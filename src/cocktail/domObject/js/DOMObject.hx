@@ -172,9 +172,6 @@ class DOMObject extends DOMObjectBase
 	{
 		super.setMatrix(matrix);
 		
-		//type the native dom object
-		var nativeSprite:HtmlDom = this._nativeReference;
-		
 		//get the data of the cross-platform matrix
 		var matrixData:MatrixData = matrix.getMatrixData();
 		
