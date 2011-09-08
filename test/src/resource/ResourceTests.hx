@@ -191,12 +191,15 @@ class ResourceTests
 		Assert.same(domObject.width, 65);
 		Assert.same(domObject.height, 65);
 		
+		Assert.same(domObject.src.indexOf("testPicture.jpg") != -1, true);
+		
 		rootDOMObject.addChild(domObject);
+		
 		#if flash9
 		domObject.setX(200);
 		Assert.is(domObject.nativeReference, Loader);
 		#elseif js
-		Assert.same(domObject.nativeReference.getAttribute("src"), "testPicture.jpg");
+		
 		#elseif php
 		Assert.same(domObject.nativeReference._nodeName, "img");
 		Assert.same(domObject.nativeReference.get("src"), "testPicture.jpg");
