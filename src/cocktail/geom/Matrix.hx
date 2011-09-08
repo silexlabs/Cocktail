@@ -174,28 +174,28 @@ class Matrix
 		//translate the matrix to set the transformation origin as it's pivot point
 		rotatedMatrix.translate(transformationOrigin.x, transformationOrigin.y);
 		
-		var a:Float = 0;
-		var b:Float = 0;
-		var c:Float = 0;
-		var d:Float = 0;
+		var a:Float = 0.0;
+		var b:Float = 0.0;
+		var c:Float = 0.0;
+		var d:Float = 0.0;
 		
 		//check for special angles
 		
 		if (angle == 90)
 		{
-			a = d = 0;
-			c = b = 1;
+			a = d = 0.0;
+			c = b = 1.0;
 			
 		}
 		else if (angle == 180)
 		{
-			a = d = -1;
-			c = b = 0;
+			a = d = -1.0;
+			c = b = 0.0;
 		}
 		else if (angle == 270)
 		{
-			a = d = 0;
-			c = b = -1;
+			a = d = 0.0;
+			c = b = -1.0;
 		}
 		else
 		{
@@ -208,7 +208,7 @@ class Matrix
 		var rotationMatrixData:MatrixData = {
 			a:a,
 			b:b,
-			c:c * -1,
+			c:c * -1.0,
 			d:d,
 			e:0.0,
 			f:0.0
@@ -330,11 +330,15 @@ class Matrix
 		//get the current angle
 		var currentRotation:Int = getRotation();
 		
-		//find the complementary angle to reset the rotation to 0
-		var resetAngle:Int = 360 - currentRotation;
-		
-		//reset the rotation while preserving other transformations
-		this.rotate(resetAngle, transformationOrigin );
+		//only reset if matrix is rotated
+		if (currentRotation != 0 && currentRotation != 360)
+		{
+			//find the complementary angle to reset the rotation to 0
+			var resetAngle:Int = 360 - currentRotation;
+			
+			//reset the rotation while preserving other transformations
+			this.rotate(resetAngle, transformationOrigin );
+		}
 		
 		//set the new rotation value
 		this.rotate(angle, transformationOrigin);
