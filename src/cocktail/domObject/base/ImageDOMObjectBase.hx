@@ -26,6 +26,15 @@ class ImageDOMObjectBase extends DOMObject
 {
 
 	/**
+	 * The URL of the loaded picture.
+	 * It is only an information, setting
+	 * it afterward won't load another
+	 * picture in the Image DOM object
+	 */
+	private var _src:String;
+	public var src(getSrc, setSrc):String;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(initialNativeReference:NativeReference = null) 
@@ -47,6 +56,21 @@ class ImageDOMObjectBase extends DOMObject
 	override public function removeChild(domObject:DOMObjectBase):Void
 	{
 		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER for picture source
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function getSrc():String
+	{
+		return this._src;
+	}
+	
+	public function setSrc(value:String):String
+	{
+		this._src = value;
+		return value;
 	}
 	
 }

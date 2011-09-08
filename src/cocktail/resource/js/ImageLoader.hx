@@ -60,11 +60,12 @@ class ImageLoader extends ResourceLoader
 		
 		//listens to image load complete and load error.
 		untyped domObject.nativeReference.onload = function() { 
-			//set the dom object width and height with the loaded picture
-			//dimensions. In this function "this" referes to the HTML Image 
+			//set the dom object width, height and source with the loaded picture
+			//dimensions and url. In this function "this" referes to the HTML Image 
 			//element
 			domObject.width = this.width;
 			domObject.height = this.height;
+			domObject.src = this.src;
 			onLoadCompleteDelegate(domObject);
 			
 			};
