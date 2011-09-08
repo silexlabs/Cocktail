@@ -1,0 +1,7 @@
+#build doc files
+-cp ../src/framework/
+-main SilexFramework
+-js ../bin/libs/silex/js/SilexFramework.js
+-xml SilexFrameworkDoc.xml
+-cmd chxdoc -o framework/js/ --includeOnly=org.*,  SilexFrameworkDoc.xml 
+#-debug

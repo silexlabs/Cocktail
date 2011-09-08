@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main keyboard.KeyboardTests
+-swf9 ../../bin/keyboard/keyboardTestAs3.swf
+-lib utest

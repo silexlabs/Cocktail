@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main domobject.DOMObjectTests
+-lib utest
+-php ../../bin/domobject/domObjectTestPHP.php
