@@ -23,6 +23,7 @@ import cocktail.domObject.GraphicDOMObject;
 import cocktail.domObject.DOMObjectData;
 import cocktail.geom.GeomData;
 import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeReference.NativeReferenceData;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -51,11 +52,9 @@ class MatrixTests
 	 */
 	public function testMatrixTransformations():Void
 	{
-		#if flash9
-		var domObject:GraphicDOMObject = new GraphicDOMObject(new flash.display.Sprite());
-		#elseif js
-		var domObject:GraphicDOMObject = new GraphicDOMObject(js.Lib.document.createElement("canvas") );
-		#end
+		
+		var domObject:GraphicDOMObject = new GraphicDOMObject(NativeReferenceManager.createNativeReference(graphic));
+
 		
 		//init the test dom object
 		
