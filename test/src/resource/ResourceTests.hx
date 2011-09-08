@@ -10,8 +10,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package resource;
 
-
+import cocktail.domObject.ContainerDOMObject;
+import cocktail.domObject.ImageDOMObject;
  #if flash9
+
 import flash.display.Loader;
 import flash.Lib;
 import flash.system.ApplicationDomain;
@@ -111,16 +113,16 @@ class ResourceTests
 	 * When the DOMObject has been loaded, attach it to the root DOMObject
 	 * @param	domObject the loaded DOMObject
 	 */
-	private function onContainerLoaded(domObject:Dynamic):Void
+	private function onContainerLoaded(domObject:ContainerDOMObject):Void
 	{
 		rootDOMObject.addChild(domObject);
 		#if flash9
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		Assert.is(domObject.nativeReference, Loader);
 		#elseif js
-		Assert.same(domObject.getReferenceToNativeDOM().firstChild.getAttribute("id"), "loadedDOMObject");
+		Assert.same(domObject.nativeReference.firstChild.getAttribute("id"), "loadedDOMObject");
 		#elseif php
-		Assert.equals(domObject.getReferenceToNativeDOM().firstChild().get("id"), "loadedDOMObject");
-		Assert.equals(domObject.getReferenceToNativeDOM().firstChild().firstChild().toString(), "container loaded");
+		Assert.equals(domObject.nativeReference.firstChild().get("id"), "loadedDOMObject");
+		Assert.equals(domObject.nativeReference.firstChild().firstChild().toString(), "container loaded");
 		#end
 	}
 	
@@ -184,7 +186,7 @@ class ResourceTests
 		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError);
 	}
 	
-	public function onPictureLoaded(domObject:Dynamic):Void
+	public function onPictureLoaded(domObject:ImageDOMObject):Void
 	{
 		Assert.same(domObject.width, 65);
 		Assert.same(domObject.height, 65);
@@ -192,12 +194,12 @@ class ResourceTests
 		rootDOMObject.addChild(domObject);
 		#if flash9
 		domObject.setX(200);
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		Assert.is(domObject.nativeReference, Loader);
 		#elseif js
-		Assert.same(domObject.getReferenceToNativeDOM().getAttribute("src"), "testPicture.jpg");
+		Assert.same(domObject.nativeReference.getAttribute("src"), "testPicture.jpg");
 		#elseif php
-		Assert.same(domObject.getReferenceToNativeDOM()._nodeName, "img");
-		Assert.same(domObject.getReferenceToNativeDOM().get("src"), "testPicture.jpg");
+		Assert.same(domObject.nativeReference._nodeName, "img");
+		Assert.same(domObject.nativeReference.get("src"), "testPicture.jpg");
 		#end
 	}
 	
@@ -230,18 +232,18 @@ class ResourceTests
 		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, false);
 	}
 	
-	private function onPictureNoCacheLoaded(domObject:Dynamic):Void
+	private function onPictureNoCacheLoaded(domObject:DOMObject):Void
 	{
 		rootDOMObject.addChild(domObject);
 		#if flash9
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		Assert.is(domObject.nativeReference, Loader);
 		#elseif js
-		var croppedSrc:String = domObject.getReferenceToNativeDOM().getAttribute("src");
+		var croppedSrc:String = domObject.nativeReference.getAttribute("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#elseif php
-		Assert.same(domObject.getReferenceToNativeDOM()._nodeName, "img");
-		var croppedSrc:String = domObject.getReferenceToNativeDOM().get("src");
+		Assert.same(domObject.nativeReference._nodeName, "img");
+		var croppedSrc:String = domObject.nativeReference.get("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#end
