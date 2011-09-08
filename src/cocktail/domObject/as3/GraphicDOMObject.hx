@@ -11,6 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
 
+import cocktail.nativeReference.NativeReference;
+import cocktail.nativeReference.NativeReferenceManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.CapsStyle;
@@ -60,22 +62,15 @@ class GraphicDOMObject extends GraphicDOMObjectBase
 	 * a default width and height. Add a bitmap display object that
 	 * will copy the vector drawing as they are drawn
 	 */
-	public function new(nativeReference:DisplayObjectContainer = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		//add a canvas Sprite if none is provided
-		if (nativeReference == null)
-		{
-			nativeReference = new Sprite();
-		}
-		
 		super(nativeReference);
 		
-		
-		_typedNativeReference = cast(nativeReference);
+		_typedNativeReference = cast(this._nativeReference);
 		
 		//init the background sprite and attach it to the display list
 		_backGroundSprite = new Sprite();
-		nativeReference.addChild(_backGroundSprite);
+		this._nativeReference.addChild(_backGroundSprite);
 
 		this._width = 100;
 		this._height = 100;
@@ -83,7 +78,7 @@ class GraphicDOMObject extends GraphicDOMObjectBase
 		
 		//init the bitmap display object and attach it to the display list
 		_bitmapDrawing = new Bitmap(new BitmapData(100, 100, true, 0x00FFFFFF));
-		nativeReference.addChild(_bitmapDrawing);
+		this._nativeReference.addChild(_bitmapDrawing);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.js;
 
+import cocktail.nativeReference.NativeReference;
 import haxe.Log;
 import js.Dom;
 import cocktail.domObject.base.DOMObjectBase;
@@ -32,9 +33,9 @@ class DOMObject extends DOMObjectBase
 	/**
 	 * Class constructor
 	 */
-	public function new(referenceToNativeDOM:HtmlDom = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOM);
+		super(nativeReference);
 	}
 	
 	/**
