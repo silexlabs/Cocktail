@@ -14,6 +14,7 @@ package cocktail.domObject.base;
 import cocktail.domObject.DOMObject;
 import cocktail.domObject.DOMObjectData;
 import cocktail.nativeReference.NativeReference;
+import haxe.Log;
 
 /**
  * This DOMObject is in charge of displaying a picture of 
@@ -27,9 +28,9 @@ class ImageDOMObjectBase extends DOMObject
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(initialNativeReference:NativeReference = null) 
 	{
-		super(nativeReference);
+		super(initialNativeReference);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

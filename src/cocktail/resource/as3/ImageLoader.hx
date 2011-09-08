@@ -17,6 +17,7 @@ import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
+import haxe.Log;
 
 import cocktail.domObject.DOMObject;
 import cocktail.domObject.ImageDOMObject;
@@ -90,6 +91,10 @@ class ImageLoader extends ResourceLoader
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
 		
 		var imageDOMObject:DOMObject = new ImageDOMObject(_imageLoader);
+		
+		//init the width and height of the dom object
+		imageDOMObject.width = Math.round(_imageLoader.width);
+		imageDOMObject.height = Math.round(_imageLoader.height);
 		
 		onLoadComplete(imageDOMObject);
 	}

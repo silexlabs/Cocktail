@@ -19,6 +19,7 @@ import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeReference.NativeReference;
+import haxe.Log;
 
 /**
  * This is a base class for runtime specific DOMObject. A DOMObject is an abstraction of the visual base element of a runtime.
@@ -208,13 +209,13 @@ class DOMObjectBase
 	 * class constructor. Set the native reference to the native DOMObject
 	 * and initialise it
 	 */
-	public function new(nativeReference:Dynamic = null) 
+	public function new(initialNativeReference:NativeReference = null) 
 	{
 		//store and init the dom object properties
 		//with the native reference if it isn't null
-		if (nativeReference != null)
+		if (initialNativeReference != null)
 		{
-			this._nativeReference = nativeReference;
+			this._nativeReference = initialNativeReference;
 			init();
 		}
 		
