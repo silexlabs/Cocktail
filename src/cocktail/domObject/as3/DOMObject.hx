@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
 
+import cocktail.nativeReference.NativeReference;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import haxe.Log;
@@ -30,9 +31,9 @@ class DOMObject extends DOMObjectBase
 	/**
 	 * Class constructor
 	 */
-	public function new(referenceToNativeDOM:DisplayObjectContainer = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOM);
+		super(nativeReference);
 	}
 	
 	/**

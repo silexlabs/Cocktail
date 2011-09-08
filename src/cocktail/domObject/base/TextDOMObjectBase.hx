@@ -12,6 +12,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domObject.base;
 import cocktail.domObject.DOMObject;
 import cocktail.nativeReference.NativeReference;
+import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeReference.NativeReferenceData;
 
 /**
  * This is a DOMObject in charge of displaying an 
@@ -33,6 +35,12 @@ class TextDOMObjectBase extends DOMObject
 	 */
 	public function new(nativeReference:NativeReference = null)
 	{
+		//create a text native reference if none is provided
+		if (nativeReference == null)
+		{
+			nativeReference = NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.text);
+		}
+		
 		super(nativeReference);
 	}
 	

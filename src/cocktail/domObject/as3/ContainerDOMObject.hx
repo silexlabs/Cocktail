@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
-import flash.display.DisplayObjectContainer;
+import cocktail.nativeReference.NativeReference;
 import cocktail.domObject.base.ContainerDOMObjectBase;
 
 /**
@@ -26,9 +26,9 @@ class ContainerDOMObject extends ContainerDOMObjectBase
 	/**
 	 * class constructor
 	 */
-	public function new(referenceToNativeDOMObject:DisplayObjectContainer = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOMObject);
+		super(nativeReference);
 	}
 	
 }
