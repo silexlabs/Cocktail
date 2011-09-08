@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.js;
 
+import cocktail.nativeReference.NativeReferenceManager;
 import haxe.Http;
 import haxe.Log;
 import js.Lib;
@@ -19,6 +20,7 @@ import cocktail.domObject.DOMObject;
 import cocktail.domObject.ImageDOMObject;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
+import cocktail.nativeReference.NativeReferenceData;
 
 /**
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
@@ -49,15 +51,23 @@ class ImageLoader extends ResourceLoader
 	override private function doLoad(url:String):Void
 	{
 		//create a DOMObject and the image container
-		var domObject:DOMObject = new ImageDOMObject(Lib.document.createElement("img"));
+		var domObject:ImageDOMObject = new ImageDOMObject(NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.image));
 		
 		//create a delegate to call the success callback once the native image element is done loading the source picture
-		var onLoadCompleteDelegate:DOMObject->Void = onLoadComplete;
+		var onLoadCompleteDelegate:ImageDOMObject->Void = onLoadComplete;
 		//create a delegate for the error callback
 		var onLoadErrorDelegate:String->Void = onLoadError;
 		
-		//listens to image load complete and load error
-		untyped domObject.nativeReference.onload = function() { onLoadCompleteDelegate(domObject); };
+		//listens to image load complete and load error.
+		untyped domObject.nativeReference.onload = function() { 
+			//set the dom object width and height with the loaded picture
+			//dimensions. In this function "this" referes to the HTML Image 
+			//element
+			domObject.width = this.width;
+			domObject.height = this.height;
+			onLoadCompleteDelegate(domObject);
+			
+			};
 		untyped domObject.nativeReference.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
 		// set it's source to start the loading of the picture

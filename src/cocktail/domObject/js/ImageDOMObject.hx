@@ -10,8 +10,9 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.js;
-import js.Dom;
+
 import cocktail.domObject.base.ImageDOMObjectBase;
+import cocktail.nativeReference.NativeReference;
 
 /**
  * This is the JavaScript implementation of the Image DOMObject.
@@ -27,9 +28,9 @@ class ImageDOMObject extends ImageDOMObjectBase
 	/**
 	 * class constructor
 	 */
-	public function new(referenceToNativeDOMObject:HtmlDom = null) 
+	public function new(initialNativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOMObject);
+		super(initialNativeReference);
 	}
 	
 }
