@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main nativeReference.NativeReferenceTests
+-lib utest
+-js ../../bin/nativeReference/nativeReferenceTestJS.js
