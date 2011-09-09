@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
 
+import cocktail.nativeReference.NativeReference;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import haxe.Log;
@@ -30,9 +31,9 @@ class DOMObject extends DOMObjectBase
 	/**
 	 * Class constructor
 	 */
-	public function new(referenceToNativeDOM:DisplayObjectContainer = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOM);
+		super(nativeReference);
 	}
 	
 	/**
@@ -113,7 +114,7 @@ class DOMObject extends DOMObjectBase
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden methods to transform the dom object and manipulate it's matrix
+	// Overriden transformation methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -136,6 +137,19 @@ class DOMObject extends DOMObjectBase
 		this._nativeReference.transform.matrix = nativeTransformMatrix;
 		
 		return this._matrix;
+	}
+	
+	/**
+	 * In flash when the transformation matrix is reseted, the x
+	 * and y are set to 0 as they represent the translation x and y
+	 * of the flash display object. We need to set x and y back to
+	 * the stored class attribute after a matrix reset
+	 */
+	override public function resetTransformations():Void
+	{
+		super.resetTransformations();
+		this.x = this._x;
+		this.y = this._y;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
