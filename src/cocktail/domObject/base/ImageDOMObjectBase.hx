@@ -35,11 +35,21 @@ class ImageDOMObjectBase extends DOMObject
 	public var src(getSrc, setSrc):String;
 	
 	/**
+	 * Determine wether the bitmap should be smoothed
+	 */
+	private var _smooth:Bool;
+	public var smooth(getSmooth, setSmooth):Bool;
+	
+	/**
 	 * class constructor
 	 */
-	public function new(initialNativeReference:NativeReference = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(initialNativeReference);
+		super(nativeReference);
+		
+		//smooth the picture by default
+		this.smooth = true;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +69,7 @@ class ImageDOMObjectBase extends DOMObject
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER for picture source
+	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function getSrc():String
@@ -71,6 +81,17 @@ class ImageDOMObjectBase extends DOMObject
 	{
 		this._src = value;
 		return value;
+	}
+	
+	public function setSmooth(value:Bool):Bool
+	{
+		this._smooth = value;
+		return value;
+	}
+	
+	public function getSmooth():Bool
+	{
+		return this._smooth;
 	}
 	
 }
