@@ -305,7 +305,7 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	private function toNativeAlpha(genericAlpa:Int):Dynamic
 	{
-		//abstract
+		return null;
 	}
 	
 	/**
@@ -315,7 +315,7 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	private function toNativeColor(genericColor:Int):Dynamic
 	{
-		//abstract
+		return null;
 	}
 	
 	/**
@@ -325,7 +325,7 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	private function toNativeRatio(genericRatio:Int):Dynamic
 	{
-		//abstract
+		return null;
 	}
 	
 	/**
@@ -335,7 +335,7 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	private function toNativeCapStyle(genericCapStyle:CapsStyleValue):Dynamic
 	{
-		//abstract
+		return null;
 	}
 	
 	/**
@@ -345,7 +345,7 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	private function toNativeJointStyle(genericJointStyle:JointStyleValue):Dynamic
 	{
-		//abstract
+		return null;
 	}
 	
 	
