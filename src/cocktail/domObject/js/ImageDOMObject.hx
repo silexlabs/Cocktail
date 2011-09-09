@@ -17,20 +17,53 @@ import cocktail.domObject.base.ImageDOMObjectBase;
 /**
  * This is the JavaScript implementation of the Image DOMObject.
  * 
- * It currently doesn't add any behaviour and is just there to allow
- * compilation
- * 
  * @author Yannick DOMINUGEZ
  */
 class ImageDOMObject extends ImageDOMObjectBase
 {
 
 	/**
+	 * This value smooth the bitmap
+	 */
+	private static inline var IMAGE_RENDERING_OPTIMIZE_QUALITY = "optimizeQuality";
+	
+	/**
+	 * This value doesn't smooth the bitmap
+	 */
+	private static inline var IMAGE_RENDERING_OPTIMIZE_SPEED = "optimizeSpeed";
+	
+	/**
 	 * class constructor
 	 */
 	public function new(nativeReference:NativeReference = null) 
 	{
 		super(nativeReference);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Override to use the CSS to smooth/unsmooth the bitmap
+	 * @param	value
+	 * @return
+	 */
+	override public function setSmooth(value:Bool):Bool
+	{
+		super.setSmooth(value);
+		
+		//set the CSS influencing image quality rendering
+		if (value == true)
+		{
+			untyped this._nativeReference.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_QUALITY;
+		}
+		else
+		{
+			untyped this._nativeReference.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_SPEED;
+		}
+		
+		return value;
 	}
 	
 }
