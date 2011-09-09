@@ -79,5 +79,14 @@ enum MouseCursorValue {
  * OS mouse cursor
  */
 enum NativeOSMouseCursorValue {
-	hand;
+	
+	/**
+	 * represents a pointed hand
+	 */
+	pointer;
+	
+	/**
+	 * represents an i-beam
+	 */
+	text;
 }

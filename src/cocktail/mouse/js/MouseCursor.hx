@@ -37,6 +37,11 @@ class MouseCursor extends MouseCursorBase
 	private static inline var MOUSE_CURSOR_STYLE_POINTER:String = "pointer";
 	
 	/**
+	 * CSS style for i-beam
+	 */
+	private static inline var MOUSE_CURSOR_STYLE_TEXT:String = "text";
+	
+	/**
 	 * CSS style for auto cursor (browser managed)
 	 */
 	private static inline var MOUSE_CURSOR_STYLE_AUTO:String = "auto";
@@ -93,8 +98,11 @@ class MouseCursor extends MouseCursorBase
 	{
 		switch (value)
 		{
-			case hand: 
+			case pointer: 
 				setCursorStyle(MOUSE_CURSOR_STYLE_POINTER);
+				
+			case text:
+				setCursorStyle(MOUSE_CURSOR_STYLE_TEXT);
 		}
 	}
 	

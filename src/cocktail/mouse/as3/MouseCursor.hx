@@ -105,8 +105,11 @@ class MouseCursor extends MouseCursorBase
 		
 		switch value
 		{
-			case hand:
-				Mouse.cursor = flash.ui.MouseCursor.HAND;
+			case pointer:
+				Mouse.cursor = flash.ui.MouseCursor.BUTTON;
+				
+			case text:
+				Mouse.cursor = flash.ui.MouseCursor.IBEAM;
 		}
 	}
 	

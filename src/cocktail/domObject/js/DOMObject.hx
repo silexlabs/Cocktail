@@ -33,9 +33,9 @@ class DOMObject extends DOMObjectBase
 	/**
 	 * Class constructor
 	 */
-	public function new(initialNativeReference:NativeReference = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(initialNativeReference);
+		super(nativeReference);
 	}
 	
 	/**

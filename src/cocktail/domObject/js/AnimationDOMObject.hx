@@ -12,6 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domObject.js;
 
 import cocktail.domObject.base.AnimationDOMObjectBase;
+import cocktail.nativeReference.NativeReference;
 
 /**
  * This is the JavaScript implementation of the AnimationDOMObject
@@ -25,9 +26,9 @@ class AnimationDOMObject extends AnimationDOMObjectBase
 	/**
 	 * class constructor
 	 */
-	public function new(referenceToNativeDOMObject:Dynamic = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		super(referenceToNativeDOMObject);
+		super(nativeReference);
 	}
 	
 }
