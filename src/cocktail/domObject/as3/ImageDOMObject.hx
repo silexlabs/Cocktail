@@ -12,13 +12,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domObject.as3;
 
 import cocktail.nativeReference.NativeReference;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Loader;
 import haxe.Log;
 import cocktail.domObject.base.ImageDOMObjectBase;
 
 /**
  * This is the Image DOMObject implementation for Flash.
- * 
- * It doesn't add any behaviour and is there to allow compilation
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -28,6 +29,29 @@ class ImageDOMObject extends ImageDOMObjectBase
 	public function new(nativeReference:NativeReference = null) 
 	{
 		super(nativeReference);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Override to use the flash API to smooth/unsmooth bitmap
+	 * @param	value
+	 * @return
+	 */
+	override public function setSmooth(value:Bool):Bool
+	{
+		super.setSmooth(value);
+		
+		//cast the native reference as a loader
+		// and retrieve its bitmap content
+		var typedNativeReference:Loader = cast(this._nativeReference);
+		var bitmap:Bitmap = cast(typedNativeReference.content);
+		//activate/deactivate picture smoothing
+		bitmap.smoothing = value;
+		
+		return value;
 	}
 	
 }
