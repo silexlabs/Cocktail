@@ -29,6 +29,7 @@ class Matrix
 	 * Stores each value of this 3x3 matrix
 	 */
 	private var _matrixData:MatrixData;
+	public var matrixData(getMatrixData, setMatrixData):MatrixData;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
@@ -65,7 +66,7 @@ class Matrix
 	 * 
 	 * @param contains 6 values
 	 */
-	public function setMatrixData(matrixData:MatrixData):Void
+	public function setMatrixData(matrixData:MatrixData):MatrixData
 	{
 		_matrixData = matrixData;
 		
@@ -74,6 +75,8 @@ class Matrix
 		{
 			identity();
 		}
+		
+		return _matrixData;
 	}
 	
 	/**
@@ -119,6 +122,9 @@ class Matrix
 			e : e,
 			f : f
 		};
+		
+				
+		
 		
 		//then set it as this matrix data
 		setMatrixData(concatenatedMatrixData);
@@ -330,15 +336,11 @@ class Matrix
 		//get the current angle
 		var currentRotation:Int = getRotation();
 		
-		//only reset if matrix is rotated
-		if (currentRotation != 0 && currentRotation != 360)
-		{
-			//find the complementary angle to reset the rotation to 0
-			var resetAngle:Int = 360 - currentRotation;
+		//find the complementary angle to reset the rotation to 0
+		var resetAngle:Int = 360 - currentRotation;
 			
-			//reset the rotation while preserving other transformations
-			this.rotate(resetAngle, transformationOrigin );
-		}
+		//reset the rotation while preserving other transformations
+		this.rotate(resetAngle, transformationOrigin );
 		
 		//set the new rotation value
 		this.rotate(angle, transformationOrigin);
