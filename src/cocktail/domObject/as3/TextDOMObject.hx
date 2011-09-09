@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
+import cocktail.nativeReference.NativeReference;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.text.TextField;
@@ -37,20 +38,14 @@ class TextDOMObject extends TextDOMObjectBase
 	 * class constructor. Instantiate the native text field
 	 * and add it as a child of the native Sprite.
 	 */
-	public function new(referenceToNativeDOMObject:DisplayObjectContainer = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		//add a new DisplayObject if none is provided
-		if (referenceToNativeDOMObject == null)
-		{
-			referenceToNativeDOMObject = new Sprite();
-		}
-		
-		super(referenceToNativeDOMObject);
+		super(nativeReference);
 		
 		_nativeTextField = new TextField();
 		_nativeTextField.wordWrap = true;
 		_nativeTextField.multiline = true;
-		referenceToNativeDOMObject.addChild(_nativeTextField);
+		this._nativeReference.addChild(_nativeTextField);
 	}
 	
 	/**

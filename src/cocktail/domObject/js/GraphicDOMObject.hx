@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.js;
 
+import cocktail.nativeReference.NativeReference;
 import js.Dom;
 import js.Lib;
 import cocktail.domObject.base.GraphicDOMObjectBase;
@@ -56,15 +57,9 @@ class GraphicDOMObject extends GraphicDOMObjectBase
 	/**
 	 * class constructor
 	 */
-	public function new(referenceToNativeDOMObject:HtmlDom = null) 
+	public function new(nativeReference:NativeReference = null) 
 	{
-		//create a canvas if none is provided
-		if (referenceToNativeDOMObject == null)
-		{
-			referenceToNativeDOMObject = Lib.document.createElement("canvas");
-		}
-		
-		super(referenceToNativeDOMObject);
+		super(nativeReference);
 		
 	}
 	

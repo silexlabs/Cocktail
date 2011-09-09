@@ -16,6 +16,8 @@ import cocktail.domObject.DOMObjectData;
 import cocktail.geom.GeomData;
 import cocktail.domObject.ImageDOMObject;
 import cocktail.nativeReference.NativeReference;
+import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeReference.NativeReferenceData;
 
 /**
  * The graphic DOMObject is used as a canvas to draw bitmap graphics programmatically. 
@@ -38,6 +40,12 @@ class GraphicDOMObjectBase extends DOMObject
 	 */
 	public function new(nativeReference:NativeReference = null) 
 	{
+		//get a graphic native reference if none is provided
+		if (nativeReference == null)
+		{
+			nativeReference = NativeReferenceManager.createNativeReference(graphic);
+		}
+		
 		super(nativeReference);
 	}
 	
