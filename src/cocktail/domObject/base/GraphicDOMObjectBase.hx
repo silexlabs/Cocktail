@@ -185,6 +185,55 @@ class GraphicDOMObjectBase extends DOMObject
 		}
 	}
 	
+	/**
+	 * High level method to draw a star. 
+	 * Needs to be called after beginFill or beginGradientFill was called.
+	 * @param	x the left point of the star
+	 * @param	y the top point of the star
+	 * @param	outerRadius the star outer radius
+	 * @param	innerRadius the star inner radius
+	 * @param	branches the number of branches of the star.
+	 */
+	public function drawStar(x:Int, y:Int, outerRadius:Int, innerRadius:Int, branches:Int):Void
+	{
+		var angle:Float = 360 / branches;
+		var angleDecal:Float = angle * 0.5;
+		
+		moveTo(Math.cos(0) * outerRadius + outerRadius, Math.sin(0) * outerRadius + outerRadius);
+		for (i in 0...branches) {
+			lineTo(Math.cos(conversion(i * angle)) * outerRadius + outerRadius, Math.sin(conversion(i * angle)) * outerRadius + outerRadius);
+			lineTo(Math.cos(conversion(i * angle + angleDecal)) * innerRadius + outerRadius, Math.sin(conversion(i * angle + angleDecal)) * innerRadius + outerRadius);
+		}
+		lineTo(Math.cos(0) * outerRadius + outerRadius, Math.sin(0) * outerRadius + outerRadius);
+	}
+	
+	/**
+	 * High level method to draw a polygon. 
+	 * Needs to be called after beginFill or beginGradientFill was called.
+	 * @param	x the left point of the polygon
+	 * @param	y the top point of the polygon
+	 * @param	radius the radius of the polygon
+	 * @param	sides the number of sides of the polygon.
+	 */
+	public function drawPolygon(x:Int, y:Int, radius:Int, sides:Int):Void
+	{
+		var angle:Float = 360 / sides;
+		
+		moveTo(Math.cos(0) * radius + radius, Math.sin(0) * radius + radius);
+		for (i in 0...sides) {
+			lineTo(Math.cos(conversion(i * angle)) * radius + radius, Math.sin(conversion(i * angle)) * radius + radius);
+			lineTo(Math.cos(conversion(i * angle + angle)) * radius + radius, Math.sin(conversion(i * angle + angle)) * radius + radius);
+		}
+		lineTo(Math.cos(0) * radius + radius, Math.sin(0) * radius + radius);
+	}
+	
+	/**
+	 * Converts an angle from deg to rad
+	 */
+	private function conversion (val:Float):Float {
+		return val / 180 * Math.PI;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// High level pixel manipulation method
 	//////////////////////////////////////////////////////////////////////////////////////////
