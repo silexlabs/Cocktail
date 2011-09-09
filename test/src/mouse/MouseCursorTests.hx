@@ -85,7 +85,7 @@ class MouseCursorTests
 	
 	private function onPointerPress(mouseEventData:MouseEventData):Void
 	{
-		MouseCursorManager.setMouseCursor(native(hand));
+		MouseCursorManager.setMouseCursor(native(pointer));
 	}
 	
 	private function onBitmapPress(mouseEventData:MouseEventData):Void
