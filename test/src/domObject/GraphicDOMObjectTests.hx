@@ -92,6 +92,40 @@ class GraphicDOMObjectTests
 		Assert.equals(1, 1);
 	}
 	
+	public function testDrawStar()
+	{
+		var starDOMObject:GraphicDOMObject = new GraphicDOMObject();
+		starDOMObject.width = 300;
+		starDOMObject.height = 300;
+		
+		starDOMObject.x = 400;
+		starDOMObject.y = 200;
+		
+		starDOMObject.beginFill(monochrome( { color:0xFF0000, alpha: 70 } ));
+		
+		starDOMObject.drawStar(0, 0, 50, 10, 7);
+		starDOMObject.endFill();
+		
+		rootDOMObject.addChild(starDOMObject);
+	}
+	
+	public function testDrawPooly()
+	{
+		var polyDOMObject:GraphicDOMObject = new GraphicDOMObject();
+		polyDOMObject.width = 300;
+		polyDOMObject.height = 300;
+		
+		polyDOMObject.x = 400;
+		polyDOMObject.y = 300;
+		
+		polyDOMObject.beginFill(monochrome( { color:0xFF0000, alpha: 70 } ));
+		
+		polyDOMObject.drawPolygon(20, 40, 50, 9);
+		polyDOMObject.endFill();
+		
+		rootDOMObject.addChild(polyDOMObject);
+	}
+	
 	/**
 	 * draw a linear gradient rectangle
 	 */
