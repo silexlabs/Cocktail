@@ -10,9 +10,8 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domObject.as3;
+
 import cocktail.nativeReference.NativeReference;
-import flash.display.DisplayObjectContainer;
-import flash.display.Loader;
 import haxe.Log;
 import cocktail.domObject.base.ImageDOMObjectBase;
 

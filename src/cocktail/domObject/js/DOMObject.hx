@@ -174,7 +174,23 @@ class DOMObject extends DOMObjectBase
 		//get the data of the cross-platform matrix
 		var matrixData:MatrixData = matrix.getMatrixData();
 		
-		var cssMatrixProperty:String = "matrix(" + matrixData.a + "," + matrixData.b + "," + matrixData.c + "," + matrixData.d + "," + matrixData.e + "," + matrixData.f + ")";
+		//report the data to number with 2 decimal
+		//as number with too much decimal prevent
+		//JS matrix style to work
+		var a:Float = matrixData.a;
+		a = untyped a.toFixed(2);
+		var b:Float = matrixData.b;
+		b = untyped b.toFixed(2);
+		var c:Float = matrixData.c;
+		c = untyped c.toFixed(2);
+		var d:Float = matrixData.d;
+		d = untyped d.toFixed(2);
+		var e:Float = matrixData.e;
+		e = untyped e.toFixed(2);
+		var f:Float = matrixData.f;
+		f = untyped f.toFixed(2);
+		
+		var cssMatrixProperty:String = "matrix(" + a + "," + b + "," + c + "," + d + "," + e + "," + f + ")";
 		
 		//first test if the transform property is set for the current browser,
 		//else test vendor specific properties
