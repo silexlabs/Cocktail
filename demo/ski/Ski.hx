@@ -13,11 +13,11 @@ import haxe.FastList;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.resource.ResourceLoaderManager;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.domObject.GraphicDOMObject;
-import cocktail.domObject.DOMObjectData;
-import cocktail.domObject.TextDOMObject;
-import cocktail.domObject.DOMObject;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.domElement.GraphicDOMElement;
+import cocktail.domElement.DOMElementData;
+import cocktail.domElement.TextDOMElement;
+import cocktail.domElement.DOMElement;
 import cocktail.keyboard.KeyboardData;
 import cocktail.nativeReference.NativeReferenceManager;
 import cocktail.geom.GeomData;
@@ -31,8 +31,8 @@ import cocktail.geom.GeomData;
 */
 class Blob
 {
-   var mArena:GraphicDOMObject;
-   var mBits:ImageDOMObject;
+   var mArena:GraphicDOMElement;
+   var mBits:ImageDOMElement;
    var mRect:Rectangle;
    var mPoint:Point;
    // The "hotspot" is the logical origin of the object, with respect
@@ -45,7 +45,7 @@ class Blob
    // Passing the arena into the constructor is not really required,
    //  but doing this reduces the number of params we have to pass into
    //  the Draw function;
-   public function new(inArena:GraphicDOMObject,inBits:ImageDOMObject,inX:Int, inY:Int, inW:Int, inH:Int,
+   public function new(inArena:GraphicDOMElement,inBits:ImageDOMElement,inX:Int, inY:Int, inW:Int, inH:Int,
            ?inHotX:Null<Float>, ?inHotY:Null<Float>)
    {
       mArena = inArena;
@@ -65,7 +65,7 @@ class Blob
       mPoint.x = inX-mHotX;
       mPoint.y = inY - mHotY;
 	  
-	  //use the drawImage method of the GraphicDOMObject
+	  //use the drawImage method of the GraphicDOMElement
 	  //to copy pixels onto a surface
 	  mArena.drawImage(mBits, mPoint, mRect);
    }
@@ -81,7 +81,7 @@ typedef TreeRow = Array<Float>;
 class Ski
 {
    // Using "drawImage" we draw into this abstract graphic object
-   var mArena:GraphicDOMObject;
+   var mArena:GraphicDOMElement;
 
    // What to do on an update...
    var mState : SkiState;
@@ -121,8 +121,8 @@ class Ski
    // GUI items
    // Use the SL Cocktail cross-platform
    // text implementation
-   var mScoreText:TextDOMObject;
-   var mTopScoreText:TextDOMObject;
+   var mScoreText:TextDOMElement;
+   var mTopScoreText:TextDOMElement;
 
 
    // Loads the input bitmap
@@ -140,7 +140,7 @@ class Ski
     * Called once the "tiles" bitmap is loaded. It is stored in an 
 	* abstract "ImageDOMobject" which can be used in both Flash and JavaScript
     */
-   function init(inBitmap:ImageDOMObject):Void
+   function init(inBitmap:ImageDOMElement):Void
    {
 	  //init the key state array
       mKeyDown = [];
@@ -148,13 +148,13 @@ class Ski
       //the abstract gaphic dom object is instantiated and
 	  //its dimensions are set. It will be used as a cross-platform
 	  //drawing surface
-      mArena = new GraphicDOMObject();
+      mArena = new GraphicDOMElement();
 	  mArena.width = 640;
 	  mArena.height = 480;
 	  
 	  //it is attached to the root dom object, the higher object
 	  //in the DOM tree
-      rootDOMObject.addChild(mArena);
+      rootDOMElement.addChild(mArena);
 
       // Create Blobs as subrects of the input images.
       // The rectanges were calculated when the image was created.  If there were
@@ -199,17 +199,17 @@ class Ski
       // The "GUI" consists of two cross-platform text objects overlapping the arena.
 	  //Formatting is not yet implemented in SL Cocktail but the text will be displayed using
 	  //the runtime default style
-      mScoreText = new TextDOMObject();
+      mScoreText = new TextDOMElement();
       mScoreText.x = 10;
       mScoreText.y = 10;
 
-      rootDOMObject.addChild(mScoreText);
+      rootDOMElement.addChild(mScoreText);
 
-      mTopScoreText = new TextDOMObject();
+      mTopScoreText = new TextDOMElement();
       mTopScoreText.x = 100;
       mTopScoreText.y = 10;
 	  
-      rootDOMObject.addChild(mTopScoreText);
+      rootDOMElement.addChild(mTopScoreText);
 
       // Just something small to aspire too...
       mTopScore = 0;
@@ -412,7 +412,7 @@ class Ski
 
    }
    
-   private static var rootDOMObject:DOMObject;
+   private static var rootDOMElement:DOMElement;
    
    // Haxe will always look for a static function called "main".
    static public function main()
@@ -420,7 +420,7 @@ class Ski
 		
 	  //create the root DOM Object of the game
 	  //the getRoot method returns the root of the current runtime (Stage for flash, body for js)
-	  rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+	  rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
 	  
 		
 	//instantiate the game	
