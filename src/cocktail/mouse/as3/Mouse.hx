@@ -12,7 +12,7 @@ package cocktail.mouse.as3;
 
 import flash.events.MouseEvent;
 import cocktail.mouse.base.MouseBase;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
 
@@ -29,9 +29,9 @@ class Mouse extends MouseBase
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeReference:NativeReference) 
+	public function new(nativeElement:NativeElement) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -42,30 +42,30 @@ class Mouse extends MouseBase
 	/**
 	 * Set the listeners for native flash mouse events
 	 */
-	override private function setNativeMouseListeners(nativeReference:NativeReference):Void
+	override private function setNativeMouseListeners(nativeElement:NativeElement):Void
 	{
-		nativeReference.addEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		nativeReference.addEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		nativeReference.addEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		nativeReference.addEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		nativeReference.addEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		nativeElement.addEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		nativeElement.addEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
+		nativeElement.addEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
+		nativeElement.addEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
+		nativeElement.addEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		
 		//In As3, a DisplayObject must be double click enabled to dispatch double click event
-		nativeReference.doubleClickEnabled = true;
-		nativeReference.addEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		nativeElement.doubleClickEnabled = true;
+		nativeElement.addEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
 	}
 	
 	/**
 	 * remove the listeners for native flash mouse events
 	 */
-	override private function unsetNativeMouseListeners(nativeReference:NativeReference):Void
+	override private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
 	{
-		nativeReference.removeEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		nativeReference.removeEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		nativeReference.removeEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		nativeReference.removeEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		nativeReference.removeEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		nativeReference.removeEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		nativeElement.removeEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		nativeElement.removeEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
+		nativeElement.removeEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
+		nativeElement.removeEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
+		nativeElement.removeEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		nativeElement.removeEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
