@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse;
 
-import cocktail.domObject.DOMObject;
+import cocktail.domElement.DOMElement;
 import cocktail.geom.GeomData;
 
 /**
@@ -56,7 +56,7 @@ enum MouseCursorValue {
 	 * an image dom object. The hotSpot is the registration
 	 * point of the cursor.
 	 */
-	custom(imageDOMObject:DOMObject, hotSpot:Point);
+	custom(imageDOMElement:DOMElement, hotSpot:Point);
 	
 	/**
 	 * Let the browser manage the mouse cursor

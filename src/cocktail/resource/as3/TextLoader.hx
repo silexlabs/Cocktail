@@ -12,8 +12,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.resource.as3;
 
 import flash.display.Sprite;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.TextDOMObject;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextDOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
 
@@ -21,7 +21,7 @@ import cocktail.resource.ResourceData;
  * This is the Text loader implementation for the Flash runtime. It is 
  * used to load HTML text and display it by attaching it to the DOM. It behaves
  * like the StringLoader with the difference that the loaded String is HTML instead
- * of a serialised format. The loaded HTML is attached to an Text DOMObject, used to
+ * of a serialised format. The loaded HTML is attached to an Text DOMElement, used to
  * display and convert the html for Flash.
  * 
  * @author Yannick DOMINGUEZ
@@ -41,15 +41,15 @@ class TextLoader extends ResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the HTML String has been loaded, create a Text DOMObject, and set its
+	 * When the HTML String has been loaded, create a Text DOMElement, and set its
 	 * text to the loaded HTML
 	 * @param	data the loaded HTML
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domObject:TextDOMObject = new TextDOMObject(new Sprite());
-		domObject.setText(data);
+		var domElement:TextDOMElement = new TextDOMElement(new Sprite());
+		domElement.setText(data);
 		
-		_onLoadCompleteCallback(domObject);
+		_onLoadCompleteCallback(domElement);
 	}
 }

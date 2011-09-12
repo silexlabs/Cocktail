@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse.base;
 
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.mouse.MouseData;
 
@@ -52,11 +52,11 @@ class MouseCursorBase
 		switch (value)
 		{
 			//if the cursor is a bitmap, calls
-			//a dedicated method with the imageDOMObject
+			//a dedicated method with the imageDOMElement
 			//to be used as cursor
-			case custom(imageDOMObject, hotSpot):
-				var typedImageDOMObject:ImageDOMObject = cast(imageDOMObject);
-				setBitmapCursor(typedImageDOMObject, hotSpot);
+			case custom(imageDOMElement, hotSpot):
+				var typedImageDOMElement:ImageDOMElement = cast(imageDOMElement);
+				setBitmapCursor(typedImageDOMElement, hotSpot);
 			
 			//let the browser manage the cursor	
 			case auto:
@@ -90,7 +90,7 @@ class MouseCursorBase
 	 * Set a bitmap as mouse cursor using native API. The hotSpot is the registration
 	 * point of the mouse cursor
 	 */
-	private function setBitmapCursor(imageDOMObject:ImageDOMObject, hotSpot:Point):Void
+	private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
 	{
 		//abstract
 	}

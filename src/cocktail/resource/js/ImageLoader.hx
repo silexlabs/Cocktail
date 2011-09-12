@@ -16,8 +16,8 @@ import haxe.Http;
 import haxe.Log;
 import js.Lib;
 import js.Dom.HtmlDom;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
 import cocktail.nativeReference.NativeReferenceData;
@@ -26,7 +26,7 @@ import cocktail.nativeReference.NativeReferenceData;
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture by creating
  * an <img> tag and setting it's source to the url of the file to load.
- * It instantiate and returns an Image DOMObject.
+ * It instantiate and returns an Image DOMElement.
  * @author Yannick DOMINGUEZ
  */
 class ImageLoader extends ResourceLoader
@@ -50,28 +50,28 @@ class ImageLoader extends ResourceLoader
 	 */
 	override private function doLoad(url:String):Void
 	{
-		//create a DOMObject and the image container
-		var domObject:ImageDOMObject = new ImageDOMObject(NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.image));
+		//create a DOMElement and the image container
+		var domElement:ImageDOMElement = new ImageDOMElement(NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.image));
 		
 		//create a delegate to call the success callback once the native image element is done loading the source picture
-		var onLoadCompleteDelegate:ImageDOMObject->Void = onLoadComplete;
+		var onLoadCompleteDelegate:ImageDOMElement->Void = onLoadComplete;
 		//create a delegate for the error callback
 		var onLoadErrorDelegate:String->Void = onLoadError;
 		
 		//listens to image load complete and load error.
-		untyped domObject.nativeReference.onload = function() { 
+		untyped domElement.nativeReference.onload = function() { 
 			//set the dom object width, height and source with the loaded picture
 			//dimensions and url. In this function "this" referes to the HTML Image 
 			//element
-			domObject.width = this.width;
-			domObject.height = this.height;
-			domObject.src = this.src;
-			onLoadCompleteDelegate(domObject);
+			domElement.width = this.width;
+			domElement.height = this.height;
+			domElement.src = this.src;
+			onLoadCompleteDelegate(domElement);
 			
 			};
-		untyped domObject.nativeReference.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
+		untyped domElement.nativeReference.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
 		// set it's source to start the loading of the picture
-		domObject.nativeReference.setAttribute("src", url);
+		domElement.nativeReference.setAttribute("src", url);
 	}
 }
