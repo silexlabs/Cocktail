@@ -8,19 +8,19 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass;
+package cocktail.classInstance;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Set the right runtime specific ClassInstance at compile-time
  */
 #if flash9
-typedef NativeInstance =  cocktail.nativeClass.as3.NativeInstance;
+typedef ClassInstance =  cocktail.classInstance.as3.ClassInstance;
 
 #elseif js
-typedef NativeInstance =  cocktail.nativeClass.js.NativeInstance;
+typedef ClassInstance =  cocktail.classInstance.js.ClassInstance;
 
 #elseif php
-typedef NativeInstance =  cocktail.nativeClass.php.NativeInstance;
+typedef ClassInstance =  cocktail.classInstance.php.ClassInstance;
 
 #else
 	#error

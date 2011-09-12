@@ -9,17 +9,17 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass.as3;
+package cocktail.classInstance.as3;
 
 import haxe.Log;
-import cocktail.nativeClass.base.NativeInstanceBase;
+import cocktail.classInstance.base.ClassInstanceBase;
 
 /**
  * This is the implementation of the native instance proxy for Flash. It implemenents
  * a class instantiation method specific to the Flash runtime
  * @author Yannick DOMINGUEZ
  */
-class NativeInstance extends NativeInstanceBase
+class ClassInstance extends ClassInstanceBase
 {
 	/**
 	 * class constructor
@@ -30,7 +30,7 @@ class NativeInstance extends NativeInstanceBase
 		
 		//instantiate the native Flash class and store a reference to it
 		var classReference:Class<Dynamic> = Type.resolveClass(nativeInstanceClassName);
-		_refToNativeClassInstance = Type.createInstance(classReference, new Array());
+		_nativeInstance = Type.createInstance(classReference, new Array());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ class NativeInstance extends NativeInstanceBase
 	override public function isFunction(functionName:String):Bool
 	{
 		//retrieve all the static native class fields
-		var instanceFields:Array<String> = Type.getInstanceFields(Type.getClass(_refToNativeClassInstance));
+		var instanceFields:Array<String> = Type.getInstanceFields(Type.getClass(_nativeInstance));
 		var numInstanceFields:Int = instanceFields.length;
 		
 		//loop in the fields to find a match for the method name

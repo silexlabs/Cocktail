@@ -8,16 +8,18 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass;
+package cocktail.nativeInstance;
+
+import cocktail.classInstance.ClassInstance;
 
 /**
- * This class exposes static method used to get instances of native class instance.
- * Those native class instance are wrapped in a NativeInstance object abstracting
+ * This class exposes static method used to get instances of native class.
+ * Those native class instance are wrapped in a ClassInstance object abstracting
  * instance manipulation
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeClass
+class NativeInstanceManager
 {
 	/**
 	 * Private constructor. This class is meant to be accessed only
@@ -29,28 +31,28 @@ class NativeClass
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Static instantiation methods. This is the recommended method to instantiate a NativeInstance
+	// Static instantiation methods. This is the recommended method to instantiate a ClassInstance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Intantiate a native class with it's name and wrap it in a
-	 * NativeInstance object
+	 * ClassInstance object
 	 * @param	className the name of the native class to instantiate
-	 * @return  a NativeInstance object
+	 * @return  a ClassInstance object
 	 */
-	public static function getNativeInstanceByClassName(className:String):NativeInstance
+	public static function getClassInstanceByClassName(className:String):ClassInstance
 	{
-		return new NativeInstance(className);
+		return new ClassInstance(className);
 	}
 	
 	/**
 	 * Instantiate a native class from a class reference and wrap it in a 
-	 * NativeInstance  object
+	 * ClassInstance  object
 	 * @param	classReference the class reference to instantiate
-	 * @return a NativeInstance object
+	 * @return a ClassInstance object
 	 */
-	public static function createInstanceOf(classReference:Class<Dynamic>):NativeInstance
+	public static function createInstanceOf(classReference:Class<Dynamic>):ClassInstance
 	{
-		return getNativeInstanceByClassName(Type.getClassName(classReference));
+		return getClassInstanceByClassName(Type.getClassName(classReference));
 	}
 }
