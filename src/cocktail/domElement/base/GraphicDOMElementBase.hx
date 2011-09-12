@@ -40,7 +40,7 @@ class GraphicDOMElementBase extends DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//get a graphic native reference if none is provided
+		//get a graphic native element if none is provided
 		if (nativeElement == null)
 		{
 			nativeElement = NativeElementManager.createNativeElement(graphic);

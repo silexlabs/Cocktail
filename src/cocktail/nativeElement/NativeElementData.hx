@@ -14,13 +14,13 @@ import cocktail.nativeElement.NativeElement;
 
 /**
  * This file contain structs and enums representing NativeElement data.
- * A native reference is an abstraction of a native DOM element such as a 
+ * A native element is an abstraction of a native DOM element such as a 
  * div in HTML or a Sprite in Flash
  */
 
  /**
   * Lists the different type of 
-  * native reference which can be created.
+  * native element which can be created.
   */
  enum NativeElementTypeValue {
 	 

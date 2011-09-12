@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElementData;
 
 
 /**
- * Test the cross-platform native reference manager 
+ * Test the cross-platform native element manager 
  *@author Yannick DOMINGUEZ
  */
 class NativeElementTests 

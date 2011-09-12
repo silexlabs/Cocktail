@@ -44,7 +44,7 @@ class ImageDOMElement extends ImageDOMElementBase
 	{
 		super.setSmooth(value);
 		
-		//cast the native reference as a loader
+		//cast the native element as a loader
 		// and retrieve its bitmap content
 		var typedNativeElement:Loader = cast(this._nativeElement);
 		var bitmap:Bitmap = cast(typedNativeElement.content);
