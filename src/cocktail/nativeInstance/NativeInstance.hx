@@ -8,7 +8,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass;
+package cocktail.nativeInstance;
 
 /**
  * Set the right runtime specific NativeInstance at compile-time

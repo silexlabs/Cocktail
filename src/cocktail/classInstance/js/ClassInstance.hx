@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.classInstance.js;
 
 import js.Lib;
-import cocktail.classInstance.base.NativeInstanceBase;
+import cocktail.classInstance.base.ClassInstanceBase;
 
 /**
  * This is the implementation of the native class instance proxy for JavaScript. It implemenents

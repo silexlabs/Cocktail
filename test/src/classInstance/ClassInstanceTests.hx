@@ -8,12 +8,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package nativeClass;
+package classInstance;
 
 
 import haxe.Log;
-import cocktail.nativeClass.NativeClass;
-import cocktail.nativeClass.NativeInstance;
+import cocktail.nativeInstance.NativeInstanceManager;
+import cocktail.classInstance.ClassInstance;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -23,12 +23,12 @@ import utest.ui.Report;
  * Test the cross-platform native class instance proxy 
  *@author Yannick DOMINGUEZ
  */
-class NativeClassTests 
+class ClassInstanceTests 
 {
 	public static function main()
 	{
 		var runner = new Runner();
-		runner.addCase(new NativeClassTests());
+		runner.addCase(new ClassInstanceTests());
 		Report.create(runner);
 		runner.run();
 	}
@@ -40,18 +40,18 @@ class NativeClassTests
 	
 	public function testNativeClassInstance()
 	{
-		var nativeClass:NativeInstance = NativeClass.getNativeInstanceByClassName("slPlayer_unit_tests.runtime.nativeClass.TestClass");
+		var classInstance:ClassInstance = NativeInstanceManager.getClassInstanceByClassName("classInstance.TestClass");
 		
 		//test native instance methods
-		Assert.isNull(nativeClass.getField("testAttribute"));
+		Assert.isNull(classInstance.getField("testAttribute"));
 		
-		Assert.equals(nativeClass.callMethod("testMethod", []), "test OK");
+		Assert.equals(classInstance.callMethod("testMethod", []), "test OK");
 		
-		nativeClass.setField("_testAttribute", "new value");
-		Assert.equals(nativeClass.getField("_testAttribute"), "new value");
+		classInstance.setField("_testAttribute", "new value");
+		Assert.equals(classInstance.getField("_testAttribute"), "new value");
 		
-		nativeClass.setField("testAttribute", "new setter value");
-		Assert.equals(nativeClass.getField("testAttribute"), "new setter value");
+		classInstance.setField("testAttribute", "new setter value");
+		Assert.equals(classInstance.getField("testAttribute"), "new setter value");
 		
 		
 	}
@@ -60,7 +60,7 @@ class NativeClassTests
 
 /**
  * This is a test class, used as a native class
- * wrapped in a NativeInstance
+ * wrapped in a ClassInstance
  */
 class TestClass
 {
