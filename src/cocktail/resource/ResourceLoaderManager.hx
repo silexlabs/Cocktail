@@ -12,11 +12,11 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.resource;
 
 import haxe.Log;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.domObject.js.AnimationDOMObject;
-import cocktail.domObject.TextDOMObject;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.domElement.js.AnimationDOMElement;
+import cocktail.domElement.TextDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
@@ -80,7 +80,7 @@ class ResourceLoaderManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadImage(url:String, successCallback:ImageDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadImage(url:String, successCallback:ImageDOMElement->Void, errorCallback:String->Void , allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
@@ -100,7 +100,7 @@ class ResourceLoaderManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadText(url:String, successCallback:TextDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadText(url:String, successCallback:TextDOMElement->Void, errorCallback:String->Void , allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
@@ -120,7 +120,7 @@ class ResourceLoaderManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadAnimation(url:String, successCallback:AnimationDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadAnimation(url:String, successCallback:AnimationDOMElement->Void, errorCallback:String->Void , allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
@@ -140,7 +140,7 @@ class ResourceLoaderManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadContainer(url:String, successCallback:ContainerDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadContainer(url:String, successCallback:ContainerDOMElement->Void, errorCallback:String->Void , allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,

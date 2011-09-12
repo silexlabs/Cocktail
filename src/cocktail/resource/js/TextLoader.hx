@@ -13,8 +13,8 @@ package cocktail.resource.js;
 
 import haxe.Http;
 import js.Lib;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.TextDOMObject;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextDOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
 
@@ -41,16 +41,16 @@ class TextLoader extends ResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the HTML String has been loaded, create a Text DOMObject, and set its
+	 * When the HTML String has been loaded, create a Text DOMElement, and set its
 	 * text to the loaded HTML
 	 * @param	data the loaded HTML
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domObject:TextDOMObject = new TextDOMObject(Lib.document.createElement("div"));
-		domObject.setText(data);
+		var domElement:TextDOMElement = new TextDOMElement(Lib.document.createElement("div"));
+		domElement.setText(data);
 		
 		// calls initial callback
-		_onLoadCompleteCallback(domObject);
+		_onLoadCompleteCallback(domElement);
 	}
 }
