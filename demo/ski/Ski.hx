@@ -301,7 +301,7 @@ class Ski
 	  
 	  //here we draw a rectangle with a monochrome fill 
 	  //using the graphic dom element drawing API
-	  var fill:FillStyleValue = monochrome( { color:0xe0e0ff, alpha:100 } );
+	  var fill:FillStyleValue = monochrome( { color:0xffffff, alpha:100 } );
 	  var line:LineStyleValue = LineStyleValue.none;
 	  
 	  mArena.beginFill(fill, line);
