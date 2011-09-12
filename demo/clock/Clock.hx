@@ -1,14 +1,14 @@
 package ;
 
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.ImageDOMElement;
 import haxe.Log;
 import haxe.Timer;
-import cocktail.domObject.GraphicDOMObject;
-import cocktail.domObject.TextDOMObject;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObjectData;
+import cocktail.domElement.GraphicDOMElement;
+import cocktail.domElement.TextDOMElement;
+import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
-import cocktail.domObject.DOMObject;
+import cocktail.domElement.DOMElement;
 import cocktail.nativeReference.NativeReferenceManager;
 import cocktail.resource.ResourceLoaderManager;
 
@@ -22,32 +22,32 @@ class Clock
 	/**
 	 * the background of the analogue clock
 	 */
-	private var _clockBackground:ImageDOMObject;
+	private var _clockBackground:ImageDOMElement;
 	
 	/**
 	 * the foreground of the analogue clock
 	 */
-	private var _clockForeGround:ImageDOMObject;
+	private var _clockForeGround:ImageDOMElement;
 	
 	/**
 	 * the second needle of the clock
 	 */
-	private var _secondNeedle:ImageDOMObject;
+	private var _secondNeedle:ImageDOMElement;
 	
 	/**
 	 * the minute needle of the clock
 	 */
-	private var _minuteNeedle:ImageDOMObject;
+	private var _minuteNeedle:ImageDOMElement;
 	
 	/**
 	 * the hour needle of the clock
 	 */
-	private var _hourNeedle:ImageDOMObject;
+	private var _hourNeedle:ImageDOMElement;
 	
 	/**
 	 * the numeric clock 
 	 */
-	private var _clockDisplay:TextDOMObject;
+	private var _clockDisplay:TextDOMElement;
 	
 	/**
 	 * count the loading of assets
@@ -64,14 +64,14 @@ class Clock
 	/**
 	 * The root of the dom (stage in flash, body in html)
 	 */
-	private static var rootDOMObject:DOMObject;
+	private static var rootDOMElement:DOMElement;
 	
 	/**
 	 * init the root dom object of the publication 
 	 */
 	public static function main()
 	{
-		rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
 		
 		//ibnstantiate the clock class
 		var cl:Clock = new Clock();
@@ -98,15 +98,15 @@ class Clock
 	private function init()
 	{
 		//init the numeric hour display
-		_clockDisplay = new TextDOMObject();
+		_clockDisplay = new TextDOMElement();
 		
 		//ad all dom objects to the DOM
-		rootDOMObject.addChild(_clockBackground);
-		rootDOMObject.addChild(_secondNeedle);
-		rootDOMObject.addChild(_minuteNeedle);
-		rootDOMObject.addChild(_hourNeedle);
-		rootDOMObject.addChild(_clockForeGround);
-		rootDOMObject.addChild(_clockDisplay);
+		rootDOMElement.addChild(_clockBackground);
+		rootDOMElement.addChild(_secondNeedle);
+		rootDOMElement.addChild(_minuteNeedle);
+		rootDOMElement.addChild(_hourNeedle);
+		rootDOMElement.addChild(_clockForeGround);
+		rootDOMElement.addChild(_clockDisplay);
 		
 		//prepare the rotation center of the second needle
 		var secondNeedleOffset:Float = 15.0;
@@ -155,33 +155,33 @@ class Clock
 	// Call the init method once all assets are loaded
 	////////////////////////////////////////////
 	
-	private function onHourNeedleLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onHourNeedleLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		_hourNeedle = imageDOMObject;
+		_hourNeedle = imageDOMElement;
 		checkLoadedAssets();
 	}
 	
-	private function onMinuteNeedleLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onMinuteNeedleLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		_minuteNeedle = imageDOMObject;
+		_minuteNeedle = imageDOMElement;
 		checkLoadedAssets();
 	}
 	
-	private function onSecondNeedleLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onSecondNeedleLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		_secondNeedle = imageDOMObject;
+		_secondNeedle = imageDOMElement;
 		checkLoadedAssets();
 	}
 	
-	private function onClockBackgroundLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onClockBackgroundLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		_clockBackground = imageDOMObject;
+		_clockBackground = imageDOMElement;
 		checkLoadedAssets();
 	}
 	
-	private function onClockForegroundLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onClockForegroundLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		_clockForeGround = imageDOMObject;
+		_clockForeGround = imageDOMElement;
 		checkLoadedAssets();
 	}
 	
