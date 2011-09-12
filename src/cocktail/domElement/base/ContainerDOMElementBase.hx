@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domElement.base;
 
 import cocktail.domElement.DOMElement;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 /**
  * This is a "neutral" DOMElement used for instance when a skin (.swf in Flash, .html in HTML)
@@ -33,9 +33,9 @@ class ContainerDOMElementBase extends DOMElement
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	/**

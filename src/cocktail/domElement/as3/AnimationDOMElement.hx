@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.base.AnimationDOMElementBase;
 
 /**
@@ -25,9 +25,9 @@ class AnimationDOMElement extends AnimationDOMElementBase
 	/**
 	 * class contructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 }

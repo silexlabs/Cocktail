@@ -42,6 +42,6 @@ class ContainerDOMElement extends ContainerDOMElementBase
 		super.setSemantic(semantic);
 		
 		//TODO
-		//trace(this._nativeReference);
+		//trace(this._nativeElement);
 	}
 }

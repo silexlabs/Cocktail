@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
 import cocktail.domElement.base.GraphicDOMElementBase;
@@ -57,9 +57,9 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 		
 	}
 	
@@ -71,24 +71,24 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	
 	override public function setWidth(value:Int):Int
 	{
-		untyped this._nativeReference.width = value;
+		untyped this._nativeElement.width = value;
 		return value;
 	}
 	
 	override public function getWidth():Int 
 	{
-		return untyped Std.parseInt(this._nativeReference.width);
+		return untyped Std.parseInt(this._nativeElement.width);
 	}
 	
 	override public function setHeight(value:Int):Int 
 	{
-		untyped this._nativeReference.height = value;
+		untyped this._nativeElement.height = value;
 		return value;
 	}
 	
 	override public function getHeight():Int 
 	{
-		return untyped Std.parseInt(this._nativeReference.height);
+		return untyped Std.parseInt(this._nativeElement.height);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		//draw the image with the Canvas API
 	
 		canvasContext.drawImage(
-			source.nativeReference,
+			source.nativeElement,
 			sourceRect.x,
 			sourceRect.y,
 			sourceRect.width,
@@ -436,7 +436,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	private function getContext():Dynamic
 	{
-		return untyped _nativeReference.getContext("2d");
+		return untyped _nativeElement.getContext("2d");
 	}
 	
 	/**
@@ -464,7 +464,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		}
 		
 		//create the canvas pattern with the native image DOM element
-		return canvasContext.createPattern(imageDOMElement.nativeReference, repeatValue);
+		return canvasContext.createPattern(imageDOMElement.nativeElement, repeatValue);
 	}
 	
 	/**

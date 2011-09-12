@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import haxe.Log;
@@ -31,9 +31,9 @@ class DOMElement extends DOMElementBase
 	/**
 	 * Class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	/**
@@ -42,10 +42,10 @@ class DOMElement extends DOMElementBase
 	 */
 	override private function init():Void
 	{	
-		this._width = Math.round(_nativeReference.width);
-		this._height = Math.round(_nativeReference.height);
-		this._x = Math.round(_nativeReference.x);
-		this._y = Math.round(_nativeReference.y);
+		this._width = Math.round(_nativeElement.width);
+		this._height = Math.round(_nativeElement.height);
+		this._x = Math.round(_nativeElement.x);
+		this._y = Math.round(_nativeElement.y);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ class DOMElement extends DOMElementBase
 	override public function addChild(domElement:DOMElementBase):Void
 	{
 		super.addChild(domElement);
-		this._nativeReference.addChild(domElement.nativeReference);
+		this._nativeElement.addChild(domElement.nativeElement);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class DOMElement extends DOMElementBase
 	override public function removeChild(domElement:DOMElementBase):Void
 	{
 		super.removeChild(domElement);
-		this._nativeReference.removeChild(domElement.nativeReference);
+		this._nativeElement.removeChild(domElement.nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ class DOMElement extends DOMElementBase
 	 */
 	override public function setIsVisible(value:Bool):Bool
 	{
-		this._nativeReference.visible = value;
+		this._nativeElement.visible = value;
 		return value;
 	}
 	
@@ -91,7 +91,7 @@ class DOMElement extends DOMElementBase
 	 */
 	override public function getIsVisible():Bool
 	{
-		return this._nativeReference.visible;
+		return this._nativeElement.visible;
 	}
 	
 	/**
@@ -100,7 +100,7 @@ class DOMElement extends DOMElementBase
 	 */
 	override public function setAlpha(value:Float):Float
 	{
-		this._nativeReference.alpha = value;
+		this._nativeElement.alpha = value;
 		return value;
 	}
 	
@@ -110,7 +110,7 @@ class DOMElement extends DOMElementBase
 	 */ 
 	override public function getAlpha():Float
 	{
-		return this._nativeReference.alpha;
+		return this._nativeElement.alpha;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ class DOMElement extends DOMElementBase
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//set the native matrix on the native DisplayObject to refresh its display
-		this._nativeReference.transform.matrix = nativeTransformMatrix;
+		this._nativeElement.transform.matrix = nativeTransformMatrix;
 		
 		return this._matrix;
 	}
@@ -160,28 +160,28 @@ class DOMElement extends DOMElementBase
 	override public function setX(value:Int):Int 
 	{
 		super.setX(value);
-		this._nativeReference.x = value;
+		this._nativeElement.x = value;
 		return this._x;
 	}
 	
 	override public function setY(value:Int):Int 
 	{
 		super.setY(value);
-		this._nativeReference.y = value;
+		this._nativeElement.y = value;
 		return this._y;
 	}
 	
 	override public function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
-		this._nativeReference.width = value;
+		this._nativeElement.width = value;
 		return this._width;
 	}
 	
 	override public function setHeight(value:Int):Int 
 	{
 		super.setHeight(value);
-		this._nativeReference.height = value;
+		this._nativeElement.height = value;
 		return this._height;
 	}
 	
@@ -201,8 +201,8 @@ class DOMElement extends DOMElementBase
 		
 		//retrieve the parent Display Object, and use it to set
 		//the new index on the current DisplayObject
-		var parent:DisplayObjectContainer = this._nativeReference.parent;
-		parent.setChildIndex(this._nativeReference, value);
+		var parent:DisplayObjectContainer = this._nativeElement.parent;
+		parent.setChildIndex(this._nativeElement, value);
 		
 		return value;
 	}
@@ -211,8 +211,8 @@ class DOMElement extends DOMElementBase
 	{
 		//retrieve the parent Display object, and use it to retrieve the current
 		//child index
-		var parent:DisplayObjectContainer = this._nativeReference.parent;
-		return parent.getChildIndex(this._nativeReference);
+		var parent:DisplayObjectContainer = this._nativeElement.parent;
+		return parent.getChildIndex(this._nativeElement);
 	}
 	
 }

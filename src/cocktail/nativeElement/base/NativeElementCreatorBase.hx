@@ -8,34 +8,36 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.js;
+package cocktail.nativeElement.base;
 
-import js.Lib;
-import cocktail.nativeReference.base.NativeReferencePathManagerBase;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElementData;
+import cocktail.nativeElement.NativeElement;
 
 /**
- * This is the JavaScript implementation for the path manager. 
- * It returns the HTML document body
+ * This is a base class for the native reference
+ * creator implementation. It creates a native element
+ * and returns a reference to it
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferencePathManager extends NativeReferencePathManagerBase
+class NativeElementCreatorBase
 {
+
 	/**
-	 * class contructor
+	 * class constructor
 	 */
 	public function new() 
 	{
-		super();
+		
 	}
 	
 	/**
-	 * Returns a reference to the Flash Stage
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	override public function getRoot():NativeReference
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		return Lib.document.body;
+		return null;
 	}
 	
 }

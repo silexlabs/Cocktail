@@ -29,8 +29,8 @@ import utest.ui.common.HeaderDisplayMode;
 import cocktail.domElement.DOMElementData;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.mouse.Mouse;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import cocktail.mouse.MouseData;
 
 class MouseTests 
@@ -44,9 +44,9 @@ class MouseTests
 	public function new() 
 	{
 		
-		var stageDOMElement:DOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		var stageDOMElement:DOMElement = new DOMElement(NativeElementManager.getRoot());
 		
-		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeReferenceManager.createNativeReference(graphic));
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 		
 		graphicDOMElement.width = 200;
 		graphicDOMElement.height = 200;

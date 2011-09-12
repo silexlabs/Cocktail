@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.base;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 /**
  * This DOMElement is in charge of displaying animation such
@@ -23,8 +23,8 @@ import cocktail.nativeReference.NativeReference;
  */
 class AnimationDOMElementBase extends DOMElement
 {
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 }

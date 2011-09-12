@@ -41,8 +41,8 @@ class TextDOMElement extends TextDOMElementBase
 	{
 		// sets the text of the DOMElement
 		super.setText(text);
-		// adds a child Xml PCData node containing the text to _nativeReference
-		this._nativeReference.addChild(Xml.createPCData(text));
+		// adds a child Xml PCData node containing the text to _nativeElement
+		this._nativeElement.addChild(Xml.createPCData(text));
 	}
 	
 }

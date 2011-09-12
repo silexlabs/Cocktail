@@ -13,7 +13,7 @@ package cocktail.domElement.base;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 
 /**
@@ -43,9 +43,9 @@ class ImageDOMElementBase extends DOMElement
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 		
 		//smooth the picture by default
 		this.smooth = true;

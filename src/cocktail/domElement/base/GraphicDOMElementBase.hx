@@ -15,9 +15,9 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeReference.NativeReference;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 
 /**
  * The graphic DOMElement is used as a canvas to draw bitmap graphics programmatically. 
@@ -38,15 +38,15 @@ class GraphicDOMElementBase extends DOMElement
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
 		//get a graphic native reference if none is provided
-		if (nativeReference == null)
+		if (nativeElement == null)
 		{
-			nativeReference = NativeReferenceManager.createNativeReference(graphic);
+			nativeElement = NativeElementManager.createNativeElement(graphic);
 		}
 		
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

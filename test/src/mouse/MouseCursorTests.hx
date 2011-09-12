@@ -21,7 +21,7 @@ import haxe.Log;
 import cocktail.domElement.base.DOMElementBase;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
@@ -31,7 +31,7 @@ import cocktail.domElement.DOMElementData;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.mouse.MouseCursorManager;
 import cocktail.mouse.MouseData;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementData;
 
 class MouseCursorTests 
 {
@@ -45,7 +45,7 @@ class MouseCursorTests
 	
 	public function new() 
 	{
-		var stageDOMElement:DOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		var stageDOMElement:DOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var domElement1:GraphicDOMElement = getGraphicDOMElement(0xFF0000);
 		var domElement2:GraphicDOMElement = getGraphicDOMElement(0x00FF00);
@@ -69,7 +69,7 @@ class MouseCursorTests
 	
 	private function getGraphicDOMElement(color:Int):GraphicDOMElement
 	{
-		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeReferenceManager.createNativeReference(graphic));
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 		
 		graphicDOMElement.width = 50;
 		graphicDOMElement.height = 50;

@@ -8,21 +8,21 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.js;
+package cocktail.nativeElement.js;
 
 import js.Lib;
-import cocktail.nativeReference.NativeReferenceData;
-import cocktail.nativeReference.NativeReference;
-import cocktail.nativeReference.base.NativeReferenceCreatorBase;
+import cocktail.nativeElement.NativeElementData;
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.base.NativeElementCreatorBase;
 
 /**
  * This is the Javascript implementation of the native reference
  * creator. It instantiate a native HTML element 
- * and returns it as a NativeReference
+ * and returns it as a NativeElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferenceCreator extends NativeReferenceCreatorBase
+class NativeElementCreator extends NativeElementCreatorBase
 {
 
 	/**
@@ -35,28 +35,28 @@ class NativeReferenceCreator extends NativeReferenceCreatorBase
 	
 	/**
 	 * Instantiate a native HTML Element based on the requested type and returns a reference to it.
-	 * @param	nativeReferenceType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	override public function createNativeReference(nativeReferenceType:NativeReferenceTypeValue):NativeReference
+	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		var nativeReference:NativeReference;
+		var nativeElement:NativeElement;
 		
-		switch (nativeReferenceType)
+		switch (nativeElementType)
 		{
 			case image:
-				nativeReference = Lib.document.createElement("img");
+				nativeElement = Lib.document.createElement("img");
 			
 			case text:
-				nativeReference = Lib.document.createElement("div");
+				nativeElement = Lib.document.createElement("div");
 				
 			case neutral:
-				nativeReference = Lib.document.createElement("div");
+				nativeElement = Lib.document.createElement("div");
 				
 			case graphic:
-				nativeReference = Lib.document.createElement("canvas");
+				nativeElement = Lib.document.createElement("canvas");
 		}
 		
-		return nativeReference;
+		return nativeElement;
 	}
 	
 }

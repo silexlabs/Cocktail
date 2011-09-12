@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import js.Lib;
 import js.Dom;
 import cocktail.domElement.base.ContainerDOMElementBase;
@@ -29,9 +29,9 @@ class ContainerDOMElement extends ContainerDOMElementBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	/**
@@ -47,10 +47,10 @@ class ContainerDOMElement extends ContainerDOMElementBase
 		//and replace the current node, as the nodeName attribute is read only
 		
 		//store the inner html of the current node, to set it later on the new node
-		var currentNativeDOMContent:Dynamic = this._nativeReference.innerHTML;
+		var currentNativeDOMContent:Dynamic = this._nativeElement.innerHTML;
 		
 		//store all the attributes of the current node to set them on the new node
-		 var currentNativeDOMAttributes:Array<Dynamic> = untyped this._nativeReference.attributes;
+		 var currentNativeDOMAttributes:Array<Dynamic> = untyped this._nativeElement.attributes;
 		
 		//create a new node with the right node name
 		var newReferenceToNativeDOM:Dynamic = Lib.document.createElement(semantic);
@@ -65,10 +65,10 @@ class ContainerDOMElement extends ContainerDOMElementBase
 		}
 		
 		//replace the current node with the new node
-		this._nativeReference.parentNode.replaceChild(newReferenceToNativeDOM, _nativeReference);
+		this._nativeElement.parentNode.replaceChild(newReferenceToNativeDOM, _nativeElement);
 		
 		//store a reference to the new node
-		this._nativeReference = newReferenceToNativeDOM;
+		this._nativeElement = newReferenceToNativeDOM;
 	}
 	
 }

@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
@@ -26,9 +26,9 @@ import cocktail.domElement.base.ImageDOMElementBase;
 class ImageDOMElement extends ImageDOMElementBase
 {
 
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,8 @@ class ImageDOMElement extends ImageDOMElementBase
 		
 		//cast the native reference as a loader
 		// and retrieve its bitmap content
-		var typedNativeReference:Loader = cast(this._nativeReference);
-		var bitmap:Bitmap = cast(typedNativeReference.content);
+		var typedNativeElement:Loader = cast(this._nativeElement);
+		var bitmap:Bitmap = cast(typedNativeElement.content);
 		//activate/deactivate picture smoothing
 		bitmap.smoothing = value;
 		

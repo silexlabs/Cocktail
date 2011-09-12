@@ -63,7 +63,7 @@ class MouseCursor extends MouseCursorBase
 	 */
 	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
 	{
-		var cursorURL:String = untyped imageDOMElement.nativeReference.src;
+		var cursorURL:String = untyped imageDOMElement.nativeElement.src;
 		
 		//init the hotSpot if null
 		//to the top left of the cursor

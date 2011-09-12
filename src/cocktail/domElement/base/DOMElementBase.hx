@@ -18,7 +18,7 @@ import cocktail.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 
 /**
@@ -122,8 +122,8 @@ class DOMElementBase
 	 * runtime : in JS it is an HTML element, in Flash a Sprite,
 	 * in PHP a resource
 	 */
-	private var _nativeReference:NativeReference;
-	public var nativeReference(getNativeReference, setNativeReference):NativeReference;
+	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
 	
 	/**
 	 * a reference to the parent of this DOMElement
@@ -209,13 +209,13 @@ class DOMElementBase
 	 * class constructor. Set the native reference to the native DOMElement
 	 * and initialise it
 	 */
-	public function new(initialNativeReference:NativeReference = null) 
+	public function new(initialNativeElement:NativeElement = null) 
 	{
 		//store and init the dom element properties
 		//with the native reference if it isn't null
-		if (initialNativeReference != null)
+		if (initialNativeElement != null)
 		{
-			this._nativeReference = initialNativeReference;
+			this._nativeElement = initialNativeElement;
 			init();
 		}
 		
@@ -229,7 +229,7 @@ class DOMElementBase
 		
 		//initialise the mouse listeners on this dom element by 
 		//listening to the current native reference
-		_mouse = new Mouse(this._nativeReference);
+		_mouse = new Mouse(this._nativeElement);
 		
 	}
 	
@@ -303,9 +303,9 @@ class DOMElementBase
 	 * set the reference to this DOMElement native DOM element
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
-	public function setNativeReference(value:NativeReference):NativeReference
+	public function setNativeElement(value:NativeElement):NativeElement
 	{
-		this._nativeReference = value;
+		this._nativeElement = value;
 		init();
 		return value;
 	}
@@ -314,9 +314,9 @@ class DOMElementBase
 	 * Returns the reference to this DOMElement native DOM element
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
-	public function getNativeReference():NativeReference
+	public function getNativeElement():NativeElement
 	{
-		return this._nativeReference;
+		return this._nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -765,7 +765,7 @@ class DOMElementBase
 	 */
 	public function setAttribute(propertyName:String, propertyValue:Dynamic):Void
 	{
-		Reflect.setField(this._nativeReference, propertyName, propertyValue);
+		Reflect.setField(this._nativeElement, propertyName, propertyValue);
 	}
 	
 	/**
@@ -775,7 +775,7 @@ class DOMElementBase
 	 */
 	public function getAttribute(propertyName:String):Dynamic
 	{
-		return Reflect.field(this._nativeReference, propertyName);
+		return Reflect.field(this._nativeElement, propertyName);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

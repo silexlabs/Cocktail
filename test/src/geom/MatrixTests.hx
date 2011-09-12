@@ -22,8 +22,8 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -35,7 +35,7 @@ class MatrixTests
 	public static function main()
 	{
 
-		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new MatrixTests());
@@ -53,7 +53,7 @@ class MatrixTests
 	public function testMatrixTransformations():Void
 	{
 		
-		var domElement:GraphicDOMElement = new GraphicDOMElement(NativeReferenceManager.createNativeReference(graphic));
+		var domElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 
 		
 		//init the test dom element

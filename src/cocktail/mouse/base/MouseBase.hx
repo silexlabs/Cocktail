@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse.base;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
 
@@ -71,9 +71,9 @@ class MouseBase
 	 * class constructor. Set the native
 	 * mouse listeners 
 	 */
-	public function new(nativeReference:NativeReference) 
+	public function new(nativeElement:NativeElement) 
 	{
-		setNativeMouseListeners(nativeReference);
+		setNativeMouseListeners(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ class MouseBase
 	/**
 	 * Set the listeners for native mouse events
 	 */
-	private function setNativeMouseListeners(nativeReference:NativeReference):Void
+	private function setNativeMouseListeners(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
@@ -92,7 +92,7 @@ class MouseBase
 	/**
 	 * remove the listeners for native mouse events
 	 */
-	private function unsetNativeMouseListeners(nativeReference:NativeReference):Void
+	private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}

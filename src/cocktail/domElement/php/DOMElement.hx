@@ -44,7 +44,7 @@ class DOMElement extends DOMElementBase
 	override public function addChild(domElement:DOMElementBase):Void
 	{
 		super.addChild(domElement);
-		this._nativeReference.addChild(domElement.getReferenceToNativeDOM());
+		this._nativeElement.addChild(domElement.getReferenceToNativeDOM());
 	}
 	
 	/**
@@ -54,7 +54,7 @@ class DOMElement extends DOMElementBase
 	/*override public function removeChild(domElement:DOMElementBase):Void
 	{
 		super.removeChild(domElement);
-		this._nativeReference.removeChild(domElement.getReferenceToNativeDOM());
+		this._nativeElement.removeChild(domElement.getReferenceToNativeDOM());
 	}*/
 	
 	/**
@@ -64,8 +64,8 @@ class DOMElement extends DOMElementBase
 	 */
 	override public function getAttribute(propertyName:String):Dynamic
 	{
-		//return Reflect.field(this._nativeReference, propertyName);
-		return this._nativeReference.get(propertyName);
+		//return Reflect.field(this._nativeElement, propertyName);
+		return this._nativeElement.get(propertyName);
 	}
 	
 	
