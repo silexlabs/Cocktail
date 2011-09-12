@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse.base;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
 
@@ -21,7 +21,7 @@ import cocktail.mouse.MouseData;
  * mouse events thanks to runtime specific implementations and calls
  * the appropriate registered callbacks.
  * 
- * It takes a target native reference objects onto which the mouse
+ * It takes a target native element objects onto which the mouse
  * event will be listening.
  * 
  * The mouse event callbacks are called with a struct containing the mouse
@@ -33,36 +33,36 @@ class MouseBase
 {
 	/**
 	 * The callback to call when
-	 * the native reference is clicked
+	 * the native element is clicked
 	 */
 	public var onMouseDown:MouseEventData->Void;
 	
 	/**
 	 * The callback to call when 
-	 * the native reference is released
+	 * the native element is released
 	 */
 	public var onMouseUp:MouseEventData->Void;
 	
 	/**
-	 * the callback to call when the native reference
+	 * the callback to call when the native element
 	 * is hovered
 	 */
 	public var onMouseOver:MouseEventData->Void;
 	
 	/**
-	 * The callback to call when the native reference
+	 * The callback to call when the native element
 	 * is moused out
 	 */
 	public var onMouseOut:MouseEventData->Void;
 	
 	/**
 	 * The callback to call when the mouse move while
-	 * over the native reference
+	 * over the native element
 	 */
 	public var onMouseMove:MouseEventData->Void;
 	
 	/**
-	 * The callback to call when the native reference
+	 * The callback to call when the native element
 	 * is double-clicked
 	 */
 	public var onMouseDoubleClick:MouseEventData->Void;
@@ -71,9 +71,9 @@ class MouseBase
 	 * class constructor. Set the native
 	 * mouse listeners 
 	 */
-	public function new(nativeReference:NativeReference) 
+	public function new(nativeElement:NativeElement) 
 	{
-		setNativeMouseListeners(nativeReference);
+		setNativeMouseListeners(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ class MouseBase
 	/**
 	 * Set the listeners for native mouse events
 	 */
-	private function setNativeMouseListeners(nativeReference:NativeReference):Void
+	private function setNativeMouseListeners(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
@@ -92,7 +92,7 @@ class MouseBase
 	/**
 	 * remove the listeners for native mouse events
 	 */
-	private function unsetNativeMouseListeners(nativeReference:NativeReference):Void
+	private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}

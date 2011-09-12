@@ -18,19 +18,19 @@ package mouse;
  */
 
 import haxe.Log;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
-import cocktail.domObject.DOMObjectData;
-import cocktail.domObject.GraphicDOMObject;
+import cocktail.domElement.DOMElementData;
+import cocktail.domElement.GraphicDOMElement;
 import cocktail.mouse.Mouse;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import cocktail.mouse.MouseData;
 
 class MouseTests 
@@ -44,64 +44,64 @@ class MouseTests
 	public function new() 
 	{
 		
-		var stageDOMObject:DOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		var stageDOMElement:DOMElement = new DOMElement(NativeElementManager.getRoot());
 		
-		var graphicDOMObject:GraphicDOMObject = new GraphicDOMObject(NativeReferenceManager.createNativeReference(graphic));
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 		
-		graphicDOMObject.width = 200;
-		graphicDOMObject.height = 200;
-		graphicDOMObject.x = 50;
-		graphicDOMObject.y = 50;
+		graphicDOMElement.width = 200;
+		graphicDOMElement.height = 200;
+		graphicDOMElement.x = 50;
+		graphicDOMElement.y = 50;
 		
-		graphicDOMObject.beginFill(monochrome( { color:0x00FF00, alpha:100 } ), LineStyleValue.none);
-		graphicDOMObject.drawRect(0, 0, 200, 200);
-		graphicDOMObject.endFill();
+		graphicDOMElement.beginFill(monochrome( { color:0x00FF00, alpha:100 } ), LineStyleValue.none);
+		graphicDOMElement.drawRect(0, 0, 200, 200);
+		graphicDOMElement.endFill();
 		
-		stageDOMObject.addChild(graphicDOMObject);
+		stageDOMElement.addChild(graphicDOMElement);
 	
-		graphicDOMObject.onMouseDown = onDOMObjectPress;
+		graphicDOMElement.onMouseDown = onDOMElementPress;
 		
-		graphicDOMObject.onMouseUp = onDOMObjectRelease;
+		graphicDOMElement.onMouseUp = onDOMElementRelease;
 		
-		graphicDOMObject.onMouseOver = onDOMObjectRollOver;
+		graphicDOMElement.onMouseOver = onDOMElementRollOver;
 		
-		graphicDOMObject.onMouseOut = onDOMObjectRollOut;
+		graphicDOMElement.onMouseOut = onDOMElementRollOut;
 
-		graphicDOMObject.onMouseMove = onDOMObjectMouseMove;
+		graphicDOMElement.onMouseMove = onDOMElementMouseMove;
 		
-		graphicDOMObject.onMouseDoubleClick = onDOMObjectDoubleClick;
+		graphicDOMElement.onMouseDoubleClick = onDOMElementDoubleClick;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////
-	// DOMObject mouse events callbacks
+	// DOMElement mouse events callbacks
 	////////////////////////////////////////////////////////////////////////////////////
 	
-	private function onDOMObjectPress(mouseEventData:MouseEventData):Void
+	private function onDOMElementPress(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse down");
 	}
 	
-	private function onDOMObjectDoubleClick(mouseEventData:MouseEventData):Void
+	private function onDOMElementDoubleClick(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse double click");
 	}
 	
-	private function onDOMObjectRelease(mouseEventData:MouseEventData):Void
+	private function onDOMElementRelease(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse release");
 	}
 	
-	private function onDOMObjectRollOver(mouseEventData:MouseEventData):Void
+	private function onDOMElementRollOver(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse roll over");
 	}
 	
-	private function onDOMObjectRollOut(mouseEventData:MouseEventData):Void
+	private function onDOMElementRollOut(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse roll out");
 	}
 	
-	private function onDOMObjectMouseMove(mouseEventData:MouseEventData):Void
+	private function onDOMElementMouseMove(mouseEventData:MouseEventData):Void
 	{
 		Log.trace("mouse move");
 	}

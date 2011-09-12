@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.DOMElementTests
+-lib utest
+-swf9 ../../bin/domElement/domElementTestAs3.swf

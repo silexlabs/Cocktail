@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.keyboard.base;
 
 import haxe.Log;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import cocktail.keyboard.KeyboardData;
 
 /**

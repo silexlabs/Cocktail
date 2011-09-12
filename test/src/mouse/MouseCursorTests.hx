@@ -18,20 +18,20 @@ package mouse;
  */
 
 import haxe.Log;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
-import cocktail.domObject.DOMObjectData;
-import cocktail.domObject.GraphicDOMObject;
+import cocktail.domElement.DOMElementData;
+import cocktail.domElement.GraphicDOMElement;
 import cocktail.mouse.MouseCursorManager;
 import cocktail.mouse.MouseData;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementData;
 
 class MouseCursorTests 
 {
@@ -45,42 +45,42 @@ class MouseCursorTests
 	
 	public function new() 
 	{
-		var stageDOMObject:DOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		var stageDOMElement:DOMElement = new DOMElement(NativeElementManager.getRoot());
 		
-		var domObject1:GraphicDOMObject = getGraphicDOMObject(0xFF0000);
-		var domObject2:GraphicDOMObject = getGraphicDOMObject(0x00FF00);
-		var domObject3:GraphicDOMObject = getGraphicDOMObject(0x0000FF);
-		var domObject4:GraphicDOMObject = getGraphicDOMObject(0x000000);
+		var domElement1:GraphicDOMElement = getGraphicDOMElement(0xFF0000);
+		var domElement2:GraphicDOMElement = getGraphicDOMElement(0x00FF00);
+		var domElement3:GraphicDOMElement = getGraphicDOMElement(0x0000FF);
+		var domElement4:GraphicDOMElement = getGraphicDOMElement(0x000000);
 		
-		stageDOMObject.addChild(domObject1);
-		stageDOMObject.addChild(domObject2);
-		stageDOMObject.addChild(domObject3);
-		stageDOMObject.addChild(domObject4);
+		stageDOMElement.addChild(domElement1);
+		stageDOMElement.addChild(domElement2);
+		stageDOMElement.addChild(domElement3);
+		stageDOMElement.addChild(domElement4);
 		
-		domObject2.x = 150;
-		domObject3.x = 250;
-		domObject4.x = 350;
+		domElement2.x = 150;
+		domElement3.x = 250;
+		domElement4.x = 350;
 		
-		domObject1.onMouseDown = onPointerPress;
-		domObject2.onMouseDown = onBitmapPress;
-		domObject3.onMouseDown = onHidePress;
-		domObject4.onMouseDown = onAutoPress;
+		domElement1.onMouseDown = onPointerPress;
+		domElement2.onMouseDown = onBitmapPress;
+		domElement3.onMouseDown = onHidePress;
+		domElement4.onMouseDown = onAutoPress;
 	}
 	
-	private function getGraphicDOMObject(color:Int):GraphicDOMObject
+	private function getGraphicDOMElement(color:Int):GraphicDOMElement
 	{
-		var graphicDOMObject:GraphicDOMObject = new GraphicDOMObject(NativeReferenceManager.createNativeReference(graphic));
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 		
-		graphicDOMObject.width = 50;
-		graphicDOMObject.height = 50;
-		graphicDOMObject.x = 50;
-		graphicDOMObject.y = 50;
+		graphicDOMElement.width = 50;
+		graphicDOMElement.height = 50;
+		graphicDOMElement.x = 50;
+		graphicDOMElement.y = 50;
 		
-		graphicDOMObject.beginFill(monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
-		graphicDOMObject.drawRect(0, 0, 50, 50);
-		graphicDOMObject.endFill();
+		graphicDOMElement.beginFill(monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
+		graphicDOMElement.drawRect(0, 0, 50, 50);
+		graphicDOMElement.endFill();
 		
-		return graphicDOMObject;
+		return graphicDOMElement;
 	}
 	
 	private function onPointerPress(mouseEventData:MouseEventData):Void
@@ -93,9 +93,9 @@ class MouseCursorTests
 		ResourceLoaderManager.loadImage("testPointer.png", onCursorLoaded, function(err:String){});
 	}
 	
-	private function onCursorLoaded(imageDOMObject:ImageDOMObject):Void
+	private function onCursorLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		MouseCursorManager.setMouseCursor(custom(imageDOMObject, { x:0.0, y:0.0 } ));
+		MouseCursorManager.setMouseCursor(custom(imageDOMElement, { x:0.0, y:0.0 } ));
 	}
 	
 	private function onHidePress(mouseEventData:MouseEventData):Void

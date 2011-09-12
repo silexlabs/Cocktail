@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main nativeClass.NativeClassTests
--lib utest
--php ../../bin/nativeClass
