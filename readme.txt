@@ -11,6 +11,7 @@ Silex Labs Cocktail library is released under GPL.
 * Project home: http://www.silexlabs.org/groups/labs/cocktail/
 * Cocktail source code: https://github.com/silexlabs/Cocktail
 * Forums: http://www.silexlabs.org/groups/labs/cocktail/forum/
+* Wiki on haXe libs: http://haxe.org/com/libs/cocktail
 
 == license ==
 
