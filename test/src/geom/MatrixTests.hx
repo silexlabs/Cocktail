@@ -56,7 +56,7 @@ class MatrixTests
 		var domElement:GraphicDOMElement = new GraphicDOMElement(NativeReferenceManager.createNativeReference(graphic));
 
 		
-		//init the test dom object
+		//init the test dom element
 		
 		domElement.setWidth(200);
 		domElement.setHeight(100);

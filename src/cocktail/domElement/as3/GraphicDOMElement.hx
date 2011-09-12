@@ -31,7 +31,7 @@ import cocktail.domElement.DOMElementData;
 /**
  * This is the Flash AVM2 implementation of the graphic DOMElement.
  * It draws shape programatically onto a native Sprite object.
- * The sprite dom object is then cached as a bitmap. It allows to work
+ * The sprite dom element is then cached as a bitmap. It allows to work
  * with both the flash drawing API and directly working with bitmap.
  * 
  * @author Yannick DOMINGUEZ
@@ -93,7 +93,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	{
 		this._width = value;
 		
-		//update the background delimiting this dom object
+		//update the background delimiting this dom element
 		setUpBackgroundSprite(this._backGroundSprite, value, getHeight());
 		
 		//update the bitmap drawing
@@ -106,7 +106,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	{
 		this._height = value;
 		
-		//update the background delimiting this dom object
+		//update the background delimiting this dom element
 		setUpBackgroundSprite(this._backGroundSprite, getWidth(), value);
 		
 		//update the bitmap drawing
@@ -195,7 +195,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		//retrieve the current bitmapData
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
-		//create a new transparent bitmapData with the new size of the dom object
+		//create a new transparent bitmapData with the new size of the dom element
 		var newBitmapData:BitmapData = new BitmapData(this._width, this._height, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
@@ -203,7 +203,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		var drawingWidth:Int = 0;
 		
 		//if the current bitmap data width is superior to the new
-		//width of the dom object, then only the new width of pixels
+		//width of the dom element, then only the new width of pixels
 		//must be copied, the rest will be cropped
 		if (currentBitmapData.width > this._width)
 		{
@@ -366,7 +366,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom object into the bitmap display object.
+	 * Draw a bitmap extracted from an image dom element into the bitmap display object.
 	 */
 	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
 	{	
@@ -393,7 +393,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		}
 		
 		
-		//get the image dom object bitmap data and current bitmap data
+		//get the image dom element bitmap data and current bitmap data
 		var sourceBitmapData:BitmapData = getBitmapData(source);
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
@@ -401,7 +401,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		var nativeDestinationPoint:flash.geom.Point = new flash.geom.Point(destinationPoint.x, destinationPoint.y);
 		
-		//draw the image dom object bitmap data onto the current bitmap data
+		//draw the image dom element bitmap data onto the current bitmap data
 		currentBitmapData.copyPixels(sourceBitmapData, nativeSourceRect, nativeDestinationPoint, null, null, true);
 
 	}

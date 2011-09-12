@@ -221,7 +221,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom object into the canvas.
+	 * Draw a bitmap extracted from an image dom element into the canvas.
 	 */
 	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
 	{

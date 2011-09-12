@@ -239,14 +239,14 @@ class GraphicDOMElementBase extends DOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom object into the native graphic dom object. Alpha is conserved
+	 * Draw a bitmap extracted from an image dom element into the native graphic dom element. Alpha is conserved
 	 * for transparent bitmap
-	 * @param	source the source image dom object containing the bitmap data
+	 * @param	source the source image dom element containing the bitmap data
 	 * @param	destinationPoint represent the top left point of the drawn image on the native graphic
-	 * dom object. for instance a 0,0 point will draw the image in the top left corner of the graphic
-	 * dom object. Takes 0,0 by default
-	 * @param	sourceRect defines the zone from the source dom object that must be copied onto the 
-	 * native graphic dom object. Takes the whole image by default
+	 * dom element. for instance a 0,0 point will draw the image in the top left corner of the graphic
+	 * dom element. Takes 0,0 by default
+	 * @param	sourceRect defines the zone from the source dom element that must be copied onto the 
+	 * native graphic dom element. Takes the whole image by default
 	 */
 	public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
 	{

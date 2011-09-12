@@ -237,7 +237,7 @@ class DOMElementTests
 		var nativeDOMElement:Dynamic = js.Lib.document.createElement("canvas");
 		#end
 		
-		//test with a graphic dom object to easily have a background
+		//test with a graphic dom element to easily have a background
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
 		graphicDOMElement.setWidth(200);
@@ -424,7 +424,7 @@ class DOMElementTests
 	}
 	
 	/**
-	 * Test the container dom object specific method
+	 * Test the container dom element specific method
 	 */
 	public function testContainerDOMElement()
 	{
@@ -444,7 +444,7 @@ class DOMElementTests
 	}
 	
 	/**
-	 * Test the text dom object specific method
+	 * Test the text dom element specific method
 	 */
 	public function testTextDOMElement()
 	{
