@@ -35,7 +35,7 @@ import utest.ui.Report;
 
 import cocktail.resource.ResourceLoaderManager;
 
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 
 #if flash9
 import flash.display.Sprite;
@@ -53,7 +53,7 @@ class DOMElementTests
 	
 	public static function main()
 	{
-		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new DOMElementTests());
@@ -81,7 +81,7 @@ class DOMElementTests
 		var parentDOMElement:DOMElement = new DOMElement(spriteParentDOMElement);
 		
 		//add the native Sprite to the Flash Stage
-		Lib.current.addChild(parentDOMElement.nativeReference);
+		Lib.current.addChild(parentDOMElement.nativeElement);
 		
 		var spriteChildDOMElement:Sprite = new Sprite();
 		spriteChildDOMElement.graphics.beginFill(0xFF0000, 1);
@@ -96,7 +96,7 @@ class DOMElementTests
 		parentDOMElement.addChild(childDOMElement);
 		
 		//compare the names to verify that the children's parent is the parent DOMElement
-		Assert.same(childDOMElement.getParent().nativeReference.name, parentDOMElement.nativeReference.name);
+		Assert.same(childDOMElement.getParent().nativeElement.name, parentDOMElement.nativeElement.name);
 		
 		//test getting each of the properties of the child DOMElement
 		Assert.equals(childDOMElement.getWidth(), 100);
@@ -111,7 +111,7 @@ class DOMElementTests
 		
 		//remove the child and parent DOMElements from the display list
 		parentDOMElement.removeChild(childDOMElement);
-		Lib.current.removeChild(parentDOMElement.nativeReference);
+		Lib.current.removeChild(parentDOMElement.nativeElement);
 		
 		//check that the parent is now null
 		Assert.same(childDOMElement.getParent(), null);

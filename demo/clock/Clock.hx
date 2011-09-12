@@ -9,7 +9,7 @@ import cocktail.domElement.base.DOMElementBase;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.resource.ResourceLoaderManager;
 
 
@@ -71,7 +71,7 @@ class Clock
 	 */
 	public static function main()
 	{
-		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		//ibnstantiate the clock class
 		var cl:Clock = new Clock();

@@ -8,19 +8,34 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference;
+package cocktail.nativeElement.js;
+
+import js.Lib;
+import cocktail.nativeElement.base.NativeElementPathManagerBase;
+import cocktail.nativeElement.NativeElement;
 
 /**
- * Set the right runtime specific NativeElement at compile-time
+ * This is the JavaScript implementation for the path manager. 
+ * It returns the HTML document body
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef NativeReference =  flash.display.DisplayObjectContainer;
-
-#elseif js
-import js.Dom;
-typedef NativeReference =  js.HtmlDom;
-
-#elseif php
-typedef NativeReference =  Xml;
-
-#end
+class NativeElementPathManager extends NativeElementPathManagerBase
+{
+	/**
+	 * class contructor
+	 */
+	public function new() 
+	{
+		super();
+	}
+	
+	/**
+	 * Returns a reference to the Flash Stage
+	 */
+	override public function getRoot():NativeElement
+	{
+		return Lib.document.body;
+	}
+	
+}

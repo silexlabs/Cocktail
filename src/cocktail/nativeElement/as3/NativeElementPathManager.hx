@@ -8,36 +8,34 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.base;
+package cocktail.nativeElement.as3;
 
-import cocktail.nativeReference.NativeReferenceData;
-import cocktail.nativeReference.NativeReference;
+import flash.Lib;
+import cocktail.nativeElement.base.NativeElementPathManagerBase;
+import cocktail.nativeElement.NativeElement;
 
 /**
- * This is a base class for the native reference
- * creator implementation. It creates a native element
- * and returns a reference to it
+ * This is the flash AVM2 implementation for the path manager. 
+ * It returns the flash Stage
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferenceCreatorBase
+class NativeElementPathManager extends NativeElementPathManagerBase
 {
-
 	/**
-	 * class constructor
+	 * class contructor
 	 */
 	public function new() 
 	{
-		
+		super();
 	}
 	
 	/**
-	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
-	 * @param	nativeReferenceType the type of element to create (graphic, text...)
+	 * Returns a reference to the Flash Stage
 	 */
-	public function createNativeReference(nativeReferenceType:NativeReferenceTypeValue):NativeReference
+	override public function getRoot():NativeElement
 	{
-		return null;
+		return Lib.current.stage;
 	}
 	
 }

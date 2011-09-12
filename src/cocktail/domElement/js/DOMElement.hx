@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
 import cocktail.domElement.base.DOMElementBase;
@@ -33,9 +33,9 @@ class DOMElement extends DOMElementBase
 	/**
 	 * Class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	/**
@@ -47,28 +47,28 @@ class DOMElement extends DOMElementBase
 		//all DOMElements are positioned as absolute to prevent most
 		//of browsers inconsistencies regarding margin/padding. 
 		//Margin, padding , floating... concepts will be abstracted
-		_nativeReference.style.position = "absolute";
+		_nativeElement.style.position = "absolute";
 		
-		if (_nativeReference.style.width != null)
+		if (_nativeElement.style.width != null)
 		{
-			this._width = Std.parseInt(_nativeReference.style.width);
+			this._width = Std.parseInt(_nativeElement.style.width);
 		}
 		else
 		{
-			this._width = _nativeReference.offsetWidth;
+			this._width = _nativeElement.offsetWidth;
 		}
 		
-		if (_nativeReference.style.height != null)
+		if (_nativeElement.style.height != null)
 		{
-			this._height = Std.parseInt(_nativeReference.style.height);
+			this._height = Std.parseInt(_nativeElement.style.height);
 		}
 		else
 		{
-			this._height = _nativeReference.offsetHeight;
+			this._height = _nativeElement.offsetHeight;
 		}
 		
-		this._x = Std.parseInt(_nativeReference.style.left);
-		this._y = Std.parseInt(_nativeReference.style.top);
+		this._x = Std.parseInt(_nativeElement.style.left);
+		this._y = Std.parseInt(_nativeElement.style.top);
 		
 	}
 	
@@ -83,10 +83,10 @@ class DOMElement extends DOMElementBase
 	override public function addChild(domElement:DOMElementBase):Void
 	{
 		super.addChild(domElement);
-		this._nativeReference.appendChild(domElement.nativeReference);
+		this._nativeElement.appendChild(domElement.nativeElement);
 		
 		//intialise z-order on the DOMElement, as it is null by default in JavaScript
-		domElement.nativeReference.style.zIndex = _children.length - 1;
+		domElement.nativeElement.style.zIndex = _children.length - 1;
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class DOMElement extends DOMElementBase
 	override public function removeChild(domElement:DOMElementBase):Void
 	{
 		super.removeChild(domElement);
-		this._nativeReference.removeChild(domElement.nativeReference);
+		this._nativeElement.removeChild(domElement.nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -112,11 +112,11 @@ class DOMElement extends DOMElementBase
 		//set the right visibility CSS property value
 		if (value == true)
 		{
-			this._nativeReference.style.visibility = "visible";
+			this._nativeElement.style.visibility = "visible";
 		}
 		else
 		{
-			this._nativeReference.style.visibility = "hidden";
+			this._nativeElement.style.visibility = "hidden";
 		}
 		
 		return value;
@@ -127,7 +127,7 @@ class DOMElement extends DOMElementBase
 	 */
 	override public function getIsVisible():Bool
 	{
-		if (this._nativeReference.style.visibility == "visible")
+		if (this._nativeElement.style.visibility == "visible")
 		{
 			return true;
 		}
@@ -144,7 +144,7 @@ class DOMElement extends DOMElementBase
 	override public function setAlpha(value:Float):Float
 	{
 		super.setAlpha(value);
-		untyped this._nativeReference.style.opacity = value;
+		untyped this._nativeElement.style.opacity = value;
 		return value;
 	}
 	
@@ -154,7 +154,7 @@ class DOMElement extends DOMElementBase
 	 */ 
 	override public function getAlpha():Float
 	{
-		return untyped Std.parseFloat(this._nativeReference.style.opacity);
+		return untyped Std.parseFloat(this._nativeElement.style.opacity);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -194,25 +194,25 @@ class DOMElement extends DOMElementBase
 		
 		//first test if the transform property is set for the current browser,
 		//else test vendor specific properties
-		if (untyped this._nativeReference.style.transform != null)
+		if (untyped this._nativeElement.style.transform != null)
 		{
-			untyped this._nativeReference.style.transform = cssMatrixProperty;
-			untyped this._nativeReference.style.transformOrigin = "0 0";
+			untyped this._nativeElement.style.transform = cssMatrixProperty;
+			untyped this._nativeElement.style.transformOrigin = "0 0";
 		}
-		if (untyped this._nativeReference.style.MozTransform != null)
+		if (untyped this._nativeElement.style.MozTransform != null)
 		{
-			untyped this._nativeReference.style.MozTransform = cssMatrixProperty;
-			untyped this._nativeReference.style.MozTransformOrigin = "0 0";
+			untyped this._nativeElement.style.MozTransform = cssMatrixProperty;
+			untyped this._nativeElement.style.MozTransformOrigin = "0 0";
 		}
-		else if (untyped this._nativeReference.style.WebkitTransform != null)
+		else if (untyped this._nativeElement.style.WebkitTransform != null)
 		{
-			untyped this._nativeReference.style.WebkitTransform = cssMatrixProperty;
-			untyped this._nativeReference.style.WebkitTransformOrigin = "0 0";
+			untyped this._nativeElement.style.WebkitTransform = cssMatrixProperty;
+			untyped this._nativeElement.style.WebkitTransformOrigin = "0 0";
 		}
-		else if (untyped this._nativeReference.style.OTransform != null)
+		else if (untyped this._nativeElement.style.OTransform != null)
 		{
-			untyped this._nativeReference.style.OTransform = cssMatrixProperty;
-			untyped this._nativeReference.style.OTransform = "0 0";
+			untyped this._nativeElement.style.OTransform = cssMatrixProperty;
+			untyped this._nativeElement.style.OTransform = "0 0";
 		}
 		
 		return this._matrix;
@@ -226,28 +226,28 @@ class DOMElement extends DOMElementBase
 	override public function setX(value:Int):Int 
 	{
 		super.setX(value);
-		this._nativeReference.style.left = value + "px";
+		this._nativeElement.style.left = value + "px";
 		return this._x;
 	}
 	
 	override public function setY(value:Int):Int 
 	{
 		super.setY(value);
-		this._nativeReference.style.top = value + "px";
+		this._nativeElement.style.top = value + "px";
 		return this._y;
 	}
 	
 	override public function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
-		this._nativeReference.style.width = value +"px";
+		this._nativeElement.style.width = value +"px";
 		return this._width;
 	}
 	
 	override public function setHeight(value:Int):Int 
 	{
 		super.setHeight(value);
-		this._nativeReference.style.height = value + "px";
+		this._nativeElement.style.height = value + "px";
 		return this._height;
 	}
 
@@ -272,7 +272,7 @@ class DOMElement extends DOMElementBase
 			value = _parent.getChildren().length - 1;
 		}
 		
-		var nativeParent:HtmlDom = this._nativeReference.parentNode;
+		var nativeParent:HtmlDom = this._nativeElement.parentNode;
 		var numChildren:Int = nativeParent.childNodes.length;
 		
 		var oldIndex:Int = getZOrder();
@@ -318,14 +318,14 @@ class DOMElement extends DOMElementBase
 		}
 		
 		//set the z-index of the current element
-		this._nativeReference.style.zIndex = value;
+		this._nativeElement.style.zIndex = value;
 		
 		return value;
 	}
 	
 	override public function getZOrder():Int 
 	{
-		return this._nativeReference.style.zIndex;
+		return this._nativeElement.style.zIndex;
 	}
 	
 }

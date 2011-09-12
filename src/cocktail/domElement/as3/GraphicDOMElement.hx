@@ -11,8 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 
-import cocktail.nativeReference.NativeReference;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.CapsStyle;
@@ -55,22 +55,22 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 * Cast the native DOM as a sprite to access the 
 	 * graphics object
 	 */
-	private var _typedNativeReference:Sprite;
+	private var _typedNativeElement:Sprite;
 	
 	/**
 	 * class constructor. Init the background Sprite with
 	 * a default width and height. Add a bitmap display object that
 	 * will copy the vector drawing as they are drawn
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 		
-		_typedNativeReference = cast(this._nativeReference);
+		_typedNativeElement = cast(this._nativeElement);
 		
 		//init the background sprite and attach it to the display list
 		_backGroundSprite = new Sprite();
-		this._nativeReference.addChild(_backGroundSprite);
+		this._nativeElement.addChild(_backGroundSprite);
 
 		this._width = 100;
 		this._height = 100;
@@ -78,7 +78,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		
 		//init the bitmap display object and attach it to the display list
 		_bitmapDrawing = new Bitmap(new BitmapData(100, 100, true, 0x00FFFFFF));
-		this._nativeReference.addChild(_bitmapDrawing);
+		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +152,9 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	override public function endFill():Void
 	{
-		_typedNativeReference.graphics.endFill();
+		_typedNativeElement.graphics.endFill();
 		blit();
-		_typedNativeReference.graphics.clear();
+		_typedNativeElement.graphics.clear();
 		
 	}
 		
@@ -169,10 +169,10 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	private function blit():Void
 	{
 		//create a new transparent bitmap data, the size of the vector drawing
-		var currentGraphicBitmapData:BitmapData = new BitmapData(Math.round(_typedNativeReference.width), Math.round(_typedNativeReference.height), true, 0x00FFFFFF);
+		var currentGraphicBitmapData:BitmapData = new BitmapData(Math.round(_typedNativeElement.width), Math.round(_typedNativeElement.height), true, 0x00FFFFFF);
 		
 		//draw the current vector into a bitmap
-		currentGraphicBitmapData.draw(_typedNativeReference);
+		currentGraphicBitmapData.draw(_typedNativeElement);
 		
 		//retrive the current bitmapData (the sum of all the previous
 		//vector drawings)
@@ -180,7 +180,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		
 		//copy each pixel from the new vector drawing into the current bitmapData,
 		//preserving the alpha values
-		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, _typedNativeReference.width, _typedNativeReference.height), new flash.geom.Point(0, 0));
+		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, _typedNativeElement.width, _typedNativeElement.height), new flash.geom.Point(0, 0));
 		
 		//set the bitmapData on the bitmap display object
 		_bitmapDrawing.bitmapData = bitmapData;
@@ -235,9 +235,9 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		currentBitmapData.dispose();
 		
 		//replace the current bitmap data byt the new one
-		this._nativeReference.removeChild(_bitmapDrawing);
+		this._nativeElement.removeChild(_bitmapDrawing);
 		_bitmapDrawing = new Bitmap(newBitmapData);
-		this._nativeReference.addChild(_bitmapDrawing);
+		this._nativeElement.addChild(_bitmapDrawing);
 		
 	}
 	
@@ -247,7 +247,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	override public function clear():Void
 	{
-		_typedNativeReference.graphics.clear();
+		_typedNativeElement.graphics.clear();
 		
 		//draws a transparent rectangle over all the bitmap, erasing it's content
 		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this._width, this._height), 0x00FFFFFF);
@@ -268,16 +268,16 @@ class GraphicDOMElement extends GraphicDOMElementBase
 			//if there must be no fill style (probably only a stroke style)
 			//start a transparent fill
 			case none:
-				_typedNativeReference.graphics.beginFill(0,0);
+				_typedNativeElement.graphics.beginFill(0,0);
 			
 			//for a fill style with one color, use the native beginFill method
 			case monochrome(colorStop):
-				_typedNativeReference.graphics.beginFill(colorStop.color, toNativeAlpha(colorStop.alpha));
+				_typedNativeElement.graphics.beginFill(colorStop.color, toNativeAlpha(colorStop.alpha));
 			
 			//for a gradient fill, use the beginGradientFill native method
 			case gradient(gradientStyle):
 				
-				_typedNativeReference.graphics.beginGradientFill(
+				_typedNativeElement.graphics.beginGradientFill(
 					getGradientType(gradientStyle.gradientType),
 					getGradientColors(gradientStyle.gradientStops),
 					getGradientAlphas(gradientStyle.gradientStops),
@@ -288,7 +288,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 			//for a bitmap fill, use the natvie beginBitmapFill method, using
 			//an ImageDOMElement as source for the bitmap data
 			case bitmap(imageDOMElement, repeat):
-				_typedNativeReference.graphics.beginBitmapFill(getBitmapData(imageDOMElement), new Matrix(), repeat);
+				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageDOMElement), new Matrix(), repeat);
 		}	
 	}
 	
@@ -307,7 +307,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 			//if there must be a one-color line, use the native lineStyle method
 			case monochrome(colorStop, lineStyleData):
 				//set the line style
-				_typedNativeReference.graphics.lineStyle(
+				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
 					colorStop.color,
 					toNativeAlpha(colorStop.alpha),
@@ -321,7 +321,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 			case gradient(gradientStyle, lineStyleData):
 				
 				//set first the line style so that the line is visible	
-				_typedNativeReference.graphics.lineStyle(
+				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
 					0,
 					1,
@@ -333,7 +333,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 					
 				
 
-				_typedNativeReference.graphics.lineGradientStyle(
+				_typedNativeElement.graphics.lineGradientStyle(
 					getGradientType(gradientStyle.gradientType),
 					getGradientColors(gradientStyle.gradientStops),
 					getGradientAlphas(gradientStyle.gradientStops), 
@@ -346,7 +346,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 			//setting the bitmap data on the line
 			case bitmap(imageDOMElement, lineStyleData, repeat):
 				//set first the line style so that the line is visible	
-				_typedNativeReference.graphics.lineStyle(
+				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
 					0,
 					1,
@@ -357,7 +357,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 					lineStyleData.miterLimit);
 				
 				//then set the bitmap data on it
-				_typedNativeReference.graphics.lineBitmapStyle(getBitmapData(imageDOMElement), new Matrix(), repeat);
+				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement), new Matrix(), repeat);
 		}
 	}
 	
@@ -415,7 +415,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	override public function lineTo(x:Float, y:Float):Void
 	{
-		_typedNativeReference.graphics.lineTo(x, y);
+		_typedNativeElement.graphics.lineTo(x, y);
 	}
 	
 	/**
@@ -423,7 +423,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	override public function moveTo(x:Float, y:Float):Void
 	{
-		_typedNativeReference.graphics.moveTo(x, y);
+		_typedNativeElement.graphics.moveTo(x, y);
 	}
 	
 	/**
@@ -431,7 +431,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	 */
 	override public function curveTo(controlX:Float, controlY:Float, x:Float, y:Float):Void
 	{
-		_typedNativeReference.graphics.curveTo(controlX, controlY, x, y);
+		_typedNativeElement.graphics.curveTo(controlX, controlY, x, y);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -537,7 +537,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 	private function getBitmapData(imageDOMElement:DOMElement):BitmapData
 	{
 		var bitmapData:BitmapData = new BitmapData(imageDOMElement.width, imageDOMElement.height, true, 0x00FFFFFF);
-		bitmapData.draw(imageDOMElement.nativeReference);
+		bitmapData.draw(imageDOMElement.nativeElement);
 		
 		return bitmapData;
 	}
@@ -604,7 +604,7 @@ class GraphicDOMElement extends GraphicDOMElementBase
 		sprite.graphics.drawRect(0, 0, width, height);
 		sprite.graphics.endFill();
 		
-		this._nativeReference.mask = _backGroundSprite;
+		this._nativeElement.mask = _backGroundSprite;
 	}
 	
 	/**

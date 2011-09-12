@@ -8,25 +8,25 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference;
+package cocktail.nativeElement;
 
 //import the right runtime implementations
 #if flash9
-import cocktail.nativeReference.as3.NativeReferenceCreator;
-import cocktail.nativeReference.as3.NativeReferencePathManager;
+import cocktail.nativeElement.as3.NativeElementCreator;
+import cocktail.nativeElement.as3.NativeElementPathManager;
 
 #elseif js
-import cocktail.nativeReference.js.NativeReferenceCreator;
-import cocktail.nativeReference.js.NativeReferencePathManager;
+import cocktail.nativeElement.js.NativeElementCreator;
+import cocktail.nativeElement.js.NativeElementPathManager;
 #end
 
-import cocktail.nativeReference.NativeReferenceData;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElementData;
+import cocktail.nativeElement.NativeElement;
 
 /**
  * this class abstract and manages the interaction with a
  * native DOM. Native DOM element element are abstracted as 
- * NativeReference.
+ * NativeElement.
  * 
  * It manages the native references path, allowing to retrieve
  * native reference with path
@@ -38,19 +38,19 @@ import cocktail.nativeReference.NativeReference;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferenceManager 
+class NativeElementManager 
 {
 	/**
 	 * A reference to the runtime specific implementation of the class
 	 * instantiating the new native elements
 	 */
-	static private var _nativeReferenceCreator:NativeReferenceCreator;
+	static private var _nativeElementCreator:NativeElementCreator;
 	
 	/**
 	 * A reference to the runtime specific implementation of the class
 	 * managing the native reference paths
 	 */
-	static private var _nativeReferencePathManager:NativeReferencePathManager;
+	static private var _nativeElementPathManager:NativeElementPathManager;
 	
 	/**
 	 * Class constructor. Private as this class is meant to be used
@@ -65,28 +65,28 @@ class NativeReferenceManager
 	 * Returns the native DOM root of the current runtime, for instance
 	 * the Body element in HTML
 	 */
-	public static function getRoot():NativeReference
+	public static function getRoot():NativeElement
 	{
 		//instantiate the path manager if first use
-		if (_nativeReferencePathManager == null)
+		if (_nativeElementPathManager == null)
 		{
-			_nativeReferencePathManager = new NativeReferencePathManager();
+			_nativeElementPathManager = new NativeElementPathManager();
 		}
-		return _nativeReferencePathManager.getRoot();
+		return _nativeElementPathManager.getRoot();
 	}
 	
 	/**
 	 * Instantiate a native element and returns a reference to it
-	 * @param	nativeReferenceType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	public static function createNativeReference(nativeReferenceType:NativeReferenceTypeValue):NativeReference
+	public static function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
 		//instantiate the reference creator if first use
-		if (_nativeReferenceCreator == null)
+		if (_nativeElementCreator == null)
 		{
-			_nativeReferenceCreator = new NativeReferenceCreator();
+			_nativeElementCreator = new NativeElementCreator();
 		}
 		
-		return _nativeReferenceCreator.createNativeReference(nativeReferenceType);
+		return _nativeElementCreator.createNativeElement(nativeElementType);
 	}
 }

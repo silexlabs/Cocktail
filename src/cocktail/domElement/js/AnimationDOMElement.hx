@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domElement.js;
 
 import cocktail.domElement.base.AnimationDOMElementBase;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 /**
  * This is the JavaScript implementation of the AnimationDOMElement
@@ -26,9 +26,9 @@ class AnimationDOMElement extends AnimationDOMElementBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 }

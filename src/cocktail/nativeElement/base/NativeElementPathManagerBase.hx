@@ -8,9 +8,9 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.base;
+package cocktail.nativeElement.base;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 /**
  * This is a base class for the path manager. 
@@ -19,7 +19,7 @@ import cocktail.nativeReference.NativeReference;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferencePathManagerBase
+class NativeElementPathManagerBase
 {
 	/**
 	 * class contructor
@@ -32,7 +32,7 @@ class NativeReferencePathManagerBase
 	/**
 	 * Returns the root of the DOM. Implemented by subclasses
 	 */
-	public function getRoot():NativeReference
+	public function getRoot():NativeElement
 	{
 		return null;
 	}

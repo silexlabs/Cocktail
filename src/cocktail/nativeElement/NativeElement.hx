@@ -8,34 +8,19 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.as3;
-
-import flash.Lib;
-import cocktail.nativeReference.base.NativeReferencePathManagerBase;
-import cocktail.nativeReference.NativeReference;
+package cocktail.nativeElement;
 
 /**
- * This is the flash AVM2 implementation for the path manager. 
- * It returns the flash Stage
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific NativeElement at compile-time
  */
-class NativeReferencePathManager extends NativeReferencePathManagerBase
-{
-	/**
-	 * class contructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-	
-	/**
-	 * Returns a reference to the Flash Stage
-	 */
-	override public function getRoot():NativeReference
-	{
-		return Lib.current.stage;
-	}
-	
-}
+#if flash9
+typedef NativeElement =  flash.display.DisplayObjectContainer;
+
+#elseif js
+import js.Dom;
+typedef NativeElement =  js.HtmlDom;
+
+#elseif php
+typedef NativeElement =  Xml;
+
+#end

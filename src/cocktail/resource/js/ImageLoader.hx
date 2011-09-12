@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.js;
 
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import haxe.Http;
 import haxe.Log;
 import js.Lib;
@@ -20,7 +20,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
@@ -51,7 +51,7 @@ class ImageLoader extends ResourceLoader
 	override private function doLoad(url:String):Void
 	{
 		//create a DOMElement and the image container
-		var domElement:ImageDOMElement = new ImageDOMElement(NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.image));
+		var domElement:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		
 		//create a delegate to call the success callback once the native image element is done loading the source picture
 		var onLoadCompleteDelegate:ImageDOMElement->Void = onLoadComplete;
@@ -59,7 +59,7 @@ class ImageLoader extends ResourceLoader
 		var onLoadErrorDelegate:String->Void = onLoadError;
 		
 		//listens to image load complete and load error.
-		untyped domElement.nativeReference.onload = function() { 
+		untyped domElement.nativeElement.onload = function() { 
 			//set the dom element width, height and source with the loaded picture
 			//dimensions and url. In this function "this" referes to the HTML Image 
 			//element
@@ -69,9 +69,9 @@ class ImageLoader extends ResourceLoader
 			onLoadCompleteDelegate(domElement);
 			
 			};
-		untyped domElement.nativeReference.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
+		untyped domElement.nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
 		// set it's source to start the loading of the picture
-		domElement.nativeReference.setAttribute("src", url);
+		domElement.nativeElement.setAttribute("src", url);
 	}
 }

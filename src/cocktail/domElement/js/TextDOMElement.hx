@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
 import cocktail.domElement.base.TextDOMElementBase;
@@ -28,9 +28,9 @@ class TextDOMElement extends TextDOMElementBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	/**
@@ -41,7 +41,7 @@ class TextDOMElement extends TextDOMElementBase
 	override public function setText(text:String):String
 	{
 		super.setText(text);
-		this._nativeReference.innerHTML = text;
+		this._nativeElement.innerHTML = text;
 		return text;
 	}
 	

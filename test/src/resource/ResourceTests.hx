@@ -20,7 +20,7 @@ import flash.system.ApplicationDomain;
 
 
 #end
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.domElement.TextDOMElement;
 import cocktail.nativeClass.NativeClass;
 import cocktail.nativeClass.NativeInstance;
@@ -47,7 +47,7 @@ class ResourceTests
 	{
 	
 		
-		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new ResourceTests());
@@ -118,12 +118,12 @@ class ResourceTests
 	{
 		rootDOMElement.addChild(domElement);
 		#if flash9
-		Assert.is(domElement.nativeReference, Loader);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
-		Assert.same(domElement.nativeReference.firstChild.getAttribute("id"), "loadedDOMElement");
+		Assert.same(domElement.nativeElement.firstChild.getAttribute("id"), "loadedDOMElement");
 		#elseif php
-		Assert.equals(domElement.nativeReference.firstChild().get("id"), "loadedDOMElement");
-		Assert.equals(domElement.nativeReference.firstChild().firstChild().toString(), "container loaded");
+		Assert.equals(domElement.nativeElement.firstChild().get("id"), "loadedDOMElement");
+		Assert.equals(domElement.nativeElement.firstChild().firstChild().toString(), "container loaded");
 		#end
 	}
 	
@@ -198,12 +198,12 @@ class ResourceTests
 		
 		#if flash9
 		domElement.setX(200);
-		Assert.is(domElement.nativeReference, Loader);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
 		
 		#elseif php
-		Assert.same(domElement.nativeReference._nodeName, "img");
-		Assert.same(domElement.nativeReference.get("src"), "testPicture.jpg");
+		Assert.same(domElement.nativeElement._nodeName, "img");
+		Assert.same(domElement.nativeElement.get("src"), "testPicture.jpg");
 		#end
 	}
 	
@@ -240,14 +240,14 @@ class ResourceTests
 	{
 		rootDOMElement.addChild(domElement);
 		#if flash9
-		Assert.is(domElement.nativeReference, Loader);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
-		var croppedSrc:String = domElement.nativeReference.getAttribute("src");
+		var croppedSrc:String = domElement.nativeElement.getAttribute("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#elseif php
-		Assert.same(domElement.nativeReference._nodeName, "img");
-		var croppedSrc:String = domElement.nativeReference.get("src");
+		Assert.same(domElement.nativeElement._nodeName, "img");
+		var croppedSrc:String = domElement.nativeElement.get("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#end

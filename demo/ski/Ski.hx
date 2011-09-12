@@ -19,7 +19,7 @@ import cocktail.domElement.DOMElementData;
 import cocktail.domElement.TextDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.keyboard.KeyboardData;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.geom.GeomData;
 
 /*
@@ -420,7 +420,7 @@ class Ski
 		
 	  //create the root DOM Object of the game
 	  //the getRoot method returns the root of the current runtime (Stage for flash, body for js)
-	  rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+	  rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 	  
 		
 	//instantiate the game	

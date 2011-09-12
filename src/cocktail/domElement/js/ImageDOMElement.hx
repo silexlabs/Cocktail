@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.base.ImageDOMElementBase;
 
 /**
@@ -35,9 +35,9 @@ class ImageDOMElement extends ImageDOMElementBase
 	/**
 	 * class constructor
 	 */
-	public function new(nativeReference:NativeReference = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -56,11 +56,11 @@ class ImageDOMElement extends ImageDOMElementBase
 		//set the CSS influencing image quality rendering
 		if (value == true)
 		{
-			untyped this._nativeReference.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_QUALITY;
+			untyped this._nativeElement.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_QUALITY;
 		}
 		else
 		{
-			untyped this._nativeReference.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_SPEED;
+			untyped this._nativeElement.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_SPEED;
 		}
 		
 		return value;

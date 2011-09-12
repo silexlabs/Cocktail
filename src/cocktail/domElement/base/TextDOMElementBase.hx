@@ -11,9 +11,9 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.base;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeReference.NativeReference;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is a DOMElement in charge of displaying an 
@@ -33,15 +33,15 @@ class TextDOMElementBase extends DOMElement
 	/**
 	 * class contructor
 	 */
-	public function new(nativeReference:NativeReference = null)
+	public function new(nativeElement:NativeElement = null)
 	{
 		//create a text native reference if none is provided
-		if (nativeReference == null)
+		if (nativeElement == null)
 		{
-			nativeReference = NativeReferenceManager.createNativeReference(NativeReferenceTypeValue.text);
+			nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.text);
 		}
 		
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

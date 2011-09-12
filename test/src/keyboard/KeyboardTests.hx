@@ -21,7 +21,7 @@ import haxe.Log;
 import cocktail.domElement.base.DOMElementBase;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
@@ -39,7 +39,7 @@ class KeyboardTests
 	public static function main()
 	{
 		
-		rootDOMElement = new DOMElement(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		new KeyboardTests();
 		

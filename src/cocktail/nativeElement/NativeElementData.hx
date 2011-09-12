@@ -8,12 +8,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference;
+package cocktail.nativeElement;
 
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 
 /**
- * This file contain structs and enums representing NativeReference data.
+ * This file contain structs and enums representing NativeElement data.
  * A native reference is an abstraction of a native DOM element such as a 
  * div in HTML or a Sprite in Flash
  */
@@ -22,7 +22,7 @@ import cocktail.nativeReference.NativeReference;
   * Lists the different type of 
   * native reference which can be created.
   */
- enum NativeReferenceTypeValue {
+ enum NativeElementTypeValue {
 	 
 	 /**
 	  * standard container type, such as 

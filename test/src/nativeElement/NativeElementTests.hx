@@ -8,28 +8,28 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package nativeReference;
+package nativeElement;
 
 
 import haxe.Log;
-import cocktail.nativeReference.NativeReference;
+import cocktail.nativeElement.NativeElement;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.nativeReference.NativeReferenceData;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 
 
 /**
  * Test the cross-platform native reference manager 
  *@author Yannick DOMINGUEZ
  */
-class NativeReferenceTests 
+class NativeElementTests 
 {
 	public static function main()
 	{
 		var runner = new Runner();
-		runner.addCase(new NativeReferenceTests());
+		runner.addCase(new NativeElementTests());
 		Report.create(runner);
 		runner.run();
 	}
@@ -39,9 +39,9 @@ class NativeReferenceTests
 		
 	}
 	
-	public function testNativeReference()
+	public function testNativeElement()
 	{
-		var domRoot:NativeReference = NativeReferenceManager.getRoot();
+		var domRoot:NativeElement = NativeElementManager.getRoot();
 		
 		#if flash9
 		Assert.is(domRoot, flash.display.Stage);
@@ -49,7 +49,7 @@ class NativeReferenceTests
 		Assert.same(domRoot.nodeName, "BODY");
 		#end
 		
-		var nativeGraphicReference:NativeReference = NativeReferenceManager.createNativeReference(graphic);
+		var nativeGraphicReference:NativeElement = NativeElementManager.createNativeElement(graphic);
 		
 		#if flash9
 		Assert.is(nativeGraphicReference, flash.display.Sprite);

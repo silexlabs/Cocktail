@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main nativeElement.NativeElementTests
+-lib utest
+-js ../../bin/nativeElement/nativeElementTestJS.js

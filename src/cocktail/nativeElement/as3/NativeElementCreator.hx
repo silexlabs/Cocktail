@@ -8,22 +8,22 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeReference.as3;
+package cocktail.nativeElement.as3;
 
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
-import cocktail.nativeReference.NativeReferenceData;
-import cocktail.nativeReference.NativeReference;
-import cocktail.nativeReference.base.NativeReferenceCreatorBase;
+import cocktail.nativeElement.NativeElementData;
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.base.NativeElementCreatorBase;
 
 /**
  * This is the flash AVM2 implementation of the native reference
  * creator. It instantiate a native flash display object 
- * and returns it as a NativeReference
+ * and returns it as a NativeElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeReferenceCreator extends NativeReferenceCreatorBase
+class NativeElementCreator extends NativeElementCreatorBase
 {
 
 	/**
@@ -36,15 +36,15 @@ class NativeReferenceCreator extends NativeReferenceCreatorBase
 	
 	/**
 	 * Instantiate a native flash display object based on the requested type and returns a reference to it.
-	 * @param	nativeReferenceType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	override public function createNativeReference(nativeReferenceType:NativeReferenceTypeValue):NativeReference
+	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
 		//in flash all of the base element type (image, graphic, text...) can be implemented
 		//through a Sprite
-		var nativeReference:NativeReference = new Sprite();
+		var nativeElement:NativeElement = new Sprite();
 		
-		return nativeReference;
+		return nativeElement;
 	}
 	
 }
