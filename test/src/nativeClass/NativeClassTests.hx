@@ -13,6 +13,7 @@ package nativeClass;
 
 import haxe.Log;
 import cocktail.nativeClass.NativeClass;
+import cocktail.nativeClass.NativeInstance;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
