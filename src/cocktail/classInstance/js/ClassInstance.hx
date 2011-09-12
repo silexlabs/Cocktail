@@ -9,22 +9,22 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass.js;
+package cocktail.classInstance.js;
 
 import js.Lib;
-import cocktail.nativeClass.base.NativeInstanceBase;
+import cocktail.classInstance.base.NativeInstanceBase;
 
 /**
  * This is the implementation of the native class instance proxy for JavaScript. It implemenents
  * a class instantiation method specific to the JavaScript runtime
  * @author Yannick DOMINGUEZ
  */
-class NativeInstance extends NativeInstanceBase
+class ClassInstance extends ClassInstanceBase
 {
 	/**
 	 * class constructor
 	 */
-	public function new(nativeInstanceClassName:Dynamic) 
+	public function new(nativeInstanceClassName:String) 
 	{
 		super(nativeInstanceClassName);
 		
@@ -33,12 +33,12 @@ class NativeInstance extends NativeInstanceBase
 		//tests if the class can be resolved, meaning it was compiled with Haxe, then instanciate it
 		if (Type.resolveClass(nativeInstanceClassName) != null)
 		{
-			_refToNativeClassInstance = Type.createInstance(Type.resolveClass(nativeInstanceClassName), []);
+			_nativeInstance = Type.createInstance(Type.resolveClass(nativeInstanceClassName), []);
 		}
 		else
 		{
 			//else instantiate it with native JavaScript method
-			_refToNativeClassInstance = Lib.eval("new " + nativeInstanceClassName + "()");
+			_nativeInstance = Lib.eval("new " + nativeInstanceClassName + "()");
 		}
 	}
 	

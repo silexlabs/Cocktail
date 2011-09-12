@@ -8,12 +8,14 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeClass.base;
+package cocktail.classInstance.base;
 import haxe.Log;
+
+import cocktail.nativeInstance.NativeInstance;
 
 /**
  * This class is used to manipulate a native class instance, 
- * call its methods, retrieve attributes values etc. 
+ * call its methods, retrieve attribute values etc. 
  * It is necessary to use this "proxy" since the native methods 
  * and attributes may need processing before being used in haXe. 
  * And also haXe values may need processing before being passed to the native class.
@@ -25,12 +27,13 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeInstanceBase 
+class ClassInstanceBase 
 {
 	/**
 	 * a reference to a native class instance, specific to a given runtime
 	 */
-	private var _refToNativeClassInstance:Dynamic;
+	private var _nativeInstance:NativeInstance;
+	public var nativeInstance(getNativeInstance, never):NativeInstance;
 	
 	/**
 	 * prefix of a setter function
@@ -46,7 +49,7 @@ class NativeInstanceBase
 	 * Instantiate the native class with the provided class name. Instantiation
 	 * is specific to each runtime and so it is done in inheriting classes
 	 * @param	nativeInstanceClassName the name of the native class
-	 * to wrap in this NativeInstance
+	 * to wrap in this ClassInstance
 	 */
 	public function new(nativeInstanceClassName:String) 
 	{
@@ -69,8 +72,8 @@ class NativeInstanceBase
 		//check if the method exists before calling it
 		if (isFunction(methodName))
 		{
-			var method:Dynamic = Reflect.field(_refToNativeClassInstance, methodName);
-			return Reflect.callMethod(_refToNativeClassInstance, method, args);
+			var method:Dynamic = Reflect.field(_nativeInstance, methodName);
+			return Reflect.callMethod(_nativeInstance, method, args);
 		}
 
 		return null;
@@ -89,12 +92,12 @@ class NativeInstanceBase
 		//if a getter function exist for this field, return it's value
 		if (isFunction(fieldGetterName))
 		{
-			return Reflect.callMethod(_refToNativeClassInstance, Reflect.field(_refToNativeClassInstance, fieldGetterName), []);
+			return Reflect.callMethod(_nativeInstance, Reflect.field(_nativeInstance, fieldGetterName), []);
 		}
 		//else return the value of the attribute
 		else
 		{
-			return Reflect.field(_refToNativeClassInstance, fieldName);
+			return Reflect.field(_nativeInstance, fieldName);
 		}
 	}
 	
@@ -115,12 +118,12 @@ class NativeInstanceBase
 		//if a setter function exists for this field, call it
 		if (isFunction(fieldSetterName))
 		{
-			Reflect.callMethod(_refToNativeClassInstance, Reflect.field(_refToNativeClassInstance, fieldSetterName), [fieldValue]);
+			Reflect.callMethod(_nativeInstance, Reflect.field(_nativeInstance, fieldSetterName), [fieldValue]);
 		}
 		//else set the field directly
 		else
 		{
-			Reflect.setField(_refToNativeClassInstance, fieldName, fieldValue);
+			Reflect.setField(_nativeInstance, fieldName, fieldValue);
 		}
 	}
 	
@@ -135,15 +138,15 @@ class NativeInstanceBase
 	 */
 	public function isFunction(functionName:String):Bool
 	{
-		return Reflect.isFunction(Reflect.field(_refToNativeClassInstance, functionName));
+		return Reflect.isFunction(Reflect.field(_nativeInstance, functionName));
 	}
 	
 	/**
 	 * Returns the reference to the native class instance
 	 */
-	public function getReferenceToNativeClassInstance():Dynamic
+	public function getNativeInstance():NativeInstance
 	{
-		return _refToNativeClassInstance;
+		return _nativeInstance;
 	}
 	
 }
