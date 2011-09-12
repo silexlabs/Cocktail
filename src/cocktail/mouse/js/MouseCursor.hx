@@ -12,7 +12,7 @@ package cocktail.mouse.js;
 
 import haxe.Log;
 import js.Lib;
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.mouse.base.MouseCursorBase;
 import cocktail.geom.GeomData;
 import cocktail.mouse.MouseData;
@@ -61,9 +61,9 @@ class MouseCursor extends MouseCursorBase
 	/**
 	 * Set a bitmap as mouse cursor using CSS styling via JavaScript
 	 */
-	override private function setBitmapCursor(imageDOMObject:ImageDOMObject, hotSpot:Point):Void
+	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
 	{
-		var cursorURL:String = untyped imageDOMObject.nativeReference.src;
+		var cursorURL:String = untyped imageDOMElement.nativeReference.src;
 		
 		//init the hotSpot if null
 		//to the top left of the cursor

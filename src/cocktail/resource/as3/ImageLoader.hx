@@ -19,8 +19,8 @@ import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import haxe.Log;
 
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
 
@@ -28,7 +28,7 @@ import cocktail.resource.ResourceData;
  * This is the Image loader implementation for the Flash runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture with
  * a native flash loader, then attach the content of the loader as the native 
- * DOMObject of an Image DOMObject instance
+ * DOMElement of an Image DOMElement instance
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -80,8 +80,8 @@ class ImageLoader extends ResourceLoader
 	
 	/**
 	 * When the .swf has been loaded, remove the listener on it, 
-	 * instantiate an image DOMObject and set the loaded picture
-	 * as it's native DOMObject,
+	 * instantiate an image DOMElement and set the loaded picture
+	 * as it's native DOMElement,
 	 * then call the load complete method
 	 * @param	event the Complete event, contains the native Loader
 	 */
@@ -90,14 +90,14 @@ class ImageLoader extends ResourceLoader
 		_imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoadComplete);
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
 		
-		var imageDOMObject:ImageDOMObject = new ImageDOMObject(_imageLoader);
+		var imageDOMElement:ImageDOMElement = new ImageDOMElement(_imageLoader);
 		
 		//init the width, height and src of the image dom object
-		imageDOMObject.width = Math.round(_imageLoader.width);
-		imageDOMObject.height = Math.round(_imageLoader.height);
-		imageDOMObject.src = _imageLoader.contentLoaderInfo.url;
+		imageDOMElement.width = Math.round(_imageLoader.width);
+		imageDOMElement.height = Math.round(_imageLoader.height);
+		imageDOMElement.src = _imageLoader.contentLoaderInfo.url;
 		
-		onLoadComplete(imageDOMObject);
+		onLoadComplete(imageDOMElement);
 	}
 	
 	/**

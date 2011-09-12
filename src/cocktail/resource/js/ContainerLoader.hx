@@ -15,8 +15,8 @@ import haxe.Http;
 import haxe.Log;
 import js.Lib;
 import js.Dom.HtmlDom;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
 import cocktail.resource.ResourceLoader;
 import cocktail.resource.ResourceData;
 
@@ -43,13 +43,13 @@ class ContainerLoader extends ResourceLoader
 
 	/**
 	 * When the HTML has been loaded, set the loaded HTML as the
-	 * native DOM of the Container DOMObject
+	 * native DOM of the Container DOMElement
 	 * @param	data the loaded HTML
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domObject:ContainerDOMObject = new ContainerDOMObject(Lib.document.createElement("div"));
-		domObject.nativeReference.innerHTML = data;
-		_onLoadCompleteCallback(domObject);
+		var domElement:ContainerDOMElement = new ContainerDOMElement(Lib.document.createElement("div"));
+		domElement.nativeReference.innerHTML = data;
+		_onLoadCompleteCallback(domElement);
 	}
 }

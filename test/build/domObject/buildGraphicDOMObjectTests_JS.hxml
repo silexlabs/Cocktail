@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main domObject.GraphicDOMObjectTests
--lib utest
--js ../../bin/domObject/graphicDOMObjectTestJS.js
