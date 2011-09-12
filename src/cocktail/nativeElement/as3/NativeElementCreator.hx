@@ -17,7 +17,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.base.NativeElementCreatorBase;
 
 /**
- * This is the flash AVM2 implementation of the native reference
+ * This is the flash AVM2 implementation of the native element
  * creator. It instantiate a native flash display object 
  * and returns it as a NativeElement
  * 

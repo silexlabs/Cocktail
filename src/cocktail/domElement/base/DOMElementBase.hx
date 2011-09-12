@@ -206,13 +206,13 @@ class DOMElementBase
 	/////////////////////////////////
 	
 	/**
-	 * class constructor. Set the native reference to the native DOMElement
+	 * class constructor. Set the native element to the native DOMElement
 	 * and initialise it
 	 */
 	public function new(initialNativeElement:NativeElement = null) 
 	{
 		//store and init the dom element properties
-		//with the native reference if it isn't null
+		//with the native element if it isn't null
 		if (initialNativeElement != null)
 		{
 			this._nativeElement = initialNativeElement;
@@ -228,7 +228,7 @@ class DOMElementBase
 		_keyboard = new Keyboard();
 		
 		//initialise the mouse listeners on this dom element by 
-		//listening to the current native reference
+		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
 		
 	}

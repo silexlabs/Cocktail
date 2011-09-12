@@ -14,7 +14,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
 
 /**
- * This is a base class for the native reference
+ * This is a base class for the native element
  * creator implementation. It creates a native element
  * and returns a reference to it
  * 

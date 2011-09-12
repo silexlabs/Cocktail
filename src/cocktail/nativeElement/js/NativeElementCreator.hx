@@ -16,7 +16,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.base.NativeElementCreatorBase;
 
 /**
- * This is the Javascript implementation of the native reference
+ * This is the Javascript implementation of the native element
  * creator. It instantiate a native HTML element 
  * and returns it as a NativeElement
  * 

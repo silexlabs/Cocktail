@@ -21,7 +21,7 @@ import cocktail.mouse.MouseData;
  * mouse events thanks to runtime specific implementations and calls
  * the appropriate registered callbacks.
  * 
- * It takes a target native reference objects onto which the mouse
+ * It takes a target native element objects onto which the mouse
  * event will be listening.
  * 
  * The mouse event callbacks are called with a struct containing the mouse
@@ -33,36 +33,36 @@ class MouseBase
 {
 	/**
 	 * The callback to call when
-	 * the native reference is clicked
+	 * the native element is clicked
 	 */
 	public var onMouseDown:MouseEventData->Void;
 	
 	/**
 	 * The callback to call when 
-	 * the native reference is released
+	 * the native element is released
 	 */
 	public var onMouseUp:MouseEventData->Void;
 	
 	/**
-	 * the callback to call when the native reference
+	 * the callback to call when the native element
 	 * is hovered
 	 */
 	public var onMouseOver:MouseEventData->Void;
 	
 	/**
-	 * The callback to call when the native reference
+	 * The callback to call when the native element
 	 * is moused out
 	 */
 	public var onMouseOut:MouseEventData->Void;
 	
 	/**
 	 * The callback to call when the mouse move while
-	 * over the native reference
+	 * over the native element
 	 */
 	public var onMouseMove:MouseEventData->Void;
 	
 	/**
-	 * The callback to call when the native reference
+	 * The callback to call when the native element
 	 * is double-clicked
 	 */
 	public var onMouseDoubleClick:MouseEventData->Void;

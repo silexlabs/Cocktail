@@ -28,8 +28,8 @@ import cocktail.nativeElement.NativeElement;
  * native DOM. Native DOM element element are abstracted as 
  * NativeElement.
  * 
- * It manages the native references path, allowing to retrieve
- * native reference with path
+ * It manages the native elements path, allowing to retrieve
+ * native element with path
  * 
  * It abstracts the creation of new native element by mimicking
  * the HTML way of creating new element.
@@ -48,7 +48,7 @@ class NativeElementManager
 	
 	/**
 	 * A reference to the runtime specific implementation of the class
-	 * managing the native reference paths
+	 * managing the native element paths
 	 */
 	static private var _nativeElementPathManager:NativeElementPathManager;
 	

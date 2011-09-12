@@ -35,7 +35,7 @@ class TextDOMElementBase extends DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null)
 	{
-		//create a text native reference if none is provided
+		//create a text native element if none is provided
 		if (nativeElement == null)
 		{
 			nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.text);
