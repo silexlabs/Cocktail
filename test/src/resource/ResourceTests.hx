@@ -23,6 +23,7 @@ import flash.system.ApplicationDomain;
 import cocktail.nativeReference.NativeReferenceManager;
 import cocktail.domObject.TextDOMObject;
 import cocktail.nativeClass.NativeClass;
+import cocktail.nativeClass.NativeInstance;
 import haxe.Log;
 import cocktail.domObject.DOMObject;
 import cocktail.domObject.base.DOMObjectBase;

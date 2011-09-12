@@ -11,22 +11,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.nativeClass;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
- */
-#if flash9
-typedef NativeInstance =  cocktail.nativeClass.as3.NativeInstance;
-
-#elseif js
-typedef NativeInstance =  cocktail.nativeClass.js.NativeInstance;
-
-#elseif php
-typedef NativeInstance =  cocktail.nativeClass.php.NativeInstance;
-
-#else
-	#error
-#end
-
-/**
  * This class exposes static method used to get instances of native class instance.
  * Those native class instance are wrapped in a NativeInstance object abstracting
  * instance manipulation
