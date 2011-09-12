@@ -92,7 +92,7 @@ class ImageLoader extends ResourceLoader
 		
 		var imageDOMElement:ImageDOMElement = new ImageDOMElement(_imageLoader);
 		
-		//init the width, height and src of the image dom object
+		//init the width, height and src of the image dom element
 		imageDOMElement.width = Math.round(_imageLoader.width);
 		imageDOMElement.height = Math.round(_imageLoader.height);
 		imageDOMElement.src = _imageLoader.contentLoaderInfo.url;

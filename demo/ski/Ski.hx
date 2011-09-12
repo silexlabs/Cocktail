@@ -145,14 +145,14 @@ class Ski
 	  //init the key state array
       mKeyDown = [];
 
-      //the abstract gaphic dom object is instantiated and
+      //the abstract gaphic dom element is instantiated and
 	  //its dimensions are set. It will be used as a cross-platform
 	  //drawing surface
       mArena = new GraphicDOMElement();
 	  mArena.width = 640;
 	  mArena.height = 480;
 	  
-	  //it is attached to the root dom object, the higher object
+	  //it is attached to the root dom element, the higher object
 	  //in the DOM tree
       rootDOMElement.addChild(mArena);
 
@@ -296,11 +296,11 @@ class Ski
       var scroll_y = mPlayerY - 60;
 	  
       //this method clears the bitmap data of the cross-platform 
-	  //graphic dom object
+	  //graphic dom element
 	  mArena.clear();
 	  
 	  //here we draw a rectangle with a monochrome fill 
-	  //using the graphic dom object drawing API
+	  //using the graphic dom element drawing API
 	  var fill:FillStyleValue = monochrome( { color:0xe0e0ff, alpha:100 } );
 	  var line:LineStyleValue = LineStyleValue.none;
 	  

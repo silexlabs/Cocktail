@@ -74,22 +74,22 @@ class DOMElementBase
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
 	
 	/**
-	 * The callback called when the mouse over this dom object
+	 * The callback called when the mouse over this dom element
 	 */
 	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
 	
 	/**
-	 * The callback called on mouse out of this dom object
+	 * The callback called on mouse out of this dom element
 	 */
 	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
 	
 	/**
-	 * The callback called when the mouse move over this dom object
+	 * The callback called when the mouse move over this dom element
 	 */
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
 	
 	/**
-	 * The callback called when this dom object is double-clicked
+	 * The callback called when this dom element is double-clicked
 	 */
 	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
 	
@@ -149,29 +149,29 @@ class DOMElementBase
 	// Stores the coords of the DOM Object
 	// as they are set. This abstraction is used
 	// to prevent runtime inconsistencies happening
-	// when retrieving coords from a native dom object
+	// when retrieving coords from a native dom element
 	////////////////////////////////
 	
 	/**
-	 * Stores the x position of this dom object
+	 * Stores the x position of this dom element
 	 */
 	private var _x:Int;
 	public var x(getX, setX):Int;
 	
 	/**
-	 * Stores the y position of this dom object
+	 * Stores the y position of this dom element
 	 */
 	private var _y:Int;
 	public var y(getY, setY):Int;
 	
 	/**
-	 * Stores the width position of this dom object
+	 * Stores the width position of this dom element
 	 */
 	private var _width:Int;
 	public var width(getWidth, setWidth):Int;
 	
 	/**
-	 * Stores the height position of this dom object
+	 * Stores the height position of this dom element
 	 */
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
@@ -211,7 +211,7 @@ class DOMElementBase
 	 */
 	public function new(initialNativeReference:NativeReference = null) 
 	{
-		//store and init the dom object properties
+		//store and init the dom element properties
 		//with the native reference if it isn't null
 		if (initialNativeReference != null)
 		{
@@ -221,13 +221,13 @@ class DOMElementBase
 		
 		_children = new Array<DOMElementBase>();
 		
-		//initialise the transformation matrix of this dom object
+		//initialise the transformation matrix of this dom element
 		_matrix = new Matrix();
 		
-		//initialise the keyboard listener of this dom object 
+		//initialise the keyboard listener of this dom element 
 		_keyboard = new Keyboard();
 		
-		//initialise the mouse listeners on this dom object by 
+		//initialise the mouse listeners on this dom element by 
 		//listening to the current native reference
 		_mouse = new Mouse(this._nativeReference);
 		
@@ -236,7 +236,7 @@ class DOMElementBase
 	/**
 	 * Set the domElement properties which can be retrieved
 	 * from the referenceToNativeDom. Called each time
-	 * the native dom object is set
+	 * the native dom element is set
 	 */
 	private function init():Void
 	{
@@ -321,7 +321,7 @@ class DOMElementBase
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// VISIBILITY/OPACITY
-	// Public and private methods to manage the visibility and opacity of the dom object
+	// Public and private methods to manage the visibility and opacity of the dom element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -363,7 +363,7 @@ class DOMElementBase
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// TRANSFORMATIONS
-	// Public and private methods to transform the dom object and manipulate it's matrix
+	// Public and private methods to transform the dom element and manipulate it's matrix
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**

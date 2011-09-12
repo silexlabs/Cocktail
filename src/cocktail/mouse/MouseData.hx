@@ -36,7 +36,7 @@ typedef MouseEventData = {
 /**
  * Represents the position of the mouse, both
  * global (relative to the browser window top left
- * corner) and local (relative to the dom object
+ * corner) and local (relative to the dom element
  * which triggered the mouse event top left corner)
  */
 typedef MousePosition = {
@@ -53,7 +53,7 @@ typedef MousePosition = {
 enum MouseCursorValue {
 	/**
 	 * uses a custom bitmap cursor set with
-	 * an image dom object. The hotSpot is the registration
+	 * an image dom element. The hotSpot is the registration
 	 * point of the cursor.
 	 */
 	custom(imageDOMElement:DOMElement, hotSpot:Point);

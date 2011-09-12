@@ -67,7 +67,7 @@ class Clock
 	private static var rootDOMElement:DOMElement;
 	
 	/**
-	 * init the root dom object of the publication 
+	 * init the root dom element of the publication 
 	 */
 	public static function main()
 	{
@@ -100,7 +100,7 @@ class Clock
 		//init the numeric hour display
 		_clockDisplay = new TextDOMElement();
 		
-		//ad all dom objects to the DOM
+		//ad all dom elements to the DOM
 		rootDOMElement.addChild(_clockBackground);
 		rootDOMElement.addChild(_secondNeedle);
 		rootDOMElement.addChild(_minuteNeedle);

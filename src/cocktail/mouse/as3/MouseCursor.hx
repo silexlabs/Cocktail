@@ -53,7 +53,7 @@ class MouseCursor extends MouseCursorBase
 			hotSpot = { x:0.0, y:0.0 };
 		}
 		
-		//draw the image dom object onto a 32x32 transparent bitmap data
+		//draw the image dom element onto a 32x32 transparent bitmap data
 		var mouseCursorBitmapData:BitmapData = new BitmapData(32, 32, true, 0x00FFFFFF);
 		mouseCursorBitmapData.draw(imageDOMElement.nativeReference);
 		
