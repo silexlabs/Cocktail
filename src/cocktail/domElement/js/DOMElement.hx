@@ -44,6 +44,8 @@ class DOMElement extends DOMElementBase
 	 */
 	override private function init():Void
 	{
+		super.init();
+		
 		//all DOMElements are positioned as absolute to prevent most
 		//of browsers inconsistencies regarding margin/padding. 
 		//Margin, padding , floating... concepts will be abstracted

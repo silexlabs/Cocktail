@@ -227,13 +227,27 @@ class ResourceTests
 		Log.trace(error);
 	}
 	
+	
+	public function testPictureLoadWithDOMElement():Void
+	{
+		var imageDOMElement:ImageDOMElement = new ImageDOMElement();
+		var successCallback:Dynamic->Void = Assert.createEvent(onPictureWithDOMElementLoaded);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, imageDOMElement);
+	}
+	
+	public function onPictureWithDOMElementLoaded(imageDOMElement:ImageDOMElement)
+	{
+		Assert.same(imageDOMElement.src.indexOf("testPicture.jpg") != -1, true);
+	}
+	
+	
 	/**
 	 * Test loading a picture without caching it
 	 */
 	public function testLoadNoCache()
 	{
 		var successCallback:Dynamic->Void = Assert.createEvent(onPictureNoCacheLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError,null, false);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, null, false);
 	}
 	
 	private function onPictureNoCacheLoaded(domElement:DOMElement):Void
