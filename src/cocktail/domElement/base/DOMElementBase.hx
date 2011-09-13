@@ -209,16 +209,23 @@ class DOMElementBase
 	 * class constructor. Set the native element to the native DOMElement
 	 * and initialise it
 	 */
-	public function new(initialNativeElement:NativeElement = null) 
+	public function new(nativeElement:NativeElement = null) 
 	{
 		//store and init the dom element properties
 		//with the native element if it isn't null
-		if (initialNativeElement != null)
+		if (nativeElement != null)
 		{
-			this._nativeElement = initialNativeElement;
-			init();
+			this.nativeElement = nativeElement;
 		}
-		
+	}
+	
+	/**
+	 * Set the domElement properties which can be retrieved
+	 * from the referenceToNativeDom. Called each time
+	 * the native dom element is set
+	 */
+	private function init():Void
+	{
 		_children = new Array<DOMElementBase>();
 		
 		//initialise the transformation matrix of this dom element
@@ -231,16 +238,6 @@ class DOMElementBase
 		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
 		
-	}
-	
-	/**
-	 * Set the domElement properties which can be retrieved
-	 * from the referenceToNativeDom. Called each time
-	 * the native dom element is set
-	 */
-	private function init():Void
-	{
-		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

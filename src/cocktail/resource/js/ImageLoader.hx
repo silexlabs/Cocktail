@@ -57,6 +57,7 @@ class ImageLoader extends ResourceLoader
 		if (this._domElement != null)
 		{
 			domElement = cast(this._domElement);
+			domElement.nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
 		}
 		else
 		{
