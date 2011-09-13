@@ -217,6 +217,8 @@ class DOMElementBase
 		{
 			this.nativeElement = nativeElement;
 		}
+		
+		_children = new Array<DOMElementBase>();
 	}
 	
 	/**
@@ -225,9 +227,7 @@ class DOMElementBase
 	 * the native dom element is set
 	 */
 	private function init():Void
-	{
-		_children = new Array<DOMElementBase>();
-		
+	{	
 		//initialise the transformation matrix of this dom element
 		_matrix = new Matrix();
 		
