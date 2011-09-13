@@ -50,8 +50,19 @@ class ImageLoader extends ResourceLoader
 	 */
 	override private function doLoad(url:String):Void
 	{
-		//create a DOMElement and the image container
-		var domElement:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
+		var domElement:ImageDOMElement;
+		
+		//use the provided domElement if any, else
+		//create one
+		if (this._domElement != null)
+		{
+			domElement = cast(this._domElement);
+			domElement.nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
+		}
+		else
+		{
+			domElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
+		}
 		
 		//create a delegate to call the success callback once the native image element is done loading the source picture
 		var onLoadCompleteDelegate:ImageDOMElement->Void = onLoadComplete;

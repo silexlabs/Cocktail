@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
+import cocktail.domElement.DOMElement;
 import haxe.Http;
 import haxe.Log;
 
@@ -32,6 +33,13 @@ class ResourceLoader
 	private var _onLoadErrorCallback:Dynamic->Void;
 	
 	/**
+	 * Stores the target domElement if it exists. If a domElement is 
+	 * provided, the loaded resource will be set on it, else a new 
+	 * DOMElement will be created
+	 */
+	private var _domElement:DOMElement;
+	
+	/**
 	 * class constructor
 	 */
 	public function new()
@@ -49,12 +57,16 @@ class ResourceLoader
 	 * @param	url the url of the file to load
 	 * @param	onLoadComplete called when the file is done loading
 	 * @param	onLoadError called when there is an error during loading
+	 * @param   domElement if provided, the loaded resource will be set on it
+	 * instead of creating a new DOMElement
 	 * @param	allowCache wether to allow the browser to cache the loaded file
 	 */
-	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool):Void
+	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, domElement:DOMElement = null, allowCache:Bool = true):Void
 	{
 		this._onLoadCompleteCallback = onLoadComplete;
 		this._onLoadErrorCallback = onLoadError;
+		
+		this._domElement = domElement;
 		
 		//if the loaded resource must not be cached,
 		//add a random number at the end of the url to fool

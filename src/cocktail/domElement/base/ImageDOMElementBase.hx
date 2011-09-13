@@ -46,10 +46,17 @@ class ImageDOMElementBase extends DOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+	}
+	
+	/**
+	 * Init the smoothing of the picture
+	 */
+	override private function init():Void
+	{	
+		super.init();
 		
 		//smooth the picture by default
 		this.smooth = true;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
