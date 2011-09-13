@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
+import cocktail.domElement.DOMElement;
 
 
  /**
@@ -31,6 +32,13 @@ typedef ResourceData =
 	 * The url of the file to load
 	 */
 	var url : String;
+	
+	/**
+	 * If not null, the loaded resource will
+	 * be set on this DOMElement, else, a 
+	 * new DOMElement will be created
+	 */
+	var domElement:DOMElement;
 	
 	/**
 	 * Wether to allow the browser to cache the file
