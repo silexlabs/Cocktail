@@ -48,8 +48,12 @@ class ImageDOMElement extends ImageDOMElementBase
 		// and retrieve its bitmap content
 		var typedNativeElement:Loader = cast(this._nativeElement);
 		var bitmap:Bitmap = cast(typedNativeElement.content);
-		//activate/deactivate picture smoothing
-		bitmap.smoothing = value;
+		
+		if (bitmap != null)
+		{
+			//activate/deactivate picture smoothing
+			bitmap.smoothing = value;
+		}
 		
 		return value;
 	}

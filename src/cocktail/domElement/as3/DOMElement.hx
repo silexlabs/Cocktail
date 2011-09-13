@@ -160,8 +160,11 @@ class DOMElement extends DOMElementBase
 	
 	override public function setX(value:Int):Int 
 	{
+		Log.trace("set x");
 		super.setX(value);
+		Log.trace(this._nativeElement);
 		this._nativeElement.x = value;
+		Log.trace("set x 3 ");
 		return this._x;
 	}
 	

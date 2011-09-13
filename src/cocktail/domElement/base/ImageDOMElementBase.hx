@@ -46,9 +46,6 @@ class ImageDOMElementBase extends DOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
-		
-
-		
 	}
 	
 	/**

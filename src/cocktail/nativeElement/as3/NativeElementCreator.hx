@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.nativeElement.as3;
 
 import flash.display.DisplayObjectContainer;
+import flash.display.Loader;
 import flash.display.Sprite;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
@@ -40,9 +41,19 @@ class NativeElementCreator extends NativeElementCreatorBase
 	 */
 	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		//in flash all of the base element type (image, graphic, text...) can be implemented
-		//through a Sprite
-		var nativeElement:NativeElement = new Sprite();
+		var nativeElement:NativeElement;
+		
+		switch (nativeElementType)
+		{
+			//for image the expected type is a Flash loader
+			case image:
+				nativeElement = new Loader();
+			
+			//for other types, it is a Sprite	
+			default:
+				nativeElement = new Sprite();
+				
+		}
 		
 		return nativeElement;
 	}
