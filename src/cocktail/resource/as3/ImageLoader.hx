@@ -90,7 +90,19 @@ class ImageLoader extends ResourceLoader
 		_imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoadComplete);
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
 		
-		var imageDOMElement:ImageDOMElement = new ImageDOMElement(_imageLoader);
+		var imageDOMElement:ImageDOMElement;
+		
+		//if a domElement is provided, use it
+		//else create one
+		if (this._domElement != null)
+		{
+			imageDOMElement = cast(this._domElement);
+			imageDOMElement.nativeElement = _imageLoader;
+		}
+		else
+		{
+			imageDOMElement =  new ImageDOMElement(_imageLoader);
+		}
 		
 		//init the width, height and src of the image dom element
 		imageDOMElement.width = Math.round(_imageLoader.width);
