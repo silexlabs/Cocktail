@@ -12,14 +12,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.classInstance.as3;
 
 import haxe.Log;
-import cocktail.classInstance.base.ClassInstanceBase;
+import cocktail.classInstance.abstract.AbstractClassInstance;
 
 /**
  * This is the implementation of the native instance proxy for Flash. It implemenents
  * a class instantiation method specific to the Flash runtime
  * @author Yannick DOMINGUEZ
  */
-class ClassInstance extends ClassInstanceBase
+class ClassInstance extends AbstractClassInstance
 {
 	/**
 	 * class constructor

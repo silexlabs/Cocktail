@@ -18,6 +18,11 @@ import cocktail.nativeElement.as3.NativeElementPathManager;
 #elseif js
 import cocktail.nativeElement.js.NativeElementCreator;
 import cocktail.nativeElement.js.NativeElementPathManager;
+
+#elseif doc
+class NativeElementCreator extends cocktail.nativeElement.abstract.AbstractNativeElementCreator { }
+class NativeElementPathManager extends cocktail.nativeElement.abstract.AbstractNativeElementPathManager { }
+
 #end
 
 import cocktail.nativeElement.NativeElementData;

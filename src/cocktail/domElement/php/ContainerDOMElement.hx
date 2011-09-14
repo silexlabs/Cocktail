@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.php;
 
-import cocktail.domElement.base.ContainerDOMElementBase;
+import cocktail.domElement.abstract.AbstractContainerDOMElement;
 
 /**
  * This is the PHP implementation of the container DOMElement.
@@ -22,7 +22,7 @@ import cocktail.domElement.base.ContainerDOMElementBase;
  * 
  * @author Raphael HARMEL
  */
-class ContainerDOMElement extends ContainerDOMElementBase
+class ContainerDOMElement extends AbstractContainerDOMElement
 {
 	/**
 	 * class constructor

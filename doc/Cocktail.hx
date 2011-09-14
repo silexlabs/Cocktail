@@ -1,4 +1,5 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
+/*
+This file is part of Silex - see http://projects.silexlabs.org/?/silex
 
 Silex is © 2010-2011 Silex Labs and is released under the GPL License:
 
@@ -8,33 +9,28 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement.base;
 
-import cocktail.nativeElement.NativeElement;
+package ;
+
+import cocktail.domElement.DOMElement;
+import cocktail.classInstance.ClassInstance;
+import cocktail.mouse.Mouse;
+import cocktail.mouse.MouseCursorManager;
+import cocktail.keyboard.Keyboard;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.resource.ResourceLoaderManager;
+import cocktail.nativeInstance.NativeInstanceManager;
 
 /**
- * This is a base class for the path manager. 
- * It retrieves and return the root of the DOM, 
- * sush as the body tag in HTML
- * 
- * @author Yannick DOMINGUEZ
- */
-class NativeElementPathManagerBase
+* This class is used to import all of the classes that must
+* appear in thr doc
+*/
+class Cocktail 
 {
-	/**
-	 * class contructor
-	 */
-	public function new() 
+	
+	public static function main()
 	{
 		
-	}
-	
-	/**
-	 * Returns the root of the DOM. Implemented by subclasses
-	 */
-	public function getRoot():NativeElement
-	{
-		return null;
 	}
 	
 }
