@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement.base;
+package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextDOMElementBase extends DOMElement
+class AbstractTextDOMElement extends DOMElement
 {
 
 	/**
@@ -50,12 +50,12 @@ class TextDOMElementBase extends DOMElement
 	// DOMElement, as it is a leaf DOMElement (can't have children)
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
 	
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}

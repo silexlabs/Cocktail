@@ -15,7 +15,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 import flash.text.TextField;
 import haxe.Log;
-import cocktail.domElement.base.TextDOMElementBase;
+import cocktail.domElement.abstract.AbstractTextDOMElement;
 
 /**
  * This is the Text DOMElement implementation for Flash.
@@ -26,7 +26,7 @@ import cocktail.domElement.base.TextDOMElementBase;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextDOMElement extends TextDOMElementBase
+class TextDOMElement extends AbstractTextDOMElement
 {
 	/**
 	 * The native Flash text field that will be used to display

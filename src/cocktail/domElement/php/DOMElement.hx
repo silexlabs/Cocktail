@@ -13,7 +13,7 @@ package cocktail.domElement.php;
 
 
 //import js.Dom;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 
 /**
  * This is the DOMElement implementation for PHP. 
@@ -22,7 +22,7 @@ import cocktail.domElement.base.DOMElementBase;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class DOMElement extends DOMElementBase
+class DOMElement extends AbstractDOMElement
 {
 
 	/**
@@ -41,7 +41,7 @@ class DOMElement extends DOMElementBase
 	 * Adds a native HTML DOMElement (an html element) to this DOMElement native DOMElement
 	 * @param	domElement the html element to add to this
 	 */
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		super.addChild(domElement);
 		this._nativeElement.addChild(domElement.getReferenceToNativeDOM());
@@ -51,7 +51,7 @@ class DOMElement extends DOMElementBase
 	 * Removes a native HTML DOMElement (an html element) from this DOMElement native DOMElement
 	 * @param	domElement the html element to remove from this
 	 */
-	/*override public function removeChild(domElement:DOMElementBase):Void
+	/*override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		super.removeChild(domElement);
 		this._nativeElement.removeChild(domElement.getReferenceToNativeDOM());

@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.php;
-import cocktail.domElement.base.AnimationDOMElementBase;
+import cocktail.domElement.abstract.AbstractAnimationDOMElement;
 
 /**
  * This is the JavaScript implementation of the AnimationDOMElement
@@ -20,7 +20,7 @@ import cocktail.domElement.base.AnimationDOMElementBase;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class AnimationDOMElement extends AnimationDOMElementBase
+class AnimationDOMElement extends AbstractAnimationDOMElement
 {
 	/**
 	 * class constructor

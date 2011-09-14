@@ -13,7 +13,7 @@ package cocktail.keyboard.as3;
 import flash.events.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
-import cocktail.keyboard.base.KeyboardBase;
+import cocktail.keyboard.abstract.AbstractKeyboard;
 import cocktail.keyboard.KeyboardData;
 
 /**
@@ -23,7 +23,7 @@ import cocktail.keyboard.KeyboardData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Keyboard extends KeyboardBase
+class Keyboard extends AbstractKeyboard
 {
 	/**
 	 * class constructor. Set native keyboard listeners

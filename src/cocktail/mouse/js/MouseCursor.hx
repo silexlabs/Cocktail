@@ -13,7 +13,7 @@ package cocktail.mouse.js;
 import haxe.Log;
 import js.Lib;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.mouse.base.MouseCursorBase;
+import cocktail.mouse.abstract.AbstractMouseCursor;
 import cocktail.geom.GeomData;
 import cocktail.mouse.MouseData;
 
@@ -24,7 +24,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class MouseCursor extends MouseCursorBase
+class MouseCursor extends AbstractMouseCursor
 {
 	/**
 	 * CSS style for no mouse cursor

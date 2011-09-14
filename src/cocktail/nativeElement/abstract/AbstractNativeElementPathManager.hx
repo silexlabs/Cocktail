@@ -1,5 +1,4 @@
-/*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
+/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
 
 Silex is © 2010-2011 Silex Labs and is released under the GPL License:
 
@@ -9,22 +8,33 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement.base;
-import cocktail.domElement.DOMElement;
+package cocktail.nativeElement.abstract;
+
 import cocktail.nativeElement.NativeElement;
 
 /**
- * This DOMElement is in charge of displaying animation such
- * as a .swf file in Flash or a .svg file in HTML
- * 
- * TO DO
+ * This is a base class for the path manager. 
+ * It retrieves and return the root of the DOM, 
+ * sush as the body tag in HTML
  * 
  * @author Yannick DOMINGUEZ
  */
-class AnimationDOMElementBase extends DOMElement
+class AbstractNativeElementPathManager
 {
-	public function new(nativeElement:NativeElement = null) 
+	/**
+	 * class contructor
+	 */
+	public function new() 
 	{
-		super(nativeElement);
+		
 	}
+	
+	/**
+	 * Returns the root of the DOM. Implemented by subclasses
+	 */
+	public function getRoot():NativeElement
+	{
+		return null;
+	}
+	
 }

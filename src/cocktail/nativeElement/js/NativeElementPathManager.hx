@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.nativeElement.js;
 
 import js.Lib;
-import cocktail.nativeElement.base.NativeElementPathManagerBase;
+import cocktail.nativeElement.abstract.AbstractNativeElementPathManager;
 import cocktail.nativeElement.NativeElement;
 
 /**
@@ -20,7 +20,7 @@ import cocktail.nativeElement.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementPathManager extends NativeElementPathManagerBase
+class NativeElementPathManager extends AbstractNativeElementPathManager
 {
 	/**
 	 * class contructor

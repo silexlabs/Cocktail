@@ -22,6 +22,9 @@ typedef NativeInstance =  Dynamic;
 #elseif php
 typedef NativeInstance =  Dynamic;
 
+#elseif doc
+typedef NativeInstance = Dynamic;
+
 #else
 	#error
 #end

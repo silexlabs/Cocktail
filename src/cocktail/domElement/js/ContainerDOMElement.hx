@@ -13,7 +13,7 @@ package cocktail.domElement.js;
 import cocktail.nativeElement.NativeElement;
 import js.Lib;
 import js.Dom;
-import cocktail.domElement.base.ContainerDOMElementBase;
+import cocktail.domElement.abstract.AbstractContainerDOMElement;
 
 /**
  * This is the JavaScript implementation of the container DOMElement.
@@ -24,7 +24,7 @@ import cocktail.domElement.base.ContainerDOMElementBase;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ContainerDOMElement extends ContainerDOMElementBase
+class ContainerDOMElement extends AbstractContainerDOMElement
 {
 	/**
 	 * class constructor

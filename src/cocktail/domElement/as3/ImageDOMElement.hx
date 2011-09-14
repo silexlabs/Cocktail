@@ -16,14 +16,14 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
 import haxe.Log;
-import cocktail.domElement.base.ImageDOMElementBase;
+import cocktail.domElement.abstract.AbstractImageDOMElement;
 
 /**
  * This is the Image DOMElement implementation for Flash.
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageDOMElement extends ImageDOMElementBase
+class ImageDOMElement extends AbstractImageDOMElement
 {
 
 	public function new(nativeElement:NativeElement = null) 

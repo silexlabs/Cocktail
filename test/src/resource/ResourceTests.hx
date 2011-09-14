@@ -26,7 +26,7 @@ import cocktail.domElement.TextDOMElement;
 import cocktail.classInstance.ClassInstance;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;

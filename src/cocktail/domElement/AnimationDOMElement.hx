@@ -19,4 +19,11 @@ typedef AnimationDOMElement =  cocktail.domElement.as3.AnimationDOMElement;
 #elseif js
 typedef AnimationDOMElement =  cocktail.domElement.js.AnimationDOMElement;
 
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class AnimationDOMElement extends cocktail.domElement.abstract.AbstractAnimationDOMElement { }
+
 #end
