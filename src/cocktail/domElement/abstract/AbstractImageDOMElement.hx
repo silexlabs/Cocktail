@@ -22,7 +22,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageDOMElementBase extends DOMElement
+class ImageAbstractDOMElement extends DOMElement
 {
 
 	/**
@@ -65,12 +65,12 @@ class ImageDOMElementBase extends DOMElement
 	// DOMElement, as it is a leaf DOMElement (can't have children)
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
 	
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
