@@ -8,25 +8,36 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement;
+package cocktail.nativeElement.abstract;
+
+import cocktail.nativeElement.NativeElementData;
+import cocktail.nativeElement.NativeElement;
 
 /**
- * Set the right runtime specific DOMElement at compile-time
+ * This is a base class for the native element
+ * creator implementation. It creates a native element
+ * and returns a reference to it
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef DOMElement =  cocktail.domElement.as3.DOMElement;
+class AbstractNativeElementCreator
+{
 
-#elseif js
-typedef DOMElement =  cocktail.domElement.js.DOMElement;
-
-#elseif php
-typedef DOMElement =  cocktail.domElement.php.DOMElement;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class DOMElement extends cocktail.domElement.abstract.AbstractDOMElement { }
-
-#end
+	/**
+	 * class constructor
+	 */
+	public function new() 
+	{
+		
+	}
+	
+	/**
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 */
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
+	{
+		return null;
+	}
+	
+}

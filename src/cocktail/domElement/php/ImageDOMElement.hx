@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.php;
-import cocktail.domElement.base.ImageDOMElementBase;
+import cocktail.domElement.abstract.AbstractImageDOMElement;
 
 /**
  * This is the JavaScript implementation of the Image DOMElement.
@@ -21,7 +21,7 @@ import cocktail.domElement.base.ImageDOMElementBase;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class ImageDOMElement extends ImageDOMElementBase
+class ImageDOMElement extends AbstractImageDOMElement
 {
 
 	/**

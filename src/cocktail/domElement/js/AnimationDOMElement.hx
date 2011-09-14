@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
-import cocktail.domElement.base.AnimationDOMElementBase;
+import cocktail.domElement.abstract.AbstractAnimationDOMElement;
 import cocktail.nativeElement.NativeElement;
 
 /**
@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AnimationDOMElement extends AnimationDOMElementBase
+class AnimationDOMElement extends AbstractAnimationDOMElement
 {
 	/**
 	 * class constructor

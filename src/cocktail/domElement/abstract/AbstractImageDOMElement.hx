@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement.base;
+package cocktail.domElement.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
@@ -22,7 +22,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageDOMElementBase extends DOMElement
+class AbstractImageDOMElement extends DOMElement
 {
 
 	/**
@@ -65,12 +65,12 @@ class ImageDOMElementBase extends DOMElement
 	// DOMElement, as it is a leaf DOMElement (can't have children)
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
 	
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}

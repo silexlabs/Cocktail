@@ -13,7 +13,7 @@ package cocktail.nativeElement.js;
 import js.Lib;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.base.NativeElementCreatorBase;
+import cocktail.nativeElement.abstract.AbstractNativeElementCreator;
 
 /**
  * This is the Javascript implementation of the native element
@@ -22,7 +22,7 @@ import cocktail.nativeElement.base.NativeElementCreatorBase;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementCreator extends NativeElementCreatorBase
+class NativeElementCreator extends AbstractNativeElementCreator
 {
 
 	/**

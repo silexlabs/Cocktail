@@ -43,6 +43,14 @@ import cocktail.resource.php.ContainerLoader;
 import cocktail.resource.php.AnimationLoader;
 import cocktail.resource.php.LibraryLoader;
 
+#elseif doc
+class StringLoader extends ResourceLoader {}
+class ImageLoader extends ResourceLoader {}
+class TextLoader extends ResourceLoader {}
+class ContainerLoader extends ResourceLoader {}
+class AnimationLoader extends ResourceLoader {}
+class LibraryLoader extends ResourceLoader {}
+
 #end	
 
 /**

@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse.js;
 
-import cocktail.mouse.base.MouseBase;
+import cocktail.mouse.abstract.AbstractMouse;
 import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
@@ -22,7 +22,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Mouse extends MouseBase
+class Mouse extends AbstractMouse
 {
 	
 	/**

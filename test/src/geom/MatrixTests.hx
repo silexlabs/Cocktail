@@ -17,7 +17,7 @@ package geom;
  * @author Yannick DOMINGUEZ
  */
 import haxe.Log;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
