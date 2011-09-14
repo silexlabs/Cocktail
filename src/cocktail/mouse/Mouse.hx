@@ -20,6 +20,10 @@ typedef Mouse =  cocktail.mouse.as3.Mouse;
 typedef Mouse =  cocktail.mouse.js.Mouse;
 
 #elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
 class Mouse extends cocktail.mouse.abstract.AbstractMouse{}
 
 #end

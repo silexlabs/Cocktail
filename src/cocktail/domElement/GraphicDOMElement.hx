@@ -19,4 +19,11 @@ typedef GraphicDOMElement =  cocktail.domElement.as3.GraphicDOMElement;
 #elseif js
 typedef GraphicDOMElement =  cocktail.domElement.js.GraphicDOMElement;
 
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class GraphicDOMElement extends cocktail.domElement.abstract.AbstractGraphicDOMElement { }
+
 #end

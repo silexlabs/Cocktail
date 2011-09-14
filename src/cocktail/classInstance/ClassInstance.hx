@@ -22,6 +22,13 @@ typedef ClassInstance =  cocktail.classInstance.js.ClassInstance;
 #elseif php
 typedef ClassInstance =  cocktail.classInstance.php.ClassInstance;
 
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class ClassInstance extends cocktail.classInstance.abstract.AbstractClassInstance { }
+
 #else
 	#error
 #end
