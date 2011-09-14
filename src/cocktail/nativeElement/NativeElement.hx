@@ -23,4 +23,7 @@ typedef NativeElement =  js.HtmlDom;
 #elseif php
 typedef NativeElement =  Xml;
 
+#elseif doc
+typedef NativeElement = Dynamic;
+
 #end

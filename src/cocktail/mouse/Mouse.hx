@@ -19,4 +19,7 @@ typedef Mouse =  cocktail.mouse.as3.Mouse;
 #elseif js
 typedef Mouse =  cocktail.mouse.js.Mouse;
 
+#elseif doc
+class Mouse extends cocktail.mouse.abstract.AbstractMouse{}
+
 #end

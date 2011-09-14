@@ -25,7 +25,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.TextDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;

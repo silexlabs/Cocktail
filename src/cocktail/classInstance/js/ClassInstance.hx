@@ -12,14 +12,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.classInstance.js;
 
 import js.Lib;
-import cocktail.classInstance.base.ClassInstanceBase;
+import cocktail.classInstance.abstract.AbstractClassInstance;
 
 /**
  * This is the implementation of the native class instance proxy for JavaScript. It implemenents
  * a class instantiation method specific to the JavaScript runtime
  * @author Yannick DOMINGUEZ
  */
-class ClassInstance extends ClassInstanceBase
+class ClassInstance extends AbstractClassInstance
 {
 	/**
 	 * class constructor

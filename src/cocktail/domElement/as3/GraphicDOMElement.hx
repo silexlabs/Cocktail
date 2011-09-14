@@ -24,7 +24,7 @@ import flash.display.Sprite;
 import flash.geom.Matrix;
 import flash.Lib;
 import haxe.Log;
-import cocktail.domElement.base.GraphicDOMElementBase;
+import cocktail.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElementData;
 
@@ -36,7 +36,7 @@ import cocktail.domElement.DOMElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicDOMElement extends GraphicDOMElementBase
+class GraphicDOMElement extends AbstractGraphicDOMElement
 {
 	/**
 	 * A transparent clip used to give a width and height

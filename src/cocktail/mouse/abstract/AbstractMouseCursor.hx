@@ -8,7 +8,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.mouse.base;
+package cocktail.mouse.abstract;
 
 import cocktail.domElement.ImageDOMElement;
 import cocktail.geom.GeomData;
@@ -21,7 +21,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class MouseCursorBase 
+class AbstractMouseCursor 
 {
 	/**
 	 * Stores the current state of the mouse cursor

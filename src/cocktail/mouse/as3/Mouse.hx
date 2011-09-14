@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.mouse.as3;
 
 import flash.events.MouseEvent;
-import cocktail.mouse.base.MouseBase;
+import cocktail.mouse.abstract.AbstractMouse;
 import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
@@ -23,7 +23,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Mouse extends MouseBase
+class Mouse extends AbstractMouse
 {
 	
 	/**

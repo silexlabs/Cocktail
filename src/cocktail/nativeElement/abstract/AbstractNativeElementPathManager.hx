@@ -8,7 +8,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement.base;
+package cocktail.nativeElement.abstract;
 
 import cocktail.nativeElement.NativeElement;
 
@@ -19,7 +19,7 @@ import cocktail.nativeElement.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementPathManagerBase
+class AbstractNativeElementPathManager
 {
 	/**
 	 * class contructor

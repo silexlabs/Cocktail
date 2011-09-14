@@ -12,7 +12,7 @@ package cocktail.keyboard.js;
 
 import haxe.Log;
 import js.Lib;
-import cocktail.keyboard.base.KeyboardBase;
+import cocktail.keyboard.abstract.AbstractKeyboard;
 import cocktail.keyboard.KeyboardData;
 
 /**
@@ -22,7 +22,7 @@ import cocktail.keyboard.KeyboardData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Keyboard extends KeyboardBase
+class Keyboard extends AbstractKeyboard
 {
 	/**
 	 * class constructor. Set keyboard listeners

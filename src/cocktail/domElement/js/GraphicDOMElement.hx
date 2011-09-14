@@ -14,7 +14,7 @@ package cocktail.domElement.js;
 import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
-import cocktail.domElement.base.GraphicDOMElementBase;
+import cocktail.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 
@@ -23,7 +23,7 @@ import cocktail.geom.GeomData;
  * It draws shape programatically onto a native Canvas object
  * @author Yannick DOMINGUEZ
  */
-class GraphicDOMElement extends GraphicDOMElementBase
+class GraphicDOMElement extends AbstractGraphicDOMElement
 {
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

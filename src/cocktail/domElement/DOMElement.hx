@@ -22,4 +22,7 @@ typedef DOMElement =  cocktail.domElement.js.DOMElement;
 #elseif php
 typedef DOMElement =  cocktail.domElement.php.DOMElement;
 
+#elseif doc
+class DOMElement extends cocktail.domElement.abstract.DOMElementBase{}
+
 #end
