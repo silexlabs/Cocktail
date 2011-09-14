@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextDOMElementBase extends DOMElement
+class TextAbstractDOMElement extends DOMElement
 {
 
 	/**
@@ -50,12 +50,12 @@ class TextDOMElementBase extends DOMElement
 	// DOMElement, as it is a leaf DOMElement (can't have children)
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
 	
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}

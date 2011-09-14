@@ -28,7 +28,7 @@ import haxe.Log;
  * inheriting class
  * @author Yannick DOMINGUEZ
  */
-class DOMElementBase 
+class AbstractDOMElement 
 {
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -128,15 +128,15 @@ class DOMElementBase
 	/**
 	 * a reference to the parent of this DOMElement
 	 */ 
-	private var _parent:DOMElementBase;
-	public var parent(getParent, setParent):DOMElementBase;
+	private var _parent:AbstractDOMElement;
+	public var parent(getParent, setParent):AbstractDOMElement;
 	
 	/**
 	 *  a reference to each of the DOMElement childs, stored by
 	 *  z-index
 	 */
-	private var _children:Array<DOMElementBase>;
-	public var children(getChildren, never):Array<DOMElementBase>;
+	private var _children:Array<AbstractDOMElement>;
+	public var children(getChildren, never):Array<AbstractDOMElement>;
 	
 	/**
 	 * a reference to this domElement transformation matrix
@@ -218,7 +218,7 @@ class DOMElementBase
 			this.nativeElement = nativeElement;
 		}
 		
-		_children = new Array<DOMElementBase>();
+		_children = new Array<AbstractDOMElement>();
 	}
 	
 	/**
@@ -251,7 +251,7 @@ class DOMElementBase
 	 * child to native DOM.
 	 * @param	domElement the DOMElement to attach to this DOMElement
 	 */
-	public function addChild(domElement:DOMElementBase):Void
+	public function addChild(domElement:AbstractDOMElement):Void
 	{
 		domElement.setParent(this);
 		_children.push(domElement);
@@ -263,7 +263,7 @@ class DOMElementBase
 	 * runtime to remove also from the native DOM
 	 * @param	domElement the DOMElement to remove from this DOMElement
 	 */
-	public function removeChild(domElement:DOMElementBase):Void
+	public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		domElement.setParent(null);
 		_children.remove(domElement);
@@ -272,7 +272,7 @@ class DOMElementBase
 	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */
-	public function getParent():DOMElementBase
+	public function getParent():AbstractDOMElement
 	{
 		return this._parent;
 	}
@@ -280,7 +280,7 @@ class DOMElementBase
 	/**
 	 * set the parent of this DOMElement
 	 */
-	public function setParent(domElement:DOMElementBase):DOMElementBase
+	public function setParent(domElement:AbstractDOMElement):AbstractDOMElement
 	{
 		this._parent = domElement;
 		return this._parent;
@@ -291,7 +291,7 @@ class DOMElementBase
 	 * returns the children of this DOMElement
 	 * @return an array of DOMElement
 	 */
-	public function getChildren():Array<DOMElementBase>
+	public function getChildren():Array<AbstractDOMElement>
 	{
 		return _children;
 	}

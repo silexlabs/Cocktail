@@ -10,50 +10,21 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.base;
-
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 
 /**
- * This is a "neutral" DOMElement used for instance when a skin (.swf in Flash, .html in HTML)
- * is loaded. It allows for setting semantic of the root node of the DOMElement (not implemented for
- * Flash)
+ * This DOMElement is in charge of displaying animation such
+ * as a .swf file in Flash or a .svg file in HTML
+ * 
+ * TO DO
  * 
  * @author Yannick DOMINGUEZ
  */
-class ContainerDOMElementBase extends DOMElement
+class AnimationAbstractDOMElement extends DOMElement
 {
-	/**
-	 * Store the node name (div, nav, header...) of the
-	 * first node of the reference to the native DOM.
-	 * This doesn't apply to Flash
-	 */
-	private var _semantic:String;
-	
-	/**
-	 * class constructor
-	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
 	}
-	
-	/**
-	 * Set the semantic name of the first native node
-	 * @param	semantic an HTML tag name (div, nav, header...)
-	 */
-	public function setSemantic(semantic:String):Void
-	{
-		this._semantic = semantic;
-	}
-	
-	/**
-	 * Return the semantic name of the first native node
-	 * @return	semantic an HTML tag name (div, nav, header...)
-	 */
-	public function getSemantic():String
-	{
-		return this._semantic;
-	}
-	
 }

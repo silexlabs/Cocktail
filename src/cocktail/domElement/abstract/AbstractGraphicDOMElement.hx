@@ -32,7 +32,7 @@ import cocktail.nativeElement.NativeElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicDOMElementBase extends DOMElement
+class GraphicAbstractDOMElement extends DOMElement
 {
 
 	/**
@@ -55,12 +55,12 @@ class GraphicDOMElementBase extends DOMElement
 	// DOMElement, as it is a leaf DOMElement (can't have children)
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
 	
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		
 	}
