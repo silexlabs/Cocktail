@@ -17,7 +17,13 @@ import cocktail.mouse.as3.MouseCursor;
 
 #elseif js
 import cocktail.mouse.js.MouseCursor;
+
+#elseif doc
+class MouseCursor extends cocktail.mouse.abstract.AbstractMouseCursor { }
+
 #end
+
+
 
 import cocktail.mouse.MouseData;
 

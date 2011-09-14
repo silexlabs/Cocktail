@@ -22,4 +22,11 @@ typedef ImageDOMElement =  cocktail.domElement.js.ImageDOMElement;
 #elseif php
 typedef ImageDOMElement =  cocktail.domElement.php.ImageDOMElement;
 
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class ImageDOMElement extends cocktail.domElement.abstract.AbstractImageDOMElement { }
+
 #end
