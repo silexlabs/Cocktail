@@ -1,7 +1,0 @@
-#build doc files
--cp ../src/framework/
--main SilexFramework
--swf9 ../bin/libs/silex/as3/SilexFramework.swf
--xml SilexFrameworkDoc.xml
--cmd chxdoc -o framework/as3/ --includeOnly=org.*,  SilexFrameworkDoc.xml 
-#-debug
