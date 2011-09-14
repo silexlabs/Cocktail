@@ -5,7 +5,7 @@ import haxe.Log;
 import haxe.Timer;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.TextDOMElement;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
