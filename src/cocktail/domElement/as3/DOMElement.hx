@@ -42,6 +42,7 @@ class DOMElement extends DOMElementBase
 	 */
 	override private function init():Void
 	{	
+		super.init();
 		this._width = Math.round(_nativeElement.width);
 		this._height = Math.round(_nativeElement.height);
 		this._x = Math.round(_nativeElement.x);
@@ -159,8 +160,11 @@ class DOMElement extends DOMElementBase
 	
 	override public function setX(value:Int):Int 
 	{
+		Log.trace("set x");
 		super.setX(value);
+		Log.trace(this._nativeElement);
 		this._nativeElement.x = value;
+		Log.trace("set x 3 ");
 		return this._x;
 	}
 	
