@@ -12,6 +12,7 @@ package resource;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
+import cocktail.nativeInstance.NativeInstanceManager;
  #if flash9
 
 import flash.display.Loader;
@@ -22,8 +23,7 @@ import flash.system.ApplicationDomain;
 #end
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.domElement.TextDOMElement;
-import cocktail.nativeClass.NativeClass;
-import cocktail.nativeClass.NativeInstance;
+import cocktail.classInstance.ClassInstance;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.base.DOMElementBase;
@@ -157,10 +157,10 @@ class ResourceTests
 	 */
 	private function onLibraryLoaded(data:Dynamic):Void
 	{
-		var nativeInstance:NativeInstance = NativeClass.getNativeInstanceByClassName("LibrarySymbol");
+		var nativeInstance:ClassInstance = NativeInstanceManager.getClassInstanceByClassName("LibrarySymbol");
 		
 		#if flash9
-		flash.Lib.current.addChild(nativeInstance.getReferenceToNativeClassInstance());
+		flash.Lib.current.addChild(nativeInstance.getNativeInstance());
 		Assert.same(nativeInstance.getField("x"), 0);
 		#elseif js
 		Assert.same(nativeInstance.callMethod("testMethod", []), "library loaded ok !");
@@ -227,13 +227,27 @@ class ResourceTests
 		Log.trace(error);
 	}
 	
+	
+	public function testPictureLoadWithDOMElement():Void
+	{
+		var imageDOMElement:ImageDOMElement = new ImageDOMElement();
+		var successCallback:Dynamic->Void = Assert.createEvent(onPictureWithDOMElementLoaded);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, imageDOMElement);
+	}
+	
+	public function onPictureWithDOMElementLoaded(imageDOMElement:ImageDOMElement)
+	{
+		Assert.same(imageDOMElement.src.indexOf("testPicture.jpg") != -1, true);
+	}
+	
+	
 	/**
 	 * Test loading a picture without caching it
 	 */
 	public function testLoadNoCache()
 	{
 		var successCallback:Dynamic->Void = Assert.createEvent(onPictureNoCacheLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, false);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, null, false);
 	}
 	
 	private function onPictureNoCacheLoaded(domElement:DOMElement):Void
