@@ -15,7 +15,7 @@ import cocktail.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import haxe.Log;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
@@ -25,7 +25,7 @@ import cocktail.geom.GeomData;
  * It manipulates the native Flash DOM
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends DOMElementBase
+class DOMElement extends AbstractDOMElement
 {
 
 	/**
@@ -57,7 +57,7 @@ class DOMElement extends DOMElementBase
 	 * Adds a native Flash DOMElement (DisplayObject) to this DOMElement native DOMElement
 	 * @param	domElement the DisplayObject to add to this
 	 */
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		super.addChild(domElement);
 		this._nativeElement.addChild(domElement.nativeElement);
@@ -67,7 +67,7 @@ class DOMElement extends DOMElementBase
 	 * Removes a native Flash DOMElement (DisplayObject) from this DOMElement native DOMElement
 	 * @param	domElement the DisplayObject to remove from this
 	 */
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		super.removeChild(domElement);
 		this._nativeElement.removeChild(domElement.nativeElement);

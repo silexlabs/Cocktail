@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement.base;
+package cocktail.domElement.abstract;
 
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;

@@ -12,14 +12,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domElement.js;
 
 import cocktail.nativeElement.NativeElement;
-import cocktail.domElement.base.ImageDOMElementBase;
+import cocktail.domElement.abstract.AbstractImageDOMElement;
 
 /**
  * This is the JavaScript implementation of the Image DOMElement.
  * 
  * @author Yannick DOMINUGEZ
  */
-class ImageDOMElement extends ImageDOMElementBase
+class ImageDOMElement extends AbstractImageDOMElement
 {
 
 	/**

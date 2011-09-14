@@ -15,7 +15,7 @@ import flash.ui.MouseCursorData;
 import flash.ui.Mouse;
 import flash.Vector;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.mouse.base.MouseCursorBase;
+import cocktail.mouse.abstract.AbstractMouseCursor;
 import cocktail.geom.GeomData;
 import cocktail.mouse.MouseData;
 
@@ -26,7 +26,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class MouseCursor extends MouseCursorBase
+class MouseCursor extends AbstractMouseCursor
 {
 	/**
 	 * class constructor

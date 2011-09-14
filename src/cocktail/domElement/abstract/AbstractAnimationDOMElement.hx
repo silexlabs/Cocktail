@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement.base;
+package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 
@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AnimationAbstractDOMElement extends DOMElement
+class AbstractAnimationDOMElement extends DOMElement
 {
 	public function new(nativeElement:NativeElement = null) 
 	{

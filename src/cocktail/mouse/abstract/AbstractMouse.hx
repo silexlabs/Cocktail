@@ -8,7 +8,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.mouse.base;
+package cocktail.mouse.abstract;
 
 import cocktail.nativeElement.NativeElement;
 
@@ -29,7 +29,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class MouseBase 
+class AbstractMouse 
 {
 	/**
 	 * The callback to call when

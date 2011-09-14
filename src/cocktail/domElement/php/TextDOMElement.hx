@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.php;
 
-import cocktail.domElement.base.TextDOMElementBase;
+import cocktail.domElement.abstract.AbstractTextDOMElement;
 
 /**
  * This is the JavaScript implementation for the Text DOMElement
@@ -22,7 +22,7 @@ import cocktail.domElement.base.TextDOMElementBase;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class TextDOMElement extends TextDOMElementBase
+class TextDOMElement extends AbstractTextDOMElement
 {
 	/**
 	 * class constructor

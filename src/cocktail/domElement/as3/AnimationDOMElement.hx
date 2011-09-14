@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 import cocktail.nativeElement.NativeElement;
-import cocktail.domElement.base.AnimationDOMElementBase;
+import cocktail.domElement.abstract.AbstractAnimationDOMElement;
 
 /**
  * This is the Flash implementation of the AnimationDOMElement
@@ -20,7 +20,7 @@ import cocktail.domElement.base.AnimationDOMElementBase;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AnimationDOMElement extends AnimationDOMElementBase
+class AnimationDOMElement extends AbstractAnimationDOMElement
 {
 	/**
 	 * class contructor

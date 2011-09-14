@@ -18,7 +18,7 @@ package domElement;
  */
 
 import haxe.Log;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;

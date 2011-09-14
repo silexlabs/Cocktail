@@ -13,7 +13,7 @@ package cocktail.domElement.js;
 import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
-import cocktail.domElement.base.TextDOMElementBase;
+import cocktail.domElement.abstract.AbstractTextDOMElement;
 
 /**
  * This is the JavaScript implementation for the Text DOMElement
@@ -23,7 +23,7 @@ import cocktail.domElement.base.TextDOMElementBase;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextDOMElement extends TextDOMElementBase
+class TextDOMElement extends AbstractTextDOMElement
 {
 	/**
 	 * class constructor

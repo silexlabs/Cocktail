@@ -14,7 +14,7 @@ package cocktail.domElement.js;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
-import cocktail.domElement.base.DOMElementBase;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
@@ -24,7 +24,7 @@ import cocktail.geom.GeomData;
  * It manipulates the native HTML DOM
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends DOMElementBase
+class DOMElement extends AbstractDOMElement
 {
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -82,7 +82,7 @@ class DOMElement extends DOMElementBase
 	 * Adds a native HTML DOMElement (an html element) to this DOMElement native DOMElement
 	 * @param	domElement the html element to add to this
 	 */
-	override public function addChild(domElement:DOMElementBase):Void
+	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		super.addChild(domElement);
 		this._nativeElement.appendChild(domElement.nativeElement);
@@ -95,7 +95,7 @@ class DOMElement extends DOMElementBase
 	 * Removes a native HTML DOMElement (an html element) from this DOMElement native DOMElement
 	 * @param	domElement the html element to remove from this
 	 */
-	override public function removeChild(domElement:DOMElementBase):Void
+	override public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		super.removeChild(domElement);
 		this._nativeElement.removeChild(domElement.nativeElement);
