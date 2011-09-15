@@ -18,28 +18,28 @@ package keyboard;
  */
 
 import haxe.Log;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.nativeElement.NativeElementManager;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
 import cocktail.keyboard.KeyboardData;
-import cocktail.domObject.DOMObjectData;
-import cocktail.domObject.GraphicDOMObject;
+import cocktail.domElement.DOMElementData;
+import cocktail.domElement.GraphicDOMElement;
 
 
 class KeyboardTests 
 {
-	private static var rootDOMObject:DOMObject;
+	private static var rootDOMElement:DOMElement;
 	
 	public static function main()
 	{
 		
-		rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		new KeyboardTests();
 		
@@ -52,23 +52,23 @@ class KeyboardTests
 	
 	public function testKeyboard()
 	{
-		var graphicDOMObject:GraphicDOMObject = new GraphicDOMObject();
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement();
 		
-		graphicDOMObject.width  = 100;
-		graphicDOMObject.height = 100;
-		graphicDOMObject.x = 0;
-		graphicDOMObject.y = 0;
+		graphicDOMElement.width  = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 0;
+		graphicDOMElement.y = 0;
 		
-		graphicDOMObject.beginFill(monochrome( { color:0xFF0000, alpha:100 } ));
+		graphicDOMElement.beginFill(monochrome( { color:0xFF0000, alpha:100 } ));
 		
-		graphicDOMObject.drawRect(0, 0, 100, 100);
-		graphicDOMObject.endFill();
+		graphicDOMElement.drawRect(0, 0, 100, 100);
+		graphicDOMElement.endFill();
 		
 		
-		rootDOMObject.addChild(graphicDOMObject);
+		rootDOMElement.addChild(graphicDOMElement);
 		
-		graphicDOMObject.onKeyDown = onKeyDown;
-		graphicDOMObject.onKeyUp = onKeyUp;
+		graphicDOMElement.onKeyDown = onKeyDown;
+		graphicDOMElement.onKeyUp = onKeyUp;
 		
 		
 	}

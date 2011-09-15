@@ -14,21 +14,21 @@ package cocktail.resource.php;
 import haxe.Http;
 import haxe.Log;
 import php.Web;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.resource.ResourceLoader;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
  * This is the Image loader implementation for the PHP runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture by creating
  * an <img> tag and setting it's source to the url of the file to load.
- * It instantiate and returns an Image DOMObject.
+ * It instantiate and returns an Image DOMElement.
  * 
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class ImageLoader extends ResourceLoader
+class ImageLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
@@ -57,17 +57,17 @@ class ImageLoader extends ResourceLoader
 		
 		// construction of the Xml element containing the image link
 		
-		//create a DOMObject and the image container
-		var domObject:DOMObject = new ImageDOMObject(Xml.createElement('img'));
+		//create a DOMElement and the image container
+		var domElement:DOMElement = new ImageDOMElement(Xml.createElement('img'));
 		
 		// set its source to start the loading of the picture
-		domObject.getReferenceToNativeDOM().set("src", relativeUrl);
+		domElement.getReferenceToNativeDOM().set("src", relativeUrl);
 		
 		// in PHP, the image content is not loaded and only the <img src="..."> string is built
 		// so parent's method is not called
 		//super.doLoad(absoluteUrl);
 		
 		// onLoadComplete method is called directly
-		onLoadComplete(domObject);
+		onLoadComplete(domElement);
 	}
 }

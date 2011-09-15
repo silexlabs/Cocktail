@@ -14,8 +14,8 @@ import flash.display.BitmapData;
 import flash.ui.MouseCursorData;
 import flash.ui.Mouse;
 import flash.Vector;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.mouse.base.MouseCursorBase;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.mouse.abstract.AbstractMouseCursor;
 import cocktail.geom.GeomData;
 import cocktail.mouse.MouseData;
 
@@ -26,7 +26,7 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class MouseCursor extends MouseCursorBase
+class MouseCursor extends AbstractMouseCursor
 {
 	/**
 	 * class constructor
@@ -44,7 +44,7 @@ class MouseCursor extends MouseCursorBase
 	/**
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	override private function setBitmapCursor(imageDOMObject:ImageDOMObject, hotSpot:Point):Void
+	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
 	{
 		//init the hotSpot if null
 		//to the top left of the cursor
@@ -53,9 +53,9 @@ class MouseCursor extends MouseCursorBase
 			hotSpot = { x:0.0, y:0.0 };
 		}
 		
-		//draw the image dom object onto a 32x32 transparent bitmap data
+		//draw the image dom element onto a 32x32 transparent bitmap data
 		var mouseCursorBitmapData:BitmapData = new BitmapData(32, 32, true, 0x00FFFFFF);
-		mouseCursorBitmapData.draw(imageDOMObject.nativeReference);
+		mouseCursorBitmapData.draw(imageDOMElement.nativeElement);
 		
 		//set the flash mouse cursor data with the drawn bitmap data
 		//and the cursor hot spot
@@ -105,8 +105,11 @@ class MouseCursor extends MouseCursorBase
 		
 		switch value
 		{
-			case hand:
-				Mouse.cursor = flash.ui.MouseCursor.HAND;
+			case pointer:
+				Mouse.cursor = flash.ui.MouseCursor.BUTTON;
+				
+			case text:
+				Mouse.cursor = flash.ui.MouseCursor.IBEAM;
 		}
 	}
 	

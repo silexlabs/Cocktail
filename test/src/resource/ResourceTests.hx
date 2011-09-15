@@ -10,20 +10,23 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package resource;
 
-
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.nativeInstance.NativeInstanceManager;
  #if flash9
+
 import flash.display.Loader;
 import flash.Lib;
 import flash.system.ApplicationDomain;
 
 
 #end
-import cocktail.nativeReference.NativeReferenceManager;
-import cocktail.domObject.TextDOMObject;
-import cocktail.nativeClass.NativeClass;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.domElement.TextDOMElement;
+import cocktail.classInstance.ClassInstance;
 import haxe.Log;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.base.DOMObjectBase;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -38,13 +41,13 @@ import cocktail.resource.ResourceLoaderManager;
 class ResourceTests 
 {
 	
-	private static var rootDOMObject:DOMObject;
+	private static var rootDOMElement:DOMElement;
 	
 	public static function main()
 	{
 	
 		
-		rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new ResourceTests());
@@ -52,8 +55,8 @@ class ResourceTests
 		runner.run();
 		
 		#if php
-		// display rootDOMObject filled with all tested elements
-		untyped __call__('print_r', '<html>' + rootDOMObject.getReferenceToNativeDOM() + '</html>');
+		// display rootDOMElement filled with all tested elements
+		untyped __call__('print_r', '<html>' + rootDOMElement.getReferenceToNativeDOM() + '</html>');
 		#end
 	}
 	
@@ -90,42 +93,42 @@ class ResourceTests
 	}
 	
 	/**
-	 * Test the loading of a container DOMObject
+	 * Test the loading of a container DOMElement
 	 */
 	public function testContainerLoad()
 	{
 		var successCallback:Dynamic->Void = Assert.createEvent(onContainerLoaded);
 		
 		#if flash9
-		var containerUrl:String = "domObjectAs3.swf";
+		var containerUrl:String = "domElementAs3.swf";
 		#elseif js
-		var containerUrl:String = "domObject.html";
+		var containerUrl:String = "domElement.html";
 		#elseif php
-		var containerUrl:String = "domObject.html";
+		var containerUrl:String = "domElement.html";
 		#end
 		
 		ResourceLoaderManager.loadContainer(containerUrl, successCallback, onContainerLoadError);
 	}
 	
 	/**
-	 * When the DOMObject has been loaded, attach it to the root DOMObject
-	 * @param	domObject the loaded DOMObject
+	 * When the DOMElement has been loaded, attach it to the root DOMElement
+	 * @param	domElement the loaded DOMElement
 	 */
-	private function onContainerLoaded(domObject:Dynamic):Void
+	private function onContainerLoaded(domElement:ContainerDOMElement):Void
 	{
-		rootDOMObject.addChild(domObject);
+		rootDOMElement.addChild(domElement);
 		#if flash9
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
-		Assert.same(domObject.getReferenceToNativeDOM().firstChild.getAttribute("id"), "loadedDOMObject");
+		Assert.same(domElement.nativeElement.firstChild.getAttribute("id"), "loadedDOMElement");
 		#elseif php
-		Assert.equals(domObject.getReferenceToNativeDOM().firstChild().get("id"), "loadedDOMObject");
-		Assert.equals(domObject.getReferenceToNativeDOM().firstChild().firstChild().toString(), "container loaded");
+		Assert.equals(domElement.nativeElement.firstChild().get("id"), "loadedDOMElement");
+		Assert.equals(domElement.nativeElement.firstChild().firstChild().toString(), "container loaded");
 		#end
 	}
 	
 	/**
-	 * Called when there is an error while loading the container DOMObject
+	 * Called when there is an error while loading the container DOMElement
 	 * @param	msg
 	 */
 	private function onContainerLoadError(msg:String):Void
@@ -154,10 +157,10 @@ class ResourceTests
 	 */
 	private function onLibraryLoaded(data:Dynamic):Void
 	{
-		var nativeInstance:NativeInstance = NativeClass.getNativeInstanceByClassName("LibrarySymbol");
+		var nativeInstance:ClassInstance = NativeInstanceManager.getClassInstanceByClassName("LibrarySymbol");
 		
 		#if flash9
-		flash.Lib.current.addChild(nativeInstance.getReferenceToNativeClassInstance());
+		flash.Lib.current.addChild(nativeInstance.getNativeInstance());
 		Assert.same(nativeInstance.getField("x"), 0);
 		#elseif js
 		Assert.same(nativeInstance.callMethod("testMethod", []), "library loaded ok !");
@@ -184,20 +187,23 @@ class ResourceTests
 		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError);
 	}
 	
-	public function onPictureLoaded(domObject:Dynamic):Void
+	public function onPictureLoaded(domElement:ImageDOMElement):Void
 	{
-		Assert.same(domObject.width, 65);
-		Assert.same(domObject.height, 65);
+		Assert.same(domElement.width, 65);
+		Assert.same(domElement.height, 65);
 		
-		rootDOMObject.addChild(domObject);
+		Assert.same(domElement.src.indexOf("testPicture.jpg") != -1, true);
+		
+		rootDOMElement.addChild(domElement);
+		
 		#if flash9
-		domObject.setX(200);
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		domElement.setX(200);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
-		Assert.same(domObject.getReferenceToNativeDOM().getAttribute("src"), "testPicture.jpg");
+		
 		#elseif php
-		Assert.same(domObject.getReferenceToNativeDOM()._nodeName, "img");
-		Assert.same(domObject.getReferenceToNativeDOM().get("src"), "testPicture.jpg");
+		Assert.same(domElement.nativeElement._nodeName, "img");
+		Assert.same(domElement.nativeElement.get("src"), "testPicture.jpg");
 		#end
 	}
 	
@@ -221,27 +227,41 @@ class ResourceTests
 		Log.trace(error);
 	}
 	
+	
+	public function testPictureLoadWithDOMElement():Void
+	{
+		var imageDOMElement:ImageDOMElement = new ImageDOMElement();
+		var successCallback:Dynamic->Void = Assert.createEvent(onPictureWithDOMElementLoaded);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, imageDOMElement);
+	}
+	
+	public function onPictureWithDOMElementLoaded(imageDOMElement:ImageDOMElement)
+	{
+		Assert.same(imageDOMElement.src.indexOf("testPicture.jpg") != -1, true);
+	}
+	
+	
 	/**
 	 * Test loading a picture without caching it
 	 */
 	public function testLoadNoCache()
 	{
 		var successCallback:Dynamic->Void = Assert.createEvent(onPictureNoCacheLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, false);
+		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, null, false);
 	}
 	
-	private function onPictureNoCacheLoaded(domObject:Dynamic):Void
+	private function onPictureNoCacheLoaded(domElement:DOMElement):Void
 	{
-		rootDOMObject.addChild(domObject);
+		rootDOMElement.addChild(domElement);
 		#if flash9
-		Assert.is(domObject.getReferenceToNativeDOM(), Loader);
+		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
-		var croppedSrc:String = domObject.getReferenceToNativeDOM().getAttribute("src");
+		var croppedSrc:String = domElement.nativeElement.getAttribute("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#elseif php
-		Assert.same(domObject.getReferenceToNativeDOM()._nodeName, "img");
-		var croppedSrc:String = domObject.getReferenceToNativeDOM().get("src");
+		Assert.same(domElement.nativeElement._nodeName, "img");
+		var croppedSrc:String = domElement.nativeElement.get("src");
 		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
 		Assert.same(croppedSrc, "testPicture.jpg");
 		#end
@@ -257,15 +277,15 @@ class ResourceTests
 	}
 	
 	/**
-	 * Called when the text domObject is created, tests if the loaded
+	 * Called when the text domElement is created, tests if the loaded
 	 * data matches the html text that loaded
 	 */
-	private function onTextLoaded(domObject:TextDOMObject)
+	private function onTextLoaded(domElement:TextDOMElement)
 	{
-		rootDOMObject.addChild(domObject);
-		Assert.equals(domObject.getText(), "<h1>This is an HTML text test</h1><p>paragraph</p><h2><b>second header</b></h2>");
+		rootDOMElement.addChild(domElement);
+		Assert.equals(domElement.getText(), "<h1>This is an HTML text test</h1><p>paragraph</p><h2><b>second header</b></h2>");
 		#if flash9
-		domObject.setY(200);
+		domElement.setY(200);
 		#end
 	}
 	

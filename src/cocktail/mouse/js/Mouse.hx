@@ -10,8 +10,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse.js;
 
-import cocktail.mouse.base.MouseBase;
-import cocktail.nativeReference.NativeReference;
+import cocktail.mouse.abstract.AbstractMouse;
+import cocktail.nativeElement.NativeElement;
 
 import cocktail.mouse.MouseData;
 
@@ -22,15 +22,15 @@ import cocktail.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Mouse extends MouseBase
+class Mouse extends AbstractMouse
 {
 	
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeReference:NativeReference) 
+	public function new(nativeElement:NativeElement) 
 	{
-		super(nativeReference);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -41,27 +41,27 @@ class Mouse extends MouseBase
 	/**
 	 * Set the listeners for native JavaScript mouse events
 	 */
-	override private function setNativeMouseListeners(nativeReference:NativeReference):Void
+	override private function setNativeMouseListeners(nativeElement:NativeElement):Void
 	{
-		nativeReference.onmousedown = onNativeMouseDown;
-		nativeReference.onmouseup = onNativeMouseUp;
-		nativeReference.onmouseover = onNativeMouseOver;
-		nativeReference.onmouseout = onNativeMouseOut;
-		nativeReference.onmousemove = onNativeMouseMove;
-		nativeReference.ondblclick = onNativeMouseDoubleClick;
+		nativeElement.onmousedown = onNativeMouseDown;
+		nativeElement.onmouseup = onNativeMouseUp;
+		nativeElement.onmouseover = onNativeMouseOver;
+		nativeElement.onmouseout = onNativeMouseOut;
+		nativeElement.onmousemove = onNativeMouseMove;
+		nativeElement.ondblclick = onNativeMouseDoubleClick;
 	}
 	
 	/**
 	 * remove the listeners for native JavaScript mouse events
 	 */
-	override private function unsetNativeMouseListeners(nativeReference:NativeReference):Void
+	override private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
 	{
-		nativeReference.onmousedown = null;
-		nativeReference.onmouseup = null;
-		nativeReference.onmouseover = null;
-		nativeReference.onmouseout = null;
-		nativeReference.onmousemove = null;
-		nativeReference.ondblclick = null;
+		nativeElement.onmousedown = null;
+		nativeElement.onmouseup = null;
+		nativeElement.onmouseover = null;
+		nativeElement.onmouseout = null;
+		nativeElement.onmousemove = null;
+		nativeElement.ondblclick = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

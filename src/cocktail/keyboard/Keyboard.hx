@@ -19,4 +19,11 @@ typedef Keyboard =  cocktail.keyboard.as3.Keyboard;
 #elseif js
 typedef Keyboard =  cocktail.keyboard.js.Keyboard;
 
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class Keyboard extends cocktail.keyboard.abstract.AbstractKeyboard{}
+
 #end
