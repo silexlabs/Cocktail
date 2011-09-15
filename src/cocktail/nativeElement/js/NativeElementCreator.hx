@@ -54,6 +54,9 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				
 			case graphic:
 				nativeElement = Lib.document.createElement("canvas");
+				
+			case custom(name):
+				nativeElement = Lib.document.createElement(name);
 		}
 		
 		return nativeElement;

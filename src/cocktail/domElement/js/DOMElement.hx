@@ -269,15 +269,15 @@ class DOMElement extends AbstractDOMElement
 	{
 		//if the z-index is outside of the children range, 
 		//set it as the last z-index of the range
-		if (value > _parent.getChildren().length - 1)
+		if (value > _parent.children.length - 1)
 		{
-			value = _parent.getChildren().length - 1;
+			value = _parent.children.length - 1;
 		}
 		
 		var nativeParent:HtmlDom = this._nativeElement.parentNode;
 		var numChildren:Int = nativeParent.childNodes.length;
 		
-		var oldIndex:Int = getZOrder();
+		var oldIndex:Int = this.zOrder;
 		var newIndex:Int = value;
 		
 		//check all the siblings of the current native DOM element,
