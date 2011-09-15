@@ -49,7 +49,7 @@ class TextLoader extends ResourceLoader
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domElement:TextDOMElement = new TextDOMElement(NativeElementManager.createNativeElement(neutral));
+		var domElement:TextDOMElement = new TextDOMElement(NativeElementManager.createNativeElement(text));
 		domElement.text = data;
 		
 		// calls initial callback
