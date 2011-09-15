@@ -146,12 +146,12 @@ class DOMElement extends AbstractDOMElement
 	 * they are incremented
 	 * @param	value the z index to set
 	 */
-	override public function setZOrder(value:Int) 
+	override public function setZIndex(value:Int) 
 	{
 		// TODO
 	}
 	
-	override public function getZOrder():Int 
+	override public function getZIndex():Int 
 	{
 		// TODO
 		return 0;

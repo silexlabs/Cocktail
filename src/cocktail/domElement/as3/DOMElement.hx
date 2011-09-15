@@ -188,10 +188,10 @@ class DOMElement extends AbstractDOMElement
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z order in the publication
+	// Setter/Getter to manipulate a native DOMElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	override public function setZOrder(value:Int):Int
+	override public function setZIndex(value:Int):Int
 	{
 		//if the value is outside of the children range, set it to the 
 		//last children range
@@ -208,7 +208,7 @@ class DOMElement extends AbstractDOMElement
 		return value;
 	}
 	
-	override public function getZOrder():Int 
+	override public function getZIndex():Int 
 	{
 		//retrieve the parent Display object, and use it to retrieve the current
 		//child index
