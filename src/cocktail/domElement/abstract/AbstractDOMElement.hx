@@ -180,7 +180,7 @@ class AbstractDOMElement
 	/**
 	 * get/set translation x
 	 */
-	public var translationX(getTranslationX, setTranslationY):Float;
+	public var translationX(getTranslationX, setTranslationX):Float;
 	
 	/**
 	 * get/set translation y
@@ -484,10 +484,10 @@ class AbstractDOMElement
 	 */
 	public function rotate(angle:Int, transformationOrigin:TransformationOriginValue = null):Void
 	{
-		//default transformation center is top left
+		//if no transformation origin, get the currently stored one
 		if (transformationOrigin == null)
 		{
-			transformationOrigin = constant(left, top);
+			transformationOrigin = this.transformationOrigin;
 		}
 		
 		//use the matrix API, retrieve the pivot point
@@ -505,10 +505,10 @@ class AbstractDOMElement
 	 */
 	public function scale(scaleX:Float, scaleY:Float, transformationOrigin:TransformationOriginValue = null):Void
 	{
-		//default transformation center is top left
+		//if no transformation origin, get the currently stored one
 		if (transformationOrigin == null)
 		{
-			transformationOrigin = constant(left, top);
+			transformationOrigin = this.transformationOrigin;
 		}
 		
 		//use the matrix API, retrieve the scale center
@@ -527,10 +527,10 @@ class AbstractDOMElement
 	 */
 	public function skew(skewX:Float, skewY:Float, transformationOrigin:TransformationOriginValue = null):Void
 	{
-		//default transformation center is top left
+		//if no transformation origin, get the currently stored one
 		if (transformationOrigin == null)
 		{
-			transformationOrigin = constant(left, top);
+			transformationOrigin = this.transformationOrigin;
 		}
 		
 		//use the matrix API, retrieve the skew center
