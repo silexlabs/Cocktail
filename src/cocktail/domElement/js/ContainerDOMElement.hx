@@ -11,6 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import js.Lib;
 import js.Dom;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
@@ -47,28 +49,28 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		//and replace the current node, as the nodeName attribute is read only
 		
 		//store the inner html of the current node, to set it later on the new node
-		var currentNativeDOMContent:Dynamic = this._nativeElement.innerHTML;
+		var currentNativeElementContent:Dynamic = this._nativeElement.innerHTML;
 		
 		//store all the attributes of the current node to set them on the new node
-		 var currentNativeDOMAttributes:Array<Dynamic> = untyped this._nativeElement.attributes;
+		 var currentNativeElementAttributes:Array<Dynamic> = untyped this._nativeElement.attributes;
 		
 		//create a new node with the right node name
-		var newReferenceToNativeDOM:Dynamic = Lib.document.createElement(semantic);
+		var newNativeElement:NativeElement = NativeElementManager.createNativeElement(custom(semantic));
 		
 		//set it's inner html to the current node inner html
-		newReferenceToNativeDOM.innerHTML = currentNativeDOMContent;
+		newNativeElement.innerHTML = currentNativeElementContent;
 		
 		//paste all the attributes of the current node on the new node
-		for (i in 0...currentNativeDOMAttributes.length)
+		for (i in 0...currentNativeElementAttributes.length)
 		{
-			newReferenceToNativeDOM.setAttribute(currentNativeDOMAttributes[i].nodeName, currentNativeDOMAttributes[i].nodeValue);
+			newNativeElement.setAttribute(currentNativeElementAttributes[i].nodeName, currentNativeElementAttributes[i].nodeValue);
 		}
 		
 		//replace the current node with the new node
-		this._nativeElement.parentNode.replaceChild(newReferenceToNativeDOM, _nativeElement);
+		this._nativeElement.parentNode.replaceChild(newNativeElement, _nativeElement);
 		
 		//store a reference to the new node
-		this._nativeElement = newReferenceToNativeDOM;
+		this._nativeElement = newNativeElement;
 		
 		return semantic;
 	}
