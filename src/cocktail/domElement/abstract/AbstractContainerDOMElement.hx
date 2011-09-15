@@ -29,6 +29,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * This doesn't apply to Flash
 	 */
 	private var _semantic:String;
+	public var semantic(getSemantic, setSemantic):String;
 	
 	/**
 	 * class constructor
@@ -42,9 +43,10 @@ class AbstractContainerDOMElement extends DOMElement
 	 * Set the semantic name of the first native node
 	 * @param	semantic an HTML tag name (div, nav, header...)
 	 */
-	public function setSemantic(semantic:String):Void
+	public function setSemantic(semantic:String):String
 	{
 		this._semantic = semantic;
+		return this._semantic;
 	}
 	
 	/**

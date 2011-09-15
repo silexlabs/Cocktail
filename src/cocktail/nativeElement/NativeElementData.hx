@@ -46,5 +46,12 @@ import cocktail.nativeElement.NativeElement;
 	  * Image type such as an HTML img tag
 	  */
 	 image;
+	 
+	 /**
+	  * Can be any other type of native element.
+	  * The name can be used for instance in HTML
+	  * as a tag name
+	  */
+	 custom(name:String);
  }
  

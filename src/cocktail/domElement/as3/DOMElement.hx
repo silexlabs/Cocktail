@@ -160,11 +160,8 @@ class DOMElement extends AbstractDOMElement
 	
 	override public function setX(value:Int):Int 
 	{
-		Log.trace("set x");
 		super.setX(value);
-		Log.trace(this._nativeElement);
 		this._nativeElement.x = value;
-		Log.trace("set x 3 ");
 		return this._x;
 	}
 	
@@ -198,9 +195,9 @@ class DOMElement extends AbstractDOMElement
 	{
 		//if the value is outside of the children range, set it to the 
 		//last children range
-		if (value > _parent.getChildren().length - 1)
+		if (value > _parent.children.length - 1)
 		{
-			value = _parent.getChildren().length - 1;
+			value = _parent.children.length - 1;
 		}
 		
 		//retrieve the parent Display Object, and use it to set
