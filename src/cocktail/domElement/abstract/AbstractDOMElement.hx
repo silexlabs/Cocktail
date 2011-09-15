@@ -213,9 +213,9 @@ class AbstractDOMElement
 	/**
 	 * The z-order / z-index of this DOM Object, relative to
 	 * its parent (the first child of a DOMElement always has
-	 * a 0 z-order)
+	 * a 0 z-index)
 	 */
-	public var zOrder(getZOrder, setZOrder):Int;
+	public var zIndex(getZIndex, setZIndex):Int;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -852,15 +852,15 @@ class AbstractDOMElement
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z order in the publication
+	// Setter/Getter to manipulate a native DOMElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setZOrder(value:Int):Int 
+	public function setZIndex(value:Int):Int 
 	{
 		return value;
 	}
 	
-	public function getZOrder():Int 
+	public function getZIndex():Int 
 	{
 		return 0;
 	}
