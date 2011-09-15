@@ -13,7 +13,7 @@ package cocktail.resource.php;
 
 
 import php.Web;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 
 /**
  * This is the implementation of the library loader for the PHP runtime. A library in PHP
@@ -22,7 +22,7 @@ import cocktail.resource.ResourceLoader;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class LibraryLoader extends ResourceLoader
+class LibraryLoader extends AbstractResourceLoader
 {
 
 	/**

@@ -21,7 +21,7 @@ import haxe.Log;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -32,7 +32,7 @@ import cocktail.resource.ResourceData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends ResourceLoader
+class ImageLoader extends AbstractResourceLoader
 {
 	/**
 	 * The native flash skin loader

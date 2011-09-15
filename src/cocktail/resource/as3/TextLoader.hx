@@ -16,7 +16,7 @@ import cocktail.nativeElement.NativeElementData;
 import flash.display.Sprite;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextDOMElement;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -28,7 +28,7 @@ import cocktail.resource.ResourceData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextLoader extends ResourceLoader
+class TextLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor

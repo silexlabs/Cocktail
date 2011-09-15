@@ -259,13 +259,13 @@ class DOMElement extends AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When setting the z-order on an HTML element,
+	 * When setting the z-index on an HTML element,
 	 * all the siblings z-indexes must be updated. If they
 	 * are superior or equal to the z-index set on the current element,
 	 * they are incremented
 	 * @param	value the z index to set
 	 */
-	override public function setZOrder(value:Int):Int 
+	override public function setZIndex(value:Int):Int 
 	{
 		//if the z-index is outside of the children range, 
 		//set it as the last z-index of the range
@@ -277,7 +277,7 @@ class DOMElement extends AbstractDOMElement
 		var nativeParent:HtmlDom = this._nativeElement.parentNode;
 		var numChildren:Int = nativeParent.childNodes.length;
 		
-		var oldIndex:Int = this.zOrder;
+		var oldIndex:Int = this.zIndex;
 		var newIndex:Int = value;
 		
 		//check all the siblings of the current native DOM element,
@@ -325,7 +325,7 @@ class DOMElement extends AbstractDOMElement
 		return value;
 	}
 	
-	override public function getZOrder():Int 
+	override public function getZIndex():Int 
 	{
 		return this._nativeElement.style.zIndex;
 	}

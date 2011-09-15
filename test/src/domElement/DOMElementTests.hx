@@ -103,7 +103,7 @@ class DOMElementTests
 		Assert.equals(childDOMElement.getHeight(), 100);
 		Assert.equals(childDOMElement.getX(), 0);
 		Assert.equals(childDOMElement.getY(), 0);
-		Assert.equals(childDOMElement.getZOrder(), 0);
+		Assert.equals(childDOMElement.getZIndex(), 0);
 		
 		//set the child height of the DOMElement and test the returned height
 		childDOMElement.setHeight(200);
@@ -160,7 +160,7 @@ class DOMElementTests
 		Assert.equals(childDOMElement.getHeight(), 200);
 		Assert.equals(childDOMElement.getX(), 100);
 		Assert.equals(childDOMElement.getY(), 50);
-		Assert.equals(childDOMElement.getZOrder(), 0);
+		Assert.equals(childDOMElement.getZIndex(), 0);
 		
 		
 		//check the parent of the child DOMElement
@@ -213,7 +213,7 @@ class DOMElementTests
 		Assert.equals(childDOMElement.getHeight(), 200);
 		Assert.equals(childDOMElement.getX(), 100);
 		Assert.equals(childDOMElement.getY(), 50);
-		Assert.equals(childDOMElement.getZOrder(), 0);
+		Assert.equals(childDOMElement.getZIndex(), 0);
 		
 		//check the parent of the child DOMElement
 		//Assert.same(childDOMElement.getParent(), parentDOMElement);
@@ -410,16 +410,16 @@ class DOMElementTests
 		parentDOMElement.addChild(childDOMElement3);
 		
 		//check the default z-order set when the domElement is tested
-		Assert.equals(1, childDOMElement2.getZOrder());
+		Assert.equals(1, childDOMElement2.getZIndex());
 		
 		//check z-order manipulation and coherence with another
 		//domElement z-index
-		childDOMElement2.setZOrder(0);
-		Assert.equals(1, childDOMElement1.getZOrder());
+		childDOMElement2.setZIndex(0);
+		Assert.equals(1, childDOMElement1.getZIndex());
 		
 		//check out of range z-index
-		childDOMElement1.setZOrder(999);
-		Assert.equals(2, childDOMElement1.getZOrder());
+		childDOMElement1.setZIndex(999);
+		Assert.equals(2, childDOMElement1.getZIndex());
 		
 	}
 	

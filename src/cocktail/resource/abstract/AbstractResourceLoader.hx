@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.resource;
+package cocktail.resource.abstract;
 import cocktail.domElement.DOMElement;
 import haxe.Http;
 import haxe.Log;
@@ -19,7 +19,7 @@ import haxe.Log;
  * class which will be implemented for each file types.
  * @author Yannick DOMINGUEZ
  */
-class ResourceLoader 
+class AbstractResourceLoader 
 {
 
 	/**
