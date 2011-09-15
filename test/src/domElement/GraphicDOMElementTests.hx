@@ -330,7 +330,7 @@ class GraphicDOMElementTests
 		
 		rootDOMElement.addChild(graphicDOMElement);
 		
-		graphicDOMElement.zOrder = 5;
+		graphicDOMElement.zIndex = 5;
 		Assert.equals(1, 1);
 	}
 	
