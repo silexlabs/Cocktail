@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.resource.js;
 
 
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import js.Dom.HtmlDom;
 import js.Lib;
 
@@ -21,7 +21,7 @@ import js.Lib;
  * is a .js file. This class is in charge of adding a script tag to the HTML DOM with the new script to add
  * @author Yannick DOMINGUEZ
  */
-class LibraryLoader extends ResourceLoader
+class LibraryLoader extends AbstractResourceLoader
 {
 
 	/**

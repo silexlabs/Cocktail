@@ -19,7 +19,7 @@ import js.Lib;
 import js.Dom.HtmlDom;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -29,7 +29,7 @@ import cocktail.resource.ResourceData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ContainerLoader extends ResourceLoader
+class ContainerLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
