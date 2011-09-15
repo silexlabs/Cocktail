@@ -786,7 +786,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field
 	 * @param	propertyValue the new value of the field
 	 */
-	public function setAttribute(propertyName:String, propertyValue:Dynamic):Void
+	public function setField(propertyName:String, propertyValue:Dynamic):Void
 	{
 		Reflect.setField(this._nativeElement, propertyName, propertyValue);
 	}
@@ -796,7 +796,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
-	public function getAttribute(propertyName:String):Dynamic
+	public function getField(propertyName:String):Dynamic
 	{
 		return Reflect.field(this._nativeElement, propertyName);
 	}
