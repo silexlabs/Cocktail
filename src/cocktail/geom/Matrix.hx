@@ -38,7 +38,7 @@ class Matrix
 	 */
 	public function new(matrixData:MatrixData = null) 
 	{
-		setMatrixData(matrixData);
+		this.matrixData = matrixData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ class Matrix
 	{
 		//get a ref to current and target matrix data
 		var currentMatrixData:MatrixData = _matrixData;
-		var targetMatrixData:MatrixData = matrix.getMatrixData();
+		var targetMatrixData:MatrixData = matrix.matrixData;
 		
 		//multiply the two matrix data values
 		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
@@ -127,7 +127,7 @@ class Matrix
 		
 		
 		//then set it as this matrix data
-		setMatrixData(concatenatedMatrixData);
+		this.matrixData = concatenatedMatrixData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

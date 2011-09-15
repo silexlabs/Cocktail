@@ -253,7 +253,7 @@ class AbstractDOMElement
 	 */
 	public function addChild(domElement:AbstractDOMElement):Void
 	{
-		domElement.setParent(this);
+		domElement.parent = this;
 		_children.push(domElement);
 	}
 	
@@ -265,7 +265,7 @@ class AbstractDOMElement
 	 */
 	public function removeChild(domElement:AbstractDOMElement):Void
 	{
-		domElement.setParent(null);
+		domElement.parent = null;
 		_children.remove(domElement);
 	}
 	
@@ -388,7 +388,7 @@ class AbstractDOMElement
 	public function resetTransformations():Void
 	{
 		_matrix.identity();
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -457,7 +457,7 @@ class AbstractDOMElement
 		_matrix.translate(x, y);
 		
 		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -468,7 +468,7 @@ class AbstractDOMElement
 	public function setTranslationX(translationX:Float):Void
 	{
 		_matrix.setTranslationX(translationX);
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -488,7 +488,7 @@ class AbstractDOMElement
 	public function setTranslationY(translationY:Float):Void
 	{
 		_matrix.setTranslationY(translationY);
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -520,7 +520,7 @@ class AbstractDOMElement
 		//use the matrix API, retrieve the pivot point
 		_matrix.rotate(angle, getTransformationOriginPoint(transformationOrigin));
 		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -539,7 +539,7 @@ class AbstractDOMElement
 		}
 		
 		_matrix.setRotation(angle, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -573,7 +573,7 @@ class AbstractDOMElement
 		_matrix.scale(scaleX, scaleY, getTransformationOriginPoint(transformationOrigin));
 		
 		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -590,7 +590,7 @@ class AbstractDOMElement
 		}
 		
 		_matrix.setScaleX(scaleX, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -615,7 +615,7 @@ class AbstractDOMElement
 		}
 		
 		_matrix.setScaleY(scaleY, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -649,7 +649,7 @@ class AbstractDOMElement
 		_matrix.skew(skewX, skewY, getTransformationOriginPoint(transformationOrigin));
 		
 		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

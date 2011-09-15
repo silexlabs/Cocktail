@@ -48,7 +48,7 @@ class TextLoader extends ResourceLoader
 	override private function onLoadComplete(data:Dynamic):Void
 	{
 		var domElement:TextDOMElement = new TextDOMElement(new Sprite());
-		domElement.setText(data);
+		domElement.text = data;
 		
 		_onLoadCompleteCallback(domElement);
 	}
