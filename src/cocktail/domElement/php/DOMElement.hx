@@ -62,7 +62,7 @@ class DOMElement extends AbstractDOMElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
-	override public function getAttribute(propertyName:String):Dynamic
+	override public function getField(propertyName:String):Dynamic
 	{
 		//return Reflect.field(this._nativeElement, propertyName);
 		return this._nativeElement.get(propertyName);
