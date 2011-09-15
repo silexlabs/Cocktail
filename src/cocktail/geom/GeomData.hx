@@ -69,8 +69,8 @@ package cocktail.geom;
 	 * It can be specified by a constant, representing a point (top-left, center...) 
 	 * or directly by a point (in px).
 	 */
-	enum TransformationOriginValue {
-		constant(transformationOriginX:TransformationOriginXValue, transformationOriginY:TransformationOriginYValue);
+	enum RegistrationPointValue {
+		constant(registrationPointX:RegistrationPointXValue, registrationPointY:RegistrationPointYValue);
 		point(point:Point);
 	}
 	
@@ -78,7 +78,7 @@ package cocktail.geom;
 	 * The different values for the transformation origin
 	 * along the x axis
 	 */
-	enum TransformationOriginXValue {
+	enum RegistrationPointXValue {
 		left;
 		center;
 		right;
@@ -88,7 +88,7 @@ package cocktail.geom;
 	 * The different values for the transformation origin
 	 * along the y axis
 	 */
-	enum TransformationOriginYValue {
+	enum RegistrationPointYValue {
 		top;
 		middle;
 		bottom;

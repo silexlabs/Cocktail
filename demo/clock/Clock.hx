@@ -117,9 +117,9 @@ class Clock
 		}
 		
 		//set the pivot point for each needle
-		_secondNeedle.transformationOrigin = point(_secondNeedleRotationCenter);
-		_minuteNeedle.transformationOrigin = constant(center, bottom);
-		_hourNeedle.transformationOrigin = constant(center, bottom);
+		_secondNeedle.registrationPoint = point(_secondNeedleRotationCenter);
+		_minuteNeedle.registrationPoint = constant(center, bottom);
+		_hourNeedle.registrationPoint = constant(center, bottom);
 		
 		//move all the needles and the foreground to the center
 		_secondNeedle.translate(_clockBackground.width / 2 - _secondNeedle.width /2, (_clockBackground.height / 2 - _secondNeedle.height + secondNeedleOffset));
