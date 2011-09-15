@@ -18,7 +18,7 @@ import js.Lib;
 import js.Dom.HtmlDom;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 import cocktail.nativeElement.NativeElementData;
 
@@ -29,7 +29,7 @@ import cocktail.nativeElement.NativeElementData;
  * It instantiate and returns an Image DOMElement.
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends ResourceLoader
+class ImageLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor

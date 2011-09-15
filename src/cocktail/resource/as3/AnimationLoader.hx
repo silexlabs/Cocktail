@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.as3;
 
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 
 /**
  * This is the Animation loader implementation for the Flash runtime. It is used to 
@@ -21,7 +21,7 @@ import cocktail.resource.ResourceLoader;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AnimationLoader extends ResourceLoader
+class AnimationLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
