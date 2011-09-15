@@ -202,12 +202,14 @@ class Ski
       mScoreText = new TextDOMElement();
       mScoreText.x = 10;
       mScoreText.y = 10;
+	  mScoreText.width = 300;
 
       rootDOMElement.addChild(mScoreText);
 
       mTopScoreText = new TextDOMElement();
-      mTopScoreText.x = 100;
+      mTopScoreText.x = 300;
       mTopScoreText.y = 10;
+	  mTopScoreText.width = 300;
 	  
       rootDOMElement.addChild(mTopScoreText);
 
