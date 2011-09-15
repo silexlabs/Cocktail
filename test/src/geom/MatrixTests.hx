@@ -58,10 +58,10 @@ class MatrixTests
 		
 		//init the test dom element
 		
-		domElement.setWidth(200);
-		domElement.setHeight(100);
-		domElement.setX(0);
-		domElement.setY(0);
+		domElement.width = 200;
+		domElement.height = 100;
+		domElement.x = 0;
+		domElement.y = 0;
 		
 		var gradientStops:Array<GradientStopData> = [];
 		gradientStops.push( { colorStop: { color:Std.parseInt("0xFF0000"), alpha:100 }, ratio:0 } );
@@ -100,7 +100,7 @@ class MatrixTests
 		
 		domElement.rotate(270, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getRotation(), 270);
+		Assert.equals(domElement.matrix.getRotation(), 270);
 		
 		
 		//test x scale
@@ -137,8 +137,8 @@ class MatrixTests
 		
 		domElement.translate(20, 30);
 		
-		Assert.equals(domElement.getMatrix().getTranslationX(), 20);
-		Assert.equals(domElement.getMatrix().getTranslationY(), 30);
+		Assert.equals(domElement.matrix.getTranslationX(), 20);
+		Assert.equals(domElement.matrix.getTranslationY(), 30);
 		
 		
 		//test skew
@@ -154,42 +154,44 @@ class MatrixTests
 		
 		domElement.resetTransformations();
 		
-		domElement.setRotation(45, constant(center, middle));
-		domElement.setRotation(45, constant(center, middle));
-		domElement.setRotation(20, constant(center, middle));
+		domElement.transformationOrigin = constant(center, middle);
 		
-		Assert.equals(domElement.getRotation(), 20);
+		domElement.rotation = 45;
+		domElement.rotation = 45;
+		domElement.rotation = 20;
+		
+		Assert.equals(domElement.rotation, 20);
 		
 		domElement.resetTransformations();
 		
 		//test absolut scale setting
 		
-		domElement.setScaleX(2, constant(center, middle));
-		domElement.setScaleX(2, constant(center, middle));
-		domElement.setScaleX(2, constant(center, middle));
+		domElement.scaleX = 2;
+		domElement.scaleX = 2;
+		domElement.scaleX = 2;
 		
-		domElement.setScaleY(3, constant(center, middle));
-		domElement.setScaleY(3, constant(center, middle));
-		domElement.setScaleY(3, constant(center, middle));
+		domElement.scaleY = 3;
+		domElement.scaleY = 3;
+		domElement.scaleY = 3;
 		
 		
-		Assert.equals(domElement.getScaleX(), 2);
-		Assert.equals(domElement.getScaleY(), 3);
+		Assert.equals(domElement.scaleX, 2);
+		Assert.equals(domElement.scaleY, 3);
 		
 		domElement.resetTransformations();
 		
 		//test absolut translation setting
 		
-		domElement.setTranslationX(500);
-		domElement.setTranslationX(500);
-		domElement.setTranslationX(500);
+		domElement.translationX = 500;
+		domElement.translationX = 500;
+		domElement.translationX = 500;
 		
-		domElement.setTranslationY(20);
-		domElement.setTranslationY(20);
-		domElement.setTranslationY(20);
+		domElement.translationY = 20;
+		domElement.translationY = 20;
+		domElement.translationY = 20;
 		
-		Assert.equals(domElement.getTranslationX(), 500);
-		Assert.equals(domElement.getTranslationY(), 20);
+		Assert.equals(domElement.translationX, 500);
+		Assert.equals(domElement.translationY, 20);
 		
 		
 	}
