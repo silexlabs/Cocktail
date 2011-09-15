@@ -11,6 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.as3;
 
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import flash.display.Sprite;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextDOMElement;
@@ -47,7 +49,7 @@ class TextLoader extends ResourceLoader
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domElement:TextDOMElement = new TextDOMElement(new Sprite());
+		var domElement:TextDOMElement = new TextDOMElement(NativeElementManager.createNativeElement(text));
 		domElement.text = data;
 		
 		_onLoadCompleteCallback(domElement);
