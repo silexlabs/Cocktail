@@ -1,14 +1,17 @@
 package ;
 
+import cocktail.domElement.ImageDOMElement;
 import haxe.Log;
 import haxe.Timer;
-import cocktail.domObject.GraphicDOMObject;
-import cocktail.domObject.TextDOMObject;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObjectData;
+import cocktail.domElement.GraphicDOMElement;
+import cocktail.domElement.TextDOMElement;
+import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
-import cocktail.domObject.DOMObject;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.resource.ResourceLoaderManager;
+
 
 /**
  * Display an "analogue" and numeric clock updated each seconds
@@ -19,53 +22,119 @@ class Clock
 	/**
 	 * the background of the analogue clock
 	 */
-	private var _clockBackground:GraphicDOMObject;
+	private var _clockBackground:ImageDOMElement;
+	
+	/**
+	 * the foreground of the analogue clock
+	 */
+	private var _clockForeGround:ImageDOMElement;
 	
 	/**
 	 * the second needle of the clock
 	 */
-	private var _clockSeconds:GraphicDOMObject;
+	private var _secondNeedle:ImageDOMElement;
+	
+	/**
+	 * the minute needle of the clock
+	 */
+	private var _minuteNeedle:ImageDOMElement;
+	
+	/**
+	 * the hour needle of the clock
+	 */
+	private var _hourNeedle:ImageDOMElement;
 	
 	/**
 	 * the numeric clock 
 	 */
-	private var _clockDisplay:TextDOMObject;
-	
-	private static var rootDOMObject:DOMObject;
+	private var _clockDisplay:TextDOMElement;
 	
 	/**
-	 * init the root dom object of the publication 
+	 * count the loading of assets
+	 */
+	private var _loadedAssetsCounter:Int;
+	
+	/**
+	 * the center of the rotation for the second nedle
+	 * as this needle goes further than the clock half
+	 */
+	private var _secondNeedleRotationCenter:Point;
+	
+	
+	/**
+	 * The root of the dom (stage in flash, body in html)
+	 */
+	private static var rootDOMElement:DOMElement;
+	
+	/**
+	 * init the root dom element of the publication 
 	 */
 	public static function main()
 	{
-		rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		//ibnstantiate the clock class
 		var cl:Clock = new Clock();
 	}
 	
 	/**
-	 * draw/instantiate all the clock parts, set
-	 * them up and start the clock update  
+	 * starts the loading of all the clocks parts
 	 */
 	public function new() 
 	{
-		_clockBackground = getClockBackground();
-		_clockSeconds = getClockSeconds();
-		_clockDisplay = new TextDOMObject();
+		_loadedAssetsCounter = 0;
 		
-		_clockSeconds.translate(200.0, 0);
+		ResourceLoaderManager.loadImage("assets/second_needle.png", onSecondNeedleLoaded, function(err){});
+		ResourceLoaderManager.loadImage("assets/hour_needle.png", onHourNeedleLoaded, function(err){});
+		ResourceLoaderManager.loadImage("assets/minute_needle.png", onMinuteNeedleLoaded, function(err){});
+		ResourceLoaderManager.loadImage("assets/clock_background.png", onClockBackgroundLoaded, function(err){});
+		ResourceLoaderManager.loadImage("assets/clock_foreground.png", onClockForegroundLoaded, function(err){});
+	}
+	
+	/**
+	 * Called once all the clock's assets
+	 * are loaded
+	 */
+	private function init()
+	{
+		//init the numeric hour display
+		_clockDisplay = new TextDOMElement();
 		
-		_clockDisplay.y = 400;
+		//ad all dom elements to the DOM
+		rootDOMElement.addChild(_clockBackground);
+		rootDOMElement.addChild(_secondNeedle);
+		rootDOMElement.addChild(_minuteNeedle);
+		rootDOMElement.addChild(_hourNeedle);
+		rootDOMElement.addChild(_clockForeGround);
+		rootDOMElement.addChild(_clockDisplay);
+		
+		//prepare the rotation center of the second needle
+		var secondNeedleOffset:Float = 15.0;
+		
+		_secondNeedleRotationCenter = {
+			x:_secondNeedle.width / 2,
+			y:_secondNeedle.height - secondNeedleOffset
+		}
+		
+		//set the pivot point for each needle
+		_secondNeedle.registrationPoint = point(_secondNeedleRotationCenter);
+		_minuteNeedle.registrationPoint = constant(center, bottom);
+		_hourNeedle.registrationPoint = constant(center, bottom);
+		
+		//move all the needles and the foreground to the center
+		_secondNeedle.translate(_clockBackground.width / 2 - _secondNeedle.width /2, (_clockBackground.height / 2 - _secondNeedle.height + secondNeedleOffset));
+		_minuteNeedle.translate(_clockBackground.width / 2 - _minuteNeedle.width / 2, (_clockBackground.height / 2 - _minuteNeedle.height ));
+		_hourNeedle.translate(_clockBackground.width / 2 - _hourNeedle.width / 2, (_clockBackground.height / 2 - _hourNeedle.height));
+		_clockForeGround.translate(_clockBackground.width / 2 - _clockForeGround.width / 2, (_clockBackground.height / 2 - _clockForeGround.height / 2));
+		
+		//set up the text display
 		_clockDisplay.width = 300;
-		_clockDisplay.height = 300;
+		_clockDisplay.y = _clockBackground.height;
 		
-		rootDOMObject.addChild(_clockBackground);
-		rootDOMObject.addChild(_clockSeconds);
-		rootDOMObject.addChild(_clockDisplay);
+		//update the needle position and the text display with the current time
+		//and enter a loop, refreshing every second
+		updateTime();
 		
-		
-		Timer.delay(updateTime, 1000);
 		
 	}
 	
@@ -76,72 +145,59 @@ class Clock
 	private function updateTime():Void
 	{
 		_clockDisplay.text = Date.now().toString();
-		_clockSeconds.setRotation(Math.round(Date.now().getSeconds() * 6), constant(center, bottom));
+		
+		_secondNeedle.rotation = Math.round(Date.now().getSeconds() * 6);
+		_minuteNeedle.rotation = Math.round(Date.now().getMinutes() * 6);
+		_hourNeedle.rotation = Math.round(Date.now().getHours() * (360/12));
 		
 		Timer.delay(updateTime, 1000);
 	}
 	
-	/**
-	 * draw and return the clock background
-	 */
-	private function getClockBackground():GraphicDOMObject
-	{
-		var clockBackground:GraphicDOMObject = new GraphicDOMObject();
-		
-		clockBackground.width = 400;
-		clockBackground.height = 400;
-		
-		var gradientStops:Array<GradientStopData> = [];
-		gradientStops.push( { colorStop: { color:Std.parseInt("0xDDDDDD"), alpha:100 }, ratio:0 } );
-		gradientStops.push( { colorStop: { color:Std.parseInt("0xAAAAAA"), alpha:100 }, ratio:100 } );
-		
-		var gradientStyle:GradientStyleData = {
-			gradientType:linear,
-			gradientStops:gradientStops,
-			rotation:90		}
+
 	
-		var lineStyle:LineStyleValue = LineStyleValue.none;
-		
-		var fillStyle:FillStyleValue = gradient(gradientStyle);
-		
-		clockBackground.beginFill(fillStyle, lineStyle);
-		
-		clockBackground.drawEllipse(0, 0, 400, 400);
-		clockBackground.endFill();
-		
-		return clockBackground;
+	/////////////////////////////////////////////
+	// ASSET LOADING CALLBACK
+	// Call the init method once all assets are loaded
+	////////////////////////////////////////////
+	
+	private function onHourNeedleLoaded(imageDOMElement:ImageDOMElement):Void
+	{
+		_hourNeedle = imageDOMElement;
+		checkLoadedAssets();
 	}
 	
-	/**
-	 * draw and return the clock seconds needle
-	 */
-	private function getClockSeconds():GraphicDOMObject
+	private function onMinuteNeedleLoaded(imageDOMElement:ImageDOMElement):Void
 	{
-		var clockSeconds:GraphicDOMObject = new GraphicDOMObject();
-		
-		clockSeconds.width = 5;
-		clockSeconds.height = 200;
-		
-		var colorStop:ColorStopData = { color:Std.parseInt("0x000000") , alpha:100 };
-		
-		var fillStyle:FillStyleValue = monochrome(colorStop);
-		
-		var lineStyle:LineStyleValue = LineStyleValue.none;
-		
-		clockSeconds.beginFill(fillStyle, lineStyle);
-		
-		var cornerRadiuses:CornerRadiusData = {
-			tlCornerRadius:3,
-			trCornerRadius:3,
-			blCornerRadius:0,
-			brCornerRadius:0
+		_minuteNeedle = imageDOMElement;
+		checkLoadedAssets();
+	}
+	
+	private function onSecondNeedleLoaded(imageDOMElement:ImageDOMElement):Void
+	{
+		_secondNeedle = imageDOMElement;
+		checkLoadedAssets();
+	}
+	
+	private function onClockBackgroundLoaded(imageDOMElement:ImageDOMElement):Void
+	{
+		_clockBackground = imageDOMElement;
+		checkLoadedAssets();
+	}
+	
+	private function onClockForegroundLoaded(imageDOMElement:ImageDOMElement):Void
+	{
+		_clockForeGround = imageDOMElement;
+		checkLoadedAssets();
+	}
+	
+	private function checkLoadedAssets()
+	{
+		_loadedAssetsCounter++;
+		if (_loadedAssetsCounter == 5)
+		{
+			init();
 		}
-		
-		
-		clockSeconds.drawRect(0, 0, 5, 200, cornerRadiuses);
-		clockSeconds.endFill();
-		
-		return clockSeconds;
 	}
+	
 	
 }

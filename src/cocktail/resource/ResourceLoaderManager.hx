@@ -11,12 +11,13 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
 
+import cocktail.resource.abstract.AbstractResourceLoader;
 import haxe.Log;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.domObject.js.AnimationDOMObject;
-import cocktail.domObject.TextDOMObject;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.domElement.js.AnimationDOMElement;
+import cocktail.domElement.TextDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
@@ -42,6 +43,14 @@ import cocktail.resource.php.TextLoader;
 import cocktail.resource.php.ContainerLoader;
 import cocktail.resource.php.AnimationLoader;
 import cocktail.resource.php.LibraryLoader;
+
+#elseif doc
+class StringLoader extends AbstractResourceLoader {}
+class ImageLoader extends AbstractResourceLoader {}
+class TextLoader extends AbstractResourceLoader {}
+class ContainerLoader extends AbstractResourceLoader {}
+class AnimationLoader extends AbstractResourceLoader {}
+class LibraryLoader extends AbstractResourceLoader {}
 
 #end	
 
@@ -78,14 +87,17 @@ class ResourceLoaderManager
 	 * @param	url the url of the file to load
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
+	 * @param	domElement, if provided, the loaded resource (in this case a picture) will be set on this
+	 * DOMElement, else a new ImageDOMElement will be created
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadImage(url:String, successCallback:ImageDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadImage(url:String, successCallback:ImageDOMElement->Void, errorCallback:String->Void , imageDOMElement:ImageDOMElement = null, allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
+			domElement:cast(imageDOMElement),
 			allowCache:allowCache,
 			loadingType:image
 		};
@@ -98,14 +110,17 @@ class ResourceLoaderManager
 	 * @param	url the url of the file to load
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
+	 * @param	domElement, if provided, the loaded resource (in this case a formatted text) will be set on this
+	 * DOMElement, else a new TextDOMElement will be created
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadText(url:String, successCallback:TextDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadText(url:String, successCallback:TextDOMElement->Void, errorCallback:String->Void , textDOMElement:TextDOMElement = null, allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
+			domElement:cast(textDOMElement),
 			allowCache:allowCache,
 			loadingType:text
 		};
@@ -118,15 +133,18 @@ class ResourceLoaderManager
 	 * @param	url the url of the file to load
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
+	 * @param	domElement, if provided, the loaded resource (in this case an animation) will be set on this
+	 * DOMElement, else a new AnimationDOMElement will be created
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadAnimation(url:String, successCallback:AnimationDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadAnimation(url:String, successCallback:AnimationDOMElement->Void, errorCallback:String->Void , animationDOMElement:AnimationDOMElement = null, allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
+			domElement:cast(animationDOMElement),
 			loadingType:animation
 		};
 		
@@ -140,13 +158,14 @@ class ResourceLoaderManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadContainer(url:String, successCallback:ContainerDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
+	public static function loadContainer(url:String, successCallback:ContainerDOMElement->Void, errorCallback:String->Void , containerDOMElement:ContainerDOMElement = null, allowCache:Bool = true):Void
 	{
 		var resourceDataToAdd:ResourceData = {
 			url:url,
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
+			domElement:cast(containerDOMElement),
 			loadingType:container
 		};
 		
@@ -167,6 +186,7 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
+			domElement:null,
 			loadingType:data
 		};
 		
@@ -187,6 +207,7 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
+			domElement:null,
 			loadingType:library
 		};
 		
@@ -220,7 +241,7 @@ class ResourceLoaderManager
 	/**
 	 *  Set isLoading to true or false depending on the content of filesArray.
 	 *	Retrieve the next ResourceData object.
-	 *	Create the corresponding ResourceLoader
+	 *	Create the corresponding AbstractResourceLoader
 	 *	Actually start loading the resource.
 	 */
 	private static function loadNextResource():Void
@@ -238,7 +259,7 @@ class ResourceLoaderManager
 			
 			var resourceDataToLoad:ResourceData = _resourceDataArray[0];
 			
-			var resourceLoader:ResourceLoader;
+			var resourceLoader:AbstractResourceLoader;
 			switch (resourceDataToLoad.loadingType)
 			{
 				case data:
@@ -260,7 +281,7 @@ class ResourceLoaderManager
 				resourceLoader = new LibraryLoader();
 			}
 			
-			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
+			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.domElement, resourceDataToLoad.allowCache);
 		}
 	}
 	

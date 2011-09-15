@@ -10,7 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.mouse;
 
-import cocktail.domObject.DOMObject;
+import cocktail.domElement.DOMElement;
 import cocktail.geom.GeomData;
 
 /**
@@ -36,7 +36,7 @@ typedef MouseEventData = {
 /**
  * Represents the position of the mouse, both
  * global (relative to the browser window top left
- * corner) and local (relative to the dom object
+ * corner) and local (relative to the dom element
  * which triggered the mouse event top left corner)
  */
 typedef MousePosition = {
@@ -53,10 +53,10 @@ typedef MousePosition = {
 enum MouseCursorValue {
 	/**
 	 * uses a custom bitmap cursor set with
-	 * an image dom object. The hotSpot is the registration
+	 * an image dom element. The hotSpot is the registration
 	 * point of the cursor.
 	 */
-	custom(imageDOMObject:DOMObject, hotSpot:Point);
+	custom(imageDOMElement:DOMElement, hotSpot:Point);
 	
 	/**
 	 * Let the browser manage the mouse cursor
@@ -79,5 +79,14 @@ enum MouseCursorValue {
  * OS mouse cursor
  */
 enum NativeOSMouseCursorValue {
-	hand;
+	
+	/**
+	 * represents a pointed hand
+	 */
+	pointer;
+	
+	/**
+	 * represents an i-beam
+	 */
+	text;
 }

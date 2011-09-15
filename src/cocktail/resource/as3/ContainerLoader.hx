@@ -17,9 +17,9 @@ import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
-import cocktail.resource.ResourceLoader;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -28,7 +28,7 @@ import cocktail.resource.ResourceData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ContainerLoader extends ResourceLoader
+class ContainerLoader extends AbstractResourceLoader
 {
 	/**
 	 * The native flash skin loader
@@ -76,8 +76,8 @@ class ContainerLoader extends ResourceLoader
 	
 	/**
 	 * When the .swf has been loaded, remove the listener on it, 
-	 * instantiate a container DOMObject and set the loaded Flash skin
-	 * as it's native DOMObject,
+	 * instantiate a container DOMElement and set the loaded Flash skin
+	 * as it's native DOMElement,
 	 * then call the load complete method
 	 * @param	event the Complete event, contains the native Loader
 	 */
@@ -86,9 +86,9 @@ class ContainerLoader extends ResourceLoader
 		_skinLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onSkinLoadComplete);
 		_skinLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onSkinLoadIOError);
 		
-		var containerDOMObject:DOMObject = new ContainerDOMObject(_skinLoader);
+		var containerDOMElement:DOMElement = new ContainerDOMElement(_skinLoader);
 		
-		onLoadComplete(containerDOMObject);
+		onLoadComplete(containerDOMElement);
 	}
 	
 	/**

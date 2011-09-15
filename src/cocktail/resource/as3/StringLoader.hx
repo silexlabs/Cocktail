@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.as3;
 
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 
 /**
  * Implementation of StringLoader for the Flash AVM2 runtime, used to load resource
@@ -19,7 +19,7 @@ import cocktail.resource.ResourceLoader;
  * it's parent class, the haxe.Http class acting as an abstraction layer
  * @author Yannick DOMINGUEZ
  */
-class StringLoader extends ResourceLoader
+class StringLoader extends AbstractResourceLoader
 {
 
 	public function new() 

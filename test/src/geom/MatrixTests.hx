@@ -13,28 +13,29 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package geom;
 
 /**
- * Units tests for DOMObjects transformation matrix
+ * Units tests for DOMElements transformation matrix
  * @author Yannick DOMINGUEZ
  */
 import haxe.Log;
-import cocktail.domObject.base.DOMObjectBase;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.GraphicDOMObject;
-import cocktail.domObject.DOMObjectData;
+import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.domElement.GraphicDOMElement;
+import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
-import cocktail.nativeReference.NativeReferenceManager;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 
 class MatrixTests 
 {
-	private static var rootDOMObject:DOMObject;
+	private static var rootDOMElement:DOMElement;
 	
 	public static function main()
 	{
 
-		rootDOMObject = new DOMObject(NativeReferenceManager.getRoot());
+		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new MatrixTests());
@@ -51,18 +52,16 @@ class MatrixTests
 	 */
 	public function testMatrixTransformations():Void
 	{
-		#if flash9
-		var domObject:GraphicDOMObject = new GraphicDOMObject(new flash.display.Sprite());
-		#elseif js
-		var domObject:GraphicDOMObject = new GraphicDOMObject(js.Lib.document.createElement("canvas") );
-		#end
 		
-		//init the test dom object
+		var domElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
+
 		
-		domObject.setWidth(200);
-		domObject.setHeight(100);
-		domObject.setX(0);
-		domObject.setY(0);
+		//init the test dom element
+		
+		domElement.width = 200;
+		domElement.height = 100;
+		domElement.x = 0;
+		domElement.y = 0;
 		
 		var gradientStops:Array<GradientStopData> = [];
 		gradientStops.push( { colorStop: { color:Std.parseInt("0xFF0000"), alpha:100 }, ratio:0 } );
@@ -73,124 +72,126 @@ class MatrixTests
 			gradientStops:gradientStops,
 			rotation:0		}
 		
-		domObject.beginFill(gradient( gradientStyle), LineStyleValue.none);
-		domObject.drawRect(0, 0, 200, 100, { tlCornerRadius:0, trCornerRadius:0, blCornerRadius:0, brCornerRadius:0 } );
-		domObject.endFill();
+		domElement.beginFill(gradient( gradientStyle), LineStyleValue.none);
+		domElement.drawRect(0, 0, 200, 100, { tlCornerRadius:0, trCornerRadius:0, blCornerRadius:0, brCornerRadius:0 } );
+		domElement.endFill();
 		
-		rootDOMObject.addChild(domObject);
+		rootDOMElement.addChild(domElement);
 		
 		//test rotations at angles of each of a circle quarter
 		
-		domObject.rotate(45, constant(center, middle));
+		domElement.rotate(45, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getRotation(), 45);
+		Assert.equals(domElement.getMatrix().getRotation(), 45);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.rotate(90, constant(center, middle));
+		domElement.rotate(90, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getRotation(), 90);
+		Assert.equals(domElement.getMatrix().getRotation(), 90);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.rotate(180, constant(center, middle));
+		domElement.rotate(180, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getRotation(), 180);
+		Assert.equals(domElement.getMatrix().getRotation(), 180);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.rotate(270, constant(center, middle));
+		domElement.rotate(270, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getRotation(), 270);
+		Assert.equals(domElement.matrix.getRotation(), 270);
 		
 		
 		//test x scale
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.scale(2, 1, constant(center, middle));
+		domElement.scale(2, 1, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getScaleX(), 2);
+		Assert.equals(domElement.getMatrix().getScaleX(), 2);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.scale(-2, 1, constant(center, middle));
+		domElement.scale(-2, 1, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getScaleX(), -2);
+		Assert.equals(domElement.getMatrix().getScaleX(), -2);
 		
 		//test y scale
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.scale(1, 2, constant(center, middle));
+		domElement.scale(1, 2, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getScaleY(), 2);
+		Assert.equals(domElement.getMatrix().getScaleY(), 2);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.scale(1, -2, constant(center, middle));
+		domElement.scale(1, -2, constant(center, middle));
 		
-		Assert.equals(domObject.getMatrix().getScaleY(), -2);
+		Assert.equals(domElement.getMatrix().getScaleY(), -2);
 		
 		//test translation
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.translate(20, 30);
+		domElement.translate(20, 30);
 		
-		Assert.equals(domObject.getMatrix().getTranslationX(), 20);
-		Assert.equals(domObject.getMatrix().getTranslationY(), 30);
+		Assert.equals(domElement.matrix.getTranslationX(), 20);
+		Assert.equals(domElement.matrix.getTranslationY(), 30);
 		
 		
 		//test skew
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.skew(0.5, 0.2, constant(center, middle));
+		domElement.skew(0.5, 0.2, constant(center, middle));
 		
-		Assert.equals(Std.string(domObject.getMatrix().getSkewX()).substr(0,3), "0.5");
-		Assert.equals(Std.string(domObject.getMatrix().getSkewY()).substr(0,3), "0.2");
+		Assert.equals(Std.string(domElement.getMatrix().getSkewX()).substr(0,3), "0.5");
+		Assert.equals(Std.string(domElement.getMatrix().getSkewY()).substr(0,3), "0.2");
 		
 		//test absolut rotation setting
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
-		domObject.setRotation(45, constant(center, middle));
-		domObject.setRotation(45, constant(center, middle));
-		domObject.setRotation(20, constant(center, middle));
+		domElement.registrationPoint = constant(center, middle);
 		
-		Assert.equals(domObject.getRotation(), 20);
+		domElement.rotation = 45;
+		domElement.rotation = 45;
+		domElement.rotation = 20;
 		
-		domObject.resetTransformations();
+		Assert.equals(domElement.rotation, 20);
+		
+		domElement.resetTransformations();
 		
 		//test absolut scale setting
 		
-		domObject.setScaleX(2, constant(center, middle));
-		domObject.setScaleX(2, constant(center, middle));
-		domObject.setScaleX(2, constant(center, middle));
+		domElement.scaleX = 2;
+		domElement.scaleX = 2;
+		domElement.scaleX = 2;
 		
-		domObject.setScaleY(3, constant(center, middle));
-		domObject.setScaleY(3, constant(center, middle));
-		domObject.setScaleY(3, constant(center, middle));
+		domElement.scaleY = 3;
+		domElement.scaleY = 3;
+		domElement.scaleY = 3;
 		
 		
-		Assert.equals(domObject.getScaleX(), 2);
-		Assert.equals(domObject.getScaleY(), 3);
+		Assert.equals(domElement.scaleX, 2);
+		Assert.equals(domElement.scaleY, 3);
 		
-		domObject.resetTransformations();
+		domElement.resetTransformations();
 		
 		//test absolut translation setting
 		
-		domObject.setTranslationX(500);
-		domObject.setTranslationX(500);
-		domObject.setTranslationX(500);
+		domElement.translationX = 500;
+		domElement.translationX = 500;
+		domElement.translationX = 500;
 		
-		domObject.setTranslationY(20);
-		domObject.setTranslationY(20);
-		domObject.setTranslationY(20);
+		domElement.translationY = 20;
+		domElement.translationY = 20;
+		domElement.translationY = 20;
 		
-		Assert.equals(domObject.getTranslationX(), 500);
-		Assert.equals(domObject.getTranslationY(), 20);
+		Assert.equals(domElement.translationX, 500);
+		Assert.equals(domElement.translationY, 20);
 		
 		
 	}

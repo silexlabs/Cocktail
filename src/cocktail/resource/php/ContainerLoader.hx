@@ -14,9 +14,9 @@ package cocktail.resource.php;
 import haxe.Http;
 import haxe.Log;
 import php.Web;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
-import cocktail.resource.ResourceLoader;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -27,7 +27,7 @@ import cocktail.resource.ResourceData;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class ContainerLoader extends ResourceLoader
+class ContainerLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
@@ -60,16 +60,16 @@ class ContainerLoader extends ResourceLoader
 	
 	/**
 	 * When the HTML has been loaded, set the loaded HTML as the
-	 * native DOM of the Container DOMObject
+	 * native DOM of the Container DOMElement
 	 * Xml is used for easier data structuring
 	 * @param	data the loaded HTML
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
 		// construction of the Xml element containing the container
-		var domObject:ContainerDOMObject = new ContainerDOMObject(Xml.parse(data));
+		var domElement:ContainerDOMElement = new ContainerDOMElement(Xml.parse(data));
 		
 		// calls initial callback
-		_onLoadCompleteCallback(domObject);
+		_onLoadCompleteCallback(domElement);
 	}
 }

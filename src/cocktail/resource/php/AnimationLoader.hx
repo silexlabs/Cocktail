@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.php;
 
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 
 /**
  * This is the Animation loader implementation for the PHP runtime. It can be used to 
@@ -22,7 +22,7 @@ import cocktail.resource.ResourceLoader;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class AnimationLoader extends ResourceLoader
+class AnimationLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
