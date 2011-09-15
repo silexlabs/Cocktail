@@ -24,34 +24,12 @@ import haxe.Log;
 /**
  * This is a base class for runtime specific DOMElement. A DOMElement is an abstraction of the visual base element of a runtime.
  * For instance in JS, a DOMElement is an HTML element, like a <div> or <img> element. In Flash AS3, a domElement is a Sprite.
- * A Domobject can contain other DOMElements. This class abstracts manipulating DOM elements, each runtime is implemented in an
+ * A DOMElement can contain other DOMElements. This class abstracts manipulating DOM elements, each runtime is implemented in an
  * inheriting class
  * @author Yannick DOMINGUEZ
  */
 class AbstractDOMElement 
 {
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Event callbacks, cross-platform callbacks for runtime specific events
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The callback called when there is a mouse wheel event over the DOMElement
-	 * TO DO
-	 */
-	public var onMouseWheel:Void->Void;
-	
-	/**
-	 * The callback called when the DOMElement gains focus
-	 * TO DO
-	 */
-	public var onFocusIn:Void->Void;
-	
-	/**
-	 * The callback called when the DOMElement loses focus
-	 * TO DO
-	 */
-	public var onFocusOut:Void->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
@@ -114,7 +92,7 @@ class AbstractDOMElement
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):Key->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private attributes
+	// DOCUMENT TREE attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -138,14 +116,8 @@ class AbstractDOMElement
 	private var _children:Array<AbstractDOMElement>;
 	public var children(getChildren, never):Array<AbstractDOMElement>;
 	
-	/**
-	 * a reference to this domElement transformation matrix
-	 */
-	private var _matrix:Matrix;
-	public var matrix(getMatrix, setMatrix):Matrix;
-	
 	/////////////////////////////////
-	// COORDS Attributes
+	// COORDS attributes
 	// Stores the coords of the DOM Object
 	// as they are set. This abstraction is used
 	// to prevent runtime inconsistencies happening
@@ -175,6 +147,50 @@ class AbstractDOMElement
 	 */
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
+	
+	/////////////////////////////////
+	// TRANSFORMATION attributes
+	////////////////////////////////
+	
+	/**
+	 * Stores the origin of the domElement transformations.
+	 * It is used by defautlt when none is provided for a
+	 * transformation. It defaults to the top left of the
+	 * domElement
+	 */
+	private var _transformationOrigin:TransformationOriginValue;
+	public var transformationOrigin(getTransformationOrigin, setTransformationOrigin):TransformationOriginValue;
+	
+	/**
+	 * Stores a reference to this domElement transformation matrix
+	 */
+	private var _matrix:Matrix;
+	public var matrix(getMatrix, setMatrix):Matrix;
+	
+	/**
+	 * get/set x scale
+	 */
+	public var scaleX(getScaleX, setScaleX):Float;
+	
+	/**
+	 * get/set y scale
+	 */
+	public var scaleY(getScaleY, setScaleY):Float;
+	
+	/**
+	 * get/set translation x
+	 */
+	public var translationX(getTranslationX, setTranslationX):Float;
+	
+	/**
+	 * get/set translation y
+	 */
+	public var translationY(getTranslationY, setTranslationY):Float;
+	
+	/**
+	 * get/set the rotation on degree
+	 */
+	public var rotation(getRotation, setRotation):Int;
 	
 	/////////////////////////////////
 	// VISIBILITY/OPACITY attributes
@@ -238,6 +254,10 @@ class AbstractDOMElement
 		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
 		
+		//init the origin transformation point to the 
+		//top left of this domElement
+		_transformationOrigin = constant(left, top);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +273,7 @@ class AbstractDOMElement
 	 */
 	public function addChild(domElement:AbstractDOMElement):Void
 	{
-		domElement.setParent(this);
+		domElement.parent = this;
 		_children.push(domElement);
 	}
 	
@@ -265,7 +285,7 @@ class AbstractDOMElement
 	 */
 	public function removeChild(domElement:AbstractDOMElement):Void
 	{
-		domElement.setParent(null);
+		domElement.parent = null;
 		_children.remove(domElement);
 	}
 	
@@ -388,7 +408,7 @@ class AbstractDOMElement
 	public function resetTransformations():Void
 	{
 		_matrix.identity();
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
@@ -442,9 +462,6 @@ class AbstractDOMElement
 		return transformationOriginPoint;
 	}
 	
-	/////////////////
-	// TRANSLATION
-	/////////////////
 	
 	/**
 	 * Translate the domElement along the x and y axis, using x and y as offset
@@ -457,18 +474,87 @@ class AbstractDOMElement
 		_matrix.translate(x, y);
 		
 		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
 	}
 	
 	/**
+	 * Rotate the domElement with the given angle using the transformationOrigin as pivot point
+	 * @param	angle the rotation angle, in degree
+	 * @param	transformationOrigin the pivot point, represented as an enum value or as a point
+	 */
+	public function rotate(angle:Int, transformationOrigin:TransformationOriginValue = null):Void
+	{
+		//if no transformation origin, get the currently stored one
+		if (transformationOrigin == null)
+		{
+			transformationOrigin = this.transformationOrigin;
+		}
+		
+		//use the matrix API, retrieve the pivot point
+		_matrix.rotate(angle, getTransformationOriginPoint(transformationOrigin));
+		//refresh the matrix to refresh the domElement display
+		this.matrix = this._matrix;
+	}
+	
+	/**
+	 * Scale the domElement with the scaleX and scaleY factor, using the transformationOrigin as scaling
+	 * center
+	 * @param	scaleX the horizontal scale factor
+	 * @param	scaleY the vertical scale factor
+	 * @param	transformationOrigin the scale center, represented as an enum value or as a point
+	 */
+	public function scale(scaleX:Float, scaleY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	{
+		//if no transformation origin, get the currently stored one
+		if (transformationOrigin == null)
+		{
+			transformationOrigin = this.transformationOrigin;
+		}
+		
+		//use the matrix API, retrieve the scale center
+		_matrix.scale(scaleX, scaleY, getTransformationOriginPoint(transformationOrigin));
+		
+		//refresh the matrix to refresh the domElement display
+		this.matrix = this._matrix;
+	}
+	
+	/**
+	 * skew the domElement with the skewX and skewY factor, using the transformationOrigin as skewing
+	 * center
+	 * @param	skewX the horizontal skew factor
+	 * @param	skewY the vertical skew factor
+	 * @param	transformationOrigin the skew center, represented as an enum value or as a point
+	 */
+	public function skew(skewX:Float, skewY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	{
+		//if no transformation origin, get the currently stored one
+		if (transformationOrigin == null)
+		{
+			transformationOrigin = this.transformationOrigin;
+		}
+		
+		//use the matrix API, retrieve the skew center
+		_matrix.skew(skewX, skewY, getTransformationOriginPoint(transformationOrigin));
+		
+		//refresh the matrix to refresh the domElement display
+		this.matrix = this._matrix;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TRANSFORMATION SETTER/GETTER
+	// Set/get transformations absolute value
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+		/**
 	 * Set the absolut x translation instead of adding it to 
 	 * the current x translation
 	 * @param	translationX the target x translation
 	 */
-	public function setTranslationX(translationX:Float):Void
+	public function setTranslationX(translationX:Float):Float
 	{
 		_matrix.setTranslationX(translationX);
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
+		return translationX;
 	}
 	
 	/**
@@ -485,10 +571,11 @@ class AbstractDOMElement
 	 * the current y translation
 	 * @param	translationX the target y translation
 	 */
-	public function setTranslationY(translationY:Float):Void
+	public function setTranslationY(translationY:Float):Float
 	{
 		_matrix.setTranslationY(translationY);
-		setMatrix(this._matrix);
+		this.matrix = this._matrix;
+		return translationY;
 	}
 	
 	/**
@@ -500,97 +587,15 @@ class AbstractDOMElement
 		return this._matrix.getTranslationY();
 	}
 	
-	/////////////////
-	// ROTATION
-	/////////////////
-	
-	/**
-	 * Rotate the domElement with the given angle using the transformationOrigin as pivot point
-	 * @param	angle the rotation angle, in degree
-	 * @param	transformationOrigin the pivot point, represented as an enum value or as a point
-	 */
-	public function rotate(angle:Int, transformationOrigin:TransformationOriginValue = null):Void
-	{
-		//default transformation center is top left
-		if (transformationOrigin == null)
-		{
-			transformationOrigin = constant(left, top);
-		}
-		
-		//use the matrix API, retrieve the pivot point
-		_matrix.rotate(angle, getTransformationOriginPoint(transformationOrigin));
-		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
-	}
-	
-	/**
-	 * Set the rotation to an absolute angle instead of adding a rotation to the existing 
-	 * rotation
-	 * @param	angle the target angle
-	 * @param	transformationOrigin the rotation center
-	 */
-	public function setRotation(angle:Int, transformationOrigin:TransformationOriginValue = null):Void 
-	{
-		
-		//default transformation center is top left
-		if (transformationOrigin == null)
-		{
-			transformationOrigin = constant(left, top);
-		}
-		
-		_matrix.setRotation(angle, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
-	}
-	
-	/**
-	 * Return the current rotation angle in deg
-	 * @return an Int from 0 to 360
-	 */
-	public function getRotation():Int { 
-		return _matrix.getRotation();
-	}
-	
-	/////////////////
-	// SCALING
-	/////////////////
-	
-	/**
-	 * Scale the domElement with the scaleX and scaleY factor, using the transformationOrigin as scaling
-	 * center
-	 * @param	scaleX the horizontal scale factor
-	 * @param	scaleY the vertical scale factor
-	 * @param	transformationOrigin the scale center, represented as an enum value or as a point
-	 */
-	public function scale(scaleX:Float, scaleY:Float, transformationOrigin:TransformationOriginValue = null):Void
-	{
-		//default transformation center is top left
-		if (transformationOrigin == null)
-		{
-			transformationOrigin = constant(left, top);
-		}
-		
-		//use the matrix API, retrieve the scale center
-		_matrix.scale(scaleX, scaleY, getTransformationOriginPoint(transformationOrigin));
-		
-		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
-	}
-	
 	/**
 	 * set the absolut x scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target x scale
-	 * @param	transformationOrigin the scale center
 	 */
-	public function setScaleX(scaleX:Float, transformationOrigin:TransformationOriginValue = null):Void
+	public function setScaleX(scaleX:Float):Float
 	{
-		//default transformation center is top left
-		if (transformationOrigin == null)
-		{
-			transformationOrigin = constant(left, top);
-		}
-		
-		_matrix.setScaleX(scaleX, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
+		_matrix.setScaleX(scaleX, getTransformationOriginPoint(this.transformationOrigin));
+		this.matrix = this._matrix;
+		return scaleX;
 	}
 	
 	/**
@@ -600,13 +605,13 @@ class AbstractDOMElement
 	public function getScaleX():Float { 
 		return _matrix.getScaleX();
 	}
+
 	
 	/**
 	 * set the absolut y scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target y scale
-	 * @param	transformationOrigin the scale center
 	 */
-	public function setScaleY(scaleY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	public function setScaleY(scaleY:Float):Float
 	{
 		//default transformation center is top left
 		if (transformationOrigin == null)
@@ -614,8 +619,9 @@ class AbstractDOMElement
 			transformationOrigin = constant(left, top);
 		}
 		
-		_matrix.setScaleY(scaleY, getTransformationOriginPoint(transformationOrigin));
-		setMatrix(this._matrix);
+		_matrix.setScaleY(scaleY, getTransformationOriginPoint(this.transformationOrigin));
+		this.matrix = this._matrix;
+		return scaleY;
 	}
 	
 	/**
@@ -626,30 +632,50 @@ class AbstractDOMElement
 		return _matrix.getScaleY();
 	}
 	
-	/////////////////
-	// SKEWING
-	/////////////////
-	
 	/**
-	 * skew the domElement with the skewX and skewY factor, using the transformationOrigin as skewing
-	 * center
-	 * @param	skewX the horizontal skew factor
-	 * @param	skewY the vertical skew factor
-	 * @param	transformationOrigin the skew center, represented as an enum value or as a point
+	 * Set the rotation to an absolute angle instead of adding a rotation to the existing 
+	 * rotation
+	 * @param	angle the target angle
 	 */
-	public function skew(skewX:Float, skewY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	public function setRotation(angle:Int):Int 
 	{
+		
 		//default transformation center is top left
 		if (transformationOrigin == null)
 		{
 			transformationOrigin = constant(left, top);
 		}
 		
-		//use the matrix API, retrieve the skew center
-		_matrix.skew(skewX, skewY, getTransformationOriginPoint(transformationOrigin));
-		
-		//refresh the matrix to refresh the domElement display
-		setMatrix(this._matrix);
+		_matrix.setRotation(angle, getTransformationOriginPoint(this.transformationOrigin));
+		this.matrix = this._matrix;
+		return angle;
+	}
+	
+	/**
+	 * Return the current rotation angle in deg
+	 * @return an Int from 0 to 360
+	 */
+	public function getRotation():Int { 
+		return _matrix.getRotation();
+	}
+	
+	/**
+	 * Set the origin of the domElement transformations
+	 * @param	transformationOrigin the new origin of transformation
+	 * @return an enum value containing a constant or a point
+	 */
+	public function setTransformationOrigin(transformationOrigin:TransformationOriginValue):TransformationOriginValue
+	{
+		this._transformationOrigin = transformationOrigin;
+		return this._transformationOrigin;
+	}
+	
+	/**
+	 * Return the transformation origin
+	 */
+	public function getTransformationOrigin():TransformationOriginValue
+	{
+		return this._transformationOrigin;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

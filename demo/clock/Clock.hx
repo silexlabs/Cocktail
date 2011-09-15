@@ -116,6 +116,11 @@ class Clock
 			y:_secondNeedle.height - secondNeedleOffset
 		}
 		
+		//set the pivot point for each needle
+		_secondNeedle.transformationOrigin = point(_secondNeedleRotationCenter);
+		_minuteNeedle.transformationOrigin = constant(center, bottom);
+		_hourNeedle.transformationOrigin = constant(center, bottom);
+		
 		//move all the needles and the foreground to the center
 		_secondNeedle.translate(_clockBackground.width / 2 - _secondNeedle.width /2, (_clockBackground.height / 2 - _secondNeedle.height + secondNeedleOffset));
 		_minuteNeedle.translate(_clockBackground.width / 2 - _minuteNeedle.width / 2, (_clockBackground.height / 2 - _minuteNeedle.height ));
@@ -141,9 +146,9 @@ class Clock
 	{
 		_clockDisplay.text = Date.now().toString();
 		
-		_secondNeedle.setRotation(Math.round(Date.now().getSeconds() * 6), point(_secondNeedleRotationCenter));
-		_minuteNeedle.setRotation(Math.round(Date.now().getMinutes() * 6), constant(center, bottom));
-		_hourNeedle.setRotation(Math.round(Date.now().getHours() * (360/12)), constant(center, bottom));
+		_secondNeedle.rotation = Math.round(Date.now().getSeconds() * 6);
+		_minuteNeedle.rotation = Math.round(Date.now().getMinutes() * 6);
+		_hourNeedle.rotation = Math.round(Date.now().getHours() * (360/12));
 		
 		Timer.delay(updateTime, 1000);
 	}

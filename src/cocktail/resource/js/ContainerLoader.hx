@@ -11,6 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource.js;
 
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import haxe.Http;
 import haxe.Log;
 import js.Lib;
@@ -48,7 +50,7 @@ class ContainerLoader extends ResourceLoader
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domElement:ContainerDOMElement = new ContainerDOMElement(Lib.document.createElement("div"));
+		var domElement:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		domElement.nativeElement.innerHTML = data;
 		_onLoadCompleteCallback(domElement);
 	}
