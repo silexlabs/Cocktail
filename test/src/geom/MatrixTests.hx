@@ -154,7 +154,7 @@ class MatrixTests
 		
 		domElement.resetTransformations();
 		
-		domElement.transformationOrigin = constant(center, middle);
+		domElement.registrationPoint = constant(center, middle);
 		
 		domElement.rotation = 45;
 		domElement.rotation = 45;

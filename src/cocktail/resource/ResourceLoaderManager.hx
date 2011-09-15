@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
 
+import cocktail.resource.abstract.AbstractResourceLoader;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
@@ -44,12 +45,12 @@ import cocktail.resource.php.AnimationLoader;
 import cocktail.resource.php.LibraryLoader;
 
 #elseif doc
-class StringLoader extends ResourceLoader {}
-class ImageLoader extends ResourceLoader {}
-class TextLoader extends ResourceLoader {}
-class ContainerLoader extends ResourceLoader {}
-class AnimationLoader extends ResourceLoader {}
-class LibraryLoader extends ResourceLoader {}
+class StringLoader extends AbstractResourceLoader {}
+class ImageLoader extends AbstractResourceLoader {}
+class TextLoader extends AbstractResourceLoader {}
+class ContainerLoader extends AbstractResourceLoader {}
+class AnimationLoader extends AbstractResourceLoader {}
+class LibraryLoader extends AbstractResourceLoader {}
 
 #end	
 
@@ -240,7 +241,7 @@ class ResourceLoaderManager
 	/**
 	 *  Set isLoading to true or false depending on the content of filesArray.
 	 *	Retrieve the next ResourceData object.
-	 *	Create the corresponding ResourceLoader
+	 *	Create the corresponding AbstractResourceLoader
 	 *	Actually start loading the resource.
 	 */
 	private static function loadNextResource():Void
@@ -258,7 +259,7 @@ class ResourceLoaderManager
 			
 			var resourceDataToLoad:ResourceData = _resourceDataArray[0];
 			
-			var resourceLoader:ResourceLoader;
+			var resourceLoader:AbstractResourceLoader;
 			switch (resourceDataToLoad.loadingType)
 			{
 				case data:

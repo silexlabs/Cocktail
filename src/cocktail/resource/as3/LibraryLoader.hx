@@ -14,7 +14,7 @@ package cocktail.resource.as3;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import haxe.Log;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
@@ -27,7 +27,7 @@ import flash.events.Event;
  * the Flash DOM
  * @author Yannick DOMINGUEZ
  */
-class LibraryLoader extends ResourceLoader
+class LibraryLoader extends AbstractResourceLoader
 {
 	/**
 	 * The native flash library loader

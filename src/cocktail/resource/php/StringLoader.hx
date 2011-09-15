@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.resource.php;
 
 import haxe.Http;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import php.FileSystem;
 import php.Web;
 
@@ -24,7 +24,7 @@ import php.Web;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class StringLoader extends ResourceLoader
+class StringLoader extends AbstractResourceLoader
 {
 	public function new() 
 	{

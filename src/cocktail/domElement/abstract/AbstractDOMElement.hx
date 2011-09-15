@@ -158,8 +158,8 @@ class AbstractDOMElement
 	 * transformation. It defaults to the top left of the
 	 * domElement
 	 */
-	private var _transformationOrigin:TransformationOriginValue;
-	public var transformationOrigin(getTransformationOrigin, setTransformationOrigin):TransformationOriginValue;
+	private var _registrationPoint:RegistrationPointValue;
+	public var registrationPoint(getRegistrationPoint, setRegistrationPoint):RegistrationPointValue;
 	
 	/**
 	 * Stores a reference to this domElement transformation matrix
@@ -213,9 +213,9 @@ class AbstractDOMElement
 	/**
 	 * The z-order / z-index of this DOM Object, relative to
 	 * its parent (the first child of a DOMElement always has
-	 * a 0 z-order)
+	 * a 0 z-index)
 	 */
-	public var zOrder(getZOrder, setZOrder):Int;
+	public var zIndex(getZIndex, setZIndex):Int;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -256,7 +256,7 @@ class AbstractDOMElement
 		
 		//init the origin transformation point to the 
 		//top left of this domElement
-		_transformationOrigin = constant(left, top);
+		_registrationPoint = constant(left, top);
 		
 	}
 	
@@ -413,53 +413,53 @@ class AbstractDOMElement
 	
 	/**
 	 * Return the transformation origin as a Point, from a
-	 * TransformationOriginValue
+	 * RegistrationPointValue
 	 */
-	private function getTransformationOriginPoint(transformationOrigin:TransformationOriginValue):Point
+	private function getRegistrationPointPoint(registrationPoint:RegistrationPointValue):Point
 	{
 		//set the returned point
-		var transformationOriginPoint:Point = { x:0.0, y:0.0 };
+		var registrationPointPoint:Point = { x:0.0, y:0.0 };
 		
 		//switch the origin point value
-		switch (transformationOrigin)
+		switch (registrationPoint)
 		{
 			//if it is given as point (in pixels), set it
-			//on the transformationOriginPoint that will be returned
+			//on the registrationPointPoint that will be returned
 			case point(point):
-				transformationOriginPoint = point;
+				registrationPointPoint = point;
 			
 			//else if it is given as constants, deduce the point coordinate
 			//from the constant value
-			case constant(transformationOriginX, transformationOriginY):
+			case constant(registrationPointX, registrationPointY):
 			
 			//for x point coordinate	
-			switch transformationOriginX
+			switch registrationPointX
 			{
 				case left : 
-					transformationOriginPoint.x = 0;
+					registrationPointPoint.x = 0;
 				
 				case center :
-					transformationOriginPoint.x = getWidth() / 2;
+					registrationPointPoint.x = getWidth() / 2;
 					
 				case right :
-					transformationOriginPoint.x = getWidth();
+					registrationPointPoint.x = getWidth();
 			}
 			
 			//for y point coordinate	
-			switch transformationOriginY
+			switch registrationPointY
 			{
 				case top : 
-					transformationOriginPoint.y = 0;
+					registrationPointPoint.y = 0;
 				
 				case middle :
-					transformationOriginPoint.y = getHeight() / 2;
+					registrationPointPoint.y = getHeight() / 2;
 					
 				case bottom :
-					transformationOriginPoint.y = getHeight();
+					registrationPointPoint.y = getHeight();
 			}
 		}
 		
-		return transformationOriginPoint;
+		return registrationPointPoint;
 	}
 	
 	
@@ -478,63 +478,63 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Rotate the domElement with the given angle using the transformationOrigin as pivot point
+	 * Rotate the domElement with the given angle using the registrationPoint as pivot point
 	 * @param	angle the rotation angle, in degree
-	 * @param	transformationOrigin the pivot point, represented as an enum value or as a point
+	 * @param	registrationPoint the pivot point, represented as an enum value or as a point
 	 */
-	public function rotate(angle:Int, transformationOrigin:TransformationOriginValue = null):Void
+	public function rotate(angle:Int, registrationPoint:RegistrationPointValue = null):Void
 	{
 		//if no transformation origin, get the currently stored one
-		if (transformationOrigin == null)
+		if (registrationPoint == null)
 		{
-			transformationOrigin = this.transformationOrigin;
+			registrationPoint = this.registrationPoint;
 		}
 		
 		//use the matrix API, retrieve the pivot point
-		_matrix.rotate(angle, getTransformationOriginPoint(transformationOrigin));
+		_matrix.rotate(angle, getRegistrationPointPoint(registrationPoint));
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
 	}
 	
 	/**
-	 * Scale the domElement with the scaleX and scaleY factor, using the transformationOrigin as scaling
+	 * Scale the domElement with the scaleX and scaleY factor, using the registrationPoint as scaling
 	 * center
 	 * @param	scaleX the horizontal scale factor
 	 * @param	scaleY the vertical scale factor
-	 * @param	transformationOrigin the scale center, represented as an enum value or as a point
+	 * @param	registrationPoint the scale center, represented as an enum value or as a point
 	 */
-	public function scale(scaleX:Float, scaleY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	public function scale(scaleX:Float, scaleY:Float, registrationPoint:RegistrationPointValue = null):Void
 	{
 		//if no transformation origin, get the currently stored one
-		if (transformationOrigin == null)
+		if (registrationPoint == null)
 		{
-			transformationOrigin = this.transformationOrigin;
+			registrationPoint = this.registrationPoint;
 		}
 		
 		//use the matrix API, retrieve the scale center
-		_matrix.scale(scaleX, scaleY, getTransformationOriginPoint(transformationOrigin));
+		_matrix.scale(scaleX, scaleY, getRegistrationPointPoint(registrationPoint));
 		
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
 	}
 	
 	/**
-	 * skew the domElement with the skewX and skewY factor, using the transformationOrigin as skewing
+	 * skew the domElement with the skewX and skewY factor, using the registrationPoint as skewing
 	 * center
 	 * @param	skewX the horizontal skew factor
 	 * @param	skewY the vertical skew factor
-	 * @param	transformationOrigin the skew center, represented as an enum value or as a point
+	 * @param	registrationPoint the skew center, represented as an enum value or as a point
 	 */
-	public function skew(skewX:Float, skewY:Float, transformationOrigin:TransformationOriginValue = null):Void
+	public function skew(skewX:Float, skewY:Float, registrationPoint:RegistrationPointValue = null):Void
 	{
 		//if no transformation origin, get the currently stored one
-		if (transformationOrigin == null)
+		if (registrationPoint == null)
 		{
-			transformationOrigin = this.transformationOrigin;
+			registrationPoint = this.registrationPoint;
 		}
 		
 		//use the matrix API, retrieve the skew center
-		_matrix.skew(skewX, skewY, getTransformationOriginPoint(transformationOrigin));
+		_matrix.skew(skewX, skewY, getRegistrationPointPoint(registrationPoint));
 		
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
@@ -593,7 +593,7 @@ class AbstractDOMElement
 	 */
 	public function setScaleX(scaleX:Float):Float
 	{
-		_matrix.setScaleX(scaleX, getTransformationOriginPoint(this.transformationOrigin));
+		_matrix.setScaleX(scaleX, getRegistrationPointPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return scaleX;
 	}
@@ -614,12 +614,12 @@ class AbstractDOMElement
 	public function setScaleY(scaleY:Float):Float
 	{
 		//default transformation center is top left
-		if (transformationOrigin == null)
+		if (registrationPoint == null)
 		{
-			transformationOrigin = constant(left, top);
+			registrationPoint = constant(left, top);
 		}
 		
-		_matrix.setScaleY(scaleY, getTransformationOriginPoint(this.transformationOrigin));
+		_matrix.setScaleY(scaleY, getRegistrationPointPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return scaleY;
 	}
@@ -641,12 +641,12 @@ class AbstractDOMElement
 	{
 		
 		//default transformation center is top left
-		if (transformationOrigin == null)
+		if (registrationPoint == null)
 		{
-			transformationOrigin = constant(left, top);
+			registrationPoint = constant(left, top);
 		}
 		
-		_matrix.setRotation(angle, getTransformationOriginPoint(this.transformationOrigin));
+		_matrix.setRotation(angle, getRegistrationPointPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return angle;
 	}
@@ -661,21 +661,21 @@ class AbstractDOMElement
 	
 	/**
 	 * Set the origin of the domElement transformations
-	 * @param	transformationOrigin the new origin of transformation
+	 * @param	registrationPoint the new origin of transformation
 	 * @return an enum value containing a constant or a point
 	 */
-	public function setTransformationOrigin(transformationOrigin:TransformationOriginValue):TransformationOriginValue
+	public function setRegistrationPoint(registrationPoint:RegistrationPointValue):RegistrationPointValue
 	{
-		this._transformationOrigin = transformationOrigin;
-		return this._transformationOrigin;
+		this._registrationPoint = registrationPoint;
+		return this._registrationPoint;
 	}
 	
 	/**
 	 * Return the transformation origin
 	 */
-	public function getTransformationOrigin():TransformationOriginValue
+	public function getRegistrationPoint():RegistrationPointValue
 	{
-		return this._transformationOrigin;
+		return this._registrationPoint;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -786,7 +786,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field
 	 * @param	propertyValue the new value of the field
 	 */
-	public function setAttribute(propertyName:String, propertyValue:Dynamic):Void
+	public function setField(propertyName:String, propertyValue:Dynamic):Void
 	{
 		Reflect.setField(this._nativeElement, propertyName, propertyValue);
 	}
@@ -796,7 +796,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
-	public function getAttribute(propertyName:String):Dynamic
+	public function getField(propertyName:String):Dynamic
 	{
 		return Reflect.field(this._nativeElement, propertyName);
 	}
@@ -852,15 +852,15 @@ class AbstractDOMElement
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z order in the publication
+	// Setter/Getter to manipulate a native DOMElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setZOrder(value:Int):Int 
+	public function setZIndex(value:Int):Int 
 	{
 		return value;
 	}
 	
-	public function getZOrder():Int 
+	public function getZIndex():Int 
 	{
 		return 0;
 	}

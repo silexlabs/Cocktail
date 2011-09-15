@@ -62,7 +62,7 @@ class DOMElement extends AbstractDOMElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
-	override public function getAttribute(propertyName:String):Dynamic
+	override public function getField(propertyName:String):Dynamic
 	{
 		//return Reflect.field(this._nativeElement, propertyName);
 		return this._nativeElement.get(propertyName);
@@ -146,12 +146,12 @@ class DOMElement extends AbstractDOMElement
 	 * they are incremented
 	 * @param	value the z index to set
 	 */
-	override public function setZOrder(value:Int) 
+	override public function setZIndex(value:Int) 
 	{
 		// TODO
 	}
 	
-	override public function getZOrder():Int 
+	override public function getZIndex():Int 
 	{
 		// TODO
 		return 0;

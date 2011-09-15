@@ -16,7 +16,7 @@ import haxe.Log;
 import php.Web;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.resource.ResourceLoader;
+import cocktail.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
@@ -27,7 +27,7 @@ import cocktail.resource.ResourceData;
  * @author	Raphael HARMEL
  * @date	2011-08-03
  */
-class ContainerLoader extends ResourceLoader
+class ContainerLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
