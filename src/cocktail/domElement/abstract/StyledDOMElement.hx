@@ -34,6 +34,11 @@ class StyledDOMElement extends AbstractDOMElement
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Public layout method
+	// main entry point for layout algorithm
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Main layout method, compute the dimensions of a DOMElement then layout and
 	 * place its children recursively
@@ -100,18 +105,35 @@ class StyledDOMElement extends AbstractDOMElement
 		//it will be set once all the children DOMElement have been laid out
 		var computedHeight:Int = getComputedDimension(this.style.height, containingDOMElementDimensions.height);
 		
+		//margin top
 		var computedMarginTop:Int = getComputedMargin(this.style.marginTop, this.style.marginBottom, containingDOMElementDimensions.height, computedHeight, computedPaddingTop + computedPaddingBottom, true);
 		
+		//margin bottom
 		var computedMarginBottom:Int = getComputedMargin(this.style.marginBottom, this.style.marginTop, containingDOMElementDimensions.height, computedHeight, computedPaddingTop + computedPaddingBottom, true);
 		
+		/**
+		* The next step is to compute the dimensions
+		* constraint style (max-width, min-height...)
+		* and check that the computed height and width
+		* enforce those constraint
+		*/
+		
+		//max height
 		var computedMaxHeight:Int  = getComputedConstrainedDimension(this.style.maxHeight, containingDOMElementDimensions.height);
 		
+		//min height
 		var computedMinHeight:Int = getComputedConstrainedDimension(this.style.minHeight, containingDOMElementDimensions.height, true);
 		
+		//max width
 		var computedMaxWidth:Int  = getComputedConstrainedDimension(this.style.maxWidth, containingDOMElementDimensions.width);
 		
+		//min width
 		var computedMinWidth:Int = getComputedConstrainedDimension(this.style.minWidth, containingDOMElementDimensions.width, true);
 		
+		//check that the computedWidth is not 
+		//superior to max width. The max width
+		//can be defined as "null" if there are 
+		//no width limit on this DOMElement
 		if (computedMaxWidth != NULL)
 		{
 			if (computedWidth > computedMaxWidth)
@@ -120,13 +142,20 @@ class StyledDOMElement extends AbstractDOMElement
 			}
 		}
 		
+		//check that width is superior to min width
 		if (computedWidth < computedMinWidth)
 		{
 			computedWidth = computedMinWidth;
 		}
 		
+		//at this point the computed height might still
+		//be null if no fixed height was defined for this
+		//DOMElement, in this case, the max height will
+		//be checked again once the height of the DOMElement
+		//has been defined
 		if (computedHeight != NULL)
 		{
+			//check that height is within authorised range
 			if (computedMaxHeight != NULL)
 			{
 				if (computedHeight > computedMaxHeight)
@@ -135,11 +164,18 @@ class StyledDOMElement extends AbstractDOMElement
 				}
 			}
 			
+			//check that height is superior to min height
 			if (computedHeight < computedMinHeight)
 			{
 				computedHeight = computedMinHeight;
 			}
 		}
+		
+		/**
+		 * At this point, all the dimensions of the DOMElement are known maybe except the
+		 * width. Those dimensions are now enough to position each of the DOMElement's
+		 * children
+		 */
 		
 		
 		var flowX:Int = computedMarginLeft + computedPaddingLeft;
@@ -273,51 +309,109 @@ class StyledDOMElement extends AbstractDOMElement
 		return offsetDOMElementDimensions;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private layout methods
+	// Utilities method to help the main layout method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the value of a margin thickness from a 
+	 * margin style value
+	 * @param	marginStyleValue contains the value of the computed margin as a unit, percentage or defined as auto
+	 * @param	opositeMarginStyleValue the complementary margin from the computed margin. For example for the left margin, it
+	 * is the right margin
+	 * @param	containingDOMElementDimension the width and height of the DOMElement containing the current DOMElement, used for
+	 * computing percentage values
+	 * @param	computedDimension a computed dimension (width or height) of the content of the current DOMElement
+	 * @param	computedPaddingsDimension the computed dimensions of both horizontal or vertical paddings, depending if the computed
+	 * margin is horizontal or vertical
+	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
+	 * @return the computed thickness of the margin
+	 */
 	private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
 	{
+		//the return value
 		var computedMargin:Int;
 		
+		//check which type of value is defined
 		switch (marginStyleValue)
 		{
+			//it's a length (an absolute value
+			//with a unit)
 			case length(value):
 				computedMargin = getValueFromLength(value);
-				
+			
+			//It's a percentage, compute it from the containing dimension
 			case percent(value): 
-				computedMargin = getValueFromPercent(value, containingDOMElementDimension);
 				
-			case auto:	
-				if (containingDOMElementDimension == NULL || isHorizontalMargin == true)
+				//margin default to 0 if containing dimension is undefined
+				if (containingDOMElementDimension == NULL)
 				{
 					computedMargin = 0;
 				}
 				else
 				{
+					computedMargin = getValueFromPercent(value, containingDOMElementDimension);
+				}
+			
+			//auto margins take the remaining place left after
+			//paddings, other margin and dimension are set
+			case auto:	
+				//if the containing dimension (most likely height) is undefined,
+				//margin default to 0. Top and bottom margin also default to 0 with
+				//an auto value
+				if (containingDOMElementDimension == NULL || isHorizontalMargin == true)
+				{
+					computedMargin = 0;
+				}
+				//if the margin is either left or right the containing width is defined
+				else
+				{
+					//check if the oposite margin is set to auto too
 					switch (opositeMarginStyleValue)
 					{
+						//if it is, then both margin have the same thickness and share the place left by the content and paddings
 						case auto:
 							computedMargin = Math.round((containingDOMElementDimension - computedDimension - computedPaddingsDimension) / 2);
-							
+						
+						//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 						default:
 							var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, computedPaddingsDimension);
 							computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
 					}
-						
 				}
 		}
 		
 		return computedMargin;
 	}
 	
+	/**
+	 * Compute a contrain dimensions (max-height, min-width...)
+	 * from a contrain style value
+	 * @param	constrainedDimensionStyleValue can be defined as a unit, a percentage
+	 * or to "none" if no constraint must be applied
+	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
+	 * the current DOMElement must fit
+	 * @param	isMinConstraint true if min-width or min-height is computed
+	 * @return a computed contraint dimensions in pixels
+	 */
 	private function getComputedConstrainedDimension(constrainedDimensionStyleValue:ConstrainedDimensionStyleValue, containingDOMElementDimension:Int, isMinConstraint:Bool = false):Int
 	{
 		var computedConstraintDimension:Int;
 		
+		//check which type of value is defined
 		switch (constrainedDimensionStyleValue)
 		{
+			//it's a length (an absolute value
+			//with a unit)
 			case length(value):
 				computedConstraintDimension = getValueFromLength(value);
-				
+			
+			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
+				//if the containing DOMElement is not defined,
+				//for min value default to 0, for max value,
+				//default to "null" (no constraints)
 				if (containingDOMElementDimension == NULL)
 				{
 					if (isMinConstraint == true)
@@ -334,7 +428,8 @@ class StyledDOMElement extends AbstractDOMElement
 					computedConstraintDimension = getValueFromPercent(value, containingDOMElementDimension);
 				}
 				
-				
+			//here no constraint are applied,
+			//defaults are set
 			case none:
 				if (isMinConstraint == true)
 				{
@@ -349,35 +444,68 @@ class StyledDOMElement extends AbstractDOMElement
 		return computedConstraintDimension;
 	}
 	
+	/**
+	 * Compute the content dimension (width or height) of a DOMElement
+	 * @param	dimensionStyleValue can be defined as a unit, a percent or auto
+	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
+	 * the current DOMElement must fit
+	 * @return a computed dimension in pixel
+	 */
 	private function getComputedDimension(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int):Int
 	{
 		var computedDimensions:Int;
 		
+		//check which type of value is defined
 		switch (dimensionStyleValue)
 		{
+			//it's a length (an absolute value
+			//with a unit)
 			case length(value):
 				computedDimensions = getValueFromLength(value);
-				
+			
+			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
-				computedDimensions = getValueFromPercent(value, containingDOMElementDimension);
+				
+				if (containingDOMElementDimension == NULL)
+				{
+					//TO DO
+				}
+				else
+				{
+					computedDimensions = getValueFromPercent(value, containingDOMElementDimension);
+				}
 				
 			case auto:
+				//TO DO
 				computedDimensions = NULL;
 		}
 		
 		return computedDimensions;
 	}
 	
+	/**
+	 * Compute a padding's thickness from a padding style value
+	 * @param	paddingStyleValue can be defined as a unit (px, em...) or a percentage
+	 * @param	containingDOMElementDimension the dimensions of the DOMElement into which 
+	 * the current DOMElement must fit
+	 * @return a computed padding in pixel
+	 */
 	private function getComputedPadding(paddingStyleValue:PaddingStyleValue, containingDOMElementDimension:Int):Int
 	{
 		var computedPaddingValue:Int;
 		
+		//check which type of value is defined
 		switch (paddingStyleValue)
 		{
+			//it's a length (an absolute value
+			//with a unit)
 			case length(value):
 				computedPaddingValue = getValueFromLength(value);
-				
+			
+			//It's a percentage, compute it from the containing dimension		
 			case percent(value):
+				//if containing dimension is not defined, padding defaults
+				//to 0
 				if (containingDOMElementDimension == NULL)
 				{
 					computedPaddingValue = 0;
@@ -392,6 +520,12 @@ class StyledDOMElement extends AbstractDOMElement
 		return computedPaddingValue;
 	}
 	
+	/**
+	 * Get a value in pixel 
+	 * from a unit value
+	 * (px, em, cm...)
+	 * @param	length contains the unit type and the value
+	 */
 	private function getValueFromLength(length:LengthValue):Int
 	{
 		var lengthValue:Int;
@@ -405,10 +539,20 @@ class StyledDOMElement extends AbstractDOMElement
 		return lengthValue;
 	}
 	
+	/**
+	 * Get a percentage of a reference value
+	 * @param	percent form 0 to 100
+	 * @param	reference the reference value
+	 * @return a percentage of the reference value
+	 */
 	private function getValueFromPercent(percent:Int, reference:Int):Int
 	{
 		return Math.round(reference * (percent * 0.01));
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// STYLE SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function getStyle():StyleData
 	{
