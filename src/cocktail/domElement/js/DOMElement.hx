@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
+import cocktail.domElement.abstract.StyledDOMElement;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
@@ -24,7 +25,7 @@ import cocktail.geom.GeomData;
  * It manipulates the native HTML DOM
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends AbstractDOMElement
+class DOMElement extends StyledDOMElement
 {
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
