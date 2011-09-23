@@ -22,6 +22,8 @@ import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.resource.ResourceLoaderManager;
 import utest.Assert;
 import utest.Runner;
@@ -107,6 +109,54 @@ class GraphicDOMElementTests
 		starDOMElement.endFill();
 		
 		rootDOMElement.addChild(starDOMElement);
+	}
+	
+	public function testLayout()
+	{
+		var containerDOMElement:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
+		containerDOMElement.width = 200;
+		containerDOMElement.height = 200;
+		containerDOMElement.x = 500;
+		containerDOMElement.y = 200;
+		
+		rootDOMElement.addChild(containerDOMElement);
+		
+		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement();
+		
+		graphicDOMElement.width = 200;
+		graphicDOMElement.height = 200;
+		graphicDOMElement.x = 500;
+		graphicDOMElement.y = 200;
+		
+		var colorStop:ColorStopData = { color:Std.parseInt("0xAAAAAA") , alpha:60 };
+		var fillStyle:FillStyleValue = monochrome(colorStop);
+		
+		graphicDOMElement.beginFill(fillStyle, LineStyleValue.none);
+		
+		graphicDOMElement.drawRect(0, 0, 200, 200);
+		
+		graphicDOMElement.endFill();
+		
+		containerDOMElement.addChild(graphicDOMElement);
+		
+		var graphicDOMElement2:GraphicDOMElement = new GraphicDOMElement();
+		
+		graphicDOMElement2.width = 200;
+		graphicDOMElement2.height = 200;
+		graphicDOMElement2.x = 0;
+		graphicDOMElement2.y = 0;
+		
+	
+		
+		var colorStop2:ColorStopData = { color:Std.parseInt("0x888888") , alpha:60 };
+		var fillStyle2:FillStyleValue = monochrome(colorStop2);
+			graphicDOMElement2.beginFill(fillStyle2, LineStyleValue.none);
+		graphicDOMElement2.drawRect(0, 0, 200, 200);
+		
+		graphicDOMElement2.endFill();
+		
+		containerDOMElement.addChild(graphicDOMElement2);
+		
 	}
 	
 	public function testDrawPooly()

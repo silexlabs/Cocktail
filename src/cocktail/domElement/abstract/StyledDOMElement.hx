@@ -173,7 +173,7 @@ class StyledDOMElement extends AbstractDOMElement
 		
 		/**
 		 * At this point, all the dimensions of the DOMElement are known maybe except the
-		 * width. Those dimensions are now enough to position each of the DOMElement's
+		 * content height. Those dimensions are now enough to position each of the DOMElement's
 		 * children
 		 */
 		
@@ -189,6 +189,14 @@ class StyledDOMElement extends AbstractDOMElement
 		var domElementDimensions:ContainingDOMElementDimensions = {
 			width: computedWidth,
 			height: computedHeight
+		}
+		
+		switch (this.style.position)
+		{
+			case relative, absolute, fixed :
+				lastPositionedDOMElement = this;
+				
+			default:	
 		}
 		
 		
@@ -253,6 +261,8 @@ class StyledDOMElement extends AbstractDOMElement
 							var childTop:PositionOffsetStyleValue = childDOMElement.style.top;
 							var childBottom:PositionOffsetStyleValue = childDOMElement.style.bottom;
 							
+							
+							
 						case fixed:
 							
 							var childLeft:PositionOffsetStyleValue = childDOMElement.style.left;
@@ -300,6 +310,9 @@ class StyledDOMElement extends AbstractDOMElement
 				computedHeight = computedMinHeight;
 			}
 		}
+		
+		//this.width = computedWidth;
+		//this.height = computedHeight;
 		
 		var offsetDOMElementDimensions:OffsetDOMElementDimensions = {
 			width : computedMarginLeft + computedPaddingLeft + computedWidth + computedPaddingRight + computedMarginRight,
@@ -469,6 +482,7 @@ class StyledDOMElement extends AbstractDOMElement
 				if (containingDOMElementDimension == NULL)
 				{
 					//TO DO
+					computedDimensions = 0;
 				}
 				else
 				{
