@@ -50,7 +50,7 @@ class FontManager extends AbstractFontManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadFont(url:String, name:String, successCallback:FontData->Void, errorCallback:String->Void):Void
+	public static function loadFont(url:String, name:String, successCallback:Void->Void, errorCallback:String->Void):Void
 	{
 		var extension:String = url.substr(url.lastIndexOf("."), url.length); 
 		var fontData:FontData = {
@@ -73,26 +73,13 @@ class FontManager extends AbstractFontManager
 		//Create a 'style' element	
 		var styleE:HtmlDom = Lib.document.createElement("style");
 		styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
-		
-		// Set it's onLoad callback
-		untyped styleE.onload = onLoadComplete;
-		
-		//Set it's error callback
-		untyped styleE.onerror = onLoadError;
-		
+
 		// Now add this new element to the head tag
 		Lib.document.getElementsByTagName("head")[0].appendChild(styleE);
 		
-		//successCallback(fontData);
+		// to do: detect css loading errors
+		successCallback();
+		if (fonts == null) fonts = new Array();
+		fonts.push(fontData);
 	}
-	/**
-	 * When the font is loaded, calls the success callback with the font data structure
-	 * @param	data the loaded library data
-	 */
-	private function onLoadComplete(data:Dynamic):Void
-	{
-		
-		//_onLoadCompleteCallback(null);
-	}
-	
 }

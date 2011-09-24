@@ -13,11 +13,13 @@ package font;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeInstance.NativeInstanceManager;
+
 #if flash9
 import flash.display.Loader;
 import flash.Lib;
 import flash.system.ApplicationDomain;
 #end
+
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.domElement.TextDOMElement;
 import cocktail.classInstance.ClassInstance;
@@ -43,10 +45,6 @@ class FontTests
 	
 	public static function main()
 	{
-	
-		
-		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
-		
 		var runner = new Runner();
 		runner.addCase(new FontTests());
 		Report.create(runner);
@@ -68,26 +66,58 @@ class FontTests
 	 */
 	public function testFontLoad()
 	{
-		var successCallback:FontData->Void = Assert.createEvent(onFontLoaded);
+		var successCallback:Void->Void = Assert.createAsync(onFontLoaded);
 		FontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
-		FontManager.loadFont("embed_test_font.eot", "EmbedFontTest", successCallback, onFontLoadError);
+		#if js
+			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
+		#end
 	}
 	
 	/**
 	 * Called when the Font has been loaded
 	 */
-	private function onFontLoaded(fontData : FontData):Void
+	private function onFontLoaded():Void
 	{
 		Assert.isTrue(true);
+		var successCallback:Void->Void = Assert.createAsync(onFontLoaded2);
+		FontManager.loadFont("embed_test_font.eot", "EmbedFontTest", successCallback, onFontLoadError);
 	}
-	
+	/**
+	 * Called when the Font has been loaded
+	 */
+	private function onFontLoaded2():Void
+	{
+		Assert.isTrue(true);
+		var successCallback:Void->Void = Assert.createAsync(onFontLoaded3);
+		FontManager.loadFont("embed_test_font.otf", "EmbedFontTest", successCallback, onFontLoadError);
+	}
+	/**
+	 * Called when the Font has been loaded
+	 */
+	private function onFontLoaded3():Void
+	{
+		Assert.isTrue(true);
+
+// TODO HERE: ERROR_LOADING_TEST
+
+//		var errorCallback:String->Void = Assert.createEvent(onFontLoadError);
+//		FontManager.loadFont("ERROR_LOADING_TEST", "EmbedFontTest", onFontLoaded4, errorCallback);
+	}
+	/**
+	 * Called when the Font has been loaded
+	 */
+	private function onFontLoaded4():Void
+	{
+		// never called, just used to test errors
+	}
+
 	/**
 	 * Called when there is an error while loading Font
 	 * @param	msg
 	 */
 	private function onFontLoadError(msg:String):Void
 	{
-		
+		Assert.isTrue(true);
 	}
 	
 }
