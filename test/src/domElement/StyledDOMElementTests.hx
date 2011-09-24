@@ -76,15 +76,16 @@ class StyledDOMElementTests
 		
 		var domElement1Style:StyleData = getDefaultStyle();
 		domElement1.style = domElement1Style;
-		domElement1.style.width = DimensionStyleValue.length(pixel(500));
+		domElement1.style.width = DimensionStyleValue.percent(100);
 		domElement1.style.height = DimensionStyleValue.length(pixel(200));
 		
 		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
 		
 		var domElement2Style:StyleData = getDefaultStyle();
+		domElement2Style.display = inlineBlock;
 		domElement2.style = domElement2Style;
 		domElement2.style.width = DimensionStyleValue.length(pixel(200));
-		domElement2.style.height = DimensionStyleValue.length(pixel(300));
+		domElement2.style.height = DimensionStyleValue.percent(100);
 		
 		
 		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
@@ -93,12 +94,21 @@ class StyledDOMElementTests
 		//domElement3Style.display = inlineBlock;
 		domElement3.style = domElement3Style;
 		domElement3.style.width = DimensionStyleValue.length(pixel(50));
-		domElement3.style.height = DimensionStyleValue.length(pixel(100));
+		domElement3.style.height = DimensionStyleValue.length(pixel(300));
 		domElement3.style.marginLeft = MarginStyleValue.length(pixel(50));
 		
+		var domElement4:GraphicDOMElement = getGraph(0x999999, 0, 0, 600, 30);
+		
+		var domElement4Style:StyleData = getDefaultStyle();
+		domElement4Style.display = inlineBlock;
+		domElement4.style = domElement4Style;
+		domElement4.style.width = DimensionStyleValue.length(pixel(600));
+		domElement4.style.height = DimensionStyleValue.length(pixel(30));
+		domElement4.style.marginLeft = MarginStyleValue.length(pixel(20));
 		
 		rootDOMElement.addChild(domElement1);
 		container1.addChild(domElement2);
+		container1.addChild(domElement4);
 		rootDOMElement.addChild(container1);
 		rootDOMElement.addChild(domElement3);
 		

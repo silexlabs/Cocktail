@@ -314,7 +314,6 @@ class StyledDOMElement extends AbstractDOMElement
 							
 							if (flowX + childOffsetWidth <= containingDOMElementDimensions.width)
 							{
-								Log.trace("bim");
 								childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
 								childDOMElement.y = flowY + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
 								
@@ -371,8 +370,8 @@ class StyledDOMElement extends AbstractDOMElement
 			}
 		}
 		
-		//this.width = computedWidth;
-		//this.height = computedHeight;
+		this.width = computedWidth;
+		this.height = computedHeight;
 		
 		var computedDOMElementDimensions:ComputedDOMElementDimensions = {
 			width : computedWidth,
