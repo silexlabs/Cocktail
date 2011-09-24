@@ -9,27 +9,36 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.font.abstract;
+package cocktail.font.as3;
+
+import haxe.Log;
+import cocktail.font.abstract.AbstractFontManager;
+import cocktail.resource.ResourceLoaderManager;
+
 
 /**
- * This class handles the fonts loading, stores a list of loaded fonts. 
- * It is a base class, which is extended for each target.
- * Since the FontManager is a static class, this base class is only for the documentation
- * @author lexa
+ * This is the implementation of the font loader for the Flash AVM2 runtime. A font in Flash in embeded in a .swf
+ * file. It is loaded like a library. The font can be used for a text, just set the HTML style attribute to "font-family=MyFontName"
+ * @author Lex oYo
  */
-class AbstractFontManager 
-{	
+class FontManager extends AbstractFontManager
+{
 	/**
 	 * List of loaded fonts, successfull loaded fonts only
 	 */
 	public static var fonts:Array<FontData>;
 	
 	/**
-	 * The constructor is private as this class is meant to be accessed through static public method.
+	 * List of fonts being loaded
 	 */
-	private function new() 
+	public static var loadingFonts:Array<FontData>;
+	
+	/**
+	 * class constructor
+	 */
+	public function new() 
 	{
-		
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +55,29 @@ class AbstractFontManager
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public function loadFont(url:String, name:String, successCallback:FontData->Void, errorCallback:String->Void):Void
+	public static function loadFont(url:String, name:String, successCallback:Void->Void, errorCallback:String->Void):Void
 	{
-		// to be implemented for each target
+		ResourceLoaderManager.loadLibrary(url, onLoadComplete, onLoadError);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Callbacks for the loader
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the file is done loading, calls the success callback and update the fonts array
+	 * @param	data the loaded library data
+	 */
+	private static function onLoadComplete(data:Dynamic):Void
+	{
+		trace("onLoadComplete");
+	}
+	/**
+	 * An error occured while loading the font
+	 * @param	data the loaded library data
+	 */
+	private static function onLoadError(data:Dynamic):Void
+	{
+		trace("onLoadError");
+	}
 }
