@@ -135,6 +135,16 @@ class StyledDOMElement extends AbstractDOMElement
 		//min width
 		var computedMinWidth:Int = getComputedConstrainedDimension(this.style.minWidth, containingDOMElementDimensions.width, true);
 		
+		
+		var computedLeft:Int = getComputedPositionOffset(this.style.left, containingDOMElementDimensions.width);
+		
+		var computedRight:Int = getComputedPositionOffset(this.style.right, containingDOMElementDimensions.width);
+		
+		var computedTop:Int = getComputedPositionOffset(this.style.top, containingDOMElementDimensions.height);
+		
+		var computedBottom:Int = getComputedPositionOffset(this.style.bottom, containingDOMElementDimensions.height);
+		
+		
 		//check that the computedWidth is not 
 		//superior to max width. The max width
 		//can be defined as "null" if there are 
@@ -212,7 +222,7 @@ class StyledDOMElement extends AbstractDOMElement
 			var childDOMElement:StyledDOMElement = cast(this._children[i]);
 			
 			var computedDOMElementDimensions:ComputedDOMElementDimensions = childDOMElement.layout(domElementDimensions, lastPositionedDOMElement, rootDOMElement);
-			Log.trace(computedDOMElementDimensions);
+			
 			switch (childDOMElement.style.display)
 			{
 				case none:
@@ -226,40 +236,49 @@ class StyledDOMElement extends AbstractDOMElement
 							flowX = computedPaddingLeft;
 							
 							childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
+							childDOMElement.y = flowY + maxLineHeight + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
+							
+							flowY += computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
+							computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
+							
+							maxLineHeight = 0;
+							
+
+							
+						case relative:
+							
+							flowX = computedPaddingLeft;
+							
+							childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
 							childDOMElement.y = flowY + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
 							
 							flowY += computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
 							computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
 							
-							maxLineHeight = computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
-							computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
-							
-
-							
-						case relative:
-							if (computedDOMElementDimensions.height > maxLineHeight)
-							{
-								maxLineHeight = computedDOMElementDimensions.height;
-							}
-							
-							flowX = computedMarginLeft + computedPaddingLeft;
-							flowY += maxLineHeight;
-							
 							maxLineHeight = 0;
 							
-							childDOMElement.x = flowX;
-							childDOMElement.y = flowY;
 							
-							var childLeft:PositionOffsetStyleValue = childDOMElement.style.left;
-							var childRight:PositionOffsetStyleValue = childDOMElement.style.right;
-							var childTop:PositionOffsetStyleValue = childDOMElement.style.top;
-							var childBottom:PositionOffsetStyleValue = childDOMElement.style.bottom;
 							
-							/**
-							if (childDOMElement.style.right == 0 || childDOMElement.style.right == null)
+							//note : NULL can't work as -1 is valid, use an enum ComputedValue ?
+							if (computedDOMElementDimensions.left != NULL)
 							{
-								//TO DO
-							}*/
+								childDOMElement.x += computedDOMElementDimensions.left;
+							}
+							else if (computedDOMElementDimensions.right != NULL)
+							{
+								childDOMElement.x = containingDOMElementDimensions.width - computedDOMElementDimensions.width;
+								childDOMElement.x -= computedDOMElementDimensions.right;
+							}
+							
+							if (computedDOMElementDimensions.top != NULL)
+							{
+								childDOMElement.y += computedDOMElementDimensions.top;
+							}
+							else if (computedDOMElementDimensions.bottom != NULL)
+							{
+								childDOMElement.y = containingDOMElementDimensions.height - computedDOMElementDimensions.height;
+								childDOMElement.y -= computedDOMElementDimensions.bottom;
+							}
 							
 						case absolute:
 							
@@ -288,6 +307,40 @@ class StyledDOMElement extends AbstractDOMElement
 					switch (childDOMElement.style.position)
 					{
 						case _static:
+							
+							
+							var childOffsetWidth:Int = computedDOMElementDimensions.width + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft + computedDOMElementDimensions.marginRight + computedDOMElementDimensions.paddingRight;
+							var childOffsetHeight:Int = computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.marginBottom + computedDOMElementDimensions.paddingBottom;
+							
+							if (flowX + childOffsetWidth <= containingDOMElementDimensions.width)
+							{
+								Log.trace("bim");
+								childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
+								childDOMElement.y = flowY + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
+								
+								flowX += childOffsetWidth;
+								
+								if (childOffsetHeight > maxLineHeight)
+								{
+									maxLineHeight = childOffsetHeight;
+								}
+							}
+							else
+							{
+								flowX = computedPaddingLeft;
+							
+								childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
+								childDOMElement.y = flowY + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
+							
+								flowY += computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
+								computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
+							
+								maxLineHeight = computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
+								computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
+							
+								flowX = computedDOMElementDimensions.width + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft + computedDOMElementDimensions.marginRight + computedDOMElementDimensions.paddingRight;
+
+							}
 							
 						case relative:
 							
@@ -331,7 +384,11 @@ class StyledDOMElement extends AbstractDOMElement
 			paddingLeft : computedPaddingLeft,
 			paddingRight : computedPaddingRight,
 			paddingTop : computedPaddingTop,
-			paddingBottom : computedPaddingBottom
+			paddingBottom : computedPaddingBottom,
+			left: computedLeft,
+			right: computedRight,
+			top: computedTop,
+			bottom : computedBottom
 		}
 		
 		return computedDOMElementDimensions;
@@ -470,6 +527,25 @@ class StyledDOMElement extends AbstractDOMElement
 		}
 		
 		return computedConstraintDimension;
+	}
+	
+	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffsetStyleValue, containingDOMElementDimension:Int):Int
+	{
+		var computedPositionOffset:Int;
+		
+		switch(positionOffsetStyleValue)
+		{
+			case length(value):
+				computedPositionOffset = getValueFromLength(value);
+				
+			case percent(value):
+				computedPositionOffset = getValueFromPercent(value, containingDOMElementDimension);
+				
+			case auto:
+				computedPositionOffset = 0;
+		}
+		
+		return computedPositionOffset;
 	}
 	
 	/**

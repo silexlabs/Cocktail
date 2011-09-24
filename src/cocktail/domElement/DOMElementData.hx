@@ -267,6 +267,10 @@ package cocktail.domElement;
 		var paddingRight:Int;
 		var paddingTop:Int;
 		var paddingBottom:Int;
+		var left:Int;
+		var right:Int;
+		var top:Int;
+		var bottom:Int;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

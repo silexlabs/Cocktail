@@ -57,13 +57,15 @@ class StyledDOMElementTests
 	public function testStyle()
 	{
 		var rootStyle:StyleData = getDefaultStyle();
-		rootStyle.width = DimensionStyleValue.length(pixel(1000));
+		rootStyle.width = DimensionStyleValue.length(pixel(2000));
 		rootStyle.height = DimensionStyleValue.length(pixel(2000));
 		rootDOMElement.style = rootStyle;
 		
 		var container1:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		var container1Style:StyleData = getDefaultStyle();
+		container1Style.display = inlineBlock;
 		container1.style = container1Style;
+		
 		container1.style.width = DimensionStyleValue.length(pixel(250));
 		container1.style.height = DimensionStyleValue.length(pixel(100));
 		container1.style.marginTop = MarginStyleValue.length(pixel(20));
@@ -88,6 +90,7 @@ class StyledDOMElementTests
 		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
 		
 		var domElement3Style:StyleData = getDefaultStyle();
+		//domElement3Style.display = inlineBlock;
 		domElement3.style = domElement3Style;
 		domElement3.style.width = DimensionStyleValue.length(pixel(50));
 		domElement3.style.height = DimensionStyleValue.length(pixel(100));
