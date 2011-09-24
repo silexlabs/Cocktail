@@ -2432,13 +2432,12 @@ font.FontTests.prototype.onFontLoaded2 = function() {
 }
 font.FontTests.prototype.onFontLoaded3 = function() {
 	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 99, className : "font.FontTests", methodName : "onFontLoaded3"});
-	var errorCallback = utest.Assert.createEvent($closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded4 = function() {
 	null;
 }
 font.FontTests.prototype.onFontLoadError = function(msg) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 117, className : "font.FontTests", methodName : "onFontLoadError"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 120, className : "font.FontTests", methodName : "onFontLoadError"});
 }
 font.FontTests.prototype.__class__ = font.FontTests;
 ValueType = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
