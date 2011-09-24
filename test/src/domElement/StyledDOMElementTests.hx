@@ -46,63 +46,78 @@ class StyledDOMElementTests
 	public static function main()
 	{
 		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
-		
-		var runner = new Runner();
-		runner.addCase(new StyledDOMElementTests());
-		Report.create(runner);
-		runner.run();
+		new StyledDOMElementTests();
 	}
 	
 	public function new() 
 	{
+		testStyle();
 	}
 	
 	public function testStyle()
 	{
 		var rootStyle:StyleData = getDefaultStyle();
-		rootStyle.width = DimensionStyleValue.length(pixel(500));
-		rootStyle.height = DimensionStyleValue.length(pixel(500));
+		rootStyle.width = DimensionStyleValue.length(pixel(1000));
+		rootStyle.height = DimensionStyleValue.length(pixel(2000));
 		rootDOMElement.style = rootStyle;
 		
 		var container1:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		var container1Style:StyleData = getDefaultStyle();
 		container1.style = container1Style;
-		container1.width = 200;
-		container1.height = 200;
+		container1.style.width = DimensionStyleValue.length(pixel(250));
+		container1.style.height = DimensionStyleValue.length(pixel(100));
+		container1.style.marginTop = MarginStyleValue.length(pixel(20));
+		container1.width = 250;
+		container1.height = 100;
 		
-		var domElement1:GraphicDOMElement = getGraph(0xFF0000, 0, 0, 100, 100);
+		var domElement1:GraphicDOMElement = getGraph(0xFF0000, 0, 0, 500, 200);
 		
 		var domElement1Style:StyleData = getDefaultStyle();
 		domElement1.style = domElement1Style;
+		domElement1.style.width = DimensionStyleValue.length(pixel(500));
+		domElement1.style.height = DimensionStyleValue.length(pixel(200));
 		
-		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 100, 100);
+		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
 		
 		var domElement2Style:StyleData = getDefaultStyle();
 		domElement2.style = domElement2Style;
+		domElement2.style.width = DimensionStyleValue.length(pixel(200));
+		domElement2.style.height = DimensionStyleValue.length(pixel(300));
 		
-		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 100, 100);
+		
+		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
 		
 		var domElement3Style:StyleData = getDefaultStyle();
 		domElement3.style = domElement3Style;
+		domElement3.style.width = DimensionStyleValue.length(pixel(50));
+		domElement3.style.height = DimensionStyleValue.length(pixel(100));
+		domElement3.style.marginLeft = MarginStyleValue.length(pixel(50));
 		
-		domElement1.addChild(domElement3);
 		
 		rootDOMElement.addChild(domElement1);
-		
+		container1.addChild(domElement2);
 		rootDOMElement.addChild(container1);
-		container1.addChild(domElement3);
+		rootDOMElement.addChild(domElement3);
 		
-		rootDOMElement.addChild(domElement2);
 		
-		rootDOMElement.layout( { width:500, height:500 }, rootDOMElement, rootDOMElement);
+		rootDOMElement.layout( { width:1000, height:1000 }, rootDOMElement, rootDOMElement);
 	}
 	
 	private function getGraph(color:Int, x:Int, y:Int, width:Int, height:Int):GraphicDOMElement
 	{
+		
+		
 		var ret:GraphicDOMElement = new GraphicDOMElement();
+		
+		ret.width = width;
+		ret.height = height;
+		
 		ret.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
 		ret.drawRect(x, y, width, height);
 		ret.endFill();
+		
+
+		
 		return ret;
 	}
 	
@@ -134,8 +149,8 @@ class StyledDOMElementTests
 			
 			position:_static,
 			
-			width:DimensionStyleValue.length(pixel(100)),
-			height:DimensionStyleValue.length(pixel(100))
+			width:DimensionStyleValue.auto,
+			height:DimensionStyleValue.auto
 		}
 	}
 	

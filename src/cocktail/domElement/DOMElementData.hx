@@ -253,12 +253,20 @@ package cocktail.domElement;
 	}
 	
 	/**
-	 * Represents the total width and height of a 
-	 * DOMElement, including its content, margins and paddings
+	 * Stores all of the dimensions used to 
+	 * place a DOMElement
 	 */
-	typedef OffsetDOMElementDimensions = {
+	typedef ComputedDOMElementDimensions = {
 		var width:Int;
 		var height:Int;
+		var marginLeft:Int;
+		var marginRight:Int;
+		var marginTop:Int;
+		var marginBottom:Int;
+		var paddingLeft:Int;
+		var paddingRight:Int;
+		var paddingTop:Int;
+		var paddingBottom:Int;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

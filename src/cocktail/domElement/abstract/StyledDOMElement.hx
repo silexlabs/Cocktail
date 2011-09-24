@@ -2,6 +2,7 @@ package cocktail.domElement.abstract;
 
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.DOMElementData;
+import haxe.Log;
 
 /**
  * ...
@@ -51,8 +52,9 @@ class StyledDOMElement extends AbstractDOMElement
 	 * @return returns the offset dimensions (width and height) of the laid out DOMElement. Those dimensions include
 	 * paddings and margins
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:StyledDOMElement, rootDOMElement:StyledDOMElement):OffsetDOMElementDimensions
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:StyledDOMElement, rootDOMElement:StyledDOMElement):ComputedDOMElementDimensions
 	{
+		
 		/**
 		* First, start by computing each value constituting 
 		* the DOMElements dimensions : content width and height,
@@ -78,11 +80,14 @@ class StyledDOMElement extends AbstractDOMElement
 		//get the left padding thickness in pixel 
 		var computedPaddingLeft:Int = getComputedPadding(this.style.paddingLeft, containingDOMElementDimensions.width);
 		
+		
 		//right padding
 		var computedPaddingRight:Int = getComputedPadding(this.style.paddingRight, containingDOMElementDimensions.width);
 		
 		//get the content width (width without margins and paddings)
 		var computedWidth:Int = getComputedDimension(this.style.width, containingDOMElementDimensions.width);
+		
+		Log.trace(computedWidth);
 		
 		//left margin
 		var computedMarginLeft:Int = getComputedMargin(this.style.marginLeft, this.style.marginRight, containingDOMElementDimensions.width, computedWidth, computedPaddingRight + computedPaddingLeft);
@@ -178,9 +183,9 @@ class StyledDOMElement extends AbstractDOMElement
 		 */
 		
 		
-		var flowX:Int = computedMarginLeft + computedPaddingLeft;
+		var flowX:Int = computedPaddingLeft;
 		
-		var flowY:Int = computedMarginTop + computedPaddingTop;
+		var flowY:Int = computedPaddingTop;
 		
 		var totalChildrenHeight:Int = 0;
 		
@@ -190,6 +195,8 @@ class StyledDOMElement extends AbstractDOMElement
 			width: computedWidth,
 			height: computedHeight
 		}
+		
+	
 		
 		switch (this.style.position)
 		{
@@ -204,8 +211,8 @@ class StyledDOMElement extends AbstractDOMElement
 		{
 			var childDOMElement:StyledDOMElement = cast(this._children[i]);
 			
-			var childrenOffsetDimensions:OffsetDOMElementDimensions = childDOMElement.layout(domElementDimensions, lastPositionedDOMElement, rootDOMElement);
-			
+			var computedDOMElementDimensions:ComputedDOMElementDimensions = childDOMElement.layout(domElementDimensions, lastPositionedDOMElement, rootDOMElement);
+			Log.trace(computedDOMElementDimensions);
 			switch (childDOMElement.style.display)
 			{
 				case none:
@@ -215,24 +222,24 @@ class StyledDOMElement extends AbstractDOMElement
 					switch (childDOMElement.style.position)
 					{
 						case _static:
+
+							flowX = computedPaddingLeft;
 							
-							if (childrenOffsetDimensions.height > maxLineHeight)
-							{
-								maxLineHeight = childrenOffsetDimensions.height;
-							}
+							childDOMElement.x = flowX + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
+							childDOMElement.y = flowY + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
 							
-							flowX = computedMarginLeft + computedPaddingLeft;
-							flowY += maxLineHeight;
+							flowY += computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
+							computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
 							
-							maxLineHeight = 0;
+							maxLineHeight = computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
+							computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
 							
-							childDOMElement.x = flowX;
-							childDOMElement.y = flowY;
+
 							
 						case relative:
-							if (childrenOffsetDimensions.height > maxLineHeight)
+							if (computedDOMElementDimensions.height > maxLineHeight)
 							{
-								maxLineHeight = childrenOffsetDimensions.height;
+								maxLineHeight = computedDOMElementDimensions.height;
 							}
 							
 							flowX = computedMarginLeft + computedPaddingLeft;
@@ -314,12 +321,20 @@ class StyledDOMElement extends AbstractDOMElement
 		//this.width = computedWidth;
 		//this.height = computedHeight;
 		
-		var offsetDOMElementDimensions:OffsetDOMElementDimensions = {
-			width : computedMarginLeft + computedPaddingLeft + computedWidth + computedPaddingRight + computedMarginRight,
-			height : computedMarginTop + computedPaddingTop + computedHeight + computedPaddingBottom + computedMarginBottom
+		var computedDOMElementDimensions:ComputedDOMElementDimensions = {
+			width : computedWidth,
+			height : computedHeight,
+			marginLeft : computedMarginLeft,
+			marginRight : computedMarginRight,
+			marginTop : computedMarginTop,
+			marginBottom : computedMarginBottom,
+			paddingLeft : computedPaddingLeft,
+			paddingRight : computedPaddingRight,
+			paddingTop : computedPaddingTop,
+			paddingBottom : computedPaddingBottom
 		}
 		
-		return offsetDOMElementDimensions;
+		return computedDOMElementDimensions;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
