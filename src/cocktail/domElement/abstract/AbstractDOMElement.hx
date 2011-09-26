@@ -893,6 +893,12 @@ class AbstractDOMElement
 			localX -= parentGlobalX;
 			
 		}
+		//if this DOMElement has no parent, then it is the 
+		//root DOMElement and the origin for all global position
+		else 
+		{
+			localX = 0;
+		}
 		this.x = localX;
 		
 		return this._x;
@@ -907,7 +913,7 @@ class AbstractDOMElement
 		//init the globalX with the current localX
 		//if this DOMElement has no parent, it will
 		//be the returned value
-		var globalX:Int = this.x;
+		var newGlobalX:Int = this.x;
 		
 		//if this DOMElement has a parent
 		if (this._parent != null)
@@ -918,11 +924,17 @@ class AbstractDOMElement
 			//The added localX form the globalX valu
 			while (parentDOMElement != null)
 			{
-				globalX += parentDOMElement.x;
+				newGlobalX += parentDOMElement.x;
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
-		return globalX;
+		//if this DOMElement has no parent, then it is the 
+		//root DOMElement and the origin for all global position
+		else
+		{
+			newGlobalX = 0;
+		}
+		return newGlobalX;
 		
 	}
 	
@@ -942,6 +954,10 @@ class AbstractDOMElement
 			localY -= parentGlobalY;
 			
 		}
+		else
+		{
+			localY = 0;
+		}
 		this.y = localY;
 		
 		return this._y;
@@ -954,85 +970,24 @@ class AbstractDOMElement
 	public function getGlobalY():Int
 	{
 		//see getGlobalY
-		var globalY:Int = this.y;
+		var newGlobalY:Int = this.y;
 		
-		if (this._parent != null)
-		{
-			var parentDOMElement:AbstractDOMElement = this._parent;
-			
-			while (parentDOMElement != null)
-			{
-				globalY += parentDOMElement.y;
-				parentDOMElement = parentDOMElement.parent;
-			}
-		}
-		return globalY;
-	}
-	
-	/**
-	 * Take a value representing an absolute position (x or y)
-	 * that a DOMElement should have and return the position that
-	 * the DOMElement should have relative to its parent to match
-	 * the absolute position
-	 * @param	value a position value (x or y) where 0 correponds to 
-	 * the root DOMElement position
-	 * @param	method a callback used to retrive the DOMElement parent's
-	 * global coord
-	 * @return the new position of the DOMElement in its parent coordinate system
-	 */
-	private function globalToLocal(value:Int, method:Void->Int):Int
-	{
-		//init the global value with the provided value, if the DOMElement has no parent
-		//then this will be the global coord
-		var localCoord:Int = value;
-		
-		//if the DOMElement has a parent,
-		//retrieve its global coord and substract it
-		//to the desired global coord, it will return
-		//the local coord, relative to the DOMElement's parent
-		//origin
-		if (this._parent != null)
-		{
-			var parentGlobalCoord:Int = localToGlobal(value, method);
-			localCoord -= parentGlobalCoord;
-		}
-		
-		return localCoord;
-	}
-	
-	/**
-	 * Take a position value (x or y) relative to the DOMElement's parent and convert
-	 * it to the root DOMElement coord system
-	 * @param	value the local value, relative to the parent coord system
-	 * @param	method a method used to retrive a parent local position 
-	 * @return a coord value where 0 is the position of the root DOMElement
-	 */
-	private function localToGlobal(value:Int, method:Void->Int):Int
-	{
-	
-		//init the returned value with the provided local coord,
-		//if the DOMElement has no parent, it will be the 
-		//returned value
-		var globalCoord:Int = value;
-		
-		//if the DOMElement has a parent, 
-		//add the parents local coord value
-		//until a DOMElement with no parent is found
-		//(the root DOMElement). The accumulated value is
-		//the global coord
 		if (this._parent != null)
 		{
 			var parentDOMElement:AbstractDOMElement = this._parent;
 			while (parentDOMElement != null)
 			{
-				globalCoord += Reflect.callMethod(parentDOMElement, method, []);
+				newGlobalY += parentDOMElement.y;
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
-
-		return globalCoord;
+		else
+		{
+			newGlobalY = 0;
+		}
+		
+		return newGlobalY;
 	}
-	
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
