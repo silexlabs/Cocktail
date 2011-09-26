@@ -15,6 +15,9 @@ class StyledDOMElement extends AbstractDOMElement
 	private var _style:StyleData;
 	public var style(getStyle, setStyle):StyleData;
 	
+	private var _computedStyle:ComputedStyleData;
+	public var computedStyle(getComputedStyle, never):ComputedStyleData;
+	
 	private var _isDirty:Bool;
 	
 	private static inline var NULL:Int = -1;
@@ -40,6 +43,12 @@ class StyledDOMElement extends AbstractDOMElement
 	// main entry point for layout algorithm
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	public function applyStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElement:StyledDOMElement):Void
+	{
+		layout(containingDOMElementDimensions);
+		position(rootDOMElement, rootDOMElement);
+	}
+	
 	/**
 	 * Main layout method, compute the dimensions of a DOMElement then layout and
 	 * place its children recursively
@@ -52,7 +61,7 @@ class StyledDOMElement extends AbstractDOMElement
 	 * @return returns the offset dimensions (width and height) of the laid out DOMElement. Those dimensions include
 	 * paddings and margins
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:StyledDOMElement, rootDOMElement:StyledDOMElement):ComputedDOMElementDimensions
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
 	{
 		
 		/**
@@ -87,7 +96,6 @@ class StyledDOMElement extends AbstractDOMElement
 		//get the content width (width without margins and paddings)
 		var computedWidth:Int = getComputedDimension(this.style.width, containingDOMElementDimensions.width);
 		
-		Log.trace(computedWidth);
 		
 		//left margin
 		var computedMarginLeft:Int = getComputedMargin(this.style.marginLeft, this.style.marginRight, containingDOMElementDimensions.width, computedWidth, computedPaddingRight + computedPaddingLeft);
@@ -192,6 +200,22 @@ class StyledDOMElement extends AbstractDOMElement
 		 * children
 		 */
 		
+		 if (this.style.width == DimensionStyleValue.auto)
+		 {
+			 if (computedLeft != 0 && computedRight != 0)
+			 {
+				 this.width = containingDOMElementDimensions.width - computedLeft - computedRight;
+			 }
+		 }
+		 
+		 if (this.style.height == DimensionStyleValue.auto)
+		 {
+			 if (computedTop != 0 && computedBottom != 0)
+			 {
+				 this.height = containingDOMElementDimensions.height - computedTop - computedBottom;
+			 }
+		 }
+		 
 		
 		var flowData:FlowData = {
 			x : computedPaddingLeft,
@@ -207,22 +231,14 @@ class StyledDOMElement extends AbstractDOMElement
 			height: computedHeight
 		}
 		
-	
 		
-		switch (this.style.position)
-		{
-			case relative, absolute, fixed :
-				lastPositionedDOMElement = this;
-				
-			default:	
-		}
 		
 		
 		for (i in 0...this._children.length)
 		{
 			var childDOMElement:StyledDOMElement = cast(this._children[i]);
 			
-			var computedDOMElementDimensions:ComputedDOMElementDimensions = childDOMElement.layout(domElementDimensions, lastPositionedDOMElement, rootDOMElement);
+			var computedStyleData:ComputedStyleData = childDOMElement.layout(domElementDimensions);
 			
 			switch (childDOMElement.style.display)
 			{
@@ -234,21 +250,21 @@ class StyledDOMElement extends AbstractDOMElement
 					{
 						case _static:
 		
-							flowData = applyBlockFlow(flowData, computedPaddingLeft, childDOMElement, computedDOMElementDimensions);
+							flowData = applyBlockFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData);
 							
 						case relative:
 							
-							flowData = applyBlockFlow(flowData, computedPaddingLeft, childDOMElement, computedDOMElementDimensions);
+							flowData = applyBlockFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData);
 							
-							applyOffset(childDOMElement, computedDOMElementDimensions, containingDOMElementDimensions);
+							applyOffset(childDOMElement, computedStyleData, containingDOMElementDimensions);
 							
 						case absolute:
 							
-							applyPosition(childDOMElement, lastPositionedDOMElement, computedDOMElementDimensions);
+							//applyPosition(childDOMElement, lastPositionedDOMElement, computedStyleData);
 							
 						case fixed:
 							
-							applyPosition(childDOMElement, rootDOMElement, computedDOMElementDimensions);
+							//applyPosition(childDOMElement, rootDOMElement, computedStyleData);
 							
 					}
 					
@@ -260,21 +276,21 @@ class StyledDOMElement extends AbstractDOMElement
 					{
 						case _static:
 							
-							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedDOMElementDimensions, containingDOMElementDimensions);
+							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);
 							
 						case relative:
 							
-							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedDOMElementDimensions, containingDOMElementDimensions);
+							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);
 							
-							applyOffset(childDOMElement, computedDOMElementDimensions, containingDOMElementDimensions);
+							applyOffset(childDOMElement, computedStyleData, containingDOMElementDimensions);
 							
 						case absolute:
 							
-							applyPosition(childDOMElement, lastPositionedDOMElement, computedDOMElementDimensions);
+							//applyPosition(childDOMElement, lastPositionedDOMElement, computedStyleData);
 							
 						case fixed:
 							
-							applyPosition(childDOMElement, rootDOMElement, computedDOMElementDimensions);
+							//applyPosition(childDOMElement, rootDOMElement, computedStyleData);
 					}
 			}
 			
@@ -299,10 +315,10 @@ class StyledDOMElement extends AbstractDOMElement
 			}
 		}
 		
-		this.width = computedWidth;
-		this.height = computedHeight;
+		//this.width = computedWidth;
+		//this.height = computedHeight;
 		
-		var computedDOMElementDimensions:ComputedDOMElementDimensions = {
+		var computedStyleData:ComputedStyleData = {
 			width : computedWidth,
 			height : computedHeight,
 			offsetWidth : computedWidth + computedMarginLeft + computedPaddingLeft + computedMarginRight + computedPaddingRight,
@@ -321,7 +337,41 @@ class StyledDOMElement extends AbstractDOMElement
 			bottom : computedBottom
 		}
 		
-		return computedDOMElementDimensions;
+		this._computedStyle = computedStyleData;
+		
+		return computedStyleData;
+	}
+	
+	public function position(lastPositionedDOMElement:StyledDOMElement, rootDOMElement:StyledDOMElement):Void
+	{
+		switch (this.style.position)
+		{
+			case relative, absolute, fixed :
+				lastPositionedDOMElement = this;
+				
+			default:	
+		}
+		
+		
+		for (i in 0...this._children.length)
+		{
+			var childDOMElement:StyledDOMElement = cast(this._children[i]);
+			
+			childDOMElement.position(lastPositionedDOMElement, rootDOMElement);
+			switch (childDOMElement.style.position)
+			{
+				case absolute:
+						
+					applyPosition(childDOMElement, lastPositionedDOMElement);
+						
+				case fixed:
+						
+					applyPosition(childDOMElement, rootDOMElement);
+					
+				default:
+			}
+			
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -329,97 +379,88 @@ class StyledDOMElement extends AbstractDOMElement
 	// Utilities method to help the main layout method
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function applyBlockInlineFlow(flowData:FlowData, computedPaddingLeft:Int, domElement:StyledDOMElement, computedDOMElementDimensions:ComputedDOMElementDimensions, containingDOMElementDimensions:ContainingDOMElementDimensions):FlowData
+	private function applyBlockInlineFlow(flowData:FlowData, computedPaddingLeft:Int, domElement:StyledDOMElement, computedStyleData:ComputedStyleData, containingDOMElementDimensions:ContainingDOMElementDimensions):FlowData
 	{
-		if (flowData.x + computedDOMElementDimensions.offsetWidth <= containingDOMElementDimensions.width)
+		if (flowData.x + computedStyleData.offsetWidth <= containingDOMElementDimensions.width)
 		{
-			return applyInlineFlow(flowData, domElement, computedDOMElementDimensions, containingDOMElementDimensions);
+			return applyInlineFlow(flowData, domElement, computedStyleData, containingDOMElementDimensions);
 		}
 		else
 		{
-			return applyBlockFlow(flowData, computedPaddingLeft, domElement, computedDOMElementDimensions);
+			return applyBlockFlow(flowData, computedPaddingLeft, domElement, computedStyleData);
 		}
 	}
 	
-	private function applyBlockFlow(flowData:FlowData, computedPaddingLeft:Int, domElement:StyledDOMElement, computedDOMElementDimensions:ComputedDOMElementDimensions):FlowData
+	private function applyBlockFlow(flowData:FlowData, computedPaddingLeft:Int, domElement:StyledDOMElement, computedStyleData:ComputedStyleData):FlowData
 	{
 		flowData.x = computedPaddingLeft;
 						
-		domElement.x = flowData.x + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
-		domElement.y = flowData.y + flowData.maxLineHeight + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
+		domElement.x = flowData.x + computedStyleData.marginLeft + computedStyleData.paddingLeft;
+		domElement.y = flowData.y + flowData.maxLineHeight + computedStyleData.marginTop + computedStyleData.paddingTop;
 		
-		flowData.y += computedDOMElementDimensions.height + computedDOMElementDimensions.marginTop + 
-		computedDOMElementDimensions.paddingTop + computedDOMElementDimensions.paddingBottom + computedDOMElementDimensions.marginBottom;
+		flowData.y += computedStyleData.height + computedStyleData.marginTop + 
+		computedStyleData.paddingTop + computedStyleData.paddingBottom + computedStyleData.marginBottom;
 		
 		flowData.maxLineHeight = 0;
 		
 		return flowData;
 	}
 	
-	private function applyInlineFlow(flowData:FlowData, domElement:StyledDOMElement, computedDOMElementDimensions:ComputedDOMElementDimensions, containingDOMElementDimensions:ContainingDOMElementDimensions ):FlowData
+	private function applyInlineFlow(flowData:FlowData, domElement:StyledDOMElement, computedStyleData:ComputedStyleData, containingDOMElementDimensions:ContainingDOMElementDimensions ):FlowData
 	{			
 		
-		domElement.x = flowData.x + computedDOMElementDimensions.marginLeft + computedDOMElementDimensions.paddingLeft;
-		domElement.y = flowData.y + computedDOMElementDimensions.marginTop + computedDOMElementDimensions.paddingTop;
+		domElement.x = flowData.x + computedStyleData.marginLeft + computedStyleData.paddingLeft;
+		domElement.y = flowData.y + computedStyleData.marginTop + computedStyleData.paddingTop;
 				
-		flowData.x += computedDOMElementDimensions.offsetWidth;
+		flowData.x += computedStyleData.offsetWidth;
 					
-		if (computedDOMElementDimensions.offsetHeight > flowData.maxLineHeight)
+		if (computedStyleData.offsetHeight > flowData.maxLineHeight)
 		{
-			flowData.maxLineHeight = computedDOMElementDimensions.offsetHeight;
+			flowData.maxLineHeight = computedStyleData.offsetHeight;
 		}
 			
 		return flowData;
 	}
 	
-	private function applyOffset(domElement:StyledDOMElement, computedDOMElementDimensions:ComputedDOMElementDimensions, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	private function applyOffset(domElement:StyledDOMElement, computedStyleData:ComputedStyleData, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
-		if (computedDOMElementDimensions.left != NULL)
+		if (computedStyleData.left != 0)
 		{
-			domElement.x += computedDOMElementDimensions.left;
+			domElement.x += computedStyleData.left;
 		}
-		else if (computedDOMElementDimensions.right != NULL)
+		else if (computedStyleData.right != 0)
 		{
-			domElement.x = containingDOMElementDimensions.width - computedDOMElementDimensions.width;
-			domElement.x -= computedDOMElementDimensions.right;
+			domElement.x = containingDOMElementDimensions.width - computedStyleData.width;
+			domElement.x -= computedStyleData.right;
 		}
 		
-		if (computedDOMElementDimensions.top != NULL)
+		if (computedStyleData.top != 0)
 		{
-			domElement.y += computedDOMElementDimensions.top;
+			domElement.y += computedStyleData.top;
 		}
-		else if (computedDOMElementDimensions.bottom != NULL)
+		else if (computedStyleData.bottom != 0)
 		{
-			domElement.y = containingDOMElementDimensions.height - computedDOMElementDimensions.height;
-			domElement.y -= computedDOMElementDimensions.bottom;
+			domElement.y = containingDOMElementDimensions.height - computedStyleData.height;
+			domElement.y -= computedStyleData.bottom;
 		}
 	}
 	
-	private function applyPosition(domElement:StyledDOMElement, containingDOMElement:StyledDOMElement, computedDOMElementDimensions:ComputedDOMElementDimensions):Void
+	private function applyPosition(domElement:StyledDOMElement, containingDOMElement:StyledDOMElement):Void
 	{
 		var referenceGlobalX:Int = containingDOMElement.globalX;
+	
 		var referenceGlobalY:Int = containingDOMElement.globalY;
 		
+		domElement.globalX = referenceGlobalX;
+		domElement.globalY = referenceGlobalY;
 		
-		if (computedDOMElementDimensions.left != NULL)
-		{
-			domElement.globalX = referenceGlobalX + computedDOMElementDimensions.left;
-		}
-		else if (computedDOMElementDimensions.right != NULL)
-		{
-			domElement.globalX = referenceGlobalX + containingDOMElement.width - computedDOMElementDimensions.width;
-			domElement.globalX -= computedDOMElementDimensions.right;
+		var containingDOMElementDimensions:ContainingDOMElementDimensions = {
+			width : containingDOMElement.computedStyle.width,
+			height : containingDOMElement.computedStyle.height
 		}
 		
-		if (computedDOMElementDimensions.top != NULL)
-		{
-			domElement.globalY += referenceGlobalY + computedDOMElementDimensions.top;
-		}
-		else if (computedDOMElementDimensions.bottom != NULL)
-		{
-			domElement.globalY = referenceGlobalY + containingDOMElement.height - computedDOMElementDimensions.height;
-			domElement.globalY -= computedDOMElementDimensions.bottom;
-		}
+		applyOffset(domElement, domElement.computedStyle, containingDOMElementDimensions);
+		
 	}
 	
 	/**
@@ -692,6 +733,11 @@ class StyledDOMElement extends AbstractDOMElement
 		this._style = value;
 		invalidate();
 		return this._style;
+	}
+	
+	public function getComputedStyle():ComputedStyleData
+	{
+		return _computedStyle;
 	}
 	
 }

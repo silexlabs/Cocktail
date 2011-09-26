@@ -57,8 +57,8 @@ class StyledDOMElementTests
 	public function testStyle()
 	{
 		var rootStyle:StyleData = getDefaultStyle();
-		rootStyle.width = DimensionStyleValue.length(pixel(2000));
-		rootStyle.height = DimensionStyleValue.length(pixel(2000));
+		rootStyle.width = DimensionStyleValue.length(pixel(1000));
+		rootStyle.height = DimensionStyleValue.length(pixel(1000));
 		rootDOMElement.style = rootStyle;
 		
 		var container1:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
@@ -69,8 +69,11 @@ class StyledDOMElementTests
 		container1.style.width = DimensionStyleValue.length(pixel(250));
 		container1.style.height = DimensionStyleValue.length(pixel(100));
 		container1.style.marginTop = MarginStyleValue.length(pixel(20));
-		container1.width = 250;
-		container1.height = 100;
+		container1.style.position = relative;
+		//container1.width = 250;
+		//container1.height = 100;
+		container1.x = 0;
+		container1.y = 0;
 		
 		var domElement1:GraphicDOMElement = getGraph(0xFF0000, 0, 0, 500, 200);
 		
@@ -82,6 +85,8 @@ class StyledDOMElementTests
 		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
 		
 		var domElement2Style:StyleData = getDefaultStyle();
+		domElement2Style.position = absolute;
+		domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
 		domElement2Style.display = inlineBlock;
 		domElement2.style = domElement2Style;
 		domElement2.style.width = DimensionStyleValue.length(pixel(200));
@@ -91,7 +96,7 @@ class StyledDOMElementTests
 		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
 		
 		var domElement3Style:StyleData = getDefaultStyle();
-		//domElement3Style.display = inlineBlock;
+		
 		domElement3.style = domElement3Style;
 		domElement3.style.width = DimensionStyleValue.length(pixel(50));
 		domElement3.style.height = DimensionStyleValue.length(pixel(300));
@@ -113,7 +118,7 @@ class StyledDOMElementTests
 		rootDOMElement.addChild(domElement3);
 		
 		
-		rootDOMElement.layout( { width:1000, height:1000 }, rootDOMElement, rootDOMElement);
+		rootDOMElement.applyStyle( { width:1000, height:1000 }, rootDOMElement);
 	}
 	
 	private function getGraph(color:Int, x:Int, y:Int, width:Int, height:Int):GraphicDOMElement
@@ -128,7 +133,8 @@ class StyledDOMElementTests
 		ret.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
 		ret.drawRect(x, y, width, height);
 		ret.endFill();
-		
+		ret.x = 0;
+		ret.y = 0;
 
 		
 		return ret;

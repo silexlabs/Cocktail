@@ -253,10 +253,12 @@ package cocktail.domElement;
 	}
 	
 	/**
-	 * Stores all of the dimensions used to 
-	 * place a DOMElement
+	 * Stores all the computed styles
+	 * of a DOMElement as they are 
+	 * used multiple times when appliying
+	 * styles
 	 */
-	typedef ComputedDOMElementDimensions = {
+	typedef ComputedStyleData = {
 		
 		/**
 		 * content width
