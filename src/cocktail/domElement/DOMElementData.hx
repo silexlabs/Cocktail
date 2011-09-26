@@ -257,8 +257,27 @@ package cocktail.domElement;
 	 * place a DOMElement
 	 */
 	typedef ComputedDOMElementDimensions = {
+		
+		/**
+		 * content width
+		 */
 		var width:Int;
+		
+		/**
+		 * content height
+		 */
 		var height:Int;
+		
+		/**
+		 * content width + margins + paddings
+		 */
+		var offsetWidth:Int;
+		
+		/**
+		 * content height + margins + paddings
+		 */
+		var offsetHeight:Int;
+		
 		var marginLeft:Int;
 		var marginRight:Int;
 		var marginTop:Int;
@@ -271,6 +290,36 @@ package cocktail.domElement;
 		var right:Int;
 		var top:Int;
 		var bottom:Int;
+	}
+	
+	/**
+	 * Contains the data necessary to place
+	 * a DOMElement in flow
+	 */
+	typedef FlowData = {
+		/**
+		 * the x position where the next in flow DOMElement
+		 * should be
+		 */
+		var x:Int;
+		
+		/**
+		 * the y position where the next in flow DOMElement
+		 * should be
+		 */
+		var y:Int;
+		
+		/**
+		 * The height of highest DOMElement in the current line
+		 * (includes paddings and margins)
+		 */
+		var maxLineHeight:Int;
+		
+		/**
+		 * The accumulated height of all the in flow DOMElements
+		 * (includes paddings and margins)
+		 */
+		var totalHeight:Int;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
