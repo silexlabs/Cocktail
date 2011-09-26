@@ -125,16 +125,30 @@ class AbstractDOMElement
 	////////////////////////////////
 	
 	/**
-	 * Stores the x position of this dom element
+	 * Stores the x position of this dom element, relative
+	 * to its parent
 	 */
 	private var _x:Int;
 	public var x(getX, setX):Int;
 	
 	/**
-	 * Stores the y position of this dom element
+	 * get/set the global x. It is relative to the root 
+	 * DOMElement.
+	 */
+	public var globalX(getGlobalX, setGlobalX):Int;
+	
+	/**
+	 * Stores the y position of this dom element, relative
+	 * to its parent
 	 */
 	private var _y:Int;
 	public var y(getY, setY):Int;
+	
+	/**
+	 * get/set the global y. It is relative to the root 
+	 * DOMElement.
+	 */
+	public var globalY(getGlobalY, setGlobalY):Int;
 	
 	/**
 	 * Stores the width position of this dom element
@@ -849,6 +863,119 @@ class AbstractDOMElement
 	{ 
 		return this._height;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GLOBAL POSITION SETTERS/GETTERS
+	// Setters/Getters to manipulate a nativeElement global position (relative to the root 
+	// DOMElement)
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the DOMElement x position relative to the root DOMElement
+	 * x position
+	 * @param	value the new x position of the DOMElement
+	 */
+	public function setGlobalX(value:Int):Int
+	{
+		var globalX:Int = setGlobalCoord(value, getGlobalX);
+		this.x = globalX;
+		return this._x;
+	}
+	
+	/**
+	 * Return the x position of this DOMElement relative
+	 * to the root DOMElement x position
+	 */
+	public function getGlobalX():Int
+	{
+		return getGlobalCoord(this.x, getX);
+	}
+	
+	/**
+	 * Set the DOMElement y position relative to the root DOMElement
+	 * y position
+	 * @param	value the new y position of the DOMElement
+	 */
+	public function setGlobalY(value:Int):Int
+	{
+		var globalY:Int = setGlobalCoord(value, getGlobalY);
+		this.y = globalY;
+		return this.y;
+	}
+	
+	/**
+	 * Return the y position of this DOMElement relative
+	 * to the root DOMElement y position
+	 */
+	public function getGlobalY():Int
+	{
+		return getGlobalCoord(this.y, getY);
+	}
+	
+	/**
+	 * Take a value representing an absolute position (x or y)
+	 * that a DOMElement should have and return the position that
+	 * the DOMElement should have relative to its parent to match
+	 * the absolute position
+	 * @param	value a position value (x or y) where 0 correponds to 
+	 * the root DOMElement position
+	 * @param	method a callback used to retrive the DOMElement parent's
+	 * global coord
+	 * @return the new position of the DOMElement in its parent coordinate system
+	 */
+	private function setGlobalCoord(value:Int, method:Void->Int):Int
+	{
+		//init the global value with the provided value, if the DOMElement has no parent
+		//then this will be the global coord
+		var globalCoord:Int = value;
+		
+		//if the DOMElement has a parent,
+		//retrieve its global coord and substract it
+		//to the desired global coord, it will return
+		//the local coord, relative to the DOMElement's parent
+		//origin
+		if (this._parent != null)
+		{
+			var parentGlobalCoord:Int = Reflect.callMethod(parent, method, []);
+			globalCoord -= parentGlobalCoord;
+		}
+		
+		return globalCoord;
+	}
+	
+	/**
+	 * Take a position value (x or y) relative to the DOMElement's parent and convert
+	 * it to the root DOMElement coord system
+	 * @param	value the local value, relative to the parent coord system
+	 * @param	method a method used to retrive a parent local position 
+	 * @return a coord value where 0 is the position of the root DOMElement
+	 */
+	private function getGlobalCoord(value:Int, method:Void->Int):Int
+	{
+		//init the returned value with the provided local coord,
+		//if the DOMElement has no parent, it will be the 
+		//returned value
+		var globalCoord:Int = value;
+		
+		//if the DOMElement has a parent, 
+		//add the parents local coord value
+		//until a DOMElement with no parent is found
+		//(the root DOMElement). The accumulated value is
+		//the global coord
+		if (this._parent != null)
+		{
+			var parentDOMElement:AbstractDOMElement = this._parent;
+			while (parentDOMElement != null)
+			{
+				globalCoord += Reflect.callMethod(parentDOMElement, method, []);
+				parentDOMElement = parentDOMElement.parent;
+			}
+		}
+
+		return globalCoord;
+	}
+	
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
