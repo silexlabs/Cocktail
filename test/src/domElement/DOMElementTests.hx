@@ -34,7 +34,7 @@ import utest.Runner;
 import utest.ui.Report;
 
 import cocktail.resource.ResourceLoaderManager;
-
+import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
 
 #if flash9
@@ -421,6 +421,48 @@ class DOMElementTests
 		childDOMElement1.setZIndex(999);
 		Assert.equals(2, childDOMElement1.getZIndex());
 		
+	}
+	
+	public function testGlobalCoord()
+	{
+		var graph1:GraphicDOMElement = new GraphicDOMElement();
+		graph1.width = 100;
+		graph1.height = 100;
+		graph1.x = 0;
+		graph1.y = 0;
+		graph1.beginFill(FillStyleValue.monochrome( { color:0xFF0000, alpha:100 } ), LineStyleValue.none);
+		
+		graph1.drawRect(0, 0, 100, 100);
+		graph1.endFill();
+		
+		var graph2:GraphicDOMElement = new GraphicDOMElement();
+		graph2.width = 100;
+		graph2.height = 100;
+		graph2.x = 0;
+		graph2.y = 0;
+		graph2.beginFill(FillStyleValue.monochrome( { color:0xFF0000, alpha:100 } ), LineStyleValue.none);
+		
+		graph2.drawRect(0, 0, 100, 100);
+		graph2.endFill();
+		
+		var container:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
+		container.width = 200;
+		container.height = 200;
+		
+		container.addChild(graph1);
+		container.addChild(graph2);
+		
+		rootDOMElement.addChild(container);
+		
+		container.x = 100;
+		container.y = 100;
+		
+		graph1.globalX = 300;
+		graph2.globalY = 100;
+
+		
+		Assert.same(graph1.x, 200);
+		Assert.same(graph2.globalY, 100);
 	}
 	
 	/**

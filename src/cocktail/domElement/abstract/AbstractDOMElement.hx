@@ -871,14 +871,30 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the DOMElement x position relative to the root DOMElement
-	 * x position
+	 * Get a global x position (relative to the root DOMElement)
+	 * and convert to an x position relative to the parent DOMElement
 	 * @param	value the new x position of the DOMElement
 	 */
 	public function setGlobalX(value:Int):Int
 	{
-		var globalX:Int = setGlobalCoord(value, getGlobalX);
-		this.x = globalX;
+		//init the local x position with the provided value
+		//, if the DOMElement has no parent, it will be the 
+		//returned value
+		var localX:Int = value;
+		
+		//if the DOMElement has a parent
+		if (this._parent != null)
+		{
+			//retrieve its global x value, and substract
+			//it to the local value, effectively computing
+			//the x that this DOMElement should have relative
+			//to its parent
+			var parentGlobalX:Int = this._parent.globalX;
+			localX -= parentGlobalX;
+			
+		}
+		this.x = localX;
+		
 		return this._x;
 	}
 	
@@ -888,7 +904,26 @@ class AbstractDOMElement
 	 */
 	public function getGlobalX():Int
 	{
-		return getGlobalCoord(this.x, getX);
+		//init the globalX with the current localX
+		//if this DOMElement has no parent, it will
+		//be the returned value
+		var globalX:Int = this.x;
+		
+		//if this DOMElement has a parent
+		if (this._parent != null)
+		{
+			var parentDOMElement:AbstractDOMElement = this._parent;
+			//Add the localX of each parent until a DOMElement
+			//with no parent is found (the root DOMElement).
+			//The added localX form the globalX valu
+			while (parentDOMElement != null)
+			{
+				globalX += parentDOMElement.x;
+				parentDOMElement = parentDOMElement.parent;
+			}
+		}
+		return globalX;
+		
 	}
 	
 	/**
@@ -898,9 +933,18 @@ class AbstractDOMElement
 	 */
 	public function setGlobalY(value:Int):Int
 	{
-		var globalY:Int = setGlobalCoord(value, getGlobalY);
-		this.y = globalY;
-		return this.y;
+		//see setGlobalX
+		var localY:Int = value;
+		
+		if (this._parent != null)
+		{
+			var parentGlobalY:Int = this._parent.globalY;
+			localY -= parentGlobalY;
+			
+		}
+		this.y = localY;
+		
+		return this._y;
 	}
 	
 	/**
@@ -909,7 +953,20 @@ class AbstractDOMElement
 	 */
 	public function getGlobalY():Int
 	{
-		return getGlobalCoord(this.y, getY);
+		//see getGlobalY
+		var globalY:Int = this.y;
+		
+		if (this._parent != null)
+		{
+			var parentDOMElement:AbstractDOMElement = this._parent;
+			
+			while (parentDOMElement != null)
+			{
+				globalY += parentDOMElement.y;
+				parentDOMElement = parentDOMElement.parent;
+			}
+		}
+		return globalY;
 	}
 	
 	/**
@@ -923,11 +980,11 @@ class AbstractDOMElement
 	 * global coord
 	 * @return the new position of the DOMElement in its parent coordinate system
 	 */
-	private function setGlobalCoord(value:Int, method:Void->Int):Int
+	private function globalToLocal(value:Int, method:Void->Int):Int
 	{
 		//init the global value with the provided value, if the DOMElement has no parent
 		//then this will be the global coord
-		var globalCoord:Int = value;
+		var localCoord:Int = value;
 		
 		//if the DOMElement has a parent,
 		//retrieve its global coord and substract it
@@ -936,11 +993,11 @@ class AbstractDOMElement
 		//origin
 		if (this._parent != null)
 		{
-			var parentGlobalCoord:Int = Reflect.callMethod(parent, method, []);
-			globalCoord -= parentGlobalCoord;
+			var parentGlobalCoord:Int = localToGlobal(value, method);
+			localCoord -= parentGlobalCoord;
 		}
 		
-		return globalCoord;
+		return localCoord;
 	}
 	
 	/**
@@ -950,8 +1007,9 @@ class AbstractDOMElement
 	 * @param	method a method used to retrive a parent local position 
 	 * @return a coord value where 0 is the position of the root DOMElement
 	 */
-	private function getGlobalCoord(value:Int, method:Void->Int):Int
+	private function localToGlobal(value:Int, method:Void->Int):Int
 	{
+	
 		//init the returned value with the provided local coord,
 		//if the DOMElement has no parent, it will be the 
 		//returned value
