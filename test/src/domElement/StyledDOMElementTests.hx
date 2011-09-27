@@ -85,9 +85,9 @@ class StyledDOMElementTests
 		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
 		
 		var domElement2Style:StyleData = getDefaultStyle();
-		//domElement2Style.position = relative;
-		//domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
-		//domElement2Style.display = inlineBlock;
+		domElement2Style.position = relative;
+		domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
+		domElement2Style.display = inlineBlock;
 		domElement2.style = domElement2Style;
 		domElement2.style.width = DimensionStyleValue.length(pixel(200));
 		domElement2.style.height = DimensionStyleValue.length(pixel(300));
@@ -111,14 +111,28 @@ class StyledDOMElementTests
 		domElement4.style.height = DimensionStyleValue.length(pixel(30));
 		domElement4.style.marginLeft = MarginStyleValue.length(pixel(20));
 		
+		var domElement5:TextDOMElement = new TextDOMElement();
+		domElement5.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti";
+		
+		domElement5.style = getDefaultStyle();
+		domElement5.style.width = DimensionStyleValue.percent(60);
+		domElement5.style.position = relative;
+		domElement5.style.display = inlineBlock;
+		domElement5.style.right = PositionOffsetStyleValue.length(pixel(200));
+		domElement5.style.paddingRight = PaddingStyleValue.length(pixel(123));
+		domElement5.style.height = DimensionStyleValue.length(pixel(200));
+		
 		rootDOMElement.addChild(domElement1);
 		container1.addChild(domElement2);
+		container1.addChild(domElement5);
 		container1.addChild(domElement4);
 		rootDOMElement.addChild(container1);
 		rootDOMElement.addChild(domElement3);
 		
 		
 		rootDOMElement.applyStyle( { width:1000, height:1000 }, rootDOMElement);
+		domElement4.style.width = DimensionStyleValue.percent(10);
+		container1.applyStyle( { width : container1.width, height:container1.height }, rootDOMElement);
 	}
 	
 	private function getGraph(color:Int, x:Int, y:Int, width:Int, height:Int):GraphicDOMElement

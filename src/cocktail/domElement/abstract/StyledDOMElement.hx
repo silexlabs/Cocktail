@@ -92,7 +92,7 @@ class StyledDOMElement extends AbstractDOMElement
 		
 		//right padding
 		var computedPaddingRight:Int = getComputedPadding(this.style.paddingRight, containingDOMElementDimensions.width);
-		
+		Log.trace(computedPaddingRight);
 		
 
 		var isWidthAuto:Bool = this.style.width == DimensionStyleValue.auto;
@@ -456,7 +456,7 @@ class StyledDOMElement extends AbstractDOMElement
 		computedStyleData.paddingTop + computedStyleData.paddingBottom + computedStyleData.marginBottom;
 		
 		
-		flowData.totalHeight = flowData.y ;
+		flowData.totalHeight = flowData.y + flowData.maxLineHeight ;
 		flowData.maxLineHeight = 0;
 		
 		return flowData;
@@ -472,11 +472,13 @@ class StyledDOMElement extends AbstractDOMElement
 					
 		if (computedStyleData.offsetHeight > flowData.maxLineHeight)
 		{
+			var oldMaxLineHeight:Int = flowData.maxLineHeight;
 			flowData.maxLineHeight = computedStyleData.offsetHeight;
+			flowData.totalHeight += flowData.maxLineHeight - oldMaxLineHeight;
+			
 		}
 		
-		flowData.totalHeight = flowData.y + flowData.maxLineHeight;
-		Log.trace(flowData.totalHeight);
+		
 		return flowData;
 	}
 	
