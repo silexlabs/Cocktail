@@ -57,19 +57,19 @@ class StyledDOMElementTests
 	public function testStyle()
 	{
 		var rootStyle:StyleData = getDefaultStyle();
-		rootStyle.width = DimensionStyleValue.length(pixel(1000));
-		rootStyle.height = DimensionStyleValue.length(pixel(1000));
+		rootStyle.width = DimensionStyleValue.percent(100);
+		rootStyle.height = DimensionStyleValue.auto;
 		rootDOMElement.style = rootStyle;
 		
 		var container1:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		var container1Style:StyleData = getDefaultStyle();
-		container1Style.display = inlineBlock;
+		//container1Style.display = inlineBlock;
 		container1.style = container1Style;
 		
-		container1.style.width = DimensionStyleValue.length(pixel(250));
-		container1.style.height = DimensionStyleValue.length(pixel(100));
+		container1.style.width = DimensionStyleValue.auto;
+		container1.style.height = DimensionStyleValue.auto;
 		container1.style.marginTop = MarginStyleValue.length(pixel(20));
-		container1.style.position = relative;
+		//container1.style.position = relative;
 		//container1.width = 250;
 		//container1.height = 100;
 		container1.x = 0;
@@ -85,21 +85,21 @@ class StyledDOMElementTests
 		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
 		
 		var domElement2Style:StyleData = getDefaultStyle();
-		domElement2Style.position = absolute;
-		domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
-		domElement2Style.display = inlineBlock;
+		//domElement2Style.position = relative;
+		//domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
+		//domElement2Style.display = inlineBlock;
 		domElement2.style = domElement2Style;
 		domElement2.style.width = DimensionStyleValue.length(pixel(200));
-		domElement2.style.height = DimensionStyleValue.percent(100);
+		domElement2.style.height = DimensionStyleValue.length(pixel(300));
 		
 		
 		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
 		
 		var domElement3Style:StyleData = getDefaultStyle();
-		
+		domElement3Style.maxHeight = ConstrainedDimensionStyleValue.length(pixel(200));
 		domElement3.style = domElement3Style;
 		domElement3.style.width = DimensionStyleValue.length(pixel(50));
-		domElement3.style.height = DimensionStyleValue.length(pixel(300));
+		domElement3.style.height = DimensionStyleValue.length(pixel(800));
 		domElement3.style.marginLeft = MarginStyleValue.length(pixel(50));
 		
 		var domElement4:GraphicDOMElement = getGraph(0x999999, 0, 0, 600, 30);

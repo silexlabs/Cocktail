@@ -45,7 +45,7 @@ class StyledDOMElement extends AbstractDOMElement
 	
 	public function applyStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElement:StyledDOMElement):Void
 	{
-		layout(containingDOMElementDimensions);
+		flow(containingDOMElementDimensions);
 		position(rootDOMElement, rootDOMElement);
 	}
 	
@@ -61,7 +61,7 @@ class StyledDOMElement extends AbstractDOMElement
 	 * @return returns the offset dimensions (width and height) of the laid out DOMElement. Those dimensions include
 	 * paddings and margins
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
 	{
 		
 		/**
@@ -93,15 +93,43 @@ class StyledDOMElement extends AbstractDOMElement
 		//right padding
 		var computedPaddingRight:Int = getComputedPadding(this.style.paddingRight, containingDOMElementDimensions.width);
 		
-		//get the content width (width without margins and paddings)
-		var computedWidth:Int = getComputedDimension(this.style.width, containingDOMElementDimensions.width);
+		
+
+		var isWidthAuto:Bool = this.style.width == DimensionStyleValue.auto;
+		
+		var computedWidth:Int;
+		var computedMarginLeft:Int;
+		var computedMarginRight:Int;
+		
+		if (isWidthAuto == true)
+		{
+			computedWidth = NULL;
+			
+			//left margin
+			computedMarginLeft = getComputedMargin(this.style.marginLeft, this.style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+		
+			//right margin
+			computedMarginRight = getComputedMargin(this.style.marginRight, this.style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+		
+			computedWidth = containingDOMElementDimensions.width - computedPaddingLeft - computedPaddingRight - computedMarginLeft - computedMarginRight;
+		}
+		else
+		{
+			//get the content width (width without margins and paddings)
+			computedWidth = getComputedDimension(this.style.width, containingDOMElementDimensions.width);
+			
+			//left margin
+			computedMarginLeft = getComputedMargin(this.style.marginLeft, this.style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+		
+			//right margin
+			computedMarginRight = getComputedMargin(this.style.marginRight, this.style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+		
+		}
 		
 		
-		//left margin
-		var computedMarginLeft:Int = getComputedMargin(this.style.marginLeft, this.style.marginRight, containingDOMElementDimensions.width, computedWidth, computedPaddingRight + computedPaddingLeft);
+	
+	
 		
-		//right margin
-		var computedMarginRight:Int = getComputedMargin(this.style.marginRight, this.style.marginLeft, containingDOMElementDimensions.width, computedWidth, computedPaddingRight + computedPaddingLeft);
 		
 		/**
 		 * HEIGHT
@@ -116,13 +144,38 @@ class StyledDOMElement extends AbstractDOMElement
 		//get the content height (height without margins and paddings)
 		//the height might be null at this point if must take the content size
 		//it will be set once all the children DOMElement have been laid out
-		var computedHeight:Int = getComputedDimension(this.style.height, containingDOMElementDimensions.height);
+		//var computedHeight:Int = getComputedDimension(this.style.height, containingDOMElementDimensions.height);
 		
-		//margin top
-		var computedMarginTop:Int = getComputedMargin(this.style.marginTop, this.style.marginBottom, containingDOMElementDimensions.height, computedHeight, computedPaddingTop + computedPaddingBottom, true);
+		var isHeightAuto:Bool = this.style.height == DimensionStyleValue.auto;
 		
-		//margin bottom
-		var computedMarginBottom:Int = getComputedMargin(this.style.marginBottom, this.style.marginTop, containingDOMElementDimensions.height, computedHeight, computedPaddingTop + computedPaddingBottom, true);
+		var computedHeight:Int;
+		var computedMarginTop:Int;
+		var computedMarginBottom:Int;
+		
+		if (isHeightAuto == true)
+		{
+			computedHeight = NULL;
+			
+			//left margin
+			computedMarginTop = getComputedMargin(this.style.marginTop, this.style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+		
+			//right margin
+			computedMarginBottom = getComputedMargin(this.style.marginBottom, this.style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+		
+			
+		}
+		else
+		{
+			//get the content width (width without margins and paddings)
+			computedHeight = getComputedDimension(this.style.height, containingDOMElementDimensions.height);
+			
+			//left margin
+			computedMarginTop = getComputedMargin(this.style.marginTop, this.style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+		
+			//right margin
+			computedMarginBottom = getComputedMargin(this.style.marginBottom, this.style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+		
+		}
 		
 		/**
 		* The next step is to compute the dimensions
@@ -238,7 +291,7 @@ class StyledDOMElement extends AbstractDOMElement
 		{
 			var childDOMElement:StyledDOMElement = cast(this._children[i]);
 			
-			var computedStyleData:ComputedStyleData = childDOMElement.layout(domElementDimensions);
+			var computedStyleData:ComputedStyleData = childDOMElement.flow(domElementDimensions);
 			
 			switch (childDOMElement.style.display)
 			{
@@ -276,11 +329,11 @@ class StyledDOMElement extends AbstractDOMElement
 					{
 						case _static:
 							
-							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);
+							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);	
 							
-						case relative:
+						case relative:	
 							
-							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);
+							flowData = applyBlockInlineFlow(flowData, computedPaddingLeft, childDOMElement, computedStyleData, containingDOMElementDimensions);	
 							
 							applyOffset(childDOMElement, computedStyleData, containingDOMElementDimensions);
 							
@@ -299,6 +352,7 @@ class StyledDOMElement extends AbstractDOMElement
 		
 		if (computedHeight == NULL)
 		{
+			
 			computedHeight = flowData.totalHeight;
 			
 			if (computedMaxHeight != NULL)
@@ -315,8 +369,8 @@ class StyledDOMElement extends AbstractDOMElement
 			}
 		}
 		
-		//this.width = computedWidth;
-		//this.height = computedHeight;
+		this.width = computedWidth;
+		this.height = computedHeight;
 		
 		var computedStyleData:ComputedStyleData = {
 			width : computedWidth,
@@ -401,6 +455,8 @@ class StyledDOMElement extends AbstractDOMElement
 		flowData.y += computedStyleData.height + computedStyleData.marginTop + 
 		computedStyleData.paddingTop + computedStyleData.paddingBottom + computedStyleData.marginBottom;
 		
+		
+		flowData.totalHeight = flowData.y ;
 		flowData.maxLineHeight = 0;
 		
 		return flowData;
@@ -418,7 +474,9 @@ class StyledDOMElement extends AbstractDOMElement
 		{
 			flowData.maxLineHeight = computedStyleData.offsetHeight;
 		}
-			
+		
+		flowData.totalHeight = flowData.y + flowData.maxLineHeight;
+		Log.trace(flowData.totalHeight);
 		return flowData;
 	}
 	
@@ -472,12 +530,13 @@ class StyledDOMElement extends AbstractDOMElement
 	 * @param	containingDOMElementDimension the width and height of the DOMElement containing the current DOMElement, used for
 	 * computing percentage values
 	 * @param	computedDimension a computed dimension (width or height) of the content of the current DOMElement
+	 * @param isDimensionAuto wether the reference dimensions is auto, meaning its computed width id not set yet
 	 * @param	computedPaddingsDimension the computed dimensions of both horizontal or vertical paddings, depending if the computed
 	 * margin is horizontal or vertical
 	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
 	 * @return the computed thickness of the margin
 	 */
-	private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
+	private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
 	{
 		//the return value
 		var computedMargin:Int;
@@ -506,10 +565,10 @@ class StyledDOMElement extends AbstractDOMElement
 			//auto margins take the remaining place left after
 			//paddings, other margin and dimension are set
 			case auto:	
-				//if the containing dimension (most likely height) is undefined,
+				//if the containing dimension (most likely height) is undefined or if it is set to auto,
 				//margin default to 0. Top and bottom margin also default to 0 with
 				//an auto value
-				if (containingDOMElementDimension == NULL || isHorizontalMargin == true)
+				if (containingDOMElementDimension == NULL || isHorizontalMargin == true || isDimensionAuto == true)
 				{
 					computedMargin = 0;
 				}
@@ -525,7 +584,7 @@ class StyledDOMElement extends AbstractDOMElement
 						
 						//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 						default:
-							var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, computedPaddingsDimension);
+							var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension);
 							computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
 					}
 				}
