@@ -92,7 +92,6 @@ class StyledDOMElement extends AbstractDOMElement
 		
 		//right padding
 		var computedPaddingRight:Int = getComputedPadding(this.style.paddingRight, containingDOMElementDimensions.width);
-		Log.trace(computedPaddingRight);
 		
 
 		var isWidthAuto:Bool = this.style.width == DimensionStyleValue.auto;
@@ -125,10 +124,6 @@ class StyledDOMElement extends AbstractDOMElement
 			computedMarginRight = getComputedMargin(this.style.marginRight, this.style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
 		
 		}
-		
-		
-	
-	
 		
 		
 		/**

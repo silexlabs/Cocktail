@@ -43,20 +43,44 @@ class StyledDOMElementTests
 	
 	private static var rootDOMElement:DOMElement;
 	
+	private var _mainContainer:ContainerDOMElement;
+	
+	private var _background:GraphicDOMElement;
+	
+	private var _siteBackground:GraphicDOMElement;
+	
+	private var _navigation:GraphicDOMElement;
+	
+	private var _header:GraphicDOMElement;
+	
+	private var _siteRightBackground:GraphicDOMElement;
+	
+	private var _footer:GraphicDOMElement;
+	
 	public static function main()
 	{
-		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
+		//rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
 		new StyledDOMElementTests();
 	}
 	
 	public function new() 
 	{
-		testStyle();
+		#if js
+		js.Lib.window.onresize = refresh;
+		
+		#elseif flash9
+		flash.Lib.current.stage.addEventListener(flash.events.Event.RESIZE, refresh);
+		
+		#end
+		testLayout();
+		
+		
+		
 	}
 	
 	public function testStyle()
 	{
-		var rootStyle:StyleData = getDefaultStyle();
+		/**var rootStyle:StyleData = getDefaultStyle();
 		rootStyle.width = DimensionStyleValue.percent(100);
 		rootStyle.height = DimensionStyleValue.auto;
 		rootDOMElement.style = rootStyle;
@@ -122,34 +146,204 @@ class StyledDOMElementTests
 		domElement5.style.paddingRight = PaddingStyleValue.length(pixel(123));
 		domElement5.style.height = DimensionStyleValue.length(pixel(200));
 		
+		var domElement6:GraphicDOMElement = getGraph(0x000000, 0, 0, 100, 50);
+		var domElement6Style:StyleData = getDefaultStyle();
+		domElement6.style = domElement6Style;
+		domElement6Style.width =  DimensionStyleValue.length(pixel(100));
+		domElement6Style.height =  DimensionStyleValue.length(pixel(50));
+		domElement6Style.marginRight = MarginStyleValue.auto;
+		domElement6Style.marginLeft = MarginStyleValue.auto;
+		
 		rootDOMElement.addChild(domElement1);
 		container1.addChild(domElement2);
 		container1.addChild(domElement5);
 		container1.addChild(domElement4);
 		rootDOMElement.addChild(container1);
 		rootDOMElement.addChild(domElement3);
+		rootDOMElement.addChild(domElement6);
 		
+
 		
 		rootDOMElement.applyStyle( { width:1000, height:1000 }, rootDOMElement);
 		domElement4.style.width = DimensionStyleValue.percent(10);
-		container1.applyStyle( { width : container1.width, height:container1.height }, rootDOMElement);
+		container1.applyStyle( { width : container1.width, height:container1.height }, rootDOMElement);*/
 	}
 	
-	private function getGraph(color:Int, x:Int, y:Int, width:Int, height:Int):GraphicDOMElement
+	public function testLayout()
+	{
+		_background = getGraph();
+		_background.style.width = DimensionStyleValue.percent(100);
+		_background.style.height = DimensionStyleValue.length(pixel(2000));
+		_background.style.position = absolute;
+		
+		
+		_mainContainer = getContainer();
+		_mainContainer.style.width = DimensionStyleValue.percent(100);
+		_mainContainer.style.height = DimensionStyleValue.auto;
+		
+		
+		attach(_mainContainer);
+		
+		_mainContainer.addChild(_background);
+		
+		_siteBackground = getGraph();
+		_siteBackground.style.width = DimensionStyleValue.percent(100);
+		_siteBackground.style.height = DimensionStyleValue.length(pixel(2000));
+		_siteBackground.style.position = absolute;
+		
+		var siteContainer:ContainerDOMElement = getContainer();
+		siteContainer.style.position = relative;
+		siteContainer.style.width = DimensionStyleValue.percent(70);
+		siteContainer.style.height = DimensionStyleValue.auto;
+		siteContainer.style.marginLeft = MarginStyleValue.auto;
+		siteContainer.style.marginRight = MarginStyleValue.auto;
+		siteContainer.style.marginTop = MarginStyleValue.length(pixel(10));
+		
+		siteContainer.addChild(_siteBackground);
+		
+		var headerContainer:ContainerDOMElement = getContainer();
+		headerContainer.style.width = DimensionStyleValue.percent(100);
+		headerContainer.style.height = DimensionStyleValue.length(pixel(150));
+		headerContainer.style.paddingTop = PaddingStyleValue.length(pixel(5));
+		headerContainer.style.paddingBottom = PaddingStyleValue.length(pixel(5));
+		headerContainer.style.paddingLeft = PaddingStyleValue.length(pixel(5));
+		headerContainer.style.paddingRight = PaddingStyleValue.length(pixel(5));
+		headerContainer.style.marginBottom = MarginStyleValue.length(pixel(10));
+		
+		_header = getGraph();
+		_header.style.width = DimensionStyleValue.auto;
+		_header.style.height = DimensionStyleValue.percent(100);
+		
+		headerContainer.addChild(_header);
+		
+		siteContainer.addChild(headerContainer);
+		
+		var siteLeftContainer:ContainerDOMElement = getContainer();
+		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
+		siteLeftContainer.style.height = DimensionStyleValue.auto;
+		siteLeftContainer.style.display = inlineBlock;
+
+		
+		_navigation = getGraph();
+		_navigation.style.width = DimensionStyleValue.auto;
+		_navigation.style.height = DimensionStyleValue.length(pixel(50));
+		_navigation.style.paddingLeft = PaddingStyleValue.length(pixel(10));
+		_navigation.style.paddingRight = PaddingStyleValue.length(pixel(10));
+		_navigation.style.marginLeft = MarginStyleValue.auto;
+		_navigation.style.marginRight = MarginStyleValue.auto;
+		
+		var siteLeftText:TextDOMElement = getText();
+		siteLeftText.style.width = DimensionStyleValue.auto;
+		siteLeftText.style.paddingLeft = PaddingStyleValue.length(pixel(10));
+		siteLeftText.style.paddingRight = PaddingStyleValue.length(pixel(10));
+		siteLeftText.style.marginTop = MarginStyleValue.length(pixel(10));
+		siteLeftText.style.height = DimensionStyleValue.length(pixel(300));
+		siteLeftText.style.marginLeft = MarginStyleValue.auto;
+		siteLeftText.style.marginRight = MarginStyleValue.auto;
+		
+		
+		siteContainer.addChild(siteLeftContainer);
+		siteLeftContainer.addChild(_navigation);
+		siteLeftContainer.addChild(siteLeftText);
+		
+		var siteContainerRight:ContainerDOMElement = getContainer();
+		siteContainerRight.style.width = DimensionStyleValue.percent(30);
+		siteContainerRight.style.height = DimensionStyleValue.length(pixel(500));
+		siteContainerRight.style.display = inlineBlock;
+		
+		siteContainer.addChild(siteContainerRight);
+	
+		
+		_siteRightBackground = getGraph();
+		_siteRightBackground.style.width = DimensionStyleValue.auto;
+		_siteRightBackground.style.height = DimensionStyleValue.percent(100);
+		
+		siteContainerRight.addChild(_siteRightBackground);
+		
+		 _footer = getGraph();
+		_footer.style.width = DimensionStyleValue.percent(100);
+		_footer.style.height = DimensionStyleValue.length(pixel(250));
+		_footer.style.marginTop = MarginStyleValue.length(pixel(10));
+		
+		
+		siteContainer.addChild(_footer);
+		
+		_mainContainer.addChild(siteContainer);
+		
+		refresh();
+		
+		
+		
+	
+	}
+	
+	private function paint(domElement:GraphicDOMElement, color:Int):Void
+	{
+		domElement.clear();
+		domElement.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
+		domElement.drawRect(0, 0, domElement.width, domElement.height);
+		domElement.endFill();
+		
+	}
+	
+	private function refresh(event:Dynamic = null)
+	{
+		var browserWidth:Int;
+		var browserHeight:Int;
+		
+		#if flash9
+		browserWidth = Math.round(flash.Lib.current.stage.stageWidth);
+		browserHeight = Math.round(flash.Lib.current.stage.stageHeight);
+		#elseif js
+		browserWidth = js.Lib.document.body.clientWidth;
+		browserHeight = js.Lib.document.body.clientHeight;
+		#end
+		_mainContainer.applyStyle( { width:browserWidth, height:browserHeight }, _mainContainer);
+		
+		paint(_background, 0x222222);
+		paint(_siteBackground, 0xFFFFFF);
+		paint(_header, 0xDDDDDD);
+		paint(_navigation, 0xDDDDDD);
+		paint(_siteRightBackground, 0xDDDDDD);
+		paint(_footer, 0xDDDDDD);
+	}
+	
+	private function attach(domElement:DOMElement):Void
+	{
+		#if flash9
+		flash.Lib.current.addChild(domElement.nativeElement);
+		#elseif js
+		js.Lib.document.body.appendChild(domElement.nativeElement);
+		#end
+	}
+	
+	private function getContainer():ContainerDOMElement
+	{
+		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
+		ret.style = getDefaultStyle();
+		ret.x = 0;
+		ret.y = 0;
+		return ret;
+	}
+	
+	private function getText():TextDOMElement
+	{
+		var ret:TextDOMElement = new TextDOMElement();
+		ret.x = 0;
+		ret.y = 0;
+		ret.style = getDefaultStyle();
+		ret.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti";
+		return ret;
+		
+	}
+	
+	private function getGraph():GraphicDOMElement
 	{
 		
 		
 		var ret:GraphicDOMElement = new GraphicDOMElement();
 		
-		ret.width = width;
-		ret.height = height;
-		
-		ret.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
-		ret.drawRect(x, y, width, height);
-		ret.endFill();
-		ret.x = 0;
-		ret.y = 0;
-
+		ret.style = getDefaultStyle();
 		
 		return ret;
 	}
