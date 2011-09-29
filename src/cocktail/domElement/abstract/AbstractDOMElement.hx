@@ -19,6 +19,7 @@ import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.Style;
 import haxe.Log;
 
 /**
@@ -162,6 +163,17 @@ class AbstractDOMElement
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Style attribute
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Stores a reference to the styles of this DOMElement
+	 * and the methods to apply them
+	 */
+	private var _style:Style;
+	public var style(getStyle, setStyle):Style;
+	
 	/////////////////////////////////
 	// TRANSFORMATION attributes
 	////////////////////////////////
@@ -271,6 +283,10 @@ class AbstractDOMElement
 		//init the origin transformation point to the 
 		//top left of this domElement
 		_registrationPoint = constant(left, top);
+		
+		//init the orgin positioning of the DOMElement
+		_x = 0;
+		_y = 0;
 		
 	}
 	
@@ -989,6 +1005,20 @@ class AbstractDOMElement
 		return newGlobalY;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// STYLE SETTER/GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function setStyle(value:Style):Style
+	{
+		this._style = value;
+		return this._style;
+	}
+	
+	public function getStyle():Style
+	{
+		return this._style;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
