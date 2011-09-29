@@ -13,6 +13,8 @@ package cocktail.domElement.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is a "neutral" DOMElement used for instance when a skin (.swf in Flash, .html in HTML)
@@ -32,10 +34,17 @@ class AbstractContainerDOMElement extends DOMElement
 	public var semantic(getSemantic, setSemantic):String;
 	
 	/**
-	 * class constructor
+	 * class constructor. Create a container NativeElement
+	 * if none is provided
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
+		//get a neutral native element if none is provided
+		if (nativeElement == null)
+		{
+			nativeElement = NativeElementManager.createNativeElement(neutral);
+		}
+		
 		super(nativeElement);
 	}
 	
