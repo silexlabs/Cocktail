@@ -31,6 +31,15 @@ class TextDOMElement extends AbstractTextDOMElement
 		super(nativeElement);
 	}
 	
+	override public function attach():Void
+	{
+		
+	}
+	
+	override public function detach():Void
+	{
+		
+	}
 	
 	/**
 	 * Append a text node to the current text content.
@@ -40,6 +49,6 @@ class TextDOMElement extends AbstractTextDOMElement
 	{
 		super.appendText(text);
 		
-		this._nativeElement.appendChild(text);
+		this._parent.nativeElement.appendChild(text);
 	}
 }
