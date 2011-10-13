@@ -49,20 +49,9 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		super.addChild(domElement);
-		this._nativeElement.appendChild(domElement.nativeElement);
 		
 		//intialise z-order on the DOMElement, as it is null by default in JavaScript
 		domElement.nativeElement.style.zIndex = _children.length - 1;
-	}
-	
-	/**
-	 * Removes a native HTML DOMElement (an html element) from this DOMElement native DOMElement
-	 * @param	domElement the html element to remove from this
-	 */
-	override public function removeChild(domElement:AbstractDOMElement):Void
-	{
-		super.removeChild(domElement);
-		this._nativeElement.removeChild(domElement.nativeElement);
 	}
 	
 	/**

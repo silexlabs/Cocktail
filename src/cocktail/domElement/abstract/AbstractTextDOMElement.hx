@@ -48,17 +48,11 @@ class AbstractTextDOMElement extends DOMElement
 		
 		//stores the provided NativeElement as first child
 		_children = new Array<Dynamic>();
-		_children.push(nativeElement);
 		
 		super(nativeElement);
 	}
 	
-	override public function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
-	{
-		super.setParent(domElement);
-		
-		this.nativeElement = this._parent.nativeElement;
-	}
+	
 	
 	/**
 	 * Append a text node to the current text content.

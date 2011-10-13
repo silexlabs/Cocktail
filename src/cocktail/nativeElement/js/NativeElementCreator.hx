@@ -48,7 +48,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				nativeElement = Lib.document.createElement("img");
 			
 			case text:
-				nativeElement = Lib.document.createTextNode("");
+				nativeElement = Lib.document.createElement("div");
 				
 			case neutral:
 				nativeElement = Lib.document.createElement("div");

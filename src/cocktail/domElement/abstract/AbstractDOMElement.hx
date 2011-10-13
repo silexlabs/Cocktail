@@ -272,6 +272,16 @@ class AbstractDOMElement
 	// Public method to manipulate the DOM
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	public function attach():Void
+	{
+		
+	}
+	
+	public function detach():Void
+	{
+		
+	}
+	
 	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */

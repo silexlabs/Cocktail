@@ -73,6 +73,7 @@ class AbstractContainerDOMElement extends DOMElement
 	public function addChild(domElement:AbstractDOMElement):Void
 	{
 		domElement.parent = this;
+		domElement.attach();
 		_children.push(domElement);
 	}
 	
@@ -85,6 +86,7 @@ class AbstractContainerDOMElement extends DOMElement
 	public function removeChild(domElement:AbstractDOMElement):Void
 	{
 		domElement.parent = null;
+		domElement.detach();
 		_children.remove(domElement);
 	}
 	
