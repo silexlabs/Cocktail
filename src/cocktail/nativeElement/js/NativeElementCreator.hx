@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.nativeElement.js;
 
+import cocktail.domElement.TextNode;
 import js.Lib;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
@@ -47,7 +48,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				nativeElement = Lib.document.createElement("img");
 			
 			case text:
-				nativeElement = Lib.document.createElement("div");
+				nativeElement = Lib.document.createTextNode("");
 				
 			case neutral:
 				nativeElement = Lib.document.createElement("div");
@@ -60,6 +61,11 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		}
 		
 		return nativeElement;
+	}
+	
+	override public function createNativeTextNode(text:String):TextNode
+	{
+		return Lib.document.createTextNode(text);
 	}
 	
 }

@@ -178,4 +178,3 @@ package cocktail.domElement;
 		round;
 		bevel;
 	}
-	

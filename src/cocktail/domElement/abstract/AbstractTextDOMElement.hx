@@ -11,10 +11,12 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
-import flash.xml.XML;
+import cocktail.domElement.DOMElementData;
+
 
 /**
  * This is a DOMElement in charge of displaying an 
@@ -41,7 +43,7 @@ class AbstractTextDOMElement extends DOMElement
 		//create a text native element if none is provided
 		if (nativeElement == null)
 		{
-			nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.text);
+			nativeElement = NativeElementManager.createNativeElement(text);
 		}
 		
 		//stores the provided NativeElement as first child
@@ -51,11 +53,18 @@ class AbstractTextDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
+	override public function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
+	{
+		super.setParent(domElement);
+		
+		this.nativeElement = this._parent.nativeElement;
+	}
+	
 	/**
 	 * Append a text node to the current text content.
 	 * @param	text a raw string of text
 	 */
-	public function appendText(text:Xml):Void
+	public function appendText(text:TextNode):Void
 	{
 		_children.push(text);
 	}
@@ -63,7 +72,7 @@ class AbstractTextDOMElement extends DOMElement
 	/**
 	 * Remove a text node from the current text content
 	 */
-	public function removeText(text:XML):Void
+	public function removeText(text:TextNode):Void
 	{
 		_children.remove(text);
 	}

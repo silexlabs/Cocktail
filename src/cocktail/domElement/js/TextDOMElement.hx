@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
@@ -30,4 +31,15 @@ class TextDOMElement extends AbstractTextDOMElement
 		super(nativeElement);
 	}
 	
+	
+	/**
+	 * Append a text node to the current text content.
+	 * @param	text a raw string of text
+	 */
+	override public function appendText(text:TextNode):Void
+	{
+		super.appendText(text);
+		
+		this._nativeElement.appendChild(text);
+	}
 }
