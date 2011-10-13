@@ -11,7 +11,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 
-import cocktail.domElement.abstract.StyledDOMElement;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
@@ -25,7 +24,7 @@ import cocktail.geom.GeomData;
  * It manipulates the native HTML DOM
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends StyledDOMElement
+class DOMElement extends AbstractDOMElement
 {
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -75,32 +74,6 @@ class DOMElement extends StyledDOMElement
 		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden methods to manipulate the HTML DOM
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Adds a native HTML DOMElement (an html element) to this DOMElement native DOMElement
-	 * @param	domElement the html element to add to this
-	 */
-	override public function addChild(domElement:AbstractDOMElement):Void
-	{
-		super.addChild(domElement);
-		this._nativeElement.appendChild(domElement.nativeElement);
-		
-		//intialise z-order on the DOMElement, as it is null by default in JavaScript
-		domElement.nativeElement.style.zIndex = _children.length - 1;
-	}
-	
-	/**
-	 * Removes a native HTML DOMElement (an html element) from this DOMElement native DOMElement
-	 * @param	domElement the html element to remove from this
-	 */
-	override public function removeChild(domElement:AbstractDOMElement):Void
-	{
-		super.removeChild(domElement);
-		this._nativeElement.removeChild(domElement.nativeElement);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the dom element

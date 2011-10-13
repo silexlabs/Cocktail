@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
 
@@ -28,6 +29,32 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	{
 		super(nativeElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM
+	// Overriden Public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Adds a native Flash DOMElement (DisplayObject) to this DOMElement native DOMElement
+	 * @param	domElement the DisplayObject to add to this
+	 */
+	override public function addChild(domElement:AbstractDOMElement):Void
+	{
+		super.addChild(domElement);
+		this._nativeElement.addChild(domElement.nativeElement);
+	}
+	
+	/**
+	 * Removes a native Flash DOMElement (DisplayObject) from this DOMElement native DOMElement
+	 * @param	domElement the DisplayObject to remove from this
+	 */
+	override public function removeChild(domElement:AbstractDOMElement):Void
+	{
+		super.removeChild(domElement);
+		this._nativeElement.removeChild(domElement.nativeElement);
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden getter/setter

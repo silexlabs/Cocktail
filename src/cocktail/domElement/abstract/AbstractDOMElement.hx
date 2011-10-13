@@ -19,14 +19,12 @@ import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
-import cocktail.style.Style;
 import haxe.Log;
 
 /**
  * This is a base class for runtime specific DOMElement. A DOMElement is an abstraction of the visual base element of a runtime.
  * For instance in JS, a DOMElement is an HTML element, like a <div> or <img> element. In Flash AS3, a domElement is a Sprite.
- * A DOMElement can contain other DOMElements. This class abstracts manipulating DOM elements, each runtime is implemented in an
- * inheriting class
+ * This class abstracts manipulating DOM elements, each runtime is implemented in an inheriting class
  * @author Yannick DOMINGUEZ
  */
 class AbstractDOMElement 
@@ -93,7 +91,7 @@ class AbstractDOMElement
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):Key->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOCUMENT TREE attributes
+	// DOM attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -105,17 +103,10 @@ class AbstractDOMElement
 	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
 	
 	/**
-	 * a reference to the parent of this DOMElement
+	 * a reference to the parent of this DOMElement, of type container
 	 */ 
-	private var _parent:AbstractDOMElement;
-	public var parent(getParent, setParent):AbstractDOMElement;
-	
-	/**
-	 *  a reference to each of the DOMElement childs, stored by
-	 *  z-index
-	 */
-	private var _children:Array<AbstractDOMElement>;
-	public var children(getChildren, never):Array<AbstractDOMElement>;
+	private var _parent:AbstractContainerDOMElement;
+	public var parent(getParent, setParent):AbstractContainerDOMElement;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -163,16 +154,6 @@ class AbstractDOMElement
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Style attribute
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Stores a reference to the styles of this DOMElement
-	 * and the methods to apply them
-	 */
-	private var _style:Style;
-	public var style(getStyle, setStyle):Style;
 	
 	/////////////////////////////////
 	// TRANSFORMATION attributes
@@ -233,12 +214,12 @@ class AbstractDOMElement
 	public var isVisible(getIsVisible, setIsVisible):Bool;
 	
 	/////////////////////////////////
-	// Z-ORDER attribute
+	// Z-Index attribute
 	/////////////////////////////////
 	
 	/**
 	 * The z-order / z-index of this DOM Object, relative to
-	 * its parent (the first child of a DOMElement always has
+	 * its parent (the first child of a ContainerDOMElement always has
 	 * a 0 z-index)
 	 */
 	public var zIndex(getZIndex, setZIndex):Int;
@@ -259,14 +240,11 @@ class AbstractDOMElement
 		{
 			this.nativeElement = nativeElement;
 		}
-		
-		_children = new Array<AbstractDOMElement>();
 	}
 	
 	/**
-	 * Set the domElement properties which can be retrieved
-	 * from the referenceToNativeDom. Called each time
-	 * the native dom element is set
+	 * Init the domElement properties. Called each time
+	 * the NativeElement is set
 	 */
 	private function init():Void
 	{	
@@ -284,10 +262,9 @@ class AbstractDOMElement
 		//top left of this domElement
 		_registrationPoint = constant(left, top);
 		
-		//init the orgin positioning of the DOMElement
+		//init the origin positioning of the DOMElement
 		_x = 0;
 		_y = 0;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -296,33 +273,9 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the current DOMElement as the parent of the added domElement, and 
-	 * store it in the children array. Overriden by each runtime, to add the
-	 * child to native DOM.
-	 * @param	domElement the DOMElement to attach to this DOMElement
-	 */
-	public function addChild(domElement:AbstractDOMElement):Void
-	{
-		domElement.parent = this;
-		_children.push(domElement);
-	}
-	
-	/**
-	 * Reset the parent of the remove child object as it no longer is attached
-	 * to the DOM, remove it also from the children array. Overrident by each
-	 * runtime to remove also from the native DOM
-	 * @param	domElement the DOMElement to remove from this DOMElement
-	 */
-	public function removeChild(domElement:AbstractDOMElement):Void
-	{
-		domElement.parent = null;
-		_children.remove(domElement);
-	}
-	
-	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */
-	public function getParent():AbstractDOMElement
+	public function getParent():AbstractContainerDOMElement
 	{
 		return this._parent;
 	}
@@ -330,24 +283,14 @@ class AbstractDOMElement
 	/**
 	 * set the parent of this DOMElement
 	 */
-	public function setParent(domElement:AbstractDOMElement):AbstractDOMElement
+	public function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
 	{
 		this._parent = domElement;
 		return this._parent;
 	}
 	
-	
 	/**
-	 * returns the children of this DOMElement
-	 * @return an array of DOMElement
-	 */
-	public function getChildren():Array<AbstractDOMElement>
-	{
-		return _children;
-	}
-	
-	/**
-	 * set the reference to this DOMElement native DOM element
+	 * set the reference to this DOMElement NativeElement
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
 	public function setNativeElement(value:NativeElement):NativeElement
@@ -575,8 +518,8 @@ class AbstractDOMElement
 	// Set/get transformations absolute value
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
-	 * Set the absolut x translation instead of adding it to 
+	/**
+	 * Set the absolute x translation instead of adding it to 
 	 * the current x translation
 	 * @param	translationX the target x translation
 	 */
@@ -1003,21 +946,6 @@ class AbstractDOMElement
 		}
 		
 		return newGlobalY;
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// STYLE SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	public function setStyle(value:Style):Style
-	{
-		this._style = value;
-		return this._style;
-	}
-	
-	public function getStyle():Style
-	{
-		return this._style;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

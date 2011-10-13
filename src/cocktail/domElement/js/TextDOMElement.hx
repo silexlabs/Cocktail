@@ -18,9 +18,6 @@ import cocktail.domElement.abstract.AbstractTextDOMElement;
 /**
  * This is the JavaScript implementation for the Text DOMElement
  * 
- * It adds the JavaScript specific behaviour of setting the HTML
- * of the reference to native DOM object
- * 
  * @author Yannick DOMINGUEZ
  */
 class TextDOMElement extends AbstractTextDOMElement
@@ -31,18 +28,6 @@ class TextDOMElement extends AbstractTextDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
-	}
-	
-	/**
-	 * Set the innerHTML of the reference to the native
-	 * HTML tag with the provided text
-	 * @param	text an HTML formatted text
-	 */
-	override public function setText(text:String):String
-	{
-		super.setText(text);
-		this._nativeElement.innerHTML = text;
-		return text;
 	}
 	
 }
