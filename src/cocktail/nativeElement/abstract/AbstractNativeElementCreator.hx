@@ -12,6 +12,7 @@ package cocktail.nativeElement.abstract;
 
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
+import cocktail.domElement.TextNode;
 
 /**
  * This is a base class for the native element
@@ -36,6 +37,11 @@ class AbstractNativeElementCreator
 	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
 	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
+	{
+		return null;
+	}
+	
+	public function createNativeTextNode(text:String):TextNode
 	{
 		return null;
 	}
