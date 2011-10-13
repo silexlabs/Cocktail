@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
@@ -32,7 +32,7 @@ import cocktail.nativeElement.NativeElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractGraphicDOMElement extends DOMElement
+class AbstractGraphicDOMElement extends EmbeddedDOMElement
 {
 
 	/**
@@ -49,21 +49,6 @@ class AbstractGraphicDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden hierarchy methods
-	// The addChild and removeChild method are not implemented for this 
-	// DOMElement, as it is a leaf DOMElement (can't have children)
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function addChild(domElement:AbstractDOMElement):Void
-	{
-		
-	}
-	
-	override public function removeChild(domElement:AbstractDOMElement):Void
-	{
-		
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public drawing API

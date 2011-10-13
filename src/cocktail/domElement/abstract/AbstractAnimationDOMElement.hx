@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
 
 /**
@@ -21,7 +22,7 @@ import cocktail.nativeElement.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractAnimationDOMElement extends DOMElement
+class AbstractAnimationDOMElement extends EmbeddedDOMElement
 {
 	public function new(nativeElement:NativeElement = null) 
 	{

@@ -10,24 +10,18 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
+
+import cocktail.domElement.abstract.AbstractEmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
-import flash.text.TextField;
-import haxe.Log;
-import cocktail.domElement.abstract.AbstractTextDOMElement;
 
 /**
- * This is the Text DOMElement implementation for Flash.
- * 
+ * This is the Flash AVM2 implementation of the Embedded DOMElement
  * @author Yannick DOMINGUEZ
  */
-class TextDOMElement extends AbstractTextDOMElement
+class EmbeddedDOMElement extends AbstractEmbeddedDOMElement
 {
-
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
 	}
-
 }

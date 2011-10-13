@@ -17,8 +17,9 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 
 /**
- * This is a "neutral" DOMElement used for instance when a skin (.swf in Flash, .html in HTML)
- * is loaded. It allows for setting semantic of the root node of the DOMElement (not implemented for
+ * This is a DOMElement hich can contain other DOMElement, it is in charge of building the DOMElement tree.
+ * It can receive any DOMElement as children.
+ * It allows for setting semantic of the root node of the DOMElement (not implemented for
  * Flash)
  * 
  * @author Yannick DOMINGUEZ
@@ -34,19 +35,71 @@ class AbstractContainerDOMElement extends DOMElement
 	public var semantic(getSemantic, setSemantic):String;
 	
 	/**
+	 *  a reference to each of the DOMElement childs, stored by
+	 *  z-index
+	 */
+	private var _children:Array<AbstractDOMElement>;
+	public var children(getChildren, never):Array<AbstractDOMElement>;
+	
+	/**
 	 * class constructor. Create a container NativeElement
 	 * if none is provided
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//get a neutral native element if none is provided
+		//get a neutral native element if none is provided (correspond to a div in HTML)
 		if (nativeElement == null)
 		{
 			nativeElement = NativeElementManager.createNativeElement(neutral);
 		}
 		
+		//init the children array
+		_children = new Array<AbstractDOMElement>();
+		
 		super(nativeElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM
+	// Public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the current ContainerDOMElement as the parent of the added domElement, and 
+	 * store it in the children array. Overriden by each runtime, to add the
+	 * child to native DOM.
+	 * @param	domElement the DOMElement to attach to this DOMElement
+	 */
+	public function addChild(domElement:AbstractDOMElement):Void
+	{
+		domElement.parent = this;
+		_children.push(domElement);
+	}
+	
+	/**
+	 * Reset the parent of the removed child object as it no longer is attached
+	 * to the DOM, remove it also from the children array. Overriden by each
+	 * runtime to remove also from the native DOM
+	 * @param	domElement the DOMElement to remove from this DOMElement
+	 */
+	public function removeChild(domElement:AbstractDOMElement):Void
+	{
+		domElement.parent = null;
+		_children.remove(domElement);
+	}
+	
+	/**
+	 * returns the children of this DOMElement
+	 * @return an array of DOMElement
+	 */
+	public function getChildren():Array<AbstractDOMElement>
+	{
+		return _children;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SEMANTIC methods
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Set the semantic name of the first native node

@@ -1,0 +1,92 @@
+/*
+This file is part of Silex - see http://projects.silexlabs.org/?/silex
+
+Silex is © 2010-2011 Silex Labs and is released under the GPL License:
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+package cocktail.domElement.abstract;
+
+import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
+
+/**
+ * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a
+ * replaced element in HTML, typically has an intrinsic width, height and ratio. 
+ * For example, for a picture it corresponds to the picture's dimensions in pixel
+ * 
+ * @author Yannick DOMINGUEZ
+ */
+class AbstractEmbeddedDOMElement extends DOMElement
+{
+
+	/**
+	 * The instrinsic width of an embedded content. For example, for a video, the width
+	 * in pixel of the video
+	 */
+	private var _intrinsicWidth:Int;
+	public var intrinsicWidth(getIntrinsicWidth, setIntrinsicWidth):Int;
+	
+	/**
+	 * The instrinsic height of an embedded content. For example, for a video, the height
+	 * in pixel of the video
+	 */
+	private var _intrinsicHeight:Int;
+	public var intrinsicHeight(getIntrinsicHeight, setIntrinsicHeight):Int;
+	
+	/**
+	 * The instrinsic ratio of an embedded content. For example, for a video, the height/width
+	 * ratio of the video
+	 */
+	private var _intrinsicRatio:Float;
+	public var intrinsicRatio(getIntrinsicRatio, setIntrinsicRatio):Float;
+	
+	/**
+	 * Constructor
+	 */
+	public function new(nativeElement:NativeElement = null) 
+	{
+		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// INTRINSIC DIMENSIOSN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function setIntrinsicWidth(value:Int):Int
+	{
+		this._intrinsicWidth = value;
+		return value;
+	}
+	
+	public function getIntrinsicWidth():Int
+	{
+		return this._intrinsicWidth;
+	}
+	
+	public function setIntrinsicHeight(value:Int):Int
+	{
+		this._intrinsicHeight = value;
+		return value;
+	}
+	
+	public function getIntrinsicHeight():Int
+	{
+		return this._intrinsicHeight;
+	}
+	
+	public function getIntrinsicRatio():Float
+	{
+		return this._intrinsicRatio;
+	}
+	
+	public function setIntrinsicRatio(value:Float):Float
+	{
+		this._intrinsicRatio = value;
+		return value;
+	}
+}
