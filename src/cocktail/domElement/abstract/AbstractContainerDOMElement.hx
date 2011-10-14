@@ -15,6 +15,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktail.style.ContainerStyle;
 
 /**
  * This is a DOMElement hich can contain other DOMElement, it is in charge of building the DOMElement tree.
@@ -57,6 +58,15 @@ class AbstractContainerDOMElement extends DOMElement
 		_children = new Array<AbstractDOMElement>();
 		
 		super(nativeElement);
+	}
+	
+	/**
+	 * Override to instantiate a Container specific 
+	 * style manager
+	 */
+	override private function initStyle():Void
+	{
+		this._style = new ContainerStyle(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -40,14 +40,19 @@ class AbstractTextDOMElement extends DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null)
 	{
+		//stores the provided NativeElement as first child
+		_children = new Array<Dynamic>();
+		
 		//create a text native element if none is provided
 		if (nativeElement == null)
 		{
+			_children.push(NativeElementManager.createNativeTextNode(""));
 			nativeElement = NativeElementManager.createNativeElement(text);
 		}
-		
-		//stores the provided NativeElement as first child
-		_children = new Array<Dynamic>();
+		else
+		{
+			_children.push(nativeElement);
+		}
 		
 		super(nativeElement);
 	}
