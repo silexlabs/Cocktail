@@ -24,10 +24,10 @@ class BlockFormattingContext extends FormattingContext
 		startNewLine();
 		
 		_flowData.x = flowData.firstLineX;
-						
-		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
-		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop + domElement.style.computedStyle.paddingTop;
-		
+					
+		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
+		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop;
+	
 		_flowData.y += domElement.style.computedStyle.height + domElement.style.computedStyle.marginTop + 
 		domElement.style.computedStyle.paddingTop + domElement.style.computedStyle.paddingBottom + domElement.style.computedStyle.marginBottom;
 		

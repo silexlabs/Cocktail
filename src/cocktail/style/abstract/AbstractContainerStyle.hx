@@ -37,13 +37,13 @@ class AbstractContainerStyle extends Style
 	
 	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
 	{
-		Log.trace("layout");
-		flow(containingDOMElementDimensions, new BlockFormattingContext(this._domElement, null));
+		flow(containingDOMElementDimensions, null, true);
 		positionElement(lastPositionedDOMElement, rootDOMElement);
 	}
 	
-	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
+		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
 		computePositionStyle();
@@ -56,32 +56,29 @@ class AbstractContainerStyle extends Style
 			return;
 		}
 		
+		
 		for (i in 0...containerDOMElement.children.length)
 		{
 			containerDOMElement.children[i].style.computePositionStyle();
-			Log.trace(containerDOMElement.children[i].style.computedStyle);
 		}
 		
 		var childrenFormattingContext:FormattingContext;
 		
-		if (formatingContext == null)
+		if (initialContainer == true)
 		{
 			formatingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);
 			childrenFormattingContext = formatingContext;
 			
-			containingDOMElementDimensions = {
-				width:this._computedStyle.width,
-				height:this._computedStyle.height
-			}
+
 		}
 		else if (formatingContext.beginNewFormattingContext(containerDOMElement))
 		{
-			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);
+			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);		
 			
 			containingDOMElementDimensions = {
-				width:this._computedStyle.width,
-				height:this._computedStyle.height
-			}
+			width:this._computedStyle.width,
+			height:this._computedStyle.height
+		}
 		}
 		else
 		{
@@ -96,6 +93,8 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
+
+		
 		for (i in 0...containerDOMElement.children.length)
 		{
 			if (containerDOMElement.children[i].style.isFloat() == false)
@@ -108,8 +107,6 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-		Log.trace(childrenFormattingContext.flowData.totalHeight);
-		
 		if (isInline() == false && this._computedStyle.height == -1)
 		{
 			
@@ -120,9 +117,14 @@ class AbstractContainerStyle extends Style
 		this._domElement.height = this._computedStyle.height;
 		
 		
-		if (isPositioned() == false)
+		if (isPositioned() == false || isRelativePositioned() == true)
 		{
-			formatingContext.insert(this._domElement);
+			if (initialContainer == false)
+			{
+				formatingContext.insert(this._domElement);
+			}
+			
+			
 		}
 		
 		
