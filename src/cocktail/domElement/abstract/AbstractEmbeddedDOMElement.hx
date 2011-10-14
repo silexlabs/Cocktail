@@ -13,6 +13,7 @@ package cocktail.domElement.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.EmbeddedStyle;
 
 /**
  * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a
@@ -53,8 +54,17 @@ class AbstractEmbeddedDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
+	/**
+	 * Override to instantiate an embedded DOMElement specific 
+	 * style manager
+	 */
+	override private function initStyle():Void
+	{
+		this._style = new EmbeddedStyle(this);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// INTRINSIC DIMENSIOSN SETTERS/GETTERS
+	// INTRINSIC DIMENSIONS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function setIntrinsicWidth(value:Int):Int

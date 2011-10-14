@@ -43,16 +43,21 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Adds a native HTML DOMElement (an html element) to this DOMElement native DOMElement
+	 * Overriden to set the CSS z-index of the newly attached children
 	 * @param	domElement the html element to add to this
 	 */
 	override public function addChild(domElement:AbstractDOMElement):Void
 	{
 		super.addChild(domElement);
 		
-		//intialise z-order on the DOMElement, as it is null by default in JavaScript
+		//intialise z-index on the DOMElement, as it is null by default in JavaScript
 		domElement.nativeElement.style.zIndex = _children.length - 1;
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden Semantic method
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Set the semantic of this DOMElement and set it as the node name

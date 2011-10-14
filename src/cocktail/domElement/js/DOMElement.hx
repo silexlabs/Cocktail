@@ -74,16 +74,27 @@ class DOMElement extends AbstractDOMElement
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attaches this domElement NativeElement (an HTML element) to its
+	 * parent NativeElement
+	 */
 	override public function attach():Void
 	{
 		this._parent.nativeElement.appendChild(this._nativeElement);
 	}
 	
+	/**
+	 * Detaches this domElement NativeElement (an HTML element) from its
+	 * parent NativeElement
+	 */
 	override public function detach():Void
 	{
 		this._parent.nativeElement.removeChild(this._nativeElement);
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the dom element

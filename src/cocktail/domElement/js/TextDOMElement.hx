@@ -31,11 +31,23 @@ class TextDOMElement extends AbstractTextDOMElement
 		super(nativeElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden methods to manipulate the HTML DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * In JS, TextDOMElement as it doesn't have a NativeElement
+	 * by default because its first element can be an HTML text node.
+	 * So we can't rely on the attachement method.
+	 */
 	override public function attach():Void
 	{
 		
 	}
 	
+	/**
+	 * Same as attach, we can't rely on the generic detach method
+	 */
 	override public function detach():Void
 	{
 		
@@ -48,7 +60,12 @@ class TextDOMElement extends AbstractTextDOMElement
 	override public function appendText(text:TextNode):Void
 	{
 		super.appendText(text);
-		
 		this._parent.nativeElement.appendChild(text);
+	}
+	
+	override public function appendTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
+	{
+		super.appendTextDOMElement(textDOMElement);
+		
 	}
 }

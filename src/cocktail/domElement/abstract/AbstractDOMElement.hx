@@ -19,6 +19,7 @@ import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.Style;
 import haxe.Log;
 
 /**
@@ -154,6 +155,16 @@ class AbstractDOMElement
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
 	
+	/////////////////////////////////
+	// STYLE attribute
+	////////////////////////////////
+	
+	/**
+	 * Stores the styles of a DOMElement and manage
+	 * how they are applied
+	 */
+	private var _style:Style;
+	public var style(getStyle, never):Style;
 	
 	/////////////////////////////////
 	// TRANSFORMATION attributes
@@ -265,6 +276,19 @@ class AbstractDOMElement
 		//init the origin positioning of the DOMElement
 		_x = 0;
 		_y = 0;
+		
+		//init the style for this DOMElement
+		initStyle();
+	}
+	
+	/**
+	 * Instantiate the right style manager for this
+	 * DOMElement. Overriden by DOMElements with
+	 * specific style manager, such as Text
+	 */
+	private function initStyle():Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -272,14 +296,22 @@ class AbstractDOMElement
 	// Public method to manipulate the DOM
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * attaches the NativeElement to its parent's
+	 * NativeElement
+	 */
 	public function attach():Void
 	{
-		
+		//abstract
 	}
 	
+	/**
+	 * detaches the NativeElement from its parent's
+	 * NativeElement
+	 */
 	public function detach():Void
 	{
-		
+		//abstract
 	}
 	
 	/**
@@ -971,5 +1003,14 @@ class AbstractDOMElement
 	public function getZIndex():Int 
 	{
 		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// STYLE GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function getStyle():Style
+	{
+		return this._style;
 	}
 }
