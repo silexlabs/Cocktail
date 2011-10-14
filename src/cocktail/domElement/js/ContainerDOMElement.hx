@@ -46,7 +46,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	 * Overriden to set the CSS z-index of the newly attached children
 	 * @param	domElement the html element to add to this
 	 */
-	override public function addChild(domElement:AbstractDOMElement):Void
+	override public function addChild(domElement:DOMElement):Void
 	{
 		super.addChild(domElement);
 		

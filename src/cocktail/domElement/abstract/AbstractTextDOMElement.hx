@@ -16,6 +16,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.domElement.DOMElementData;
+import cocktail.style.TextStyle;
 
 
 /**
@@ -57,6 +58,14 @@ class AbstractTextDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
+	/**
+	 * Override to instantiate a Text DOMElement specific 
+	 * style manager
+	 */
+	override private function initStyle():Void
+	{
+		this._style = new TextStyle(this);
+	}
 	
 	
 	/**
