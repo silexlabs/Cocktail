@@ -39,8 +39,8 @@ class AbstractContainerDOMElement extends DOMElement
 	 *  a reference to each of the DOMElement childs, stored by
 	 *  z-index
 	 */
-	private var _children:Array<AbstractDOMElement>;
-	public var children(getChildren, never):Array<AbstractDOMElement>;
+	private var _children:Array<DOMElement>;
+	public var children(getChildren, never):Array<DOMElement>;
 	
 	/**
 	 * class constructor. Create a container NativeElement
@@ -55,7 +55,7 @@ class AbstractContainerDOMElement extends DOMElement
 		}
 		
 		//init the children array
-		_children = new Array<AbstractDOMElement>();
+		_children = new Array<DOMElement>();
 		
 		super(nativeElement);
 	}
@@ -80,7 +80,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * child to native DOM.
 	 * @param	domElement the DOMElement to attach to this DOMElement
 	 */
-	public function addChild(domElement:AbstractDOMElement):Void
+	public function addChild(domElement:DOMElement):Void
 	{
 		domElement.parent = this;
 		domElement.attach();
@@ -93,7 +93,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * runtime to remove also from the native DOM
 	 * @param	domElement the DOMElement to remove from this DOMElement
 	 */
-	public function removeChild(domElement:AbstractDOMElement):Void
+	public function removeChild(domElement:DOMElement):Void
 	{
 		domElement.parent = null;
 		domElement.detach();
@@ -104,7 +104,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * returns the children of this DOMElement
 	 * @return an array of DOMElement
 	 */
-	public function getChildren():Array<AbstractDOMElement>
+	public function getChildren():Array<DOMElement>
 	{
 		return _children;
 	}
