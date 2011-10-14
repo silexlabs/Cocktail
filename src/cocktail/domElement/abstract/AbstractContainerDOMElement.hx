@@ -11,11 +11,17 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.style.ContainerStyle;
+
+#if flash9
+import cocktail.domElement.as3.DOMElement;
+#elseif js
+import cocktail.domElement.js.DOMElement;
+#end
+
 
 /**
  * This is a DOMElement hich can contain other DOMElement, it is in charge of building the DOMElement tree.
