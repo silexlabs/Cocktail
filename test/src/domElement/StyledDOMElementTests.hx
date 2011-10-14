@@ -221,7 +221,7 @@ class StyledDOMElementTests
 		
 		headerContainer.addChild(_header);
 		
-		//siteContainer.addChild(headerContainer);
+		siteContainer.addChild(headerContainer);
 		
 		var siteLeftContainer:ContainerDOMElement = getContainer();
 		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
@@ -234,15 +234,15 @@ class StyledDOMElementTests
 		_navigation.style.height = DimensionStyleValue.length(pixel(50));
 		_navigation.style.paddingLeft = PaddingStyleValue.length(pixel(10));
 		_navigation.style.paddingRight = PaddingStyleValue.length(pixel(10));
-		_navigation.style.marginLeft = MarginStyleValue.auto;
-		_navigation.style.marginRight = MarginStyleValue.auto;
+		//_navigation.style.marginLeft = MarginStyleValue.auto;
+		//_navigation.style.marginRight = MarginStyleValue.auto;
 		
 		var siteLeftTextContainer:ContainerDOMElement = getContainer();
 		siteLeftTextContainer.style.width = DimensionStyleValue.auto;
 		siteLeftTextContainer.style.height = DimensionStyleValue.auto;
 		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(pixel(10));
 		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(pixel(10));
-		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
+		siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText:TextDOMElement = getText();
 		siteLeftText.style.width = DimensionStyleValue.length(pixel(300));
@@ -270,9 +270,9 @@ class StyledDOMElementTests
 		
 		
 		
-		siteLeftTextContainer.addChild(siteLeftText);
-		siteLeftTextContainer.addChild(siteLeftText2);
-		siteLeftTextContainer.addChild(siteLeftText3);
+		//siteLeftTextContainer.addChild(siteLeftText);
+		//siteLeftTextContainer.addChild(siteLeftText2);
+		//siteLeftTextContainer.addChild(siteLeftText3);
 		
 		
 		_siteLeftFloatBackground = getGraph();
@@ -289,13 +289,13 @@ class StyledDOMElementTests
 		siteLeftFloat2.style.height = DimensionStyleValue.length(pixel(120));
 		siteLeftFloat2.style.float = FloatStyleValue.left;
 		
-		siteLeftFloat.addChild(_siteLeftFloatBackground);
+		//siteLeftFloat.addChild(_siteLeftFloatBackground);
 		
 		//siteLeftTextContainer.addChild(siteLeftFloat);
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-		siteLeftContainer.addChild(siteLeftTextContainer);
+		//siteLeftContainer.addChild(siteLeftTextContainer);
 		//siteLeftContainer.addChild(siteLeftFloat);
 		
 		var siteRightLeftContainer:ContainerDOMElement = getContainer();
@@ -304,7 +304,7 @@ class StyledDOMElementTests
 		
 		siteRightLeftContainer.addChild(siteLeftContainer);
 		
-		//siteContainer.addChild(siteRightLeftContainer);
+		siteContainer.addChild(siteRightLeftContainer);
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
@@ -326,7 +326,7 @@ class StyledDOMElementTests
 		_footer.style.marginTop = MarginStyleValue.length(pixel(10));
 		
 		
-		//siteContainer.addChild(_footer);
+		siteContainer.addChild(_footer);
 		
 		
 		
@@ -348,6 +348,7 @@ class StyledDOMElementTests
 	
 	private function refresh(event:Dynamic = null)
 	{
+		Log.clear();
 		var browserWidth:Int;
 		var browserHeight:Int;
 		

@@ -153,9 +153,9 @@ class AbstractStyle
 		
 	}
 	
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
-		
+	
 		computePositionStyle();
 		
 		this._computedStyle = computeBoxModelStyle(containingDOMElementDimensions);

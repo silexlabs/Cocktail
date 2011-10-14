@@ -223,6 +223,7 @@ class DOMElement extends AbstractDOMElement
 	override public function setX(value:Int):Int 
 	{
 		super.setX(value);
+		
 		this._nativeElement.style.left = value + "px";
 		return this._x;
 	}

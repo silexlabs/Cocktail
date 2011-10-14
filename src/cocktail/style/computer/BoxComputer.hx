@@ -174,7 +174,6 @@ class BoxComputer
 			position:computedPosition
 		}
 		
-		
 		computedStyleData = constrainDimensions(computedStyleData);
 		
 		/**

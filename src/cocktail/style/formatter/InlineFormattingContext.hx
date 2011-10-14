@@ -20,7 +20,7 @@ class InlineFormattingContext extends FormattingContext
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
-		
+		Log.trace("inline place");
 		if (_flowData.x + domElement.style.computedStyle.offsetWidth + getLeftFloatOffset(_flowData.y) + getRightFloatOffset(flowData.y) > _flowData.maxLineWidth)
 		{
 			startNewLine();
@@ -80,12 +80,8 @@ class InlineFormattingContext extends FormattingContext
 	override public function beginNewFormattingContext(domElement:ContainerDOMElement):Bool
 	{
 		var ret:Bool = false;
+
 		
-		if (FormattingContext.childrenInline(domElement) == false)
-		{
-			ret = true;
-		}
-		/**
 		switch domElement.style.computedStyle.display
 		{
 			case inlineBlock:
@@ -93,10 +89,10 @@ class InlineFormattingContext extends FormattingContext
 				
 			default:
 				
-		}*/
+		}
 		
 		
-		return false;
+		return ret;
 	}
 	
 	
