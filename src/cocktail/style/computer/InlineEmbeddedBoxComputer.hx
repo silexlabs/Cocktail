@@ -7,12 +7,13 @@ import cocktail.style.StyleData;
 
 class InlineEmbeddedBoxComputer extends BoxComputer
 {
+	private static var NULL:Int = -1;
 
 	public function new() 
 	{
 		super();
 	}
-	
+	/**
 	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
 	{
 		//the return value
@@ -45,5 +46,5 @@ class InlineEmbeddedBoxComputer extends BoxComputer
 		
 		return computedMargin;
 	}
-	
+	*/
 }

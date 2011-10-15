@@ -48,7 +48,7 @@ class AbstractContainerStyle extends Style
 		
 		computePositionStyle();
 		
-		this._computedStyle = computeBoxModelStyle(containingDOMElementDimensions);
+		computeBoxModelStyle(containingDOMElementDimensions);
 		
 		if (this._computedStyle.display == DisplayStyleValue.none)
 		{

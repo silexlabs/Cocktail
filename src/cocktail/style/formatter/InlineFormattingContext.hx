@@ -20,21 +20,20 @@ class InlineFormattingContext extends FormattingContext
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
-		Log.trace("inline place");
-		if (_flowData.x + domElement.style.computedStyle.offsetWidth + getLeftFloatOffset(_flowData.y) + getRightFloatOffset(flowData.y) > _flowData.maxLineWidth)
+		
+		if (_flowData.x + domElement.offsetWidth + getLeftFloatOffset(_flowData.y) + getRightFloatOffset(flowData.y) > _flowData.maxLineWidth)
 		{
 			startNewLine();
 		}
 		
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
 		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop + domElement.style.computedStyle.paddingTop;
-				
-		_flowData.x += domElement.style.computedStyle.offsetWidth;
+		_flowData.x += domElement.offsetWidth;
 					
-		if (domElement.style.computedStyle.offsetHeight > flowData.maxLineHeight)
+		if (domElement.offsetHeight > flowData.maxLineHeight)
 		{
 			var oldMaxLineHeight:Int = _flowData.maxLineHeight;
-			_flowData.maxLineHeight = domElement.style.computedStyle.offsetHeight;
+			_flowData.maxLineHeight = domElement.offsetHeight;
 			_flowData.totalHeight += _flowData.maxLineHeight - oldMaxLineHeight;
 			
 		}
