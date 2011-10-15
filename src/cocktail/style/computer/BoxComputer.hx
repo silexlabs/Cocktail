@@ -1,5 +1,6 @@
 package cocktail.style.computer;
 import cocktail.domElement.DOMElement;
+import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
 import haxe.Log;
@@ -19,19 +20,18 @@ class BoxComputer
 	}
 	
 	
-	public function measure(domElement:DOMElement, containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
+	public function measure(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
 	{
-		var styleData:Style = domElement.style; 
 		
 		//get the left padding thickness in pixel 
-		var computedPaddingLeft:Int = getComputedPadding(styleData.paddingLeft, containingDOMElementDimensions.width);
+		var computedPaddingLeft:Int = getComputedPadding(style.paddingLeft, containingDOMElementDimensions.width);
 		
 		
 		//right padding
-		var computedPaddingRight:Int = getComputedPadding(styleData.paddingRight, containingDOMElementDimensions.width);
+		var computedPaddingRight:Int = getComputedPadding(style.paddingRight, containingDOMElementDimensions.width);
 		
 
-		var isWidthAuto:Bool = styleData.width == DimensionStyleValue.auto;
+		var isWidthAuto:Bool = style.width == DimensionStyleValue.auto;
 		
 		var computedWidth:Int;
 		var computedMarginLeft:Int;
@@ -42,23 +42,23 @@ class BoxComputer
 			computedWidth = NULL;
 			
 			//left margin
-			computedMarginLeft = getComputedMargin(styleData.marginLeft, styleData.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+			computedMarginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
 		
 			//right margin
-			computedMarginRight = getComputedMargin(styleData.marginRight, styleData.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+			computedMarginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
 		
 			computedWidth = containingDOMElementDimensions.width - computedPaddingLeft - computedPaddingRight - computedMarginLeft - computedMarginRight;
 		}
 		else
 		{
 			//get the content width (width without margins and paddings)
-			computedWidth = getComputedDimension(styleData.width, containingDOMElementDimensions.width);
+			computedWidth = getComputedDimension(style.width, containingDOMElementDimensions.width);
 			
 			//left margin
-			computedMarginLeft = getComputedMargin(styleData.marginLeft, styleData.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+			computedMarginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
 		
 			//right margin
-			computedMarginRight = getComputedMargin(styleData.marginRight, styleData.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+			computedMarginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
 		
 		}
 		
@@ -68,17 +68,17 @@ class BoxComputer
 		 */
 		
 		//top padding
-		var computedPaddingTop:Int = getComputedPadding(styleData.paddingTop, containingDOMElementDimensions.height);
+		var computedPaddingTop:Int = getComputedPadding(style.paddingTop, containingDOMElementDimensions.height);
 		
 		//bottom padding
-		var computedPaddingBottom:Int = getComputedPadding(styleData.paddingBottom, containingDOMElementDimensions.height);
+		var computedPaddingBottom:Int = getComputedPadding(style.paddingBottom, containingDOMElementDimensions.height);
 		
 		//get the content height (height without margins and paddings)
 		//the height might be null at this point if must take the content size
 		//it will be set once all the children DOMElement have been laid out
 		//var computedHeight:Int = getComputedDimension(styleData.height, containingDOMElementDimensions.height);
 		
-		var isHeightAuto:Bool = styleData.height == DimensionStyleValue.auto;
+		var isHeightAuto:Bool = style.height == DimensionStyleValue.auto;
 		
 		var computedHeight:Int;
 		var computedMarginTop:Int;
@@ -89,23 +89,23 @@ class BoxComputer
 			computedHeight = NULL;
 			
 			//left margin
-			computedMarginTop = getComputedMargin(styleData.marginTop, styleData.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+			computedMarginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
 		
 			//right margin
-			computedMarginBottom = getComputedMargin(styleData.marginBottom, styleData.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+			computedMarginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
 		
 			
 		}
 		else
 		{
 			//get the content width (width without margins and paddings)
-			computedHeight = getComputedDimension(styleData.height, containingDOMElementDimensions.height);
+			computedHeight = getComputedDimension(style.height, containingDOMElementDimensions.height);
 			
 			//left margin
-			computedMarginTop = getComputedMargin(styleData.marginTop, styleData.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+			computedMarginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
 		
 			//right margin
-			computedMarginBottom = getComputedMargin(styleData.marginBottom, styleData.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
+			computedMarginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
 		
 		}
 		
@@ -117,35 +117,35 @@ class BoxComputer
 		*/
 		
 		//max height
-		var computedMaxHeight:Int  = getComputedConstrainedDimension(styleData.maxHeight, containingDOMElementDimensions.height);
+		var computedMaxHeight:Int  = getComputedConstrainedDimension(style.maxHeight, containingDOMElementDimensions.height);
 		
 		//min height
-		var computedMinHeight:Int = getComputedConstrainedDimension(styleData.minHeight, containingDOMElementDimensions.height, true);
+		var computedMinHeight:Int = getComputedConstrainedDimension(style.minHeight, containingDOMElementDimensions.height, true);
 		
 		//max width
-		var computedMaxWidth:Int  = getComputedConstrainedDimension(styleData.maxWidth, containingDOMElementDimensions.width);
+		var computedMaxWidth:Int  = getComputedConstrainedDimension(style.maxWidth, containingDOMElementDimensions.width);
 		
 		//min width
-		var computedMinWidth:Int = getComputedConstrainedDimension(styleData.minWidth, containingDOMElementDimensions.width, true);
+		var computedMinWidth:Int = getComputedConstrainedDimension(style.minWidth, containingDOMElementDimensions.width, true);
 		
 		
-		var computedLeft:Int = getComputedPositionOffset(styleData.left, containingDOMElementDimensions.width);
+		var computedLeft:Int = getComputedPositionOffset(style.left, containingDOMElementDimensions.width);
 		
-		var computedRight:Int = getComputedPositionOffset(styleData.right, containingDOMElementDimensions.width);
+		var computedRight:Int = getComputedPositionOffset(style.right, containingDOMElementDimensions.width);
 		
-		var computedTop:Int = getComputedPositionOffset(styleData.top, containingDOMElementDimensions.height);
+		var computedTop:Int = getComputedPositionOffset(style.top, containingDOMElementDimensions.height);
 		
-		var computedBottom:Int = getComputedPositionOffset(styleData.bottom, containingDOMElementDimensions.height);
+		var computedBottom:Int = getComputedPositionOffset(style.bottom, containingDOMElementDimensions.height);
 		
 		
 		
-		var computedDisplay:DisplayStyleValue = getComputedDisplay(styleData.display);
+		var computedDisplay:DisplayStyleValue = style.computedStyle.display;
 		
-		var computedFloat:FloatStyleValue = getComputedFloat(styleData.float);
+		var computedFloat:FloatStyleValue = style.computedStyle.float;
 		
-		var computedClear:ClearStyleValue = getComputedClear(styleData.clear);
+		var computedClear:ClearStyleValue = style.computedStyle.clear;
 		
-		var computedPosition:PositionStyleValue = getComputedPosition(styleData.position);
+		var computedPosition:PositionStyleValue = style.computedStyle.position;
 		
 		var computedStyleData:ComputedStyleData = {
 			width : computedWidth,
@@ -477,26 +477,6 @@ class BoxComputer
 		}
 		
 		return computedPaddingValue;
-	}
-	
-	private function getComputedDisplay(display:DisplayStyleValue):DisplayStyleValue
-	{
-		return display;
-	}
-	
-	private function getComputedFloat(float:FloatStyleValue):FloatStyleValue
-	{
-		return float;
-	}
-	
-	private function getComputedClear(clear:ClearStyleValue):ClearStyleValue
-	{
-		return clear;
-	}
-	
-	private function getComputedPosition(position:PositionStyleValue):PositionStyleValue
-	{
-		return position;
 	}
 	
 	/**

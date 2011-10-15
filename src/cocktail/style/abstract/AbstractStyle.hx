@@ -196,7 +196,7 @@ class AbstractStyle
 				boxComputer = new InLineBoxComputer();
 		}
 		
-		return boxComputer.measure(this._domElement, containingDOMElementDimensions);
+		return boxComputer.measure(this, containingDOMElementDimensions);
 	}
 	
 	public function positionElement(lastPositionnedDOMElement:DOMElement, rootDOMElement:DOMElement):Void

@@ -219,6 +219,7 @@ class StyledDOMElementTests
 		_header.style.width = DimensionStyleValue.auto;
 		_header.style.height = DimensionStyleValue.percent(100);
 		
+		
 		headerContainer.addChild(_header);
 		
 		siteContainer.addChild(headerContainer);
@@ -289,14 +290,14 @@ class StyledDOMElementTests
 		siteLeftFloat2.style.height = DimensionStyleValue.length(pixel(120));
 		siteLeftFloat2.style.float = FloatStyleValue.left;
 		
-		//siteLeftFloat.addChild(_siteLeftFloatBackground);
+		siteLeftFloat.addChild(_siteLeftFloatBackground);
 		
 		//siteLeftTextContainer.addChild(siteLeftFloat);
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
 		//siteLeftContainer.addChild(siteLeftTextContainer);
-		//siteLeftContainer.addChild(siteLeftFloat);
+		siteLeftContainer.addChild(siteLeftFloat);
 		
 		var siteRightLeftContainer:ContainerDOMElement = getContainer();
 		siteRightLeftContainer.style.width = DimensionStyleValue.percent(100);
@@ -315,7 +316,7 @@ class StyledDOMElementTests
 	
 		
 		_siteRightBackground = getGraph();
-		_siteRightBackground.style.width = DimensionStyleValue.auto;
+		_siteRightBackground.style.width = DimensionStyleValue.percent(100);
 		_siteRightBackground.style.height = DimensionStyleValue.length(pixel(500));
 		
 		siteContainerRight.addChild(_siteRightBackground);
@@ -343,6 +344,7 @@ class StyledDOMElementTests
 		domElement.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
 		domElement.drawRect(0, 0, domElement.width, domElement.height);
 		domElement.endFill();
+		domElement.alpha = 0.6;
 		
 	}
 	
