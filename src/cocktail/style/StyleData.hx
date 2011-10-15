@@ -40,17 +40,6 @@ package cocktail.style;
 		
 		var minHeight:Int;
 		
-		
-		/**
-		 * content width + margins + paddings
-		 */
-		var offsetWidth:Int;
-		
-		/**
-		 * content height + margins + paddings
-		 */
-		var offsetHeight:Int;
-		
 		var marginLeft:Int;
 		var marginRight:Int;
 		var marginTop:Int;

@@ -3,9 +3,12 @@ package cocktail.style.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.style.computer.BlockBoxComputer;
 import cocktail.style.computer.BoxComputer;
+import cocktail.style.computer.FloatBoxComputer;
+import cocktail.style.computer.InlineBlockBoxComputer;
 import cocktail.style.computer.InLineBoxComputer;
 import cocktail.style.computer.NoneBoxComputer;
 import cocktail.style.computer.PositionComputer;
+import cocktail.style.computer.PositionedBoxComputer;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
 import haxe.Log;
@@ -127,8 +130,6 @@ class AbstractStyle
 			maxHeight : 0,
 			minWidth : 0,
 			maxWidth : 0,
-			offsetWidth : 0,
-			offsetHeight : 0,
 			marginLeft : 0,
 			marginRight : 0,
 			marginTop : 0,
@@ -158,7 +159,7 @@ class AbstractStyle
 	
 		computePositionStyle();
 		
-		this._computedStyle = computeBoxModelStyle(containingDOMElementDimensions);
+		computeBoxModelStyle(containingDOMElementDimensions);
 		
 		if (this._computedStyle.display == DisplayStyleValue.none)
 		{
@@ -180,23 +181,38 @@ class AbstractStyle
 		this._computedStyle = PositionComputer.compute(this);
 	}
 	
-	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
+	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		var boxComputer:BoxComputer;
 		
-		switch(this._computedStyle.display)
+		if (isFloat() == true)
 		{
-			case block, inlineBlock:
-				boxComputer = new BlockBoxComputer();
-			
-			case none:
-				boxComputer = new NoneBoxComputer();
-			
-			case _inline:
-				boxComputer = new InLineBoxComputer();
+			boxComputer = new FloatBoxComputer();
+		}
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			boxComputer = new PositionedBoxComputer();
+		}
+		else
+		{
+			switch(this._computedStyle.display)
+			{
+				case block:
+					boxComputer = new BlockBoxComputer();
+					
+				case inlineBlock:
+					boxComputer = new InlineBlockBoxComputer();
+				
+				case none:
+					boxComputer = new NoneBoxComputer();
+				
+				case _inline:
+					boxComputer = new InLineBoxComputer();
+			}
 		}
 		
-		return boxComputer.measure(this, containingDOMElementDimensions);
+		
+		boxComputer.measure(this, containingDOMElementDimensions);
 	}
 	
 	public function positionElement(lastPositionnedDOMElement:DOMElement, rootDOMElement:DOMElement):Void

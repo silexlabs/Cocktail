@@ -3,8 +3,11 @@ package cocktail.style.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.style.computer.BlockEmbeddedBoxComputer;
 import cocktail.style.computer.BoxComputer;
+import cocktail.style.computer.FloatEmbeddedBoxComputer;
+import cocktail.style.computer.InlineBlockEmbeddedBoxComputer;
 import cocktail.style.computer.InlineEmbeddedBoxComputer;
 import cocktail.style.computer.NoneBoxComputer;
+import cocktail.style.computer.PositionedEmbeddedBoxComputer;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
@@ -24,14 +27,25 @@ class AbstractEmbeddedStyle extends Style
 	
 	
 	
-	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
+	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		var boxComputer:BoxComputer;
 		
+		if (isFloat() == true)
+		{
+			boxComputer = new FloatEmbeddedBoxComputer();
+		}
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			boxComputer = new PositionedEmbeddedBoxComputer();
+		}
 		switch(this._computedStyle.display)
 		{
-			case block, inlineBlock:
+			case block:
 				boxComputer = new BlocEmbeddedBoxComputer();
+				
+			case inlineBlock:
+				boxComputer = new InlineBlockEmbeddedBoxComputer();	
 			
 			case none:
 				boxComputer = new NoneBoxComputer();
@@ -40,7 +54,7 @@ class AbstractEmbeddedStyle extends Style
 				boxComputer = new InlineEmbeddedBoxComputer();
 		}
 		
-		return boxComputer.measure(this, containingDOMElementDimensions);
+		boxComputer.measure(this, containingDOMElementDimensions);
 	}
 	
 }

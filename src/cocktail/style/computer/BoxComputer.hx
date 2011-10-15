@@ -20,94 +20,17 @@ class BoxComputer
 	}
 	
 	
-	public function measure(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):ComputedStyleData
+	public function measure(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
+		measureHorizontalPaddings(style, containingDOMElementDimensions);
 		
-		//get the left padding thickness in pixel 
-		var computedPaddingLeft:Int = getComputedPadding(style.paddingLeft, containingDOMElementDimensions.width);
-		
-		
-		//right padding
-		var computedPaddingRight:Int = getComputedPadding(style.paddingRight, containingDOMElementDimensions.width);
-		
+		measureWidthAndHorizontalMargins(style, containingDOMElementDimensions);
 
-		var isWidthAuto:Bool = style.width == DimensionStyleValue.auto;
 		
-		var computedWidth:Int;
-		var computedMarginLeft:Int;
-		var computedMarginRight:Int;
+		measureVerticalPaddings(style, containingDOMElementDimensions);
 		
-		if (isWidthAuto == true)
-		{
-			computedWidth = NULL;
-			
-			//left margin
-			computedMarginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
+		measureHeightAndVerticalMargins(style, containingDOMElementDimensions);
 		
-			//right margin
-			computedMarginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
-		
-			computedWidth = containingDOMElementDimensions.width - computedPaddingLeft - computedPaddingRight - computedMarginLeft - computedMarginRight;
-		}
-		else
-		{
-			//get the content width (width without margins and paddings)
-			computedWidth = getComputedDimension(style.width, containingDOMElementDimensions.width);
-			
-			//left margin
-			computedMarginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
-		
-			//right margin
-			computedMarginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, computedWidth, isWidthAuto, computedPaddingRight + computedPaddingLeft);
-		
-		}
-		
-		
-		/**
-		 * HEIGHT
-		 */
-		
-		//top padding
-		var computedPaddingTop:Int = getComputedPadding(style.paddingTop, containingDOMElementDimensions.height);
-		
-		//bottom padding
-		var computedPaddingBottom:Int = getComputedPadding(style.paddingBottom, containingDOMElementDimensions.height);
-		
-		//get the content height (height without margins and paddings)
-		//the height might be null at this point if must take the content size
-		//it will be set once all the children DOMElement have been laid out
-		//var computedHeight:Int = getComputedDimension(styleData.height, containingDOMElementDimensions.height);
-		
-		var isHeightAuto:Bool = style.height == DimensionStyleValue.auto;
-		
-		var computedHeight:Int;
-		var computedMarginTop:Int;
-		var computedMarginBottom:Int;
-		
-		if (isHeightAuto == true)
-		{
-			computedHeight = NULL;
-			
-			//left margin
-			computedMarginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
-		
-			//right margin
-			computedMarginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
-		
-			
-		}
-		else
-		{
-			//get the content width (width without margins and paddings)
-			computedHeight = getComputedDimension(style.height, containingDOMElementDimensions.height);
-			
-			//left margin
-			computedMarginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
-		
-			//right margin
-			computedMarginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, computedHeight, isHeightAuto, computedPaddingTop + computedPaddingBottom);
-		
-		}
 		
 		/**
 		* The next step is to compute the dimensions
@@ -115,74 +38,143 @@ class BoxComputer
 		* and check that the computed height and width
 		* enforce those constraint
 		*/
+		measureDimensionsConstraints(style, containingDOMElementDimensions);
 		
-		//max height
-		var computedMaxHeight:Int  = getComputedConstrainedDimension(style.maxHeight, containingDOMElementDimensions.height);
-		
-		//min height
-		var computedMinHeight:Int = getComputedConstrainedDimension(style.minHeight, containingDOMElementDimensions.height, true);
-		
-		//max width
-		var computedMaxWidth:Int  = getComputedConstrainedDimension(style.maxWidth, containingDOMElementDimensions.width);
-		
-		//min width
-		var computedMinWidth:Int = getComputedConstrainedDimension(style.minWidth, containingDOMElementDimensions.width, true);
+		measurePositionOffsets(style, containingDOMElementDimensions);
 		
 		
-		var computedLeft:Int = getComputedPositionOffset(style.left, containingDOMElementDimensions.width);
-		
-		var computedRight:Int = getComputedPositionOffset(style.right, containingDOMElementDimensions.width);
-		
-		var computedTop:Int = getComputedPositionOffset(style.top, containingDOMElementDimensions.height);
-		
-		var computedBottom:Int = getComputedPositionOffset(style.bottom, containingDOMElementDimensions.height);
-		
-		
-		
-		var computedDisplay:DisplayStyleValue = style.computedStyle.display;
-		
-		var computedFloat:FloatStyleValue = style.computedStyle.float;
-		
-		var computedClear:ClearStyleValue = style.computedStyle.clear;
-		
-		var computedPosition:PositionStyleValue = style.computedStyle.position;
-		
-		var computedStyleData:ComputedStyleData = {
-			width : computedWidth,
-			height : computedHeight,
-			minHeight : computedMinHeight,
-			maxHeight : computedMaxHeight,
-			minWidth : computedMinWidth,
-			maxWidth : computedMaxWidth,
-			offsetWidth : computedWidth + computedMarginLeft + computedPaddingLeft + computedMarginRight + computedPaddingRight,
-			offsetHeight : computedHeight + computedMarginTop + computedPaddingTop + computedMarginBottom + computedPaddingBottom,
-			marginLeft : computedMarginLeft,
-			marginRight : computedMarginRight,
-			marginTop : computedMarginTop,
-			marginBottom : computedMarginBottom,
-			paddingLeft : computedPaddingLeft,
-			paddingRight : computedPaddingRight,
-			paddingTop : computedPaddingTop,
-			paddingBottom : computedPaddingBottom,
-			left: computedLeft,
-			right: computedRight,
-			top: computedTop,
-			bottom : computedBottom,
-			clear : computedClear,
-			float : computedFloat,
-			display : computedDisplay,
-			position:computedPosition
-		}
-		
-		computedStyleData = constrainDimensions(computedStyleData);
-		
+		constrainDimensions(style.computedStyle);
 		/**
 		 * At this point, all the dimensions of the DOMElement are known maybe except the
 		 * content height. Those dimensions are now enough to position each of the DOMElement's
 		 * children
 		 */
+	}
+	
+	private function measureDimensionsConstraints(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		//max height
+		style.computedStyle.maxHeight = getComputedConstrainedDimension(style.maxHeight, containingDOMElementDimensions.height);
 		
-		return computedStyleData;
+		//min height
+		style.computedStyle.minHeight = getComputedConstrainedDimension(style.minHeight, containingDOMElementDimensions.height, true);
+		
+		//max width
+		style.computedStyle.maxWidth  = getComputedConstrainedDimension(style.maxWidth, containingDOMElementDimensions.width);
+		
+		//min width
+		style.computedStyle.minWidth = getComputedConstrainedDimension(style.minWidth, containingDOMElementDimensions.width, true);
+	}
+	
+	private function measurePositionOffsets(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementDimensions.width);
+		
+		style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementDimensions.width);
+		
+		style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementDimensions.height);
+		
+		style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementDimensions.height);
+	}
+	
+	private function measureHorizontalPaddings(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		//get the left padding thickness in pixel 
+		style.computedStyle.paddingLeft = getComputedPadding(style.paddingLeft, containingDOMElementDimensions.width);
+		
+		//right padding
+		style.computedStyle.paddingRight = getComputedPadding(style.paddingRight, containingDOMElementDimensions.width);
+	}
+	
+	private function measureVerticalPaddings(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		style.computedStyle.paddingTop = getComputedPadding(style.paddingTop, containingDOMElementDimensions.height);
+		
+		style.computedStyle.paddingBottom = getComputedPadding(style.paddingBottom, containingDOMElementDimensions.height);
+	}
+	
+	private function measureWidthAndHorizontalMargins(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		
+		if (style.width == DimensionStyleValue.auto)
+		{
+			measureAutoWidth(style, containingDOMElementDimensions);
+		}
+		else
+		{
+			measureWidth(style, containingDOMElementDimensions);
+		}
+	}
+	
+	private function measureAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		style.computedStyle.width = NULL;
+			
+		//left margin
+		style.computedStyle.marginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, style.computedStyle.width, true, style.computedStyle.paddingRight + style.computedStyle.paddingLeft);
+		
+		//right margin
+		style.computedStyle.marginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, style.computedStyle.width, true, style.computedStyle.paddingRight + style.computedStyle.paddingLeft);
+		
+		style.computedStyle.width = containingDOMElementDimensions.width - style.computedStyle.paddingLeft - style.computedStyle.paddingRight - style.computedStyle.marginLeft - style.computedStyle.marginRight;
+	}
+	
+	private function measureWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		//get the content width (width without margins and paddings)
+		style.computedStyle.width = getComputedWidth(style.width, containingDOMElementDimensions.width);
+			
+		//left margin
+		style.computedStyle.marginLeft = getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementDimensions.width, style.computedStyle.width, false, style.computedStyle.paddingRight + style.computedStyle.paddingLeft);
+		
+		//right margin
+		style.computedStyle.marginRight = getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementDimensions.width, style.computedStyle.width, false, style.computedStyle.paddingLeft + style.computedStyle.paddingRight);
+	}
+	
+	private function getComputedWidth(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int):Int
+	{
+		return getComputedDimension(dimensionStyleValue, containingDOMElementDimension);
+	}
+	
+	private function measureHeightAndVerticalMargins(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		
+		//get the content height (height without margins and paddings)
+		//the height might be null at this point if must take the content size
+		//it will be set once all the children DOMElement have been laid out
+		
+		if (style.height == DimensionStyleValue.auto)
+		{
+			measureAutoHeight(style, containingDOMElementDimensions);
+		}
+		else
+		{
+			measureHeight(style, containingDOMElementDimensions);
+		}
+	}
+	
+
+	private function measureAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		style.computedStyle.height = NULL;
+			
+		style.computedStyle.marginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, style.computedStyle.height, true, style.computedStyle.paddingTop + style.computedStyle.paddingBottom);
+		
+		style.computedStyle.marginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, style.computedStyle.height, true, style.computedStyle.paddingTop + style.computedStyle.paddingBottom);
+	}
+	
+	private function measureHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	{
+		style.computedStyle.height = getComputedHeight(style.height, containingDOMElementDimensions.height);
+		
+		style.computedStyle.marginTop = getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementDimensions.height, style.computedStyle.height, false, style.computedStyle.paddingTop + style.computedStyle.paddingBottom);
+	
+		style.computedStyle.marginBottom = getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementDimensions.height, style.computedStyle.height, false, style.computedStyle.paddingTop + style.computedStyle.paddingBottom);
+	}
+	
+	private function getComputedHeight(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int):Int
+	{
+		return getComputedDimension(dimensionStyleValue, containingDOMElementDimension);
 	}
 	
 	private function applyOffsetDimensions(styleData:Style, computedStyle:ComputedStyleData):Void
@@ -206,7 +198,7 @@ class BoxComputer
 		 }*/
 	}
 	
-	private function constrainDimensions(computedStyle:ComputedStyleData):ComputedStyleData
+	private function constrainDimensions(computedStyle:ComputedStyleData):Void
 	{
 		//check that the computedWidth is not 
 		//superior to max width. The max width
@@ -248,8 +240,6 @@ class BoxComputer
 				computedStyle.height = computedStyle.minHeight;
 			}
 		}
-		
-		return computedStyle;
 	}
 	
 	/**

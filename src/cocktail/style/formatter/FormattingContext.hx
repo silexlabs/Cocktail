@@ -239,8 +239,8 @@ class FormattingContext
 		return {
 			x: floatX,
 			y: floatY,
-			width:domElement.style.computedStyle.offsetWidth,
-			height:domElement.style.computedStyle.offsetHeight
+			width:domElement.offsetWidth,
+			height:domElement.offsetHeight
 		}
 	}
 	
@@ -249,8 +249,8 @@ class FormattingContext
 		return {
 			x: 0,
 			y: 0,
-			width:domElement.style.computedStyle.offsetWidth,
-			height:domElement.style.computedStyle.offsetHeight
+			width:domElement.offsetWidth,
+			height:domElement.offsetHeight
 		}
 	}
 	
