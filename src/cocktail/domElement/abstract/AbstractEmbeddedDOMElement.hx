@@ -47,11 +47,13 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	public var intrinsicRatio(getIntrinsicRatio, setIntrinsicRatio):Float;
 	
 	/**
-	 * Constructor
+	 * Constructor. Init the default dimensions and intrinsic dimensions of the DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+		initDimensions();
+		initInstrinsicDimensions();
 	}
 	
 	/**
@@ -61,6 +63,25 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	override private function initStyle():Void
 	{
 		this._style = new EmbeddedStyle(this);
+	}
+	
+	/**
+	 * Init the default width and height of an 
+	 * embedded DOMElement, varies for each inheriting
+	 * DOMElement
+	 */
+	private function initDimensions():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Init the default intrinsic width, height and ratio.
+	 * Different for each inheriting embedded DOMElement
+	 */
+	private function initInstrinsicDimensions():Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

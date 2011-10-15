@@ -60,6 +60,28 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		this.smooth = true;
 	}
 	
+	/**
+	 * An ImageDOMElement dimensions are equal to 0
+	 * until a picture is loaded
+	 */
+	override private function initDimensions():Void
+	{
+		this._height = 0;
+		this._width = 0;
+	}
+	
+	/**
+	 * For an ImageDOMElement, the intrinsic width, height and ratio
+	 * represents the unscaled dimensions of the picture. They are
+	 * equal to 0 until a picture is loaded
+	 */
+	override private function initInstrinsicDimensions():Void
+	{
+		this._intrinsicHeight = 0;
+		this._intrinsicWidth = 0;
+		this._intrinsicRatio = 0;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
