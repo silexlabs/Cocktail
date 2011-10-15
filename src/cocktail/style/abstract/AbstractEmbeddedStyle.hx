@@ -40,7 +40,7 @@ class AbstractEmbeddedStyle extends Style
 				boxComputer = new InlineEmbeddedBoxComputer();
 		}
 		
-		return boxComputer.measure(this._domElement, containingDOMElementDimensions);
+		return boxComputer.measure(this, containingDOMElementDimensions);
 	}
 	
 }

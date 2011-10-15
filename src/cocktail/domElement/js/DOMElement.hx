@@ -49,7 +49,8 @@ class DOMElement extends AbstractDOMElement
 		//all DOMElements are positioned as absolute to prevent most
 		//of browsers inconsistencies regarding margin/padding. 
 		//Margin, padding , floating... concepts will be abstracted
-		_nativeElement.style.position = "absolute";
+		
+		//_nativeElement.style.position = "absolute";
 		
 		if (_nativeElement.style.width != null)
 		{
