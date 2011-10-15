@@ -72,9 +72,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_backGroundSprite = new Sprite();
 		this._nativeElement.addChild(_backGroundSprite);
 
-		this._width = 100;
-		this._height = 100;
-		setUpBackgroundSprite(_backGroundSprite, 100, 100);
+		setUpBackgroundSprite(_backGroundSprite, this._width, this._height);
 		
 		//init the bitmap display object and attach it to the display list
 		_bitmapDrawing = new Bitmap(new BitmapData(100, 100, true, 0x00FFFFFF));
