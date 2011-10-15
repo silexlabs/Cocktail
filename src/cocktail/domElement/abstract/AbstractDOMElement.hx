@@ -20,6 +20,7 @@ import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.Style;
+import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
@@ -154,6 +155,18 @@ class AbstractDOMElement
 	 */
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
+	
+	/**
+	 * Read-only, returns the width of the domElement
+	 * + horizontal paddings + horizontal margins
+	 */
+	public var offsetWidth(getOffsetWidth, never):Int;
+	
+	/**
+	 * Read-only, returns the height of the domElement
+	 * + vertical paddings + vertical margins
+	 */
+	public var offsetHeight(getOffsetHeight, never):Int;
 	
 	/////////////////////////////////
 	// STYLE attribute
@@ -863,6 +876,26 @@ class AbstractDOMElement
 	public function getHeight():Int 
 	{ 
 		return this._height;
+	}
+	
+	/**
+	 * constructs the offset width from the computed
+	 * box of this domElement
+	 */
+	public function getOffsetWidth():Int
+	{
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.width + computedStyle.marginLeft + computedStyle.marginRight + computedStyle.paddingLeft + computedStyle.paddingRight;
+	}
+	
+	/**
+	 * constructs the offset height from the computed
+	 * box of this domElement
+	 */
+	public function getOffsetHeight():Int
+	{
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.height + computedStyle.marginTop + computedStyle.marginBottom + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
