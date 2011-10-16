@@ -35,12 +35,21 @@ class AbstractContainerStyle extends Style
 		super(domElement);
 	}
 	
+	
+	
 	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
 	{
 		flow(containingDOMElementDimensions, null, true);
 		positionElement(lastPositionedDOMElement, rootDOMElement);
 	}
 	
+	
+	
+	/**
+	 * TO DO : 
+	 * The method called recursively on children should be layout, this way yhe positionElement method can be only defined for 
+	 * Container DOMElement instead of all of them. Same for the flow method ?
+	 */
 	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
 		
