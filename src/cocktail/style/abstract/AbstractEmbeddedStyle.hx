@@ -42,7 +42,7 @@ class AbstractEmbeddedStyle extends Style
 		switch(this._computedStyle.display)
 		{
 			case block:
-				boxComputer = new BlocEmbeddedBoxComputer();
+				boxComputer = new BlockEmbeddedBoxComputer();
 				
 			case inlineBlock:
 				boxComputer = new InlineBlockEmbeddedBoxComputer();	

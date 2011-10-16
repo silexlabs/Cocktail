@@ -5,7 +5,7 @@ package cocktail.style.computer;
  * @author Yannick DOMINGUEZ
  */
 
-class FloatEmbeddedBoxComputer extends BoxComputer
+class FloatEmbeddedBoxComputer extends InlineEmbeddedBoxComputer
 {
 
 	public function new() 
