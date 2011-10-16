@@ -308,7 +308,7 @@ class Style extends AbstractStyle
 				floatValue = "none";
 		}
 		
-		this._domElement.nativeElement.style.styleFloat = floatValue;
+		untyped this._domElement.nativeElement.style.cssFloat = floatValue;
 		
 		return _float = value;
 	}

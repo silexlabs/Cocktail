@@ -118,6 +118,7 @@ class AbstractStyle
 	 * apply
 	 */
 	private var _domElement:DOMElement;
+	public var domElement(getDOMElement, never):DOMElement;
 	
 	public function new(domElement:DOMElement) 
 	{
@@ -297,6 +298,11 @@ class AbstractStyle
 	public function setComputedStyle(value:ComputedStyleData):ComputedStyleData
 	{
 		return _computedStyle = value;
+	}
+	
+	public function getDOMElement():DOMElement
+	{
+		return this._domElement;
 	}
 	
 	/////////////////////////////////

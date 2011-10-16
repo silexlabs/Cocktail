@@ -29,22 +29,22 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	 * The instrinsic width of an embedded content. For example, for a video, the width
 	 * in pixel of the video
 	 */
-	private var _intrinsicWidth:Int;
-	public var intrinsicWidth(getIntrinsicWidth, setIntrinsicWidth):Int;
+	private var _intrinsicWidth:Null<Int>;
+	public var intrinsicWidth(getIntrinsicWidth, setIntrinsicWidth):Null<Int>;
 	
 	/**
 	 * The instrinsic height of an embedded content. For example, for a video, the height
 	 * in pixel of the video
 	 */
-	private var _intrinsicHeight:Int;
-	public var intrinsicHeight(getIntrinsicHeight, setIntrinsicHeight):Int;
+	private var _intrinsicHeight:Null<Int>;
+	public var intrinsicHeight(getIntrinsicHeight, setIntrinsicHeight):Null<Int>;
 	
 	/**
 	 * The instrinsic ratio of an embedded content. For example, for a video, the height/width
 	 * ratio of the video
 	 */
-	private var _intrinsicRatio:Float;
-	public var intrinsicRatio(getIntrinsicRatio, setIntrinsicRatio):Float;
+	private var _intrinsicRatio:Null<Float>;
+	public var intrinsicRatio(getIntrinsicRatio, setIntrinsicRatio):Null<Float>;
 	
 	/**
 	 * Constructor. Init the default dimensions and intrinsic dimensions of the DOMElement
@@ -88,34 +88,34 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	// INTRINSIC DIMENSIONS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setIntrinsicWidth(value:Int):Int
+	public function setIntrinsicWidth(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicWidth = value;
 		return value;
 	}
 	
-	public function getIntrinsicWidth():Int
+	public function getIntrinsicWidth():Null<Int>
 	{
 		return this._intrinsicWidth;
 	}
 	
-	public function setIntrinsicHeight(value:Int):Int
+	public function setIntrinsicHeight(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicHeight = value;
 		return value;
 	}
 	
-	public function getIntrinsicHeight():Int
+	public function getIntrinsicHeight():Null<Int>
 	{
 		return this._intrinsicHeight;
 	}
 	
-	public function getIntrinsicRatio():Float
+	public function getIntrinsicRatio():Null<Float>
 	{
 		return this._intrinsicRatio;
 	}
 	
-	public function setIntrinsicRatio(value:Float):Float
+	public function setIntrinsicRatio(value:Null<Float>):Null<Float>
 	{
 		this._intrinsicRatio = value;
 		return value;

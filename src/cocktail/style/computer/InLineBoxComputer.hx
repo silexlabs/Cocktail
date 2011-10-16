@@ -1,4 +1,5 @@
 package cocktail.style.computer;
+import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 /**
  * ...
@@ -47,12 +48,12 @@ class InLineBoxComputer extends BoxComputer
 		return computedMargin;
 	}
 	
-	override private function getComputedWidth(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int):Int
+	override private function getComputedWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
 	{
 		return 0;
 	}
 	
-	override private function getComputedHeight(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int):Int
+	override private function getComputedHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
 	{
 		//TO DO, should be based on font size, but to do it for multi-line ? Should be set during layout ? (probably)
 		return 0;
