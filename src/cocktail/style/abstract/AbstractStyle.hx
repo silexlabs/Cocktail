@@ -14,7 +14,13 @@ import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
- * ...
+ * This is the base class for all Style classes. Style classes
+ * are in charge of storing the style value for a DOMElement
+ * and applying them when neccessary.
+ * 
+ * This class holds a reference to the targeted DOMElement
+ * 
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractStyle 
@@ -120,6 +126,10 @@ class AbstractStyle
 	private var _domElement:DOMElement;
 	public var domElement(getDOMElement, never):DOMElement;
 	
+	/**
+	 * Class constructor. Stores the target DOMElement and init
+	 * the computed styles structure with default values
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
@@ -150,11 +160,42 @@ class AbstractStyle
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The main layout method. When called, the DOMElement's box
+	 * model styles (width, height, margins, paddings...) are computed
+	 * and the DOMElement layout its children if it has any.
+	 * 
+	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
+	 * this DOMElement must be layout
+	 * @param	lastPositionedDOMElement a reference to the last DOMElement in the hierararchy which is 'positioned', meaning that
+	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
+	 * of 'absolute'), it it used as origin.
+	 * @param	rootDOMElement a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
+	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
+	 */
 	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
 	{
-		
+		//abstract
 	}
 	
+	/**
+	 * This method is in charge of placing "in-flow" DOMElements (DOMElement with a 'position' style of 'static' or 'relative') into
+	 * its parent flow. The flow may be a block flow, in which each DOMElement is placed below the preceding DOMElement or an
+	 * inline flow where the DOMElement are arranged in lines, and placed either next to the preceding DOMElement or on a
+	 * new line below.
+	 * 
+	 * This method is called recursively if the DOMElement has children
+	 * 
+	 * 
+	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
+	 * this DOMElement must be layout
+	 * @param	formatingContext
+	 * @param	initialContainer
+	 */
 	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
 	
@@ -177,11 +218,21 @@ class AbstractStyle
 		}
 	}
 	
+	
+	/**
+	 * This method computes the styles determing
+	 * the DOMElement's layout scheme :
+	 * position, display, float, clear
+	 */
 	public function computePositionStyle():Void
 	{
 		this._computedStyle = PositionComputer.compute(this);
 	}
 	
+	/**
+	 * Compute the box model styles (width, height, paddings, margins...) of this
+	 * DOMElement by instantiating the right box model computer class
+	 */ 
 	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		var boxComputer:BoxComputer;
@@ -212,7 +263,8 @@ class AbstractStyle
 			}
 		}
 		
-		
+		//compute the styles, the results are stored in the computed styles
+		//structure
 		boxComputer.measure(this, containingDOMElementDimensions);
 	}
 	
@@ -221,6 +273,18 @@ class AbstractStyle
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the DOMElement introduces
+	 * 'clearance', which as the effect of placing
+	 * the DOMElement below any preceding floated
+	 * DOMElement. A DOMElement introduces clearance
+	 * if he clears either left or right floats
+	 * or both
+	 */
 	public function isClear():Bool
 	{
 		var ret:Bool = false;
@@ -237,6 +301,19 @@ class AbstractStyle
 		return ret;
 	}
 	
+	/**
+	 * Determine if the DOMElement is a floated
+	 * DOMElement. A floated DOMElement is first
+	 * placed in the flow then moved to the
+	 * left-most or right-most of its container.
+	 * Any subsequent inline DOMElement flows
+	 * around on the float until a new line 
+	 * starts below the float or if it is cleared
+	 * by another DOMElement.
+	 * 
+	 * A DOMElement is float if he declares either
+	 * a left or right float
+	 */
 	public function isFloat():Bool
 	{
 		var ret:Bool = false;
@@ -253,6 +330,16 @@ class AbstractStyle
 		return ret;
 	}
 	
+	/**
+	 * An inline DOMElement is one that is
+	 * layout on a line. It will be placed
+	 * either next to the precending DOMElement
+	 * or on a new line if the current line
+	 * is too short to host it.
+	 * 
+	 * Wheter an element is inline is determined
+	 * by the display style
+	 */
 	public function isInline():Bool
 	{
 		var ret:Bool = false;
@@ -269,6 +356,25 @@ class AbstractStyle
 		return ret;
 	}
 	
+	/**
+	 * A positioned element is one that 
+	 * is positioned outside of the normal
+	 * flow.
+	 * 
+	 * The 'relative', 'absolute' and'fixed'
+	 * values of the 'position' style makes
+	 * a DOMElement 'positioned'. 
+	 * 
+	 * The 'absolute' and 'fixed' value make
+	 * a DOMElement an 'absolutely positioned'
+	 * DOMElement. This kind of DOMElement
+	 * doesn't affect the normal flow (it is
+	 * treated as if it doesn't exist). It
+	 * uses as origin its first ancestor
+	 * which is also positioned
+	 * 
+	 * See below for the 'relative' value
+	 */
 	public function isPositioned():Bool
 	{
 		var ret:Bool = false;
@@ -285,19 +391,32 @@ class AbstractStyle
 		return ret;
 	}
 	
+	/**
+	 * Determine wether a DOMElement has
+	 * the 'position' value 'relative'.
+	 * 
+	 * A 'relative' DOMElement is first placed
+	 * normally in the flow then an offset is 
+	 * applied to it with the top, left, right
+	 * and bottom style.
+	 * 
+	 * It is used as origin for any 'absolute'
+	 * or 'fixed' positioned children and 
+	 * grand-children until another positioned
+	 * DOMElement is found
+	 */
 	public function isRelativePositioned():Bool
 	{
 		return this._computedStyle.position == relative;
 	}
 	
+	/////////////////////////////////
+	// SETTERS/GETTERS
+	////////////////////////////////
+	
 	public function getComputedStyle():ComputedStyleData
 	{
 		return _computedStyle;
-	}
-	
-	public function setComputedStyle(value:ComputedStyleData):ComputedStyleData
-	{
-		return _computedStyle = value;
 	}
 	
 	public function getDOMElement():DOMElement
