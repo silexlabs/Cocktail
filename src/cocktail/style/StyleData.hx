@@ -73,6 +73,8 @@ package cocktail.style;
 		
 		var position:PositionStyleValue;
 		
+		var verticalAlign:Int;
+		
 	}
 	
 	/**
@@ -128,6 +130,81 @@ package cocktail.style;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Controls the vertical alignement of an 
+	 * inline DOMElement in its containing
+	 * DOMElement
+	 */
+	enum VerticalAlignStyleValue {
+		
+		/**
+		 * Align the baseline of the box with the baseline
+		 * of the parent box. If the box does not have a
+		 * baseline, align the bottom margin edge with 
+		 * the parent's baseline.
+		 */
+		baseline;
+		
+		/**
+		 * Lower the baseline of the box to the proper 
+		 * position for subscripts of the parent's box
+		 */
+		sub;
+		
+		/**
+		 * Raise the baseline of the box to the proper 
+		 * position for superscripts of the parent's box.
+		 */
+		_super;
+		
+		/**
+		 * Align the top of the aligned subtree with 
+		 * the top of the line box.
+		 */
+		top;
+		
+		/**
+		 * Align the top of the box with the top of the
+		 * parent's content area
+		 */
+		textTop;
+		
+		/**
+		 * Align the vertical midpoint of the box with the baseline
+		 * of the parent box plus half the x-height of the parent.
+		 */
+		middle;
+		
+		/**
+		 * Align the bottom of the aligned subtree with the 
+		 * bottom of the line box.
+		 */
+		bottom;
+		
+		/**
+		 * Align the bottom of the box with the bottom of the 
+		 * parent's content area
+		 */
+		textBottom;
+		
+		/**
+		 * a positive value raise the box, a
+		 * negative lowers it, by taking the
+		 * parent baseline as reference for
+		 * 0%
+		 */
+		percent(value:Int);
+		
+		/**
+		 * a positive value raise the box, a
+		 * negative lowers it, by taking the
+		 * parent baseline as reference for
+		 * 0
+		 */
+		length(value:LengthValue);
+		
+	}
 	
 	/**
 	 * Dimensions values for margin thickness
