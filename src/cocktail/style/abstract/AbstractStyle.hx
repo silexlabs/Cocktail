@@ -160,7 +160,8 @@ class AbstractStyle
 			clear : ClearStyleValue.none,
 			float : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
-			position: PositionStyleValue._static
+			position: PositionStyleValue._static,
+			verticalAlign : 0
 		}
 	}
 	
@@ -231,7 +232,7 @@ class AbstractStyle
 	 */
 	public function computePositionStyle():Void
 	{
-		this._computedStyle = PositionComputer.compute(this);
+		PositionComputer.compute(this);
 	}
 	
 	/**

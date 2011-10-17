@@ -71,6 +71,10 @@ class AbstractContainerStyle extends Style
 		
 		if (this._computedStyle.display == DisplayStyleValue.none)
 		{
+			/**
+			 * TO DO : must the set the computed style value
+			 * of 'visible' to false, not the visible property
+			 */
 			this._domElement.isVisible = false;
 			return;
 		}
@@ -124,8 +128,6 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-
-		
 		for (i in 0...containerDOMElement.children.length)
 		{
 			if (containerDOMElement.children[i].style.isClear())
@@ -147,10 +149,7 @@ class AbstractContainerStyle extends Style
 		
 		if (isPositioned() == false || isRelativePositioned() == true)
 		{
-			if (initialContainer == false)
-			{
-				formatingContext.insert(this._domElement);
-			}
+			formatingContext.insert(this._domElement);
 		}
 		
 	}

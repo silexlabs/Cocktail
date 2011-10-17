@@ -16,11 +16,7 @@ class PositionedBoxComputer extends BoxComputer
 		super();
 	}
 	
-	/**
-	 * Compute the 'position offsets' styles :
-	 * top, left, bottom, right, used if the DOMElement
-	 * is 'positioned' (position style other than 'static')
-	 */
+
 	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		super.measurePositionOffsets(style, containingDOMElementDimensions);

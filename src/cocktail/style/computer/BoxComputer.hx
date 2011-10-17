@@ -306,29 +306,6 @@ class BoxComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	private function applyOffsetDimensions(styleData:Style, computedStyle:ComputedStyleData):Void
-	{
-		//Should it be here ?
-		
-		 if (styleData.width == DimensionStyleValue.auto)
-		 {
-			 if (computedStyle.left != 0 && computedStyle.right != 0)
-			 {
-				 this.width = containingDOMElementDimensions.width - computedLeft - computedRight;
-			 }
-		 }
-		 
-		 if (styleData.height == DimensionStyleValue.auto)
-		 {
-			 if (computedTop != 0 && computedBottom != 0)
-			 {
-				 this.height = containingDOMElementDimensions.height - computedTop - computedBottom;
-			 }
-		 }
-	}
-	*/
-	
-	/**
 	 * Apply the dimensions constraints, such as 
 	 * max-height to the computed width and height
 	 * values
