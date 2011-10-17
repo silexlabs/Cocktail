@@ -27,7 +27,7 @@ class AbstractEmbeddedStyle extends Style
 	
 	
 	
-	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		var boxComputer:BoxComputer;
 		

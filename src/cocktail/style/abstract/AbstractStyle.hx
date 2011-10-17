@@ -10,6 +10,10 @@ import cocktail.style.computer.NoneBoxComputer;
 import cocktail.style.computer.PositionComputer;
 import cocktail.style.computer.PositionedBoxComputer;
 import cocktail.style.formatter.FormattingContext;
+import cocktail.style.positioner.AbsolutePositioner;
+import cocktail.style.positioner.BoxPositioner;
+import cocktail.style.positioner.FixedPositioner;
+import cocktail.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -177,7 +181,7 @@ class AbstractStyle
 	 * @param	rootDOMElement a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		//abstract
 	}
@@ -196,12 +200,13 @@ class AbstractStyle
 	 * @param	formatingContext
 	 * @param	initialContainer
 	 */
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
 	
 		computePositionStyle();
 		
-		computeBoxModelStyle(containingDOMElementDimensions);
+		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		
 		
 		if (this._computedStyle.display == DisplayStyleValue.none)
 		{
@@ -233,9 +238,27 @@ class AbstractStyle
 	 * Compute the box model styles (width, height, paddings, margins...) of this
 	 * DOMElement by instantiating the right box model computer class
 	 */ 
-	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
 		var boxComputer:BoxComputer;
+		
+		var containingBlockDimensions:ContainingDOMElementDimensions = containingDOMElementDimensions;
+		
+		if (isPositioned() == true)
+		{
+			if (this._computedStyle.position == PositionStyleValue.fixed)
+			{
+				containingBlockDimensions = rootDOMElementDimensions;
+			}
+			else if (this._computedStyle.position == PositionStyleValue.absolute)
+			{
+				containingBlockDimensions = lastPositionedDOMElementDimensions;
+			}
+			else
+			{
+				containingBlockDimensions = containingDOMElementDimensions;
+			}
+		}
 		
 		if (isFloat() == true)
 		{
@@ -265,12 +288,48 @@ class AbstractStyle
 		
 		//compute the styles, the results are stored in the computed styles
 		//structure
-		boxComputer.measure(this, containingDOMElementDimensions);
+		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
-	public function positionElement(lastPositionnedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
+	/**
+	 * Position
+	 * @param	lastPositionnedDOMElement
+	 * @param	rootDOMElement
+	 */
+	public function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
-		
+		if (this.isPositioned() == true)
+		{
+			var positioner:BoxPositioner;
+			if (this.isRelativePositioned() == true)
+			{
+				positioner = new RelativePositioner();
+				positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+			}
+			else
+			{
+				switch (this._domElement.style.computedStyle.position)
+				{
+					case fixed:
+						positioner = new FixedPositioner();
+						
+						/**
+						 * TO DO : remove the x and y scroll from the root dom element dimensions
+						 * so that it seems to stay at the same place in the window
+						 */
+						var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = rootDOMElementDimensions;
+						
+						positioner.position(this._domElement, scrolledRootDOMElementDimensions);
+						
+					case absolute:
+						positioner = new AbsolutePositioner();
+						positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+						
+					default:	
+						positioner = new AbsolutePositioner();
+				}
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

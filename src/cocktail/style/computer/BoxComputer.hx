@@ -75,17 +75,16 @@ class BoxComputer
 		measureWidthAndHorizontalMargins(style, containingDOMElementDimensions);
 		measureHeightAndVerticalMargins(style, containingDOMElementDimensions);
 		
+		//measure the top, left, right and bottom offsets
+		//used when the DOMElement is 'positioned' (any position style
+		//but static)
+		measurePositionOffsets(style, containingDOMElementDimensions);
 		
 		//The next step is to compute the dimensions
 		//constraint style (max-width, min-height...)
 		//and check that the computed height and width
 		//enforce those constraint
 		measureDimensionsConstraints(style, containingDOMElementDimensions);
-		
-		//measure the top, left, right and bottom offsets
-		//used when the DOMElement is 'positioned' (any position style
-		//but static)
-		measurePositionOffsets(style, containingDOMElementDimensions);
 		
 		//apply the dimensions constraints (min-width, max-height...)
 		//to the computed width and height dimensions
@@ -95,7 +94,7 @@ class BoxComputer
 		 //content height if it was set to 'auto' and thus depends on its content's height.
 		 //Those dimensions are now enough to layout each of the DOMElement's children.
 		 //If the parent's height of this DOMElement is set to 'auto', it will use the
-		 //computed dimensions of this DOMElement to compute it
+		 //computed dimensions of this DOMElement to compute its own height.
 		 
 	}
 	

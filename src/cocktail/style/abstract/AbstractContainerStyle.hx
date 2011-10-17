@@ -37,9 +37,19 @@ class AbstractContainerStyle extends Style
 	
 	
 	
-	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
+	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
-		flow(containingDOMElementDimensions, null, true);
+		var rootDOMElementDimensions:ContainingDOMElementDimensions = {
+			width : rootDOMElement.width,
+			height : rootDOMElement.height
+		}
+		
+		var lastPositionedDOMElementDimensions:ContainingDOMElementDimensions = {
+			width : lastPositionedDOMElement.width,
+			height : lastPositionedDOMElement.height
+		}
+		
+		flow(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, null, true);
 		positionElement(lastPositionedDOMElement, rootDOMElement);
 	}
 	
@@ -50,14 +60,14 @@ class AbstractContainerStyle extends Style
 	 * The method called recursively on children should be layout, this way yhe positionElement method can be only defined for 
 	 * Container DOMElement instead of all of them. Same for the flow method ?
 	 */
-	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
+	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
 	{
 		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
 		computePositionStyle();
 		
-		computeBoxModelStyle(containingDOMElementDimensions);
+		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 		
 		if (this._computedStyle.display == DisplayStyleValue.none)
 		{
@@ -84,15 +94,27 @@ class AbstractContainerStyle extends Style
 		{
 			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);		
 			
-			containingDOMElementDimensions = {
-			width:this._computedStyle.width,
-			height:this._computedStyle.height
-		}
+		
 		}
 		else
 		{
 			childrenFormattingContext = formatingContext;
 		}
+		
+			containingDOMElementDimensions = {
+			width:this._computedStyle.width,
+			height:this._computedStyle.height
+		}
+		
+		var childLastPositionedDOMElementDimensions:ContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
+		if (this.isPositioned() == true)
+		{
+			childLastPositionedDOMElementDimensions = {
+				width:this._computedStyle.width,
+				height:this._computedStyle.height
+			}
+		}
+		
 		
 		for (i in 0...containerDOMElement.children.length)
 		{
@@ -106,17 +128,14 @@ class AbstractContainerStyle extends Style
 		
 		for (i in 0...containerDOMElement.children.length)
 		{
-			if (containerDOMElement.children[i].style.isFloat() == false)
+			if (containerDOMElement.children[i].style.isClear())
 			{
-				if (containerDOMElement.children[i].style.isClear())
-				{
-					formatingContext.clearFloat(containerDOMElement.children[i].style.computedStyle.clear);
-				}
-				containerDOMElement.children[i].style.flow(containingDOMElementDimensions, childrenFormattingContext);
+				formatingContext.clearFloat(containerDOMElement.children[i].style.computedStyle.clear);
 			}
+			containerDOMElement.children[i].style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 		}
 		
-		if (isInline() == false && this._computedStyle.height == -1)
+		if (isInline() == false && this._height == DimensionStyleValue.auto)
 		{
 			
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
@@ -132,55 +151,36 @@ class AbstractContainerStyle extends Style
 			{
 				formatingContext.insert(this._domElement);
 			}
-			
-			
 		}
-		
 		
 	}
 	
-	override public function positionElement(lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
+	override public function positionElement(lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
-		if (isPositioned() == true)
-		{
-			lastPositionedDOMElement = this._domElement;
-		}
+		super.positionElement(lastPositionedDOMElement, rootDOMElement);
 		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		var childrenLastPositionedDOM:AbsolutelyPositionedContainingDOMElementDimensions = {
+				globalX:lastPositionedDOMElement.globalX,
+				globalY:lastPositionedDOMElement.globalY,
+				width:lastPositionedDOMElement.width,
+				height:lastPositionedDOMElement.height
+			}
+			
+		if (this.isPositioned() == true)
+		{
+			childrenLastPositionedDOM.width = this._domElement.width;
+			childrenLastPositionedDOM.height = this._domElement.height;
+			childrenLastPositionedDOM.globalX = this._domElement.globalX;
+			childrenLastPositionedDOM.globalY = this._domElement.globalY;
+		}
 		
 		for (i in 0...containerDOMElement.children.length)
 		{
 			var childDOMElement:DOMElement = containerDOMElement.children[i];
 			
-			childDOMElement.style.positionElement(lastPositionedDOMElement, rootDOMElement);
-			
-						
-			if (childDOMElement.style.isPositioned() == true)
-			{
-				var positioner:BoxPositioner;
-				if (childDOMElement.style.isRelativePositioned() == true)
-				{
-					positioner = new RelativePositioner();
-					positioner.position(childDOMElement, lastPositionedDOMElement);
-				}
-				else
-				{
-					switch (childDOMElement.style.computedStyle.position)
-					{
-						case fixed:
-							positioner = new FixedPositioner();
-							positioner.position(childDOMElement, rootDOMElement);
-							
-						case absolute:
-							positioner = new AbsolutePositioner();
-							positioner.position(childDOMElement, lastPositionedDOMElement);
-							
-						default:	
-							positioner = new AbsolutePositioner();
-					}
-				}
-				
-			}
+			childDOMElement.style.positionElement(childrenLastPositionedDOM, rootDOMElement);
 		}
 		
 	}
