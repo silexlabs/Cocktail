@@ -1,6 +1,7 @@
 package cocktail.style.positioner;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * ...
@@ -15,18 +16,18 @@ class BoxPositioner
 		
 	}
 	
-	public function position(domElement:DOMElement, containingDOMElement:DOMElement):Void
+	public function position(domElement:DOMElement, containingDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		var referenceGlobalX:Int = containingDOMElement.globalX;
-	
+		Log.trace(referenceGlobalX);
 		var referenceGlobalY:Int = containingDOMElement.globalY;
 		
 		domElement.globalX = referenceGlobalX;
 		domElement.globalY = referenceGlobalY;
 		
 		var containingDOMElementDimensions:ContainingDOMElementDimensions = {
-			width : containingDOMElement.style.computedStyle.width,
-			height : containingDOMElement.style.computedStyle.height
+			width : containingDOMElement.width,
+			height : containingDOMElement.height
 		}
 		
 		applyOffset(domElement, containingDOMElementDimensions);
@@ -34,21 +35,22 @@ class BoxPositioner
 	
 	private function applyOffset(domElement:DOMElement, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
 	{
-		if (domElement.style.computedStyle.left != 0)
+		if (domElement.style.left != PositionOffsetStyleValue.auto)
 		{
+			//Log.trace(domElement.style.computedStyle.left);
 			domElement.x += domElement.style.computedStyle.left;
 		}
-		else if (domElement.style.computedStyle.right != 0)
+		else if (domElement.style.right != PositionOffsetStyleValue.auto)
 		{
 			domElement.x = containingDOMElementDimensions.width - domElement.style.computedStyle.width;
 			domElement.x -= domElement.style.computedStyle.right;
 		}
 		
-		if (domElement.style.computedStyle.top != 0)
+		if (domElement.style.top != PositionOffsetStyleValue.auto)
 		{
 			domElement.y += domElement.style.computedStyle.top;
 		}
-		else if (domElement.style.computedStyle.bottom != 0)
+		else if (domElement.style.bottom != PositionOffsetStyleValue.auto)
 		{
 			domElement.y = containingDOMElementDimensions.height - domElement.style.computedStyle.height;
 			domElement.y -= domElement.style.computedStyle.bottom;

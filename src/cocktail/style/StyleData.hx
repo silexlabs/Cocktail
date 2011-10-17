@@ -15,6 +15,18 @@ package cocktail.style;
 	}
 	
 	/**
+	 * Represents the dimensions of a DOMElement used
+	 * as origin when positioning an absolutely
+	 * positioned DOMElelement
+	 */
+	typedef AbsolutelyPositionedContainingDOMElementDimensions = {
+		var globalX:Int;
+		var globalY:Int;
+		var width:Int;
+		var height:Int;
+	}
+	
+	/**
 	 * Stores all the computed styles
 	 * of a DOMElement as they are 
 	 * used multiple times when appliying

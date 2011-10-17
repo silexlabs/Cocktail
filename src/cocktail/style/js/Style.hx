@@ -11,10 +11,12 @@ import cocktail.style.StyleData;
  */
 class Style extends AbstractStyle
 {
+	
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
 	}
+	
 	
 	private function getMarginValue(value:MarginStyleValue):String
 	{

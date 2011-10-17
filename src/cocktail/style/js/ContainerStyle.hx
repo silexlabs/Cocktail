@@ -14,9 +14,10 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		super(domElement);
 	}
-	
-	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:DOMElement, rootDOMElement:DOMElement):Void
+
+	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		
 	}
+	
 }
