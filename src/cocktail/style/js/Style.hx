@@ -1,4 +1,15 @@
+/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
+
+Silex is © 2010-2011 Silex Labs and is released under the GPL License:
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.style.js;
+
 import cocktail.domElement.DOMElement;
 import cocktail.style.abstract.AbstractStyle;
 import haxe.Log;
@@ -17,6 +28,33 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
+	private function getConvertedValue(lengthValue:LengthValue):String
+	{
+		var ret:String;
+		
+		switch (lengthValue)
+		{
+			case px(pixelValue):
+				ret = Std.string(pixelValue) + "px";
+				
+			case pt(pointValue):
+				ret = Std.string(pointValue) + "pt";
+				
+			case mm(milimetersValue):
+				ret = Std.string(milimetersValue) + "mm";
+				
+			case pc(picasValue):
+				ret = Std.string(picasValue) + "pc";
+				
+			case cm(centimetersValue):
+				ret = Std.string(centimetersValue) + "cm";
+				
+			case _in(inchesValue):
+				ret = Std.string(inchesValue) + "in";
+		}
+	
+		return ret;	
+	}
 	
 	private function getMarginValue(value:MarginStyleValue):String
 	{
@@ -25,11 +63,7 @@ class Style extends AbstractStyle
 		switch(value)
 		{
 			case length(unit):
-			switch unit
-			{
-				case pixel(pixelValue):
-					marginValue = Std.string(pixelValue) + "px";
-			}
+				marginValue = getConvertedValue(unit);
 			
 			case percent(percentValue):
 				marginValue = Std.string(percentValue) + "%";
@@ -48,11 +82,7 @@ class Style extends AbstractStyle
 		switch(value)
 		{
 			case length(unit):
-			switch unit
-			{
-				case pixel(pixelValue):
-					paddingValue = Std.string(pixelValue) + "px";
-			}
+				paddingValue = getConvertedValue(unit);
 			
 			case percent(percentValue):
 				paddingValue = Std.string(percentValue) + "%";
@@ -68,11 +98,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case DimensionStyleValue.length(unit):
-				switch (unit)
-				{
-					case pixel(pixelValue):
-						dimensionValue = Std.string(pixelValue) + "px";
-				}
+				dimensionValue = getConvertedValue(unit);
 				
 			case DimensionStyleValue.percent(percentValue):
 				dimensionValue = Std.string(percentValue) + "%";
@@ -91,11 +117,8 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-			switch unit
-			{
-				case pixel(pixelValue):
-					positionOffsetValue = Std.string(pixelValue) + "px";
-			}
+				positionOffsetValue = getConvertedValue(unit);	
+			
 			
 			case percent(percentValue):
 				positionOffsetValue = Std.string(percentValue) + "%";
@@ -114,11 +137,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-			switch (unit)
-			{
-				case pixel(pixelValue):
-					constrainedValue = Std.string(pixelValue) + "px";
-			}
+				constrainedValue = getConvertedValue(unit);
 			
 			case percent(percentValue):
 				constrainedValue = Std.string(percentValue) + "%";
