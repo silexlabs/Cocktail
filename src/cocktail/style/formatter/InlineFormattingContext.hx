@@ -87,23 +87,7 @@ class InlineFormattingContext extends FormattingContext
 		return leftFloatOffset;
 	}
 	
-	override public function beginNewFormattingContext(domElement:ContainerDOMElement):Bool
-	{
-		var ret:Bool = false;
-
-		
-		switch domElement.style.computedStyle.display
-		{
-			case inlineBlock:
-				ret = true;
-				
-			default:
-				
-		}
-		
-		
-		return ret;
-	}
+	
 	
 	
 

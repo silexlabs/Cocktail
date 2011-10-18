@@ -60,6 +60,8 @@ class StyledDOMElementTests
 	
 	private var _siteLeftFloatBackground:GraphicDOMElement;
 	
+	private var _siteLeftAfterFloatBackground:GraphicDOMElement;
+	
 	public static function main()
 	{
 		//rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
@@ -176,14 +178,18 @@ class StyledDOMElementTests
 	{
 		_background = getGraph();
 		_background.style.width = DimensionStyleValue.percent(100);
-		_background.style.height = DimensionStyleValue.length(pixel(2000));
+		_background.style.height = DimensionStyleValue.percent(100);
 		_background.style.position = absolute;
 		
 		
 		_mainContainer = getContainer();
-		_mainContainer.style.width = DimensionStyleValue.percent(100);
-		_mainContainer.style.height = DimensionStyleValue.auto;
-		
+		//_mainContainer.style.width = DimensionStyleValue.percent(100);
+		//_mainContainer.style.height = DimensionStyleValue.auto;
+		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.top = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.position = PositionStyleValue.absolute;
 		
 		attach(_mainContainer);
 		
@@ -191,16 +197,20 @@ class StyledDOMElementTests
 		
 		_siteBackground = getGraph();
 		_siteBackground.style.width = DimensionStyleValue.percent(100);
-		_siteBackground.style.height = DimensionStyleValue.length(pixel(2000));
+		_siteBackground.style.height = DimensionStyleValue.percent(100);
 		_siteBackground.style.position = absolute;
 		
 		var siteContainer:ContainerDOMElement = getContainer();
-		siteContainer.style.position = relative;
-		siteContainer.style.width = DimensionStyleValue.percent(70);
-		siteContainer.style.height = DimensionStyleValue.auto;
-		siteContainer.style.marginLeft = MarginStyleValue.auto;
-		siteContainer.style.marginRight = MarginStyleValue.auto;
-		siteContainer.style.marginTop = MarginStyleValue.length(pixel(10));
+		siteContainer.style.position = absolute;
+		//siteContainer.style.width = DimensionStyleValue.percent(70);
+	//	siteContainer.style.height = DimensionStyleValue.auto;
+	//	siteContainer.style.marginLeft = MarginStyleValue.auto;
+	//	siteContainer.style.marginRight = MarginStyleValue.auto;
+	//	siteContainer.style.marginTop = MarginStyleValue.length(pixel(10));
+		siteContainer.style.left = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.right = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.top = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.bottom = PositionOffsetStyleValue.length(px(40));
 		
 		siteContainer.addChild(_siteBackground);
 		_mainContainer.addChild(siteContainer);
@@ -208,16 +218,17 @@ class StyledDOMElementTests
 		
 		var headerContainer:ContainerDOMElement = getContainer();
 		headerContainer.style.width = DimensionStyleValue.auto;
-		headerContainer.style.height = DimensionStyleValue.length(pixel(150));
-		headerContainer.style.paddingTop = PaddingStyleValue.length(pixel(5));
-		headerContainer.style.paddingBottom = PaddingStyleValue.length(pixel(5));
-		headerContainer.style.paddingLeft = PaddingStyleValue.length(pixel(5));
-		headerContainer.style.paddingRight = PaddingStyleValue.length(pixel(5));
-		headerContainer.style.marginBottom = MarginStyleValue.length(pixel(10));
+		headerContainer.style.height = DimensionStyleValue.length(px(150));
+		headerContainer.style.paddingTop = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingBottom = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingLeft = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingRight = PaddingStyleValue.length(px(5));
+		headerContainer.style.marginBottom = MarginStyleValue.length(px(10));
 		
 		_header = getGraph();
 		_header.style.width = DimensionStyleValue.auto;
 		_header.style.height = DimensionStyleValue.percent(100);
+		_header.style.display = DisplayStyleValue._inline;
 		
 		
 		headerContainer.addChild(_header);
@@ -232,39 +243,39 @@ class StyledDOMElementTests
 		
 		_navigation = getGraph();
 		_navigation.style.width = DimensionStyleValue.auto;
-		_navigation.style.height = DimensionStyleValue.length(pixel(50));
-		_navigation.style.paddingLeft = PaddingStyleValue.length(pixel(10));
-		_navigation.style.paddingRight = PaddingStyleValue.length(pixel(10));
+		_navigation.style.height = DimensionStyleValue.length(px(50));
+		_navigation.style.paddingLeft = PaddingStyleValue.length(px(10));
+		_navigation.style.paddingRight = PaddingStyleValue.length(px(10));
 		//_navigation.style.marginLeft = MarginStyleValue.auto;
 		//_navigation.style.marginRight = MarginStyleValue.auto;
 		
 		var siteLeftTextContainer:ContainerDOMElement = getContainer();
 		siteLeftTextContainer.style.width = DimensionStyleValue.auto;
 		siteLeftTextContainer.style.height = DimensionStyleValue.auto;
-		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(pixel(10));
-		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(pixel(10));
+		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(px(10));
+		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(px(10));
 		siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText:TextDOMElement = getText();
-		siteLeftText.style.width = DimensionStyleValue.length(pixel(300));
-		siteLeftText.style.marginTop = MarginStyleValue.length(pixel(10));
-		siteLeftText.style.height = DimensionStyleValue.length(pixel(300));
+		siteLeftText.style.width = DimensionStyleValue.length(px(300));
+		siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
+		siteLeftText.style.height = DimensionStyleValue.length(px(300));
 		//siteLeftText.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText.style.marginRight = MarginStyleValue.auto;
 		siteLeftText.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText2:TextDOMElement = getText();
-		siteLeftText2.style.width = DimensionStyleValue.length(pixel(300));
-		siteLeftText2.style.marginTop = MarginStyleValue.length(pixel(10));
-		siteLeftText2.style.height = DimensionStyleValue.length(pixel(300));
+		siteLeftText2.style.width = DimensionStyleValue.length(px(300));
+		siteLeftText2.style.marginTop = MarginStyleValue.length(px(10));
+		siteLeftText2.style.height = DimensionStyleValue.length(px(300));
 		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
 		siteLeftText2.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText3:TextDOMElement = getText();
-		siteLeftText3.style.width = DimensionStyleValue.length(pixel(300));
-		siteLeftText3.style.marginTop = MarginStyleValue.length(pixel(10));
-		siteLeftText3.style.height = DimensionStyleValue.length(pixel(300));
+		siteLeftText3.style.width = DimensionStyleValue.length(px(300));
+		siteLeftText3.style.marginTop = MarginStyleValue.length(px(10));
+		siteLeftText3.style.height = DimensionStyleValue.length(px(300));
 		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
 		siteLeftText3.style.display = DisplayStyleValue.inlineBlock;
@@ -277,18 +288,22 @@ class StyledDOMElementTests
 		
 		
 		_siteLeftFloatBackground = getGraph();
-		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(pixel(50));
-		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(pixel(300));
+		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
+		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(300));
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
-		siteLeftFloat.style.width = DimensionStyleValue.length(pixel(50));
-		siteLeftFloat.style.height = DimensionStyleValue.length(pixel(300));
+		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
+		siteLeftFloat.style.height = DimensionStyleValue.length(px(300));
 		siteLeftFloat.style.float = FloatStyleValue.left;
 		
 		var siteLeftFloat2:ContainerDOMElement = getContainer();
-		siteLeftFloat2.style.width = DimensionStyleValue.length(pixel(20));
-		siteLeftFloat2.style.height = DimensionStyleValue.length(pixel(120));
+		siteLeftFloat2.style.width = DimensionStyleValue.length(px(20));
+		siteLeftFloat2.style.height = DimensionStyleValue.length(px(120));
 		siteLeftFloat2.style.float = FloatStyleValue.left;
+		
+		_siteLeftAfterFloatBackground = getGraph();
+		_siteLeftAfterFloatBackground.style.width = DimensionStyleValue.length(px(200));
+		_siteLeftAfterFloatBackground.style.height = DimensionStyleValue.length(px(50));
 		
 		siteLeftFloat.addChild(_siteLeftFloatBackground);
 		
@@ -297,7 +312,8 @@ class StyledDOMElementTests
 		
 		siteLeftContainer.addChild(_navigation);
 		//siteLeftContainer.addChild(siteLeftTextContainer);
-		siteLeftContainer.addChild(siteLeftFloat);
+		//siteLeftContainer.addChild(siteLeftFloat);
+		siteLeftContainer.addChild(_siteLeftAfterFloatBackground);
 		
 		var siteRightLeftContainer:ContainerDOMElement = getContainer();
 		siteRightLeftContainer.style.width = DimensionStyleValue.percent(100);
@@ -309,7 +325,7 @@ class StyledDOMElementTests
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
-		siteContainerRight.style.height = DimensionStyleValue.length(pixel(500));
+		siteContainerRight.style.height = DimensionStyleValue.length(px(500));
 		siteContainerRight.style.display = inlineBlock;
 		
 		siteRightLeftContainer.addChild(siteContainerRight);
@@ -317,14 +333,14 @@ class StyledDOMElementTests
 		
 		_siteRightBackground = getGraph();
 		_siteRightBackground.style.width = DimensionStyleValue.percent(100);
-		_siteRightBackground.style.height = DimensionStyleValue.length(pixel(500));
+		_siteRightBackground.style.height = DimensionStyleValue.length(px(500));
 		
 		siteContainerRight.addChild(_siteRightBackground);
 		
 		 _footer = getGraph();
 		_footer.style.width = DimensionStyleValue.percent(100);
-		_footer.style.height = DimensionStyleValue.length(pixel(250));
-		_footer.style.marginTop = MarginStyleValue.length(pixel(10));
+		_footer.style.height = DimensionStyleValue.length(px(250));
+		_footer.style.marginTop = MarginStyleValue.length(px(10));
 		
 		
 		siteContainer.addChild(_footer);
@@ -350,7 +366,6 @@ class StyledDOMElementTests
 	
 	private function refresh(event:Dynamic = null)
 	{
-		Log.clear();
 		var browserWidth:Int;
 		var browserHeight:Int;
 		
@@ -361,8 +376,8 @@ class StyledDOMElementTests
 		browserWidth = js.Lib.document.body.clientWidth;
 		browserHeight = js.Lib.document.body.clientHeight;
 		#end
-		_mainContainer.style.layout( { width:browserWidth, height:browserHeight }, _mainContainer, _mainContainer);
-		
+		_mainContainer.style.layout( { width:browserWidth, height:browserHeight }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0});
+	
 		paint(_background, 0x222222);
 		paint(_siteBackground, 0xFFFFFF);
 		paint(_header, 0xDDDDDD);
@@ -370,6 +385,7 @@ class StyledDOMElementTests
 		paint(_siteRightBackground, 0xDDDDDD);
 		paint(_footer, 0xDDDDDD);
 		paint(_siteLeftFloatBackground, 0xBBBBBB);
+		paint(_siteLeftAfterFloatBackground, 0x00000);
 	}
 	
 	private function attach(domElement:DOMElement):Void
@@ -415,20 +431,20 @@ class StyledDOMElementTests
 	
 	private function getDefaultStyle(domElement:DOMElement):Void
 	{
-			domElement.style.marginLeft = length(pixel(0));
-			domElement.style.marginRight = length(pixel(0));
-			domElement.style.marginTop = length(pixel(0));
-			domElement.style.marginBottom = length(pixel(0));
+			domElement.style.marginLeft = MarginStyleValue.length(px(0));
+			domElement.style.marginRight = MarginStyleValue.length(px(0));
+			domElement.style.marginTop = MarginStyleValue.length(px(0));
+			domElement.style.marginBottom = MarginStyleValue.length(px(0));
 			
-			domElement.style.paddingLeft = PaddingStyleValue.length(pixel(0));
-			domElement.style.paddingRight = PaddingStyleValue.length(pixel(0));
-			domElement.style.paddingTop = PaddingStyleValue.length(pixel(0));
-			domElement.style.paddingBottom = PaddingStyleValue.length(pixel(0));
+			domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+			domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+			domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+			domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 			
-			domElement.style.top = PositionOffsetStyleValue.length(pixel(0));
-			domElement.style.left = PositionOffsetStyleValue.length(pixel(0));
-			domElement.style.right = PositionOffsetStyleValue.length(pixel(0));
-			domElement.style.bottom  = PositionOffsetStyleValue.length(pixel(0));
+			domElement.style.top = PositionOffsetStyleValue.length(px(0));
+			domElement.style.left = PositionOffsetStyleValue.length(px(0));
+			domElement.style.right = PositionOffsetStyleValue.length(px(0));
+			domElement.style.bottom  = PositionOffsetStyleValue.length(px(0));
 			
 			domElement.style.minWidth = ConstrainedDimensionStyleValue.none;
 			domElement.style.maxWidth = ConstrainedDimensionStyleValue.none;

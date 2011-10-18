@@ -69,20 +69,13 @@ class FormattingContext
 	{
 		var ret:FormattingContext;
 		
-		switch (domElement.style.computedStyle.display)
+		if (childrenInline(domElement) == true)
 		{
-			case block, inlineBlock:
-				if (childrenInline(domElement) == true)
-				{
-					ret = new InlineFormattingContext(domElement, previousFormatingContext);
-				}
-				else
-				{
-					ret = new BlockFormattingContext(domElement, previousFormatingContext);
-				}
-				
-			default:
-				ret = new InlineFormattingContext(domElement, previousFormatingContext);
+			ret = new InlineFormattingContext(domElement, previousFormatingContext);
+		}
+		else
+		{
+			ret = new BlockFormattingContext(domElement, previousFormatingContext);
 		}
 		
 		return ret;
@@ -265,10 +258,6 @@ class FormattingContext
 		}
 	}
 	
-	public function beginNewFormattingContext(domElement:ContainerDOMElement):Bool
-	{
-		return true;
-	}
 	
 	private function startNewLine():Void
 	{

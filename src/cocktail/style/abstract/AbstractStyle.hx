@@ -34,7 +34,6 @@ import haxe.Log;
  * 
  * This class holds a reference to the targeted DOMElement
  * 
- * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractStyle 
@@ -69,7 +68,7 @@ class AbstractStyle
 	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
 	
 	/**
-	* The way a DOMElement flows in a document
+	* The way a DOMElement is displayed in a document
 	*/
 	private var _display:DisplayStyleValue;
 	public var display(getDisplay, setDisplay):DisplayStyleValue;
@@ -186,54 +185,153 @@ class AbstractStyle
 	 * 
 	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
-	 * @param	lastPositionedDOMElement a reference to the last DOMElement in the hierararchy which is 'positioned', meaning that
+	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
-	 * @param	rootDOMElement a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
+	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		//abstract
 	}
 	
 	/**
 	 * This method is in charge of placing "in-flow" DOMElements (DOMElement with a 'position' style of 'static' or 'relative') into
-	 * its parent flow. The flow may be a block flow, in which each DOMElement is placed below the preceding DOMElement or an
-	 * inline flow where the DOMElement are arranged in lines, and placed either next to the preceding DOMElement or on a
-	 * new line below.
+	 * its parent flow and "positioned" DOMElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
+	 * ancestor.
 	 * 
-	 * This method is called recursively if the DOMElement has children
+	 * The DOMElement first compute its box model dimensions, then insert itself into the document based 
+	 * on its positioning scheme.
 	 * 
+	 * This method is called recursively on every children of the DOMElement if it has any
 	 * 
 	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
-	 * @param	formatingContext
-	 * @param	initialContainer
+	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
+	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
+	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
+	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
+	 * of 'absolute'), it it used as origin.
+	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
+	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
 	{
-	
-		computePositionStyle();
-		
-		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-		
-		
-		if (this._computedStyle.display == DisplayStyleValue.none)
+		//do nothing if the DOMElement must not be displayed
+		if (isNotDisplayed() == true)
 		{
 			this._domElement.isVisible = false;
 			return;
 		}
 		
+		//compute all the style determining how a DOMElement is placed in the document and its box model
+		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		
+		//flow all the children of the DOMElement of this style of it has any
+		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
+		
+		//insert the DOMElement in the document based on its positioning scheme
+		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+	
+		//apply the computed width and height to the DOMElement
 		this._domElement.width = this._computedStyle.width;
 		this._domElement.height = this._computedStyle.height;
 		
-		if (isPositioned() == false)
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Flow all the children of a DOMElement if it has any. Abstract by default
+	 */
+	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Place a positioned DOMElement (with a position of 'relative', 'absolute', or 'fixed') using either the normal
+	 * flow, the last positioned DOMElement or the root of the document, then apply an offset defined by the 'top',
+	 * 'left', 'bottom' and 'right' computed styles values
+	 */
+	private function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	{
+		//instantiate the right positioner
+		//class based on the value of the 'position' style
+		var positioner:BoxPositioner;
+		
+		//position 'relative' DOMElement
+		if (this.isRelativePositioned() == true)
 		{
-			formatingContext.insert(this._domElement);
+			positioner = new RelativePositioner();
+			positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+		}
+		else
+		{
+			switch (this._domElement.style.computedStyle.position)
+			{
+				//positioned 'fixed' DOMElement
+				case fixed:
+					positioner = new FixedPositioner();
+					
+					/**
+					 * TO DO : remove the x and y scroll from the root dom element dimensions
+					 * so that it seems to stay at the same place in the window
+					 */
+					var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = rootDOMElementDimensions;
+					
+					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
+					
+				//positioned 'absolute' DOMElement	
+				case absolute:
+					positioner = new AbsolutePositioner();
+					positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+					
+				default:	
+					positioner = new AbsolutePositioner();
+			}
 		}
 	}
 	
+	/**
+	 * Insert the DOMElement in the document, in or out of the flow.
+	 * 
+	 * @param	formatingContext
+	 * @param	lastPositionedDOMElementDimensions
+	 * @param	rootDOMElementDimensions
+	 */
+	private function insertDOMElement(formatingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	{
+		//insert as a float
+		if (isFloat() == true)
+		{
+			formatingContext.insertFloat(this._domElement);
+		}
+		//insert in the flow
+		else if (isPositioned() == false)
+		{
+			formatingContext.insert(this._domElement);
+		}
+		//insert in the flow, then apply an offset to it
+		else if (isRelativePositioned() == true)
+		{
+			formatingContext.insert(this._domElement);
+			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		}
+		//insert as an absolutely positioned DOMElement
+		else
+		{
+			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE COMPUTING METHODS
+	// compute styles definition into usable values
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * This method computes the styles determing
@@ -246,39 +344,44 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Compute the box model styles (width, height, paddings, margins...) of this
-	 * DOMElement by instantiating the right box model computer class
-	 */ 
-	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions):Void
+	 * Compute first the styles determining the DOMElement's
+	 * positioning scheme (position, float, clear...) then
+	 * the styles determining its box model (width, height, margins
+	 * paddings...)
+	 */
+	private function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
+		computePositionStyle();
+		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+	}
+	
+	/**
+	 * Compute the box model styles (width, height, paddings, margins...) based on
+	 * its positioning scheme
+	 */ 
+	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	{
+		//instantiate the right box computer class
+		//based on the DOMElement's positioning
+		//scheme
 		var boxComputer:BoxComputer;
 		
-		var containingBlockDimensions:ContainingDOMElementDimensions = containingDOMElementDimensions;
+		//get the right containing dimensions. For example,
+		//for a DOMElement with a 'position' style of 'absolute',
+		//it is the last positioned DOMElement
+		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
-		if (isPositioned() == true)
-		{
-			if (this._computedStyle.position == PositionStyleValue.fixed)
-			{
-				containingBlockDimensions = rootDOMElementDimensions;
-			}
-			else if (this._computedStyle.position == PositionStyleValue.absolute)
-			{
-				containingBlockDimensions = lastPositionedDOMElementDimensions;
-			}
-			else
-			{
-				containingBlockDimensions = containingDOMElementDimensions;
-			}
-		}
-		
+		//get the box computer for float
 		if (isFloat() == true)
 		{
 			boxComputer = new FloatBoxComputer();
 		}
+		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			boxComputer = new PositionedBoxComputer();
 		}
+		//else get the box computer based on the display style
 		else
 		{
 			switch(this._computedStyle.display)
@@ -297,54 +400,45 @@ class AbstractStyle
 			}
 		}
 		
-		//compute the styles, the results are stored in the computed styles
-		//structure
+		//compute the box model styles
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
 	/**
-	 * Position
-	 * @param	lastPositionnedDOMElement
-	 * @param	rootDOMElement
+	 * Get the right containing parent dimensions for a DOMElement
+	 * based on its position style value
 	 */
-	public function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function getContainingDOMElementDimensions(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):ContainingDOMElementDimensions
 	{
-		if (this.isPositioned() == true)
+		//for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
+		var containingBlockDimensions:ContainingDOMElementDimensions = containingDOMElementDimensions;
+		
+		//for 'positioned' DOMElement
+		if (isPositioned() == true)
 		{
-			var positioner:BoxPositioner;
-			if (this.isRelativePositioned() == true)
+			//for 'fixed' DOMElement, takes the root DOMElement (the first DOMElement in the hierarchy)
+			if (this._computedStyle.position == PositionStyleValue.fixed)
 			{
-				positioner = new RelativePositioner();
-				positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+				containingBlockDimensions = {width:rootDOMElementDimensions.width, height:rootDOMElementDimensions.height};
 			}
+			//for 'absolute' takes the first positioned ancestor
+			else if (this._computedStyle.position == PositionStyleValue.absolute)
+			{
+				containingBlockDimensions = {width:lastPositionedDOMElementDimensions.width, height:lastPositionedDOMElementDimensions.height};
+			}
+			//else for 'relative', takes the parent as 'relative' are "in-flow" DOMElements
 			else
 			{
-				switch (this._domElement.style.computedStyle.position)
-				{
-					case fixed:
-						positioner = new FixedPositioner();
-						
-						/**
-						 * TO DO : remove the x and y scroll from the root dom element dimensions
-						 * so that it seems to stay at the same place in the window
-						 */
-						var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = rootDOMElementDimensions;
-						
-						positioner.position(this._domElement, scrolledRootDOMElementDimensions);
-						
-					case absolute:
-						positioner = new AbsolutePositioner();
-						positioner.position(this._domElement, lastPositionedDOMElementDimensions);
-						
-					default:	
-						positioner = new AbsolutePositioner();
-				}
+				containingBlockDimensions = containingDOMElementDimensions;
 			}
 		}
+		
+		return containingBlockDimensions;
 	}
 	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC HELPER METHODS
+	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -355,7 +449,7 @@ class AbstractStyle
 	 * if he clears either left or right floats
 	 * or both
 	 */
-	public function isClear():Bool
+	private function isClear():Bool
 	{
 		var ret:Bool = false;
 		
@@ -372,6 +466,15 @@ class AbstractStyle
 	}
 	
 	/**
+	 * Determine wether the DOMElement is added
+	 * to the document
+	 */
+	private function isNotDisplayed():Bool
+	{
+		return this._computedStyle.display == DisplayStyleValue.none;
+	}
+	
+	/**
 	 * Determine if the DOMElement is a floated
 	 * DOMElement. A floated DOMElement is first
 	 * placed in the flow then moved to the
@@ -384,7 +487,7 @@ class AbstractStyle
 	 * A DOMElement is float if he declares either
 	 * a left or right float
 	 */
-	public function isFloat():Bool
+	private function isFloat():Bool
 	{
 		var ret:Bool = false;
 		
@@ -410,7 +513,7 @@ class AbstractStyle
 	 * Wheter an element is inline is determined
 	 * by the display style
 	 */
-	public function isInline():Bool
+	private function isInline():Bool
 	{
 		var ret:Bool = false;
 		
@@ -445,7 +548,7 @@ class AbstractStyle
 	 * 
 	 * See below for the 'relative' value
 	 */
-	public function isPositioned():Bool
+	private function isPositioned():Bool
 	{
 		var ret:Bool = false;
 		
@@ -475,7 +578,7 @@ class AbstractStyle
 	 * grand-children until another positioned
 	 * DOMElement is found
 	 */
-	public function isRelativePositioned():Bool
+	private function isRelativePositioned():Bool
 	{
 		return this._computedStyle.position == relative;
 	}
