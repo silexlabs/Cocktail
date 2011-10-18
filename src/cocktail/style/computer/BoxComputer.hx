@@ -681,18 +681,35 @@ class BoxComputer
 	 * from a unit value
 	 * (px, em, cm...)
 	 * @param	length contains the unit type and the value
-	 */
+	 * @return returns the computed value as pixel with rounded
+	 * values
+	 */ 
 	private function getValueFromLength(length:LengthValue):Int
 	{
-		var lengthValue:Int;
+		var lengthValue:Float;
 		
 		switch (length)
 		{
-			case pixel(value):
+			case px(value):
 				lengthValue = value;
+				
+			case mm(value):
+				lengthValue = value;
+				
+			case cm(value):
+				lengthValue = value;
+				
+			case pt(value):
+				lengthValue = value;	
+				
+			case _in(value):
+				lengthValue = value;
+				
+			case pc(value):
+				lengthValue = value;	
 		}
 		
-		return lengthValue;
+		return Math.round(lengthValue);
 	}
 	
 	/**

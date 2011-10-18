@@ -412,7 +412,36 @@ package cocktail.style;
 	enum LengthValue {
 		
 		/**
-		 * a length defined in screen pixels
+		 * pixel, 1px is equal to 0.75pt.
 		 */
-		pixel(value:Int);
+		px(value:Float);
+		
+		/**
+		 * centimeters
+		 */
+		cm(value:Float);
+		
+		/**
+		 * millimeters
+		 */
+		mm(value:Float);
+		
+		/**
+		 * points, the points
+		 * are equal to 1/72nd of 1in. 
+		 */
+		pt(value:Float);
+		
+		/**
+		 * picas, 1pc is equal to 12pt.
+		 */
+		pc(value:Float);
+		
+		/**
+		 * inches, 1in is equal to 2.54cm.
+		 */
+		_in(value:Float);
+		
+		
+		
 	}
