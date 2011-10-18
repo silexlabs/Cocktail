@@ -694,19 +694,19 @@ class BoxComputer
 				lengthValue = value;
 				
 			case mm(value):
-				lengthValue = value;
+				lengthValue = (value * ((72 * (1 / 0.75)) / 2.54)) / 10;
 				
 			case cm(value):
-				lengthValue = value;
+				lengthValue = value * ((72 * (1/0.75)) / 2.54);
 				
 			case pt(value):
-				lengthValue = value;	
+				lengthValue = value * 1/0.75;	
 				
 			case _in(value):
-				lengthValue = value;
+				lengthValue = value * (72 * (1/0.75));
 				
 			case pc(value):
-				lengthValue = value;	
+				lengthValue = value * (12 * (1/0.75));	
 		}
 		
 		return Math.round(lengthValue);

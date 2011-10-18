@@ -254,15 +254,16 @@ class StyledDOMElementTests
 		siteLeftTextContainer.style.height = DimensionStyleValue.auto;
 		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(px(10));
 		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(px(10));
-		siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
+		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText:TextDOMElement = getText();
 		siteLeftText.style.width = DimensionStyleValue.length(px(300));
 		siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
 		siteLeftText.style.height = DimensionStyleValue.length(px(300));
+		
 		//siteLeftText.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText.style.marginRight = MarginStyleValue.auto;
-		siteLeftText.style.display = DisplayStyleValue.inlineBlock;
+		//siteLeftText.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText2:TextDOMElement = getText();
 		siteLeftText2.style.width = DimensionStyleValue.length(px(300));
@@ -282,7 +283,8 @@ class StyledDOMElementTests
 		
 		
 		
-		//siteLeftTextContainer.addChild(siteLeftText);
+		siteLeftTextContainer.addChild(siteLeftText);
+		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		
@@ -311,8 +313,8 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-		//siteLeftContainer.addChild(siteLeftTextContainer);
-		//siteLeftContainer.addChild(siteLeftFloat);
+		siteLeftContainer.addChild(siteLeftTextContainer);
+		siteLeftContainer.addChild(siteLeftFloat);
 		siteLeftContainer.addChild(_siteLeftAfterFloatBackground);
 		
 		var siteRightLeftContainer:ContainerDOMElement = getContainer();
@@ -325,7 +327,7 @@ class StyledDOMElementTests
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
-		siteContainerRight.style.height = DimensionStyleValue.length(px(500));
+		siteContainerRight.style.height = DimensionStyleValue.length(mm(150));
 		siteContainerRight.style.display = inlineBlock;
 		
 		siteRightLeftContainer.addChild(siteContainerRight);
@@ -333,7 +335,7 @@ class StyledDOMElementTests
 		
 		_siteRightBackground = getGraph();
 		_siteRightBackground.style.width = DimensionStyleValue.percent(100);
-		_siteRightBackground.style.height = DimensionStyleValue.length(px(500));
+		_siteRightBackground.style.height = DimensionStyleValue.length(mm(150));
 		
 		siteContainerRight.addChild(_siteRightBackground);
 		
