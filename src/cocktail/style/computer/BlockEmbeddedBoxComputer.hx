@@ -15,29 +15,50 @@ import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 
 /**
- * ...
+ * This is the box computer implementation for an
+ * embedded block DOMElement.
+ * 
+ * It add special treatement for dimensions
+ * computation, as an embedded DOMElement has intrinsic
+ * dimensions
+ * 
+ * 
+ * 
  * @author Yannick DOMINGUEZ
  */
 class BlockEmbeddedBoxComputer extends BoxComputer
 {
 
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
 	}
 	
+	/**
+	 * Override the way a value of 'auto' for the width style
+	 * is computed, as an embedded DOMElement may have an intrinsic width
+	 * and/or intrinsic ratio
+	 */ 
 	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
 	{
 		var ret:Int = 0;
 		
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
+		//if the 'height' style also is defined as 'auto'
 		if (style.height == DimensionStyleValue.auto)
 		{
+			//first try to use the intrinsic width of the embedded
+			//DOMElement if it exist (it might for instance be a
+			//picture width for an ImageDOMElement)
 			if (embeddedDOMElement.intrinsicWidth != null)
 			{
 				ret = embeddedDOMElement.intrinsicWidth;
 			}
+			//else deduce the intrinsic width from the intrinsic height and rotaio
 			else if (embeddedDOMElement.intrinsicHeight != null && embeddedDOMElement.intrinsicRatio != null)
 			{
 				ret = Math.round(embeddedDOMElement.intrinsicHeight * embeddedDOMElement.intrinsicRatio);
@@ -55,14 +76,19 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 				ret = 0;
 			}
 		}
+		
+		//if the 'height' style is not auto
 		else
 		{
+			//compute the used height
 			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementDimensions.height);
 			
+			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedDOMElement.intrinsicRatio != null)
 			{
 				ret = Math.round(computedHeight * embeddedDOMElement.intrinsicRatio);
 			}
+			//else use the intrinsic width if defined
 			else if (embeddedDOMElement.intrinsicWidth != null)
 			{
 				ret = embeddedDOMElement.intrinsicWidth;
@@ -82,23 +108,33 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 		return ret;
 	}
 	
+	/**
+	 * Override the way a value of 'auto' for the height style
+	 * is computed, as an embedded DOMElement may have an intrinsic height
+	 * and/or intrinsic ratio
+	 */ 
 	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
 		var ret:Int = 0;
 		
+		//if the 'width' style is also set to 'auto'
 		if (style.width == DimensionStyleValue.auto)
 		{
+			//try to use the intrinsic height if not null
 			if (embeddedDOMElement.intrinsicHeight != null)
 			{
 				ret = embeddedDOMElement.intrinsicHeight;
 			}
 		}
+		//else if 'width' is not 'auto'
 		else
 		{
+			//compute the used value of 'width'
 			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementDimensions.height);
 			
+			//deduce theheight from the computed width and the intrinsic ratio if it is defined
 			if (embeddedDOMElement.intrinsicRatio != null)
 			{
 				ret = Math.round(computedWidth * embeddedDOMElement.intrinsicRatio);

@@ -33,197 +33,107 @@ import cocktail.style.js.Style;
 import haxe.Log;
 
 /**
- * ...
+ * This is the style implementation for ContainerDOMElement.
+ * 
+ * ContainerDOMElement can have children, and when laid out,
+ * also start the layout on each of its children
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractContainerStyle extends Style
 {
-
+	/**
+	 * class constructor
+	 * @param	domElement
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
 	}
 	
-	
-	
+	/**
+	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
+	 * will be measured and placed as well as all its children
+	 */
 	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
-		var rootDOMElementDimensions:ContainingDOMElementDimensions = {
-			width : rootDOMElement.width,
-			height : rootDOMElement.height
-		}
-		
-		var lastPositionedDOMElementDimensions:ContainingDOMElementDimensions = {
-			width : lastPositionedDOMElement.width,
-			height : lastPositionedDOMElement.height
-		}
-		
-		flow(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, null, true);
-		positionElement(lastPositionedDOMElement, rootDOMElement);
+		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
 	}
-	
-	
-	
+
 	/**
-	 * TO DO : 
-	 * The method called recursively on children should be layout, this way yhe positionElement method can be only defined for 
-	 * Container DOMElement instead of all of them. Same for the flow method ?
+	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions, formatingContext:FormattingContext = null, initialContainer:Bool = false):Void
+	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
 	{
-		
+		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
-		computePositionStyle();
-		
-		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-		
-		if (this._computedStyle.display == DisplayStyleValue.none)
-		{
-			/**
-			 * TO DO : must the set the computed style value
-			 * of 'visible' to false, not the visible property
-			 */
-			this._domElement.isVisible = false;
-			return;
-		}
-		
-		
+		//compute all the styles of the children that will affect
+		//their lay out (display, position, float, clear)
+		//Those styles need to be computed whzen a new FormattingContext
+		//is instantiated as the type of FormattingContext mainly
+		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
 			containerDOMElement.children[i].style.computePositionStyle();
 		}
 		
+		//a new FormattingContext must be created for the children of the 
+		//ContainerDOMElement as they will be placed inside the ContainerDOMElement 
+		//using its width and height
 		var childrenFormattingContext:FormattingContext;
 		
-		if (initialContainer == true)
+		//if the FormattingContext is null, this ContainerDOMElement
+		//is the first to be lay out
+		if (formatingContext == null)
 		{
-			formatingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);
-			childrenFormattingContext = formatingContext;
-			
-
-		}
-		else if (formatingContext.beginNewFormattingContext(containerDOMElement))
-		{
-			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);		
-			
-		
+			formatingContext = FormattingContext.getFormatingContext(containerDOMElement);
+			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement);
 		}
 		else
 		{
-			childrenFormattingContext = formatingContext;
+			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);
 		}
 		
-			containingDOMElementDimensions = {
+		//the containing dimensions of the children
+		//because those of the current ContainerDOMElement
+		//as they will be placed inside it
+		containingDOMElementDimensions = {
 			width:this._computedStyle.width,
 			height:this._computedStyle.height
 		}
 		
-		var childLastPositionedDOMElementDimensions:ContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
+		
+		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
+		
+		//if the ContainerDOMElement is positioned, it becomes the first positioned for the children it
+		//will layout, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
 			childLastPositionedDOMElementDimensions = {
 				width:this._computedStyle.width,
-				height:this._computedStyle.height
+				height:this._computedStyle.height,
+				globalX:this._domElement.globalX,
+				globalY:this._domElement.globalY
 			}
 		}
 		
-		
+		//call the flow method of all children
 		for (i in 0...containerDOMElement.children.length)
 		{
-			if (containerDOMElement.children[i].style.isFloat() == true)
-			{
-				childrenFormattingContext.insertFloat(containerDOMElement.children[i]);
-			}
-		}
-		
-		for (i in 0...containerDOMElement.children.length)
-		{
-			if (containerDOMElement.children[i].style.isClear())
-			{
-				formatingContext.clearFloat(containerDOMElement.children[i].style.computedStyle.clear);
-			}
 			containerDOMElement.children[i].style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 		}
-		
-		if (isInline() == false && this._height == DimensionStyleValue.auto)
+	
+		//if the 'height' style of this ContainerDOMElement is 
+		//defined as 'auto', then it depends on its content width
+		//and it must now be adjusted to the total height
+		//of its children before the ContainerDOMElement is actually
+		//sized
+		if (this._height == DimensionStyleValue.auto)
 		{
-			
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
-		
-		this._domElement.width = this._computedStyle.width;
-		this._domElement.height = this._computedStyle.height;
-		
-		
-		if (isPositioned() == false || isRelativePositioned() == true)
-		{
-			formatingContext.insert(this._domElement);
-		}
-		
 	}
 	
-	override public function positionElement(lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
-	{
-		super.positionElement(lastPositionedDOMElement, rootDOMElement);
-		
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
-		var childrenLastPositionedDOM:AbsolutelyPositionedContainingDOMElementDimensions = {
-				globalX:lastPositionedDOMElement.globalX,
-				globalY:lastPositionedDOMElement.globalY,
-				width:lastPositionedDOMElement.width,
-				height:lastPositionedDOMElement.height
-			}
-			
-		if (this.isPositioned() == true)
-		{
-			childrenLastPositionedDOM.width = this._domElement.width;
-			childrenLastPositionedDOM.height = this._domElement.height;
-			childrenLastPositionedDOM.globalX = this._domElement.globalX;
-			childrenLastPositionedDOM.globalY = this._domElement.globalY;
-		}
-		
-		for (i in 0...containerDOMElement.children.length)
-		{
-			var childDOMElement:DOMElement = containerDOMElement.children[i];
-			
-			childDOMElement.style.positionElement(childrenLastPositionedDOM, rootDOMElement);
-		}
-		
-	}
-	
-	public function isInlineFlow():Bool
-	{
-		var ret:Bool = false;
-		
-		switch(this._computedStyle.display)
-		{
-			case _inline:
-				ret = true;
-				
-			default:
-				ret = childrenInline();
-		}
-		
-		return ret;
-	}
-	
-	public function childrenInline():Bool
-	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
-		var ret:Bool = true;
-		for (i in 0...containerDOMElement.children.length)
-		{
-			if (containerDOMElement.children[i].style.computedStyle.display == block)
-			{
-				ret = true;
-			}
-		}
-		
-		return ret;
-	}
 	
 }

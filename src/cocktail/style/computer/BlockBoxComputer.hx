@@ -13,13 +13,20 @@ package cocktail.style.computer;
 import cocktail.style.StyleData;
 
 /**
- * ...
+ * This is the box computer implementation for a
+ * non-embedded block level element.
+ * 
+ * It doesn't add any behaviour as it is the
+ * default behaviour
+ * 
  * @author Yannick DOMINGUEZ
  */
 class BlockBoxComputer extends BoxComputer
 {
-
-	public function new() 
+	/**
+	 * class constructor
+	 */
+	public function new()
 	{
 		super();
 	}

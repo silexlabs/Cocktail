@@ -35,7 +35,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		_flowData.x = flowData.firstLineX;
 					
-		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
+		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
 		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop;
 	
 		_flowData.y += domElement.style.computedStyle.height + domElement.style.computedStyle.marginTop + 
@@ -48,26 +48,7 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 	
-	override public function beginNewFormattingContext(domElement:ContainerDOMElement):Bool
-	{
-		var ret:Bool = false;
-		
-		if (FormattingContext.childrenInline(domElement) == true)
-		{
-			ret = true;
-		}
-		
-		/**switch domElement.style.computedStyle.display
-		{
-			case inlineBlock:
-				ret = true;
-			default:
-				
-		}*/
-		
-		
-		return true;
-	}
+
 	
 	
 	

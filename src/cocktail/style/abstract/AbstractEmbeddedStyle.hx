@@ -22,25 +22,42 @@ import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
 import haxe.Log;
+
 /**
- * ...
+ * This is the style implementation for embedded
+ * DOMElement. Embedded DOMElement include external
+ * content in the document, such as picture or video
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractEmbeddedStyle extends Style
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
 	}
 	
-	
-	
-	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:ContainingDOMElementDimensions):Void
+	/**
+	 * This is method is overriden to use box computer specific to 
+	 * embedded DOMElement instead of the default one
+	 */
+	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
+		//instantiate the right box computer class
+		//based on the DOMElement's positioning
+		//scheme
 		var boxComputer:BoxComputer;
 		
+		//get the right containing dimensions. For example,
+		//for a DOMElement with a 'position' style of 'absolute',
+		//it is the last positioned DOMElement
+		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		
+		//get the embedded box computers based on
+		//the positioning scheme
 		if (isFloat() == true)
 		{
 			boxComputer = new FloatEmbeddedBoxComputer();
@@ -64,7 +81,8 @@ class AbstractEmbeddedStyle extends Style
 				boxComputer = new InlineEmbeddedBoxComputer();
 		}
 		
-		boxComputer.measure(this, containingDOMElementDimensions);
+		//compute the embedded DOMElement box model styles
+		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
 }
