@@ -18,6 +18,7 @@ import cocktail.style.computer.InLineBoxComputer;
 import cocktail.style.computer.NoneBoxComputer;
 import cocktail.style.formatter.BlockFormattingContext;
 import cocktail.style.formatter.FormattingContext;
+import cocktail.style.formatter.InlineFormattingContext;
 import cocktail.style.positioner.AbsolutePositioner;
 import cocktail.style.positioner.BoxPositioner;
 import cocktail.style.positioner.FixedPositioner;
@@ -87,12 +88,12 @@ class AbstractContainerStyle extends Style
 		//is the first to be lay out
 		if (formatingContext == null)
 		{
-			formatingContext = FormattingContext.getFormatingContext(containerDOMElement);
-			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement);
+			formatingContext = getFormatingContext();
+			childrenFormattingContext = getFormatingContext();
 		}
 		else
 		{
-			childrenFormattingContext = FormattingContext.getFormatingContext(containerDOMElement, formatingContext);
+			childrenFormattingContext = getFormatingContext(formatingContext);
 		}
 		
 		//the containing dimensions of the children
@@ -133,6 +134,72 @@ class AbstractContainerStyle extends Style
 		{
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate the right formatting context for this ContainerDOMElement.
+	 * 
+	 * If the container DOMElement itself is an inline level DOMElement, all
+	 * its children must be formatted as inline and thus an Inline formatting 
+	 * context is returned
+	 * 
+	 * If the container DOMElement itself is a block level DOMElement, if all its
+	 * children are inline level, an inline formatting context is instantiated, else
+	 * if all its children are block level, a block level formatting context is
+	 * instantiated. If its children mix inline and block level DOMElement, 
+	 * block formatting context is the default
+	 * 
+	 * 
+	 * @param	previousFormatingContext the formatting context of the parent of this
+	 * Container DOMElement, used to retrieve floats position from it which might also
+	 * apply to this container DOMElement
+	 * 
+	 * @return an inline or block formatting context
+	 */
+	private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		var ret:FormattingContext;
+		
+		if (childrenInline() == true)
+		{
+			ret = new InlineFormattingContext(containerDOMElement, previousFormatingContext);
+		}
+		else
+		{
+			ret = new BlockFormattingContext(containerDOMElement, previousFormatingContext);
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Determine wether the children of this DOMElement
+	 * are all block level or if they are all inline level
+	 * elements
+	 * @return true if all children are inline DOMElements
+	 */
+	private function childrenInline():Bool
+	{
+		var ret:Bool = false;
+		
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		for (i in 0...containerDOMElement.children.length)
+		{
+			if (containerDOMElement.children[i].style.computedStyle.display == _inline ||
+			containerDOMElement.children[i].style.computedStyle.display == inlineBlock)
+			{
+				ret = true;
+			}
+		}
+		
+		return ret;
 	}
 	
 	
