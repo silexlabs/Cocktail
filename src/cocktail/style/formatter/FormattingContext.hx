@@ -65,38 +65,6 @@ class FormattingContext
 		};
 	}
 	
-	public static function getFormatingContext(domElement:ContainerDOMElement, previousFormatingContext:FormattingContext = null):FormattingContext
-	{
-		var ret:FormattingContext;
-		
-		if (childrenInline(domElement) == true)
-		{
-			ret = new InlineFormattingContext(domElement, previousFormatingContext);
-		}
-		else
-		{
-			ret = new BlockFormattingContext(domElement, previousFormatingContext);
-		}
-		
-		return ret;
-	}
-	
-	public static function childrenInline(domElement:ContainerDOMElement):Bool
-	{
-		var ret:Bool = false;
-		for (i in 0...domElement.children.length)
-		{
-			if (domElement.children[i].style.computedStyle.display == _inline ||
-			domElement.children[i].style.computedStyle.display == inlineBlock)
-			{
-				ret = true;
-			}
-		}
-		
-		return ret;
-		
-	}
-	
 	public function insert(domElement:DOMElement):Void
 	{
 		_formatedElements.push(domElement);

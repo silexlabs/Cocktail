@@ -115,11 +115,21 @@ package cocktail.style;
 		var totalHeight:Int;
 	}
 	
+	/**
+	 * Represents the left and right
+	 * floats registered for a 
+	 * container DOMElement
+	 */
 	typedef FloatsData = {
 		var left:Array<FloatData>;
 		var right:Array<FloatData>;
 	}
 	
+	/**
+	 * Represents the coordinates and
+	 * dimensions of the float in its
+	 * parent coordinate space
+	 */
 	typedef FloatData = {
 		var x:Int;
 		var y:Int;
@@ -280,12 +290,21 @@ package cocktail.style;
 		none;
 	}
 	
+	/**
+	 * A floated DOMElement is pushed to the
+	 * left-most or the right-most of its container
+	 */
 	enum FloatStyleValue {
 		left;
 		right;
 		none;
 	}
 	
+	/**
+	 * A DOMElement with clearance cancels a preceding
+	 * float. It is placed below any preceding left
+	 * or right float that it clears
+	 */
 	enum ClearStyleValue {
 		none;
 		left;
@@ -441,7 +460,4 @@ package cocktail.style;
 		 * inches, 1in is equal to 2.54cm.
 		 */
 		_in(value:Float);
-		
-		
-		
 	}
