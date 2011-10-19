@@ -59,35 +59,9 @@ class InlineFormattingContext extends FormattingContext
 		_flowData.maxLineHeight = 0;
 		
 		_flowData.x = _flowData.firstLineX + getLeftFloatOffset(_flowData.y);
-		_flowData.maxLineWidth = _flowData.maxWidth - getRightFloatOffset(_flowData.y) - getLeftFloatOffset(_flowData.y);
+		_flowData.maxLineWidth = _flowData.containingBlockWidth - getRightFloatOffset(_flowData.y) - getLeftFloatOffset(_flowData.y);
 		
 	}
-	
-	private function getRightFloatOffset(y:Int):Int
-	{
-		return 0;
-	}
-	
-	private function getLeftFloatOffset(y:Int):Int
-	{
-		var leftFloatOffset:Int = 0;
-		
-		for (i in 0..._floats.left.length)
-		{
-			if (_floats.left[i].y + _floats.left[i].height > y &&
-			_floats.left[i].y <= y)
-			{
-				if (_floats.left[i].x + _floats.left[i].width > leftFloatOffset)
-				{
-					leftFloatOffset = _floats.left[i].x + _floats.left[i].width;
-				}
-			}
-		}
-		
-		return leftFloatOffset;
-	}
-	
-	
 	
 	
 

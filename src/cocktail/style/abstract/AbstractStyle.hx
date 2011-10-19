@@ -233,7 +233,8 @@ class AbstractStyle
 		
 		//insert the DOMElement in the document based on its positioning scheme
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
-	
+
+		
 		//apply the computed width and height to the DOMElement
 		this._domElement.width = this._computedStyle.width;
 		this._domElement.height = this._computedStyle.height;
@@ -298,6 +299,7 @@ class AbstractStyle
 	
 	/**
 	 * Insert the DOMElement in the document, in or out of the flow.
+	 * Might clear preceding floats
 	 * 
 	 * @param	formatingContext
 	 * @param	lastPositionedDOMElementDimensions
@@ -305,6 +307,13 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formatingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
+		//clear preceding left floats, right floats
+		//or both
+		if (isClear() == true)
+		{
+			formatingContext.clearFloat(this._computedStyle.clear);
+		}
+		
 		//insert as a float
 		if (isFloat() == true)
 		{
@@ -359,7 +368,7 @@ class AbstractStyle
 	 * Compute the box model styles (width, height, paddings, margins...) based on
 	 * its positioning scheme
 	 */ 
-	public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -436,6 +445,20 @@ class AbstractStyle
 		return containingBlockDimensions;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine if the DOMElement is an embeded (replaced)
+	 * DOMElement. For example an ImageDOMElement is an
+	 * embedded DOMElement as it embeds a picture in the
+	 * document
+	 */
+	public function isEmbedded():Bool
+	{
+		return false;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS

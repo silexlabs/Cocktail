@@ -22,9 +22,9 @@ import haxe.Log;
 class BlockFormattingContext extends FormattingContext
 {
 
-	public function new(domElement:DOMElement, previsouFormatingContext:FormattingContext) 
+	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
-		super(domElement, previsouFormatingContext);
+		super(domElement, previousFormattingContext);
 	}
 	
 	override private function place(domElement:DOMElement):Void
@@ -33,7 +33,20 @@ class BlockFormattingContext extends FormattingContext
 		
 		startNewLine();
 		
-		_flowData.x = flowData.firstLineX;
+		var leftFloatOffset:Int;
+		
+		if (domElement.style.isEmbedded() == true)
+		{
+			leftFloatOffset = getLeftFloatOffset(_flowData.y);
+			Log.trace(leftFloatOffset);
+		}
+		else
+		{
+			leftFloatOffset = 0;
+		}
+		
+		
+		_flowData.x = flowData.firstLineX + leftFloatOffset;
 					
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
 		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop;
@@ -48,7 +61,12 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 
-	
+	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	{
+		Log.trace(floatData);
+		domElement.x = domElement.style.computedStyle.marginLeft;
+		domElement.y = domElement.style.computedStyle.marginTop;
+	}
 
 	
 	
