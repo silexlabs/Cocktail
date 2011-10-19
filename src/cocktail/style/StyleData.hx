@@ -100,7 +100,9 @@ package cocktail.style;
 		
 		var maxLineWidth:Int;
 		
-		var maxWidth:Int;
+		var containingBlockWidth:Int;
+		
+		var containingBlockHeight:Int;
 		
 		/**
 		 * The height of highest DOMElement in the current line

@@ -61,6 +61,33 @@ class AbstractContainerStyle extends Style
 		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
 	}
 
+	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	{
+		//do nothing if the DOMElement must not be displayed
+		if (isNotDisplayed() == true)
+		{
+			this._domElement.isVisible = false;
+			return;
+		}
+		
+		//compute all the style determining how a DOMElement is placed in the document and its box model
+		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		
+		//flow all the children of the DOMElement of this style of it has any
+		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
+		
+		//insert the DOMElement in the document based on its positioning scheme
+		
+
+		
+		
+		
+		//apply the computed width and height to the DOMElement
+		this._domElement.width = this._computedStyle.width;
+		this._domElement.height = this._computedStyle.height;
+		
+	}
+	
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
@@ -124,7 +151,7 @@ class AbstractContainerStyle extends Style
 		{
 			containerDOMElement.children[i].style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 		}
-	
+		
 		//if the 'height' style of this ContainerDOMElement is 
 		//defined as 'auto', then it depends on its content width
 		//and it must now be adjusted to the total height
@@ -134,6 +161,12 @@ class AbstractContainerStyle extends Style
 		{
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
+		
+		
+		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		
+		formatingContext.retrieveFloats(childrenFormattingContext);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

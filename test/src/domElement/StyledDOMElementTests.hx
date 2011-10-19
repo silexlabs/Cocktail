@@ -61,6 +61,7 @@ class StyledDOMElementTests
 	private var _siteLeftFloatBackground:GraphicDOMElement;
 	
 	private var _siteLeftAfterFloatBackground:GraphicDOMElement;
+	private var _siteLeftAfterFloatBackground2:GraphicDOMElement;
 	
 	public static function main()
 	{
@@ -193,7 +194,7 @@ class StyledDOMElementTests
 		
 		attach(_mainContainer);
 		
-		_mainContainer.addChild(_background);
+		//_mainContainer.addChild(_background);
 		
 		_siteBackground = getGraph();
 		_siteBackground.style.width = DimensionStyleValue.percent(100);
@@ -212,7 +213,7 @@ class StyledDOMElementTests
 		siteContainer.style.top = PositionOffsetStyleValue.length(px(40));
 		siteContainer.style.bottom = PositionOffsetStyleValue.length(px(40));
 		
-		siteContainer.addChild(_siteBackground);
+		//siteContainer.addChild(_siteBackground);
 		_mainContainer.addChild(siteContainer);
 		
 		
@@ -227,8 +228,9 @@ class StyledDOMElementTests
 		
 		_header = getGraph();
 		_header.style.width = DimensionStyleValue.auto;
-		_header.style.height = DimensionStyleValue.percent(100);
-		_header.style.display = DisplayStyleValue._inline;
+		_header.style.height = DimensionStyleValue.length(px(300));
+		_header.style.float = FloatStyleValue.left;
+		//_header.style.display = DisplayStyleValue._inline;
 		
 		
 		headerContainer.addChild(_header);
@@ -238,7 +240,7 @@ class StyledDOMElementTests
 		var siteLeftContainer:ContainerDOMElement = getContainer();
 		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
 		siteLeftContainer.style.height = DimensionStyleValue.auto;
-		siteLeftContainer.style.display = inlineBlock;
+		//siteLeftContainer.style.display = inlineBlock;
 
 		
 		_navigation = getGraph();
@@ -283,15 +285,15 @@ class StyledDOMElementTests
 		
 		
 		
-		siteLeftTextContainer.addChild(siteLeftText);
-		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
+		//siteLeftTextContainer.addChild(siteLeftText);
+		//siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		
 		
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
-		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(300));
+		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(300)); 
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
@@ -303,9 +305,21 @@ class StyledDOMElementTests
 		siteLeftFloat2.style.height = DimensionStyleValue.length(px(120));
 		siteLeftFloat2.style.float = FloatStyleValue.left;
 		
+		var siteLeftAfterFloatBackgroundContainer:ContainerDOMElement = getContainer();
+		siteLeftAfterFloatBackgroundContainer.style.width = DimensionStyleValue.auto;
+		siteLeftAfterFloatBackgroundContainer.style.height = DimensionStyleValue.auto;
+		
 		_siteLeftAfterFloatBackground = getGraph();
 		_siteLeftAfterFloatBackground.style.width = DimensionStyleValue.length(px(200));
-		_siteLeftAfterFloatBackground.style.height = DimensionStyleValue.length(px(50));
+		_siteLeftAfterFloatBackground.style.height = DimensionStyleValue.length(px(400));
+		
+		_siteLeftAfterFloatBackground2 = getGraph();
+		_siteLeftAfterFloatBackground2.style.width = DimensionStyleValue.length(px(200));
+		_siteLeftAfterFloatBackground2.style.height = DimensionStyleValue.length(px(50));
+		_siteLeftAfterFloatBackground2.style.marginTop = MarginStyleValue.length(px(10));
+		
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground);
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground2);
 		
 		siteLeftFloat.addChild(_siteLeftFloatBackground);
 		
@@ -313,9 +327,9 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-		siteLeftContainer.addChild(siteLeftTextContainer);
+		//siteLeftContainer.addChild(siteLeftTextContainer);
 		siteLeftContainer.addChild(siteLeftFloat);
-		siteLeftContainer.addChild(_siteLeftAfterFloatBackground);
+		siteLeftContainer.addChild(siteLeftAfterFloatBackgroundContainer);
 		
 		var siteRightLeftContainer:ContainerDOMElement = getContainer();
 		siteRightLeftContainer.style.width = DimensionStyleValue.percent(100);
@@ -327,25 +341,25 @@ class StyledDOMElementTests
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
-		siteContainerRight.style.height = DimensionStyleValue.length(mm(150));
-		siteContainerRight.style.display = inlineBlock;
+		siteContainerRight.style.height = DimensionStyleValue.auto;
+		//siteContainerRight.style.display = inlineBlock;
 		
-		siteRightLeftContainer.addChild(siteContainerRight);
+		//siteRightLeftContainer.addChild(siteContainerRight);
 	
 		
 		_siteRightBackground = getGraph();
 		_siteRightBackground.style.width = DimensionStyleValue.percent(100);
-		_siteRightBackground.style.height = DimensionStyleValue.length(mm(150));
+		_siteRightBackground.style.height = DimensionStyleValue.length(px(500));
 		
 		siteContainerRight.addChild(_siteRightBackground);
 		
 		 _footer = getGraph();
-		_footer.style.width = DimensionStyleValue.percent(100);
+		_footer.style.width = DimensionStyleValue.percent(50);
 		_footer.style.height = DimensionStyleValue.length(px(250));
 		_footer.style.marginTop = MarginStyleValue.length(px(10));
 		
 		
-		siteContainer.addChild(_footer);
+		//siteContainer.addChild(_footer);
 		
 		
 		
@@ -385,9 +399,10 @@ class StyledDOMElementTests
 		paint(_header, 0xDDDDDD);
 		paint(_navigation, 0xDDDDDD);
 		paint(_siteRightBackground, 0xDDDDDD);
-		paint(_footer, 0xDDDDDD);
+		paint(_footer, 0xBBBBBB);
 		paint(_siteLeftFloatBackground, 0xBBBBBB);
 		paint(_siteLeftAfterFloatBackground, 0x00000);
+		paint(_siteLeftAfterFloatBackground2, 0x00000);
 	}
 	
 	private function attach(domElement:DOMElement):Void

@@ -44,7 +44,7 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override public function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	override private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -83,6 +83,19 @@ class AbstractEmbeddedStyle extends Style
 		
 		//compute the embedded DOMElement box model styles
 		boxComputer.measure(this, containingBlockDimensions);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as all inherithing classes of the
+	 * Embedded DOMElement are embedded
+	 */
+	override public function isEmbedded():Bool
+	{
+		return true;
 	}
 	
 }
