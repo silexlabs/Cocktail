@@ -41,23 +41,40 @@ class FormattingContext
 		
 		_flowData = initFlowData(domElement);
 		
-		var leftFloats:Array<FloatData> = new Array<FloatData>();
-		var rightFloats:Array<FloatData> = new Array<FloatData>();
-		
+		var floatsLeft:Array<FloatData> = new Array<FloatData>();
+		var floatsRight:Array<FloatData> = new Array<FloatData>();
+	
 		_floats = {
-			left:leftFloats,
-			right:rightFloats
+			left:floatsLeft,
+			right:floatsRight
 		}
+		
 		
 		_formatedElements = new Array<DOMElement>();
 		
 		if (previousFormatingContext != null)
 		{
-			retrieveFloats(previousFormatingContext);
+				//_floats = previousFormatingContext.floats;
+				
+				for (i in 0...previousFormatingContext.floats.left.length)
+				{
+					_floats.left.push( { x:previousFormatingContext.floats.left[i].x,
+					y:previousFormatingContext.floats.left[i].y,
+					width:previousFormatingContext.floats.left[i].width,
+					height:previousFormatingContext.floats.left[i].height } );
+				}
+				
+			//_floats = previousFormatingContext.floats;
+			
+			if (previousFormatingContext.floats.left.length > 0)
+			{
+				//Log.trace(previousFormatingContext.flowData);
+				//Log.trace(previousFormatingContext.floats.left);
+			}
+			
+		//	retrieveFloats(previousFormatingContext);
+			//Log.trace(_floats.left);
 		}
-		
-		
-		
 		
 		
 		startNewLine();
@@ -83,6 +100,7 @@ class FormattingContext
 	{
 		_formatedElements.push(domElement);
 		place(domElement);
+		removeFloats();
 	}
 	
 	private function place(domElement:DOMElement):Void
@@ -98,7 +116,6 @@ class FormattingContext
 		{
 			case left:
 				_floats.left.push(floatData);
-				Log.trace("add left float");
 			
 			case right:
 				_floats.right.push(floatData);
@@ -119,9 +136,32 @@ class FormattingContext
 		
 	}
 	
-	private function removeFloat():Void
+	private function removeFloats():Void
 	{
+		var leftFloats:Array<FloatData> = _floats.left;
+		var newLeftFloats:Array <FloatData> = new Array<FloatData>();
 		
+		for (i in 0...leftFloats.length)
+		{
+			if (leftFloats[i].y + leftFloats[i].height > _flowData.y)
+			{
+				newLeftFloats.push(leftFloats[i]);
+			}
+			else
+			{
+				Log.trace("remove : " + _flowData.y);
+			}
+		}
+		
+		_floats.left = newLeftFloats;
+		
+		for (i in 0..._floats.right.length)
+		{
+			if (_floats.right[i].y + _floats.right[i].height <= _flowData.y)
+			{
+				_floats.right.remove(_floats.right[i]);
+			}
+		}
 	}
 	
 	
@@ -131,11 +171,14 @@ class FormattingContext
 		{
 			for (i in 0...formattingContext.floats.left.length)
 			{
-				if (isFloatOverflowing(formattingContext.floats.left[i], formattingContext.flowData.containingBlockHeight) ==  true)
+				if (formattingContext.flowData.containingBlockHeight != -1)
 				{
-					Log.trace("push");
-					_floats.left.push(convertFloatDataCoordinateSpace(formattingContext.floats.left[i], formattingContext.flowData));
+					if (isFloatOverflowing(formattingContext.floats.left[i], formattingContext.flowData.containingBlockHeight) ==  true)
+					{
+						_floats.left.push(convertFloatDataCoordinateSpace(formattingContext.floats.left[i], formattingContext.flowData));
+					}
 				}
+				
 			}
 			
 			for (i in 0...formattingContext.floats.right.length)
@@ -155,20 +198,23 @@ class FormattingContext
 		
 		if (floatData.height + floatData.y > totalHeight)
 		{
+			Log.trace("overflow");
 			ret = true;
 		}
 		
-		return true;
+		return ret;
 	}
 	
 	private function convertFloatDataCoordinateSpace(floatData:FloatData, flowData:FlowData):FloatData
 	{
 
 		var floatX:Int = floatData.x;
+		Log.trace(floatX);
 		var floatY:Int = 0;
-		Log.trace(floatData);
+
+		var floatHeight:Int = floatData.height + floatData.y - flowData.containingBlockHeight;
 		
-		var floatHeight:Int = floatData.height;
+		
 		
 		var floatWidth:Int = floatData.width;
 		
@@ -178,6 +224,9 @@ class FormattingContext
 			width: floatWidth,
 			height: floatHeight
 		}
+		Log.trace(flowData);
+		Log.trace(convertedFloatData);
+		
 		return convertedFloatData;
 	}
 	
@@ -197,17 +246,24 @@ class FormattingContext
 				ret = null;
 		}
 		
-		domElement.x = ret.x;
-		domElement.y = ret.y;
-		
 		return ret;
 	}
 	
 	private function getLeftFloatData(domElement:DOMElement):FloatData
 	{
-		var floatX:Int = _flowData.firstLineX;
-		var floatY:Int = _flowData.y;
+		var floatX:Int = _flowData.firstLineX + getLeftFloatOffset(_flowData.y);
+		var floatY:Int = 0;
+		var floatWidth:Int = domElement.offsetWidth;
+		var floatHeight:Int = domElement.offsetHeight;
 		
+		
+		//Log.trace(floatY);
+		
+		/**while (getLeftFloatOffset(floatY) + floatWidth > _flowData.containingBlockWidth)
+		{
+			floatY += 1;
+		}*/
+		/**
 		if (_floats.left.length > 0)
 		{
 			floatX = _floats.left[_floats.left.length - 1].x + _floats.left[_floats.left.length - 1].width;
@@ -216,7 +272,7 @@ class FormattingContext
 			{
 				floatX = _flowData.firstLineX;
 				
-				var highestFloatValue:Int = 0;
+				var highestFloatValue:Int = floatY;
 				
 				for (i in 0..._floats.left.length)
 				{
@@ -232,16 +288,15 @@ class FormattingContext
 			{
 				floatY = _floats.left[_floats.left.length - 1].y;
 			}
-		}
+		}*/
 		
-		
-		Log.trace(floatX);
+		//Log.trace(floatWidth);
 		
 		return {
 			x: floatX,
 			y: floatY,
-			width:domElement.offsetWidth,
-			height:domElement.offsetHeight
+			width:floatWidth,
+			height:floatHeight
 		}
 	}
 	
@@ -264,15 +319,16 @@ class FormattingContext
 	private function getLeftFloatOffset(y:Int):Int
 	{
 		var leftFloatOffset:Int = 0;
-		
+		Log.trace(y);
 		for (i in 0..._floats.left.length)
 		{
 			if (_floats.left[i].y + _floats.left[i].height > y &&
 			_floats.left[i].y <= y)
 			{
+				Log.trace("added offset float");
 				if (_floats.left[i].x + _floats.left[i].width > leftFloatOffset)
 				{
-					leftFloatOffset = _floats.left[i].x + _floats.left[i].width;
+					leftFloatOffset +=  _floats.left[i].width;
 				}
 			}
 		}
