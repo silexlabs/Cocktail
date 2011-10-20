@@ -317,11 +317,14 @@ class AbstractStyle
 		//insert as a float
 		if (isFloat() == true)
 		{
+			Log.trace("place float");
 			formatingContext.insertFloat(this._domElement);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
+			Log.trace("flow children");
+			Log.trace(formatingContext.floats);
 			formatingContext.insert(this._domElement);
 		}
 		//insert in the flow, then apply an offset to it

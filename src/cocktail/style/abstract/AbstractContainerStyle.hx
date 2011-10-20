@@ -163,9 +163,13 @@ class AbstractContainerStyle extends Style
 		}
 		
 		
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		
+		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		Log.trace(childrenFormattingContext.floats);
 		formatingContext.retrieveFloats(childrenFormattingContext);
+		Log.trace(formatingContext.floats);
+		
+		
 		
 	}
 	
