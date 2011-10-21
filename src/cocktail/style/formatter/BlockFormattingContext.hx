@@ -38,15 +38,12 @@ class BlockFormattingContext extends FormattingContext
 		if (domElement.style.isEmbedded() == true)
 		{
 			leftFloatOffset = getLeftFloatOffset(_flowData.y);
-			Log.trace(leftFloatOffset);
-			Log.trace(_floats.left);
 		}
 		
 		
 		_flowData.x = flowData.firstLineX + leftFloatOffset;
-					
-		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
-		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop;
+		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
+		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop ;
 	
 		_flowData.y += domElement.offsetHeight;
 		
@@ -59,8 +56,8 @@ class BlockFormattingContext extends FormattingContext
 
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-		_flowData.x = getLeftFloatOffset(_flowData.y) - domElement.offsetWidth;
-		domElement.x = _flowData.x;
+		//_flowData.x = getLeftFloatOffset(_flowData.y) - domElement.offsetWidth;
+		domElement.x = floatData.x;
 		domElement.y = _flowData.y;
 	}
 

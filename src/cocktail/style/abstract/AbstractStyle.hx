@@ -238,6 +238,9 @@ class AbstractStyle
 		//apply the computed width and height to the DOMElement
 		this._domElement.width = this._computedStyle.width;
 		this._domElement.height = this._computedStyle.height;
+		//the DOMElement adds its own paddings to itself
+		this._domElement.x += this._computedStyle.paddingLeft;
+		this._domElement.y += this._computedStyle.paddingTop;
 		
 	}
 	
@@ -317,14 +320,11 @@ class AbstractStyle
 		//insert as a float
 		if (isFloat() == true)
 		{
-			Log.trace("place float");
 			formatingContext.insertFloat(this._domElement);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			Log.trace("flow children");
-			Log.trace(formatingContext.floats);
 			formatingContext.insert(this._domElement);
 		}
 		//insert in the flow, then apply an offset to it
@@ -513,7 +513,7 @@ class AbstractStyle
 	 * A DOMElement is float if he declares either
 	 * a left or right float
 	 */
-	private function isFloat():Bool
+	public function isFloat():Bool
 	{
 		var ret:Bool = false;
 		

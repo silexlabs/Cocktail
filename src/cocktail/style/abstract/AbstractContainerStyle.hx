@@ -162,14 +162,9 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
 		
-		
-		
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
-		Log.trace(childrenFormattingContext.floats);
+
 		formatingContext.retrieveFloats(childrenFormattingContext);
-		Log.trace(formatingContext.floats);
-		
-		
 		
 	}
 	
