@@ -32,7 +32,7 @@ class InlineFormattingContext extends FormattingContext
 	{
 		super.place(domElement);
 		
-		if (_flowData.x + domElement.offsetWidth + getLeftFloatOffset(_flowData.y) + getRightFloatOffset(flowData.y) > _flowData.maxLineWidth)
+		if (_flowData.x + domElement.offsetWidth + _floatsManager.getLeftFloatOffset(_flowData.y) + _floatsManager.getRightFloatOffset(flowData.y) > _flowData.maxLineWidth)
 		{
 			startNewLine();
 		}
@@ -58,8 +58,8 @@ class InlineFormattingContext extends FormattingContext
 		_flowData.totalHeight += _flowData.maxLineHeight;
 		_flowData.maxLineHeight = 0;
 		
-		_flowData.x = _flowData.firstLineX + getLeftFloatOffset(_flowData.y);
-		_flowData.maxLineWidth = _flowData.containingBlockWidth - getRightFloatOffset(_flowData.y) - getLeftFloatOffset(_flowData.y);
+		_flowData.x = _flowData.firstLineX + _floatsManager.getLeftFloatOffset(_flowData.y);
+		_flowData.maxLineWidth = _flowData.containingBlockWidth - _floatsManager.getRightFloatOffset(_flowData.y) - _floatsManager.getLeftFloatOffset(_flowData.y);
 		
 	}
 	

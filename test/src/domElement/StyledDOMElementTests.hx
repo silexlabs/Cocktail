@@ -184,13 +184,13 @@ class StyledDOMElementTests
 		
 		
 		_mainContainer = getContainer();
-		//_mainContainer.style.width = DimensionStyleValue.percent(100);
+		_mainContainer.style.width = DimensionStyleValue.percent(100);
 		//_mainContainer.style.height = DimensionStyleValue.auto;
-		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.top = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.position = PositionStyleValue.absolute;
+		//_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
+		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
+		//_mainContainer.style.top = PositionOffsetStyleValue.length(px(20));
+		//_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
+		//_mainContainer.style.position = PositionStyleValue.absolute;
 		
 		attach(_mainContainer);
 		
@@ -214,7 +214,7 @@ class StyledDOMElementTests
 		siteContainer.style.bottom = PositionOffsetStyleValue.length(px(40));
 		
 		//siteContainer.addChild(_siteBackground);
-		_mainContainer.addChild(siteContainer);
+		//_mainContainer.addChild(siteContainer);
 		
 		
 		var headerContainer:ContainerDOMElement = getContainer();
@@ -235,7 +235,7 @@ class StyledDOMElementTests
 		
 		headerContainer.addChild(_header);
 		
-		siteContainer.addChild(headerContainer);
+		_mainContainer.addChild(headerContainer);
 		
 		var siteLeftContainer:ContainerDOMElement = getContainer();
 		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
@@ -293,11 +293,12 @@ class StyledDOMElementTests
 		
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
-		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(300)); 
+		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
+		//_siteLeftFloatBackground.style.float = FloatStyleValue.left;
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
-		siteLeftFloat.style.height = DimensionStyleValue.length(px(300));
+		siteLeftFloat.style.height = DimensionStyleValue.length(px(400));
 		siteLeftFloat.style.float = FloatStyleValue.left;
 		
 		var siteLeftFloat2:ContainerDOMElement = getContainer();
@@ -327,7 +328,7 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-		//siteLeftContainer.addChild(siteLeftTextContainer);
+	//	siteLeftContainer.addChild(siteLeftTextContainer);
 		siteLeftContainer.addChild(siteLeftFloat);
 		siteLeftContainer.addChild(siteLeftAfterFloatBackgroundContainer);
 		
@@ -337,7 +338,7 @@ class StyledDOMElementTests
 		
 		siteRightLeftContainer.addChild(siteLeftContainer);
 		
-		siteContainer.addChild(siteRightLeftContainer);
+		_mainContainer.addChild(siteLeftContainer);
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
@@ -418,6 +419,7 @@ class StyledDOMElementTests
 	{
 		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		getDefaultStyle(ret);
+		
 		ret.x = 0;
 		ret.y = 0;
 		return ret;
