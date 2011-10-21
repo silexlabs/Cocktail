@@ -49,6 +49,7 @@ class DOMElement extends AbstractDOMElement
 		//all DOMElements are positioned as absolute to prevent most
 		//of browsers inconsistencies regarding margin/padding. 
 		//Margin, padding , floating... concepts will be abstracted
+		
 		_nativeElement.style.position = "absolute";
 		
 		if (_nativeElement.style.width != null)
@@ -75,30 +76,25 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden methods to manipulate the HTML DOM
+	// Overriden public method to manipulate the DOM
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Adds a native HTML DOMElement (an html element) to this DOMElement native DOMElement
-	 * @param	domElement the html element to add to this
+	 * Attaches this domElement NativeElement (an HTML element) to its
+	 * parent NativeElement
 	 */
-	override public function addChild(domElement:AbstractDOMElement):Void
+	override public function attach():Void
 	{
-		super.addChild(domElement);
-		this._nativeElement.appendChild(domElement.nativeElement);
-		
-		//intialise z-order on the DOMElement, as it is null by default in JavaScript
-		domElement.nativeElement.style.zIndex = _children.length - 1;
+		this._parent.nativeElement.appendChild(this._nativeElement);
 	}
 	
 	/**
-	 * Removes a native HTML DOMElement (an html element) from this DOMElement native DOMElement
-	 * @param	domElement the html element to remove from this
+	 * Detaches this domElement NativeElement (an HTML element) from its
+	 * parent NativeElement
 	 */
-	override public function removeChild(domElement:AbstractDOMElement):Void
+	override public function detach():Void
 	{
-		super.removeChild(domElement);
-		this._nativeElement.removeChild(domElement.nativeElement);
+		this._parent.nativeElement.removeChild(this._nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -228,6 +224,7 @@ class DOMElement extends AbstractDOMElement
 	override public function setX(value:Int):Int 
 	{
 		super.setX(value);
+		
 		this._nativeElement.style.left = value + "px";
 		return this._x;
 	}

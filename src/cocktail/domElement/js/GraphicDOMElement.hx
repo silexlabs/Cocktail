@@ -71,7 +71,15 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override public function setWidth(value:Int):Int
 	{
+		//when changing the width or height of a Canvas,
+		//its content is erased, 
+		var canvasContext:Dynamic = getContext();
+		//so we first save it
+		var imageData:Dynamic = canvasContext.getImageData(0, 0, this.width, this.height);
+		//set the new width
 		untyped this._nativeElement.width = value;
+		//then put back the pixel data
+		canvasContext.putImageData(imageData, 0,0);
 		return value;
 	}
 	
@@ -82,7 +90,11 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override public function setHeight(value:Int):Int 
 	{
+		//same as width, save the pixel data and put it back
+		var canvasContext:Dynamic = getContext();
+		var imageData:Dynamic = canvasContext.getImageData(0,0, this.width, this.height);
 		untyped this._nativeElement.height = value;
+		canvasContext.putImageData(imageData, 0,0);
 		return value;
 	}
 	

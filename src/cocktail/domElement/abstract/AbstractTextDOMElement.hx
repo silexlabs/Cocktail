@@ -11,13 +11,18 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktail.domElement.DOMElementData;
+import cocktail.style.TextStyle;
+
 
 /**
  * This is a DOMElement in charge of displaying an 
- * HTML text
+ * HTML text. The text is stored as a series of text node
+ * and TextDOMElements.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -25,58 +30,78 @@ class AbstractTextDOMElement extends DOMElement
 {
 
 	/**
-	 * Stores the HTML text displaying by this DOMElement
+	 * Stores the children of this TextDOMElement, which can
+	 * be either text nodes or other TextDOMElements
 	 */
-	private var _text:String;
-	public var text(getText, setText):String;
+	private var _children:Array<Dynamic>;
 	
 	/**
-	 * class contructor
+	 * class contructor. Init the TextDOMElement with an empty text node
+	 * if no NativeElement is provided
 	 */
 	public function new(nativeElement:NativeElement = null)
 	{
+		//stores the provided NativeElement as first child
+		_children = new Array<Dynamic>();
+		
 		//create a text native element if none is provided
 		if (nativeElement == null)
 		{
-			nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.text);
+			_children.push(NativeElementManager.createNativeTextNode(""));
+			nativeElement = NativeElementManager.createNativeElement(text);
+		}
+		else
+		{
+			_children.push(nativeElement);
 		}
 		
 		super(nativeElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden hierarchy methods
-	// The addChild and removeChild method are not implemented for this 
-	// DOMElement, as it is a leaf DOMElement (can't have children)
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function addChild(domElement:AbstractDOMElement):Void
+	/**
+	 * Override to instantiate a Text DOMElement specific 
+	 * style manager
+	 */
+	override private function initStyle():Void
 	{
-		
+		this._style = new TextStyle(this);
 	}
 	
-	override public function removeChild(domElement:AbstractDOMElement):Void
+	
+	/**
+	 * Append a text node to the current text content.
+	 * @param	text a raw string of text
+	 */
+	public function appendText(text:TextNode):Void
 	{
-		
+		_children.push(text);
 	}
 	
 	/**
-	 * Set the HTML text displayed by this component
-	 * @param	text a text formatted with HTML tags
+	 * Remove a text node from the current text content
 	 */
-	public function setText(text:String):String
+	public function removeText(text:TextNode):Void
 	{
-		this._text = text;
-		return this._text;
+		_children.remove(text);
 	}
 	
 	/**
-	 * Return the HTML text displayed by this component
-	 * @return	text a text formatted with HTML tags
+	 * Append a TextDOMElement to the current TextDOMElement which can
+	 * in turn also have texrt node and TextDOMElement children
+	 * @param	textDOMElement
 	 */
-	public function getText():String
+	public function appendTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
 	{
-		return this._text;
+		_children.push(textDOMElement);
 	}
+	
+	/**
+	 * Removes a TextDOMElement from the current text content
+	 */
+	public function removeTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
+	{
+		_children.remove(textDOMElement);
+	}
+	
 	
 }

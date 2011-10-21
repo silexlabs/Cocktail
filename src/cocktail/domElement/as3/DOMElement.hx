@@ -54,23 +54,21 @@ class DOMElement extends AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Adds a native Flash DOMElement (DisplayObject) to this DOMElement native DOMElement
-	 * @param	domElement the DisplayObject to add to this
+	 * Attaches this domElement NativeElement (a Flash DisplayObject) to its
+	 * parent NativeElement
 	 */
-	override public function addChild(domElement:AbstractDOMElement):Void
+	override public function attach():Void
 	{
-		super.addChild(domElement);
-		this._nativeElement.addChild(domElement.nativeElement);
+		this._parent.nativeElement.addChild(this._nativeElement);
 	}
 	
 	/**
-	 * Removes a native Flash DOMElement (DisplayObject) from this DOMElement native DOMElement
-	 * @param	domElement the DisplayObject to remove from this
+	 * Detaches this domElement NativeElement (a Flash DisplayObject) from its
+	 * parent NativeElement
 	 */
-	override public function removeChild(domElement:AbstractDOMElement):Void
+	override public function detach():Void
 	{
-		super.removeChild(domElement);
-		this._nativeElement.removeChild(domElement.nativeElement);
+		this._parent.nativeElement.removeChild(this._nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
