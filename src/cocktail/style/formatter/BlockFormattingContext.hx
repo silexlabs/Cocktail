@@ -37,7 +37,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		if (domElement.style.isEmbedded() == true)
 		{
-			leftFloatOffset = getLeftFloatOffset(_flowData.y);
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y);
 		}
 		
 		
