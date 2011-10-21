@@ -228,32 +228,36 @@ class AbstractStyle
 		//compute all the style determining how a DOMElement is placed in the document and its box model
 		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 		
-		//flow all the children of the DOMElement of this style of it has any
+		//flow all the children of the DOMElement of this style of it has any, then insert this DOMElement in the document
 		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
 		
-		//insert the DOMElement in the document based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
-
-		
-		//apply the computed width and height to the DOMElement
-		this._domElement.width = this._computedStyle.width;
-		this._domElement.height = this._computedStyle.height;
-		//the DOMElement adds its own paddings to itself
-		this._domElement.x += this._computedStyle.paddingLeft;
-		this._domElement.y += this._computedStyle.paddingTop;
-		
+		//apply the computed dimensions to the DOMElement
+		applyComputedDimensions();
 	}
 	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Flow all the children of a DOMElement if it has any. Abstract by default
+	 * Actually aply the computed dimensions on the
+	 * DOMElement
+	 */
+	private function applyComputedDimensions():Void
+	{
+		//apply the computed width and height to the DOMElement
+		this._domElement.width = this._computedStyle.width;
+		this._domElement.height = this._computedStyle.height;
+	}
+	
+	/**
+	 * Flow all the children of a DOMElement if it has any, then the DOMElement.
 	 */
 	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
 	{
-		//abstract
+		//insert the DOMElement in the document based on its positioning scheme
+		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 	}
 	
 	/**

@@ -52,6 +52,10 @@ class AbstractContainerStyle extends Style
 		super(domElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
@@ -60,33 +64,10 @@ class AbstractContainerStyle extends Style
 	{
 		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
 	}
-
-	override public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
-	{
-		//do nothing if the DOMElement must not be displayed
-		if (isNotDisplayed() == true)
-		{
-			this._domElement.isVisible = false;
-			return;
-		}
-		
-		//compute all the style determining how a DOMElement is placed in the document and its box model
-		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-		
-		//flow all the children of the DOMElement of this style of it has any
-		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
-		
-		//insert the DOMElement in the document based on its positioning scheme
-		
-
-		
-		
-		
-		//apply the computed width and height to the DOMElement
-		this._domElement.width = this._computedStyle.width;
-		this._domElement.height = this._computedStyle.height;
-		
-	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Lay out all the children of the ContainerDOMElement
@@ -162,8 +143,11 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
 		
+		//insert the ContainerDOMElement into the document
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 
+		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
+		//that will also affect the position of its following siblings
 		formatingContext.retrieveFloats(childrenFormattingContext);
 		
 	}
