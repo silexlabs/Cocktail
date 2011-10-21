@@ -19,13 +19,14 @@ import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.Mouse;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.Style;
+import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
  * This is a base class for runtime specific DOMElement. A DOMElement is an abstraction of the visual base element of a runtime.
  * For instance in JS, a DOMElement is an HTML element, like a <div> or <img> element. In Flash AS3, a domElement is a Sprite.
- * A DOMElement can contain other DOMElements. This class abstracts manipulating DOM elements, each runtime is implemented in an
- * inheriting class
+ * This class abstracts manipulating DOM elements, each runtime is implemented in an inheriting class
  * @author Yannick DOMINGUEZ
  */
 class AbstractDOMElement 
@@ -92,7 +93,7 @@ class AbstractDOMElement
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):Key->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOCUMENT TREE attributes
+	// DOM attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -104,17 +105,10 @@ class AbstractDOMElement
 	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
 	
 	/**
-	 * a reference to the parent of this DOMElement
+	 * a reference to the parent of this DOMElement, of type container
 	 */ 
-	private var _parent:AbstractDOMElement;
-	public var parent(getParent, setParent):AbstractDOMElement;
-	
-	/**
-	 *  a reference to each of the DOMElement childs, stored by
-	 *  z-index
-	 */
-	private var _children:Array<AbstractDOMElement>;
-	public var children(getChildren, never):Array<AbstractDOMElement>;
+	private var _parent:AbstractContainerDOMElement;
+	public var parent(getParent, setParent):AbstractContainerDOMElement;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -125,16 +119,30 @@ class AbstractDOMElement
 	////////////////////////////////
 	
 	/**
-	 * Stores the x position of this dom element
+	 * Stores the x position of this dom element, relative
+	 * to its parent
 	 */
 	private var _x:Int;
 	public var x(getX, setX):Int;
 	
 	/**
-	 * Stores the y position of this dom element
+	 * get/set the global x. It is relative to the root 
+	 * DOMElement.
+	 */
+	public var globalX(getGlobalX, setGlobalX):Int;
+	
+	/**
+	 * Stores the y position of this dom element, relative
+	 * to its parent
 	 */
 	private var _y:Int;
 	public var y(getY, setY):Int;
+	
+	/**
+	 * get/set the global y. It is relative to the root 
+	 * DOMElement.
+	 */
+	public var globalY(getGlobalY, setGlobalY):Int;
 	
 	/**
 	 * Stores the width position of this dom element
@@ -147,6 +155,29 @@ class AbstractDOMElement
 	 */
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
+	
+	/**
+	 * Read-only, returns the width of the domElement
+	 * + horizontal paddings + horizontal margins
+	 */
+	public var offsetWidth(getOffsetWidth, never):Int;
+	
+	/**
+	 * Read-only, returns the height of the domElement
+	 * + vertical paddings + vertical margins
+	 */
+	public var offsetHeight(getOffsetHeight, never):Int;
+	
+	/////////////////////////////////
+	// STYLE attribute
+	////////////////////////////////
+	
+	/**
+	 * Stores the styles of a DOMElement and manage
+	 * how they are applied
+	 */
+	private var _style:Style;
+	public var style(getStyle, never):Style;
 	
 	/////////////////////////////////
 	// TRANSFORMATION attributes
@@ -207,12 +238,12 @@ class AbstractDOMElement
 	public var isVisible(getIsVisible, setIsVisible):Bool;
 	
 	/////////////////////////////////
-	// Z-ORDER attribute
+	// Z-Index attribute
 	/////////////////////////////////
 	
 	/**
 	 * The z-order / z-index of this DOM Object, relative to
-	 * its parent (the first child of a DOMElement always has
+	 * its parent (the first child of a ContainerDOMElement always has
 	 * a 0 z-index)
 	 */
 	public var zIndex(getZIndex, setZIndex):Int;
@@ -233,14 +264,11 @@ class AbstractDOMElement
 		{
 			this.nativeElement = nativeElement;
 		}
-		
-		_children = new Array<AbstractDOMElement>();
 	}
 	
 	/**
-	 * Set the domElement properties which can be retrieved
-	 * from the referenceToNativeDom. Called each time
-	 * the native dom element is set
+	 * Init the domElement properties. Called each time
+	 * the NativeElement is set
 	 */
 	private function init():Void
 	{	
@@ -258,6 +286,22 @@ class AbstractDOMElement
 		//top left of this domElement
 		_registrationPoint = constant(left, top);
 		
+		//init the origin positioning of the DOMElement
+		_x = 0;
+		_y = 0;
+		
+		//init the style for this DOMElement
+		initStyle();
+	}
+	
+	/**
+	 * Instantiate the right style manager for this
+	 * DOMElement. Overriden by DOMElements with
+	 * specific style manager, such as Text
+	 */
+	private function initStyle():Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -266,33 +310,27 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the current DOMElement as the parent of the added domElement, and 
-	 * store it in the children array. Overriden by each runtime, to add the
-	 * child to native DOM.
-	 * @param	domElement the DOMElement to attach to this DOMElement
+	 * attaches the NativeElement to its parent's
+	 * NativeElement
 	 */
-	public function addChild(domElement:AbstractDOMElement):Void
+	public function attach():Void
 	{
-		domElement.parent = this;
-		_children.push(domElement);
+		//abstract
 	}
 	
 	/**
-	 * Reset the parent of the remove child object as it no longer is attached
-	 * to the DOM, remove it also from the children array. Overrident by each
-	 * runtime to remove also from the native DOM
-	 * @param	domElement the DOMElement to remove from this DOMElement
+	 * detaches the NativeElement from its parent's
+	 * NativeElement
 	 */
-	public function removeChild(domElement:AbstractDOMElement):Void
+	public function detach():Void
 	{
-		domElement.parent = null;
-		_children.remove(domElement);
+		//abstract
 	}
 	
 	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */
-	public function getParent():AbstractDOMElement
+	public function getParent():AbstractContainerDOMElement
 	{
 		return this._parent;
 	}
@@ -300,24 +338,14 @@ class AbstractDOMElement
 	/**
 	 * set the parent of this DOMElement
 	 */
-	public function setParent(domElement:AbstractDOMElement):AbstractDOMElement
+	public function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
 	{
 		this._parent = domElement;
 		return this._parent;
 	}
 	
-	
 	/**
-	 * returns the children of this DOMElement
-	 * @return an array of DOMElement
-	 */
-	public function getChildren():Array<AbstractDOMElement>
-	{
-		return _children;
-	}
-	
-	/**
-	 * set the reference to this DOMElement native DOM element
+	 * set the reference to this DOMElement NativeElement
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
 	public function setNativeElement(value:NativeElement):NativeElement
@@ -545,8 +573,8 @@ class AbstractDOMElement
 	// Set/get transformations absolute value
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
-	 * Set the absolut x translation instead of adding it to 
+	/**
+	 * Set the absolute x translation instead of adding it to 
 	 * the current x translation
 	 * @param	translationX the target x translation
 	 */
@@ -850,6 +878,151 @@ class AbstractDOMElement
 		return this._height;
 	}
 	
+	/**
+	 * constructs the offset width from the computed
+	 * box of this domElement
+	 */
+	public function getOffsetWidth():Int
+	{
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.width + computedStyle.marginLeft + computedStyle.marginRight + computedStyle.paddingLeft + computedStyle.paddingRight;
+	}
+	
+	/**
+	 * constructs the offset height from the computed
+	 * box of this domElement
+	 */
+	public function getOffsetHeight():Int
+	{
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.height + computedStyle.marginTop + computedStyle.marginBottom + computedStyle.paddingTop + computedStyle.paddingBottom;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GLOBAL POSITION SETTERS/GETTERS
+	// Setters/Getters to manipulate a nativeElement global position (relative to the root 
+	// DOMElement)
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Get a global x position (relative to the root DOMElement)
+	 * and convert to an x position relative to the parent DOMElement
+	 * @param	value the new x position of the DOMElement
+	 */
+	public function setGlobalX(value:Int):Int
+	{
+		//init the local x position with the provided value
+		//, if the DOMElement has no parent, it will be the 
+		//returned value
+		var localX:Int = value;
+		
+		//if the DOMElement has a parent
+		if (this._parent != null)
+		{
+			//retrieve its global x value, and substract
+			//it to the local value, effectively computing
+			//the x that this DOMElement should have relative
+			//to its parent
+			var parentGlobalX:Int = this._parent.globalX;
+			localX -= parentGlobalX;
+			
+		}
+		//if this DOMElement has no parent, then it is the 
+		//root DOMElement and the origin for all global position
+		else 
+		{
+			localX = 0;
+		}
+		this.x = localX;
+		
+		return this._x;
+	}
+	
+	/**
+	 * Return the x position of this DOMElement relative
+	 * to the root DOMElement x position
+	 */
+	public function getGlobalX():Int
+	{
+		//init the globalX with the current localX
+		//if this DOMElement has no parent, it will
+		//be the returned value
+		var newGlobalX:Int = this.x;
+		
+		//if this DOMElement has a parent
+		if (this._parent != null)
+		{
+			var parentDOMElement:AbstractDOMElement = this._parent;
+			//Add the localX of each parent until a DOMElement
+			//with no parent is found (the root DOMElement).
+			//The added localX form the globalX valu
+			while (parentDOMElement != null)
+			{
+				newGlobalX += parentDOMElement.x;
+				parentDOMElement = parentDOMElement.parent;
+			}
+		}
+		//if this DOMElement has no parent, then it is the 
+		//root DOMElement and the origin for all global position
+		else
+		{
+			newGlobalX = 0;
+		}
+		return newGlobalX;
+		
+	}
+	
+	/**
+	 * Set the DOMElement y position relative to the root DOMElement
+	 * y position
+	 * @param	value the new y position of the DOMElement
+	 */
+	public function setGlobalY(value:Int):Int
+	{
+		//see setGlobalX
+		var localY:Int = value;
+		
+		if (this._parent != null)
+		{
+			var parentGlobalY:Int = this._parent.globalY;
+			localY -= parentGlobalY;
+			
+		}
+		else
+		{
+			localY = 0;
+		}
+		this.y = localY;
+		
+		return this._y;
+	}
+	
+	/**
+	 * Return the y position of this DOMElement relative
+	 * to the root DOMElement y position
+	 */
+	public function getGlobalY():Int
+	{
+		//see getGlobalY
+		var newGlobalY:Int = this.y;
+		
+		if (this._parent != null)
+		{
+			var parentDOMElement:AbstractDOMElement = this._parent;
+			while (parentDOMElement != null)
+			{
+				newGlobalY += parentDOMElement.y;
+				parentDOMElement = parentDOMElement.parent;
+			}
+		}
+		else
+		{
+			newGlobalY = 0;
+		}
+		
+		return newGlobalY;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
 	// Setter/Getter to manipulate a native DOMElement z-index in the publication
@@ -863,5 +1036,14 @@ class AbstractDOMElement
 	public function getZIndex():Int 
 	{
 		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// STYLE GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function getStyle():Style
+	{
+		return this._style;
 	}
 }

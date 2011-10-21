@@ -11,7 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
@@ -32,7 +32,7 @@ import cocktail.nativeElement.NativeElementData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractGraphicDOMElement extends DOMElement
+class AbstractGraphicDOMElement extends EmbeddedDOMElement
 {
 
 	/**
@@ -49,20 +49,27 @@ class AbstractGraphicDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden hierarchy methods
-	// The addChild and removeChild method are not implemented for this 
-	// DOMElement, as it is a leaf DOMElement (can't have children)
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function addChild(domElement:AbstractDOMElement):Void
+	/**
+	 * By convention a GraphicDOMElement dimensions is
+	 * 300 * 150 by default, according to the HTML5 Canvas
+	 * element specifications
+	 */
+	override private function initDimensions():Void
 	{
-		
+		this._height = 150;
+		this._width = 300;
 	}
 	
-	override public function removeChild(domElement:AbstractDOMElement):Void
+	
+	/**
+	 * Init the default intrinsic width, height and ratio.
+	 * Different for each inheriting embedded DOMElement
+	 */
+	override private function initInstrinsicDimensions():Void
 	{
-		
+		this._intrinsicHeight = this._height;
+		this._intrinsicWidth = this._width;
+		this._intrinsicRatio = this._width / this._height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

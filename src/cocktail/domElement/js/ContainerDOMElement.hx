@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -35,6 +36,28 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	{
 		super(nativeElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM
+	// Overriden Public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to set the CSS z-index of the newly attached children
+	 * @param	domElement the html element to add to this
+	 */
+	override public function addChild(domElement:DOMElement):Void
+	{
+		super.addChild(domElement);
+		
+		//intialise z-index on the DOMElement, as it is null by default in JavaScript
+		domElement.nativeElement.style.zIndex = _children.length - 1;
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden Semantic method
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Set the semantic of this DOMElement and set it as the node name
