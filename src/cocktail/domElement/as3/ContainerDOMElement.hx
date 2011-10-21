@@ -10,13 +10,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
 
 /**
  * This is the Flash implementation of the container DOMElement.
- * 
- * It doesn't add any behaviour as semantic doesn't apply to Flash
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -29,6 +28,25 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden getter/setter
+	// The width and height setter/getter are overriden to prevent setting the width and height
+	// of the native Flash DisplayObjectContainer. In as3, when the width or height is set on a
+	// container, the content of the container is scaled
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setWidth(value:Int):Int
+	{
+		this._width = value;
+		return this._width;
+	}
+	
+	override public function setHeight(value:Int):Int
+	{
+		this._height = value;
+		return this._height;
 	}
 	
 }

@@ -49,8 +49,8 @@ class TextLoader extends AbstractResourceLoader
 	 */
 	override private function onLoadComplete(data:Dynamic):Void
 	{
-		var domElement:TextDOMElement = new TextDOMElement(NativeElementManager.createNativeElement(text));
-		domElement.text = data;
+		var domElement:TextDOMElement = new TextDOMElement();
+		domElement.appendText(NativeElementManager.createNativeTextNode(data));
 		
 		_onLoadCompleteCallback(domElement);
 	}

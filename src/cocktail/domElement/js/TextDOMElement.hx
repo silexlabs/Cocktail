@@ -10,6 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
@@ -17,9 +18,6 @@ import cocktail.domElement.abstract.AbstractTextDOMElement;
 
 /**
  * This is the JavaScript implementation for the Text DOMElement
- * 
- * It adds the JavaScript specific behaviour of setting the HTML
- * of the reference to native DOM object
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -33,16 +31,41 @@ class TextDOMElement extends AbstractTextDOMElement
 		super(nativeElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden methods to manipulate the HTML DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Set the innerHTML of the reference to the native
-	 * HTML tag with the provided text
-	 * @param	text an HTML formatted text
+	 * In JS, TextDOMElement as it doesn't have a NativeElement
+	 * by default because its first element can be an HTML text node.
+	 * So we can't rely on the attachement method.
 	 */
-	override public function setText(text:String):String
+	override public function attach():Void
 	{
-		super.setText(text);
-		this._nativeElement.innerHTML = text;
-		return text;
+		
 	}
 	
+	/**
+	 * Same as attach, we can't rely on the generic detach method
+	 */
+	override public function detach():Void
+	{
+		
+	}
+	
+	/**
+	 * Append a text node to the current text content.
+	 * @param	text a raw string of text
+	 */
+	override public function appendText(text:TextNode):Void
+	{
+		super.appendText(text);
+		this._parent.nativeElement.appendChild(text);
+	}
+	
+	override public function appendTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
+	{
+		super.appendTextDOMElement(textDOMElement);
+		
+	}
 }

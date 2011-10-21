@@ -10,89 +10,101 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import flash.text.engine.ContentElement;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.FontPosture;
+import flash.text.engine.FontWeight;
+import flash.text.engine.GroupElement;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import flash.text.TextField;
+import flash.Vector;
 import haxe.Log;
 import cocktail.domElement.abstract.AbstractTextDOMElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is the Text DOMElement implementation for Flash.
- * 
- * It displays an htmlText in a native flash text field.
- * It needs to convert the HTML text to Flash pseudo-HTML
- * format before displaying it
  * 
  * @author Yannick DOMINGUEZ
  */
 class TextDOMElement extends AbstractTextDOMElement
 {
-	/**
-	 * The native Flash text field that will be used to display
-	 * the html text
-	 */
-	private var _nativeTextField:TextField;
-	
-	/**
-	 * class constructor. Instantiate the native text field
-	 * and add it as a child of the native Sprite.
-	 */
+
 	public function new(nativeElement:NativeElement = null) 
 	{
+		if (nativeElement ==  null)
+		{
+			nativeElement = NativeElementManager.createNativeElement(neutral);
+		}
 		super(nativeElement);
+	}
+	
+	//TO DO : the method attaching lines should go in the TextStyle object. This object should create a 
+	//Sprite, add lines to it, then set this Sprite as the native element of the Text DOMElement
+	
+	/**
+	 * Append a text node to the current text content.
+	 * @param	text a raw string of text
+	 */
+	override public function appendText(text:TextNode):Void
+	{
+		super.appendText(text);
 		
-		_nativeTextField = new TextField();
-		_nativeTextField.wordWrap = true;
-		_nativeTextField.multiline = true;
-		this._nativeElement.addChild(_nativeTextField);
+		for (i in 0...this._nativeElement.numChildren - 1)
+		{
+			this._nativeElement.removeChildAt(0);
+		}
+		
+		var textElements:Vector<ContentElement> = new Vector<ContentElement>();
+		
+		for (i in 0...this._children.length)
+		{
+			//Log.trace(this._children[i]);
+			//textElements.push(cast(this._children[i]));
+		}
+		
+		var e1:TextElement = new TextElement('Consider, what makes a text line a ', new ElementFormat(new FontDescription(), 24));
+		var e2:TextElement = new TextElement('text line', new ElementFormat(new FontDescription("_serif", FontWeight.NORMAL, FontPosture.ITALIC), 24));
+		var e3:TextElement = new TextElement('?', new ElementFormat(new FontDescription(), 24));
+		
+		 var e:Vector<ContentElement> = new Vector<ContentElement>();
+		e.push(e1);
+		e.push(e2);
+		e.push(e3);
+		
+		var block:TextBlock = new TextBlock(new GroupElement(e));
+		var line:TextLine = block.createTextLine(null, 100);
+		
+		//textElements.push(new TextElement("bim", new ElementFormat()));
+		
+		//var groupElement:GroupElement = new GroupElement(textElements);
+		
+		//var textBlock:TextBlock = new TextBlock(new GroupElement(textElements));
+		
+		//this._nativeElement.appendChild(text);
+		//var textLine:TextLine = textBlock.createTextLine(null, 100);
+		
+		var _y:Float = 0;
+		  while(line != null)
+		  {
+			this._nativeElement.addChild(line);
+			_y += line.height;
+			line.y = _y;
+			line = block.createTextLine(line, 100);
+		  }
+		
+		
+		//line.y = 100;
+		//this._nativeElement.addChild(line);
 	}
-	
-	/**
-	 * This method is overriden to set the Flash pseudo-html
-	 * string on the native text field
-	 * @param text the HTML text before conversion
-	 */
-	override public function setText(text:String):String
-	{
-		super.setText(text);
-		_nativeTextField.htmlText = fromHTMLtoFLASHTML(text);
-		return text;
-	}
-	
-	/**
-	 * Convert an HTML string into a Flash pseudo-html string.
-	 * Flash supports only a limited subset of the HTML format
-	 * @param	html the HTML string
-	 * @return the pseudo-html string
-	 */
-	private static function fromHTMLtoFLASHTML(html:String):String
-	{
-		return html;
-	}
-	
-	/**
-	 * override to set only the width of the native text
-	 * field. The container sprite must not be reseized,
-	 * else it scale the text
-	 */ 
-	override public function setWidth(value:Int):Int
-	{
-		this._width = value;
-		_nativeTextField.width = value;
-		return this._width;
-	}
-	
-	/**
-	 * override to set only the height of the native text
-	 * field. The container sprite must not be reseized,
-	 * else it scale the text
-	 */ 
-	override public function setHeight(value:Int):Int
-	{
-		this._height = value;
-		_nativeTextField.height = value;
-		return this._height;
-	}
-	
+
+
 }

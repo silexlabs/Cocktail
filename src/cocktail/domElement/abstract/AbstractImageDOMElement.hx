@@ -13,6 +13,7 @@ package cocktail.domElement.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 
@@ -22,7 +23,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractImageDOMElement extends DOMElement
+class AbstractImageDOMElement extends EmbeddedDOMElement
 {
 
 	/**
@@ -59,20 +60,26 @@ class AbstractImageDOMElement extends DOMElement
 		this.smooth = true;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden hierarchy methods
-	// The addChild and removeChild method are not implemented for this 
-	// DOMElement, as it is a leaf DOMElement (can't have children)
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function addChild(domElement:AbstractDOMElement):Void
+	/**
+	 * An ImageDOMElement dimensions are equal to 0
+	 * until a picture is loaded
+	 */
+	override private function initDimensions():Void
 	{
-		
+		this._height = 0;
+		this._width = 0;
 	}
 	
-	override public function removeChild(domElement:AbstractDOMElement):Void
+	/**
+	 * For an ImageDOMElement, the intrinsic width, height and ratio
+	 * represents the unscaled dimensions of the picture. They are
+	 * equal to 0 until a picture is loaded
+	 */
+	override private function initInstrinsicDimensions():Void
 	{
-		
+		this._intrinsicHeight = 0;
+		this._intrinsicWidth = 0;
+		this._intrinsicRatio = 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
