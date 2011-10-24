@@ -28,7 +28,7 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
-
+	
 	private function getConvertedValue(lengthValue:LengthValue):String
 	{
 		var ret:String;
@@ -358,4 +358,5 @@ class Style extends AbstractStyle
 		
 		return _clear = value;
 	}
+	
 }

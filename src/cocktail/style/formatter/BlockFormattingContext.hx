@@ -31,13 +31,11 @@ class BlockFormattingContext extends FormattingContext
 	{
 		super.place(domElement);
 		
-		startNewLine();
-		
 		var leftFloatOffset:Int = 0;
 		
 		if (domElement.style.isEmbedded() == true)
 		{
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y);
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
 		}
 		
 		
@@ -56,9 +54,8 @@ class BlockFormattingContext extends FormattingContext
 
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-		//_flowData.x = getLeftFloatOffset(_flowData.y) - domElement.offsetWidth;
 		domElement.x = floatData.x;
-		domElement.y = _flowData.y;
+		domElement.y = floatData.y;
 	}
 
 	
