@@ -62,6 +62,7 @@ class StyledDOMElementTests
 	
 	private var _siteLeftAfterFloatBackground:GraphicDOMElement;
 	private var _siteLeftAfterFloatBackground2:GraphicDOMElement;
+	private var _siteLeftAfterFloatBackground3:GraphicDOMElement;
 	
 	public static function main()
 	{
@@ -178,9 +179,10 @@ class StyledDOMElementTests
 	public function testLayout()
 	{
 		_background = getGraph();
-		_background.style.width = DimensionStyleValue.percent(100);
-		_background.style.height = DimensionStyleValue.percent(100);
+		_background.style.width = DimensionStyleValue.percent(90);
+		_background.style.height = DimensionStyleValue.length(px(100));
 		_background.style.position = absolute;
+
 		
 		
 		_mainContainer = getContainer();
@@ -193,6 +195,8 @@ class StyledDOMElementTests
 		//_mainContainer.style.position = PositionStyleValue.absolute;
 		
 		attach(_mainContainer);
+		_mainContainer.addChild(_background);
+
 		
 		//_mainContainer.addChild(_background);
 		
@@ -319,8 +323,14 @@ class StyledDOMElementTests
 		_siteLeftAfterFloatBackground2.style.height = DimensionStyleValue.length(px(50));
 		_siteLeftAfterFloatBackground2.style.marginTop = MarginStyleValue.length(px(10));
 		
+		_siteLeftAfterFloatBackground3 = getGraph();
+		_siteLeftAfterFloatBackground3.style.width = DimensionStyleValue.percent(40);
+		_siteLeftAfterFloatBackground3.style.height = DimensionStyleValue.length(px(50));
+		_siteLeftAfterFloatBackground3.style.paddingTop = PaddingStyleValue.length(px(5));
+		
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground);
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground2);
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground3);
 		
 		siteLeftFloat.addChild(_siteLeftFloatBackground);
 		
@@ -404,6 +414,7 @@ class StyledDOMElementTests
 		paint(_siteLeftFloatBackground, 0xBBBBBB);
 		paint(_siteLeftAfterFloatBackground, 0x00000);
 		paint(_siteLeftAfterFloatBackground2, 0x00000);
+		paint(_siteLeftAfterFloatBackground3, 0x222222);
 	}
 	
 	private function attach(domElement:DOMElement):Void

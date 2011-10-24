@@ -3,6 +3,7 @@ package cocktail.style.floats;
 import cocktail.domElement.DOMElement;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * ...
@@ -26,19 +27,18 @@ class FloatsManager
 		}
 	}
 	
-	public function addLeftFloats(formattingContext:FormattingContext):Void
+	public function addLeftFloats(parentFormattingContext:FormattingContext, formattingContext:FormattingContext):Void
 	{
-		for (i in 0...formattingContext.floatsManager.floats.left.length)
+		for (i in 0...parentFormattingContext.floatsManager.floats.left.length)
 		{	
-						
-			_floats.left.push(globalTolocal(formattingContext.floatsManager.floats.left[i], formattingContext.flowData));		
+			_floats.left.push(globalTolocal(parentFormattingContext.floatsManager.floats.left[i], parentFormattingContext.flowData));		
 		}
 	}
 	
 	public function removeFloats(yFlow:Int):Void
 	{
 		var leftFloats:Array<FloatData> = _floats.left;
-		var newLeftFloats:Array <FloatData> = new Array<FloatData>();
+		var newLeftFloats:Array<FloatData> = new Array<FloatData>();
 		
 		for (i in 0...leftFloats.length)
 		{
@@ -50,62 +50,43 @@ class FloatsManager
 		
 		_floats.left = newLeftFloats;
 		
-		for (i in 0..._floats.right.length)
+		var rightFloats:Array<FloatData> = _floats.right;
+		var newRightFloat:Array<FloatData> = new Array<FloatData>();
+		
+		for (i in 0...rightFloats.length)
 		{
-			if (_floats.right[i].y + _floats.right[i].height <= yFlow)
+			if (rightFloats[i].y + rightFloats[i].height > yFlow)
 			{
-				_floats.right.remove(_floats.right[i]);
+				newRightFloat.push(rightFloats[i]);
 			}
 		}
 	}
 	
-	public function retrieveFloats(formattingContext:FormattingContext):Void
+	public function retrieveFloats(childrenFormattingContext:FormattingContext, formattingContext:FormattingContext):Void
 	{
-		if (formattingContext != null)
+		if (childrenFormattingContext != null)
 		{
-			for (i in 0...formattingContext.floatsManager.floats.left.length)
+			for (i in 0...childrenFormattingContext.floatsManager.floats.left.length)
 			{
-				if (formattingContext.flowData.containingBlockHeight != -1)
-				{
-					if (isFloatOverflowing(formattingContext.floatsManager.floats.left[i], formattingContext.flowData.containingBlockHeight) ==  true)
-					{
-						_floats.left.push(localToGlobal(formattingContext.floatsManager.floats.left[i], formattingContext.flowData,formattingContext.getRootDOMElement()));
-					}
-				}
-				
+				_floats.left.push(localToGlobal(childrenFormattingContext.floatsManager.floats.left[i], formattingContext.flowData));
 			}
 			
 			for (i in 0...formattingContext.floatsManager.floats.right.length)
 			{
-				if (isFloatOverflowing(formattingContext.floatsManager.floats.right[i], formattingContext.flowData.containingBlockHeight) ==  true)
-				{
-					_floats.right.push(localToGlobal(formattingContext.floatsManager.floats.right[i], formattingContext.flowData, formattingContext.getRootDOMElement()));
-				}
+				_floats.right.push(localToGlobal(formattingContext.floatsManager.floats.right[i], formattingContext.flowData));
 			}
 		}
 		
 	}
 	
-	private function isFloatOverflowing(floatData:FloatData, totalHeight:Int):Bool
-	{
-		var ret:Bool = false;
-		
-		if (floatData.height + floatData.y > totalHeight)
-		{
-			ret = true;
-		}
-		
-		return ret;
-	}
-	
-	private function localToGlobal(floatData:FloatData, flowData:FlowData, containingBlock:DOMElement):FloatData
+	private function localToGlobal(floatData:FloatData, flowData:FlowData):FloatData
 	{
 
-		var floatX:Int = floatData.x;
-		var floatY:Int = 0;
-
-		var floatHeight:Int = floatData.height + floatData.y - containingBlock.style.computedStyle.height - containingBlock.style.computedStyle.marginBottom -containingBlock.style.computedStyle.paddingTop - containingBlock.style.computedStyle.paddingBottom;
+		var floatX:Int = floatData.x + flowData.x;
 		
+		var floatY:Int = floatData.y ;
+		
+		var floatHeight:Int = floatData.height;
 		
 		var floatWidth:Int = floatData.width;
 		
@@ -115,6 +96,7 @@ class FloatsManager
 			width: floatWidth,
 			height: floatHeight
 		}
+		
 		
 		return convertedFloatData;
 	}
@@ -122,17 +104,12 @@ class FloatsManager
 	private function globalTolocal(floatData:FloatData, flowData:FlowData):FloatData
 	{
 		var floatX:Int = floatData.x;
-		var floatY:Int = 0;
+		var floatY:Int = floatData.y - flowData.y;
 
+		var floatHeight:Int = floatData.height;
 		
-		var floatHeight:Int = floatData.height - flowData.containingBlockHeight;
-		
-		if (flowData.containingBlockHeight == -1)
-		{
-			floatHeight = floatData.height;
-		}
+		floatHeight = floatData.height;
 	
-		
 		var floatWidth:Int = floatData.width;
 		
 		var convertedFloatData:FloatData = {
@@ -141,6 +118,7 @@ class FloatsManager
 			width: floatWidth,
 			height: floatHeight
 		}
+		
 		
 		return convertedFloatData;
 	}
@@ -173,44 +151,14 @@ class FloatsManager
 	
 	private function getLeftFloatData(domElement:DOMElement, flowData:FlowData):FloatData
 	{
-		var floatX:Int = flowData.firstLineX + getLeftFloatOffset(flowData.y);
-		var floatY:Int = flowData.y;
+		
+
+		
 		var floatWidth:Int = domElement.offsetWidth;
 		var floatHeight:Int = domElement.offsetHeight;
-		
-		//Log.trace(floatY);
-		
-		/**while (getLeftFloatOffset(floatY) + floatWidth > _flowData.containingBlockWidth)
-		{
-			floatY += 1;
-		}*/
-		/**
-		if (_floats.left.length > 0)
-		{
-			floatX = _floats.left[_floats.left.length - 1].x + _floats.left[_floats.left.length - 1].width;
-			
-			if (floatX > _flowData.containingBlockWidth)
-			{
-				floatX = _flowData.firstLineX;
-				
-				var highestFloatValue:Int = floatY;
-				
-				for (i in 0..._floats.left.length)
-				{
-					if ((_floats.left[i].y + _floats.left[i].height) > highestFloatValue)
-					{
-						highestFloatValue = (_floats.left[i].y + _floats.left[i].height);
-					}
-				}
-				
-				floatY = highestFloatValue; 
-			}
-			else
-			{
-				floatY = _floats.left[_floats.left.length - 1].y;
-			}
-		}
-		*/
+	
+		var floatY:Int = getFirstAvailableY(flowData, floatWidth);
+		var floatX:Int = flowData.firstLineX + getLeftFloatOffset(floatY);
 		
 		return {
 			x: floatX,
@@ -218,6 +166,44 @@ class FloatsManager
 			width:floatWidth,
 			height:floatHeight
 		}
+	}
+	
+	private function getFirstAvailableY(flowData:FlowData, floatWidth:Int):Int
+	{
+		var retY:Int = flowData.y;
+		
+		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY) + floatWidth > flowData.containingBlockWidth)
+		{
+			var afterLeftFloats:Array<FloatData> = new Array<FloatData>();
+			for (i in 0..._floats.left.length)
+			{
+				if (_floats.left[i].y < retY && _floats.left[i].height + _floats.left[i].y >= retY)
+				{
+					afterLeftFloats.push(_floats.left[i]);
+				}
+			}
+			
+			if (afterLeftFloats.length == 0)
+			{
+				break;
+			}
+			else
+			{
+				var highestXOffsetFloat:FloatData = afterLeftFloats[0];
+				
+				for (i in 0...afterLeftFloats.length)
+				{
+					if (afterLeftFloats[i].x > highestXOffsetFloat.x)
+					{
+						highestXOffsetFloat = afterLeftFloats[i];
+					}
+				}
+				
+				retY = highestXOffsetFloat.y + highestXOffsetFloat.height;
+			}
+		}
+		
+		return retY;
 	}
 	
 	private function getRightFloatData(domElement:DOMElement, flowData:FlowData):FloatData
