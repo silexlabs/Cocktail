@@ -71,9 +71,9 @@ class TextDOMElement extends AbstractTextDOMElement
 			//textElements.push(cast(this._children[i]));
 		}
 		
-		var e1:TextElement = new TextElement('Consider, what makes a text line a ', new ElementFormat(new FontDescription(), 24));
-		var e2:TextElement = new TextElement('text line', new ElementFormat(new FontDescription("_serif", FontWeight.NORMAL, FontPosture.ITALIC), 24));
-		var e3:TextElement = new TextElement('?', new ElementFormat(new FontDescription(), 24));
+		var e1:TextElement = new TextElement('Consider, what makes a text line a ', new ElementFormat(new FontDescription(), 12));
+		var e2:TextElement = new TextElement('text line', new ElementFormat(new FontDescription("_serif", FontWeight.NORMAL, FontPosture.ITALIC), 12));
+		var e3:TextElement = new TextElement('?', new ElementFormat(new FontDescription(), 12));
 		
 		 var e:Vector<ContentElement> = new Vector<ContentElement>();
 		e.push(e1);

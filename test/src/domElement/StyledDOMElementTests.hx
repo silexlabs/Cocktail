@@ -233,7 +233,7 @@ class StyledDOMElementTests
 		_header = getGraph();
 		_header.style.width = DimensionStyleValue.auto;
 		_header.style.height = DimensionStyleValue.length(px(300));
-		_header.style.float = FloatStyleValue.left;
+		_header.style.float = FloatStyleValue.right;
 		//_header.style.display = DisplayStyleValue._inline;
 		
 		
@@ -252,6 +252,7 @@ class StyledDOMElementTests
 		_navigation.style.height = DimensionStyleValue.length(px(50));
 		_navigation.style.paddingLeft = PaddingStyleValue.length(px(10));
 		_navigation.style.paddingRight = PaddingStyleValue.length(px(10));
+		_navigation.style.float = FloatStyleValue.left;
 		//_navigation.style.marginLeft = MarginStyleValue.auto;
 		//_navigation.style.marginRight = MarginStyleValue.auto;
 		
@@ -263,9 +264,9 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText:TextDOMElement = getText();
-		siteLeftText.style.width = DimensionStyleValue.length(px(300));
+	//	siteLeftText.style.width = DimensionStyleValue.length(px(300));
 		siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
-		siteLeftText.style.height = DimensionStyleValue.length(px(300));
+	//	siteLeftText.style.height = DimensionStyleValue.length(px(300));
 		
 		//siteLeftText.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText.style.marginRight = MarginStyleValue.auto;
@@ -322,11 +323,13 @@ class StyledDOMElementTests
 		_siteLeftAfterFloatBackground2.style.width = DimensionStyleValue.length(px(200));
 		_siteLeftAfterFloatBackground2.style.height = DimensionStyleValue.length(px(50));
 		_siteLeftAfterFloatBackground2.style.marginTop = MarginStyleValue.length(px(10));
+		_siteLeftAfterFloatBackground2.style.float = FloatStyleValue.right;
 		
 		_siteLeftAfterFloatBackground3 = getGraph();
 		_siteLeftAfterFloatBackground3.style.width = DimensionStyleValue.percent(40);
 		_siteLeftAfterFloatBackground3.style.height = DimensionStyleValue.length(px(50));
 		_siteLeftAfterFloatBackground3.style.paddingTop = PaddingStyleValue.length(px(5));
+		_siteLeftAfterFloatBackground3.style.clear = ClearStyleValue.right;
 		
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground);
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground2);
@@ -338,7 +341,7 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-	//	siteLeftContainer.addChild(siteLeftTextContainer);
+		//siteLeftContainer.addChild(siteLeftTextContainer);
 		siteLeftContainer.addChild(siteLeftFloat);
 		siteLeftContainer.addChild(siteLeftAfterFloatBackgroundContainer);
 		
@@ -439,8 +442,6 @@ class StyledDOMElementTests
 	private function getText():TextDOMElement
 	{
 		var ret:TextDOMElement = new TextDOMElement();
-		ret.x = 0;
-		ret.y = 0;
 		getDefaultStyle(ret);
 		//ret.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti";
 		return ret;

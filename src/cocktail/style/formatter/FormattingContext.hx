@@ -95,6 +95,7 @@ class FormattingContext
 			if (domElement.style.isFloat() == false)
 			{
 				_floatsManager.addLeftFloats(previousFormatingContext, this);
+				_floatsManager.addRightFloats(previousFormatingContext, this);
 			}
 		}
 		
@@ -151,7 +152,6 @@ class FormattingContext
 		//get the float data (x,y, width and height) from the 
 		//floats manager
 		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _flowData);
-		
 		//actually place the floated DOMElement
 		placeFloat(domElement, floatData);
 	}

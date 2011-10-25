@@ -34,6 +34,7 @@ class AbstractTextDOMElement extends DOMElement
 	 * be either text nodes or other TextDOMElements
 	 */
 	private var _children:Array<Dynamic>;
+	public var children(getChildren, never):Array<Dynamic>;
 	
 	/**
 	 * class contructor. Init the TextDOMElement with an empty text node
@@ -103,5 +104,13 @@ class AbstractTextDOMElement extends DOMElement
 		_children.remove(textDOMElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTERS/SETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getChildren():Array<Dynamic>
+	{
+		return _children;
+	}
 	
 }
