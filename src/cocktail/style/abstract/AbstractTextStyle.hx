@@ -11,7 +11,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextDOMElement;
+import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
+import cocktail.style.StyleData;
 
 /**
  * ...
@@ -23,6 +26,20 @@ class AbstractTextStyle extends Style
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+
+	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
+	{
+		/**
+		var textDOMElement:TextDOMElement = cast(this._domElement);
+		
+		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+		
+		while( textLine != null)
+		{
+			formatingContext.insert(textLine);
+		}*/
 	}
 	
 }

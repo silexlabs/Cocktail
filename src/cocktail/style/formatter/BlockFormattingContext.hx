@@ -36,14 +36,36 @@ class BlockFormattingContext extends FormattingContext
 		if (domElement.style.isEmbedded() == true)
 		{
 			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+			var rightFloatOffset:Int = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+			
+			if (domElement.offsetWidth + leftFloatOffset + rightFloatOffset > _flowData.containingBlockWidth)
+			{
+				
+				_flowData.y = _floatsManager.clearFloat(_floatsManager.getNextClear(_flowData), _flowData);
+				
+				rightFloatOffset = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+				leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y );
+				
+				if (domElement.offsetWidth + leftFloatOffset + rightFloatOffset > _flowData.containingBlockWidth)
+				{
+					_flowData.y = _floatsManager.clearFloat(ClearStyleValue.both, _flowData);
+					
+					rightFloatOffset = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+					leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+				}
+				
+			}
+			
 		}
+			
 		
 		
-		_flowData.x = flowData.firstLineX + leftFloatOffset;
+		
+		_flowData.x = _flowData.firstLineX + leftFloatOffset;
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
 		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop ;
 	
-		_flowData.y += domElement.offsetHeight;
+		_flowData.y += domElement.offsetHeight ;
 		
 		
 		_flowData.totalHeight = _flowData.y + _flowData.maxLineHeight ;
@@ -54,42 +76,15 @@ class BlockFormattingContext extends FormattingContext
 
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-		domElement.x = floatData.x;
-		domElement.y = floatData.y;
+		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
+		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
+		
+		_flowData.y = floatData.y;
 	}
 
-	
-	
-	
 	override public function clearFloat(clear:ClearStyleValue):Void
 	{
-		switch (clear)
-		{
-			case none:
-				
-			case left:
-				clearLeft();
-			case right:
-				clearRight();
-			case both:	
-				clearBoth();
-		}
-	}
-	
-	private function clearLeft():Void
-	{
-		
-	}
-	
-	private function clearRight():Void
-	{
-		
-	}
-	
-	private function clearBoth():Void
-	{
-		clearLeft();
-		clearRight();
+		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
 	}
 	
 	
