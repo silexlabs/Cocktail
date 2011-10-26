@@ -305,6 +305,7 @@ class StyledDOMElementTests
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
 		siteLeftFloat.style.height = DimensionStyleValue.length(px(400));
 		siteLeftFloat.style.float = FloatStyleValue.left;
+		//siteLeftFloat.style.clear = ClearStyleValue.both;
 		
 		var siteLeftFloat2:ContainerDOMElement = getContainer();
 		siteLeftFloat2.style.width = DimensionStyleValue.length(px(20));
@@ -329,7 +330,7 @@ class StyledDOMElementTests
 		_siteLeftAfterFloatBackground3.style.width = DimensionStyleValue.percent(40);
 		_siteLeftAfterFloatBackground3.style.height = DimensionStyleValue.length(px(50));
 		_siteLeftAfterFloatBackground3.style.paddingTop = PaddingStyleValue.length(px(5));
-		_siteLeftAfterFloatBackground3.style.clear = ClearStyleValue.right;
+		//_siteLeftAfterFloatBackground3.style.clear = ClearStyleValue.right;
 		
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground);
 		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground2);

@@ -59,6 +59,11 @@ class AbstractTextDOMElement extends DOMElement
 		super(nativeElement);
 	}
 	
+	public function createTextLine(width:Int):TextLineData
+	{
+		return null;
+	}
+	
 	/**
 	 * Override to instantiate a Text DOMElement specific 
 	 * style manager

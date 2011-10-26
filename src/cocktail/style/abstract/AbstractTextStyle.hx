@@ -31,7 +31,7 @@ class AbstractTextStyle extends Style
 
 	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
 	{
-		/**
+		
 		var textDOMElement:TextDOMElement = cast(this._domElement);
 		
 		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
@@ -39,7 +39,7 @@ class AbstractTextStyle extends Style
 		while( textLine != null)
 		{
 			formatingContext.insert(textLine);
-		}*/
+		}
 	}
 	
 }
