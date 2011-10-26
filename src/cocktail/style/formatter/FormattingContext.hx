@@ -94,8 +94,7 @@ class FormattingContext
 		{
 			if (domElement.style.isFloat() == false)
 			{
-				_floatsManager.addLeftFloats(previousFormatingContext, this);
-				_floatsManager.addRightFloats(previousFormatingContext, this);
+				_floatsManager.addFloats(previousFormatingContext);
 			}
 		}
 		
@@ -172,7 +171,7 @@ class FormattingContext
 	 */
 	public function retrieveFloats(formattingContext:FormattingContext):Void
 	{
-		_floatsManager.retrieveFloats(formattingContext, this);
+		_floatsManager.retrieveFloats(formattingContext);
 	}
 
 	
