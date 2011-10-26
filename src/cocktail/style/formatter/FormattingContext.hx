@@ -173,6 +173,11 @@ class FormattingContext
 	{
 		_floatsManager.retrieveFloats(formattingContext);
 	}
+	
+	public function getRemainingLineWidth():Int
+	{
+		return _flowData.containingBlockWidth - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+	}
 
 	
 	/////////////////////////////////

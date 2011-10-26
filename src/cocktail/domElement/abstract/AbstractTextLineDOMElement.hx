@@ -2,6 +2,8 @@ package cocktail.domElement.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.Style;
+import cocktail.style.StyleData;
 
 /**
  * ...
@@ -15,5 +17,12 @@ class AbstractTextLineDOMElement extends DOMElement
 	{
 		super(nativeElement);
 	}
+
+	override private function initStyle():Void
+	{
+		this._style = new Style(this);
+	}
+
+
 	
 }

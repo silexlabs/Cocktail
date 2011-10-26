@@ -15,6 +15,7 @@ import cocktail.domElement.TextDOMElement;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * ...
@@ -34,11 +35,47 @@ class AbstractTextStyle extends Style
 		
 		var textDOMElement:TextDOMElement = cast(this._domElement);
 		
-		var textLine:DOMElement = textDOMElement.createTextLine(100);
+		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+		
 		
 		while( textLine != null)
 		{
+			
+			textLine.style.marginLeft = MarginStyleValue.length(px(0));
+			textLine.style.marginRight = MarginStyleValue.length(px(0));
+			textLine.style.marginTop = MarginStyleValue.length(px(0));
+			textLine.style.marginBottom = MarginStyleValue.length(px(0));
+			
+			textLine.style.paddingLeft = PaddingStyleValue.length(px(0));
+			textLine.style.paddingRight = PaddingStyleValue.length(px(0));
+			textLine.style.paddingTop = PaddingStyleValue.length(px(0));
+			textLine.style.paddingBottom = PaddingStyleValue.length(px(0));
+			
+			textLine.style.top = PositionOffsetStyleValue.length(px(0));
+			textLine.style.left = PositionOffsetStyleValue.length(px(0));
+			textLine.style.right = PositionOffsetStyleValue.length(px(0));
+			textLine.style.bottom  = PositionOffsetStyleValue.length(px(0));
+			
+			textLine.style.minWidth = ConstrainedDimensionStyleValue.none;
+			textLine.style.maxWidth = ConstrainedDimensionStyleValue.none;
+			textLine.style.minHeight = ConstrainedDimensionStyleValue.none;
+			textLine.style.maxHeight = ConstrainedDimensionStyleValue.none;
+			
+			textLine.style.display = DisplayStyleValue._inline;
+			
+			textLine.style.position = _static;
+			
+			textLine.style.width = DimensionStyleValue.auto;
+			textLine.style.height = DimensionStyleValue.auto;
+			
+			textLine.style.float = FloatStyleValue.none;
+			textLine.style.clear = ClearStyleValue.none;
+			
+			textLine.style.computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+			
 			formatingContext.insert(textLine);
+			Log.trace(formatingContext.getRemainingLineWidth());
+			textLine = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
 		}
 	}
 	

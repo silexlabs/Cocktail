@@ -257,8 +257,8 @@ class StyledDOMElementTests
 		//_navigation.style.marginRight = MarginStyleValue.auto;
 		
 		var siteLeftTextContainer:ContainerDOMElement = getContainer();
-		siteLeftTextContainer.style.width = DimensionStyleValue.auto;
-		siteLeftTextContainer.style.height = DimensionStyleValue.auto;
+		//siteLeftTextContainer.style.width = DimensionStyleValue.auto;
+		//siteLeftTextContainer.style.height = DimensionStyleValue.auto;
 		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(px(10));
 		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(px(10));
 		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
@@ -267,6 +267,7 @@ class StyledDOMElementTests
 	//	siteLeftText.style.width = DimensionStyleValue.length(px(300));
 		siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
 	//	siteLeftText.style.height = DimensionStyleValue.length(px(300));
+		siteLeftText.style.display = DisplayStyleValue._inline;
 		
 		//siteLeftText.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText.style.marginRight = MarginStyleValue.auto;

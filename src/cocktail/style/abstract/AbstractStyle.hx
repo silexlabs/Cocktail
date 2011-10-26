@@ -345,9 +345,21 @@ class AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE COMPUTING METHODS
+	// PUBLIC COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute first the styles determining the DOMElement's
+	 * positioning scheme (position, float, clear...) then
+	 * the styles determining its box model (width, height, margins
+	 * paddings...)
+	 */
+	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	{
+		computePositionStyle();
+		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+	}
 	
 	/**
 	 * This method computes the styles determing
@@ -359,17 +371,12 @@ class AbstractStyle
 		PositionComputer.compute(this);
 	}
 	
-	/**
-	 * Compute first the styles determining the DOMElement's
-	 * positioning scheme (position, float, clear...) then
-	 * the styles determining its box model (width, height, margins
-	 * paddings...)
-	 */
-	private function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
-	{
-		computePositionStyle();
-		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE COMPUTING METHODS
+	// compute styles definition into usable values
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+
 	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) based on

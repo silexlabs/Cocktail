@@ -61,6 +61,7 @@ class TextDOMElement extends AbstractTextDOMElement
 	override public function appendText(text:TextNode):Void
 	{
 		super.appendText(text);
+		
 		/**
 		for (i in 0...this._nativeElement.numChildren - 1)
 		{
@@ -122,6 +123,7 @@ class TextDOMElement extends AbstractTextDOMElement
 		if (textLine != null)
 		{
 			_previousTextLine = textLine;
+			_nativeElement.addChild(textLine);
 			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine);
 			return textLineDOMElement;
 		}
@@ -143,7 +145,6 @@ class TextDOMElement extends AbstractTextDOMElement
 			}
 			else
 			{
-				Log.trace(_children[i]);
 				contents.push(_children[i]);
 			}
 		}
