@@ -17,4 +17,15 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		super(nativeElement);
 	}
 	
+	override public function getOffsetWidth():Int
+	{
+		return untyped _nativeElement.textWidth;
+	}
+	
+
+	override public function getOffsetHeight():Int
+	{
+		return untyped _nativeElement.textHeight;
+	}
+	
 }
