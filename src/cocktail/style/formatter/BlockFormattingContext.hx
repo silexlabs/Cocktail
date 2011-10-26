@@ -35,26 +35,11 @@ class BlockFormattingContext extends FormattingContext
 		
 		if (domElement.style.isEmbedded() == true)
 		{
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
-			var rightFloatOffset:Int = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
 			
-			if (domElement.offsetWidth + leftFloatOffset + rightFloatOffset > _flowData.containingBlockWidth)
-			{
-				
-				_flowData.y = _floatsManager.clearFloat(_floatsManager.getNextClear(_flowData), _flowData);
-				
-				rightFloatOffset = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
-				leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y );
-				
-				if (domElement.offsetWidth + leftFloatOffset + rightFloatOffset > _flowData.containingBlockWidth)
-				{
-					_flowData.y = _floatsManager.clearFloat(ClearStyleValue.both, _flowData);
-					
-					rightFloatOffset = _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
-					leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
-				}
-				
-			}
+			_flowData.y = _floatsManager.getFirstAvailableY(flowData, domElement.offsetWidth);
+			
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+			
 			
 		}
 			
@@ -79,12 +64,16 @@ class BlockFormattingContext extends FormattingContext
 		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
 		
+
 		_flowData.y = floatData.y;
+
+		
 	}
 
 	override public function clearFloat(clear:ClearStyleValue):Void
 	{
 		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
+		
 	}
 	
 	
