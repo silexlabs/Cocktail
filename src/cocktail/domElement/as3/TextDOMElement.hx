@@ -38,6 +38,10 @@ import cocktail.nativeElement.NativeElementData;
 class TextDOMElement extends AbstractTextDOMElement
 {
 
+	private var _textBlock:TextBlock;
+	
+	private var _previousTextLine:TextLine;
+	
 	public function new(nativeElement:NativeElement = null) 
 	{
 		if (nativeElement ==  null)
@@ -57,7 +61,7 @@ class TextDOMElement extends AbstractTextDOMElement
 	override public function appendText(text:TextNode):Void
 	{
 		super.appendText(text);
-		
+		/**
 		for (i in 0...this._nativeElement.numChildren - 1)
 		{
 			this._nativeElement.removeChildAt(0);
@@ -101,10 +105,53 @@ class TextDOMElement extends AbstractTextDOMElement
 			line = block.createTextLine(line, 100);
 		  }
 		
-		
+		*/
 		//line.y = 100;
 		//this._nativeElement.addChild(line);
 	}
+	
+	override public function createTextLine(width:Int):TextLineDOMElement
+	{
+		if (_textBlock == null)
+		{
+			_textBlock = new TextBlock(new GroupElement(getContentElement()));
+		}
+		
+		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width);
+		
+		if (textLine != null)
+		{
+			_previousTextLine = textLine;
+			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine);
+			return textLineDOMElement;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public function getContentElement():Vector<ContentElement>
+	{
+		var contents:Vector<ContentElement> = new Vector<ContentElement>();
+		
+		for (i in 0..._children.length)
+		{
+			if (Std.is(_children[i], TextDOMElement))
+			{
+				contents.push(_children[i].getContentElement());
+			}
+			else
+			{
+				Log.trace(_children[i]);
+				contents.push(_children[i]);
+			}
+		}
+		
+		return contents;
+	}
+	
+	
 
 
 }

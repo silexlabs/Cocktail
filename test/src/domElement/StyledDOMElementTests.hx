@@ -290,8 +290,8 @@ class StyledDOMElementTests
 		
 		
 		
-		//siteLeftTextContainer.addChild(siteLeftText);
-		//siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
+		siteLeftTextContainer.addChild(siteLeftText);
+		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		
@@ -342,7 +342,7 @@ class StyledDOMElementTests
 		//siteLeftTextContainer.addChild(siteLeftFloat2);
 		
 		siteLeftContainer.addChild(_navigation);
-		//siteLeftContainer.addChild(siteLeftTextContainer);
+		siteLeftContainer.addChild(siteLeftTextContainer);
 		siteLeftContainer.addChild(siteLeftFloat);
 		siteLeftContainer.addChild(siteLeftAfterFloatBackgroundContainer);
 		

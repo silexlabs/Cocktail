@@ -339,7 +339,7 @@ class AbstractStyle
 		}
 		//insert as an absolutely positioned DOMElement
 		else
-		{
+		{ 
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 	}

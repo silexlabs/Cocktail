@@ -34,7 +34,7 @@ class AbstractTextStyle extends Style
 		
 		var textDOMElement:TextDOMElement = cast(this._domElement);
 		
-		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+		var textLine:DOMElement = textDOMElement.createTextLine(100);
 		
 		while( textLine != null)
 		{

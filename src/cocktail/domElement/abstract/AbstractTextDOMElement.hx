@@ -53,13 +53,13 @@ class AbstractTextDOMElement extends DOMElement
 		}
 		else
 		{
-			_children.push(nativeElement);
+			//_children.push(nativeElement);
 		}
 		
 		super(nativeElement);
 	}
 	
-	public function createTextLine(width:Int):TextLineData
+	public function createTextLine(width:Int):TextLineDOMElement
 	{
 		return null;
 	}
