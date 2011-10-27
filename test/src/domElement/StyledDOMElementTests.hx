@@ -265,7 +265,7 @@ class StyledDOMElementTests
 		
 		var siteLeftText:TextDOMElement = getText();
 	//	siteLeftText.style.width = DimensionStyleValue.length(px(300));
-		siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
+		//siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
 	//	siteLeftText.style.height = DimensionStyleValue.length(px(300));
 		siteLeftText.style.display = DisplayStyleValue._inline;
 		
@@ -274,25 +274,37 @@ class StyledDOMElementTests
 		//siteLeftText.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText2:TextDOMElement = getText();
-		siteLeftText2.style.width = DimensionStyleValue.length(px(300));
-		siteLeftText2.style.marginTop = MarginStyleValue.length(px(10));
-		siteLeftText2.style.height = DimensionStyleValue.length(px(300));
+		//siteLeftText2.style.width = DimensionStyleValue.length(px(300));
+		//siteLeftText2.style.marginTop = MarginStyleValue.length(px(10));
+		//siteLeftText2.style.height = DimensionStyleValue.length(px(300));
 		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
-		siteLeftText2.style.display = DisplayStyleValue.inlineBlock;
+		siteLeftText2.style.display = DisplayStyleValue._inline;
 		
 		var siteLeftText3:TextDOMElement = getText();
-		siteLeftText3.style.width = DimensionStyleValue.length(px(300));
-		siteLeftText3.style.marginTop = MarginStyleValue.length(px(10));
-		siteLeftText3.style.height = DimensionStyleValue.length(px(300));
+		//siteLeftText3.style.width = DimensionStyleValue.length(px(300));
+		//siteLeftText3.style.marginTop = MarginStyleValue.length(px(10));
+		//siteLeftText3.style.height = DimensionStyleValue.length(px(300));
 		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
-		siteLeftText3.style.display = DisplayStyleValue.inlineBlock;
+		siteLeftText3.style.display = DisplayStyleValue._inline;
 		
 		
-		
+		siteLeftTextContainer.style.fontSize = FontSizeStyleValue.length(px(20));
+		siteLeftTextContainer.style.lineHeight = LineHeightStyleValue.length(px(25));
 		siteLeftTextContainer.addChild(siteLeftText);
 		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
+		siteLeftText2.style.fontSize = FontSizeStyleValue.length(px(60));
+		siteLeftText2.style.lineHeight = LineHeightStyleValue.length(px(60));
+		siteLeftText.appendTextDOMElement(siteLeftText2);
+		siteLeftText2.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum"));
+		siteLeftText.appendTextDOMElement(siteLeftText3);
+		siteLeftText3.style.fontSize = FontSizeStyleValue.length(px(25));
+		siteLeftText3.style.lineHeight = LineHeightStyleValue.length(px(25));
+		siteLeftText3.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod conva"));
+		
+		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
+	
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		
@@ -483,6 +495,9 @@ class StyledDOMElementTests
 			domElement.style.maxWidth = ConstrainedDimensionStyleValue.none;
 			domElement.style.minHeight = ConstrainedDimensionStyleValue.none;
 			domElement.style.maxHeight = ConstrainedDimensionStyleValue.none;
+			
+			domElement.style.fontSize = FontSizeStyleValue.length(px(12));
+			domElement.style.lineHeight = LineHeightStyleValue.length(px(12));
 			
 			domElement.style.display = block;
 			

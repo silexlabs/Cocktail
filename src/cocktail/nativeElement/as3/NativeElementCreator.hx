@@ -18,6 +18,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.abstract.AbstractNativeElementCreator;
 import flash.text.engine.ElementFormat;
+import flash.text.engine.TextBaseline;
 import flash.text.engine.TextElement;
 
 /**

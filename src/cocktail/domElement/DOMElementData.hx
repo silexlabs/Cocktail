@@ -9,6 +9,76 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement;
+import cocktail.style.Style;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Text DOMElement structures and enums
+//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Structures
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Wraps a text block object which a model
+	 * for a Text DOMElement and associate its
+	 * styles to it
+	 */ 
+	typedef TextBlockWrapperData = {
+		
+		/**
+		 * The text model, used as 
+		 * a factory for text lines
+		 */
+		var textBlock:Dynamic;
+		
+		/**
+		 * The styles that must be
+		 * applied to the lines created
+		 * with the text block
+		 */
+		var style:Style;
+	}
+	
+	/**
+	 * A wrapper common to all elements 
+	 * (DOMElements or TextNode) which
+	 * can be added as children of 
+	 * a TextDOMElement
+	 */
+	typedef TextDOMElementChildrenData = {
+		
+		/**
+		 * The wrapped children
+		 */
+		var children:Dynamic;
+		
+		/**
+		 * The type of the children
+		 */
+		var type:TextDOMElementChildrenValue;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Enums
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lists the type of children that a 
+	 * TextDOMElement can have
+	 */
+	enum TextDOMElementChildrenValue {
+		
+		/**
+		 * a simple text string
+		 */
+		textNode;
+		
+		/**
+		 * another TextDOMElement
+		 */
+		textDOMElement;
+	}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic DOMElement structures and enums

@@ -11,12 +11,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextDOMElement;
 import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.domElement.DOMElementData;
 import cocktail.style.TextStyle;
+import haxe.Log;
 
 
 /**
@@ -33,8 +35,11 @@ class AbstractTextDOMElement extends DOMElement
 	 * Stores the children of this TextDOMElement, which can
 	 * be either text nodes or other TextDOMElements
 	 */
-	private var _children:Array<Dynamic>;
-	public var children(getChildren, never):Array<Dynamic>;
+	private var _children:Array<TextDOMElementChildrenData>;
+	public var children(getChildren, never):Array<TextDOMElementChildrenData>;
+	
+	private var _textDOMElementParent:AbstractTextDOMElement;
+	public var textDOMElementParent(getTextDOMElementParent, setTextDOMElementParent):AbstractTextDOMElement;
 	
 	/**
 	 * class contructor. Init the TextDOMElement with an empty text node
@@ -43,12 +48,12 @@ class AbstractTextDOMElement extends DOMElement
 	public function new(nativeElement:NativeElement = null)
 	{
 		//stores the provided NativeElement as first child
-		_children = new Array<Dynamic>();
+		_children = new Array<TextDOMElementChildrenData>();
 		
 		//create a text native element if none is provided
 		if (nativeElement == null)
 		{
-			_children.push(NativeElementManager.createNativeTextNode(""));
+			_children.push({children:NativeElementManager.createNativeTextNode(""), type:TextDOMElementChildrenValue.textNode});
 			nativeElement = NativeElementManager.createNativeElement(text);
 		}
 		else
@@ -62,6 +67,11 @@ class AbstractTextDOMElement extends DOMElement
 	public function createTextLine(width:Int):TextLineDOMElement
 	{
 		return null;
+	}
+	
+	public function reset():Void
+	{
+		
 	}
 	
 	/**
@@ -80,7 +90,7 @@ class AbstractTextDOMElement extends DOMElement
 	 */
 	public function appendText(text:TextNode):Void
 	{
-		_children.push(text);
+		_children.push({children:text, type:TextDOMElementChildrenValue.textNode});
 	}
 	
 	/**
@@ -88,7 +98,13 @@ class AbstractTextDOMElement extends DOMElement
 	 */
 	public function removeText(text:TextNode):Void
 	{
-		_children.remove(text);
+		for (i in 0..._children.length)
+		{
+			if (_children[i].children == text)
+			{
+				_children.remove(_children[i]);
+			}
+		}	
 	}
 	
 	/**
@@ -98,7 +114,8 @@ class AbstractTextDOMElement extends DOMElement
 	 */
 	public function appendTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
 	{
-		_children.push(textDOMElement);
+		_children.push({children:textDOMElement, type:TextDOMElementChildrenValue.textDOMElement});
+		textDOMElement.textDOMElementParent = this;
 	}
 	
 	/**
@@ -106,16 +123,34 @@ class AbstractTextDOMElement extends DOMElement
 	 */
 	public function removeTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
 	{
-		_children.remove(textDOMElement);
+		for (i in 0..._children.length)
+		{
+			if (_children[i].children == textDOMElement)
+			{
+				_children.remove(_children[i]);
+			}
+		}
+		
+		textDOMElement.textDOMElementParent = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getChildren():Array<Dynamic>
+	private function getChildren():Array<TextDOMElementChildrenData>
 	{
 		return _children;
+	}
+	
+	private function setTextDOMElementParent(value:AbstractTextDOMElement):AbstractTextDOMElement
+	{
+		return this._textDOMElementParent = value;
+	}
+	
+	private function getTextDOMElementParent():AbstractTextDOMElement
+	{
+		return this._textDOMElementParent;
 	}
 	
 }

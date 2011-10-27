@@ -4,6 +4,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
+import cocktail.style.TextStyle;
 
 /**
  * ...
@@ -13,14 +14,16 @@ import cocktail.style.StyleData;
 class AbstractTextLineDOMElement extends DOMElement
 {
 
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeElement:NativeElement, style:Style) 
 	{
 		super(nativeElement);
+		
+		this._style = style;
 	}
 
 	override private function initStyle():Void
 	{
-		this._style = new Style(this);
+		
 	}
 
 

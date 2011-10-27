@@ -15,6 +15,7 @@ import cocktail.domElement.TextDOMElement;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
+import cocktail.domElement.DOMElementData;
 import haxe.Log;
 
 /**
@@ -35,48 +36,47 @@ class AbstractTextStyle extends Style
 		
 		var textDOMElement:TextDOMElement = cast(this._domElement);
 		
+		
+		textDOMElement.reset();
+		
+	
+		
+		/**
+		 * TO DO : recursive method to compute all child textDOMElement
+		 * Should it be here ?
+		 */
+		for (i in 0...textDOMElement.children.length)
+		{
+			if (textDOMElement.children[i].type == TextDOMElementChildrenValue.textDOMElement)
+			{
+				var childrenTextDOMElement:TextDOMElement = cast(textDOMElement.children[i].children);
+					childrenTextDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+
+			}
+		
+		}
+		
+		
 		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
 		
 		
 		while( textLine != null)
 		{
 			
-			textLine.style.marginLeft = MarginStyleValue.length(px(0));
-			textLine.style.marginRight = MarginStyleValue.length(px(0));
-			textLine.style.marginTop = MarginStyleValue.length(px(0));
-			textLine.style.marginBottom = MarginStyleValue.length(px(0));
-			
-			textLine.style.paddingLeft = PaddingStyleValue.length(px(0));
-			textLine.style.paddingRight = PaddingStyleValue.length(px(0));
-			textLine.style.paddingTop = PaddingStyleValue.length(px(0));
-			textLine.style.paddingBottom = PaddingStyleValue.length(px(0));
-			
-			textLine.style.top = PositionOffsetStyleValue.length(px(0));
-			textLine.style.left = PositionOffsetStyleValue.length(px(0));
-			textLine.style.right = PositionOffsetStyleValue.length(px(0));
-			textLine.style.bottom  = PositionOffsetStyleValue.length(px(0));
-			
-			textLine.style.minWidth = ConstrainedDimensionStyleValue.none;
-			textLine.style.maxWidth = ConstrainedDimensionStyleValue.none;
-			textLine.style.minHeight = ConstrainedDimensionStyleValue.none;
-			textLine.style.maxHeight = ConstrainedDimensionStyleValue.none;
-			
-			textLine.style.display = DisplayStyleValue._inline;
-			
-			textLine.style.position = _static;
-			
-			textLine.style.width = DimensionStyleValue.auto;
-			textLine.style.height = DimensionStyleValue.auto;
-			
-			textLine.style.float = FloatStyleValue.none;
-			textLine.style.clear = ClearStyleValue.none;
-			
-			textLine.style.computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+			textLine.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+
 			
 			formatingContext.insert(textLine);
-			Log.trace(formatingContext.getRemainingLineWidth());
 			textLine = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
 		}
+		
+		
+	}
+	
+
+	override private function applyComputedDimensions():Void
+	{
+		
 	}
 	
 }

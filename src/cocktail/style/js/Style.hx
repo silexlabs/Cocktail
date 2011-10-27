@@ -57,6 +57,32 @@ class Style extends AbstractStyle
 		return ret;	
 	}
 	
+	private function getFontSizeValue(value:FontSizeStyleValue):String
+	{
+		var fontValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				fontValue = getConvertedValue(unit);
+		}
+		
+		return fontValue;
+	}
+	
+	private function getLineHeightValue(value:LineHeightStyleValue):String
+	{
+		var lineHeightValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				lineHeightValue = getConvertedValue(unit);
+		}
+		
+		return lineHeightValue;
+	}
+	
 	private function getMarginValue(value:MarginStyleValue):String
 	{
 		var marginValue:String;
@@ -156,6 +182,17 @@ class Style extends AbstractStyle
 	////////////////////////////////
 	
 	
+	override private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		this._domElement.nativeElement.style.fontSize = getFontSizeValue(value);
+		return _fontSize = value;
+	}
+	
+	override private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		this._domElement.nativeElement.style.lineHeight = getLineHeightValue(value);
+		return _lineHeight = value;
+	}
 	
 	override private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
 	{

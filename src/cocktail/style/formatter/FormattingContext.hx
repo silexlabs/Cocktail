@@ -76,10 +76,6 @@ class FormattingContext
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
 		
-		//init the flow data to place the first inserted
-		//DOMElement in the right position
-		_flowData = initFlowData(_containingDOMElement);
-		
 		//will store each inserted DOMElement
 		_formatedElements = new Array<DOMElement>();
 		
@@ -98,6 +94,10 @@ class FormattingContext
 			}
 		}
 		
+		//init the flow data to place the first inserted
+		//DOMElement in the right position
+		_flowData = initFlowData(_containingDOMElement);
+		
 	}
 	
 	/**
@@ -106,9 +106,11 @@ class FormattingContext
 	 */
 	private function initFlowData(domElement:DOMElement):FlowData
 	{
+		var flowY:Int = domElement.style.computedStyle.paddingTop;
+		
 		return {
-			x : domElement.style.computedStyle.paddingLeft,
-			y : domElement.style.computedStyle.paddingTop,
+			x : domElement.style.computedStyle.paddingLeft + _floatsManager.getLeftFloatOffset(flowY),
+			y : flowY,
 			firstLineX : domElement.style.computedStyle.paddingLeft,
 			firstLineY : domElement.style.computedStyle.paddingTop,
 			maxLineWidth : domElement.style.computedStyle.width,
@@ -176,7 +178,7 @@ class FormattingContext
 	
 	public function getRemainingLineWidth():Int
 	{
-		return _flowData.containingBlockWidth - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+		return _flowData.containingBlockWidth - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth) - flowData.firstLineX;
 	}
 
 	
