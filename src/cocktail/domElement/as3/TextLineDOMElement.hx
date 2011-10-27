@@ -3,6 +3,8 @@ package cocktail.domElement.as3;
 import cocktail.domElement.abstract.AbstractTextLineDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.StyleData;
+import cocktail.style.Style;
 
 /**
  * ...
@@ -12,20 +14,26 @@ import cocktail.nativeElement.NativeElement;
 class TextLineDOMElement extends AbstractTextLineDOMElement
 {
 
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeElement:NativeElement, style:Style) 
 	{
-		super(nativeElement);
+		super(nativeElement, style);
 	}
 	
 	override public function getOffsetWidth():Int
 	{
-		return untyped _nativeElement.textWidth;
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		
+		return untyped _nativeElement.textWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
+
 	}
 	
 
 	override public function getOffsetHeight():Int
 	{
-		return untyped _nativeElement.textHeight;
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		
+		//return untyped _nativeElement.textHeight;
+		return Math.round(computedStyle.lineHeight);
 	}
 	
 }

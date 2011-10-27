@@ -3,6 +3,7 @@ package cocktail.domElement.js;
 import cocktail.domElement.abstract.AbstractTextLineDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.Style;
 
 /**
  * ...
@@ -12,9 +13,9 @@ import cocktail.nativeElement.NativeElement;
 class TextLineDOMElement extends AbstractTextLineDOMElement
 {
 
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeElement:NativeElement, style:Style) 
 	{
-		super(nativeElement);
+		super(nativeElement, style);
 	}
 	
 }

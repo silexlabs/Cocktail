@@ -14,21 +14,26 @@ import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import flash.text.engine.BreakOpportunity;
 import flash.text.engine.ContentElement;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
 import flash.text.engine.FontWeight;
 import flash.text.engine.GroupElement;
+import flash.text.engine.Kerning;
+import flash.text.engine.TextBaseline;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.TextField;
 import flash.Vector;
+import flash.Vector;
 import haxe.Log;
 import cocktail.domElement.abstract.AbstractTextDOMElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktail.domElement.DOMElementData;
 
 /**
  * This is the Text DOMElement implementation for Flash.
@@ -42,6 +47,12 @@ class TextDOMElement extends AbstractTextDOMElement
 	
 	private var _previousTextLine:TextLine;
 	
+	private var _textLineDOMElements:Array<TextLineDOMElement>;
+	
+	private var _textBlocks:Array<TextBlockWrapperData>;
+	
+	private var _textBlocksIndex:Int;
+	
 	public function new(nativeElement:NativeElement = null) 
 	{
 		if (nativeElement ==  null)
@@ -49,107 +60,116 @@ class TextDOMElement extends AbstractTextDOMElement
 			nativeElement = NativeElementManager.createNativeElement(neutral);
 		}
 		super(nativeElement);
+		
+		_textLineDOMElements = new Array<TextLineDOMElement>();
 	}
 	
-	//TO DO : the method attaching lines should go in the TextStyle object. This object should create a 
-	//Sprite, add lines to it, then set this Sprite as the native element of the Text DOMElement
-	
-	/**
-	 * Append a text node to the current text content.
-	 * @param	text a raw string of text
-	 */
-	override public function appendText(text:TextNode):Void
+
+	override public function attach():Void
 	{
-		super.appendText(text);
+		super.attach();
 		
-		/**
-		for (i in 0...this._nativeElement.numChildren - 1)
+		if (this.parent != null)
 		{
-			this._nativeElement.removeChildAt(0);
+			if (Std.is(_children[0], TextDOMElement) == false)
+			{
+				this._style.fontSize = this._parent.style.fontSize;
+				this._style.lineHeight = this._parent.style.lineHeight;
+			}
 		}
 		
-		var textElements:Vector<ContentElement> = new Vector<ContentElement>();
-		
-		for (i in 0...this._children.length)
+	}
+	
+	override public function reset():Void
+	{
+		for (i in 0..._textLineDOMElements.length)
 		{
-			//Log.trace(this._children[i]);
-			//textElements.push(cast(this._children[i]));
+			_nativeElement.removeChild(_textLineDOMElements[i].nativeElement);
 		}
 		
-		var e1:TextElement = new TextElement('Consider, what makes a text line a ', new ElementFormat(new FontDescription(), 12));
-		var e2:TextElement = new TextElement('text line', new ElementFormat(new FontDescription("_serif", FontWeight.NORMAL, FontPosture.ITALIC), 12));
-		var e3:TextElement = new TextElement('?', new ElementFormat(new FontDescription(), 12));
-		
-		 var e:Vector<ContentElement> = new Vector<ContentElement>();
-		e.push(e1);
-		e.push(e2);
-		e.push(e3);
-		
-		var block:TextBlock = new TextBlock(new GroupElement(e));
-		var line:TextLine = block.createTextLine(null, 100);
-		
-		//textElements.push(new TextElement("bim", new ElementFormat()));
-		
-		//var groupElement:GroupElement = new GroupElement(textElements);
-		
-		//var textBlock:TextBlock = new TextBlock(new GroupElement(textElements));
-		
-		//this._nativeElement.appendChild(text);
-		//var textLine:TextLine = textBlock.createTextLine(null, 100);
-		
-		var _y:Float = 0;
-		  while(line != null)
-		  {
-			this._nativeElement.addChild(line);
-			_y += line.height;
-			line.y = _y;
-			line = block.createTextLine(line, 100);
-		  }
-		
-		*/
-		//line.y = 100;
-		//this._nativeElement.addChild(line);
+		_textLineDOMElements = new Array<TextLineDOMElement>();
+		_textBlocks = null;
+		_previousTextLine = null;
+		_textBlocksIndex = 0;
 	}
 	
 	override public function createTextLine(width:Int):TextLineDOMElement
 	{
-		if (_textBlock == null)
+		
+		if (_textBlocks == null)
 		{
-			_textBlock = new TextBlock(new GroupElement(getContentElement()));
+			_textBlocks = getTextBlocks();
+			
+			_textBlocksIndex = 0;
 		}
 		
-		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width);
+	
+		var textLine:TextLine = _textBlocks[_textBlocksIndex].textBlock.createTextLine(_previousTextLine, width);
 		
 		if (textLine != null)
 		{
+
+			
 			_previousTextLine = textLine;
+			
+
+			
 			_nativeElement.addChild(textLine);
-			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine);
+			
+			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine, _textBlocks[_textBlocksIndex].style);
+		
+			_textLineDOMElements.push(textLineDOMElement);
+			
 			return textLineDOMElement;
 		}
-		else
+		else if (_textBlocksIndex < _textBlocks.length - 1)
+		{
+			_textBlocksIndex++;
+			_previousTextLine = null;
+			
+			return createTextLine(width);
+		}
+		else 
 		{
 			return null;
 		}
 	}
 	
-	public function getContentElement():Vector<ContentElement>
+	
+	public function getTextBlocks():Array<TextBlockWrapperData>
 	{
-		var contents:Vector<ContentElement> = new Vector<ContentElement>();
+		var textBlocks:Array<TextBlockWrapperData> = new Array<TextBlockWrapperData>();
 		
 		for (i in 0..._children.length)
 		{
-			if (Std.is(_children[i], TextDOMElement))
+			if (_children[i].type == TextDOMElementChildrenValue.textDOMElement)
 			{
-				contents.push(_children[i].getContentElement());
+				var childrenTextBlocks:Array<TextBlockWrapperData> = _children[i].children.getTextBlocks();
+				for (j in 0...childrenTextBlocks.length)
+				{
+					textBlocks.push(childrenTextBlocks[j]);
+				}
+	
 			}
 			else
 			{
-				contents.push(_children[i]);
+				var textBlock:TextBlock = new TextBlock(convertStyle(new TextElement(_children[i].children.text)));
+				
+				textBlocks.push({textBlock:textBlock, style:this._style});
 			}
 		}
 		
-		return contents;
+		return textBlocks;
+	}
+	
+	private function convertStyle(textNode:TextElement):TextElement
+	{
+		var elementFormat:ElementFormat = new ElementFormat();
+		elementFormat.fontSize = _style.computedStyle.fontSize;
+		
+		textNode.elementFormat = elementFormat;
+		
+		return textNode;
 	}
 	
 	

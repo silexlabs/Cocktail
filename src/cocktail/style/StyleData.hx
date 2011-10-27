@@ -75,6 +75,10 @@ package cocktail.style;
 		
 		var verticalAlign:Int;
 		
+		var fontSize:Float;
+		
+		var lineHeight:Float;
+		
 	}
 	
 	/**
@@ -142,6 +146,42 @@ package cocktail.style;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+		// FONT STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Controls the em box size
+	 * of a font.
+	 */
+	enum FontSizeStyleValue {
+		
+		/**
+		 * absolute font size
+		 */
+		length(value:LengthValue);
+	}
+	
+		// TEXT STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * On a container DOMElement with inline level
+	 * children, this style controls the minimum height
+	 * of each line 
+	 * 
+	 * On a non-embedded inline DOMElement, it controls
+	 * the height of the DOMElement, used to calculate
+	 * its line height
+	 */
+	enum LineHeightStyleValue {
+		
+		/**
+		 * absolute line height value
+		 */
+		length(value:LengthValue);
+	}
 	
 	/**
 	 * Controls the vertical alignement of an 
@@ -218,6 +258,9 @@ package cocktail.style;
 		
 	}
 	
+		// BOX STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Dimensions values for margin thickness
 	 */
@@ -257,6 +300,35 @@ package cocktail.style;
 		 */
 		percent(value:Int);
 	}
+	
+	/**
+	 * The dimension of the content of 
+	 * a DOMElement (without margins 
+	 * and paddings)
+	 */
+	enum DimensionStyleValue {
+		
+		/**
+		 * absolute value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * relative the parent DOMElement
+		 * dimensions
+		 */
+		percent(value:Int);
+		
+		/**
+		 * takes the remaining space in
+		 * the parent element width or 
+		 * height
+		 */
+		auto;
+	}
+	
+		// DISPLAY STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Display of a DOMElement in a 
@@ -375,31 +447,6 @@ package cocktail.style;
 		auto;
 	}
 	
-	/**
-	 * The dimension of the content of 
-	 * a DOMElement (without margins 
-	 * and paddings)
-	 */
-	enum DimensionStyleValue {
-		
-		/**
-		 * absolute value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * relative the parent DOMElement
-		 * dimensions
-		 */
-		percent(value:Int);
-		
-		/**
-		 * takes the remaining space in
-		 * the parent element width or 
-		 * height
-		 */
-		auto;
-	}
 	
 	/**
 	 * The constraint applied to the content

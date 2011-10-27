@@ -60,12 +60,29 @@ class TextDOMElement extends AbstractTextDOMElement
 	override public function appendText(text:TextNode):Void
 	{
 		super.appendText(text);
-		this._parent.nativeElement.appendChild(text);
+		if (this._parent != null)
+		{
+			this._parent.nativeElement.appendChild(text);
+		}
+		else if (this._textDOMElementParent != null)
+		{
+			this._textDOMElementParent.nativeElement.appendChild(text);
+		}
+		
 	}
 	
 	override public function appendTextDOMElement(textDOMElement:AbstractTextDOMElement):Void
 	{
 		super.appendTextDOMElement(textDOMElement);
+		
+		if (this._parent != null)
+		{
+			this._parent.nativeElement.appendChild(textDOMElement.nativeElement);
+		}
+		else if (this._textDOMElementParent != null)
+		{
+			this._textDOMElementParent.appendTextDOMElement(textDOMElement);
+		}
 		
 	}
 }

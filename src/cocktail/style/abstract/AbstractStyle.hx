@@ -14,6 +14,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.style.computer.BlockBoxComputer;
 import cocktail.style.computer.BoxComputer;
 import cocktail.style.computer.FloatBoxComputer;
+import cocktail.style.computer.FontComputer;
 import cocktail.style.computer.InlineBlockBoxComputer;
 import cocktail.style.computer.InLineBoxComputer;
 import cocktail.style.computer.NoneBoxComputer;
@@ -122,6 +123,18 @@ class AbstractStyle
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
 	
+	/**
+	 * font
+	 */
+	private var _fontSize:FontSizeStyleValue;
+	public var fontSize(getFontSize, setFontSize):FontSizeStyleValue;
+	
+	/**
+	 * text
+	 */
+	private var _lineHeight:LineHeightStyleValue;
+	public var lineHeight(getLineHeight, setLineHeight):LineHeightStyleValue;
+	
 	////////////////////////////////
 	
 	/**
@@ -170,7 +183,9 @@ class AbstractStyle
 			float : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
 			position: PositionStyleValue._static,
-			verticalAlign : 0
+			verticalAlign : 0,
+			fontSize:15.0,
+			lineHeight:14.0
 		}
 	}
 	
@@ -358,6 +373,7 @@ class AbstractStyle
 	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		computePositionStyle();
+		computeFontStyle();
 		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 	}
 	
@@ -369,6 +385,11 @@ class AbstractStyle
 	public function computePositionStyle():Void
 	{
 		PositionComputer.compute(this);
+	}
+	
+	public function computeFontStyle():Void
+	{
+		FontComputer.compute(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -867,5 +888,25 @@ class AbstractStyle
 	private function setClear(value:ClearStyleValue):ClearStyleValue 
 	{
 		return _clear = value;
+	}
+	
+	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		return _fontSize = value;
+	}
+	
+	private function getFontSize():FontSizeStyleValue
+	{
+		return _fontSize;
+	}
+	
+	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		return _lineHeight = value;
+	}
+	
+	private function getLineHeight():LineHeightStyleValue
+	{
+		return _lineHeight;
 	}
 }

@@ -38,9 +38,15 @@ class InlineFormattingContext extends FormattingContext
 			_flowData.totalHeight += _flowData.maxLineHeight;
 			_flowData.maxLineHeight = 0;
 		
-			_flowData.x = _flowData.firstLineX + _floatsManager.getLeftFloatOffset(_flowData.y);
+			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.firstLineX)
+			{
+				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
+			}
+			else
+			{
+				_flowData.x = _flowData.firstLineX;
+			}
 			_flowData.maxLineWidth = _flowData.containingBlockWidth - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth) - _floatsManager.getLeftFloatOffset(_flowData.y);
-		
 		}
 		
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
