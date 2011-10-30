@@ -14,6 +14,7 @@ import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import flash.errors.ScriptTimeoutError;
 import flash.text.engine.BreakOpportunity;
 import flash.text.engine.ContentElement;
 import flash.text.engine.ElementFormat;
@@ -26,6 +27,7 @@ import flash.text.engine.TextBaseline;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
+import flash.text.engine.TextLineCreationResult;
 import flash.text.TextField;
 import flash.Vector;
 import flash.Vector;
@@ -53,6 +55,8 @@ class TextDOMElement extends AbstractTextDOMElement
 	
 	private var _textBlocksIndex:Int;
 	
+	private var _textLineContainer:Sprite;
+	
 	public function new(nativeElement:NativeElement = null) 
 	{
 		if (nativeElement ==  null)
@@ -61,24 +65,12 @@ class TextDOMElement extends AbstractTextDOMElement
 		}
 		super(nativeElement);
 		
+		_textLineContainer = new Sprite();
 		_textLineDOMElements = new Array<TextLineDOMElement>();
 	}
 	
 
-	override public function attach():Void
-	{
-		super.attach();
-		
-		if (this.parent != null)
-		{
-			if (Std.is(_children[0], TextDOMElement) == false)
-			{
-				this._style.fontSize = this._parent.style.fontSize;
-				this._style.lineHeight = this._parent.style.lineHeight;
-			}
-		}
-		
-	}
+
 	
 	override public function reset():Void
 	{
@@ -170,6 +162,39 @@ class TextDOMElement extends AbstractTextDOMElement
 		textNode.elementFormat = elementFormat;
 		
 		return textNode;
+	}
+	
+	override private function getTextBlockCompletionValue():TextBlockCompletionValue
+	{
+		var addedRawTextLength:Int = 0;
+		var currentTextBlock:TextBlock = _textBlocks[_textBlocksIndex].textBlock;
+		
+		var firstLine:TextLine = currentTextBlock.firstLine;
+		if (firstLine == null)
+		{
+			return incomplete;
+		}
+		
+		addedRawTextLength = firstLine.rawTextLength;
+		
+		var nextLine:TextLine = firstLine.nextLine;
+		
+		while (nextLine != null)
+		{
+			addedRawTextLength += nextLine.rawTextLength;
+			nextLine = nextLine.nextLine;
+		}
+		
+		
+		if (addedRawTextLength == currentTextBlock.content.rawText.length)
+		{
+			return complete;
+		}
+		else
+		{
+			return incomplete;
+		}
+		
 	}
 	
 	

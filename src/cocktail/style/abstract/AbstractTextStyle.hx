@@ -12,6 +12,7 @@ package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextDOMElement;
+import cocktail.domElement.TextLineDOMElement;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
@@ -51,13 +52,24 @@ class AbstractTextStyle extends Style
 			{
 				var childrenTextDOMElement:TextDOMElement = cast(textDOMElement.children[i].children);
 					childrenTextDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-
 			}
 		
 		}
 		
 		
-		var textLine:DOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+		var textLine:TextLineDOMElement = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+		var startNewLine:Bool = false;
+		if (textLine != null)
+		{
+			if (textDOMElement.textBlockCompletionValue == TextBlockCompletionValue.incomplete)
+			{
+				startNewLine = true;
+			}
+			else
+			{
+				startNewLine = false;
+			}
+		}
 		
 		
 		while( textLine != null)
@@ -67,7 +79,29 @@ class AbstractTextStyle extends Style
 
 			
 			formatingContext.insert(textLine);
+			
+			if (startNewLine == true)
+			{
+				formatingContext.startNewLine();
+			}
+			
 			textLine = textDOMElement.createTextLine(formatingContext.getRemainingLineWidth());
+			
+			if (textLine != null)
+			{
+				if (textDOMElement.textBlockCompletionValue == TextBlockCompletionValue.incomplete)
+				{
+					startNewLine = true;
+				}
+				else
+				{
+					startNewLine = false;
+				}
+				
+			}
+			
+			
+			
 		}
 		
 		

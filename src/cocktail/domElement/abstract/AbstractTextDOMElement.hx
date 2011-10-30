@@ -41,6 +41,8 @@ class AbstractTextDOMElement extends DOMElement
 	private var _textDOMElementParent:AbstractTextDOMElement;
 	public var textDOMElementParent(getTextDOMElementParent, setTextDOMElementParent):AbstractTextDOMElement;
 	
+	public var textBlockCompletionValue(getTextBlockCompletionValue, never):TextBlockCompletionValue;
+	
 	/**
 	 * class contructor. Init the TextDOMElement with an empty text node
 	 * if no NativeElement is provided
@@ -54,7 +56,8 @@ class AbstractTextDOMElement extends DOMElement
 		if (nativeElement == null)
 		{
 			_children.push({children:NativeElementManager.createNativeTextNode(""), type:TextDOMElementChildrenValue.textNode});
-			nativeElement = NativeElementManager.createNativeElement(text);
+			//nativeElement = NativeElementManager.createNativeElement(text);
+			initStyle();
 		}
 		else
 		{
@@ -151,6 +154,11 @@ class AbstractTextDOMElement extends DOMElement
 	private function getTextDOMElementParent():AbstractTextDOMElement
 	{
 		return this._textDOMElementParent;
+	}
+	
+	private function getTextBlockCompletionValue():TextBlockCompletionValue
+	{
+		return null;
 	}
 	
 }

@@ -59,6 +59,8 @@ import cocktail.style.Style;
 		var type:TextDOMElementChildrenValue;
 	}
 	
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +80,29 @@ import cocktail.style.Style;
 		 * another TextDOMElement
 		 */
 		textDOMElement;
+	}
+	
+	/**
+	 * For a TextDOMElement, determine if the last
+	 * created line encapsulate all the remaining
+	 * content of a block of text or if the 
+	 * current text block still has content to
+	 * display as lines
+	 */
+	enum TextBlockCompletionValue {
+		
+		/**
+		 * The last created line contains
+		 * the end of the current text block
+		 * content
+		 */
+		complete;
+		
+		/**
+		 * Content remains in the text block
+		 * after the last line creation
+		 */
+		incomplete;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////

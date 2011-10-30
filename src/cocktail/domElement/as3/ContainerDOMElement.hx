@@ -31,6 +31,34 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// Override public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to add the native flash display object as a 
+	 * child of the native display object of this container
+	 * @param domElement the flash display object to add to this 
+	 * container
+	 */
+	override public function addChild(domElement:DOMElement):Void
+	{
+		super.addChild(domElement);
+		this._nativeElement.addChild(domElement.nativeElement);
+	}
+	
+	/**
+	 * Overriden to remove the native flash display object from
+	 * the native display object of this container
+	 * @param domElement the flash display object to remove from
+	 * this container
+	 */
+	override public function removeChild(domElement:DOMElement):Void
+	{
+		super.removeChild(domElement);
+		this._nativeElement.removeChild(domElement.nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden getter/setter
 	// The width and height setter/getter are overriden to prevent setting the width and height
 	// of the native Flash DisplayObjectContainer. In as3, when the width or height is set on a

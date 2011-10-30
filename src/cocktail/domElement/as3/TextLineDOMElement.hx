@@ -36,4 +36,10 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		return Math.round(computedStyle.lineHeight);
 	}
 	
+	override private function getActualWidth():Int
+	{
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return untyped _nativeElement.specifiedWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
+	}
+	
 }
