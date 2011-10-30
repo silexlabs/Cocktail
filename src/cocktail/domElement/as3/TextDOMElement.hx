@@ -108,7 +108,7 @@ class TextDOMElement extends AbstractTextDOMElement
 			
 			_nativeElement.addChild(textLine);
 			
-			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine, _textBlocks[_textBlocksIndex].style);
+			var textLineDOMElement:TextLineDOMElement = new TextLineDOMElement(textLine, _textBlocks[_textBlocksIndex].style, false);
 		
 			_textLineDOMElements.push(textLineDOMElement);
 			

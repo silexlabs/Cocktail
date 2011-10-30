@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -50,7 +51,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	override public function addChild(domElement:DOMElement):Void
 	{
 		super.addChild(domElement);
-		this.nativeElement.appendChild(domElement.nativeElement);
+		this._nativeElement.appendChild(domElement.nativeElement);
 		//intialise z-index on the DOMElement, as it is null by default in JavaScript
 		domElement.nativeElement.style.zIndex = _children.length - 1;
 	}
@@ -64,6 +65,27 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	{
 		super.removeChild(domElement);
 		this._nativeElement.removeChild(domElement.nativeElement);
+	}
+	
+	/**
+	 * Overriden to append the text node to the HTML element of this container
+	 * @param	text the text node to append
+	 */
+	override public function addText(text:TextNode):Void
+	{
+		super.addText(text);
+		this.nativeElement.appendChild(text);
+	}
+	
+	/**
+	 * Overriden to remove the text node from the HTML element of this
+	 * container
+	 * @param	text the text node to remove
+	 */
+	override public function removeText(text:TextNode):Void
+	{
+		super.removeText(text);
+		this._nativeElement.removeChild(text);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -10,8 +10,13 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.style.abstract;
 
+import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.GraphicDOMElement;
+import cocktail.domElement.ImageDOMElement;
+import cocktail.domElement.TextLineDOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.style.computer.BlockBoxComputer;
 import cocktail.style.computer.BoxComputer;
 import cocktail.style.computer.InLineBoxComputer;
@@ -76,16 +81,23 @@ class AbstractContainerStyle extends Style
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.resetTextLines();
 		
 		//compute all the styles of the children that will affect
 		//their lay out (display, position, float, clear)
-		//Those styles need to be computed whzen a new FormattingContext
+		//Those styles need to be computed when a new FormattingContext
 		//is instantiated as the type of FormattingContext mainly
 		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
-			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
-			childrenDOMElement.style.computePositionStyle();
+			//only DOMElement styles are computed, not TextNode element's.
+			//TextNode don't influence which type of formatting context will
+			//be used
+			if (isDOMElement(containerDOMElement.children[i]) == true)
+			{
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				childrenDOMElement.style.computePositionStyle();
+			}
 		}
 		
 		//a new FormattingContext must be created for the children of the 
@@ -128,11 +140,22 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-		//call the flow method of all children
+		//flow all children
 		for (i in 0...containerDOMElement.children.length)
 		{
-			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
-			childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
+			//if the children is a DOMElement, call its flow method
+			if (isDOMElement(containerDOMElement.children[i]) == true)
+			{
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
+			}
+			//else if it is a text node, call a specific method that will create TextLineDOMElement
+			//and insert them into the document using the TextNode as text content
+			else 
+			{
+				var childrenTextNode:TextNode = cast(containerDOMElement.children[i]);
+				insertTextNode(childrenTextNode, childrenFormattingContext, containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
+			}
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 
@@ -153,6 +176,64 @@ class AbstractContainerStyle extends Style
 		formatingContext.retrieveFloats(childrenFormattingContext);
 		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Insert a text node ( a string of text without formatting ) by creating as many text lines as needed from it
+	 * and inserting them into the document
+	 * @param	textNode the string of text used as content for the created text lines
+	 */
+	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//create a text line of the available width remaining in the current line of the formatting context.
+		//the created line might be smaller than the specified width if there is not enough text to render
+		//in the TextNode
+		var textLineDOMElement:TextLineDOMElement = containerDOMElement.createTextLine(formattingContext.getRemainingLineWidth(), textNode);
+		
+		//a flag determining if a new line must be started after that the current line was inserted into the
+		// formatting context.
+		var startNewLine:Bool = false;
+		
+		//create new TextLineDOMElements and insert them into the formatting context
+		//until all the text in the TextNode has been rendered. A null TextLineDOMElement
+		//will be created to signal that all the text was rendered
+		while( textLineDOMElement != null)
+		{
+			//compute the styles (box model, text style...) of the newly created line of text
+			textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+			
+			//insert the line of text in the document
+			formattingContext.insert(textLineDOMElement);
+			
+			//if the line is not the last of its text block (the TextNode still has text
+			//to render) then a new line must be started in the formatting context as 
+			//the newly created line takes all the available space on the current line
+			if (textLineDOMElement.isLastLineOfTextBlock == false)
+			{
+				startNewLine = true;
+			}
+			else
+			{
+				startNewLine = false;
+			}
+			
+			//start a new line if neccessary
+			if (startNewLine == true)
+			{
+				formattingContext.startNewLine();
+			}
+			
+			//create the next line of text, return null if no text is left to render
+			textLineDOMElement = containerDOMElement.createTextLine(formattingContext.getRemainingLineWidth(), textNode);
+		}
+				
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
@@ -210,15 +291,25 @@ class AbstractContainerStyle extends Style
 		
 		for (i in 0...containerDOMElement.children.length)
 		{
-			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
-			if (childrenDOMElement.style.computedStyle.display == _inline ||
-			childrenDOMElement.style.computedStyle.display == inlineBlock)
+			if (isDOMElement(containerDOMElement.children[i]))
 			{
-				ret = true;
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				if (childrenDOMElement.style.computedStyle.display == _inline ||
+				childrenDOMElement.style.computedStyle.display == inlineBlock)
+				{
+				
+					ret = true;
+				}
 			}
+			
 		}
 		
 		return ret;
+	}
+	
+	private function isDOMElement(element:Dynamic):Bool
+	{
+		return false;
 	}
 	
 	

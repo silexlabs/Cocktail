@@ -13,9 +13,9 @@ import cocktail.style.Style;
 class TextLineDOMElement extends AbstractTextLineDOMElement
 {
 
-	public function new(nativeElement:NativeElement, style:Style) 
+	public function new(nativeElement:NativeElement, style:Style, isLastLineOfTextBlock:Bool) 
 	{
-		super(nativeElement, style);
+		super(nativeElement, style, isLastLineOfTextBlock);
 	}
 	
 }

@@ -11,9 +11,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.EmbeddedStyle;
+
+#if flash9
+import cocktail.domElement.as3.DOMElement;
+#elseif js
+import cocktail.domElement.js.DOMElement;
+#end
 
 /**
  * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a

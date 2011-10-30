@@ -11,8 +11,12 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.as3;
 
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.style.abstract.AbstractContainerStyle;
 import cocktail.style.abstract.AbstractStyle;
+import flash.text.engine.TextElement;
+import flash.utils.QName;
+import haxe.Log;
 
 
 
@@ -25,5 +29,10 @@ class ContainerStyle extends AbstractContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+	override private function isDOMElement(element:Dynamic):Bool
+	{
+		return (!Std.is(element, TextElement));
 	}
 }
