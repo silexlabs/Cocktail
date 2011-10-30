@@ -310,24 +310,6 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * attaches the NativeElement to its parent's
-	 * NativeElement
-	 */
-	public function attach():Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * detaches the NativeElement from its parent's
-	 * NativeElement
-	 */
-	public function detach():Void
-	{
-		//abstract
-	}
-	
-	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */
 	public function getParent():AbstractContainerDOMElement

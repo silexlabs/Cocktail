@@ -13,7 +13,8 @@ import cocktail.style.TextStyle;
 
 class AbstractTextLineDOMElement extends DOMElement
 {
-
+	public var actualWidth(getActualWidth, never):Int;
+	
 	public function new(nativeElement:NativeElement, style:Style) 
 	{
 		super(nativeElement);
@@ -24,6 +25,11 @@ class AbstractTextLineDOMElement extends DOMElement
 	override private function initStyle():Void
 	{
 		
+	}
+	
+	private function getActualWidth():Int
+	{
+		return 0;
 	}
 
 

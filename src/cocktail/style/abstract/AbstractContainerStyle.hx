@@ -84,7 +84,8 @@ class AbstractContainerStyle extends Style
 		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
-			containerDOMElement.children[i].style.computePositionStyle();
+			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+			childrenDOMElement.style.computePositionStyle();
 		}
 		
 		//a new FormattingContext must be created for the children of the 
@@ -130,7 +131,8 @@ class AbstractContainerStyle extends Style
 		//call the flow method of all children
 		for (i in 0...containerDOMElement.children.length)
 		{
-			containerDOMElement.children[i].style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
+			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+			childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 
@@ -208,8 +210,9 @@ class AbstractContainerStyle extends Style
 		
 		for (i in 0...containerDOMElement.children.length)
 		{
-			if (containerDOMElement.children[i].style.computedStyle.display == _inline ||
-			containerDOMElement.children[i].style.computedStyle.display == inlineBlock)
+			var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+			if (childrenDOMElement.style.computedStyle.display == _inline ||
+			childrenDOMElement.style.computedStyle.display == inlineBlock)
 			{
 				ret = true;
 			}

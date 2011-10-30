@@ -50,28 +50,6 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden methods to manipulate the Flash DOM
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attaches this domElement NativeElement (a Flash DisplayObject) to its
-	 * parent NativeElement
-	 */
-	override public function attach():Void
-	{
-		this._parent.nativeElement.addChild(this._nativeElement);
-	}
-	
-	/**
-	 * Detaches this domElement NativeElement (a Flash DisplayObject) from its
-	 * parent NativeElement
-	 */
-	override public function detach():Void
-	{
-		this._parent.nativeElement.removeChild(this._nativeElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the dom element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

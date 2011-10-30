@@ -108,8 +108,18 @@ class FormattingContext
 	{
 		var flowY:Int = domElement.style.computedStyle.paddingTop;
 		
+		var flowX:Int;
+		if (domElement.style.computedStyle.paddingLeft > _floatsManager.getLeftFloatOffset(flowY))
+		{
+			flowX = domElement.style.computedStyle.paddingLeft;
+		}
+		else
+		{
+			flowX = _floatsManager.getLeftFloatOffset(flowY);
+		}
+		
 		return {
-			x : domElement.style.computedStyle.paddingLeft + _floatsManager.getLeftFloatOffset(flowY),
+			x : flowX,
 			y : flowY,
 			firstLineX : domElement.style.computedStyle.paddingLeft,
 			firstLineY : domElement.style.computedStyle.paddingTop,
@@ -178,9 +188,14 @@ class FormattingContext
 	
 	public function getRemainingLineWidth():Int
 	{
-		return _flowData.containingBlockWidth - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth) - flowData.firstLineX;
+		return _flowData.containingBlockWidth - _flowData.x - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
 	}
 
+	public function startNewLine():Void
+	{
+		
+	}
+	
 	
 	/////////////////////////////////
 	// PRIVATE METHODS

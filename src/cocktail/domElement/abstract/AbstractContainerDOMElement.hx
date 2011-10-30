@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -22,12 +23,11 @@ import cocktail.domElement.as3.DOMElement;
 import cocktail.domElement.js.DOMElement;
 #end
 
-
 /**
- * This is a DOMElement hich can contain other DOMElement, it is in charge of building the DOMElement tree.
- * It can receive any DOMElement as children.
- * It allows for setting semantic of the root node of the DOMElement (not implemented for
- * Flash)
+ * This is a DOMElement which can contain other both DOMElement and TextNode, it is in charge of building the DOMElement tree.
+ * A ContainerDOMElement can receive any DOMElement as children.
+ * A TextNode is a reference to a simple string of text which takes the style of its container. A TextNode can't have children.
+ * It allows for setting semantic (node name) of the root node of the ContainerDOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -42,11 +42,12 @@ class AbstractContainerDOMElement extends DOMElement
 	public var semantic(getSemantic, setSemantic):String;
 	
 	/**
-	 *  a reference to each of the DOMElement childs, stored by
-	 *  z-index
+	 * a reference to each of the ContainerDOMElement children which
+	 * can be either of type DOMElement or TextNode.
+	 * Their order is significant to the layout of the document
 	 */
-	private var _children:Array<DOMElement>;
-	public var children(getChildren, never):Array<DOMElement>;
+	private var _children:Array<Dynamic>;
+	public var children(getChildren, never):Array<Dynamic>;
 	
 	/**
 	 * class constructor. Create a container NativeElement
@@ -54,14 +55,15 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//get a neutral native element if none is provided (correspond to a div in HTML)
+		//get a neutral native element if none is provided (e.g a div in HTML or a
+		//display object container in flash)
 		if (nativeElement == null)
 		{
 			nativeElement = NativeElementManager.createNativeElement(neutral);
 		}
 		
 		//init the children array
-		_children = new Array<DOMElement>();
+		_children = new Array<Dynamic>();
 		
 		super(nativeElement);
 	}
@@ -89,7 +91,6 @@ class AbstractContainerDOMElement extends DOMElement
 	public function addChild(domElement:DOMElement):Void
 	{
 		domElement.parent = this;
-		domElement.attach();
 		_children.push(domElement);
 	}
 	
@@ -102,15 +103,36 @@ class AbstractContainerDOMElement extends DOMElement
 	public function removeChild(domElement:DOMElement):Void
 	{
 		domElement.parent = null;
-		domElement.detach();
 		_children.remove(domElement);
 	}
 	
 	/**
-	 * returns the children of this DOMElement
-	 * @return an array of DOMElement
+	 * Add a TextNode as a children of the ContainerDOMElement. Overriden
+	 * by each runtime to attach the text to their specific DOM
+	 * @param	text a reference to a string of text
 	 */
-	public function getChildren():Array<DOMElement>
+	public function addText(text:TextNode):Void
+	{
+		_children.push(text);
+	}
+	
+	/**
+	 * Removes a TextNode from the ContainerDOMElement. Overriden
+	 * by each runtime to the detach the text from their
+	 * specific DOM
+	 * @param	text
+	 */
+	public function removeText(text:TextNode):Void
+	{
+		_children.remove(text);
+	}
+	
+	/**
+	 * returns the children of this ContainerDOMElement
+	 * @return an array containing any number of TextNode
+	 * and DOMElements
+	 */
+	public function getChildren():Array<Dynamic>
 	{
 		return _children;
 	}

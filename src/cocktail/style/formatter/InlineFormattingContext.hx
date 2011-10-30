@@ -32,35 +32,42 @@ class InlineFormattingContext extends FormattingContext
 	{
 		super.place(domElement);
 		
-		if (_flowData.x + domElement.offsetWidth + _floatsManager.getLeftFloatOffset(_flowData.y) + _floatsManager.getRightFloatOffset(flowData.y, flowData.containingBlockWidth) > _flowData.maxLineWidth)
+		
+		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
+		{	
+			startNewLine();
+		}
+		
+		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
+		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
+		
+		_flowData.x += domElement.offsetWidth;
+					
+		if (domElement.offsetHeight > _flowData.maxLineHeight)
 		{
+			var oldMaxLineHeight:Int = _flowData.maxLineHeight;
+			_flowData.maxLineHeight = domElement.offsetHeight;
+			//_flowData.totalHeight += _flowData.maxLineHeight - oldMaxLineHeight;
+			
+		}
+		
+	}
+	
+	override public function startNewLine():Void
+	{
 			_flowData.y += _flowData.maxLineHeight;
 			_flowData.totalHeight += _flowData.maxLineHeight;
 			_flowData.maxLineHeight = 0;
-		
+			
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.firstLineX)
 			{
+				
 				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
 			}
 			else
 			{
 				_flowData.x = _flowData.firstLineX;
 			}
-			_flowData.maxLineWidth = _flowData.containingBlockWidth - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth) - _floatsManager.getLeftFloatOffset(_flowData.y);
-		}
-		
-		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft + domElement.style.computedStyle.paddingLeft;
-		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop + domElement.style.computedStyle.paddingTop;
-		_flowData.x += domElement.offsetWidth;
-					
-		if (domElement.offsetHeight > flowData.maxLineHeight)
-		{
-			var oldMaxLineHeight:Int = _flowData.maxLineHeight;
-			_flowData.maxLineHeight = domElement.offsetHeight;
-			_flowData.totalHeight += _flowData.maxLineHeight - oldMaxLineHeight;
-			
-		}
-		
 	}
 	
 	

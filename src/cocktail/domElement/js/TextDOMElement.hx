@@ -31,27 +31,6 @@ class TextDOMElement extends AbstractTextDOMElement
 		super(nativeElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden methods to manipulate the HTML DOM
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * In JS, TextDOMElement as it doesn't have a NativeElement
-	 * by default because its first element can be an HTML text node.
-	 * So we can't rely on the attachement method.
-	 */
-	override public function attach():Void
-	{
-		
-	}
-	
-	/**
-	 * Same as attach, we can't rely on the generic detach method
-	 */
-	override public function detach():Void
-	{
-		
-	}
 	
 	/**
 	 * Append a text node to the current text content.
@@ -60,13 +39,55 @@ class TextDOMElement extends AbstractTextDOMElement
 	override public function appendText(text:TextNode):Void
 	{
 		super.appendText(text);
-		if (this._parent != null)
+		
+		if (this._nativeElement != null)
+		{
+			this._nativeElement.appendChild(text);
+		}
+		else if (this._parent != null)
 		{
 			this._parent.nativeElement.appendChild(text);
 		}
 		else if (this._textDOMElementParent != null)
 		{
-			this._textDOMElementParent.nativeElement.appendChild(text);
+			if (this._textDOMElementParent.nativeElement != null)
+			{
+				this._textDOMElementParent.nativeElement.appendChild(text);
+			}
+			else
+			{
+				var currentTextDOMElementParent:AbstractTextDOMElement = this._textDOMElementParent;
+				var parentNativeElement:NativeElement = null;
+				
+				while (parentNativeElement == null)
+				{
+					if (currentTextDOMElementParent.nativeElement != null)
+					{
+						parentNativeElement = currentTextDOMElementParent.nativeElement;
+					}
+					else if (currentTextDOMElementParent.parent != null)
+					{
+						parentNativeElement = currentTextDOMElementParent.parent.nativeElement;
+					}
+					else
+					{
+						if (currentTextDOMElementParent.textDOMElementParent != null)
+						{
+							currentTextDOMElementParent = currentTextDOMElementParent.textDOMElementParent;
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+				
+				if (parentNativeElement != null)
+				{
+					parentNativeElement.appendChild(text);
+				}
+			}
+			
 		}
 		
 	}
