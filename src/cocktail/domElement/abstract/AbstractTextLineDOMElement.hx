@@ -3,7 +3,6 @@ package cocktail.domElement.abstract;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
-import cocktail.style.TextStyle;
 
 #if flash9
 import cocktail.domElement.as3.DOMElement;
