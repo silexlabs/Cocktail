@@ -116,13 +116,16 @@ class AbstractContainerDOMElement extends DOMElement
 	public function removeChild(domElement:DOMElement):Void
 	{
 		domElement.parent = null;
+		
+		var newChildrenArray:Array<ContainerDOMElementChildrenData> = new Array<ContainerDOMElementChildrenData>();
 		for (i in 0..._children.length)
 		{
-			if (_children[i].children == domElement)
+			if (_children[i].children != domElement)
 			{
-				_children.remove(_children[i]);
+				newChildrenArray.push(_children[i]);
 			}
 		}
+		this._children = newChildrenArray;
 		
 	}
 	
@@ -144,13 +147,15 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function removeText(text:TextNode):Void
 	{
+		var newChildrenArray:Array<ContainerDOMElementChildrenData> = new Array<ContainerDOMElementChildrenData>();
 		for (i in 0..._children.length)
 		{
-			if (_children[i].children == text)
+			if (_children[i].children != text)
 			{
-				_children.remove(_children[i]);
+				newChildrenArray.push(_children[i]);
 			}
 		}
+		this._children = newChildrenArray;
 	}
 	
 	/**
