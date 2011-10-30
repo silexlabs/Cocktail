@@ -19,9 +19,14 @@ import cocktail.style.computer.InlineEmbeddedBoxComputer;
 import cocktail.style.computer.NoneBoxComputer;
 import cocktail.style.computer.PositionedEmbeddedBoxComputer;
 import cocktail.style.formatter.FormattingContext;
-import cocktail.style.Style;
 import cocktail.style.StyleData;
 import haxe.Log;
+
+#if flash9
+import cocktail.style.as3.Style;
+#elseif js
+import cocktail.style.js.Style;
+#end
 
 /**
  * This is the style implementation for embedded

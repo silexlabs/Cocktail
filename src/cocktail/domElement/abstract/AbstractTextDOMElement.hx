@@ -10,7 +10,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
-import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextDOMElement;
 import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
@@ -19,6 +18,12 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.domElement.DOMElementData;
 import cocktail.style.TextStyle;
 import haxe.Log;
+
+#if flash9
+import cocktail.domElement.as3.DOMElement;
+#elseif js
+import cocktail.domElement.js.DOMElement;
+#end
 
 
 /**

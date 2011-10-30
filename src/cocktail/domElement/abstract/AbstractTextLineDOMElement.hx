@@ -1,10 +1,15 @@
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
 import cocktail.style.TextStyle;
+
+#if flash9
+import cocktail.domElement.as3.DOMElement;
+#elseif js
+import cocktail.domElement.js.DOMElement;
+#end
 
 /**
  * ...
@@ -15,16 +20,25 @@ class AbstractTextLineDOMElement extends DOMElement
 {
 	public var actualWidth(getActualWidth, never):Int;
 	
-	public function new(nativeElement:NativeElement, style:Style) 
+	private var _isLastLineOfTextBlock:Bool;
+	public var isLastLineOfTextBlock(getIsLastLineOfTextBlock, never):Bool;
+	
+	public function new(nativeElement:NativeElement, style:Style, isLastLineOfTextBlock:Bool) 
 	{
 		super(nativeElement);
 		
+		this._isLastLineOfTextBlock = isLastLineOfTextBlock;
 		this._style = style;
 	}
 
 	override private function initStyle():Void
 	{
 		
+	}
+	
+	private function getIsLastLineOfTextBlock():Bool
+	{
+		return isLastLineOfTextBlock;
 	}
 	
 	private function getActualWidth():Int

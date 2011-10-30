@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
+import cocktail.domElement.TextLineDOMElement;
 import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -28,6 +29,10 @@ import cocktail.domElement.js.DOMElement;
  * A ContainerDOMElement can receive any DOMElement as children.
  * A TextNode is a reference to a simple string of text which takes the style of its container. A TextNode can't have children.
  * It allows for setting semantic (node name) of the root node of the ContainerDOMElement.
+ * 
+ * When a ContainerDOMElement is laid out, it as many TextLineDOMObject as necessary each time one of its laid out children is
+ * a TextNode. The TextNode is used as the model of the text, the generated TextLineDOMObjects are the view creating enough text line
+ * to render all the text model. The TextLineDOMElements uses the ContainerDOMElement styles.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -50,6 +55,12 @@ class AbstractContainerDOMElement extends DOMElement
 	public var children(getChildren, never):Array<Dynamic>;
 	
 	/**
+	 * Stores each of the text lines generated at layout so they 
+	 * can easily be removed when a new layout occurs.
+	 */
+	private var _textLineDOMElements:Array<TextLineDOMElement>;
+	
+	/**
 	 * class constructor. Create a container NativeElement
 	 * if none is provided
 	 */
@@ -64,6 +75,7 @@ class AbstractContainerDOMElement extends DOMElement
 		
 		//init the children array
 		_children = new Array<Dynamic>();
+		_textLineDOMElements = new Array<TextLineDOMElement>();
 		
 		super(nativeElement);
 	}
@@ -135,6 +147,64 @@ class AbstractContainerDOMElement extends DOMElement
 	public function getChildren():Array<Dynamic>
 	{
 		return _children;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TEXT LINE CREATION methods
+	// used to create TextLineDOMElements using the TextNode children as model
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Create and return a TextLineDOMElement of the specified width using the provided
+	 * TextNode as model
+	 * @param	width the desired width for the created text line. As many as possible glyphs will
+	 * be added to the line until adding another glyph would make the text line too wide, so 
+	 * the actual width of the line will probably be a bit inferior to the specified width. 
+	 * It might also be inferior if there is not enough text to fill the specified width
+	 * @param	textNode the string of unformatted text to use as the model to create the
+	 * text line. If the createTextLine method is called multiple times in a row with the
+	 * same TextNode, text lines will be created until all of the TextNode text has been rendered
+	 * as text lines.
+	 * @return either a TextLineDOMElement or null if the TextNode model has run out of text to 
+	 * render
+	 */
+	public function createTextLine(width:Int, textNode:TextNode):TextLineDOMElement
+	{
+		var textLineDOMElement:TextLineDOMElement = doCreateTextLine(width, textNode);
+		
+		//the text line is null if there is no more text in the TextNode to render
+		if (textLineDOMElement != null)
+		{
+			//stores the text lines to easily remove it on the next layout
+			//and add it as a child of this ContainerDOMElement so that it can
+			//appear in the DOM
+			_textLineDOMElements.push(textLineDOMElement);
+			this.addChild(textLineDOMElement);
+		}
+		
+		return  textLineDOMElement;
+	}
+	
+	/**
+	 * When a layout of this ContainerDOMElement occurs, all previously
+	 * created text lines must be removed
+	 */
+	public function resetTextLines():Void
+	{
+		for (i in 0..._textLineDOMElements.length)
+		{
+			this.removeChild(_textLineDOMElements[i]);
+		}
+		_textLineDOMElements = new Array<TextLineDOMElement>();
+	}
+	
+	/**
+	 * Actually create a text line using native API and wrap it in a 
+	 * TextLineDOMElement. Overidden by each runtime.
+	 */
+	private function doCreateTextLine(width:Int, textNode:TextNode):TextLineDOMElement
+	{
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

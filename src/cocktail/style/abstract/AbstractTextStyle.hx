@@ -14,10 +14,15 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextDOMElement;
 import cocktail.domElement.TextLineDOMElement;
 import cocktail.style.formatter.FormattingContext;
-import cocktail.style.Style;
 import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import haxe.Log;
+
+#if flash9
+import cocktail.style.as3.Style;
+#elseif js
+import cocktail.style.js.Style;
+#end
 
 /**
  * ...
