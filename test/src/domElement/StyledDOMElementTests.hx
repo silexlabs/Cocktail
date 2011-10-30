@@ -23,7 +23,6 @@ package domElement;
 import cocktail.style.Style;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.TextDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.abstract.AbstractDOMElement;
@@ -240,7 +239,7 @@ class StyledDOMElementTests
 		headerContainer.addChild(_header);
 		
 		_mainContainer.addChild(headerContainer);
-		
+		_mainContainer.addText(NativeElementManager.createNativeTextNode("oihiojhiopnj"));
 		var siteLeftContainer:ContainerDOMElement = getContainer();
 		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
 		siteLeftContainer.style.height = DimensionStyleValue.auto;
@@ -262,7 +261,7 @@ class StyledDOMElementTests
 		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(px(10));
 		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(px(10));
 		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
-		
+		/**
 		var siteLeftText:TextDOMElement = getText();
 	//	siteLeftText.style.width = DimensionStyleValue.length(px(300));
 		//siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
@@ -274,6 +273,7 @@ class StyledDOMElementTests
 		//siteLeftText.style.display = DisplayStyleValue.inlineBlock;
 		
 		var siteLeftText2:TextDOMElement = getText();
+		//siteLeftText2.nativeElement = NativeElementManager.createNativeElement(custom("span"));
 		//siteLeftText2.style.width = DimensionStyleValue.length(px(300));
 		//siteLeftText2.style.marginTop = MarginStyleValue.length(px(10));
 		//siteLeftText2.style.height = DimensionStyleValue.length(px(300));
@@ -288,11 +288,12 @@ class StyledDOMElementTests
 		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
 		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
 		siteLeftText3.style.display = DisplayStyleValue._inline;
-		
+		*/
 		
 		siteLeftTextContainer.style.fontSize = FontSizeStyleValue.length(px(20));
 		siteLeftTextContainer.style.lineHeight = LineHeightStyleValue.length(px(25));
-		siteLeftTextContainer.addChild(siteLeftText);
+		/**
+		//siteLeftTextContainer.addChild(siteLeftText);
 		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		siteLeftText2.style.fontSize = FontSizeStyleValue.length(px(60));
 		siteLeftText2.style.lineHeight = LineHeightStyleValue.length(px(60));
@@ -302,11 +303,18 @@ class StyledDOMElementTests
 		siteLeftText3.style.fontSize = FontSizeStyleValue.length(px(25));
 		siteLeftText3.style.lineHeight = LineHeightStyleValue.length(px(25));
 		siteLeftText3.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod conva"));
-		
-		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
-	
+		*/
+		siteLeftTextContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet,"));
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
+		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
+		siteLeftContainerChildren.style.display = DisplayStyleValue._inline;
+		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode("span text"));
+		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(50));
+		
+		siteLeftTextContainer.addChild(siteLeftContainerChildren);
+		
+		siteLeftTextContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		
 		
 		_siteLeftFloatBackground = getGraph();
@@ -453,14 +461,7 @@ class StyledDOMElementTests
 		return ret;
 	}
 	
-	private function getText():TextDOMElement
-	{
-		var ret:TextDOMElement = new TextDOMElement();
-		getDefaultStyle(ret);
-		//ret.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti";
-		return ret;
-		
-	}
+
 	
 	private function getGraph():GraphicDOMElement
 	{
