@@ -29,6 +29,7 @@ import cocktail.style.positioner.BoxPositioner;
 import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
+import cocktail.domElement.DOMElementData;
 
 #if flash9
 import cocktail.style.as3.Style;
@@ -95,7 +96,7 @@ class AbstractContainerStyle extends Style
 			//be used
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
 				childrenDOMElement.style.computePositionStyle();
 			}
 		}
@@ -146,14 +147,14 @@ class AbstractContainerStyle extends Style
 			//if the children is a DOMElement, call its flow method
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
 				childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 			}
 			//else if it is a text node, call a specific method that will create TextLineDOMElement
 			//and insert them into the document using the TextNode as text content
 			else 
 			{
-				var childrenTextNode:TextNode = cast(containerDOMElement.children[i]);
+				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].children);
 				insertTextNode(childrenTextNode, childrenFormattingContext, containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
 			}
 		}
@@ -293,7 +294,7 @@ class AbstractContainerStyle extends Style
 		{
 			if (isDOMElement(containerDOMElement.children[i]))
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i]);
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
 				if (childrenDOMElement.style.computedStyle.display == _inline ||
 				childrenDOMElement.style.computedStyle.display == inlineBlock)
 				{
@@ -307,9 +308,24 @@ class AbstractContainerStyle extends Style
 		return ret;
 	}
 	
-	private function isDOMElement(element:Dynamic):Bool
+	/**
+	 * Determine wether the given children is a 
+	 * DOMElement or a TextNode
+	 */
+	private function isDOMElement(containerDOMElementChildrenData:ContainerDOMElementChildrenData):Bool
 	{
-		return false;
+		var ret:Bool = false;
+		
+		switch (containerDOMElementChildrenData.type)
+		{
+			case ContainerDOMElementChildrenValue.DOMElement:
+				ret = true;
+			
+			case ContainerDOMElementChildrenValue.TextNode:
+				ret = false;
+		}
+		
+		return ret;
 	}
 	
 	
