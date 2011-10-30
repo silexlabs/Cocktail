@@ -30,9 +30,4 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		super(domElement);
 	}
-	
-	override private function isDOMElement(element:Dynamic):Bool
-	{
-		return (!Std.is(element, TextElement));
-	}
 }

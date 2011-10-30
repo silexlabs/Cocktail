@@ -17,6 +17,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.style.ContainerStyle;
+import cocktail.domElement.DOMElementData;
 
 #if flash9
 import cocktail.domElement.as3.DOMElement;
@@ -51,8 +52,8 @@ class AbstractContainerDOMElement extends DOMElement
 	 * can be either of type DOMElement or TextNode.
 	 * Their order is significant to the layout of the document
 	 */
-	private var _children:Array<Dynamic>;
-	public var children(getChildren, never):Array<Dynamic>;
+	private var _children:Array<ContainerDOMElementChildrenData>;
+	public var children(getChildren, never):Array<ContainerDOMElementChildrenData>;
 	
 	/**
 	 * Stores each of the text lines generated at layout so they 
@@ -73,8 +74,8 @@ class AbstractContainerDOMElement extends DOMElement
 			nativeElement = NativeElementManager.createNativeElement(neutral);
 		}
 		
-		//init the children array
-		_children = new Array<Dynamic>();
+		//init the children and text lines array
+		_children = new Array<ContainerDOMElementChildrenData>();
 		_textLineDOMElements = new Array<TextLineDOMElement>();
 		
 		super(nativeElement);
@@ -103,7 +104,7 @@ class AbstractContainerDOMElement extends DOMElement
 	public function addChild(domElement:DOMElement):Void
 	{
 		domElement.parent = this;
-		_children.push(domElement);
+		_children.push({children:domElement, type:ContainerDOMElementChildrenValue.DOMElement});
 	}
 	
 	/**
@@ -115,7 +116,14 @@ class AbstractContainerDOMElement extends DOMElement
 	public function removeChild(domElement:DOMElement):Void
 	{
 		domElement.parent = null;
-		_children.remove(domElement);
+		for (i in 0..._children.length)
+		{
+			if (_children[i].children == domElement)
+			{
+				_children.remove(_children[i]);
+			}
+		}
+		
 	}
 	
 	/**
@@ -125,7 +133,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function addText(text:TextNode):Void
 	{
-		_children.push(text);
+		_children.push({children:text, type:ContainerDOMElementChildrenValue.TextNode});
 	}
 	
 	/**
@@ -136,7 +144,13 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function removeText(text:TextNode):Void
 	{
-		_children.remove(text);
+		for (i in 0..._children.length)
+		{
+			if (_children[i].children == text)
+			{
+				_children.remove(_children[i]);
+			}
+		}
 	}
 	
 	/**
@@ -144,7 +158,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * @return an array containing any number of TextNode
 	 * and DOMElements
 	 */
-	public function getChildren():Array<Dynamic>
+	public function getChildren():Array<ContainerDOMElementChildrenData>
 	{
 		return _children;
 	}
