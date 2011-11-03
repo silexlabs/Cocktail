@@ -69,5 +69,6 @@ class InLineBoxComputer extends BoxComputer
 		//TO DO, should be based on font size, but to do it for multi-line ? Should be set during layout ? (probably)
 		return 0;
 	}
+
 	
 }

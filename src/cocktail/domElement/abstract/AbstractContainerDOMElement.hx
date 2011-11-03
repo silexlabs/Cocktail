@@ -52,8 +52,8 @@ class AbstractContainerDOMElement extends DOMElement
 	 * can be either of type DOMElement or TextNode.
 	 * Their order is significant to the layout of the document
 	 */
-	private var _children:Array<ContainerDOMElementChildrenData>;
-	public var children(getChildren, never):Array<ContainerDOMElementChildrenData>;
+	private var _children:Array<ContainerDOMElementChildData>;
+	public var children(getChildren, never):Array<ContainerDOMElementChildData>;
 	
 	/**
 	 * Stores each of the text lines generated at layout so they 
@@ -75,7 +75,7 @@ class AbstractContainerDOMElement extends DOMElement
 		}
 		
 		//init the children and text lines array
-		_children = new Array<ContainerDOMElementChildrenData>();
+		_children = new Array<ContainerDOMElementChildData>();
 		_textLineDOMElements = new Array<TextLineDOMElement>();
 		
 		super(nativeElement);
@@ -104,7 +104,7 @@ class AbstractContainerDOMElement extends DOMElement
 	public function addChild(domElement:DOMElement):Void
 	{
 		domElement.parent = this;
-		_children.push({children:domElement, type:ContainerDOMElementChildrenValue.DOMElement});
+		_children.push({child:domElement, type:ContainerDOMElementChildValue.domElement});
 	}
 	
 	/**
@@ -117,10 +117,10 @@ class AbstractContainerDOMElement extends DOMElement
 	{
 		domElement.parent = null;
 		
-		var newChildrenArray:Array<ContainerDOMElementChildrenData> = new Array<ContainerDOMElementChildrenData>();
+		var newChildrenArray:Array<ContainerDOMElementChildData> = new Array<ContainerDOMElementChildData>();
 		for (i in 0..._children.length)
 		{
-			if (_children[i].children != domElement)
+			if (_children[i].child != domElement)
 			{
 				newChildrenArray.push(_children[i]);
 			}
@@ -136,7 +136,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function addText(text:TextNode):Void
 	{
-		_children.push({children:text, type:ContainerDOMElementChildrenValue.TextNode});
+		_children.push({child:text, type:ContainerDOMElementChildValue.textNode});
 	}
 	
 	/**
@@ -147,10 +147,10 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function removeText(text:TextNode):Void
 	{
-		var newChildrenArray:Array<ContainerDOMElementChildrenData> = new Array<ContainerDOMElementChildrenData>();
+		var newChildrenArray:Array<ContainerDOMElementChildData> = new Array<ContainerDOMElementChildData>();
 		for (i in 0..._children.length)
 		{
-			if (_children[i].children != text)
+			if (_children[i].child != text)
 			{
 				newChildrenArray.push(_children[i]);
 			}
@@ -163,7 +163,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * @return an array containing any number of TextNode
 	 * and DOMElements
 	 */
-	public function getChildren():Array<ContainerDOMElementChildrenData>
+	public function getChildren():Array<ContainerDOMElementChildData>
 	{
 		return _children;
 	}
@@ -195,10 +195,9 @@ class AbstractContainerDOMElement extends DOMElement
 		if (textLineDOMElement != null)
 		{
 			//stores the text lines to easily remove it on the next layout
-			//and add it as a child of this ContainerDOMElement so that it can
-			//appear in the DOM
-			_textLineDOMElements.push(textLineDOMElement);
-			this.addChild(textLineDOMElement);
+			//and add it as a child of this ContainerDOMElement nativeElement
+			//so that it can appear in the DOM
+			this.addTextLine(textLineDOMElement);
 		}
 		
 		return  textLineDOMElement;
@@ -212,7 +211,7 @@ class AbstractContainerDOMElement extends DOMElement
 	{
 		for (i in 0..._textLineDOMElements.length)
 		{
-			this.removeChild(_textLineDOMElements[i]);
+			this.removeTextLine(_textLineDOMElements[i]);
 		}
 		_textLineDOMElements = new Array<TextLineDOMElement>();
 	}
@@ -224,6 +223,24 @@ class AbstractContainerDOMElement extends DOMElement
 	private function doCreateTextLine(width:Int, textNode:TextNode):TextLineDOMElement
 	{
 		return null;
+	}
+	
+	/**
+	 * Stores a reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to attach the native text line to the native element of the container
+	 */
+	private function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		_textLineDOMElements.push(textLineDOMElement);
+	}
+	
+	/**
+	 * Removes a stored reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to remove the native text line from the native element of the container
+	 */
+	private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		_textLineDOMElements.remove(textLineDOMElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

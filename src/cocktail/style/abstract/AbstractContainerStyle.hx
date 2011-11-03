@@ -96,7 +96,7 @@ class AbstractContainerStyle extends Style
 			//be used
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				childrenDOMElement.style.computePositionStyle();
 			}
 		}
@@ -147,14 +147,14 @@ class AbstractContainerStyle extends Style
 			//if the children is a DOMElement, call its flow method
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 			}
 			//else if it is a text node, call a specific method that will create TextLineDOMElement
 			//and insert them into the document using the TextNode as text content
 			else 
 			{
-				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].children);
+				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
 				insertTextNode(childrenTextNode, childrenFormattingContext, containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
 			}
 		}
@@ -178,6 +178,18 @@ class AbstractContainerStyle extends Style
 		
 	}
 	
+	/**
+	 * Overriden as ContainerDOMElement is only added to the flow if it is not inline.
+	 * If it is inline, only its children are added in the flow.
+	 */
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	{
+		if (isInline() == false)
+		{
+			super.insertInFlowDOMElement(formattingContext);
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +202,7 @@ class AbstractContainerStyle extends Style
 	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
+
 		//create a text line of the available width remaining in the current line of the formatting context.
 		//the created line might be smaller than the specified width if there is not enough text to render
 		//in the TextNode
@@ -205,9 +217,11 @@ class AbstractContainerStyle extends Style
 		//will be created to signal that all the text was rendered
 		while( textLineDOMElement != null)
 		{
+
+			
 			//compute the styles (box model, text style...) of the newly created line of text
 			textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-			
+
 			//insert the line of text in the document
 			formattingContext.insert(textLineDOMElement);
 			
@@ -220,6 +234,7 @@ class AbstractContainerStyle extends Style
 			}
 			else
 			{
+				
 				startNewLine = false;
 			}
 			
@@ -253,6 +268,12 @@ class AbstractContainerStyle extends Style
 	 * instantiated. If its children mix inline and block level DOMElement, 
 	 * block formatting context is the default
 	 * 
+	 * Lastly, if this container DOMElement is inline meaning it participates in
+	 * an inline formatting context and the previous formatting context is already
+	 * an inline formatting context, then this formatting context is used, none
+	 * is instantiated. This case mainluy happens when block of text are formatted
+	 * combining multiple elements (bold text, italic text...)
+	 * 
 	 * 
 	 * @param	previousFormatingContext the formatting context of the parent of this
 	 * Container DOMElement, used to retrieve floats position from it which might also
@@ -263,12 +284,16 @@ class AbstractContainerStyle extends Style
 	private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
 		var ret:FormattingContext;
 		
-		if (childrenInline() == true)
+		if (isInline() && Std.is(previousFormatingContext, InlineFormattingContext))
 		{
-			ret = new InlineFormattingContext(containerDOMElement, previousFormatingContext);
+			ret = previousFormatingContext;
+		}
+		
+		else if (childrenInline() == true)
+		{
+			ret = new InlineFormattingContext(containerDOMElement, previousFormatingContext);	
 		}
 		else
 		{
@@ -286,23 +311,23 @@ class AbstractContainerStyle extends Style
 	 */
 	private function childrenInline():Bool
 	{
-		var ret:Bool = false;
+		var ret:Bool = true;
 		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
 		for (i in 0...containerDOMElement.children.length)
 		{
+			
 			if (isDOMElement(containerDOMElement.children[i]))
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].children);
-				if (childrenDOMElement.style.computedStyle.display == _inline ||
-				childrenDOMElement.style.computedStyle.display == inlineBlock)
-				{
+				//if one of the children is a block level DOMElement, then the container
+				//is block level
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				
-					ret = true;
+				if (childrenDOMElement.style.computedStyle.display == block)
+				{
+					ret = false;
 				}
 			}
-			
 		}
 		
 		return ret;
@@ -312,16 +337,16 @@ class AbstractContainerStyle extends Style
 	 * Determine wether the given children is a 
 	 * DOMElement or a TextNode
 	 */
-	private function isDOMElement(containerDOMElementChildrenData:ContainerDOMElementChildrenData):Bool
+	private function isDOMElement(containerDOMElementChildData:ContainerDOMElementChildData):Bool
 	{
 		var ret:Bool = false;
 		
-		switch (containerDOMElementChildrenData.type)
+		switch (containerDOMElementChildData.type)
 		{
-			case ContainerDOMElementChildrenValue.DOMElement:
+			case ContainerDOMElementChildValue.domElement:
 				ret = true;
 			
-			case ContainerDOMElementChildrenValue.TextNode:
+			case ContainerDOMElementChildValue.textNode:
 				ret = false;
 		}
 		

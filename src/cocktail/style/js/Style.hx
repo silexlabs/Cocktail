@@ -78,6 +78,15 @@ class Style extends AbstractStyle
 		{
 			case length(unit):
 				lineHeightValue = getConvertedValue(unit);
+				
+			case normal:
+				lineHeightValue = "normal";
+				
+			case percentage(value):
+				lineHeightValue = Std.string(value) + "%";
+				
+			case number(value):
+				lineHeightValue = Std.string(value);	
 		}
 		
 		return lineHeightValue;
@@ -177,9 +186,196 @@ class Style extends AbstractStyle
 		
 	}
 	
+	private function getFontWeightValue(value:FontWeightStyleValue):String
+	{
+		var fontWeightValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				fontWeightValue = "normal";
+				
+			case bold:
+				fontWeightValue = "bold";
+		}
+		
+		return fontWeightValue;
+	}
+	
+	private function getFontStyleValue(value:FontStyleStyleValue):String
+	{
+		var fontStyleValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				fontStyleValue = "normal";
+				
+			case italic:
+				fontStyleValue = "italic";
+		}
+		
+		return fontStyleValue;
+	}
+	
+	private function getFontVariantValue(value:FontVariantStyleValue):String
+	{
+		var fontVariantValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				fontVariantValue = "normal";
+				
+			case smallCaps:
+				fontVariantValue = "small-caps";
+		}
+		
+		return fontVariantValue;
+	}
+	
+	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamilyValue:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String;
+			
+			switch (value[i])
+			{
+				case FontFamilyStyleValue.familyName(name):
+					fontName = name;
+				
+				case FontFamilyStyleValue.genericFamily(genericName):
+					switch (genericName)
+					{
+						case GenericFontFamilyValue.serif:
+							fontName = "serif";
+						
+						case GenericFontFamilyValue.sansSerif:
+							fontName = "sans-serif";
+							
+						case GenericFontFamilyValue.monospace:
+							fontName = "monospace";
+					}
+			}
+			
+			if (fontName.indexOf(" ") != -1)
+			{
+				fontName = "'" + fontName + "'";
+			}
+			
+			fontFamilyValue += fontName;
+			
+			if (i < value.length -1)
+			{
+				fontFamilyValue += ",";
+			}
+		}
+		
+		return fontFamilyValue;
+	}
+	
+	private function getTextTransformValue(value:TextTransformStyleValue):String
+	{
+		var textTransformValue:String;
+		
+		switch (value)
+		{
+			case none:
+				textTransformValue = "none";
+				
+			case uppercase:
+				textTransformValue = "uppercase";
+				
+			case lowercase:
+				textTransformValue = "lowercase";
+				
+			case capitalize:
+				textTransformValue = "capitalize";
+		}
+		
+		return textTransformValue;
+	}
+	
+	private function getLetterSpacingValue(value:LetterSpacingStyleValue):String
+	{
+		var letterSpacingValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				letterSpacingValue = "normal";
+				
+			case length(unit):
+				letterSpacingValue = getConvertedValue(unit);
+		}
+		
+		return letterSpacingValue;
+	}
+	
+	private function getWordSpacingValue(value:WordSpacingStyleValue):String
+	{
+		var wordSpacingValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				wordSpacingValue = "normal";
+				
+			case length(unit):
+				wordSpacingValue = getConvertedValue(unit);
+		}
+		
+		return wordSpacingValue;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
+	
+	override private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		this._domElement.nativeElement.style.wordSpacing = getWordSpacingValue(value);
+		return _wordSpacing = value;
+	}
+	
+	override private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		this._domElement.nativeElement.style.letterSpacing = getLetterSpacingValue(value);
+		return _letterSpacing = value;
+	}
+	
+	override private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		this._domElement.nativeElement.style.textTransform = getTextTransformValue(value);
+		return _textTransform = value;
+	}
+	
+	override private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		this._domElement.nativeElement.style.fontVariant = getFontVariantValue(value);
+		return _fontVariant = value;
+	}
+	
+	override private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		this._domElement.nativeElement.style.fontFamily = getFontFamilyValue(value);
+		return _fontFamily = value;
+	}
+	
+	override private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		this._domElement.nativeElement.style.fontWeight = getFontWeightValue(value);
+		return _fontWeight = value;
+	}
+	
+	override private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		this._domElement.nativeElement.style.fontStyle = getFontStyleValue(value);
+		return _fontStyle = value;
+	}
 	
 	
 	override private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue

@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.style.as3.ContainerStyle;
 import cocktail.style.computer.BlockBoxComputer;
 import cocktail.style.computer.BoxComputer;
 import cocktail.style.computer.FloatBoxComputer;
@@ -129,11 +130,35 @@ class AbstractStyle
 	private var _fontSize:FontSizeStyleValue;
 	public var fontSize(getFontSize, setFontSize):FontSizeStyleValue;
 	
+	private var _fontWeight:FontWeightStyleValue;
+	public var fontWeight(getFontWeight, setFontWeight):FontWeightStyleValue;
+	
+	private var _fontStyle:FontStyleStyleValue;
+	public var fontStyle(getFontStyle, setFontStyle):FontStyleStyleValue;
+	
+	private var _fontFamily:Array<FontFamilyStyleValue>;
+	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamilyStyleValue>;
+	
+	private var _fontVariant:FontVariantStyleValue;
+	public var fontVariant(getFontVariant, setFontVariant):FontVariantStyleValue;
+	
+	private var _color:ColorValue;
+	public var color(getColor, setColor):ColorValue;
+	
 	/**
 	 * text
 	 */
 	private var _lineHeight:LineHeightStyleValue;
 	public var lineHeight(getLineHeight, setLineHeight):LineHeightStyleValue;
+	
+	private var _textTransform:TextTransformStyleValue;
+	public var textTransform(getTextTransform, setTextTransform):TextTransformStyleValue;
+	
+	private var _letterSpacing:LetterSpacingStyleValue;
+	public var letterSpacing(getLetterSpacing, setLetterSpacing):LetterSpacingStyleValue;
+	
+	private var _wordSpacing:WordSpacingStyleValue;
+	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacingStyleValue;
 	
 	////////////////////////////////
 	
@@ -185,7 +210,14 @@ class AbstractStyle
 			position: PositionStyleValue._static,
 			verticalAlign : 0,
 			fontSize:15.0,
-			lineHeight:14.0
+			lineHeight:14.0,
+			fontWeight:FontWeightStyleValue.normal,
+			fontStyle:FontStyleStyleValue.normal,
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontVariant:FontVariantStyleValue.normal,
+			textTransform:TextTransformStyleValue.none,
+			letterSpacing:0,
+			wordSpacing:0
 		}
 	}
 	
@@ -327,29 +359,30 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementDimensions
 	 * @param	rootDOMElementDimensions
 	 */
-	private function insertDOMElement(formatingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
 	{
 		//clear preceding left floats, right floats
 		//or both
 		if (isClear() == true)
 		{
-			formatingContext.clearFloat(this._computedStyle.clear);
+			formattingContext.clearFloat(this._computedStyle.clear);
 		}
 		
 		//insert as a float
 		if (isFloat() == true)
 		{
-			formatingContext.insertFloat(this._domElement);
+			formattingContext.insertFloat(this._domElement);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			formatingContext.insert(this._domElement);
+			insertInFlowDOMElement(formattingContext);
+			
 		}
 		//insert in the flow, then apply an offset to it
 		else if (isRelativePositioned() == true)
 		{
-			formatingContext.insert(this._domElement);
+			formattingContext.insert(this._domElement);
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 		//insert as an absolutely positioned DOMElement
@@ -357,6 +390,15 @@ class AbstractStyle
 		{ 
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
+	}
+	
+	/**
+	 * Do insert an inflow DOMElement into the document. Method added to allow
+	 * overriding for some inherithing class
+	 */
+	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	{
+		formattingContext.insert(this._domElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -396,8 +438,6 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-
 	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) based on
@@ -691,7 +731,6 @@ class AbstractStyle
 		return _marginTop = value;
 	}
 	
-	
 	private function getMarginBottom():MarginStyleValue 
 	{
 		return _marginBottom;
@@ -898,6 +937,86 @@ class AbstractStyle
 	private function getFontSize():FontSizeStyleValue
 	{
 		return _fontSize;
+	}
+	
+	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		return _fontWeight = value;
+	}
+	
+	private function getFontWeight():FontWeightStyleValue
+	{
+		return _fontWeight;
+	}
+	
+	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		return _fontStyle = value;
+	}
+	
+	private function getFontStyle():FontStyleStyleValue
+	{
+		return _fontStyle;
+	}
+	
+	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		return _fontFamily = value;
+	}
+	
+	private function getFontFamily():Array<FontFamilyStyleValue>
+	{
+		return _fontFamily;
+	}
+	
+	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		return _fontVariant = value;
+	}
+	
+	private function getFontVariant():FontVariantStyleValue
+	{
+		return _fontVariant;
+	}
+	
+	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		return _textTransform = value;
+	}
+	
+	private function getTextTransform():TextTransformStyleValue
+	{
+		return _textTransform;
+	}
+	
+	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		return _letterSpacing = value;
+	}
+	
+	private function getLetterSpacing():LetterSpacingStyleValue
+	{
+		return _letterSpacing;
+	}
+	
+	private function setColor(value:ColorValue):ColorValue
+	{
+		return _color = value;
+	}
+	
+	private function getColor():ColorValue
+	{
+		return _color;
+	}
+	
+	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		return _wordSpacing = value;
+	}
+	
+	private function getWordSpacing():WordSpacingStyleValue
+	{
+		return _wordSpacing;
 	}
 	
 	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue

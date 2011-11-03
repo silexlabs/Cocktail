@@ -25,9 +25,9 @@ import cocktail.style.Style;
 	 * as children. This structures holds of reference to the
 	 * children and to its type
 	 */
-	typedef ContainerDOMElementChildrenData = {
-		var children:Dynamic;
-		var type:ContainerDOMElementChildrenValue;
+	typedef ContainerDOMElementChildData = {
+		var child:Dynamic;
+		var type:ContainerDOMElementChildValue;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -38,9 +38,9 @@ import cocktail.style.Style;
 	 * The types of children a ContainerDOMElement
 	 * can have
 	 */
-	enum ContainerDOMElementChildrenValue {
-		DOMElement;
-		TextNode;
+	enum ContainerDOMElementChildValue {
+		domElement;
+		textNode;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -32,9 +32,9 @@ class InlineFormattingContext extends FormattingContext
 	{
 		super.place(domElement);
 		
-		
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
+			
 			startNewLine();
 		}
 		
@@ -42,7 +42,7 @@ class InlineFormattingContext extends FormattingContext
 		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
 		
 		_flowData.x += domElement.offsetWidth;
-					
+
 		if (domElement.offsetHeight > _flowData.maxLineHeight)
 		{
 			var oldMaxLineHeight:Int = _flowData.maxLineHeight;
