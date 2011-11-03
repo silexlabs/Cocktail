@@ -5,6 +5,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.StyleData;
 import cocktail.style.Style;
+import haxe.Log;
 
 /**
  * ...
@@ -22,8 +23,20 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 	override public function getOffsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		var relevantWidth:Float;
+		Log.trace(untyped _nativeElement.textWidth);
+		if (untyped _nativeElement.textWidth == 0)
+		{
+			relevantWidth = untyped _nativeElement.getAtomBounds(0).width ;
+			
+		}
+		else
+		{
+
+			relevantWidth = untyped _nativeElement.textWidth + _style.computedStyle.letterSpacing;
+		}
 		
-		return untyped _nativeElement.textWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
+		return untyped relevantWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
 
 	}
 	
@@ -36,10 +49,6 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		return Math.round(computedStyle.lineHeight);
 	}
 	
-	override private function getActualWidth():Int
-	{
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
-		return untyped _nativeElement.specifiedWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
-	}
+
 	
 }

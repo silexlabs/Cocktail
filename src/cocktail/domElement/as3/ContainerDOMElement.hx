@@ -14,10 +14,22 @@ import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
+import flash.text.engine.BreakOpportunity;
+import flash.text.engine.ContentElement;
 import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.FontPosture;
+import flash.text.engine.FontWeight;
+import flash.text.engine.GroupElement;
+import flash.text.engine.LineJustification;
+import flash.text.engine.SpaceJustifier;
+import flash.text.engine.TextBaseline;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
+import cocktail.style.StyleData;
+import flash.text.engine.TypographicCase;
+import flash.Vector;
 import haxe.Log;
 
 /**
@@ -111,13 +123,18 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		if (_currentTextNode == null || _currentTextNode != textNode)
 		{
 			_currentTextNode = textNode;
+			
+			var textBlockElementFormat:ElementFormat = new ElementFormat();
+			textBlockElementFormat.breakOpportunity = BreakOpportunity.AUTO;
+			textBlockElementFormat.fontSize = 60;
+			
 			//create a new flash TextBlock using the TextNode as content
-			_textBlock = new TextBlock(convertStyle(new TextElement(textNode.text)));
+			_textBlock = new TextBlock(getBrokenTextElements(textNode.text));
 			_previousTextLine = null;
 		}
 		
 		//create a native flash text line
-		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width);
+		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width, 0, true);
 		_previousTextLine = textLine;
 		
 		//if the text line is not null (meaning that the current TextNode still had text to render)
@@ -138,6 +155,71 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
+	 * Stores a reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to attach the native text line to the native element of the container
+	 */
+	override private function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		super.addTextLine(textLineDOMElement);
+		this._nativeElement.addChild(textLineDOMElement.nativeElement);
+	}
+	
+	/**
+	 * Removes a stored reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to remove the native text line from the native element of the container
+	 */
+	override private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		super.removeTextLine(textLineDOMElement);
+		if (textLineDOMElement != null)
+		{
+			this._nativeElement.removeChild(textLineDOMElement.nativeElement);
+		}
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE TEXT LINE CREATION methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	private function getBrokenTextElements(text:String):GroupElement
+	{
+		var textElements:Vector<ContentElement> = new Vector<ContentElement>();
+		
+		var textFragment:String = "";
+		
+		for (i in 0...text.length)
+		{
+			if (StringTools.isSpace(text, i) == true)
+			{
+				if (textFragment != null)
+				{
+					textElements.push(getTextElement(textFragment, false));
+					textFragment = null;
+				}
+				textElements.push(getTextElement(text.charAt(i), true));
+			}
+			else
+			{
+				if (textFragment == null)
+				{
+					textFragment = "";
+				}
+				textFragment += text.charAt(i);
+			}
+		}
+		
+		if (textFragment != null)
+		{
+			textElements.push(getTextElement(textFragment, false));
+		}
+		
+		
+		return new GroupElement(textElements);
+	}
+	
+	/**
 	 * Takes a flash TextElement which is a model fro text containing a
 	 * string of text and objects to format the text when rendered, and
 	 * parametrise its text formatting using the styles of the ContainerDOMElement
@@ -145,19 +227,161 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	 * @return a textElement with a flash element format matching the styles
 	 * of the ContainerDOMElement
 	 */
-	private function convertStyle(textElement:TextElement):TextElement
+	private function getTextElement(text:String, isSpace:Bool):TextElement
 	{
+		var textElement:TextElement = new TextElement(text);
+		
 		//create a flash element format object and set its
 		//attribute to match the styles defined in this ContainerDOMElement
 		var elementFormat:ElementFormat = new ElementFormat();
 		elementFormat.fontSize = _style.computedStyle.fontSize;
 		
+		var fontDescription:FontDescription = new FontDescription();
+		
+		var fontWeightValue:FontWeight;
+		
+		switch (_style.computedStyle.fontWeight)
+		{
+			case bold:
+				fontWeightValue = FontWeight.BOLD;
+				
+			case normal:
+				fontWeightValue = FontWeight.NORMAL;
+		}
+		
+		var fontPostureValue:FontPosture;
+		
+		switch (_style.computedStyle.fontStyle)
+		{
+			case normal:
+				fontPostureValue = FontPosture.NORMAL;
+				
+			case italic:
+				fontPostureValue = FontPosture.ITALIC;
+		}
+		
+		fontDescription.fontWeight = fontWeightValue;
+		fontDescription.fontPosture = fontPostureValue;
+		fontDescription.fontName = getFontFamilyValue(_style.computedStyle.fontFamily);
+		
+		
+		elementFormat.fontDescription = fontDescription;
+		
+		//elementFormat.breakOpportunity = BreakOpportunity.AUTO;
+		
+		var typographicCase:TypographicCase;
+		
+		switch (_style.computedStyle.fontVariant)
+		{
+			case normal:
+				typographicCase = TypographicCase.DEFAULT;
+				
+			case smallCaps:
+				typographicCase = TypographicCase.CAPS_AND_SMALL_CAPS;
+				
+		}
+		
+		
+		elementFormat.typographicCase = typographicCase;
+		
+		if (isSpace == false)
+		{
+			elementFormat.trackingRight = _style.computedStyle.letterSpacing;
+		}
+		else
+		{
+			elementFormat.trackingRight = _style.computedStyle.wordSpacing;
+		}
+		
+		
+		textElement.replaceText(0, textElement.text.length, applyTextTransform(textElement.text));
 		
 		//set the element format as the text element
 		//element format
 		textElement.elementFormat = elementFormat;
 		
 		return textElement;
+	}
+	
+	private function applyTextTransform(text:String):String
+	{
+		switch (_style.computedStyle.textTransform)
+		{
+			case uppercase:
+				text = text.toUpperCase();
+				
+			case lowercase:
+				text = text.toLowerCase();
+				
+			case capitalize:
+				text = capitalizeText(text);
+				
+			case none:
+		}
+		
+		return text;
+	}
+	
+	private function capitalizeText(text:String):String
+	{
+		
+		var capitalizedText:String = text.charAt(0);
+		
+		for (i in 1...text.length)
+		{	
+			if (text.charAt(i - 1) == " ")
+			{
+				capitalizedText += text.charAt(i).toUpperCase();
+			}
+			else
+			{
+				capitalizedText += text.charAt(i);
+			}
+		}
+		return capitalizedText;
+	}
+	
+	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamilyValue:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String;
+			
+			switch (value[i])
+			{
+				case FontFamilyStyleValue.familyName(name):
+					fontName = name;
+				
+				case FontFamilyStyleValue.genericFamily(genericName):
+					switch (genericName)
+					{
+						case GenericFontFamilyValue.serif:
+							fontName = "_serif";
+						
+						case GenericFontFamilyValue.sansSerif:
+							fontName = "_sans";
+							
+						case GenericFontFamilyValue.monospace:
+							fontName = "_typewriter";
+					}
+			}
+			
+			if (fontName.indexOf(" ") != -1)
+			{
+				fontName = "'" + fontName + "'";
+			}
+			
+			fontFamilyValue += fontName;
+			
+			if (i < value.length -1)
+			{
+				fontFamilyValue += ",";
+			}
+		}
+		
+		return fontFamilyValue;
 	}
 	
 	/**

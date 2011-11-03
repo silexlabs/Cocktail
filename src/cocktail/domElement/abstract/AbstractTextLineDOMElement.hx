@@ -17,7 +17,6 @@ import cocktail.domElement.js.DOMElement;
 
 class AbstractTextLineDOMElement extends DOMElement
 {
-	public var actualWidth(getActualWidth, never):Int;
 	
 	private var _isLastLineOfTextBlock:Bool;
 	public var isLastLineOfTextBlock(getIsLastLineOfTextBlock, never):Bool;
@@ -37,13 +36,10 @@ class AbstractTextLineDOMElement extends DOMElement
 	
 	private function getIsLastLineOfTextBlock():Bool
 	{
-		return isLastLineOfTextBlock;
+		return this._isLastLineOfTextBlock;
 	}
 	
-	private function getActualWidth():Int
-	{
-		return 0;
-	}
+
 
 
 	

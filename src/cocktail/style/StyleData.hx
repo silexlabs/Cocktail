@@ -79,6 +79,22 @@ package cocktail.style;
 		
 		var lineHeight:Float;
 		
+		var fontWeight:FontWeightStyleValue;
+		
+		var fontStyle:FontStyleStyleValue;
+		
+		var fontFamily:Array<FontFamilyStyleValue>;
+		
+		var fontVariant:FontVariantStyleValue;
+		
+		var textTransform:TextTransformStyleValue;
+		
+		var letterSpacing:Int;
+		
+		var wordSpacing:Int;
+		
+		var color:Int;
+		
 	}
 	
 	/**
@@ -163,8 +179,119 @@ package cocktail.style;
 		length(value:LengthValue);
 	}
 	
+	/**
+	 * Controls the weight of the
+	 * font
+	 */
+	enum FontWeightStyleValue {
+		normal;
+		bold;
+	}
+	
+	/**
+	 * Controls wether the font
+	 * is displayed in italic
+	 */
+	enum FontStyleStyleValue {
+		normal;
+		italic;
+	}
+	
+	/**
+	 * Lists the type of font which can
+	 * be affected to a text 
+	 */
+	enum FontFamilyStyleValue {
+		
+		/**
+		 * A custom font family name
+		 */
+		familyName(name:String);
+		
+		/**
+		 * A generic family name, most
+		 * likely used as a fallback
+		 * if a more specific font 
+		 * wasn't available
+		 */
+		genericFamily(genericName:GenericFontFamilyValue);
+	}
+	
+	/**
+	 * Lists the available generic 
+	 * font families
+	 */
+	enum GenericFontFamilyValue {
+		serif;
+		sansSerif;
+		monospace;
+	}
+	
+	/**
+	 * Controls wether text is
+	 * displayed as small caps, where
+	 * lowercase charachters look like
+	 * smaller uppercase characters
+	 */
+	enum FontVariantStyleValue {
+		normal;
+		smallCaps;
+	}
+	
 		// TEXT STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Controls the amount of space
+	 * between 2 letter in a text.
+	 */
+	enum LetterSpacingStyleValue {
+		/**
+		 * Use the default spacing of
+		 * the chosen font
+		 */
+		normal;
+		
+		/**
+		 * A length to add to the 
+		 * default spacing of the font,
+		 * might be negative.
+		 */
+		length(value:LengthValue);
+	}
+	
+	/**
+	 * Controls the amount of space between
+	 * two words in a text
+	 */
+	enum WordSpacingStyleValue {
+		
+		/**
+		 * Use the default inter-word
+		 * spacing of the chosen font
+		 */
+		normal;
+		
+		/**
+		 * A length to add to each space
+		 * character, might be negative
+		 */
+		length(value:LengthValue);
+	}
+	
+	/**
+	 * Controls wether all charachters
+	 * in a text are transformed to
+	 * uppercase, lowercase or capitalised
+	 * (only first letter of each word is
+	 * set to uppercase)
+	 */
+	enum TextTransformStyleValue {
+		capitalize;
+		uppercase;
+		lowercase;
+		none;
+	}
 	
 	/**
 	 * On a container DOMElement with inline level
@@ -178,9 +305,29 @@ package cocktail.style;
 	enum LineHeightStyleValue {
 		
 		/**
+		 * Use a "reasonnable" line height value which
+		 * is equal to the font size.
+		 */
+		normal;
+		
+		/**
+		 * With this value, the computed value of the line height 
+		 * is equal to this number multiplied by the font size
+		 */
+		number(value:Float);
+		
+		/**
 		 * absolute line height value
 		 */
 		length(value:LengthValue);
+		
+		/**
+		 * With this value, the computed value of the line height 
+		 * is equal to this percentage multiplied by the font size
+		 */
+		percentage(value:Int);
+		
+		
 	}
 	
 	/**
@@ -472,6 +619,10 @@ package cocktail.style;
 		none;
 	}
 	
+	
+		// UNITS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Lists the different types of 
 	 * unit supported with an explicitly
@@ -509,4 +660,25 @@ package cocktail.style;
 		 * inches, 1in is equal to 2.54cm.
 		 */
 		_in(value:Float);
+	}
+	
+	/**
+	 * Lists the different color format supported.
+	 * Each value describes one color
+	 */
+	enum ColorValue {
+		
+		/**
+		 * each value (red, green and blue)
+		 * must be an integer from 0 to 255
+		 */
+		RGB(red:Int, green:Int, blue:Int);
+		
+		/**
+		 * The color value must be represented
+		 * as 6 hexadecimal number string started
+		 * with a "#" charachter.
+		 * e.g : for red, #FF0000
+		 */
+		hex(value:String);
 	}
