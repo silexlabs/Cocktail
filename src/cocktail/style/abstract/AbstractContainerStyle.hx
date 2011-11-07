@@ -118,14 +118,16 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext = getFormatingContext(formatingContext);
 		}
 		
+		/**
 		//the containing dimensions of the children
 		//because those of the current ContainerDOMElement
 		//as they will be placed inside it
-		containingDOMElementDimensions = {
+		childrenContainingDOMElementDimensions = {
 			width:this._computedStyle.width,
 			height:this._computedStyle.height
-		}
+		}*/
 		
+		var childrenContainingDOMElementDimensions:ContainingDOMElementDimensions = getChildrenContainingDOMElementDimensions();
 		
 		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
 		
@@ -148,14 +150,14 @@ class AbstractContainerStyle extends Style
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.flow(containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
 			}
 			//else if it is a text node, call a specific method that will create TextLineDOMElement
 			//and insert them into the document using the TextNode as text content
 			else 
 			{
 				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
-				insertTextNode(childrenTextNode, childrenFormattingContext, containingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
+				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
 			}
 		}
 		
@@ -301,6 +303,22 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return ret;
+	}
+	
+	private function getChildrenContainingDOMElementDimensions():ContainingDOMElementDimensions
+	{
+		if (isInline() == true)
+		{
+			return { width:this._computedStyle.width, height:Math.round(this._computedStyle.lineHeight) };
+		}
+		else if (isInline() == false && childrenInline() == true)
+		{
+			return { width:this._computedStyle.width, height:Math.round(this._computedStyle.lineHeight) };
+		}
+		else
+		{
+			return { width:this._computedStyle.width, height:this._computedStyle.height };
+		}
 	}
 	
 	/**

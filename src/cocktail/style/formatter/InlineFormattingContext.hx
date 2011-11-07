@@ -55,6 +55,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	override public function startNewLine():Void
 	{
+			computeLineBox();
+		
 			_flowData.y += _flowData.maxLineHeight;
 			_flowData.totalHeight += _flowData.maxLineHeight;
 			_flowData.maxLineHeight = 0;
@@ -68,6 +70,46 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_flowData.x = _flowData.firstLineX;
 			}
+	}
+	
+	private function computeLineBox():Void
+	{
+		var lineBoxTop:Int;
+		var lineBoxBottom:Int;
+		
+		for (i in 0...domElementInLineBox.length)
+		{
+			var baselineOffset:Int;
+			
+			switch(domElementInLineBox[i].style.computedStyle.verticalAlign)
+			{
+				case baseline:
+					baselineOffset = 0;
+					
+				case middle:
+					baselineOffset = domElementInLineBox[i].offsetHeight / 2 + _containingDOMElement.fontMetrics.xHeight / 2;
+					
+				case sub:
+					baselineOffset = domElementInLineBox[i].fontMetrics.subscriptOffset;
+					
+				case _super:
+					baselineOffset = domElementInLineBox[i].fontMetrics.supercriptOffset;
+					
+				case textTop:
+					
+					
+			}
+			
+			if (domElement[i].fontMetrics != null)
+			{
+				
+				
+				if (domElement[i].fontMetrics.ascent > lineBoxTop)
+				{
+					lineBoxTop = domElement[i].fontMetrics.ascent;
+				}
+			}
+		}
 	}
 	
 	

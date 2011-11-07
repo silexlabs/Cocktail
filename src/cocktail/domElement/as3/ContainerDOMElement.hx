@@ -101,6 +101,23 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	// OVERRIDEN TEXT LINE CREATION methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+
+	override public function resetTextLines():Void
+	{
+		if (_textBlock != null)
+		{
+			if (_textBlock.firstLine != null)
+			{
+				_textBlock.releaseLines(_textBlock.firstLine, _textBlock.lastLine);
+				_textBlock.releaseLineCreationData();
+			}
+			
+			_currentTextNode = null;
+			_previousTextLine = null;
+		}
+		super.resetTextLines();
+	}
+	
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
@@ -124,17 +141,13 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		{
 			_currentTextNode = textNode;
 			
-			var textBlockElementFormat:ElementFormat = new ElementFormat();
-			textBlockElementFormat.breakOpportunity = BreakOpportunity.AUTO;
-			textBlockElementFormat.fontSize = 60;
-			
 			//create a new flash TextBlock using the TextNode as content
 			_textBlock = new TextBlock(getBrokenTextElements(textNode.text));
 			_previousTextLine = null;
 		}
 		
 		//create a native flash text line
-		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width, 0, true);
+		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width);
 		_previousTextLine = textLine;
 		
 		//if the text line is not null (meaning that the current TextNode still had text to render)
@@ -169,13 +182,13 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	 * to remove the native text line from the native element of the container
 	 */
 	override private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
-	{
+	{		
 		super.removeTextLine(textLineDOMElement);
+		
 		if (textLineDOMElement != null)
 		{
 			this._nativeElement.removeChild(textLineDOMElement.nativeElement);
 		}
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +211,11 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 					textElements.push(getTextElement(textFragment, false));
 					textFragment = null;
 				}
-				textElements.push(getTextElement(text.charAt(i), true));
+				
+				var space:String = text.charAt(i);
+				space += String.fromCharCode(Std.parseInt("#e2808b"));
+				//Log.trace(String.fromCharCode(Std.parseInt("#e2808b")));
+				textElements.push(getTextElement(space, true));
 			}
 			else
 			{
@@ -267,7 +284,8 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		
 		elementFormat.fontDescription = fontDescription;
 		
-		//elementFormat.breakOpportunity = BreakOpportunity.AUTO;
+		elementFormat.color = _style.computedStyle.color;
+		
 		
 		var typographicCase:TypographicCase;
 		
@@ -293,8 +311,9 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 			elementFormat.trackingRight = _style.computedStyle.wordSpacing;
 		}
 		
-		
 		textElement.replaceText(0, textElement.text.length, applyTextTransform(textElement.text));
+		
+		Log.trace(elementFormat.getFontMetrics().emBox);
 		
 		//set the element format as the text element
 		//element format

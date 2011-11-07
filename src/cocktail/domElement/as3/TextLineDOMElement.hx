@@ -24,7 +24,7 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		var relevantWidth:Float;
-		Log.trace(untyped _nativeElement.textWidth);
+		
 		if (untyped _nativeElement.textWidth == 0)
 		{
 			relevantWidth = untyped _nativeElement.getAtomBounds(0).width ;

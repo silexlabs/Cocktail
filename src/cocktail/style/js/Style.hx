@@ -331,9 +331,156 @@ class Style extends AbstractStyle
 		return wordSpacingValue;
 	}
 	
+	private function getColorValue(value:ColorStyleValue):String
+	{
+		var colorValue:String;
+		
+		switch (value)
+		{
+			case numeric(value):
+				colorValue = getColorFromValue(value);
+				
+			case keyword(value):
+				colorValue = getColorFromKeyword(value);
+		}
+		
+		return colorValue;
+	}
+	
+	private function getColorFromValue(value:ColorValue):String
+	{
+		var colorValue:String;
+		
+		switch (value)
+		{
+			case hex(value):
+				colorValue = value;
+				
+			case RGB(red, green, blue):
+				colorValue = "rgb(" + red + "," + green + "," + blue + ")";
+		}
+		
+		return colorValue;
+	}
+	
+	private function getColorFromKeyword(value:ColorKeywordValue):String
+	{
+		var hexColor:String;
+		
+		switch (value)
+		{
+			case aqua:
+				hexColor = "aqua";
+				
+			case black:
+				hexColor = "black";
+				
+			case blue:
+				hexColor = "blue";
+				
+			case fuchsia:
+				hexColor = "fuchsia";
+				
+			case gray:
+				hexColor = "gray";
+				
+			case green:
+				hexColor = "green";
+				
+			case lime:
+				hexColor = "lime";
+				
+			case maroon:
+				hexColor = "maroon";
+				
+			case navy:
+				hexColor = "navy";
+				
+			case olive:
+				hexColor = "olive";
+				
+			case orange:
+				hexColor = "orange";
+				
+			case purple:
+				hexColor = "purple";
+				
+			case red:
+				hexColor = "red";
+				
+			case silver:
+				hexColor = "silver";
+				
+			case teal:
+				hexColor = "teal";
+				
+			case white:
+				hexColor = "white";
+				
+			case yellow:
+				hexColor = "yellow";
+				
+		}
+		
+		return hexColor;
+	}
+	
+	private function getVerticalAlignValue(value:VerticalAlignStyleValue):String
+	{
+		var verticalAlignValue:String;
+		
+		switch (value)
+		{
+			case baseline:
+				verticalAlignValue = "baseline";
+				
+			case middle:
+				verticalAlignValue = "middle";
+				
+			case sub:
+				verticalAlignValue = "sub";
+				
+			case _super:
+				verticalAlignValue = "super";
+				
+			case textTop:
+				verticalAlignValue = "text-top";
+				
+			case textBottom:
+				verticalAlignValue = "text-bottom";
+				
+			case VerticalAlignStyleValue.top:
+				verticalAlignValue = "top";
+				
+			case VerticalAlignStyleValue.bottom:
+				verticalAlignValue = "bottom";
+				
+			case percent(value):
+				verticalAlignValue = value + "%";
+				
+			case length(value):
+				verticalAlignValue = getConvertedValue(value);
+		}
+		
+		return verticalAlignValue;
+		
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
+	
+	override private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		this._domElement.nativeElement.style.verticalAlign = getVerticalAlignValue(value);
+		return _verticalAlign = value;
+	}
+	
+	override private function setColor(value:ColorStyleValue):ColorStyleValue
+	{
+		this._domElement.nativeElement.style.color = getColorValue(value);
+		return _color = value;
+	}
 	
 	override private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
 	{

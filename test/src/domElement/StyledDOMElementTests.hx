@@ -63,6 +63,8 @@ class StyledDOMElementTests
 	private var _siteLeftAfterFloatBackground2:GraphicDOMElement;
 	private var _siteLeftAfterFloatBackground3:GraphicDOMElement;
 	
+	private var _insetGraphicElement:GraphicDOMElement;
+	
 	public static function main()
 	{
 		//rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
@@ -185,7 +187,7 @@ class StyledDOMElementTests
 		
 		
 		_mainContainer = getContainer();
-		_mainContainer.style.width = DimensionStyleValue.percent(100);
+		_mainContainer.style.width = DimensionStyleValue.percent(50);
 		//_mainContainer.style.height = DimensionStyleValue.auto;
 		//_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
 		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
@@ -194,7 +196,7 @@ class StyledDOMElementTests
 		//_mainContainer.style.position = PositionStyleValue.absolute;
 		
 		attach(_mainContainer);
-		_mainContainer.addChild(_background);
+		//_mainContainer.addChild(_background);
 
 		
 		//_mainContainer.addChild(_background);
@@ -238,8 +240,8 @@ class StyledDOMElementTests
 		
 		headerContainer.addChild(_header);
 		
-		_mainContainer.addChild(headerContainer);
-		_mainContainer.addText(NativeElementManager.createNativeTextNode("oihiojhiopnj"));
+		//_mainContainer.addChild(headerContainer);
+		//_mainContainer.addText(NativeElementManager.createNativeTextNode("oihiojhiopnj"));
 		var siteLeftContainer:ContainerDOMElement = getContainer();
 		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
 		siteLeftContainer.style.height = DimensionStyleValue.auto;
@@ -292,6 +294,7 @@ class StyledDOMElementTests
 		
 		siteLeftTextContainer.style.fontSize = FontSizeStyleValue.length(px(20));
 		siteLeftTextContainer.style.lineHeight = LineHeightStyleValue.length(px(25));
+	
 		/**
 		//siteLeftTextContainer.addChild(siteLeftText);
 		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
@@ -304,19 +307,42 @@ class StyledDOMElementTests
 		siteLeftText3.style.lineHeight = LineHeightStyleValue.length(px(25));
 		siteLeftText3.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod conva"));
 		*/
-		siteLeftTextContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet,"));
+		//_mainContainer.addChild(siteLeftTextContainer);
+		_mainContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur"));
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren.style.display = DisplayStyleValue._inline;
-		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode("span text"));
-		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(50));
+		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM"));
+		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(90));
+		siteLeftContainerChildren.style.fontWeight = FontWeightStyleValue.bold;
+		//siteLeftContainerChildren.style.fontVariant = FontVariantStyleValue.smallCaps;
+		siteLeftContainerChildren.style.letterSpacing = LetterSpacingStyleValue.length(px(20));
+		siteLeftContainerChildren.style.color = ColorStyleValue.keyword(ColorKeywordValue.red);
 		
-		siteLeftTextContainer.addChild(siteLeftContainerChildren);
+		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
+		siteLeftContainerChildren2.style.display = DisplayStyleValue._inline;
+		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode("BADA"));
+		siteLeftContainerChildren2.style.fontSize = FontSizeStyleValue.length(px(50));
+		siteLeftContainerChildren2.style.fontStyle = FontStyleStyleValue.italic;
+		siteLeftContainerChildren.addChild(siteLeftContainerChildren2);
+		siteLeftContainerChildren2.style.textTransform = TextTransformStyleValue.capitalize;
 		
-		siteLeftTextContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
 		
+		//_mainContainer.style.lineHeight = LineHeightStyleValue.length(px(40));
+		//_mainContainer.style.wordSpacing  = WordSpacingStyleValue.length(px(20));
+		//_mainContainer.style.letterSpacing = LetterSpacingStyleValue.length(px(30));
 		
+		_insetGraphicElement = getGraph();
+		_insetGraphicElement.style.width = DimensionStyleValue.length(px(20));
+		_insetGraphicElement.style.height = DimensionStyleValue.length(px(120));
+		_insetGraphicElement.style.display = DisplayStyleValue._inline;
+		_mainContainer.addChild(_insetGraphicElement);
+		_mainContainer.addChild(siteLeftContainerChildren);
+		_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit. aaaaaaaa"));
+		_mainContainer.style.position = PositionStyleValue.relative;
+		_mainContainer.style.top = PositionOffsetStyleValue.length(px(500));
+		_mainContainer.style.fontSize = FontSizeStyleValue.length(px(50));
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
 		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
@@ -324,7 +350,6 @@ class StyledDOMElementTests
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
-		siteLeftFloat.style.height = DimensionStyleValue.length(px(400));
 		siteLeftFloat.style.float = FloatStyleValue.left;
 		//siteLeftFloat.style.clear = ClearStyleValue.both;
 		
@@ -373,7 +398,7 @@ class StyledDOMElementTests
 		
 		siteRightLeftContainer.addChild(siteLeftContainer);
 		
-		_mainContainer.addChild(siteLeftContainer);
+		//_mainContainer.addChild(siteLeftContainer);
 		
 		var siteContainerRight:ContainerDOMElement = getContainer();
 		siteContainerRight.style.width = DimensionStyleValue.percent(30);
@@ -440,6 +465,7 @@ class StyledDOMElementTests
 		paint(_siteLeftAfterFloatBackground, 0x00000);
 		paint(_siteLeftAfterFloatBackground2, 0x00000);
 		paint(_siteLeftAfterFloatBackground3, 0x222222);
+		paint(_insetGraphicElement, 0xFF0000);
 	}
 	
 	private function attach(domElement:DOMElement):Void
@@ -497,8 +523,21 @@ class StyledDOMElementTests
 			domElement.style.minHeight = ConstrainedDimensionStyleValue.none;
 			domElement.style.maxHeight = ConstrainedDimensionStyleValue.none;
 			
+
+			
 			domElement.style.fontSize = FontSizeStyleValue.length(px(12));
-			domElement.style.lineHeight = LineHeightStyleValue.length(px(12));
+			domElement.style.lineHeight = LineHeightStyleValue.normal;
+			domElement.style.fontWeight = FontWeightStyleValue.normal;
+			domElement.style.fontStyle = FontStyleStyleValue.normal;
+			domElement.style.fontFamily = [FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
+			domElement.style.fontVariant = FontVariantStyleValue.normal;
+			domElement.style.textTransform = TextTransformStyleValue.none;
+			domElement.style.letterSpacing = LetterSpacingStyleValue.normal;
+			domElement.style.wordSpacing = WordSpacingStyleValue.normal;
+			
+			domElement.style.verticalAlign = VerticalAlignStyleValue.baseline;
+			
+			domElement.style.color = ColorStyleValue.keyword(ColorKeywordValue.black);
 			
 			domElement.style.display = block;
 			
