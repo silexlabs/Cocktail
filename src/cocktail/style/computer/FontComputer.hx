@@ -41,9 +41,23 @@ class FontComputer
 		
 	}
 	
+	
+	
 	private static function getComputedColor(style:AbstractStyle):Int
 	{
+		var color:Int;
 		
+		switch (style.color)
+		{
+			case numeric(value):
+				color = getValueFromColor(value);
+				
+			case keyword(value):
+				color = getValueFromColorKeyword(value);
+		}
+		
+		
+		return color;
 	}
 	
 	private static function getComputedWordSpacing(style:AbstractStyle):Int
@@ -167,4 +181,84 @@ class FontComputer
 		return lengthValue;
 	}
 	
+	private static function getValueFromColor(value:ColorValue):Int
+	{
+		var color:Int;
+		
+		switch (value)
+		{
+			case RGB(red, green, blue):
+				color = red;
+				color = (color << 8) + green;
+				color = (color << 8) + blue;
+			
+			case hex(value):
+				color = Std.parseInt(StringTools.replace(value, "#", "0x"));
+
+		}
+		
+		return color;
+	}
+	
+	private static function getValueFromColorKeyword(value:ColorKeywordValue):Int
+	{
+		var hexColor:String;
+		
+		switch (value)
+		{
+			case aqua:
+				hexColor = "#00FFFF";
+				
+			case black:
+				hexColor = "#000000";
+				
+			case blue:
+				hexColor = "#0000FF";
+				
+			case fuchsia:
+				hexColor = "#FF00FF";
+				
+			case gray:
+				hexColor = "#808080";
+				
+			case green:
+				hexColor = "#008000";
+				
+			case lime:
+				hexColor = "#00FF00";
+				
+			case maroon:
+				hexColor = "#800000";
+				
+			case navy:
+				hexColor = "#000080";
+				
+			case olive:
+				hexColor = "#808000";
+				
+			case orange:
+				hexColor = "#FFA500";
+				
+			case purple:
+				hexColor = "#800080";
+				
+			case red:
+				hexColor = "#FF0000";
+				
+			case silver:
+				hexColor = "#C0C0C0";
+				
+			case teal:
+				hexColor = "#008080";
+				
+			case white:
+				hexColor = "#FFFFFF";
+				
+			case yellow:
+				hexColor = "#FFFF00";
+				
+		}
+		
+		return getValueFromColor(ColorValue.hex(hexColor));
+	}
 }

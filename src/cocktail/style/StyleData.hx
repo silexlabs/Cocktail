@@ -168,6 +168,48 @@ package cocktail.style;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Lists the type of value which
+	 * can define a text color
+	 */
+	enum ColorStyleValue {
+		
+		/**
+		 * A numerical representation of a
+		 * color (hex, RGB...)
+		 */
+		numeric(value:ColorValue);
+		
+		/**
+		 * the color is chosen among a
+		 * set of predefined colors
+		 */ 
+		keyword(value:ColorKeywordValue);
+	}
+	
+	/**
+	 * Lists the default available colors
+	 */
+	enum ColorKeywordValue {
+		aqua;
+		black;
+		blue;
+		fuchsia;
+		gray;
+		green;
+		lime;
+		maroon;
+		navy;
+		olive;
+		orange;
+		purple;
+		red;
+		silver;
+		teal;
+		white;
+		yellow;
+	}
+	
+	/**
 	 * Controls the em box size
 	 * of a font.
 	 */

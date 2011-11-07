@@ -11,7 +11,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.style.as3.ContainerStyle;
 import cocktail.style.computer.BlockBoxComputer;
 import cocktail.style.computer.BoxComputer;
 import cocktail.style.computer.FloatBoxComputer;
@@ -116,6 +115,13 @@ class AbstractStyle
 	public var right(getRight, setRight):PositionOffsetStyleValue;
 	
 	/**
+	 * The way an element is aligned vertically in an 
+	 * inline formatting context
+	 */
+	private var _verticalAlign:VerticalAlignStyleValue;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
+	
+	/**
 	 * float positioning styles. A floated element is placed to 
 	 * the further left or right of its container
 	 */
@@ -142,8 +148,8 @@ class AbstractStyle
 	private var _fontVariant:FontVariantStyleValue;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariantStyleValue;
 	
-	private var _color:ColorValue;
-	public var color(getColor, setColor):ColorValue;
+	private var _color:ColorStyleValue;
+	public var color(getColor, setColor):ColorStyleValue;
 	
 	/**
 	 * text
@@ -217,7 +223,8 @@ class AbstractStyle
 			fontVariant:FontVariantStyleValue.normal,
 			textTransform:TextTransformStyleValue.none,
 			letterSpacing:0,
-			wordSpacing:0
+			wordSpacing:0,
+			color:0
 		}
 	}
 	
@@ -999,12 +1006,12 @@ class AbstractStyle
 		return _letterSpacing;
 	}
 	
-	private function setColor(value:ColorValue):ColorValue
+	private function setColor(value:ColorStyleValue):ColorStyleValue
 	{
 		return _color = value;
 	}
 	
-	private function getColor():ColorValue
+	private function getColor():ColorStyleValue
 	{
 		return _color;
 	}
@@ -1027,5 +1034,15 @@ class AbstractStyle
 	private function getLineHeight():LineHeightStyleValue
 	{
 		return _lineHeight;
+	}
+	
+	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		return _verticalAlign = value;
+	}
+	
+	private function getVerticalAlign():VerticalAlignStyleValue
+	{
+		return _verticalAlign;
 	}
 }

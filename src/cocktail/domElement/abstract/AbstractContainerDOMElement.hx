@@ -18,6 +18,7 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.style.ContainerStyle;
 import cocktail.domElement.DOMElementData;
+import haxe.Log;
 
 #if flash9
 import cocktail.domElement.as3.DOMElement;
@@ -199,6 +200,11 @@ class AbstractContainerDOMElement extends DOMElement
 			//so that it can appear in the DOM
 			this.addTextLine(textLineDOMElement);
 		}
+		else
+		{
+			//Log.trace("null");
+		}
+		
 		
 		return  textLineDOMElement;
 	}
@@ -240,7 +246,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
 	{
-		_textLineDOMElements.remove(textLineDOMElement);
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
