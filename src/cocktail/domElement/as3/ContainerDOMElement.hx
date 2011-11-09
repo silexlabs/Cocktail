@@ -450,13 +450,13 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	// container, the content of the container is scaled
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		this._width = value;
 		return this._width;
 	}
 	
-	override public function setHeight(value:Int):Int
+	override private function setHeight(value:Int):Int
 	{
 		this._height = value;
 		return this._height;

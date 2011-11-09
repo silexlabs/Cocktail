@@ -69,7 +69,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	// are attributes of the Canvas tag and not styles
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		//when changing the width or height of a Canvas,
 		//its content is erased, 
@@ -83,12 +83,12 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		return value;
 	}
 	
-	override public function getWidth():Int 
+	override private function getWidth():Int 
 	{
 		return untyped Std.parseInt(this._nativeElement.width);
 	}
 	
-	override public function setHeight(value:Int):Int 
+	override private function setHeight(value:Int):Int 
 	{
 		//same as width, save the pixel data and put it back
 		var canvasContext:Dynamic = getContext();
@@ -98,7 +98,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		return value;
 	}
 	
-	override public function getHeight():Int 
+	override private function getHeight():Int 
 	{
 		return untyped Std.parseInt(this._nativeElement.height);
 	}

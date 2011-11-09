@@ -87,7 +87,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	// acts as a mask, to clip the graphics
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		this._width = value;
 		
@@ -100,7 +100,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		return value;
 	}
 	
-	override public function setHeight(value:Int):Int 
+	override private function setHeight(value:Int):Int 
 	{
 		this._height = value;
 		

@@ -20,7 +20,7 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		super(nativeElement, style, isLastLineOfTextBlock);
 	}
 	
-	override public function getOffsetWidth():Int
+	override private function getOffsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		var relevantWidth:Float;
@@ -41,7 +41,7 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 	}
 	
 
-	override public function getOffsetHeight():Int
+	override private function getOffsetHeight():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		

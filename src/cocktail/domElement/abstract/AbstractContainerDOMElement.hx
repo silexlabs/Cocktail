@@ -164,7 +164,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * @return an array containing any number of TextNode
 	 * and DOMElements
 	 */
-	public function getChildren():Array<ContainerDOMElementChildData>
+	private function getChildren():Array<ContainerDOMElementChildData>
 	{
 		return _children;
 	}
@@ -257,7 +257,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * Set the semantic name of the first native node
 	 * @param	semantic an HTML tag name (div, nav, header...)
 	 */
-	public function setSemantic(semantic:String):String
+	private function setSemantic(semantic:String):String
 	{
 		this._semantic = semantic;
 		return this._semantic;
@@ -267,7 +267,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * Return the semantic name of the first native node
 	 * @return	semantic an HTML tag name (div, nav, header...)
 	 */
-	public function getSemantic():String
+	private function getSemantic():String
 	{
 		return this._semantic;
 	}

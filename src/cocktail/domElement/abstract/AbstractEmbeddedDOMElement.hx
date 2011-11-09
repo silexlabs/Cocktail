@@ -93,34 +93,34 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	// INTRINSIC DIMENSIONS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setIntrinsicWidth(value:Null<Int>):Null<Int>
+	private function setIntrinsicWidth(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicWidth = value;
 		return value;
 	}
 	
-	public function getIntrinsicWidth():Null<Int>
+	private function getIntrinsicWidth():Null<Int>
 	{
 		return this._intrinsicWidth;
 	}
 	
-	public function setIntrinsicHeight(value:Null<Int>):Null<Int>
+	private function setIntrinsicHeight(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicHeight = value;
 		return value;
 	}
 	
-	public function getIntrinsicHeight():Null<Int>
+	private function getIntrinsicHeight():Null<Int>
 	{
 		return this._intrinsicHeight;
 	}
 	
-	public function getIntrinsicRatio():Null<Float>
+	private function getIntrinsicRatio():Null<Float>
 	{
 		return this._intrinsicRatio;
 	}
 	
-	public function setIntrinsicRatio(value:Null<Float>):Null<Float>
+	private function setIntrinsicRatio(value:Null<Float>):Null<Float>
 	{
 		this._intrinsicRatio = value;
 		return value;
