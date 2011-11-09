@@ -3,3 +3,4 @@
 -main domElement.GraphicDOMElementTests
 -lib utest
 -swf9 ../../bin/domElement/graphicDOMElementTestAs3.swf
+-swf-version 10.1

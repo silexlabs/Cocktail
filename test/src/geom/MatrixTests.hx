@@ -16,6 +16,7 @@ package geom;
  * Units tests for DOMElements transformation matrix
  * @author Yannick DOMINGUEZ
  */
+import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
 import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
@@ -30,12 +31,12 @@ import utest.ui.Report;
 
 class MatrixTests 
 {
-	private static var rootDOMElement:DOMElement;
+	private static var rootDOMElement:ContainerDOMElement;
 	
 	public static function main()
 	{
 
-		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
+		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new MatrixTests());
@@ -82,19 +83,19 @@ class MatrixTests
 		
 		domElement.rotate(45, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getRotation(), 45);
+		Assert.equals(domElement.matrix.getRotation(), 45);
 		
 		domElement.resetTransformations();
 		
 		domElement.rotate(90, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getRotation(), 90);
+		Assert.equals(domElement.matrix.getRotation(), 90);
 		
 		domElement.resetTransformations();
 		
 		domElement.rotate(180, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getRotation(), 180);
+		Assert.equals(domElement.matrix.getRotation(), 180);
 		
 		domElement.resetTransformations();
 		
@@ -109,13 +110,13 @@ class MatrixTests
 		
 		domElement.scale(2, 1, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getScaleX(), 2);
+		Assert.equals(domElement.matrix.getScaleX(), 2);
 		
 		domElement.resetTransformations();
 		
 		domElement.scale(-2, 1, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getScaleX(), -2);
+		Assert.equals(domElement.matrix.getScaleX(), -2);
 		
 		//test y scale
 		
@@ -123,13 +124,13 @@ class MatrixTests
 		
 		domElement.scale(1, 2, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getScaleY(), 2);
+		Assert.equals(domElement.matrix.getScaleY(), 2);
 		
 		domElement.resetTransformations();
 		
 		domElement.scale(1, -2, constant(center, middle));
 		
-		Assert.equals(domElement.getMatrix().getScaleY(), -2);
+		Assert.equals(domElement.matrix.getScaleY(), -2);
 		
 		//test translation
 		
@@ -137,8 +138,8 @@ class MatrixTests
 		
 		domElement.translate(20, 30);
 		
-		Assert.equals(domElement.matrix.getTranslationX(), 20);
-		Assert.equals(domElement.matrix.getTranslationY(), 30);
+		Assert.equals(domElement.matrix.getTranslationX, 20);
+		Assert.equals(domElement.matrix.getTranslationY, 30);
 		
 		
 		//test skew
@@ -147,8 +148,8 @@ class MatrixTests
 		
 		domElement.skew(0.5, 0.2, constant(center, middle));
 		
-		Assert.equals(Std.string(domElement.getMatrix().getSkewX()).substr(0,3), "0.5");
-		Assert.equals(Std.string(domElement.getMatrix().getSkewY()).substr(0,3), "0.2");
+		Assert.equals(Std.string(domElement.matrix.getSkewX()).substr(0,3), "0.5");
+		Assert.equals(Std.string(domElement.matrix.getSkewY()).substr(0,3), "0.2");
 		
 		//test absolut rotation setting
 		
