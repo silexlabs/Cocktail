@@ -22,7 +22,6 @@ import flash.system.ApplicationDomain;
 
 #end
 import cocktail.nativeElement.NativeElementManager;
-import cocktail.domElement.TextDOMElement;
 import cocktail.classInstance.ClassInstance;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
@@ -41,13 +40,13 @@ import cocktail.resource.ResourceLoaderManager;
 class ResourceTests 
 {
 	
-	private static var rootDOMElement:DOMElement;
+	private static var rootDOMElement:ContainerDOMElement;
 	
 	public static function main()
 	{
 	
 		
-		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
+		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new ResourceTests());
@@ -160,7 +159,7 @@ class ResourceTests
 		var nativeInstance:ClassInstance = NativeInstanceManager.getClassInstanceByClassName("LibrarySymbol");
 		
 		#if flash9
-		flash.Lib.current.addChild(nativeInstance.getNativeInstance());
+		flash.Lib.current.addChild(nativeInstance.nativeInstance);
 		Assert.same(nativeInstance.getField("x"), 0);
 		#elseif js
 		Assert.same(nativeInstance.callMethod("testMethod", []), "library loaded ok !");
@@ -197,7 +196,7 @@ class ResourceTests
 		rootDOMElement.addChild(domElement);
 		
 		#if flash9
-		domElement.setX(200);
+		domElement.x = 200;
 		Assert.is(domElement.nativeElement, Loader);
 		#elseif js
 		
@@ -267,34 +266,5 @@ class ResourceTests
 		#end
 	}
 	
-	/**
-	 * tests the loading of an HTML text
-	 */ 
-	public function testLoadText()
-	{
-		var successCallback:Dynamic->Void = Assert.createEvent(onTextLoaded);
-		ResourceLoaderManager.loadText("htmlText.html", successCallback, onTextLoadError);
-	}
-	
-	/**
-	 * Called when the text domElement is created, tests if the loaded
-	 * data matches the html text that loaded
-	 */
-	private function onTextLoaded(domElement:TextDOMElement)
-	{
-		rootDOMElement.addChild(domElement);
-		Assert.equals(domElement.getText(), "<h1>This is an HTML text test</h1><p>paragraph</p><h2><b>second header</b></h2>");
-		#if flash9
-		domElement.setY(200);
-		#end
-	}
-	
-	/**
-	 * Called when there is an error while loading text
-	 * @param	error the error message
-	 */
-	private function onTextLoadError(error:String)
-	{
-		trace('Error while loading htmlText.html');
-	}
+
 }
