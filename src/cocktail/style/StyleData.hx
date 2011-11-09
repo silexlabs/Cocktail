@@ -35,64 +35,68 @@ package cocktail.style;
 	typedef ComputedStyleData = {
 		
 		/**
-		 * content width
+		 * content dimensions
 		 */
 		var width:Int;
-		
-		var minWidth:Int;
-		
-		var maxWidth:Int;
-		
-		/**
-		 * content height
-		 */
 		var height:Int;
 		
+		/**
+		 * content dimensions constraints
+		 */
+		var minWidth:Int;
+		var maxWidth:Int;
 		var maxHeight:Int;
-		
 		var minHeight:Int;
 		
+		/**
+		 * margins
+		 */
 		var marginLeft:Int;
 		var marginRight:Int;
 		var marginTop:Int;
 		var marginBottom:Int;
+		
+		/**
+		 * paddings
+		 */
 		var paddingLeft:Int;
 		var paddingRight:Int;
 		var paddingTop:Int;
 		var paddingBottom:Int;
+		
+		/**
+		 * position offset
+		 */
 		var left:Int;
 		var right:Int;
 		var top:Int;
 		var bottom:Int;
 		
+		/**
+		 * display
+		 */
 		var display:DisplayStyleValue;
-		
 		var float:FloatStyleValue;
-		
 		var clear:ClearStyleValue;
-		
 		var position:PositionStyleValue;
-		
 		var verticalAlign:Int;
-		
-		var fontSize:Float;
-		
 		var lineHeight:Float;
 		
+		/**
+		 * font
+		 */
+		var fontSize:Float;
 		var fontWeight:FontWeightStyleValue;
-		
 		var fontStyle:FontStyleStyleValue;
-		
 		var fontFamily:Array<FontFamilyStyleValue>;
-		
 		var fontVariant:FontVariantStyleValue;
 		
+		/**
+		 * text
+		 */
 		var textTransform:TextTransformStyleValue;
-		
 		var letterSpacing:Int;
-		
 		var wordSpacing:Int;
-		
 		var color:Int;
 		
 	}
@@ -114,14 +118,28 @@ package cocktail.style;
 		 */
 		var y:Int;
 		
-		var firstLineX:Int;
+		/**
+		 * The x offset applied to each starting line
+		 * (matches the containing DOMElement left padding)
+		 */
+		var xOffset:Int;
 		
-		var firstLineY:Int;
+		/**
+		 * The y offset applied to the formatting context
+		 * (matches the containing DOMElement top padding)
+		 */
+		var yOffset:Int;
 		
-		var maxLineWidth:Int;
-		
+		/**
+		 * The width of the content area of the containing
+		 * DOMElement in which the flow occurs
+		 */
 		var containingBlockWidth:Int;
 		
+		/**
+		 * The height of the content area of the containing
+		 * DOMElement in which the flow occurs
+		 */
 		var containingBlockHeight:Int;
 		
 		/**

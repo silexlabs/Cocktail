@@ -273,7 +273,7 @@ class FloatsManager
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
-		floatData.x = flowData.firstLineX + getLeftFloatOffset(floatData.y);
+		floatData.x = flowData.xOffset + getLeftFloatOffset(floatData.y);
 		
 		return floatData;
 	}
@@ -288,7 +288,7 @@ class FloatsManager
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = flowData.containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, flowData.containingBlockWidth) + flowData.firstLineX;
+		floatData.x = flowData.containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, flowData.containingBlockWidth) + flowData.xOffset;
 		
 		return floatData;
 	}

@@ -143,7 +143,7 @@ class AbstractClassInstance
 	/**
 	 * Returns the reference to the native class instance
 	 */
-	public function getNativeInstance():NativeInstance
+	private function getNativeInstance():NativeInstance
 	{
 		return _nativeInstance;
 	}

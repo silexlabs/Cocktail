@@ -105,7 +105,7 @@ class DOMElement extends AbstractDOMElement
 		super.setMatrix(matrix);
 		
 		//get the data of the cross-platform matrix
-		var matrixData:MatrixData = matrix.getMatrixData();
+		var matrixData:MatrixData = matrix.data;
 		
 		//create a native matrix with the cross-platform matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);

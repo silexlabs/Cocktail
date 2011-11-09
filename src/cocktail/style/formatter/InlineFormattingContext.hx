@@ -61,19 +61,20 @@ class InlineFormattingContext extends FormattingContext
 			_flowData.totalHeight += _flowData.maxLineHeight;
 			_flowData.maxLineHeight = 0;
 			
-			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.firstLineX)
+			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
 				
 				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
 			}
 			else
 			{
-				_flowData.x = _flowData.firstLineX;
+				_flowData.x = _flowData.xOffset;
 			}
 	}
 	
 	private function computeLineBox():Void
 	{
+		/**
 		var lineBoxTop:Int;
 		var lineBoxBottom:Int;
 		
@@ -96,6 +97,7 @@ class InlineFormattingContext extends FormattingContext
 					baselineOffset = domElementInLineBox[i].fontMetrics.supercriptOffset;
 					
 				case textTop:
+					baselineOffset
 					
 					
 			}
@@ -109,7 +111,7 @@ class InlineFormattingContext extends FormattingContext
 					lineBoxTop = domElement[i].fontMetrics.ascent;
 				}
 			}
-		}
+		}*/
 	}
 	
 	
