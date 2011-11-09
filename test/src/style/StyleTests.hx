@@ -10,13 +10,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package domElement;
+package style;
 
 /**
- * Units tests for DOMElements
- * @author Yannick DOMINGUEZ & Raphael HARMEL
+ * Units tests for Styles
+ * @author Yannick DOMINGUEZ
  * 
- * 2011-08-10 PHP part is not complete yet.
  * 
  */
 
@@ -38,7 +37,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
 
 
-class StyledDOMElementTests 
+class StyleTests 
 {
 	
 	private static var rootDOMElement:DOMElement;
@@ -68,7 +67,7 @@ class StyledDOMElementTests
 	public static function main()
 	{
 		//rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
-		new StyledDOMElementTests();
+		new StyleTests();
 	}
 	
 	public function new() 
