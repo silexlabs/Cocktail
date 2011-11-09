@@ -57,7 +57,7 @@ class DOMElement extends AbstractDOMElement
 	 * Show or hide the native DisplayObject. 
 	 * @param	value true if the DisplayObject must be visible
 	 */
-	override public function setIsVisible(value:Bool):Bool
+	override private function setIsVisible(value:Bool):Bool
 	{
 		this._nativeElement.visible = value;
 		return value;
@@ -66,7 +66,7 @@ class DOMElement extends AbstractDOMElement
 	/**
 	 * Return wether the native DisplayObject is visible.
 	 */
-	override public function getIsVisible():Bool
+	override private function getIsVisible():Bool
 	{
 		return this._nativeElement.visible;
 	}
@@ -75,7 +75,7 @@ class DOMElement extends AbstractDOMElement
 	 * Set the opacity of the DisplayObject
 	 * @param	value from 0 (transparent) to 1 (opaque)
 	 */
-	override public function setAlpha(value:Float):Float
+	override private function setAlpha(value:Float):Float
 	{
 		this._nativeElement.alpha = value;
 		return value;
@@ -85,7 +85,7 @@ class DOMElement extends AbstractDOMElement
 	 * return the opacity of the DisplayObject, 
 	 * from 0 to 1
 	 */ 
-	override public function getAlpha():Float
+	override private function getAlpha():Float
 	{
 		return this._nativeElement.alpha;
 	}
@@ -100,7 +100,7 @@ class DOMElement extends AbstractDOMElement
 	 * native DisplayObject
 	 * @param	matrix
 	 */
-	override public function setMatrix(matrix:Matrix):Matrix
+	override private function setMatrix(matrix:Matrix):Matrix
 	{
 		super.setMatrix(matrix);
 		
@@ -134,28 +134,28 @@ class DOMElement extends AbstractDOMElement
 	// set the following attributes : x,y,width,height
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setX(value:Int):Int 
+	override private function setX(value:Int):Int 
 	{
 		super.setX(value);
 		this._nativeElement.x = value;
 		return this._x;
 	}
 	
-	override public function setY(value:Int):Int 
+	override private function setY(value:Int):Int 
 	{
 		super.setY(value);
 		this._nativeElement.y = value;
 		return this._y;
 	}
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
 		this._nativeElement.width = value;
 		return this._width;
 	}
 	
-	override public function setHeight(value:Int):Int 
+	override private function setHeight(value:Int):Int 
 	{
 		super.setHeight(value);
 		this._nativeElement.height = value;
@@ -167,7 +167,7 @@ class DOMElement extends AbstractDOMElement
 	// Setter/Getter to manipulate a native DOMElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	override public function setZIndex(value:Int):Int
+	override private function setZIndex(value:Int):Int
 	{
 		//if the value is outside of the children range, set it to the 
 		//last children range
@@ -184,7 +184,7 @@ class DOMElement extends AbstractDOMElement
 		return value;
 	}
 	
-	override public function getZIndex():Int 
+	override private function getZIndex():Int 
 	{
 		//retrieve the parent Display object, and use it to retrieve the current
 		//child index

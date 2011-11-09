@@ -97,7 +97,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	 * of the root tag of the native DOMElement (which is an HTML tag)
 	 * @param	semantic the new node name
 	 */
-	override public function setSemantic(semantic:String):String
+	override private function setSemantic(semantic:String):String
 	{
 		super.setSemantic(semantic);
 		

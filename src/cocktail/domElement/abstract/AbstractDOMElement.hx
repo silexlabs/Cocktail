@@ -312,7 +312,7 @@ class AbstractDOMElement
 	/**
 	 * Returns the DOMElement parent of this DOMElement
 	 */
-	public function getParent():AbstractContainerDOMElement
+	private function getParent():AbstractContainerDOMElement
 	{
 		return this._parent;
 	}
@@ -320,7 +320,7 @@ class AbstractDOMElement
 	/**
 	 * set the parent of this DOMElement
 	 */
-	public function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
+	private function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
 	{
 		this._parent = domElement;
 		return this._parent;
@@ -330,7 +330,7 @@ class AbstractDOMElement
 	 * set the reference to this DOMElement NativeElement
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
-	public function setNativeElement(value:NativeElement):NativeElement
+	private function setNativeElement(value:NativeElement):NativeElement
 	{
 		this._nativeElement = value;
 		init();
@@ -341,7 +341,7 @@ class AbstractDOMElement
 	 * Returns the reference to this DOMElement native DOM element
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
-	public function getNativeElement():NativeElement
+	private function getNativeElement():NativeElement
 	{
 		return this._nativeElement;
 	}
@@ -356,7 +356,7 @@ class AbstractDOMElement
 	 * by runtime specific sub class
 	 * @param	value true if the DOM object must be visible
 	 */
-	public function setIsVisible(value:Bool):Bool
+	private function setIsVisible(value:Bool):Bool
 	{
 		return value;
 	}
@@ -365,7 +365,7 @@ class AbstractDOMElement
 	 * Return wether the DOM object is visible. Implemented
 	 * by runtime specific sub class
 	 */
-	public function getIsVisible():Bool
+	private function getIsVisible():Bool
 	{
 		return false;
 	}
@@ -374,7 +374,7 @@ class AbstractDOMElement
 	 * Set the opacity of the DOM object
 	 * @param	value from 0 (transparent) to 1 (opaque)
 	 */
-	public function setAlpha(value:Float):Float
+	private function setAlpha(value:Float):Float
 	{
 		return value;
 	}
@@ -383,7 +383,7 @@ class AbstractDOMElement
 	 * return the opacity of the DOM Object, 
 	 * from 0 to 1
 	 */ 
-	public function getAlpha():Float
+	private function getAlpha():Float
 	{
 		return 0;
 	}
@@ -398,7 +398,7 @@ class AbstractDOMElement
 	 * by the inheriting runtime specific class to update
 	 * their native matrix transformations
 	 */
-	public function setMatrix(matrix:Matrix):Matrix
+	private function setMatrix(matrix:Matrix):Matrix
 	{
 		this._matrix = matrix;
 		return this._matrix;
@@ -407,7 +407,7 @@ class AbstractDOMElement
 	/**
 	 * Return this domElement matrix
 	 */
-	public function getMatrix():Matrix
+	private function getMatrix():Matrix
 	{
 		return this._matrix;
 	}
@@ -560,7 +560,7 @@ class AbstractDOMElement
 	 * the current x translation
 	 * @param	translationX the target x translation
 	 */
-	public function setTranslationX(translationX:Float):Float
+	private function setTranslationX(translationX:Float):Float
 	{
 		_matrix.setTranslationX(translationX);
 		this.matrix = this._matrix;
@@ -571,7 +571,7 @@ class AbstractDOMElement
 	 * Return the current x translation
 	 * @return
 	 */
-	public function getTranslationX():Float
+	private function getTranslationX():Float
 	{
 		return this._matrix.getTranslationX();
 	}
@@ -581,7 +581,7 @@ class AbstractDOMElement
 	 * the current y translation
 	 * @param	translationX the target y translation
 	 */
-	public function setTranslationY(translationY:Float):Float
+	private function setTranslationY(translationY:Float):Float
 	{
 		_matrix.setTranslationY(translationY);
 		this.matrix = this._matrix;
@@ -592,7 +592,7 @@ class AbstractDOMElement
 	 * Return the current y translation
 	 * @return
 	 */
-	public function getTranslationY():Float
+	private function getTranslationY():Float
 	{
 		return this._matrix.getTranslationY();
 	}
@@ -601,7 +601,7 @@ class AbstractDOMElement
 	 * set the absolut x scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target x scale
 	 */
-	public function setScaleX(scaleX:Float):Float
+	private function setScaleX(scaleX:Float):Float
 	{
 		_matrix.setScaleX(scaleX, getRegistrationPointPoint(this.registrationPoint));
 		this.matrix = this._matrix;
@@ -612,7 +612,7 @@ class AbstractDOMElement
 	 * Return the current x scale
 	 * @return a float, 1 corresponds to no x scale
 	 */
-	public function getScaleX():Float { 
+	private function getScaleX():Float { 
 		return _matrix.getScaleX();
 	}
 
@@ -621,7 +621,7 @@ class AbstractDOMElement
 	 * set the absolut y scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target y scale
 	 */
-	public function setScaleY(scaleY:Float):Float
+	private function setScaleY(scaleY:Float):Float
 	{
 		//default transformation center is top left
 		if (registrationPoint == null)
@@ -638,7 +638,7 @@ class AbstractDOMElement
 	 * Return the current y scale
 	 * @return a float, 1 corresponds to no y scale
 	 */
-	public function getScaleY():Float { 
+	private function getScaleY():Float { 
 		return _matrix.getScaleY();
 	}
 	
@@ -647,7 +647,7 @@ class AbstractDOMElement
 	 * rotation
 	 * @param	angle the target angle
 	 */
-	public function setRotation(angle:Int):Int 
+	private function setRotation(angle:Int):Int 
 	{
 		
 		//default transformation center is top left
@@ -665,7 +665,7 @@ class AbstractDOMElement
 	 * Return the current rotation angle in deg
 	 * @return an Int from 0 to 360
 	 */
-	public function getRotation():Int { 
+	private function getRotation():Int { 
 		return _matrix.getRotation();
 	}
 	
@@ -674,7 +674,7 @@ class AbstractDOMElement
 	 * @param	registrationPoint the new origin of transformation
 	 * @return an enum value containing a constant or a point
 	 */
-	public function setRegistrationPoint(registrationPoint:RegistrationPointValue):RegistrationPointValue
+	private function setRegistrationPoint(registrationPoint:RegistrationPointValue):RegistrationPointValue
 	{
 		this._registrationPoint = registrationPoint;
 		return this._registrationPoint;
@@ -683,7 +683,7 @@ class AbstractDOMElement
 	/**
 	 * Return the transformation origin
 	 */
-	public function getRegistrationPoint():RegistrationPointValue
+	private function getRegistrationPoint():RegistrationPointValue
 	{
 		return this._registrationPoint;
 	}
@@ -693,68 +693,68 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseDown = value;
 		return value;
 	}
 	
-	public function getOnMouseDown():MouseEventData->Void
+	private function getOnMouseDown():MouseEventData->Void
 	{
 		return _mouse.onMouseDown;
 	}
 	
-	public function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseUp = value;
 		return value;
 	}
 	
-	public function getOnMouseUp():MouseEventData->Void
+	private function getOnMouseUp():MouseEventData->Void
 	{
 		return _mouse.onMouseUp;
 	}
 	
-	public function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseOver = value;
 		return value;
 	}
 	
-	public function getOnMouseOver():MouseEventData->Void
+	private function getOnMouseOver():MouseEventData->Void
 	{
 		return _mouse.onMouseOver;
 	}
 	
-	public function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseOut = value;
 		return value;
 	}
 	
-	public function getOnMouseOut():MouseEventData->Void
+	private function getOnMouseOut():MouseEventData->Void
 	{
 		return _mouse.onMouseOut;
 	}
 	
-	public function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseMove = value;
 		return value;
 	}
 	
-	public function getOnMouseMove():MouseEventData->Void
+	private function getOnMouseMove():MouseEventData->Void
 	{
 		return _mouse.onMouseMove;
 	}
 	
-	public function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
 		_mouse.onMouseDoubleClick = value;
 		return value;
 	}
 	
-	public function getOnMouseDoubleClick():MouseEventData->Void
+	private function getOnMouseDoubleClick():MouseEventData->Void
 	{
 		return _mouse.onMouseDoubleClick;
 	}
@@ -764,24 +764,24 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setOnKeyDown(value:Key->Void):Key->Void
+	private function setOnKeyDown(value:Key->Void):Key->Void
 	{
 		_keyboard.onKeyDown = value;
 		return value;
 	}
 	
-	public function getOnKeyDown():Key->Void
+	private function getOnKeyDown():Key->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	public function setOnKeyUp(value:Key->Void):Key->Void
+	private function setOnKeyUp(value:Key->Void):Key->Void
 	{
 		_keyboard.onKeyUp = value;
 		return value;
 	}
 	
-	public function getOnKeyUp():Key->Void
+	private function getOnKeyUp():Key->Void
 	{
 		return _keyboard.onKeyUp;
 	}
@@ -796,7 +796,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field
 	 * @param	propertyValue the new value of the field
 	 */
-	public function setField(propertyName:String, propertyValue:Dynamic):Void
+	private function setField(propertyName:String, propertyValue:Dynamic):Void
 	{
 		Reflect.setField(this._nativeElement, propertyName, propertyValue);
 	}
@@ -806,7 +806,7 @@ class AbstractDOMElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
-	public function getField(propertyName:String):Dynamic
+	private function getField(propertyName:String):Dynamic
 	{
 		return Reflect.field(this._nativeElement, propertyName);
 	}
@@ -816,46 +816,46 @@ class AbstractDOMElement
 	// Setters/Getters to manipulate a native DOMElement positioning in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setX(value:Int):Int 
+	private function setX(value:Int):Int 
 	{
 		this._x = value;
 		return this._x;
 	}
 	
-	public function getX():Int 
+	private function getX():Int 
 	{ 
 		return this._x; 
 	}
 	
-	public function setY(value:Int):Int
+	private function setY(value:Int):Int
 	{
 		this._y = value;
 		return this._y;
 	}
 	
-	public function getY():Int 
+	private function getY():Int 
 	{ 
 		return this._y; 
 	}
 	
-	public function setWidth(value:Int):Int
+	private function setWidth(value:Int):Int
 	{
 		this._width = value;
 		return this._width;
 	}
 	
-	public function getWidth():Int 
+	private function getWidth():Int 
 	{ 
 		return this._width; 
 	}
 	
-	public function setHeight(value:Int):Int
+	private function setHeight(value:Int):Int
 	{
 		this._height = value;
 		return this._height;
 	}
 	
-	public function getHeight():Int 
+	private function getHeight():Int 
 	{ 
 		return this._height;
 	}
@@ -864,7 +864,7 @@ class AbstractDOMElement
 	 * constructs the offset width from the computed
 	 * box of this domElement
 	 */
-	public function getOffsetWidth():Int
+	private function getOffsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.width + computedStyle.marginLeft + computedStyle.marginRight + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -874,7 +874,7 @@ class AbstractDOMElement
 	 * constructs the offset height from the computed
 	 * box of this domElement
 	 */
-	public function getOffsetHeight():Int
+	private function getOffsetHeight():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.height + computedStyle.marginTop + computedStyle.marginBottom + computedStyle.paddingTop + computedStyle.paddingBottom;
@@ -891,7 +891,7 @@ class AbstractDOMElement
 	 * and convert to an x position relative to the parent DOMElement
 	 * @param	value the new x position of the DOMElement
 	 */
-	public function setGlobalX(value:Int):Int
+	private function setGlobalX(value:Int):Int
 	{
 		//init the local x position with the provided value
 		//, if the DOMElement has no parent, it will be the 
@@ -924,7 +924,7 @@ class AbstractDOMElement
 	 * Return the x position of this DOMElement relative
 	 * to the root DOMElement x position
 	 */
-	public function getGlobalX():Int
+	private function getGlobalX():Int
 	{
 		//init the globalX with the current localX
 		//if this DOMElement has no parent, it will
@@ -959,7 +959,7 @@ class AbstractDOMElement
 	 * y position
 	 * @param	value the new y position of the DOMElement
 	 */
-	public function setGlobalY(value:Int):Int
+	private function setGlobalY(value:Int):Int
 	{
 		//see setGlobalX
 		var localY:Int = value;
@@ -983,7 +983,7 @@ class AbstractDOMElement
 	 * Return the y position of this DOMElement relative
 	 * to the root DOMElement y position
 	 */
-	public function getGlobalY():Int
+	private function getGlobalY():Int
 	{
 		//see getGlobalY
 		var newGlobalY:Int = this.y;
@@ -1010,12 +1010,12 @@ class AbstractDOMElement
 	// Setter/Getter to manipulate a native DOMElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setZIndex(value:Int):Int 
+	private function setZIndex(value:Int):Int 
 	{
 		return value;
 	}
 	
-	public function getZIndex():Int 
+	private function getZIndex():Int 
 	{
 		return 0;
 	}
@@ -1024,7 +1024,7 @@ class AbstractDOMElement
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function getStyle():Style
+	private function getStyle():Style
 	{
 		return this._style;
 	}
