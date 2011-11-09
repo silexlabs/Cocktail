@@ -46,7 +46,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 		
-		_flowData.x = _flowData.firstLineX + leftFloatOffset;
+		_flowData.x = _flowData.xOffset + leftFloatOffset;
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
 		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop ;
 	

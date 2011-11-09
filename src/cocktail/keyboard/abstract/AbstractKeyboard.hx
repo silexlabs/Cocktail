@@ -211,10 +211,8 @@ class AbstractKeyboard
 			case 17:
 				keyboardKeyValue = control;
 				
-
-				
 			case 46:
-				keyboardKeyValue = delete;
+				keyboardKeyValue = del;
 				
 			case 40:
 				keyboardKeyValue = down;

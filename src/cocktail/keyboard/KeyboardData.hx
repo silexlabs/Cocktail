@@ -88,7 +88,7 @@ enum KeyboardKeyValue {
 	backSpace;
 	capsLock;
 	control;
-	delete;
+	del;
 	down;
 	end;
 	escape;

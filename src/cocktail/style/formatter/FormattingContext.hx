@@ -121,9 +121,8 @@ class FormattingContext
 		return {
 			x : flowX,
 			y : flowY,
-			firstLineX : domElement.style.computedStyle.paddingLeft,
-			firstLineY : domElement.style.computedStyle.paddingTop,
-			maxLineWidth : domElement.style.computedStyle.width,
+			xOffset : domElement.style.computedStyle.paddingLeft,
+			yOffset : domElement.style.computedStyle.paddingTop,
 			containingBlockWidth : domElement.style.computedStyle.width,
 			containingBlockHeight : domElement.style.computedStyle.height,
 			totalHeight : 0,

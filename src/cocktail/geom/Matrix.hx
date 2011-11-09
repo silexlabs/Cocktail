@@ -28,17 +28,17 @@ class Matrix
 	/**
 	 * Stores each value of this 3x3 matrix
 	 */
-	private var _matrixData:MatrixData;
-	public var matrixData(getMatrixData, setMatrixData):MatrixData;
+	private var _data:MatrixData;
+	public var data(getData, setData):MatrixData;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
 	 */
-	public function new(matrixData:MatrixData = null) 
+	public function new(data:MatrixData = null) 
 	{
-		this.matrixData = matrixData;
+		this.data = data;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		_matrixData = {
+		_data = {
 			a : 1.0,
 			b : 0.0, 
 			c : 0.0,
@@ -66,26 +66,26 @@ class Matrix
 	 * 
 	 * @param contains 6 values
 	 */
-	public function setMatrixData(matrixData:MatrixData):MatrixData
+	private function setData(data:MatrixData):MatrixData
 	{
-		_matrixData = matrixData;
+		_data = data;
 		
 		//init the null matrix as an identity matrix
-		if (_matrixData == null)
+		if (_data == null)
 		{
 			identity();
 		}
 		
-		return _matrixData;
+		return _data;
 	}
 	
 	/**
 	 * Return this matrix data
 	 * @return the 6 values of this 3x3 matrix
 	 */
-	public function getMatrixData():MatrixData
+	private function getData():MatrixData
 	{
-		return _matrixData;
+		return _data;
 	}
 	
 	/**
@@ -102,8 +102,8 @@ class Matrix
 	public function concatenate(matrix:Matrix):Void
 	{
 		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixData = _matrixData;
-		var targetMatrixData:MatrixData = matrix.matrixData;
+		var currentMatrixData:MatrixData = _data;
+		var targetMatrixData:MatrixData = matrix.data;
 		
 		//multiply the two matrix data values
 		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
@@ -127,7 +127,7 @@ class Matrix
 		
 		
 		//then set it as this matrix data
-		this.matrixData = concatenatedMatrixData;
+		this.data = concatenatedMatrixData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -456,7 +456,7 @@ class Matrix
 	 */
 	public function getScaleX():Float
 	{
-		return _matrixData.a;
+		return _data.a;
 	}
 	
 	/**
@@ -484,7 +484,7 @@ class Matrix
 	 */
 	public function getScaleY():Float
 	{
-		return _matrixData.d;
+		return _data.d;
 	}
 	
 	/**
@@ -510,7 +510,7 @@ class Matrix
 	 */
 	public function getTranslationX():Float
 	{
-		return _matrixData.e;
+		return _data.e;
 	}
 	
 	/**
@@ -536,7 +536,7 @@ class Matrix
 	 */
 	public function getTranslationY():Float
 	{
-		return _matrixData.f;
+		return _data.f;
 	}
 	
 	/**
@@ -544,7 +544,7 @@ class Matrix
 	 */
 	public function getSkewX():Float
 	{
-		return _matrixData.c;
+		return _data.c;
 	}
 	
 	/**
@@ -552,7 +552,7 @@ class Matrix
 	 */
 	public function getSkewY():Float
 	{
-		return _matrixData.b;
+		return _data.b;
 	}
 	
 }

@@ -148,7 +148,7 @@ class DOMElement extends AbstractDOMElement
 		super.setMatrix(matrix);
 		
 		//get the data of the cross-platform matrix
-		var matrixData:MatrixData = matrix.getMatrixData();
+		var matrixData:MatrixData = matrix.data;
 		
 		//report the data to number with 2 decimal
 		//as number with too much decimal prevent
