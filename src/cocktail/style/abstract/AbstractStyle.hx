@@ -184,6 +184,14 @@ class AbstractStyle
 	public var domElement(getDOMElement, never):DOMElement;
 	
 	/**
+	 * Returns metrics info for the currently defined
+	 * font and font size used in inline formatting context
+	 * to determine lineBoxes sizes
+	 */
+	public var fontMetrics(getFontMetrics, never):FontMetrics;
+	
+	
+	/**
 	 * Class constructor. Stores the target DOMElement and init
 	 * the computed styles structure with default values
 	 */
@@ -692,12 +700,21 @@ class AbstractStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	public function getComputedStyle():ComputedStyleData
+	/**
+	 * Abstract by default, as font metrics vary based
+	 * on the inheriting style class
+	 */
+	private function getFontMetrics():FontMetrics
+	{
+		return null;
+	}
+	
+	private function getComputedStyle():ComputedStyleData
 	{
 		return _computedStyle;
 	}
 	
-	public function getDOMElement():DOMElement
+	private function getDOMElement():DOMElement
 	{
 		return this._domElement;
 	}

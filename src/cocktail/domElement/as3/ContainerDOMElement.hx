@@ -62,6 +62,13 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	private var _currentTextNode:TextNode;
 	
 	/**
+	 * Generic font families names
+	 */
+	private static var SERIF_GENERIC_FONT_NAME:String = "_serif";
+	private static var SANS_SERIF_GENERIC_FONT_NAME:String = "_sans";
+	private static var MONOSPACE_GENERIC_FONT_NAME:String = "_typewriter";
+	
+	/**
 	 * class constructor
 	 */
 	public function new(nativeElement:NativeElement = null) 
@@ -101,7 +108,12 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	// OVERRIDEN TEXT LINE CREATION methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
+	/**
+	 * Overriden to clean up the native flash TextBlock
+	 * object before removing all the text lines. It removes
+	 * the link between text lines and their text block and
+	 * allow garbage collection
+	 */
 	override public function resetTextLines():Void
 	{
 		if (_textBlock != null)
@@ -195,28 +207,44 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	// PRIVATE TEXT LINE CREATION methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
+	/**
+	 * Broke a text into word and spaces. Treating a text as a combination
+	 * of words and spaces allows for more control of its layout, e.g a
+	 * "word spacing" style can be applied to the block of text.
+	 * 
+	 * Each word and space is wrapped in a native Flash ContentElement
+	 * which is the model used by a Flash TextBlock
+	 */
 	private function getBrokenTextElements(text:String):GroupElement
 	{
 		var textElements:Vector<ContentElement> = new Vector<ContentElement>();
 		
 		var textFragment:String = "";
 		
+		
+		//Loop in all the text charachters
 		for (i in 0...text.length)
 		{
+			
+			//If the charachter is a space
 			if (StringTools.isSpace(text, i) == true)
 			{
+				
+				//If a word was being formed by concatenating
+				//characters
 				if (textFragment != null)
 				{
+					//push the word into the returned array
 					textElements.push(getTextElement(textFragment, false));
 					textFragment = null;
 				}
 				
-				var space:String = text.charAt(i);
-				space += String.fromCharCode(Std.parseInt("#e2808b"));
-				//Log.trace(String.fromCharCode(Std.parseInt("#e2808b")));
-				textElements.push(getTextElement(space, true));
+				//push the space in the returned array
+				textElements.push(getTextElement(text.charAt(i), true));
 			}
+			//else the charachter belongs to a word
+			//and is added to the word which is being
+			//concatenated
 			else
 			{
 				if (textFragment == null)
@@ -227,6 +255,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 			}
 		}
 		
+		//push the remaining word if text doesn't end by a space
 		if (textFragment != null)
 		{
 			textElements.push(getTextElement(textFragment, false));
@@ -237,7 +266,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
-	 * Takes a flash TextElement which is a model fro text containing a
+	 * Takes a flash TextElement which is a model for text containing a
 	 * string of text and objects to format the text when rendered, and
 	 * parametrise its text formatting using the styles of the ContainerDOMElement
 	 * @param	textElement a textElement with a default flash element format
@@ -322,6 +351,14 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		return textElement;
 	}
 	
+	/**
+	 * Transform a text letters into uppercase, lowercase
+	 * or capitalise them (only the first letter of each word
+	 * is transformed to uppercase), based on the textTransform
+	 * style of this container DOMElement
+	 * @param	text the text to transform
+	 * @return the transformed text
+	 */
 	private function applyTextTransform(text:String):String
 	{
 		switch (_style.computedStyle.textTransform)
@@ -341,11 +378,20 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		return text;
 	}
 	
+	/**
+	 * Capitalise a text (turn each first letter
+	 * of a word to uppercase)
+	 * @param	text the text to capitaliee
+	 * @return the capitalized
+	 */
 	private function capitalizeText(text:String):String
 	{
-		
 		var capitalizedText:String = text.charAt(0);
 		
+		/**
+		 * loop in all charachter looking for word breaks
+		 * and capitalize each word's first letter
+		 */
 		for (i in 1...text.length)
 		{	
 			if (text.charAt(i - 1) == " ")
@@ -360,6 +406,16 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		return capitalizedText;
 	}
 	
+	/**
+	 * Takes the array containing every font to apply to the
+	 * text (ordered by priority, the first available font being
+	 * used) and return a comma separated list containing the ordered
+	 * font names.
+	 * @param	value an array which may contain any combination of generic
+	 * font family name and font family name
+	 * @return a comma separated list of font, genrally ordered from most
+	 * specific to most generic, e.g "Universe,Arial,_sans"
+	 */
 	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
 	{
 		var fontFamilyValue:String = "";
@@ -377,13 +433,13 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 					switch (genericName)
 					{
 						case GenericFontFamilyValue.serif:
-							fontName = "_serif";
+							fontName = SERIF_GENERIC_FONT_NAME;
 						
 						case GenericFontFamilyValue.sansSerif:
-							fontName = "_sans";
+							fontName = SANS_SERIF_GENERIC_FONT_NAME;
 							
 						case GenericFontFamilyValue.monospace:
-							fontName = "_typewriter";
+							fontName = MONOSPACE_GENERIC_FONT_NAME;
 					}
 			}
 			
@@ -394,7 +450,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 			
 			fontFamilyValue += fontName;
 			
-			if (i < value.length -1)
+			if (i < value.length - 1)
 			{
 				fontFamilyValue += ",";
 			}

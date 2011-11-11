@@ -371,5 +371,4 @@ class AbstractContainerStyle extends Style
 		return ret;
 	}
 	
-	
 }
