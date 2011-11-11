@@ -43,6 +43,8 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 
 	override private function getOffsetHeight():Int
 	{
+		//TO DO : add leading ?
+		
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		
 		//return untyped _nativeElement.textHeight;

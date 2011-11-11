@@ -49,7 +49,7 @@ package cocktail.geom;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Represents the value of a 3x3 Matrix
+	 * Represents the values of a 3x3 Matrix
 	 */
 	typedef MatrixData = {
 		var a:Float;

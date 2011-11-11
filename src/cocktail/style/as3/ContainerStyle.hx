@@ -14,8 +14,8 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.TextNode;
 import cocktail.style.abstract.AbstractContainerStyle;
 import cocktail.style.abstract.AbstractStyle;
-import flash.text.engine.TextElement;
-import flash.utils.QName;
+import cocktail.style.StyleData;
+import flash.text.engine.ElementFormat;
 import haxe.Log;
 
 
@@ -29,5 +29,24 @@ class ContainerStyle extends AbstractContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	////////////////////////////////
+	
+	override private function getFontMetrics():FontMetrics
+	{
+		var elementFormat:ElementFormat = new ElementFormat();
+		
+		var ascent
+		
+		return {
+			ascent:domElement.offsetHeight,
+			descent:0,
+			xHeight:0,
+			superscriptOffset:0,
+			subscriptOffset:0
+		};
 	}
 }

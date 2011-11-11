@@ -15,13 +15,15 @@ class FontComputer
 		
 	}
 	
-	public static function compute(style:AbstractStyle):Void
+	public static function compute(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		var computedStyle = style.computedStyle;
 		
 		computedStyle.fontSize = getComputedFontSize(style);
 		
 		computedStyle.lineHeight = getComputedLineHeight(style);
+		
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementFontMetrics);
 		
 		computedStyle.fontWeight = getComputedFontWeight(style);
 		
@@ -41,7 +43,49 @@ class FontComputer
 		
 	}
 	
-	
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Int
+	{
+		var verticalAlign:Int;
+		
+		//To DO : move this to the box computer, will need to add either a ref to the containing dom element
+			//or to its font metrics
+			switch(domElementInLineBox[i].style.computedStyle.verticalAlign)
+			{
+				case baseline:
+					baselineOffset = 0;
+					
+				case middle:
+					//! warning : containing dom element must be either an inline parent or the block which started inline context
+					baselineOffset = domElementInLineBox[i].offsetHeight / 2 + _containingDOMElement.fontMetrics.xHeight / 2;
+					
+				case sub:
+					baselineOffset = _containingDOMElement.fontMetrics.subscriptOffset;
+					
+				case _super:
+					baselineOffset = _containingDOMElement.fontMetrics.supercriptOffset;
+					
+				case textTop:
+					baselineOffset = 0;
+					//TO DO : Align the top of the box with the top of the parent's content area
+					
+				case textBottom:
+					baselineOffset = 0;
+					//TO DO : Align the bottom of the box with the bottom of the parent's content area 
+					
+				case percent(value):
+					baselineOffset = domElementInLineBox[i].style.computedStyle.lineHeight * (value * 0.01);
+					
+				case length(value):
+					baselineOffset = getValueFromLength(value);
+					
+				case top:
+					baselineOffset = 0;
+					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
+				case bottom:	
+					baselineOffset = 0;
+					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
+			}
+	}
 	
 	private static function getComputedColor(style:AbstractStyle):Int
 	{

@@ -13,6 +13,7 @@ package cocktail.domElement.abstract;
 
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.EmbeddedStyle;
+import cocktail.domElement.DOMElementData;
 
 #if flash9
 import cocktail.domElement.as3.DOMElement;
