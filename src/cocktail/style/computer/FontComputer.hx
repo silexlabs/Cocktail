@@ -43,48 +43,52 @@ class FontComputer
 		
 	}
 	
-	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Int
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Float
 	{
-		var verticalAlign:Int;
+		
+		//TO DO : must represent an offset from the inlinebox baseline
+		var verticalAlign:Float;
 		
 		//To DO : move this to the box computer, will need to add either a ref to the containing dom element
-			//or to its font metrics
-			switch(domElementInLineBox[i].style.computedStyle.verticalAlign)
-			{
-				case baseline:
-					baselineOffset = 0;
-					
-				case middle:
-					//! warning : containing dom element must be either an inline parent or the block which started inline context
-					baselineOffset = domElementInLineBox[i].offsetHeight / 2 + _containingDOMElement.fontMetrics.xHeight / 2;
-					
-				case sub:
-					baselineOffset = _containingDOMElement.fontMetrics.subscriptOffset;
-					
-				case _super:
-					baselineOffset = _containingDOMElement.fontMetrics.supercriptOffset;
-					
-				case textTop:
-					baselineOffset = 0;
-					//TO DO : Align the top of the box with the top of the parent's content area
-					
-				case textBottom:
-					baselineOffset = 0;
-					//TO DO : Align the bottom of the box with the bottom of the parent's content area 
-					
-				case percent(value):
-					baselineOffset = domElementInLineBox[i].style.computedStyle.lineHeight * (value * 0.01);
-					
-				case length(value):
-					baselineOffset = getValueFromLength(value);
-					
-				case top:
-					baselineOffset = 0;
-					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
-				case bottom:	
-					baselineOffset = 0;
-					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
-			}
+		//or to its font metrics
+		switch(style.verticalAlign)
+		{
+			case baseline:
+				verticalAlign = 0;
+				
+			case middle:
+				//! warning : containing dom element must be either an inline parent or the block which started inline context
+				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetrics.xHeight / 2;
+				
+			case sub:
+				verticalAlign = containingDOMElementFontMetrics.subscriptOffset;
+				
+			case _super:
+				verticalAlign = containingDOMElementFontMetrics.superscriptOffset;
+				
+			case textTop:
+				verticalAlign = 0;
+				//TO DO : Align the top of the box with the top of the parent's content area
+				
+			case textBottom:
+				verticalAlign = 0;
+				//TO DO : Align the bottom of the box with the bottom of the parent's content area 
+				
+			case percent(value):
+				verticalAlign = style.computedStyle.lineHeight * (value * 0.01);
+				
+			case length(value):
+				verticalAlign = getValueFromLength(value);
+				
+			case top:
+				verticalAlign = 0;
+				//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
+			case bottom:	
+				verticalAlign = 0;
+				//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
+		}
+		
+		return verticalAlign;
 	}
 	
 	private static function getComputedColor(style:AbstractStyle):Int

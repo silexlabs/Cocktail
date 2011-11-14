@@ -222,7 +222,7 @@ class AbstractStyle
 			float : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
 			position: PositionStyleValue._static,
-			verticalAlign : 0,
+			verticalAlign : 0.0,
 			fontSize:15.0,
 			lineHeight:14.0,
 			fontWeight:FontWeightStyleValue.normal,
@@ -252,8 +252,9 @@ class AbstractStyle
 	 * of 'absolute'), it it used as origin.
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
+	 * @param containingDOMElementFontMetrics contains font metrics used to layout children in an inline formatting context
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		//abstract
 	}
@@ -275,10 +276,11 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
+	 * @param containingDOMElementFontMetrics contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null):Void
 	{
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
@@ -288,10 +290,10 @@ class AbstractStyle
 		}
 		
 		//compute all the style determining how a DOMElement is placed in the document and its box model
-		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 		
 		//flow all the children of the DOMElement of this style of it has any, then insert this DOMElement in the document
-		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
+		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
 		applyComputedDimensions();
@@ -316,7 +318,7 @@ class AbstractStyle
 	/**
 	 * Flow all the children of a DOMElement if it has any, then the DOMElement.
 	 */
-	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
+	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null ):Void
 	{
 		//insert the DOMElement in the document based on its positioning scheme
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
@@ -427,10 +429,10 @@ class AbstractStyle
 	 * the styles determining its box model (width, height, margins
 	 * paddings...)
 	 */
-	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		computePositionStyle();
-		computeFontStyle();
+		computeFontStyle(containingDOMElementFontMetrics);
 		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 	}
 	
@@ -444,9 +446,9 @@ class AbstractStyle
 		PositionComputer.compute(this);
 	}
 	
-	public function computeFontStyle():Void
+	public function computeFontStyle(containingDOMElementFontMetrics:FontMetrics):Void
 	{
-		FontComputer.compute(this);
+		FontComputer.compute(this, containingDOMElementFontMetrics);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

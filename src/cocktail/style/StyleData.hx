@@ -79,7 +79,7 @@ package cocktail.style;
 		var float:FloatStyleValue;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
-		var verticalAlign:Int;
+		var verticalAlign:Float;
 		var lineHeight:Float;
 		
 		/**

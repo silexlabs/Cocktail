@@ -66,7 +66,7 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
 	}
@@ -78,7 +78,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -128,6 +128,7 @@ class AbstractContainerStyle extends Style
 		}*/
 		
 		var childrenContainingDOMElementDimensions:ContainingDOMElementDimensions = getChildrenContainingDOMElementDimensions();
+		var childrenContainingDOMElementFontMetrics:FontMetrics = this.fontMetrics;
 		
 		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
 		
@@ -150,16 +151,17 @@ class AbstractContainerStyle extends Style
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.flow(childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetrics, childrenFormattingContext);
 			}
 			//else if it is a text node, call a specific method that will create TextLineDOMElement
 			//and insert them into the document using the TextNode as text content
 			else 
 			{
 				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
-				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions);
+				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 			}
 		}
+		childrenFormattingContext.startNewLine();
 		
 		//if the 'height' style of this ContainerDOMElement is 
 		//defined as 'auto', then it depends on its content width
@@ -201,7 +203,7 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the document
 	 * @param	textNode the string of text used as content for the created text lines
 	 */
-	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
@@ -222,7 +224,7 @@ class AbstractContainerStyle extends Style
 
 			
 			//compute the styles (box model, text style...) of the newly created line of text
-			textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+			textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 
 			//insert the line of text in the document
 			formattingContext.insert(textLineDOMElement);
