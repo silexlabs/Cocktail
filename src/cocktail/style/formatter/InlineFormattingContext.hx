@@ -23,9 +23,21 @@ import haxe.Log;
 class InlineFormattingContext extends FormattingContext
 {
 
+	private var _domElementInLineBox:Array<DOMElement>;
+	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
 		super(domElement, previousFormattingContext);
+		
+		_domElementInLineBox = new Array<DOMElement>();
+	}
+	
+
+	override public function insert(domElement:DOMElement):Void
+	{
+		_domElementInLineBox.push(domElement);
+		
+		super.insert(domElement);
 	}
 	
 	override private function place(domElement:DOMElement):Void
@@ -34,7 +46,6 @@ class InlineFormattingContext extends FormattingContext
 		
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
-			
 			startNewLine();
 		}
 		
@@ -55,10 +66,15 @@ class InlineFormattingContext extends FormattingContext
 	
 	override public function startNewLine():Void
 	{
-			computeLineBox();
-		
-			_flowData.y += _flowData.maxLineHeight;
-			_flowData.totalHeight += _flowData.maxLineHeight;
+		if (_domElementInLineBox.length > 0)
+		{
+			
+			var lineBoxHeight:Int = computeLineBoxHeight();
+			
+			_domElementInLineBox = new Array<DOMElement>();
+			
+			_flowData.y += lineBoxHeight;
+			_flowData.totalHeight += lineBoxHeight;
 			_flowData.maxLineHeight = 0;
 			
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
@@ -70,74 +86,55 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_flowData.x = _flowData.xOffset;
 			}
+		}
+			
+			
+			
+			
 	}
 	
-	private function computeLineBox():Void
+	private function computeLineBoxHeight():Int
 	{
 		//get ascent and descent of the strut
-		var lineBoxAscent:Int = _containingDOMElement.fontMetrics.ascent;
-		var lineBoxDescent:Int = _containingDOMElement.fontMetrics.descent;
+		var lineBoxAscent:Float = _containingDOMElement.style.fontMetrics.ascent;
+		var lineBoxDescent:Float = _containingDOMElement.style.fontMetrics.descent;
 		
-		for (i in 0...domElementInLineBox.length)
+		
+		for (i in 0..._domElementInLineBox.length)
 		{
-			//TO DO : baselineOffset should actually be computed vertical align which is a value
-			//relative to the strut baseline
-			var baselineOffset:Int;
-			
-			//To DO : move this to the box computer, will need to add either a ref to the containing dom element
-			//or to its font metrics
-			switch(domElementInLineBox[i].style.computedStyle.verticalAlign)
-			{
-				case baseline:
-					baselineOffset = 0;
-					
-				case middle:
-					//! warning : containing dom element must be either an inline parent or the block which started inline context
-					baselineOffset = domElementInLineBox[i].offsetHeight / 2 + _containingDOMElement.fontMetrics.xHeight / 2;
-					
-				case sub:
-					baselineOffset = _containingDOMElement.fontMetrics.subscriptOffset;
-					
-				case _super:
-					baselineOffset = _containingDOMElement.fontMetrics.supercriptOffset;
-					
-				case textTop:
-					baselineOffset = 0;
-					//TO DO : Align the top of the box with the top of the parent's content area
-					
-				case textBottom:
-					baselineOffset = 0;
-					//TO DO : Align the bottom of the box with the bottom of the parent's content area 
-					
-				case percent(value):
-					baselineOffset = domElementInLineBox[i].style.computedStyle.lineHeight * (value * 0.01);
-					
-				case length(value):
-					baselineOffset = getValueFromLength(value);
-					
-				case top:
-					baselineOffset = 0;
-					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
-				case bottom:	
-					baselineOffset = 0;
-					//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
-			}
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
 			//of the block container
-			if (domElementInLineBox[i].fontMetrics.ascent - baselineOffset > lineBoxAscent)
+			if (_domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign > lineBoxAscent)
 			{
-				lineBoxAscent = domElementInLineBox[i].fontMetrics.ascent - baselineOffset;
+				lineBoxAscent = _domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign;
 			}
 			
-			if (domElementInLineBox[i].fontMetrics.descent + baselineOffset > lineBoxDescent)
+			if (_domElementInLineBox[i].style.fontMetrics.descent + _domElementInLineBox[i].style.computedStyle.verticalAlign > lineBoxDescent)
 			{
-				lineBoxDescent = domElementInLineBox[i].fontMetrics.descent + baselineOffset;
+				lineBoxDescent = _domElementInLineBox[i].style.fontMetrics.descent + _domElementInLineBox[i].style.computedStyle.verticalAlign;
 			}
 			
 		}
 		
-		var lineBoxHeight:Int = lineBoxAscent + lineBoxDescent;
+		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent;
+		
+		//Log.trace(lineBoxHeight);
+		//Log.trace(lineBoxAscent);
+		//Log.trace(lineBoxDescent);
+		
+		for (i in 0..._domElementInLineBox.length)
+		{
+			if (_domElementInLineBox[i].style.isEmbedded() == false)
+			{
+				_domElementInLineBox[i].y += Math.round(lineBoxAscent) ;
+			}
+			
+			
+		}
+		
+	//	Log.trace(lineBoxHeight);
+		return Math.round(lineBoxHeight);
 	}
 	
 	

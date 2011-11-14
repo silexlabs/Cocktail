@@ -338,10 +338,11 @@ class StyleTests
 		_insetGraphicElement.style.display = DisplayStyleValue._inline;
 		_mainContainer.addChild(_insetGraphicElement);
 		_mainContainer.addChild(siteLeftContainerChildren);
-		_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit. aaaaaaaa"));
+		_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
 		_mainContainer.style.position = PositionStyleValue.relative;
 		_mainContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		_mainContainer.style.fontSize = FontSizeStyleValue.length(px(50));
+		_mainContainer.style.lineHeight = LineHeightStyleValue.length(px(70));
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
 		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
@@ -452,7 +453,8 @@ class StyleTests
 		browserWidth = js.Lib.document.body.clientWidth;
 		browserHeight = js.Lib.document.body.clientHeight;
 		#end
-		_mainContainer.style.layout( { width:browserWidth, height:browserHeight }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0});
+		_mainContainer.style.computedStyle.lineHeight = 70;
+		_mainContainer.style.layout( { width:browserWidth, height:browserHeight }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0}, _mainContainer.style.fontMetrics);
 	
 		paint(_background, 0x222222);
 		paint(_siteBackground, 0xFFFFFF);

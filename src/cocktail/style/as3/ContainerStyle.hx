@@ -15,7 +15,10 @@ import cocktail.domElement.TextNode;
 import cocktail.style.abstract.AbstractContainerStyle;
 import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.FontWeight;
 import haxe.Log;
 
 
@@ -39,14 +42,99 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		var elementFormat:ElementFormat = new ElementFormat();
 		
-		var ascent
+		var fontDescription:FontDescription = new FontDescription(getFontFamilyValue(this._fontFamily));
+
+
+		var fontWeightValue:FontWeight;
+		
+		switch (_computedStyle.fontWeight)
+		{
+			case bold:
+				fontWeightValue = FontWeight.BOLD;
+				
+			case normal:
+				fontWeightValue = FontWeight.NORMAL;
+		}
+		
+		fontDescription.fontWeight = fontWeightValue;
+		
+		elementFormat.fontDescription = fontDescription;
+	
+		
+		elementFormat.fontSize = this._computedStyle.fontSize;
+		
+		/**var ascent:Int = Math.round(Math.abs(elementFormat.getFontMetrics().emBox.top));
+		var descent:Int = Math.round(Math.abs(elementFormat.getFontMetrics().emBox.bottom));
+		
+		var leading:Int = Math.round(_computedStyle.lineHeight - (ascent + descent));
+		
+		var leadedAscent:Int = Math.round(ascent + leading/2);
+		var leadedDescent:Int = Math.round(descent + leading / 2);
+		*/
+		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
+		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
+		
+		var leading:Float = _computedStyle.lineHeight - (ascent + descent);
+		Log.trace(leading);
+		//Log.trace(_computedStyle.lineHeight);
+		//Log.trace(ascent);
+		//Log.trace(descent);
+		var leadedAscent:Float = ascent + leading/2;
+		var leadedDescent:Float = descent + leading/2;
+		
 		
 		return {
-			ascent:domElement.offsetHeight,
-			descent:0,
+			ascent:Math.round(leadedAscent),
+			descent:Math.round(leadedDescent),
 			xHeight:0,
 			superscriptOffset:0,
 			subscriptOffset:0
 		};
+	}
+	
+	/**
+	 * !WARNING duplicated code
+	 */
+	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamilyValue:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String;
+			
+			switch (value[i])
+			{
+				case FontFamilyStyleValue.familyName(name):
+					fontName = name;
+				
+				case FontFamilyStyleValue.genericFamily(genericName):
+					switch (genericName)
+					{
+						case GenericFontFamilyValue.serif:
+							fontName = "_serif";
+						
+						case GenericFontFamilyValue.sansSerif:
+							fontName = "_sans";
+							
+						case GenericFontFamilyValue.monospace:
+							fontName = "_typewriter";
+					}
+			}
+			
+			if (fontName.indexOf(" ") != -1)
+			{
+				fontName = "'" + fontName + "'";
+			}
+			
+			fontFamilyValue += fontName;
+			
+			if (i < value.length - 1)
+			{
+				fontFamilyValue += ",";
+			}
+		}
+		
+		return fontFamilyValue;
 	}
 }

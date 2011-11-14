@@ -342,7 +342,6 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		
 		textElement.replaceText(0, textElement.text.length, applyTextTransform(textElement.text));
 		
-		Log.trace(elementFormat.getFontMetrics().emBox);
 		
 		//set the element format as the text element
 		//element format
