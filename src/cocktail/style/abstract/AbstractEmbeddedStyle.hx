@@ -143,7 +143,8 @@ class AbstractEmbeddedStyle extends Style
 			descent:0,
 			xHeight:0,
 			superscriptOffset:0,
-			subscriptOffset:0
+			subscriptOffset:0,
+			underlineOffset:0
 		};
 	}
 	
