@@ -226,6 +226,12 @@ package cocktail.style;
 		 * glyphs
 		 */
 		var superscriptOffset:Int;
+		
+		/**
+		 * A suggested offset to apply from
+		 * the baseline when drawing underlines
+		 */
+		var underlineOffset:Int;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

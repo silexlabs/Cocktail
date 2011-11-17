@@ -19,6 +19,9 @@ import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontWeight;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import haxe.Log;
 
 
@@ -74,21 +77,26 @@ class ContainerStyle extends AbstractContainerStyle
 		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 		
+		//Log.trace(ascent);
 		var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-		Log.trace(leading);
+		//Log.trace(leading);
 		//Log.trace(_computedStyle.lineHeight);
 		//Log.trace(ascent);
 		//Log.trace(descent);
 		var leadedAscent:Float = ascent + leading/2;
 		var leadedDescent:Float = descent + leading/2;
+		//Log.trace(leadedAscent);
 		
+	//	Log.trace(_computedStyle.lineHeight);
+		//Log.trace(leadedAscent);
 		
 		return {
 			ascent:Math.round(leadedAscent),
 			descent:Math.round(leadedDescent),
 			xHeight:0,
 			superscriptOffset:0,
-			subscriptOffset:0
+			subscriptOffset:0,
+			underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
 		};
 	}
 	

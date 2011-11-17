@@ -99,7 +99,6 @@ class InlineFormattingContext extends FormattingContext
 		var lineBoxAscent:Float = _containingDOMElement.style.fontMetrics.ascent;
 		var lineBoxDescent:Float = _containingDOMElement.style.fontMetrics.descent;
 		
-		
 		for (i in 0..._domElementInLineBox.length)
 		{
 			
@@ -107,6 +106,7 @@ class InlineFormattingContext extends FormattingContext
 			//of the block container
 			if (_domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign > lineBoxAscent)
 			{
+				
 				lineBoxAscent = _domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign;
 			}
 			
@@ -117,8 +117,9 @@ class InlineFormattingContext extends FormattingContext
 			
 		}
 		
-		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent;
+		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent; 
 		
+		//Log.trace(lineBoxHeight);
 		//Log.trace(lineBoxHeight);
 		//Log.trace(lineBoxAscent);
 		//Log.trace(lineBoxDescent);
@@ -127,7 +128,10 @@ class InlineFormattingContext extends FormattingContext
 		{
 			if (_domElementInLineBox[i].style.isEmbedded() == false)
 			{
-				_domElementInLineBox[i].y += Math.round(lineBoxAscent) ;
+				/**
+				 * ! WARNING adding underline offset seems to bridge the gap between as/js, need to find better metrics
+				 */
+				_domElementInLineBox[i].y += Math.round(lineBoxAscent) + _domElementInLineBox[i].style.fontMetrics.underlineOffset ;
 			}
 			
 			

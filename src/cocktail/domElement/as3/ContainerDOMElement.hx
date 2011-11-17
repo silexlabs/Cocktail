@@ -15,6 +15,7 @@ import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
 import flash.text.engine.BreakOpportunity;
+import flash.text.engine.CFFHinting;
 import flash.text.engine.ContentElement;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
@@ -310,11 +311,11 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		fontDescription.fontPosture = fontPostureValue;
 		fontDescription.fontName = getFontFamilyValue(_style.computedStyle.fontFamily);
 		
-		
 		elementFormat.fontDescription = fontDescription;
 		
 		elementFormat.color = _style.computedStyle.color;
 		
+	
 		
 		var typographicCase:TypographicCase;
 		
