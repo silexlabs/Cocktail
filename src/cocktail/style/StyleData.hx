@@ -97,6 +97,10 @@ package cocktail.style;
 		var textTransform:TextTransformStyleValue;
 		var letterSpacing:Int;
 		var wordSpacing:Int;
+		var textIndent:Int;
+		var whiteSpace:WhiteSpaceStyleValue;
+		var textAlign:TextAlignStyleValue;
+		
 		var color:Int;
 		
 	}
@@ -359,6 +363,46 @@ package cocktail.style;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Controls how white space inside
+	 * a DOMElement is handled
+	 */
+	enum WhiteSpaceStyleValue {
+		
+		/**
+		 * This value directs user agents to collapse sequences
+		 * of white space, and break lines as necessary to fill line boxes.
+		 */
+		normal;
+		
+		/**
+		 * This value prevents user agents from collapsing
+		 * sequences of white space. Lines are only broken at
+		 * preserved newline characters.
+		 */
+		pre;
+		
+		/**
+		 * This value collapses white space as for 'normal',
+		 * but suppresses line breaks within text.
+		 */
+		nowrap;
+		
+		/**
+		 * This value prevents user agents from collapsing sequences
+		 * of white space. Lines are broken at preserved newline
+		 * characters, and as necessary to fill line boxes.
+		 */
+		preWrap;
+		
+		/**
+		 * This value directs user agents to collapse sequences of white space.
+		 * Lines are broken at preserved newline characters,
+		 * and as necessary to fill line boxes.
+		 */
+		preLine;
+	}
+	
+	/**
 	 * Controls the amount of space
 	 * between 2 letter in a text.
 	 */
@@ -394,6 +438,36 @@ package cocktail.style;
 		 * character, might be negative
 		 */
 		length(value:LengthValue);
+	}
+	
+	/**
+	 * Controls the indentation of the
+	 * first line of text in a block of text
+	 * with respect to the containing block
+	 */
+	enum TextIndentStyleValue {
+		
+		/**
+		 * An absolute value for the text indentation
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage of the containing block
+		 * width
+		 */
+		percentage(value:Int);
+	}
+	
+	/**
+	 * Controls how inline DOMElement inside
+	 * a block container is aligned
+	 */
+	enum TextAlignStyleValue {
+		left;
+		right;
+		center;
+		justify;
 	}
 	
 	/**

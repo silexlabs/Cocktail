@@ -85,96 +85,7 @@ class StyleTests
 		
 	}
 	
-	public function testStyle()
-	{
-		/**var rootStyle:StyleData = getDefaultStyle();
-		rootStyle.width = DimensionStyleValue.percent(100);
-		rootStyle.height = DimensionStyleValue.auto;
-		rootDOMElement.style = rootStyle;
-		
-		var container1:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
-		var container1Style:StyleData = getDefaultStyle();
-		//container1Style.display = inlineBlock;
-		container1.style = container1Style;
-		
-		container1.style.styleData.width = DimensionStyleValue.auto;
-		container1.style.styleData.height = DimensionStyleValue.auto;
-		container1.style.styleData.marginTop = MarginStyleValue.length(pixel(20));
-		//container1.style.styleData.position = relative;
-		//container1.width = 250;
-		//container1.height = 100;
-		container1.x = 0;
-		container1.y = 0;
-		
-		var domElement1:GraphicDOMElement = getGraph(0xFF0000, 0, 0, 500, 200);
-		
-		var domElement1Style:StyleData = getDefaultStyle();
-		domElement1.style = domElement1Style;
-		domElement1.style.styleData.width = DimensionStyleValue.percent(100);
-		domElement1.style.styleData.height = DimensionStyleValue.length(pixel(200));
-		
-		var domElement2:GraphicDOMElement = getGraph(0x00FF00, 0, 0, 200, 300);
-		
-		var domElement2Style:StyleData = getDefaultStyle();
-		domElement2Style.position = relative;
-		domElement2Style.bottom = PositionOffsetStyleValue.length(pixel(100));
-		domElement2Style.display = inlineBlock;
-		domElement2.style = domElement2Style;
-		domElement2.style.styleData.width = DimensionStyleValue.length(pixel(200));
-		domElement2.style.styleData.height = DimensionStyleValue.length(pixel(300));
-		
-		
-		var domElement3:GraphicDOMElement = getGraph(0x0000FF, 0, 0, 50, 300);
-		
-		var domElement3Style:StyleData = getDefaultStyle();
-		domElement3Style.maxHeight = ConstrainedDimensionStyleValue.length(pixel(200));
-		domElement3.style = domElement3Style;
-		domElement3.style.styleData.width = DimensionStyleValue.length(pixel(50));
-		domElement3.style.styleData.height = DimensionStyleValue.length(pixel(800));
-		domElement3.style.styleData.marginLeft = MarginStyleValue.length(pixel(50));
-		
-		var domElement4:GraphicDOMElement = getGraph(0x999999, 0, 0, 600, 30);
-		
-		var domElement4Style:StyleData = getDefaultStyle();
-		domElement4Style.display = inlineBlock;
-		domElement4.style = domElement4Style;
-		domElement4.style.styleData.width = DimensionStyleValue.length(pixel(600));
-		domElement4.style.styleData.height = DimensionStyleValue.length(pixel(30));
-		domElement4.style.styleData.marginLeft = MarginStyleValue.length(pixel(20));
-		
-		var domElement5:TextDOMElement = new TextDOMElement();
-		domElement5.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti";
-		
-		domElement5.style = getDefaultStyle();
-		domElement5.style.styleData.width = DimensionStyleValue.percent(60);
-		domElement5.style.styleData.position = relative;
-		domElement5.style.styleData.display = inlineBlock;
-		domElement5.style.styleData.right = PositionOffsetStyleValue.length(pixel(200));
-		domElement5.style.styleData.paddingRight = PaddingStyleValue.length(pixel(123));
-		domElement5.style.styleData.height = DimensionStyleValue.length(pixel(200));
-		
-		var domElement6:GraphicDOMElement = getGraph(0x000000, 0, 0, 100, 50);
-		var domElement6Style:StyleData = getDefaultStyle();
-		domElement6.style = domElement6Style;
-		domElement6Style.width =  DimensionStyleValue.length(pixel(100));
-		domElement6Style.height =  DimensionStyleValue.length(pixel(50));
-		domElement6Style.marginRight = MarginStyleValue.auto;
-		domElement6Style.marginLeft = MarginStyleValue.auto;
-		
-		rootDOMElement.addChild(domElement1);
-		container1.addChild(domElement2);
-		container1.addChild(domElement5);
-		container1.addChild(domElement4);
-		rootDOMElement.addChild(container1);
-		rootDOMElement.addChild(domElement3);
-		rootDOMElement.addChild(domElement6);
-		
 
-		
-		rootDOMElement.applyStyle( { width:1000, height:1000 }, rootDOMElement);
-		domElement4.style.styleData.width = DimensionStyleValue.percent(10);
-		container1.applyStyle( { width : container1.width, height:container1.height }, rootDOMElement);*/
-	}
 	
 	public function testLayout()
 	{
@@ -308,11 +219,14 @@ class StyleTests
 		*/
 		//_mainContainer.addChild(siteLeftTextContainer);
 		_mainContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur"));
+		//_mainContainer.style.textIndent =  TextIndentStyleValue.length(px(150));
+		//_mainContainer.style.whiteSpace = WhiteSpaceStyleValue.pre;
+		//_mainContainer.style.textAlign = TextAlignStyleValue.right;
 		//siteLeftTextContainer.addChild(siteLeftText2);
 		//siteLeftTextContainer.addChild(siteLeftText3);
 		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren.style.display = DisplayStyleValue._inline;
-		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM"));
+		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM "));
 		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(90));
 		siteLeftContainerChildren.style.fontWeight = FontWeightStyleValue.bold;
 		//siteLeftContainerChildren.style.fontVariant = FontVariantStyleValue.smallCaps;
@@ -321,12 +235,12 @@ class StyleTests
 		
 		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren2.style.display = DisplayStyleValue._inline;
-		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode("BADA"));
+		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode(" BADA"));
 		siteLeftContainerChildren2.style.fontSize = FontSizeStyleValue.length(px(50));
 		siteLeftContainerChildren2.style.fontStyle = FontStyleStyleValue.italic;
 		siteLeftContainerChildren.addChild(siteLeftContainerChildren2);
 		siteLeftContainerChildren2.style.textTransform = TextTransformStyleValue.capitalize;
-		
+	
 		
 		//_mainContainer.style.lineHeight = LineHeightStyleValue.length(px(40));
 		//_mainContainer.style.wordSpacing  = WordSpacingStyleValue.length(px(20));
@@ -338,7 +252,7 @@ class StyleTests
 		_insetGraphicElement.style.display = DisplayStyleValue._inline;
 		_mainContainer.addChild(_insetGraphicElement);
 		_mainContainer.addChild(siteLeftContainerChildren);
-		_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
+		//_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
 		_mainContainer.style.position = PositionStyleValue.relative;
 		_mainContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		_mainContainer.style.fontSize = FontSizeStyleValue.length(px(50));
@@ -535,6 +449,9 @@ class StyleTests
 			domElement.style.textTransform = TextTransformStyleValue.none;
 			domElement.style.letterSpacing = LetterSpacingStyleValue.normal;
 			domElement.style.wordSpacing = WordSpacingStyleValue.normal;
+			domElement.style.textIndent = TextIndentStyleValue.length(px(0));
+			domElement.style.whiteSpace = WhiteSpaceStyleValue.normal;
+			domElement.style.textAlign = TextAlignStyleValue.left;
 			
 			domElement.style.verticalAlign = VerticalAlignStyleValue.baseline;
 			

@@ -57,6 +57,53 @@ class Style extends AbstractStyle
 		return ret;	
 	}
 	
+	private function getTextAlignStyleValue(value:TextAlignStyleValue):String
+	{
+		var textAlignValue:String;
+		
+		switch (value)
+		{
+			case TextAlignStyleValue.left:
+				textAlignValue = "left";
+				
+			case TextAlignStyleValue.right:
+				textAlignValue = "right";
+				
+			case TextAlignStyleValue.center:
+				textAlignValue = "center";
+				
+			case TextAlignStyleValue.justify:
+				textAlignValue = "justify";
+		}
+		
+		return textAlignValue;
+	}
+	
+	private function getWhiteSpaceStyleValue(value:WhiteSpaceStyleValue):String
+	{
+		var whiteSpaceValue:String;
+		
+		switch (value)
+		{
+			case WhiteSpaceStyleValue.normal:
+				whiteSpaceValue = "normal";
+				
+			case pre:
+				whiteSpaceValue = "pre";
+				
+			case nowrap:
+				whiteSpaceValue = "nowrap";
+				
+			case preWrap:
+				whiteSpaceValue = "pre-wrap";
+				
+			case preLine:
+				whiteSpaceValue = "pre-line";
+		}
+		
+		return whiteSpaceValue;
+	}
+	
 	private function getFontSizeValue(value:FontSizeStyleValue):String
 	{
 		var fontValue:String;
@@ -466,6 +513,22 @@ class Style extends AbstractStyle
 		
 	}
 	
+	private function getTextIndentStyleValue(value:TextIndentStyleValue):String
+	{
+		var textIndentValue:String;
+		
+		switch (value)
+		{
+			case length(value):
+				textIndentValue = getConvertedValue(value);
+				
+			case percentage(value):
+				textIndentValue = value + "%";
+		}
+		
+		return textIndentValue;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -694,6 +757,12 @@ class Style extends AbstractStyle
 		return _right = value;
 	}
 	
+	override private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	{
+		this._domElement.nativeElement.style.textIndent = getTextIndentStyleValue(value);
+		return _textIndent = value;
+	}
+	
 	override private function setFloat(value:FloatStyleValue):FloatStyleValue 
 	{
 		var floatValue:String;
@@ -737,6 +806,18 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.clear = clearValue;
 		
 		return _clear = value;
+	}
+	
+	override private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	{
+		this._domElement.nativeElement.style.whiteSpace = getWhiteSpaceStyleValue(value);
+		return _whiteSpace = value;
+	}
+	
+	override private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	{
+		this._domElement.nativeElement.style.textAlign = getTextAlignStyleValue(value);
+		return _textAlign = value;
 	}
 	
 }

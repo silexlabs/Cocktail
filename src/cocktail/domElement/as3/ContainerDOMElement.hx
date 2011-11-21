@@ -156,11 +156,12 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 			
 			//create a new flash TextBlock using the TextNode as content
 			_textBlock = new TextBlock(getBrokenTextElements(textNode.text));
+			
 			_previousTextLine = null;
 		}
 		
 		//create a native flash text line
-		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, width);
+		var textLine:TextLine = _textBlock.createTextLine(_previousTextLine, 10000, 0.0, true);
 		_previousTextLine = textLine;
 		
 		//if the text line is not null (meaning that the current TextNode still had text to render)
@@ -262,8 +263,10 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 			textElements.push(getTextElement(textFragment, false));
 		}
 		
+		var groupElementFormat:ElementFormat = new ElementFormat();
+		groupElementFormat.breakOpportunity = BreakOpportunity.ALL;
 		
-		return new GroupElement(textElements);
+		return new GroupElement(textElements, groupElementFormat);
 	}
 	
 	/**
@@ -342,6 +345,17 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		}
 		
 		textElement.replaceText(0, textElement.text.length, applyTextTransform(textElement.text));
+		
+		/**
+		var breakOpportunity:BreakOpportunity;
+		
+		
+		switch (_style.computedStyle.whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal,
+			:
+				breakOpportunity = BreakOpportunity.AUTO
+		}*/
 		
 		
 		//set the element format as the text element

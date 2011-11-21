@@ -15,7 +15,7 @@ class FontComputer
 		
 	}
 	
-	public static function compute(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Void
+	public static function compute(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		var computedStyle = style.computedStyle;
 		
@@ -39,8 +39,40 @@ class FontComputer
 		
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
+		computedStyle.textIndent = getComputedTextIndent(style, containingDOMElementDimensions);
+		
+		computedStyle.whiteSpace = getComputedWhiteSpace(style);
+		
+		computedStyle.textAlign = getComputedTextAlign(style);
+		
 		computedStyle.color = getComputedColor(style);
 		
+	}
+	
+	private static function getComputedTextAlign(style:AbstractStyle):TextAlignStyleValue
+	{
+		return style.textAlign;
+	}
+	
+	private static function getComputedWhiteSpace(style:AbstractStyle):WhiteSpaceStyleValue
+	{
+		return style.whiteSpace;
+	}
+	
+	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	{
+		var textIndent:Int;
+		
+		switch(style.textIndent)
+		{
+			case length(value):
+				textIndent = Math.round(getValueFromLength(value));
+				
+			case percentage(value):
+				textIndent = getValueFromPercent(value, containingDOMElementDimensions.width);
+		}
+		
+		return textIndent;
 	}
 	
 	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Float
@@ -246,6 +278,11 @@ class FontComputer
 		}
 		
 		return color;
+	}
+	
+	private static function getValueFromPercent(percent:Int, reference:Int):Int
+	{
+		return Math.round(reference * (percent * 0.01));
 	}
 	
 	private static function getValueFromColorKeyword(value:ColorKeywordValue):Int

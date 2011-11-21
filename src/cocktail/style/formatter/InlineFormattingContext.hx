@@ -30,6 +30,14 @@ class InlineFormattingContext extends FormattingContext
 		super(domElement, previousFormattingContext);
 		
 		_domElementInLineBox = new Array<DOMElement>();
+		
+		applyTextIndent();
+		
+	}
+	
+	private function applyTextIndent():Void
+	{
+		_flowData.x += _containingDOMElement.style.computedStyle.textIndent;
 	}
 	
 
@@ -131,7 +139,7 @@ class InlineFormattingContext extends FormattingContext
 				/**
 				 * ! WARNING adding underline offset seems to bridge the gap between as/js, need to find better metrics
 				 */
-				_domElementInLineBox[i].y += Math.round(lineBoxAscent) + _domElementInLineBox[i].style.fontMetrics.underlineOffset ;
+				_domElementInLineBox[i].y += Math.round(lineBoxAscent)  ;
 			}
 			
 			

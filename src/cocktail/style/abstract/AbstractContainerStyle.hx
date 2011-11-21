@@ -234,7 +234,7 @@ class AbstractContainerStyle extends Style
 			//the newly created line takes all the available space on the current line
 			if (textLineDOMElement.isLastLineOfTextBlock == false)
 			{
-				startNewLine = true;
+				startNewLine = false;
 			}
 			else
 			{
