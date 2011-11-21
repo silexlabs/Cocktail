@@ -30,6 +30,7 @@ import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
+import flash.text.engine.TextLine;
 
 #if flash9
 import cocktail.style.as3.Style;
@@ -207,53 +208,50 @@ class AbstractContainerStyle extends Style
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
-		//create a text line of the available width remaining in the current line of the formatting context.
-		//the created line might be smaller than the specified width if there is not enough text to render
-		//in the TextNode
-		var textLineDOMElement:TextLineDOMElement = containerDOMElement.createTextLine(formattingContext.getRemainingLineWidth(), textNode);
+		var brokenTextElements:Array<TextElement> = getBrokenTextElements(getNativeText(textNode));
 		
-		//a flag determining if a new line must be started after that the current line was inserted into the
-		// formatting context.
-		var startNewLine:Bool = false;
-		
-		//create new TextLineDOMElements and insert them into the formatting context
-		//until all the text in the TextNode has been rendered. A null TextLineDOMElement
-		//will be created to signal that all the text was rendered
-		while( textLineDOMElement != null)
+		for (i in 0...brokenTextElements.length)
 		{
-
-			
-			//compute the styles (box model, text style...) of the newly created line of text
-			textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
-
-			//insert the line of text in the document
-			formattingContext.insert(textLineDOMElement);
-			
-			//if the line is not the last of its text block (the TextNode still has text
-			//to render) then a new line must be started in the formatting context as 
-			//the newly created line takes all the available space on the current line
-			if (textLineDOMElement.isLastLineOfTextBlock == false)
+			switch(brokenTextElements[i])
 			{
-				startNewLine = false;
+				case word(value):
+					//TO DO : create native text line and
+					//textLineDOMElement and add it as a text child
+					//of the containerDOMElement
+					textLineDOMElement = createTextLine(value);
+					textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+					formattingContext.insert(textLineDOMElement);
+					
+				case spaceSequence(spaceNumber):
+					formattingContext.insertSpace(spaceNumber, fontMetrics.spaceWidth);
+					
+				case tab:
+					formattingContext.insertTab(fontMetrics.spaceWidth * 8);
+					
+				case lineFeed:
+					formattingContext.startNewLine();
 			}
-			else
-			{
-				
-				startNewLine = false;
-			}
-			
-			//start a new line if neccessary
-			if (startNewLine == true)
-			{
-				formattingContext.startNewLine();
-			}
-			
-			//create the next line of text, return null if no text is left to render
-			textLineDOMElement = containerDOMElement.createTextLine(formattingContext.getRemainingLineWidth(), textNode);
 		}
 				
 	}
 	
+	private function createTextLine(text:String):TextLineDOMElement
+	{
+		//implemented by each runtime :
+		// create and style native element
+		// wrap it in textlineDOMElement
+		// add it as a text line children of the container DOM Element
+	}
+	
+	private function getBrokenTextElements(text:String):Array<TextElement>
+	{
+		//return array of text, line feed, tabs and spaces sequences
+	}
+	
+	private function getNativeText(textNode:TextNode):String
+	{
+		//abstract implemented by each runtime
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
