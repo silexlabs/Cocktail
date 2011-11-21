@@ -166,6 +166,15 @@ class AbstractStyle
 	private var _wordSpacing:WordSpacingStyleValue;
 	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacingStyleValue;
 	
+	private var _whiteSpace:WhiteSpaceStyleValue;
+	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpaceStyleValue;
+	
+	private var _textAlign:TextAlignStyleValue;
+	public var textAlign(getTextAlign, setTextAlign):TextAlignStyleValue;
+	
+	private var _textIndent:TextIndentStyleValue;
+	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
+	
 	////////////////////////////////
 	
 	/**
@@ -232,6 +241,9 @@ class AbstractStyle
 			textTransform:TextTransformStyleValue.none,
 			letterSpacing:0,
 			wordSpacing:0,
+			textIndent:0,
+			whiteSpace:WhiteSpaceStyleValue.normal,
+			textAlign:TextAlignStyleValue.left,
 			color:0
 		}
 	}
@@ -432,7 +444,7 @@ class AbstractStyle
 	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		computePositionStyle();
-		computeFontStyle(containingDOMElementFontMetrics);
+		computeFontStyle(containingDOMElementDimensions, containingDOMElementFontMetrics);
 		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 	}
 	
@@ -446,9 +458,9 @@ class AbstractStyle
 		PositionComputer.compute(this);
 	}
 	
-	public function computeFontStyle(containingDOMElementFontMetrics:FontMetrics):Void
+	public function computeFontStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
-		FontComputer.compute(this, containingDOMElementFontMetrics);
+		FontComputer.compute(this, containingDOMElementDimensions, containingDOMElementFontMetrics);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1063,5 +1075,35 @@ class AbstractStyle
 	private function getVerticalAlign():VerticalAlignStyleValue
 	{
 		return _verticalAlign;
+	}
+	
+	private function getTextIndent():TextIndentStyleValue
+	{
+		return _textIndent;
+	}
+	
+	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	{
+		return _textIndent = value;
+	}
+	
+	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	{
+		return _whiteSpace = value;
+	}
+	
+	private function getWhiteSpace():WhiteSpaceStyleValue
+	{
+		return _whiteSpace;
+	}
+	
+	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	{
+		return _textAlign = value;
+	}
+	
+	private function getTextAlign():TextAlignStyleValue
+	{
+		return _textAlign;
 	}
 }
