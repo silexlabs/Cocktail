@@ -30,7 +30,6 @@ import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
-import flash.text.engine.TextLine;
 
 #if flash9
 import cocktail.style.as3.Style;
@@ -50,6 +49,12 @@ import haxe.Log;
  */
 class AbstractContainerStyle extends Style
 {
+	private var _serifFontName:String;
+	
+	private var _sansSerifFontName:String;
+	
+	private var _monospaceFontName:String;
+	
 	/**
 	 * class constructor
 	 * @param	domElement
@@ -208,25 +213,36 @@ class AbstractContainerStyle extends Style
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
-		var brokenTextElements:Array<TextElement> = getBrokenTextElements(getNativeText(textNode));
-		
-		for (i in 0...brokenTextElements.length)
+		var textFragments:Array<TextFragmentValue> = getTextFragments(getNativeText(textNode));
+		for (i in 0...textFragments.length)
 		{
-			switch(brokenTextElements[i])
+			switch(textFragments[i])
 			{
 				case word(value):
 					//TO DO : create native text line and
 					//textLineDOMElement and add it as a text child
 					//of the containerDOMElement
-					textLineDOMElement = createTextLine(value);
-					textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
-					formattingContext.insert(textLineDOMElement);
+					var textLineDOMElement:TextLineDOMElement = createTextLine(value);
+					if (textLineDOMElement.nativeElement != null)
+					{
+						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+						formattingContext.insert(textLineDOMElement);
 					
-				case spaceSequence(spaceNumber):
-					formattingContext.insertSpace(spaceNumber, fontMetrics.spaceWidth);
+					}
+					
+				case space:
+					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
+					if (textLineDOMElement.nativeElement != null)
+					{
+						
+						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+						formattingContext.insertSpace(textLineDOMElement);
+					}
 					
 				case tab:
-					formattingContext.insertTab(fontMetrics.spaceWidth * 8);
+					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
+					textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+					formattingContext.insertTab(textLineDOMElement);
 					
 				case lineFeed:
 					formattingContext.startNewLine();
@@ -235,22 +251,296 @@ class AbstractContainerStyle extends Style
 				
 	}
 	
+	/**
+	 * Create and return a TextLineDOMElement of the specified width using the provided
+	 * TextNode as model
+	 * @param	width the desired width for the created text line. As many as possible glyphs will
+	 * be added to the line until adding another glyph would make the text line too wide, so 
+	 * the actual width of the line will probably be a bit inferior to the specified width. 
+	 * It might also be inferior if there is not enough text to fill the specified width
+	 * @param	textNode the string of unformatted text to use as the model to create the
+	 * text line. If the createTextLine method is called multiple times in a row with the
+	 * same TextNode, text lines will be created until all of the TextNode text has been rendered
+	 * as text lines.
+	 * @return either a TextLineDOMElement or null if the TextNode model has run out of text to 
+	 * render
+	 */
 	private function createTextLine(text:String):TextLineDOMElement
+	{
+		var textLineDOMElement:TextLineDOMElement = doCreateTextLine(text);
+		
+		//stores the text lines to easily remove it on the next layout
+		//and add it as a child of this ContainerDOMElement nativeElement
+		//so that it can appear in the DOM
+		
+		if (textLineDOMElement.nativeElement != null)
+		{
+			var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+			containerDOMElement.addTextLine(textLineDOMElement);
+		}
+		
+	
+		
+		return  textLineDOMElement;
+	}
+	
+	private function doCreateTextLine(text:String):TextLineDOMElement
 	{
 		//implemented by each runtime :
 		// create and style native element
 		// wrap it in textlineDOMElement
 		// add it as a text line children of the container DOM Element
+		return null;
 	}
 	
-	private function getBrokenTextElements(text:String):Array<TextElement>
+	private function getTextFragments(text:String):Array<TextFragmentValue>
 	{
-		//return array of text, line feed, tabs and spaces sequences
+		switch (_computedStyle.whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal:
+				text = collapseSpaceSequences(text);
+				
+			case WhiteSpaceStyleValue.pre:
+				text = removeLineFeeds(text);
+				
+			case WhiteSpaceStyleValue.nowrap:
+				text = collapseSpaceSequences(text);
+				text = removeLineFeeds(text);
+				text = convertTabToSpace(text);
+				
+			case WhiteSpaceStyleValue.preWrap:
+				
+			case WhiteSpaceStyleValue.preLine:
+				text = collapseSpaceSequences(text);
+		}
+		
+		var textFragments:Array<TextFragmentValue> = new Array<TextFragmentValue>();
+		
+		var textFragment:String = "";
+		
+		var i:Int = 0;
+		
+		
+		
+		//Loop in all the text charachters
+		while (i < text.length)
+		{
+			if (text.charAt(i) == "\\")
+			{
+				if (text.charAt(i + 1) != null)
+				{
+					if (text.charAt(i + 1) == "n")
+					{
+						if (textFragment != null)
+						{
+							//push the word into the returned array
+							textFragments.push(word(textFragment));
+							textFragment = null;
+						}
+						textFragments.push(lineFeed);
+						i ++;
+					}
+					else if (text.charAt(i + 1) == "t")
+					{
+						if (textFragment != null)
+						{
+							//push the word into the returned array
+							textFragments.push(word(textFragment));
+							textFragment = null;
+						}
+						textFragments.push(tab);
+						i ++;
+					}
+				}
+			}
+			
+			//If the charachter is a space
+			else if (StringTools.isSpace(text, i) == true)
+			{
+				
+				//If a word was being formed by concatenating
+				//characters
+				if (textFragment != null)
+				{
+					//push the word into the returned array
+					textFragments.push(word(textFragment));
+					textFragment = null;
+				}
+				
+				//push the space in the returned array
+				textFragments.push(space);
+			}
+			//else the charachter belongs to a word
+			//and is added to the word which is being
+			//concatenated
+			else
+			{
+				if (textFragment == null)
+				{
+					textFragment = "";
+				}
+				textFragment += text.charAt(i);
+			}
+			
+			i++;
+		}
+		
+		//push the remaining word if text doesn't end with a space
+		if (textFragment != null)
+		{
+			textFragments.push(word(textFragment));
+		}
+		
+		return textFragments;
+	}
+	
+	private function collapseSpaceSequences(text:String):String
+	{
+		var collapsedText:String = "";
+		var isSpaceSequence:Bool = false;
+		
+		for (i in 0...text.length)
+		{
+			if (StringTools.isSpace(text, i))
+			{
+				if (isSpaceSequence == false)
+				{
+					collapsedText += text.charAt(i);
+					isSpaceSequence = true;
+				}
+			}
+			else
+			{
+				isSpaceSequence = false;
+				collapsedText += text.charAt(i);
+			}
+		}
+		
+		return collapsedText;
+	}
+	
+	private function removeLineFeeds(text:String):String
+	{
+		return StringTools.replace(text, "\n", "");
+	}
+	
+	private function convertTabToSpace(text:String):String
+	{
+		return StringTools.replace(text, "\t", " ");
+	}
+	
+	/**
+	 * Transform a text letters into uppercase, lowercase
+	 * or capitalise them (only the first letter of each word
+	 * is transformed to uppercase), based on the textTransform
+	 * style of this container DOMElement
+	 * @param	text the text to transform
+	 * @return the transformed text
+	 */
+	private function applyTextTransform(text:String):String
+	{
+		switch (_computedStyle.textTransform)
+		{
+			case uppercase:
+				text = text.toUpperCase();
+				
+			case lowercase:
+				text = text.toLowerCase();
+				
+			case capitalize:
+				text = capitalizeText(text);
+				
+			case none:
+		}
+		
+		return text;
+	}
+	
+	/**
+	 * Capitalise a text (turn each first letter
+	 * of a word to uppercase)
+	 * @param	text the text to capitaliee
+	 * @return the capitalized
+	 */
+	private function capitalizeText(text:String):String
+	{
+		var capitalizedText:String = text.charAt(0);
+		
+		/**
+		 * loop in all charachter looking for word breaks
+		 * and capitalize each word's first letter
+		 */
+		for (i in 1...text.length)
+		{	
+			if (text.charAt(i - 1) == " ")
+			{
+				capitalizedText += text.charAt(i).toUpperCase();
+			}
+			else
+			{
+				capitalizedText += text.charAt(i);
+			}
+		}
+		return capitalizedText;
+	}
+	
+		/**
+	 * Takes the array containing every font to apply to the
+	 * text (ordered by priority, the first available font being
+	 * used) and return a comma separated list containing the ordered
+	 * font names.
+	 * @param	value an array which may contain any combination of generic
+	 * font family name and font family name
+	 * @return a comma separated list of font, genrally ordered from most
+	 * specific to most generic, e.g "Universe,Arial,_sans"
+	 */
+	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamilyValue:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String;
+			
+			switch (value[i])
+			{
+				case FontFamilyStyleValue.familyName(name):
+					fontName = name;
+				
+				case FontFamilyStyleValue.genericFamily(genericName):
+					switch (genericName)
+					{
+						case GenericFontFamilyValue.serif:
+							fontName = this._serifFontName;
+						
+						case GenericFontFamilyValue.sansSerif:
+							fontName = this._sansSerifFontName;
+							
+						case GenericFontFamilyValue.monospace:
+							fontName = this._monospaceFontName;
+					}
+			}
+			
+			if (fontName.indexOf(" ") != -1)
+			{
+				fontName = "'" + fontName + "'";
+			}
+			
+			fontFamilyValue += fontName;
+			
+			if (i < value.length - 1)
+			{
+				fontFamilyValue += ",";
+			}
+		}
+		
+		return fontFamilyValue;
 	}
 	
 	private function getNativeText(textNode:TextNode):String
 	{
 		//abstract implemented by each runtime
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

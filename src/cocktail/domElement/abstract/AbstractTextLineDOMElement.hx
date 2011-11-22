@@ -18,14 +18,9 @@ import cocktail.domElement.js.DOMElement;
 class AbstractTextLineDOMElement extends DOMElement
 {
 	
-	private var _isLastLineOfTextBlock:Bool;
-	public var isLastLineOfTextBlock(getIsLastLineOfTextBlock, never):Bool;
-	
-	public function new(nativeElement:NativeElement, style:Style, isLastLineOfTextBlock:Bool) 
+	public function new(nativeElement:NativeElement, style:Style) 
 	{
 		super(nativeElement);
-		
-		this._isLastLineOfTextBlock = isLastLineOfTextBlock;
 		this._style = style;
 	}
 
@@ -33,14 +28,5 @@ class AbstractTextLineDOMElement extends DOMElement
 	{
 		
 	}
-	
-	private function getIsLastLineOfTextBlock():Bool
-	{
-		return this._isLastLineOfTextBlock;
-	}
-	
-
-
-
 	
 }

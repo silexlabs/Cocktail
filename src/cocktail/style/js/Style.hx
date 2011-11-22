@@ -281,7 +281,7 @@ class Style extends AbstractStyle
 		return fontVariantValue;
 	}
 	
-	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
+	private function getFontFamilyStringValue(value:Array<FontFamilyStyleValue>):String
 	{
 		var fontFamilyValue:String = "";
 		
@@ -571,7 +571,7 @@ class Style extends AbstractStyle
 	
 	override private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
 	{
-		this._domElement.nativeElement.style.fontFamily = getFontFamilyValue(value);
+		this._domElement.nativeElement.style.fontFamily = getFontFamilyStringValue(value);
 		return _fontFamily = value;
 	}
 	

@@ -73,6 +73,8 @@ class FormattingContext
 	 */
 	public function new(domElement:DOMElement, previousFormatingContext:FormattingContext = null) 
 	{
+		
+		
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
 		
@@ -88,6 +90,8 @@ class FormattingContext
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
 		{
+			previousFormatingContext.destroy();
+			
 			if (domElement.style.isFloat() == false)
 			{
 				_floatsManager.addFloats(previousFormatingContext);
@@ -149,8 +153,28 @@ class FormattingContext
 		place(domElement);
 		
 		//remove all the floats that the insertion
+		//of the DOMElement made obsolete
+		removeFloats();
+	}
+	
+	public function insertSpace(domElement:DOMElement):Void
+	{
+		//store the DOMElement
+		_formatedElements.push(domElement);
+		
+		//actually place the DOMElement by computing
+		//its place in the flow than updating its
+		//position attributes
+		place(domElement);
+		
+		//remove all the floats that the insertion
 		//of the DOMElement made obsolote
 		removeFloats();
+	}
+	
+	public function insertTab(domElement:DOMElement):Void
+	{
+		
 	}
 	
 	/**
@@ -185,7 +209,7 @@ class FormattingContext
 		_floatsManager.retrieveFloats(formattingContext);
 	}
 	
-	public function getRemainingLineWidth():Int
+	private function getRemainingLineWidth():Int
 	{
 		return _flowData.containingBlockWidth - _flowData.x - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
 	}
@@ -193,6 +217,16 @@ class FormattingContext
 	public function startNewLine():Void
 	{
 		
+	}
+	
+	/**
+	 * Called by a new formatting context
+	 * to perform clean up before this
+	 * formatting context gets destroyed
+	 */
+	public function destroy():Void
+	{
+		//abstract
 	}
 	
 	
