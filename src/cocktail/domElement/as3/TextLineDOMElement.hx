@@ -15,9 +15,9 @@ import haxe.Log;
 class TextLineDOMElement extends AbstractTextLineDOMElement
 {
 
-	public function new(nativeElement:NativeElement, style:Style, isLastLineOfTextBlock:Bool) 
+	public function new(nativeElement:NativeElement, style:Style) 
 	{
-		super(nativeElement, style, isLastLineOfTextBlock);
+		super(nativeElement, style);
 	}
 	
 	override private function getOffsetWidth():Int
@@ -33,17 +33,16 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		else
 		{
 
-			relevantWidth = untyped _nativeElement.textWidth + _style.computedStyle.letterSpacing;
+			relevantWidth = untyped _nativeElement.textWidth ;
 		}
 		
-		return untyped relevantWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
+		return untyped relevantWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight + _style.computedStyle.letterSpacing;
 
 	}
 	
 
 	override private function getOffsetHeight():Int
 	{
-		//TO DO : add leading ?
 		
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		

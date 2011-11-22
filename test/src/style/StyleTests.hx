@@ -232,6 +232,7 @@ class StyleTests
 		//siteLeftContainerChildren.style.fontVariant = FontVariantStyleValue.smallCaps;
 		siteLeftContainerChildren.style.letterSpacing = LetterSpacingStyleValue.length(px(20));
 		siteLeftContainerChildren.style.color = ColorStyleValue.keyword(ColorKeywordValue.red);
+		siteLeftContainerChildren.style.fontFamily = [FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)];
 		
 		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren2.style.display = DisplayStyleValue._inline;

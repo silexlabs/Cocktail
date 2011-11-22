@@ -43,19 +43,31 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function insert(domElement:DOMElement):Void
 	{
+		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
+		{	
+			startNewLine();
+		}
+		
+		_domElementInLineBox.push(domElement);
+		super.insert(domElement);
+	}
+	
+	override public function insertSpace(domElement:DOMElement):Void
+	{
+		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
+		{	
+			startNewLine();
+		}
 		_domElementInLineBox.push(domElement);
 		
-		super.insert(domElement);
+		super.insertSpace(domElement);
 	}
 	
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
 		
-		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
-		{	
-			startNewLine();
-		}
+		
 		
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
@@ -127,10 +139,6 @@ class InlineFormattingContext extends FormattingContext
 		
 		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent; 
 		
-		//Log.trace(lineBoxHeight);
-		//Log.trace(lineBoxHeight);
-		//Log.trace(lineBoxAscent);
-		//Log.trace(lineBoxDescent);
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
@@ -139,7 +147,7 @@ class InlineFormattingContext extends FormattingContext
 				/**
 				 * ! WARNING adding underline offset seems to bridge the gap between as/js, need to find better metrics
 				 */
-				_domElementInLineBox[i].y += Math.round(lineBoxAscent)  ;
+				_domElementInLineBox[i].y += Math.round(lineBoxAscent);
 			}
 			
 			

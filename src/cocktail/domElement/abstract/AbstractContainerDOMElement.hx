@@ -170,44 +170,9 @@ class AbstractContainerDOMElement extends DOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// TEXT LINE CREATION methods
-	// used to create TextLineDOMElements using the TextNode children as model
+	// TEXT LINE MANAGEMENT methods
+	// used to add and remove TextLineDOMElements to the container
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Create and return a TextLineDOMElement of the specified width using the provided
-	 * TextNode as model
-	 * @param	width the desired width for the created text line. As many as possible glyphs will
-	 * be added to the line until adding another glyph would make the text line too wide, so 
-	 * the actual width of the line will probably be a bit inferior to the specified width. 
-	 * It might also be inferior if there is not enough text to fill the specified width
-	 * @param	textNode the string of unformatted text to use as the model to create the
-	 * text line. If the createTextLine method is called multiple times in a row with the
-	 * same TextNode, text lines will be created until all of the TextNode text has been rendered
-	 * as text lines.
-	 * @return either a TextLineDOMElement or null if the TextNode model has run out of text to 
-	 * render
-	 */
-	public function createTextLine(width:Int, textNode:TextNode):TextLineDOMElement
-	{
-		var textLineDOMElement:TextLineDOMElement = doCreateTextLine(width, textNode);
-		
-		//the text line is null if there is no more text in the TextNode to render
-		if (textLineDOMElement != null)
-		{
-			//stores the text lines to easily remove it on the next layout
-			//and add it as a child of this ContainerDOMElement nativeElement
-			//so that it can appear in the DOM
-			this.addTextLine(textLineDOMElement);
-		}
-		else
-		{
-			//Log.trace("null");
-		}
-		
-		
-		return  textLineDOMElement;
-	}
 	
 	/**
 	 * When a layout of this ContainerDOMElement occurs, all previously
@@ -223,19 +188,10 @@ class AbstractContainerDOMElement extends DOMElement
 	}
 	
 	/**
-	 * Actually create a text line using native API and wrap it in a 
-	 * TextLineDOMElement. Overidden by each runtime.
-	 */
-	private function doCreateTextLine(width:Int, textNode:TextNode):TextLineDOMElement
-	{
-		return null;
-	}
-	
-	/**
 	 * Stores a reference to a generated TextLineDOMElement. Overriden by each runtime
 	 * to attach the native text line to the native element of the container
 	 */
-	private function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	public function addTextLine(textLineDOMElement:TextLineDOMElement):Void
 	{
 		_textLineDOMElements.push(textLineDOMElement);
 	}
