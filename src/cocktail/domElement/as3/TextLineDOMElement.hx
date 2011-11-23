@@ -39,7 +39,7 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		{
 			//return this._width;
 			//relevantWidth = untyped _nativeElement.getAtomBounds(0).width;
-			return this._width;
+			return this._width + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
 		}
 		else
 		{
