@@ -239,6 +239,11 @@ import cocktail.domElement.DOMElement;
 		var underlineOffset:Int;
 	}
 	
+	typedef LineBoxElement = {
+		var domElement:DOMElement;
+		var domElementType:InlineBoxValue;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -276,10 +281,20 @@ import cocktail.domElement.DOMElement;
 		lineFeed;
 	}
 	
+	/**
+	 * Lists the different kind of
+	 * boxes that can be added in an
+	 * inline formatting context.
+	 * 
+	 * Spaces and tabs are separated
+	 * from other domElement as they
+	 * can influence a linebox layout
+	 * once it is complete
+	 */
 	enum InlineBoxValue {
-		domElement(domElement:DOMElement);
-		space(domElement:DOMElement);
-		tab(domElement:DOMElement);
+		domElement;
+		space;
+		tab;
 	}
 	
 	
