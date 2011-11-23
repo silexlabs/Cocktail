@@ -23,13 +23,13 @@ import haxe.Log;
 class InlineFormattingContext extends FormattingContext
 {
 
-	private var _domElementInLineBox:Array<DOMElement>;
+	private var _domElementInLineBox:Array<LineBoxElement>;
 	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
 		super(domElement, previousFormattingContext);
 		
-		_domElementInLineBox = new Array<DOMElement>();
+		_domElementInLineBox = new Array<LineBoxElement>();
 		
 		applyTextIndent();
 		
@@ -41,6 +41,12 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 
+	override public function destroy():Void
+	{
+		startNewLine();
+	}
+	
+
 	override public function insert(domElement:DOMElement):Void
 	{
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
@@ -48,17 +54,19 @@ class InlineFormattingContext extends FormattingContext
 			startNewLine();
 		}
 		
-		_domElementInLineBox.push(domElement);
+		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.domElement});
 		super.insert(domElement);
 	}
 	
 	override public function insertSpace(domElement:DOMElement):Void
 	{
+
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
 			startNewLine();
+			return;
 		}
-		_domElementInLineBox.push(domElement);
+		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.space});
 		
 		super.insertSpace(domElement);
 	}
@@ -90,8 +98,8 @@ class InlineFormattingContext extends FormattingContext
 		{
 			
 			var lineBoxHeight:Int = computeLineBoxHeight();
-			
-			_domElementInLineBox = new Array<DOMElement>();
+			alignText();
+			_domElementInLineBox = new Array<LineBoxElement>();
 			
 			_flowData.y += lineBoxHeight;
 			_flowData.totalHeight += lineBoxHeight;
@@ -107,12 +115,71 @@ class InlineFormattingContext extends FormattingContext
 				_flowData.x = _flowData.xOffset;
 			}
 		}
-			
-			
-			
-			
 	}
 	
+	private function alignText():Void
+	{
+		var concatenatedLength:Int = 0;
+		for (i in 0..._domElementInLineBox.length)
+		{
+			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
+		}
+		
+		
+		var remainingSpace:Int = _flowData.containingBlockWidth - concatenatedLength;
+		
+		
+		switch (_containingDOMElement.style.computedStyle.textAlign)
+		{
+			case left:
+				
+			case right:
+				for (i in 0..._domElementInLineBox.length)
+				{
+					_domElementInLineBox[i].domElement.x += remainingSpace;
+				}
+				
+				
+			case center:
+				for (i in 0..._domElementInLineBox.length)
+				{
+					_domElementInLineBox[i].domElement.x += Math.round(remainingSpace / 2);
+				}
+				
+			case justify:	
+				var spacesNumber:Int = 0;
+				for (i in 0..._domElementInLineBox.length)
+				{
+					switch (_domElementInLineBox[i].domElementType)
+					{
+						case space:
+							spacesNumber++;
+							
+						default:	
+					}
+				}
+				
+				for (i in 0..._domElementInLineBox.length)
+				{
+					switch (_domElementInLineBox[i].domElementType)
+					{
+						case space:
+							spacesNumber++;
+							
+						default:	
+					}
+				}
+				
+				
+				
+				
+				
+		}
+	}
+	
+	/**
+	 * To DO : separate processing from appling to x/y of DOMElements ?
+	 */
 	private function computeLineBoxHeight():Int
 	{
 		//get ascent and descent of the strut
@@ -124,17 +191,16 @@ class InlineFormattingContext extends FormattingContext
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
 			//of the block container
-			if (_domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign > lineBoxAscent)
+			if (_domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxAscent)
 			{
 				
-				lineBoxAscent = _domElementInLineBox[i].style.fontMetrics.ascent - _domElementInLineBox[i].style.computedStyle.verticalAlign;
+				lineBoxAscent = _domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
 			}
 			
-			if (_domElementInLineBox[i].style.fontMetrics.descent + _domElementInLineBox[i].style.computedStyle.verticalAlign > lineBoxDescent)
+			if (_domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxDescent)
 			{
-				lineBoxDescent = _domElementInLineBox[i].style.fontMetrics.descent + _domElementInLineBox[i].style.computedStyle.verticalAlign;
+				lineBoxDescent = _domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
 			}
-			
 		}
 		
 		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent; 
@@ -142,12 +208,12 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
-			if (_domElementInLineBox[i].style.isEmbedded() == false)
+			if (_domElementInLineBox[i].domElement.style.isEmbedded() == false)
 			{
 				/**
 				 * ! WARNING adding underline offset seems to bridge the gap between as/js, need to find better metrics
 				 */
-				_domElementInLineBox[i].y += Math.round(lineBoxAscent);
+				_domElementInLineBox[i].domElement.y += Math.round(lineBoxAscent);
 			}
 			
 			

@@ -27,14 +27,10 @@ import cocktail.domElement.js.DOMElement;
 #end
 
 /**
- * This is a DOMElement which can contain other both DOMElement and TextNode, it is in charge of building the DOMElement tree.
+ * This is a DOMElement which can contain both DOMElement and TextNode, it is in charge of building the DOMElement tree.
  * A ContainerDOMElement can receive any DOMElement as children.
- * A TextNode is a reference to a simple string of text which takes the style of its container. A TextNode can't have children.
- * It allows for setting semantic (node name) of the root node of the ContainerDOMElement.
- * 
- * When a ContainerDOMElement is laid out, it as many TextLineDOMObject as necessary each time one of its laid out children is
- * a TextNode. The TextNode is used as the model of the text, the generated TextLineDOMObjects are the view creating enough text line
- * to render all the text model. The TextLineDOMElements uses the ContainerDOMElement styles.
+ * A TextNode is a reference to a simple string of text which takes the visual style of its ContainerDOMElement. A TextNode can't have children.
+ * Each ContainerDOMElement represents a semantic element in the DOMElement tree.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -43,7 +39,6 @@ class AbstractContainerDOMElement extends DOMElement
 	/**
 	 * Store the node name (div, nav, header...) of the
 	 * first node of the reference to the native DOM.
-	 * This doesn't apply to Flash
 	 */
 	private var _semantic:String;
 	public var semantic(getSemantic, setSemantic):String;
@@ -58,7 +53,7 @@ class AbstractContainerDOMElement extends DOMElement
 	
 	/**
 	 * Stores each of the text lines generated at layout so they 
-	 * can easily be removed when a new layout occurs.
+	 * can easily be removed when the text content changes.
 	 */
 	private var _textLineDOMElements:Array<TextLineDOMElement>;
 	
@@ -171,12 +166,13 @@ class AbstractContainerDOMElement extends DOMElement
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// TEXT LINE MANAGEMENT methods
-	// used to add and remove TextLineDOMElements to the container
+	// used to add and remove TextLineDOMElements generating by this
+	// ContainerDOMElement text nodes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When a layout of this ContainerDOMElement occurs, all previously
-	 * created text lines must be removed
+	 * Removes all the previously created text lines. Occurs
+	 * when the content of a text node changes
 	 */
 	public function resetTextLines():Void
 	{

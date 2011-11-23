@@ -88,6 +88,7 @@ class AbstractContainerStyle extends Style
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
 		containerDOMElement.resetTextLines();
 		
 		//compute all the styles of the children that will affect
@@ -116,7 +117,7 @@ class AbstractContainerStyle extends Style
 		//is the first to be lay out
 		if (formatingContext == null)
 		{
-			formatingContext = getFormatingContext();
+			formatingContext = new BlockFormattingContext(containerDOMElement, null);
 			childrenFormattingContext = getFormatingContext();
 		}
 		else
@@ -167,7 +168,7 @@ class AbstractContainerStyle extends Style
 				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 			}
 		}
-		childrenFormattingContext.startNewLine();
+		childrenFormattingContext.destroy();
 		
 		//if the 'height' style of this ContainerDOMElement is 
 		//defined as 'auto', then it depends on its content width
@@ -227,14 +228,12 @@ class AbstractContainerStyle extends Style
 					{
 						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 						formattingContext.insert(textLineDOMElement);
-					
 					}
 					
 				case space:
 					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
 					if (textLineDOMElement.nativeElement != null)
 					{
-						
 						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 						formattingContext.insertSpace(textLineDOMElement);
 					}

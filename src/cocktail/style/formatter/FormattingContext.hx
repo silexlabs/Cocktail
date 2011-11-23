@@ -90,7 +90,7 @@ class FormattingContext
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
 		{
-			previousFormatingContext.destroy();
+		//	previousFormatingContext.destroy();
 			
 			if (domElement.style.isFloat() == false)
 			{
