@@ -21,13 +21,13 @@ import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 
 /**
- * This is the DOMElement implementation for FLASH AVM2. 
- * It manipulates the native Flash DOM
+ * This is the DOMElement implementation for FLASH AS3. 
+ * It manipulates the native Flash DOM (the DisplayList)
+ * 
  * @author Yannick DOMINGUEZ
  */
 class DOMElement extends AbstractDOMElement
 {
-
 	/**
 	 * Class constructor
 	 */
@@ -37,8 +37,8 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	/**
-	 * Set the domElement properties which can be retrieved
-	 * from the native Display Object
+	 * Set the DOMElement properties which can be retrieved
+	 * from the nativeElement (a flash Display Object)
 	 */
 	override private function init():Void
 	{	
@@ -50,7 +50,7 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public and private methods to manage the visibility and opacity of the dom element
+	// Overriden public and private methods to manage the visibility and opacity of the DOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -104,10 +104,10 @@ class DOMElement extends AbstractDOMElement
 	{
 		super.setMatrix(matrix);
 		
-		//get the data of the cross-platform matrix
+		//get the data of the abstract matrix
 		var matrixData:MatrixData = matrix.data;
 		
-		//create a native matrix with the cross-platform matrix data
+		//create a native matrix with the abstract matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//set the native matrix on the native DisplayObject to refresh its display
@@ -130,7 +130,7 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden Setters to manipulate the Flash DOMElement
+	// Overriden Setters to manipulate the Flash DisplayObject
 	// set the following attributes : x,y,width,height
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -163,8 +163,8 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z-index in the publication
+	// OVERRIDEN Z-INDEX SETTER/GETTER
+	// Setter/Getter to manipulate a nativeElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	override private function setZIndex(value:Int):Int

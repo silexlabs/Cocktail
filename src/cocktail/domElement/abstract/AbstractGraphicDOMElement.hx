@@ -23,7 +23,7 @@ import cocktail.nativeElement.NativeElementData;
  * The graphic DOMElement is used as a canvas to draw bitmap graphics programmatically. 
  * 
  * It is an abstraction of Flash and JavaScript respective drawing APIs. 
- * It was at first considered to only have a drawing API in the runtime
+ * It was at first considered to only have a drawing API in a separate
  * package which could have been leveraged by each of the DOMElements,
  * but unlike Flash where every Sprite can be used to draw graphics,
  * in HTML graphics can only be drawn on a canvas element. As a result, 
@@ -246,7 +246,7 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the native graphic dom element. Alpha is conserved
+	 * Draw a bitmap extracted from an image dom element into the native graphic dom element. Alpha is preserved 
 	 * for transparent bitmap
 	 * @param	source the source image dom element containing the bitmap data
 	 * @param	destinationPoint represent the top left point of the drawn image on the native graphic
@@ -265,7 +265,7 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draws a line from current drawing point to point to point x,y. 
+	 * Draws a line from current drawing point to point x,y. 
 	 * If a linestyle is defined for this Graphic DOMElement, draw a line with the current 
 	 * linestyle from current point to point x,y. The current position becomes point x,y.
 	 * @param	x target point x

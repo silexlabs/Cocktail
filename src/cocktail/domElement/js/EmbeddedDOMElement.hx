@@ -16,6 +16,7 @@ import cocktail.nativeElement.NativeElement;
 
 /**
  * This is theJavaScript implementation of the Embedded DOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedDOMElement extends AbstractEmbeddedDOMElement

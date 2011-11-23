@@ -19,7 +19,7 @@ import haxe.Log;
 import cocktail.domElement.abstract.AbstractImageDOMElement;
 
 /**
- * This is the Image DOMElement implementation for Flash.
+ * This is the image DOMElement implementation for Flash.
  * 
  * @author Yannick DOMINGUEZ
  */

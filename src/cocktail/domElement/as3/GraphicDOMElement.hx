@@ -31,8 +31,8 @@ import cocktail.domElement.DOMElementData;
 /**
  * This is the Flash AVM2 implementation of the graphic DOMElement.
  * It draws shape programatically onto a native Sprite object.
- * The sprite dom element is then cached as a bitmap. It allows to work
- * with both the flash drawing API and directly working with bitmap.
+ * The sprite DOMElement is then cached as a bitmap. It allows to work
+ * with both the flash vector drawing API and bitmaps.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -40,7 +40,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 {
 	/**
 	 * A transparent clip used to give a width and height
-	 * to the DOMElement. 
+	 * to the DOMElement without scaling its content. 
 	 */
 	private var _backGroundSprite:Sprite;
 	
@@ -52,7 +52,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	private var _bitmapDrawing:Bitmap;
 	
 	/**
-	 * Cast the native DOM as a sprite to access the 
+	 * Cast the nativeElement as a sprite to access the 
 	 * graphics object
 	 */
 	private var _typedNativeElement:Sprite;
@@ -82,8 +82,8 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden getter/setter
 	// The width and height setter/getter are overriden. In Flash, the with and height
-	// will depend on a transparent background Sprite, it will allow to draw graphics
-	// smaller than the whole graphic DOMElement. The background Sprite will also
+	// depends on the transparent background Sprite, it allows drawing graphics
+	// smaller than the whole graphic DOMElement. The background Sprite also
 	// acts as a mask, to clip the graphics
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -91,7 +91,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	{
 		this._width = value;
 		
-		//update the background delimiting this dom element
+		//update the background delimiting this DOMElement
 		setUpBackgroundSprite(this._backGroundSprite, value, getHeight());
 		
 		//update the bitmap drawing
@@ -186,14 +186,14 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 
 	/**
 	 * Update the size of the bitmap display object when the size of
-	 * dom Object changes
+	 * the DOMElement changes
 	 */
 	private function updateBitmapDrawingSize():Void
 	{
 		//retrieve the current bitmapData
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
-		//create a new transparent bitmapData with the new size of the dom element
+		//create a new transparent bitmapData with the new size of the DOMElement
 		var newBitmapData:BitmapData = new BitmapData(this._width, this._height, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
@@ -201,7 +201,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var drawingWidth:Int = 0;
 		
 		//if the current bitmap data width is superior to the new
-		//width of the dom element, then only the new width of pixels
+		//width of the DOMElement, then only the new width of pixels
 		//must be copied, the rest will be cropped
 		if (currentBitmapData.width > this._width)
 		{
@@ -232,7 +232,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//free the memory used by the current bitmap data
 		currentBitmapData.dispose();
 		
-		//replace the current bitmap data byt the new one
+		//replace the current bitmap data by the new one
 		this._nativeElement.removeChild(_bitmapDrawing);
 		_bitmapDrawing = new Bitmap(newBitmapData);
 		this._nativeElement.addChild(_bitmapDrawing);
@@ -339,7 +339,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 					getGradientBox(gradientStyle)
 				);
 			
-			//for a bitmap line style, use a ImageDOMElement as the source
+			//for a bitmap line style, use an ImageDOMElement as the source
 			//for the BitmapData. The line style must also be set before
 			//setting the bitmap data on the line
 			case bitmap(imageDOMElement, lineStyleData, repeat):
@@ -364,7 +364,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the bitmap display object.
+	 * Draw a bitmap extracted from an ImageDOMElement into the bitmap display object.
 	 */
 	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
 	{	
@@ -391,7 +391,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		}
 		
 		
-		//get the image dom element bitmap data and current bitmap data
+		//get the ImageDOMElement bitmap data and current bitmap data
 		var sourceBitmapData:BitmapData = getBitmapData(source);
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
@@ -399,7 +399,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		var nativeDestinationPoint:flash.geom.Point = new flash.geom.Point(destinationPoint.x, destinationPoint.y);
 		
-		//draw the image dom element bitmap data onto the current bitmap data
+		//draw the ImageDOMElement bitmap data onto the current bitmap data
 		currentBitmapData.copyPixels(sourceBitmapData, nativeSourceRect, nativeDestinationPoint, null, null, true);
 
 	}

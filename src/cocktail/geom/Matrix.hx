@@ -18,7 +18,7 @@ import cocktail.geom.GeomData;
  * cross-platform and as such doesn't rely on any runtime specific API.
  * 
  * It exposes method to create and manipulate a matrix which can then be 
- * used to apply 2d transformations to a display object.
+ * used to apply 2d transformations to a DOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -123,9 +123,6 @@ class Matrix
 			f : f
 		};
 		
-				
-		
-		
 		//then set it as this matrix data
 		this.data = concatenatedMatrixData;
 	}
@@ -163,7 +160,7 @@ class Matrix
 	
 	/**
 	 * Apply a transformation rotating the matrix of the angle number of degree (clockwise), using 
-	 * "registrationPoint" as rotation center.
+	 * registrationPoint as rotation center.
 	 * 
 	 * @param angle the rotation angle in degree
 	 * @param registrationPoint the pivot point
@@ -326,7 +323,7 @@ class Matrix
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the rotation of the matrix to an absolut value instead of adding a rotation
+	 * Set the rotation of the matrix to an absolute value instead of adding a rotation
 	 * to an existing rotation. Preserve the existing transformations
 	 * @param	angle the angle that must be applied
 	 * @param	registrationPoint the rotation center

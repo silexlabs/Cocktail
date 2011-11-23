@@ -34,7 +34,7 @@ import flash.Vector;
 import haxe.Log;
 
 /**
- * This is the Flash implementation of the container DOMElement.
+ * This is the Flash AS3 implementation of the container DOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -81,8 +81,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Stores a reference to a generated TextLineDOMElement. Overriden by each runtime
-	 * to attach the native text line to the native element of the container
+	 * Attach the native flash TextLine object to this DOMElement native DisplayObjectContainer
 	 */
 	override public function addTextLine(textLineDOMElement:TextLineDOMElement):Void
 	{
@@ -91,8 +90,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
-	 * Removes a stored reference to a generated TextLineDOMElement. Overriden by each runtime
-	 * to remove the native text line from the native element of the container
+	 * Removes the native flash TextLine object from this DOMElement native DisplayObjectContainer
 	 */
 	override private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
 	{		
