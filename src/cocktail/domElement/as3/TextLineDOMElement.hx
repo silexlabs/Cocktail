@@ -18,6 +18,16 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 	public function new(nativeElement:NativeElement, style:Style) 
 	{
 		super(nativeElement, style);
+		
+		if (_nativeElement != null)
+		{
+			if (untyped _nativeElement.textWidth == 0)
+			{
+			
+				this._width = untyped _nativeElement.getAtomBounds(0).width;
+			}
+		}
+	
 	}
 	
 	override private function getOffsetWidth():Int
@@ -27,8 +37,9 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		
 		if (untyped _nativeElement.textWidth == 0)
 		{
-			relevantWidth = untyped _nativeElement.getAtomBounds(0).width ;
-			
+			//return this._width;
+			//relevantWidth = untyped _nativeElement.getAtomBounds(0).width;
+			return this._width;
 		}
 		else
 		{
@@ -37,7 +48,9 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		}
 		
 		return untyped relevantWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight + _style.computedStyle.letterSpacing;
-
+				
+		
+		
 	}
 	
 

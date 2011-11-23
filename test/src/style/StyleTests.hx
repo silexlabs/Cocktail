@@ -85,7 +85,273 @@ class StyleTests
 		
 	}
 	
+	public function testLayout2()
+	{
+		_background = getGraph();
+		_background.style.width = DimensionStyleValue.percent(90);
+		_background.style.height = DimensionStyleValue.percent(100);
+		_background.style.position = absolute;
 
+		
+		
+		_mainContainer = getContainer();
+		_mainContainer.style.width = DimensionStyleValue.percent(80);
+		_mainContainer.style.height = DimensionStyleValue.auto;
+		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.top = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.position = PositionStyleValue.absolute;
+		
+		attach(_mainContainer);
+		//_mainContainer.addChild(_background);
+
+		
+		//_mainContainer.addChild(_background);
+		
+		_siteBackground = getGraph();
+		_siteBackground.style.width = DimensionStyleValue.percent(90);
+		_siteBackground.style.height = DimensionStyleValue.percent(100);
+		_siteBackground.style.position = absolute;
+		
+		var siteContainer:ContainerDOMElement = getContainer();
+		siteContainer.style.position = absolute;
+		//siteContainer.style.width = DimensionStyleValue.percent(70);
+	//	siteContainer.style.height = DimensionStyleValue.auto;
+	//	siteContainer.style.marginLeft = MarginStyleValue.auto;
+	//	siteContainer.style.marginRight = MarginStyleValue.auto;
+	//	siteContainer.style.marginTop = MarginStyleValue.length(pixel(10));
+		siteContainer.style.left = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.right = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.top = PositionOffsetStyleValue.length(px(40));
+		siteContainer.style.bottom = PositionOffsetStyleValue.length(px(40));
+		
+		//siteContainer.addChild(_siteBackground);
+		_mainContainer.addChild(siteContainer);
+		
+		
+		var headerContainer:ContainerDOMElement = getContainer();
+		headerContainer.style.width = DimensionStyleValue.auto;
+		headerContainer.style.height = DimensionStyleValue.length(px(150));
+		headerContainer.style.paddingTop = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingBottom = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingLeft = PaddingStyleValue.length(px(5));
+		headerContainer.style.paddingRight = PaddingStyleValue.length(px(5));
+		headerContainer.style.marginBottom = MarginStyleValue.length(px(10));
+		
+		_header = getGraph();
+		_header.style.width = DimensionStyleValue.auto;
+		_header.style.height = DimensionStyleValue.length(px(300));
+		_header.style.float = FloatStyleValue.right;
+		//_header.style.display = DisplayStyleValue._inline;
+		
+		
+		headerContainer.addChild(_header);
+		
+		siteContainer.addChild(headerContainer);
+		//_mainContainer.addText(NativeElementManager.createNativeTextNode("oihiojhiopnj"));
+		var siteLeftContainer:ContainerDOMElement = getContainer();
+		siteLeftContainer.style.width = DimensionStyleValue.percent(70);
+		siteLeftContainer.style.height = DimensionStyleValue.auto;
+		//siteLeftContainer.style.display = inlineBlock;
+
+		
+		_navigation = getGraph();
+		_navigation.style.width = DimensionStyleValue.auto;
+		_navigation.style.height = DimensionStyleValue.length(px(50));
+		_navigation.style.paddingLeft = PaddingStyleValue.length(px(10));
+		_navigation.style.paddingRight = PaddingStyleValue.length(px(10));
+		_navigation.style.float = FloatStyleValue.left;
+		//_navigation.style.marginLeft = MarginStyleValue.auto;
+		//_navigation.style.marginRight = MarginStyleValue.auto;
+		
+		var siteLeftTextContainer:ContainerDOMElement = getContainer();
+		//siteLeftTextContainer.style.width = DimensionStyleValue.auto;
+		//siteLeftTextContainer.style.height = DimensionStyleValue.auto;
+		siteLeftTextContainer.style.paddingLeft = PaddingStyleValue.length(px(10));
+		siteLeftTextContainer.style.paddingRight = PaddingStyleValue.length(px(10));
+		//siteLeftTextContainer.style.display = DisplayStyleValue.inlineBlock;
+		/**
+		var siteLeftText:TextDOMElement = getText();
+	//	siteLeftText.style.width = DimensionStyleValue.length(px(300));
+		//siteLeftText.style.marginTop = MarginStyleValue.length(px(10));
+	//	siteLeftText.style.height = DimensionStyleValue.length(px(300));
+		siteLeftText.style.display = DisplayStyleValue._inline;
+		
+		//siteLeftText.style.marginLeft = MarginStyleValue.auto;
+		//siteLeftText.style.marginRight = MarginStyleValue.auto;
+		//siteLeftText.style.display = DisplayStyleValue.inlineBlock;
+		
+		var siteLeftText2:TextDOMElement = getText();
+		//siteLeftText2.nativeElement = NativeElementManager.createNativeElement(custom("span"));
+		//siteLeftText2.style.width = DimensionStyleValue.length(px(300));
+		//siteLeftText2.style.marginTop = MarginStyleValue.length(px(10));
+		//siteLeftText2.style.height = DimensionStyleValue.length(px(300));
+		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
+		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
+		siteLeftText2.style.display = DisplayStyleValue._inline;
+		
+		var siteLeftText3:TextDOMElement = getText();
+		//siteLeftText3.style.width = DimensionStyleValue.length(px(300));
+		//siteLeftText3.style.marginTop = MarginStyleValue.length(px(10));
+		//siteLeftText3.style.height = DimensionStyleValue.length(px(300));
+		//siteLeftText2.style.marginLeft = MarginStyleValue.auto;
+		//siteLeftText2.style.marginRight = MarginStyleValue.auto;
+		siteLeftText3.style.display = DisplayStyleValue._inline;
+		*/
+		
+		siteLeftTextContainer.style.fontSize = FontSizeStyleValue.length(px(20));
+		siteLeftTextContainer.style.lineHeight = LineHeightStyleValue.length(px(25));
+		
+		/**
+		//siteLeftTextContainer.addChild(siteLeftText);
+		siteLeftText.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod convallis convallis justo placerat. Suspendisse rutrum justo et nunc dapibus semper. Donec id lectus nec lorem consectetur elementum ac eget odio. Curabitur ac ligula sem. Donec diam nisl, cursus eu luctus in, porttitor a tellus. Nullam auctor erat eget mi tristique porttitor. Quisque dignissim mattis purus id hendrerit. Cras turpis enim, ultricies viverra scelerisque eu, pharetra eget nibh. Suspendisse potenti"));
+		siteLeftText2.style.fontSize = FontSizeStyleValue.length(px(60));
+		siteLeftText2.style.lineHeight = LineHeightStyleValue.length(px(60));
+		siteLeftText.appendTextDOMElement(siteLeftText2);
+		siteLeftText2.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum"));
+		siteLeftText.appendTextDOMElement(siteLeftText3);
+		siteLeftText3.style.fontSize = FontSizeStyleValue.length(px(25));
+		siteLeftText3.style.lineHeight = LineHeightStyleValue.length(px(25));
+		siteLeftText3.appendText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu facilisis mi. Curabitur convallis tortor sit amet mi euismod conva"));
+		*/
+		//_mainContainer.addChild(siteLeftTextContainer);
+		
+		//_mainContainer.style.whiteSpace = WhiteSpaceStyleValue.pre;
+		//_mainContainer.style.textAlign = TextAlignStyleValue.right;
+		//siteLeftTextContainer.addChild(siteLeftText2);
+		//siteLeftTextContainer.addChild(siteLeftText3);
+		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
+		siteLeftContainerChildren.style.display = DisplayStyleValue._inline;
+		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM "));
+		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(90));
+		siteLeftContainerChildren.style.fontWeight = FontWeightStyleValue.bold;
+		//siteLeftContainerChildren.style.fontVariant = FontVariantStyleValue.smallCaps;
+		siteLeftContainerChildren.style.letterSpacing = LetterSpacingStyleValue.length(px(20));
+		siteLeftContainerChildren.style.color = ColorStyleValue.keyword(ColorKeywordValue.red);
+		siteLeftContainerChildren.style.fontFamily = [FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)];
+		
+		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
+		siteLeftContainerChildren2.style.display = DisplayStyleValue._inline;
+		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode(" BADA"));
+		siteLeftContainerChildren2.style.fontSize = FontSizeStyleValue.length(px(50));
+		siteLeftContainerChildren2.style.fontStyle = FontStyleStyleValue.italic;
+		siteLeftContainerChildren.addChild(siteLeftContainerChildren2);
+		siteLeftContainerChildren2.style.textTransform = TextTransformStyleValue.capitalize;
+	
+		
+		//_mainContainer.style.lineHeight = LineHeightStyleValue.length(px(40));
+		//_mainContainer.style.wordSpacing  = WordSpacingStyleValue.length(px(20));
+		//_mainContainer.style.letterSpacing = LetterSpacingStyleValue.length(px(30));
+		
+		var textContainer:ContainerDOMElement = getContainer();
+		//textContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing."));
+		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, "));
+		textContainer.style.textIndent =  TextIndentStyleValue.length(px(150));
+		siteContainer.addChild(textContainer);
+		textContainer.style.width = DimensionStyleValue.percent(50);
+		
+		_insetGraphicElement = getGraph();
+		_insetGraphicElement.style.width = DimensionStyleValue.length(px(200));
+		_insetGraphicElement.style.height = DimensionStyleValue.length(px(120));
+		_insetGraphicElement.style.display = DisplayStyleValue._inline;
+		textContainer.addChild(_insetGraphicElement);
+		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, Lorem ipsum dolor sit amet, consectetur, "));
+	
+		textContainer.addChild(siteLeftContainerChildren);
+		textContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing."));
+		//textContainer.style.position = PositionStyleValue.relative;
+		//textContainer.style.top = PositionOffsetStyleValue.length(px(300));
+		textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
+		//textContainer.style.lineHeight = LineHeightStyleValue.length(px(70));
+		_siteLeftFloatBackground = getGraph();
+		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
+		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
+		//_siteLeftFloatBackground.style.float = FloatStyleValue.left;
+		
+		
+		var siteLeftFloat:ContainerDOMElement = getContainer();
+		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
+		siteLeftFloat.style.float = FloatStyleValue.left;
+		//siteLeftFloat.style.clear = ClearStyleValue.both;
+		
+		var siteLeftFloat2:ContainerDOMElement = getContainer();
+		siteLeftFloat2.style.width = DimensionStyleValue.length(px(20));
+		siteLeftFloat2.style.height = DimensionStyleValue.length(px(120));
+		siteLeftFloat2.style.float = FloatStyleValue.left;
+		
+		var siteLeftAfterFloatBackgroundContainer:ContainerDOMElement = getContainer();
+		siteLeftAfterFloatBackgroundContainer.style.width = DimensionStyleValue.auto;
+		siteLeftAfterFloatBackgroundContainer.style.height = DimensionStyleValue.auto;
+		
+		_siteLeftAfterFloatBackground = getGraph();
+		_siteLeftAfterFloatBackground.style.width = DimensionStyleValue.length(px(200));
+		_siteLeftAfterFloatBackground.style.height = DimensionStyleValue.length(px(400));
+		
+		_siteLeftAfterFloatBackground2 = getGraph();
+		_siteLeftAfterFloatBackground2.style.width = DimensionStyleValue.length(px(200));
+		_siteLeftAfterFloatBackground2.style.height = DimensionStyleValue.length(px(50));
+		_siteLeftAfterFloatBackground2.style.marginTop = MarginStyleValue.length(px(10));
+		_siteLeftAfterFloatBackground2.style.float = FloatStyleValue.right;
+		
+		_siteLeftAfterFloatBackground3 = getGraph();
+		_siteLeftAfterFloatBackground3.style.width = DimensionStyleValue.percent(40);
+		_siteLeftAfterFloatBackground3.style.height = DimensionStyleValue.length(px(50));
+		_siteLeftAfterFloatBackground3.style.paddingTop = PaddingStyleValue.length(px(5));
+		//_siteLeftAfterFloatBackground3.style.clear = ClearStyleValue.right;
+		
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground);
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground2);
+		siteLeftAfterFloatBackgroundContainer.addChild(_siteLeftAfterFloatBackground3);
+		
+		siteLeftFloat.addChild(_siteLeftFloatBackground);
+		
+		//siteLeftTextContainer.addChild(siteLeftFloat);
+		//siteLeftTextContainer.addChild(siteLeftFloat2);
+		
+		siteLeftContainer.addChild(_navigation);
+		siteLeftContainer.addChild(siteLeftTextContainer);
+		siteLeftContainer.addChild(siteLeftFloat);
+		siteLeftContainer.addChild(siteLeftAfterFloatBackgroundContainer);
+		
+		var siteRightLeftContainer:ContainerDOMElement = getContainer();
+		siteRightLeftContainer.style.width = DimensionStyleValue.percent(100);
+		siteRightLeftContainer.style.height = DimensionStyleValue.auto;
+		
+		siteRightLeftContainer.addChild(siteLeftContainer);
+		
+		//_mainContainer.addChild(siteLeftContainer);
+		
+		var siteContainerRight:ContainerDOMElement = getContainer();
+		siteContainerRight.style.width = DimensionStyleValue.percent(30);
+		siteContainerRight.style.height = DimensionStyleValue.auto;
+		//siteContainerRight.style.display = inlineBlock;
+		
+		//siteRightLeftContainer.addChild(siteContainerRight);
+	
+		
+		_siteRightBackground = getGraph();
+		_siteRightBackground.style.width = DimensionStyleValue.percent(100);
+		_siteRightBackground.style.height = DimensionStyleValue.length(px(500));
+		
+		siteContainerRight.addChild(_siteRightBackground);
+		
+		 _footer = getGraph();
+		_footer.style.width = DimensionStyleValue.percent(50);
+		_footer.style.height = DimensionStyleValue.length(px(250));
+		_footer.style.marginTop = MarginStyleValue.length(px(10));
+		
+		
+		//siteContainer.addChild(_footer);
+		
+		
+		
+		refresh();
+		
+		
+		
+	
+	}
 	
 	public function testLayout()
 	{
@@ -219,7 +485,8 @@ class StyleTests
 		*/
 		//_mainContainer.addChild(siteLeftTextContainer);
 		_mainContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur"));
-		//_mainContainer.style.textIndent =  TextIndentStyleValue.length(px(150));
+		_mainContainer.style.textAlign = TextAlignStyleValue.center;
+		_mainContainer.style.textIndent =  TextIndentStyleValue.length(px(500));
 		//_mainContainer.style.whiteSpace = WhiteSpaceStyleValue.pre;
 		//_mainContainer.style.textAlign = TextAlignStyleValue.right;
 		//siteLeftTextContainer.addChild(siteLeftText2);
@@ -251,9 +518,9 @@ class StyleTests
 		_insetGraphicElement.style.width = DimensionStyleValue.length(px(20));
 		_insetGraphicElement.style.height = DimensionStyleValue.length(px(120));
 		_insetGraphicElement.style.display = DisplayStyleValue._inline;
-		_mainContainer.addChild(_insetGraphicElement);
-		_mainContainer.addChild(siteLeftContainerChildren);
-		//_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
+		//_mainContainer.addChild(_insetGraphicElement);
+		//_mainContainer.addChild(siteLeftContainerChildren);
+		_mainContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
 		_mainContainer.style.position = PositionStyleValue.relative;
 		_mainContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		_mainContainer.style.fontSize = FontSizeStyleValue.length(px(50));
