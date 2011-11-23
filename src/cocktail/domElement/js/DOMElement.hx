@@ -39,18 +39,12 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	/**
-	 * Set the domElement properties which can be retrieved
+	 * Set the DOMElement properties which can be retrieved
 	 * from the native HTML DOM element
 	 */
 	override private function init():Void
 	{
 		super.init();
-		
-		//all DOMElements are positioned as absolute to prevent most
-		//of browsers inconsistencies regarding margin/padding. 
-		//Margin, padding , floating... concepts will be abstracted
-		
-		_nativeElement.style.position = "absolute";
 		
 		if (_nativeElement.style.width != null)
 		{
@@ -230,7 +224,7 @@ class DOMElement extends AbstractDOMElement
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z order in the publication
+	// Setter/Getter to manipulate a nativeElement z order in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**

@@ -23,8 +23,8 @@ import cocktail.domElement.abstract.AbstractContainerDOMElement;
  * This is the JavaScript implementation of the container DOMElement.
  * 
  * When it's semantic is set, it adds the JavaScript specific behaviour
- * of changing the root node type of the reference to the native DOM
- * by setting it's name
+ * of changing the root node type of the reference to the nativeElement
+ * by setting it's node name
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -94,7 +94,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	
 	/**
 	 * Set the semantic of this DOMElement and set it as the node name
-	 * of the root tag of the native DOMElement (which is an HTML tag)
+	 * of the root tag of the nativeElement (which is an HTML tag)
 	 * @param	semantic the new node name
 	 */
 	override private function setSemantic(semantic:String):String

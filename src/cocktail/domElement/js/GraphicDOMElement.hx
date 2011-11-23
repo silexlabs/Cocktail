@@ -20,7 +20,8 @@ import cocktail.geom.GeomData;
 
 /**
  * This is the JavaScript implementation of the graphic DOMElement.
- * It draws shape programatically onto a native Canvas object
+ * It draws shape programatically onto an HTML Canvas element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class GraphicDOMElement extends AbstractGraphicDOMElement
@@ -233,7 +234,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the canvas.
+	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
 	 */
 	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
 	{

@@ -24,9 +24,10 @@ import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
- * This is a base class for runtime specific DOMElement. A DOMElement is an abstraction of the visual base element of a runtime.
- * For instance in JS, a DOMElement is an HTML element, like a <div> or <img> element. In Flash AS3, a domElement is a Sprite.
- * This class abstracts manipulating DOM elements, each runtime is implemented in an inheriting class
+ * This is the base class for all DOMElements. A DOMElement is an abstraction of the visual base element of a runtime.
+ * For instance in JS, a DOMElement is an HTML element, like a <div> or <img> element. In Flash AS3, a domElement is a DisplayObject.
+ * This class abstracts manipulating DOM elements, each runtime implemented in a sub-class.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractDOMElement 
@@ -53,7 +54,7 @@ class AbstractDOMElement
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
 	
 	/**
-	 * The callback called when the mouse over this dom element
+	 * The callback called when the mouse pointer hovers this dom element
 	 */
 	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
 	
@@ -63,7 +64,7 @@ class AbstractDOMElement
 	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
 	
 	/**
-	 * The callback called when the mouse move over this dom element
+	 * The callback called when the mouse pointer moves over this dom element
 	 */
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
 	
@@ -78,7 +79,7 @@ class AbstractDOMElement
 	
 	/**
 	 * An instance of the cross-platform keyboard class, used to listen
-	 * to key dow and up event
+	 * to key down and up event
 	 */
 	private var _keyboard:Keyboard;
 	
@@ -97,15 +98,16 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * A reference to the native DOM object. Varies for each
-	 * runtime : in JS it is an HTML element, in Flash a Sprite,
-	 * in PHP a resource
+	 * An abstract reference to the native element wrapped by this DOMElement.
+	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite,
+	 * in PHP a resource...
 	 */
 	private var _nativeElement:NativeElement;
 	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
 	
 	/**
-	 * a reference to the parent of this DOMElement, of type container
+	 * a reference to the parent of this DOMElement, of type container, the
+	 * only kind of DOMElement which can have children
 	 */ 
 	private var _parent:AbstractContainerDOMElement;
 	public var parent(getParent, setParent):AbstractContainerDOMElement;
@@ -145,13 +147,13 @@ class AbstractDOMElement
 	public var globalY(getGlobalY, setGlobalY):Int;
 	
 	/**
-	 * Stores the width position of this dom element
+	 * Stores the width of this dom element
 	 */
 	private var _width:Int;
 	public var width(getWidth, setWidth):Int;
 	
 	/**
-	 * Stores the height position of this dom element
+	 * Stores the height of this dom element
 	 */
 	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
@@ -173,8 +175,8 @@ class AbstractDOMElement
 	////////////////////////////////
 	
 	/**
-	 * Stores the styles of a DOMElement and manage
-	 * how they are applied
+	 * This Style object stores the styles of
+	 * a DOMElement and manages how they are applied
 	 */
 	private var _style:Style;
 	public var style(getStyle, never):Style;
@@ -193,7 +195,7 @@ class AbstractDOMElement
 	public var registrationPoint(getRegistrationPoint, setRegistrationPoint):RegistrationPointValue;
 	
 	/**
-	 * Stores a reference to this domElement transformation matrix
+	 * Stores a reference to this domElement 2d transformation matrix
 	 */
 	private var _matrix:Matrix;
 	public var matrix(getMatrix, setMatrix):Matrix;
@@ -219,7 +221,7 @@ class AbstractDOMElement
 	public var translationY(getTranslationY, setTranslationY):Float;
 	
 	/**
-	 * get/set the rotation on degree
+	 * get/set the rotation in deg (0 to 360)
 	 */
 	public var rotation(getRotation, setRotation):Int;
 	
@@ -242,7 +244,7 @@ class AbstractDOMElement
 	/////////////////////////////////
 	
 	/**
-	 * The z-order / z-index of this DOM Object, relative to
+	 * The z-index of this DOM Object, relative to
 	 * its parent (the first child of a ContainerDOMElement always has
 	 * a 0 z-index)
 	 */
@@ -253,8 +255,9 @@ class AbstractDOMElement
 	/////////////////////////////////
 	
 	/**
-	 * class constructor. Set the native element to the native DOMElement
-	 * and initialise it
+	 * class constructor. Stores the reference to the
+	 * native element triggering the initialisation
+	 * of the DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
@@ -267,7 +270,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Init the domElement properties. Called each time
+	 * Init the DOMElement properties. Called each time
 	 * the NativeElement is set
 	 */
 	private function init():Void
@@ -295,9 +298,9 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Instantiate the right style manager for this
+	 * Instantiate the right style object for this
 	 * DOMElement. Overriden by DOMElements with
-	 * specific style manager, such as Text
+	 * specific style objects, such as ContainerDOMElement
 	 */
 	private function initStyle():Void
 	{
@@ -310,7 +313,7 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Returns the DOMElement parent of this DOMElement
+	 * Returns the parent of this DOMElement
 	 */
 	private function getParent():AbstractContainerDOMElement
 	{
@@ -333,6 +336,7 @@ class AbstractDOMElement
 	private function setNativeElement(value:NativeElement):NativeElement
 	{
 		this._nativeElement = value;
+		//reset the DOMElement's properties
 		init();
 		return value;
 	}
@@ -352,7 +356,7 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Show or hide the native DOM Object. Implemented
+	 * Show or hide the native DOMElement. Implemented
 	 * by runtime specific sub class
 	 * @param	value true if the DOM object must be visible
 	 */
@@ -362,7 +366,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Return wether the DOM object is visible. Implemented
+	 * Return wether the DOMElement is visible. Implemented
 	 * by runtime specific sub class
 	 */
 	private function getIsVisible():Bool
@@ -371,7 +375,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Set the opacity of the DOM object
+	 * Set the opacity of the DOMElement
 	 * @param	value from 0 (transparent) to 1 (opaque)
 	 */
 	private function setAlpha(value:Float):Float
@@ -380,7 +384,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * return the opacity of the DOM Object, 
+	 * returns the opacity of the DOMElement, 
 	 * from 0 to 1
 	 */ 
 	private function getAlpha():Float
@@ -394,7 +398,7 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the transformation matrix of this domElement. Used
+	 * Set the transformation matrix of this DOMElement. Overriden
 	 * by the inheriting runtime specific class to update
 	 * their native matrix transformations
 	 */
@@ -405,7 +409,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Return this domElement matrix
+	 * Return this DOMElement matrix
 	 */
 	private function getMatrix():Matrix
 	{
@@ -425,9 +429,9 @@ class AbstractDOMElement
 	 * Return the transformation origin as a Point, from a
 	 * RegistrationPointValue
 	 */
-	private function getRegistrationPointPoint(registrationPoint:RegistrationPointValue):Point
+	private function getRegistrationPointValueAsPoint(registrationPoint:RegistrationPointValue):Point
 	{
-		//set the returned point
+		//init the returned point
 		var registrationPointPoint:Point = { x:0.0, y:0.0 };
 		
 		//switch the origin point value
@@ -474,7 +478,7 @@ class AbstractDOMElement
 	
 	
 	/**
-	 * Translate the domElement along the x and y axis, using x and y as offset
+	 * Translate the DOMElement along the x and y axis, using x and y as offset
 	 * @param	x the x offset
 	 * @param	y the y offset
 	 */
@@ -488,7 +492,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Rotate the domElement with the given angle using the registrationPoint as pivot point
+	 * Rotate the DOMElement with the given angle using the registrationPoint as pivot point
 	 * @param	angle the rotation angle, in degree
 	 * @param	registrationPoint the pivot point, represented as an enum value or as a point
 	 */
@@ -501,13 +505,13 @@ class AbstractDOMElement
 		}
 		
 		//use the matrix API, retrieve the pivot point
-		_matrix.rotate(angle, getRegistrationPointPoint(registrationPoint));
+		_matrix.rotate(angle, getRegistrationPointValueAsPoint(registrationPoint));
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
 	}
 	
 	/**
-	 * Scale the domElement with the scaleX and scaleY factor, using the registrationPoint as scaling
+	 * Scale the DOMElement with the scaleX and scaleY factor, using the registrationPoint as scaling
 	 * center
 	 * @param	scaleX the horizontal scale factor
 	 * @param	scaleY the vertical scale factor
@@ -522,14 +526,14 @@ class AbstractDOMElement
 		}
 		
 		//use the matrix API, retrieve the scale center
-		_matrix.scale(scaleX, scaleY, getRegistrationPointPoint(registrationPoint));
+		_matrix.scale(scaleX, scaleY, getRegistrationPointValueAsPoint(registrationPoint));
 		
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
 	}
 	
 	/**
-	 * skew the domElement with the skewX and skewY factor, using the registrationPoint as skewing
+	 * skew the DOMElement with the skewX and skewY factor, using the registrationPoint as skewing
 	 * center
 	 * @param	skewX the horizontal skew factor
 	 * @param	skewY the vertical skew factor
@@ -544,7 +548,7 @@ class AbstractDOMElement
 		}
 		
 		//use the matrix API, retrieve the skew center
-		_matrix.skew(skewX, skewY, getRegistrationPointPoint(registrationPoint));
+		_matrix.skew(skewX, skewY, getRegistrationPointValueAsPoint(registrationPoint));
 		
 		//refresh the matrix to refresh the domElement display
 		this.matrix = this._matrix;
@@ -577,7 +581,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Set the absolut y translation instead of adding it to 
+	 * Set the absolute y translation instead of adding it to 
 	 * the current y translation
 	 * @param	translationX the target y translation
 	 */
@@ -598,12 +602,12 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * set the absolut x scale of the domElement instead of adding it to the current scale
+	 * set the absolute x scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target x scale
 	 */
 	private function setScaleX(scaleX:Float):Float
 	{
-		_matrix.setScaleX(scaleX, getRegistrationPointPoint(this.registrationPoint));
+		_matrix.setScaleX(scaleX, getRegistrationPointValueAsPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return scaleX;
 	}
@@ -618,7 +622,7 @@ class AbstractDOMElement
 
 	
 	/**
-	 * set the absolut y scale of the domElement instead of adding it to the current scale
+	 * set the absolute y scale of the domElement instead of adding it to the current scale
 	 * @param	scaleX the target y scale
 	 */
 	private function setScaleY(scaleY:Float):Float
@@ -629,7 +633,7 @@ class AbstractDOMElement
 			registrationPoint = constant(left, top);
 		}
 		
-		_matrix.setScaleY(scaleY, getRegistrationPointPoint(this.registrationPoint));
+		_matrix.setScaleY(scaleY, getRegistrationPointValueAsPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return scaleY;
 	}
@@ -656,7 +660,7 @@ class AbstractDOMElement
 			registrationPoint = constant(left, top);
 		}
 		
-		_matrix.setRotation(angle, getRegistrationPointPoint(this.registrationPoint));
+		_matrix.setRotation(angle, getRegistrationPointValueAsPoint(this.registrationPoint));
 		this.matrix = this._matrix;
 		return angle;
 	}
@@ -792,7 +796,7 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set a field value on the native DOM object
+	 * Set a field value on the nativeElement
 	 * @param	propertyName the name of the field
 	 * @param	propertyValue the new value of the field
 	 */
@@ -802,7 +806,7 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Return the value of a field of the native object
+	 * Return the value of a field of the nativeElement
 	 * @param	propertyName the name of the field value to return
 	 * @return might be any type
 	 */
@@ -813,7 +817,7 @@ class AbstractDOMElement
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POSITIONING SETTERS/GETTERS
-	// Setters/Getters to manipulate a native DOMElement positioning in the publication
+	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function setX(value:Int):Int 
