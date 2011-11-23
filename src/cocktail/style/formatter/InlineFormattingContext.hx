@@ -25,8 +25,12 @@ class InlineFormattingContext extends FormattingContext
 
 	private var _domElementInLineBox:Array<LineBoxElement>;
 	
+	private var _firstLineLaidOut:Bool;
+	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
+		_firstLineLaidOut = false;
+		
 		super(domElement, previousFormattingContext);
 		
 		_domElementInLineBox = new Array<LineBoxElement>();
@@ -64,7 +68,6 @@ class InlineFormattingContext extends FormattingContext
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
 			startNewLine();
-			return;
 		}
 		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.space});
 		
@@ -77,7 +80,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		
 		
-		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
+		//domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
 		
 		_flowData.x += domElement.offsetWidth;
@@ -96,9 +99,9 @@ class InlineFormattingContext extends FormattingContext
 	{
 		if (_domElementInLineBox.length > 0)
 		{
-			
+			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
-			alignText();
+			alignText(_firstLineLaidOut == false);
 			_domElementInLineBox = new Array<LineBoxElement>();
 			
 			_flowData.y += lineBoxHeight;
@@ -114,10 +117,39 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_flowData.x = _flowData.xOffset;
 			}
+			
+			_firstLineLaidOut = true;
 		}
 	}
 	
-	private function alignText():Void
+	private function removeSpaces():Void
+	{
+		switch (_containingDOMElement.style.computedStyle.whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal,
+			WhiteSpaceStyleValue.nowrap,
+			WhiteSpaceStyleValue.preLine:
+				
+				
+				if (_domElementInLineBox[0].domElementType == InlineBoxValue.space)
+				{
+					_domElementInLineBox.shift();
+				}
+				if (_domElementInLineBox.length > 0)
+				{
+					if (_domElementInLineBox[_domElementInLineBox.length - 1].domElementType == InlineBoxValue.space)
+					{
+						_domElementInLineBox.pop();
+					}
+				}
+				
+								
+			default:
+		}
+		
+	}
+	
+	private function alignText(firstLine:Bool):Void
 	{
 		var concatenatedLength:Int = 0;
 		for (i in 0..._domElementInLineBox.length)
@@ -125,25 +157,44 @@ class InlineFormattingContext extends FormattingContext
 			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
 		}
 		
+		var remainingSpace:Int;
+		var localFlow:Int;
+		if (firstLine == true)
+		{
+			remainingSpace = _flowData.containingBlockWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent;
+			localFlow = _containingDOMElement.style.computedStyle.textIndent;
+		}
+		else
+		{
+			remainingSpace = _flowData.containingBlockWidth - concatenatedLength;
+			localFlow = 0;
+		}
 		
-		var remainingSpace:Int = _flowData.containingBlockWidth - concatenatedLength;
 		
 		
 		switch (_containingDOMElement.style.computedStyle.textAlign)
 		{
 			case left:
-				
-			case right:
+			
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.x += remainingSpace;
+					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
+				}
+			case right:
+				
+				for (i in 0..._domElementInLineBox.length)
+				{
+					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace;
+					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
 				
 			case center:
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.x += Math.round(remainingSpace / 2);
+					_domElementInLineBox[i].domElement.x = Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
 			case justify:	
@@ -164,10 +215,18 @@ class InlineFormattingContext extends FormattingContext
 					switch (_domElementInLineBox[i].domElementType)
 					{
 						case space:
-							spacesNumber++;
+							_domElementInLineBox[i].domElement.width += Math.round(remainingSpace / spacesNumber);
 							
 						default:	
 					}
+				}
+				
+				for (i in 0..._domElementInLineBox.length)
+				{
+					
+					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
+					
+					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
 				
