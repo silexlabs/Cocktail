@@ -104,13 +104,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		_flowData.x += domElement.offsetWidth;
 
-		if (domElement.offsetHeight > _flowData.maxLineHeight)
-		{
-			var oldMaxLineHeight:Int = _flowData.maxLineHeight;
-			_flowData.maxLineHeight = domElement.offsetHeight;
-			//_flowData.totalHeight += _flowData.maxLineHeight - oldMaxLineHeight;
-			
-		}
+		
 		
 	}
 	
@@ -182,12 +176,15 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	private function alignText(firstLine:Bool):Void
-	{
+	{	
+		
 		var concatenatedLength:Int = 0;
 		for (i in 0..._domElementInLineBox.length)
 		{
 			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
 		}
+		
+		
 		
 		var remainingSpace:Int;
 		var localFlow:Int;
@@ -201,7 +198,8 @@ class InlineFormattingContext extends FormattingContext
 			remainingSpace = _flowData.containingBlockWidth - concatenatedLength;
 			localFlow = 0;
 		}
-		localFlow += _floatsManager.getLeftFloatOffset(_flowData.y);
+		
+		localFlow += _floatsManager.getLeftFloatOffset(_flowData.y) + _flowData.xOffset;
 		
 		
 		switch (_containingDOMElement.style.computedStyle.textAlign)
@@ -241,6 +239,7 @@ class InlineFormattingContext extends FormattingContext
 						default:	
 					}
 				}
+				
 				
 				for (i in 0..._domElementInLineBox.length)
 				{
@@ -301,10 +300,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			if (_domElementInLineBox[i].domElement.style.isEmbedded() == false)
 			{
-				/**
-				 * ! WARNING adding underline offset seems to bridge the gap between as/js, need to find better metrics
-				 */
-				_domElementInLineBox[i].domElement.y += Math.round(lineBoxAscent);
+				_domElementInLineBox[i].domElement.y += Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign);
 			}
 			
 			

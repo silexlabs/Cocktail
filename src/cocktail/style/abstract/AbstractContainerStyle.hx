@@ -488,7 +488,7 @@ class AbstractContainerStyle extends Style
 		return capitalizedText;
 	}
 	
-		/**
+	/**
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
 	 * used) and return a comma separated list containing the ordered
@@ -541,6 +541,10 @@ class AbstractContainerStyle extends Style
 		return fontFamilyValue;
 	}
 	
+	/**
+	 * Return a String from a TextNode
+	 * using runtime specific method
+	 */
 	private function getNativeText(textNode:TextNode):String
 	{
 		//abstract implemented by each runtime

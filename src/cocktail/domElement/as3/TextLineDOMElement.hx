@@ -43,12 +43,8 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		else
 		{
 
-			relevantWidth = untyped _nativeElement.textWidth ;
-		}
-		
-		return untyped relevantWidth + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight + _style.computedStyle.letterSpacing;
-				
-		
+			return untyped _nativeElement.textWidth ;
+		}				
 		
 	}
 	
