@@ -3,6 +3,7 @@ import cocktail.style.abstract.AbstractStyle;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitManager;
+import haxe.Log;
 
 /**
  * ...
@@ -93,7 +94,6 @@ class FontComputer
 			case middle:
 				//! warning : containing dom element must be either an inline parent or the block which started inline context
 				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetrics.xHeight / 2;
-				
 			case sub:
 				verticalAlign = containingDOMElementFontMetrics.subscriptOffset;
 				

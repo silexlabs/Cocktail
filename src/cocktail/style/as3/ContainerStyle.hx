@@ -16,6 +16,7 @@ import cocktail.domElement.TextNode;
 import cocktail.style.abstract.AbstractContainerStyle;
 import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktail.unit.UnitManager;
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
@@ -25,6 +26,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
+import cocktail.unit.UnitData;
 import haxe.Log;
 
 
@@ -82,6 +84,7 @@ class ContainerStyle extends AbstractContainerStyle
 		elementFormat.fontDescription = fontDescription;
 	
 		
+		
 		elementFormat.fontSize = this._computedStyle.fontSize;
 
 		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
@@ -92,14 +95,22 @@ class ContainerStyle extends AbstractContainerStyle
 		var leadedAscent:Float = ascent + leading/2;
 		var leadedDescent:Float = descent + leading/2;
 		
+					
 		return {
 			ascent:Math.round(leadedAscent),
 			descent:Math.round(leadedDescent),
-			xHeight:0,
-			superscriptOffset:0,
-			subscriptOffset:0,
+			xHeight:getXHeight(elementFormat) ,
+			superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
+			subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
 			underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
 		};
+	}
+	
+	private function getXHeight(elementFormat:ElementFormat):Int
+	{
+		var textBlock:TextBlock = new TextBlock(new TextElement("x", elementFormat));
+		
+		return Math.round(textBlock.createTextLine(null, 10000).getAtomBounds(0).height);
 	}
 	
 	/**

@@ -209,7 +209,7 @@ class FormattingContext
 	
 	private function getRemainingLineWidth():Int
 	{
-		return _flowData.containingBlockWidth - _flowData.x - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+		return _flowData.containingBlockWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
 	}
 
 	public function startNewLine():Void
