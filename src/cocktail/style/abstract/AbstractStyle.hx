@@ -25,6 +25,7 @@ import cocktail.style.positioner.AbsolutePositioner;
 import cocktail.style.positioner.BoxPositioner;
 import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
+import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -148,8 +149,8 @@ class AbstractStyle
 	private var _fontVariant:FontVariantStyleValue;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariantStyleValue;
 	
-	private var _color:ColorStyleValue;
-	public var color(getColor, setColor):ColorStyleValue;
+	private var _color:ColorValue;
+	public var color(getColor, setColor):ColorValue;
 	
 	/**
 	 * text
@@ -1037,12 +1038,12 @@ class AbstractStyle
 		return _letterSpacing;
 	}
 	
-	private function setColor(value:ColorStyleValue):ColorStyleValue
+	private function setColor(value:ColorValue):ColorValue
 	{
 		return _color = value;
 	}
 	
-	private function getColor():ColorStyleValue
+	private function getColor():ColorValue
 	{
 		return _color;
 	}

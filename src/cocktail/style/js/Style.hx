@@ -12,6 +12,7 @@ package cocktail.style.js;
 
 import cocktail.domElement.DOMElement;
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.unit.UnitData;
 import haxe.Log;
 
 import cocktail.style.StyleData;
@@ -378,23 +379,7 @@ class Style extends AbstractStyle
 		return wordSpacingValue;
 	}
 	
-	private function getColorValue(value:ColorStyleValue):String
-	{
-		var colorValue:String;
-		
-		switch (value)
-		{
-			case numeric(value):
-				colorValue = getColorFromValue(value);
-				
-			case keyword(value):
-				colorValue = getColorFromKeyword(value);
-		}
-		
-		return colorValue;
-	}
-	
-	private function getColorFromValue(value:ColorValue):String
+	private function getStringColorValue(value:ColorValue):String
 	{
 		var colorValue:String;
 		
@@ -405,10 +390,15 @@ class Style extends AbstractStyle
 				
 			case RGB(red, green, blue):
 				colorValue = "rgb(" + red + "," + green + "," + blue + ")";
+				
+		
+			case keyword(value):
+				colorValue = getColorFromKeyword(value);
 		}
 		
 		return colorValue;
 	}
+	
 	
 	private function getColorFromKeyword(value:ColorKeywordValue):String
 	{
@@ -539,9 +529,9 @@ class Style extends AbstractStyle
 		return _verticalAlign = value;
 	}
 	
-	override private function setColor(value:ColorStyleValue):ColorStyleValue
+	override private function setColor(value:ColorValue):ColorValue
 	{
-		this._domElement.nativeElement.style.color = getColorValue(value);
+		this._domElement.nativeElement.style.color = getStringColorValue(value);
 		return _color = value;
 	}
 	

@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.computer;
 import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktail.unit.UnitManager;
 
 
 /**
@@ -37,7 +38,7 @@ class InLineBoxComputer extends BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedMargin = getValueFromLength(value);
+				computedMargin = UnitManager.getPixelFromLengthValue(value);
 			
 			//It's a percentage, compute it from the containing dimension
 			case percent(value): 
@@ -49,7 +50,7 @@ class InLineBoxComputer extends BoxComputer
 				}
 				else
 				{
-					computedMargin = getValueFromPercent(value, containingDOMElementDimension);
+					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 			
 			case auto:	

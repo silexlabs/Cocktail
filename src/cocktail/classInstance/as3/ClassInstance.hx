@@ -40,7 +40,7 @@ class ClassInstance extends AbstractClassInstance
 	
 	/**
 	 * check if a function exists on the class instance. Must rely on Type.getInstanceField to check if
-	 * the method exists, as Reflect.hasField only works for dynamic attributes and only return false for 
+	 * the method exists, as Reflect.hasField only works for dynamic attributes and always return false for 
 	 * class attributes/methods.
 	 * 
 	 * @param functionName the name of the searched method
