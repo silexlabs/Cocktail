@@ -168,7 +168,12 @@ class AbstractContainerStyle extends Style
 				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 			}
 		}
-		childrenFormattingContext.destroy();
+		
+		if (childrenFormattingContext != formatingContext)
+		{
+			childrenFormattingContext.destroy();
+		}
+		
 		
 		//if the 'height' style of this ContainerDOMElement is 
 		//defined as 'auto', then it depends on its content width

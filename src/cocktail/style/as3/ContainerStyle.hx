@@ -79,7 +79,6 @@ class ContainerStyle extends AbstractContainerStyle
 		}
 		
 		fontDescription.fontWeight = fontWeightValue;
-		
 		elementFormat.fontDescription = fontDescription;
 	
 		

@@ -30,7 +30,6 @@ class InlineFormattingContext extends FormattingContext
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
 		_firstLineLaidOut = false;
-		
 		super(domElement, previousFormattingContext);
 		
 		_domElementInLineBox = new Array<LineBoxElement>();
@@ -48,6 +47,9 @@ class InlineFormattingContext extends FormattingContext
 	override public function destroy():Void
 	{
 		startNewLine();
+		//var lineBoxHeight:Int = computeLineBoxHeight();
+		//removeSpaces();
+		//alignText(_firstLineLaidOut == false);
 	}
 	
 
@@ -55,7 +57,16 @@ class InlineFormattingContext extends FormattingContext
 	{
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
-			startNewLine();
+			switch(domElement.style.computedStyle.whiteSpace)
+			{
+				case WhiteSpaceStyleValue.normal,
+				WhiteSpaceStyleValue.preLine:
+					startNewLine();
+				
+				default:	
+					
+			}
+			
 		}
 		
 		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.domElement});
@@ -67,7 +78,15 @@ class InlineFormattingContext extends FormattingContext
 
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
-			startNewLine();
+			switch(domElement.style.computedStyle.whiteSpace)
+			{
+				case WhiteSpaceStyleValue.normal,
+				WhiteSpaceStyleValue.preLine:
+					startNewLine();
+				
+				default:	
+					
+			}
 		}
 		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.space});
 		
@@ -124,7 +143,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function removeSpaces():Void
 	{
-		switch (_containingDOMElement.style.computedStyle.whiteSpace)
+		switch (_domElementInLineBox[0].domElement.style.computedStyle.whiteSpace)
 		{
 			case WhiteSpaceStyleValue.normal,
 			WhiteSpaceStyleValue.nowrap,
@@ -135,17 +154,30 @@ class InlineFormattingContext extends FormattingContext
 				{
 					_domElementInLineBox.shift();
 				}
-				if (_domElementInLineBox.length > 0)
-				{
-					if (_domElementInLineBox[_domElementInLineBox.length - 1].domElementType == InlineBoxValue.space)
-					{
-						_domElementInLineBox.pop();
-					}
-				}
 				
 								
 			default:
 		}
+		if (_domElementInLineBox.length > 0)
+		{
+			switch (_domElementInLineBox[_domElementInLineBox.length - 1].domElement.style.computedStyle.whiteSpace)
+			{
+				case WhiteSpaceStyleValue.normal,
+				WhiteSpaceStyleValue.nowrap,
+				WhiteSpaceStyleValue.preLine:
+					
+					
+
+				if (_domElementInLineBox[_domElementInLineBox.length - 1].domElementType == InlineBoxValue.space)
+				{
+					_domElementInLineBox.pop();
+				}
+					
+					
+									
+				default:
+			}
+		}	
 		
 	}
 	
@@ -169,7 +201,7 @@ class InlineFormattingContext extends FormattingContext
 			remainingSpace = _flowData.containingBlockWidth - concatenatedLength;
 			localFlow = 0;
 		}
-		
+		localFlow += _floatsManager.getLeftFloatOffset(_flowData.y);
 		
 		
 		switch (_containingDOMElement.style.computedStyle.textAlign)
