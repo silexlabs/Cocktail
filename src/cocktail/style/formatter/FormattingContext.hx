@@ -89,9 +89,7 @@ class FormattingContext
 		//retrieve the floats inserted in a previous formatting
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
-		{
-		//	previousFormatingContext.destroy();
-			
+		{	
 			if (domElement.style.isFloat() == false)
 			{
 				_floatsManager.addFloats(previousFormatingContext);

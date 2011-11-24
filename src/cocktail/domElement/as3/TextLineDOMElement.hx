@@ -23,7 +23,6 @@ class TextLineDOMElement extends AbstractTextLineDOMElement
 		{
 			if (untyped _nativeElement.textWidth == 0)
 			{
-			
 				this._width = untyped _nativeElement.getAtomBounds(0).width;
 			}
 		}
