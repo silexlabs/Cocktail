@@ -50,7 +50,7 @@ class LibraryLoader extends AbstractResourceLoader {}
 #end	
 
 /**
- * Manages the queue of files to load, and exposes method to load resources of diferent types. 
+ * Manages a queue of files to load, and exposes method to load resources of diferent types. 
  * @author Yannick DOMINGUEZ
  */
 class ResourceLoaderManager 

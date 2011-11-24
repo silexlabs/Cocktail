@@ -14,6 +14,8 @@ import cocktail.domElement.DOMElement;
 import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.Style;
 import cocktail.style.StyleData;
+import cocktail.unit.UnitData;
+import cocktail.unit.UnitManager;
 import haxe.Log;
 
 
@@ -461,7 +463,7 @@ class BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedMargin = getValueFromLength(value);
+				computedMargin = UnitManager.getPixelFromLengthValue(value);
 			
 			//It's a percentage, compute it from the containing dimension
 			case percent(value): 
@@ -473,7 +475,7 @@ class BoxComputer
 				}
 				else
 				{
-					computedMargin = getValueFromPercent(value, containingDOMElementDimension);
+					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 			
 			//auto margins take the remaining place left after
@@ -527,7 +529,7 @@ class BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedConstraintDimension = getValueFromLength(value);
+				computedConstraintDimension = UnitManager.getPixelFromLengthValue(value);
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
@@ -547,7 +549,7 @@ class BoxComputer
 				}
 				else
 				{
-					computedConstraintDimension = getValueFromPercent(value, containingDOMElementDimension);
+					computedConstraintDimension = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 				
 			//here no constraint are applied,
@@ -582,10 +584,10 @@ class BoxComputer
 		switch(positionOffsetStyleValue)
 		{
 			case length(value):
-				computedPositionOffset = getValueFromLength(value);
+				computedPositionOffset = UnitManager.getPixelFromLengthValue(value);
 				
 			case percent(value):
-				computedPositionOffset = getValueFromPercent(value, containingDOMElementDimension);
+				computedPositionOffset = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				
 			case auto:
 				computedPositionOffset = 0;
@@ -611,7 +613,7 @@ class BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedDimensions = getValueFromLength(value);
+				computedDimensions = UnitManager.getPixelFromLengthValue(value);
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
@@ -623,7 +625,7 @@ class BoxComputer
 				}
 				else
 				{
-					computedDimensions = getValueFromPercent(value, containingDOMElementDimension);
+					computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 				
 			case auto:
@@ -652,7 +654,7 @@ class BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedPaddingValue = getValueFromLength(value);
+				computedPaddingValue = UnitManager.getPixelFromLengthValue(value);
 			
 			//It's a percentage, compute it from the containing dimension		
 			case percent(value):
@@ -664,7 +666,7 @@ class BoxComputer
 				}
 				else
 				{
-					computedPaddingValue = getValueFromPercent(value, containingDOMElementDimension);
+					computedPaddingValue = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 		}
 		
@@ -676,51 +678,6 @@ class BoxComputer
 	// For unit and percent based values
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Get a value in pixel 
-	 * from a unit value
-	 * (px, em, cm...)
-	 * @param	length contains the unit type and the value
-	 * @return returns the computed value as pixel with rounded
-	 * values
-	 */ 
-	private function getValueFromLength(length:LengthValue):Int
-	{
-		var lengthValue:Float;
-		
-		switch (length)
-		{
-			case px(value):
-				lengthValue = value;
-				
-			case mm(value):
-				lengthValue = (value * ((72 * (1 / 0.75)) / 2.54)) / 10;
-				
-			case cm(value):
-				lengthValue = value * ((72 * (1/0.75)) / 2.54);
-				
-			case pt(value):
-				lengthValue = value * 1/0.75;	
-				
-			case _in(value):
-				lengthValue = value * (72 * (1/0.75));
-				
-			case pc(value):
-				lengthValue = value * (12 * (1/0.75));	
-		}
-		
-		return Math.round(lengthValue);
-	}
 	
-	/**
-	 * Get a percentage of a reference value
-	 * @param	percent form 0 to 100
-	 * @param	reference the reference value
-	 * @return a percentage of the reference value
-	 */
-	private function getValueFromPercent(percent:Int, reference:Int):Int
-	{
-		return Math.round(reference * (percent * 0.01));
-	}
 	
 }

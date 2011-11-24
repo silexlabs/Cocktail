@@ -1,6 +1,8 @@
 package cocktail.style.computer;
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
+import cocktail.unit.UnitManager;
 
 /**
  * ...
@@ -61,18 +63,18 @@ class FontComputer
 	
 	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
 	{
-		var textIndent:Int;
+		var textIndent:Float;
 		
 		switch(style.textIndent)
 		{
 			case length(value):
-				textIndent = Math.round(getValueFromLength(value));
+				textIndent = UnitManager.getPixelFromLengthValue(value);
 				
 			case percentage(value):
-				textIndent = getValueFromPercent(value, containingDOMElementDimensions.width);
+				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementDimensions.width);
 		}
 		
-		return textIndent;
+		return Math.round(textIndent);
 	}
 	
 	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Float
@@ -107,10 +109,10 @@ class FontComputer
 				//TO DO : Align the bottom of the box with the bottom of the parent's content area 
 				
 			case percent(value):
-				verticalAlign = style.computedStyle.lineHeight * (value * 0.01);
+				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));
 				
 			case length(value):
-				verticalAlign = getValueFromLength(value);
+				verticalAlign = UnitManager.getPixelFromLengthValue(value);
 				
 			case top:
 				verticalAlign = 0;
@@ -125,19 +127,7 @@ class FontComputer
 	
 	private static function getComputedColor(style:AbstractStyle):Int
 	{
-		var color:Int;
-		
-		switch (style.color)
-		{
-			case numeric(value):
-				color = getValueFromColor(value);
-				
-			case keyword(value):
-				color = getValueFromColorKeyword(value);
-		}
-		
-		
-		return color;
+		return UnitManager.getColorFromColorValue(style.color);
 	}
 	
 	private static function getComputedWordSpacing(style:AbstractStyle):Int
@@ -150,7 +140,7 @@ class FontComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = Math.round(getValueFromLength(unit));
+				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit));
 		}
 		
 		return wordSpacing;
@@ -163,13 +153,13 @@ class FontComputer
 		switch (style.lineHeight)
 		{
 			case length(unit):
-				lineHeight = getValueFromLength(unit);
+				lineHeight = UnitManager.getPixelFromLengthValue(unit);
 				
 			case normal:
 				lineHeight = style.computedStyle.fontSize * 1.2;
 				
 			case percentage(value):
-				lineHeight = style.computedStyle.fontSize * (value / 100);
+				lineHeight = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.fontSize));
 				
 			case number(value):
 				lineHeight = style.computedStyle.fontSize * value;
@@ -188,7 +178,7 @@ class FontComputer
 				letterSpacing = 0;
 				
 			case length(unit):
-				letterSpacing = Math.round(getValueFromLength(unit));
+				letterSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit));
 		}
 		
 		return letterSpacing;
@@ -216,7 +206,7 @@ class FontComputer
 		switch (style.fontSize)
 		{
 			case length(unit):
-				fontSize = getValueFromLength(unit);
+				fontSize = UnitManager.getPixelFromLengthValue(unit);
 				
 		}
 		
@@ -231,119 +221,5 @@ class FontComputer
 	private static function getComputedFontWeight(style:AbstractStyle):FontWeightStyleValue
 	{
 		return style.fontWeight;
-	}
-	
-	private static function getValueFromLength(length:LengthValue):Float
-	{
-		var lengthValue:Float;
-		
-		switch (length)
-		{
-			case px(value):
-				lengthValue = value;
-				
-			case mm(value):
-				lengthValue = (value * ((72 * (1 / 0.75)) / 2.54)) / 10;
-				
-			case cm(value):
-				lengthValue = value * ((72 * (1/0.75)) / 2.54);
-				
-			case pt(value):
-				lengthValue = value * 1/0.75;	
-				
-			case _in(value):
-				lengthValue = value * (72 * (1/0.75));
-				
-			case pc(value):
-				lengthValue = value * (12 * (1/0.75));	
-		}
-		
-		return lengthValue;
-	}
-	
-	private static function getValueFromColor(value:ColorValue):Int
-	{
-		var color:Int;
-		
-		switch (value)
-		{
-			case RGB(red, green, blue):
-				color = red;
-				color = (color << 8) + green;
-				color = (color << 8) + blue;
-			
-			case hex(value):
-				color = Std.parseInt(StringTools.replace(value, "#", "0x"));
-
-		}
-		
-		return color;
-	}
-	
-	private static function getValueFromPercent(percent:Int, reference:Int):Int
-	{
-		return Math.round(reference * (percent * 0.01));
-	}
-	
-	private static function getValueFromColorKeyword(value:ColorKeywordValue):Int
-	{
-		var hexColor:String;
-		
-		switch (value)
-		{
-			case aqua:
-				hexColor = "#00FFFF";
-				
-			case black:
-				hexColor = "#000000";
-				
-			case blue:
-				hexColor = "#0000FF";
-				
-			case fuchsia:
-				hexColor = "#FF00FF";
-				
-			case gray:
-				hexColor = "#808080";
-				
-			case green:
-				hexColor = "#008000";
-				
-			case lime:
-				hexColor = "#00FF00";
-				
-			case maroon:
-				hexColor = "#800000";
-				
-			case navy:
-				hexColor = "#000080";
-				
-			case olive:
-				hexColor = "#808000";
-				
-			case orange:
-				hexColor = "#FFA500";
-				
-			case purple:
-				hexColor = "#800080";
-				
-			case red:
-				hexColor = "#FF0000";
-				
-			case silver:
-				hexColor = "#C0C0C0";
-				
-			case teal:
-				hexColor = "#008080";
-				
-			case white:
-				hexColor = "#FFFFFF";
-				
-			case yellow:
-				hexColor = "#FFFF00";
-				
-		}
-		
-		return getValueFromColor(ColorValue.hex(hexColor));
 	}
 }

@@ -64,7 +64,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 	
 	override public function createNativeTextNode(text:String):TextNode
 	{
-		return new TextElement(text, new ElementFormat());
+		return text;
 	}
 	
 }

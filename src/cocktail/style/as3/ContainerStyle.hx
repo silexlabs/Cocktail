@@ -127,7 +127,7 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	override private function getNativeText(textNode:TextNode):String
 	{
-		return textNode.text;
+		return textNode;
 	}
 	
 	/**

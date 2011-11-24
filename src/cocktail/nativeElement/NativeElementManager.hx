@@ -31,11 +31,8 @@ import cocktail.domElement.TextNode;
 
 /**
  * this class abstract and manages the interaction with a
- * native DOM. Native DOM element element are abstracted as 
- * NativeElement.
- * 
- * It manages the native elements path, allowing to retrieve
- * native element with path
+ * native DOM element (e.g a DisplayObject in flash, an HTML element in JS...). Native elements are wrapped in 
+ * NativeElement class instance.
  * 
  * It abstracts the creation of new native element by mimicking
  * the HTML way of creating new element.
@@ -69,7 +66,7 @@ class NativeElementManager
 	
 	/**
 	 * Returns the native DOM root of the current runtime, for instance
-	 * the Body element in HTML
+	 * the Body element in HTML, the Stage in Flash
 	 */
 	public static function getRoot():NativeElement
 	{
@@ -96,6 +93,11 @@ class NativeElementManager
 		return _nativeElementCreator.createNativeElement(nativeElementType);
 	}
 	
+	/**
+	 * Create a TextNode from a text, which is an abstract representation
+	 * of a text element, e.g in JS, it is an HTML TextNode, in flash a 
+	 * simple string
+	 */
 	public static function createNativeTextNode(text:String):TextNode
 	{
 		//instantiate the reference creator if first use

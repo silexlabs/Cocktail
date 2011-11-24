@@ -13,9 +13,9 @@ package cocktail.classInstance.abstract;
 import cocktail.nativeInstance.NativeInstance;
 
 /**
- * This class is used to manipulate a native class instance, 
- * call its methods, retrieve attribute values etc. 
- * It is necessary to use this "proxy" since the native methods 
+ * This class proxies access to a native class instance, 
+ * to call its methods, retrieve attributes etc. 
+ * It is necessary to use this proxy since the native methods 
  * and attributes may need processing before being used in haXe. 
  * And also haXe values may need processing before being passed to the native class.
  * 
@@ -52,7 +52,7 @@ class AbstractClassInstance
 	 */
 	public function new(nativeInstanceClassName:String) 
 	{
-		
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

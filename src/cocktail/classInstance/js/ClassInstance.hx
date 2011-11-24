@@ -37,7 +37,7 @@ class ClassInstance extends AbstractClassInstance
 		}
 		else
 		{
-			//else instantiate it with native JavaScript method
+			//else instantiate it with a native JavaScript method
 			_nativeInstance = Lib.eval("new " + nativeInstanceClassName + "()");
 		}
 	}
