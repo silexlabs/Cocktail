@@ -242,18 +242,18 @@ class FloatsManager
 	 * @param	flowData the flow data of the formatting context placing the floated
 	 * DOMElement
 	 */
-	public function computeFloatData(domElement:DOMElement, flowData:FlowData):FloatData
+	public function computeFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
 	{
 		var ret:FloatData;
 		
 		switch (domElement.style.computedStyle.float)
 		{
 			case left:
-				ret = getLeftFloatData(domElement, flowData);
+				ret = getLeftFloatData(domElement, flowData, containingBlockWidth);
 				_floats.left.push(ret);
 				
 			case right:
-				ret = getRightFloatData(domElement, flowData);
+				ret = getRightFloatData(domElement, flowData, containingBlockWidth);
 				_floats.right.push(ret);
 				
 			default:
@@ -266,10 +266,10 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a left float
 	 */
-	private function getLeftFloatData(domElement:DOMElement, flowData:FlowData):FloatData
+	private function getLeftFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(domElement, flowData);
+		var floatData:FloatData = getFloatData(domElement, flowData, containingBlockWidth);
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
@@ -281,14 +281,14 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(domElement:DOMElement, flowData:FlowData):FloatData
+	private function getRightFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(domElement, flowData);
+		var floatData:FloatData = getFloatData(domElement, flowData, containingBlockWidth);
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = flowData.containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, flowData.containingBlockWidth) + flowData.xOffset;
+		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth) + flowData.xOffset;
 		
 		return floatData;
 	}
@@ -297,7 +297,7 @@ class FloatsManager
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(domElement:DOMElement, flowData:FlowData):FloatData
+	private function getFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
 	{
 		//a float width and height use the margin box of a
 		//DOMElement
@@ -305,7 +305,7 @@ class FloatsManager
 		var floatHeight:Int = domElement.offsetHeight;
 	
 		//get the first y position where the float can be placed
-		var floatY:Int = getFirstAvailableY(flowData, floatWidth);
+		var floatY:Int = getFirstAvailableY(flowData, floatWidth, containingBlockWidth);
 		
 		//the x position of the float vary for left and right float
 		var floatX:Int = 0;
@@ -324,9 +324,10 @@ class FloatsManager
 	 * without overlapping floats or other DOMElements
 	 * @param	flowData the current flowData
 	 * @param	elementWidth the width of the element that must be inserted
+	 * @param	containingBlockWidth the maximum available width in a line
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableY(flowData:FlowData, elementWidth:Int):Int
+	public function getFirstAvailableY(flowData:FlowData, elementWidth:Int, containingBlockWidth:Int):Int
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
@@ -335,7 +336,7 @@ class FloatsManager
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
-		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY, flowData.containingBlockWidth) + elementWidth > flowData.containingBlockWidth)
+		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY, containingBlockWidth) + elementWidth > containingBlockWidth)
 		{
 			//stores all the floats situated at the same height or after
 			//the current y position

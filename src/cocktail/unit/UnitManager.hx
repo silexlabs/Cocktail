@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.unit;
 import cocktail.unit.UnitData;
+import haxe.Log;
 
 /**
  * This class exposes static unit conversion
@@ -38,10 +39,18 @@ class UnitManager
 	 * from a length value
 	 * (px, em, cm...)
 	 * @param	length contains the unit type and the value
+	 * @param	emReference the computed value used as reference
+	 * when computing an em relative length value. It can be either the
+	 * DOMElement's computed font size or its parent's if the computed em
+	 * value is the font size of the DOMElement
+	 * @param exReference he computed value used as reference
+	 * when computing an ex relative length value. It can be either the
+	 * DOMElement's x-height or its parent's x-height if the computed ex value
+	 * is the font size of the DOMElement
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLengthValue(length:LengthValue):Int
+	public static function getPixelFromLengthValue(length:LengthValue, emReference:Float, exReference:Float):Int
 	{
 		var lengthValue:Float;
 		
@@ -63,11 +72,77 @@ class UnitManager
 				lengthValue = value * (72 * (1/0.75));
 				
 			case pc(value):
-				lengthValue = value * (12 * (1/0.75));	
+				lengthValue = value * (12 * (1 / 0.75));	
+				
+			case em(value):
+				lengthValue = emReference * value;
+				
+			case ex(value):
+				lengthValue = exReference * value;
 		}
 		
 		return Math.round(lengthValue);
 	}
+	
+	/**
+	 * Takes an absolute size value for a font size and return
+	 * a pixel value
+	 */
+	public static function getFontSizeFromAbsoluteSizeValue(absoluteSize:FontSizeAbsoluteSizeValue):Float
+	{
+		var fontSize:Float;
+		
+		var mediumFontSize:Int = 16;
+		
+		switch (absoluteSize)
+		{
+			case xxSmall:
+				fontSize = 9;
+				
+			case xSmall:
+				fontSize = 10;
+				
+			case small:
+				fontSize = 13;
+				
+			case medium:
+				fontSize = 16;
+				
+			case large:
+				fontSize = 18;
+				
+			case xLarge:
+				fontSize = 24;
+				
+			case xxLarge:
+				fontSize = 32;
+		}
+		
+		return fontSize;
+	}
+	
+	/**
+	 * Take a relative value for a font size and return
+	 * a pixel value using the parent's computed font
+	 */
+	public static function getFontSizeFromRelativeSizeValue(relativeSize:FontSizeRelativeSizeValue, parentFontSize:Float):Float
+	{
+		var fontSize:Float;
+		
+		
+		switch (relativeSize)
+		{
+			case larger:
+				fontSize = getLargerFontSize(parentFontSize);
+				
+			case smaller:
+				fontSize = getSmallerFontSize(parentFontSize);
+		}
+		
+		return fontSize;
+	}
+	
+	
 	
 	/**
 	 * Get a percentage of a reference value
@@ -172,6 +247,55 @@ class UnitManager
 		}
 		
 		return getColorFromColorValue(ColorValue.hex(hexColor));
+	}
+	
+	/**
+	 * Get the next largest font size in the font size size array, taking
+	 * the parent's font size as starting value
+	 */
+	private static function getLargerFontSize(parentFontSize:Float):Float
+	{
+		var fontSizeTable:Array<Int> = [9, 10, 13, 16, 18, 24, 32];
+		var fontSize:Float = fontSizeTable[fontSizeTable.length - 1];
+		
+		for (i in 0...fontSizeTable.length)
+		{
+			if (fontSizeTable[i] > parentFontSize)
+			{
+				fontSize = fontSizeTable[i];
+				break;
+			}
+		}
+	
+		return fontSize;
+	}
+	
+	/**
+	 * Get the next smallest font size in the font size size array, taking
+	 * the parent's font size as starting value
+	 */
+	private static function getSmallerFontSize(parentFontSize:Float):Float
+	{
+		
+		var fontSizeTable:Array<Int> = [9, 10, 13, 16, 18, 24, 32];
+		var fontSize:Float = fontSizeTable[0];
+		
+		var i:Int = fontSizeTable.length - 1;
+		
+		while (i > 0 )
+		{
+			if (fontSizeTable[i] < parentFontSize)
+			{
+				
+				fontSize = fontSizeTable[i];
+				
+				break;
+			}
+			
+			i--;
+		}
+			
+		return fontSize;
 	}
 	
 }

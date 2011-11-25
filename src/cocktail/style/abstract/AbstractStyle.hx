@@ -198,6 +198,7 @@ class AbstractStyle
 	 * font and font size used in inline formatting context
 	 * to determine lineBoxes sizes
 	 */
+	private var _fontMetrics:FontMetrics;
 	public var fontMetrics(getFontMetrics, never):FontMetrics;
 	
 	
@@ -233,7 +234,7 @@ class AbstractStyle
 			display : DisplayStyleValue.block,
 			position: PositionStyleValue._static,
 			verticalAlign : 0.0,
-			fontSize:15.0,
+			fontSize:12.0,
 			lineHeight:14.0,
 			fontWeight:FontWeightStyleValue.normal,
 			fontStyle:FontStyleStyleValue.normal,
@@ -715,13 +716,9 @@ class AbstractStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	/**
-	 * Abstract by default, as font metrics vary based
-	 * on the inheriting style class
-	 */
 	private function getFontMetrics():FontMetrics
 	{
-		return null;
+		return _fontMetrics;
 	}
 	
 	private function getComputedStyle():ComputedStyleData

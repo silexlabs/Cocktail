@@ -18,6 +18,14 @@ package cocktail.unit;
  * Lists the different types of 
  * unit supported with an explicitly
  * set length such as px, cm, em...
+ * 
+ * There are two kinds of length units :
+ * - absolute (px, cm, mm, pt, pc, in).
+ * absolute length are all computed to pixel
+ * values.
+ * 
+ * - relative (em and ex). Relative length units 
+ * specify a length relative to another length property.
  */
 enum LengthValue {
 	
@@ -51,6 +59,60 @@ enum LengthValue {
 	 * inches, 1in is equal to 2.54cm.
 	 */
 	_in(value:Float);
+	
+	/**
+	 * The 'em' unit is equal to the
+	 * computed value of the 'font-size'
+	 * property of the element on which it is used.
+	 * The exception is when 'em'
+	 * occurs in the value of the 'font-size' 
+	 * property itself, in which case it
+	 * refers to the font size of the parent
+	 * element. It may be used for vertical or
+	 * horizontal measurement.
+	 */
+	em(value:Float);
+	
+	/**
+	 * The 'ex' unit is defined by the element's first available font.
+	 * The exception is when 'ex' occurs in
+	 * the value of the 'font-size' property,
+	 * in which case it refers to the 'ex' of the
+	 * parent element.The 'x-height' 
+	 * is so called because it is often equal to the height
+	 * of the lowercase "x". However, an 'ex' is
+	 * defined even for fonts that do not contain an "x".
+	 */
+	ex(value:Float);
+}
+
+/**
+ * Lists the possible values to 
+ * define an absolute size for a font.
+ * The actual value matching each
+ * of the absolute values depends 
+ * on the user agent and the user 
+ * preferences
+ */
+enum FontSizeAbsoluteSizeValue {
+	xxSmall;
+	xSmall;
+	small;
+	medium;
+	large;
+	xLarge;
+	xxLarge;
+}
+
+/**
+ * Lists the possible relative values
+ * to define the font size of a
+ * DOMElement in relation
+ * with the parent font size.
+ */
+enum FontSizeRelativeSizeValue {
+	larger;
+	smaller;
 }
 
 /**
