@@ -42,6 +42,13 @@ class FormattingContext
 	public var containingDOMElement(getContainingDOMElement, never):DOMElement;
 	
 	/**
+	 * The width of the DOMElement starting the formatting context,
+	 * represeting the maximum width of a line
+	 */
+	private var _containingDOMElementWidth:Int;
+	
+	
+	/**
 	 * A reference to each of the DOMElements that were inserted into
 	 * this formatting context
 	 */
@@ -77,6 +84,7 @@ class FormattingContext
 		
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
+		_containingDOMElementWidth = _containingDOMElement.style.computedStyle.width;
 		
 		//will store each inserted DOMElement
 		_formatedElements = new Array<DOMElement>();
@@ -125,10 +133,7 @@ class FormattingContext
 			y : flowY,
 			xOffset : domElement.style.computedStyle.paddingLeft,
 			yOffset : domElement.style.computedStyle.paddingTop,
-			containingBlockWidth : domElement.style.computedStyle.width,
-			containingBlockHeight : domElement.style.computedStyle.height,
-			totalHeight : 0,
-			maxLineHeight : 0
+			totalHeight : 0
 		};
 	}
 	
@@ -183,7 +188,7 @@ class FormattingContext
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
-		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _flowData);
+		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _flowData, _containingDOMElementWidth);
 		//actually place the floated DOMElement
 		placeFloat(domElement, floatData);
 	}
@@ -209,7 +214,7 @@ class FormattingContext
 	
 	private function getRemainingLineWidth():Int
 	{
-		return _flowData.containingBlockWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _flowData.containingBlockWidth);
+		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
 	}
 
 	public function startNewLine():Void

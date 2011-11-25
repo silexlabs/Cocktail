@@ -22,7 +22,16 @@ class FontComputer
 	{
 		var computedStyle = style.computedStyle;
 		
-		computedStyle.fontSize = getComputedFontSize(style);
+		if (containingDOMElementFontMetrics != null)
+		{
+			computedStyle.fontSize = getComputedFontSize(style, containingDOMElementFontMetrics.fontSize, containingDOMElementFontMetrics.xHeight);
+		}
+		else
+		{
+			//TO DO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
+			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
+		}
+		
 		
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
@@ -69,7 +78,7 @@ class FontComputer
 		switch(style.textIndent)
 		{
 			case length(value):
-				textIndent = UnitManager.getPixelFromLengthValue(value);
+				textIndent = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
 				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementDimensions.width);
@@ -112,7 +121,7 @@ class FontComputer
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));
 				
 			case length(value):
-				verticalAlign = UnitManager.getPixelFromLengthValue(value);
+				verticalAlign = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case top:
 				verticalAlign = 0;
@@ -140,7 +149,7 @@ class FontComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit));
+				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return wordSpacing;
@@ -153,7 +162,7 @@ class FontComputer
 		switch (style.lineHeight)
 		{
 			case length(unit):
-				lineHeight = UnitManager.getPixelFromLengthValue(unit);
+				lineHeight = UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case normal:
 				lineHeight = style.computedStyle.fontSize * 1.2;
@@ -178,7 +187,7 @@ class FontComputer
 				letterSpacing = 0;
 				
 			case length(unit):
-				letterSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit));
+				letterSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return letterSpacing;
@@ -199,14 +208,23 @@ class FontComputer
 		return style.fontFamily;
 	}
 	
-	private static function getComputedFontSize(style:AbstractStyle):Float
+	private static function getComputedFontSize(style:AbstractStyle, parentFontSize:Float, parentXHeight:Float):Float
 	{
 		var fontSize:Float;
 		
 		switch (style.fontSize)
 		{
 			case length(unit):
-				fontSize = UnitManager.getPixelFromLengthValue(unit);
+				fontSize = UnitManager.getPixelFromLengthValue(unit, parentFontSize, parentXHeight);
+				
+			case percentage(percent):
+				fontSize = UnitManager.getPixelFromPercent(percent, Math.round(parentFontSize));
+				
+			case absoluteSize(value):
+				fontSize = UnitManager.getFontSizeFromAbsoluteSizeValue(value);
+				
+			case relativeSize(value):
+				fontSize = UnitManager.getFontSizeFromRelativeSizeValue(value, parentFontSize);
 				
 		}
 		

@@ -47,9 +47,6 @@ class InlineFormattingContext extends FormattingContext
 	override public function destroy():Void
 	{
 		startNewLine();
-		//var lineBoxHeight:Int = computeLineBoxHeight();
-		//removeSpaces();
-		//alignText(_firstLineLaidOut == false);
 	}
 	
 
@@ -119,7 +116,6 @@ class InlineFormattingContext extends FormattingContext
 			
 			_flowData.y += lineBoxHeight;
 			_flowData.totalHeight += lineBoxHeight;
-			_flowData.maxLineHeight = 0;
 			
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
@@ -190,12 +186,12 @@ class InlineFormattingContext extends FormattingContext
 		var localFlow:Int;
 		if (firstLine == true)
 		{
-			remainingSpace = _flowData.containingBlockWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent;
+			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent;
 			localFlow = _containingDOMElement.style.computedStyle.textIndent;
 		}
 		else
 		{
-			remainingSpace = _flowData.containingBlockWidth - concatenatedLength;
+			remainingSpace = _containingDOMElementWidth - concatenatedLength;
 			localFlow = 0;
 		}
 		

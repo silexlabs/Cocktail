@@ -53,6 +53,12 @@ class Style extends AbstractStyle
 				
 			case _in(inchesValue):
 				ret = Std.string(inchesValue) + "in";
+				
+			case em(emValue	):
+				ret = Std.string(emValue) + "em";
+				
+			case ex(exValue):
+				ret = Std.string(exValue) + "ex";
 		}
 	
 		return ret;	
@@ -113,6 +119,44 @@ class Style extends AbstractStyle
 		{
 			case length(unit):
 				fontValue = getConvertedValue(unit);
+				
+			case percentage(percent):
+				fontValue = Std.string(percent) + "%";
+				
+			case absoluteSize(value):
+				switch (value)
+				{
+					case xxSmall:
+						fontValue = "xx-small";
+					
+					case xSmall:
+						fontValue = "x-small";
+						
+					case small:
+						fontValue = "small";
+						
+					case medium:
+						fontValue = "medium";
+						
+					case large:
+						fontValue = "large";
+						
+					case xLarge:
+						fontValue = "x-large";
+						
+					case xxLarge:	
+						fontValue = "xx-large";
+				}
+				
+			case relativeSize(value):
+				switch (value)
+				{
+					case larger:
+						fontValue = "larger";
+						
+					case smaller:
+						fontValue = "smaller";
+				}
 		}
 		
 		return fontValue;

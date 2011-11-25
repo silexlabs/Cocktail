@@ -140,6 +140,7 @@ class AbstractEmbeddedStyle extends Style
 	{
 		return {
 			ascent:domElement.offsetHeight,
+			fontSize:0.0,
 			descent:0,
 			xHeight:0,
 			superscriptOffset:0,

@@ -27,7 +27,7 @@ class FloatBoxComputer extends BoxComputer
 		super();
 	}
 	
-	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
+	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
 	{
 		//the return value
 		var computedMargin:Int;
@@ -38,7 +38,7 @@ class FloatBoxComputer extends BoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedMargin = UnitManager.getPixelFromLengthValue(value);
+				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension
 			case percent(value): 

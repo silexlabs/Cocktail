@@ -44,7 +44,6 @@ class ContainerStyle extends AbstractContainerStyle
 	private static inline var SERIF_GENERIC_FONT_NAME:String = "_serif";
 	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "_sans";
 	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "_typewriter";
-	
 
 	
 	public function new(domElement:DOMElement) 
@@ -64,53 +63,61 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	override private function getFontMetrics():FontMetrics
 	{
-		var elementFormat:ElementFormat = new ElementFormat();
-		
-		var fontDescription:FontDescription = new FontDescription(getFontFamilyValue(this._fontFamily));
-
-
-		var fontWeightValue:FontWeight;
-		
-		switch (_computedStyle.fontWeight)
+		if (_fontMetrics == null)
 		{
-			case bold:
-				fontWeightValue = FontWeight.BOLD;
-				
-			case normal:
-				fontWeightValue = FontWeight.NORMAL;
+			var elementFormat:ElementFormat = new ElementFormat();
+			
+			var fontDescription:FontDescription = new FontDescription(getFontFamilyValue(this._fontFamily));
+
+
+			var fontWeightValue:FontWeight;
+			
+			switch (_computedStyle.fontWeight)
+			{
+				case bold:
+					fontWeightValue = FontWeight.BOLD;
+					
+				case normal:
+					fontWeightValue = FontWeight.NORMAL;
+			}
+			
+			fontDescription.fontWeight = fontWeightValue;
+			elementFormat.fontDescription = fontDescription;
+		
+			
+			
+			elementFormat.fontSize = this._computedStyle.fontSize;
+
+			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
+			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
+			
+			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
+			
+			var leadedAscent:Float = ascent + leading/2;
+			var leadedDescent:Float = descent + leading/2;
+			var xHeight:Int = getXHeight(elementFormat);
+			
+			_fontMetrics = {
+				fontSize:_computedStyle.fontSize,
+				ascent:Math.round(leadedAscent),
+				descent:Math.round(leadedDescent),
+				xHeight:xHeight ,
+				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
+				subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
+				underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
+			};
 		}
 		
-		fontDescription.fontWeight = fontWeightValue;
-		elementFormat.fontDescription = fontDescription;
-	
-		
-		
-		elementFormat.fontSize = this._computedStyle.fontSize;
 
-		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
-		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 		
-		var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-		
-		var leadedAscent:Float = ascent + leading/2;
-		var leadedDescent:Float = descent + leading/2;
-		
-					
-		return {
-			ascent:Math.round(leadedAscent),
-			descent:Math.round(leadedDescent),
-			xHeight:getXHeight(elementFormat) ,
-			superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
-			subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
-			underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
-		};
+		return _fontMetrics;
 	}
 	
 	private function getXHeight(elementFormat:ElementFormat):Int
 	{
 		var textBlock:TextBlock = new TextBlock(new TextElement("x", elementFormat));
 		
-		return Math.round(textBlock.createTextLine(null, 10000).getAtomBounds(0).height);
+		return Math.round(textBlock.createTextLine(null, 10000).textHeight);
 	}
 	
 	/**

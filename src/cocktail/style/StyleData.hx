@@ -145,24 +145,6 @@ import cocktail.unit.UnitData;
 		var yOffset:Int;
 		
 		/**
-		 * The width of the content area of the containing
-		 * DOMElement in which the flow occurs
-		 */
-		var containingBlockWidth:Int;
-		
-		/**
-		 * The height of the content area of the containing
-		 * DOMElement in which the flow occurs
-		 */
-		var containingBlockHeight:Int;
-		
-		/**
-		 * The height of highest DOMElement in the current line
-		 * (includes paddings and margins)
-		 */
-		var maxLineHeight:Int;
-		
-		/**
 		 * The accumulated height of all the in flow DOMElements
 		 * (includes paddings and margins)
 		 */
@@ -198,6 +180,12 @@ import cocktail.unit.UnitData;
 	 * on the font
 	 */
 	typedef FontMetrics = {
+		
+		/**
+		 * The font size of 
+		 * the DOMElement, in pixels
+		 */
+		var fontSize:Float;
 		
 		/**
 		 * A characteristic height
@@ -324,6 +312,30 @@ import cocktail.unit.UnitData;
 		 * absolute font size
 		 */
 		length(value:LengthValue);
+		
+		/**
+		 * a percentage of the containing block
+		 * font size
+		 */
+		percentage(value:Int);
+		
+		/**
+		 * use a keyword indexed to a specified dimension.
+		 * For instance in a desktop browser, an absolute
+		 * size of medium maps to 16 pixels.
+		 */
+		absoluteSize(value:FontSizeAbsoluteSizeValue);
+		
+		/**
+		 * Define if the font should be larger or smaller
+		 * than its parent's font. The closest absolute
+		 * size is determined using the parent computed
+		 * font size and this absolute size is used as
+		 * the font size
+		 */
+		relativeSize(value:FontSizeRelativeSizeValue);
+		
+		
 	}
 	
 	/**
