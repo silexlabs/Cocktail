@@ -33,7 +33,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BoxComputer 
+class BoxStylesComputer 
 {
 
 	/**

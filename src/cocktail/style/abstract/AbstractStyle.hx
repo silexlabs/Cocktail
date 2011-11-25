@@ -11,15 +11,15 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.style.computer.BlockBoxComputer;
-import cocktail.style.computer.BoxComputer;
-import cocktail.style.computer.FloatBoxComputer;
-import cocktail.style.computer.FontComputer;
-import cocktail.style.computer.InlineBlockBoxComputer;
-import cocktail.style.computer.InLineBoxComputer;
-import cocktail.style.computer.NoneBoxComputer;
-import cocktail.style.computer.PositionComputer;
-import cocktail.style.computer.PositionedBoxComputer;
+import cocktail.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.FloatBoxStylesComputer;
+import cocktail.style.computer.boxComputers.InlineBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.InLineBoxStylesComputer;
+import cocktail.style.computer.boxComputers.NoneBoxStylesComputer;
+import cocktail.style.computer.boxComputers.PositionedBoxStylesComputer;
+import cocktail.style.computer.BoxStylesComputer;
+import cocktail.style.computer.DisplayStylesComputer;
+import cocktail.style.computer.FontAndTextStylesComputer;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.positioner.AbsolutePositioner;
 import cocktail.style.positioner.BoxPositioner;
@@ -457,12 +457,12 @@ class AbstractStyle
 	 */
 	public function computePositionStyle():Void
 	{
-		PositionComputer.compute(this);
+		DisplayStylesComputer.compute(this);
 	}
 	
 	public function computeFontStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
-		FontComputer.compute(this, containingDOMElementDimensions, containingDOMElementFontMetrics);
+		FontAndTextStylesComputer.compute(this, containingDOMElementDimensions, containingDOMElementFontMetrics);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -479,7 +479,7 @@ class AbstractStyle
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
 		//scheme
-		var boxComputer:BoxComputer;
+		var boxComputer:BoxStylesComputer;
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
@@ -489,12 +489,12 @@ class AbstractStyle
 		//get the box computer for float
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatBoxComputer();
+			boxComputer = new FloatBoxStylesComputer();
 		}
 		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedBoxComputer();
+			boxComputer = new PositionedBoxStylesComputer();
 		}
 		//else get the box computer based on the display style
 		else
@@ -502,16 +502,16 @@ class AbstractStyle
 			switch(this._computedStyle.display)
 			{
 				case block:
-					boxComputer = new BlockBoxComputer();
+					boxComputer = new BlockBoxStylesComputer();
 					
 				case inlineBlock:
-					boxComputer = new InlineBlockBoxComputer();
+					boxComputer = new InlineBlockBoxStylesComputer();
 				
 				case none:
-					boxComputer = new NoneBoxComputer();
+					boxComputer = new NoneBoxStylesComputer();
 				
 				case _inline:
-					boxComputer = new InLineBoxComputer();
+					boxComputer = new InLineBoxStylesComputer();
 			}
 		}
 		

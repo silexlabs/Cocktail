@@ -425,7 +425,7 @@ class StyleTests
 		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		
 		
-		textContainer.style.textAlign = TextAlignStyleValue.justify;
+		textContainer.style.textAlign = TextAlignStyleValue.left;
 		//textContainer.style.whiteSpace = WhiteSpaceStyleValue.pre;
 		
 		textContainer.style.paddingLeft = PaddingStyleValue.length(px(200));
@@ -458,8 +458,8 @@ class StyleTests
 		//textContainer.addChild(siteLeftContainerChildren);
 		//textContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing elit."));
 		textContainer.style.position = PositionStyleValue.relative;
-		textContainer.style.top = PositionOffsetStyleValue.length(px(500));
-		textContainer.style.fontSize = FontSizeStyleValue.length(px(11));
+		textContainer.style.top = PositionOffsetStyleValue.length(em(2));
+		textContainer.style.fontSize = FontSizeStyleValue.relativeSize(FontSizeRelativeSizeValue.smaller);
 		//textContainer.style.lineHeight = LineHeightStyleValue.length(px(70));
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));

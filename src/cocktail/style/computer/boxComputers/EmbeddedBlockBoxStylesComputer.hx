@@ -8,10 +8,11 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
 
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 
 /**
@@ -26,7 +27,7 @@ import cocktail.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockEmbeddedBoxComputer extends BoxComputer
+class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 {
 
 	/**

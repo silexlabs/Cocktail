@@ -11,13 +11,13 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
-import cocktail.style.computer.BoxComputer;
-import cocktail.style.computer.FloatEmbeddedBoxComputer;
-import cocktail.style.computer.InlineBlockEmbeddedBoxComputer;
-import cocktail.style.computer.InlineEmbeddedBoxComputer;
-import cocktail.style.computer.NoneBoxComputer;
-import cocktail.style.computer.PositionedEmbeddedBoxComputer;
+import cocktail.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.style.computer.boxComputers.NoneBoxStylesComputer;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
 import haxe.Log;
@@ -72,7 +72,7 @@ class AbstractEmbeddedStyle extends Style
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
 		//scheme
-		var boxComputer:BoxComputer;
+		var boxComputer:BoxStylesComputer;
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
@@ -83,25 +83,25 @@ class AbstractEmbeddedStyle extends Style
 		//the positioning scheme
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatEmbeddedBoxComputer();
+			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedEmbeddedBoxComputer();
+			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
 		switch(this._computedStyle.display)
 		{
 			case block:
-				boxComputer = new BlockEmbeddedBoxComputer();
+				boxComputer = new EmbeddedBlockBoxStylesComputer();
 				
 			case inlineBlock:
-				boxComputer = new InlineBlockEmbeddedBoxComputer();	
+				boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 			
 			case none:
-				boxComputer = new NoneBoxComputer();
+				boxComputer = new NoneBoxStylesComputer();
 			
 			case _inline:
-				boxComputer = new InlineEmbeddedBoxComputer();
+				boxComputer = new EmbeddedInlineBoxStylesComputer();
 		}
 		
 		//compute the embedded DOMElement box model styles

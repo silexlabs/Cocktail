@@ -8,9 +8,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
 
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -18,7 +19,7 @@ import haxe.Log;
  * ...
  * @author Yannick DOMINGUEZ
  */
-class PositionedBoxComputer extends BoxComputer
+class PositionedBoxStylesComputer extends BoxStylesComputer
 {
 
 	public function new() 
