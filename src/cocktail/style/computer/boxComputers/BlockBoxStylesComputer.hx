@@ -8,16 +8,26 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
+
+import cocktail.style.computer.BoxStylesComputer;
+import cocktail.style.StyleData;
+
 /**
- * ...
+ * This is the box computer implementation for a
+ * non-embedded block level element.
+ * 
+ * It doesn't add any behaviour as it is the
+ * default behaviour
+ * 
  * @author Yannick DOMINGUEZ
  */
-
-class PositionedEmbeddedBoxComputer extends BoxComputer
+class BlockBoxStylesComputer extends BoxStylesComputer
 {
-
-	public function new() 
+	/**
+	 * class constructor
+	 */
+	public function new()
 	{
 		super();
 	}

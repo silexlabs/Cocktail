@@ -21,7 +21,7 @@ import cocktail.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class PositionComputer 
+class DisplayStylesComputer 
 {
 	/**
 	 * Class contructor. Private, as

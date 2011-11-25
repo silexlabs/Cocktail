@@ -8,8 +8,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
+
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitManager;
 
@@ -18,7 +20,7 @@ import cocktail.unit.UnitManager;
  * ...
  * @author Yannick DOMINGUEZ
  */
-class InLineBoxComputer extends BoxComputer
+class InLineBoxStylesComputer extends BoxStylesComputer
 {
 	private static var NULL:Int = -1;
 

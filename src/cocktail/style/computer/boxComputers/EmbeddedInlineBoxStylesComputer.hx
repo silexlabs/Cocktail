@@ -8,11 +8,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
+
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.abstract.AbstractStyle;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitManager;
 import haxe.Log;
@@ -21,7 +20,7 @@ import haxe.Log;
  * ...
  * @author Yannick DOMINGUEZ
  */
-class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
+class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 {
 	private static var NULL:Int = -1;
 
