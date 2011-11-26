@@ -30,7 +30,7 @@ class Style extends AbstractStyle
 	}
 	
 	
-	private function getConvertedValue(lengthValue:LengthValue):String
+	private function getCSSLengthValue(lengthValue:LengthValue):String
 	{
 		var ret:String;
 		
@@ -64,7 +64,7 @@ class Style extends AbstractStyle
 		return ret;	
 	}
 	
-	private function getTextAlignStyleValue(value:TextAlignStyleValue):String
+	private function getCSSTextAlign(value:TextAlignStyleValue):String
 	{
 		var textAlignValue:String;
 		
@@ -86,7 +86,7 @@ class Style extends AbstractStyle
 		return textAlignValue;
 	}
 	
-	private function getWhiteSpaceStyleValue(value:WhiteSpaceStyleValue):String
+	private function getCSSWhiteSpace(value:WhiteSpaceStyleValue):String
 	{
 		var whiteSpaceValue:String;
 		
@@ -111,14 +111,14 @@ class Style extends AbstractStyle
 		return whiteSpaceValue;
 	}
 	
-	private function getFontSizeValue(value:FontSizeStyleValue):String
+	private function getCSSFontSize(value:FontSizeStyleValue):String
 	{
 		var fontValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				fontValue = getConvertedValue(unit);
+				fontValue = getCSSLengthValue(unit);
 				
 			case percentage(percent):
 				fontValue = Std.string(percent) + "%";
@@ -162,14 +162,14 @@ class Style extends AbstractStyle
 		return fontValue;
 	}
 	
-	private function getLineHeightValue(value:LineHeightStyleValue):String
+	private function getCSSLineHeight(value:LineHeightStyleValue):String
 	{
 		var lineHeightValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				lineHeightValue = getConvertedValue(unit);
+				lineHeightValue = getCSSLengthValue(unit);
 				
 			case normal:
 				lineHeightValue = "normal";
@@ -184,14 +184,36 @@ class Style extends AbstractStyle
 		return lineHeightValue;
 	}
 	
-	private function getMarginValue(value:MarginStyleValue):String
+	private function getCSSDisplay(value:DisplayStyleValue):String
+	{
+		var displayValue:String;
+		
+		switch (value)
+		{
+			case block:
+				displayValue = "block";
+			
+			case _inline:
+				displayValue = "inline";
+			
+			case inlineBlock:
+				displayValue = "inline-block";
+				
+			case DisplayStyleValue.none:
+				displayValue = "none";
+		}
+		
+		return displayValue;
+	}
+	
+	private function getCSSMargin(value:MarginStyleValue):String
 	{
 		var marginValue:String;
 		
 		switch(value)
 		{
 			case length(unit):
-				marginValue = getConvertedValue(unit);
+				marginValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
 				marginValue = Std.string(percentValue) + "%";
@@ -203,14 +225,14 @@ class Style extends AbstractStyle
 		return marginValue;
 	}
 	
-	private function getPaddingValue(value:PaddingStyleValue):String
+	private function getCSSPadding(value:PaddingStyleValue):String
 	{
 		var paddingValue:String;
 		
 		switch(value)
 		{
 			case length(unit):
-				paddingValue = getConvertedValue(unit);
+				paddingValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
 				paddingValue = Std.string(percentValue) + "%";
@@ -219,14 +241,14 @@ class Style extends AbstractStyle
 		return paddingValue;
 	}
 	
-	private function getDimensionValue(value:DimensionStyleValue):String
+	private function getCSSDimension(value:DimensionStyleValue):String
 	{
 		var dimensionValue:String;
 		
 		switch (value)
 		{
 			case DimensionStyleValue.length(unit):
-				dimensionValue = getConvertedValue(unit);
+				dimensionValue = getCSSLengthValue(unit);
 				
 			case DimensionStyleValue.percent(percentValue):
 				dimensionValue = Std.string(percentValue) + "%";
@@ -238,14 +260,14 @@ class Style extends AbstractStyle
 		return dimensionValue;
 	}
 	
-	private function getPositionOffsetStyleValue(value:PositionOffsetStyleValue):String
+	private function getCSSPositionOffset(value:PositionOffsetStyleValue):String
 	{
 		var positionOffsetValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				positionOffsetValue = getConvertedValue(unit);	
+				positionOffsetValue = getCSSLengthValue(unit);	
 			
 			
 			case percent(percentValue):
@@ -258,14 +280,14 @@ class Style extends AbstractStyle
 		return positionOffsetValue;
 	}
 	
-	private function getConstrainedDimensionValue(value:ConstrainedDimensionStyleValue):String
+	private function getCSSConstrainedDimension(value:ConstrainedDimensionStyleValue):String
 	{
 		var constrainedValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				constrainedValue = getConvertedValue(unit);
+				constrainedValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
 				constrainedValue = Std.string(percentValue) + "%";
@@ -278,7 +300,7 @@ class Style extends AbstractStyle
 		
 	}
 	
-	private function getFontWeightValue(value:FontWeightStyleValue):String
+	private function getCSSFontWeight(value:FontWeightStyleValue):String
 	{
 		var fontWeightValue:String;
 		
@@ -294,7 +316,7 @@ class Style extends AbstractStyle
 		return fontWeightValue;
 	}
 	
-	private function getFontStyleValue(value:FontStyleStyleValue):String
+	private function getCSSFontStyle(value:FontStyleStyleValue):String
 	{
 		var fontStyleValue:String;
 		
@@ -310,7 +332,7 @@ class Style extends AbstractStyle
 		return fontStyleValue;
 	}
 	
-	private function getFontVariantValue(value:FontVariantStyleValue):String
+	private function getCSSFontVariant(value:FontVariantStyleValue):String
 	{
 		var fontVariantValue:String;
 		
@@ -326,7 +348,51 @@ class Style extends AbstractStyle
 		return fontVariantValue;
 	}
 	
-	private function getFontFamilyStringValue(value:Array<FontFamilyStyleValue>):String
+	private function getCSSFloat(value:FloatStyleValue):String
+	{
+		var floatValue:String;
+		
+		switch (value)
+		{
+			case FloatStyleValue.left:
+				floatValue = "left";
+				
+			case FloatStyleValue.right:
+				floatValue = "right";
+				
+			case FloatStyleValue.none:
+				floatValue = "none";
+		}
+		
+		return floatValue;
+	}
+	
+	private function getCSSClear(value:ClearStyleValue):String
+	{
+		var clearValue:String;
+		
+		switch (value)
+		{
+			case ClearStyleValue.left:
+				clearValue = "left";
+				
+			case ClearStyleValue.right:
+				clearValue = "right";
+				
+			case ClearStyleValue.both:
+				clearValue = "both";
+				
+			case ClearStyleValue.none:
+				clearValue = "none";
+		}
+		
+		return clearValue;
+	}
+	
+	/**
+	 * !warning duplicate code with AbstractContainerStyle
+	 */
+	private function getCSSFontFamily(value:Array<FontFamilyStyleValue>):String
 	{
 		var fontFamilyValue:String = "";
 		
@@ -369,7 +435,7 @@ class Style extends AbstractStyle
 		return fontFamilyValue;
 	}
 	
-	private function getTextTransformValue(value:TextTransformStyleValue):String
+	private function getCSSTextTransform(value:TextTransformStyleValue):String
 	{
 		var textTransformValue:String;
 		
@@ -391,7 +457,7 @@ class Style extends AbstractStyle
 		return textTransformValue;
 	}
 	
-	private function getLetterSpacingValue(value:LetterSpacingStyleValue):String
+	private function getCSSLetterSpacing(value:LetterSpacingStyleValue):String
 	{
 		var letterSpacingValue:String;
 		
@@ -401,13 +467,13 @@ class Style extends AbstractStyle
 				letterSpacingValue = "normal";
 				
 			case length(unit):
-				letterSpacingValue = getConvertedValue(unit);
+				letterSpacingValue = getCSSLengthValue(unit);
 		}
 		
 		return letterSpacingValue;
 	}
 	
-	private function getWordSpacingValue(value:WordSpacingStyleValue):String
+	private function getCSSWordSpacing(value:WordSpacingStyleValue):String
 	{
 		var wordSpacingValue:String;
 		
@@ -417,13 +483,13 @@ class Style extends AbstractStyle
 				wordSpacingValue = "normal";
 				
 			case length(unit):
-				wordSpacingValue = getConvertedValue(unit);
+				wordSpacingValue = getCSSLengthValue(unit);
 		}
 		
 		return wordSpacingValue;
 	}
 	
-	private function getStringColorValue(value:ColorValue):String
+	private function getCSSColor(value:ColorValue):String
 	{
 		var colorValue:String;
 		
@@ -506,7 +572,7 @@ class Style extends AbstractStyle
 		return hexColor;
 	}
 	
-	private function getVerticalAlignValue(value:VerticalAlignStyleValue):String
+	private function getCSSVerticalAlign(value:VerticalAlignStyleValue):String
 	{
 		var verticalAlignValue:String;
 		
@@ -540,21 +606,21 @@ class Style extends AbstractStyle
 				verticalAlignValue = value + "%";
 				
 			case length(value):
-				verticalAlignValue = getConvertedValue(value);
+				verticalAlignValue = getCSSLengthValue(value);
 		}
 		
 		return verticalAlignValue;
 		
 	}
 	
-	private function getTextIndentStyleValue(value:TextIndentStyleValue):String
+	private function getCSSTextIndent(value:TextIndentStyleValue):String
 	{
 		var textIndentValue:String;
 		
 		switch (value)
 		{
 			case length(value):
-				textIndentValue = getConvertedValue(value);
+				textIndentValue = getCSSLengthValue(value);
 				
 			case percentage(value):
 				textIndentValue = value + "%";
@@ -563,149 +629,7 @@ class Style extends AbstractStyle
 		return textIndentValue;
 	}
 	
-	/////////////////////////////////
-	// STYLES SETTERS/GETTERS
-	////////////////////////////////
-	
-	override private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
-	{
-		this._domElement.nativeElement.style.verticalAlign = getVerticalAlignValue(value);
-		return _verticalAlign = value;
-	}
-	
-	override private function setColor(value:ColorValue):ColorValue
-	{
-		this._domElement.nativeElement.style.color = getStringColorValue(value);
-		return _color = value;
-	}
-	
-	override private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
-	{
-		this._domElement.nativeElement.style.wordSpacing = getWordSpacingValue(value);
-		return _wordSpacing = value;
-	}
-	
-	override private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
-	{
-		this._domElement.nativeElement.style.letterSpacing = getLetterSpacingValue(value);
-		return _letterSpacing = value;
-	}
-	
-	override private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
-	{
-		this._domElement.nativeElement.style.textTransform = getTextTransformValue(value);
-		return _textTransform = value;
-	}
-	
-	override private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
-	{
-		this._domElement.nativeElement.style.fontVariant = getFontVariantValue(value);
-		return _fontVariant = value;
-	}
-	
-	override private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
-	{
-		this._domElement.nativeElement.style.fontFamily = getFontFamilyStringValue(value);
-		return _fontFamily = value;
-	}
-	
-	override private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
-	{
-		this._domElement.nativeElement.style.fontWeight = getFontWeightValue(value);
-		return _fontWeight = value;
-	}
-	
-	override private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
-	{
-		this._domElement.nativeElement.style.fontStyle = getFontStyleValue(value);
-		return _fontStyle = value;
-	}
-	
-	
-	override private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
-	{
-		this._domElement.nativeElement.style.fontSize = getFontSizeValue(value);
-		return _fontSize = value;
-	}
-	
-	override private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
-	{
-		this._domElement.nativeElement.style.lineHeight = getLineHeightValue(value);
-		return _lineHeight = value;
-	}
-	
-	override private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
-	{
-		this._domElement.nativeElement.style.marginLeft = getMarginValue(value);
-		return _marginLeft = value;
-	}
-	
-	override private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
-	{
-		this._domElement.nativeElement.style.marginRight = getMarginValue(value);
-		return _marginRight = value;
-	}
-	
-	override private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
-	{
-		this._domElement.nativeElement.style.marginTop = getMarginValue(value);
-		return _marginTop = value;
-	}
-	
-	override private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
-	{
-		this._domElement.nativeElement.style.marginBottom = getMarginValue(value);
-		return _marginBottom = value;
-	}
-	
-	override private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		this._domElement.nativeElement.style.paddingLeft = getPaddingValue(value);
-		return _paddingLeft = value;
-	}
-	
-	override private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		this._domElement.nativeElement.style.paddingRight = getPaddingValue(value);
-		return _paddingRight = value;
-	}
-	
-	override private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		this._domElement.nativeElement.style.paddingTop = getPaddingValue(value);
-		return _paddingTop = value;
-	}
-	
-	override private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		this._domElement.nativeElement.style.paddingBottom = getPaddingValue(value);
-		return _paddingBottom = value;
-	}
-	
-	override private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
-	{
-		var displayValue:String;
-		
-		switch (value)
-		{
-			case block:
-				displayValue = "block";
-			
-			case _inline:
-				displayValue = "inline";
-			
-			case inlineBlock:
-				displayValue = "inline-block";
-				
-			case DisplayStyleValue.none:
-				displayValue = "none";
-		}
-		this._domElement.nativeElement.style.display = displayValue;
-		
-		return _display = value;
-	}
-	
-	override private function setPosition(value:PositionStyleValue):PositionStyleValue 
+	private function getCSSPosition(value:PositionStyleValue):String
 	{
 		var positionValue:String;
 		
@@ -724,133 +648,228 @@ class Style extends AbstractStyle
 				positionValue = "fixed";
 		}
 		
-		this._domElement.nativeElement.style.position = positionValue;
-		
+		return positionValue;
+	}
+	
+	/////////////////////////////////
+	// STYLES SETTERS/GETTERS
+	////////////////////////////////
+	
+	override private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		this._domElement.nativeElement.style.verticalAlign = getCSSVerticalAlign(value);
+		return _verticalAlign = value;
+	}
+	
+	override private function setColor(value:ColorValue):ColorValue
+	{
+		this._domElement.nativeElement.style.color = getCSSColor(value);
+		return _color = value;
+	}
+	
+	override private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		this._domElement.nativeElement.style.wordSpacing = getCSSWordSpacing(value);
+		return _wordSpacing = value;
+	}
+	
+	override private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		this._domElement.nativeElement.style.letterSpacing = getCSSLetterSpacing(value);
+		return _letterSpacing = value;
+	}
+	
+	override private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		this._domElement.nativeElement.style.textTransform = getCSSTextTransform(value);
+		return _textTransform = value;
+	}
+	
+	override private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		this._domElement.nativeElement.style.fontVariant = getCSSFontVariant(value);
+		return _fontVariant = value;
+	}
+	
+	override private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		this._domElement.nativeElement.style.fontFamily = getCSSFontFamily(value);
+		return _fontFamily = value;
+	}
+	
+	override private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		this._domElement.nativeElement.style.fontWeight = getCSSFontWeight(value);
+		return _fontWeight = value;
+	}
+	
+	override private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		this._domElement.nativeElement.style.fontStyle = getCSSFontStyle(value);
+		return _fontStyle = value;
+	}
+	
+	override private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		this._domElement.nativeElement.style.fontSize = getCSSFontSize(value);
+		return _fontSize = value;
+	}
+	
+	override private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		this._domElement.nativeElement.style.lineHeight = getCSSLineHeight(value);
+		return _lineHeight = value;
+	}
+	
+	override private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
+	{
+		this._domElement.nativeElement.style.marginLeft = getCSSMargin(value);
+		return _marginLeft = value;
+	}
+	
+	override private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
+	{
+		this._domElement.nativeElement.style.marginRight = getCSSMargin(value);
+		return _marginRight = value;
+	}
+	
+	override private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
+	{
+		this._domElement.nativeElement.style.marginTop = getCSSMargin(value);
+		return _marginTop = value;
+	}
+	
+	override private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
+	{
+		this._domElement.nativeElement.style.marginBottom = getCSSMargin(value);
+		return _marginBottom = value;
+	}
+	
+	override private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		this._domElement.nativeElement.style.paddingLeft = getCSSPadding(value);
+		return _paddingLeft = value;
+	}
+	
+	override private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		this._domElement.nativeElement.style.paddingRight = getCSSPadding(value);
+		return _paddingRight = value;
+	}
+	
+	override private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		this._domElement.nativeElement.style.paddingTop = getCSSPadding(value);
+		return _paddingTop = value;
+	}
+	
+	override private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		this._domElement.nativeElement.style.paddingBottom = getCSSPadding(value);
+		return _paddingBottom = value;
+	}
+	
+	override private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
+	{
+		this._domElement.nativeElement.style.display = getCSSDisplay(value);
+		return _display = value;
+	}
+	
+	override private function setPosition(value:PositionStyleValue):PositionStyleValue 
+	{
+		this._domElement.nativeElement.style.position = getCSSPosition(value);
 		return _position = value;
 	}
 	
 	override private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.width = getDimensionValue(value);
+		this._domElement.nativeElement.style.width = getCSSDimension(value);
 		
 		return _width = value;
 	}
 	
 	override private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.height = getDimensionValue(value);
+		this._domElement.nativeElement.style.height = getCSSDimension(value);
 		
 		return _height = value;
 	}
 	
 	override private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.minHeight = getConstrainedDimensionValue(value);
+		this._domElement.nativeElement.style.minHeight = getCSSConstrainedDimension(value);
 		return _minHeight = value;
 	}
 	
 	override private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.maxHeight = getConstrainedDimensionValue(value);
+		this._domElement.nativeElement.style.maxHeight = getCSSConstrainedDimension(value);
 		return _maxHeight = value;
 	}
 	
 	override private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.minWidth = getConstrainedDimensionValue(value);
+		this._domElement.nativeElement.style.minWidth = getCSSConstrainedDimension(value);
 		return _minWidth = value;
 	}
 	
 	override private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
-		this._domElement.nativeElement.style.maxWidth = getConstrainedDimensionValue(value);
+		this._domElement.nativeElement.style.maxWidth = getCSSConstrainedDimension(value);
 		return _maxWidth = value;
 	}
 	
 	override private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
-		this._domElement.nativeElement.style.top = getPositionOffsetStyleValue(value);
+		this._domElement.nativeElement.style.top = getCSSPositionOffset(value);
 		return _top = value;
 	}
 	
 	override private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
-		this._domElement.nativeElement.style.left = getPositionOffsetStyleValue(value);
+		this._domElement.nativeElement.style.left = getCSSPositionOffset(value);
 		return _left = value;
 	}
 	
 	override private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
-		this._domElement.nativeElement.style.bottom = getPositionOffsetStyleValue(value);
+		this._domElement.nativeElement.style.bottom = getCSSPositionOffset(value);
 		return _bottom = value;
 	}
 	
 	override private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
-		this._domElement.nativeElement.style.right = getPositionOffsetStyleValue(value);
+		this._domElement.nativeElement.style.right = getCSSPositionOffset(value);
 		return _right = value;
 	}
 	
 	override private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
 	{
-		this._domElement.nativeElement.style.textIndent = getTextIndentStyleValue(value);
+		this._domElement.nativeElement.style.textIndent = getCSSTextIndent(value);
 		return _textIndent = value;
 	}
 	
 	override private function setFloat(value:FloatStyleValue):FloatStyleValue 
 	{
-		var floatValue:String;
-		
-		switch (value)
-		{
-			case FloatStyleValue.left:
-				floatValue = "left";
-				
-			case FloatStyleValue.right:
-				floatValue = "right";
-				
-			case FloatStyleValue.none:
-				floatValue = "none";
-		}
-		
-		untyped this._domElement.nativeElement.style.cssFloat = floatValue;
-		
+		untyped this._domElement.nativeElement.style.cssFloat = getCSSFloat(value);
 		return _float = value;
 	}
 	
 	override private function setClear(value:ClearStyleValue):ClearStyleValue 
 	{
-		var clearValue:String;
-		
-		switch (value)
-		{
-			case ClearStyleValue.left:
-				clearValue = "left";
-				
-			case ClearStyleValue.right:
-				clearValue = "right";
-				
-			case ClearStyleValue.both:
-				clearValue = "both";
-				
-			case ClearStyleValue.none:
-				clearValue = "none";
-		}
-		
-		this._domElement.nativeElement.style.clear = clearValue;
-		
+		this._domElement.nativeElement.style.clear = getCSSClear(value);
 		return _clear = value;
 	}
 	
 	override private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
 	{
-		this._domElement.nativeElement.style.whiteSpace = getWhiteSpaceStyleValue(value);
+		this._domElement.nativeElement.style.whiteSpace = getCSSWhiteSpace(value);
 		return _whiteSpace = value;
 	}
 	
 	override private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
 	{
-		this._domElement.nativeElement.style.textAlign = getTextAlignStyleValue(value);
+		this._domElement.nativeElement.style.textAlign = getCSSTextAlign(value);
 		return _textAlign = value;
 	}
 	

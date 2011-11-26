@@ -728,8 +728,8 @@ import cocktail.unit.UnitData;
 		
 		/**
 		 * Displayed on the current line. 
-		 * Doesn't have block's attributes
-		 * such as margins, paddings...
+		 * Can only have horizontal margins
+		 * and paddings
 		 */
 		_inline;
 		
