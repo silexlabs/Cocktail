@@ -217,7 +217,7 @@ class FormattingContext
 		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
 	}
 
-	public function startNewLine():Void
+	public function startNewLine(domElementWidth:Int):Void
 	{
 		
 	}
