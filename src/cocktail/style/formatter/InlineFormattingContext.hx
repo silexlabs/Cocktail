@@ -46,7 +46,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function destroy():Void
 	{
-		startNewLine();
+		startNewLine(0);
 	}
 	
 
@@ -58,7 +58,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				case WhiteSpaceStyleValue.normal,
 				WhiteSpaceStyleValue.preLine:
-					startNewLine();
+					startNewLine(domElement.offsetWidth);
 				
 				default:	
 					
@@ -79,7 +79,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				case WhiteSpaceStyleValue.normal,
 				WhiteSpaceStyleValue.preLine:
-					startNewLine();
+					startNewLine(domElement.offsetWidth);
 				
 				default:	
 					
@@ -105,7 +105,7 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	override public function startNewLine():Void
+	override public function startNewLine(domElementWidth:Int):Void
 	{
 		if (_domElementInLineBox.length > 0)
 		{
@@ -115,7 +115,8 @@ class InlineFormattingContext extends FormattingContext
 			_domElementInLineBox = new Array<LineBoxElement>();
 			
 			_flowData.y += lineBoxHeight;
-			_flowData.totalHeight += lineBoxHeight;
+			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
+			_flowData.totalHeight = _flowData.y + lineBoxHeight;
 			
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
@@ -196,7 +197,6 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		localFlow += _floatsManager.getLeftFloatOffset(_flowData.y) + _flowData.xOffset;
-		
 		
 		switch (_containingDOMElement.style.computedStyle.textAlign)
 		{

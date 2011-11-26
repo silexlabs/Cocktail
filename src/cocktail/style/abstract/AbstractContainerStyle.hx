@@ -227,7 +227,6 @@ class AbstractContainerStyle extends Style
 					var textLineDOMElement:TextLineDOMElement = createTextLine(value);
 					if (textLineDOMElement.nativeElement != null)
 					{
-						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 						formattingContext.insert(textLineDOMElement);
 					}
 					
@@ -235,17 +234,15 @@ class AbstractContainerStyle extends Style
 					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
 					if (textLineDOMElement.nativeElement != null)
 					{
-						textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 						formattingContext.insertSpace(textLineDOMElement);
 					}
 					
 				case tab:
 					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
-					textLineDOMElement.style.computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
 					formattingContext.insertTab(textLineDOMElement);
 					
 				case lineFeed:
-					formattingContext.startNewLine();
+					formattingContext.startNewLine(0);
 			}
 		}
 				
@@ -635,9 +632,17 @@ class AbstractContainerStyle extends Style
 				//is block level
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				
-				if (childrenDOMElement.style.computedStyle.display == block)
+				if (childrenDOMElement.style.computedStyle.display == block )
 				{
-					ret = false;
+					if (childrenDOMElement.style.isFloat() == false)
+					{
+						ret = false;
+					}
+					else if (childrenDOMElement.style.isEmbedded() == true)
+					{
+						ret = false;
+					}
+					
 				}
 			}
 		}
