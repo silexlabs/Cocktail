@@ -93,8 +93,8 @@ class ContainerStyle extends AbstractContainerStyle
 			
 			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
 			
-			var leadedAscent:Float = ascent + leading/2;
-			var leadedDescent:Float = descent + leading/2;
+			var leadedAscent:Float = (ascent + leading/2) ;
+			var leadedDescent:Float = (descent + leading/2) ;
 			var xHeight:Int = getXHeight(elementFormat);
 			
 			_fontMetrics = {

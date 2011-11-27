@@ -80,7 +80,7 @@ class StyleTests
 		flash.Lib.current.stage.addEventListener(flash.events.Event.RESIZE, refresh);
 		
 		#end
-		testLayout();
+		testLayout2();
 		
 		
 		
@@ -100,9 +100,9 @@ class StyleTests
 		_mainContainer.style.height = DimensionStyleValue.auto;
 		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
 		_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.top = PositionOffsetStyleValue.length(px(20));
+		//_mainContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
-		_mainContainer.style.position = PositionStyleValue.absolute;
+		_mainContainer.style.position = PositionStyleValue.relative;
 		
 		attach(_mainContainer);
 		
@@ -255,20 +255,37 @@ class StyleTests
 		_insetGraphicElement.style.width = DimensionStyleValue.length(px(200));
 		_insetGraphicElement.style.height = DimensionStyleValue.length(px(120));
 		_insetGraphicElement.style.display = DisplayStyleValue._inline;
+		
+		
+		
+		
 		//textContainer.addChild(_insetGraphicElement);
-		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet,"));
+		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		//textContainer.addChild(siteLeftContainerChildren);
-		textContainer.addText(NativeElementManager.createNativeTextNode(" consectetur adipiscing."));
+		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		//textContainer.style.position = PositionStyleValue.relative;
 		//textContainer.style.top = PositionOffsetStyleValue.length(px(300));
-		textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
+		textContainer.style.fontSize = FontSizeStyleValue.length(px(9));
+		textContainer.style.display = DisplayStyleValue._inline;
 		//textContainer.style.lineHeight = LineHeightStyleValue.length(px(70));
 		_siteLeftFloatBackground = getGraph();
 		_siteLeftFloatBackground.style.width = DimensionStyleValue.length(px(50));
 		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
 		//_siteLeftFloatBackground.style.float = FloatStyleValue.left;
 		
+		var firstLetterContainer:ContainerDOMElement = getContainer();
+		firstLetterContainer.addText(NativeElementManager.createNativeTextNode("a, b, c, d "));
+		firstLetterContainer.style.textTransform = TextTransformStyleValue.uppercase;
+		firstLetterContainer.style.fontSize = FontSizeStyleValue.length(px(50));
+		firstLetterContainer.style.display = DisplayStyleValue._inline;
+		firstLetterContainer.style.float = FloatStyleValue.left;
+		firstLetterContainer.style.width = DimensionStyleValue.length(px(400));
+		firstLetterContainer.style.height = DimensionStyleValue.length(px(50));
 		
+		var textBlock:ContainerDOMElement = getContainer();
+		
+		textBlock.addChild(firstLetterContainer);
+		textBlock.addChild(textContainer);
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
@@ -340,11 +357,11 @@ class StyleTests
 		_footer.style.width = DimensionStyleValue.percent(50);
 		_footer.style.height = DimensionStyleValue.length(px(250));
 		_footer.style.marginTop = MarginStyleValue.length(px(10));
+		_footer.style.float = FloatStyleValue.right;
 		
-		
-		//_mainContainer.addChild(headerContainer);
-		_mainContainer.addChild(textContainer);
-		//_mainContainer.addChild(_footer);
+		_mainContainer.addChild(headerContainer);
+		_mainContainer.addChild(textBlock);
+		_mainContainer.addChild(_footer);
 		
 		
 		//siteContainer.addChild(_footer);

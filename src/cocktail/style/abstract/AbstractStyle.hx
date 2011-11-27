@@ -566,6 +566,35 @@ class AbstractStyle
 		return false;
 	}
 	
+	/**
+	 * Determine if the DOMElement is a floated
+	 * DOMElement. A floated DOMElement is first
+	 * placed in the flow then moved to the
+	 * left-most or right-most of its container.
+	 * Any subsequent inline DOMElement flows
+	 * around on the float until a new line 
+	 * starts below the float or if it is cleared
+	 * by another DOMElement.
+	 * 
+	 * A DOMElement is float if he declares either
+	 * a left or right float
+	 */
+	public function isFloat():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.float) 
+		{
+			case FloatStyleValue.left, FloatStyleValue.right:
+				ret = true;
+			
+			case FloatStyleValue.none:
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -601,35 +630,6 @@ class AbstractStyle
 	private function isNotDisplayed():Bool
 	{
 		return this._computedStyle.display == DisplayStyleValue.none;
-	}
-	
-	/**
-	 * Determine if the DOMElement is a floated
-	 * DOMElement. A floated DOMElement is first
-	 * placed in the flow then moved to the
-	 * left-most or right-most of its container.
-	 * Any subsequent inline DOMElement flows
-	 * around on the float until a new line 
-	 * starts below the float or if it is cleared
-	 * by another DOMElement.
-	 * 
-	 * A DOMElement is float if he declares either
-	 * a left or right float
-	 */
-	public function isFloat():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.float) 
-		{
-			case FloatStyleValue.left, FloatStyleValue.right:
-				ret = true;
-			
-			case FloatStyleValue.none:
-				ret = false;
-		}
-		
-		return ret;
 	}
 	
 	/**
@@ -756,7 +756,6 @@ class AbstractStyle
 		return _marginRight = value;
 	}
 	
-	
 	private function getMarginTop():MarginStyleValue 
 	{
 		return _marginTop;
@@ -776,7 +775,6 @@ class AbstractStyle
 	{
 		return _marginBottom = value;
 	}
-	
 	
 	private function getPaddingLeft():PaddingStyleValue 
 	{
@@ -849,7 +847,6 @@ class AbstractStyle
 		return _width = value;
 	}
 	
-	
 	private function getHeight():DimensionStyleValue 
 	{
 		return _height;
@@ -859,7 +856,6 @@ class AbstractStyle
 	{
 		return _height = value;
 	}
-	
 	
 	private function getMinHeight():ConstrainedDimensionStyleValue 
 	{
@@ -871,7 +867,6 @@ class AbstractStyle
 		return _minHeight = value;
 	}
 	
-	
 	private function getMaxHeight():ConstrainedDimensionStyleValue 
 	{
 		return _maxHeight;
@@ -882,7 +877,6 @@ class AbstractStyle
 		return _maxHeight = value;
 	}
 	
-	
 	private function getMinWidth():ConstrainedDimensionStyleValue 
 	{
 		return _minWidth;
@@ -892,7 +886,6 @@ class AbstractStyle
 	{
 		return _minWidth = value;
 	}
-	
 	
 	private function getMaxWidth():ConstrainedDimensionStyleValue 
 	{
@@ -913,7 +906,6 @@ class AbstractStyle
 	{
 		return _top = value;
 	}
-	
 	
 	private function getLeft():PositionOffsetStyleValue 
 	{

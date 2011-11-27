@@ -14,7 +14,10 @@ import cocktail.domElement.DOMElement;
 import cocktail.style.abstract.AbstractStyle;
 
 /**
- * ...
+ * This is the Flash AS3 implementation of the Style.
+ * 
+ * Only present to allow compilation
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Style extends AbstractStyle
@@ -23,6 +26,4 @@ class Style extends AbstractStyle
 	{
 		super(domElement);
 	}
-	
-	
 }
