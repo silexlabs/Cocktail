@@ -713,7 +713,7 @@ import cocktail.unit.UnitData;
 	enum DisplayStyleValue {
 		
 		/**
-		 * add a line break before
+		 * add a line break before 
 		 * and after the DOMElement. Act
 		 * as a box with margins, paddings
 		 * and dimensions

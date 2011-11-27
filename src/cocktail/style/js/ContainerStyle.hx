@@ -16,7 +16,11 @@ import cocktail.style.StyleData;
 
 
 /**
- * ...
+ * This is the JavaScript implementation of the ContainerStyle.
+ * 
+ * In JS, styles are applied using native CSS, so the browser
+ * formats the document instead of Cocktail
+ * 
  * @author Yannick DOMINGUEZ
  */
 class ContainerStyle extends AbstractContainerStyle
@@ -26,6 +30,10 @@ class ContainerStyle extends AbstractContainerStyle
 		super(domElement);
 	}
 
+	/**
+	 * Overriden to prevent layout in JS, as it will be done by
+	 * the browser via CSS.
+	 */
 	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
 	{
 		
