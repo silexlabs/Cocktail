@@ -34,34 +34,44 @@ class InlineFormattingContext extends FormattingContext
 		
 		_domElementInLineBox = new Array<LineBoxElement>();
 		
-		applyTextIndent();
 		
-	}
-	
-	private function applyTextIndent():Void
-	{
-		_flowData.x += _containingDOMElement.style.computedStyle.textIndent + _floatsManager.getLeftFloatOffset(_flowData.y);
 	}
 	
 
 	override public function destroy():Void
 	{
 		var currentTotalHeight:Int = _flowData.totalHeight;
-		startNewLine(0);
+		startNewLine(0, true);
 		_flowData.totalHeight = currentTotalHeight;
+		
 	}
 	
 
 	override public function insert(domElement:DOMElement):Void
 	{
+		var remainingWidth:Int = getRemainingLineWidth();
 		
-		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
+		if (_firstLineLaidOut == false)
+		{
+			remainingWidth -= _containingDOMElement.style.computedStyle.textIndent;
+		}
+		
+		
+		if (remainingWidth - domElement.offsetWidth < 0)
 		{	
 			switch(domElement.style.computedStyle.whiteSpace)
 			{
 				case WhiteSpaceStyleValue.normal,
 				WhiteSpaceStyleValue.preLine:
-					startNewLine(domElement.offsetWidth);
+					if (_firstLineLaidOut == false)
+					{
+						startNewLine(domElement.offsetWidth +  _containingDOMElement.style.computedStyle.textIndent );
+					}
+					else
+					{
+						startNewLine(domElement.offsetWidth );
+					}
+					
 				
 				default:	
 					
@@ -75,8 +85,14 @@ class InlineFormattingContext extends FormattingContext
 	
 	override public function insertSpace(domElement:DOMElement):Void
 	{
-
-		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
+		var remainingWidth:Int = getRemainingLineWidth();
+		
+		if (_firstLineLaidOut == false)
+		{
+			remainingWidth -= _containingDOMElement.style.computedStyle.textIndent;
+		}
+		
+		if (remainingWidth - domElement.offsetWidth < 0)
 		{	
 			switch(domElement.style.computedStyle.whiteSpace)
 			{
@@ -108,16 +124,17 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	override public function startNewLine(domElementWidth:Int):Void
+	override public function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
 		if (_domElementInLineBox.length > 0)
 		{
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
-			alignText(_firstLineLaidOut == false);
+			alignText(_firstLineLaidOut == false, isLastLine);
 			_domElementInLineBox = new Array<LineBoxElement>();
 			
 			_flowData.y += lineBoxHeight;
+			
 			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
 			_flowData.totalHeight = _flowData.y + lineBoxHeight;
 			
@@ -135,7 +152,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 		else
 		{
+			
 			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
+			
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
 				
@@ -145,6 +164,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_flowData.x = _flowData.xOffset;
 			}
+			
+			
 		}
 	}
 	
@@ -153,23 +174,17 @@ class InlineFormattingContext extends FormattingContext
 		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
 		
-		if (_firstLineLaidOut == true)
+		if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 		{
-			_flowData.x = _floatsManager.getLeftFloatOffset(_flowData.y);
+			flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
 		}
 		else
 		{
-			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _containingDOMElement.style.computedStyle.textIndent)
-			{
-				_flowData.x = _floatsManager.getLeftFloatOffset(_flowData.y);
-			}
-			else
-			{
-				_flowData.x = _containingDOMElement.style.computedStyle.textIndent;
-			}
+			_flowData.x = _flowData.xOffset;
 		}
-
 		
+		
+
 	}
 	
 	private function removeSpaces():Void
@@ -212,7 +227,7 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	private function alignText(firstLine:Bool):Void
+	private function alignText(firstLine:Bool, isLastLine:Bool):Void
 	{	
 		
 		var concatenatedLength:Int = 0;
@@ -227,12 +242,12 @@ class InlineFormattingContext extends FormattingContext
 		var localFlow:Int;
 		if (firstLine == true)
 		{
-			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent;
+			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
 			localFlow = _containingDOMElement.style.computedStyle.textIndent;
 		}
 		else
 		{
-			remainingSpace = _containingDOMElementWidth - concatenatedLength;
+			remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
 			localFlow = 0;
 		}
 		
@@ -264,41 +279,49 @@ class InlineFormattingContext extends FormattingContext
 				}
 				
 			case justify:	
-				var spacesNumber:Int = 0;
-				for (i in 0..._domElementInLineBox.length)
+				
+				if (isLastLine == true)
 				{
-					switch (_domElementInLineBox[i].domElementType)
+					for (i in 0..._domElementInLineBox.length)
 					{
-						case space:
-							spacesNumber++;
-							
-						default:	
+						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
 				}
-				
-				
-				for (i in 0..._domElementInLineBox.length)
+				else
 				{
-					switch (_domElementInLineBox[i].domElementType)
+					var spacesNumber:Int = 0;
+					for (i in 0..._domElementInLineBox.length)
 					{
-						case space:
-							_domElementInLineBox[i].domElement.width += Math.round(remainingSpace / spacesNumber);
-							
-						default:	
+						switch (_domElementInLineBox[i].domElementType)
+						{
+							case space:
+								spacesNumber++;
+								
+							default:	
+						}
+					}
+					
+					
+					for (i in 0..._domElementInLineBox.length)
+					{
+						switch (_domElementInLineBox[i].domElementType)
+						{
+							case space:
+								_domElementInLineBox[i].domElement.width += Math.round(remainingSpace / spacesNumber);
+								
+							default:	
+						}
+					}
+					
+					for (i in 0..._domElementInLineBox.length)
+					{
+						
+						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
+						
+						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
 				}
-				
-				for (i in 0..._domElementInLineBox.length)
-				{
-					
-					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
-					
-					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-				}
-				
-				
-				
-				
 				
 		}
 	}
