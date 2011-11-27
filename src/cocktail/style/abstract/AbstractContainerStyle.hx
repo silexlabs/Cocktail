@@ -276,8 +276,6 @@ class AbstractContainerStyle extends Style
 			containerDOMElement.addTextLine(textLineDOMElement);
 		}
 		
-	
-		
 		return  textLineDOMElement;
 	}
 	

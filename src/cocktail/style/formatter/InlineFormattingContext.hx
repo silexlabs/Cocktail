@@ -40,18 +40,21 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function applyTextIndent():Void
 	{
-		_flowData.x += _containingDOMElement.style.computedStyle.textIndent;
+		_flowData.x += _containingDOMElement.style.computedStyle.textIndent + _floatsManager.getLeftFloatOffset(_flowData.y);
 	}
 	
 
 	override public function destroy():Void
 	{
+		var currentTotalHeight:Int = _flowData.totalHeight;
 		startNewLine(0);
+		_flowData.totalHeight = currentTotalHeight;
 	}
 	
 
 	override public function insert(domElement:DOMElement):Void
 	{
+		
 		if (getRemainingLineWidth() - domElement.offsetWidth < 0)
 		{	
 			switch(domElement.style.computedStyle.whiteSpace)
@@ -130,6 +133,43 @@ class InlineFormattingContext extends FormattingContext
 			
 			_firstLineLaidOut = true;
 		}
+		else
+		{
+			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
+			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
+			{
+				
+				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
+			}
+			else
+			{
+				_flowData.x = _flowData.xOffset;
+			}
+		}
+	}
+	
+	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	{
+		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
+		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
+		
+		if (_firstLineLaidOut == true)
+		{
+			_flowData.x = _floatsManager.getLeftFloatOffset(_flowData.y);
+		}
+		else
+		{
+			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _containingDOMElement.style.computedStyle.textIndent)
+			{
+				_flowData.x = _floatsManager.getLeftFloatOffset(_flowData.y);
+			}
+			else
+			{
+				_flowData.x = _containingDOMElement.style.computedStyle.textIndent;
+			}
+		}
+
+		
 	}
 	
 	private function removeSpaces():Void
