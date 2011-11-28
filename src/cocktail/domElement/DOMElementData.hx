@@ -135,7 +135,7 @@ import cocktail.style.Style;
 	/**
 	 * defines an RGB color
 	 */
-	typedef RGB = {
+	typedef RGBData = {
 		var red:Int;
 		var green:Int;
 		var blue:Int;

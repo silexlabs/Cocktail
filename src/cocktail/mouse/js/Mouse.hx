@@ -78,7 +78,7 @@ class Mouse extends AbstractMouse
 		
 		//retrieve the position and keyboard state
 		//from JavaScript event
-		var mousePosition:MousePosition = {
+		var mousePosition:MousePositionData = {
 			localX:event.clientX,
 			localY:event.clientY,
 			globalX:event.screenX,

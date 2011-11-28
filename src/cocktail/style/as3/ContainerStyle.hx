@@ -30,7 +30,6 @@ import cocktail.unit.UnitData;
 import haxe.Log;
 
 
-
 /**
  * ...
  * @author Yannick DOMINGUEZ
@@ -61,7 +60,7 @@ class ContainerStyle extends AbstractContainerStyle
 	// OVERRIDEN SETTERS/GETTERS
 	////////////////////////////////
 	
-	override private function getFontMetrics():FontMetrics
+	override private function getFontMetricsData():FontMetricsData
 	{
 		if (_fontMetrics == null)
 		{

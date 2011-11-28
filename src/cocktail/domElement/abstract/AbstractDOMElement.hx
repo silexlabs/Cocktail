@@ -86,12 +86,12 @@ class AbstractDOMElement
 	/**
 	 * The callback called on key down through the keyboard instance
 	 */
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):Key->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyEventData->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):Key->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
@@ -429,10 +429,10 @@ class AbstractDOMElement
 	 * Return the transformation origin as a Point, from a
 	 * RegistrationPointValue
 	 */
-	private function getRegistrationPointValueAsPoint(registrationPoint:RegistrationPointValue):Point
+	private function getRegistrationPointValueAsPoint(registrationPoint:RegistrationPointValue):PointData
 	{
 		//init the returned point
-		var registrationPointPoint:Point = { x:0.0, y:0.0 };
+		var registrationPointPoint:PointData = { x:0.0, y:0.0 };
 		
 		//switch the origin point value
 		switch (registrationPoint)
@@ -768,24 +768,24 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:Key->Void):Key->Void
+	private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
 	{
 		_keyboard.onKeyDown = value;
 		return value;
 	}
 	
-	private function getOnKeyDown():Key->Void
+	private function getOnKeyDown():KeyEventData->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:Key->Void):Key->Void
+	private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
 	{
 		_keyboard.onKeyUp = value;
 		return value;
 	}
 	
-	private function getOnKeyUp():Key->Void
+	private function getOnKeyUp():KeyEventData->Void
 	{
 		return _keyboard.onKeyUp;
 	}
@@ -822,7 +822,7 @@ class AbstractDOMElement
 	
 	private function setX(value:Int):Int 
 	{
-		this._x = value;
+		this ._x = value;
 		return this._x;
 	}
 	

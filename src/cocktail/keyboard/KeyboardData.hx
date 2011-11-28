@@ -19,7 +19,7 @@ package cocktail.keyboard;
  * Represents a keyboard key on a up/down event
  * and the state of the modifier keys then
  */ 
-typedef Key = {
+typedef KeyEventData = {
 	
 	/**
 	 * an enum value of the key or unknown if 

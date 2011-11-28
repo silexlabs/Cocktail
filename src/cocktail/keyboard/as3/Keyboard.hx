@@ -68,12 +68,12 @@ class Keyboard extends AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and other key values
 	 */
-	override private function getKeyData(event:Dynamic):Key
+	override private function getKeyData(event:Dynamic):KeyEventData
 	{
 		//cast the flash KeyboardEvent
 		var typedEvent:KeyboardEvent = cast(event);
 		
-		var key:Key = {
+		var key:KeyEventData = {
 			value : getKeyValue(typedEvent.keyCode),
 			code : typedEvent.keyCode,
 			ascii : typedEvent.charCode,

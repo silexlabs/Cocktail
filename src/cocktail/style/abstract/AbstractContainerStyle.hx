@@ -45,10 +45,22 @@ import haxe.Log;
  */
 class AbstractContainerStyle extends Style
 {
+	/**
+	 * used to hold a runtime specific default
+	 * font name for serif font
+	 */
 	private var _serifFontName:String;
 	
+	/**
+	 * used to hold a runtime specific default
+	 * font name for sans-serif font
+	 */
 	private var _sansSerifFontName:String;
 	
+	/**
+	 * used to hold a runtime specific default
+	 * font name for monospace font
+	 */
 	private var _monospaceFontName:String;
 	
 	/**
@@ -68,7 +80,7 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensionsData, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensionsData, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
 	}
@@ -80,7 +92,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -88,15 +100,15 @@ class AbstractContainerStyle extends Style
 		containerDOMElement.resetTextLines();
 		
 		//compute all the styles of the children that will affect
-		//their lay out (display, position, float, clear)
-		//Those styles need to be computed when a new FormattingContext
-		//is instantiated as the type of FormattingContext mainly
+		//their layout (display, position, float, clear)
+		//Those styles need to be computed before a new FormattingContext
+		//gets instantiated as the type of FormattingContext mainly
 		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
 			//only DOMElement styles are computed, not TextNode element's.
 			//TextNode don't influence which type of formatting context will
-			//be used
+			//be used as when rendered, they use the ContainerDOMElement's styles
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
@@ -105,15 +117,17 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//a new FormattingContext must be created for the children of the 
-		//ContainerDOMElement as they will be placed inside the ContainerDOMElement 
+		//ContainerDOMElement as they will be laid out inside the ContainerDOMElement 
 		//using its width and height
 		var childrenFormattingContext:FormattingContext;
 		
 		//if the FormattingContext is null, this ContainerDOMElement
-		//is the first to be lay out
+		//is the first to be laid out, it is not necessary the root
+		//DOMElement of the document as any DOMElement can trigger
+		//a layout
 		if (formatingContext == null)
 		{
-			formatingContext = new BlockFormattingContext(containerDOMElement, null);
+			formatingContext = getFormatingContext();
 			childrenFormattingContext = getFormatingContext();
 		}
 		else
@@ -121,22 +135,22 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext = getFormatingContext(formatingContext);
 		}
 		
-		/**
-		//the containing dimensions of the children
-		//because those of the current ContainerDOMElement
-		//as they will be placed inside it
-		childrenContainingDOMElementDimensions = {
-			width:this._computedStyle.width,
-			height:this._computedStyle.height
-		}*/
+		//get the dimensions that will be used to lay out the children
+		//of the DOMElement. If the ContainerDOMElement establishes an
+		//inline formatting context, then its lineHeight will be used
+		//instead of its height
+		var childrenContainingDOMElementDimensionsData:ContainingDOMElementDimensionsData = getChildrenContainingDOMElementDimensionsData();
 		
-		var childrenContainingDOMElementDimensions:ContainingDOMElementDimensions = getChildrenContainingDOMElementDimensions();
-		var childrenContainingDOMElementFontMetrics:FontMetrics = this.fontMetrics;
+		//get the computed font metrics of the ContainerDOMElement. Those metrics
+		//are based on the font and the font size used
+		var childrenContainingDOMElementFontMetricsData:FontMetricsData = this.fontMetrics;
 		
-		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = lastPositionedDOMElementDimensions;
+		//pass a reference to the dimensions of the first positioned ancestor of the 
+		//ContainerDOMElement
+		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData = lastPositionedDOMElementDimensions;
 		
-		//if the ContainerDOMElement is positioned, it becomes the first positioned for the children it
-		//will layout, and will be used as origin for absolutely positioned children
+		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
+		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
 			childLastPositionedDOMElementDimensions = {
@@ -147,24 +161,34 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-		//flow all children
+		//flow all children 
 		for (i in 0...containerDOMElement.children.length)
 		{
 			//if the children is a DOMElement, call its flow method
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.flow(childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetrics, childrenFormattingContext);
+				//the flow method also lays out recursively all the children of the childrenDOMElement
+				//if it is a ContainerDOMElement
+				childrenDOMElement.style.flow(childrenContainingDOMElementDimensionsData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
-			//else if it is a text node, call a specific method that will create TextLineDOMElement
-			//and insert them into the document using the TextNode as text content
+			//else if it is a text node, call a method that will create as many TextLineDOMElement
+			//as necessary to render the TextNode and insert them into the document
 			else 
 			{
 				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
-				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensions, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensionsData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 			}
 		}
 		
+		//destroy the current formatting context, prompting
+		//to clean up all references it might have and also
+		//lays out the last line of DOMElement for an
+		//inline formatting context
+		//This method is only called if a new formatting
+		//context was established by this ContainerDOMElement,
+		//meaning that the previous formatting context needs to
+		//be destroyed.
 		if (childrenFormattingContext != formatingContext)
 		{
 			childrenFormattingContext.destroy();
@@ -211,7 +235,7 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the document
 	 * @param	textNode the string of text used as content for the created text lines
 	 */
-	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
@@ -221,9 +245,6 @@ class AbstractContainerStyle extends Style
 			switch(textFragments[i])
 			{
 				case word(value):
-					//TO DO : create native text line and
-					//textLineDOMElement and add it as a text child
-					//of the containerDOMElement
 					var textLineDOMElement:TextLineDOMElement = createTextLine(value);
 					if (textLineDOMElement.nativeElement != null)
 					{
@@ -516,11 +537,6 @@ class AbstractContainerStyle extends Style
 					}
 			}
 			
-			if (fontName.indexOf(" ") != -1)
-			{
-				fontName = "'" + fontName + "'";
-			}
-			
 			fontFamilyValue += fontName;
 			
 			if (i < value.length - 1)
@@ -594,7 +610,7 @@ class AbstractContainerStyle extends Style
 		return ret;
 	}
 	
-	private function getChildrenContainingDOMElementDimensions():ContainingDOMElementDimensions
+	private function getChildrenContainingDOMElementDimensionsData():ContainingDOMElementDimensionsData
 	{
 		if (isInline() == true)
 		{

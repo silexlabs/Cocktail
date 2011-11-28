@@ -20,7 +20,7 @@ import cocktail.unit.UnitData;
 	 * Represents the width and height of a DOMElement's
 	 * parent content, into which it can be placed
 	 */
-	typedef ContainingDOMElementDimensions = {
+	typedef ContainingDOMElementDimensionsData = {
 		var width:Int;
 		var height:Int;
 	}
@@ -30,7 +30,7 @@ import cocktail.unit.UnitData;
 	 * as origin when positioning an absolutely
 	 * positioned DOMElelement
 	 */
-	typedef AbsolutelyPositionedContainingDOMElementDimensions = {
+	typedef AbsolutelyPositionedContainingDOMElementDimensionsData = {
 		var globalX:Int;
 		var globalY:Int;
 		var width:Int;
@@ -179,7 +179,7 @@ import cocktail.unit.UnitData;
 	 * this structures return metrics info
 	 * on the font
 	 */
-	typedef FontMetrics = {
+	typedef FontMetricsData = {
 		
 		/**
 		 * The font size of 
@@ -240,7 +240,7 @@ import cocktail.unit.UnitData;
 	 * Defines a DOMElement added to a LineBox
 	 * and its type
 	 */
-	typedef LineBoxElement = {
+	typedef LineBoxElementData = {
 		var domElement:DOMElement;
 		var domElementType:InlineBoxValue;
 	}

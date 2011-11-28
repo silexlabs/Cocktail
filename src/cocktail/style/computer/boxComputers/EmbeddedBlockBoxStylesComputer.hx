@@ -43,7 +43,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
 	{
 		var ret:Int = 0;
 		
@@ -114,7 +114,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		

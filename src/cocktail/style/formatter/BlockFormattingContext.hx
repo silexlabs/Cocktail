@@ -66,7 +66,7 @@ class BlockFormattingContext extends FormattingContext
 		
 	}
 
-	override public function clearFloat(clear:ClearStyleValue):Void
+	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
 		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
 		

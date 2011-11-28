@@ -23,7 +23,7 @@ import haxe.Log;
 class InlineFormattingContext extends FormattingContext
 {
 
-	private var _domElementInLineBox:Array<LineBoxElement>;
+	private var _domElementInLineBox:Array<LineBoxElementData>;
 	
 	private var _firstLineLaidOut:Bool;
 	
@@ -32,8 +32,7 @@ class InlineFormattingContext extends FormattingContext
 		_firstLineLaidOut = false;
 		super(domElement, previousFormattingContext);
 		
-		_domElementInLineBox = new Array<LineBoxElement>();
-		
+		_domElementInLineBox = new Array<LineBoxElementData>();
 		
 	}
 	
@@ -131,7 +130,7 @@ class InlineFormattingContext extends FormattingContext
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
 			alignText(_firstLineLaidOut == false, isLastLine);
-			_domElementInLineBox = new Array<LineBoxElement>();
+			_domElementInLineBox = new Array<LineBoxElementData>();
 			
 			_flowData.y += lineBoxHeight;
 			
@@ -169,8 +168,19 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
+	{
+		if (isFloat == true)
+		{
+			
+			 _flowData.y = _floatsManager.clearFloat(clear, _flowData);
+			
+		}
+	}
+	
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
+
 		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
 		

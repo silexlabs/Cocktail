@@ -25,7 +25,7 @@ package cocktail.geom;
 	/**
 	 * represent a rectangle
 	 */
-	typedef Rectangle = {
+	typedef RectangleData = {
 		var x:Float;
 		var y:Float;
 		var width:Float;
@@ -35,7 +35,7 @@ package cocktail.geom;
 	/**
 	 * Represents a point in 2d space
 	 */
-	typedef Point = {
+	typedef PointData = {
 		var x:Float;
 		var y:Float;
 	}
@@ -71,7 +71,7 @@ package cocktail.geom;
 	 */
 	enum RegistrationPointValue {
 		constant(registrationPointX:RegistrationPointXValue, registrationPointY:RegistrationPointYValue);
-		point(point:Point);
+		point(point:PointData);
 	}
 	
 	/**
