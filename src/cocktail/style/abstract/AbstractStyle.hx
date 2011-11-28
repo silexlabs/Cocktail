@@ -196,10 +196,11 @@ class AbstractStyle
 	/**
 	 * Returns metrics info for the currently defined
 	 * font and font size used in inline formatting context
-	 * to determine lineBoxes sizes
+	 * to determine lineBoxes sizes and text vertical
+	 * alignement
 	 */
-	private var _fontMetrics:FontMetrics;
-	public var fontMetrics(getFontMetrics, never):FontMetrics;
+	private var _fontMetrics:FontMetricsData;
+	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	
 	/**
@@ -266,9 +267,9 @@ class AbstractStyle
 	 * of 'absolute'), it it used as origin.
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
-	 * @param containingDOMElementFontMetrics contains font metrics used to layout children in an inline formatting context
+	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}
@@ -290,11 +291,11 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
-	 * @param containingDOMElementFontMetrics contains font metrics used to layout children in an inline formatting context
+	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
@@ -302,12 +303,23 @@ class AbstractStyle
 			this._domElement.isVisible = false;
 			return;
 		}
+		else
+		{
+			this._domElement.isVisible = true;
+		}
+		
+		//clear preceding left floats, right floats
+		//or both
+		if (isClear() == true)
+		{
+			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
+		}
 		
 		//compute all the style determining how a DOMElement is placed in the document and its box model
-		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics);
+		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 		
 		//flow all the children of the DOMElement of this style of it has any, then insert this DOMElement in the document
-		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetrics, formatingContext);
+		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
 		applyComputedDimensions();
@@ -332,7 +344,7 @@ class AbstractStyle
 	/**
 	 * Flow all the children of a DOMElement if it has any, then the DOMElement.
 	 */
-	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics, formatingContext:FormattingContext = null ):Void
+	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
 	{
 		//insert the DOMElement in the document based on its positioning scheme
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
@@ -343,7 +355,7 @@ class AbstractStyle
 	 * flow, the last positioned DOMElement or the root of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 */
-	private function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
@@ -367,7 +379,7 @@ class AbstractStyle
 					 * TO DO : remove the x and y scroll from the root dom element dimensions
 					 * so that it seems to stay at the same place in the window
 					 */
-					var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = rootDOMElementDimensions;
+					var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData = rootDOMElementDimensions;
 					
 					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
 					
@@ -390,14 +402,9 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementDimensions
 	 * @param	rootDOMElementDimensions
 	 */
-	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
 	{
-		//clear preceding left floats, right floats
-		//or both
-		if (isClear() == true)
-		{
-			formattingContext.clearFloat(this._computedStyle.clear);
-		}
+		
 		
 		//insert as a float
 		if (isFloat() == true)
@@ -443,10 +450,10 @@ class AbstractStyle
 	 * the styles determining its box model (width, height, margins
 	 * paddings...)
 	 */
-	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	public function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		computePositionStyle();
-		computeFontStyle(containingDOMElementDimensions, containingDOMElementFontMetrics);
+		computeFontStyle(containingDOMElementDimensions, containingDOMElementFontMetricsData);
 		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 	}
 	
@@ -460,9 +467,9 @@ class AbstractStyle
 		DisplayStylesComputer.compute(this);
 	}
 	
-	public function computeFontStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	public function computeFontStyle(containingDOMElementDimensions:ContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		FontAndTextStylesComputer.compute(this, containingDOMElementDimensions, containingDOMElementFontMetrics);
+		FontAndTextStylesComputer.compute(this, containingDOMElementDimensions, containingDOMElementFontMetricsData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -474,7 +481,7 @@ class AbstractStyle
 	 * Compute the box model styles (width, height, paddings, margins...) based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -484,7 +491,7 @@ class AbstractStyle
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementDimensionsData = getContainingDOMElementDimensionsData(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
 		//get the box computer for float
 		if (isFloat() == true)
@@ -523,10 +530,10 @@ class AbstractStyle
 	 * Get the right containing parent dimensions for a DOMElement
 	 * based on its position style value
 	 */
-	private function getContainingDOMElementDimensions(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):ContainingDOMElementDimensions
+	private function getContainingDOMElementDimensionsData(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):ContainingDOMElementDimensionsData
 	{
 		//for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
-		var containingBlockDimensions:ContainingDOMElementDimensions = containingDOMElementDimensions;
+		var containingBlockDimensions:ContainingDOMElementDimensionsData = containingDOMElementDimensions;
 		
 		//for 'positioned' DOMElement
 		if (isPositioned() == true)
@@ -716,7 +723,7 @@ class AbstractStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	private function getFontMetrics():FontMetrics
+	private function getFontMetricsData():FontMetricsData
 	{
 		return _fontMetrics;
 	}

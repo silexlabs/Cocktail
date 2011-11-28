@@ -366,7 +366,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * Draw a bitmap extracted from an ImageDOMElement into the bitmap display object.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
+	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
 	{	
 		//init destination point and sourceRect if null
 		

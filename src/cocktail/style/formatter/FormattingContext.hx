@@ -198,7 +198,7 @@ class FormattingContext
 	 * When floats are cleared, the flow y attribute is placed
 	 * at the bottom of the last cleared float
 	 */
-	public function clearFloat(clear:ClearStyleValue):Void
+	public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
 		//abstract
 	}

@@ -255,7 +255,7 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 * @param	sourceRect defines the zone from the source dom element that must be copied onto the 
 	 * native graphic dom element. Takes the whole image by default
 	 */
-	public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
+	public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
 	{
 		//abstract
 	}

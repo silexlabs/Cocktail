@@ -28,7 +28,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	}
 	
 
-	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Void
 	{
 		super.measurePositionOffsets(style, containingDOMElementDimensions);
 		

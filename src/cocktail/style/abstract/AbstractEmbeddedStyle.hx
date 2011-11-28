@@ -67,7 +67,7 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	override private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -77,7 +77,7 @@ class AbstractEmbeddedStyle extends Style
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementDimensionsData = getContainingDOMElementDimensionsData(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
 		//get the embedded box computers based on
 		//the positioning scheme
@@ -136,7 +136,7 @@ class AbstractEmbeddedStyle extends Style
 	 * The other font metrics don't apply to it and are
 	 * set to 0
 	 */
-	override private function getFontMetrics():FontMetrics
+	override private function getFontMetricsData():FontMetricsData
 	{
 		return {
 			ascent:domElement.offsetHeight,

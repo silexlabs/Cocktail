@@ -29,13 +29,13 @@ class FontAndTextStylesComputer
 		
 	}
 	
-	public static function compute(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions, containingDOMElementFontMetrics:FontMetrics):Void
+	public static function compute(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
-		if (containingDOMElementFontMetrics != null)
+		if (containingDOMElementFontMetricsData != null)
 		{
-			computedStyle.fontSize = getComputedFontSize(style, containingDOMElementFontMetrics.fontSize, containingDOMElementFontMetrics.xHeight);
+			computedStyle.fontSize = getComputedFontSize(style, containingDOMElementFontMetricsData.fontSize, containingDOMElementFontMetricsData.xHeight);
 		}
 		else
 		{
@@ -46,7 +46,7 @@ class FontAndTextStylesComputer
 		
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementFontMetrics);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementFontMetricsData);
 		
 		computedStyle.fontWeight = getComputedFontWeight(style);
 		
@@ -82,7 +82,7 @@ class FontAndTextStylesComputer
 		return style.whiteSpace;
 	}
 	
-	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
 	{
 		var textIndent:Float;
 		
@@ -98,7 +98,7 @@ class FontAndTextStylesComputer
 		return Math.round(textIndent);
 	}
 	
-	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetrics:FontMetrics):Float
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetricsData:FontMetricsData):Float
 	{
 		
 		//TO DO : must represent an offset from the inlinebox baseline
@@ -113,12 +113,12 @@ class FontAndTextStylesComputer
 				
 			case middle:
 				//! warning : containing dom element must be either an inline parent or the block which started inline context
-				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetrics.xHeight / 2;
+				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
 			case sub:
-				verticalAlign = containingDOMElementFontMetrics.subscriptOffset;
+				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;
 				
 			case _super:
-				verticalAlign = containingDOMElementFontMetrics.superscriptOffset;
+				verticalAlign = containingDOMElementFontMetricsData.superscriptOffset;
 				
 			case textTop:
 				verticalAlign = 0;

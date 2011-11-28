@@ -195,8 +195,8 @@ class FloatsManager
 	}
 	
 	/**
-	 * Actually clears a set of float (right or left). Finds the hightest
-	 * float among the clear float and return its height + y as the new
+	 * Actually clears a set of float (right or left). Finds the highest
+	 * float among the cleared float and return its height + y as the new
 	 * flowData y position
 	 * 
 	 * @param flowData the current flowData, its y value is returned if there are no 

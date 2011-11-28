@@ -165,7 +165,7 @@ class Matrix
 	 * @param angle the rotation angle in degree
 	 * @param registrationPoint the pivot point
 	 */
-	public function rotate(angle:Int, registrationPoint:Point):Void
+	public function rotate(angle:Int, registrationPoint:PointData):Void
 	{
 		//convert degree to radian
 		var angleInRad:Float = angle / 180 * Math.PI;
@@ -240,7 +240,7 @@ class Matrix
 	 * @param scaleY vertical scale factor
 	 * @param transformOrigin the scale center
 	 */
-	public function scale(scaleX:Float, scaleY:Float, registrationPoint:Point):Void
+	public function scale(scaleX:Float, scaleY:Float, registrationPoint:PointData):Void
 	{	
 		//the matrix that will be scaled along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
@@ -283,7 +283,7 @@ class Matrix
 	 * @param skewY the vertical skew factor
 	 * @param transformOrigin the skew center
 	 */
-	public function skew(skewX:Float, skewY:Float, registrationPoint:Point ):Void
+	public function skew(skewX:Float, skewY:Float, registrationPoint:PointData ):Void
 	{
 		//the matrix that will be skewed along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
@@ -328,7 +328,7 @@ class Matrix
 	 * @param	angle the angle that must be applied
 	 * @param	registrationPoint the rotation center
 	 */
-	public function setRotation(angle:Int, registrationPoint:Point):Void 
+	public function setRotation(angle:Int, registrationPoint:PointData):Void 
 	{
 		//get the current angle
 		var currentRotation:Int = getRotation();
@@ -434,7 +434,7 @@ class Matrix
 	 * @param	scaleXFactor the target scale x
 	 * @param	registrationPoint the scale center
 	 */
-	public function setScaleX(scaleXFactor:Float, registrationPoint:Point):Void
+	public function setScaleX(scaleXFactor:Float, registrationPoint:PointData):Void
 	{
 		var currentScaleX:Float = getScaleX();
 		
@@ -462,7 +462,7 @@ class Matrix
 	 * @param	scaleXFactor the target scale y
 	 * @param	registrationPoint the scale center
 	 */
-	public function setScaleY(scaleYFactor:Float, registrationPoint:Point):Void
+	public function setScaleY(scaleYFactor:Float, registrationPoint:PointData):Void
 	{
 		var currentScaleY:Float = getScaleY();
 		

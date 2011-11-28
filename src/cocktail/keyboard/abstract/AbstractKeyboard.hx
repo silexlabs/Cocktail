@@ -35,13 +35,13 @@ class AbstractKeyboard
 	 * The callback to call when
 	 * a key is pressed
 	 */
-	public var onKeyDown:Key->Void;
+	public var onKeyDown:KeyEventData->Void;
 	
 	/**
 	 * The callback to call when 
 	 * a key is released
 	 */
-	public var onKeyUp:Key->Void;
+	public var onKeyUp:KeyEventData->Void;
 	
 	/**
 	 * class constructor. Set the native
@@ -107,7 +107,7 @@ class AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and ascii value
 	 */
-	private function getKeyData(event:Dynamic):Key
+	private function getKeyData(event:Dynamic):KeyEventData
 	{
 		return null;
 	}

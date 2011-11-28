@@ -236,7 +236,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
+	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
 	{
 		//init destination point and sourceRect if null
 		
@@ -385,7 +385,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 */
 	private function colorStopToRGBA(colorStop:ColorStopData):String
 	{
-		var rgb:RGB = hexToRGB(getHexColor(colorStop.color));
+		var rgb:RGBData = hexToRGB(getHexColor(colorStop.color));
 		return "rgba(" + rgb.red + "," + rgb.green + "," + rgb.blue + "," + toNativeAlpha(colorStop.alpha) + ")";
 	}
 	
@@ -409,12 +409,12 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 * Converts an hexadecimal to it's rgb representation
 	 * @return an RGB typedef, with 3 value ranging from 0 to 255
 	 */
-	private function hexToRGB(hex:String):RGB
+	private function hexToRGB(hex:String):RGBData
 	{
 		var hexCopy:String = hex;
 		
 		var hexCopy = hexCopy.substr(1);
-		var rgb:RGB = {
+		var rgb:RGBData = {
 			red: Std.parseInt("0x"+hexCopy.substr(0, 2)),
 			green: Std.parseInt("0x"+hexCopy.substr(2, 2)),
 			blue:Std.parseInt("0x"+hexCopy.substr(4,2))

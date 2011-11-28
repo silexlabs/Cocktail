@@ -67,9 +67,9 @@ class Keyboard extends AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and ascii value
 	 */
-	override private function getKeyData(event:Dynamic):Key
+	override private function getKeyData(event:Dynamic):KeyEventData
 	{
-		var key:Key = {
+		var key:KeyEventData = {
 			value : getKeyValue(event.keyCode),
 			code : event.keyCode,
 			ascii : event.charCode,
