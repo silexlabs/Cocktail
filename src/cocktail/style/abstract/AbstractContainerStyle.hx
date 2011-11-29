@@ -80,9 +80,9 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementDimensions:ContainingDOMElementDimensionsData, lastPositionedDOMElement:AbsolutelyPositionedContainingDOMElementDimensionsData, rootDOMElement:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:ContainingDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		flow(containingDOMElementDimensions, rootDOMElement, lastPositionedDOMElement, null);
+		flow(containingDOMElementData, rootDOMElement, lastPositionedDOMElement, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -139,7 +139,7 @@ class AbstractContainerStyle extends Style
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height
-		var childrenContainingDOMElementDimensionsData:ContainingDOMElementDimensionsData = getChildrenContainingDOMElementDimensionsData();
+		var childrenContainingDOMElementData:ContainingDOMElementData = getChildrenContainingDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
 		//are based on the font and the font size used
@@ -147,18 +147,13 @@ class AbstractContainerStyle extends Style
 		
 		//pass a reference to the dimensions of the first positioned ancestor of the 
 		//ContainerDOMElement
-		var childLastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData = lastPositionedDOMElementDimensions;
+		var childLastPositionedDOMElementDimensions:ContainingDOMElementData = lastPositionedDOMElementDimensions;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
-			childLastPositionedDOMElementDimensions = {
-				width:this._computedStyle.width,
-				height:this._computedStyle.height,
-				globalX:this._domElement.globalX,
-				globalY:this._domElement.globalY
-			}
+			childLastPositionedDOMElementDimensions = getChildrenContainingDOMElementData();
 		}
 		
 		//flow all children 
@@ -170,14 +165,14 @@ class AbstractContainerStyle extends Style
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementDimensionsData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 			//else if it is a text node, call a method that will create as many TextLineDOMElement
 			//as necessary to render the TextNode and insert them into the document
 			else 
 			{
 				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
-				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementDimensionsData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
+				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 			}
 		}
 		
@@ -235,7 +230,7 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the document
 	 * @param	textNode the string of text used as content for the created text lines
 	 */
-	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
@@ -610,20 +605,31 @@ class AbstractContainerStyle extends Style
 		return ret;
 	}
 	
-	private function getChildrenContainingDOMElementDimensionsData():ContainingDOMElementDimensionsData
+	private function getChildrenContainingDOMElementData():ContainingDOMElementData
 	{
+		var height:Int;
+		
 		if (isInline() == true)
 		{
-			return { width:this._computedStyle.width, height:Math.round(this._computedStyle.lineHeight) };
+			height = Math.round(this._computedStyle.lineHeight);
 		}
 		else if (isInline() == false && childrenInline() == true)
 		{
-			return { width:this._computedStyle.width, height:Math.round(this._computedStyle.lineHeight) };
+			height = Math.round(this._computedStyle.lineHeight);
 		}
 		else
 		{
-			return { width:this._computedStyle.width, height:this._computedStyle.height };
+			height = this._computedStyle.height;
 		}
+		
+		return {
+			width:this._computedStyle.width,
+			isWidthAuto:this._width == DimensionStyleValue.auto,
+			height:height,
+			isHeightAuto:this._height == DimensionStyleValue.auto,
+			globalX:this._domElement.globalX,
+			globalY:this._domElement.globalY
+		};
 	}
 	
 	/**
@@ -646,7 +652,7 @@ class AbstractContainerStyle extends Style
 				//is block level
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				
-				if (childrenDOMElement.style.computedStyle.display == block )
+				if (childrenDOMElement.style.computedStyle.display == block && childrenDOMElement.style.isFloat() == false )
 				{
 					if (childrenDOMElement.style.isFloat() == false)
 					{

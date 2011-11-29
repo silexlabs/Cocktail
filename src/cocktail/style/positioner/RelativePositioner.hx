@@ -41,9 +41,9 @@ class RelativePositioner extends BoxPositioner
 	 * Override to prevent DOMElement from being globally positioned, 'relative' DOMElement are
 	 * first normally positioned in the flow, then an offset is applied to them
 	 */
-	override public function position(domElement:DOMElement, containingDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
+	override public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		applyOffset(domElement, containingDOMElementDimensions);
+		applyOffset(domElement, containingDOMElementData);
 	}
 	
 }

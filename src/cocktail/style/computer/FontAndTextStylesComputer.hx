@@ -29,7 +29,7 @@ class FontAndTextStylesComputer
 		
 	}
 	
-	public static function compute(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
@@ -62,7 +62,7 @@ class FontAndTextStylesComputer
 		
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
-		computedStyle.textIndent = getComputedTextIndent(style, containingDOMElementDimensions);
+		computedStyle.textIndent = getComputedTextIndent(style, containingDOMElementData);
 		
 		computedStyle.whiteSpace = getComputedWhiteSpace(style);
 		
@@ -82,7 +82,7 @@ class FontAndTextStylesComputer
 		return style.whiteSpace;
 	}
 	
-	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var textIndent:Float;
 		
@@ -92,7 +92,7 @@ class FontAndTextStylesComputer
 				textIndent = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
-				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementDimensions.width);
+				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementData.width);
 		}
 		
 		return Math.round(textIndent);

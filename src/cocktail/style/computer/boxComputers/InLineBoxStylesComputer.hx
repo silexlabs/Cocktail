@@ -62,12 +62,12 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 		return computedMargin;
 	}
 	
-	override private function getComputedWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return 0;
 	}
 	
-	override private function getComputedHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		//TO DO, should be based on font size, but to do it for multi-line ? Should be set during layout ? (probably)
 		return 0;
