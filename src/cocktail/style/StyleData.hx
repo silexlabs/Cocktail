@@ -17,24 +17,19 @@ import cocktail.unit.UnitData;
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Represents the width and height of a DOMElement's
-	 * parent content, into which it can be placed
+	 * Represents the width, height of a DOMElement's
+	 * parent content, and it's global position, relative
+	 * to the root DOMElement.
+	 * Specify for each dimension if it is 'auto', 
+	 * meaning it depends on its content
 	 */
-	typedef ContainingDOMElementDimensionsData = {
+	typedef ContainingDOMElementData = {
 		var width:Int;
+		var isWidthAuto:Bool;
 		var height:Int;
-	}
-	
-	/**
-	 * Represents the dimensions of a DOMElement used
-	 * as origin when positioning an absolutely
-	 * positioned DOMElelement
-	 */
-	typedef AbsolutelyPositionedContainingDOMElementDimensionsData = {
+		var isHeightAuto:Bool;
 		var globalX:Int;
 		var globalY:Int;
-		var width:Int;
-		var height:Int;
 	}
 	
 	/**

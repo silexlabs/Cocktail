@@ -63,7 +63,7 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	}
 	
 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		//TO DO : In certain cases (see, e.g., sections 10.6.4 and 10.6.6 above), the height of an element that establishes 
 		//a block formatting context is computed as follows:If it only has inline-level children, the height is the distance
@@ -80,7 +80,7 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	
 	
 	
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		//TO DO : If 'width' is computed as 'auto', the used value is the "shrink-to-fit" width. Calculation
 		//of the shrink-to-fit width is similar to calculating the width of a table cell using the automatic

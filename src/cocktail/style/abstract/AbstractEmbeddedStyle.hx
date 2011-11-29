@@ -67,7 +67,7 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensionsData, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensionsData):Void
+	override private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -77,7 +77,7 @@ class AbstractEmbeddedStyle extends Style
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementDimensionsData = getContainingDOMElementDimensionsData(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
 		//get the embedded box computers based on
 		//the positioning scheme

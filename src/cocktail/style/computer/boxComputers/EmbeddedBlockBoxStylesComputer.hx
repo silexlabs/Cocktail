@@ -43,7 +43,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var ret:Int = 0;
 		
@@ -82,7 +82,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used height
-			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementDimensions.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedDOMElement.intrinsicRatio != null)
@@ -114,7 +114,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensionsData):Int
+	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
@@ -133,7 +133,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used value of 'width'
-			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementDimensions.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//deduce theheight from the computed width and the intrinsic ratio if it is defined
 			if (embeddedDOMElement.intrinsicRatio != null)
