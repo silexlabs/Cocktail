@@ -31,68 +31,45 @@ class BlockFormattingContext extends FormattingContext
 	{
 		super.place(domElement);
 		
-		startNewLine();
-		
 		var leftFloatOffset:Int = 0;
 		
 		if (domElement.style.isEmbedded() == true)
 		{
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y);
+			
+			_flowData.y = _floatsManager.getFirstAvailableY(flowData, domElement.offsetWidth, _containingDOMElementWidth);
+			
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+			
+			
 		}
-		
-		
-		_flowData.x = flowData.firstLineX + leftFloatOffset;
+			
+		_flowData.x = _flowData.xOffset + leftFloatOffset;
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
-		domElement.y = _flowData.y + _flowData.maxLineHeight + domElement.style.computedStyle.marginTop ;
+		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
 	
-		_flowData.y += domElement.offsetHeight;
+		_flowData.y += domElement.offsetHeight ;
 		
 		
-		_flowData.totalHeight = _flowData.y + _flowData.maxLineHeight ;
-		_flowData.maxLineHeight = 0;
+		_flowData.totalHeight = _flowData.y  ;
 		
 	}
 	
 
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-		//_flowData.x = getLeftFloatOffset(_flowData.y) - domElement.offsetWidth;
-		domElement.x = floatData.x;
-		domElement.y = _flowData.y;
+		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
+		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
+		
+
+		_flowData.y = floatData.y;
+
+		
 	}
 
-	
-	
-	
-	override public function clearFloat(clear:ClearStyleValue):Void
+	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
-		switch (clear)
-		{
-			case none:
-				
-			case left:
-				clearLeft();
-			case right:
-				clearRight();
-			case both:	
-				clearBoth();
-		}
-	}
-	
-	private function clearLeft():Void
-	{
+		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
 		
-	}
-	
-	private function clearRight():Void
-	{
-		
-	}
-	
-	private function clearBoth():Void
-	{
-		clearLeft();
-		clearRight();
 	}
 	
 	

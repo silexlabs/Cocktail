@@ -9,6 +9,38 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement;
+import cocktail.style.Style;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Container DOMElement structures and enums
+//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Structures
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * ContainerDOMElement can have both DOMElement and TextNode
+	 * as children. This structures holds of reference to the
+	 * children and to its type
+	 */
+	typedef ContainerDOMElementChildData = {
+		var child:Dynamic;
+		var type:ContainerDOMElementChildValue;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Enums
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The types of children a ContainerDOMElement
+	 * can have
+	 */
+	enum ContainerDOMElementChildValue {
+		domElement;
+		textNode;
+	}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic DOMElement structures and enums
@@ -103,7 +135,7 @@ package cocktail.domElement;
 	/**
 	 * defines an RGB color
 	 */
-	typedef RGB = {
+	typedef RGBData = {
 		var red:Int;
 		var green:Int;
 		var blue:Int;

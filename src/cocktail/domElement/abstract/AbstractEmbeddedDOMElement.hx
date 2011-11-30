@@ -11,9 +11,15 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.EmbeddedStyle;
+import cocktail.domElement.DOMElementData;
+
+#if flash9
+import cocktail.domElement.as3.DOMElement;
+#elseif js
+import cocktail.domElement.js.DOMElement;
+#end
 
 /**
  * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a
@@ -88,34 +94,34 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	// INTRINSIC DIMENSIONS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function setIntrinsicWidth(value:Null<Int>):Null<Int>
+	private function setIntrinsicWidth(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicWidth = value;
 		return value;
 	}
 	
-	public function getIntrinsicWidth():Null<Int>
+	private function getIntrinsicWidth():Null<Int>
 	{
 		return this._intrinsicWidth;
 	}
 	
-	public function setIntrinsicHeight(value:Null<Int>):Null<Int>
+	private function setIntrinsicHeight(value:Null<Int>):Null<Int>
 	{
 		this._intrinsicHeight = value;
 		return value;
 	}
 	
-	public function getIntrinsicHeight():Null<Int>
+	private function getIntrinsicHeight():Null<Int>
 	{
 		return this._intrinsicHeight;
 	}
 	
-	public function getIntrinsicRatio():Null<Float>
+	private function getIntrinsicRatio():Null<Float>
 	{
 		return this._intrinsicRatio;
 	}
 	
-	public function setIntrinsicRatio(value:Null<Float>):Null<Float>
+	private function setIntrinsicRatio(value:Null<Float>):Null<Float>
 	{
 		this._intrinsicRatio = value;
 		return value;

@@ -49,7 +49,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 	 * @param	value
 	 * @return
 	 */
-	override public function setSmooth(value:Bool):Bool
+	override private function setSmooth(value:Bool):Bool
 	{
 		super.setSmooth(value);
 		

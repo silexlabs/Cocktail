@@ -55,7 +55,6 @@ typedef ResourceData =
  * Enumerates the file type which can be loaded : 
  * data for text file,
  * image for picture such as .jpg, .gif and .png files,
- * text for html text files, 
  * animation for animated format such as .swf and .svg,
  * container for skin loading (.swf, .html),
  * and library for classes library which may be stored in .swf or .js files for instance
@@ -64,7 +63,6 @@ enum LoadingTypeValue
 {
 	data;
 	image;
-	text;
 	animation;
 	container;
 	library;

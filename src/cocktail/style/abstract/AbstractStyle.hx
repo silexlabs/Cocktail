@@ -11,19 +11,21 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.style.computer.BlockBoxComputer;
-import cocktail.style.computer.BoxComputer;
-import cocktail.style.computer.FloatBoxComputer;
-import cocktail.style.computer.InlineBlockBoxComputer;
-import cocktail.style.computer.InLineBoxComputer;
-import cocktail.style.computer.NoneBoxComputer;
-import cocktail.style.computer.PositionComputer;
-import cocktail.style.computer.PositionedBoxComputer;
+import cocktail.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.FloatBoxStylesComputer;
+import cocktail.style.computer.boxComputers.InlineBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.InLineBoxStylesComputer;
+import cocktail.style.computer.boxComputers.NoneBoxStylesComputer;
+import cocktail.style.computer.boxComputers.PositionedBoxStylesComputer;
+import cocktail.style.computer.BoxStylesComputer;
+import cocktail.style.computer.DisplayStylesComputer;
+import cocktail.style.computer.FontAndTextStylesComputer;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.positioner.AbsolutePositioner;
 import cocktail.style.positioner.BoxPositioner;
 import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
+import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -114,6 +116,13 @@ class AbstractStyle
 	public var right(getRight, setRight):PositionOffsetStyleValue;
 	
 	/**
+	 * The way an element is aligned vertically in an 
+	 * inline formatting context
+	 */
+	private var _verticalAlign:VerticalAlignStyleValue;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
+	
+	/**
 	 * float positioning styles. A floated element is placed to 
 	 * the further left or right of its container
 	 */
@@ -121,6 +130,51 @@ class AbstractStyle
 	public var float(getFloat, setFloat):FloatStyleValue;
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
+	
+	/**
+	 * font
+	 */
+	private var _fontSize:FontSizeStyleValue;
+	public var fontSize(getFontSize, setFontSize):FontSizeStyleValue;
+	
+	private var _fontWeight:FontWeightStyleValue;
+	public var fontWeight(getFontWeight, setFontWeight):FontWeightStyleValue;
+	
+	private var _fontStyle:FontStyleStyleValue;
+	public var fontStyle(getFontStyle, setFontStyle):FontStyleStyleValue;
+	
+	private var _fontFamily:Array<FontFamilyStyleValue>;
+	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamilyStyleValue>;
+	
+	private var _fontVariant:FontVariantStyleValue;
+	public var fontVariant(getFontVariant, setFontVariant):FontVariantStyleValue;
+	
+	private var _color:ColorValue;
+	public var color(getColor, setColor):ColorValue;
+	
+	/**
+	 * text
+	 */
+	private var _lineHeight:LineHeightStyleValue;
+	public var lineHeight(getLineHeight, setLineHeight):LineHeightStyleValue;
+	
+	private var _textTransform:TextTransformStyleValue;
+	public var textTransform(getTextTransform, setTextTransform):TextTransformStyleValue;
+	
+	private var _letterSpacing:LetterSpacingStyleValue;
+	public var letterSpacing(getLetterSpacing, setLetterSpacing):LetterSpacingStyleValue;
+	
+	private var _wordSpacing:WordSpacingStyleValue;
+	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacingStyleValue;
+	
+	private var _whiteSpace:WhiteSpaceStyleValue;
+	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpaceStyleValue;
+	
+	private var _textAlign:TextAlignStyleValue;
+	public var textAlign(getTextAlign, setTextAlign):TextAlignStyleValue;
+	
+	private var _textIndent:TextIndentStyleValue;
+	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
 	
 	////////////////////////////////
 	
@@ -138,6 +192,16 @@ class AbstractStyle
 	 */
 	private var _domElement:DOMElement;
 	public var domElement(getDOMElement, never):DOMElement;
+	
+	/**
+	 * Returns metrics info for the currently defined
+	 * font and font size used in inline formatting context
+	 * to determine lineBoxes sizes and text vertical
+	 * alignement
+	 */
+	private var _fontMetrics:FontMetricsData;
+	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
+	
 	
 	/**
 	 * Class constructor. Stores the target DOMElement and init
@@ -169,8 +233,21 @@ class AbstractStyle
 			clear : ClearStyleValue.none,
 			float : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
-			position: PositionStyleValue._static,
-			verticalAlign : 0
+			position: PositionStyleValue.staticStyle,
+			verticalAlign : 0.0,
+			fontSize:12.0,
+			lineHeight:14.0,
+			fontWeight:FontWeightStyleValue.normal,
+			fontStyle:FontStyleStyleValue.normal,
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontVariant:FontVariantStyleValue.normal,
+			textTransform:TextTransformStyleValue.none,
+			letterSpacing:0,
+			wordSpacing:0,
+			textIndent:0,
+			whiteSpace:WhiteSpaceStyleValue.normal,
+			textAlign:TextAlignStyleValue.left,
+			color:0
 		}
 	}
 	
@@ -183,15 +260,16 @@ class AbstractStyle
 	 * model styles (width, height, margins, paddings...) are computed
 	 * and the DOMElement layout its children if it has any.
 	 * 
-	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
+	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
+	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 */
-	public function layout(containingDOMElementDimensions:ContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}
@@ -206,17 +284,18 @@ class AbstractStyle
 	 * 
 	 * This method is called recursively on every children of the DOMElement if it has any
 	 * 
-	 * @param	containingDOMElementDimensions the dimensions of the parent DOMElement into which 
+	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
+	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
@@ -224,12 +303,23 @@ class AbstractStyle
 			this._domElement.isVisible = false;
 			return;
 		}
+		else
+		{
+			this._domElement.isVisible = true;
+		}
+		
+		//clear preceding left floats, right floats
+		//or both
+		if (isClear() == true)
+		{
+			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
+		}
 		
 		//compute all the style determining how a DOMElement is placed in the document and its box model
-		computeDOMElement(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		computeDOMElement(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 		
 		//flow all the children of the DOMElement of this style of it has any, then insert this DOMElement in the document
-		flowChildren(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions, formatingContext);
+		flowChildren(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
 		applyComputedDimensions();
@@ -254,7 +344,7 @@ class AbstractStyle
 	/**
 	 * Flow all the children of a DOMElement if it has any, then the DOMElement.
 	 */
-	private function flowChildren(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, formatingContext:FormattingContext = null ):Void
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
 	{
 		//insert the DOMElement in the document based on its positioning scheme
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
@@ -265,7 +355,7 @@ class AbstractStyle
 	 * flow, the last positioned DOMElement or the root of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 */
-	private function positionElement(lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function positionElement(lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
@@ -289,7 +379,7 @@ class AbstractStyle
 					 * TO DO : remove the x and y scroll from the root dom element dimensions
 					 * so that it seems to stay at the same place in the window
 					 */
-					var scrolledRootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions = rootDOMElementDimensions;
+					var scrolledRootDOMElementDimensions:ContainingDOMElementData = rootDOMElementDimensions;
 					
 					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
 					
@@ -312,42 +402,60 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementDimensions
 	 * @param	rootDOMElementDimensions
 	 */
-	private function insertDOMElement(formatingContext:FormattingContext, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData):Void
 	{
-		//clear preceding left floats, right floats
-		//or both
-		if (isClear() == true)
-		{
-			formatingContext.clearFloat(this._computedStyle.clear);
-		}
+		
 		
 		//insert as a float
 		if (isFloat() == true)
 		{
-			formatingContext.insertFloat(this._domElement);
+			formattingContext.insertFloat(this._domElement);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			formatingContext.insert(this._domElement);
+			insertInFlowDOMElement(formattingContext);
+			
 		}
 		//insert in the flow, then apply an offset to it
 		else if (isRelativePositioned() == true)
 		{
-			formatingContext.insert(this._domElement);
+			formattingContext.insert(this._domElement);
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 		//insert as an absolutely positioned DOMElement
 		else
-		{
+		{ 
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 	}
 	
+	/**
+	 * Do insert an inflow DOMElement into the document. Method added to allow
+	 * overriding for some inherithing class
+	 */
+	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	{
+		formattingContext.insert(this._domElement);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE COMPUTING METHODS
+	// PUBLIC COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute first the styles determining the DOMElement's
+	 * positioning scheme (position, float, clear...) then
+	 * the styles determining its box model (width, height, margins
+	 * paddings...)
+	 */
+	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{
+		computePositionStyle();
+		computeFontStyle(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyle(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+	}
 	
 	/**
 	 * This method computes the styles determing
@@ -356,46 +464,44 @@ class AbstractStyle
 	 */
 	public function computePositionStyle():Void
 	{
-		PositionComputer.compute(this);
+		DisplayStylesComputer.compute(this);
 	}
 	
-	/**
-	 * Compute first the styles determining the DOMElement's
-	 * positioning scheme (position, float, clear...) then
-	 * the styles determining its box model (width, height, margins
-	 * paddings...)
-	 */
-	private function computeDOMElement(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function computeFontStyle(containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		computePositionStyle();
-		computeBoxModelStyle(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		FontAndTextStylesComputer.compute(this, containingDOMElementData, containingDOMElementFontMetricsData);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE COMPUTING METHODS
+	// compute styles definition into usable values
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
 		//scheme
-		var boxComputer:BoxComputer;
+		var boxComputer:BoxStylesComputer;
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
 		//get the box computer for float
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatBoxComputer();
+			boxComputer = new FloatBoxStylesComputer();
 		}
 		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedBoxComputer();
+			boxComputer = new PositionedBoxStylesComputer();
 		}
 		//else get the box computer based on the display style
 		else
@@ -403,16 +509,16 @@ class AbstractStyle
 			switch(this._computedStyle.display)
 			{
 				case block:
-					boxComputer = new BlockBoxComputer();
+					boxComputer = new BlockBoxStylesComputer();
 					
 				case inlineBlock:
-					boxComputer = new InlineBlockBoxComputer();
+					boxComputer = new InlineBlockBoxStylesComputer();
 				
 				case none:
-					boxComputer = new NoneBoxComputer();
+					boxComputer = new NoneBoxStylesComputer();
 				
-				case _inline:
-					boxComputer = new InLineBoxComputer();
+				case inlineStyle:
+					boxComputer = new InLineBoxStylesComputer();
 			}
 		}
 		
@@ -424,10 +530,10 @@ class AbstractStyle
 	 * Get the right containing parent dimensions for a DOMElement
 	 * based on its position style value
 	 */
-	private function getContainingDOMElementDimensions(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):ContainingDOMElementDimensions
+	private function getContainingDOMElementData(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):ContainingDOMElementData
 	{
 		//for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
-		var containingBlockDimensions:ContainingDOMElementDimensions = containingDOMElementDimensions;
+		var containingBlockDimensions:ContainingDOMElementData = containingDOMElementData;
 		
 		//for 'positioned' DOMElement
 		if (isPositioned() == true)
@@ -435,17 +541,29 @@ class AbstractStyle
 			//for 'fixed' DOMElement, takes the root DOMElement (the first DOMElement in the hierarchy)
 			if (this._computedStyle.position == PositionStyleValue.fixed)
 			{
-				containingBlockDimensions = {width:rootDOMElementDimensions.width, height:rootDOMElementDimensions.height};
+				containingBlockDimensions = {
+					width:rootDOMElementDimensions.width,
+					height:rootDOMElementDimensions.height,
+					isHeightAuto:rootDOMElementDimensions.isHeightAuto,
+					isWidthAuto:rootDOMElementDimensions.isWidthAuto,
+					globalX:rootDOMElementDimensions.globalX,
+					globalY:rootDOMElementDimensions.globalY};
 			}
 			//for 'absolute' takes the first positioned ancestor
 			else if (this._computedStyle.position == PositionStyleValue.absolute)
 			{
-				containingBlockDimensions = {width:lastPositionedDOMElementDimensions.width, height:lastPositionedDOMElementDimensions.height};
+				containingBlockDimensions = {
+					width:lastPositionedDOMElementDimensions.width,
+					height:lastPositionedDOMElementDimensions.height,
+					isHeightAuto:lastPositionedDOMElementDimensions.isHeightAuto,
+					isWidthAuto:lastPositionedDOMElementDimensions.isWidthAuto,
+					globalX:lastPositionedDOMElementDimensions.globalX,
+					globalY:lastPositionedDOMElementDimensions.globalY};
 			}
 			//else for 'relative', takes the parent as 'relative' are "in-flow" DOMElements
 			else
 			{
-				containingBlockDimensions = containingDOMElementDimensions;
+				containingBlockDimensions = containingDOMElementData;
 			}
 		}
 		
@@ -465,6 +583,35 @@ class AbstractStyle
 	public function isEmbedded():Bool
 	{
 		return false;
+	}
+	
+	/**
+	 * Determine if the DOMElement is a floated
+	 * DOMElement. A floated DOMElement is first
+	 * placed in the flow then moved to the
+	 * left-most or right-most of its container.
+	 * Any subsequent inline DOMElement flows
+	 * around on the float until a new line 
+	 * starts below the float or if it is cleared
+	 * by another DOMElement.
+	 * 
+	 * A DOMElement is float if he declares either
+	 * a left or right float
+	 */
+	public function isFloat():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.float) 
+		{
+			case FloatStyleValue.left, FloatStyleValue.right:
+				ret = true;
+			
+			case FloatStyleValue.none:
+				ret = false;
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -505,35 +652,6 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Determine if the DOMElement is a floated
-	 * DOMElement. A floated DOMElement is first
-	 * placed in the flow then moved to the
-	 * left-most or right-most of its container.
-	 * Any subsequent inline DOMElement flows
-	 * around on the float until a new line 
-	 * starts below the float or if it is cleared
-	 * by another DOMElement.
-	 * 
-	 * A DOMElement is float if he declares either
-	 * a left or right float
-	 */
-	public function isFloat():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.float) 
-		{
-			case FloatStyleValue.left, FloatStyleValue.right:
-				ret = true;
-			
-			case FloatStyleValue.none:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * An inline DOMElement is one that is
 	 * layout on a line. It will be placed
 	 * either next to the precending DOMElement
@@ -549,7 +667,7 @@ class AbstractStyle
 		
 		switch (this._computedStyle.display) 
 		{
-			case _inline, inlineBlock:
+			case inlineStyle, inlineBlock:
 				ret = true;
 			
 			default:
@@ -587,7 +705,7 @@ class AbstractStyle
 			case relative, absolute, fixed:
 				ret = true;
 			
-			case _static:
+			case staticStyle:
 				ret = false;
 		}
 		
@@ -617,12 +735,17 @@ class AbstractStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	public function getComputedStyle():ComputedStyleData
+	private function getFontMetricsData():FontMetricsData
+	{
+		return _fontMetrics;
+	}
+	
+	private function getComputedStyle():ComputedStyleData
 	{
 		return _computedStyle;
 	}
 	
-	public function getDOMElement():DOMElement
+	private function getDOMElement():DOMElement
 	{
 		return this._domElement;
 	}
@@ -652,7 +775,6 @@ class AbstractStyle
 		return _marginRight = value;
 	}
 	
-	
 	private function getMarginTop():MarginStyleValue 
 	{
 		return _marginTop;
@@ -663,7 +785,6 @@ class AbstractStyle
 		return _marginTop = value;
 	}
 	
-	
 	private function getMarginBottom():MarginStyleValue 
 	{
 		return _marginBottom;
@@ -673,7 +794,6 @@ class AbstractStyle
 	{
 		return _marginBottom = value;
 	}
-	
 	
 	private function getPaddingLeft():PaddingStyleValue 
 	{
@@ -746,7 +866,6 @@ class AbstractStyle
 		return _width = value;
 	}
 	
-	
 	private function getHeight():DimensionStyleValue 
 	{
 		return _height;
@@ -756,7 +875,6 @@ class AbstractStyle
 	{
 		return _height = value;
 	}
-	
 	
 	private function getMinHeight():ConstrainedDimensionStyleValue 
 	{
@@ -768,7 +886,6 @@ class AbstractStyle
 		return _minHeight = value;
 	}
 	
-	
 	private function getMaxHeight():ConstrainedDimensionStyleValue 
 	{
 		return _maxHeight;
@@ -779,7 +896,6 @@ class AbstractStyle
 		return _maxHeight = value;
 	}
 	
-	
 	private function getMinWidth():ConstrainedDimensionStyleValue 
 	{
 		return _minWidth;
@@ -789,7 +905,6 @@ class AbstractStyle
 	{
 		return _minWidth = value;
 	}
-	
 	
 	private function getMaxWidth():ConstrainedDimensionStyleValue 
 	{
@@ -810,7 +925,6 @@ class AbstractStyle
 	{
 		return _top = value;
 	}
-	
 	
 	private function getLeft():PositionOffsetStyleValue 
 	{
@@ -860,5 +974,145 @@ class AbstractStyle
 	private function setClear(value:ClearStyleValue):ClearStyleValue 
 	{
 		return _clear = value;
+	}
+	
+	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		return _fontSize = value;
+	}
+	
+	private function getFontSize():FontSizeStyleValue
+	{
+		return _fontSize;
+	}
+	
+	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		return _fontWeight = value;
+	}
+	
+	private function getFontWeight():FontWeightStyleValue
+	{
+		return _fontWeight;
+	}
+	
+	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		return _fontStyle = value;
+	}
+	
+	private function getFontStyle():FontStyleStyleValue
+	{
+		return _fontStyle;
+	}
+	
+	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		return _fontFamily = value;
+	}
+	
+	private function getFontFamily():Array<FontFamilyStyleValue>
+	{
+		return _fontFamily;
+	}
+	
+	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		return _fontVariant = value;
+	}
+	
+	private function getFontVariant():FontVariantStyleValue
+	{
+		return _fontVariant;
+	}
+	
+	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		return _textTransform = value;
+	}
+	
+	private function getTextTransform():TextTransformStyleValue
+	{
+		return _textTransform;
+	}
+	
+	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		return _letterSpacing = value;
+	}
+	
+	private function getLetterSpacing():LetterSpacingStyleValue
+	{
+		return _letterSpacing;
+	}
+	
+	private function setColor(value:ColorValue):ColorValue
+	{
+		return _color = value;
+	}
+	
+	private function getColor():ColorValue
+	{
+		return _color;
+	}
+	
+	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		return _wordSpacing = value;
+	}
+	
+	private function getWordSpacing():WordSpacingStyleValue
+	{
+		return _wordSpacing;
+	}
+	
+	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		return _lineHeight = value;
+	}
+	
+	private function getLineHeight():LineHeightStyleValue
+	{
+		return _lineHeight;
+	}
+	
+	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		return _verticalAlign = value;
+	}
+	
+	private function getVerticalAlign():VerticalAlignStyleValue
+	{
+		return _verticalAlign;
+	}
+	
+	private function getTextIndent():TextIndentStyleValue
+	{
+		return _textIndent;
+	}
+	
+	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	{
+		return _textIndent = value;
+	}
+	
+	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	{
+		return _whiteSpace = value;
+	}
+	
+	private function getWhiteSpace():WhiteSpaceStyleValue
+	{
+		return _whiteSpace;
+	}
+	
+	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	{
+		return _textAlign = value;
+	}
+	
+	private function getTextAlign():TextAlignStyleValue
+	{
+		return _textAlign;
 	}
 }

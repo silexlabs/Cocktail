@@ -21,7 +21,7 @@ import cocktail.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class PositionComputer 
+class DisplayStylesComputer 
 {
 	/**
 	 * Class contructor. Private, as
@@ -97,7 +97,7 @@ class PositionComputer
 			switch (style.display)
 			{
 				//for inline level value, default to block
-				case _inline, inlineBlock:
+				case inlineStyle, inlineBlock:
 					ret = DisplayStyleValue.block;
 				
 				//the value remains unchanged for other	
@@ -155,7 +155,7 @@ class PositionComputer
 	{
 		var ret:ClearStyleValue;
 		
-		if (computedDisplay == DisplayStyleValue._inline || computedDisplay == DisplayStyleValue.inlineBlock)
+		if (computedDisplay == DisplayStyleValue.inlineStyle || computedDisplay == DisplayStyleValue.inlineBlock)
 		{
 			ret = ClearStyleValue.none;
 		}

@@ -35,12 +35,12 @@ import cocktail.domElement.DOMElementData;
 
 class GraphicDOMElementTests 
 {
-	private static var rootDOMElement:DOMElement;
+	private static var rootDOMElement:ContainerDOMElement;
 	
 	public static function main()
 	{
 		
-		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
+		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
 		
 		var runner = new Runner();
 		runner.addCase(new GraphicDOMElementTests());
@@ -66,10 +66,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(200);
-		graphicDOMElement.setHeight(200);
-		graphicDOMElement.setX(0);
-		graphicDOMElement.setY(0);
+		graphicDOMElement.width = 200;
+		graphicDOMElement.height = 200;
+		graphicDOMElement.x = 0;
+		graphicDOMElement.y = 0;
 		
 		var colorStop:ColorStopData = { color:Std.parseInt("0xFF0000") , alpha:100 };
 		var fillStyle:FillStyleValue = monochrome(colorStop);
@@ -189,10 +189,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(150);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(200);
-		graphicDOMElement.setY(0);
+		graphicDOMElement.width = 150;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 200;
+		graphicDOMElement.y = 0;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -248,10 +248,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(400);
-		graphicDOMElement.setY(0);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 400;
+		graphicDOMElement.y = 0;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -287,10 +287,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(600);
-		graphicDOMElement.setY(0);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 600;
+		graphicDOMElement.y = 0;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -338,10 +338,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(20);
-		graphicDOMElement.setY(60);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 20;
+		graphicDOMElement.y = 60;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -403,10 +403,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(400);
-		graphicDOMElement.setY(100);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x  = 400;
+		graphicDOMElement.y = 100;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -447,10 +447,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(300);
-		graphicDOMElement.setY(100);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 300;
+		graphicDOMElement.y = 100;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -508,10 +508,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(50);
-		graphicDOMElement.setY(100);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 50;
+		graphicDOMElement.y = 100;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -593,10 +593,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(150);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(200);
-		graphicDOMElement.setY(200);
+		graphicDOMElement.width = 150;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 200;
+		graphicDOMElement.y = 200;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,
@@ -646,10 +646,10 @@ class GraphicDOMElementTests
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(100);
-		graphicDOMElement.setHeight(100);
-		graphicDOMElement.setX(0);
-		graphicDOMElement.setY(200);
+		graphicDOMElement.width = 100;
+		graphicDOMElement.height = 100;
+		graphicDOMElement.x = 0;
+		graphicDOMElement.y = 200;
 		
 		var cornerRadiuses:CornerRadiusData = {
 			tlCornerRadius:0,

@@ -22,7 +22,7 @@ import cocktail.geom.GeomData;
  * Stored the data raised by a mouse event
  */ 
 typedef MouseEventData = {
-	var mousePosition:MousePosition;
+	var mousePosition:MousePositionData;
 	
 	/**
 	 * represents the keyboard state
@@ -39,7 +39,7 @@ typedef MouseEventData = {
  * corner) and local (relative to the dom element
  * which triggered the mouse event top left corner)
  */
-typedef MousePosition = {
+typedef MousePositionData = {
 	var localX:Float;
 	var localY:Float;
 	var globalX:Float;
@@ -56,7 +56,7 @@ enum MouseCursorValue {
 	 * an image dom element. The hotSpot is the registration
 	 * point of the cursor.
 	 */
-	custom(imageDOMElement:DOMElement, hotSpot:Point);
+	custom(imageDOMElement:DOMElement, hotSpot:PointData);
 	
 	/**
 	 * Let the browser manage the mouse cursor

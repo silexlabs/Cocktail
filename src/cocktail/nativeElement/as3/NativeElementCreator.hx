@@ -17,6 +17,8 @@ import flash.display.Sprite;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.abstract.AbstractNativeElementCreator;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.TextBaseline;
 import flash.text.engine.TextElement;
 
 /**
@@ -62,7 +64,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 	
 	override public function createNativeTextNode(text:String):TextNode
 	{
-		return new TextElement(text);
+		return text;
 	}
 	
 }

@@ -8,10 +8,11 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
 
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 
 /**
@@ -26,7 +27,7 @@ import cocktail.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockEmbeddedBoxComputer extends BoxComputer
+class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 {
 
 	/**
@@ -42,7 +43,7 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var ret:Int = 0;
 		
@@ -81,7 +82,7 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 		else
 		{
 			//compute the used height
-			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementDimensions.height);
+			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedDOMElement.intrinsicRatio != null)
@@ -113,7 +114,7 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Int
+	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
@@ -132,7 +133,7 @@ class BlockEmbeddedBoxComputer extends BoxComputer
 		else
 		{
 			//compute the used value of 'width'
-			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementDimensions.height);
+			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//deduce theheight from the computed width and the intrinsic ratio if it is defined
 			if (embeddedDOMElement.intrinsicRatio != null)

@@ -84,7 +84,7 @@ class Mouse extends AbstractMouse
 		
 		//retrieve the position and keyboard state
 		//from flash event
-		var mousePosition:MousePosition = {
+		var mousePosition:MousePositionData = {
 			localX:typedEvent.localX,
 			localY:typedEvent.localY,
 			globalX:typedEvent.stageX,

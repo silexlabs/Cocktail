@@ -20,7 +20,8 @@ import cocktail.geom.GeomData;
 
 /**
  * This is the JavaScript implementation of the graphic DOMElement.
- * It draws shape programatically onto a native Canvas object
+ * It draws shape programatically onto an HTML Canvas element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class GraphicDOMElement extends AbstractGraphicDOMElement
@@ -69,7 +70,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	// are attributes of the Canvas tag and not styles
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		//when changing the width or height of a Canvas,
 		//its content is erased, 
@@ -83,12 +84,12 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		return value;
 	}
 	
-	override public function getWidth():Int 
+	override private function getWidth():Int 
 	{
 		return untyped Std.parseInt(this._nativeElement.width);
 	}
 	
-	override public function setHeight(value:Int):Int 
+	override private function setHeight(value:Int):Int 
 	{
 		//same as width, save the pixel data and put it back
 		var canvasContext:Dynamic = getContext();
@@ -98,7 +99,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		return value;
 	}
 	
-	override public function getHeight():Int 
+	override private function getHeight():Int 
 	{
 		return untyped Std.parseInt(this._nativeElement.height);
 	}
@@ -233,9 +234,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the canvas.
+	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:Point = null, sourceRect:Rectangle = null):Void
+	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
 	{
 		//init destination point and sourceRect if null
 		
@@ -384,7 +385,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 */
 	private function colorStopToRGBA(colorStop:ColorStopData):String
 	{
-		var rgb:RGB = hexToRGB(getHexColor(colorStop.color));
+		var rgb:RGBData = hexToRGB(getHexColor(colorStop.color));
 		return "rgba(" + rgb.red + "," + rgb.green + "," + rgb.blue + "," + toNativeAlpha(colorStop.alpha) + ")";
 	}
 	
@@ -408,12 +409,12 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 * Converts an hexadecimal to it's rgb representation
 	 * @return an RGB typedef, with 3 value ranging from 0 to 255
 	 */
-	private function hexToRGB(hex:String):RGB
+	private function hexToRGB(hex:String):RGBData
 	{
 		var hexCopy:String = hex;
 		
 		var hexCopy = hexCopy.substr(1);
-		var rgb:RGB = {
+		var rgb:RGBData = {
 			red: Std.parseInt("0x"+hexCopy.substr(0, 2)),
 			green: Std.parseInt("0x"+hexCopy.substr(2, 2)),
 			blue:Std.parseInt("0x"+hexCopy.substr(4,2))
