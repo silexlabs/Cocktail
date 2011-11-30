@@ -11,22 +11,22 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.domElement;
 
 /**
- * Set the right runtime specific TextLineDOMElement at compile-time
+ * Set the right runtime specific TextFragmentDOMElement at compile-time
  */
 #if flash9
-typedef TextLineDOMElement =  cocktail.domElement.as3.TextLineDOMElement;
+typedef TextFragmentDOMElement =  cocktail.domElement.as3.TextFragmentDOMElement;
 
 #elseif js
-typedef TextLineDOMElement =  cocktail.domElement.js.TextLineDOMElement;
+typedef TextFragmentDOMElement =  cocktail.domElement.js.TextFragmentDOMElement;
 
 #elseif php
-typedef TextLineDOMElement =  cocktail.domElement.php.TextLineDOMElement;
+typedef TextFragmentDOMElement =  cocktail.domElement.php.TextFragmentDOMElement;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class TextLineDOMElement extends cocktail.domElement.abstract.AbstractTextLineDOMElement { }
+class TextFragmentDOMElement extends cocktail.domElement.abstract.AbstractTextFragmentDOMElement { }
 
 #end

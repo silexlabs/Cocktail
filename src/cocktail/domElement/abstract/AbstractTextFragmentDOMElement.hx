@@ -31,7 +31,7 @@ import cocktail.domElement.js.DOMElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractTextLineDOMElement extends DOMElement
+class AbstractTextFragmentDOMElement extends DOMElement
 {
 	/**
 	 * Class constructor. Unlike other DOMElements, this
