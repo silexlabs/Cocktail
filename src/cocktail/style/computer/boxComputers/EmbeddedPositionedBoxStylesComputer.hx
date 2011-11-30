@@ -8,21 +8,19 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.js;
-
-import cocktail.domElement.DOMElement;
-import cocktail.style.abstract.AbstractTextStyle;
-
-
-
+package cocktail.style.computer.boxComputers;
+import cocktail.style.computer.BoxStylesComputer;
 /**
  * ...
  * @author Yannick DOMINGUEZ
  */
-class TextStyle extends AbstractTextStyle
+
+class EmbeddedPositionedBoxStylesComputer extends BoxStylesComputer
 {
-	public function new(domElement:DOMElement) 
+
+	public function new() 
 	{
-		super(domElement);
+		super();
 	}
+	
 }

@@ -45,7 +45,7 @@ class AbstractMouseCursor
 	/**
 	 * Set the mouse cursor display. Actual implementation is in the subclasses
 	 */
-	public function setNativeMouseCursor(value:MouseCursorValue):MouseCursorValue
+	private function setNativeMouseCursor(value:MouseCursorValue):MouseCursorValue
 	{
 		_nativeMouseCursor = value;
 		
@@ -77,7 +77,7 @@ class AbstractMouseCursor
 	/**
 	 * get the current mouse display
 	 */
-	public function getNativeMouseCursor():MouseCursorValue
+	private function getNativeMouseCursor():MouseCursorValue
 	{
 		return _nativeMouseCursor;
 	}

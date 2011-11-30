@@ -8,14 +8,15 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
+import cocktail.style.computer.BoxStylesComputer;
 
 /**
  * ...
  * @author Yannick DOMINGUEZ
  */
 
-class InlineBlockBoxComputer extends BoxComputer
+class InlineBlockBoxStylesComputer extends BoxStylesComputer
 {
 
 	public function new() 

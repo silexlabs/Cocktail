@@ -8,9 +8,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
 
 import cocktail.style.abstract.AbstractStyle;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -18,7 +19,7 @@ import haxe.Log;
  * ...
  * @author Yannick DOMINGUEZ
  */
-class PositionedBoxComputer extends BoxComputer
+class PositionedBoxStylesComputer extends BoxStylesComputer
 {
 
 	public function new() 
@@ -27,9 +28,9 @@ class PositionedBoxComputer extends BoxComputer
 	}
 	
 
-	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementDimensions:ContainingDOMElementDimensions):Void
+	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		super.measurePositionOffsets(style, containingDOMElementDimensions);
+		super.measurePositionOffsets(style, containingDOMElementData);
 		
 		if (style.width == DimensionStyleValue.auto)
 		{
@@ -38,7 +39,7 @@ class PositionedBoxComputer extends BoxComputer
 			{
 				
 				var computedStyle:ComputedStyleData = style.computedStyle;
-				style.computedStyle.width = containingDOMElementDimensions.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.marginLeft - computedStyle.marginRight; 
+				style.computedStyle.width = containingDOMElementData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.marginLeft - computedStyle.marginRight; 
 
 			}
 		}
@@ -48,7 +49,7 @@ class PositionedBoxComputer extends BoxComputer
 			if (style.top != PositionOffsetStyleValue.auto && style.bottom != PositionOffsetStyleValue.auto)
 			{
 				var computedStyle:ComputedStyleData = style.computedStyle;
-				style.computedStyle.height = containingDOMElementDimensions.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
+				style.computedStyle.height = containingDOMElementData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
 
 			}
 		}

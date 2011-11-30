@@ -1,79 +1,112 @@
-package cocktail.style;
+/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
 
+Silex is © 2010-2011 Silex Labs and is released under the GPL License:
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+package cocktail.style;
+import cocktail.domElement.DOMElement;
+import cocktail.unit.UnitData;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Represents the width and height of a DOMElement's
-	 * parent content, into which it can be placed
+	 * Represents the width, height of a DOMElement's
+	 * parent content, and it's global position, relative
+	 * to the root DOMElement.
+	 * Specify for each dimension if it is 'auto', 
+	 * meaning it depends on its content
 	 */
-	typedef ContainingDOMElementDimensions = {
+	typedef ContainingDOMElementData = {
 		var width:Int;
+		var isWidthAuto:Bool;
 		var height:Int;
-	}
-	
-	/**
-	 * Represents the dimensions of a DOMElement used
-	 * as origin when positioning an absolutely
-	 * positioned DOMElelement
-	 */
-	typedef AbsolutelyPositionedContainingDOMElementDimensions = {
+		var isHeightAuto:Bool;
 		var globalX:Int;
 		var globalY:Int;
-		var width:Int;
-		var height:Int;
 	}
 	
 	/**
 	 * Stores all the computed styles
 	 * of a DOMElement as they are 
-	 * used multiple times when appliying
+	 * used multiple times when applying
 	 * styles
 	 */
 	typedef ComputedStyleData = {
 		
 		/**
-		 * content width
+		 * content dimensions
 		 */
 		var width:Int;
-		
-		var minWidth:Int;
-		
-		var maxWidth:Int;
-		
-		/**
-		 * content height
-		 */
 		var height:Int;
 		
+		/**
+		 * content dimensions constraints
+		 */
+		var minWidth:Int;
+		var maxWidth:Int;
 		var maxHeight:Int;
-		
 		var minHeight:Int;
 		
+		/**
+		 * margins
+		 */
 		var marginLeft:Int;
 		var marginRight:Int;
 		var marginTop:Int;
 		var marginBottom:Int;
+		
+		/**
+		 * paddings
+		 */
 		var paddingLeft:Int;
 		var paddingRight:Int;
 		var paddingTop:Int;
 		var paddingBottom:Int;
+		
+		/**
+		 * position offset
+		 */
 		var left:Int;
 		var right:Int;
 		var top:Int;
 		var bottom:Int;
 		
+		/**
+		 * display
+		 */
 		var display:DisplayStyleValue;
-		
 		var float:FloatStyleValue;
-		
 		var clear:ClearStyleValue;
-		
 		var position:PositionStyleValue;
+		var lineHeight:Float;
 		
-		var verticalAlign:Int;
+		/**
+		 * font
+		 */
+		var fontSize:Float;
+		var fontWeight:FontWeightStyleValue;
+		var fontStyle:FontStyleStyleValue;
+		var fontFamily:Array<FontFamilyStyleValue>;
+		var fontVariant:FontVariantStyleValue;
+		
+		/**
+		 * text
+		 */
+		var textTransform:TextTransformStyleValue;
+		var letterSpacing:Int;
+		var verticalAlign:Float;
+		var wordSpacing:Int;
+		var textIndent:Int;
+		var whiteSpace:WhiteSpaceStyleValue;
+		var textAlign:TextAlignStyleValue;
+		var color:Int;
 		
 	}
 	
@@ -94,21 +127,17 @@ package cocktail.style;
 		 */
 		var y:Int;
 		
-		var firstLineX:Int;
-		
-		var firstLineY:Int;
-		
-		var maxLineWidth:Int;
-		
-		var containingBlockWidth:Int;
-		
-		var containingBlockHeight:Int;
+		/**
+		 * The x offset applied to each starting line
+		 * (matches the containing DOMElement left padding)
+		 */
+		var xOffset:Int;
 		
 		/**
-		 * The height of highest DOMElement in the current line
-		 * (includes paddings and margins)
+		 * The y offset applied to the formatting context
+		 * (matches the containing DOMElement top padding)
 		 */
-		var maxLineHeight:Int;
+		var yOffset:Int;
 		
 		/**
 		 * The accumulated height of all the in flow DOMElements
@@ -139,9 +168,391 @@ package cocktail.style;
 		var height:Int;
 	}
 	
+	/**
+	 * Given a font family and a font size
+	 * provided by the DOMElement's styles, 
+	 * this structures return metrics info
+	 * on the font
+	 */
+	typedef FontMetricsData = {
+		
+		/**
+		 * The font size of 
+		 * the DOMElement, in pixels
+		 */
+		var fontSize:Float;
+		
+		/**
+		 * A characteristic height
+		 * of the font above the 
+		 * baseline defined by
+		 * the font creator. This is a metric
+		 * for the font has a whole, 
+		 * not specific to any glyphs
+		 */
+		var ascent:Int;
+		
+		/**
+		 * A characteristic height
+		 * of the font below the 
+		 * baseline defined by
+		 * the font creator. This is a metric
+		 * for the font has a whole, 
+		 * not specific to any glyphs
+		 */
+		var descent:Int;
+		
+		/**
+		 * This is a standard metrics used 
+		 * to define a font size. Represents
+		 * the height of a lowercase "x" glyph
+		 * at the given font size
+		 */ 
+		var xHeight:Int;
+		
+		/**
+		 * A suggested offset to apply
+		 * from the baseline for subscript
+		 * glyphs
+		 */
+		var subscriptOffset:Int;
+		
+		/**
+		 * A suggested offset to apply
+		 * from the baseline for superscript
+		 * glyphs
+		 */
+		var superscriptOffset:Int;
+		
+		/**
+		 * A suggested offset to apply from
+		 * the baseline when drawing underlines
+		 */
+		var underlineOffset:Int;
+	}
+	
+	/**
+	 * Defines a DOMElement added to a LineBox
+	 * and its type
+	 */
+	typedef LineBoxElementData = {
+		var domElement:DOMElement;
+		var domElementType:InlineBoxValue;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lists all the different consituant
+	 * of a plain text, including 
+	 * controls characters
+	 */
+	enum TextFragmentValue {
+		
+		/**
+		 * a word, surrounded by
+		 * spaces
+		 */
+		word(value:String);
+		
+		/**
+		 * represents one
+		 * space which can be 
+		 * between 2 words or among
+		 * a space sequence
+		 */
+		space;
+		
+		/**
+		 * a tabulation
+		 */
+		tab;
+		
+		/**
+		 * a line feed (starts
+		 * a new line)
+		 */
+		lineFeed;
+	}
+	
+	/**
+	 * Lists the different kind of
+	 * boxes that can be added in an
+	 * inline formatting context.
+	 * 
+	 * Spaces and tabs are separated
+	 * from other domElement as they
+	 * can influence a linebox layout
+	 * once it is complete
+	 */
+	enum InlineBoxValue {
+		domElement;
+		space;
+		tab;
+	}
+	
+	
+		// FONT STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Controls the em box size
+	 * of a font.
+	 */
+	enum FontSizeStyleValue {
+		
+		/**
+		 * absolute font size
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage of the containing block
+		 * font size
+		 */
+		percentage(value:Int);
+		
+		/**
+		 * use a keyword indexed to a specified dimension.
+		 * For instance in a desktop browser, an absolute
+		 * size of medium maps to 16 pixels.
+		 */
+		absoluteSize(value:FontSizeAbsoluteSizeValue);
+		
+		/**
+		 * Define if the font should be larger or smaller
+		 * than its parent's font. The closest absolute
+		 * size is determined using the parent computed
+		 * font size and this absolute size is used as
+		 * the font size
+		 */
+		relativeSize(value:FontSizeRelativeSizeValue);
+		
+		
+	}
+	
+	/**
+	 * Controls the weight of the
+	 * font
+	 */
+	enum FontWeightStyleValue {
+		normal;
+		bold;
+	}
+	
+	/**
+	 * Controls wether the font
+	 * is displayed in italic
+	 */
+	enum FontStyleStyleValue {
+		normal;
+		italic;
+	}
+	
+	/**
+	 * Lists the type of font which can
+	 * be affected to a text 
+	 */
+	enum FontFamilyStyleValue {
+		
+		/**
+		 * A custom font family name
+		 */
+		familyName(name:String);
+		
+		/**
+		 * A generic family name, most
+		 * likely used as a fallback
+		 * if a more specific font 
+		 * wasn't available
+		 */
+		genericFamily(genericName:GenericFontFamilyValue);
+	}
+	
+	/**
+	 * Lists the available generic 
+	 * font families
+	 */
+	enum GenericFontFamilyValue {
+		serif;
+		sansSerif;
+		monospace;
+	}
+	
+	/**
+	 * Controls wether text is
+	 * displayed as small caps, where
+	 * lowercase charachters look like
+	 * smaller uppercase characters
+	 */
+	enum FontVariantStyleValue {
+		normal;
+		smallCaps;
+	}
+	
+		// TEXT STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Controls how white space inside
+	 * a DOMElement is handled
+	 */
+	enum WhiteSpaceStyleValue {
+		
+		/**
+		 * This value directs user agents to collapse sequences
+		 * of white space, and break lines as necessary to fill line boxes.
+		 */
+		normal;
+		
+		/**
+		 * This value prevents user agents from collapsing
+		 * sequences of white space. Lines are only broken at
+		 * preserved newline characters.
+		 */
+		pre;
+		
+		/**
+		 * This value collapses white space as for 'normal',
+		 * but suppresses line breaks within text.
+		 */
+		nowrap;
+		
+		/**
+		 * This value prevents user agents from collapsing sequences
+		 * of white space. Lines are broken at preserved newline
+		 * characters, and as necessary to fill line boxes.
+		 */
+		preWrap;
+		
+		/**
+		 * This value directs user agents to collapse sequences of white space.
+		 * Lines are broken at preserved newline characters,
+		 * and as necessary to fill line boxes.
+		 */
+		preLine;
+	}
+	
+	/**
+	 * Controls the amount of space
+	 * between 2 letter in a text.
+	 */
+	enum LetterSpacingStyleValue {
+		/**
+		 * Use the default spacing of
+		 * the chosen font
+		 */
+		normal;
+		
+		/**
+		 * A length to add to the 
+		 * default spacing of the font,
+		 * might be negative.
+		 */
+		length(value:LengthValue);
+	}
+	
+	/**
+	 * Controls the amount of space between
+	 * two words in a text
+	 */
+	enum WordSpacingStyleValue {
+		
+		/**
+		 * Use the default inter-word
+		 * spacing of the chosen font
+		 */
+		normal;
+		
+		/**
+		 * A length to add to each space
+		 * character, might be negative
+		 */
+		length(value:LengthValue);
+	}
+	
+	/**
+	 * Controls the indentation of the
+	 * first line of text in a block of text
+	 * with respect to the containing block
+	 */
+	enum TextIndentStyleValue {
+		
+		/**
+		 * An absolute value for the text indentation
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage of the containing block
+		 * width
+		 */
+		percentage(value:Int);
+	}
+	
+	/**
+	 * Controls how inline DOMElement inside
+	 * a block container is aligned
+	 */
+	enum TextAlignStyleValue {
+		left;
+		right;
+		center;
+		justify;
+	}
+	
+	/**
+	 * Controls wether all charachters
+	 * in a text are transformed to
+	 * uppercase, lowercase or capitalised
+	 * (only first letter of each word is
+	 * set to uppercase)
+	 */
+	enum TextTransformStyleValue {
+		capitalize;
+		uppercase;
+		lowercase;
+		none;
+	}
+	
+	/**
+	 * On a container DOMElement with inline level
+	 * children, this style controls the minimum height
+	 * of each line 
+	 * 
+	 * On a non-embedded inline DOMElement, it controls
+	 * the height of the DOMElement, used to calculate
+	 * its line height
+	 */
+	enum LineHeightStyleValue {
+		
+		/**
+		 * Use a "reasonnable" line height value which
+		 * is equal to the font size.
+		 */
+		normal;
+		
+		/**
+		 * With this value, the computed value of the line height 
+		 * is equal to this number multiplied by the font size
+		 */
+		number(value:Float);
+		
+		/**
+		 * absolute line height value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * With this value, the computed value of the line height 
+		 * is equal to this percentage multiplied by the font size
+		 */
+		percentage(value:Int);
+		
+		
+	}
 	
 	/**
 	 * Controls the vertical alignement of an 
@@ -167,8 +578,11 @@ package cocktail.style;
 		/**
 		 * Raise the baseline of the box to the proper 
 		 * position for superscripts of the parent's box.
+		 * 
+		 * n.b: appended 'Style' to 'super' because 'super'
+		 * is a reserved HaXe word
 		 */
-		_super;
+		superStyle;
 		
 		/**
 		 * Align the top of the aligned subtree with 
@@ -218,6 +632,9 @@ package cocktail.style;
 		
 	}
 	
+		// BOX STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Dimensions values for margin thickness
 	 */
@@ -259,13 +676,42 @@ package cocktail.style;
 	}
 	
 	/**
+	 * The dimension of the content of 
+	 * a DOMElement (without margins 
+	 * and paddings)
+	 */
+	enum DimensionStyleValue {
+		
+		/**
+		 * absolute value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * relative the parent DOMElement
+		 * dimensions
+		 */
+		percent(value:Int);
+		
+		/**
+		 * takes the remaining space in
+		 * the parent element width or 
+		 * height
+		 */
+		auto;
+	}
+	
+		// DISPLAY STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
 	 * Display of a DOMElement in a 
 	 * DOMElements flow
 	 */
 	enum DisplayStyleValue {
 		
 		/**
-		 * add a line break before
+		 * add a line break before 
 		 * and after the DOMElement. Act
 		 * as a box with margins, paddings
 		 * and dimensions
@@ -280,10 +726,14 @@ package cocktail.style;
 		
 		/**
 		 * Displayed on the current line. 
-		 * Doesn't have block's attributes
-		 * such as margins, paddings...
+		 * Can only have horizontal margins
+		 * and paddings
+		 * 
+		 * n.b : appended 'Style' to 'inline'
+		 * because inline is a reserved HaXe 
+		 * word
 		 */
-		_inline;
+		inlineStyle;
 		
 		/**
 		 * The DOMElement isn't displays
@@ -324,8 +774,11 @@ package cocktail.style;
 		 * Appear after its parent in the flow, on a
 		 * new line or the current one based on its
 		 * display
+		 * 
+		 * n.b: appended 'Style' to 'static' because
+		 * 'static' is a reserved HaXe word
 		 */
-		_static;
+		staticStyle;
 		
 		/**
 		 * same as static but an offset can be applied
@@ -375,31 +828,6 @@ package cocktail.style;
 		auto;
 	}
 	
-	/**
-	 * The dimension of the content of 
-	 * a DOMElement (without margins 
-	 * and paddings)
-	 */
-	enum DimensionStyleValue {
-		
-		/**
-		 * absolute value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * relative the parent DOMElement
-		 * dimensions
-		 */
-		percent(value:Int);
-		
-		/**
-		 * takes the remaining space in
-		 * the parent element width or 
-		 * height
-		 */
-		auto;
-	}
 	
 	/**
 	 * The constraint applied to the content
@@ -423,43 +851,4 @@ package cocktail.style;
 		 * No constraint is enforced
 		 */
 		none;
-	}
-	
-	/**
-	 * Lists the different types of 
-	 * unit supported with an explicitly
-	 * set length such as px, cm, em...
-	 */
-	enum LengthValue {
-		
-		/**
-		 * pixel, 1px is equal to 0.75pt.
-		 */
-		px(value:Float);
-		
-		/**
-		 * centimeters
-		 */
-		cm(value:Float);
-		
-		/**
-		 * millimeters
-		 */
-		mm(value:Float);
-		
-		/**
-		 * points, the points
-		 * are equal to 1/72nd of 1in. 
-		 */
-		pt(value:Float);
-		
-		/**
-		 * picas, 1pc is equal to 12pt.
-		 */
-		pc(value:Float);
-		
-		/**
-		 * inches, 1in is equal to 2.54cm.
-		 */
-		_in(value:Float);
 	}

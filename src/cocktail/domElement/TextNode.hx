@@ -14,7 +14,7 @@ package cocktail.domElement;
  * Set the right runtime specific TextNode at compile-time
  */
 #if flash9
-typedef TextNode =  flash.text.engine.TextElement;
+typedef TextNode =  String;
 
 #elseif js
 import js.Dom;

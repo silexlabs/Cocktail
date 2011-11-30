@@ -8,20 +8,25 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.as3;
-
-import cocktail.domElement.DOMElement;
-import cocktail.style.abstract.AbstractStyle;
-import cocktail.style.abstract.AbstractTextStyle;
+package cocktail.domElement;
 
 /**
- * ...
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific TextLineDOMElement at compile-time
  */
-class TextStyle extends AbstractTextStyle
-{
-	public function new(domElement:DOMElement) 
-	{
-		super(domElement);
-	}
-}
+#if flash9
+typedef TextLineDOMElement =  cocktail.domElement.as3.TextLineDOMElement;
+
+#elseif js
+typedef TextLineDOMElement =  cocktail.domElement.js.TextLineDOMElement;
+
+#elseif php
+typedef TextLineDOMElement =  cocktail.domElement.php.TextLineDOMElement;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class TextLineDOMElement extends cocktail.domElement.abstract.AbstractTextLineDOMElement { }
+
+#end

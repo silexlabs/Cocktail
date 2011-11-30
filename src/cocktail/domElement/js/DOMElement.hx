@@ -39,18 +39,12 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	/**
-	 * Set the domElement properties which can be retrieved
+	 * Set the DOMElement properties which can be retrieved
 	 * from the native HTML DOM element
 	 */
 	override private function init():Void
 	{
 		super.init();
-		
-		//all DOMElements are positioned as absolute to prevent most
-		//of browsers inconsistencies regarding margin/padding. 
-		//Margin, padding , floating... concepts will be abstracted
-		
-		_nativeElement.style.position = "absolute";
 		
 		if (_nativeElement.style.width != null)
 		{
@@ -76,28 +70,6 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public method to manipulate the DOM
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attaches this domElement NativeElement (an HTML element) to its
-	 * parent NativeElement
-	 */
-	override public function attach():Void
-	{
-		this._parent.nativeElement.appendChild(this._nativeElement);
-	}
-	
-	/**
-	 * Detaches this domElement NativeElement (an HTML element) from its
-	 * parent NativeElement
-	 */
-	override public function detach():Void
-	{
-		this._parent.nativeElement.removeChild(this._nativeElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the dom element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -105,7 +77,7 @@ class DOMElement extends AbstractDOMElement
 	 * Show or hide the native HTML element. 
 	 * @param	value true if the element must be visible
 	 */
-	override public function setIsVisible(value:Bool):Bool
+	override private function setIsVisible(value:Bool):Bool
 	{
 		//set the right visibility CSS property value
 		if (value == true)
@@ -123,7 +95,7 @@ class DOMElement extends AbstractDOMElement
 	/**
 	 * Return wether the native HTML element is visible.
 	 */
-	override public function getIsVisible():Bool
+	override private function getIsVisible():Bool
 	{
 		if (this._nativeElement.style.visibility == "visible")
 		{
@@ -139,7 +111,7 @@ class DOMElement extends AbstractDOMElement
 	 * Set the opacity of the HTML element
 	 * @param	value from 0 (transparent) to 1 (opaque)
 	 */
-	override public function setAlpha(value:Float):Float
+	override private function setAlpha(value:Float):Float
 	{
 		super.setAlpha(value);
 		untyped this._nativeElement.style.opacity = value;
@@ -150,7 +122,7 @@ class DOMElement extends AbstractDOMElement
 	 * return the opacity of the HTML element, 
 	 * from 0 to 1
 	 */ 
-	override public function getAlpha():Float
+	override private function getAlpha():Float
 	{
 		return untyped Std.parseFloat(this._nativeElement.style.opacity);
 	}
@@ -165,12 +137,12 @@ class DOMElement extends AbstractDOMElement
 	 * HTML DOM native element
 	 * @param	matrix
 	 */
-	override public function setMatrix(matrix:Matrix):Matrix
+	override private function setMatrix(matrix:Matrix):Matrix
 	{
 		super.setMatrix(matrix);
 		
 		//get the data of the cross-platform matrix
-		var matrixData:MatrixData = matrix.getMatrixData();
+		var matrixData:MatrixData = matrix.data;
 		
 		//report the data to number with 2 decimal
 		//as number with too much decimal prevent
@@ -221,7 +193,7 @@ class DOMElement extends AbstractDOMElement
 	// set the following attributes : x,y,width,height
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setX(value:Int):Int 
+	override private function setX(value:Int):Int 
 	{
 		super.setX(value);
 		
@@ -229,21 +201,21 @@ class DOMElement extends AbstractDOMElement
 		return this._x;
 	}
 	
-	override public function setY(value:Int):Int 
+	override private function setY(value:Int):Int 
 	{
 		super.setY(value);
 		this._nativeElement.style.top = value + "px";
 		return this._y;
 	}
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
 		this._nativeElement.style.width = value +"px";
 		return this._width;
 	}
 	
-	override public function setHeight(value:Int):Int 
+	override private function setHeight(value:Int):Int 
 	{
 		super.setHeight(value);
 		this._nativeElement.style.height = value + "px";
@@ -252,7 +224,7 @@ class DOMElement extends AbstractDOMElement
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z order in the publication
+	// Setter/Getter to manipulate a nativeElement z order in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -262,7 +234,7 @@ class DOMElement extends AbstractDOMElement
 	 * they are incremented
 	 * @param	value the z index to set
 	 */
-	override public function setZIndex(value:Int):Int 
+	override private function setZIndex(value:Int):Int 
 	{
 		//if the z-index is outside of the children range, 
 		//set it as the last z-index of the range
@@ -322,7 +294,7 @@ class DOMElement extends AbstractDOMElement
 		return value;
 	}
 	
-	override public function getZIndex():Int 
+	override private function getZIndex():Int 
 	{
 		return this._nativeElement.style.zIndex;
 	}

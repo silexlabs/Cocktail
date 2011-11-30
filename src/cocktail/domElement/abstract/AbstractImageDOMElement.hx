@@ -86,24 +86,24 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function getSrc():String
+	private function getSrc():String
 	{
 		return this._src;
 	}
 	
-	public function setSrc(value:String):String
+	private function setSrc(value:String):String
 	{
 		this._src = value;
 		return value;
 	}
 	
-	public function setSmooth(value:Bool):Bool
+	private function setSmooth(value:Bool):Bool
 	{
 		this._smooth = value;
 		return value;
 	}
 	
-	public function getSmooth():Bool
+	private function getSmooth():Bool
 	{
 		return this._smooth;
 	}
