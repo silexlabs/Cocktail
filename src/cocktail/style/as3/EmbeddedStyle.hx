@@ -15,7 +15,10 @@ import cocktail.style.abstract.AbstractEmbeddedStyle;
 import cocktail.style.abstract.AbstractStyle;
 
 /**
- * ...
+ * This is the Flash AS3 implementation of the EmbeddedStyle.
+ * 
+ * Only present to allow compilation
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedStyle extends AbstractEmbeddedStyle

@@ -22,7 +22,6 @@ package domElement;
 
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.TextDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.abstract.AbstractDOMElement;
@@ -244,10 +243,10 @@ class DOMElementTests
 		//test with a graphic dom element to easily have a background
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(nativeDOMElement);
 		
-		graphicDOMElement.setWidth(200);
-		graphicDOMElement.setHeight(200);
-		graphicDOMElement.setX(0);
-		graphicDOMElement.setY(100);
+		graphicDOMElement.width = 200;
+		graphicDOMElement.height = 200;
+		graphicDOMElement.x = 0;
+		graphicDOMElement.y = 100;
 		
 		var colorStop:ColorStopData = { color:Std.parseInt("0xFF0000") , alpha:100 };
 		var fillStyle:FillStyleValue = monochrome(colorStop);
@@ -269,14 +268,14 @@ class DOMElementTests
 		
 		rootDOMElement.addChild(graphicDOMElement);
 		
-		graphicDOMElement.setIsVisible(false);
-		Assert.equals(graphicDOMElement.getIsVisible(), false);
+		graphicDOMElement.isVisible = false;
+		Assert.equals(graphicDOMElement.isVisible, false);
 		
-		graphicDOMElement.setIsVisible(true);
-		Assert.equals(graphicDOMElement.getIsVisible(), true);
+		graphicDOMElement.isVisible = true ;
+		Assert.equals(graphicDOMElement.isVisible, true);
 		
-		graphicDOMElement.setAlpha(0.5);
-		Assert.equals(graphicDOMElement.getAlpha(), 0.5);
+		graphicDOMElement.alpha = 0.5;
+		Assert.equals(graphicDOMElement.alpha, 0.5);
 	}
 	
 	/**
@@ -398,15 +397,15 @@ class DOMElementTests
 		#end
 		
 		//set the width/height and position of the DOMElement
-		childDOMElement1.setWidth(100);
-		childDOMElement1.setHeight(100);
-		childDOMElement2.setWidth(100);
-		childDOMElement2.setHeight(100);
-		childDOMElement3.setWidth(100);
-		childDOMElement3.setHeight(100);
+		childDOMElement1.width = 100;
+		childDOMElement1.height = 100;
+		childDOMElement2.width  = 100;
+		childDOMElement2.height = 100;
+		childDOMElement3.width = 100;
+		childDOMElement3.height = 100;
 		
-		childDOMElement2.setX(50);
-		childDOMElement3.setX(80);
+		childDOMElement2.x = 50;
+		childDOMElement3.x = 80;
 		
 		//then add them to the parent node
 		parentDOMElement.addChild(childDOMElement1);
@@ -414,16 +413,16 @@ class DOMElementTests
 		parentDOMElement.addChild(childDOMElement3);
 		
 		//check the default z-order set when the domElement is tested
-		Assert.equals(1, childDOMElement2.getZIndex());
+		Assert.equals(1, childDOMElement2.zIndex);
 		
 		//check z-order manipulation and coherence with another
 		//domElement z-index
-		childDOMElement2.setZIndex(0);
-		Assert.equals(1, childDOMElement1.getZIndex());
+		childDOMElement2.zIndex = 0;
+		Assert.equals(1, childDOMElement1.zIndex);
 		
 		//check out of range z-index
-		childDOMElement1.setZIndex(999);
-		Assert.equals(2, childDOMElement1.getZIndex());
+		childDOMElement1.zIndex = 999;
+		Assert.equals(2, childDOMElement1.zIndex);
 		
 	}
 	
@@ -484,33 +483,9 @@ class DOMElementTests
 		
 		rootDOMElement.addChild(containerDomObject);
 		
-		containerDomObject.setSemantic("nav");
+		containerDomObject.semantic = "nav";
 		
-		Assert.same(containerDomObject.getSemantic(), "nav");
-	}
-	
-	/**
-	 * Test the text dom element specific method
-	 */
-	public function testTextDOMElement()
-	{
-		#if flash9
-		var textDomObject:TextDOMElement = new TextDOMElement(new Sprite());
-		#elseif js
-		var textDomObject:TextDOMElement = new TextDOMElement();
-		#elseif php
-		var textDomObject:TextDOMElement = new TextDOMElement(Xml.createElement('div'));
-		#end
-		
-		var textContainer:ContainerDOMElement = new ContainerDOMElement();
-		rootDOMElement.addChild(textContainer);
-		textContainer.addChild(textDomObject);
-		textDomObject.appendText(NativeElementManager.createNativeTextNode("test html text"));
-		textDomObject.appendText(NativeElementManager.createNativeTextNode("tes2"));
-		
-		//textDomObject.setWidth(500);
-		
-	//	Assert.same(textDomObject.getText(), "<h1>test html text</h1>");
+		Assert.same(containerDomObject.semantic, "nav");
 	}
 	
 }

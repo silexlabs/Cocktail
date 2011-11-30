@@ -11,6 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -22,8 +23,8 @@ import cocktail.domElement.abstract.AbstractContainerDOMElement;
  * This is the JavaScript implementation of the container DOMElement.
  * 
  * When it's semantic is set, it adds the JavaScript specific behaviour
- * of changing the root node type of the reference to the native DOM
- * by setting it's name
+ * of changing the root node type of the reference to the nativeElement
+ * by setting it's node name
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -43,17 +44,49 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden to set the CSS z-index of the newly attached children
-	 * @param	domElement the html element to add to this
+	 * Overriden to attach the native HTML element to the HTML DOM and
+	 * to set the CSS z-index of the newly attached children
+	 * @param	domElement the html element to add to this container
 	 */
 	override public function addChild(domElement:DOMElement):Void
 	{
 		super.addChild(domElement);
-		
+		this._nativeElement.appendChild(domElement.nativeElement);
 		//intialise z-index on the DOMElement, as it is null by default in JavaScript
 		domElement.nativeElement.style.zIndex = _children.length - 1;
 	}
 	
+	/**
+	 * Overriden to remove the native HTML element from
+	 * the HTML DOM
+	 * @param domElement the html element to remove from this container
+	 */
+	override public function removeChild(domElement:DOMElement):Void
+	{
+		super.removeChild(domElement);
+		this._nativeElement.removeChild(domElement.nativeElement);
+	}
+	
+	/**
+	 * Overriden to append the text node to the HTML element of this container
+	 * @param	text the text node to append
+	 */
+	override public function addText(text:TextNode):Void
+	{
+		super.addText(text);
+		this.nativeElement.appendChild(text);
+	}
+	
+	/**
+	 * Overriden to remove the text node from the HTML element of this
+	 * container
+	 * @param	text the text node to remove
+	 */
+	override public function removeText(text:TextNode):Void
+	{
+		super.removeText(text);
+		this._nativeElement.removeChild(text);
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden Semantic method
@@ -61,10 +94,10 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	
 	/**
 	 * Set the semantic of this DOMElement and set it as the node name
-	 * of the root tag of the native DOMElement (which is an HTML tag)
+	 * of the root tag of the nativeElement (which is an HTML tag)
 	 * @param	semantic the new node name
 	 */
-	override public function setSemantic(semantic:String):String
+	override private function setSemantic(semantic:String):String
 	{
 		super.setSemantic(semantic);
 		

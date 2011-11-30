@@ -8,19 +8,19 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
-import cocktail.domElement.EmbeddedDOMElement;
+package cocktail.style.computer.boxComputers;
+
 import cocktail.style.abstract.AbstractStyle;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
-import haxe.Log;
+import cocktail.unit.UnitManager;
+
 
 /**
  * ...
  * @author Yannick DOMINGUEZ
  */
-class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
+class InLineBoxStylesComputer extends BoxStylesComputer
 {
 	private static var NULL:Int = -1;
 
@@ -29,7 +29,7 @@ class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
 		super();
 	}
 	
-	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, isHorizontalMargin:Bool = false ):Int
+	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
 	{
 		//the return value
 		var computedMargin:Int;
@@ -40,7 +40,7 @@ class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedMargin = getValueFromLength(value);
+				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension
 			case percent(value): 
@@ -52,7 +52,7 @@ class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
 				}
 				else
 				{
-					computedMargin = getValueFromPercent(value, containingDOMElementDimension);
+					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				}
 			
 			case auto:	
@@ -61,5 +61,17 @@ class InlineEmbeddedBoxComputer extends BlockEmbeddedBoxComputer
 		
 		return computedMargin;
 	}
+	
+	override private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	{
+		return 0;
+	}
+	
+	override private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	{
+		//TO DO, should be based on font size, but to do it for multi-line ? Should be set during layout ? (probably)
+		return 0;
+	}
+
 	
 }

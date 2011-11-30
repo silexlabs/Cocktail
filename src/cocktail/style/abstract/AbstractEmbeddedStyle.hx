@@ -11,17 +11,22 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.style.computer.BlockEmbeddedBoxComputer;
-import cocktail.style.computer.BoxComputer;
-import cocktail.style.computer.FloatEmbeddedBoxComputer;
-import cocktail.style.computer.InlineBlockEmbeddedBoxComputer;
-import cocktail.style.computer.InlineEmbeddedBoxComputer;
-import cocktail.style.computer.NoneBoxComputer;
-import cocktail.style.computer.PositionedEmbeddedBoxComputer;
+import cocktail.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.style.computer.boxComputers.NoneBoxStylesComputer;
+import cocktail.style.computer.BoxStylesComputer;
 import cocktail.style.formatter.FormattingContext;
-import cocktail.style.Style;
 import cocktail.style.StyleData;
 import haxe.Log;
+
+#if flash9
+import cocktail.style.as3.Style;
+#elseif js
+import cocktail.style.js.Style;
+#end
 
 /**
  * This is the style implementation for embedded
@@ -62,41 +67,41 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override private function computeBoxModelStyle(containingDOMElementDimensions:ContainingDOMElementDimensions, rootDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions, lastPositionedDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	override private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
 		//scheme
-		var boxComputer:BoxComputer;
+		var boxComputer:BoxStylesComputer;
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementDimensions = getContainingDOMElementDimensions(containingDOMElementDimensions, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
 		//get the embedded box computers based on
 		//the positioning scheme
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatEmbeddedBoxComputer();
+			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedEmbeddedBoxComputer();
+			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
 		switch(this._computedStyle.display)
 		{
 			case block:
-				boxComputer = new BlockEmbeddedBoxComputer();
+				boxComputer = new EmbeddedBlockBoxStylesComputer();
 				
 			case inlineBlock:
-				boxComputer = new InlineBlockEmbeddedBoxComputer();	
+				boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 			
 			case none:
-				boxComputer = new NoneBoxComputer();
+				boxComputer = new NoneBoxStylesComputer();
 			
-			case _inline:
-				boxComputer = new InlineEmbeddedBoxComputer();
+			case inlineStyle:
+				boxComputer = new EmbeddedInlineBoxStylesComputer();
 		}
 		
 		//compute the embedded DOMElement box model styles
@@ -114,6 +119,34 @@ class AbstractEmbeddedStyle extends Style
 	override public function isEmbedded():Bool
 	{
 		return true;
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	////////////////////////////////
+	
+	/**
+	 * Embedded DOMElement don't have baseline as
+	 * they can't contain text. When aligned to the baseline
+	 * in an inline formatting context, their bottom margin
+	 * is aligned to the baseline. The offset height
+	 * of an embedded DOMElement represents its ascent
+	 * and it has no descent.
+	 * 
+	 * The other font metrics don't apply to it and are
+	 * set to 0
+	 */
+	override private function getFontMetricsData():FontMetricsData
+	{
+		return {
+			ascent:domElement.offsetHeight,
+			fontSize:0.0,
+			descent:0,
+			xHeight:0,
+			superscriptOffset:0,
+			subscriptOffset:0,
+			underlineOffset:0
+		};
 	}
 	
 }

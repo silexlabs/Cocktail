@@ -11,17 +11,35 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
+import flash.text.engine.BreakOpportunity;
+import flash.text.engine.CFFHinting;
+import flash.text.engine.ContentElement;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.FontPosture;
+import flash.text.engine.FontWeight;
+import flash.text.engine.GroupElement;
+import flash.text.engine.LineJustification;
+import flash.text.engine.SpaceJustifier;
+import flash.text.engine.TextBaseline;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
+import cocktail.style.StyleData;
+import flash.text.engine.TypographicCase;
+import flash.Vector;
+import haxe.Log;
 
 /**
- * This is the Flash implementation of the container DOMElement.
+ * This is the Flash AS3 implementation of the container DOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
 class ContainerDOMElement extends AbstractContainerDOMElement
 {
-
 	/**
 	 * class constructor
 	 */
@@ -31,19 +49,73 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// Override public method to manipulate the DOM
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to add the native flash display object as a 
+	 * child of the native display object of this container
+	 * @param domElement the flash display object to add to this 
+	 * container
+	 */
+	override public function addChild(domElement:DOMElement):Void
+	{
+		super.addChild(domElement);
+		this._nativeElement.addChild(domElement.nativeElement);
+	}
+	
+	/**
+	 * Overriden to remove the native flash display object from
+	 * the native display object of this container
+	 * @param domElement the flash display object to remove from
+	 * this container
+	 */
+	override public function removeChild(domElement:DOMElement):Void
+	{
+		super.removeChild(domElement);
+		this._nativeElement.removeChild(domElement.nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN TEXT LINE MANAGEMENT methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach the native flash TextLine object to this DOMElement native DisplayObjectContainer
+	 */
+	override public function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		super.addTextLine(textLineDOMElement);
+		this._nativeElement.addChild(textLineDOMElement.nativeElement);
+	}
+	
+	/**
+	 * Removes the native flash TextLine object from this DOMElement native DisplayObjectContainer
+	 */
+	override private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{		
+		super.removeTextLine(textLineDOMElement);
+		
+		if (textLineDOMElement != null)
+		{
+			this._nativeElement.removeChild(textLineDOMElement.nativeElement);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden getter/setter
 	// The width and height setter/getter are overriden to prevent setting the width and height
 	// of the native Flash DisplayObjectContainer. In as3, when the width or height is set on a
 	// container, the content of the container is scaled
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setWidth(value:Int):Int
+	override private function setWidth(value:Int):Int
 	{
 		this._width = value;
 		return this._width;
 	}
 	
-	override public function setHeight(value:Int):Int
+	override private function setHeight(value:Int):Int
 	{
 		this._height = value;
 		return this._height;

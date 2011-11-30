@@ -11,10 +11,14 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.abstract;
 
+import cocktail.domElement.TextLineDOMElement;
+import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.style.ContainerStyle;
+import cocktail.domElement.DOMElementData;
+import haxe.Log;
 
 #if flash9
 import cocktail.domElement.as3.DOMElement;
@@ -22,12 +26,11 @@ import cocktail.domElement.as3.DOMElement;
 import cocktail.domElement.js.DOMElement;
 #end
 
-
 /**
- * This is a DOMElement hich can contain other DOMElement, it is in charge of building the DOMElement tree.
- * It can receive any DOMElement as children.
- * It allows for setting semantic of the root node of the DOMElement (not implemented for
- * Flash)
+ * This is a DOMElement which can contain both DOMElement and TextNode, it is in charge of building the DOMElement tree.
+ * A ContainerDOMElement can receive any DOMElement as children.
+ * A TextNode is a reference to a simple string of text which takes the visual style of its ContainerDOMElement. A TextNode can't have children.
+ * Each ContainerDOMElement represents a semantic element in the DOMElement tree.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -36,17 +39,23 @@ class AbstractContainerDOMElement extends DOMElement
 	/**
 	 * Store the node name (div, nav, header...) of the
 	 * first node of the reference to the native DOM.
-	 * This doesn't apply to Flash
 	 */
 	private var _semantic:String;
 	public var semantic(getSemantic, setSemantic):String;
 	
 	/**
-	 *  a reference to each of the DOMElement childs, stored by
-	 *  z-index
+	 * a reference to each of the ContainerDOMElement children which
+	 * can be either of type DOMElement or TextNode.
+	 * Their order is significant to the layout of the document
 	 */
-	private var _children:Array<DOMElement>;
-	public var children(getChildren, never):Array<DOMElement>;
+	private var _children:Array<ContainerDOMElementChildData>;
+	public var children(getChildren, never):Array<ContainerDOMElementChildData>;
+	
+	/**
+	 * Stores each of the text lines generated at layout so they 
+	 * can easily be removed when the text content changes.
+	 */
+	private var _textLineDOMElements:Array<TextLineDOMElement>;
 	
 	/**
 	 * class constructor. Create a container NativeElement
@@ -54,14 +63,16 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//get a neutral native element if none is provided (correspond to a div in HTML)
+		//get a neutral native element if none is provided (e.g a div in HTML or a
+		//display object container in flash)
 		if (nativeElement == null)
 		{
 			nativeElement = NativeElementManager.createNativeElement(neutral);
 		}
 		
-		//init the children array
-		_children = new Array<DOMElement>();
+		//init the children and text lines array
+		_children = new Array<ContainerDOMElementChildData>();
+		_textLineDOMElements = new Array<TextLineDOMElement>();
 		
 		super(nativeElement);
 	}
@@ -89,8 +100,7 @@ class AbstractContainerDOMElement extends DOMElement
 	public function addChild(domElement:DOMElement):Void
 	{
 		domElement.parent = this;
-		domElement.attach();
-		_children.push(domElement);
+		_children.push({child:domElement, type:ContainerDOMElementChildValue.domElement});
 	}
 	
 	/**
@@ -102,17 +112,93 @@ class AbstractContainerDOMElement extends DOMElement
 	public function removeChild(domElement:DOMElement):Void
 	{
 		domElement.parent = null;
-		domElement.detach();
-		_children.remove(domElement);
+		
+		var newChildrenArray:Array<ContainerDOMElementChildData> = new Array<ContainerDOMElementChildData>();
+		for (i in 0..._children.length)
+		{
+			if (_children[i].child != domElement)
+			{
+				newChildrenArray.push(_children[i]);
+			}
+		}
+		this._children = newChildrenArray;
+		
 	}
 	
 	/**
-	 * returns the children of this DOMElement
-	 * @return an array of DOMElement
+	 * Add a TextNode as a children of the ContainerDOMElement. Overriden
+	 * by each runtime to attach the text to their specific DOM
+	 * @param	text a reference to a string of text
 	 */
-	public function getChildren():Array<DOMElement>
+	public function addText(text:TextNode):Void
+	{
+		_children.push({child:text, type:ContainerDOMElementChildValue.textNode});
+	}
+	
+	/**
+	 * Removes a TextNode from the ContainerDOMElement. Overriden
+	 * by each runtime to the detach the text from their
+	 * specific DOM
+	 * @param	text
+	 */
+	public function removeText(text:TextNode):Void
+	{
+		var newChildrenArray:Array<ContainerDOMElementChildData> = new Array<ContainerDOMElementChildData>();
+		for (i in 0..._children.length)
+		{
+			if (_children[i].child != text)
+			{
+				newChildrenArray.push(_children[i]);
+			}
+		}
+		this._children = newChildrenArray;
+	}
+	
+	/**
+	 * returns the children of this ContainerDOMElement
+	 * @return an array containing any number of TextNode
+	 * and DOMElements
+	 */
+	private function getChildren():Array<ContainerDOMElementChildData>
 	{
 		return _children;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TEXT LINE MANAGEMENT methods
+	// used to add and remove TextLineDOMElements generating by this
+	// ContainerDOMElement text nodes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Removes all the previously created text lines. Occurs
+	 * when the content of a text node changes
+	 */
+	public function resetTextLines():Void
+	{
+		for (i in 0..._textLineDOMElements.length)
+		{
+			this.removeTextLine(_textLineDOMElements[i]);
+		}
+		_textLineDOMElements = new Array<TextLineDOMElement>();
+	}
+	
+	/**
+	 * Stores a reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to attach the native text line to the native element of the container
+	 */
+	public function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		_textLineDOMElements.push(textLineDOMElement);
+	}
+	
+	/**
+	 * Removes a stored reference to a generated TextLineDOMElement. Overriden by each runtime
+	 * to remove the native text line from the native element of the container
+	 */
+	private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +209,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * Set the semantic name of the first native node
 	 * @param	semantic an HTML tag name (div, nav, header...)
 	 */
-	public function setSemantic(semantic:String):String
+	private function setSemantic(semantic:String):String
 	{
 		this._semantic = semantic;
 		return this._semantic;
@@ -133,7 +219,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 * Return the semantic name of the first native node
 	 * @return	semantic an HTML tag name (div, nav, header...)
 	 */
-	public function getSemantic():String
+	private function getSemantic():String
 	{
 		return this._semantic;
 	}

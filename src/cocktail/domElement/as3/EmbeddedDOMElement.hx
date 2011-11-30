@@ -16,6 +16,7 @@ import cocktail.nativeElement.NativeElement;
 
 /**
  * This is the Flash AVM2 implementation of the Embedded DOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedDOMElement extends AbstractEmbeddedDOMElement

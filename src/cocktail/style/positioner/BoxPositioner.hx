@@ -59,17 +59,17 @@ class BoxPositioner
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement
 	 */
-	public function position(domElement:DOMElement, containingDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
 	{
 
 		//the DOMElement is first place in the same position as
 		//its containing DOMElement, using its global coordinates
-		domElement.globalX = containingDOMElementDimensions.globalX;
-		domElement.globalY = containingDOMElementDimensions.globalY;
+		domElement.globalX = containingDOMElementData.globalX;
+		domElement.globalY = containingDOMElementData.globalY;
 		
 		//an offset is then applied to it, using the left, top, right and bottom
 		//computed styles value
-		applyOffset(domElement, containingDOMElementDimensions);
+		applyOffset(domElement, containingDOMElementData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ class BoxPositioner
 	 * Apply an offset to the DOMElement using its top, left, bottom and right
 	 * styles value
 	 */
-	private function applyOffset(domElement:DOMElement, containingDOMElementDimensions:AbsolutelyPositionedContainingDOMElementDimensions):Void
+	private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
 		//left takes precedance so we try to apply left offset first
@@ -93,7 +93,7 @@ class BoxPositioner
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.auto)
 		{
-			domElement.x = containingDOMElementDimensions.width - domElement.style.computedStyle.width;
+			domElement.x = containingDOMElementData.width - domElement.style.computedStyle.width;
 			domElement.x -= domElement.style.computedStyle.right;
 		}
 		
@@ -104,7 +104,7 @@ class BoxPositioner
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.auto)
 		{
-			domElement.y = containingDOMElementDimensions.height - domElement.style.computedStyle.height;
+			domElement.y = containingDOMElementData.height - domElement.style.computedStyle.height;
 			domElement.y -= domElement.style.computedStyle.bottom;
 		}
 	}

@@ -8,14 +8,13 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.style.computer;
+package cocktail.style.computer.boxComputers;
 
 /**
  * ...
  * @author Yannick DOMINGUEZ
  */
-
-class NoneBoxComputer extends BoxComputer
+class EmbeddedFloatBoxStylesComputer extends EmbeddedInlineBoxStylesComputer
 {
 
 	public function new() 

@@ -23,8 +23,6 @@ class MouseCursor extends cocktail.mouse.abstract.AbstractMouseCursor { }
 
 #end
 
-
-
 import cocktail.mouse.MouseData;
 
 /**
