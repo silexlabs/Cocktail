@@ -68,7 +68,8 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
-	 * Overriden to append the text node to the HTML element of this container
+	 * Overriden to append the textElement's NativeTextElement (an 
+	 * HTML textNode) to the HTML element of this container
 	 * @param	text the text node to append
 	 */
 	override public function addText(textElement:TextElement):Void
@@ -78,7 +79,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
-	 * Overriden to remove the text node from the HTML element of this
+	 * Overriden to remove the native HTML text node from the HTML element of this
 	 * container
 	 * @param	text the text node to remove
 	 */
