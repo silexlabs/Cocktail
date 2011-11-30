@@ -233,7 +233,7 @@ class AbstractStyle
 			clear : ClearStyleValue.none,
 			float : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
-			position: PositionStyleValue._static,
+			position: PositionStyleValue.staticStyle,
 			verticalAlign : 0.0,
 			fontSize:12.0,
 			lineHeight:14.0,
@@ -517,7 +517,7 @@ class AbstractStyle
 				case none:
 					boxComputer = new NoneBoxStylesComputer();
 				
-				case _inline:
+				case inlineStyle:
 					boxComputer = new InLineBoxStylesComputer();
 			}
 		}
@@ -667,7 +667,7 @@ class AbstractStyle
 		
 		switch (this._computedStyle.display) 
 		{
-			case _inline, inlineBlock:
+			case inlineStyle, inlineBlock:
 				ret = true;
 			
 			default:
@@ -705,7 +705,7 @@ class AbstractStyle
 			case relative, absolute, fixed:
 				ret = true;
 			
-			case _static:
+			case staticStyle:
 				ret = false;
 		}
 		

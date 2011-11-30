@@ -60,7 +60,7 @@ class Style extends AbstractStyle
 			case block:
 				displayValue = "block";
 			
-			case _inline:
+			case inlineStyle:
 				displayValue = "inline";
 			
 			case inlineBlock:
@@ -129,7 +129,7 @@ class Style extends AbstractStyle
 		
 		switch (value)
 		{
-			case _static:
+			case staticStyle:
 				positionValue = "static";
 			
 			case relative:
@@ -276,7 +276,7 @@ class Style extends AbstractStyle
 			case sub:
 				verticalAlignValue = "sub";
 				
-			case _super:
+			case superStyle:
 				verticalAlignValue = "super";
 				
 			case textTop:
