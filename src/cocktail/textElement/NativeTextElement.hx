@@ -12,6 +12,9 @@ package cocktail.textElement;
 
 /**
  * Set the right runtime specific NativeTextElement at compile-time
+ * 
+ * A NativeTextElement is an abstraction of a text element, variying
+ * based on runtime
  */
 #if flash9
 typedef NativeTextElement = String;
