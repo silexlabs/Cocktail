@@ -11,8 +11,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.style.as3;
 
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.TextLineDOMElement;
-import cocktail.domElement.TextNode;
+import cocktail.domElement.TextFragmentDOMElement;
 import cocktail.style.abstract.AbstractContainerStyle;
 import cocktail.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
@@ -123,10 +122,10 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override private function doCreateTextLine(text:String):TextLineDOMElement
+	override private function doCreateTextFragment(text:String):TextFragmentDOMElement
 	{
 
-		var textBlock:TextBlock = new TextBlock(getTextElement(text));
+		var textBlock:TextBlock = new TextBlock(getNativeTextElement(text));
 		
 		//create a native flash text line
 		var textLine:TextLine = textBlock.createTextLine(null, 10000, 0.0, true);
@@ -138,13 +137,8 @@ class ContainerStyle extends AbstractContainerStyle
 		}
 	
 		
-		return new TextLineDOMElement(textLine, this);
+		return new TextFragmentDOMElement(textLine, this);
 	
-	}
-	
-	override private function getNativeText(textNode:TextNode):String
-	{
-		return textNode;
 	}
 	
 	/**
@@ -155,7 +149,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * @return a textElement with a flash element format matching the styles
 	 * of the ContainerDOMElement
 	 */
-	private function getTextElement(text:String):TextElement
+	private function getNativeTextElement(text:String):TextElement
 	{
 		var textElement:TextElement = new TextElement(text);
 		

@@ -11,7 +11,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.as3;
 import cocktail.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
 import flash.text.engine.BreakOpportunity;
@@ -83,22 +82,22 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	/**
 	 * Attach the native flash TextLine object to this DOMElement native DisplayObjectContainer
 	 */
-	override public function addTextLine(textLineDOMElement:TextLineDOMElement):Void
+	override public function addTextFragment(textFragmentDOMElement:TextFragmentDOMElement):Void
 	{
-		super.addTextLine(textLineDOMElement);
-		this._nativeElement.addChild(textLineDOMElement.nativeElement);
+		super.addTextFragment(textFragmentDOMElement);
+		this._nativeElement.addChild(textFragmentDOMElement.nativeElement);
 	}
 	
 	/**
 	 * Removes the native flash TextLine object from this DOMElement native DisplayObjectContainer
 	 */
-	override private function removeTextLine(textLineDOMElement:TextLineDOMElement):Void
+	override private function removeTextFragment(textFragmentDOMElement:TextFragmentDOMElement):Void
 	{		
-		super.removeTextLine(textLineDOMElement);
+		super.removeTextFragment(textFragmentDOMElement);
 		
-		if (textLineDOMElement != null)
+		if (textFragmentDOMElement != null)
 		{
-			this._nativeElement.removeChild(textLineDOMElement.nativeElement);
+			this._nativeElement.removeChild(textFragmentDOMElement.nativeElement);
 		}
 	}
 	

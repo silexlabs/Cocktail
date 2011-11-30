@@ -20,7 +20,7 @@ import cocktail.style.Style;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * ContainerDOMElement can have both DOMElement and TextNode
+	 * ContainerDOMElement can have both DOMElement and TextElement
 	 * as children. This structures holds of reference to the
 	 * children and to its type
 	 */
@@ -29,9 +29,55 @@ import cocktail.style.Style;
 		var type:ContainerDOMElementChildValue;
 	}
 	
+	/**
+	 * Holds the data of a text element, which
+	 * is a string added to a ContainerDOMElement
+	 * and taking its styles once rendered.
+	 * 
+	 * Keep a reference to the string of text
+	 * and to the tokenised string of text
+	 */
+	typedef TextElementData = {
+		var text:String;
+		var textTokens:Array<TextTokenValue>;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lists all the different consituant
+	 * of a plain text, including 
+	 * controls characters
+	 */
+	enum TextTokenValue {
+		
+		/**
+		 * a word, surrounded by
+		 * spaces
+		 */
+		word(value:String);
+		
+		/**
+		 * represents one
+		 * space which can be 
+		 * between 2 words or among
+		 * a space sequence
+		 */
+		space;
+		
+		/**
+		 * a tabulation
+		 */
+		tab;
+		
+		/**
+		 * a line feed (starts
+		 * a new line)
+		 */
+		lineFeed;
+	}
 	
 	/**
 	 * The types of children a ContainerDOMElement
@@ -39,7 +85,7 @@ import cocktail.style.Style;
 	 */
 	enum ContainerDOMElementChildValue {
 		domElement;
-		textNode;
+		textElement;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////
