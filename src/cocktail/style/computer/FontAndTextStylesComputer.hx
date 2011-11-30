@@ -117,7 +117,7 @@ class FontAndTextStylesComputer
 			case sub:
 				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;
 				
-			case _super:
+			case superStyle:
 				verticalAlign = containingDOMElementFontMetricsData.superscriptOffset;
 				
 			case textTop:

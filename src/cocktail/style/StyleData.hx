@@ -578,8 +578,11 @@ import cocktail.unit.UnitData;
 		/**
 		 * Raise the baseline of the box to the proper 
 		 * position for superscripts of the parent's box.
+		 * 
+		 * n.b: appended 'Style' to 'super' because 'super'
+		 * is a reserved HaXe word
 		 */
-		_super;
+		superStyle;
 		
 		/**
 		 * Align the top of the aligned subtree with 
@@ -725,8 +728,12 @@ import cocktail.unit.UnitData;
 		 * Displayed on the current line. 
 		 * Can only have horizontal margins
 		 * and paddings
+		 * 
+		 * n.b : appended 'Style' to 'inline'
+		 * because inline is a reserved HaXe 
+		 * word
 		 */
-		_inline;
+		inlineStyle;
 		
 		/**
 		 * The DOMElement isn't displays
@@ -767,8 +774,11 @@ import cocktail.unit.UnitData;
 		 * Appear after its parent in the flow, on a
 		 * new line or the current one based on its
 		 * display
+		 * 
+		 * n.b: appended 'Style' to 'static' because
+		 * 'static' is a reserved HaXe word
 		 */
-		_static;
+		staticStyle;
 		
 		/**
 		 * same as static but an offset can be applied

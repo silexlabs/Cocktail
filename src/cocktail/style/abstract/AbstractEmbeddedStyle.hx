@@ -100,7 +100,7 @@ class AbstractEmbeddedStyle extends Style
 			case none:
 				boxComputer = new NoneBoxStylesComputer();
 			
-			case _inline:
+			case inlineStyle:
 				boxComputer = new EmbeddedInlineBoxStylesComputer();
 		}
 		
