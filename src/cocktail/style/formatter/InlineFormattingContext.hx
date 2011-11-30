@@ -29,6 +29,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
+		
 		_firstLineLaidOut = false;
 		super(domElement, previousFormattingContext);
 		
@@ -39,9 +40,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function destroy():Void
 	{
-		var currentTotalHeight:Int = _flowData.totalHeight;
 		startNewLine(0, true);
-		_flowData.totalHeight = currentTotalHeight;
 		
 	}
 	
@@ -125,18 +124,21 @@ class InlineFormattingContext extends FormattingContext
 	
 	override public function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
+		
 		if (_domElementInLineBox.length > 0)
 		{
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
+		
 			alignText(_firstLineLaidOut == false, isLastLine);
 			_domElementInLineBox = new Array<LineBoxElementData>();
 			
 			_flowData.y += lineBoxHeight;
 			
 			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
-			_flowData.totalHeight = _flowData.y + lineBoxHeight;
 			
+			
+			_flowData.totalHeight = _flowData.y;
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
 				
