@@ -15,8 +15,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.TextLineDOMElement;
-import cocktail.domElement.TextNode;
+import cocktail.domElement.TextFragmentDOMElement;
 import cocktail.style.formatter.BlockFormattingContext;
 import cocktail.style.formatter.FormattingContext;
 import cocktail.style.formatter.InlineFormattingContext;
@@ -26,6 +25,8 @@ import cocktail.style.positioner.FixedPositioner;
 import cocktail.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
+import cocktail.textElement.TextElement;
+import cocktail.textElement.TextElementData;
 
 #if flash9
 import cocktail.style.as3.Style;
@@ -97,8 +98,6 @@ class AbstractContainerStyle extends Style
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
-		containerDOMElement.resetTextLines();
-		
 		//compute all the styles of the children that will affect
 		//their layout (display, position, float, clear)
 		//Those styles need to be computed before a new FormattingContext
@@ -106,8 +105,8 @@ class AbstractContainerStyle extends Style
 		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
-			//only DOMElement styles are computed, not TextNode element's.
-			//TextNode don't influence which type of formatting context will
+			//only DOMElement styles are computed, not TextElement element's.
+			//TextElement don't influence which type of formatting context will
 			//be used as when rendered, they use the ContainerDOMElement's styles
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
@@ -167,12 +166,12 @@ class AbstractContainerStyle extends Style
 				//if it is a ContainerDOMElement
 				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
-			//else if it is a text node, call a method that will create as many TextLineDOMElement
-			//as necessary to render the TextNode and insert them into the document
+			//else if it is a text node, call a method that will create as many TextFragmentDOMElement
+			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
-				var childrenTextNode:TextNode = cast(containerDOMElement.children[i].child);
-				insertTextNode(childrenTextNode, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
+				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
+				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 			}
 		}
 		
@@ -230,32 +229,88 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the document
 	 * @param	textNode the string of text used as content for the created text lines
 	 */
-	private function insertTextNode(textNode:TextNode, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
-		var textFragments:Array<TextFragmentValue> = getTextFragments(getNativeText(textNode));
+		var text:String = textElement.getNativeText();
+		switch (whiteSpace)
+		{
+				case WhiteSpaceStyleValue.normal:
+					text = collapseSpaceSequences(text);
+					
+				case WhiteSpaceStyleValue.pre:
+					text = removeLineFeeds(text);
+					
+				case WhiteSpaceStyleValue.nowrap:
+					text = collapseSpaceSequences(text);
+					text = removeLineFeeds(text);
+					text = convertTabToSpace(text);
+					
+				case WhiteSpaceStyleValue.preWrap:
+					
+				case WhiteSpaceStyleValue.preLine:
+					text = collapseSpaceSequences(text);
+		}
+		
+		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
+		
+		
+		
 		for (i in 0...textFragments.length)
 		{
-			switch(textFragments[i])
+			switch(textFragments[i].textToken)
 			{
 				case word(value):
-					var textLineDOMElement:TextLineDOMElement = createTextLine(value);
-					if (textLineDOMElement.nativeElement != null)
+					var textFragmentDOMElement:TextFragmentDOMElement;
+					if (textFragments[i].textFragmentDOMElement == null)
 					{
-						formattingContext.insert(textLineDOMElement);
+						textFragmentDOMElement = createTextFragment(value);
+						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
+					}
+					else
+					{
+						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
+					}
+				
+					if (textFragmentDOMElement.nativeElement != null)
+					{
+						formattingContext.insert(textFragmentDOMElement);
 					}
 					
 				case space:
-					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
-					if (textLineDOMElement.nativeElement != null)
+					var textFragmentDOMElement:TextFragmentDOMElement;
+					if (textFragments[i].textFragmentDOMElement == null)
 					{
-						formattingContext.insertSpace(textLineDOMElement);
+						textFragmentDOMElement = createTextFragment(" ");
+						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
+					}
+					else
+					{
+						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
+					}
+				
+					if (textFragmentDOMElement.nativeElement != null)
+					{
+						formattingContext.insert(textFragmentDOMElement);
 					}
 					
 				case tab:
-					var textLineDOMElement:TextLineDOMElement = createTextLine(" ");
-					formattingContext.insertTab(textLineDOMElement);
+				var textFragmentDOMElement:TextFragmentDOMElement;
+					if (textFragments[i].textFragmentDOMElement == null)
+					{
+						textFragmentDOMElement = createTextFragment(" ");
+						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
+					}
+					else
+					{
+						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
+					}
+				
+					if (textFragmentDOMElement.nativeElement != null)
+					{
+						formattingContext.insert(textFragmentDOMElement);
+					}
 					
 				case lineFeed:
 					formattingContext.startNewLine(0);
@@ -264,180 +319,46 @@ class AbstractContainerStyle extends Style
 				
 	}
 	
+	
+	
 	/**
-	 * Create and return a TextLineDOMElement of the specified width using the provided
-	 * TextNode as model
+	 * Create and return a TextFragmentDOMElement of the specified width using the provided
+	 * TextElement as model
 	 * @param	width the desired width for the created text line. As many as possible glyphs will
 	 * be added to the line until adding another glyph would make the text line too wide, so 
 	 * the actual width of the line will probably be a bit inferior to the specified width. 
 	 * It might also be inferior if there is not enough text to fill the specified width
 	 * @param	textNode the string of unformatted text to use as the model to create the
 	 * text line. If the createTextLine method is called multiple times in a row with the
-	 * same TextNode, text lines will be created until all of the TextNode text has been rendered
+	 * same TextElement, text lines will be created until all of the TextElement text has been rendered
 	 * as text lines.
-	 * @return either a TextLineDOMElement or null if the TextNode model has run out of text to 
+	 * @return either a TextFragmentDOMElement or null if the TextElement model has run out of text to 
 	 * render
 	 */
-	private function createTextLine(text:String):TextLineDOMElement
+	private function createTextFragment(text:String):TextFragmentDOMElement
 	{
-		var textLineDOMElement:TextLineDOMElement = doCreateTextLine(text);
+		var textFragmentDOMElement:TextFragmentDOMElement = doCreateTextFragment(text);
 		
 		//stores the text lines to easily remove it on the next layout
 		//and add it as a child of this ContainerDOMElement nativeElement
 		//so that it can appear in the DOM
 		
-		if (textLineDOMElement.nativeElement != null)
+		if (textFragmentDOMElement.nativeElement != null)
 		{
 			var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-			containerDOMElement.addTextLine(textLineDOMElement);
+			containerDOMElement.addTextFragment(textFragmentDOMElement);
 		}
 		
-		return  textLineDOMElement;
+		return  textFragmentDOMElement;
 	}
 	
-	private function doCreateTextLine(text:String):TextLineDOMElement
+	private function doCreateTextFragment(text:String):TextFragmentDOMElement
 	{
 		//implemented by each runtime :
 		// create and style native element
 		// wrap it in textlineDOMElement
 		// add it as a text line children of the container DOM Element
 		return null;
-	}
-	
-	private function getTextFragments(text:String):Array<TextFragmentValue>
-	{
-		switch (_computedStyle.whiteSpace)
-		{
-			case WhiteSpaceStyleValue.normal:
-				text = collapseSpaceSequences(text);
-				
-			case WhiteSpaceStyleValue.pre:
-				text = removeLineFeeds(text);
-				
-			case WhiteSpaceStyleValue.nowrap:
-				text = collapseSpaceSequences(text);
-				text = removeLineFeeds(text);
-				text = convertTabToSpace(text);
-				
-			case WhiteSpaceStyleValue.preWrap:
-				
-			case WhiteSpaceStyleValue.preLine:
-				text = collapseSpaceSequences(text);
-		}
-		
-		var textFragments:Array<TextFragmentValue> = new Array<TextFragmentValue>();
-		
-		var textFragment:String = "";
-		
-		var i:Int = 0;
-		
-		
-		
-		//Loop in all the text charachters
-		while (i < text.length)
-		{
-			if (text.charAt(i) == "\\")
-			{
-				if (text.charAt(i + 1) != null)
-				{
-					if (text.charAt(i + 1) == "n")
-					{
-						if (textFragment != null)
-						{
-							//push the word into the returned array
-							textFragments.push(word(textFragment));
-							textFragment = null;
-						}
-						textFragments.push(lineFeed);
-						i ++;
-					}
-					else if (text.charAt(i + 1) == "t")
-					{
-						if (textFragment != null)
-						{
-							//push the word into the returned array
-							textFragments.push(word(textFragment));
-							textFragment = null;
-						}
-						textFragments.push(tab);
-						i ++;
-					}
-				}
-			}
-			
-			//If the charachter is a space
-			else if (StringTools.isSpace(text, i) == true)
-			{
-				
-				//If a word was being formed by concatenating
-				//characters
-				if (textFragment != null)
-				{
-					//push the word into the returned array
-					textFragments.push(word(textFragment));
-					textFragment = null;
-				}
-				
-				//push the space in the returned array
-				textFragments.push(space);
-			}
-			//else the charachter belongs to a word
-			//and is added to the word which is being
-			//concatenated
-			else
-			{
-				if (textFragment == null)
-				{
-					textFragment = "";
-				}
-				textFragment += text.charAt(i);
-			}
-			
-			i++;
-		}
-		
-		//push the remaining word if text doesn't end with a space
-		if (textFragment != null)
-		{
-			textFragments.push(word(textFragment));
-		}
-		
-		return textFragments;
-	}
-	
-	private function collapseSpaceSequences(text:String):String
-	{
-		var collapsedText:String = "";
-		var isSpaceSequence:Bool = false;
-		
-		for (i in 0...text.length)
-		{
-			if (StringTools.isSpace(text, i))
-			{
-				if (isSpaceSequence == false)
-				{
-					collapsedText += text.charAt(i);
-					isSpaceSequence = true;
-				}
-			}
-			else
-			{
-				isSpaceSequence = false;
-				collapsedText += text.charAt(i);
-			}
-		}
-		
-		return collapsedText;
-	}
-	
-	private function removeLineFeeds(text:String):String
-	{
-		return StringTools.replace(text, "\n", "");
-	}
-	
-	private function convertTabToSpace(text:String):String
-	{
-		return StringTools.replace(text, "\t", " ");
 	}
 	
 	/**
@@ -495,6 +416,41 @@ class AbstractContainerStyle extends Style
 		return capitalizedText;
 	}
 	
+	private function collapseSpaceSequences(text:String):String
+	{
+		var collapsedText:String = "";
+		var isSpaceSequence:Bool = false;
+		
+		for (i in 0...text.length)
+		{
+			if (StringTools.isSpace(text, i))
+			{
+				if (isSpaceSequence == false)
+				{
+					collapsedText += text.charAt(i);
+					isSpaceSequence = true;
+				}
+			}
+			else
+			{
+				isSpaceSequence = false;
+				collapsedText += text.charAt(i);
+			}
+		}
+		
+		return collapsedText;
+	}
+	
+	private function removeLineFeeds(text:String):String
+	{
+		return StringTools.replace(text, "\n", "");
+	}
+	
+	private function convertTabToSpace(text:String):String
+	{
+		return StringTools.replace(text, "\t", " ");
+	}
+	
 	/**
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
@@ -542,16 +498,7 @@ class AbstractContainerStyle extends Style
 		
 		return fontFamilyValue;
 	}
-	
-	/**
-	 * Return a String from a TextNode
-	 * using runtime specific method
-	 */
-	private function getNativeText(textNode:TextNode):String
-	{
-		//abstract implemented by each runtime
-		return null;
-	}
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
@@ -672,7 +619,7 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Determine wether the given children is a 
-	 * DOMElement or a TextNode
+	 * DOMElement or a TextElement
 	 */
 	private function isDOMElement(containerDOMElementChildData:ContainerDOMElementChildData):Bool
 	{
@@ -683,7 +630,7 @@ class AbstractContainerStyle extends Style
 			case ContainerDOMElementChildValue.domElement:
 				ret = true;
 			
-			case ContainerDOMElementChildValue.textNode:
+			case ContainerDOMElementChildValue.textElement:
 				ret = false;
 		}
 		
