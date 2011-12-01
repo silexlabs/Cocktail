@@ -237,10 +237,8 @@ class AbstractContainerStyle extends Style
 						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
 					}
 				
-					if (textFragmentDOMElement.nativeElement != null)
-					{
-						formattingContext.insert(textFragmentDOMElement);
-					}
+					formattingContext.insert(textFragmentDOMElement);
+					
 					
 				case space:
 					var textFragmentDOMElement:TextFragmentDOMElement;
@@ -254,10 +252,8 @@ class AbstractContainerStyle extends Style
 						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
 					}
 				
-					if (textFragmentDOMElement.nativeElement != null)
-					{
-						formattingContext.insertSpace(textFragmentDOMElement);
-					}
+					formattingContext.insertSpace(textFragmentDOMElement);
+					
 					
 				case tab:
 				var textFragmentDOMElement:TextFragmentDOMElement;
@@ -271,10 +267,8 @@ class AbstractContainerStyle extends Style
 						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
 					}
 				
-					if (textFragmentDOMElement.nativeElement != null)
-					{
-						formattingContext.insertTab(textFragmentDOMElement);
-					}
+					formattingContext.insertTab(textFragmentDOMElement);
+					
 					
 				case lineFeed:
 					formattingContext.startNewLine(0);
@@ -332,11 +326,8 @@ class AbstractContainerStyle extends Style
 		//and add it as a child of this ContainerDOMElement nativeElement
 		//so that it can appear in the DOM
 		
-		if (textFragmentDOMElement.nativeElement != null)
-		{
-			var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-			containerDOMElement.addTextFragment(textFragmentDOMElement);
-		}
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.addTextFragment(textFragmentDOMElement);
 		
 		return  textFragmentDOMElement;
 	}

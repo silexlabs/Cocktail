@@ -21,6 +21,7 @@ package style;
 
 import cocktail.domElement.ImageDOMElement;
 import cocktail.style.Style;
+import cocktail.textElement.TextElement;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
@@ -159,7 +160,7 @@ class StyleTests
 	
 		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren.style.display = DisplayStyleValue.inlineStyle;
-		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM "));
+		siteLeftContainerChildren.addText(new TextElement(" BOUM "));
 		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(90));
 		siteLeftContainerChildren.style.fontWeight = FontWeightStyleValue.bold;
 			siteLeftContainerChildren.style.verticalAlign = VerticalAlignStyleValue.sub;
@@ -169,7 +170,7 @@ class StyleTests
 		
 		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren2.style.display = DisplayStyleValue.inlineStyle;
-		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode(" BADA"));
+		siteLeftContainerChildren2.addText(new TextElement(" BADA"));
 		siteLeftContainerChildren2.style.fontSize = FontSizeStyleValue.length(px(50));
 		siteLeftContainerChildren2.style.fontStyle = FontStyleStyleValue.italic;
 		siteLeftContainerChildren.addChild(siteLeftContainerChildren2);
@@ -188,8 +189,10 @@ class StyleTests
 		
 		
 		
-		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
-		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		//textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		
+		
 		textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
 	
 		textContainer.style.display = DisplayStyleValue.inlineStyle;
@@ -198,7 +201,7 @@ class StyleTests
 		_siteLeftFloatBackground.style.height = DimensionStyleValue.length(px(400)); 
 		
 		var firstLetterContainer:ContainerDOMElement = getContainer();
-		firstLetterContainer.addText(NativeElementManager.createNativeTextNode("a, b, c, d "));
+		firstLetterContainer.addText(new TextElement("a, b, c, d "));
 		firstLetterContainer.style.textTransform = TextTransformStyleValue.uppercase;
 		firstLetterContainer.style.fontSize = FontSizeStyleValue.length(px(50));
 		firstLetterContainer.style.display = DisplayStyleValue.inlineStyle;
@@ -214,7 +217,7 @@ class StyleTests
 		textBlock.style.textIndent = TextIndentStyleValue.length(px(150));
 		//firstLetterContainer.style.clear = ClearStyleValue.right;
 		
-		textBlock.style.textAlign = TextAlignStyleValue.left;
+		//textBlock.style.textAlign = TextAlignStyleValue.justify;
 		
 		var siteLeftFloat:ContainerDOMElement = getContainer();
 		siteLeftFloat.style.width = DimensionStyleValue.length(px(50));
@@ -292,14 +295,17 @@ class StyleTests
 			var image:ImageDOMElement = new ImageDOMElement();
 			
 			ResourceLoaderManager.loadImage("testPicture.jpg", function(picture) {
-			mainCont.addChild(headerContainer);
-			textBlock.addChild(firstLetterContainer);
+			//mainCont.addChild(headerContainer);
+			//textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 			textBlock.addChild(picture);
-			textBlock.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+			textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 	
+			textBlock.style.fontFamily = [FontFamilyStyleValue.familyName("Blackoak Std")];
 			mainCont.addChild(textBlock);
-			mainCont.addChild(foot);
+			//mainCont.addChild(foot);
+			mainCont.style.position = PositionStyleValue.relative;
+			mainCont.style.top = PositionOffsetStyleValue.length(px(500));
 			
 			getDefaultStyleProxy(picture);
 			
@@ -324,6 +330,42 @@ class StyleTests
 		}, function(event) { }, image );
 		
 		
+	}
+	
+	public function testIPhone()
+	{
+		
+		_mainContainer = getContainer();
+		_mainContainer.style.width = DimensionStyleValue.percent(80);
+		_mainContainer.style.height = DimensionStyleValue.auto;
+		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(20));
+		_mainContainer.style.position = PositionStyleValue.relative;
+		
+		attach(_mainContainer);
+		
+		var list:ContainerDOMElement = getContainer();
+		var listText1:ContainerDOMElement = getContainer();
+		var listText2:ContainerDOMElement = getContainer();
+		var listText3:ContainerDOMElement = getContainer();
+		
+		listText1.addText(new TextElement("Lorem"));
+		listText2.addText(new TextElement("Ipsum"));
+		listText3.addText(new TextElement("Dolor"));
+		
+		//listText1.style.height = DimensionStyleValue.length(px(20));
+		//listText2.style.height = DimensionStyleValue.length(px(20));
+		//listText3.style.height = DimensionStyleValue.length(px(20));
+		
+		//list.addChild(textContainer);
+		list.addChild(listText1);
+		list.addChild(listText2);
+		list.addChild(listText3);
+		
+		_mainContainer.addChild(list);
+		
+		refresh();
 	}
 	
 	public function testLayout()
@@ -390,7 +432,7 @@ class StyleTests
 	
 		var textContainer:ContainerDOMElement = getContainer();
 		
-		textContainer.addText(NativeElementManager.createNativeTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		
 		
 		textContainer.style.textAlign = TextAlignStyleValue.left;
@@ -400,7 +442,7 @@ class StyleTests
 		textContainer.style.paddingRight = PaddingStyleValue.length(px(200));
 		var siteLeftContainerChildren:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren.style.display = DisplayStyleValue.inlineStyle;
-		siteLeftContainerChildren.addText(NativeElementManager.createNativeTextNode(" BOUM"));
+		siteLeftContainerChildren.addText(new TextElement(" BOUM"));
 		//siteLeftContainerChildren.style.verticalAlign = VerticalAlignStyleValue.middle;
 		siteLeftContainerChildren.style.paddingRight = PaddingStyleValue.length(px(30));
 		siteLeftContainerChildren.style.fontSize = FontSizeStyleValue.length(px(130));
@@ -411,7 +453,7 @@ class StyleTests
 		
 		var siteLeftContainerChildren2:ContainerDOMElement = getContainer();
 		siteLeftContainerChildren2.style.display = DisplayStyleValue.inlineStyle;
-		siteLeftContainerChildren2.addText(NativeElementManager.createNativeTextNode(" BADA"));
+		siteLeftContainerChildren2.addText(new TextElement(" BADA"));
 		siteLeftContainerChildren2.style.marginLeft = MarginStyleValue.length(px(50));
 		siteLeftContainerChildren2.style.fontSize = FontSizeStyleValue.length(px(50));
 		siteLeftContainerChildren2.style.fontStyle = FontStyleStyleValue.italic;
@@ -530,7 +572,7 @@ class StyleTests
 		browserWidth = js.Lib.document.body.clientWidth;
 		browserHeight = js.Lib.document.body.clientHeight;
 		#end
-		_mainContainer.style.computedStyle.lineHeight = 70;
+		//_mainContainer.style.computedStyle.lineHeight = 70;
 		_mainContainer.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, _mainContainer.style.fontMetrics);
 	
 		paint(_background, 0x222222);
@@ -629,6 +671,47 @@ class StyleTests
 			
 			domElement.style.float = FloatStyleValue.none;
 			domElement.style.clear = ClearStyleValue.none;
+			
+			var computedStyle:ComputedStyleData = {
+			width : 0,
+			height : 0,
+			minHeight : 0,
+			maxHeight : 0,
+			minWidth : 0,
+			maxWidth : 0,
+			marginLeft : 0,
+			marginRight : 0,
+			marginTop : 0,
+			marginBottom : 0,
+			paddingLeft : 0,
+			paddingRight : 0,
+			paddingTop : 0,
+			paddingBottom : 0,
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom : 0,
+			clear : ClearStyleValue.none,
+			float : FloatStyleValue.none,
+			display : DisplayStyleValue.block,
+			position: PositionStyleValue.staticStyle,
+			verticalAlign : 0.0,
+			fontSize:12.0,
+			lineHeight:14.0,
+			fontWeight:FontWeightStyleValue.normal,
+			fontStyle:FontStyleStyleValue.normal,
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontVariant:FontVariantStyleValue.normal,
+			textTransform:TextTransformStyleValue.none,
+			letterSpacing:0,
+			wordSpacing:0,
+			textIndent:0,
+			whiteSpace:WhiteSpaceStyleValue.normal,
+			textAlign:TextAlignStyleValue.left,
+			color:0
+			}
+			
+			domElement.style.computedStyle = computedStyle;
 		
 	}
 	
