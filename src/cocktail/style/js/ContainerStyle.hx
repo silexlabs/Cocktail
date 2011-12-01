@@ -25,6 +25,9 @@ import cocktail.style.StyleData;
  */
 class ContainerStyle extends AbstractContainerStyle
 {
+	/**
+	 * class constructor
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
