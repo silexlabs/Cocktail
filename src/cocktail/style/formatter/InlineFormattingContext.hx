@@ -324,8 +324,10 @@ class InlineFormattingContext extends FormattingContext
 						switch (_domElementInLineBox[i].domElementType)
 						{
 							case space:
-								_domElementInLineBox[i].domElement.width = Math.round((remainingSpace / spacesNumber));
-							default:	
+								_domElementInLineBox[i].domElement.width = Math.round(_containingDOMElement.style.fontMetrics.spaceWidth + (remainingSpace / spacesNumber));
+	
+								
+								default:	
 						}
 					}
 					
@@ -351,18 +353,32 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			var domElementAscent:Int;
+			var domElementDescent:Int;
+			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+			if (domElement.style.isEmbedded() == true)
+			{
+				domElementAscent = domElement.offsetHeight;
+				domElementDescent = 0;
+			}
+			else
+			{
+				domElementAscent = domElement.style.fontMetrics.ascent;
+				domElementDescent = domElement.style.fontMetrics.descent;
+			}
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
 			//of the block container
-			if (_domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxAscent)
+			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
 			{
 				
-				lineBoxAscent = _domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
+				lineBoxAscent = domElementAscent - domElementVerticalAlign;
 			}
 			
-			if (_domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxDescent)
+			if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
 			{
-				lineBoxDescent = _domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
+				lineBoxDescent = domElementDescent + domElementVerticalAlign;
 			}
 		}
 		

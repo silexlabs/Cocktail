@@ -202,7 +202,6 @@ class AbstractStyle
 	private var _fontMetrics:FontMetricsData;
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
-	
 	/**
 	 * Class constructor. Stores the target DOMElement and init
 	 * the computed styles structure with default values

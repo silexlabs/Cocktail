@@ -229,6 +229,12 @@ import cocktail.unit.UnitData;
 		 * the baseline when drawing underlines
 		 */
 		var underlineOffset:Int;
+		
+		/**
+		 * the width of a space character for
+		 * a given font at a given size
+		 */
+		var spaceWidth:Int;
 	}
 	
 	/**
