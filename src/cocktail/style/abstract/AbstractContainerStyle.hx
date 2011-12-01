@@ -234,27 +234,9 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
 		var text:String = textElement.getNativeText();
-		switch (whiteSpace)
-		{
-				case WhiteSpaceStyleValue.normal:
-					text = collapseSpaceSequences(text);
-					
-				case WhiteSpaceStyleValue.pre:
-					text = removeLineFeeds(text);
-					
-				case WhiteSpaceStyleValue.nowrap:
-					text = collapseSpaceSequences(text);
-					text = removeLineFeeds(text);
-					text = convertTabToSpace(text);
-					
-				case WhiteSpaceStyleValue.preWrap:
-					
-				case WhiteSpaceStyleValue.preLine:
-					text = collapseSpaceSequences(text);
-		}
+		text = applyWhiteSpace(text, this._computedStyle.whiteSpace);
 		
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
-		
 		
 		
 		for (i in 0...textFragments.length)
@@ -292,7 +274,7 @@ class AbstractContainerStyle extends Style
 				
 					if (textFragmentDOMElement.nativeElement != null)
 					{
-						formattingContext.insert(textFragmentDOMElement);
+						formattingContext.insertSpace(textFragmentDOMElement);
 					}
 					
 				case tab:
@@ -309,7 +291,7 @@ class AbstractContainerStyle extends Style
 				
 					if (textFragmentDOMElement.nativeElement != null)
 					{
-						formattingContext.insert(textFragmentDOMElement);
+						formattingContext.insertTab(textFragmentDOMElement);
 					}
 					
 				case lineFeed:
@@ -319,6 +301,31 @@ class AbstractContainerStyle extends Style
 				
 	}
 	
+	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
+	{
+		var ret:String = text;
+		
+		switch (whiteSpace)
+		{
+				case WhiteSpaceStyleValue.normal:
+					ret = collapseSpaceSequences(text);
+					
+				case WhiteSpaceStyleValue.pre:
+					ret = removeLineFeeds(text);
+					
+				case WhiteSpaceStyleValue.nowrap:
+					ret = collapseSpaceSequences(text);
+					ret = removeLineFeeds(text);
+					ret = convertTabToSpace(text);
+					
+				case WhiteSpaceStyleValue.preWrap:
+					
+				case WhiteSpaceStyleValue.preLine:
+					ret = collapseSpaceSequences(text);
+		}
+		
+		return ret;
+	}
 	
 	
 	/**
