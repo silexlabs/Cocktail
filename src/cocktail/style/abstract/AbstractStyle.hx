@@ -184,7 +184,7 @@ class AbstractStyle
 	 * be stored once computed to pixels into this structure
 	 */
 	private var _computedStyle:ComputedStyleData;
-	public var computedStyle(getComputedStyle, never):ComputedStyleData;
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
 	
 	/**
 	 * A reference to the DOMElement to which these styles
@@ -203,51 +203,11 @@ class AbstractStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
-	 * Class constructor. Stores the target DOMElement and init
-	 * the computed styles structure with default values
+	 * Class constructor. Stores the target DOMElement.
 	 */
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
-		
-		this._computedStyle = {
-			width : 0,
-			height : 0,
-			minHeight : 0,
-			maxHeight : 0,
-			minWidth : 0,
-			maxWidth : 0,
-			marginLeft : 0,
-			marginRight : 0,
-			marginTop : 0,
-			marginBottom : 0,
-			paddingLeft : 0,
-			paddingRight : 0,
-			paddingTop : 0,
-			paddingBottom : 0,
-			left: 0,
-			right: 0,
-			top: 0,
-			bottom : 0,
-			clear : ClearStyleValue.none,
-			float : FloatStyleValue.none,
-			display : DisplayStyleValue.block,
-			position: PositionStyleValue.staticStyle,
-			verticalAlign : 0.0,
-			fontSize:12.0,
-			lineHeight:14.0,
-			fontWeight:FontWeightStyleValue.normal,
-			fontStyle:FontStyleStyleValue.normal,
-			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
-			fontVariant:FontVariantStyleValue.normal,
-			textTransform:TextTransformStyleValue.none,
-			letterSpacing:0,
-			wordSpacing:0,
-			textIndent:0,
-			whiteSpace:WhiteSpaceStyleValue.normal,
-			textAlign:TextAlignStyleValue.left,
-			color:0
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -742,6 +702,11 @@ class AbstractStyle
 	private function getComputedStyle():ComputedStyleData
 	{
 		return _computedStyle;
+	}
+	
+	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	{
+		return _computedStyle = value;
 	}
 	
 	private function getDOMElement():DOMElement

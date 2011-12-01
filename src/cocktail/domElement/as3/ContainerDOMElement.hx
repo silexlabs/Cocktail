@@ -94,11 +94,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	override private function removeTextFragment(textFragmentDOMElement:TextFragmentDOMElement):Void
 	{		
 		super.removeTextFragment(textFragmentDOMElement);
-		
-		if (textFragmentDOMElement != null)
-		{
-			this._nativeElement.removeChild(textFragmentDOMElement.nativeElement);
-		}
+		this._nativeElement.removeChild(textFragmentDOMElement.nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
