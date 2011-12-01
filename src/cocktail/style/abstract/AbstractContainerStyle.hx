@@ -47,24 +47,6 @@ import haxe.Log;
 class AbstractContainerStyle extends Style
 {
 	/**
-	 * used to hold a runtime specific default
-	 * font name for serif font
-	 */
-	private var _serifFontName:String;
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for sans-serif font
-	 */
-	private var _sansSerifFontName:String;
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for monospace font
-	 */
-	private var _monospaceFontName:String;
-	
-	/**
 	 * class constructor
 	 * @param	domElement
 	 */
@@ -457,55 +439,6 @@ class AbstractContainerStyle extends Style
 	{
 		return StringTools.replace(text, "\t", " ");
 	}
-	
-	/**
-	 * Takes the array containing every font to apply to the
-	 * text (ordered by priority, the first available font being
-	 * used) and return a comma separated list containing the ordered
-	 * font names.
-	 * @param	value an array which may contain any combination of generic
-	 * font family name and font family name
-	 * @return a comma separated list of font, genrally ordered from most
-	 * specific to most generic, e.g "Universe,Arial,_sans"
-	 */
-	private function getFontFamilyValue(value:Array<FontFamilyStyleValue>):String
-	{
-		var fontFamilyValue:String = "";
-		
-		for (i in 0...value.length)
-		{
-			var fontName:String;
-			
-			switch (value[i])
-			{
-				case FontFamilyStyleValue.familyName(name):
-					fontName = name;
-				
-				case FontFamilyStyleValue.genericFamily(genericName):
-					switch (genericName)
-					{
-						case GenericFontFamilyValue.serif:
-							fontName = this._serifFontName;
-						
-						case GenericFontFamilyValue.sansSerif:
-							fontName = this._sansSerifFontName;
-							
-						case GenericFontFamilyValue.monospace:
-							fontName = this._monospaceFontName;
-					}
-			}
-			
-			fontFamilyValue += fontName;
-			
-			if (i < value.length - 1)
-			{
-				fontFamilyValue += ",";
-			}
-		}
-		
-		return fontFamilyValue;
-	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS

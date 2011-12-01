@@ -35,41 +35,17 @@ import haxe.Log;
  * using the flash text engine introduced in flash player 10.
  * 
  * It's purpose is to create as many TextFragmentDOMElement as necessary
- * to render every TextElement of the styledContainerDOMElement.
- * 
- * It also constructs the font metrics object using Flash text engine
- * font metrics
+ * to render every TextElement of the styled ContainerDOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
 class ContainerStyle extends AbstractContainerStyle
 {
 	/**
-	 * Generic font families names
-	 */
-	private static inline var SERIF_GENERIC_FONT_NAME:String = "_serif";
-	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "_sans";
-	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "_typewriter";
-	
-	/**
-	 * The flash text block used to create the 
-	 * flash text line that will be wrapped in
-	 * TextFragmentDOMElement
-	 */
-	private var _textBlock:TextBlock;
-	
-	/**
 	 * class constructor
 	 */
 	public function new(domElement:DOMElement) 
 	{
-		//apply flash specific generic font name
-		_serifFontName = SERIF_GENERIC_FONT_NAME;
-	   _sansSerifFontName = SANS_SERIF_GENERIC_FONT_NAME;
-	   _monospaceFontName = MONOSPACE_GENERIC_FONT_NAME;
-		
-	   _textBlock = new TextBlock();
-	   
 		super(domElement);
 	}
 	
@@ -123,59 +99,6 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	}
 	
-	/**
-	 * Returns a font metrics data object created using font metrics
-	 * provided by the flash text engine. The font metrics are 
-	 * processed using the styles of the ContainerDOMElement. The
-	 * font metrics are provided for a given font at a given size
-	 */
-	override private function getFontMetricsData():FontMetricsData
-	{
-		//create the font metrics object only if null,
-		//else it is already cached
-		if (_fontMetrics == null)
-		{
-			//the flash object used to access flash font metrics
-			var elementFormat:ElementFormat = new ElementFormat();
-			
-			//set font name
-			var fontDescription:FontDescription = new FontDescription();
-			fontDescription.fontName = getFontFamilyValue(this._fontFamily);
-			elementFormat.fontDescription = fontDescription;
-			
-			//set font size used for the font metrics 
-			elementFormat.fontSize = this._computedStyle.fontSize;
-			
-			//get the ascent (height above the baseline) and descent (height
-			//below the baseline) from the flash font metrics
-			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
-			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
-			
-			//the leading is an extra height to apply equally to the ascent
-			//and the descent when laying out lines of text
-			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-			
-			//apply leading to the ascent and descent
-			var leadedAscent:Float = (ascent + leading/2) ;
-			var leadedDescent:Float = (descent + leading / 2) ;
-			
-			//get the x height (the height of a lower-case "x")
-			var xHeight:Int = getXHeight(elementFormat);
-			
-			_fontMetrics = {
-				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(leadedAscent),
-				descent:Math.round(leadedDescent),
-				xHeight:xHeight ,
-				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
-				subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
-				underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
-			};
-		}
-		
-		return _fontMetrics;
-	}
-	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
@@ -208,7 +131,7 @@ class ContainerStyle extends AbstractContainerStyle
 		var fontDescription:FontDescription = new FontDescription(); 
 		fontDescription.fontWeight = getNativeFontWeight(_computedStyle.fontWeight);
 		fontDescription.fontPosture = getNativeFontPosture(_computedStyle.fontStyle);
-		fontDescription.fontName = getFontFamilyValue(_computedStyle.fontFamily);
+		fontDescription.fontName = getNativeFontFamily(_computedStyle.fontFamily);
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
@@ -231,26 +154,6 @@ class ContainerStyle extends AbstractContainerStyle
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
-	
-	/**
-	 * Return a flash FontWeight object from
-	 * the font weight style of the ContainerDOMElement
-	 */
-	private function getNativeFontWeight(fontWeight:FontWeightStyleValue):FontWeight
-	{
-		var nativeFontWeight:FontWeight;
-		
-		switch (fontWeight)
-		{
-			case bold:
-				nativeFontWeight = FontWeight.BOLD;
-				
-			case normal:
-				nativeFontWeight = FontWeight.NORMAL;
-		}
-		
-		return nativeFontWeight;
-	}
 	
 	/**
 	 * Return a flash FontPosture object from
@@ -291,17 +194,5 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
-	
-	/**
-	 * return the x height of the font which is equal to 
-	 * the height of a lower-case 'x'
-	 */
-	private function getXHeight(elementFormat:ElementFormat):Int
-	{
-		var textBlock:TextBlock = new TextBlock(new TextElement("x", elementFormat));
-		
-		return Math.round(textBlock.createTextLine(null, 10000).textHeight);
-	}
-	
 
 }
