@@ -49,6 +49,10 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Overriden because embedded DOMElement 
+	 * applies their own paddings
+	 */
 	override private function applyComputedDimensions():Void
 	{
 		super.applyComputedDimensions();
@@ -67,7 +71,7 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
+	override private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning

@@ -87,23 +87,24 @@ class AbstractContainerStyle extends Style
 		//depends on the children computed 'display' style value
 		for (i in 0...containerDOMElement.children.length)
 		{
-			//only DOMElement styles are computed, not TextElement element's.
+			//only DOMElement styles are computed, not TextElement as they have no style.
 			//TextElement don't influence which type of formatting context will
-			//be used as when rendered, they use the ContainerDOMElement's styles
+			//be used and when rendered, they use the ContainerDOMElement's styles
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.computePositionStyle();
+				childrenDOMElement.style.computeDisplayStyles();
 			}
 		}
 		
-		//a new FormattingContext must be created for the children of the 
-		//ContainerDOMElement as they will be laid out inside the ContainerDOMElement 
-		//using its width and height
+		//The children use either a new Formatting context to
+		//be laid out into if the ContainerDOMElement establishes
+		//a new formatting context or use the current formatting
+		//context
 		var childrenFormattingContext:FormattingContext;
 		
 		//if the FormattingContext is null, this ContainerDOMElement
-		//is the first to be laid out, it is not necessary the root
+		//is the first to be laid out, it is not necessarily the root
 		//DOMElement of the document as any DOMElement can trigger
 		//a layout
 		if (formatingContext == null)
@@ -119,22 +120,27 @@ class AbstractContainerStyle extends Style
 		//get the dimensions that will be used to lay out the children
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
-		//instead of its height
+		//instead of its height as containing height
 		var childrenContainingDOMElementData:ContainingDOMElementData = getChildrenContainingDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
 		//are based on the font and the font size used
 		var childrenContainingDOMElementFontMetricsData:FontMetricsData = this.fontMetrics;
 		
-		//pass a reference to the dimensions of the first positioned ancestor of the 
-		//ContainerDOMElement
-		var childLastPositionedDOMElementDimensions:ContainingDOMElementData = lastPositionedDOMElementDimensions;
+		//Holds a reference to the dimensions of the first positioned ancestor of the 
+		//laid out children
+		var childLastPositionedDOMElementDimensions:ContainingDOMElementData;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
 			childLastPositionedDOMElementDimensions = getChildrenContainingDOMElementData();
+		}
+		//
+		else
+		{
+			childLastPositionedDOMElementDimensions = lastPositionedDOMElementDimensions;
 		}
 		
 		//flow all children 
@@ -148,7 +154,7 @@ class AbstractContainerStyle extends Style
 				//if it is a ContainerDOMElement
 				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
-			//else if it is a text node, call a method that will create as many TextFragmentDOMElement
+			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
@@ -172,7 +178,7 @@ class AbstractContainerStyle extends Style
 		
 		
 		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content width
+		//defined as 'auto', then it depends on its content height
 		//and it must now be adjusted to the total height
 		//of its children before the ContainerDOMElement is actually
 		//sized
@@ -207,76 +213,107 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Insert a text node ( a string of text without formatting ) by creating as many text lines as needed from it
-	 * and inserting them into the document
-	 * @param	textNode the string of text used as content for the created text lines
+	 * Insert a TextElement ( a string of text without formatting ) by creating as many TextFragmentDOMElement as needed from it
+	 * and inserting them into the flow
+	 * @param	textElement the string of text used as content for the created text lines
 	 */
 	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
+		//get the text to display from the TextElement
 		var text:String = textElement.getNativeText();
+		
+		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
 		text = applyWhiteSpace(text, this._computedStyle.whiteSpace);
 		
+		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
 		
-		
+		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
 			switch(textFragments[i].textToken)
 			{
 				case word(value):
-					var textFragmentDOMElement:TextFragmentDOMElement;
-					if (textFragments[i].textFragmentDOMElement == null)
-					{
-						textFragmentDOMElement = createTextFragment(value);
-						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
-					}
-					else
-					{
-						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
-					}
-				
-					formattingContext.insert(textFragmentDOMElement);
+					//insert a word in the flow
+					formattingContext.insert(getTextFragmentDOMElement(textFragments[i], value));
 					
 					
 				case space:
-					var textFragmentDOMElement:TextFragmentDOMElement;
-					if (textFragments[i].textFragmentDOMElement == null)
-					{
-						textFragmentDOMElement = createTextFragment(" ");
-						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
-					}
-					else
-					{
-						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
-					}
-				
-					formattingContext.insertSpace(textFragmentDOMElement);
+					//insert a space in the flow
+					formattingContext.insertSpace(getTextFragmentDOMElement(textFragments[i], " "));
 					
 					
 				case tab:
-				var textFragmentDOMElement:TextFragmentDOMElement;
-					if (textFragments[i].textFragmentDOMElement == null)
-					{
-						textFragmentDOMElement = createTextFragment(" ");
-						textFragments[i].textFragmentDOMElement = textFragmentDOMElement;
-					}
-					else
-					{
-						textFragmentDOMElement = textFragments[i].textFragmentDOMElement;
-					}
-				
-					formattingContext.insertTab(textFragmentDOMElement);
+					//insert a tab in the flow
+					formattingContext.insertTab(getTextFragmentDOMElement(textFragments[i], " "));
 					
 					
 				case lineFeed:
+					//start a new line
 					formattingContext.startNewLine(0);
 			}
 		}
 				
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE TEXT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Take a TextFragmentData and a text, and create
+	 * a TextFragmentDOMElement from it if it does'nt already
+	 * exists. If it does, return it
+	 */
+	private function getTextFragmentDOMElement(textFragmentData:TextFragmentData, text:String):TextFragmentDOMElement
+	{
+		var textFragmentDOMElement:TextFragmentDOMElement;
+		
+		if (textFragmentData.textFragmentDOMElement == null)
+		{
+			textFragmentDOMElement = createTextFragment(text);
+			textFragmentData.textFragmentDOMElement = textFragmentDOMElement;
+		}
+		else
+		{
+			textFragmentDOMElement = textFragmentData.textFragmentDOMElement;
+		}
+		
+		return textFragmentDOMElement;
+	}
+	
+	/**
+	 * Create a TextFragmentDOMElement from a string of text and
+	 * add it to the ContainerDOMElement
+	 */
+	private function createTextFragment(text:String):TextFragmentDOMElement
+	{
+		var textFragmentDOMElement:TextFragmentDOMElement = doCreateTextFragment(text);
+	
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.addTextFragment(textFragmentDOMElement);
+		
+		return  textFragmentDOMElement;
+	}
+	
+	/**
+	 * Actually create the TextFragmentDOMElement using runtime
+	 * specific API. Overriden by each runtime
+	 */
+	private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	{
+		return null;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE TEXT HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Apply the whiteSpace style rule to a text
+	 */
 	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
 	{
 		var ret:String = text;
@@ -301,44 +338,6 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return ret;
-	}
-	
-	
-	/**
-	 * Create and return a TextFragmentDOMElement of the specified width using the provided
-	 * TextElement as model
-	 * @param	width the desired width for the created text line. As many as possible glyphs will
-	 * be added to the line until adding another glyph would make the text line too wide, so 
-	 * the actual width of the line will probably be a bit inferior to the specified width. 
-	 * It might also be inferior if there is not enough text to fill the specified width
-	 * @param	textNode the string of unformatted text to use as the model to create the
-	 * text line. If the createTextLine method is called multiple times in a row with the
-	 * same TextElement, text lines will be created until all of the TextElement text has been rendered
-	 * as text lines.
-	 * @return either a TextFragmentDOMElement or null if the TextElement model has run out of text to 
-	 * render
-	 */
-	private function createTextFragment(text:String):TextFragmentDOMElement
-	{
-		var textFragmentDOMElement:TextFragmentDOMElement = doCreateTextFragment(text);
-		
-		//stores the text lines to easily remove it on the next layout
-		//and add it as a child of this ContainerDOMElement nativeElement
-		//so that it can appear in the DOM
-		
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		containerDOMElement.addTextFragment(textFragmentDOMElement);
-		
-		return  textFragmentDOMElement;
-	}
-	
-	private function doCreateTextFragment(text:String):TextFragmentDOMElement
-	{
-		//implemented by each runtime :
-		// create and style native element
-		// wrap it in textlineDOMElement
-		// add it as a text line children of the container DOM Element
-		return null;
 	}
 	
 	/**
@@ -396,6 +395,10 @@ class AbstractContainerStyle extends Style
 		return capitalizedText;
 	}
 	
+	/**
+	 * Convert sequences of spaces in a text
+	 * into a single space
+	 */
 	private function collapseSpaceSequences(text:String):String
 	{
 		var collapsedText:String = "";
@@ -421,11 +424,20 @@ class AbstractContainerStyle extends Style
 		return collapsedText;
 	}
 	
+	/**
+	 * Removes the new line control character
+	 * from a text
+	 */
 	private function removeLineFeeds(text:String):String
 	{
 		return StringTools.replace(text, "\n", "");
 	}
 	
+	/**
+	 * Removes the tabulation control character
+	 * from a text by converting them to space
+	 * character
+	 */
 	private function convertTabToSpace(text:String):String
 	{
 		return StringTools.replace(text, "\t", " ");
@@ -439,62 +451,73 @@ class AbstractContainerStyle extends Style
 	 * Instantiate the right formatting context for this ContainerDOMElement.
 	 * 
 	 * If the container DOMElement itself is an inline level DOMElement, all
-	 * its children must be formatted as inline and thus an Inline formatting 
-	 * context is returned
+	 * its children must be formatted as inline. If the previous formatting
+	 * context was already inline, then it is also used by the container
+	 * DOMElement, else a new inline formatting context is created
 	 * 
 	 * If the container DOMElement itself is a block level DOMElement, if all its
 	 * children are inline level, an inline formatting context is instantiated, else
 	 * if all its children are block level, a block level formatting context is
 	 * instantiated. If its children mix inline and block level DOMElement, 
-	 * block formatting context is the default
-	 * 
-	 * Lastly, if this container DOMElement is inline meaning it participates in
-	 * an inline formatting context and the previous formatting context is already
-	 * an inline formatting context, then this formatting context is used, none
-	 * is instantiated. This case mainluy happens when block of text are formatted
-	 * combining multiple elements (bold text, italic text...)
-	 * 
+	 * inline formatting context is the default
 	 * 
 	 * @param	previousFormatingContext the formatting context of the parent of this
-	 * Container DOMElement, used to retrieve floats position from it which might also
-	 * apply to this container DOMElement
+	 * Container DOMElement, might be returned if the container DOMElement participates
+	 * in the same formatting context as its parent
 	 * 
 	 * @return an inline or block formatting context
 	 */
 	private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		var ret:FormattingContext;
+		var formattingContext:FormattingContext;
 		
+		//the container DOMElement participate in the same
+		//formatting context as its parent
 		if (isInline() && Std.is(previousFormatingContext, InlineFormattingContext))
 		{
-			ret = previousFormatingContext;
+			formattingContext = previousFormatingContext;
 		}
-		
-		else if (childrenInline() == true)
-		{
-			ret = new InlineFormattingContext(containerDOMElement, previousFormatingContext);	
-		}
+		//else, based on the children display style
+		//create an inline or block formatting context
 		else
 		{
-			ret = new BlockFormattingContext(containerDOMElement, previousFormatingContext);
+			if (childrenInline() == true)
+			{
+				formattingContext = new InlineFormattingContext(containerDOMElement, previousFormatingContext);	
+			}
+			else
+			{
+				formattingContext = new BlockFormattingContext(containerDOMElement, previousFormatingContext);
+			}
 		}
 		
-		return ret;
+		return formattingContext;
 	}
 	
+	/**
+	 * Return the dimensions and position data
+	 * of the ContainerDOMElement
+	 */
 	private function getChildrenContainingDOMElementData():ContainingDOMElementData
 	{
 		var height:Int;
 		
+		//if the ContainerDOMElement
+		//is inline, then its line height will
+		//be used to lay out its children in lines
 		if (isInline() == true)
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
+		//same if the ContainerDOMElement starts
+		//an inline formatting context
 		else if (isInline() == false && childrenInline() == true)
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
+		//else it starts a block formatting context
+		//and its height is used
 		else
 		{
 			height = this._computedStyle.height;
