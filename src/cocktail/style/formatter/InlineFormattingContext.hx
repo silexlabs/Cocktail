@@ -208,9 +208,12 @@ class InlineFormattingContext extends FormattingContext
 			WhiteSpaceStyleValue.preLine:
 				
 				
-				if (_domElementInLineBox[0].domElementType == InlineBoxValue.space)
+				switch(_domElementInLineBox[0].domElementType)
 				{
-					_domElementInLineBox.shift();
+					case InlineBoxValue.space:
+						_domElementInLineBox.shift();
+						
+					default:	
 				}
 				
 								
@@ -224,12 +227,14 @@ class InlineFormattingContext extends FormattingContext
 				WhiteSpaceStyleValue.nowrap,
 				WhiteSpaceStyleValue.preLine:
 					
-					
-
-				if (_domElementInLineBox[_domElementInLineBox.length - 1].domElementType == InlineBoxValue.space)
+				switch(	_domElementInLineBox[_domElementInLineBox.length - 1].domElementType)
 				{
-					_domElementInLineBox.pop();
+					case InlineBoxValue.space:
+						_domElementInLineBox.pop();
+						
+					default:	
 				}
+				
 					
 					
 									
@@ -291,7 +296,6 @@ class InlineFormattingContext extends FormattingContext
 				}
 				
 			case justify:	
-				
 				if (isLastLine == true)
 				{
 					for (i in 0..._domElementInLineBox.length)
@@ -302,6 +306,7 @@ class InlineFormattingContext extends FormattingContext
 				}
 				else
 				{
+					
 					var spacesNumber:Int = 0;
 					for (i in 0..._domElementInLineBox.length)
 					{
@@ -314,21 +319,18 @@ class InlineFormattingContext extends FormattingContext
 						}
 					}
 					
-					
 					for (i in 0..._domElementInLineBox.length)
 					{
 						switch (_domElementInLineBox[i].domElementType)
 						{
 							case space:
-								_domElementInLineBox[i].domElement.width += Math.round(remainingSpace / spacesNumber);
-								
+								_domElementInLineBox[i].domElement.width = Math.round((remainingSpace / spacesNumber));
 							default:	
 						}
 					}
 					
 					for (i in 0..._domElementInLineBox.length)
 					{
-						
 						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
