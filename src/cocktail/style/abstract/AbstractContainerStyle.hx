@@ -582,7 +582,7 @@ class AbstractContainerStyle extends Style
 				//is block level
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				
-				if (childrenDOMElement.style.computedStyle.display == block && childrenDOMElement.style.isFloat() == false )
+				if (childrenDOMElement.style.computedStyle.display == block)
 				{
 					if (childrenDOMElement.style.isFloat() == false)
 					{
