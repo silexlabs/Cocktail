@@ -448,18 +448,32 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate the right formatting context for this ContainerDOMElement.
+	 * Return the right formatting context for this ContainerDOMElement.
+	 * 
+	 * A ContainerDOMElement can either establish a new formatting context
+	 * or participate in the current formatting context. If it participates
+	 * in the current formatting context, then the previous formatting
+	 * is returned else a new block or inline formatting context is
+	 * instantiated
+	 * 
+	 * INLINE LEVEL CONTAINER DOMELEMENT
 	 * 
 	 * If the container DOMElement itself is an inline level DOMElement, all
-	 * its children must be formatted as inline. If the previous formatting
-	 * context was already inline, then it is also used by the container
-	 * DOMElement, else a new inline formatting context is created
+	 * its children must be formatted as inline and the container DOMElement
+	 * participates in the previous formatting context
 	 * 
-	 * If the container DOMElement itself is a block level DOMElement, if all its
-	 * children are inline level, an inline formatting context is instantiated, else
-	 * if all its children are block level, a block level formatting context is
-	 * instantiated. If its children mix inline and block level DOMElement, 
-	 * inline formatting context is the default
+	 * BLOCK LEVEL CONTAINER DOMELEMENT
+	 * 
+	 * If the container DOMElement itself is a block level DOMElement, it establishes
+	 * a new formatting context. If all its children are inline level, 
+	 * an inline formatting context is instantiated, else if all its children are block
+	 * level, a block level formatting context is instantiated. If its children mix
+	 * inline and block level DOMElement, inline formatting context is the default.
+	 * If the container
+	 * 
+	 * If the container DOMElement is absolutely positioned, then it belongs to a
+	 * different stacking context than the flow and is not influenced by the previously
+	 * declared float.
 	 * 
 	 * @param	previousFormatingContext the formatting context of the parent of this
 	 * Container DOMElement, might be returned if the container DOMElement participates
@@ -472,9 +486,24 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var formattingContext:FormattingContext;
 		
-		//the container DOMElement participate in the same
+		//if absolutely positioned DOMElement
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			//start an inline or block context, but don't use the 
+			//previous formatting context to retrieve current floats as they
+			//don't apply to this new formatting context
+			if (childrenInline() == true)
+			{
+				formattingContext = new InlineFormattingContext(containerDOMElement, null);	
+			}
+			else
+			{
+				formattingContext = new BlockFormattingContext(containerDOMElement, null);
+			}
+		}
+		//else if the container DOMElement participate in the same
 		//formatting context as its parent
-		if (isInline() && Std.is(previousFormatingContext, InlineFormattingContext))
+		else if (isInline() && Std.is(previousFormatingContext, InlineFormattingContext))
 		{
 			formattingContext = previousFormatingContext;
 		}
