@@ -473,6 +473,7 @@ class Style extends AbstractStyle
 					}
 			}
 			
+			//escapes font name constituted of multiple words
 			if (fontName.indexOf(" ") != -1)
 			{
 				fontName = "'" + fontName + "'";

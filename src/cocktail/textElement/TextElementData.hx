@@ -8,25 +8,52 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement;
+package cocktail.textElement;
+
+import cocktail.domElement.TextFragmentDOMElement;
 
 /**
- * Set the right runtime specific TextLineDOMElement at compile-time
+ * TextElement enum and struct
  */
-#if flash9
-typedef TextLineDOMElement =  cocktail.domElement.as3.TextLineDOMElement;
 
-#elseif js
-typedef TextLineDOMElement =  cocktail.domElement.js.TextLineDOMElement;
-
-#elseif php
-typedef TextLineDOMElement =  cocktail.domElement.php.TextLineDOMElement;
-
-#elseif doc
 /**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
+ * Lists all the different consituant
+ * of a plain text, including 
+ * controls characters
  */
-class TextLineDOMElement extends cocktail.domElement.abstract.AbstractTextLineDOMElement { }
+enum TextTokenValue {
+	
+	/**
+	 * a word, surrounded by
+	 * spaces
+	 */
+	word(value:String);
+	
+	/**
+	 * represents one
+	 * space which can be 
+	 * between 2 words or among
+	 * a space sequence
+	 */
+	space;
+	
+	/**
+	 * a tabulation
+	 */
+	tab;
+	
+	/**
+	 * a line feed (starts
+	 * a new line)
+	 */
+	lineFeed;
+}
 
-#end
+/**
+ * Holds a text token and its visual
+ * representation (a TextFragmentDOMElement)
+ */
+typedef TextFragmentData = {
+	var textToken:TextTokenValue;
+	var textFragmentDOMElement:TextFragmentDOMElement;
+}

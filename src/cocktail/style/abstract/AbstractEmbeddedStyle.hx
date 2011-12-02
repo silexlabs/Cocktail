@@ -49,6 +49,10 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Overriden because embedded DOMElement 
+	 * applies their own paddings
+	 */
 	override private function applyComputedDimensions():Void
 	{
 		super.applyComputedDimensions();
@@ -67,7 +71,7 @@ class AbstractEmbeddedStyle extends Style
 	 * This is method is overriden to use box computer specific to 
 	 * embedded DOMElement instead of the default one
 	 */
-	override private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
+	override private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -120,33 +124,4 @@ class AbstractEmbeddedStyle extends Style
 	{
 		return true;
 	}
-	
-	/////////////////////////////////
-	// OVERRIDEN SETTERS/GETTERS
-	////////////////////////////////
-	
-	/**
-	 * Embedded DOMElement don't have baseline as
-	 * they can't contain text. When aligned to the baseline
-	 * in an inline formatting context, their bottom margin
-	 * is aligned to the baseline. The offset height
-	 * of an embedded DOMElement represents its ascent
-	 * and it has no descent.
-	 * 
-	 * The other font metrics don't apply to it and are
-	 * set to 0
-	 */
-	override private function getFontMetricsData():FontMetricsData
-	{
-		return {
-			ascent:domElement.offsetHeight,
-			fontSize:0.0,
-			descent:0,
-			xHeight:0,
-			superscriptOffset:0,
-			subscriptOffset:0,
-			underlineOffset:0
-		};
-	}
-	
 }

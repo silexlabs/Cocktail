@@ -11,10 +11,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.domElement.js;
 import cocktail.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.TextNode;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktail.textElement.TextElement;
 import js.Lib;
 import js.Dom;
 import cocktail.domElement.abstract.AbstractContainerDOMElement;
@@ -68,24 +68,25 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	}
 	
 	/**
-	 * Overriden to append the text node to the HTML element of this container
+	 * Overriden to append the textElement's NativeTextElement (an 
+	 * HTML textNode) to the HTML element of this container
 	 * @param	text the text node to append
 	 */
-	override public function addText(text:TextNode):Void
+	override public function addText(textElement:TextElement):Void
 	{
-		super.addText(text);
-		this.nativeElement.appendChild(text);
+		super.addText(textElement);
+		this.nativeElement.appendChild(textElement.text);
 	}
 	
 	/**
-	 * Overriden to remove the text node from the HTML element of this
+	 * Overriden to remove the native HTML text node from the HTML element of this
 	 * container
 	 * @param	text the text node to remove
 	 */
-	override public function removeText(text:TextNode):Void
+	override public function removeText(textElement:TextElement):Void
 	{
-		super.removeText(text);
-		this._nativeElement.removeChild(text);
+		super.removeText(textElement);
+		this._nativeElement.removeChild(textElement.text);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

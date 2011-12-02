@@ -34,13 +34,10 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		
 		if (style.width == DimensionStyleValue.auto)
 		{
-			
 			if (style.left != PositionOffsetStyleValue.auto && style.right != PositionOffsetStyleValue.auto)
 			{
-				
 				var computedStyle:ComputedStyleData = style.computedStyle;
 				style.computedStyle.width = containingDOMElementData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.marginLeft - computedStyle.marginRight; 
-
 			}
 		}
 		
