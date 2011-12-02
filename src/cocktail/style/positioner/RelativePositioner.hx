@@ -12,6 +12,7 @@ package cocktail.style.positioner;
 
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * This is the box positioner implementation
