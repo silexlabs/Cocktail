@@ -46,4 +46,27 @@ class RelativePositioner extends BoxPositioner
 		applyOffset(domElement, containingDOMElementData);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERIDDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden bacause when relatively positioning a DOMElement, only its top and left
+	 * styles are accounted for
+	 */
+	override private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
+	{
+		//apply an horizontal offset if it is not 'auto'
+		if (domElement.style.left != PositionOffsetStyleValue.auto)
+		{
+			domElement.x += domElement.style.computedStyle.left;
+		}
+		
+		//apply a vertical offset if it is not 'auto'
+		if (domElement.style.top != PositionOffsetStyleValue.auto)
+		{
+			domElement.y += domElement.style.computedStyle.top;
+		}
+	}
+	
 }

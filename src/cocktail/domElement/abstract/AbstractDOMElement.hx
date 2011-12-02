@@ -902,6 +902,7 @@ class AbstractDOMElement
 		//returned value
 		var localX:Int = value;
 		
+			
 		//if the DOMElement has a parent
 		if (this._parent != null)
 		{
@@ -911,6 +912,7 @@ class AbstractDOMElement
 			//to its parent
 			var parentGlobalX:Int = this._parent.globalX;
 			localX -= parentGlobalX;
+	
 			
 		}
 		//if this DOMElement has no parent, then it is the 
