@@ -62,16 +62,16 @@ cocktail.runtime.js.Viewport.__name__ = ["cocktail","runtime","js","Viewport"];
 cocktail.runtime.js.Viewport.__super__ = cocktail.runtime.abstract.AbstractViewport;
 for(var k in cocktail.runtime.abstract.AbstractViewport.prototype ) cocktail.runtime.js.Viewport.prototype[k] = cocktail.runtime.abstract.AbstractViewport.prototype[k];
 cocktail.runtime.js.Viewport.prototype._onResizeCallback = function(e) {
-	haxe.Log.trace("YYYYEEEESSSS",{ fileName : "Viewport.hx", lineNumber : 42, className : "cocktail.runtime.js.Viewport", methodName : "_onResizeCallback"});
+	haxe.Log.trace("RESIZE fired",{ fileName : "Viewport.hx", lineNumber : 42, className : "cocktail.runtime.js.Viewport", methodName : "_onResizeCallback"});
 	if(this._getOnResize() != null) (this._getOnResize())();
 }
 cocktail.runtime.js.Viewport.prototype._addResizeEvent = function() {
 	haxe.Log.trace("start listening " + js.Lib.window.innerWidth,{ fileName : "Viewport.hx", lineNumber : 54, className : "cocktail.runtime.js.Viewport", methodName : "_addResizeEvent"});
-	js.Lib.window.onresize = $closure(this,"_onResizeCallback");
+	js.Lib.window.addEventListener("resize",$closure(this,"_onResizeCallback"),false);
 }
 cocktail.runtime.js.Viewport.prototype._removeResizeEvent = function() {
-	haxe.Log.trace("stop listening",{ fileName : "Viewport.hx", lineNumber : 62, className : "cocktail.runtime.js.Viewport", methodName : "_removeResizeEvent"});
-	js.Lib.window.onresize = null;
+	haxe.Log.trace("stop listening",{ fileName : "Viewport.hx", lineNumber : 63, className : "cocktail.runtime.js.Viewport", methodName : "_removeResizeEvent"});
+	js.Lib.window.removeEventListener("resize",$closure(this,"_onResizeCallback"),false);
 }
 cocktail.runtime.js.Viewport.prototype._addRotateEvent = function() {
 }
