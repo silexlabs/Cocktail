@@ -14,16 +14,16 @@ package cocktail.domElement;
  * Set the right runtime specific AnimationDOMElement at compile-time
  */
 #if flash9
-typedef AnimationDOMElement =  cocktail.domElement.as3.AnimationDOMElement;
+typedef AnimationDOMElement =  cocktailCore.domElement.as3.AnimationDOMElement;
 
 #elseif js
-typedef AnimationDOMElement =  cocktail.domElement.js.AnimationDOMElement;
+typedef AnimationDOMElement =  cocktailCore.domElement.js.AnimationDOMElement;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class AnimationDOMElement extends cocktail.domElement.abstract.AbstractAnimationDOMElement { }
+class AnimationDOMElement extends cocktailCore.domElement.abstract.AbstractAnimationDOMElement { }
 
 #end

@@ -14,12 +14,12 @@ package cocktail.textElement;
  * Set the right runtime specific TextElement at compile-time
  */
 #if flash9
-typedef TextElement = cocktail.textElement.as3.TextElement;
+typedef TextElement = cocktailCore.textElement.as3.TextElement;
 
 #elseif js
-typedef TextElement =  cocktail.textElement.js.TextElement;
+typedef TextElement =  cocktailCore.textElement.js.TextElement;
 
 #elseif php
-typedef TextElement =  cocktail.textElement.php.TextElement;
+typedef TextElement =  cocktailCore.textElement.php.TextElement;
 
 #end

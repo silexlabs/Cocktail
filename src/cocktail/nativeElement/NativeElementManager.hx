@@ -12,16 +12,16 @@ package cocktail.nativeElement;
 
 //import the right runtime implementations
 #if flash9
-import cocktail.nativeElement.as3.NativeElementCreator;
-import cocktail.nativeElement.as3.NativeElementPathManager;
+import cocktailCore.nativeElement.as3.NativeElementCreator;
+import cocktailCore.nativeElement.as3.NativeElementPathManager;
 
 #elseif js
-import cocktail.nativeElement.js.NativeElementCreator;
-import cocktail.nativeElement.js.NativeElementPathManager;
+import cocktailCore.nativeElement.js.NativeElementCreator;
+import cocktailCore.nativeElement.js.NativeElementPathManager;
 
 #elseif doc
-class NativeElementCreator extends cocktail.nativeElement.abstract.AbstractNativeElementCreator { }
-class NativeElementPathManager extends cocktail.nativeElement.abstract.AbstractNativeElementPathManager { }
+class NativeElementCreator extends cocktailCore.nativeElement.abstract.AbstractNativeElementCreator { }
+class NativeElementPathManager extends cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager { }
 
 #end
 
