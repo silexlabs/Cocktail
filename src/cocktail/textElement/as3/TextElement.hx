@@ -8,22 +8,34 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.domElement;
+package cocktail.textElement.as3;
+
+import cocktail.style.StyleData;
+import cocktail.textElement.abstract.AbstractTextElement;
+import cocktail.textElement.TextElementData;
 
 /**
- * Set the right runtime specific TextNode at compile-time
+ * This is the Flash As3 implementation of the TextElement.
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef TextNode =  String;
-
-#elseif js
-import js.Dom;
-typedef TextNode =  js.HtmlDom;
-
-#elseif php
-typedef TextNode =  Xml;
-
-#elseif doc
-typedef NativeElement = Dynamic;
-
-#end
+class TextElement extends AbstractTextElement
+{
+	/**
+	 * class constructor
+	 */
+	public function new(text:String) 
+	{
+		super(text);
+		_text = text;
+	}
+	
+	/**
+	 * In Flash, the NativeTextElement is already
+	 * a String, so just returns it
+	 */
+	override public function getNativeText():String
+	{
+		return _text;
+	}
+}

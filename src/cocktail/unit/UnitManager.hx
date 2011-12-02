@@ -142,8 +142,6 @@ class UnitManager
 		return fontSize;
 	}
 	
-	
-	
 	/**
 	 * Get a percentage of a reference value
 	 * @param	percent form 0 to 100

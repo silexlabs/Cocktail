@@ -27,7 +27,6 @@ class NativeElementPathManager extends cocktail.nativeElement.abstract.AbstractN
 
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
-import cocktail.domElement.TextNode;
 
 /**
  * this class abstract and manages the interaction with a
@@ -91,21 +90,5 @@ class NativeElementManager
 		}
 		
 		return _nativeElementCreator.createNativeElement(nativeElementType);
-	}
-	
-	/**
-	 * Create a TextNode from a text, which is an abstract representation
-	 * of a text element, e.g in JS, it is an HTML TextNode, in flash a 
-	 * simple string
-	 */
-	public static function createNativeTextNode(text:String):TextNode
-	{
-		//instantiate the reference creator if first use
-		if (_nativeElementCreator == null)
-		{
-			_nativeElementCreator = new NativeElementCreator();
-		}
-		
-		return _nativeElementCreator.createNativeTextNode(text);
 	}
 }

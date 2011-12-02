@@ -1,6 +1,6 @@
 package cocktail.domElement.as3;
 
-import cocktail.domElement.abstract.AbstractTextLineDOMElement;
+import cocktail.domElement.abstract.AbstractTextFragmentDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.StyleData;
@@ -12,7 +12,7 @@ import haxe.Log;
  * @author Yannick DOMINGUEZ
  */
 
-class TextLineDOMElement extends AbstractTextLineDOMElement
+class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 {
 
 	public function new(nativeElement:NativeElement, style:Style) 

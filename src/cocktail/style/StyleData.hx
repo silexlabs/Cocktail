@@ -229,6 +229,12 @@ import cocktail.unit.UnitData;
 		 * the baseline when drawing underlines
 		 */
 		var underlineOffset:Int;
+		
+		/**
+		 * the width of a space character for
+		 * a given font at a given size
+		 */
+		var spaceWidth:Int;
 	}
 	
 	/**
@@ -243,39 +249,6 @@ import cocktail.unit.UnitData;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Lists all the different consituant
-	 * of a plain text, including 
-	 * controls characters
-	 */
-	enum TextFragmentValue {
-		
-		/**
-		 * a word, surrounded by
-		 * spaces
-		 */
-		word(value:String);
-		
-		/**
-		 * represents one
-		 * space which can be 
-		 * between 2 words or among
-		 * a space sequence
-		 */
-		space;
-		
-		/**
-		 * a tabulation
-		 */
-		tab;
-		
-		/**
-		 * a line feed (starts
-		 * a new line)
-		 */
-		lineFeed;
-	}
 	
 	/**
 	 * Lists the different kind of

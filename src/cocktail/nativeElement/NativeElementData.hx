@@ -38,7 +38,7 @@ import cocktail.nativeElement.NativeElement;
 	 graphic;
 	 
 	 /**
-	  * text type such as an HTML TextNode
+	  * text type such as an HTML TextElement
 	  */
 	 text;
 	 
