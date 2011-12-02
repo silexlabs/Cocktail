@@ -8,36 +8,22 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement.abstract;
-
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElement;
+package cocktail.textElement;
 
 /**
- * This is a base class for the native element
- * creator implementation. It creates a native element
- * and returns a reference to it
+ * Set the right runtime specific NativeTextElement at compile-time
  * 
- * @author Yannick DOMINGUEZ
+ * A NativeTextElement is an abstraction of a text element, variying
+ * based on runtime
  */
-class AbstractNativeElementCreator
-{
+#if flash9
+typedef NativeTextElement = String;
 
-	/**
-	 * class constructor
-	 */
-	public function new() 
-	{
-		
-	}
-	
-	/**
-	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
-	 * @param	nativeElementType the type of element to create (graphic, text...)
-	 */
-	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
-	{
-		return null;
-	}
-	
-}
+#elseif js
+import js.Dom;
+typedef NativeTextElement =  js.HtmlDom;
+
+#elseif php
+typedef NativeTextElement =  String;
+
+#end

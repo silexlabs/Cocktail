@@ -32,11 +32,9 @@ import haxe.Log;
  */
 class FormattingContext 
 {
-
 	/**
 	 * A reference to the DOMElement which started the
-	 * formatting context. It contains all the DOMElement which
-	 * are then inserted into this formatting context
+	 * formatting context.
 	 */ 
 	private var _containingDOMElement:DOMElement;
 	public var containingDOMElement(getContainingDOMElement, never):DOMElement;
@@ -47,15 +45,8 @@ class FormattingContext
 	 */
 	private var _containingDOMElementWidth:Int;
 	
-	
 	/**
-	 * A reference to each of the DOMElements that were inserted into
-	 * this formatting context
-	 */
-	private var _formatedElements:Array<DOMElement>;
-	
-	/**
-	 * An instance of the class managing the floated DOMElement.
+	 * An instance of the class managing the floated DOMElements.
 	 */
 	private var _floatsManager:FloatsManager;
 	public var floatsManager(getFloatsManager, never):FloatsManager;
@@ -66,7 +57,6 @@ class FormattingContext
 	 */
 	private var _flowData:FlowData;
 	public var flowData(getFlowData, never):FlowData;
-	
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -80,15 +70,9 @@ class FormattingContext
 	 */
 	public function new(domElement:DOMElement, previousFormatingContext:FormattingContext = null) 
 	{
-		
-		
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
 		_containingDOMElementWidth = _containingDOMElement.style.computedStyle.width;
-		
-		//will store each inserted DOMElement
-		_formatedElements = new Array<DOMElement>();
-		
 		
 		//will store the data of the floated DOMElement of this
 		//formatting context
@@ -98,6 +82,8 @@ class FormattingContext
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
 		{	
+			//the float are not retrieved if the DOMElement starting
+			//the formatting is itself a float
 			if (domElement.style.isFloat() == false)
 			{
 				_floatsManager.addFloats(previousFormatingContext);
@@ -119,6 +105,7 @@ class FormattingContext
 		var flowY:Int = domElement.style.computedStyle.paddingTop;
 		
 		var flowX:Int;
+		
 		if (domElement.style.computedStyle.paddingLeft > _floatsManager.getLeftFloatOffset(flowY))
 		{
 			flowX = domElement.style.computedStyle.paddingLeft;
@@ -147,37 +134,34 @@ class FormattingContext
 	 */
 	public function insert(domElement:DOMElement):Void
 	{
-		//store the DOMElement
-		_formatedElements.push(domElement);
-		
-		//actually place the DOMElement by computing
-		//its place in the flow than updating its
-		//position attributes
-		place(domElement);
-		
-		//remove all the floats that the insertion
-		//of the DOMElement made obsolete
-		removeFloats();
+		doInsert(domElement);
 	}
 	
+	/**
+	 * Insert a space character, wrapped in a DOMElement
+	 * in the formatting context
+	 */
 	public function insertSpace(domElement:DOMElement):Void
 	{
-		//store the DOMElement
-		_formatedElements.push(domElement);
-		
-		//actually place the DOMElement by computing
-		//its place in the flow than updating its
-		//position attributes
-		place(domElement);
-		
-		//remove all the floats that the insertion
-		//of the DOMElement made obsolote
-		removeFloats();
+		doInsert(domElement);
 	}
 	
+	/**
+	 * Insert a tab character, wrapped in a DOMElement
+	 * in the formatting context
+	 */
 	public function insertTab(domElement:DOMElement):Void
 	{
-		
+		doInsert(domElement);
+	}
+	
+	/**
+	 * Start a new line by inserting a new line
+	 * control character
+	 */
+	public function insertLineFeed():Void
+	{
+		startNewLine(0);
 	}
 	
 	/**
@@ -204,22 +188,12 @@ class FormattingContext
 	}
 	
 	/**
-	 * Retrieve the flooats from another formatting context
+	 * Retrieve the floats from another formatting context
 	 * which applies to this formatting context
 	 */
 	public function retrieveFloats(formattingContext:FormattingContext):Void
 	{
 		_floatsManager.retrieveFloats(formattingContext);
-	}
-	
-	private function getRemainingLineWidth():Int
-	{
-		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
-	}
-
-	public function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
-	{
-		
 	}
 	
 	/**
@@ -236,6 +210,45 @@ class FormattingContext
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
+	
+	/**
+	 * Start a new line in the formatting context. Lay out
+	 * the current line before starting a new
+	 * @param	domElementWidth the width of the DOMElement that triggered the new line,
+	 * it is used to find the first y position in the flow with enough space to fit and
+	 * thus start a new line
+	 * @param	isLastLine wether the current line is the last line. If it is, the
+	 * current line is laid out but no new line is actually started
+	 */
+	private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Actually insert a DOMElement in the
+	 * formatting context
+	 */
+	private function doInsert(domElement:DOMElement):Void
+	{
+		//actually place the DOMElement by computing
+		//its place in the flow than updating its
+		//position attributes
+		place(domElement);
+		
+		//remove all the floats that the insertion
+		//of the DOMElement made obsolote
+		removeFloats();
+	}
+	
+	/**
+	 * Return the width remaining in the current line
+	 * of the formatting context
+	 */
+	private function getRemainingLineWidth():Int
+	{
+		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
+	}
 	
 	/**
 	 * Place a DOMElement is the flow according to 

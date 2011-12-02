@@ -24,7 +24,8 @@ import haxe.Log;
  * The box model is determined by a combination of styles such as the display of
  * an element, its width, its margins, paddings...
  * 
- * This class use the defined styles value and compute a used value for them. 
+ * This class use the defined styles value and compute a value for them that will
+ * actually be used. 
  * For example, if a width is determined as a percentage, this class compute
  * a pixel width value from it.
  * 
@@ -73,24 +74,22 @@ class BoxStylesComputer
 		
 		//measure the top, left, right and bottom offsets
 		//used when the DOMElement is 'positioned' (any position style
-		//but static)
+		//but 'static')
 		measurePositionOffsets(style, containingDOMElementData);
 		
 		//The next step is to compute the dimensions
 		//constraint style (max-width, min-height...)
-		//and check that the computed height and width
-		//enforce those constraint
 		measureDimensionsConstraints(style, containingDOMElementData);
 		
 		//apply the dimensions constraints (min-width, max-height...)
 		//to the computed width and height dimensions
 		constrainDimensions(style);
 		
-		 //At this point, all the dimensions of the DOMElement are known maybe except the
-		 //content height if it was set to 'auto' and thus depends on its content's height.
-		 //Those dimensions are now enough to layout each of the DOMElement's children.
-		 //If the parent's height of this DOMElement is set to 'auto', it will use the
-		 //computed dimensions of this DOMElement to compute its own height.
+		//At this point, all the dimensions of the DOMElement are known maybe except the
+		//content height if it was set to 'auto' and thus depends on its content's height.
+		//Those dimensions are now enough to layout each of the DOMElement's children.
+		//If the parent's height of this DOMElement is set to 'auto', it will use the
+		//computed dimensions of this DOMElement to compute its own height.
 		 
 	}
 	
@@ -217,8 +216,8 @@ class BoxStylesComputer
 	/**
 	 * Measure the width when it is not 'auto'.
 	 * It might be a percentage of its containing 
-	 * DOMElement width or an absolute value in pixel
-	 * or any other supported unit
+	 * DOMElement width or a length value defined
+	 * in pixels or any other length unit
 	 */
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
@@ -238,13 +237,12 @@ class BoxStylesComputer
 	 * Measure the height and
 	 * vertical margins of the 
 	 * DOMElement
-	 */ 
+	 */
 	private function measureHeightAndVerticalMargins(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		
 		//get the content height (height without margins and paddings)
-		//the height might be null at this point if must take the content size
-		//it will be set once all the children DOMElement have been laid out
+		//the height might be null at this point if it must take the content size
+		//it will be set once all its children DOMElements have been laid out
 		
 		if (style.height == DimensionStyleValue.auto)
 		{
@@ -283,7 +281,7 @@ class BoxStylesComputer
 	 * Measure the height and the vertical margins
 	 * of the DOMElement in the case where the height is
 	 * either a percentage of the containing DOMElement height
-	 * or an absolute value exprimend in a supported unit, such
+	 * or a length value exprimend in a supported unit, such
 	 * as pixel
 	 */
 	private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
@@ -312,7 +310,7 @@ class BoxStylesComputer
 		
 		//check that the computedWidth is not 
 		//superior to max width. The max width
-		//can be defined as "null" if there are 
+		//can be defined as "none" if there are 
 		//no width limit on this DOMElement
 		if (style.maxWidth != ConstrainedDimensionStyleValue.none)
 		{
@@ -370,7 +368,9 @@ class BoxStylesComputer
 	}
 	
 	/**
-	 * Compute the size of the width when 'auto' and return it as pixels
+	 * Compute the size of the width when 'auto' and return it as pixels. It is equal to
+	 * the remaining width of the containing DOMElement once the margins and paddings width have been
+	 * removed
 	 */
 	private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
@@ -390,8 +390,9 @@ class BoxStylesComputer
 	}
 	
 	/**
-	 * Get the computed height of the DOMElement when 'auto' and returns it as pixels. Default for 'auto' is null
-	 * as its children total height is not known yet
+	 * Get the computed height of the DOMElement when 'auto' and returns it as pixels. Default for 'auto' is 0
+	 * as its children total height is not known yet, it will be set once all its children have been
+	 * laid out
 	 */ 
 	private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
@@ -445,6 +446,10 @@ class BoxStylesComputer
 	 * @param isDimensionAuto wether the reference dimensions is auto, meaning its computed width id not set yet
 	 * @param	computedPaddingsDimension the computed dimensions of both horizontal or vertical paddings, depending if the computed
 	 * margin is horizontal or vertical
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the marginStyleValue if it is a length value
+	 * defined in 'em'
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the marginStyleValue if it is a length value
+	 * defined in 'ex'
 	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
 	 * @return the computed thickness of the margin
 	 */
@@ -512,6 +517,11 @@ class BoxStylesComputer
 	 * or to "none" if no constraint must be applied
 	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
 	 * the current DOMElement must fit
+	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the constrainedDimensionStyleValue if it is a length value
+	 * defined in 'em'
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the constrainedDimensionStyleValue if it is a length value
+	 * defined in 'ex'
 	 * @param	isMinConstraint true if min-width or min-height is computed
 	 * @return a computed contraint dimensions in pixels
 	 */
@@ -572,6 +582,10 @@ class BoxStylesComputer
 	 * or a percent value
 	 * @param containingDOMElementDimension, dimension to use as reference to compute 
 	 * from a percent value
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PositionOffsetStyleValue if it is a length value
+	 * defined in 'em'
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PositionOffsetStyleValue if it is a length value
+	 * defined in 'ex'
 	 */
 	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffsetStyleValue, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
 	{
@@ -597,6 +611,11 @@ class BoxStylesComputer
 	 * @param	dimensionStyleValue can be defined as a unit, a percent or auto
 	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
 	 * the current DOMElement must fit
+	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the DimensionStyleValue if it is a length value
+	 * defined in 'em'
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the DimensionStyleValue if it is a length value
+	 * defined in 'ex'
 	 * @return a computed dimension in pixel
 	 */
 	private function getComputedDimension(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int
@@ -638,6 +657,11 @@ class BoxStylesComputer
 	 * @param	paddingStyleValue can be defined as a unit (px, em...) or a percentage
 	 * @param	containingDOMElementDimension the dimensions of the DOMElement into which 
 	 * the current DOMElement must fit
+	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
+	 * defined in 'em'
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
+	 * defined in 'ex'
 	 * @return a computed padding in pixel
 	 */
 	private function getComputedPadding(paddingStyleValue:PaddingStyleValue, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int

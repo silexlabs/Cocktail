@@ -29,6 +29,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
+		
 		_firstLineLaidOut = false;
 		super(domElement, previousFormattingContext);
 		
@@ -39,9 +40,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function destroy():Void
 	{
-		var currentTotalHeight:Int = _flowData.totalHeight;
 		startNewLine(0, true);
-		_flowData.totalHeight = currentTotalHeight;
 		
 	}
 	
@@ -123,20 +122,23 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	override public function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
+	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
+		
 		if (_domElementInLineBox.length > 0)
 		{
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
+		
 			alignText(_firstLineLaidOut == false, isLastLine);
 			_domElementInLineBox = new Array<LineBoxElementData>();
 			
 			_flowData.y += lineBoxHeight;
 			
 			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
-			_flowData.totalHeight = _flowData.y + lineBoxHeight;
 			
+			
+			_flowData.totalHeight = _flowData.y;
 			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 			{
 				
@@ -206,9 +208,12 @@ class InlineFormattingContext extends FormattingContext
 			WhiteSpaceStyleValue.preLine:
 				
 				
-				if (_domElementInLineBox[0].domElementType == InlineBoxValue.space)
+				switch(_domElementInLineBox[0].domElementType)
 				{
-					_domElementInLineBox.shift();
+					case InlineBoxValue.space:
+						_domElementInLineBox.shift();
+						
+					default:	
 				}
 				
 								
@@ -222,12 +227,14 @@ class InlineFormattingContext extends FormattingContext
 				WhiteSpaceStyleValue.nowrap,
 				WhiteSpaceStyleValue.preLine:
 					
-					
-
-				if (_domElementInLineBox[_domElementInLineBox.length - 1].domElementType == InlineBoxValue.space)
+				switch(	_domElementInLineBox[_domElementInLineBox.length - 1].domElementType)
 				{
-					_domElementInLineBox.pop();
+					case InlineBoxValue.space:
+						_domElementInLineBox.pop();
+						
+					default:	
 				}
+				
 					
 					
 									
@@ -289,7 +296,6 @@ class InlineFormattingContext extends FormattingContext
 				}
 				
 			case justify:	
-				
 				if (isLastLine == true)
 				{
 					for (i in 0..._domElementInLineBox.length)
@@ -300,6 +306,7 @@ class InlineFormattingContext extends FormattingContext
 				}
 				else
 				{
+					
 					var spacesNumber:Int = 0;
 					for (i in 0..._domElementInLineBox.length)
 					{
@@ -312,21 +319,20 @@ class InlineFormattingContext extends FormattingContext
 						}
 					}
 					
-					
 					for (i in 0..._domElementInLineBox.length)
 					{
 						switch (_domElementInLineBox[i].domElementType)
 						{
 							case space:
-								_domElementInLineBox[i].domElement.width += Math.round(remainingSpace / spacesNumber);
+								_domElementInLineBox[i].domElement.width = Math.round(_containingDOMElement.style.fontMetrics.spaceWidth + (remainingSpace / spacesNumber));
+	
 								
-							default:	
+								default:	
 						}
 					}
 					
 					for (i in 0..._domElementInLineBox.length)
 					{
-						
 						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
@@ -347,18 +353,32 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			var domElementAscent:Int;
+			var domElementDescent:Int;
+			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+			if (domElement.style.isEmbedded() == true)
+			{
+				domElementAscent = domElement.offsetHeight;
+				domElementDescent = 0;
+			}
+			else
+			{
+				domElementAscent = domElement.style.fontMetrics.ascent;
+				domElementDescent = domElement.style.fontMetrics.descent;
+			}
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
 			//of the block container
-			if (_domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxAscent)
+			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
 			{
 				
-				lineBoxAscent = _domElementInLineBox[i].domElement.style.fontMetrics.ascent - _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
+				lineBoxAscent = domElementAscent - domElementVerticalAlign;
 			}
 			
-			if (_domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign > lineBoxDescent)
+			if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
 			{
-				lineBoxDescent = _domElementInLineBox[i].domElement.style.fontMetrics.descent + _domElementInLineBox[i].domElement.style.computedStyle.verticalAlign;
+				lineBoxDescent = domElementDescent + domElementVerticalAlign;
 			}
 		}
 		

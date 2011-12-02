@@ -17,24 +17,41 @@ import cocktail.unit.UnitManager;
 import haxe.Log;
 
 /**
- * ...
+ * Compute the Font and Text related styles
+ * of a DOMElement, helped by the containing
+ * DOMElement dimensions and font metrics
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class FontAndTextStylesComputer 
 {
-
-	public function new() 
+	/**
+	 * Class contructor. Private, as
+	 * this class is meant to be accessed
+	 * through its public static methods
+	 */
+	private function new() 
 	{
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC STATIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * compute all the font and text styles of the DOMElement
+	 * @param	style
+	 * @param	containingDOMElementData
+	 * @param	containingDOMElementFontMetricsData
+	 */
 	public static function compute(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
 		if (containingDOMElementFontMetricsData != null)
 		{
+			//font size
 			computedStyle.fontSize = getComputedFontSize(style, containingDOMElementFontMetricsData.fontSize, containingDOMElementFontMetricsData.xHeight);
 		}
 		else
@@ -43,45 +60,54 @@ class FontAndTextStylesComputer
 			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
 		}
 		
-		
+		//line height
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
+		//vertival align
 		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementFontMetricsData);
 		
-		computedStyle.fontWeight = getComputedFontWeight(style);
+		//font weight
+		computedStyle.fontWeight = style.fontWeight;
 		
-		computedStyle.fontStyle = getComputedFontStyle(style);
+		//font style
+		computedStyle.fontStyle = style.fontStyle;
 		
-		computedStyle.fontFamily = getComputedFontFamily(style);
+		//font family
+		computedStyle.fontFamily = style.fontFamily;
 		
-		computedStyle.fontVariant = getComputedFontVariant(style);
+		//font variant
+		computedStyle.fontVariant = style.fontVariant;
 		
-		computedStyle.textTransform = getComputedTextTransform(style);
+		//text transform
+		computedStyle.textTransform = style.textTransform;
 		
+		//letter spacing
 		computedStyle.letterSpacing = getComputedLetterSpacing(style);
 		
+		//word spacing
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
+		//text indent
 		computedStyle.textIndent = getComputedTextIndent(style, containingDOMElementData);
 		
-		computedStyle.whiteSpace = getComputedWhiteSpace(style);
+		//white space
+		computedStyle.whiteSpace = style.whiteSpace;
 		
-		computedStyle.textAlign = getComputedTextAlign(style);
+		//text align
+		computedStyle.textAlign = style.textAlign;
 		
+		//text color
 		computedStyle.color = getComputedColor(style);
 		
 	}
 	
-	private static function getComputedTextAlign(style:AbstractStyle):TextAlignStyleValue
-	{
-		return style.textAlign;
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STATIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private static function getComputedWhiteSpace(style:AbstractStyle):WhiteSpaceStyleValue
-	{
-		return style.whiteSpace;
-	}
-	
+	/**
+	 * Compute the text indent to apply to the first line of an inline formatting context
+	 */
 	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var textIndent:Float;
@@ -98,6 +124,10 @@ class FontAndTextStylesComputer
 		return Math.round(textIndent);
 	}
 	
+	/**
+	 * Compute the vertical offset to apply to a DOMElement in an inline
+	 * formatting context
+	 */
 	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetricsData:FontMetricsData):Float
 	{
 		
@@ -145,11 +175,18 @@ class FontAndTextStylesComputer
 		return verticalAlign;
 	}
 	
+	/**
+	 * Computed the color of a text of the DOMElement
+	 */
 	private static function getComputedColor(style:AbstractStyle):Int
 	{
 		return UnitManager.getColorFromColorValue(style.color);
 	}
 	
+	/**
+	 * Compute the space to add between each word in a text in
+	 * addition of the regular font space
+	 */
 	private static function getComputedWordSpacing(style:AbstractStyle):Int
 	{
 		var wordSpacing:Int;
@@ -166,6 +203,10 @@ class FontAndTextStylesComputer
 		return wordSpacing;
 	}
 	
+	/**
+	 * Compute the line height of a DOMElement in an inline
+	 * formatting context
+	 */
 	private static function getComputedLineHeight(style:AbstractStyle):Float
 	{
 		var lineHeight:Float;
@@ -188,6 +229,11 @@ class FontAndTextStylesComputer
 		return lineHeight;
 	}
 	
+	/**
+	 * Compute the space to apply between each
+	 * letter in a text, in addition to the regular
+	 * font letter spacing
+	 */
 	private static function getComputedLetterSpacing(style:AbstractStyle):Int
 	{
 		var letterSpacing:Int;
@@ -204,21 +250,9 @@ class FontAndTextStylesComputer
 		return letterSpacing;
 	}
 	
-	private static function getComputedTextTransform(style:AbstractStyle):TextTransformStyleValue
-	{
-		return style.textTransform;
-	}
-	
-	private static function getComputedFontVariant(style:AbstractStyle):FontVariantStyleValue
-	{
-		return style.fontVariant;
-	}
-	
-	private static function getComputedFontFamily(style:AbstractStyle):Array<FontFamilyStyleValue>
-	{
-		return style.fontFamily;
-	}
-	
+	/**
+	 * Compute the font size of the text of a DOMElement
+	 */
 	private static function getComputedFontSize(style:AbstractStyle, parentFontSize:Float, parentXHeight:Float):Float
 	{
 		var fontSize:Float;
@@ -240,15 +274,5 @@ class FontAndTextStylesComputer
 		}
 		
 		return fontSize;
-	}
-	
-	private static function getComputedFontStyle(style:AbstractStyle):FontStyleStyleValue
-	{
-		return style.fontStyle;
-	}
-	
-	private static function getComputedFontWeight(style:AbstractStyle):FontWeightStyleValue
-	{
-		return style.fontWeight;
 	}
 }

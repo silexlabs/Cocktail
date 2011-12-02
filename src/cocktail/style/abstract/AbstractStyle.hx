@@ -34,7 +34,7 @@ import haxe.Log;
  * are in charge of storing the style value for a DOMElement
  * and applying them when neccessary.
  * 
- * This class holds a reference to the targeted DOMElement
+ * This class holds a reference to the styled DOMElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -70,13 +70,14 @@ class AbstractStyle
 	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
 	
 	/**
-	* The way a DOMElement is displayed in a document
+	* The way a DOMElement is laid out in a document (as block,
+	* inline...)
 	*/
 	private var _display:DisplayStyleValue;
 	public var display(getDisplay, setDisplay):DisplayStyleValue;
 	
 	/**
-	* The way a DOMElement position himself
+	* The way a DOMElement is positionned
 	* relative to a parent
 	*/
 	private var _position:PositionStyleValue;
@@ -124,7 +125,7 @@ class AbstractStyle
 	
 	/**
 	 * float positioning styles. A floated element is placed to 
-	 * the further left or right of its container
+	 * the further left or right inside its container
 	 */
 	private var _float:FloatStyleValue;
 	public var float(getFloat, setFloat):FloatStyleValue;
@@ -132,7 +133,7 @@ class AbstractStyle
 	public var clear(getClear, setClear):ClearStyleValue;
 	
 	/**
-	 * font
+	 * font styles
 	 */
 	private var _fontSize:FontSizeStyleValue;
 	public var fontSize(getFontSize, setFontSize):FontSizeStyleValue;
@@ -153,7 +154,7 @@ class AbstractStyle
 	public var color(getColor, setColor):ColorValue;
 	
 	/**
-	 * text
+	 * text styles
 	 */
 	private var _lineHeight:LineHeightStyleValue;
 	public var lineHeight(getLineHeight, setLineHeight):LineHeightStyleValue;
@@ -179,12 +180,12 @@ class AbstractStyle
 	////////////////////////////////
 	
 	/**
-	 * Stores all of the actual value of styles once computed.
+	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
 	private var _computedStyle:ComputedStyleData;
-	public var computedStyle(getComputedStyle, never):ComputedStyleData;
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
 	
 	/**
 	 * A reference to the DOMElement to which these styles
@@ -195,60 +196,19 @@ class AbstractStyle
 	
 	/**
 	 * Returns metrics info for the currently defined
-	 * font and font size used in inline formatting context
+	 * font and font size. Uused in inline formatting context
 	 * to determine lineBoxes sizes and text vertical
 	 * alignement
 	 */
 	private var _fontMetrics:FontMetricsData;
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
-	
 	/**
-	 * Class constructor. Stores the target DOMElement and init
-	 * the computed styles structure with default values
+	 * Class constructor. Stores the target DOMElement.
 	 */
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
-		
-		this._computedStyle = {
-			width : 0,
-			height : 0,
-			minHeight : 0,
-			maxHeight : 0,
-			minWidth : 0,
-			maxWidth : 0,
-			marginLeft : 0,
-			marginRight : 0,
-			marginTop : 0,
-			marginBottom : 0,
-			paddingLeft : 0,
-			paddingRight : 0,
-			paddingTop : 0,
-			paddingBottom : 0,
-			left: 0,
-			right: 0,
-			top: 0,
-			bottom : 0,
-			clear : ClearStyleValue.none,
-			float : FloatStyleValue.none,
-			display : DisplayStyleValue.block,
-			position: PositionStyleValue.staticStyle,
-			verticalAlign : 0.0,
-			fontSize:12.0,
-			lineHeight:14.0,
-			fontWeight:FontWeightStyleValue.normal,
-			fontStyle:FontStyleStyleValue.normal,
-			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
-			fontVariant:FontVariantStyleValue.normal,
-			textTransform:TextTransformStyleValue.none,
-			letterSpacing:0,
-			wordSpacing:0,
-			textIndent:0,
-			whiteSpace:WhiteSpaceStyleValue.normal,
-			textAlign:TextAlignStyleValue.left,
-			color:0
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -256,14 +216,14 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The main layout method. When called, the DOMElement's box
-	 * model styles (width, height, margins, paddings...) are computed
-	 * and the DOMElement layout its children if it has any.
+	 * The main layout method. When called, the DOMElement's styles (width, height, margins, paddings...)
+	 * are computed, the DOMElement layout its children if it has any then add himself
+	 * to the layout.
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
+	 * it has a 'position' style other than 'static'. When positioning an absolutelty positioned DOMElement (a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
@@ -279,19 +239,19 @@ class AbstractStyle
 	 * its parent flow and "positioned" DOMElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
 	 * ancestor.
 	 * 
-	 * The DOMElement first compute its box model dimensions, then insert itself into the document based 
+	 * The DOMElement first compute its own styles (box model, font, text...), then insert itself into the document based 
 	 * on its positioning scheme.
 	 * 
 	 * This method is called recursively on every children of the DOMElement if it has any
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
-	 * this DOMElement must be layout
+	 * this DOMElement must be laid out
 	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' other than 'static'. When positioning an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
+	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
-	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
+	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
@@ -300,6 +260,7 @@ class AbstractStyle
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
 		{
+			//hide the DOMElement
 			this._domElement.isVisible = false;
 			return;
 		}
@@ -315,10 +276,10 @@ class AbstractStyle
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 		
-		//compute all the style determining how a DOMElement is placed in the document and its box model
+		//compute all the styles of a DOMElement
 		computeDOMElement(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
 		
-		//flow all the children of the DOMElement of this style of it has any, then insert this DOMElement in the document
+		//flow all the children of the DOMElement if it has any, then insert the DOMElement in the document
 		flowChildren(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
@@ -342,7 +303,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Flow all the children of a DOMElement if it has any, then the DOMElement.
+	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
 	 */
 	private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
 	{
@@ -361,7 +322,7 @@ class AbstractStyle
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
 		
-		//position 'relative' DOMElement
+		//'relative' positioned DOMElement
 		if (this.isRelativePositioned() == true)
 		{
 			positioner = new RelativePositioner();
@@ -404,8 +365,6 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData):Void
 	{
-		
-		
 		//insert as a float
 		if (isFloat() == true)
 		{
@@ -420,7 +379,7 @@ class AbstractStyle
 		//insert in the flow, then apply an offset to it
 		else if (isRelativePositioned() == true)
 		{
-			formattingContext.insert(this._domElement);
+			insertInFlowDOMElement(formattingContext);
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 		//insert as an absolutely positioned DOMElement
@@ -446,30 +405,26 @@ class AbstractStyle
 	
 	/**
 	 * Compute first the styles determining the DOMElement's
-	 * positioning scheme (position, float, clear...) then
+	 * positioning scheme (position, float, clear...),
 	 * the styles determining its box model (width, height, margins
-	 * paddings...)
+	 * paddings...), and the styles styling the DOMElement text and
+	 * font style
 	 */
 	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		computePositionStyle();
-		computeFontStyle(containingDOMElementData, containingDOMElementFontMetricsData);
-		computeBoxModelStyle(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		computeDisplayStyles();
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 	}
 	
 	/**
 	 * This method computes the styles determing
 	 * the DOMElement's layout scheme :
-	 * position, display, float, clear
+	 * position, display, float and clear
 	 */
-	public function computePositionStyle():Void
+	public function computeDisplayStyles():Void
 	{
 		DisplayStylesComputer.compute(this);
-	}
-	
-	public function computeFontStyle(containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
-	{
-		FontAndTextStylesComputer.compute(this, containingDOMElementData, containingDOMElementFontMetricsData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -478,10 +433,18 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute the box model styles (width, height, paddings, margins...) based on
+	 * Computes the DOMElement font and text styles (font size, font name, text color...)
+	 */
+	private function computeTextAndFontStyles(containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{
+		FontAndTextStylesComputer.compute(this, containingDOMElementData, containingDOMElementFontMetricsData);
+	}
+	
+	/**
+	 * Compute the box model styles (width, height, paddings, margins...) of the DOMElement, based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyle(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
+	private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
 		//instantiate the right box computer class
 		//based on the DOMElement's positioning
@@ -498,11 +461,13 @@ class AbstractStyle
 		{
 			boxComputer = new FloatBoxStylesComputer();
 		}
+		
 		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			boxComputer = new PositionedBoxStylesComputer();
 		}
+		
 		//else get the box computer based on the display style
 		else
 		{
@@ -522,7 +487,7 @@ class AbstractStyle
 			}
 		}
 		
-		//compute the box model styles
+		//do compute the box model styles
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
@@ -532,8 +497,7 @@ class AbstractStyle
 	 */
 	private function getContainingDOMElementData(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):ContainingDOMElementData
 	{
-		//for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
-		var containingBlockDimensions:ContainingDOMElementData = containingDOMElementData;
+		var containingBlockDimensions:ContainingDOMElementData;
 		
 		//for 'positioned' DOMElement
 		if (isPositioned() == true)
@@ -566,6 +530,11 @@ class AbstractStyle
 				containingBlockDimensions = containingDOMElementData;
 			}
 		}
+		//else, for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
+		else
+		{
+			containingBlockDimensions = containingDOMElementData;
+		}
 		
 		return containingBlockDimensions;
 	}
@@ -590,7 +559,7 @@ class AbstractStyle
 	 * DOMElement. A floated DOMElement is first
 	 * placed in the flow then moved to the
 	 * left-most or right-most of its container.
-	 * Any subsequent inline DOMElement flows
+	 * Any subsequent DOMElement flows
 	 * around on the float until a new line 
 	 * starts below the float or if it is cleared
 	 * by another DOMElement.
@@ -623,7 +592,7 @@ class AbstractStyle
 	 * 'clearance', which as the effect of placing
 	 * the DOMElement below any preceding floated
 	 * DOMElement. A DOMElement introduces clearance
-	 * if he clears either left or right floats
+	 * if he clears either left floats, right floats
 	 * or both
 	 */
 	private function isClear():Bool
@@ -653,8 +622,8 @@ class AbstractStyle
 	
 	/**
 	 * An inline DOMElement is one that is
-	 * layout on a line. It will be placed
-	 * either next to the precending DOMElement
+	 * laid out on a line. It will be placed
+	 * either next to the preceding DOMElement
 	 * or on a new line if the current line
 	 * is too short to host it.
 	 * 
@@ -719,7 +688,7 @@ class AbstractStyle
 	 * A 'relative' DOMElement is first placed
 	 * normally in the flow then an offset is 
 	 * applied to it with the top, left, right
-	 * and bottom style.
+	 * and bottom computed styles.
 	 * 
 	 * It is used as origin for any 'absolute'
 	 * or 'fixed' positioned children and 
@@ -743,6 +712,11 @@ class AbstractStyle
 	private function getComputedStyle():ComputedStyleData
 	{
 		return _computedStyle;
+	}
+	
+	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	{
+		return _computedStyle = value;
 	}
 	
 	private function getDOMElement():DOMElement
@@ -854,7 +828,6 @@ class AbstractStyle
 	{
 		return _position = value;
 	}
-	
 	
 	private function getWidth():DimensionStyleValue 
 	{

@@ -8,36 +8,34 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement.abstract;
+package cocktail.textElement.js;
 
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElement;
+import cocktail.style.StyleData;
+import cocktail.textElement.abstract.AbstractTextElement;
+import cocktail.textElement.TextElementData;
+import js.Lib;
 
 /**
- * This is a base class for the native element
- * creator implementation. It creates a native element
- * and returns a reference to it
+ * This is the JavaScript implementation of the TextElement.
+ * 
+ * In JavaScript, a text element is represented by an 
+ * HTML text node object. 
+ * 
+ * This HTML text node object is created from
+ * the text provided in the constructor.
+ * It is wrapped in a NativeTextElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractNativeElementCreator
+class TextElement extends AbstractTextElement
 {
-
 	/**
-	 * class constructor
+	 * class contructor
 	 */
-	public function new() 
+	public function new(text:String)
 	{
-		
+		super(text);
+		//create and store the native HTML text node
+		_text = Lib.document.createTextNode(text);
 	}
-	
-	/**
-	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
-	 * @param	nativeElementType the type of element to create (graphic, text...)
-	 */
-	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
-	{
-		return null;
-	}
-	
 }

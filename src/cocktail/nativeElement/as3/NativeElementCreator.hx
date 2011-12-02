@@ -10,7 +10,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.nativeElement.as3;
 
-import cocktail.domElement.TextNode;
 import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 import flash.display.Sprite;
@@ -60,11 +59,6 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		}
 		
 		return nativeElement;
-	}
-	
-	override public function createNativeTextNode(text:String):TextNode
-	{
-		return text;
 	}
 	
 }

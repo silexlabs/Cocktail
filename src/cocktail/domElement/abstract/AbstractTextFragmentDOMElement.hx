@@ -26,12 +26,12 @@ import cocktail.domElement.js.DOMElement;
  * which might be a word or a space.
  * 
  * It is not meant to be instantiated but instead it
- * is created during layout to render TextNodes
+ * is created during layout to render TextElements
  * that were added to a ContainerDOMElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractTextLineDOMElement extends DOMElement
+class AbstractTextFragmentDOMElement extends DOMElement
 {
 	/**
 	 * Class constructor. Unlike other DOMElements, this
@@ -42,7 +42,7 @@ class AbstractTextLineDOMElement extends DOMElement
 	 * @param nativeElement
 	 * @param style a reference to the Style Object of the
 	 * ContainerDOMElement owning this DOMElement (the one
-	 * which has the TextNode which was used as a model
+	 * which has the TextElement which was used as a model
 	 * to create this DOMElement)
 	 */
 	public function new(nativeElement:NativeElement, style:Style) 

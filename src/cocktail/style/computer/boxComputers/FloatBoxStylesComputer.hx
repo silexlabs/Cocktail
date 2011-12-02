@@ -63,37 +63,7 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	}
 	
 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
-	{
-		//TO DO : In certain cases (see, e.g., sections 10.6.4 and 10.6.6 above), the height of an element that establishes 
-		//a block formatting context is computed as follows:If it only has inline-level children, the height is the distance
-		//between the top of the topmost line box and the bottom of the bottommost line box. If it has block-level children, 
-		//the height is the distance between the top margin-edge of the topmost block-level child box and the bottom margin-edge
-		//of the bottommost block-level child box. Absolutely positioned children are ignored, and relatively positioned
-		//boxes are considered without their offset. Note that the child box may be an anonymous block box. In addition,
-		//if the element has any floating descendants whose bottom margin edge is below the element's bottom content edge,
-		//then the height is increased to include those edges. Only floats that participate in this block formatting context
-		//are taken into account, e.g., floats inside absolutely positioned descendants or other floats are not. 
-		
-		return 0;
-	}
 	
-	
-	
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
-	{
-		//TO DO : If 'width' is computed as 'auto', the used value is the "shrink-to-fit" width. Calculation
-		//of the shrink-to-fit width is similar to calculating the width of a table cell using the automatic
-		//table layout algorithm. Roughly: calculate the preferred width by formatting the content without
-		//breaking lines other than where explicit line breaks occur, and also calculate the preferred minimum 
-		//width, e.g., by trying all possible line breaks. CSS 2.1 does not define the exact algorithm. Thirdly,
-		//find the available width: in this case, this is the width of the containing block minus the used values
-		//of 'margin-left', 'border-left-width', 'padding-left', 'padding-right', 'border-right-width',
-		//'margin-right', and the widths of any relevant scroll bars. Then the shrink-to-fit width is:
-		//min(max(preferred minimum width, available width), preferred width).
-		
-		return 0;
-	}
 	
 	
 }
