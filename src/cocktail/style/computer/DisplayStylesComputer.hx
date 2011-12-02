@@ -17,7 +17,7 @@ import cocktail.style.StyleData;
 /**
  * This is a static class in charge of
  * computing the styles that affect how a
- * DOMElement will be laid out
+ * DOMElement will be displayed
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -38,7 +38,7 @@ class DisplayStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute all the styles affecting layout by applying CSS
+	 * Compute all the styles affecting display by applying CSS
 	 * rules. Each of this style might affect the computed value
 	 * of another style. For example, a DOMElement which is a float
 	 * must have a display of 'block'
@@ -71,12 +71,38 @@ class DisplayStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute the 'position" style. It is the same as the defined style
+	 * Compute the 'position' style. It is the same as the defined style
 	 * as no other style can affect the computed 'position' style value
 	 */
 	private static function getComputedPosition(style:AbstractStyle):PositionStyleValue
 	{
 		return style.position;
+	}
+	
+	/**
+	 * Compute the 'float' style which might be affect affected by the 'position'
+	 * style, as an absolute positioned DOMElement can't be floated
+	 * @param	style
+	 * @param	computedPosition the computed value of position, computed before float
+	 */
+	private static function getComputedFloat(style:AbstractStyle, computedPosition:PositionStyleValue):FloatStyleValue
+	{
+		var ret:FloatStyleValue;
+		
+		//if the DOMElement is absolute or fixed position,
+		//it will act as an absolutely positioned DOMElement
+		//and won't take the float style into account,
+		//so it computes to none
+		if (computedPosition == PositionStyleValue.absolute || computedPosition == PositionStyleValue.fixed)
+		{
+			ret = FloatStyleValue.none;
+		}
+		else
+		{
+			ret = style.float;
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -111,33 +137,6 @@ class DisplayStylesComputer
 		}
 		
 		return ret;
-	}
-	
-	/**
-	 * Compute the 'float' style which might be affect affected by the 'position'
-	 * style, as an absolute positioned DOMElement can't be floated
-	 * @param	style
-	 * @param	computedPosition the computed value of position, computed before float
-	 */
-	private static function getComputedFloat(style:AbstractStyle, computedPosition:PositionStyleValue):FloatStyleValue
-	{
-		var ret:FloatStyleValue;
-		
-		//if the DOMElement is absolute or fixed position,
-		//it will act as an absolutely positioned DOMElement
-		//and won't take the float style into account,
-		//so it computes to none
-		if (computedPosition == PositionStyleValue.absolute || computedPosition == PositionStyleValue.fixed)
-		{
-			ret = FloatStyleValue.none;
-		}
-		else
-		{
-			ret = style.float;
-		}
-		
-		return ret;
-		
 	}
 	
 	/**
