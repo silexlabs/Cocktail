@@ -379,7 +379,7 @@ class AbstractStyle
 		//insert in the flow, then apply an offset to it
 		else if (isRelativePositioned() == true)
 		{
-			formattingContext.insert(this._domElement);
+			insertInFlowDOMElement(formattingContext);
 			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 		}
 		//insert as an absolutely positioned DOMElement

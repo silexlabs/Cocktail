@@ -117,9 +117,6 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext = getFormatingContext(formatingContext);
 		}
 		
-		this._domElement.globalY = containingDOMElementData.globalY + formatingContext.flowData.y;
-		this._domElement.globalX = containingDOMElementData.globalX;
-		
 		//get the dimensions that will be used to lay out the children
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
