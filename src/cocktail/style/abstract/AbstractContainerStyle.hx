@@ -252,7 +252,7 @@ class AbstractContainerStyle extends Style
 					
 				case lineFeed:
 					//start a new line
-					formattingContext.startNewLine(0);
+					formattingContext.insertLineFeed();
 			}
 		}
 				

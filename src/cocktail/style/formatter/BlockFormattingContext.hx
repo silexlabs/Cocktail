@@ -35,12 +35,8 @@ class BlockFormattingContext extends FormattingContext
 		
 		if (domElement.style.isEmbedded() == true)
 		{
-			
 			_flowData.y = _floatsManager.getFirstAvailableY(flowData, domElement.offsetWidth, _containingDOMElementWidth);
-			
 			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
-			
-			
 		}
 			
 		_flowData.x = _flowData.xOffset + leftFloatOffset;
@@ -60,9 +56,7 @@ class BlockFormattingContext extends FormattingContext
 		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
 		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
 		
-
 		_flowData.y = floatData.y;
-
 		
 	}
 

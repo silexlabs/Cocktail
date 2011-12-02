@@ -122,7 +122,7 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	override public function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
+	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
 		
 		if (_domElementInLineBox.length > 0)
