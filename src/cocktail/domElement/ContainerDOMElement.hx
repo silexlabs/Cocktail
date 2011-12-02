@@ -14,19 +14,19 @@ package cocktail.domElement;
  * Set the right runtime specific ContainerDOMElement at compile-time
  */
 #if flash9
-typedef ContainerDOMElement =  cocktail.domElement.as3.ContainerDOMElement;
+typedef ContainerDOMElement =  cocktailCore.domElement.as3.ContainerDOMElement;
 
 #elseif js
-typedef ContainerDOMElement =  cocktail.domElement.js.ContainerDOMElement;
+typedef ContainerDOMElement =  cocktailCore.domElement.js.ContainerDOMElement;
 
 #elseif php
-typedef ContainerDOMElement =  cocktail.domElement.php.ContainerDOMElement;
+typedef ContainerDOMElement =  cocktailCore.domElement.php.ContainerDOMElement;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class ContainerDOMElement extends cocktail.domElement.abstract.AbstractContainerDOMElement { }
+class ContainerDOMElement extends cocktailCore.domElement.abstract.AbstractContainerDOMElement { }
 
 #end
