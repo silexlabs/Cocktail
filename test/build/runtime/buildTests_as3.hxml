@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main runtime.ViewportTests
+-lib utest
+-swf9 ../../bin/runtime/testAS3.swf
