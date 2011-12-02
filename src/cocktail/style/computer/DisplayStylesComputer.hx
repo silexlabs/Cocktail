@@ -41,7 +41,10 @@ class DisplayStylesComputer
 	 * Compute all the styles affecting display by applying CSS
 	 * rules. Each of this style might affect the computed value
 	 * of another style. For example, a DOMElement which is a float
-	 * must have a display of 'block'
+	 * must have a display of 'block'.
+	 * 
+	 * Some computed style value are the same as the defined
+	 * style values
 	 * 
 	 * @param	style contain the styles definition of the 
 	 * target DOMElement
