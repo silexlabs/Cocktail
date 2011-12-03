@@ -55,7 +55,7 @@ class Viewport extends AbstractViewport
 	 */
 	override private function _addOrientationChangeEvent() : Void
 	{
-		Lib.current.stage.removeEventListener( Event.RESIZE , _onOrientationChangeCallback );
+		Lib.current.stage.addEventListener( Event.RESIZE , _onOrientationChangeCallback );
 	}
 	/**
 	 * stop listening to the viewport event
