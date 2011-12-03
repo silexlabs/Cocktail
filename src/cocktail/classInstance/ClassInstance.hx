@@ -14,20 +14,20 @@ package cocktail.classInstance;
  * Set the right runtime specific ClassInstance at compile-time
  */
 #if flash9
-typedef ClassInstance =  cocktail.classInstance.as3.ClassInstance;
+typedef ClassInstance =  cocktailCore.classInstance.as3.ClassInstance;
 
 #elseif js
-typedef ClassInstance =  cocktail.classInstance.js.ClassInstance;
+typedef ClassInstance =  cocktailCore.classInstance.js.ClassInstance;
 
 #elseif php
-typedef ClassInstance =  cocktail.classInstance.php.ClassInstance;
+typedef ClassInstance =  cocktailcore.classInstance.php.ClassInstance;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class ClassInstance extends cocktail.classInstance.abstract.AbstractClassInstance { }
+class ClassInstance extends cocktailCore.classInstance.abstract.AbstractClassInstance { }
 
 #else
 	#error
