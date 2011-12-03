@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.computer.BoxStylesComputer;
+import cocktailCore.style.StyleData;
 
 /**
  * ...
@@ -22,6 +23,22 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	public function new() 
 	{
 		super();
+	}
+	
+	override public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	{
+		var shrinkedWidth:Int;
+		
+		if (minimumWidth < availableWidth)
+		{
+			shrinkedWidth = minimumWidth;
+		}
+		else
+		{
+			shrinkedWidth = availableWidth;
+		}
+		
+		return shrinkedWidth;
 	}
 	
 }

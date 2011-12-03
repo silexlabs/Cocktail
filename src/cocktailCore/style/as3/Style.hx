@@ -21,6 +21,7 @@ import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TypographicCase;
+import haxe.Log;
 
 /**
  * This is the Flash AS3 implementation of the Style object.

@@ -121,7 +121,8 @@ class FormattingContext
 			y : flowY,
 			xOffset : domElement.style.computedStyle.paddingLeft,
 			yOffset : domElement.style.computedStyle.paddingTop,
-			totalHeight : 0
+			totalHeight : 0,
+			maxWidth:0
 		};
 	}
 	

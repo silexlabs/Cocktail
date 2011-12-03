@@ -141,6 +141,12 @@ import cocktail.style.StyleData;
 		var yOffset:Int;
 		
 		/**
+		 * Determine the largest width of a line in
+		 * a formatting context
+		 */
+		var maxWidth:Int;
+		
+		/**
 		 * The accumulated height of all the in flow DOMElements
 		 * (includes paddings and margins)
 		 */

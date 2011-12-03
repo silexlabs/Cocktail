@@ -39,8 +39,15 @@ class BlockFormattingContext extends FormattingContext
 			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
 		}
 			
+		
 		_flowData.x = _flowData.xOffset + leftFloatOffset;
 		domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft;
+		
+		if (_flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft > _flowData.maxWidth)
+		{
+			_flowData.maxWidth = _flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft;
+		}
+		
 		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
 	
 		_flowData.y += domElement.offsetHeight ;
