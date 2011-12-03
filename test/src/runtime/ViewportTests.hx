@@ -40,15 +40,12 @@ class ViewportTests
 	 */
 	public function testViewport()
 	{
-		var onViewportResizeAsync:Void->Void = Assert.createAsync(onViewportResize, 6000);
-		var onViewportRotateAsync:Void->Void = Assert.createAsync(onViewportRotate, 6000);
-		
 		// create an object to access the application view port
 		var viewport = new Viewport();
 		
 		// listen to document events
-		viewport.onResize = onViewportResizeAsync;
-		viewport.onOrientationChange = onViewportRotateAsync;
+		viewport.onResize = Assert.createAsync(onViewportResize, 6000);
+		viewport.onOrientationChange = Assert.createAsync(onViewportRotate, 6000);
 		
 		// display a message while waiting for resize
 		untyped document.body.innerHTML += 'Resize your window now !<br />';
@@ -67,6 +64,7 @@ class ViewportTests
 		
 		// create an object to access the application view port
 		var viewport = new Viewport();
+		viewport.onResize = null;
 		Log.trace("Resize " + viewport.width + ", "+viewport.height);
 	}
 	/**
@@ -78,6 +76,7 @@ class ViewportTests
 		
 		// create an object to access the application view port
 		var viewport = new Viewport();
+		viewport.onOrientationChange = null;
 		Log.trace("Rotate " + viewport.orientation);
 	}
 }

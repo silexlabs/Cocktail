@@ -6,20 +6,21 @@ cocktail.runtime.abstract.AbstractViewport = function(p) {
 }
 cocktail.runtime.abstract.AbstractViewport.__name__ = ["cocktail","runtime","abstract","AbstractViewport"];
 cocktail.runtime.abstract.AbstractViewport.prototype.onResize = null;
-cocktail.runtime.abstract.AbstractViewport.prototype.onRotate = null;
+cocktail.runtime.abstract.AbstractViewport.prototype.onOrientationChange = null;
 cocktail.runtime.abstract.AbstractViewport.prototype.width = null;
 cocktail.runtime.abstract.AbstractViewport.prototype.height = null;
-cocktail.runtime.abstract.AbstractViewport.prototype.rotation = null;
+cocktail.runtime.abstract.AbstractViewport.prototype.orientation = null;
+cocktail.runtime.abstract.AbstractViewport.prototype._lastOrientationObserved = null;
 cocktail.runtime.abstract.AbstractViewport.prototype._addResizeEvent = function() {
 	throw "this function is virtual, it is supposed to be implemented in the derived class";
 }
 cocktail.runtime.abstract.AbstractViewport.prototype._removeResizeEvent = function() {
 	throw "this function is virtual, it is supposed to be implemented in the derived class";
 }
-cocktail.runtime.abstract.AbstractViewport.prototype._addRotateEvent = function() {
+cocktail.runtime.abstract.AbstractViewport.prototype._addOrientationChangeEvent = function() {
 	throw "this function is virtual, it is supposed to be implemented in the derived class";
 }
-cocktail.runtime.abstract.AbstractViewport.prototype._removeRotateEvent = function() {
+cocktail.runtime.abstract.AbstractViewport.prototype._removeOrientationChangeEvent = function() {
 	throw "this function is virtual, it is supposed to be implemented in the derived class";
 }
 cocktail.runtime.abstract.AbstractViewport.prototype._getWidth = function() {
@@ -30,9 +31,17 @@ cocktail.runtime.abstract.AbstractViewport.prototype._getHeight = function() {
 	throw "this function is virtual, it is supposed to be implemented in the derived class";
 	return null;
 }
-cocktail.runtime.abstract.AbstractViewport.prototype._getRotation = function() {
-	throw "this function is virtual, it is supposed to be implemented in the derived class";
-	return null;
+cocktail.runtime.abstract.AbstractViewport.prototype._getOrientation = function() {
+	if(this._getHeight() > this._getWidth()) return cocktail.runtime.OrientationValue.vertical; else return cocktail.runtime.OrientationValue.horizontal;
+}
+cocktail.runtime.abstract.AbstractViewport.prototype._onResizeCallback = function(e) {
+	if(this._getOnResize() != null) (this._getOnResize())();
+}
+cocktail.runtime.abstract.AbstractViewport.prototype._onOrientationChangeCallback = function(e) {
+	if(this._getOnOrientationChange() != null && this._lastOrientationObserved != this._getOrientation()) {
+		this._lastOrientationObserved = this._getOrientation();
+		(this._getOnOrientationChange())();
+	}
 }
 cocktail.runtime.abstract.AbstractViewport.prototype._onResize = null;
 cocktail.runtime.abstract.AbstractViewport.prototype._getOnResize = function() {
@@ -43,14 +52,15 @@ cocktail.runtime.abstract.AbstractViewport.prototype._setOnResize = function(cal
 	this._onResize = callbackFunction;
 	return this._onResize;
 }
-cocktail.runtime.abstract.AbstractViewport.prototype._onRotate = null;
-cocktail.runtime.abstract.AbstractViewport.prototype._getOnRotate = function() {
-	return this._onRotate;
+cocktail.runtime.abstract.AbstractViewport.prototype._onOrientationChange = null;
+cocktail.runtime.abstract.AbstractViewport.prototype._getOnOrientationChange = function() {
+	return this._onOrientationChange;
 }
-cocktail.runtime.abstract.AbstractViewport.prototype._setOnRotate = function(callbackFunction) {
-	if(this._onRotate == null && callbackFunction != null) this._addRotateEvent(); else if(this._onRotate != null && callbackFunction == null) this._removeRotateEvent();
-	this._onRotate = callbackFunction;
-	return this._onRotate;
+cocktail.runtime.abstract.AbstractViewport.prototype._setOnOrientationChange = function(callbackFunction) {
+	this._lastOrientationObserved = this._getOrientation();
+	if(this._onOrientationChange == null && callbackFunction != null) this._addOrientationChangeEvent(); else if(this._onOrientationChange != null && callbackFunction == null) this._removeOrientationChangeEvent();
+	this._onOrientationChange = callbackFunction;
+	return this._onOrientationChange;
 }
 cocktail.runtime.abstract.AbstractViewport.prototype.__class__ = cocktail.runtime.abstract.AbstractViewport;
 if(!cocktail.runtime.js) cocktail.runtime.js = {}
@@ -61,30 +71,23 @@ cocktail.runtime.js.Viewport = function(p) {
 cocktail.runtime.js.Viewport.__name__ = ["cocktail","runtime","js","Viewport"];
 cocktail.runtime.js.Viewport.__super__ = cocktail.runtime.abstract.AbstractViewport;
 for(var k in cocktail.runtime.abstract.AbstractViewport.prototype ) cocktail.runtime.js.Viewport.prototype[k] = cocktail.runtime.abstract.AbstractViewport.prototype[k];
-cocktail.runtime.js.Viewport.prototype._onResizeCallback = function(e) {
-	haxe.Log.trace("RESIZE fired",{ fileName : "Viewport.hx", lineNumber : 42, className : "cocktail.runtime.js.Viewport", methodName : "_onResizeCallback"});
-	if(this._getOnResize() != null) (this._getOnResize())();
-}
 cocktail.runtime.js.Viewport.prototype._addResizeEvent = function() {
-	haxe.Log.trace("start listening " + js.Lib.window.innerWidth,{ fileName : "Viewport.hx", lineNumber : 55, className : "cocktail.runtime.js.Viewport", methodName : "_addResizeEvent"});
 	js.Lib.window.addEventListener("resize",$closure(this,"_onResizeCallback"),false);
 }
 cocktail.runtime.js.Viewport.prototype._removeResizeEvent = function() {
-	haxe.Log.trace("stop listening",{ fileName : "Viewport.hx", lineNumber : 63, className : "cocktail.runtime.js.Viewport", methodName : "_removeResizeEvent"});
 	js.Lib.window.removeEventListener("resize",$closure(this,"_onResizeCallback"),false);
 }
-cocktail.runtime.js.Viewport.prototype._addRotateEvent = function() {
+cocktail.runtime.js.Viewport.prototype._addOrientationChangeEvent = function() {
+	js.Lib.window.addEventListener("resize",$closure(this,"_onOrientationChangeCallback"),false);
 }
-cocktail.runtime.js.Viewport.prototype._removeRotateEvent = function() {
+cocktail.runtime.js.Viewport.prototype._removeOrientationChangeEvent = function() {
+	js.Lib.window.removeEventListener("resize",$closure(this,"_onOrientationChangeCallback"),false);
 }
 cocktail.runtime.js.Viewport.prototype._getWidth = function() {
 	return js.Lib.window.innerWidth;
 }
 cocktail.runtime.js.Viewport.prototype._getHeight = function() {
 	return js.Lib.window.innerHeight;
-}
-cocktail.runtime.js.Viewport.prototype._getRotation = function() {
-	return null;
 }
 cocktail.runtime.js.Viewport.prototype.__class__ = cocktail.runtime.js.Viewport;
 if(typeof utest=='undefined') utest = {}
@@ -298,20 +301,23 @@ runtime.ViewportTests.main = function() {
 	runner.run();
 }
 runtime.ViewportTests.prototype.testViewport = function() {
-	var onViewportResizeAsync = utest.Assert.createAsync($closure(this,"onViewportResize"),6000);
 	var viewport = new cocktail.runtime.js.Viewport();
-	viewport._setOnResize(onViewportResizeAsync);
-	viewport._setOnRotate($closure(this,"onViewportRotate"));
+	viewport._setOnResize(utest.Assert.createAsync($closure(this,"onViewportResize"),6000));
+	viewport._setOnOrientationChange(utest.Assert.createAsync($closure(this,"onViewportRotate"),6000));
 	document.body.innerHTML += "Resize your window now !<br />";
 }
 runtime.ViewportTests.prototype.onViewportResize = function() {
-	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 68, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 60, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	document.body.innerHTML += "Rotate your device now !<br />";
 	var viewport = new cocktail.runtime.js.Viewport();
-	haxe.Log.trace("Resize " + viewport._getWidth() + ", " + viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 71, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	viewport._setOnResize(null);
+	haxe.Log.trace("Resize " + viewport._getWidth() + ", " + viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 68, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 }
 runtime.ViewportTests.prototype.onViewportRotate = function() {
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 75, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
 	var viewport = new cocktail.runtime.js.Viewport();
-	haxe.Log.trace("Rotate " + viewport._getRotation(),{ fileName : "ViewportTests.hx", lineNumber : 80, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	viewport._setOnOrientationChange(null);
+	haxe.Log.trace("Rotate " + viewport._getOrientation(),{ fileName : "ViewportTests.hx", lineNumber : 80, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
 }
 runtime.ViewportTests.prototype.__class__ = runtime.ViewportTests;
 StringTools = function() { }
@@ -3048,6 +3054,13 @@ utest.TestHandler.prototype.completed = function() {
 	this.onComplete.dispatch(this);
 }
 utest.TestHandler.prototype.__class__ = utest.TestHandler;
+cocktail.runtime.OrientationValue = { __ename__ : ["cocktail","runtime","OrientationValue"], __constructs__ : ["vertical","horizontal"] }
+cocktail.runtime.OrientationValue.vertical = ["vertical",0];
+cocktail.runtime.OrientationValue.vertical.toString = $estr;
+cocktail.runtime.OrientationValue.vertical.__enum__ = cocktail.runtime.OrientationValue;
+cocktail.runtime.OrientationValue.horizontal = ["horizontal",1];
+cocktail.runtime.OrientationValue.horizontal.toString = $estr;
+cocktail.runtime.OrientationValue.horizontal.__enum__ = cocktail.runtime.OrientationValue;
 utest.TestFixture = function(target,method,setup,teardown) {
 	if( target === $_ ) return;
 	this.target = target;
