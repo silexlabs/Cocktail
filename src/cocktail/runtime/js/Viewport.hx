@@ -42,6 +42,14 @@ class Viewport extends AbstractViewport
 		if (onResize != null)
 			onResize();
 	}
+	/**
+	 * event dispatched, call the callback
+	 */
+	private function _onOrientationChangeCallback(e:Event) : Void
+	{
+		if (onOrientationChange != null)
+			onOrientationChange();
+	}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overrides of private virtual methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -63,18 +71,18 @@ class Viewport extends AbstractViewport
 	/**
 	 * start listening to the viewport event
 	 */
-	override private function _addRotateEvent() : Void
+	override private function _addOrientationChangeEvent() : Void
 	{
-
+		untyped Lib.window.addEventListener("resize", _onOrientationChangeCallback, false);
 	}
 	/**
 	 * stop listening to the viewport event
 	 */
-	override private function _removeRotateEvent() : Void
+	override private function _removeOrientationChangeEvent() : Void
 	{
-
+		untyped Lib.window.removeEventListener("resize", _onOrientationChangeCallback, false);
 	}
-	
+
 	/**
 	 * getter for the value
 	 */
@@ -89,13 +97,5 @@ class Viewport extends AbstractViewport
 	override private function _getHeight() : Int
 	{
 		return Lib.window.innerHeight;
-	}
-
-	/**
-	 * getter for the value
-	 */
-	override private function _getRotation() : Int
-	{
-		return null;
 	}
 }
