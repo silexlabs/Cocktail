@@ -39,7 +39,6 @@ class Viewport extends AbstractViewport
 	 */
 	private function _onResizeCallback(e:Event) : Void
 	{
-		Log.trace("RESIZE fired");
 		if (onResize != null)
 			onResize();
 	}
@@ -51,16 +50,13 @@ class Viewport extends AbstractViewport
 	 */
 	override private function _addResizeEvent() : Void
 	{
-		Log.trace("start listening "+Lib.window.innerWidth);
 		untyped Lib.window.addEventListener("resize", _onResizeCallback, false);
-		
 	}
 	/**
 	 * stop listening to the viewport event
 	 */
 	override private function _removeResizeEvent() : Void
 	{
-		Log.trace("stop listening");
 		untyped Lib.window.removeEventListener("resize", _onResizeCallback, false);
 	}
 

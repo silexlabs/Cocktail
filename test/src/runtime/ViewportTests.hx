@@ -40,22 +40,26 @@ class ViewportTests
 	 */
 	public function testViewport()
 	{
-//		var onViewportResizeAsync:Void->Void = Assert.createAsync(onViewportResize);
-//		var onViewportRotateAsync:Void->Void = Assert.createAsync(onViewportRotate);
+		var onViewportResizeAsync:Void->Void = Assert.createAsync(onViewportResize, 6000);
 		
 		// create an object to access the application view port
 		var viewport = new Viewport();
 		
 		// listen to document events
-		viewport.onResize = onViewportResize; //Async;
-		viewport.onRotate = onViewportRotate; //Async;
+		viewport.onResize = onViewportResizeAsync;
+		
+		// display a message while waiting for resize
+		untyped document.body.innerHTML += 'Resize your window now !<br />';
+		
+		// (new haxe.Timer(5000)).run = Assert.createAsync(endTest,6000);
 	}
 	/**
 	 * Called when the viewport has been resized
 	 */
 	private function onViewportResize():Void
 	{
-//		Assert.isTrue(true);
+		Assert.isTrue(true);
+
 		// create an object to access the application view port
 		var viewport = new Viewport();
 		Log.trace("Resize " + viewport.width + ", "+viewport.height);
