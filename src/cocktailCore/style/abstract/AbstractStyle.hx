@@ -414,8 +414,9 @@ class AbstractStyle
 	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		computeDisplayStyles();
-		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		
 	}
 	
 	/**
@@ -447,16 +448,26 @@ class AbstractStyle
 	 */ 
 	private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
 	{
-		//instantiate the right box computer class
-		//based on the DOMElement's positioning
-		//scheme
-		var boxComputer:BoxStylesComputer;
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
 		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
 		
+		//do compute the box model styles
+		boxComputer.measure(this, containingBlockDimensions);
+	}
+	
+	/**
+	 * instantiate the right box computer class
+	 *	based on the DOMElement's positioning
+	 *	scheme
+	 */
+	private function getBoxStylesComputer():BoxStylesComputer
+	{
+		var boxComputer:BoxStylesComputer;
+				
 		//get the box computer for float
 		if (isFloat() == true)
 		{
@@ -488,8 +499,7 @@ class AbstractStyle
 			}
 		}
 		
-		//do compute the box model styles
-		boxComputer.measure(this, containingBlockDimensions);
+		return boxComputer;
 	}
 	
 	/**

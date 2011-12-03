@@ -94,6 +94,11 @@ class BoxStylesComputer
 		 
 	}
 	
+	public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	{
+		return computedStyles.width;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE MEASURE METHODS
 	// Measure the box model and determine

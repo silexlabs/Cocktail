@@ -131,21 +131,17 @@ class FontAndTextStylesComputer
 	 */
 	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetricsData:FontMetricsData):Float
 	{
-		
-		//TO DO : must represent an offset from the inlinebox baseline
 		var verticalAlign:Float;
 		
-		//To DO : move this to the box computer, will need to add either a ref to the containing dom element
-		//or to its font metrics
 		switch(style.verticalAlign)
 		{
 			case baseline:
 				verticalAlign = 0;
 				
 			case middle:
-				//! warning : containing dom element must be either an inline parent or the block which started inline context
 				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
 			case sub:
+				
 				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;
 				
 			case superStyle:
@@ -167,10 +163,8 @@ class FontAndTextStylesComputer
 				
 			case top:
 				verticalAlign = 0;
-				//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
 			case bottom:	
 				verticalAlign = 0;
-				//TO DO :  return a "null" value here. The eactual value will be calculated at formatting time
 		}
 		
 		return verticalAlign;

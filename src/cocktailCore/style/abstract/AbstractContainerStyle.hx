@@ -16,6 +16,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
+import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.formatter.InlineFormattingContext;
@@ -189,6 +190,14 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
 		
+		//if the width is defined as 'auto', it might need to 
+		//be computed to 'shrink-to-fit' (takes its content width)
+		if (this._width == DimensionStyleValue.auto)
+		{
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+		}
+		
+		
 		//insert the ContainerDOMElement into the document
 		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 
@@ -204,7 +213,7 @@ class AbstractContainerStyle extends Style
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		if (isInline() == false)
+		if (isInline() == false || isInlineFlow() == false )
 		{
 			super.insertInFlowDOMElement(formattingContext);
 		}
@@ -256,8 +265,24 @@ class AbstractContainerStyle extends Style
 					//start a new line
 					formattingContext.insertLineFeed();
 			}
-		}
-				
+		}			
+	}
+	
+	/**
+	 * In certain cases, when the width of the ContainerDOMElement is 'auto',
+	 * its computed value is 'shrink-to-fit' meaning that it will take either
+	 * the width of the widest line form by its children or the width of its
+	 * container if the children overflows
+	 * 
+	 * @param	availableWidth the width of the container of this containerDOMElement
+	 * @param	maxWidth the width of the widest line of children laid out
+	 * by this ContainerDOMElement
+	 */
+	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		
+		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -450,7 +475,8 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the right formatting context for this ContainerDOMElement.
+	 * Return the right formatting context to layout this ContainerDOMElement
+	 * children.
 	 * 
 	 * A ContainerDOMElement can either establish a new formatting context
 	 * or participate in the current formatting context. If it participates
@@ -458,24 +484,22 @@ class AbstractContainerStyle extends Style
 	 * is returned else a new block or inline formatting context is
 	 * instantiated
 	 * 
-	 * INLINE LEVEL CONTAINER DOMELEMENT
+	 * INLINE FLOW CONTAINER DOMELEMENT
 	 * 
-	 * If the container DOMElement itself is an inline level DOMElement, all
-	 * its children must be formatted as inline and the container DOMElement
-	 * participates in the previous formatting context
+	 * If the container DOMElement itself is an inline flow DOMElement
+	 * (it flows its children in an inline formatting context), the
+	 * container DOMElement participates in the previous formatting context
 	 * 
-	 * BLOCK LEVEL CONTAINER DOMELEMENT
+	 * BLOCK FLOW CONTAINER DOMELEMENT
 	 * 
-	 * If the container DOMElement itself is a block level DOMElement, it establishes
-	 * a new formatting context. If all its children are inline level, 
-	 * an inline formatting context is instantiated, else if all its children are block
-	 * level, a block level formatting context is instantiated. If its children mix
-	 * inline and block level DOMElement, inline formatting context is the default.
-	 * If the container
+	 * If the container DOMElement itself is a block flow DOMElement, (it can
+	 * layout its children either in an inline or block formatting context)
+	 * ,it establishes a new formatting context for its children. If all its 
+	 * children are inline level, an inline formatting context is instantiated,
+	 * else if all its children are block level, a block level formatting context
+	 * is instantiated. If its children mix inline and block level DOMElement,
+	 * inline formatting context is the default.
 	 * 
-	 * If the container DOMElement is absolutely positioned, then it belongs to a
-	 * different stacking context than the flow and is not influenced by the previously
-	 * declared float.
 	 * 
 	 * @param	previousFormatingContext the formatting context of the parent of this
 	 * Container DOMElement, might be returned if the container DOMElement participates
@@ -488,40 +512,41 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var formattingContext:FormattingContext;
 		
-		//if absolutely positioned DOMElement
-		if (isPositioned() == true && isRelativePositioned() == false)
+		//here, a new formatting context is created
+		if (startsNewFormattingContext() == true)
 		{
-			//start an inline or block context, but don't use the 
-			//previous formatting context to retrieve current floats as they
-			//don't apply to this new formatting context
-			if (childrenInline() == true)
+			//the formatting context that will be passed to the
+			//new formatting context
+			var usedFormatingContext:FormattingContext;
+			
+			//If the container DOMElement is absolutely positioned, then it belongs to a
+			//different stacking context than the curent flow and is not influenced by the previously
+			//declared float, so it doesn't use the previousFormattingContext
+			if (isPositioned() == true && isRelativePositioned() == false)
 			{
-				formattingContext = new InlineFormattingContext(containerDOMElement, null);	
+				usedFormatingContext = null;
 			}
 			else
 			{
-				formattingContext = new BlockFormattingContext(containerDOMElement, null);
+				usedFormatingContext = previousFormatingContext;
+			}
+			
+			//instantiate the right formatting context
+			//based on the children display
+			if (childrenInline() == true)
+			{
+				formattingContext = new InlineFormattingContext(containerDOMElement, usedFormatingContext);	
+			}
+			else
+			{
+				formattingContext = new BlockFormattingContext(containerDOMElement, usedFormatingContext);
 			}
 		}
-		//else if the container DOMElement participate in the same
-		//formatting context as its parent
-		else if (isInline() && Std.is(previousFormatingContext, InlineFormattingContext))
+		else
 		{
 			formattingContext = previousFormatingContext;
 		}
-		//else, based on the children display style
-		//create an inline or block formatting context
-		else
-		{
-			if (childrenInline() == true)
-			{
-				formattingContext = new InlineFormattingContext(containerDOMElement, previousFormatingContext);	
-			}
-			else
-			{
-				formattingContext = new BlockFormattingContext(containerDOMElement, previousFormatingContext);
-			}
-		}
+		
 		
 		return formattingContext;
 	}
@@ -597,6 +622,72 @@ class AbstractContainerStyle extends Style
 					
 				}
 			}
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Determin wether a block container
+	 * starts a new formatting context for
+	 * its children
+	 */
+	private function startsNewFormattingContext():Bool
+	{
+		var ret:Bool = false;
+		
+		//floats starts new context
+		if (isFloat() == true)
+		{
+			ret = true;
+		}
+		//positioned element which are not relative start new context
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			ret = true;
+		}
+		//element with a block/inline-block display style
+		//start a new context
+		else
+		{
+			switch (this._computedStyle.display)
+			{
+				case block, inlineBlock:
+					ret = true; 
+					
+				default:
+			}
+		}
+		
+		//in the other cases such as an inline container
+		//the current formatting context is used
+		
+		return ret;
+	}
+	
+	/**
+	 * Determine wheter the container DOMElement
+	 * is an inline or block flow. For instance,
+	 * an inline-block containerDOMElement is both
+	 * inline (because it is placed on a line) and
+	 * a block flow, because it can layout its
+	 * children either into either a block or
+	 * inline formatting context
+	 */
+	private function isInlineFlow():Bool
+	{
+		var ret:Bool;
+		
+		switch(this._computedStyle.display)
+		{
+			case block, inlineBlock:
+				ret = false;
+				
+			case inlineStyle:
+				ret = true;
+				
+			default:
+				ret = true;
 		}
 		
 		return ret;
