@@ -23,6 +23,11 @@ import cocktail.runtime.Viewport;
 class ViewportTests 
 {
 	private var _viewport : Viewport;
+	
+	#if flash9
+	private var tf:flash.text.TextField;
+	#end
+	
 	public static function main()
 	{
 		var runner = new Runner();
@@ -36,6 +41,12 @@ class ViewportTests
 		// create an object to access the application view port
 		_viewport = new Viewport();
 		
+		#if flash9
+		tf = new flash.text.TextField();
+		tf.autoSize = flash.text.TextFieldAutoSize.LEFT;
+		tf.multiline = true;
+        flash.Lib.current.addChild(tf);
+		#end
 	}
 	
 	/**
@@ -47,8 +58,11 @@ class ViewportTests
 		_viewport.onResize = Assert.createAsync(onViewportResize, 6000);
 
 		// display a message while waiting for resize
-		//untyped document.body.innerHTML += 'Resize your window now !<br />';
-		Log.trace('Resize your window now !<br />');
+		#if flash9
+        tf.htmlText += '<br>Resize your window now !<br>';
+		#elseif js
+		untyped document.body.innerHTML += 'Resize your window now !<br />';
+		#end
 		
 		// (new haxe.Timer(5000)).run = Assert.createAsync(endTest,6000);
 	}
@@ -59,15 +73,11 @@ class ViewportTests
 	{
 		Assert.isTrue(true);
 
-		//#if flash9
-		//Assert.is(domRoot, flash.display.Stage);
-		//#elseif js
-		//Assert.same(domRoot.nodeName, "BODY");
-		//#end
-		// display a message while waiting for rotation
-		//untyped document.body.innerHTML += 'Rotate your device now !<br />';
-		Log.trace('Rotate your device now !<br />');
-		
+		#if flash9
+		tf.htmlText += '<br>Rotate your device now !<br>';
+		#elseif js
+		untyped document.body.innerHTML += 'Rotate your device now !<br />';
+		#end
 		
 		// stop litening
 		_viewport.onResize = null;
@@ -86,6 +96,11 @@ class ViewportTests
 		
 		// stop litening
 		_viewport.onOrientationChange = null;
-		Log.trace("Rotate " + _viewport.orientation);
+		
+		#if flash9
+		tf.htmlText += "<br>Rotate " + _viewport.orientation;
+		#elseif js
+		untyped document.body.innerHTML += "Rotate " + _viewport.orientation;
+		#end
 	}
 }

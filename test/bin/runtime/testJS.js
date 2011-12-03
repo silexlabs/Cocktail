@@ -305,19 +305,19 @@ runtime.ViewportTests.main = function() {
 runtime.ViewportTests.prototype._viewport = null;
 runtime.ViewportTests.prototype.testViewport = function() {
 	this._viewport._setOnResize(utest.Assert.createAsync($closure(this,"onViewportResize"),6000));
-	haxe.Log.trace("Resize your window now !<br />",{ fileName : "ViewportTests.hx", lineNumber : 51, className : "runtime.ViewportTests", methodName : "testViewport"});
+	document.body.innerHTML += "Resize your window now !<br />";
 }
 runtime.ViewportTests.prototype.onViewportResize = function() {
-	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 60, className : "runtime.ViewportTests", methodName : "onViewportResize"});
-	haxe.Log.trace("Rotate your device now !<br />",{ fileName : "ViewportTests.hx", lineNumber : 69, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 74, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	document.body.innerHTML += "Rotate your device now !<br />";
 	this._viewport._setOnResize(null);
 	this._viewport._setOnOrientationChange(utest.Assert.createAsync($closure(this,"onViewportRotate"),6000));
-	haxe.Log.trace("Resize " + this._viewport._getWidth() + ", " + this._viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 78, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	haxe.Log.trace("Resize " + this._viewport._getWidth() + ", " + this._viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 88, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 }
 runtime.ViewportTests.prototype.onViewportRotate = function() {
-	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 85, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 95, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
 	this._viewport._setOnOrientationChange(null);
-	haxe.Log.trace("Rotate " + this._viewport._getOrientation(),{ fileName : "ViewportTests.hx", lineNumber : 89, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	document.body.innerHTML += "Rotate " + this._viewport._getOrientation();
 }
 runtime.ViewportTests.prototype.__class__ = runtime.ViewportTests;
 StringTools = function() { }
