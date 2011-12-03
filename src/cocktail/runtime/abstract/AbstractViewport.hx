@@ -7,6 +7,10 @@
 */
 package cocktail.runtime.abstract;
 
+import cocktail.runtime.ViewportData;
+import js.Lib;
+import js.Dom;
+
 /**
  * This class handles the interaction with the view port of the application.
  * The viewport is the visible portion of a 2D area which is larger than the visualization device.
@@ -28,7 +32,6 @@ class AbstractViewport
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Resize callback
 	 */
@@ -36,7 +39,7 @@ class AbstractViewport
 	/**
 	 * Rotate callback
 	 */
-	public var onRotate(_getOnRotate, _setOnRotate) : Void->Void;
+	public var onOrientationChange(_getOnOrientationChange, _setOnOrientationChange) : Void->Void;
 	/**
 	 * width of the viewport
 	 */
@@ -48,7 +51,17 @@ class AbstractViewport
 	/**
 	 * orientation of the viewport
 	 */
-	public var orientation(_getOrientation, null) : Int;
+	public var orientation(_getOrientation, null) : OrientationValue;
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * last data we have had for the orientation of the viewport
+	 * used to determine if orientation has changed, and then call the orientationChange callback
+	 * set by _onOrientationChangeCallback and onOrientationChange setter
+	 */
+	private var _lastOrientationObserved : OrientationValue;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private virtual methods
@@ -100,13 +113,51 @@ class AbstractViewport
 		return null;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Public setters/getters
+	//////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * getter for the value
 	 */
-	private function _getOrientation() : OrientationValue
+	public function _getOrientation() : OrientationValue
 	{
-		throw("this function is virtual, it is supposed to be implemented in the derived class");
-		return null;
+		if (height > width) 
+		{
+			//portrait mode 
+			return vertical;
+		}
+		else
+		{
+			//landscape mode  
+			return horizontal;
+		}   
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * event dispatched, call the callback
+	 */
+	private function _onResizeCallback(e:Event) : Void
+	{
+		if (onResize != null)
+			onResize();
+	}
+	/**
+	 * resize event dispatched, 
+	 * if the orientation has changed, call the callback
+	 */
+	private function _onOrientationChangeCallback(e:Event) : Void
+	{
+		if (onOrientationChange != null && _lastOrientationObserved != orientation)
+		{
+			// store the current orientation value in order to detect a change
+			_lastOrientationObserved = orientation;
+			
+			// call the callback
+			onOrientationChange();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -128,54 +179,48 @@ class AbstractViewport
 	 */
 	private function _setOnResize(callbackFunction : Void->Void) : Void->Void
 	{
+		// attach or detach the events
 		if (_onResize == null && callbackFunction != null)
 			_addResizeEvent();
 		else if (_onResize != null && callbackFunction== null)
 			_removeResizeEvent();
 
+		// store the callback 
 		_onResize = callbackFunction;
+
+		// returns the input value
 		return _onResize;
 	}
 
 	/**
 	 * private variable used to store the callback
 	 */
-	private var _onRotate : Void->Void;
+	private var _onOrientationChange : Void->Void;
 	/**
 	 * getter for the callback
 	 */
-	private function _getOnRotate() : Void->Void
+	private function _getOnOrientationChange() : Void->Void
 	{
-		return _onRotate;
+		return _onOrientationChange;
 	}
 	/**
 	 * setter for the callback
 	 */
-	private function _setOnRotate(callbackFunction : Void->Void) : Void->Void
+	private function _setOnOrientationChange(callbackFunction : Void->Void) : Void->Void
 	{
-		if (_onRotate == null && callbackFunction != null)
-			_addRotateEvent();
-		else if (_onRotate != null && callbackFunction== null)
-			_removeRotateEvent();
+		// store the current orientation value in order to detect a change
+		_lastOrientationObserved = orientation;
+		
+		// attach or detach the events
+		if (_onOrientationChange == null && callbackFunction != null)
+			_addOrientationChangeEvent();
+		else if (_onOrientationChange != null && callbackFunction== null)
+			_removeOrientationChangeEvent();
 
-		_onRotate = callbackFunction;
-		return _onRotate;
-	}
-
-	/**
-	 * getter for the value
-	 */
-	override private function _getOrientation() : OrientationValue
-	{
-		if (height > width) 
-		{
-			//portrait mode 
-			return vertical;
-		}
-		else
-		{
-			//landscape mode  
-			return horizontal;
-		}   
+		// store the callback 
+		_onOrientationChange = callbackFunction;
+		
+		// returns the input value
+		return _onOrientationChange;
 	}
 }
