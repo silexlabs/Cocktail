@@ -292,6 +292,8 @@ haxe.Stack.makeStack = function(s) {
 haxe.Stack.prototype.__class__ = haxe.Stack;
 if(typeof runtime=='undefined') runtime = {}
 runtime.ViewportTests = function(p) {
+	if( p === $_ ) return;
+	this._viewport = new cocktail.runtime.js.Viewport();
 }
 runtime.ViewportTests.__name__ = ["runtime","ViewportTests"];
 runtime.ViewportTests.main = function() {
@@ -300,24 +302,22 @@ runtime.ViewportTests.main = function() {
 	utest.ui.Report.create(runner);
 	runner.run();
 }
+runtime.ViewportTests.prototype._viewport = null;
 runtime.ViewportTests.prototype.testViewport = function() {
-	var viewport = new cocktail.runtime.js.Viewport();
-	viewport._setOnResize(utest.Assert.createAsync($closure(this,"onViewportResize"),6000));
-	viewport._setOnOrientationChange(utest.Assert.createAsync($closure(this,"onViewportRotate"),6000));
+	this._viewport._setOnResize(utest.Assert.createAsync($closure(this,"onViewportResize"),6000));
 	document.body.innerHTML += "Resize your window now !<br />";
 }
 runtime.ViewportTests.prototype.onViewportResize = function() {
-	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 60, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 59, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 	document.body.innerHTML += "Rotate your device now !<br />";
-	var viewport = new cocktail.runtime.js.Viewport();
-	viewport._setOnResize(null);
-	haxe.Log.trace("Resize " + viewport._getWidth() + ", " + viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 68, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	this._viewport._setOnResize(null);
+	this._viewport._setOnOrientationChange(utest.Assert.createAsync($closure(this,"onViewportRotate"),6000));
+	haxe.Log.trace("Resize " + this._viewport._getWidth() + ", " + this._viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 70, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 }
 runtime.ViewportTests.prototype.onViewportRotate = function() {
-	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 75, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
-	var viewport = new cocktail.runtime.js.Viewport();
-	viewport._setOnOrientationChange(null);
-	haxe.Log.trace("Rotate " + viewport._getOrientation(),{ fileName : "ViewportTests.hx", lineNumber : 80, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 77, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	this._viewport._setOnOrientationChange(null);
+	haxe.Log.trace("Rotate " + this._viewport._getOrientation(),{ fileName : "ViewportTests.hx", lineNumber : 81, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
 }
 runtime.ViewportTests.prototype.__class__ = runtime.ViewportTests;
 StringTools = function() { }

@@ -182,7 +182,7 @@ class AbstractViewport
 		// attach or detach the events
 		if (_onResize == null && callbackFunction != null)
 			_addResizeEvent();
-		else if (_onResize != null && callbackFunction== null)
+		else if (_onResize != null && callbackFunction == null)
 			_removeResizeEvent();
 
 		// store the callback 
