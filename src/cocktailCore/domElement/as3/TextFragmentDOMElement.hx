@@ -35,7 +35,7 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 		{
 			if (untyped _nativeElement.textWidth == 0)
 			{
-				this._width = untyped _nativeElement.getAtomBounds(0).width;
+				this._width = style.fontMetrics.spaceWidth;
 			}
 		}
 	
@@ -45,12 +45,13 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		var relevantWidth:Float;
-		
+	
 		if (untyped _nativeElement.textWidth == 0)
 		{
 			//return this._width;
 			//relevantWidth = untyped _nativeElement.getAtomBounds(0).width;
 			return this._width + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
+			
 		}
 		else
 		{
