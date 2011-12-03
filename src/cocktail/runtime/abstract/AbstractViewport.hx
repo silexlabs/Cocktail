@@ -48,7 +48,7 @@ class AbstractViewport
 	/**
 	 * orientation of the viewport
 	 */
-	public var rotation(_getRotation, null) : Int;
+	public var orientation(_getOrientation, null) : Int;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private virtual methods
@@ -71,14 +71,14 @@ class AbstractViewport
 	/**
 	 * start listening to the viewport event
 	 */
-	private function _addRotateEvent() : Void
+	private function _addOrientationChangeEvent() : Void
 	{
 		throw("this function is virtual, it is supposed to be implemented in the derived class");
 	}
 	/**
 	 * stop listening to the viewport event
 	 */
-	private function _removeRotateEvent() : Void
+	private function _removeOrientationChangeEvent() : Void
 	{
 		throw("this function is virtual, it is supposed to be implemented in the derived class");
 	}
@@ -103,7 +103,7 @@ class AbstractViewport
 	/**
 	 * getter for the value
 	 */
-	private function _getRotation() : Int
+	private function _getOrientation() : OrientationValue
 	{
 		throw("this function is virtual, it is supposed to be implemented in the derived class");
 		return null;
@@ -160,5 +160,22 @@ class AbstractViewport
 
 		_onRotate = callbackFunction;
 		return _onRotate;
+	}
+
+	/**
+	 * getter for the value
+	 */
+	override private function _getOrientation() : OrientationValue
+	{
+		if (height > width) 
+		{
+			//portrait mode 
+			return vertical;
+		}
+		else
+		{
+			//landscape mode  
+			return horizontal;
+		}   
 	}
 }
