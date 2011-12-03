@@ -22,6 +22,7 @@ import cocktail.runtime.Viewport;
  */
 class ViewportTests 
 {
+	private var _viewport : Viewport;
 	public static function main()
 	{
 		var runner = new Runner();
@@ -32,6 +33,8 @@ class ViewportTests
 	
 	public function new() 
 	{
+		// create an object to access the application view port
+		_viewport = new Viewport();
 		
 	}
 	
@@ -40,13 +43,9 @@ class ViewportTests
 	 */
 	public function testViewport()
 	{
-		// create an object to access the application view port
-		var viewport = new Viewport();
-		
 		// listen to document events
-		viewport.onResize = Assert.createAsync(onViewportResize, 6000);
-		viewport.onOrientationChange = Assert.createAsync(onViewportRotate, 6000);
-		
+		_viewport.onResize = Assert.createAsync(onViewportResize, 6000);
+
 		// display a message while waiting for resize
 		untyped document.body.innerHTML += 'Resize your window now !<br />';
 		
@@ -62,10 +61,13 @@ class ViewportTests
 		// display a message while waiting for rotation
 		untyped document.body.innerHTML += 'Rotate your device now !<br />';
 		
-		// create an object to access the application view port
-		var viewport = new Viewport();
-		viewport.onResize = null;
-		Log.trace("Resize " + viewport.width + ", "+viewport.height);
+		// stop litening
+		_viewport.onResize = null;
+
+		// rotation test
+		_viewport.onOrientationChange = Assert.createAsync(onViewportRotate, 6000);
+		
+		Log.trace("Resize " + _viewport.width + ", "+_viewport.height);
 	}
 	/**
 	 * Called when the viewport has been rotated
@@ -74,9 +76,8 @@ class ViewportTests
 	{
 		Assert.isTrue(true);
 		
-		// create an object to access the application view port
-		var viewport = new Viewport();
-		viewport.onOrientationChange = null;
-		Log.trace("Rotate " + viewport.orientation);
+		// stop litening
+		_viewport.onOrientationChange = null;
+		Log.trace("Rotate " + _viewport.orientation);
 	}
 }
