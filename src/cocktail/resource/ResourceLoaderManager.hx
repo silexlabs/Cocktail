@@ -11,34 +11,34 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
 
-import cocktail.resource.abstract.AbstractResourceLoader;
+import cocktailCore.resource.abstract.AbstractResourceLoader;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.js.AnimationDOMElement;
+import cocktail.domElement.AnimationDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
-import cocktail.resource.as3.StringLoader;
-import cocktail.resource.as3.ImageLoader;
-import cocktail.resource.as3.ContainerLoader;
-import cocktail.resource.as3.AnimationLoader;
-import cocktail.resource.as3.LibraryLoader;
+import cocktailCore.resource.as3.StringLoader;
+import cocktailCore.resource.as3.ImageLoader;
+import cocktailCore.resource.as3.ContainerLoader;
+import cocktailCore.resource.as3.AnimationLoader;
+import cocktailCore.resource.as3.LibraryLoader;
 
 #elseif js
-import cocktail.resource.js.StringLoader;
-import cocktail.resource.js.ImageLoader;
-import cocktail.resource.js.ContainerLoader;
-import cocktail.resource.js.AnimationLoader;
-import cocktail.resource.js.LibraryLoader;
+import cocktailCore.resource.js.StringLoader;
+import cocktailCore.resource.js.ImageLoader;
+import cocktailCore.resource.js.ContainerLoader;
+import cocktailCore.resource.js.AnimationLoader;
+import cocktailCore.resource.js.LibraryLoader;
 
 #elseif php
-import cocktail.resource.php.StringLoader;
-import cocktail.resource.php.ImageLoader;
-import cocktail.resource.php.ContainerLoader;
-import cocktail.resource.php.AnimationLoader;
-import cocktail.resource.php.LibraryLoader;
+import cocktailCore.resource.php.StringLoader;
+import cocktailCore.resource.php.ImageLoader;
+import cocktailCore.resource.php.ContainerLoader;
+import cocktailCore.resource.php.AnimationLoader;
+import cocktailCore.resource.php.LibraryLoader;
 
 #elseif doc
 class StringLoader extends AbstractResourceLoader {}

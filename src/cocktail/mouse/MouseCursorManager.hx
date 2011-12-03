@@ -13,13 +13,13 @@ package cocktail.mouse;
 
 //import the right runtime implementations
 #if flash9
-import cocktail.mouse.as3.MouseCursor;
+import cocktailCore.mouse.as3.MouseCursor;
 
 #elseif js
-import cocktail.mouse.js.MouseCursor;
+import cocktailCore.mouse.js.MouseCursor;
 
 #elseif doc
-class MouseCursor extends cocktail.mouse.abstract.AbstractMouseCursor { }
+class MouseCursor extends cocktailCore.mouse.abstract.AbstractMouseCursor { }
 
 #end
 

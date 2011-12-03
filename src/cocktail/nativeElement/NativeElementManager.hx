@@ -12,22 +12,21 @@ package cocktail.nativeElement;
 
 //import the right runtime implementations
 #if flash9
-import cocktail.nativeElement.as3.NativeElementCreator;
-import cocktail.nativeElement.as3.NativeElementPathManager;
+import cocktailCore.nativeElement.as3.NativeElementCreator;
+import cocktailCore.nativeElement.as3.NativeElementPathManager;
 
 #elseif js
-import cocktail.nativeElement.js.NativeElementCreator;
-import cocktail.nativeElement.js.NativeElementPathManager;
+import cocktailCore.nativeElement.js.NativeElementCreator;
+import cocktailCore.nativeElement.js.NativeElementPathManager;
 
 #elseif doc
-class NativeElementCreator extends cocktail.nativeElement.abstract.AbstractNativeElementCreator { }
-class NativeElementPathManager extends cocktail.nativeElement.abstract.AbstractNativeElementPathManager { }
+class NativeElementCreator extends cocktailCore.nativeElement.abstract.AbstractNativeElementCreator { }
+class NativeElementPathManager extends cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager { }
 
 #end
 
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
-import cocktail.domElement.TextNode;
 
 /**
  * this class abstract and manages the interaction with a
@@ -91,21 +90,5 @@ class NativeElementManager
 		}
 		
 		return _nativeElementCreator.createNativeElement(nativeElementType);
-	}
-	
-	/**
-	 * Create a TextNode from a text, which is an abstract representation
-	 * of a text element, e.g in JS, it is an HTML TextNode, in flash a 
-	 * simple string
-	 */
-	public static function createNativeTextNode(text:String):TextNode
-	{
-		//instantiate the reference creator if first use
-		if (_nativeElementCreator == null)
-		{
-			_nativeElementCreator = new NativeElementCreator();
-		}
-		
-		return _nativeElementCreator.createNativeTextNode(text);
 	}
 }
