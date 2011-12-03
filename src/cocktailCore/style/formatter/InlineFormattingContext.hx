@@ -254,10 +254,9 @@ class InlineFormattingContext extends FormattingContext
 			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
 		}
 		
-		
-		
 		var remainingSpace:Int;
 		var localFlow:Int;
+		
 		if (firstLine == true)
 		{
 			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
@@ -325,19 +324,22 @@ class InlineFormattingContext extends FormattingContext
 						switch (_domElementInLineBox[i].domElementType)
 						{
 							case space:
-								_domElementInLineBox[i].domElement.width = Math.round(_containingDOMElement.style.fontMetrics.spaceWidth + (remainingSpace / spacesNumber));
-	
 								
+								var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
+								spacesNumber--;
+								remainingSpace -= spaceWidth;
+								
+								localFlow += spaceWidth;
+		
+		
 								default:	
 						}
-					}
-					
-					for (i in 0..._domElementInLineBox.length)
-					{
+						
 						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
+					
 				}
 				
 		}
@@ -396,7 +398,6 @@ class InlineFormattingContext extends FormattingContext
 			
 		}
 		
-	//	Log.trace(lineBoxHeight);
 		return Math.round(lineBoxHeight);
 	}
 	

@@ -19,7 +19,6 @@ import haxe.Log;
  * ...
  * @author Yannick DOMINGUEZ
  */
-
 class BlockFormattingContext extends FormattingContext
 {
 
