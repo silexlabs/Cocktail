@@ -47,7 +47,8 @@ class ViewportTests
 		_viewport.onResize = Assert.createAsync(onViewportResize, 6000);
 
 		// display a message while waiting for resize
-		untyped document.body.innerHTML += 'Resize your window now !<br />';
+		//untyped document.body.innerHTML += 'Resize your window now !<br />';
+		Log.trace('Resize your window now !<br />');
 		
 		// (new haxe.Timer(5000)).run = Assert.createAsync(endTest,6000);
 	}
@@ -58,8 +59,15 @@ class ViewportTests
 	{
 		Assert.isTrue(true);
 
+		//#if flash9
+		//Assert.is(domRoot, flash.display.Stage);
+		//#elseif js
+		//Assert.same(domRoot.nodeName, "BODY");
+		//#end
 		// display a message while waiting for rotation
-		untyped document.body.innerHTML += 'Rotate your device now !<br />';
+		//untyped document.body.innerHTML += 'Rotate your device now !<br />';
+		Log.trace('Rotate your device now !<br />');
+		
 		
 		// stop litening
 		_viewport.onResize = null;

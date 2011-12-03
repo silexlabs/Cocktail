@@ -8,8 +8,6 @@
 package cocktail.runtime.abstract;
 
 import cocktail.runtime.ViewportData;
-import js.Lib;
-import js.Dom;
 
 /**
  * This class handles the interaction with the view port of the application.
@@ -101,7 +99,7 @@ class AbstractViewport
 	private function _getWidth() : Int
 	{
 		throw("this function is virtual, it is supposed to be implemented in the derived class");
-		return null;
+		return -1;
 	}
 
 	/**
@@ -110,7 +108,7 @@ class AbstractViewport
 	private function _getHeight() : Int
 	{
 		throw("this function is virtual, it is supposed to be implemented in the derived class");
-		return null;
+		return -1;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +137,7 @@ class AbstractViewport
 	/**
 	 * event dispatched, call the callback
 	 */
-	private function _onResizeCallback(e:Event) : Void
+	private function _onResizeCallback(e) : Void
 	{
 		if (onResize != null)
 			onResize();
@@ -148,7 +146,7 @@ class AbstractViewport
 	 * resize event dispatched, 
 	 * if the orientation has changed, call the callback
 	 */
-	private function _onOrientationChangeCallback(e:Event) : Void
+	private function _onOrientationChangeCallback(e) : Void
 	{
 		if (onOrientationChange != null && _lastOrientationObserved != orientation)
 		{
