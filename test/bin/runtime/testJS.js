@@ -66,7 +66,7 @@ cocktail.runtime.js.Viewport.prototype._onResizeCallback = function(e) {
 	if(this._getOnResize() != null) (this._getOnResize())();
 }
 cocktail.runtime.js.Viewport.prototype._addResizeEvent = function() {
-	haxe.Log.trace("start listening " + js.Lib.window.innerWidth,{ fileName : "Viewport.hx", lineNumber : 54, className : "cocktail.runtime.js.Viewport", methodName : "_addResizeEvent"});
+	haxe.Log.trace("start listening " + js.Lib.window.innerWidth,{ fileName : "Viewport.hx", lineNumber : 55, className : "cocktail.runtime.js.Viewport", methodName : "_addResizeEvent"});
 	js.Lib.window.addEventListener("resize",$closure(this,"_onResizeCallback"),false);
 }
 cocktail.runtime.js.Viewport.prototype._removeResizeEvent = function() {
@@ -298,17 +298,20 @@ runtime.ViewportTests.main = function() {
 	runner.run();
 }
 runtime.ViewportTests.prototype.testViewport = function() {
+	var onViewportResizeAsync = utest.Assert.createAsync($closure(this,"onViewportResize"),6000);
 	var viewport = new cocktail.runtime.js.Viewport();
-	viewport._setOnResize($closure(this,"onViewportResize"));
+	viewport._setOnResize(onViewportResizeAsync);
 	viewport._setOnRotate($closure(this,"onViewportRotate"));
+	document.body.innerHTML += "Resize your window now !<br />";
 }
 runtime.ViewportTests.prototype.onViewportResize = function() {
+	utest.Assert.isTrue(true,null,{ fileName : "ViewportTests.hx", lineNumber : 68, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 	var viewport = new cocktail.runtime.js.Viewport();
-	haxe.Log.trace("Resize " + viewport._getWidth() + ", " + viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 61, className : "runtime.ViewportTests", methodName : "onViewportResize"});
+	haxe.Log.trace("Resize " + viewport._getWidth() + ", " + viewport._getHeight(),{ fileName : "ViewportTests.hx", lineNumber : 71, className : "runtime.ViewportTests", methodName : "onViewportResize"});
 }
 runtime.ViewportTests.prototype.onViewportRotate = function() {
 	var viewport = new cocktail.runtime.js.Viewport();
-	haxe.Log.trace("Rotate " + viewport._getRotation(),{ fileName : "ViewportTests.hx", lineNumber : 70, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
+	haxe.Log.trace("Rotate " + viewport._getRotation(),{ fileName : "ViewportTests.hx", lineNumber : 80, className : "runtime.ViewportTests", methodName : "onViewportRotate"});
 }
 runtime.ViewportTests.prototype.__class__ = runtime.ViewportTests;
 StringTools = function() { }
