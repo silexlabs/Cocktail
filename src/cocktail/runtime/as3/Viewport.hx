@@ -9,14 +9,18 @@ package cocktail.runtime.as3;
 
 import haxe.Log;
 
+import flash.Lib;
+import flash.events.Event;
+
+import cocktail.runtime.abstract.AbstractViewport;
 
 /**
  * This class handles the interaction with the view port of the application.
  * The viewport is the visible portion of a 2D area which is larger than the visualization device.
  * Viewport width and height are read only and define the size of the visible area of our application.
  * The Viewport class is to be instanciated and the instances gives access to the viewport callbacks (events) and attributes.
- * This is the implementation for the JavaScript runtime. 
- * @author lexa
+ * This is the implementation for the Flash/AS3 runtime. 
+ * @author zabojad
  * @date	12-2011
  */
 class Viewport extends AbstractViewport
@@ -27,6 +31,54 @@ class Viewport extends AbstractViewport
 	public function new() 
 	{
 		super();
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overrides of private virtual methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * start listening to the viewport event
+	 */
+	override private function _addResizeEvent() : Void
+	{
+		Lib.current.stage.addEventListener( Event.RESIZE , _onResizeCallback );
+	}
+	/**
+	 * stop listening to the viewport event
+	 */
+	override private function _removeResizeEvent() : Void
+	{
+		Lib.current.stage.removeEventListener( Event.RESIZE , _onResizeCallback );
+	}
+
+	/**
+	 * start listening to the viewport event
+	 */
+	override private function _addOrientationChangeEvent() : Void
+	{
+		Lib.current.stage.addEventListener( Event.RESIZE , _onOrientationChangeCallback );
+	}
+	/**
+	 * stop listening to the viewport event
+	 */
+	override private function _removeOrientationChangeEvent() : Void
+	{
+		Lib.current.stage.removeEventListener( Event.RESIZE , _onOrientationChangeCallback );
+	}
+
+	/**
+	 * getter for the value
+	 */
+	override private function _getWidth() : Int
+	{
+		return Lib.current.stage.stageWidth;
+	}
+
+	/**
+	 * getter for the value
+	 */
+	override private function _getHeight() : Int
+	{
+		return Lib.current.stage.stageHeight;
 	}
 	
 }
