@@ -16,61 +16,43 @@ import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
 import cocktailCore.unit.UnitManager;
 
-
 /**
- * ...
+ * The is the box style computer for inline non-embedded
+ * DOMElement, such as a fragment of text
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InLineBoxStylesComputer extends BoxStylesComputer
 {
-	private static var NULL:Int = -1;
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
 	}
 	
-	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
-	{
-		//the return value
-		var computedMargin:Int;
-		
-		//check which type of value is defined
-		switch (marginStyleValue)
-		{
-			//it's a length (an absolute value
-			//with a unit)
-			case length(value):
-				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
-			
-			//It's a percentage, compute it from the containing dimension
-			case percent(value): 
-				
-				//margin default to 0 if containing dimension is undefined
-				if (containingDOMElementDimension == NULL)
-				{
-					computedMargin = 0;
-				}
-				else
-				{
-					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
-			
-			case auto:	
-				computedMargin = 0;
-		}
-		
-		return computedMargin;
+	/**
+	 * auto margin compute to 0 for inline non-embedded DOMElement
+	 */
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	{	
+		return 0;
 	}
 	
+	/**
+	 * for inline, non embedded DOMElement, the width doesn't apply
+	 */
 	override private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return 0;
 	}
 	
+	/**
+	 * for inline, non embedded DOMElement, the height doesn't apply
+	 */
 	override private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		//TO DO, should be based on font size, but to do it for multi-line ? Should be set during layout ? (probably)
 		return 0;
 	}
 

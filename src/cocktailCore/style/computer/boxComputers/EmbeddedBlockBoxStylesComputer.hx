@@ -154,4 +154,24 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		return ret;
 	}
 	
+	/**
+	 * for block embedded DOMElement, an 'auto' for vertical margin compute to 0, 
+	 * horizontal margin are computed like for non-embedded block DOMElements
+	 */
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	{
+		var computedMargin:Int;
+		
+		if (isHorizontalMargin == false)
+		{
+			computedMargin = 0;
+		}
+		else
+		{
+			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMarginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
+		}
+		
+		return computedMargin;
+	}
+	
 }
