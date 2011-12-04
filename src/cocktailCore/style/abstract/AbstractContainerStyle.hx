@@ -602,7 +602,6 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
 		{
-			
 			if (isDOMElement(containerDOMElement.children[i]))
 			{
 				//if one of the children is a block level DOMElement, then the container
@@ -611,15 +610,16 @@ class AbstractContainerStyle extends Style
 				
 				if (childrenDOMElement.style.computedStyle.display == block)
 				{
+					//floated children are not taken into account 
 					if (childrenDOMElement.style.isFloat() == false)
 					{
 						ret = false;
 					}
-					else if (childrenDOMElement.style.isEmbedded() == true)
+					//absolutely positioned children are not taken into account but relative positioned are
+					else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
 					{
 						ret = false;
 					}
-					
 				}
 			}
 		}
