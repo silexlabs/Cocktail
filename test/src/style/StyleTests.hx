@@ -20,18 +20,16 @@ package style;
  */
 
 import cocktail.domElement.ImageDOMElement;
-import cocktail.style.Style;
 import cocktail.textElement.TextElement;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.style.StyleData;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.unit.UnitData;
-
+import cocktailCore.style.StyleData;
 import cocktail.resource.ResourceLoaderManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
@@ -86,7 +84,6 @@ class StyleTests
 	
 	public function testLayout2()
 	{
-		
 		_mainContainer = getContainer();
 		_mainContainer.style.width = DimensionStyleValue.percent(80);
 		_mainContainer.style.height = DimensionStyleValue.auto;
@@ -94,7 +91,7 @@ class StyleTests
 		_mainContainer.style.top = PositionOffsetStyleValue.length(px(50));
 		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
 		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(200));
-	//	_mainContainer.style.position = PositionStyleValue.relative;
+		_mainContainer.style.position = PositionStyleValue.relative;
 		
 		attach(_mainContainer);
 		
@@ -106,13 +103,14 @@ class StyleTests
 		headerContainer.style.paddingBottom = PaddingStyleValue.length(px(5));
 		headerContainer.style.paddingLeft = PaddingStyleValue.length(px(5));
 		headerContainer.style.paddingRight = PaddingStyleValue.length(px(5));
-		headerContainer.style.marginBottom = MarginStyleValue.length(px(10));
+		headerContainer.style.marginBottom = MarginStyleValue.length(px(30));
+		headerContainer.style.marginRight = MarginStyleValue.length(px(50));
 		
 		_header = getGraph();
 		_header.style.width = DimensionStyleValue.auto;
 		_header.style.height = DimensionStyleValue.length(px(300));
 		//_header.style.float = FloatStyleValue.right;
-		//headerContainer.style.position = PositionStyleValue.relative;
+		//headerContainer.style.position = PositionStyleValue.absolute;
 		//headerContainer.style.left = PositionOffsetStyleValue.length(px(200)); 
 		//headerContainer.style.top = PositionOffsetStyleValue.length(px(200));
 		
@@ -153,8 +151,7 @@ class StyleTests
 		
 		textBlock.style.textIndent = TextIndentStyleValue.length(px(150));
 		//firstLetterContainer.style.clear = ClearStyleValue.right;
-		
-		//textBlock.style.textAlign = TextAlignStyleValue.justify;
+		textBlock.style.textAlign = TextAlignStyleValue.justify;
 		
 			
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
@@ -169,11 +166,12 @@ class StyleTests
 		var foot:GraphicDOMElement = _footer;
 		
 		//headerContainer.style.position = absolute;
-		headerContainer.style.left = PositionOffsetStyleValue.length(px(10));
-		headerContainer.style.right = PositionOffsetStyleValue.length(px(10));
-		headerContainer.style.display = inlineBlock;
+		//headerContainer.style.left = PositionOffsetStyleValue.auto;
+		//headerContainer.style.right = PositionOffsetStyleValue.length(px(10));
+		//headerContainer.style.display = inlineBlock;
 		
 		textContainer.style.position = relative;
+		textContainer.style.whiteSpace = WhiteSpaceStyleValue.pre;
 		//textContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		//textContainer.style.left = PositionOffsetStyleValue.length(px(150));
 		
@@ -181,18 +179,19 @@ class StyleTests
 			
 			ResourceLoaderManager.loadImage("testPicture.jpg", function(picture) {
 		//	mainCont.addChild(headerContainer);
-			textBlock.addChild(firstLetterContainer);
+		//	textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 		//	textContainer.style.position = relative;
 			textBlock.addChild(headerContainer);
-			textBlock.addChild(picture);
-			
+		textBlock.addChild(picture);
+			headerContainer.style.display = inlineBlock;
 			textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 	
 			//textBlock.style.float = FloatStyleValue.left;
 			//textContainer.style.position = PositionStyleValue.absolute;
 			
 			//textBlock.style.fontFamily = [FontFamilyStyleValue.familyName("Blackoak Std")];
+			//mainCont.addChild(headerContainer);
 			mainCont.addChild(textBlock);
 			mainCont.addChild(foot);
 			//mainCont.style.position = PositionStyleValue.relative;
@@ -208,6 +207,7 @@ class StyleTests
 			picture.style.width = DimensionStyleValue.length(px(100));
 			picture.style.height = DimensionStyleValue.length(px(100));
 			picture.style.display = DisplayStyleValue.inlineStyle;
+			//picture.style.verticalAlign = VerticalAlignStyleValue.top;
 			
 			picture.style.width = DimensionStyleValue.length(px(200));
 			picture.style.height = DimensionStyleValue.length(px(200));
