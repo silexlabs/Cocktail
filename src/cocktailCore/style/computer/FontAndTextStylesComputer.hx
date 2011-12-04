@@ -95,7 +95,7 @@ class FontAndTextStylesComputer
 		computedStyle.whiteSpace = style.whiteSpace;
 		
 		//text align
-		computedStyle.textAlign = style.textAlign;
+		computedStyle.textAlign = getComputedTextAlign(style, computedStyle.whiteSpace);
 		
 		//text color
 		computedStyle.color = getComputedColor(style);
@@ -168,6 +168,30 @@ class FontAndTextStylesComputer
 		}
 		
 		return verticalAlign;
+	}
+	
+	/**
+	 * The text alignement might be influenced by the
+	 * white space style. when there are no line-break,
+	 * the text can't be justified
+	 */
+	private static function getComputedTextAlign(style:AbstractStyle, computedWhiteSpace:WhiteSpaceStyleValue):TextAlignStyleValue
+	{
+		var textAlign:TextAlignStyleValue = style.textAlign;
+		
+		switch (computedWhiteSpace)
+		{
+			case pre:
+				if (style.textAlign == TextAlignStyleValue.justify)
+				{
+					
+					textAlign = TextAlignStyleValue.left;
+				}
+				
+			default:
+		}
+		
+		return textAlign;
 	}
 	
 	/**

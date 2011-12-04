@@ -94,6 +94,15 @@ class BoxStylesComputer
 		 
 	}
 	
+	/**
+	 * Shrink the width a DOMElement to fit its content. Doesn't apply to a
+	 * non-replaced block
+	 * @param	computedStyles
+	 * @param	availableWidth the maximum that can be occupied by the DOMElement
+	 * @param	minimumWidth the minimum width of the DOMElement, corresponding 
+	 * to its content width
+	 * @return
+	 */
 	public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
 	{
 		return computedStyles.width;
@@ -488,29 +497,41 @@ class BoxStylesComputer
 			//auto margins take the remaining place left after
 			//paddings, other margin and dimension are set
 			case auto:	
-				//if the containing dimension (most likely height) is set to auto,
-				//margin default to 0. Top and bottom margin also default to 0 with
-				//an auto value
-				if (isHorizontalMargin == true || isDimensionAuto == true)
-				{
-					computedMargin = 0;
-				}
-				//if the margin is either left or right the containing width is defined
-				else
-				{
-					//check if the oposite margin is set to auto too
-					switch (opositeMarginStyleValue)
-					{
-						//if it is, then both margin have the same thickness and share the place left by the content and paddings
-						case auto:
-							computedMargin = Math.round((containingDOMElementDimension - computedDimension - computedPaddingsDimension) / 2);
-						
-						//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
-						default:
-							var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight);
-							computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
-					}
-				}
+				computedMargin = getComputedAutoMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight);
+		}
+		
+		return computedMargin;
+	}
+	
+	/**
+	 * Return the width of an auto margin
+	 */
+	private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	{
+		var computedMargin:Int;
+		
+		//if the containing dimension (most likely height) is set to auto,
+		//margin default to 0. Top and bottom margin also default to 0 with
+		//an auto value
+		if (isHorizontalMargin == true || isDimensionAuto == true)
+		{
+			computedMargin = 0;
+		}
+		//if the margin is either left or right the containing width is defined
+		else
+		{
+			//check if the oposite margin is set to auto too
+			switch (opositeMarginStyleValue)
+			{
+				//if it is, then both margin have the same thickness and share the place left by the content and paddings
+				case auto:
+					computedMargin = Math.round((containingDOMElementDimension - computedDimension - computedPaddingsDimension) / 2);
+				
+				//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
+				default:
+					var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight);
+					computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
+			}
 		}
 		
 		return computedMargin;
@@ -641,7 +662,6 @@ class BoxStylesComputer
 				
 				if (isContainingDimensionAuto == true)
 				{
-					//TO DO
 					computedDimensions = 0;
 				}
 				else
