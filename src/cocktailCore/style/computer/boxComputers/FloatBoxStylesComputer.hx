@@ -17,50 +17,52 @@ import cocktailCore.style.StyleData;
 import cocktailCore.unit.UnitManager;
 
 /**
- * ...
+ * this is the box computer for floated non-embedded DOMElement
+ * such as a floated ContainerDOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class FloatBoxStylesComputer extends BoxStylesComputer
 {
-	
-	private static var NULL:Int = -1;
-	
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
 	}
 	
-	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	/**
+	 * for floated non-embedded DOMElements, auto margin compute to 0
+	 */
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
 	{
-		//the return value
-		var computedMargin:Int;
+		return 0;
+	}
+	
+	/**
+	 * for floated non-embedded DOMElements, an auto width is computed as 'shrink-to-fit' once all the children
+	 * have been laid out
+	 */
+	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	{
+		return 0;
+	}
+	
+	override public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	{
+		var shrinkedWidth:Int;
 		
-		//check which type of value is defined
-		switch (marginStyleValue)
+		if (minimumWidth < availableWidth)
 		{
-			//it's a length (an absolute value
-			//with a unit)
-			case length(value):
-				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
-			
-			//It's a percentage, compute it from the containing dimension
-			case percent(value): 
-				
-				//margin default to 0 if containing dimension is undefined
-				if (containingDOMElementDimension == NULL)
-				{
-					computedMargin = 0;
-				}
-				else
-				{
-					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
-			
-			case auto:	
-				computedMargin = 0;
+			shrinkedWidth = minimumWidth;
+		}
+		else
+		{
+			shrinkedWidth = availableWidth;
 		}
 		
-		return computedMargin;
+		return shrinkedWidth;
 	}
 	
 

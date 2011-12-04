@@ -10,18 +10,54 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.computer.BoxStylesComputer;
+import cocktailCore.style.StyleData;
+import cocktail.style.StyleData;
 
 /**
- * ...
+ * This is the box computer for inlineBlock non-embedded
+ * DOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class InlineBlockBoxStylesComputer extends BoxStylesComputer
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
+	}
+	
+	/**
+	 * for inlineBlock non-embedded DOMElements, auto margin compute to 0
+	 */
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * if the width is set to 'auto', then this method is called once all the children
+	 * of the inlineBlock are laid out
+	 */
+	override public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	{
+		var shrinkedWidth:Int;
+		
+		//if the minimum width that must use the inlineBlock
+		//is not superior to the width of the containing
+		//DOMElement, use the minimum width
+		if (minimumWidth < availableWidth)
+		{
+			shrinkedWidth = minimumWidth;
+		}
+		else
+		{
+			shrinkedWidth = availableWidth;
+		}
+		
+		return shrinkedWidth;
 	}
 	
 }
