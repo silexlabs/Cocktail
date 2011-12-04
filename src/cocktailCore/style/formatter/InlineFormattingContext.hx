@@ -115,7 +115,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		
 		//domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
-		domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
+		//domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
 		
 		_flowData.x += domElement.offsetWidth;
 
@@ -254,10 +254,9 @@ class InlineFormattingContext extends FormattingContext
 			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
 		}
 		
-		
-		
 		var remainingSpace:Int;
 		var localFlow:Int;
+		
 		if (firstLine == true)
 		{
 			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
@@ -325,19 +324,22 @@ class InlineFormattingContext extends FormattingContext
 						switch (_domElementInLineBox[i].domElementType)
 						{
 							case space:
-								_domElementInLineBox[i].domElement.width = Math.round(_containingDOMElement.style.fontMetrics.spaceWidth + (remainingSpace / spacesNumber));
-	
 								
+								var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
+								spacesNumber--;
+								remainingSpace -= spaceWidth;
+								
+								localFlow += spaceWidth;
+		
+		
 								default:	
 						}
-					}
-					
-					for (i in 0..._domElementInLineBox.length)
-					{
+						
 						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
+					
 				}
 				
 		}
@@ -358,7 +360,7 @@ class InlineFormattingContext extends FormattingContext
 			var domElementAscent:Int;
 			var domElementDescent:Int;
 			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
-			if (domElement.style.isEmbedded() == true)
+			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
 			{
 				domElementAscent = domElement.offsetHeight;
 				domElementDescent = 0;
@@ -388,15 +390,17 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
-			if (_domElementInLineBox[i].domElement.style.isEmbedded() == false)
+			_domElementInLineBox[i].domElement.y = Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop;
+			
+			if (_domElementInLineBox[i].domElement.style.computedStyle.display == inlineBlock)
 			{
-				_domElementInLineBox[i].domElement.y += Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign);
 			}
-			
-			
+			if (_domElementInLineBox[i].domElement.style.isEmbedded() == true || _domElementInLineBox[i].domElement.style.display == inlineBlock)
+			{
+				_domElementInLineBox[i].domElement.y -= _domElementInLineBox[i].domElement.offsetHeight;
+			}
 		}
 		
-	//	Log.trace(lineBoxHeight);
 		return Math.round(lineBoxHeight);
 	}
 	

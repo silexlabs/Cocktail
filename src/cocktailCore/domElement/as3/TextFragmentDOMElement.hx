@@ -20,54 +20,53 @@ import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
- * ...
+ * This is the Flash AS3 implementation of the TextFragmentDOMElement
+ * 
+ * It uses the native flash text engine to return the width of the
+ * created flash text line.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 {
 
+	/**
+	 * class constructor
+	 */
 	public function new(nativeElement:NativeElement, style:Style) 
 	{
 		super(nativeElement, style);
-		
-		if (_nativeElement != null)
-		{
-			if (untyped _nativeElement.textWidth == 0)
-			{
-				this._width = untyped _nativeElement.getAtomBounds(0).width;
-			}
-		}
-	
 	}
 	
+	/**
+	 * The offset width for a text fragment is the width of its
+	 * text
+	 */
 	override private function getOffsetWidth():Int
 	{
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
-		var relevantWidth:Float;
-		
+		//in this case the text fragment is a space, as the flash
+		//text engine doesn't account for the width of space
 		if (untyped _nativeElement.textWidth == 0)
 		{
-			//return this._width;
-			//relevantWidth = untyped _nativeElement.getAtomBounds(0).width;
-			return this._width + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
+			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
+			//which also apply to space and the word spacing which aplies only to text
+			return style.fontMetrics.spaceWidth + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
 		}
+		//in this case the text fragment is a word, the text width is returned, it already
+		//contains the letter spacing which was applied when the text was rendered
 		else
 		{
-
 			return untyped _nativeElement.textWidth ;
 		}				
-		
 	}
-	
 
+	/**
+	 * the height of a text fragment is the addition
+	 * of its leaded ascent and leaded descent
+	 */
 	override private function getOffsetHeight():Int
 	{
-		
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
-		
-		//return untyped _nativeElement.textHeight;
-		return Math.round(computedStyle.lineHeight);
+		return style.fontMetrics.ascent + style.fontMetrics.descent;
 	}
 	
 
