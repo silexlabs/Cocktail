@@ -12,12 +12,17 @@ package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.computer.BoxStylesComputer;
 
 /**
- * ...
+ * This is the box computer for inlineBlock embedded DOMElement
+ * It has the same behaviour as the computer for inline embedded
+ * DOMElements
+ * 
  * @author Yannick DOMINGUEZ
  */
-class EmbeddedInlineBlockBoxStylesComputer extends BoxStylesComputer
+class EmbeddedInlineBlockBoxStylesComputer extends EmbeddedInlineBoxStylesComputer
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
