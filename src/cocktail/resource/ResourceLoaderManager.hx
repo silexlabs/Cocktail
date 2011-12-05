@@ -16,21 +16,18 @@ import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.AnimationDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
 import cocktailCore.resource.as3.StringLoader;
 import cocktailCore.resource.as3.ImageLoader;
 import cocktailCore.resource.as3.ContainerLoader;
-import cocktailCore.resource.as3.AnimationLoader;
 import cocktailCore.resource.as3.LibraryLoader;
 
 #elseif js
 import cocktailCore.resource.js.StringLoader;
 import cocktailCore.resource.js.ImageLoader;
 import cocktailCore.resource.js.ContainerLoader;
-import cocktailCore.resource.js.AnimationLoader;
 import cocktailCore.resource.js.LibraryLoader;
 
 #elseif php
@@ -95,30 +92,6 @@ class ResourceLoaderManager
 			domElement:cast(imageDOMElement),
 			allowCache:allowCache,
 			loadingType:image
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	domElement, if provided, the loaded resource (in this case an animation) will be set on this
-	 * DOMElement, else a new AnimationDOMElement will be created
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadAnimation(url:String, successCallback:AnimationDOMElement->Void, errorCallback:String->Void , animationDOMElement:AnimationDOMElement = null, allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			domElement:cast(animationDOMElement),
-			loadingType:animation
 		};
 		
 		addResourceData(resourceDataToAdd);
@@ -240,9 +213,6 @@ class ResourceLoaderManager
 				
 				case image: 
 				resourceLoader = new ImageLoader();
-				
-				case animation:
-				resourceLoader = new AnimationLoader();
 				
 				case container:
 				resourceLoader = new ContainerLoader();

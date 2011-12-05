@@ -11,12 +11,17 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktailCore.style.computer.boxComputers;
 
 /**
- * ...
+ * This is the box computer for floated embedded DOMElement,
+ * such as a floated ImagdDOMElement. It behaves the same
+ * as the box computer for inline embedded DOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedFloatBoxStylesComputer extends EmbeddedInlineBoxStylesComputer
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();

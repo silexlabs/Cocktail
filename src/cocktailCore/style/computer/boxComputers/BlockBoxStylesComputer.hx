@@ -17,8 +17,7 @@ import cocktail.style.StyleData;
  * This is the box computer implementation for a
  * non-embedded block level element.
  * 
- * It doesn't add any behaviour as it is the
- * default behaviour
+ * This is the default implementation on boxStylesComputer
  * 
  * @author Yannick DOMINGUEZ
  */
