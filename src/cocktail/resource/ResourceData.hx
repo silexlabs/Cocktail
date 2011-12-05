@@ -63,7 +63,6 @@ enum LoadingTypeValue
 {
 	data;
 	image;
-	animation;
 	container;
 	library;
 }

@@ -18,49 +18,28 @@ import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
- * ...
+ * This is the box computer for inline embedded DOMElement,
+ * such as for instance an ImageDOMElement inserted in a
+ * text
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 {
-	private static var NULL:Int = -1;
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
 	}
 	
-	override private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	/**
+	 * for inline embedded DOMElement, auto margins compute to 0
+	 */
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
 	{
-		//the return value
-		var computedMargin:Int;
-		
-		//check which type of value is defined
-		switch (marginStyleValue)
-		{
-			//it's a length (an absolute value
-			//with a unit)
-			case length(value):
-				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
-			
-			//It's a percentage, compute it from the containing dimension
-			case percent(value): 
-				
-				//margin default to 0 if containing dimension is undefined
-				if (containingDOMElementDimension == NULL)
-				{
-					computedMargin = 0;
-				}
-				else
-				{
-					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
-			
-			case auto:	
-				computedMargin = 0;
-		}
-		
-		return computedMargin;
+		return 0;
 	}
 	
 }
