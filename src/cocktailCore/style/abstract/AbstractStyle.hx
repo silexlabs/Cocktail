@@ -288,42 +288,64 @@ class AbstractStyle
 		applyComputedWidth(this._domElement, this._computedStyle.width);
 	}
 	
-
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC DIMENSION AND POSITION METHODS
+	// Those method actually apply a processed dimension or position value to 
+	// the NativeElement of a target DOMElement.
+	// they are runtime specific
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	public function applyComputedX(domElement:DOMElement, x:Int):Void
 	{
-		
+		//abstract
 	}
 	
 	public function applyComputedY(domElement:DOMElement, y:Int):Void
 	{
-		
+		//abstract
 	}
 	
 	public function applyComputedWidth(domElement:DOMElement, width:Int):Void
 	{
-		
+		//abstract
 	}
 	
 	public function applyComputedHeight(domElement:DOMElement, height:Int):Void
 	{
-		
+		//abstract
 	}
 	
+	/**
+	 * Return the x of the NativeElement of the
+	 * target DOMElement
+	 */
 	public function getComputedX(domElement:DOMElement):Int
 	{
 		return 0;
 	}
 	
+	/**
+	 * Return the y of the NativeElement of the
+	 * target DOMElement
+	 */
 	public function getComputedY(domElement:DOMElement):Int
 	{
 		return 0;
 	}
 	
+	/**
+	 * Return the width of the NativeElement of the
+	 * target DOMElement
+	 */
 	public function getComputedWidth(domElement:DOMElement):Int
 	{
 		return 0;
 	}
 	
+	/**
+	 * Return the height of the NativeElement of the
+	 * target DOMElement
+	 */
 	public function getComputedHeight(domElement:DOMElement):Int
 	{
 		return 0;

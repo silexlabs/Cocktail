@@ -49,9 +49,11 @@ class ContainerStyle extends AbstractContainerStyle
 		super(domElement);
 	}
 	
-	/////////////////////////////////
-	// OVERRIDEN METHODS
-	////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// In Flash the width and height are not applied to the native DisplayObject
+	// of the ContainerDOMElement, as it would scale its content
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
 	{
@@ -62,6 +64,10 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		
 	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	////////////////////////////////
 	
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced

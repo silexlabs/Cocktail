@@ -68,9 +68,10 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
-	/////////////////////////////////
-	// OVERRIDEN METHODS
-	////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// apply and retrieve the properties from the native flash DisplayObject
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function applyComputedX(domElement:DOMElement, x:Int):Void
 	{
@@ -111,6 +112,10 @@ class Style extends AbstractStyle
 	{
 		return Math.round(domElement.nativeElement.height);
 	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	////////////////////////////////
 	
 	/**
 	 * Returns a font metrics data object created using font metrics

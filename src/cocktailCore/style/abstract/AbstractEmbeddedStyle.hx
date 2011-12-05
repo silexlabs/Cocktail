@@ -47,7 +47,9 @@ class AbstractEmbeddedStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// In an embedded object, left and top padding are also applied to the 
+	// NativeElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function applyComputedX(domElement:DOMElement, x:Int):Void
