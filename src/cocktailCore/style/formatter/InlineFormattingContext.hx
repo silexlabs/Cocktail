@@ -111,12 +111,7 @@ class InlineFormattingContext extends FormattingContext
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
-		
-		
-		
-		//domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
-		//domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
-		
+			
 		_flowData.x += domElement.offsetWidth;
 
 		
@@ -184,8 +179,7 @@ class InlineFormattingContext extends FormattingContext
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
 
-		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
-		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
+		super.placeFloat(domElement, floatData);
 		
 		if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 		{
@@ -390,14 +384,15 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
-			_domElementInLineBox[i].domElement.y = Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop;
+				
+			_domElementInLineBox[i].domElement.style.applyComputedY(_domElementInLineBox[i].domElement, Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop);
 			
 			if (_domElementInLineBox[i].domElement.style.computedStyle.display == inlineBlock)
 			{
 			}
 			if (_domElementInLineBox[i].domElement.style.isEmbedded() == true || _domElementInLineBox[i].domElement.style.display == inlineBlock)
 			{
-				_domElementInLineBox[i].domElement.y -= _domElementInLineBox[i].domElement.offsetHeight;
+				_domElementInLineBox[i].domElement.style.applyComputedY(_domElementInLineBox[i].domElement, _domElementInLineBox[i].domElement.style.getComputedY(_domElementInLineBox[i].domElement) - _domElementInLineBox[i].domElement.offsetHeight);
 			}
 		}
 		
