@@ -72,6 +72,46 @@ class Style extends AbstractStyle
 	// OVERRIDEN METHODS
 	////////////////////////////////
 	
+	override public function applyComputedX(domElement:DOMElement, x:Int):Void
+	{
+		domElement.nativeElement.x = x;
+	}
+	
+	override public function applyComputedY(domElement:DOMElement, y:Int):Void
+	{
+		domElement.nativeElement.y = y;
+	}
+	
+	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
+	{
+		domElement.nativeElement.width = width;
+	}
+	
+	override public function applyComputedHeight(domElement:DOMElement, height:Int):Void
+	{
+		domElement.nativeElement.height = height;
+	}
+	
+	override public function getComputedX(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.x);
+	}
+	
+	override public function getComputedY(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.y);
+	}
+	
+	override public function getComputedWidth(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.width);
+	}
+	
+	override public function getComputedHeight(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.height);
+	}
+	
 	/**
 	 * Returns a font metrics data object created using font metrics
 	 * provided by the flash text engine. The font metrics are 

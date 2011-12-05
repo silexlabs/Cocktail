@@ -53,6 +53,16 @@ class ContainerStyle extends AbstractContainerStyle
 	// OVERRIDEN METHODS
 	////////////////////////////////
 	
+	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
+	{
+		
+	}
+	
+	override public function applyComputedHeight(domElement:DOMElement, height:Int):Void
+	{
+		
+	}
+	
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10

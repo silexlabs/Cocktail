@@ -50,18 +50,18 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Overriden because embedded DOMElement 
-	 * applies their own paddings
-	 */
-	override private function applyComputedDimensions():Void
+	override public function applyComputedX(domElement:DOMElement, x:Int):Void
 	{
-		super.applyComputedDimensions();
-		
-		//the DOMElement adds its own paddings to itself
-		this._domElement.x += this._computedStyle.paddingLeft;
-		this._domElement.y += this._computedStyle.paddingTop;
+		x += this._computedStyle.paddingLeft;
+		super.applyComputedX(domElement, x);
 	}
+	
+	override public function applyComputedY(domElement:DOMElement, y:Int):Void
+	{
+		y += this._computedStyle.paddingTop;
+		super.applyComputedY(domElement, y);
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS

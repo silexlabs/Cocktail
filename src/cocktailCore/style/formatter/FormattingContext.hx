@@ -269,7 +269,8 @@ class FormattingContext
 	 */
 	private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-		//abstract
+		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
+		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
 	}
 	
 	/**
