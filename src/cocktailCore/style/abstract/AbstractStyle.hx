@@ -284,24 +284,54 @@ class AbstractStyle
 		flowChildren(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
-		applyComputedDimensions();
+		applyComputedHeight(this._domElement, this._computedStyle.height);
+		applyComputedWidth(this._domElement, this._computedStyle.width);
 	}
 	
 
+	public function applyComputedX(domElement:DOMElement, x:Int):Void
+	{
+		
+	}
+	
+	public function applyComputedY(domElement:DOMElement, y:Int):Void
+	{
+		
+	}
+	
+	public function applyComputedWidth(domElement:DOMElement, width:Int):Void
+	{
+		
+	}
+	
+	public function applyComputedHeight(domElement:DOMElement, height:Int):Void
+	{
+		
+	}
+	
+	public function getComputedX(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	public function getComputedY(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	public function getComputedWidth(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	public function getComputedHeight(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually aply the computed dimensions on the
-	 * DOMElement
-	 */
-	private function applyComputedDimensions():Void
-	{
-		//apply the computed width and height to the DOMElement
-		this._domElement.width = this._computedStyle.width;
-		this._domElement.height = this._computedStyle.height;
-	}
 	
 	/**
 	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.

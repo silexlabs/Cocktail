@@ -823,7 +823,7 @@ class AbstractDOMElement
 	
 	private function setX(value:Int):Int 
 	{
-		this ._x = value;
+		this._x = value;
 		return this._x;
 	}
 	
