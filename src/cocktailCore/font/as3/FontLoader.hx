@@ -22,7 +22,7 @@ import cocktail.resource.ResourceLoaderManager;
  * file. It is loaded like a library. The font can be used for a text, just set the HTML style attribute to "font-family=MyFontName"
  * @author Lex oYo
  */
-class FontManager extends AbstractFontManager
+class FontLoader extends AbstractFontLoader
 {
 	/**
 	 * List of loaded fonts, successfull loaded fonts only

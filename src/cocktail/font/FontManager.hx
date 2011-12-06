@@ -13,12 +13,12 @@ package cocktail.font;
 
 
 #if flash9
-typedef FontManager = cocktail.font.as3.FontManager;
+typedef FontManager = cocktailCore.font.as3.FontManager;
 #elseif js
-typedef FontManager = cocktail.font.js.FontManager;
+typedef FontManager = cocktailCore.font.js.FontManager;
 #elseif php
-typedef FontManager = cocktail.font.php.FontManager;
+typedef FontManager = cocktailCore.font.php.FontManager;
 #elseif doc
-import cocktail.font.abstract.AbstractFontManager;
+import cocktailCore.font.abstract.AbstractFontManager;
 class FontManager extends AbstractFontManager {}
 #end	
