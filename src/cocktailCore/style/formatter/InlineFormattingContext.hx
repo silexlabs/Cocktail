@@ -30,7 +30,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
-		
+	
 		_firstLineLaidOut = false;
 		super(domElement, previousFormattingContext);
 		
@@ -48,6 +48,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function insert(domElement:DOMElement):Void
 	{
+		
 		var remainingWidth:Int = getRemainingLineWidth();
 		
 		if (_firstLineLaidOut == false)

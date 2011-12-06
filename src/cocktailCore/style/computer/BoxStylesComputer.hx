@@ -659,15 +659,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
-				
-				if (isContainingDimensionAuto == true)
-				{
-					computedDimensions = 0;
-				}
-				else
-				{
-					computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
+				computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				
 			case auto:
 				//Dealt with in the measureAutoHeight and measureAutoWidth

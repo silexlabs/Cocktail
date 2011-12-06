@@ -114,7 +114,7 @@ class AbstractContainerStyle extends Style
 		//a layout
 		if (formatingContext == null)
 		{
-			formatingContext = getFormatingContext();
+			//formatingContext = getFormatingContext();
 			childrenFormattingContext = getFormatingContext();
 		}
 		else
@@ -199,13 +199,16 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
 		}
 		
-		
-		//insert the ContainerDOMElement into the document
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		if (formatingContext != null)
+		{
+			//insert the ContainerDOMElement into the document
+			insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
 
-		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
-		//that will also affect the position of its following siblings
-		formatingContext.retrieveFloats(childrenFormattingContext);
+			//retrieve the floats overflowing from the children of this ContainerDOMElement, 
+			//that will also affect the position of its following siblings
+			formatingContext.retrieveFloats(childrenFormattingContext);
+		}
+	
 		
 	}
 	
@@ -227,27 +230,9 @@ class AbstractContainerStyle extends Style
 	
 	override public function invalidate():Void
 	{
-		#if flash9
-		if (this._domElement.nativeElement.parent == flash.Lib.current)
-		#elseif js
-		if (this._domElement.nativeElement.parentNode == js.Lib.document.body)
-		#end
-		{
-			var viewPortData:ContainingDOMElementData = {
-				globalX:0,
-				globalY:0,
-				isHeightAuto:false,
-				isWidthAuto:false,
-				width:new Viewport().width,
-				height:new Viewport().height
-			}
-			
-			doLayout(viewPortData, viewPortData, viewPortData);
-		}
 		
-		else if (this._isInvalid == false)
+		if (this._isInvalid == false)
 		{
-			
 			this._isInvalid = true;
 			
 			if (this._domElement.parent != null)
@@ -615,7 +600,7 @@ class AbstractContainerStyle extends Style
 	 * Return the dimensions and position data
 	 * of the ContainerDOMElement
 	 */
-	public function getContainerDOMElementData():ContainingDOMElementData
+	private function getContainerDOMElementData():ContainingDOMElementData
 	{
 		var height:Int;
 		
