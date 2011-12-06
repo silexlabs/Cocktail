@@ -8,6 +8,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.font.abstract;
+import cocktail.font.FontData;
 
 /**
  * This class is in charge of loading one single font and calling the right callback(s) after the load succedeed/failed
@@ -19,24 +20,25 @@ class AbstractFontLoader
 	/**
 	 * The details about the font
 	 */
-	public static var fontData : FontData;
+	public var fontData : FontData;
 	
 	/**
-	 * An array of callbacks to be called when the fonts are successfully loaded
+	 * An array of callbacks to be called when the font is successfully loaded
 	 */
-	public static var _onLoadCompleteCallbackArray : Array<FontData->Void>;
+	public var _successCallbackArray : Array<FontData->Void>;
 	
 	/**
-	 * An array of callbacks to be called when the fonts are successfully loaded
+	 * An array of callbacks to be called when the font could not be loaded
 	 */
-	public static var _onLoadErrorCallbackArray : Array<FontData->Void>;
+	public var _errorCallbackArray : Array<FontData->String->Void>;
 	
 	/**
-	 * The constructor is private as this class is meant to be accessed through static public method.
+	 * Constructor
 	 */
-	private function new() 
+	public function new()
 	{
-		
+		_successCallbackArray = new Array();
+		_errorCallbackArray = new Array();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,21 +54,79 @@ class AbstractFontLoader
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	public function load(url:String, name:String, successCallback:FontData->Void = null, errorCallback:String->Void = null):Void
+	public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
 	{
-		// to be implemented for each target
-		throw("to be implemented for each target");
+		// create the font data
+		var extension:String = url.substr(url.lastIndexOf("."), url.length); 
+		fontData = 
+		{
+			url : url,
+			name : name,
+			type : unknown
+		};
+		// extension
+		if (extension == ".ttf")
+			fontData.type = ttf;
+		else if (extension == ".eot")
+			fontData.type = eot;
+		
+		// callback
+		addCallback(successCallback, errorCallback);
 	}
 	
 	/**
-	 * Add a callback while the font is loading. This method is called by the font manager, when it is asked to load a font which is already loading
+	 * Add a callback while the font is loading. 
+	 * This method is called by the font manager, when it is asked to load a font which is already loading
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	public function addCallback(successCallback:FontData->Void = null, errorCallback:String->Void = null):Void
+	public function addCallback(successCallback:FontData->Void = null, errorCallback : FontData->String->Void = null):Void
 	{
-		// to be implemented for each target
-		throw("to be implemented for each target");
+		// store the callback in the corresponding array
+		if (successCallback != null)
+			_successCallbackArray.push(successCallback);
+
+		// store the callback in the corresponding array
+		if (errorCallback != null)
+			_errorCallbackArray.push(errorCallback);
 	}
-	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Success callback for the font, call _onFontLoaded callback
+	 */
+	private function _successCallback()
+	{
+		// call the callbacks
+		var idx : Int;
+		for (idx in 0..._successCallbackArray.length)
+			_successCallbackArray[idx](fontData);
+			
+		// clean up
+		cleanup();
+	}
+	/**
+	 * Error callback for the font, call _onFontLoaded callback
+	 */
+	private function _errorCallback(errorStr : String)
+	{
+		// call the callbacks
+		var idx : Int;
+		for (idx in 0..._errorCallbackArray.length)
+			_errorCallbackArray[idx](fontData, errorStr);
+			
+		// clean up
+		cleanup();
+	}
+	/**
+	 * empty the arrays and remove references to callbacks
+	 */
+	private function cleanup()
+	{
+		while (_successCallbackArray.length > 0)
+			_successCallbackArray.pop();
+		while (_errorCallbackArray.length > 0)
+			_errorCallbackArray.pop();
+	}
 }

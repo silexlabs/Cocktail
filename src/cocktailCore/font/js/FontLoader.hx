@@ -1,6 +1,3 @@
-------------
-TO DO LEX
-------------
 /*
 This project is © 2010-2011 Silex Labs and is released under the GPL License:
 
@@ -10,29 +7,25 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.font.js;
+package cocktailCore.font.js;
 
 import js.Dom.HtmlDom;
 import js.Lib;
-import cocktail.font.abstract.AbstractFontManager;
+import cocktailCore.font.abstract.AbstractFontLoader;
 import cocktail.font.FontData;
 
 /**
- * This class handles the fonts loading, stores a list of loaded fonts. 
+ * This class is in charge of loading one single font and calling the right callback(s) after the load succedeed/failed
  * This is the implementation for the JavaScript runtime. 
  * @author lexa
  */
-class FontManager extends AbstractFontManager 
+class FontLoader extends AbstractFontLoader
 {	
+	private var _styleE:HtmlDom;
 	/**
-	 * List of loaded fonts, successfull loaded fonts only
+	 * Constructor
 	 */
-	public static var fonts:Array<FontData>;
-	
-	/**
-	 * The constructor is private as this class is meant to be accessed through static public method.
-	 */
-	private function new() 
+	public function new()
 	{
 		super();
 	}
@@ -42,7 +35,7 @@ class FontManager extends AbstractFontManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Start loading a font
+	 * Start loading the font
 	 * @param	url the url of the font to load
 	 * @param	name the name of the font to load. 
 	 * This is an equivalent of font-family in HTML, and an equivalent of the export name in Flash. 
@@ -50,38 +43,46 @@ class FontManager extends AbstractFontManager
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	public static function loadFont(url:String, name:String, successCallback:Void->Void, errorCallback:String->Void):Void
+	override public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
 	{
-		var extension:String = url.substr(url.lastIndexOf("."), url.length); 
-		var fontData:FontData = {
-			url:url,
-			name:name,
-			type : unknown
-		};
-		var fontTypeString:String = "";
+		super.load(url, name, successCallback, errorCallback);
 		
-		if (extension == ".ttf")
-		{
-			fontData.type = ttf;
+		// build the string to display in the style html tag
+		var fontTypeString:String = "";
+		if (fontData.type == ttf)
 			fontTypeString = " format(\"truetype\")";
-		}
-		else if (extension == ".eot")
-		{
-			fontData.type = eot;
+		else if (fontData.type == eot)
 			fontTypeString = "";
-		}
+
 		//Create a 'style' element	
-		var styleE:HtmlDom = Lib.document.createElement("style");
-		styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
+		_styleE = Lib.document.createElement("style");
+		_styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
+		
+/*
+		// Detection of the font loading success/error, impossible with JS, use Typekit or google Web Fonts API for detection
+		untyped _styleE.async = 'true';
+	    untyped _styleE.load = _styleE.onload = _styleE.onreadystatechange = _successCallback;
+
+//	    untyped _styleE.addEventListener('onload', _successCallback, false);
+//	    untyped _styleE.addEventListener('error', _errorCallback, false);
+*/
+		// workaround : allways call success callback
+		_successCallback();
 
 		// Now add this new element to the head tag
-		Lib.document.getElementsByTagName("head")[0].appendChild(styleE);
+		Lib.document.getElementsByTagName("head")[0].appendChild(_styleE);
 		
 		// to do: detect css loading errors
 		// ?? styleE.async = 'true'; styleE.onload = tk.onreadystatechange = 
-		successCallback();
-		
-		if (fonts == null) fonts = new Array();
-		fonts.push(fontData);
+//		successCallback();
+	}
+	/**
+	 * empty the arrays and remove references to callbacks
+	 */
+	override private function cleanup()
+	{
+		super.cleanup(); 
+	    untyped _styleE.removeEventListener('load', _successCallback, false);
+	    untyped _styleE.removeEventListener('error', _errorCallback, false);
 	}
 }
