@@ -8,22 +8,22 @@
 package cocktail.domElement;
 
 /**
- * Set the right runtime specific ImageDOMElement at compile-time
+ * Set the right runtime specific BodyDOMElement at compile-time
  */
 #if flash9
-typedef ImageDOMElement =  cocktailCore.domElement.as3.ImageDOMElement;
+typedef BodyDOMElement =  cocktailCore.domElement.as3.BodyDOMElement;
 
 #elseif js
-typedef ImageDOMElement =  cocktailCore.domElement.js.ImageDOMElement;
+typedef BodyDOMElement =  cocktailCore.domElement.js.BodyDOMElement;
 
 #elseif php
-typedef ImageDOMElement =  cocktailCore.domElement.php.ImageDOMElement;
+typedef BodyDOMElement =  cocktailCore.domElement.php.BodyDOMElement;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class ImageDOMElement extends cocktailCore.domElement.abstract.AbstractImageDOMElement { }
+class BodyDOMElement extends cocktailCore.domElement.abstract.AbstractBodyDOMElement { }
 
 #end
