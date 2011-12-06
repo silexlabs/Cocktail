@@ -66,7 +66,18 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	 */
 	override private function getOffsetHeight():Int
 	{
-		return style.fontMetrics.ascent + style.fontMetrics.descent;
+		var ascent:Float =  style.fontMetrics.ascent;
+		var descent:Float = style.fontMetrics.descent;
+		
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = this._style.computedStyle.lineHeight - (ascent + descent);
+		
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = (ascent + leading/2);
+		var leadedDescent:Float = (descent + leading / 2);
+		
+		return Math.round(leadedAscent + leadedDescent);
 	}
 	
 

@@ -77,45 +77,45 @@ class DOMElement extends AbstractDOMElement
 	
 	override public function setX(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getX():Int 
 	{
-		// TODO
+	
 		return 0;
 	}
 	
 	override public function setY(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getY():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
 	override public function setWidth(value:Int):Void
 	{
-		// TODO
+		
 	}
 	
 	override public function getWidth():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
 	override public function setHeight(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getHeight():Int 
 	{
-		// TODO
+	
 		return 0;
 	}
 	
@@ -125,7 +125,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function setRotation(value:Int):Void
 	{
-		// TODO
+		
 	}
 	
 	/**
@@ -135,7 +135,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function getRotation():Int
 	{
-		// TODO
+		
 		return 0;
 	}
 	
@@ -148,12 +148,12 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function setZIndex(value:Int) 
 	{
-		// TODO
+		
 	}
 	
 	override public function getZIndex():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
@@ -167,7 +167,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	private function setStyle(property:String, value:String):Void
 	{
-		// TODO
+		
 		// styleHash is used to store all the style properties & values
 		var styleHash:Hash<String> = new Hash<String>();
 		
@@ -190,7 +190,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	private function getStyle(property:String):String
 	{
-		// TODO
+		
 		// styleHash is used to store all the style properties & values
 		var styleHash:Hash<String> = new Hash<String>();
 		

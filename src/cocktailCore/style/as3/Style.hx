@@ -145,14 +145,6 @@ class Style extends AbstractStyle
 			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 			
-			//the leading is an extra height to apply equally to the ascent
-			//and the descent when laying out lines of text
-			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-			
-			//apply leading to the ascent and descent
-			var leadedAscent:Float = (ascent + leading/2) ;
-			var leadedDescent:Float = (descent + leading / 2) ;
-			
 			//get the x height (the height of a lower-case "x")
 			var xHeight:Int = getXHeight(elementFormat.clone());
 			
@@ -160,8 +152,8 @@ class Style extends AbstractStyle
 			
 			_fontMetrics = {
 				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(leadedAscent),
-				descent:Math.round(leadedDescent),
+				ascent:Math.round(ascent),
+				descent:Math.round(descent),
 				xHeight:xHeight,
 				spaceWidth:spaceWidth,
 				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
