@@ -5,25 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.runtime;
+package cocktail.viewport;
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// Enums
-//////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Values for the device orientation
- */
-enum OrientationValue 
-{
-	
-	/**
-	 * the device is vertical
-	 */
-	vertical;
-	/**
-	 * the device is horizontal
-	 */
-	horizontal;
-}
+#if flash9
+typedef Viewport = cocktailCore.viewport.as3.Viewport;
+#elseif js
+typedef Viewport = cocktailCore.viewport.js.Viewport;
+#elseif php
+typedef Viewport = cocktailCore.viewport.php.Viewport;
+#elseif doc
+import cocktailCore.viewport.abstract.AbstractViewport;
+class Viewport extends AbstractViewport {}
+#end	
