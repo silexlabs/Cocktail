@@ -29,6 +29,7 @@ import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
 import haxe.Log;
+import haxe.Timer;
 
 /**
  * This is the base class for all Style classes. Style classes
@@ -205,11 +206,18 @@ class AbstractStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
+	 * determine wether the DOMElement and its chidlren must
+	 * be laid out again
+	 */
+	private var _isInvalid:Bool;
+	
+	/**
 	 * Class constructor. Stores the target DOMElement.
 	 */
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
+		this._isInvalid = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -286,6 +294,8 @@ class AbstractStyle
 		//apply the computed dimensions to the DOMElement
 		applyComputedHeight(this._domElement, this._computedStyle.height);
 		applyComputedWidth(this._domElement, this._computedStyle.width);
+		
+		this._isInvalid = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +359,51 @@ class AbstractStyle
 	public function getComputedHeight(domElement:DOMElement):Int
 	{
 		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function invalidate():Void
+	{
+		if (this._isInvalid == false)
+		{
+			this._isInvalid = true;
+			
+			if (this._domElement.parent != null)
+			{
+				this._domElement.parent.style.invalidate();	
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function invalidateText():Void
+	{
+		_fontMetrics = null;
+		invalidate();
+	}
+	
+	private function invalidatePositionOffset():Void
+	{
+		/**if (this.position != staticStyle)
+		{
+			invalidate();
+		}*/
+		invalidate();
+	}
+	
+	private function invalidateMargin():Void
+	{
+		/**if (this.position == relative || this.position == staticStyle)
+		{
+			invalidate();
+		}*/
+		invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -466,8 +521,9 @@ class AbstractStyle
 	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		computeDisplayStyles();
-		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
+		
 		
 	}
 	
@@ -788,6 +844,223 @@ class AbstractStyle
 	}
 	
 	/////////////////////////////////
+	// INVALIDATING STYLES SETTERS
+	// setting one of those style will 
+	// cause a layout
+	////////////////////////////////
+	
+	private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
+	{
+		invalidate();
+		return _width = value;
+	}
+	
+	private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginLeft = value;
+	}
+	
+	private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginRight = value;
+	}
+	
+	private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginTop = value;
+	}
+	
+	private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginBottom = value;
+	}
+	
+	private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingLeft = value;
+	}
+	
+	private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingRight = value;
+	}
+	
+	private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingTop = value;
+	}
+	
+	private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingBottom = value;
+	}
+	
+	private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
+	{
+		invalidate();
+		return _display = value;
+	}
+	
+	private function setPosition(value:PositionStyleValue):PositionStyleValue 
+	{
+		invalidate();
+		return _position = value;
+	}
+	
+	private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
+	{
+		invalidate();
+		return _height = value;
+	}
+	
+	private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _minHeight = value;
+	}
+	
+	private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _maxHeight = value;
+	}
+	
+	private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _minWidth = value;
+	}
+	
+	private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _maxWidth = value;
+	}
+	
+	private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _top = value;
+	}
+	
+	private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _left = value;
+	}
+	
+	private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _bottom = value;
+	}
+	
+	private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _right = value;
+	}
+	
+	private function setFloat(value:FloatStyleValue):FloatStyleValue 
+	{
+		invalidate();
+		return _float = value;
+	}
+	
+	private function setClear(value:ClearStyleValue):ClearStyleValue 
+	{
+		invalidate();
+		return _clear = value;
+	}
+	
+	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		_fontSize = value;
+		invalidateText();
+		return _fontSize;
+	}
+	
+	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		invalidateText();
+		return _fontWeight = value;
+	}
+	
+	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		invalidateText();
+		return _fontStyle = value;
+	}
+	
+	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		invalidateText();
+		return _fontFamily = value;
+	}
+	
+	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		invalidateText();
+		return _fontVariant = value;
+	}
+	
+	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		invalidateText();
+		return _textTransform = value;
+	}
+	
+	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		invalidateText();
+		return _letterSpacing = value;
+	}
+	
+	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		invalidate();
+		return _wordSpacing = value;
+	}
+	
+	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		invalidate();
+		return _lineHeight = value;
+	}
+	
+	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		invalidate();
+		return _verticalAlign = value;
+	}
+	
+	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	{
+		invalidate();
+		return _textIndent = value;
+	}
+	
+	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	{
+		invalidate();
+		return _whiteSpace = value;
+	}
+	
+	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	{
+		invalidate();
+		return _textAlign = value;
+	}
+	
+	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
 	
@@ -796,20 +1069,9 @@ class AbstractStyle
 		return _marginLeft;
 	}
 	
-	private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginLeft = value;
-	}
-	
-	
 	private function getMarginRight():MarginStyleValue 
 	{
 		return _marginRight;
-	}
-	
-	private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginRight = value;
 	}
 	
 	private function getMarginTop():MarginStyleValue 
@@ -817,19 +1079,9 @@ class AbstractStyle
 		return _marginTop;
 	}
 	
-	private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginTop = value;
-	}
-	
 	private function getMarginBottom():MarginStyleValue 
 	{
 		return _marginBottom;
-	}
-	
-	private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginBottom = value;
 	}
 	
 	private function getPaddingLeft():PaddingStyleValue 
@@ -837,19 +1089,9 @@ class AbstractStyle
 		return _paddingLeft;
 	}
 	
-	private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingLeft = value;
-	}
-	
 	private function getPaddingRight():PaddingStyleValue 
 	{
 		return _paddingRight;
-	}
-	
-	private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingRight = value;
 	}
 	
 	private function getPaddingTop():PaddingStyleValue 
@@ -857,29 +1099,14 @@ class AbstractStyle
 		return _paddingTop;
 	}
 	
-	private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingTop = value;
-	}
-	
 	private function getPaddingBottom():PaddingStyleValue 
 	{
 		return _paddingBottom;
 	}
 	
-	private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingBottom = value;
-	}
-	
-		private function getDisplay():DisplayStyleValue 
+	private function getDisplay():DisplayStyleValue 
 	{
 		return _display;
-	}
-	
-	private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
-	{
-		return _display = value;
 	}
 	
 	private function getPosition():PositionStyleValue 
@@ -887,19 +1114,9 @@ class AbstractStyle
 		return _position;
 	}
 	
-	private function setPosition(value:PositionStyleValue):PositionStyleValue 
-	{
-		return _position = value;
-	}
-	
 	private function getWidth():DimensionStyleValue 
 	{
 		return _width;
-	}
-	
-	private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
-	{
-		return _width = value;
 	}
 	
 	private function getHeight():DimensionStyleValue 
@@ -907,19 +1124,9 @@ class AbstractStyle
 		return _height;
 	}
 	
-	private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
-	{
-		return _height = value;
-	}
-	
 	private function getMinHeight():ConstrainedDimensionStyleValue 
 	{
 		return _minHeight;
-	}
-	
-	private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _minHeight = value;
 	}
 	
 	private function getMaxHeight():ConstrainedDimensionStyleValue 
@@ -927,19 +1134,9 @@ class AbstractStyle
 		return _maxHeight;
 	}
 	
-	private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _maxHeight = value;
-	}
-	
 	private function getMinWidth():ConstrainedDimensionStyleValue 
 	{
 		return _minWidth;
-	}
-	
-	private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _minWidth = value;
 	}
 	
 	private function getMaxWidth():ConstrainedDimensionStyleValue 
@@ -947,19 +1144,9 @@ class AbstractStyle
 		return _maxWidth;
 	}
 	
-	private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _maxWidth = value;
-	}
-	
-		private function getTop():PositionOffsetStyleValue 
+	private function getTop():PositionOffsetStyleValue 
 	{
 		return _top;
-	}
-	
-	private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _top = value;
 	}
 	
 	private function getLeft():PositionOffsetStyleValue 
@@ -967,19 +1154,9 @@ class AbstractStyle
 		return _left;
 	}
 	
-	private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _left = value;
-	}
-	
 	private function getBottom():PositionOffsetStyleValue 
 	{
 		return _bottom;
-	}
-	
-	private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _bottom = value;
 	}
 	
 	private function getRight():PositionOffsetStyleValue 
@@ -987,19 +1164,9 @@ class AbstractStyle
 		return _right;
 	}
 	
-	private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _right = value;
-	}
-	
 	private function getFloat():FloatStyleValue 
 	{
 		return _float;
-	}
-	
-	private function setFloat(value:FloatStyleValue):FloatStyleValue 
-	{
-		return _float = value;
 	}
 	
 	private function getClear():ClearStyleValue 
@@ -1007,24 +1174,9 @@ class AbstractStyle
 		return _clear;
 	}
 	
-	private function setClear(value:ClearStyleValue):ClearStyleValue 
-	{
-		return _clear = value;
-	}
-	
-	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
-	{
-		return _fontSize = value;
-	}
-	
 	private function getFontSize():FontSizeStyleValue
 	{
 		return _fontSize;
-	}
-	
-	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
-	{
-		return _fontWeight = value;
 	}
 	
 	private function getFontWeight():FontWeightStyleValue
@@ -1032,19 +1184,9 @@ class AbstractStyle
 		return _fontWeight;
 	}
 	
-	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
-	{
-		return _fontStyle = value;
-	}
-	
 	private function getFontStyle():FontStyleStyleValue
 	{
 		return _fontStyle;
-	}
-	
-	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
-	{
-		return _fontFamily = value;
 	}
 	
 	private function getFontFamily():Array<FontFamilyStyleValue>
@@ -1052,29 +1194,14 @@ class AbstractStyle
 		return _fontFamily;
 	}
 	
-	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
-	{
-		return _fontVariant = value;
-	}
-	
 	private function getFontVariant():FontVariantStyleValue
 	{
 		return _fontVariant;
 	}
 	
-	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
-	{
-		return _textTransform = value;
-	}
-	
 	private function getTextTransform():TextTransformStyleValue
 	{
 		return _textTransform;
-	}
-	
-	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
-	{
-		return _letterSpacing = value;
 	}
 	
 	private function getLetterSpacing():LetterSpacingStyleValue
@@ -1092,29 +1219,14 @@ class AbstractStyle
 		return _color;
 	}
 	
-	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
-	{
-		return _wordSpacing = value;
-	}
-	
 	private function getWordSpacing():WordSpacingStyleValue
 	{
 		return _wordSpacing;
 	}
 	
-	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
-	{
-		return _lineHeight = value;
-	}
-	
 	private function getLineHeight():LineHeightStyleValue
 	{
 		return _lineHeight;
-	}
-	
-	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
-	{
-		return _verticalAlign = value;
 	}
 	
 	private function getVerticalAlign():VerticalAlignStyleValue
@@ -1127,24 +1239,9 @@ class AbstractStyle
 		return _textIndent;
 	}
 	
-	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
-	{
-		return _textIndent = value;
-	}
-	
-	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
-	{
-		return _whiteSpace = value;
-	}
-	
 	private function getWhiteSpace():WhiteSpaceStyleValue
 	{
 		return _whiteSpace;
-	}
-	
-	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
-	{
-		return _textAlign = value;
 	}
 	
 	private function getTextAlign():TextAlignStyleValue

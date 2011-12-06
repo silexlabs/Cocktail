@@ -339,14 +339,11 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	/**
-	 * To DO : separate processing from appling to x/y of DOMElements ?
-	 */
 	private function computeLineBoxHeight():Int
 	{
 		//get ascent and descent of the strut
-		var lineBoxAscent:Float = _containingDOMElement.style.fontMetrics.ascent;
-		var lineBoxDescent:Float = _containingDOMElement.style.fontMetrics.descent;
+		var lineBoxAscent:Float = 0;
+		var lineBoxDescent:Float = 0;
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
@@ -362,7 +359,15 @@ class InlineFormattingContext extends FormattingContext
 			else
 			{
 				domElementAscent = domElement.style.fontMetrics.ascent;
-				domElementDescent = domElement.style.fontMetrics.descent;
+				domElementDescent = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
 			}
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children

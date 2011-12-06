@@ -216,7 +216,7 @@ class FontAndTextStylesComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
+				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return wordSpacing;
@@ -233,7 +233,7 @@ class FontAndTextStylesComputer
 		switch (style.lineHeight)
 		{
 			case length(unit):
-				lineHeight = UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				lineHeight = UnitManager.getPixelFromLengthValue(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
 				
 			case normal:
 				lineHeight = style.computedStyle.fontSize * 1.2;

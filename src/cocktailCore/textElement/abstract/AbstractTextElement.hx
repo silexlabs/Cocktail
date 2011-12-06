@@ -46,7 +46,7 @@ class AbstractTextElement
 	 */
 	public function new(text:String) 
 	{
-		
+		_textFragments = new Array<TextFragmentData>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ class AbstractTextElement
 	{
 		//create only the first time or each time
 		//the text content is changed
-		if (_textFragments == null)
+		if (_textFragments.length == 0)
 		{	
 			_textFragments = doGetTextFragments(text);
 		}

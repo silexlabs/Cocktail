@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.abstract;
 
+import cocktail.viewport.Viewport;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
@@ -30,6 +31,7 @@ import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import cocktailCore.textElement.TextElementData;
+import haxe.Timer;
 
 #if flash9
 import cocktailCore.style.as3.Style;
@@ -124,7 +126,7 @@ class AbstractContainerStyle extends Style
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height as containing height
-		var childrenContainingDOMElementData:ContainingDOMElementData = getChildrenContainingDOMElementData();
+		var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
 		//are based on the font and the font size used
@@ -138,7 +140,7 @@ class AbstractContainerStyle extends Style
 		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
-			childLastPositionedDOMElementDimensions = getChildrenContainingDOMElementData();
+			childLastPositionedDOMElementDimensions = getContainerDOMElementData();
 		}
 		//
 		else
@@ -217,6 +219,64 @@ class AbstractContainerStyle extends Style
 		{
 			super.insertInFlowDOMElement(formattingContext);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function invalidate():Void
+	{
+		#if flash9
+		if (this._domElement.nativeElement.parent == flash.Lib.current)
+		#elseif js
+		if (this._domElement.nativeElement.parentNode == js.Lib.document.body)
+		#end
+		{
+			var viewPortData:ContainingDOMElementData = {
+				globalX:0,
+				globalY:0,
+				isHeightAuto:false,
+				isWidthAuto:false,
+				width:new Viewport().width,
+				height:new Viewport().height
+			}
+			
+			doLayout(viewPortData, viewPortData, viewPortData);
+		}
+		
+		else if (this._isInvalid == false)
+		{
+			
+			this._isInvalid = true;
+			
+			if (this._domElement.parent != null)
+			{
+				this._domElement.parent.style.invalidate();	
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function invalidateText():Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.resetTextFragments();	
+		super.invalidateText();
+		
+	}
+	
+	
+	private function doLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		var layoutDelegate:ContainingDOMElementData->ContainingDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
+		
+		Timer.delay(function () { 
+			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
+		}, 1);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -555,7 +615,7 @@ class AbstractContainerStyle extends Style
 	 * Return the dimensions and position data
 	 * of the ContainerDOMElement
 	 */
-	private function getChildrenContainingDOMElementData():ContainingDOMElementData
+	public function getContainerDOMElementData():ContainingDOMElementData
 	{
 		var height:Int;
 		
