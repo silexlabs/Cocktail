@@ -524,7 +524,6 @@ class AbstractStyle
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
 		
-		
 	}
 	
 	/**
