@@ -1,0 +1,4 @@
+-cp ../src
+-cp ../../../src/
+-main Iphone
+-js ../bin/Iphone.js
