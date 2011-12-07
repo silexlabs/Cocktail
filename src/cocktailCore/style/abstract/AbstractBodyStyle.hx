@@ -55,62 +55,77 @@ class AbstractBodyStyle extends ContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+		
+		//the BodyDOMElelement is set to valid by default
+		//to allow triggering the first layout when a children
+		//will be added to it
 		_isInvalid = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
+	// OVERRIDEN PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The BodyDOMElement doesn't have a parent, so when invalidated,
+	 * it always schedule a layout using the viewport dimensions as
+	 * its containing DOMElement dimensions
+	 */
 	override public function invalidate():Void
 	{
 		if (this._isInvalid == false)
 		{
+			var viewPort:Viewport = new Viewport();
+			
 			this._isInvalid = true;
 			var viewPortData:ContainingDOMElementData = {
 			globalX:0,
 			globalY:0,
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:new Viewport().width,
-			height:new Viewport().height
+			width:viewPort.width,
+			height:viewPort.height
 			}
 		
-			doLayout(viewPortData, viewPortData, viewPortData);
+			scheduleLayout(viewPortData, viewPortData, viewPortData);
 		}
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC DIMENSION AND POSITION METHODS
-	// Those method actually apply a processed dimension or position value to 
-	// the NativeElement of a target DOMElement.
-	// they are runtime specific
+	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function applyComputedX(domElement:DOMElement, x:Int):Void
-	{
-		//abstract
-	}
-	
-	override public function applyComputedY(domElement:DOMElement, y:Int):Void
-	{
-		//abstract
-	}
-	
-	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
-	{
-		//abstract
-	}
-	
-	override public function applyComputedHeight(domElement:DOMElement, height:Int):Void
-	{
-		//abstract
-	}
-	
+	/**
+	 * The root of the runtime always starts a block formatting context
+	 */
 	override private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
 	{
 		return new BlockFormattingContext(this._domElement, null);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN DIMENSION AND POSITION SETTERS
+	// Those properties can't be affected to the root of a runtime
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setNativeX(domElement:DOMElement, x:Int):Void
+	{
+		
+	}
+	
+	override public function setNativeY(domElement:DOMElement, y:Int):Void
+	{
+		
+	}
+	
+	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	{
+		
+	}
+	
+	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	{
+		
 	}
 	
 }

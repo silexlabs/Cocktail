@@ -234,7 +234,7 @@ class BoxStylesComputer
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
+		style.computedStyle.width = getNativeWidth(style, containingDOMElementData);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -299,7 +299,7 @@ class BoxStylesComputer
 	private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
+		style.computedStyle.height = getNativeHeight(style, containingDOMElementData);
 		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
@@ -374,7 +374,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getNativeWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -396,7 +396,7 @@ class BoxStylesComputer
 	/**
 	 * Get the computed height of the DOMElement when not 'auto' and returns it as pixels
 	 */ 
-	private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getNativeHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}

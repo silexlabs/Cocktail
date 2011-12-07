@@ -222,46 +222,6 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function invalidate():Void
-	{
-		
-		if (this._isInvalid == false)
-		{
-			this._isInvalid = true;
-			
-			if (this._domElement.parent != null)
-			{
-				this._domElement.parent.style.invalidate();	
-			}
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function invalidateText():Void
-	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		containerDOMElement.resetTextFragments();	
-		super.invalidateText();
-		
-	}
-	
-	
-	private function doLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
-	{
-		var layoutDelegate:ContainingDOMElementData->ContainingDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
-		
-		Timer.delay(function () { 
-			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
-		}, 1);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -325,6 +285,22 @@ class AbstractContainerStyle extends Style
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
+	 * must be deleted so that they can be redrawn on next layout
+	 */
+	override private function invalidateText():Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.resetTextFragments();	
+		super.invalidateText();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -513,6 +489,48 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the dimensions and position data
+	 * of the ContainerDOMElement
+	 */
+	public function getContainerDOMElementData():ContainingDOMElementData
+	{
+		var height:Int;
+		
+		//if the ContainerDOMElement
+		//is inline, then its line height will
+		//be used to lay out its children in lines
+		if (isInline() == true)
+		{
+			height = Math.round(this._computedStyle.lineHeight);
+		}
+		//same if the ContainerDOMElement starts
+		//an inline formatting context
+		else if (isInline() == false && childrenInline() == true)
+		{
+			height = Math.round(this._computedStyle.lineHeight);
+		}
+		//else it starts a block formatting context
+		//and its height is used
+		else
+		{
+			height = this._computedStyle.height;
+		}
+		
+		return {
+			width:this._computedStyle.width,
+			isWidthAuto:this._width == DimensionStyleValue.auto,
+			height:height,
+			isHeightAuto:this._height == DimensionStyleValue.auto,
+			globalX:this._domElement.globalX,
+			globalY:this._domElement.globalY
+		};
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -591,44 +609,6 @@ class AbstractContainerStyle extends Style
 		
 		
 		return formattingContext;
-	}
-	
-	/**
-	 * Return the dimensions and position data
-	 * of the ContainerDOMElement
-	 */
-	private function getContainerDOMElementData():ContainingDOMElementData
-	{
-		var height:Int;
-		
-		//if the ContainerDOMElement
-		//is inline, then its line height will
-		//be used to lay out its children in lines
-		if (isInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//same if the ContainerDOMElement starts
-		//an inline formatting context
-		else if (isInline() == false && childrenInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//else it starts a block formatting context
-		//and its height is used
-		else
-		{
-			height = this._computedStyle.height;
-		}
-		
-		return {
-			width:this._computedStyle.width,
-			isWidthAuto:this._width == DimensionStyleValue.auto,
-			height:height,
-			isHeightAuto:this._height == DimensionStyleValue.auto,
-			globalX:this._domElement.globalX,
-			globalY:this._domElement.globalY
-		};
 	}
 	
 	/**

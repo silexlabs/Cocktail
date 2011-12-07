@@ -52,12 +52,12 @@ class ContainerStyle extends AbstractContainerStyle
 	// of the ContainerDOMElement, as it would scale its content
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
 	{
 		
 	}
 	
-	override public function applyComputedHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
 	{
 		
 	}
