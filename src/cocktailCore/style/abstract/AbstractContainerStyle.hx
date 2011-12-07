@@ -65,9 +65,9 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:ContainingDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		flow(containingDOMElementData, rootDOMElement, lastPositionedDOMElement, null);
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -131,18 +131,18 @@ class AbstractContainerStyle extends Style
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children
-		var childLastPositionedDOMElementDimensions:ContainingDOMElementData;
+		var childLastPositionedDOMElementData:ContainingDOMElementData;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
-			childLastPositionedDOMElementDimensions = getContainerDOMElementData();
+			childLastPositionedDOMElementData = getContainerDOMElementData();
 		}
 		//
 		else
 		{
-			childLastPositionedDOMElementDimensions = lastPositionedDOMElementDimensions;
+			childLastPositionedDOMElementData = lastPositionedDOMElementData;
 		}
 		
 		//flow all children 
@@ -154,14 +154,14 @@ class AbstractContainerStyle extends Style
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
-				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
+				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, containingDOMElementFontMetricsData);
 			}
 		}
 		
@@ -199,7 +199,7 @@ class AbstractContainerStyle extends Style
 		if (formatingContext != null)
 		{
 			//insert the ContainerDOMElement into the document
-			insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+			insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 
 			//retrieve the floats overflowing from the children of this ContainerDOMElement, 
 			//that will also affect the position of its following siblings
@@ -230,7 +230,7 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
-	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 

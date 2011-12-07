@@ -7,37 +7,12 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.viewport.Viewport;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktailCore.domElement.TextFragmentDOMElement;
-import cocktailCore.style.computer.BoxStylesComputer;
+import cocktail.viewport.Viewport;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.formatter.InlineFormattingContext;
-import cocktailCore.style.positioner.AbsolutePositioner;
-import cocktailCore.style.positioner.BoxPositioner;
-import cocktailCore.style.positioner.FixedPositioner;
-import cocktailCore.style.positioner.RelativePositioner;
-import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
-import cocktail.domElement.DOMElementData;
-import cocktailCore.domElement.DOMElementData;
-import cocktail.textElement.TextElement;
-import cocktailCore.textElement.TextElementData;
-import haxe.Timer;
-
-#if flash9
-import cocktailCore.style.as3.Style;
-#elseif js
-import cocktailCore.style.js.Style;
-#end
-
-import haxe.Log;
 
 /**
  * This is the style implementation for BodyDOMElement.
