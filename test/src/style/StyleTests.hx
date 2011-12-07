@@ -72,13 +72,6 @@ class StyleTests
 	
 	public function new() 
 	{
-		#if js
-		js.Lib.window.onresize = refresh;
-		
-		#elseif flash9
-		flash.Lib.current.stage.addEventListener(flash.events.Event.RESIZE, refresh);
-		
-		#end
 		testLayout2();
 		
 		
@@ -94,7 +87,7 @@ class StyleTests
 		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
 		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(200));
 		_mainContainer.style.marginLeft = MarginStyleValue.length(px(50));
-		//_mainContainer.style.position = PositionStyleValue.relative;
+		_mainContainer.style.position = PositionStyleValue.relative;
 		
 		var bodyDOMElement:BodyDOMElement = new BodyDOMElement();
 		bodyDOMElement.addChild(_mainContainer);
@@ -162,7 +155,6 @@ class StyleTests
 		
 			
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
-		var refreshProxy:Dynamic->Void = refresh;
 		
 		 _footer = getGraph();
 		_footer.style.width = DimensionStyleValue.percent(100);
@@ -185,13 +177,13 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 			var image:ImageDOMElement = new ImageDOMElement();
 			
-			ResourceLoaderManager.loadImage("testPicture.jpg", function(picture) {
+			image.onLoad =  function() {
 		//	mainCont.addChild(headerContainer);
 		//	textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 		//	textContainer.style.position = relative;
 			textBlock.addChild(headerContainer);
-		textBlock.addChild(picture);
+		textBlock.addChild(image);
 		
 			headerContainer.style.display = inlineBlock;
 			
@@ -207,32 +199,37 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			//mainCont.style.top = PositionOffsetStyleValue.length(px(500));
 			//foot.style.position = absolute;
 			
-			getDefaultStyleProxy(picture);
+			getDefaultStyleProxy(image);
 			
-			picture.onMouseDown = function(event) {
+			image.onMouseDown = function(event) {
 				//picture.style.width = DimensionStyleValue.length(px(500));
-				
+				image.onLoad = null;
+				image.load("preview.png");
+				//mainCont.x = 300;
 				textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
 				textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
-			
+				image.width = 500;
+				foot.height = 50;
+				foot.style.height = DimensionStyleValue.auto;
+				foot.width = 350;
 			
 			//refreshProxy(null);
 			}
-			picture.onMouseOver = function(event) {
-				picture.style.marginRight = MarginStyleValue.length(px(100));
+			image.onMouseOver = function(event) {
+				image.style.marginRight = MarginStyleValue.length(px(100));
 			}
 			
-			picture.onMouseOut = function(event) {
-				picture.style.marginRight = MarginStyleValue.length(px(0));
+			image.onMouseOut = function(event) {
+				image.style.marginRight = MarginStyleValue.length(px(0));
 			}
 			
-			picture.style.width = DimensionStyleValue.length(px(100));
-			picture.style.height = DimensionStyleValue.length(px(100));
-			picture.style.display = DisplayStyleValue.inlineStyle;
+			image.style.width = DimensionStyleValue.length(px(100));
+			image.style.height = DimensionStyleValue.length(px(100));
+			image.style.display = DisplayStyleValue.inlineStyle;
 			//picture.style.verticalAlign = VerticalAlignStyleValue.top;
 			
-			picture.style.width = DimensionStyleValue.length(px(200));
-			picture.style.height = DimensionStyleValue.length(px(200));
+			image.style.width = DimensionStyleValue.length(px(200));
+			image.style.height = DimensionStyleValue.length(px(200));
 		//	picture.style.display = DisplayStyleValue.inlineBlock;
 			//picture.style.marginLeft = MarginStyleValue.percent(10);
 			//picture.style.marginTop = MarginStyleValue.length(px(20));
@@ -243,7 +240,12 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 	
 			//refreshProxy(null);
 		
-		}, function(event) { }, image );
+		};
+		
+		image.onError = function(event) { };
+		
+		image.load("testPicture.jpg");
+		
 		
 	/**	_mainContainer.addChild(headerContainer);
 		_mainContainer.addChild(_footer);
@@ -270,34 +272,6 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		domElement.drawRect(0, 0, domElement.width, domElement.height);
 		domElement.endFill();
 		domElement.alpha = 0.6;
-		
-	}
-	
-	private function refresh(event:Dynamic = null)
-	{
-		var viewPort:Viewport = new Viewport();
-		
-		var browserWidth:Int = viewPort.width;
-		var browserHeight:Int = viewPort.height;
-		
-		//_mainContainer.style.computedStyle.lineHeight = 70;
-		_mainContainer.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, _mainContainer.style.fontMetrics);
-	
-	//	paint(_background, 0x222222);
-	//	paint(_siteBackground, 0xFFFFFF);
-		paint(_header, 0xDDDDDD);
-	//	paint(_navigation, 0xDDDDDD);
-	//	paint(_siteRightBackground, 0xDDDDDD);
-	
-	//	paint(_siteLeftFloatBackground, 0xBBBBBB);
-	//	paint(_siteLeftAfterFloatBackground, 0x00000);
-	//	paint(_siteLeftAfterFloatBackground2, 0x00000);
-	//	paint(_siteLeftAfterFloatBackground3, 0x222222);
-	//	paint(_insetGraphicElement, 0xFF0000);
-	}
-	
-	private function attach(domElement:DOMElement):Void
-	{
 		
 	}
 	
