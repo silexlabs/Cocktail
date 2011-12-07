@@ -30,13 +30,6 @@ typedef ResourceData =
 	var url : String;
 	
 	/**
-	 * If not null, the loaded resource will
-	 * be set on this DOMElement, else, a 
-	 * new DOMElement will be created
-	 */
-	var domElement:DOMElement;
-	
-	/**
 	 * Wether to allow the browser to cache the file
 	 */
 	var allowCache : Bool;
@@ -50,15 +43,10 @@ typedef ResourceData =
 /**
  * Enumerates the file type which can be loaded : 
  * data for text file,
- * image for picture such as .jpg, .gif and .png files,
- * animation for animated format such as .swf and .svg,
- * container for skin loading (.swf, .html),
  * and library for classes library which may be stored in .swf or .js files for instance
  */
 enum LoadingTypeValue
 {
 	data;
-	image;
-	container;
 	library;
 }

@@ -12,12 +12,12 @@ import haxe.Log;
 
 /**
  * This class is in charge of loading one file and calling the right callback after the load succedeed/failed. This is a base
- * class which will be implemented for each file types.
+ * class implemented for each media/data types.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractResourceLoader 
 {
-
 	/**
 	 * Stores the callback to call once the file is successfully loaded
 	 */
@@ -27,13 +27,6 @@ class AbstractResourceLoader
 	 * Stores the callback to call if there is an error during loading
 	 */ 
 	private var _onLoadErrorCallback:Dynamic->Void;
-	
-	/**
-	 * Stores the target domElement if it exists. If a domElement is 
-	 * provided, the loaded resource will be set on it, else a new 
-	 * DOMElement will be created
-	 */
-	private var _domElement:DOMElement;
 	
 	/**
 	 * class constructor
@@ -49,20 +42,16 @@ class AbstractResourceLoader
 	
 	/**
 	 * Start the loading of a file. Stores the success and error callbacks. Prevent file caching if requested
-	 * then start the file loading
+	 * then actually start the file loading
 	 * @param	url the url of the file to load
 	 * @param	onLoadComplete called when the file is done loading
 	 * @param	onLoadError called when there is an error during loading
-	 * @param   domElement if provided, the loaded resource will be set on it
-	 * instead of creating a new DOMElement
 	 * @param	allowCache wether to allow the browser to cache the loaded file
 	 */
-	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, domElement:DOMElement = null, allowCache:Bool = true):Void
+	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool = true):Void
 	{
 		this._onLoadCompleteCallback = onLoadComplete;
 		this._onLoadErrorCallback = onLoadError;
-		
-		this._domElement = domElement;
 		
 		//if the loaded resource must not be cached,
 		//add a random number at the end of the url to fool

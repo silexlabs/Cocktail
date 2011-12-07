@@ -75,50 +75,6 @@ class ResourceLoaderManager
 	 * @param	url the url of the file to load
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	domElement, if provided, the loaded resource (in this case a picture) will be set on this
-	 * DOMElement, else a new ImageDOMElement will be created
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadImage(url:String, successCallback:ImageDOMElement->Void, errorCallback:String->Void , imageDOMElement:ImageDOMElement = null, allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			domElement:cast(imageDOMElement),
-			allowCache:allowCache,
-			loadingType:image
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadContainer(url:String, successCallback:ContainerDOMElement->Void, errorCallback:String->Void , containerDOMElement:ContainerDOMElement = null, allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			domElement:cast(containerDOMElement),
-			loadingType:container
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
 	public static function loadString(url:String, successCallback:String->Void, errorCallback:String->Void , allowCache:Bool = true):Void
@@ -128,7 +84,6 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
-			domElement:null,
 			loadingType:data
 		};
 		
@@ -149,7 +104,6 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
-			domElement:null,
 			loadingType:library
 		};
 		
@@ -207,17 +161,11 @@ class ResourceLoaderManager
 				case data:
 				resourceLoader = new StringLoader();
 				
-				case image: 
-				resourceLoader = new ImageLoader();
-				
-				case container:
-				resourceLoader = new ContainerLoader();
-				
 				case library:
 				resourceLoader = new LibraryLoader();
 			}
 			
-			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.domElement, resourceDataToLoad.allowCache);
+			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
 		}
 	}
 	
