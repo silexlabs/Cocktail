@@ -20,7 +20,8 @@ import cocktailCore.domElement.js.DOMElement;
 /**
  * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a
  * replaced element in HTML, typically has an intrinsic width, height and ratio. 
- * For example, for a picture it corresponds to the picture's dimensions in pixel
+ * For example, for a picture it corresponds to the displayed picture's scaled dimensions in pixel, e.g
+ * if the dimension of the picture is 100x100 and it is scaled 2x, its intrinsic dimensions will be 200x200
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -32,24 +33,24 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	 * in pixel of the video
 	 */
 	private var _intrinsicWidth:Null<Int>;
-	public var intrinsicWidth(getIntrinsicWidth, setIntrinsicWidth):Null<Int>;
+	public var intrinsicWidth(getIntrinsicWidth, never):Null<Int>;
 	
 	/**
 	 * The instrinsic height of an embedded content. For example, for a video, the height
 	 * in pixel of the video
 	 */
 	private var _intrinsicHeight:Null<Int>;
-	public var intrinsicHeight(getIntrinsicHeight, setIntrinsicHeight):Null<Int>;
+	public var intrinsicHeight(getIntrinsicHeight, never):Null<Int>;
 	
 	/**
 	 * The instrinsic ratio of an embedded content. For example, for a video, the height/width
 	 * ratio of the video
 	 */
 	private var _intrinsicRatio:Null<Float>;
-	public var intrinsicRatio(getIntrinsicRatio, setIntrinsicRatio):Null<Float>;
+	public var intrinsicRatio(getIntrinsicRatio, never):Null<Float>;
 	
 	/**
-	 * Constructor. Init the default dimensions and intrinsic dimensions of the DOMElement
+	 * Constructor. Init the default intrinsic dimensions of the DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
@@ -76,24 +77,40 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// INTRINSIC DIMENSIONS SETTERS/GETTERS
+	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setIntrinsicWidth(value:Null<Int>):Null<Int>
+	/**
+	 * When the width is set on an embedded DOMElement, the intrinsic
+	 * width is set instead of the width style. The DOMElement is then invalidated.
+	 * 
+	 * If the DOMElement has a width style of 'auto', the intrinsic width will be
+	 * used for the picture, else the width defined by the width style will be used
+	 */
+	override private function setWidth(value:Int):Int
 	{
 		this._intrinsicWidth = value;
+		this._style.invalidate();
 		return value;
 	}
+	
+	/**
+	 * same as width
+	 */
+	override private function setHeight(value:Int):Int
+	{
+		this._intrinsicHeight = value;
+		this._style.invalidate();
+		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// INTRINSIC DIMENSIONS GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getIntrinsicWidth():Null<Int>
 	{
 		return this._intrinsicWidth;
-	}
-	
-	private function setIntrinsicHeight(value:Null<Int>):Null<Int>
-	{
-		this._intrinsicHeight = value;
-		return value;
 	}
 	
 	private function getIntrinsicHeight():Null<Int>
@@ -104,11 +121,5 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	private function getIntrinsicRatio():Null<Float>
 	{
 		return this._intrinsicRatio;
-	}
-	
-	private function setIntrinsicRatio(value:Null<Float>):Null<Float>
-	{
-		this._intrinsicRatio = value;
-		return value;
 	}
 }

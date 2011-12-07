@@ -54,9 +54,9 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 */
 	override private function initInstrinsicDimensions():Void
 	{
-		this.intrinsicHeight = 150;
-		this.intrinsicWidth = 300;
-		this.intrinsicRatio = this.intrinsicWidth / this.intrinsicHeight;
+		this._intrinsicHeight = 150;
+		this._intrinsicWidth = 300;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,6 @@ import haxe.Log;
  */
 class AbstractImageDOMElement extends EmbeddedDOMElement
 {
-
 	/**
 	 * The URL of the loaded picture.
 	 * It is only an information, setting
