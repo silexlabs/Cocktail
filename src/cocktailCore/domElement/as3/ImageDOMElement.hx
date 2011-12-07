@@ -35,7 +35,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Retrive the source url, width and
+	 * Retrieve the source url, width and
 	 * height from the loaded picture
 	 * @param	image
 	 */

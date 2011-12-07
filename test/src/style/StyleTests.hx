@@ -242,6 +242,14 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		};
 		
+		var image2:ImageDOMElement = new ImageDOMElement();
+		getDefaultStyle(image2);
+		image2.load("preview.png");
+		image2.style.display = DisplayStyleValue.inlineStyle;
+		image2.width = 500;
+		image2.height = 300;
+		textBlock.addChild(image2);
+		
 		image.onError = function(event) { };
 		
 		image.load("testPicture.jpg");
