@@ -1,6 +1,3 @@
-------------
-TO DO LEX
-------------
 /*
 This project is © 2010-2011 Silex Labs and is released under the GPL License:
 
@@ -10,34 +7,26 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.font.as3;
+package cocktailCore.font.as3;
 
 import haxe.Log;
-import cocktail.font.abstract.AbstractFontManager;
+import cocktailCore.font.abstract.AbstractFontLoader;
 import cocktail.resource.ResourceLoaderManager;
+import cocktail.font.FontData;
 
 
 /**
+ * This class is in charge of loading one single font and calling the right callback(s) after the load succedeed/failed
  * This is the implementation of the font loader for the Flash AVM2 runtime. A font in Flash in embeded in a .swf
  * file. It is loaded like a library. The font can be used for a text, just set the HTML style attribute to "font-family=MyFontName"
- * @author Lex oYo
+ * @author lexa
  */
 class FontLoader extends AbstractFontLoader
-{
+{	
 	/**
-	 * List of loaded fonts, successfull loaded fonts only
+	 * Constructor
 	 */
-	public static var fonts:Array<FontData>;
-	
-	/**
-	 * List of fonts being loaded
-	 */
-	public static var loadingFonts:Array<FontData>;
-	
-	/**
-	 * class constructor
-	 */
-	public function new() 
+	public function new()
 	{
 		super();
 	}
@@ -47,18 +36,28 @@ class FontLoader extends AbstractFontLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Start loading a font
+	 * Start loading the font
 	 * @param	url the url of the font to load
 	 * @param	name the name of the font to load. 
 	 * This is an equivalent of font-family in HTML, and an equivalent of the export name in Flash. 
 	 * This is the name you want to put in the css class to apply the style to some text.
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
-	public static function loadFont(url:String, name:String, successCallback:Void->Void, errorCallback:String->Void):Void
+	override public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
 	{
-		ResourceLoaderManager.loadLibrary(url, onLoadComplete, onLoadError);
+		super.load(url, name, successCallback, errorCallback);
+
+		if (fontData.type == swf || fontData.type == unknown)
+		{
+			ResourceLoaderManager.loadLibrary(url, _onLoadComplete, _onLoadError);
+		}
+		else
+		{
+			// do nothing because the font format is not appropriate for the target
+			trace("Could not load font, the font format is not appropriate for the target: "+url);
+			_onLoadError("Could not load font, the font format is not appropriate for the target: "+url);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -69,16 +68,18 @@ class FontLoader extends AbstractFontLoader
 	 * When the file is done loading, calls the success callback and update the fonts array
 	 * @param	data the loaded library data
 	 */
-	private static function onLoadComplete(data:Dynamic):Void
+	private function _onLoadComplete(data:Dynamic):Void
 	{
 		trace("onLoadComplete");
+		_successCallback();
 	}
 	/**
 	 * An error occured while loading the font
 	 * @param	data the loaded library data
 	 */
-	private static function onLoadError(data:Dynamic):Void
+	private function _onLoadError(data:Dynamic):Void
 	{
 		trace("onLoadError");
+		_errorCallback(data);
 	}
 }

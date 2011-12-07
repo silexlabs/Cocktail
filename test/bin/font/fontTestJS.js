@@ -2071,14 +2071,17 @@ cocktailCore.font.abstract.AbstractFontManager.loadFont = function(url,name,succ
 	cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray.push(fontLoader);
 }
 cocktailCore.font.abstract.AbstractFontManager._onFontLoadingSuccess = function(fontData) {
+	cocktailCore.font.abstract.AbstractFontManager._init();
 	cocktailCore.font.abstract.AbstractFontManager.loadedFonts.push(fontData);
-	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 110, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
+	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 113, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
 }
 cocktailCore.font.abstract.AbstractFontManager._onFontLoadingError = function(fontData,errorStr) {
-	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 119, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
-	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 124, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
+	cocktailCore.font.abstract.AbstractFontManager._init();
+	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 125, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
+	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 130, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
 }
 cocktailCore.font.abstract.AbstractFontManager._removeFontLoader = function(fontData) {
+	cocktailCore.font.abstract.AbstractFontManager._init();
 	var fontLoader;
 	var idx;
 	var _g1 = 0, _g = cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray.length;
@@ -4123,7 +4126,7 @@ cocktailCore.font.abstract.AbstractFontLoader.prototype._errorCallbackArray = nu
 cocktailCore.font.abstract.AbstractFontLoader.prototype.load = function(url,name,successCallback,errorCallback) {
 	var extension = url.substr(url.lastIndexOf("."),url.length);
 	this.fontData = { url : url, name : name, type : cocktail.font.FontType.unknown};
-	if(extension == ".ttf") this.fontData.type = cocktail.font.FontType.ttf; else if(extension == ".eot") this.fontData.type = cocktail.font.FontType.eot;
+	if(extension == ".ttf") this.fontData.type = cocktail.font.FontType.ttf; else if(extension == ".eot") this.fontData.type = cocktail.font.FontType.eot; else if(extension == ".otf") this.fontData.type = cocktail.font.FontType.otf; else if(extension == ".swf") this.fontData.type = cocktail.font.FontType.swf; else this.fontData.type = cocktail.font.FontType.unknown;
 	this.addCallback(successCallback,errorCallback);
 }
 cocktailCore.font.abstract.AbstractFontLoader.prototype.addCallback = function(successCallback,errorCallback) {
@@ -5796,14 +5799,20 @@ cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype.
 }
 cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype.__class__ = cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 if(!cocktail.font) cocktail.font = {}
-cocktail.font.FontType = { __ename__ : ["cocktail","font","FontType"], __constructs__ : ["ttf","eot","unknown"] }
+cocktail.font.FontType = { __ename__ : ["cocktail","font","FontType"], __constructs__ : ["ttf","otf","eot","swf","unknown"] }
 cocktail.font.FontType.ttf = ["ttf",0];
 cocktail.font.FontType.ttf.toString = $estr;
 cocktail.font.FontType.ttf.__enum__ = cocktail.font.FontType;
-cocktail.font.FontType.eot = ["eot",1];
+cocktail.font.FontType.otf = ["otf",1];
+cocktail.font.FontType.otf.toString = $estr;
+cocktail.font.FontType.otf.__enum__ = cocktail.font.FontType;
+cocktail.font.FontType.eot = ["eot",2];
 cocktail.font.FontType.eot.toString = $estr;
 cocktail.font.FontType.eot.__enum__ = cocktail.font.FontType;
-cocktail.font.FontType.unknown = ["unknown",2];
+cocktail.font.FontType.swf = ["swf",3];
+cocktail.font.FontType.swf.toString = $estr;
+cocktail.font.FontType.swf.__enum__ = cocktail.font.FontType;
+cocktail.font.FontType.unknown = ["unknown",4];
 cocktail.font.FontType.unknown.toString = $estr;
 cocktail.font.FontType.unknown.__enum__ = cocktail.font.FontType;
 if(!cocktailCore.classInstance) cocktailCore.classInstance = {}
@@ -6443,12 +6452,14 @@ for(var k in cocktailCore.font.abstract.AbstractFontLoader.prototype ) cocktailC
 cocktailCore.font.js.FontLoader.prototype._styleE = null;
 cocktailCore.font.js.FontLoader.prototype.load = function(url,name,successCallback,errorCallback) {
 	cocktailCore.font.abstract.AbstractFontLoader.prototype.load.call(this,url,name,successCallback,errorCallback);
-	var fontTypeString = "";
-	if(this.fontData.type == cocktail.font.FontType.ttf) fontTypeString = " format(\"truetype\")"; else if(this.fontData.type == cocktail.font.FontType.eot) fontTypeString = "";
-	this._styleE = js.Lib.document.createElement("style");
-	this._styleE.innerHTML = "@font-face{font-family: " + name + " ; src: url( \"" + url + "\" )" + fontTypeString + ";}";
-	this._successCallback();
-	js.Lib.document.getElementsByTagName("head")[0].appendChild(this._styleE);
+	if(this.fontData.type != cocktail.font.FontType.swf && this.fontData.type != cocktail.font.FontType.unknown) {
+		var fontTypeString = "";
+		if(this.fontData.type == cocktail.font.FontType.ttf) fontTypeString = " format(\"truetype\")"; else fontTypeString = "";
+		this._styleE = js.Lib.document.createElement("style");
+		this._styleE.innerHTML = "@font-face{font-family: " + name + " ; src: url( \"" + url + "\" )" + fontTypeString + ";}";
+		this._successCallback();
+		js.Lib.document.getElementsByTagName("head")[0].appendChild(this._styleE);
+	} else haxe.Log.trace("Could not load font, the font format is not appropriate for the target: " + url,{ fileName : "FontLoader.hx", lineNumber : 84, className : "cocktailCore.font.js.FontLoader", methodName : "load"});
 }
 cocktailCore.font.js.FontLoader.prototype.cleanup = function() {
 	cocktailCore.font.abstract.AbstractFontLoader.prototype.cleanup.call(this);
@@ -7466,20 +7477,21 @@ font.FontTests.main = function() {
 font.FontTests.prototype.testFontLoad = function() {
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded"));
 	cocktailCore.font.js.FontManager.loadFont("embed_test_font.ttf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
+	cocktailCore.font.js.FontManager.loadFont("embed_test_font.swf","EmbedFontTest");
 	js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
 }
 font.FontTests.prototype.onFontLoaded = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 75, className : "font.FontTests", methodName : "onFontLoaded"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 85, className : "font.FontTests", methodName : "onFontLoaded"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded2"));
 	cocktailCore.font.js.FontManager.loadFont("embed_test_font.eot","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded2 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 84, className : "font.FontTests", methodName : "onFontLoaded2"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 94, className : "font.FontTests", methodName : "onFontLoaded2"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded3"));
 	cocktailCore.font.js.FontManager.loadFont("embed_test_font.otf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded3 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 93, className : "font.FontTests", methodName : "onFontLoaded3"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 103, className : "font.FontTests", methodName : "onFontLoaded3"});
 }
 font.FontTests.prototype.errorCallbackAssync = null;
 font.FontTests.prototype.onFontLoaded4 = function(fontData) {
@@ -7488,8 +7500,8 @@ font.FontTests.prototype.onFontLoadError = function(fontData,msg) {
 	this.errorCallbackAssync(msg);
 }
 font.FontTests.prototype.onFontLoadErrorUTest = function(msg) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 117, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
-	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 118, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 128, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 129, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
 }
 font.FontTests.prototype.__class__ = font.FontTests;
 utest.Assertation = { __ename__ : ["utest","Assertation"], __constructs__ : ["Success","Failure","Error","SetupError","TeardownError","TimeoutError","AsyncError","Warning"] }

@@ -19,18 +19,18 @@ import cocktail.nativeInstance.NativeInstanceManager;
 import flash.display.Loader;
 import flash.Lib;
 import flash.system.ApplicationDomain;
+import flash.text.TextFormat;
 #end
 
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.classInstance.ClassInstance;
-import haxe.Log;
 import cocktail.domElement.DOMElement;
+import cocktail.font.FontData;
+import cocktail.font.FontManager;
+
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
-
-import cocktail.font.FontData;
-import cocktail.font.FontManager;
 
 
 /**
@@ -60,10 +60,16 @@ class FontTests
 	 */
 	public function testFontLoad()
 	{
-		var successCallback : FontData->Void = Assert.createEvent(onFontLoaded);
-		FontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
+		
 		#if js
+			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded);
+			FontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
+
 			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
+		#end
+		#if flash9
+			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded3, 1000);
+			FontManager.loadFont("embed_test_font.swf", "EmbedFontTest", successCallback, onFontLoadError);
 		#end
 	}
 	
@@ -90,6 +96,22 @@ class FontTests
 	 */
 	private function onFontLoaded3(fontData : FontData):Void
 	{
+		#if flash9
+		    var format1:TextFormat = new TextFormat();
+		    format1.font="EmbedFontTest";
+		    format1.size=25;
+
+			var tf:flash.text.TextField;
+			tf = new flash.text.TextField();
+			tf.autoSize = flash.text.TextFieldAutoSize.LEFT;
+			tf.multiline = true;
+//			tf.embedFonts=true;
+//			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br /><font size=\"25\" face=\"EmbedFontTest\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</font><br /><br />";
+			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br />ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.<br /><br />";
+			tf.setTextFormat(format1);
+	        flash.Lib.current.addChild(tf);
+		#end
+
 		Assert.isTrue(true);
 
 // TO DO: test errors

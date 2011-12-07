@@ -47,34 +47,43 @@ class FontLoader extends AbstractFontLoader
 	{
 		super.load(url, name, successCallback, errorCallback);
 		
-		// build the string to display in the style html tag
-		var fontTypeString:String = "";
-		if (fontData.type == ttf)
-			fontTypeString = " format(\"truetype\")";
-		else if (fontData.type == eot)
-			fontTypeString = "";
-
-		//Create a 'style' element	
-		_styleE = Lib.document.createElement("style");
-		_styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
-		
-/*
-		// Detection of the font loading success/error, impossible with JS, use Typekit or google Web Fonts API for detection
-		untyped _styleE.async = 'true';
-	    untyped _styleE.load = _styleE.onload = _styleE.onreadystatechange = _successCallback;
-
-//	    untyped _styleE.addEventListener('onload', _successCallback, false);
-//	    untyped _styleE.addEventListener('error', _errorCallback, false);
-*/
-		// workaround : allways call success callback
-		_successCallback();
-
-		// Now add this new element to the head tag
-		Lib.document.getElementsByTagName("head")[0].appendChild(_styleE);
-		
-		// to do: detect css loading errors
-		// ?? styleE.async = 'true'; styleE.onload = tk.onreadystatechange = 
-//		successCallback();
+		if (fontData.type != swf)
+		{
+			// build the string to display in the style html tag
+			var fontTypeString:String = "";
+			if (fontData.type == ttf)
+				fontTypeString = " format(\"truetype\")";
+			else
+				fontTypeString = "";
+	
+			//Create a 'style' element	
+			_styleE = Lib.document.createElement("style");
+			_styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
+			
+	/*
+			// Detection of the font loading success/error, impossible with JS, use Typekit or google Web Fonts API for detection
+			untyped _styleE.async = 'true';
+		    untyped _styleE.load = _styleE.onload = _styleE.onreadystatechange = _successCallback;
+	
+	//	    untyped _styleE.addEventListener('onload', _successCallback, false);
+	//	    untyped _styleE.addEventListener('error', _errorCallback, false);
+	*/
+			// workaround : allways call success callback
+			_successCallback();
+	
+			// Now add this new element to the head tag
+			Lib.document.getElementsByTagName("head")[0].appendChild(_styleE);
+			
+			// to do: detect css loading errors
+			// ?? styleE.async = 'true'; styleE.onload = tk.onreadystatechange = 
+	//		successCallback();
+		}
+		else
+		{
+			// error because the font format is not appropriate for the target
+			trace("Could not load font, the font format is not appropriate for the target: "+url);
+			_onLoadError("Could not load font, the font format is not appropriate for the target: "+url);
+		}
 	}
 	/**
 	 * empty the arrays and remove references to callbacks
@@ -82,7 +91,8 @@ class FontLoader extends AbstractFontLoader
 	override private function cleanup()
 	{
 		super.cleanup(); 
-	    untyped _styleE.removeEventListener('load', _successCallback, false);
+/*	    untyped _styleE.removeEventListener('load', _successCallback, false);
 	    untyped _styleE.removeEventListener('error', _errorCallback, false);
+*/
 	}
 }

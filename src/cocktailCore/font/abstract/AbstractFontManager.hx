@@ -103,6 +103,9 @@ Returns true if the font specified bay fontName has been loaded or is available 
 	 */
 	private static function _onFontLoadingSuccess(fontData : FontData)
 	{
+		// init the static attributes if needed
+		_init();
+		
 		loadedFonts.push(fontData);
 		if (_removeFontLoader(fontData) == false)
 		{
@@ -115,6 +118,9 @@ Returns true if the font specified bay fontName has been loaded or is available 
 	 */
 	private static function _onFontLoadingError(fontData : FontData, errorStr : String)
 	{
+		// init the static attributes if needed
+		_init();
+		
 		// to do handle error
 		trace("font loading has failed");
 		
@@ -132,6 +138,9 @@ Returns true if the font specified bay fontName has been loaded or is available 
 	 */
 	private static function _removeFontLoader(fontData : FontData) : Bool
 	{
+		// init the static attributes if needed
+		_init();
+		
 		// find the font loader
 		var fontLoader : FontLoader;
 		var idx : Int;
