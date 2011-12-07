@@ -75,29 +75,8 @@ class AbstractBodyStyle extends ContainerStyle
 			width:new Viewport().width,
 			height:new Viewport().height
 			}
-			
-					
-			
-			var viewPortData2:ContainingDOMElementData = {
-			globalX:0,
-			globalY:0,
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:new Viewport().width,
-			height:new Viewport().height
-			}
-			
-						
-			var viewPortData3:ContainingDOMElementData = {
-			globalX:0,
-			globalY:0,
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:new Viewport().width,
-			height:new Viewport().height
-			}
 		
-			doLayout(viewPortData, viewPortData2, viewPortData3);
+			doLayout(viewPortData, viewPortData, viewPortData);
 		}
 		
 	}
