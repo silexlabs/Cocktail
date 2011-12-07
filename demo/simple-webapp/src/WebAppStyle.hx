@@ -1,13 +1,8 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
 package ;
@@ -25,7 +20,7 @@ import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
 /**
- * Defines the style of this web app
+ * Defines the style of the web app
  * 
  * @author Raphael Harmel
  */
@@ -33,6 +28,11 @@ import cocktail.unit.UnitData;
 class WebAppStyle 
 {
 
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
 		var computedStyle:ComputedStyleData = {
@@ -76,8 +76,16 @@ class WebAppStyle
 		
 		domElement.style.computedStyle = computedStyle;
 
+		//domElement.style.width = DimensionStyleValue.length(px(320));
+		//domElement.style.minHeight = ConstrainedDimensionStyleValue.length(px(420));
+		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
 	
+	/**
+	 * Defines main container Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getMainContainerStyle(domElement:DOMElement):Void
 	{
 		getDefaultStyle(domElement);
@@ -92,6 +100,11 @@ class WebAppStyle
 		domElement.style.position = PositionStyleValue.staticStyle;
 	}
 	
+	/**
+	 * Defines page container Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getPageContainerStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -103,6 +116,11 @@ class WebAppStyle
 		domElement.style.top = PositionOffsetStyleValue.auto;
 	}
 	
+	/**
+	 * Defines home page Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getHomePageStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -110,6 +128,11 @@ class WebAppStyle
 		//getPageStyle(domElement);
 	}
 	
+	/**
+	 * Defines default page Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getPageStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -118,9 +141,14 @@ class WebAppStyle
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
 	
+	/**
+	 * Defines home background image style Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getBgStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
+		getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.width = DimensionStyleValue.percent(100);
@@ -128,6 +156,11 @@ class WebAppStyle
 	}
 	
 	
+	/**
+	 * Defines header Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getHeaderStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -151,6 +184,11 @@ class WebAppStyle
 	}
 
 	
+	/**
+	 * Defines back button Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getBackButtonStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -175,6 +213,11 @@ class WebAppStyle
 		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 
+	/**
+	 * Defines header title text Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getHeaderTextStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
@@ -203,6 +246,11 @@ class WebAppStyle
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
 
+	/**
+	 * Defines text content Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getTextContentStyle(domElement:DOMElement):Void
 	{
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));

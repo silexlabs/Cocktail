@@ -1,13 +1,8 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
 // DOM
@@ -44,23 +39,30 @@ import components.richList.RichListUtils;
 
 class ApplicationStructure 
 {
+	// pagesContainer is the container for all pages
 	public var pagesContainer:ContainerDOMElement;
 
+	// the home page looking like a smartphone desktop
 	private var _homePage:ContainerDOMElement;
 	
+	// the calendar pages
 	private var _calListPage:ContainerDOMElement;
 	private var _dayPage:ContainerDOMElement;
 	
+	// the music pages
 	private var _artistListPage:ContainerDOMElement;
 	private var _albumListPage:ContainerDOMElement;
 	private var _songListPage:ContainerDOMElement;
 	private var _songPage:ContainerDOMElement;
 	
+	// the notes pages
 	private var _noteListPage:ContainerDOMElement;
 	private var _notePage:ContainerDOMElement;
 	
+	// the credit page
 	private var _creditsPage:ContainerDOMElement;
 	
+	// the current visible page
 	private var _currentPage:ContainerDOMElement;
 	
 	public function new() 
@@ -74,6 +76,8 @@ class ApplicationStructure
 	private function createAllPages()
 	{
 		// create pages
+		
+		// the calendar pages
 		_dayPage = createHeaderContentPage("Day","This is what I have planned today");
 		_calListPage = createHeaderListPage(
 			"Calendar",
@@ -85,6 +89,8 @@ class ApplicationStructure
 				{text:"June 5th", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage }
 			]
 		);
+
+		// the music pages
 		_songPage = createHeaderContentPage("Song","You are listening to this song");
 		_songListPage = createHeaderListPage(
 			"Artist - Album",
@@ -96,12 +102,6 @@ class ApplicationStructure
 				{text:"Song 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage }
 			]
 		);
-		Timer.delay(dolatertest, 300);
-	}
-	
-	// this method is here only for tests purposes. to be merged with preceding function
-	private function dolatertest()
-	{
 		_albumListPage = createHeaderListPage(
 			"Albums",
 			[
@@ -122,6 +122,8 @@ class ApplicationStructure
 				{text:"Artist 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage }
 			]
 		);
+
+		// the notes pages
 		_notePage = createHeaderContentPage("Note","This is the content of the note");
 		_noteListPage = createHeaderListPage(
 			"Notes",
@@ -144,14 +146,11 @@ class ApplicationStructure
 				{text:"Note 16", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage }
 			]
 		);
+		
+		// the credit page
 		_creditsPage = createHeaderContentPage("Credits", "This is a Cocktail demo. Cocktail is a cross-platform library for the HaXe programming language. It bridges the gap between all the targets supported by haXe, removing inconsistencies behind a common API. With it, the same code base is used to deploy to these targets: Flash, javaScript, PHP. It helps multi device application development and should be used by haXe projects requiring cross-target compilation. Silex Labs Cocktail library is released under GPL. Project home: http://www.silexlabs.org/groups/labs/cocktail/");
 
-		Timer.delay(dolatertest2, 300);
-	}
-	
-	// this method is here only for tests purposes. to be merged with preceding function
-	private function dolatertest2()
-	{
+		// the home page
 		_homePage = createHomePage(
 			[
 				{text:"Cal", imagePath:"images/NavButtonCalendar.png", action:"goToPage", actionTarget:_calListPage },
@@ -162,6 +161,7 @@ class ApplicationStructure
 		);
 		_currentPage = _homePage;
 		
+		// adds the home page to pagesContainer
 		pagesContainer.addChild(_homePage);
 	}
 	
@@ -178,11 +178,16 @@ class ApplicationStructure
 		_currentPage = page;
 	}
 	
-	function onChangeListCallback(itemData : CellModel)
+	/**
+	 * Called when a new cell is selected in a list
+	 * 
+	 * @param	cell
+	 */
+	function onChangeListCallback(cell : CellModel)
 	{
-		if (itemData.action == "goToPage")
+		if (cell.action == "goToPage")
 		{
-			showPage(itemData.actionTarget);
+			showPage(cell.actionTarget);
 		}
 		//if (cellData.action == "gotoURLAction")
 			//gotoURL(cellData.actionTarget);
@@ -225,7 +230,9 @@ class ApplicationStructure
 	/**
 	 * Creates a list header page
 	 * 
-	 * @return
+	 * @param	title
+	 * @param	cellDataArray
+	 * @return	the corresponding page
 	 */
 	private function createHeaderListPage(title:String, cellDataArray:Array<CellModel>):ContainerDOMElement
 	{
@@ -253,7 +260,9 @@ class ApplicationStructure
 	/**
 	 * Creates a content header page
 	 * 
-	 * @return
+	 * @param	title
+	 * @param	content
+	 * @return	the corresponding page
 	 */
 	private function createHeaderContentPage(title:String, content:String):ContainerDOMElement
 	{
@@ -280,7 +289,8 @@ class ApplicationStructure
 	/**
 	 * Creates a header with a Tile, a title and a back button
 	 * 
-	 * @return
+	 * @param	title
+	 * @return	the header
 	 */
 	private function createHeader(title:String):ContainerDOMElement
 	{
@@ -320,6 +330,11 @@ class ApplicationStructure
 		return header;
 	}
 	
+	/**
+	 * Callback when the header image has been loaded
+	 * 
+	 * @param	image
+	 */
 	//private function onHeaderTileLoaded(image:ImageDOMElement, container:ContainerDOMElement):Void
 	private function onHeaderTileLoaded(image:ImageDOMElement):Void
 	{
@@ -330,6 +345,11 @@ class ApplicationStructure
 		//container.addChild(image);
 	}
 	
+	/**
+	 * Callback when the home tile image has been loaded
+	 * 
+	 * @param	image
+	 */
 	private function onHomeTileLoaded(image:ImageDOMElement):Void
 	{
 		// set image style. this has to be done once when image has been loaded
@@ -337,7 +357,7 @@ class ApplicationStructure
 	}
 	
 	/**
-	 * Called when there is an error while loading picture
+	 * Called when there is an error while loading a picture
 	 * @param	error
 	 */
 	private function onImageLoadError(error:String):Void
@@ -345,11 +365,11 @@ class ApplicationStructure
 		trace(error);
 	}
 	
-	
 	/**
 	 * Create home's richList
 	 * 
-	 * @return
+	 * @param	content
+	 * @return	the corresponding richlist
 	 */
 	private function createRichListHome(content:Array<CellModel>):RichList
 	{
@@ -376,7 +396,8 @@ class ApplicationStructure
 	/**
 	 * Create music's richList
 	 * 
-	 * @return
+	 * @param	content
+	 * @return	the corresponding richlist
 	 */
 	private function createArrowRichList(content:Array<CellModel>):RichList
 	{
@@ -400,6 +421,11 @@ class ApplicationStructure
 		return list;
 	}
 	
+	/**
+	 * Callback called on mouse release of the back header button
+	 * 
+	 * @param	mouseEvent
+	 */
 	private function onBackButtonMouseUp(mouseEvent:MouseEventData):Void
 	{
 		showPage(_homePage);
