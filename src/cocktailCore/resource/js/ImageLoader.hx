@@ -23,7 +23,7 @@ import cocktail.nativeElement.NativeElementData;
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture by creating
  * an <img> tag and setting it's source to the url of the file to load.
- * It returns it as a NativeElement
+ * 
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -35,6 +35,8 @@ class ImageLoader extends AbstractImageLoader
 	public function new() 
 	{
 		super();
+		//instantiate the Image HTML element
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -42,28 +44,29 @@ class ImageLoader extends AbstractImageLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * To load a picture, an HTML image element needs to be created, and
-	 * it's source set to the url to load
+	 * To load a picture, the source of the Image HTML element is
+	 * set to the url to load
 	 * @param	url the url of the picture
 	 */
 	override private function doLoad(url:String):Void
-	{
-		var image:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
-		
+	{	
 		//create a delegate to call the success callback once the native image element is done loading the source picture
 		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
 		//create a delegate for the error callback
 		var onLoadErrorDelegate:String->Void = onLoadError;
 		
+		//need to have a local reference to retrieve it in the static onload function
+		var nativeElementDelegate:NativeElement = _nativeElement;
+		
 		//listens to image load complete and load error.
-		untyped image.onload = function() { 
+		untyped _nativeElement.onload = function() { 
 			
-			onLoadCompleteDelegate(image);
+			onLoadCompleteDelegate(nativeElementDelegate);
 			
 			};
-		untyped image.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
+		untyped _nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
 		// set it's source to start the loading of the picture
-		image.setAttribute("src", url);
+		_nativeElement.setAttribute("src", url);
 	}
 }

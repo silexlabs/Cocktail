@@ -21,10 +21,33 @@ import cocktailCore.domElement.abstract.AbstractImageDOMElement;
  */
 class ImageDOMElement extends AbstractImageDOMElement
 {
-
+	/**
+	 * class constructor
+	 * @param	nativeElement
+	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LOADING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Retrive the source url, width and
+	 * height from the loaded picture
+	 * @param	image
+	 */
+	override private function onLoadComplete(image:NativeElement):Void
+	{
+		var typedimage:Loader = cast(image);
+		
+		this._src = typedimage.contentLoaderInfo.url;
+		this._naturalHeight = typedimage.contentLoaderInfo.height;
+		this._naturalWidth = typedimage.contentLoaderInfo.width;
+		
+		super.onLoadComplete(image);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@ package cocktailCore.domElement.js;
 
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.abstract.AbstractImageDOMElement;
+import haxe.Log;
 
 /**
  * This is the JavaScript implementation of the Image DOMElement.
@@ -34,6 +35,24 @@ class ImageDOMElement extends AbstractImageDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LOADING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Retrive the source url, width and
+	 * height from the loaded picture
+	 * @param	image
+	 */
+	override private function onLoadComplete(image:NativeElement):Void
+	{	
+		this._src = untyped image.src;
+		this._naturalHeight = untyped image.naturalHeight;
+		this._naturalWidth = untyped image.naturalWidth;
+		
+		super.onLoadComplete(image);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

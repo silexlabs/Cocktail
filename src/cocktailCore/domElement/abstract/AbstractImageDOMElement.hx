@@ -10,7 +10,12 @@ package cocktailCore.domElement.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.domElement.EmbeddedDOMElement;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.resource.abstract.AbstractResourceLoader;
+import cocktailCore.resource.abstract.AbstractImageLoader;
+import cocktailCore.resource.ImageLoader;
+import cocktailCore.resource.ResourceLoader;
 import haxe.Log;
 
 /**
@@ -21,29 +26,77 @@ import haxe.Log;
  */
 class AbstractImageDOMElement extends EmbeddedDOMElement
 {
+	//////////////////////
+	// CALLBACKS
+	/////////////////////
+	
+	/**
+	 * The callback called once a picture has been successfully
+	 * loaded
+	 */
+	public var onLoad:Void->Void;
+	
+	/**
+	 * The callback called when there was an error during loading
+	 */
+	public var onError:String->Void;
+	
+	//////////////////////
+	// PICTURE INFO
+	/////////////////////
+	
+	/**
+	 * The actual width (no scaling) of the currently loaded picture
+	 * in pixels
+	 */
+	private var _naturalWidth:Int;
+	public var naturalWidth(getNaturalWidth, never):Int;
+	
+	/**
+	 * The actual height (no scaling) of the currently loaded picture
+	 * in pixels
+	 */
+	private var _naturalHeight:Int;
+	public var naturalHeight(getNaturalHeight, never):Int;
+	
 	/**
 	 * The URL of the loaded picture.
-	 * It is only an information, setting
-	 * it afterward won't load another
-	 * picture in the Image DOM object
+	 * Read-only
 	 */
 	private var _src:String;
-	public var src(getSrc, setSrc):String;
+	public var src(getSrc, never):String;
 	
+	//////////////////////
+	// PRIVATE ATTRIBUTES
+	/////////////////////
+	
+	/**
+	 * Reponsible for loading pictures into a NativeElement. 
+	 * Its NativeElement is used by this ImageDOMElement
+	 */
+	private var _imageLoader:ImageLoader;
+
 	/**
 	 * Determine wether the bitmap should be smoothed
 	 */
 	private var _smooth:Bool;
 	public var smooth(getSmooth, setSmooth):Bool;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CONSTRUCTOR AND INIT
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * class constructor
+	 * class constructor. Instantiate the image loader
+	 * and set its NativeElement as this ImageDOMElement's
+	 * NativeElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		super(nativeElement);
+		_imageLoader = new ImageLoader();
+		super(_imageLoader.nativeElement);
 	}
-	
+
 	/**
 	 * Init the smoothing of the picture
 	 */
@@ -57,14 +110,69 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	
 	/**
 	 * For an ImageDOMElement, the intrinsic width, height and ratio
-	 * represents the unscaled dimensions of the picture. They are
+	 * represents the scaled dimensions of the picture. They are
 	 * equal to 0 until a picture is loaded
+	 * 
+	 * The natural width and height represent the unscaled
+	 * dimensions of the picture
 	 */
 	override private function initInstrinsicDimensions():Void
 	{
 		this._intrinsicHeight = 0;
 		this._intrinsicWidth = 0;
 		this._intrinsicRatio = 0;
+		this._naturalHeight = 0;
+		this._naturalWidth = 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LOADING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Starts a loading with the image loader
+	 * @param	url the url of the picture to load
+	 * @param	allowCache wheter the picture is allowed to be cached by the browser
+	 */
+	public function load(url:String, allowCache:Bool = true):Void
+	{
+		_imageLoader.load(url, onLoadComplete, onLoadError, allowCache);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LOADING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the picture was successfuly loaded.
+	 * Invalidate the DOMElement and call the
+	 * onLoad callback if provided
+	 * @param	image the loaded picture stored as a nativeElement
+	 */
+	private function onLoadComplete(image:NativeElement):Void
+	{
+		this._style.invalidate();
+		
+		//refresh picture smoothing
+		this.smooth = this.smooth;
+		
+		if (onLoad != null)
+		{
+			onLoad();
+		}
+	}
+	
+	/**
+	 * Called when there was an error during loading.
+	 * Call the error callback if provided
+	 * @param	message the error message
+	 */
+	private function onLoadError(message:String):Void
+	{
+		if (onError != null)
+		{
+			onError(message);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -76,12 +184,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		return this._src;
 	}
 	
-	private function setSrc(value:String):String
-	{
-		this._src = value;
-		return value;
-	}
-	
 	private function setSmooth(value:Bool):Bool
 	{
 		this._smooth = value;
@@ -91,6 +193,16 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	private function getSmooth():Bool
 	{
 		return this._smooth;
+	}
+	
+	private function getNaturalWidth():Int
+	{
+		return _naturalWidth;
+	}
+	
+	private function getNaturalHeight():Int
+	{
+		return _naturalHeight;
 	}
 	
 }
