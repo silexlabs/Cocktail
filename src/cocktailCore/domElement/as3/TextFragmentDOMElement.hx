@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.as3;
 
@@ -66,7 +62,18 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	 */
 	override private function getOffsetHeight():Int
 	{
-		return style.fontMetrics.ascent + style.fontMetrics.descent;
+		var ascent:Float =  style.fontMetrics.ascent;
+		var descent:Float = style.fontMetrics.descent;
+		
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = this._style.computedStyle.lineHeight - (ascent + descent);
+		
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = (ascent + leading/2);
+		var leadedDescent:Float = (descent + leading / 2);
+		
+		return Math.round(leadedAscent + leadedDescent);
 	}
 	
 

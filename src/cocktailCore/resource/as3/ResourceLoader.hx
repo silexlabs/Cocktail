@@ -5,25 +5,21 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.runtime;
+package cocktailCore.resource.as3;
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// Enums
-//////////////////////////////////////////////////////////////////////////////////////////
+import cocktailCore.resource.abstract.AbstractResourceLoader;
 
 /**
- * Values for the device orientation
+ * This is the Flash As3 implementation of the ResourceLoader
+ * 
+ * @author Yannick DOMINGUEZ
  */
-enum OrientationValue 
+class ResourceLoader extends AbstractResourceLoader
 {
+
+	public function new() 
+	{
+		super();
+	}
 	
-	/**
-	 * the device is vertical
-	 */
-	vertical;
-	/**
-	 * the device is horizontal
-	 */
-	horizontal;
 }

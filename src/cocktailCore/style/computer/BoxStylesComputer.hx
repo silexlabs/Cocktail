@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.computer;
 
@@ -237,7 +234,7 @@ class BoxStylesComputer
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
+		style.computedStyle.width = getNativeWidth(style, containingDOMElementData);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -302,7 +299,7 @@ class BoxStylesComputer
 	private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
+		style.computedStyle.height = getNativeHeight(style, containingDOMElementData);
 		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
@@ -377,7 +374,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getNativeWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -399,7 +396,7 @@ class BoxStylesComputer
 	/**
 	 * Get the computed height of the DOMElement when not 'auto' and returns it as pixels
 	 */ 
-	private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getNativeHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -659,15 +656,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
-				
-				if (isContainingDimensionAuto == true)
-				{
-					computedDimensions = 0;
-				}
-				else
-				{
-					computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
+				computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				
 			case auto:
 				//Dealt with in the measureAutoHeight and measureAutoWidth
