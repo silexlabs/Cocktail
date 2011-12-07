@@ -7,6 +7,7 @@
 */
 package cocktailCore.resource.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
@@ -18,11 +19,19 @@ import haxe.Log;
  */
 class AbstractImageLoader extends ResourceLoader
 {
+	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
+	
 	/**
 	 * class constructor
 	 */
 	public function new()
 	{
 		super();
+	}
+	
+	private function getNativeElement():NativeElement
+	{
+		return _nativeElement;
 	}
 }

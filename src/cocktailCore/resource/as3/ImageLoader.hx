@@ -40,6 +40,9 @@ class ImageLoader extends AbstractImageLoader
 	public function new() 
 	{
 		super();
+		//instantiate a native Flash loader
+		_imageLoader = new Loader();
+		_nativeElement = _imageLoader;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,8 +55,7 @@ class ImageLoader extends AbstractImageLoader
 	 */
 	override private function doLoad(url:String):Void
 	{
-		//instantiate a native Flash loader
-		_imageLoader = new Loader();
+		_imageLoader.unload();
 		
 		//listen for complete/error event on the loader
 		_imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoadComplete);
@@ -79,7 +81,7 @@ class ImageLoader extends AbstractImageLoader
 	 * @param	event the Complete event, contains the native Loader
 	 */
 	private function onImageLoadComplete(event:Event):Void
-	{
+	{	
 		_imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoadComplete);
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
 		

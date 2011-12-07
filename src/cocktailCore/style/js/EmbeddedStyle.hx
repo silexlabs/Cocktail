@@ -13,8 +13,6 @@ import cocktailCore.style.abstract.AbstractEmbeddedStyle;
 /**
  * This is the JavaScript implementation of the EmbeddedStyle.
  * 
- * Only present to allow compilation
- * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedStyle extends AbstractEmbeddedStyle
