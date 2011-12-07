@@ -94,23 +94,4 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		this._nativeElement.removeChild(textFragmentDOMElement.nativeElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden getter/setter
-	// The width and height setter/getter are overriden to prevent setting the width and height
-	// of the native Flash DisplayObjectContainer. In as3, when the width or height is set on a
-	// container, the content of the container is scaled
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setWidth(value:Int):Int
-	{
-		this._width = value;
-		return this._width;
-	}
-	
-	override private function setHeight(value:Int):Int
-	{
-		this._height = value;
-		return this._height;
-	}
-	
 }

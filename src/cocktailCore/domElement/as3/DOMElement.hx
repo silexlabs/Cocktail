@@ -32,19 +32,6 @@ class DOMElement extends AbstractDOMElement
 		super(nativeElement);
 	}
 	
-	/**
-	 * Set the DOMElement properties which can be retrieved
-	 * from the nativeElement (a flash Display Object)
-	 */
-	override private function init():Void
-	{	
-		super.init();
-		this._width = Math.round(_nativeElement.width);
-		this._height = Math.round(_nativeElement.height);
-		this._x = Math.round(_nativeElement.x);
-		this._y = Math.round(_nativeElement.y);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the DOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -110,52 +97,6 @@ class DOMElement extends AbstractDOMElement
 		this._nativeElement.transform.matrix = nativeTransformMatrix;
 		
 		return this._matrix;
-	}
-	
-	/**
-	 * In flash when the transformation matrix is reseted, the x
-	 * and y are set to 0 as they represent the translation x and y
-	 * of the flash display object. We need to set x and y back to
-	 * the stored class attribute after a matrix reset
-	 */
-	override public function resetTransformations():Void
-	{
-		super.resetTransformations();
-		this.x = this._x;
-		this.y = this._y;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden Setters to manipulate the Flash DisplayObject
-	// set the following attributes : x,y,width,height
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setX(value:Int):Int 
-	{
-		super.setX(value);
-		this._nativeElement.x = value;
-		return this._x;
-	}
-	
-	override private function setY(value:Int):Int 
-	{
-		super.setY(value);
-		this._nativeElement.y = value;
-		return this._y;
-	}
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		this._nativeElement.width = value;
-		return this._width;
-	}
-	
-	override private function setHeight(value:Int):Int 
-	{
-		super.setHeight(value);
-		this._nativeElement.height = value;
-		return this._height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

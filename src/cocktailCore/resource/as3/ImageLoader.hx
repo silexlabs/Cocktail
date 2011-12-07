@@ -93,10 +93,6 @@ class ImageLoader extends AbstractResourceLoader
 		if (this._domElement != null)
 		{
 			imageDOMElement = cast(this._domElement);
-			//transfer x and y from current nativeElement
-			//to new Loader NativeElement, else it will be lost
-			_imageLoader.x = imageDOMElement.x;
-			_imageLoader.y = imageDOMElement.y;
 			imageDOMElement.nativeElement = _imageLoader;
 		}
 		else
