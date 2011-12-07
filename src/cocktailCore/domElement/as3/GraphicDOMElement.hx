@@ -22,6 +22,7 @@ import flash.Lib;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.geom.GeomData;
+import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 
 /**
@@ -85,26 +86,33 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setWidth(value:Int):Int
 	{
-		this.intrinsicWidth = value;
+		super.setWidth(value);
 		
-		//update the background delimiting this DOMElement
-		setUpBackgroundSprite(this._backGroundSprite, value, height);
+
+		if (this._style.width == DimensionStyleValue.auto)
+		{
+			//update the background delimiting this DOMElement
+			setUpBackgroundSprite(this._backGroundSprite, value, this.height);
 		
-		//update the bitmap drawing
-		updateBitmapDrawingSize();
+			//update the bitmap drawing
+			updateBitmapDrawingSize();
+		}
 		
 		return value;
 	}
 	
 	override private function setHeight(value:Int):Int 
 	{
-		this.intrinsicHeight = value;
+		super.setHeight(value);
 		
-		//update the background delimiting this dom element
-		setUpBackgroundSprite(this._backGroundSprite, width, value);
+		if (this._style.height == DimensionStyleValue.auto)
+		{
+			//update the background delimiting this dom element
+			setUpBackgroundSprite(this._backGroundSprite, this.width, value);
 		
-		//update the bitmap drawing
-		updateBitmapDrawingSize();
+			//update the bitmap drawing
+			updateBitmapDrawingSize();
+		}
 		
 		return value;
 	}
@@ -215,7 +223,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		
 		if (currentBitmapData.height > this.intrinsicHeight)
 		{
-			drawingHeight = this.intrinsicHeight;
+			drawingHeight = this.height;
 		}
 		else
 		{

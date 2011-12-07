@@ -23,4 +23,44 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	{
 		super(domElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN DIMENSION AND POSITION SETTER/GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the x of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function getNativeX(domElement:DOMElement):Int
+	{
+		return domElement.nativeElement.offsetLeft;
+	}
+	
+	/**
+	 * Return the y of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function getNativeY(domElement:DOMElement):Int
+	{
+		return domElement.nativeElement.offsetTop;
+	}
+	
+	/**
+	 * Return the width of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function getNativeWidth(domElement:DOMElement):Int
+	{
+		return domElement.nativeElement.clientWidth;
+	}
+	
+	/**
+	 * Return the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function getNativeHeight(domElement:DOMElement):Int
+	{
+		return domElement.nativeElement.clientHeight;
+	}
 }

@@ -437,10 +437,10 @@ class AbstractDOMElement
 					registrationPointPoint.x = 0;
 				
 				case center :
-					registrationPointPoint.x = getWidth() / 2;
+					registrationPointPoint.x = this.width / 2;
 					
 				case right :
-					registrationPointPoint.x = getWidth();
+					registrationPointPoint.x = this.width;
 			}
 			
 			//for y point coordinate	
@@ -450,10 +450,10 @@ class AbstractDOMElement
 					registrationPointPoint.y = 0;
 				
 				case middle :
-					registrationPointPoint.y = getHeight() / 2;
+					registrationPointPoint.y = this.height / 2;
 					
 				case bottom :
-					registrationPointPoint.y = getHeight();
+					registrationPointPoint.y = this.height;
 			}
 		}
 		
@@ -804,45 +804,69 @@ class AbstractDOMElement
 	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * update the left style, triggering a layout of the document
+	 */ 
 	private function setX(value:Int):Int 
 	{
 		this._style.left = PositionOffsetStyleValue.length(px(value));
 		return value;
 	}
 	
+	/**
+	 * return the x of the nativeElement, relative to its parent
+	 */ 
 	private function getX():Int 
 	{ 
 		return this._style.getNativeX(cast(this)); 
 	}
 	
+	/**
+	 * update the top style, triggering a layout of the document
+	 */ 
 	private function setY(value:Int):Int
 	{
 		this._style.top = PositionOffsetStyleValue.length(px(value));
 		return value;
 	}
-	
+		
+	/**
+	 * return the y of the nativeElement, relative to its parent
+	 */
 	private function getY():Int 
 	{ 
 		return this._style.getNativeY(cast(this)); 
 	}
 	
+	/**
+	 * update the width style, triggering a layout of the document
+	 */ 
 	private function setWidth(value:Int):Int
 	{
 		this._style.width = DimensionStyleValue.length(px(value));
 		return value;
 	}
 	
+	/**
+	 * return the width of the nativeElement
+	 */
 	private function getWidth():Int 
 	{ 
 		return this._style.getNativeWidth(cast(this)); 
 	}
 	
+	/**
+	 * update the height style, triggering a layout of the document
+	 */ 
 	private function setHeight(value:Int):Int
 	{
 		this._style.height = DimensionStyleValue.length(px(value));
 		return value;
 	}
 	
+	/**
+	 * return the height of the nativeElement
+	 */
 	private function getHeight():Int 
 	{ 
 		return this._style.getNativeHeight(cast(this)); 

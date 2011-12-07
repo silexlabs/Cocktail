@@ -61,7 +61,6 @@ class AbstractEmbeddedStyle extends Style
 		super.setNativeY(domElement, y);
 	}
 	
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
