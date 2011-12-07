@@ -68,10 +68,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_backGroundSprite = new Sprite();
 		this._nativeElement.addChild(_backGroundSprite);
 
-		setUpBackgroundSprite(_backGroundSprite, this._width, this._height);
+		setUpBackgroundSprite(_backGroundSprite, this.intrinsicWidth, this.intrinsicHeight);
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(this._width, this._height, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF));
 		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
@@ -85,10 +85,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setWidth(value:Int):Int
 	{
-		this._width = value;
+		this.intrinsicWidth = value;
 		
 		//update the background delimiting this DOMElement
-		setUpBackgroundSprite(this._backGroundSprite, value, getHeight());
+		setUpBackgroundSprite(this._backGroundSprite, value, height);
 		
 		//update the bitmap drawing
 		updateBitmapDrawingSize();
@@ -98,10 +98,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setHeight(value:Int):Int 
 	{
-		this._height = value;
+		this.intrinsicHeight = value;
 		
 		//update the background delimiting this dom element
-		setUpBackgroundSprite(this._backGroundSprite, getWidth(), value);
+		setUpBackgroundSprite(this._backGroundSprite, width, value);
 		
 		//update the bitmap drawing
 		updateBitmapDrawingSize();
@@ -190,7 +190,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//create a new transparent bitmapData with the new size of the DOMElement
-		var newBitmapData:BitmapData = new BitmapData(this._width, this._height, true, 0x00FFFFFF);
+		var newBitmapData:BitmapData = new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
 		//from the current bitmap data
@@ -199,9 +199,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//if the current bitmap data width is superior to the new
 		//width of the DOMElement, then only the new width of pixels
 		//must be copied, the rest will be cropped
-		if (currentBitmapData.width > this._width)
+		if (currentBitmapData.width > this.intrinsicWidth)
 		{
-			drawingWidth = this._width;
+			drawingWidth = this.intrinsicWidth;
 		}
 		//else if the new width is superior to the current bitmap width
 		//all current bitmap pixel width must be copied
@@ -213,9 +213,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//same for height
 		var drawingHeight:Int = 0;
 		
-		if (currentBitmapData.height > this._height)
+		if (currentBitmapData.height > this.intrinsicHeight)
 		{
-			drawingHeight = this._height;
+			drawingHeight = this.intrinsicHeight;
 		}
 		else
 		{
@@ -244,7 +244,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_typedNativeElement.graphics.clear();
 		
 		//draws a transparent rectangle over all the bitmap, erasing it's content
-		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this._width, this._height), 0x00FFFFFF);
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this.intrinsicWidth, this.intrinsicHeight), 0x00FFFFFF);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

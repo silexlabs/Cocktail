@@ -212,6 +212,7 @@ class AbstractStyle
 	
 	/**
 	 * Class constructor. Stores the target DOMElement.
+	 * 
 	 * The style is invalid by default and will be updated
 	 * when the DOMElement is added to the DOM.
 	 */
@@ -219,6 +220,58 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isInvalid = true;
+		initDefaultStyleValues();
+	}
+	
+	/**
+	 * Init the standard default value for styles
+	 */
+	private function initDefaultStyleValues():Void
+	{
+		this._width = DimensionStyleValue.auto;
+		this._height = DimensionStyleValue.auto;
+		
+		this._minWidth = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxWidth = ConstrainedDimensionStyleValue.none;
+		this._minHeight = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxHeight = ConstrainedDimensionStyleValue.none;
+		
+		this._marginTop = MarginStyleValue.length(px(0));
+		this._marginBottom = MarginStyleValue.length(px(0));
+		this._marginLeft = MarginStyleValue.length(px(0));
+		this._marginRight = MarginStyleValue.length(px(0));
+		
+		this._paddingTop = PaddingStyleValue.length(px(0));
+		this._paddingBottom = PaddingStyleValue.length(px(0));
+		this._paddingLeft = PaddingStyleValue.length(px(0));
+		this._paddingRight = PaddingStyleValue.length(px(0));
+		
+		this._lineHeight = LineHeightStyleValue.normal;
+		this._verticalAlign = VerticalAlignStyleValue.baseline;
+		
+		this._display = DisplayStyleValue.inlineStyle;
+		this._position = PositionStyleValue.staticStyle;
+		
+		this._top = PositionOffsetStyleValue.auto;
+		this._bottom = PositionOffsetStyleValue.auto;
+		this._left = PositionOffsetStyleValue.auto;
+		this._right = PositionOffsetStyleValue.auto;
+		
+		this._float = FloatStyleValue.none;
+		this._clear = ClearStyleValue.none;
+		
+		this._fontStyle = FontStyleStyleValue.normal;
+		this._fontVariant = FontVariantStyleValue.normal;
+		this._fontWeight = FontWeightStyleValue.normal;
+		this._fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		
+		this._textIndent = TextIndentStyleValue.length(px(0));
+		this._textAlign = TextAlignStyleValue.left;
+		this._letterSpacing = LetterSpacingStyleValue.normal;
+		this._wordSpacing = WordSpacingStyleValue.normal;
+		this._textTransform = TextTransformStyleValue.none;
+		this._whiteSpace = WhiteSpaceStyleValue.normal;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -34,37 +34,6 @@ class DOMElement extends AbstractDOMElement
 		super(nativeElement);
 	}
 	
-	/**
-	 * Set the DOMElement properties which can be retrieved
-	 * from the native HTML DOM element
-	 */
-	override private function init():Void
-	{
-		super.init();
-		
-		if (_nativeElement.style.width != null)
-		{
-			this._width = Std.parseInt(_nativeElement.style.width);
-		}
-		else
-		{
-			this._width = _nativeElement.offsetWidth;
-		}
-		
-		if (_nativeElement.style.height != null)
-		{
-			this._height = Std.parseInt(_nativeElement.style.height);
-		}
-		else
-		{
-			this._height = _nativeElement.offsetHeight;
-		}
-		
-		this._x = Std.parseInt(_nativeElement.style.left);
-		this._y = Std.parseInt(_nativeElement.style.top);
-		
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden public and private methods to manage the visibility and opacity of the dom element
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -182,40 +151,6 @@ class DOMElement extends AbstractDOMElement
 		}
 		
 		return this._matrix;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden Setters to manipulate the JavaScript DOMElement
-	// set the following attributes : x,y,width,height
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setX(value:Int):Int 
-	{
-		super.setX(value);
-		
-		this._nativeElement.style.left = value + "px";
-		return this._x;
-	}
-	
-	override private function setY(value:Int):Int 
-	{
-		super.setY(value);
-		this._nativeElement.style.top = value + "px";
-		return this._y;
-	}
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		this._nativeElement.style.width = value +"px";
-		return this._width;
-	}
-	
-	override private function setHeight(value:Int):Int 
-	{
-		super.setHeight(value);
-		this._nativeElement.style.height = value + "px";
-		return this._height;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
