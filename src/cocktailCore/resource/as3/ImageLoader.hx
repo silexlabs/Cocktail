@@ -7,6 +7,7 @@
 */
 package cocktailCore.resource.as3;
 
+import cocktailCore.resource.abstract.AbstractImageLoader;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -17,21 +18,19 @@ import haxe.Log;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
  * This is the Image loader implementation for the Flash runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture with
- * a native flash loader, then attach the content of the loader as the native 
- * DOMElement of an Image DOMElement instance
+ * a native flash loader, then return the content of the loader as a NativeElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends AbstractResourceLoader
+class ImageLoader extends AbstractImageLoader
 {
 	/**
-	 * The native flash skin loader
+	 * The native flash image loader
 	 */
 	private var _imageLoader:Loader;
 	
@@ -76,9 +75,7 @@ class ImageLoader extends AbstractResourceLoader
 	
 	/**
 	 * When the .swf has been loaded, remove the listener on it, 
-	 * instantiate an image DOMElement and set the loaded picture
-	 * as it's native DOMElement,
-	 * then call the load complete method
+	 * then call the load complete method passing it as a NativeElement
 	 * @param	event the Complete event, contains the native Loader
 	 */
 	private function onImageLoadComplete(event:Event):Void
@@ -86,30 +83,11 @@ class ImageLoader extends AbstractResourceLoader
 		_imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoadComplete);
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
 		
-		var imageDOMElement:ImageDOMElement;
-		
-		//if a domElement is provided, use it
-		//else create one
-		if (this._domElement != null)
-		{
-			imageDOMElement = cast(this._domElement);
-			imageDOMElement.nativeElement = _imageLoader;
-		}
-		else
-		{
-			imageDOMElement =  new ImageDOMElement(_imageLoader);
-		}
-		
-		//init the width, height and src of the image dom element
-		imageDOMElement.width = Math.round(_imageLoader.width);
-		imageDOMElement.height = Math.round(_imageLoader.height);
-		imageDOMElement.src = _imageLoader.contentLoaderInfo.url;
-		
-		onLoadComplete(imageDOMElement);
+		onLoadComplete(_imageLoader);
 	}
 	
 	/**
-	 * when there was an error during loading, call the error callback with the
+	 * When there was an error during loading, call the error callback with the
 	 * the message error, remove the event listeners
 	 * @param	event the IO_ERROR event, containd info on the error
 	 */
@@ -117,7 +95,7 @@ class ImageLoader extends AbstractResourceLoader
 	{
 		_imageLoader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoadComplete);
 		_imageLoader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onImageLoadIOError);
-		
+
 		onLoadError(event.toString());
 	}
 }

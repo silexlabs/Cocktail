@@ -7,14 +7,15 @@
 */
 package cocktailCore.resource.js;
 
+import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
+import cocktailCore.resource.abstract.AbstractImageLoader;
 import haxe.Http;
 import haxe.Log;
 import js.Lib;
 import js.Dom.HtmlDom;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 import cocktail.nativeElement.NativeElementData;
 
@@ -22,10 +23,11 @@ import cocktail.nativeElement.NativeElementData;
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
  * load pictures that will be attached to the DOM. It loads the picture by creating
  * an <img> tag and setting it's source to the url of the file to load.
- * It instantiate and returns an Image DOMElement.
+ * It returns it as a NativeElement
+ * 
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends AbstractResourceLoader
+class ImageLoader extends AbstractImageLoader
 {
 	/**
 	 * class constructor
@@ -40,45 +42,28 @@ class ImageLoader extends AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * To load a picture, an image element needs to be created, and
+	 * To load a picture, an HTML image element needs to be created, and
 	 * it's source set to the url to load
 	 * @param	url the url of the picture
 	 */
 	override private function doLoad(url:String):Void
 	{
-		var domElement:ImageDOMElement;
-		
-		//use the provided domElement if any, else
-		//create one
-		if (this._domElement != null)
-		{
-			domElement = cast(this._domElement);
-			domElement.nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
-		}
-		else
-		{
-			domElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
-		}
+		var image:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
 		
 		//create a delegate to call the success callback once the native image element is done loading the source picture
-		var onLoadCompleteDelegate:ImageDOMElement->Void = onLoadComplete;
+		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
 		//create a delegate for the error callback
 		var onLoadErrorDelegate:String->Void = onLoadError;
 		
 		//listens to image load complete and load error.
-		untyped domElement.nativeElement.onload = function() { 
-			//set the dom element width, height and source with the loaded picture
-			//dimensions and url. In this function "this" referes to the HTML Image 
-			//element
-			domElement.width = __this__.width;
-			domElement.height = __this__.height;
-			domElement.src = __this__.src;
-			onLoadCompleteDelegate(domElement);
+		untyped image.onload = function() { 
+			
+			onLoadCompleteDelegate(image);
 			
 			};
-		untyped domElement.nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
+		untyped image.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
 		// set it's source to start the loading of the picture
-		domElement.nativeElement.setAttribute("src", url);
+		image.setAttribute("src", url);
 	}
 }
