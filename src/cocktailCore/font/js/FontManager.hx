@@ -16,7 +16,7 @@ import cocktail.font.FontData;
 
 
 /**
- * This class handles the fonts loading, stores a list of loaded fonts. 
+ * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
  * This is the implementation for the JavaScript runtime. 
  * @author lexa
  */
@@ -25,12 +25,17 @@ class FontManager extends AbstractFontManager
 	/**
 	 * The constructor is private as this class is meant to be accessed through static public method.
 	 */
-	override private function new() 
+	override public function new() 
 	{
 		super();
 	}
-	public static function loadFont(url : String, name : String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	/** 
+	 * Returns a list of fonts which are installed on the current runtime.
+	 */
+	override public function getSystemFonts() : Array<FontData>
 	{
-		AbstractFontManager.loadFont(url, name, successCallback, errorCallback);
+		// throw ("It is impossible to list the system fonts in javascript");
+		trace ("It is impossible to list the system fonts in javascript");
+		return new Array();
 	}
 }

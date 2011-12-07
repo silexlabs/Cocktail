@@ -54,7 +54,7 @@ class AbstractFontLoader
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	public function load(url:String, name:String):Void
 	{
 		// create the font data
 		var extension:String = url.substr(url.lastIndexOf("."), url.length); 
@@ -75,9 +75,6 @@ class AbstractFontLoader
 			fontData.type = swf;
 		else 
 			fontData.type = unknown;
-		
-		// callback
-		addCallback(successCallback, errorCallback);
 	}
 	
 	/**

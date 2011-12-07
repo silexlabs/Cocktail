@@ -44,9 +44,9 @@ class FontLoader extends AbstractFontLoader
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	override public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	override public function load(url:String, name:String):Void
 	{
-		super.load(url, name, successCallback, errorCallback);
+		super.load(url, name);
 
 		if (fontData.type == swf || fontData.type == unknown)
 		{
