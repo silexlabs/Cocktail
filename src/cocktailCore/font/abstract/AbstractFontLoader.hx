@@ -69,6 +69,12 @@ class AbstractFontLoader
 			fontData.type = ttf;
 		else if (extension == ".eot")
 			fontData.type = eot;
+		else if (extension == ".otf")
+			fontData.type = otf;
+		else if (extension == ".swf")
+			fontData.type = swf;
+		else 
+			fontData.type = unknown;
 		
 		// callback
 		addCallback(successCallback, errorCallback);
