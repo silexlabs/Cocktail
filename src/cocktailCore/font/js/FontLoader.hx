@@ -43,9 +43,9 @@ class FontLoader extends AbstractFontLoader
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	override public function load(url:String, name:String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	override public function load(url:String, name:String):Void
 	{
-		super.load(url, name, successCallback, errorCallback);
+		super.load(url, name);
 		
 		if (fontData.type != swf)
 		{
@@ -59,6 +59,9 @@ class FontLoader extends AbstractFontLoader
 			//Create a 'style' element	
 			_styleE = Lib.document.createElement("style");
 			_styleE.innerHTML = "@font-face{font-family: "+name+" ; src: url( \""+url+"\" )" +fontTypeString+ ";}";
+
+			// Now add this new element to the head tag
+			Lib.document.getElementsByTagName("head")[0].appendChild(_styleE);
 			
 	/*
 			// Detection of the font loading success/error, impossible with JS, use Typekit or google Web Fonts API for detection
@@ -69,20 +72,14 @@ class FontLoader extends AbstractFontLoader
 	//	    untyped _styleE.addEventListener('error', _errorCallback, false);
 	*/
 			// workaround : allways call success callback
+			//haxe.Timer.delay(_successCallback, 100);
 			_successCallback();
-	
-			// Now add this new element to the head tag
-			Lib.document.getElementsByTagName("head")[0].appendChild(_styleE);
-			
-			// to do: detect css loading errors
-			// ?? styleE.async = 'true'; styleE.onload = tk.onreadystatechange = 
-	//		successCallback();
 		}
 		else
 		{
 			// error because the font format is not appropriate for the target
 			trace("Could not load font, the font format is not appropriate for the target: "+url);
-			_onLoadError("Could not load font, the font format is not appropriate for the target: "+url);
+			_errorCallback("Could not load font, the font format is not appropriate for the target: "+url);
 		}
 	}
 	/**

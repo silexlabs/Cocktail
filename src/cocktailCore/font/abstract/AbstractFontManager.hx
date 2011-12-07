@@ -13,10 +13,8 @@ import cocktail.font.FontData;
 import cocktailCore.font.FontLoader;
 
 /**
- * This class is the manager for system and embedded fonts. Use this static class to load new fonts, or to check if a system font is supported, etc.
- * It has a loadedFonts array used to make sure a font is not loaded twice.
+ * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
  * It is a base class, which is extended for each target.
- * Since the FontManager is a static class, this base class is only for the documentation
  * @author lexa
  */
 class AbstractFontManager 
@@ -24,7 +22,7 @@ class AbstractFontManager
 	/**
 	 * List of loaded fonts, successfull loaded fonts only
 	 */
-	public static var loadedFonts:Array<FontData>;
+	private static var _loadedFonts:Array<FontData>;
 	
 	/**
 	 * the font loaders for currently loading fonts
@@ -32,18 +30,14 @@ class AbstractFontManager
 	private static var _fontLoaderArray:Array<FontLoader>;
 	
 	/**
-	 * The constructor is private as this class is meant to be accessed through static public method.
+	 * Constructor initializes the static attributes
 	 */
-	private function new() {}
-	/**
-	 * This method initializes the static attributes
-	 */
-	private static function _init() 
+	public function new()
 	{
 		if(_fontLoaderArray == null)
 			_fontLoaderArray = new Array();
-		if(loadedFonts == null)
-			loadedFonts = new Array();
+		if(_loadedFonts == null)
+			_loadedFonts = new Array();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -58,11 +52,8 @@ class AbstractFontManager
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 */
-	public static function loadFont(url : String, name : String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	public function loadFont(url : String, name : String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
 	{
-		// init the static attributes if needed
-		_init();
-		
 		// check if the font is allready loading
 		var fontLoader : FontLoader;
 		var idx : Int;
@@ -77,36 +68,63 @@ class AbstractFontManager
 		}
 		// create the font loader 
 		fontLoader = new FontLoader();
-		fontLoader.load(url, name, successCallback, errorCallback);
 		fontLoader.addCallback(_onFontLoadingSuccess, _onFontLoadingError);
+		fontLoader.addCallback(successCallback, errorCallback);
+		fontLoader.load(url, name);
 		_fontLoaderArray.push(fontLoader);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public virtual methods
 	//////////////////////////////////////////////////////////////////////////////////////////
-/*
-getEmbeddedFonts() : Array
-Returns a list of fonts which have been loaded.
-
-getSystemFonts() : Array
-Returns a list of fonts which are installed on the current runtime.
-
-hasFont(fontName:String) : Boolean
-Returns true if the font specified bay fontName has been loaded or is available as a system font.
-
-*/
+	/** 
+	 * Returns a list of fonts which have been loaded.
+	 */
+	public function getEmbeddedFonts() : Array<FontData>
+	{
+		return _loadedFonts;
+	}
+	/** 
+	 * Returns a list of fonts which are installed on the current runtime.
+	 */
+	public function getSystemFonts() : Array<FontData>
+	{
+		throw ("Virtual method should be implemented in sub class");
+		return null;
+	}
+	/** 
+	 * Returns true if the font specified bay fontName has been loaded or is available as a system font.
+	 */
+	public function hasFont(fontName:String) : Bool
+	{
+		var fontDataArray : Array<FontData>;
+		var idx : Int;
+		
+		// check in the loaded fonts
+		fontDataArray = getEmbeddedFonts();
+		for (idx in 0...fontDataArray.length)
+			if (fontDataArray[idx].name == fontName)
+				return true;
+		
+		// check in the system fonts
+		fontDataArray = getSystemFonts();
+		for (idx in 0...fontDataArray.length)
+			if (fontDataArray[idx].name == fontName)
+				return true;
+		
+		return false;
+	}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font loading callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * A font has been loaded
 	 */
-	private static function _onFontLoadingSuccess(fontData : FontData)
+	private function _onFontLoadingSuccess(fontData : FontData)
 	{
-		// init the static attributes if needed
-		_init();
+		// store the font data
+		_loadedFonts.push(fontData);
 		
-		loadedFonts.push(fontData);
+		// free the font loader
 		if (_removeFontLoader(fontData) == false)
 		{
 			// to do handle error
@@ -116,14 +134,12 @@ Returns true if the font specified bay fontName has been loaded or is available 
 	/**
 	 * A font could not be loaded
 	 */
-	private static function _onFontLoadingError(fontData : FontData, errorStr : String)
+	private function _onFontLoadingError(fontData : FontData, errorStr : String)
 	{
-		// init the static attributes if needed
-		_init();
-		
 		// to do handle error
 		trace("font loading has failed");
 		
+		// free the font loader
 		if (_removeFontLoader(fontData) == false)
 		{
 			// to do handle error
@@ -136,11 +152,8 @@ Returns true if the font specified bay fontName has been loaded or is available 
 	/**
 	 * Remove a font loader from the list
 	 */
-	private static function _removeFontLoader(fontData : FontData) : Bool
+	private function _removeFontLoader(fontData : FontData) : Bool
 	{
-		// init the static attributes if needed
-		_init();
-		
 		// find the font loader
 		var fontLoader : FontLoader;
 		var idx : Int;

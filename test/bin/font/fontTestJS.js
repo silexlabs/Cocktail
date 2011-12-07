@@ -2045,16 +2045,14 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype.__class__ = cocktai
 if(!cocktailCore.font) cocktailCore.font = {}
 if(!cocktailCore.font["abstract"]) cocktailCore.font["abstract"] = {}
 cocktailCore.font.abstract.AbstractFontManager = function(p) {
+	if( p === $_ ) return;
+	if(cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray == null) cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray = new Array();
+	if(cocktailCore.font.abstract.AbstractFontManager._loadedFonts == null) cocktailCore.font.abstract.AbstractFontManager._loadedFonts = new Array();
 }
 cocktailCore.font.abstract.AbstractFontManager.__name__ = ["cocktailCore","font","abstract","AbstractFontManager"];
-cocktailCore.font.abstract.AbstractFontManager.loadedFonts = null;
+cocktailCore.font.abstract.AbstractFontManager._loadedFonts = null;
 cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray = null;
-cocktailCore.font.abstract.AbstractFontManager._init = function() {
-	if(cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray == null) cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray = new Array();
-	if(cocktailCore.font.abstract.AbstractFontManager.loadedFonts == null) cocktailCore.font.abstract.AbstractFontManager.loadedFonts = new Array();
-}
-cocktailCore.font.abstract.AbstractFontManager.loadFont = function(url,name,successCallback,errorCallback) {
-	cocktailCore.font.abstract.AbstractFontManager._init();
+cocktailCore.font.abstract.AbstractFontManager.prototype.loadFont = function(url,name,successCallback,errorCallback) {
 	var fontLoader;
 	var idx;
 	var _g1 = 0, _g = cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray.length;
@@ -2066,22 +2064,44 @@ cocktailCore.font.abstract.AbstractFontManager.loadFont = function(url,name,succ
 		}
 	}
 	fontLoader = new cocktailCore.font.js.FontLoader();
-	fontLoader.load(url,name,successCallback,errorCallback);
-	fontLoader.addCallback(cocktailCore.font.abstract.AbstractFontManager._onFontLoadingSuccess,cocktailCore.font.abstract.AbstractFontManager._onFontLoadingError);
+	fontLoader.addCallback($closure(this,"_onFontLoadingSuccess"),$closure(this,"_onFontLoadingError"));
+	fontLoader.addCallback(successCallback,errorCallback);
+	fontLoader.load(url,name);
 	cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray.push(fontLoader);
 }
-cocktailCore.font.abstract.AbstractFontManager._onFontLoadingSuccess = function(fontData) {
-	cocktailCore.font.abstract.AbstractFontManager._init();
-	cocktailCore.font.abstract.AbstractFontManager.loadedFonts.push(fontData);
-	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 113, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
+cocktailCore.font.abstract.AbstractFontManager.prototype.getEmbeddedFonts = function() {
+	return cocktailCore.font.abstract.AbstractFontManager._loadedFonts;
 }
-cocktailCore.font.abstract.AbstractFontManager._onFontLoadingError = function(fontData,errorStr) {
-	cocktailCore.font.abstract.AbstractFontManager._init();
-	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 125, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
-	if(cocktailCore.font.abstract.AbstractFontManager._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 130, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
+cocktailCore.font.abstract.AbstractFontManager.prototype.getSystemFonts = function() {
+	throw "Virtual method should be implemented in sub class";
+	return null;
 }
-cocktailCore.font.abstract.AbstractFontManager._removeFontLoader = function(fontData) {
-	cocktailCore.font.abstract.AbstractFontManager._init();
+cocktailCore.font.abstract.AbstractFontManager.prototype.hasFont = function(fontName) {
+	var fontDataArray;
+	var idx;
+	fontDataArray = this.getEmbeddedFonts();
+	var _g1 = 0, _g = fontDataArray.length;
+	while(_g1 < _g) {
+		var idx1 = _g1++;
+		if(fontDataArray[idx1].name == fontName) return true;
+	}
+	fontDataArray = this.getSystemFonts();
+	var _g1 = 0, _g = fontDataArray.length;
+	while(_g1 < _g) {
+		var idx1 = _g1++;
+		if(fontDataArray[idx1].name == fontName) return true;
+	}
+	return false;
+}
+cocktailCore.font.abstract.AbstractFontManager.prototype._onFontLoadingSuccess = function(fontData) {
+	cocktailCore.font.abstract.AbstractFontManager._loadedFonts.push(fontData);
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 131, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
+}
+cocktailCore.font.abstract.AbstractFontManager.prototype._onFontLoadingError = function(fontData,errorStr) {
+	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 140, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 146, className : "cocktailCore.font.abstract.AbstractFontManager", methodName : "_onFontLoadingError"});
+}
+cocktailCore.font.abstract.AbstractFontManager.prototype._removeFontLoader = function(fontData) {
 	var fontLoader;
 	var idx;
 	var _g1 = 0, _g = cocktailCore.font.abstract.AbstractFontManager._fontLoaderArray.length;
@@ -2103,8 +2123,9 @@ cocktailCore.font.js.FontManager = function(p) {
 cocktailCore.font.js.FontManager.__name__ = ["cocktailCore","font","js","FontManager"];
 cocktailCore.font.js.FontManager.__super__ = cocktailCore.font.abstract.AbstractFontManager;
 for(var k in cocktailCore.font.abstract.AbstractFontManager.prototype ) cocktailCore.font.js.FontManager.prototype[k] = cocktailCore.font.abstract.AbstractFontManager.prototype[k];
-cocktailCore.font.js.FontManager.loadFont = function(url,name,successCallback,errorCallback) {
-	cocktailCore.font.abstract.AbstractFontManager.loadFont(url,name,successCallback,errorCallback);
+cocktailCore.font.js.FontManager.prototype.getSystemFonts = function() {
+	haxe.Log.trace("It is impossible to list the system fonts in javascript",{ fileName : "FontManager.hx", lineNumber : 38, className : "cocktailCore.font.js.FontManager", methodName : "getSystemFonts"});
+	return new Array();
 }
 cocktailCore.font.js.FontManager.prototype.__class__ = cocktailCore.font.js.FontManager;
 List = function(p) {
@@ -4123,11 +4144,10 @@ cocktailCore.font.abstract.AbstractFontLoader.__name__ = ["cocktailCore","font",
 cocktailCore.font.abstract.AbstractFontLoader.prototype.fontData = null;
 cocktailCore.font.abstract.AbstractFontLoader.prototype._successCallbackArray = null;
 cocktailCore.font.abstract.AbstractFontLoader.prototype._errorCallbackArray = null;
-cocktailCore.font.abstract.AbstractFontLoader.prototype.load = function(url,name,successCallback,errorCallback) {
+cocktailCore.font.abstract.AbstractFontLoader.prototype.load = function(url,name) {
 	var extension = url.substr(url.lastIndexOf("."),url.length);
 	this.fontData = { url : url, name : name, type : cocktail.font.FontType.unknown};
 	if(extension == ".ttf") this.fontData.type = cocktail.font.FontType.ttf; else if(extension == ".eot") this.fontData.type = cocktail.font.FontType.eot; else if(extension == ".otf") this.fontData.type = cocktail.font.FontType.otf; else if(extension == ".swf") this.fontData.type = cocktail.font.FontType.swf; else this.fontData.type = cocktail.font.FontType.unknown;
-	this.addCallback(successCallback,errorCallback);
 }
 cocktailCore.font.abstract.AbstractFontLoader.prototype.addCallback = function(successCallback,errorCallback) {
 	if(successCallback != null) this._successCallbackArray.push(successCallback);
@@ -5799,7 +5819,7 @@ cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype.
 }
 cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype.__class__ = cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 if(!cocktail.font) cocktail.font = {}
-cocktail.font.FontType = { __ename__ : ["cocktail","font","FontType"], __constructs__ : ["ttf","otf","eot","swf","unknown"] }
+cocktail.font.FontType = { __ename__ : ["cocktail","font","FontType"], __constructs__ : ["ttf","otf","eot","swf","system","unknown"] }
 cocktail.font.FontType.ttf = ["ttf",0];
 cocktail.font.FontType.ttf.toString = $estr;
 cocktail.font.FontType.ttf.__enum__ = cocktail.font.FontType;
@@ -5812,7 +5832,10 @@ cocktail.font.FontType.eot.__enum__ = cocktail.font.FontType;
 cocktail.font.FontType.swf = ["swf",3];
 cocktail.font.FontType.swf.toString = $estr;
 cocktail.font.FontType.swf.__enum__ = cocktail.font.FontType;
-cocktail.font.FontType.unknown = ["unknown",4];
+cocktail.font.FontType.system = ["system",4];
+cocktail.font.FontType.system.toString = $estr;
+cocktail.font.FontType.system.__enum__ = cocktail.font.FontType;
+cocktail.font.FontType.unknown = ["unknown",5];
 cocktail.font.FontType.unknown.toString = $estr;
 cocktail.font.FontType.unknown.__enum__ = cocktail.font.FontType;
 if(!cocktailCore.classInstance) cocktailCore.classInstance = {}
@@ -6450,21 +6473,22 @@ cocktailCore.font.js.FontLoader.__name__ = ["cocktailCore","font","js","FontLoad
 cocktailCore.font.js.FontLoader.__super__ = cocktailCore.font.abstract.AbstractFontLoader;
 for(var k in cocktailCore.font.abstract.AbstractFontLoader.prototype ) cocktailCore.font.js.FontLoader.prototype[k] = cocktailCore.font.abstract.AbstractFontLoader.prototype[k];
 cocktailCore.font.js.FontLoader.prototype._styleE = null;
-cocktailCore.font.js.FontLoader.prototype.load = function(url,name,successCallback,errorCallback) {
-	cocktailCore.font.abstract.AbstractFontLoader.prototype.load.call(this,url,name,successCallback,errorCallback);
-	if(this.fontData.type != cocktail.font.FontType.swf && this.fontData.type != cocktail.font.FontType.unknown) {
+cocktailCore.font.js.FontLoader.prototype.load = function(url,name) {
+	cocktailCore.font.abstract.AbstractFontLoader.prototype.load.call(this,url,name);
+	if(this.fontData.type != cocktail.font.FontType.swf) {
 		var fontTypeString = "";
 		if(this.fontData.type == cocktail.font.FontType.ttf) fontTypeString = " format(\"truetype\")"; else fontTypeString = "";
 		this._styleE = js.Lib.document.createElement("style");
 		this._styleE.innerHTML = "@font-face{font-family: " + name + " ; src: url( \"" + url + "\" )" + fontTypeString + ";}";
-		this._successCallback();
 		js.Lib.document.getElementsByTagName("head")[0].appendChild(this._styleE);
-	} else haxe.Log.trace("Could not load font, the font format is not appropriate for the target: " + url,{ fileName : "FontLoader.hx", lineNumber : 84, className : "cocktailCore.font.js.FontLoader", methodName : "load"});
+		this._successCallback();
+	} else {
+		haxe.Log.trace("Could not load font, the font format is not appropriate for the target: " + url,{ fileName : "FontLoader.hx", lineNumber : 81, className : "cocktailCore.font.js.FontLoader", methodName : "load"});
+		this._errorCallback("Could not load font, the font format is not appropriate for the target: " + url);
+	}
 }
 cocktailCore.font.js.FontLoader.prototype.cleanup = function() {
 	cocktailCore.font.abstract.AbstractFontLoader.prototype.cleanup.call(this);
-	this._styleE.removeEventListener("load",$closure(this,"_successCallback"),false);
-	this._styleE.removeEventListener("error",$closure(this,"_errorCallback"),false);
 }
 cocktailCore.font.js.FontLoader.prototype.__class__ = cocktailCore.font.js.FontLoader;
 cocktailCore.style.positioner.FixedPositioner = function(p) {
@@ -7465,9 +7489,11 @@ cocktail.unit.ColorKeywordValue.yellow.toString = $estr;
 cocktail.unit.ColorKeywordValue.yellow.__enum__ = cocktail.unit.ColorKeywordValue;
 if(typeof font=='undefined') font = {}
 font.FontTests = function(p) {
+	if( p === $_ ) return;
+	font.FontTests._fontManager = new cocktailCore.font.js.FontManager();
 }
 font.FontTests.__name__ = ["font","FontTests"];
-font.FontTests.rootDOMElement = null;
+font.FontTests._fontManager = null;
 font.FontTests.main = function() {
 	var runner = new utest.Runner();
 	runner.addCase(new font.FontTests());
@@ -7476,22 +7502,23 @@ font.FontTests.main = function() {
 }
 font.FontTests.prototype.testFontLoad = function() {
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded"));
-	cocktailCore.font.js.FontManager.loadFont("embed_test_font.ttf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
-	cocktailCore.font.js.FontManager.loadFont("embed_test_font.swf","EmbedFontTest");
+	font.FontTests._fontManager.loadFont("embed_test_font.ttf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 	js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
 }
 font.FontTests.prototype.onFontLoaded = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 85, className : "font.FontTests", methodName : "onFontLoaded"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 82, className : "font.FontTests", methodName : "onFontLoaded"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded2"));
-	cocktailCore.font.js.FontManager.loadFont("embed_test_font.eot","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
+	font.FontTests._fontManager.loadFont("embed_test_font.eot","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded2 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 94, className : "font.FontTests", methodName : "onFontLoaded2"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 91, className : "font.FontTests", methodName : "onFontLoaded2"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded3"));
-	cocktailCore.font.js.FontManager.loadFont("embed_test_font.otf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
+	font.FontTests._fontManager.loadFont("embed_test_font.otf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded3 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 103, className : "font.FontTests", methodName : "onFontLoaded3"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 116, className : "font.FontTests", methodName : "onFontLoaded3"});
+	haxe.Log.trace(font.FontTests._fontManager.getEmbeddedFonts(),{ fileName : "FontTests.hx", lineNumber : 119, className : "font.FontTests", methodName : "onFontLoaded3"});
+	utest.Assert.isTrue(font.FontTests._fontManager.hasFont("EmbedFontTest"),null,{ fileName : "FontTests.hx", lineNumber : 120, className : "font.FontTests", methodName : "onFontLoaded3"});
 }
 font.FontTests.prototype.errorCallbackAssync = null;
 font.FontTests.prototype.onFontLoaded4 = function(fontData) {
@@ -7500,8 +7527,8 @@ font.FontTests.prototype.onFontLoadError = function(fontData,msg) {
 	this.errorCallbackAssync(msg);
 }
 font.FontTests.prototype.onFontLoadErrorUTest = function(msg) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 128, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
-	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 129, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 145, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 146, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
 }
 font.FontTests.prototype.__class__ = font.FontTests;
 utest.Assertation = { __ename__ : ["utest","Assertation"], __constructs__ : ["Success","Failure","Error","SetupError","TeardownError","TimeoutError","AsyncError","Warning"] }

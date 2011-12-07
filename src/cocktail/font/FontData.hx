@@ -41,5 +41,6 @@ enum FontType
 	otf;
 	eot;
 	swf;
+	system;
 	unknown;
 }

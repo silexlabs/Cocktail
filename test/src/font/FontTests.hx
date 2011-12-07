@@ -40,7 +40,7 @@ import utest.ui.Report;
 class FontTests 
 {
 	
-	private static var rootDOMElement:DOMElement;
+	private static var _fontManager : FontManager;
 	
 	public static function main()
 	{
@@ -52,8 +52,9 @@ class FontTests
 	
 	public function new() 
 	{
-		
+		_fontManager = new FontManager();
 	}
+	
 	
 	/**
 	 * Test loading a font - ther must be ttf and eot versions
@@ -63,13 +64,13 @@ class FontTests
 		
 		#if js
 			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded);
-			FontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
+			_fontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
 
 			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
 		#end
 		#if flash9
 			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded3, 1000);
-			FontManager.loadFont("embed_test_font.swf", "EmbedFontTest", successCallback, onFontLoadError);
+			_fontManager.loadFont("embed_test_font.swf", "EmbedFontTest", successCallback, onFontLoadError);
 		#end
 	}
 	
@@ -80,7 +81,7 @@ class FontTests
 	{
 		Assert.isTrue(true);
 		var successCallback : FontData->Void = Assert.createEvent(onFontLoaded2);
-		FontManager.loadFont("embed_test_font.eot", "EmbedFontTest", successCallback, onFontLoadError);
+		_fontManager.loadFont("embed_test_font.eot", "EmbedFontTest", successCallback, onFontLoadError);
 	}
 	/**
 	 * Called when the Font has been loaded
@@ -89,7 +90,7 @@ class FontTests
 	{
 		Assert.isTrue(true);
 		var successCallback : FontData->Void = Assert.createEvent(onFontLoaded3);
-		FontManager.loadFont("embed_test_font.otf", "EmbedFontTest", successCallback, onFontLoadError);
+		_fontManager.loadFont("embed_test_font.otf", "EmbedFontTest", successCallback, onFontLoadError);
 	}
 	/**
 	 * Called when the Font has been loaded
@@ -103,20 +104,24 @@ class FontTests
 
 			var tf:flash.text.TextField;
 			tf = new flash.text.TextField();
+			tf.setTextFormat(format1);
 			tf.autoSize = flash.text.TextFieldAutoSize.LEFT;
 			tf.multiline = true;
-//			tf.embedFonts=true;
-//			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br /><font size=\"25\" face=\"EmbedFontTest\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</font><br /><br />";
-			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br />ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.<br /><br />";
-			tf.setTextFormat(format1);
+			tf.embedFonts=true;
+			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br /><font size=\"25\" face=\"EmbedFontTest\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</font><br /><br />--end text--";
+//			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br />ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.<br /><br />";
 	        flash.Lib.current.addChild(tf);
 		#end
 
 		Assert.isTrue(true);
 
+		// Test font lists
+		trace(_fontManager.getEmbeddedFonts());
+		Assert.isTrue(_fontManager.hasFont("EmbedFontTest"));
+		
 // TO DO: test errors
 //		errorCallbackAssync = Assert.createEvent(onFontLoadErrorUTest);
-//		FontManager.loadFont("ERROR_LOADING_TEST", "EmbedFontTest", onFontLoaded4, onFontLoadError);
+//		_fontManager.loadFont("ERROR_LOADING_TEST", "EmbedFontTest", onFontLoaded4, onFontLoadError);
 	}
 	var errorCallbackAssync:String->Void ;
 	/**
@@ -140,5 +145,4 @@ class FontTests
 		Assert.isTrue(true);
 		Log.trace ("Font loading error : "+msg);
 	}
-	
 }
