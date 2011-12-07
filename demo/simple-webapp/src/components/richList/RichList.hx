@@ -1,13 +1,8 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
 package components.richList;
@@ -38,6 +33,7 @@ import components.richList.RichListUtils;
  */
 class RichList extends ContainerDOMElement
 {
+	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
 	
 	/**
@@ -60,7 +56,6 @@ class RichList extends ContainerDOMElement
 	 * 
 	 * @param	richListModel
 	 * @param	listStyle
-	 * @param	firstCellElement
 	 */
 	private function createRichListDOM(richListModel:RichListModel, listStyle:RichListStyleModel):Void
 	{
@@ -110,6 +105,8 @@ class RichList extends ContainerDOMElement
 	 * 
 	 * @param	domElement
 	 * @param	cell
+	 * @param	listStyle
+	 * @param	cellData
 	 */
 	private function onPictureLoaded(domElement:ImageDOMElement, cell:ContainerDOMElement, listStyle:RichListStyleModel, cellData:CellModel):Void
 	{
@@ -133,6 +130,7 @@ class RichList extends ContainerDOMElement
 
 	/**
 	 * Called when there is an error while loading picture
+	 * 
 	 * @param	error
 	 */
 	private function onPictureLoadError(error:String):Void
@@ -184,6 +182,7 @@ class RichList extends ContainerDOMElement
 	 * @param	mouseEventData
 	 * @param	cell
 	 * @param	listStyle
+	 * @param	cellData
 	 */
 	private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel, cellData:CellModel):Void
 	{

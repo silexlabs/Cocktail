@@ -1,13 +1,8 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
 package components.richList;
@@ -42,6 +37,11 @@ import Utils;
 class StyleNormal
 {
 
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -87,7 +87,6 @@ class StyleNormal
 		
 		domElement.style.display = block;
 		
-		//domElement.style.position = _static;
 		domElement.style.position = staticStyle;
 		
 		domElement.style.width = DimensionStyleValue.auto;
@@ -97,6 +96,11 @@ class StyleNormal
 		domElement.style.clear = ClearStyleValue.none;
 	}
 	
+	/**
+	 * Defines cell Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
 		getDefaultStyle(domElement);
@@ -107,7 +111,6 @@ class StyleNormal
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 				
 		//domElement.style.position = absolute;
-		//domElement.style.float = FloatStyleValue.left;
 		domElement.style.color = ColorValue.hex('666666');
 
 
@@ -119,6 +122,11 @@ class StyleNormal
 		//domElement.addChild(line);
 	}
 	
+	/**
+	 * Defines cell image Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
 		getDefaultStyle(domElement);
@@ -128,6 +136,11 @@ class StyleNormal
 		domElement.style.float = FloatStyleValue.right;
 	}
 	
+	/**
+	 * Defines mouse over Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
 		//getCellStyle(domElement);
@@ -138,6 +151,11 @@ class StyleNormal
 		//addLineAgain(domElement);
 	}
 	
+	/**
+	 * Defines mouse out Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
 		//getCellStyle(domElement);
@@ -148,6 +166,11 @@ class StyleNormal
 		//addLineAgain(domElement);
 	}
 	
+	/**
+	 * Defines mouse down Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
 		//getCellStyle(domElement);
@@ -158,6 +181,11 @@ class StyleNormal
 		//addLineAgain(domElement);
 	}
 	
+	/**
+	 * Defines mouse up Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
 		//getCellStyle(domElement);
@@ -168,22 +196,38 @@ class StyleNormal
 		//addLineAgain(domElement);
 	}
 	
+	/**
+	 * Defines cell line Style
+	 * 
+	 * @param	domElement
+	 */
 	public static function getCellLineStyle(domElement:DOMElement):Void
 	{
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
 	}
 	
-	private static function createLine(color:Int):GraphicDOMElement
+	/**
+	 * Creates a line.
+	 * 
+	 * @param	color
+	 * @return
+	 */
+	/*private static function createLine(color:Int):GraphicDOMElement
 	{
 		var line:GraphicDOMElement = Utils.getGraphic();
 		getCellLineStyle(line);
 		Utils.fillGraphic(line, color);
 		
 		return(line);
-	}
+	}*/
 	
-	private static function addLineAgain(domElement:ContainerDOMElement)
+	/**
+	 * Adds a line. Used to split each cell.
+	 * 
+	 * @param	domElement
+	 */
+	/*private static function addLineAgain(domElement:ContainerDOMElement)
 	{
 		// create line to separate cells
 		var line:GraphicDOMElement;
@@ -191,5 +235,5 @@ class StyleNormal
 		
 		domElement.removeChild(line);
 		domElement.addChild(line);
-	}
+	}*/
 }
