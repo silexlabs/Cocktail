@@ -58,13 +58,13 @@ class RelativePositioner extends BoxPositioner
 		//apply an horizontal offset if it is not 'auto'
 		if (domElement.style.left != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedX(domElement, domElement.style.getComputedX(domElement) + domElement.style.computedStyle.left);
+			domElement.style.setNativeX(domElement, domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left);
 		}
 		
 		//apply a vertical offset if it is not 'auto'
 		if (domElement.style.top != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedY(domElement, domElement.style.getComputedY(domElement) + domElement.style.computedStyle.top);
+			domElement.style.setNativeY(domElement, domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top);
 		}
 	}
 	

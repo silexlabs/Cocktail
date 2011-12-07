@@ -268,14 +268,14 @@ class InlineFormattingContext extends FormattingContext
 			
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.style.applyComputedX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 			case right:
 				
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.style.applyComputedX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace);
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
@@ -283,7 +283,7 @@ class InlineFormattingContext extends FormattingContext
 			case center:
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.style.applyComputedX(_domElementInLineBox[i].domElement, Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
@@ -292,7 +292,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					for (i in 0..._domElementInLineBox.length)
 					{
-						_domElementInLineBox[i].domElement.style.applyComputedX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
+						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
 				}
@@ -327,7 +327,7 @@ class InlineFormattingContext extends FormattingContext
 								default:	
 						}
 						
-						_domElementInLineBox[i].domElement.style.applyComputedX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft) ;
+						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft) ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
@@ -388,14 +388,14 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0..._domElementInLineBox.length)
 		{
 				
-			_domElementInLineBox[i].domElement.style.applyComputedY(_domElementInLineBox[i].domElement, Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop);
+			_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop);
 			
 			if (_domElementInLineBox[i].domElement.style.computedStyle.display == inlineBlock)
 			{
 			}
 			if (_domElementInLineBox[i].domElement.style.isEmbedded() == true || _domElementInLineBox[i].domElement.style.display == inlineBlock)
 			{
-				_domElementInLineBox[i].domElement.style.applyComputedY(_domElementInLineBox[i].domElement, _domElementInLineBox[i].domElement.style.getComputedY(_domElementInLineBox[i].domElement) - _domElementInLineBox[i].domElement.offsetHeight);
+				_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, _domElementInLineBox[i].domElement.style.getNativeY(_domElementInLineBox[i].domElement) - _domElementInLineBox[i].domElement.offsetHeight);
 			}
 		}
 		

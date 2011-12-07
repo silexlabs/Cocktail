@@ -8,6 +8,7 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.viewport.Viewport;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -17,6 +18,7 @@ import cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.computer.DisplayStylesComputer;
 import cocktailCore.style.computer.FontAndTextStylesComputer;
+import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.positioner.AbsolutePositioner;
 import cocktailCore.style.positioner.BoxPositioner;
@@ -210,6 +212,8 @@ class AbstractStyle
 	
 	/**
 	 * Class constructor. Stores the target DOMElement.
+	 * The style is invalid by default and will be updated
+	 * when the DOMElement is added to the DOM.
 	 */
 	public function new(domElement:DOMElement) 
 	{
@@ -289,123 +293,30 @@ class AbstractStyle
 		flowChildren(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
-		applyComputedHeight(this._domElement, this._computedStyle.height);
-		applyComputedWidth(this._domElement, this._computedStyle.width);
+		setNativeHeight(this._domElement, this._computedStyle.height);
+		setNativeWidth(this._domElement, this._computedStyle.width);
 		
+		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC DIMENSION AND POSITION METHODS
-	// Those method actually apply a processed dimension or position value to 
-	// the NativeElement of a target DOMElement.
-	// they are runtime specific
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	public function applyComputedX(domElement:DOMElement, x:Int):Void
-	{
-		//abstract
-	}
-	
-	public function applyComputedY(domElement:DOMElement, y:Int):Void
-	{
-		//abstract
-	}
-	
-	public function applyComputedWidth(domElement:DOMElement, width:Int):Void
-	{
-		//abstract
-	}
-	
-	public function applyComputedHeight(domElement:DOMElement, height:Int):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Return the x of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function getComputedX(domElement:DOMElement):Int
-	{
-		return 0;
-	}
-	
-	/**
-	 * Return the y of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function getComputedY(domElement:DOMElement):Int
-	{
-		return 0;
-	}
-	
-	/**
-	 * Return the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function getComputedWidth(domElement:DOMElement):Int
-	{
-		return 0;
-	}
-	
-	/**
-	 * Return the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function getComputedHeight(domElement:DOMElement):Int
-	{
-		return 0;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	public function invalidate():Void
-	{
-		if (this._isInvalid == false)
-		{
-			this._isInvalid = true;
-			
-			if (this._domElement.parent != null)
-			{
-				this._domElement.parent.style.invalidate();	
-			}
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function invalidateText():Void
-	{
-		_fontMetrics = null;
-		invalidate();
-	}
-	
-	private function invalidatePositionOffset():Void
-	{
-		/**if (this.position != staticStyle)
-		{
-			invalidate();
-		}*/
-		invalidate();
-	}
-	
-	private function invalidateMargin():Void
-	{
-		/**if (this.position == relative || this.position == staticStyle)
-		{
-			invalidate();
-		}*/
-		invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set a timer to trigger a layout of the DOMElement asynchronously. this method is used by the invalidation
+	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
+	 * value are set instead of happening for each changes.
+	 */
+	private function scheduleLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		var layoutDelegate:ContainingDOMElementData->ContainingDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
+		
+		Timer.delay(function () { 
+			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
+		}, 1);
+	}
 	
 	/**
 	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
@@ -501,6 +412,128 @@ class AbstractStyle
 	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
 		formattingContext.insert(this._domElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the value of a style that require
+	 * a layout (such as width, height, display...) is
+	 * changed.
+	 * 
+	 * An invalidated DOMElement will in turn invalidate its
+	 * parent and so on until the root DOMElement is invalidated.
+	 * The root DOMElement will then layout itself, laying out
+	 * at the same time all its invalidated children.
+	 */
+	public function invalidate():Void
+	{
+		//only invalidate the parent if it isn't
+		//done already
+		if (this._isInvalid == false)
+		{
+			//set the invalid flag to prevent multiple
+			//invalidation of the DOMElement in a row
+			//The DOMElement will be be able to be invalidated
+			//again once it is laid out
+			this._isInvalid = true;
+			
+			//if the DOMElement doesn't have a parent, then it
+			//is not currently added to the DOM and doesn't require
+			//a layout
+			if (this._domElement.parent != null)
+			{
+				//invalidate its parent if it must
+				if (isParentInvalid() == true)
+				{
+					this._domElement.parent.style.invalidate();	
+				}
+				//else schedule a layout for this DOMElement
+				else
+				{
+					//retrive its parent and the viewport dimension
+					var parentStyle:ContainerStyle = cast(this._domElement.parent.style);
+					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
+					var viewPort:Viewport = new Viewport();
+					
+					var viewPortData:ContainingDOMElementData = {
+						globalX:0,
+						globalY:0,
+						isHeightAuto:false,
+						isWidthAuto:false,
+						width:viewPort.width,
+						height:viewPort.height
+					}
+					
+					//schedule an asynchronous layout
+					scheduleLayout(containingDOMElementData, containingDOMElementData, viewPortData);
+				}
+				
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	// Those method allow for
+	// the re-layout of only a part of the DOM tree
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When a style invalidating the text is called
+	 * (font size, font weight...), the font metrics
+	 * structure must be reseted so that it is re-created
+	 * with updated values on next layout
+	 */
+	private function invalidateText():Void
+	{
+		_fontMetrics = null;
+		invalidate();
+	}
+	
+	/**
+	 * When a position offset style changes (top, left, 
+	 * right, bottom), it only requires a layout if the
+	 * DOMElement is positioned (not static).
+	 */
+	private function invalidatePositionOffset():Void
+	{
+		if (this.position != staticStyle)
+		{
+			invalidate();
+		}
+	}
+	
+	/**
+	 * When the margin style changes, if the DOMElement
+	 * is absolutely positioned, there is no need for a layout
+	 */
+	private function invalidateMargin():Void
+	{
+		if (this.position == relative || this.position == staticStyle)
+		{
+			invalidate();
+		}
+	}
+	
+	/**
+	 * Determine wheter the parent of the DOMElement needs
+	 * to be invalidated too. In some caes, for instance
+	 * if the DOMElement is absolutely positioned, invalidating
+	 * its parent isn't necessary
+	 */
+	private function isParentInvalid():Bool
+	{
+		var ret:Bool = true;
+		
+		if (this.isPositioned() == true && this.isRelativePositioned() == false)
+		{
+			ret = false;
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -815,6 +848,85 @@ class AbstractStyle
 		return this._computedStyle.position == relative;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DIMENSION AND POSITION SETTER/GETTER
+	// Those method actually apply a processed dimension or position value to 
+	// the NativeElement of a target DOMElement.
+	// they are runtime specific
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the x of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeX(domElement:DOMElement, x:Int):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Set the y of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeY(domElement:DOMElement, y:Int):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Set the width of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Set the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Return the x of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function getNativeX(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * Return the y of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function getNativeY(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * Return the width of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function getNativeWidth(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * Return the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function getNativeHeight(domElement:DOMElement):Int
+	{
+		return 0;
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
@@ -979,9 +1091,8 @@ class AbstractStyle
 	
 	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
 	{
-		_fontSize = value;
 		invalidateText();
-		return _fontSize;
+		return _fontSize = value;
 	}
 	
 	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue

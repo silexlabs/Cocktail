@@ -70,42 +70,42 @@ class Style extends AbstractStyle
 	// apply and retrieve the properties from the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function applyComputedX(domElement:DOMElement, x:Int):Void
+	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
 		domElement.nativeElement.x = x;
 	}
 	
-	override public function applyComputedY(domElement:DOMElement, y:Int):Void
+	override public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
 		domElement.nativeElement.y = y;
 	}
 	
-	override public function applyComputedWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
 	{
 		domElement.nativeElement.width = width;
 	}
 	
-	override public function applyComputedHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
 	{
 		domElement.nativeElement.height = height;
 	}
 	
-	override public function getComputedX(domElement:DOMElement):Int
+	override public function getNativeX(domElement:DOMElement):Int
 	{
 		return Math.round(domElement.nativeElement.x);
 	}
 	
-	override public function getComputedY(domElement:DOMElement):Int
+	override public function getNativeY(domElement:DOMElement):Int
 	{
 		return Math.round(domElement.nativeElement.y);
 	}
 	
-	override public function getComputedWidth(domElement:DOMElement):Int
+	override public function getNativeWidth(domElement:DOMElement):Int
 	{
 		return Math.round(domElement.nativeElement.width);
 	}
 	
-	override public function getComputedHeight(domElement:DOMElement):Int
+	override public function getNativeHeight(domElement:DOMElement):Int
 	{
 		return Math.round(domElement.nativeElement.height);
 	}

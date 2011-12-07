@@ -39,8 +39,8 @@ class BlockFormattingContext extends FormattingContext
 		
 		_flowData.x = _flowData.xOffset + leftFloatOffset;
 	
-		domElement.style.applyComputedX(domElement, _flowData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.applyComputedY(domElement, _flowData.y + domElement.style.computedStyle.marginTop);
+		domElement.style.setNativeX(domElement, _flowData.x + domElement.style.computedStyle.marginLeft);
+		domElement.style.setNativeY(domElement, _flowData.y + domElement.style.computedStyle.marginTop);
 		
 		_flowData.y += domElement.offsetHeight ;
 		_flowData.totalHeight = _flowData.y  ;

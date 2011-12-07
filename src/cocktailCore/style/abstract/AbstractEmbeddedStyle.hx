@@ -49,16 +49,16 @@ class AbstractEmbeddedStyle extends Style
 	// NativeElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function applyComputedX(domElement:DOMElement, x:Int):Void
+	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
 		x += this._computedStyle.paddingLeft;
-		super.applyComputedX(domElement, x);
+		super.setNativeX(domElement, x);
 	}
 	
-	override public function applyComputedY(domElement:DOMElement, y:Int):Void
+	override public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
 		y += this._computedStyle.paddingTop;
-		super.applyComputedY(domElement, y);
+		super.setNativeY(domElement, y);
 	}
 	
 	

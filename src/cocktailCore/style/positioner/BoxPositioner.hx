@@ -84,24 +84,24 @@ class BoxPositioner
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedX(domElement, domElement.style.getComputedX(domElement) + domElement.style.computedStyle.left);
+			domElement.style.setNativeX(domElement, domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left);
 		}
 		//if no left offset is defined, then try to apply a right offset
 		//right offset takes the containing DOMElement element width minus, the
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedX(domElement, containingDOMElementData.width - domElement.style.computedStyle.width - domElement.style.computedStyle.right);
+			domElement.style.setNativeX(domElement, containingDOMElementData.width - domElement.style.computedStyle.width - domElement.style.computedStyle.right);
 		}
 		
 		//for vertical offset, the same rule as hortizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedY(domElement, domElement.style.getComputedY(domElement) + domElement.style.computedStyle.top);
+			domElement.style.setNativeY(domElement, domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top);
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.auto)
 		{
-			domElement.style.applyComputedY(domElement, containingDOMElementData.height - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom);
+			domElement.style.setNativeY(domElement, containingDOMElementData.height - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom);
 		}
 	}
 	
