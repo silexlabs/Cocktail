@@ -70,9 +70,9 @@ class ImageLoader extends AbstractResourceLoader
 			//set the dom element width, height and source with the loaded picture
 			//dimensions and url. In this function "this" referes to the HTML Image 
 			//element
-			domElement.width = this.width;
-			domElement.height = this.height;
-			domElement.src = this.src;
+			domElement.width = __this__.width;
+			domElement.height = __this__.height;
+			domElement.src = __this__.src;
 			onLoadCompleteDelegate(domElement);
 			
 			};
