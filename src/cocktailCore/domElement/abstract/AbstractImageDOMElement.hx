@@ -49,15 +49,15 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 * The actual width (no scaling) of the currently loaded picture
 	 * in pixels
 	 */
-	private var _naturalWidth:Int;
-	public var naturalWidth(getNaturalWidth, never):Int;
+	private var _naturalWidth:Null<Int>;
+	public var naturalWidth(getNaturalWidth, never):Null<Int>;
 	
 	/**
 	 * The actual height (no scaling) of the currently loaded picture
 	 * in pixels
 	 */
-	private var _naturalHeight:Int;
-	public var naturalHeight(getNaturalHeight, never):Int;
+	private var _naturalHeight:Null<Int>;
+	public var naturalHeight(getNaturalHeight, never):Null<Int>;
 	
 	/**
 	 * The URL of the loaded picture.
@@ -106,23 +106,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		
 		//smooth the picture by default
 		this.smooth = true;
-	}
-	
-	/**
-	 * For an ImageDOMElement, the intrinsic width, height and ratio
-	 * represents the scaled dimensions of the picture. They are
-	 * equal to 0 until a picture is loaded
-	 * 
-	 * The natural width and height represent the unscaled
-	 * dimensions of the picture
-	 */
-	override private function initInstrinsicDimensions():Void
-	{
-		this._intrinsicHeight = 0;
-		this._intrinsicWidth = 0;
-		this._intrinsicRatio = 0;
-		this._naturalHeight = 0;
-		this._naturalWidth = 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -195,13 +178,23 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		return this._smooth;
 	}
 	
-	private function getNaturalWidth():Int
+	private function getNaturalWidth():Null<Int>
 	{
+		if (_naturalWidth == null)
+		{
+			return 0;
+		}
+		
 		return _naturalWidth;
 	}
 	
-	private function getNaturalHeight():Int
+	private function getNaturalHeight():Null<Int>
 	{
+		if (_naturalHeight == null)
+		{
+			return 0;
+		}
+		
 		return _naturalHeight;
 	}
 	

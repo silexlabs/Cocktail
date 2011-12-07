@@ -33,6 +33,12 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 
 	/**
 	 * class constructor
+	 * 
+	 * Init the default intrinsic width, height and ratio.
+	 * 
+	 * By convention a GraphicDOMElement dimensions is
+	 * 300 * 150 by default, according to the HTML5 Canvas
+	 * element specifications
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
@@ -43,17 +49,7 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 		}
 		
 		super(nativeElement);
-	}
-	
-	/**
-	 * Init the default intrinsic width, height and ratio.
-	 * 
-	 * By convention a GraphicDOMElement dimensions is
-	 * 300 * 150 by default, according to the HTML5 Canvas
-	 * element specifications
-	 */
-	override private function initInstrinsicDimensions():Void
-	{
+		
 		this._intrinsicHeight = 150;
 		this._intrinsicWidth = 300;
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
