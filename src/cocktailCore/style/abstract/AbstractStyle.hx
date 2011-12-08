@@ -27,6 +27,7 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 import haxe.Timer;
 
@@ -373,7 +374,7 @@ class AbstractStyle
 	 * flow, the last positioned DOMElement or the viewport of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 */
-	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
@@ -383,7 +384,7 @@ class AbstractStyle
 		if (this.isRelativePositioned() == true)
 		{
 			positioner = new RelativePositioner();
-			positioner.position(this._domElement, lastPositionedDOMElementData);
+			positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 		}
 		else
 		{
@@ -392,19 +393,12 @@ class AbstractStyle
 				//positioned 'fixed' DOMElement
 				case fixed:
 					positioner = new FixedPositioner();
-					
-					/**
-					 * TO DO : remove the x and y scroll from the root dom element dimensions
-					 * so that it seems to stay at the same place in the window
-					 */
-					var scrolledRootDOMElementDimensions:ContainingDOMElementData = viewportData;
-					
-					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
+					positioner.position(this._domElement, viewportData, staticPosition);
 					
 				//positioned 'absolute' DOMElement	
 				case absolute:
 					positioner = new AbsolutePositioner();
-					positioner.position(this._domElement, lastPositionedDOMElementData);
+					positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 					
 				default:	
 					positioner = new AbsolutePositioner();
@@ -460,23 +454,44 @@ class AbstractStyle
 			insertInFlowDOMElement(formattingContext);
 			
 		}
-		//insert in the flow, then apply an offset to it
-		else if (isRelativePositioned() == true)
-		{
-			insertInFlowDOMElement(formattingContext);
-			positionElement(lastPositionedDOMElementData.data, viewportData);
-		}
-		//insert as an absolutely positioned DOMElement
-		//an absolutely positioned DOMElement is not positioned right away, it must
-		//wait for its first positioned ancestor to be laid out. The reason is that
-		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this DOMElement can't be positioned
-		//using the bottom style yet. Once the first ancestor is laid out, it
-		//calls the positionElement method on all the stored children
+		//else the DOMElement is positioned
 		else
-		{ 
-			lastPositionedDOMElementData.children.push(this);
+		{
+			//retrieve the static position (the position of the DOMElement
+			//if its position style was 'static'
+			var x:Float = formattingContext.flowData.x;
+			var y:Float = formattingContext.flowData.y;
+			
+			var staticPosition:PointData = {
+				x:x,
+				y:y
+			}
+			
+			//insert in the flow, then apply an offset to it
+			if (isRelativePositioned() == true)
+			{
+				insertInFlowDOMElement(formattingContext);
+				positionElement(lastPositionedDOMElementData.data, viewportData, staticPosition);
+			}
+			//insert as an absolutely positioned DOMElement
+			//an absolutely positioned DOMElement is not positioned right away, it must
+			//wait for its first positioned ancestor to be laid out. The reason is that
+			//if the positioned ancestor height is 'auto', the height of the positioned
+			//ancestor is not yet determined and so this DOMElement can't be positioned
+			//using the bottom style yet. Once the first ancestor is laid out, it
+			//calls the positionElement method on all the stored children
+			else
+			{ 
+			
+				var positionedDOMElementData:PositionedDOMElementData = {
+					staticPosition:staticPosition,
+					style:this
+				}
+				lastPositionedDOMElementData.children.push(positionedDOMElementData);
+			}
+			
 		}
+		
 	}
 	
 	/**
@@ -542,7 +557,7 @@ class AbstractStyle
 					}
 					
 					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
-						children: new Array<AbstractStyle>(),
+						children: new Array<PositionedDOMElementData>(),
 						data:viewPortData
 					}
 					

@@ -140,7 +140,7 @@ class AbstractContainerStyle extends Style
 		{
 			childLastPositionedDOMElementData = {
 				data: getContainerDOMElementData(),
-				children: new Array<AbstractStyle>()
+				children: new Array<PositionedDOMElementData>()
 			}
 		}
 		else
@@ -217,7 +217,8 @@ class AbstractContainerStyle extends Style
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
-				childLastPositionedDOMElementData.children[i].positionElement(childLastPositionedDOMElementData.data, viewportData);
+				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
+				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 			}
 		}
 		

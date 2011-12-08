@@ -64,7 +64,7 @@ class AbstractBodyStyle extends ContainerStyle
 		
 								
 			var lastPositionedDOMElementData:LastPositionedDOMElementData = {
-				children: new Array<AbstractStyle>(),
+				children: new Array<PositionedDOMElementData>(),
 				data:viewPortData
 			}
 			

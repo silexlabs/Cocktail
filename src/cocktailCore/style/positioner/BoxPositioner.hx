@@ -10,6 +10,7 @@ package cocktailCore.style.positioner;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -56,8 +57,9 @@ class BoxPositioner
 	 * @param	domElement the DOMElement to position
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement
+	 * @param staticPosition the position the DOMElement would have in the flow if it weren't positioned
 	 */
-	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
+	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 
 		//the DOMElement is first place in the same position as
@@ -67,7 +69,7 @@ class BoxPositioner
 		
 		//an offset is then applied to it, using the left, top, right and bottom
 		//computed styles value
-		applyOffset(domElement, containingDOMElementData);
+		applyOffset(domElement, containingDOMElementData, staticPosition);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,7 @@ class BoxPositioner
 	 * Apply an offset to the DOMElement using its top, left, bottom and right
 	 * styles value
 	 */
-	private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
+	private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
@@ -92,8 +94,11 @@ class BoxPositioner
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.auto)
 		{
-		
 			domElement.style.setNativeX(domElement, containingDOMElementData.width - domElement.style.computedStyle.width - domElement.style.computedStyle.right);
+		}
+		else
+		{
+			domElement.style.setNativeX(domElement, Math.round(staticPosition.x));
 		}
 		
 		//for vertical offset, the same rule as hortizontal offsets apply
@@ -104,6 +109,10 @@ class BoxPositioner
 		else if (domElement.style.bottom != PositionOffsetStyleValue.auto)
 		{
 			domElement.style.setNativeY(domElement, containingDOMElementData.height - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom);
+		}
+		else
+		{
+			domElement.style.setNativeY(domElement, Math.round(staticPosition.y));
 		}
 	}
 	
