@@ -10,6 +10,7 @@ package cocktailCore.style.positioner;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -40,9 +41,9 @@ class RelativePositioner extends BoxPositioner
 	 * Override to prevent DOMElement from being globally positioned, 'relative' DOMElement are
 	 * first normally positioned in the flow, then an offset is applied to them
 	 */
-	override public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
+	override public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
-		applyOffset(domElement, containingDOMElementData);
+		applyOffset(domElement, containingDOMElementData, staticPosition);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -50,10 +51,10 @@ class RelativePositioner extends BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden bacause when relatively positioning a DOMElement, only its top and left
+	 * Overriden because when relatively positioning a DOMElement, only its top and left
 	 * styles are accounted for
 	 */
-	override private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
+	override private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 		//apply an horizontal offset if it is not 'auto'
 		if (domElement.style.left != PositionOffsetStyleValue.auto)
