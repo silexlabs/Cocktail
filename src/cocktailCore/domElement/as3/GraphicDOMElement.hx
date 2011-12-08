@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.as3;
 
@@ -26,6 +22,7 @@ import flash.Lib;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.geom.GeomData;
+import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 
 /**
@@ -72,10 +69,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_backGroundSprite = new Sprite();
 		this._nativeElement.addChild(_backGroundSprite);
 
-		setUpBackgroundSprite(_backGroundSprite, this._width, this._height);
+		setUpBackgroundSprite(_backGroundSprite, this.intrinsicWidth, this.intrinsicHeight);
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(100, 100, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF));
 		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
@@ -89,26 +86,33 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setWidth(value:Int):Int
 	{
-		this._width = value;
+		super.setWidth(value);
 		
-		//update the background delimiting this DOMElement
-		setUpBackgroundSprite(this._backGroundSprite, value, getHeight());
+
+		if (this._style.width == DimensionStyleValue.auto)
+		{
+			//update the background delimiting this DOMElement
+			setUpBackgroundSprite(this._backGroundSprite, value, this.height);
 		
-		//update the bitmap drawing
-		updateBitmapDrawingSize();
+			//update the bitmap drawing
+			updateBitmapDrawingSize();
+		}
 		
 		return value;
 	}
 	
 	override private function setHeight(value:Int):Int 
 	{
-		this._height = value;
+		super.setHeight(value);
 		
-		//update the background delimiting this dom element
-		setUpBackgroundSprite(this._backGroundSprite, getWidth(), value);
+		if (this._style.height == DimensionStyleValue.auto)
+		{
+			//update the background delimiting this dom element
+			setUpBackgroundSprite(this._backGroundSprite, this.width, value);
 		
-		//update the bitmap drawing
-		updateBitmapDrawingSize();
+			//update the bitmap drawing
+			updateBitmapDrawingSize();
+		}
 		
 		return value;
 	}
@@ -194,7 +198,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//create a new transparent bitmapData with the new size of the DOMElement
-		var newBitmapData:BitmapData = new BitmapData(this._width, this._height, true, 0x00FFFFFF);
+		var newBitmapData:BitmapData = new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
 		//from the current bitmap data
@@ -203,9 +207,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//if the current bitmap data width is superior to the new
 		//width of the DOMElement, then only the new width of pixels
 		//must be copied, the rest will be cropped
-		if (currentBitmapData.width > this._width)
+		if (currentBitmapData.width > this.intrinsicWidth)
 		{
-			drawingWidth = this._width;
+			drawingWidth = this.intrinsicWidth;
 		}
 		//else if the new width is superior to the current bitmap width
 		//all current bitmap pixel width must be copied
@@ -217,9 +221,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//same for height
 		var drawingHeight:Int = 0;
 		
-		if (currentBitmapData.height > this._height)
+		if (currentBitmapData.height > this.intrinsicHeight)
 		{
-			drawingHeight = this._height;
+			drawingHeight = this.height;
 		}
 		else
 		{
@@ -248,7 +252,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_typedNativeElement.graphics.clear();
 		
 		//draws a transparent rectangle over all the bitmap, erasing it's content
-		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this._width, this._height), 0x00FFFFFF);
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this.intrinsicWidth, this.intrinsicHeight), 0x00FFFFFF);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

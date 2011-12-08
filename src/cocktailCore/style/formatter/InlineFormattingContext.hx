@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.formatter;
 
@@ -30,7 +27,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
-		
+	
 		_firstLineLaidOut = false;
 		super(domElement, previousFormattingContext);
 		
@@ -48,6 +45,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override public function insert(domElement:DOMElement):Void
 	{
+		
 		var remainingWidth:Int = getRemainingLineWidth();
 		
 		if (_firstLineLaidOut == false)
@@ -111,12 +109,7 @@ class InlineFormattingContext extends FormattingContext
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
-		
-		
-		
-		//domElement.x = _flowData.x + domElement.style.computedStyle.marginLeft ;
-		//domElement.y = _flowData.y + domElement.style.computedStyle.marginTop ;
-		
+			
 		_flowData.x += domElement.offsetWidth;
 
 		
@@ -184,8 +177,7 @@ class InlineFormattingContext extends FormattingContext
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
 
-		domElement.x = floatData.x + domElement.style.computedStyle.marginLeft ;
-		domElement.y = floatData.y + domElement.style.computedStyle.marginTop ;
+		super.placeFloat(domElement, floatData);
 		
 		if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
 		{
@@ -276,14 +268,14 @@ class InlineFormattingContext extends FormattingContext
 			
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 			case right:
 				
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace;
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
@@ -291,7 +283,7 @@ class InlineFormattingContext extends FormattingContext
 			case center:
 				for (i in 0..._domElementInLineBox.length)
 				{
-					_domElementInLineBox[i].domElement.x = Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 				}
 				
@@ -300,7 +292,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					for (i in 0..._domElementInLineBox.length)
 					{
-						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft;
+						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
 				}
@@ -335,7 +327,7 @@ class InlineFormattingContext extends FormattingContext
 								default:	
 						}
 						
-						_domElementInLineBox[i].domElement.x = localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft ;
+						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft) ;
 						
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
@@ -345,14 +337,11 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	/**
-	 * To DO : separate processing from appling to x/y of DOMElements ?
-	 */
 	private function computeLineBoxHeight():Int
 	{
 		//get ascent and descent of the strut
-		var lineBoxAscent:Float = _containingDOMElement.style.fontMetrics.ascent;
-		var lineBoxDescent:Float = _containingDOMElement.style.fontMetrics.descent;
+		var lineBoxAscent:Float = 0;
+		var lineBoxDescent:Float = 0;
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
@@ -368,7 +357,15 @@ class InlineFormattingContext extends FormattingContext
 			else
 			{
 				domElementAscent = domElement.style.fontMetrics.ascent;
-				domElementDescent = domElement.style.fontMetrics.descent;
+				domElementDescent = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
 			}
 			
 			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
@@ -390,14 +387,15 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0..._domElementInLineBox.length)
 		{
-			_domElementInLineBox[i].domElement.y = Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop;
+				
+			_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop);
 			
 			if (_domElementInLineBox[i].domElement.style.computedStyle.display == inlineBlock)
 			{
 			}
 			if (_domElementInLineBox[i].domElement.style.isEmbedded() == true || _domElementInLineBox[i].domElement.style.display == inlineBlock)
 			{
-				_domElementInLineBox[i].domElement.y -= _domElementInLineBox[i].domElement.offsetHeight;
+				_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, _domElementInLineBox[i].domElement.style.getNativeY(_domElementInLineBox[i].domElement) - _domElementInLineBox[i].domElement.offsetHeight);
 			}
 		}
 		
