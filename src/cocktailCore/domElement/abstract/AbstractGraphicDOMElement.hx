@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.abstract;
 
@@ -37,6 +33,12 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 
 	/**
 	 * class constructor
+	 * 
+	 * Init the default intrinsic width, height and ratio.
+	 * 
+	 * By convention a GraphicDOMElement dimensions is
+	 * 300 * 150 by default, according to the HTML5 Canvas
+	 * element specifications
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
@@ -47,29 +49,10 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 		}
 		
 		super(nativeElement);
-	}
-	
-	/**
-	 * By convention a GraphicDOMElement dimensions is
-	 * 300 * 150 by default, according to the HTML5 Canvas
-	 * element specifications
-	 */
-	override private function initDimensions():Void
-	{
-		this._height = 150;
-		this._width = 300;
-	}
-	
-	
-	/**
-	 * Init the default intrinsic width, height and ratio.
-	 * Different for each inheriting embedded DOMElement
-	 */
-	override private function initInstrinsicDimensions():Void
-	{
-		this._intrinsicHeight = this._height;
-		this._intrinsicWidth = this._width;
-		this._intrinsicRatio = this._width / this._height;
+		
+		this._intrinsicHeight = 150;
+		this._intrinsicWidth = 300;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

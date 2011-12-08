@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.php;
 
@@ -77,45 +73,45 @@ class DOMElement extends AbstractDOMElement
 	
 	override public function setX(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getX():Int 
 	{
-		// TODO
+	
 		return 0;
 	}
 	
 	override public function setY(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getY():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
 	override public function setWidth(value:Int):Void
 	{
-		// TODO
+		
 	}
 	
 	override public function getWidth():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
 	override public function setHeight(value:Int):Void 
 	{
-		// TODO
+		
 	}
 	
 	override public function getHeight():Int 
 	{
-		// TODO
+	
 		return 0;
 	}
 	
@@ -125,7 +121,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function setRotation(value:Int):Void
 	{
-		// TODO
+		
 	}
 	
 	/**
@@ -135,7 +131,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function getRotation():Int
 	{
-		// TODO
+		
 		return 0;
 	}
 	
@@ -148,12 +144,12 @@ class DOMElement extends AbstractDOMElement
 	 */
 	override public function setZIndex(value:Int) 
 	{
-		// TODO
+		
 	}
 	
 	override public function getZIndex():Int 
 	{
-		// TODO
+		
 		return 0;
 	}
 	
@@ -167,7 +163,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	private function setStyle(property:String, value:String):Void
 	{
-		// TODO
+		
 		// styleHash is used to store all the style properties & values
 		var styleHash:Hash<String> = new Hash<String>();
 		
@@ -190,7 +186,7 @@ class DOMElement extends AbstractDOMElement
 	 */
 	private function getStyle(property:String):String
 	{
-		// TODO
+		
 		// styleHash is used to store all the style properties & values
 		var styleHash:Hash<String> = new Hash<String>();
 		

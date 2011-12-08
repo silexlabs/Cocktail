@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.as3;
 
@@ -68,8 +65,53 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// apply and retrieve the properties from the native flash DisplayObject
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setNativeX(domElement:DOMElement, x:Int):Void
+	{
+		domElement.nativeElement.x = x;
+	}
+	
+	override public function setNativeY(domElement:DOMElement, y:Int):Void
+	{
+		domElement.nativeElement.y = y;
+	}
+	
+	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	{
+		domElement.nativeElement.width = width;
+	}
+	
+	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	{
+		domElement.nativeElement.height = height;
+	}
+	
+	override public function getNativeX(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.x);
+	}
+	
+	override public function getNativeY(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.y);
+	}
+	
+	override public function getNativeWidth(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.width);
+	}
+	
+	override public function getNativeHeight(domElement:DOMElement):Int
+	{
+		return Math.round(domElement.nativeElement.height);
+	}
+	
 	/////////////////////////////////
-	// OVERRIDEN METHODS
+	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
 	
 	/**
@@ -100,14 +142,6 @@ class Style extends AbstractStyle
 			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 			
-			//the leading is an extra height to apply equally to the ascent
-			//and the descent when laying out lines of text
-			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-			
-			//apply leading to the ascent and descent
-			var leadedAscent:Float = (ascent + leading/2) ;
-			var leadedDescent:Float = (descent + leading / 2) ;
-			
 			//get the x height (the height of a lower-case "x")
 			var xHeight:Int = getXHeight(elementFormat.clone());
 			
@@ -115,8 +149,8 @@ class Style extends AbstractStyle
 			
 			_fontMetrics = {
 				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(leadedAscent),
-				descent:Math.round(leadedDescent),
+				ascent:Math.round(ascent),
+				descent:Math.round(descent),
 				xHeight:xHeight,
 				spaceWidth:spaceWidth,
 				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),

@@ -1,15 +1,13 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.abstract;
 
+import cocktail.viewport.Viewport;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
@@ -30,6 +28,7 @@ import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import cocktailCore.textElement.TextElementData;
+import haxe.Timer;
 
 #if flash9
 import cocktailCore.style.as3.Style;
@@ -66,9 +65,9 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:ContainingDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		flow(containingDOMElementData, rootDOMElement, lastPositionedDOMElement, null);
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +77,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -112,7 +111,7 @@ class AbstractContainerStyle extends Style
 		//a layout
 		if (formatingContext == null)
 		{
-			formatingContext = getFormatingContext();
+			//formatingContext = getFormatingContext();
 			childrenFormattingContext = getFormatingContext();
 		}
 		else
@@ -124,7 +123,7 @@ class AbstractContainerStyle extends Style
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height as containing height
-		var childrenContainingDOMElementData:ContainingDOMElementData = getChildrenContainingDOMElementData();
+		var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
 		//are based on the font and the font size used
@@ -132,18 +131,18 @@ class AbstractContainerStyle extends Style
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children
-		var childLastPositionedDOMElementDimensions:ContainingDOMElementData;
+		var childLastPositionedDOMElementData:ContainingDOMElementData;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children
 		if (this.isPositioned() == true)
 		{
-			childLastPositionedDOMElementDimensions = getChildrenContainingDOMElementData();
+			childLastPositionedDOMElementData = getContainerDOMElementData();
 		}
 		//
 		else
 		{
-			childLastPositionedDOMElementDimensions = lastPositionedDOMElementDimensions;
+			childLastPositionedDOMElementData = lastPositionedDOMElementData;
 		}
 		
 		//flow all children 
@@ -155,14 +154,14 @@ class AbstractContainerStyle extends Style
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
-				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
+				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, containingDOMElementFontMetricsData);
 			}
 		}
 		
@@ -197,13 +196,16 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
 		}
 		
-		
-		//insert the ContainerDOMElement into the document
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		if (formatingContext != null)
+		{
+			//insert the ContainerDOMElement into the document
+			insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 
-		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
-		//that will also affect the position of its following siblings
-		formatingContext.retrieveFloats(childrenFormattingContext);
+			//retrieve the floats overflowing from the children of this ContainerDOMElement, 
+			//that will also affect the position of its following siblings
+			formatingContext.retrieveFloats(childrenFormattingContext);
+		}
+	
 		
 	}
 	
@@ -228,7 +230,7 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
-	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
@@ -283,6 +285,22 @@ class AbstractContainerStyle extends Style
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
+	 * must be deleted so that they can be redrawn on next layout
+	 */
+	override private function invalidateText():Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.resetTextFragments();	
+		super.invalidateText();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -471,6 +489,48 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the dimensions and position data
+	 * of the ContainerDOMElement
+	 */
+	public function getContainerDOMElementData():ContainingDOMElementData
+	{
+		var height:Int;
+		
+		//if the ContainerDOMElement
+		//is inline, then its line height will
+		//be used to lay out its children in lines
+		if (isInline() == true)
+		{
+			height = Math.round(this._computedStyle.lineHeight);
+		}
+		//same if the ContainerDOMElement starts
+		//an inline formatting context
+		else if (isInline() == false && childrenInline() == true)
+		{
+			height = Math.round(this._computedStyle.lineHeight);
+		}
+		//else it starts a block formatting context
+		//and its height is used
+		else
+		{
+			height = this._computedStyle.height;
+		}
+		
+		return {
+			width:this._computedStyle.width,
+			isWidthAuto:this._width == DimensionStyleValue.auto,
+			height:height,
+			isHeightAuto:this._height == DimensionStyleValue.auto,
+			globalX:this._domElement.globalX,
+			globalY:this._domElement.globalY
+		};
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -552,44 +612,6 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Return the dimensions and position data
-	 * of the ContainerDOMElement
-	 */
-	private function getChildrenContainingDOMElementData():ContainingDOMElementData
-	{
-		var height:Int;
-		
-		//if the ContainerDOMElement
-		//is inline, then its line height will
-		//be used to lay out its children in lines
-		if (isInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//same if the ContainerDOMElement starts
-		//an inline formatting context
-		else if (isInline() == false && childrenInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//else it starts a block formatting context
-		//and its height is used
-		else
-		{
-			height = this._computedStyle.height;
-		}
-		
-		return {
-			width:this._computedStyle.width,
-			isWidthAuto:this._width == DimensionStyleValue.auto,
-			height:height,
-			isHeightAuto:this._height == DimensionStyleValue.auto,
-			globalX:this._domElement.globalX,
-			globalY:this._domElement.globalY
-		};
-	}
-	
-	/**
 	 * Determine wether the children of this DOMElement
 	 * are all block level or if they are all inline level
 	 * elements
@@ -602,7 +624,6 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
 		{
-			
 			if (isDOMElement(containerDOMElement.children[i]))
 			{
 				//if one of the children is a block level DOMElement, then the container
@@ -611,15 +632,16 @@ class AbstractContainerStyle extends Style
 				
 				if (childrenDOMElement.style.computedStyle.display == block)
 				{
+					//floated children are not taken into account 
 					if (childrenDOMElement.style.isFloat() == false)
 					{
 						ret = false;
 					}
-					else if (childrenDOMElement.style.isEmbedded() == true)
+					//absolutely positioned children are not taken into account but relative positioned are
+					else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
 					{
 						ret = false;
 					}
-					
 				}
 			}
 		}
