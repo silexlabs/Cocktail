@@ -27,6 +27,7 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 import haxe.Timer;
 
@@ -272,6 +273,20 @@ class AbstractStyle
 		this._textTransform = TextTransformStyleValue.none;
 		this._whiteSpace = WhiteSpaceStyleValue.normal;
 		
+		
+	}
+	
+	/**
+	 * Return default value for style defined by the User Agent
+	 * in a browser, those styles are hard coded for other
+	 * runtimes
+	 */
+	public static function getDefaultStyle():DefaultStylesData
+	{
+		return {
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			color:ColorValue.keyword(ColorKeywordValue.black)
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -292,7 +307,7 @@ class AbstractStyle
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 */
-	public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}
@@ -313,12 +328,13 @@ class AbstractStyle
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 * @param	lastPositionedDOMElementData the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
-	 * of 'absolute'), it it used as origin.
+	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
+	 * to position their DOMElement
 	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
@@ -340,7 +356,7 @@ class AbstractStyle
 		}
 		
 		//compute all the styles of a DOMElement
-		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData);
+		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
 		//flow all the children of the DOMElement if it has any, then insert the DOMElement in the document
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
@@ -353,39 +369,12 @@ class AbstractStyle
 		this._isInvalid = false;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set a timer to trigger a layout of the DOMElement asynchronously. this method is used by the invalidation
-	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
-	 * value are set instead of happening for each changes.
-	 */
-	private function scheduleLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
-	{
-		var layoutDelegate:ContainingDOMElementData->ContainingDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
-		
-		Timer.delay(function () { 
-			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
-		}, 1);
-	}
-	
-	/**
-	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
-	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
-	{
-		//insert the DOMElement in the document based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
-	}
-	
 	/**
 	 * Place a positioned DOMElement (with a position of 'relative', 'absolute', or 'fixed') using either the normal
-	 * flow, the last positioned DOMElement or the root of the document, then apply an offset defined by the 'top',
+	 * flow, the last positioned DOMElement or the viewport of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 */
-	private function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
@@ -395,7 +384,7 @@ class AbstractStyle
 		if (this.isRelativePositioned() == true)
 		{
 			positioner = new RelativePositioner();
-			positioner.position(this._domElement, lastPositionedDOMElementData);
+			positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 		}
 		else
 		{
@@ -404,24 +393,44 @@ class AbstractStyle
 				//positioned 'fixed' DOMElement
 				case fixed:
 					positioner = new FixedPositioner();
-					
-					/**
-					 * TO DO : remove the x and y scroll from the root dom element dimensions
-					 * so that it seems to stay at the same place in the window
-					 */
-					var scrolledRootDOMElementDimensions:ContainingDOMElementData = viewportData;
-					
-					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
+					positioner.position(this._domElement, viewportData, staticPosition);
 					
 				//positioned 'absolute' DOMElement	
 				case absolute:
 					positioner = new AbsolutePositioner();
-					positioner.position(this._domElement, lastPositionedDOMElementData);
+					positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 					
 				default:	
 					positioner = new AbsolutePositioner();
 			}
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set a timer to trigger a layout of the DOMElement asynchronously. this method is used by the invalidation
+	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
+	 * value are set instead of happening for each changes.
+	 */
+	private function scheduleLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		var layoutDelegate:ContainingDOMElementData->LastPositionedDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
+		
+		Timer.delay(function () { 
+			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
+		}, 1);
+	}
+	
+	/**
+	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
+	 */
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
+	{
+		//insert the DOMElement in the document based on its positioning scheme
+		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 	}
 	
 	/**
@@ -432,7 +441,7 @@ class AbstractStyle
 	 * @param	lastPositionedDOMElementData
 	 * @param	viewportData
 	 */
-	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData):Void
+	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
 		//insert as a float
 		if (isFloat() == true)
@@ -445,17 +454,44 @@ class AbstractStyle
 			insertInFlowDOMElement(formattingContext);
 			
 		}
-		//insert in the flow, then apply an offset to it
-		else if (isRelativePositioned() == true)
-		{
-			insertInFlowDOMElement(formattingContext);
-			positionElement(lastPositionedDOMElementData, viewportData);
-		}
-		//insert as an absolutely positioned DOMElement
+		//else the DOMElement is positioned
 		else
-		{ 
-			positionElement(lastPositionedDOMElementData, viewportData);
+		{
+			//retrieve the static position (the position of the DOMElement
+			//if its position style was 'static'
+			var x:Float = formattingContext.flowData.x;
+			var y:Float = formattingContext.flowData.y;
+			
+			var staticPosition:PointData = {
+				x:x,
+				y:y
+			}
+			
+			//insert in the flow, then apply an offset to it
+			if (isRelativePositioned() == true)
+			{
+				insertInFlowDOMElement(formattingContext);
+				positionElement(lastPositionedDOMElementData.data, viewportData, staticPosition);
+			}
+			//insert as an absolutely positioned DOMElement
+			//an absolutely positioned DOMElement is not positioned right away, it must
+			//wait for its first positioned ancestor to be laid out. The reason is that
+			//if the positioned ancestor height is 'auto', the height of the positioned
+			//ancestor is not yet determined and so this DOMElement can't be positioned
+			//using the bottom style yet. Once the first ancestor is laid out, it
+			//calls the positionElement method on all the stored children
+			else
+			{ 
+			
+				var positionedDOMElementData:PositionedDOMElementData = {
+					staticPosition:staticPosition,
+					style:this
+				}
+				lastPositionedDOMElementData.children.push(positionedDOMElementData);
+			}
+			
 		}
+		
 	}
 	
 	/**
@@ -520,8 +556,13 @@ class AbstractStyle
 						height:viewPort.height
 					}
 					
+					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
+						children: new Array<PositionedDOMElementData>(),
+						data:viewPortData
+					}
+					
 					//schedule an asynchronous layout
-					scheduleLayout(containingDOMElementData, containingDOMElementData, viewPortData);
+					scheduleLayout(containingDOMElementData, lastPositionedDOMElementData, viewPortData);
 				}
 				
 			}

@@ -34,7 +34,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Overriden to prevent layout in JS, as it will be done by
 	 * the browser via CSS.
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:ContainingDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:LastPositionedDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		
 	}
