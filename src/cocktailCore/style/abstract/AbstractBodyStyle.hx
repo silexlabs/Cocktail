@@ -62,7 +62,13 @@ class AbstractBodyStyle extends ContainerStyle
 			height:viewPort.height
 			}
 		
-			scheduleLayout(viewPortData, viewPortData, viewPortData);
+								
+			var lastPositionedDOMElementData:LastPositionedDOMElementData = {
+				children: new Array<AbstractStyle>(),
+				data:viewPortData
+			}
+			
+			scheduleLayout(viewPortData, lastPositionedDOMElementData, viewPortData);
 		}
 	}
 	

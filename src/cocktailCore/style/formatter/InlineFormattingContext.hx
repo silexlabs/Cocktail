@@ -14,32 +14,46 @@ import cocktailCore.style.StyleData;
 import haxe.Log;
 
 /**
- * ...
+ * This formatting context place all formatted DOMElements
+ * in lines, called line box. When the line is full and can't contain other
+ * DOMElements, a new line is created
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class InlineFormattingContext extends FormattingContext
 {
 
+	/**
+	 * The DOMElements in the current line
+	 */
 	private var _domElementInLineBox:Array<LineBoxElementData>;
 	
+	/**
+	 * Determine wheter the first line of the formatting context was
+	 * already laid out. Used when applying text indent which is only
+	 * applied to the first line of an inline formatting context
+	 */
 	private var _firstLineLaidOut:Bool;
 	
+	/**
+	 * class constructor. Init class attributes
+	 */
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
-	
 		_firstLineLaidOut = false;
-		super(domElement, previousFormattingContext);
-		
 		_domElementInLineBox = new Array<LineBoxElementData>();
 		
+		super(domElement, previousFormattingContext);
 	}
 	
-
+	/**
+	 * Called when the inline formatting context will
+	 * be replaced by anohter. Used to ensure that the last line
+	 * of DOMElements is laid out
+	 */
 	override public function destroy():Void
 	{
 		startNewLine(0, true);
-		
 	}
 	
 
@@ -66,10 +80,8 @@ class InlineFormattingContext extends FormattingContext
 					}
 					else
 					{
-						startNewLine(domElement.offsetWidth );
+						startNewLine(domElement.offsetWidth);
 					}
-					
-				
 				default:	
 					
 			}
@@ -106,14 +118,14 @@ class InlineFormattingContext extends FormattingContext
 		super.insertSpace(domElement);
 	}
 	
+	/**
+	 * Overiden to imcrement the x position of the
+	 * flowData with the placed DOMElement's offset width
+	 */
 	override private function place(domElement:DOMElement):Void
 	{
 		super.place(domElement);
-			
 		_flowData.x += domElement.offsetWidth;
-
-		
-		
 	}
 	
 	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
@@ -168,15 +180,12 @@ class InlineFormattingContext extends FormattingContext
 	{
 		if (isFloat == true)
 		{
-			
 			 _flowData.y = _floatsManager.clearFloat(clear, _flowData);
-			
 		}
 	}
 	
 	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
-
 		super.placeFloat(domElement, floatData);
 		
 		if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
@@ -187,9 +196,6 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_flowData.x = _flowData.xOffset;
 		}
-		
-		
-
 	}
 	
 	private function removeSpaces():Void
@@ -212,6 +218,7 @@ class InlineFormattingContext extends FormattingContext
 								
 			default:
 		}
+		
 		if (_domElementInLineBox.length > 0)
 		{
 			switch (_domElementInLineBox[_domElementInLineBox.length - 1].domElement.style.computedStyle.whiteSpace)
@@ -228,9 +235,6 @@ class InlineFormattingContext extends FormattingContext
 					default:	
 				}
 				
-					
-					
-									
 				default:
 			}
 		}	
@@ -337,23 +341,41 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	/**
+	 * When a line box is full and a new line will
+	 * be created, compute the height of the current line
+	 * box and place its DOMElement vertically.
+	 * 
+	 * A line box height corresponds to the addition 
+	 * of the highest ascent and descent of its
+	 * DOMElement above the baseline
+	 */
 	private function computeLineBoxHeight():Int
 	{
-		//get ascent and descent of the strut
+		//init the ascent and descent of the line box
 		var lineBoxAscent:Float = 0;
 		var lineBoxDescent:Float = 0;
 		
+		//loop in all DOMElement in the line box to find
+		//the highest ascent and descent among them
 		for (i in 0..._domElementInLineBox.length)
 		{
 			var domElement:DOMElement = _domElementInLineBox[i].domElement;
 			var domElementAscent:Int;
 			var domElementDescent:Int;
+			
+			//the computed vertical align is the offset of the DOMElemenet relative
+			//to the baseline
 			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+			
+			//for embedded or inlineBlock elements, which have no baseline, the height zabove
+			//the baseline is the offset height and they have no descent
 			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
 			{
 				domElementAscent = domElement.offsetHeight;
 				domElementDescent = 0;
 			}
+			//else retrieve the ascent and descent and apply leading to it
 			else
 			{
 				domElementAscent = domElement.style.fontMetrics.ascent;
@@ -368,11 +390,10 @@ class InlineFormattingContext extends FormattingContext
 				domElementDescent = Math.round((domElementDescent + leading / 2));
 			}
 			
-			//! warning only works if all domElement in line are aligned to the baseline of the strut or are direct children
-			//of the block container
+			//if the ascent or descent is superior to the current maximum
+			//ascent or descent, it becomes the line box ascent/descent
 			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
 			{
-				
 				lineBoxAscent = domElementAscent - domElementVerticalAlign;
 			}
 			
@@ -382,20 +403,21 @@ class InlineFormattingContext extends FormattingContext
 			}
 		}
 		
+		//compute the line box height
 		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent; 
 		
-		
+		//for each DOMElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._domElementInLineBox.length)
 		{
-				
-			_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, Math.round(lineBoxAscent) + Math.round(_domElementInLineBox[i].domElement.style.computedStyle.verticalAlign) + _flowData.y + _domElementInLineBox[i].domElement.style.computedStyle.marginTop);
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
 			
-			if (_domElementInLineBox[i].domElement.style.computedStyle.display == inlineBlock)
+			domElement.style.setNativeY(domElement, Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _flowData.y + domElement.style.computedStyle.marginTop);
+			
+			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
+			//so that its bottom margin touches the baseline
+			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
 			{
-			}
-			if (_domElementInLineBox[i].domElement.style.isEmbedded() == true || _domElementInLineBox[i].domElement.style.display == inlineBlock)
-			{
-				_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, _domElementInLineBox[i].domElement.style.getNativeY(_domElementInLineBox[i].domElement) - _domElementInLineBox[i].domElement.offsetHeight);
+				domElement.style.setNativeY(domElement, domElement.style.getNativeY(domElement) - domElement.offsetHeight);
 			}
 		}
 		

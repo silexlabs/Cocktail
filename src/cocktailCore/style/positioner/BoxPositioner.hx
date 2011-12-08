@@ -62,8 +62,8 @@ class BoxPositioner
 
 		//the DOMElement is first place in the same position as
 		//its containing DOMElement, using its global coordinates
-		domElement.globalX = containingDOMElementData.globalX;
-		domElement.globalY = containingDOMElementData.globalY;
+		//domElement.globalX = containingDOMElementData.globalX;
+		//domElement.globalY = containingDOMElementData.globalY;
 		
 		//an offset is then applied to it, using the left, top, right and bottom
 		//computed styles value
@@ -80,6 +80,7 @@ class BoxPositioner
 	 */
 	private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData):Void
 	{
+		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.auto)
@@ -91,6 +92,7 @@ class BoxPositioner
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.auto)
 		{
+		
 			domElement.style.setNativeX(domElement, containingDOMElementData.width - domElement.style.computedStyle.width - domElement.style.computedStyle.right);
 		}
 		

@@ -9,6 +9,7 @@ package cocktailCore.style;
 import cocktail.domElement.DOMElement;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
+import cocktailCore.style.abstract.AbstractStyle;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
@@ -28,6 +29,21 @@ import cocktail.style.StyleData;
 		var isHeightAuto:Bool;
 		var globalX:Int;
 		var globalY:Int;
+	}
+	
+	/**
+	 * Contains both the data of the first 
+	 * positioned ancestor (a DOMElement with
+	 * a position style of relative, absolute,
+	 * or fixed) and a reference to each of
+	 * the AbstractStyle using it the data
+	 * as origin to layout an absolutely
+	 * positioned DOMElement
+	 */
+	typedef LastPositionedDOMElementData = {
+		var children:Array<AbstractStyle>;
+		var data:ContainingDOMElementData;
+		
 	}
 	
 	/**
