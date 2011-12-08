@@ -40,10 +40,10 @@ class StyleApp
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(15));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(15));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(15));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(15));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(10));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(10));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(10));
+		domElement.style.paddingBottom = PaddingStyleValue.length(px(10));
 		
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.position = PositionStyleValue.relative;
@@ -65,8 +65,12 @@ class StyleApp
 
 		domElement.style.height = DimensionStyleValue.auto;
 		domElement.style.width = DimensionStyleValue.auto;
-		domElement.style.marginLeft = domElement.style.marginRight = MarginStyleValue.length(px(12));
-		domElement.style.marginBottom = MarginStyleValue.length(px(12));
+		
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(18));
+		domElement.style.marginTop = MarginStyleValue.length(px(10));
+		domElement.style.marginBottom = MarginStyleValue.length(px(10));
+		
 		domElement.style.textAlign = TextAlignStyleValue.center;
 
 		domElement.style.display = DisplayStyleValue.inlineBlock;
@@ -83,7 +87,7 @@ class StyleApp
 		//getDefaultStyle(domElement);
 
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(48));
+		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(57));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
 	

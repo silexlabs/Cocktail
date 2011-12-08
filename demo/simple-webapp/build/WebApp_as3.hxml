@@ -1,5 +1,5 @@
 -cp ../src
 -cp ../../../src/
--main Iphone
--swf ../bin/Iphone.swf
+-main WebApp
+-swf ../bin/WebApp.swf
 -swf-version 10.1

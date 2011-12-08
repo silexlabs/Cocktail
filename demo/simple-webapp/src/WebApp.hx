@@ -14,6 +14,7 @@ package;
  * @date	2001-11-30
  */
 
+import cocktail.domElement.BodyDOMElement;
 import cocktailCore.style.StyleData;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
@@ -44,6 +45,7 @@ class WebApp
 {
 	
 	// the main container which will be attached to the body of the publication
+	private var _body:BodyDOMElement;
 	private var _mainContainer:ContainerDOMElement;
 	
 	public static function main()
@@ -56,13 +58,8 @@ class WebApp
 	 */
 	public function new() 
 	{
-		#if js
-		js.Lib.window.onresize = refresh;
-		
-		#elseif flash9
-		flash.Lib.current.stage.addEventListener(flash.events.Event.RESIZE, refresh);
-		
-		#end
+		_body = new BodyDOMElement();
+		WebAppStyle.getBodyStyle(_body);
 		drawInterface();
 	}
 	
@@ -79,49 +76,6 @@ class WebApp
 		WebAppStyle.getDefaultStyle(_mainContainer);
 		
 		// attach main container to document root
-		attach(_mainContainer);
-		
-		// refresh layout
-		refresh();
+		_body.addChild(_mainContainer);
 	}
-	
-	
-	/**
-	 * Used to refresh layout
-	 * 
-	 * @param	event
-	 */
-	private function refresh(event:Dynamic = null)
-	{
-		var browserWidth:Int;
-		var browserHeight:Int;
-		
-		#if flash9
-		browserWidth = Math.round(flash.Lib.current.stage.stageWidth);
-		browserHeight = Math.round(flash.Lib.current.stage.stageHeight);
-		#elseif js
-		browserWidth = js.Lib.document.body.clientWidth;
-		browserHeight = js.Lib.document.body.clientHeight;
-		#end
-		
-		_mainContainer.style.computedStyle.lineHeight = 70;
-		_mainContainer.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, _mainContainer.style.fontMetrics);
-	
-	}
-	
-	/**
-	 * Attaches a domElement to the document/root/body/stage
-	 * 
-	 * @param	domElement
-	 */
-	private function attach(domElement:DOMElement):Void
-	{
-		#if flash9
-		flash.Lib.current.addChild(domElement.nativeElement);
-		#elseif js
-		js.Lib.document.body.appendChild(domElement.nativeElement);
-		js.Lib.document.body.style.margin = 0;
-		#end
-	}
-	
 }

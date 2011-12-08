@@ -17,13 +17,14 @@ TASKS
 		=> construire un dom contenant tout le site
 		=> pour la navigation et le passage d'une page à une autre, masquer/afficher les éléments correspondants
 	Elements:
-		=> Home: 4 boutons d'applications (Calendar, Music, Notes, Credits)
+		=> Home: 4 boutons d'applications (Calendar, Music, Notes, Credits) + SilexLabs
 		=> Calendar: Liste clickable de jours
 		=> Music: Liste clickable imbriquées: Artist => Album => Song
 		=> Notes: Liste clickable simple: Libellé => Contenu
 		=> Credits: page contenant des listes clickables pour accéder:
 			=> au site de cocktail avec le logo
 			=> au site de silexlabs
+			=> site haXe
 			=> aux fichiers sources
 
  => Composants nécessaires => 1 jour => OK

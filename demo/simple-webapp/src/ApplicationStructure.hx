@@ -209,7 +209,7 @@ class ApplicationStructure
 		var backGround:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		// style is applied here even if image is not loaded so RichList assets are placed on the correct position
 		WebAppStyle.getBgStyle(backGround);
-		ResourceLoaderManager.loadImage(homeTilePath, onHomeTileLoaded, onImageLoadError, backGround);
+		backGround.load(homeTilePath);
 
 		// create richList data & style
 		var richList:RichList = createRichListHome(cellDataArray);
@@ -301,16 +301,30 @@ class ApplicationStructure
 		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		var headerTilePath:String = "images/H1.png";
 		
-		//var onHeaderTileLoadedDelegate:ImageDOMElement->ContainerDOMElement->Void = onHeaderTileLoaded;
-		//ResourceLoaderManager.loadImage(headerTilePath, function(headerTile:ImageDOMElement) { onHeaderTileLoadedDelegate(headerTile, header); }, onHeaderTileLoadError, headerTile);
-		ResourceLoaderManager.loadImage(headerTilePath, onHeaderTileLoaded, onImageLoadError, headerTile);
+		headerTile.style.width = DimensionStyleValue.percent(100);
+		headerTile.style.height = DimensionStyleValue.length(px(43));
+		headerTile.load(headerTilePath);
+		
 		
 		// Back button
-		var backButton:TextElement = new TextElement('Back');
 		var backButtonContainer:ContainerDOMElement = Utils.getContainer();
-		backButtonContainer.addText(backButton);
-		backButtonContainer.onMouseUp = onBackButtonMouseUp;
 		WebAppStyle.getBackButtonStyle(backButtonContainer);
+		// image
+		var backButtonArrowLeft:ImageDOMElement = new ImageDOMElement();
+		WebAppStyle.getBackButtonImageStyle(backButtonArrowLeft);
+		backButtonArrowLeft.load('images/blackButtonLeft.png');
+		backButtonContainer.addChild(backButtonArrowLeft);
+		var backButtonArrowRight:ImageDOMElement = new ImageDOMElement();
+		WebAppStyle.getBackButtonImageStyle(backButtonArrowRight);
+		backButtonArrowRight.load('images/blackButtonRight.png');
+		backButtonContainer.addChild(backButtonArrowRight);
+		// text
+		var backButtonTextContainer:ContainerDOMElement = Utils.getContainer();
+		WebAppStyle.getBackButtonTextStyle(backButtonTextContainer);
+		var backButtonText:TextElement = new TextElement('Back');
+		backButtonTextContainer.addText(backButtonText);
+		backButtonContainer.addChild(backButtonTextContainer);
+		backButtonContainer.onMouseUp = onBackButtonMouseUp;
 
 		// header title
 		var headerTitle:TextElement = new TextElement(title);
@@ -328,32 +342,6 @@ class ApplicationStructure
 		WebAppStyle.getHeaderStyle(header);
 
 		return header;
-	}
-	
-	/**
-	 * Callback when the header image has been loaded
-	 * 
-	 * @param	image
-	 */
-	//private function onHeaderTileLoaded(image:ImageDOMElement, container:ContainerDOMElement):Void
-	private function onHeaderTileLoaded(image:ImageDOMElement):Void
-	{
-		// set image style
-		image.style.width = DimensionStyleValue.percent(100);
-		
-		// add image to container
-		//container.addChild(image);
-	}
-	
-	/**
-	 * Callback when the home tile image has been loaded
-	 * 
-	 * @param	image
-	 */
-	private function onHomeTileLoaded(image:ImageDOMElement):Void
-	{
-		// set image style. this has to be done once when image has been loaded
-		WebAppStyle.getBgStyle(image);
 	}
 	
 	/**
