@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.js;
 
@@ -36,37 +32,6 @@ class DOMElement extends AbstractDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
-	}
-	
-	/**
-	 * Set the DOMElement properties which can be retrieved
-	 * from the native HTML DOM element
-	 */
-	override private function init():Void
-	{
-		super.init();
-		
-		if (_nativeElement.style.width != null)
-		{
-			this._width = Std.parseInt(_nativeElement.style.width);
-		}
-		else
-		{
-			this._width = _nativeElement.offsetWidth;
-		}
-		
-		if (_nativeElement.style.height != null)
-		{
-			this._height = Std.parseInt(_nativeElement.style.height);
-		}
-		else
-		{
-			this._height = _nativeElement.offsetHeight;
-		}
-		
-		this._x = Std.parseInt(_nativeElement.style.left);
-		this._y = Std.parseInt(_nativeElement.style.top);
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -186,40 +151,6 @@ class DOMElement extends AbstractDOMElement
 		}
 		
 		return this._matrix;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden Setters to manipulate the JavaScript DOMElement
-	// set the following attributes : x,y,width,height
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setX(value:Int):Int 
-	{
-		super.setX(value);
-		
-		this._nativeElement.style.left = value + "px";
-		return this._x;
-	}
-	
-	override private function setY(value:Int):Int 
-	{
-		super.setY(value);
-		this._nativeElement.style.top = value + "px";
-		return this._y;
-	}
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		this._nativeElement.style.width = value +"px";
-		return this._width;
-	}
-	
-	override private function setHeight(value:Int):Int 
-	{
-		super.setHeight(value);
-		this._nativeElement.style.height = value + "px";
-		return this._height;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

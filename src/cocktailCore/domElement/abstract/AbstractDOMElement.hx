@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.abstract;
 
@@ -22,6 +18,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.unit.UnitData;
 import haxe.Log;
 
 /**
@@ -115,17 +112,11 @@ class AbstractDOMElement
 	
 	/////////////////////////////////
 	// COORDS attributes
-	// Stores the coords of the DOM Object
-	// as they are set. This abstraction is used
-	// to prevent runtime inconsistencies happening
-	// when retrieving coords from a native dom element
 	////////////////////////////////
 	
 	/**
-	 * Stores the x position of this dom element, relative
-	 * to its parent
+	 * get/set the x position of this DOMElement's nativeElement
 	 */
-	private var _x:Int;
 	public var x(getX, setX):Int;
 	
 	/**
@@ -135,10 +126,8 @@ class AbstractDOMElement
 	public var globalX(getGlobalX, setGlobalX):Int;
 	
 	/**
-	 * Stores the y position of this dom element, relative
-	 * to its parent
+	 * get/set the y position of this DOMElement's nativeElement
 	 */
-	private var _y:Int;
 	public var y(getY, setY):Int;
 	
 	/**
@@ -148,15 +137,13 @@ class AbstractDOMElement
 	public var globalY(getGlobalY, setGlobalY):Int;
 	
 	/**
-	 * Stores the width of this dom element
+	 * get/set the width position of this DOMElement's nativeElement
 	 */
-	private var _width:Int;
 	public var width(getWidth, setWidth):Int;
 	
 	/**
-	 * Stores the height of this dom element
+	 * get/set the height position of this DOMElement's nativeElement
 	 */
-	private var _height:Int;
 	public var height(getHeight, setHeight):Int;
 	
 	/**
@@ -289,10 +276,6 @@ class AbstractDOMElement
 		//init the origin transformation point to the 
 		//top left of this domElement
 		_registrationPoint = constant(left, top);
-		
-		//init the origin positioning of the DOMElement
-		_x = 0;
-		_y = 0;
 		
 		//init the style for this DOMElement
 		initStyle();
@@ -454,10 +437,10 @@ class AbstractDOMElement
 					registrationPointPoint.x = 0;
 				
 				case center :
-					registrationPointPoint.x = getWidth() / 2;
+					registrationPointPoint.x = this.width / 2;
 					
 				case right :
-					registrationPointPoint.x = getWidth();
+					registrationPointPoint.x = this.width;
 			}
 			
 			//for y point coordinate	
@@ -467,10 +450,10 @@ class AbstractDOMElement
 					registrationPointPoint.y = 0;
 				
 				case middle :
-					registrationPointPoint.y = getHeight() / 2;
+					registrationPointPoint.y = this.height / 2;
 					
 				case bottom :
-					registrationPointPoint.y = getHeight();
+					registrationPointPoint.y = this.height;
 			}
 		}
 		
@@ -821,48 +804,72 @@ class AbstractDOMElement
 	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * update the left style, triggering a layout of the document
+	 */ 
 	private function setX(value:Int):Int 
 	{
-		this ._x = value;
-		return this._x;
+		this._style.left = PositionOffsetStyleValue.length(px(value));
+		return value;
 	}
 	
+	/**
+	 * return the x of the nativeElement, relative to its parent
+	 */ 
 	private function getX():Int 
 	{ 
-		return this._x; 
+		return this._style.getNativeX(cast(this)); 
 	}
 	
+	/**
+	 * update the top style, triggering a layout of the document
+	 */ 
 	private function setY(value:Int):Int
 	{
-		this._y = value;
-		return this._y;
+		this._style.top = PositionOffsetStyleValue.length(px(value));
+		return value;
 	}
-	
+		
+	/**
+	 * return the y of the nativeElement, relative to its parent
+	 */
 	private function getY():Int 
 	{ 
-		return this._y; 
+		return this._style.getNativeY(cast(this)); 
 	}
 	
+	/**
+	 * update the width style, triggering a layout of the document
+	 */ 
 	private function setWidth(value:Int):Int
 	{
-		this._width = value;
-		return this._width;
+		this._style.width = DimensionStyleValue.length(px(value));
+		return value;
 	}
 	
+	/**
+	 * return the width of the nativeElement
+	 */
 	private function getWidth():Int 
 	{ 
-		return this._width; 
+		return this._style.getNativeWidth(cast(this)); 
 	}
 	
+	/**
+	 * update the height style, triggering a layout of the document
+	 */ 
 	private function setHeight(value:Int):Int
 	{
-		this._height = value;
-		return this._height;
+		this._style.height = DimensionStyleValue.length(px(value));
+		return value;
 	}
 	
+	/**
+	 * return the height of the nativeElement
+	 */
 	private function getHeight():Int 
 	{ 
-		return this._height;
+		return this._style.getNativeHeight(cast(this)); 
 	}
 	
 	/**
@@ -924,7 +931,7 @@ class AbstractDOMElement
 		}
 		this.x = localX;
 		
-		return this._x;
+		return value;
 	}
 	
 	/**
@@ -983,7 +990,7 @@ class AbstractDOMElement
 		}
 		this.y = localY;
 		
-		return this._y;
+		return value;
 	}
 	
 	/**

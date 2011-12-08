@@ -5,9 +5,9 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.runtime.abstract;
+package cocktailCore.viewport.abstract;
 
-import cocktail.runtime.ViewportData;
+import cocktail.viewport.ViewportData;
 
 /**
  * This class handles the interaction with the view port of the application.
