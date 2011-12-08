@@ -272,6 +272,20 @@ class AbstractStyle
 		this._textTransform = TextTransformStyleValue.none;
 		this._whiteSpace = WhiteSpaceStyleValue.normal;
 		
+		
+	}
+	
+	/**
+	 * Return default value for style defined by the User Agent
+	 * in a browser, those styles are hard coded for other
+	 * runtimes
+	 */
+	public static function getDefaultStyle():DefaultStylesData
+	{
+		return {
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			color:ColorValue.keyword(ColorKeywordValue.black)
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

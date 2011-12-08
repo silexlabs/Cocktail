@@ -109,6 +109,18 @@ import cocktail.style.StyleData;
 	}
 	
 	/**
+	 * Holds a reference to default styles values.
+	 * Those styles default values are defined by 
+	 * the User Agent in JS, for Flash and other
+	 * runtime they will be hard-coded in this
+	 * structure.
+	 */
+	typedef DefaultStylesData = {
+		var fontFamily:Array<FontFamilyStyleValue>;
+		var color:ColorValue;
+	}
+	
+	/**
 	 * Contains the data necessary to place
 	 * a DOMElement in flow
 	 */

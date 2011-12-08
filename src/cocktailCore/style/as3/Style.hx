@@ -65,6 +65,20 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
+	/**
+	 * Overriden to set default styles normally defined
+	 * by User Agent but that must be hard-coded
+	 * in Flash
+	 */ 
+	override private function initDefaultStyleValues():Void
+	{
+		super.initDefaultStyleValues();
+		
+		var defaultStyles:DefaultStylesData = AbstractStyle.getDefaultStyle();
+		this._fontFamily = defaultStyles.fontFamily;
+		this._color = defaultStyles.color;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
 	// apply and retrieve the properties from the native flash DisplayObject
