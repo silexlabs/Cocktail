@@ -5,16 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.runtime;
+package cocktailCore.style.js;
 
+import cocktail.domElement.DOMElement;
+import cocktailCore.style.abstract.AbstractBodyStyle;
 
-#if flash9
-typedef Viewport = cocktail.runtime.as3.Viewport;
-#elseif js
-typedef Viewport = cocktail.runtime.js.Viewport;
-#elseif php
-typedef Viewport = cocktail.runtime.php.Viewport;
-#elseif doc
-import cocktail.runtime.abstract.AbstractViewport;
-class Viewport extends AbstractViewport {}
-#end	
+/**
+ * This is the JavaScript implementation of the BodyStyle
+ * 
+ * @author Yannick DOMINGUEZ
+ */
+class BodyStyle extends AbstractBodyStyle
+{
+	/**
+	 * class constructor
+	 * @param	domElement
+	 */
+	public function new(domElement:DOMElement) 
+	{
+		super(domElement);
+	}
+	
+}
