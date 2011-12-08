@@ -126,7 +126,6 @@ class UnitManager
 	{
 		var fontSize:Float;
 		
-		
 		switch (relativeSize)
 		{
 			case larger:
