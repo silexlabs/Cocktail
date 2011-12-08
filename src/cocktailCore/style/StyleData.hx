@@ -10,6 +10,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.abstract.AbstractStyle;
+import cocktail.geom.GeomData;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
@@ -32,18 +33,34 @@ import cocktailCore.style.abstract.AbstractStyle;
 	}
 	
 	/**
-	 * Contains both the data of the first 
+	 * Contains the data of the first 
 	 * positioned ancestor (a DOMElement with
 	 * a position style of relative, absolute,
 	 * or fixed) and a reference to each of
-	 * the AbstractStyle using it the data
+	 * the style objects using the data
 	 * as origin to layout an absolutely
-	 * positioned DOMElement
+	 * positioned DOMElement.
 	 */
 	typedef LastPositionedDOMElementData = {
-		var children:Array<AbstractStyle>;
+		var children:Array<PositionedDOMElementData>;
 		var data:ContainingDOMElementData;
 		
+	}
+	
+	/**
+	 * Holds a reference to the Style of a
+	 * positioned DOMElement. The static position
+	 * is the x,y point where the DOMElement
+	 * would have been if its position style
+	 * had been 'static'.
+	 * 
+	 * It is used if left and right or
+	 * top and bottom styles are both
+	 * set to 'auto'
+	 */
+	typedef PositionedDOMElementData =  {
+		var style:AbstractStyle;
+		var staticPosition:PointData;
 	}
 	
 	/**
