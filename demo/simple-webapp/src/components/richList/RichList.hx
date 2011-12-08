@@ -75,9 +75,23 @@ class RichList extends ContainerDOMElement
 			
 			// image part
 			var cellImage:ImageDOMElement = new ImageDOMElement();
-			// a delegate function is used to be able to pass an extra parameter to the callback
-			var onPictureLoadedDelegate:ImageDOMElement->ContainerDOMElement->RichListStyleModel->CellModel->Void = onPictureLoaded;
-			ResourceLoaderManager.loadImage(cellData.imagePath, function(cellImage:ImageDOMElement) { onPictureLoadedDelegate(cellImage, cell, listStyle, cellData); }, onPictureLoadError, cellImage);
+			
+			// create line to separate cells
+			listStyle.cell(cell);
+			
+			// set image style
+			listStyle.cellImage(cellImage);
+			
+			// add line, then image and then text
+			//cell.addChild(line);
+			cell.addChild(cellImage);
+			cell.addText(new TextElement(cellData.text));
+			// create line to separate cells
+			listStyle.cell(cell);
+
+			
+			
+			cellImage.load(cellData.imagePath);
 
 			// add cell to instance
 			this.addChild(cell);
@@ -100,34 +114,6 @@ class RichList extends ContainerDOMElement
 		}
 	}
 	
-	/**
-	 * Called when the image is loaded correctly. Atttach the image to the cell and set the style
-	 * 
-	 * @param	domElement
-	 * @param	cell
-	 * @param	listStyle
-	 * @param	cellData
-	 */
-	private function onPictureLoaded(domElement:ImageDOMElement, cell:ContainerDOMElement, listStyle:RichListStyleModel, cellData:CellModel):Void
-	{
-		// create line to separate cells
-		listStyle.cell(cell);
-		
-		//var line:GraphicDOMElement = Utils.getGraphic();
-		//StyleNormal.getCellLine(line);
-		//Utils.fillGraphic(line, 0xDDDDDD);
-			
-		// set image style
-		listStyle.cellImage(domElement);
-		
-		// add line, then image and then text
-		//cell.addChild(line);
-		cell.addChild(domElement);
-		cell.addText(new TextElement(cellData.text));
-		// create line to separate cells
-		listStyle.cell(cell);
-	}
-
 	/**
 	 * Called when there is an error while loading picture
 	 * 

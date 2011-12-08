@@ -82,6 +82,23 @@ class WebAppStyle
 	}
 	
 	/**
+	 * Defines body Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getBodyStyle(domElement:DOMElement):Void
+	{
+		getDefaultStyle(domElement);
+		
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+
+		domElement.style.position = PositionStyleValue.staticStyle;
+	}
+	
+	/**
 	 * Defines main container Style
 	 * 
 	 * @param	domElement
@@ -167,7 +184,6 @@ class WebAppStyle
 		
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
-		//domElement.style.float = FloatStyleValue.left;
 		domElement.style.color = ColorValue.hex('222222');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
@@ -183,36 +199,6 @@ class WebAppStyle
 
 	}
 
-	
-	/**
-	 * Defines back button Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function getBackButtonStyle(domElement:DOMElement):Void
-	{
-		//getDefaultStyle(domElement);
-		
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.float = FloatStyleValue.left;
-		domElement.style.color = ColorValue.hex('EEEEEE');
-
-		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
-		domElement.style.lineHeight = LineHeightStyleValue.normal;
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Helvetica'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-		domElement.style.textAlign = TextAlignStyleValue.center;
-
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(15));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(12));
-		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-	}
-
 	/**
 	 * Defines header title text Style
 	 * 
@@ -223,7 +209,6 @@ class WebAppStyle
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
-		//domElement.style.float = FloatStyleValue.none;
 		domElement.style.color = ColorValue.hex('EEEEEE');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
@@ -242,8 +227,64 @@ class WebAppStyle
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.height = DimensionStyleValue.length(px(43));
-		domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(43));
+		//domElement.style.height = DimensionStyleValue.percent(100);
+	}
+
+	/**
+	 * Defines back button Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getBackButtonStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);
+		
+		domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(10));
+	}
+
+	/**
+	 * Defines back button text Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getBackButtonTextStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);
+		
+		domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.color = ColorValue.hex('EEEEEE');
+
+		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
+		domElement.style.lineHeight = LineHeightStyleValue.normal;
+		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		domElement.style.fontStyle = FontStyleStyleValue.normal;
+		domElement.style.fontFamily =
+			[
+				FontFamilyStyleValue.familyName('Helvetica'),
+				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
+			];
+		domElement.style.textAlign = TextAlignStyleValue.center;
+
+		domElement.style.paddingTop = PaddingStyleValue.length(px(12));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(30));
+		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+	}
+
+	/**
+	 * Defines back button image Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getBackButtonImageStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);
+		
+		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 	}
 
 	/**
