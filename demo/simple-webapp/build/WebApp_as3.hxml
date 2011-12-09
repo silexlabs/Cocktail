@@ -1,0 +1,5 @@
+-cp ../src
+-cp ../../../src/
+-main WebApp
+-swf ../bin/WebApp.swf
+-swf-version 10.1
