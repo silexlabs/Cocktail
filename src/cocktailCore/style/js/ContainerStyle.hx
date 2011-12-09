@@ -7,16 +7,22 @@
 */
 package cocktailCore.style.js;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
+import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.StyleData;
+import haxe.Log;
 
 
 /**
  * This is the JavaScript implementation of the ContainerStyle.
  * 
  * In JS, styles are applied using native CSS, so the browser
- * formats the document instead of Cocktail
+ * formats the document instead of Cocktail.
+ * 
+ * Cocktail only store for each DOMElement the position
+ * and dimensions of its native HTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -29,14 +35,24 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		super(domElement);
 	}
-
+	
 	/**
-	 * Overriden to prevent layout in JS, as it will be done by
-	 * the browser via CSS.
+	 * Make all the DOMElement retrieve their native HTMLElement positions
+	 * and dimensions
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:LastPositionedDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
+		for (i in 0...containerDOMElement.children.length)
+		{
+			if (isDOMElement(containerDOMElement.children[i]) == true)
+			{
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
+				childrenDOMElement.style.flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+			}
+		}
 	}
+		
 	
 }

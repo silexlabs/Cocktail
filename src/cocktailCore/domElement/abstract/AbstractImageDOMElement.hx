@@ -40,24 +40,10 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 * The callback called when there was an error during loading
 	 */
 	public var onError:String->Void;
-	
+
 	//////////////////////
-	// PICTURE INFO
+	// PRIVATE ATTRIBUTES
 	/////////////////////
-	
-	/**
-	 * The actual width (no scaling) of the currently loaded picture
-	 * in pixels
-	 */
-	private var _naturalWidth:Null<Int>;
-	public var naturalWidth(getNaturalWidth, never):Null<Int>;
-	
-	/**
-	 * The actual height (no scaling) of the currently loaded picture
-	 * in pixels
-	 */
-	private var _naturalHeight:Null<Int>;
-	public var naturalHeight(getNaturalHeight, never):Null<Int>;
 	
 	/**
 	 * The URL of the loaded picture.
@@ -65,10 +51,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 */
 	private var _src:String;
 	public var src(getSrc, never):String;
-	
-	//////////////////////
-	// PRIVATE ATTRIBUTES
-	/////////////////////
 	
 	/**
 	 * Reponsible for loading pictures into a NativeElement. 
@@ -177,25 +159,4 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	{
 		return this._smooth;
 	}
-	
-	private function getNaturalWidth():Null<Int>
-	{
-		if (_naturalWidth == null)
-		{
-			return 0;
-		}
-		
-		return _naturalWidth;
-	}
-	
-	private function getNaturalHeight():Null<Int>
-	{
-		if (_naturalHeight == null)
-		{
-			return 0;
-		}
-		
-		return _naturalHeight;
-	}
-	
 }
