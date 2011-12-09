@@ -76,6 +76,11 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		_imageLoader = new ImageLoader();
+		//use the provided NativeElement if any
+		if (nativeElement != null)
+		{
+			_imageLoader.nativeElement = nativeElement;
+		}
 		super(_imageLoader.nativeElement);
 	}
 
