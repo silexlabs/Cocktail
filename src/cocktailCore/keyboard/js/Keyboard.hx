@@ -22,7 +22,7 @@ import cocktail.keyboard.KeyboardData;
 class Keyboard extends AbstractKeyboard
 {
 	/**
-	 * class constructor. Set keyboard listeners
+	 * class constructor
 	 */
 	public function new() 
 	{
@@ -30,29 +30,36 @@ class Keyboard extends AbstractKeyboard
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// EVENTS
-	// overriden private native keyboard event handler method
+	// OVERRIDEN CALLBACKS SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set the listeners for JavaScript keyboard event
-	 */
-	override private function setNativeKeyboardListeners():Void
+	override private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
 	{
-		//add listener on the Document to receive global keyboard events
-		//eventually might be applied at element level to add focus
-		//management with keyboard
-		untyped Lib.document.addEventListener("keydown", onNativeKeyDown);
-		untyped Lib.document.addEventListener("keyup", onNativeKeyUp);
+		if (value == null)
+		{
+			untyped Lib.document.removeEventListener("keydown", onNativeKeyDown);
+		}
+		else
+		{
+			//add listener on the Document to receive global keyboard events
+			//eventually might be applied at element level to add focus
+			//management with keyboard
+			untyped Lib.document.addEventListener("keydown", onNativeKeyDown);
+		}
+		return _onKeyDown = value;
 	}
 	
-	/**
-	 * removes the listeners for JavaScript keyboard event
-	 */
-	override private function unsetNativeKeyboardListeners():Void
+	override private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
 	{
-		untyped Lib.document.removeEventListener("keydown", onNativeKeyDown);
-		untyped Lib.document.removeEventListener("keyup", onNativeKeyUp);
+		if (value == null)
+		{
+			untyped Lib.document.removeEventListener("keyup", onNativeKeyUp);
+		}
+		else
+		{
+			untyped Lib.document.addEventListener("keyup", onNativeKeyUp);
+		}
+		return _onKeyUp = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
