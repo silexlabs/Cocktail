@@ -136,7 +136,12 @@ class InlineFormattingContext extends FormattingContext
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
 		
-			alignText(_firstLineLaidOut == false, isLastLine);
+			var lineWidth:Int = alignText(_firstLineLaidOut == false, isLastLine);
+			if (lineWidth > _flowData.maxWidth)
+			{
+				_flowData.maxWidth = lineWidth;
+			}
+			
 			_domElementInLineBox = new Array<LineBoxElementData>();
 			
 			_flowData.y += lineBoxHeight;
@@ -241,7 +246,7 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
-	private function alignText(firstLine:Bool, isLastLine:Bool):Void
+	private function alignText(firstLine:Bool, isLastLine:Bool):Int
 	{	
 		
 		var concatenatedLength:Int = 0;
@@ -292,6 +297,8 @@ class InlineFormattingContext extends FormattingContext
 				}
 				
 			case justify:	
+				
+				
 				if (isLastLine == true)
 				{
 					for (i in 0..._domElementInLineBox.length)
@@ -300,8 +307,13 @@ class InlineFormattingContext extends FormattingContext
 						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
 					}
 				}
+				
+				
+				
 				else
 				{
+					
+					concatenatedLength = _containingDOMElementWidth;
 					
 					var spacesNumber:Int = 0;
 					for (i in 0..._domElementInLineBox.length)
@@ -339,6 +351,8 @@ class InlineFormattingContext extends FormattingContext
 				}
 				
 		}
+		
+		return concatenatedLength;
 	}
 	
 	/**
