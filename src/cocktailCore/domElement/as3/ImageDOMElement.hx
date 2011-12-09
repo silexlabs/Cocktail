@@ -44,8 +44,9 @@ class ImageDOMElement extends AbstractImageDOMElement
 		var typedimage:Loader = cast(image);
 		
 		this._src = typedimage.contentLoaderInfo.url;
-		this._naturalHeight = typedimage.contentLoaderInfo.height;
-		this._naturalWidth = typedimage.contentLoaderInfo.width;
+		this._intrinsicHeight = typedimage.contentLoaderInfo.height;
+		this._intrinsicWidth = typedimage.contentLoaderInfo.width;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 		
 		super.onLoadComplete(image);
 	}

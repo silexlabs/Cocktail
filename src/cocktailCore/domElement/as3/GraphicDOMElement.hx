@@ -88,15 +88,11 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	{
 		super.setWidth(value);
 		
-
-		if (this._style.width == DimensionStyleValue.auto)
-		{
-			//update the background delimiting this DOMElement
-			setUpBackgroundSprite(this._backGroundSprite, value, this.height);
-		
-			//update the bitmap drawing
-			updateBitmapDrawingSize();
-		}
+		//update the background delimiting this DOMElement
+		setUpBackgroundSprite(this._backGroundSprite, value, this.height);
+	
+		//update the bitmap drawing
+		updateBitmapDrawingSize();
 		
 		return value;
 	}
@@ -105,14 +101,11 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	{
 		super.setHeight(value);
 		
-		if (this._style.height == DimensionStyleValue.auto)
-		{
-			//update the background delimiting this dom element
-			setUpBackgroundSprite(this._backGroundSprite, this.width, value);
+		//update the background delimiting this dom element
+		setUpBackgroundSprite(this._backGroundSprite, this.width, value);
 		
-			//update the bitmap drawing
-			updateBitmapDrawingSize();
-		}
+		//update the bitmap drawing
+		updateBitmapDrawingSize();
 		
 		return value;
 	}
