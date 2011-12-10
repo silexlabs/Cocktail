@@ -120,7 +120,7 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 				brCornerRadius:0
 			};
 		}
-		Log.trace(width);
+		
 		moveTo(cornerRadiuses.tlCornerRadius + x, y);
 		lineTo(width - cornerRadiuses.trCornerRadius + x, y);
 	
