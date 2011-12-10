@@ -19,7 +19,6 @@ package mouse;
 
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceLoaderManager;
@@ -29,7 +28,6 @@ import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
 import cocktail.domElement.DOMElementData;
 import cocktail.domElement.GraphicDOMElement;
-import cocktail.mouse.Mouse;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.mouse.MouseData;

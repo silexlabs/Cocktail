@@ -34,7 +34,7 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 * The callback called once a picture has been successfully
 	 * loaded
 	 */
-	public var onLoad:Void->Void;
+	public var onLoad:ImageDOMElement->Void;
 	
 	/**
 	 * The callback called when there was an error during loading
@@ -126,9 +126,11 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		//refresh picture smoothing
 		this.smooth = this.smooth;
 		
+		//if provided, call the callback
+		//with the ImageDOMElement
 		if (onLoad != null)
 		{
-			onLoad();
+			onLoad(cast(this));
 		}
 	}
 	
