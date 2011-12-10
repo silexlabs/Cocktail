@@ -191,7 +191,26 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//create a new transparent bitmapData with the new size of the DOMElement
-		var newBitmapData:BitmapData = new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF);
+		//or the intrinsic size of the DOMElement if it hasn't a specific size yet
+		var width:Int;
+		var height:Int;
+		if (this.width != 0)
+		{
+			width = this.width;
+		}
+		else
+		{
+			width = this.intrinsicWidth;
+		}
+		if (this.height != 0)
+		{
+			height = this.height;
+		}
+		else
+		{
+			height = this.intrinsicHeight;
+		}
+		var newBitmapData:BitmapData = new BitmapData(width, height, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
 		//from the current bitmap data
@@ -200,9 +219,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//if the current bitmap data width is superior to the new
 		//width of the DOMElement, then only the new width of pixels
 		//must be copied, the rest will be cropped
-		if (currentBitmapData.width > this.intrinsicWidth)
+		if (currentBitmapData.width > width)
 		{
-			drawingWidth = this.intrinsicWidth;
+			drawingWidth = width;
 		}
 		//else if the new width is superior to the current bitmap width
 		//all current bitmap pixel width must be copied
@@ -214,9 +233,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//same for height
 		var drawingHeight:Int = 0;
 		
-		if (currentBitmapData.height > this.intrinsicHeight)
+		if (currentBitmapData.height > height)
 		{
-			drawingHeight = this.height;
+			drawingHeight = height;
 		}
 		else
 		{
