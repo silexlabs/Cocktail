@@ -18,7 +18,6 @@ package geom;
  */
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
@@ -138,8 +137,8 @@ class MatrixTests
 		
 		domElement.translate(20, 30);
 		
-		Assert.equals(domElement.matrix.getTranslationX, 20);
-		Assert.equals(domElement.matrix.getTranslationY, 30);
+		Assert.equals(domElement.matrix.getTranslationX(), 20);
+		Assert.equals(domElement.matrix.getTranslationY(), 30);
 		
 		
 		//test skew

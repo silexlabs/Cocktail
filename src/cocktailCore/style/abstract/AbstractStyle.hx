@@ -295,7 +295,6 @@ class AbstractStyle
 		this._textTransform = TextTransformStyleValue.none;
 		this._whiteSpace = WhiteSpaceStyleValue.normal;
 		
-		
 	}
 	
 	/**

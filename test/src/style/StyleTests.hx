@@ -35,6 +35,7 @@ import cocktail.resource.ResourceLoaderManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
+import haxe.Timer;
 
 
 class StyleTests 
@@ -209,9 +210,9 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 				textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
 				textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
 				image.width = 500;
-				foot.height = 50;
-				foot.style.height = DimensionStyleValue.auto;
-				foot.width = 350;
+			//	foot.height = 50;
+				//foot.style.height = DimensionStyleValue.auto;
+			//	foot.width = 350;
 			
 			//refreshProxy(null);
 			}
@@ -242,12 +243,34 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		};
 		
+		
 		var image2:ImageDOMElement = new ImageDOMElement();
 		getDefaultStyle(image2);
 		image2.load("preview.png");
 		image2.style.display = DisplayStyleValue.inlineStyle;
-		image2.width = 500;
-		image2.height = 300;
+		image2.style.position = absolute;
+		//image2.style.left = PositionOffsetStyleValue.length(px(0));
+		//image2.style.top = PositionOffsetStyleValue.length(px(0));
+		//image2.style.width = DimensionStyleValue.length(px(500));
+		//image2.style.height = DimensionStyleValue.length(px(300));
+		image2.style.width = DimensionStyleValue.length(px(500));
+		image2.style.height = DimensionStyleValue.length(px(300));
+
+		_footer.width = 120;
+		_footer.height = 200;
+		
+		image2.onLoad = function() {
+			
+			
+			
+			/**	
+			#if js
+			Timer.delay(function () { Log.trace(untyped image2.nativeElement.clientWidth);
+			Log.trace(untyped foot.nativeElement.clientWidth);
+			}, 1 );
+		
+			#end*/
+			};
 		textBlock.addChild(image2);
 		
 		image.onError = function(event) { };
@@ -265,16 +288,19 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		var browserWidth:Int = viewPort.width;
 		var browserHeight:Int = viewPort.height;
+
 		
 		//_mainContainer.style.computedStyle.lineHeight = 70;
 		//bodyDOMElement.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, bodyDOMElement.style.fontMetrics);
 			paint(_footer, 0xBBBBBB);
-				paint(_header, 0xCCCCCC);
+			paint(_header, 0xCCCCCC);
 	}
 	
 	
 	private function paint(domElement:GraphicDOMElement, color:Int):Void
 	{
+		Log.trace(domElement.width);
+		Log.trace(domElement.height);
 		domElement.clear();
 		domElement.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
 		domElement.drawRect(0, 0, domElement.width, domElement.height);
