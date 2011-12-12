@@ -10,6 +10,8 @@ package cocktailCore.style.js;
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.unit.UnitData;
+import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.StyleData;
 import haxe.Log;
 
 import cocktail.style.StyleData;
@@ -31,14 +33,66 @@ import cocktail.style.StyleData;
  * For each abstract style applied to a DOMElement, this class converts it to a CSS String
  * which is applied to the style object of the native HTML element
  * 
+ * Each time a layout happens (when a style changes, when the viewport is resized...), 
+ * The width, height, x and y of the native JavaScript HTMLElement are stored.
+ * 
+ * They are also stored when the width/height/x/y are set directly on the DOMElement
+ * (with DOMElement.x, DOMElement.y ...).
+ * Those value are stored immediately because in JavaScript when changing a style on an object,
+ * methods to get the actual width of an element (like clientWidth) are set asynchronously,
+ * meaning that in the following example, the width var will be equal to 0 instead of 100 : 
+ * myHTMLElement.style.width = 100px;
+ * var width = myHTMLElement.clientWidth;
+ * 
+ * A Timer needs to be set to retrieve the value and that is why it is set after a layout
+ * which is asynchronous to prevent having multiple timers and also immediately after
+ * setting it using the x,y,width or height attributes of the DOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Style extends AbstractStyle
 {
-	
+	/**
+	 * class constructor
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
+	 */
+	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	{	
+		//make the children store their own position and dimension
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+		
+		//store the JavaScript dimension and position of the native HTMLElement, now that they are available
+		setNativeHeight(this._domElement, untyped this._domElement.nativeElement.clientHeight);
+		setNativeWidth(this._domElement, untyped this._domElement.nativeElement.clientWidth);
+		setNativeX(this._domElement, untyped this._domElement.nativeElement.offsetLeft);
+		setNativeY(this._domElement, untyped this._domElement.nativeElement.offsetTop);
+		
+		//The DOMElement is set to valid to allow future re layout
+		this._isInvalid = false;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to prevent the DOMElement to be inserted into the flow, it is managed by the browser in
+	 * JavaScript
+	 */
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
+	{
+		
 	}
 	
 	/////////////////////////////////
@@ -768,216 +822,252 @@ class Style extends AbstractStyle
 	override private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
 	{
 		this._domElement.nativeElement.style.verticalAlign = getCSSVerticalAlign(value);
+		super.setVerticalAlign(value);
 		return _verticalAlign = value;
 	}
 	
 	override private function setColor(value:ColorValue):ColorValue
 	{
 		this._domElement.nativeElement.style.color = getCSSColor(value);
+		super.setColor(value);
 		return _color = value;
 	}
 	
 	override private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
 	{
 		this._domElement.nativeElement.style.wordSpacing = getCSSWordSpacing(value);
+		super.setWordSpacing(value);
 		return _wordSpacing = value;
 	}
 	
 	override private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
 	{
 		this._domElement.nativeElement.style.letterSpacing = getCSSLetterSpacing(value);
+		super.setLetterSpacing(value);
 		return _letterSpacing = value;
 	}
 	
 	override private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
 	{
 		this._domElement.nativeElement.style.textTransform = getCSSTextTransform(value);
+		super.setTextTransform(value);
 		return _textTransform = value;
 	}
 	
 	override private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
 	{
 		this._domElement.nativeElement.style.fontVariant = getCSSFontVariant(value);
+		super.setFontVariant(value);
 		return _fontVariant = value;
 	}
 	
 	override private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
 	{
 		this._domElement.nativeElement.style.fontFamily = getCSSFontFamily(value);
+		super.setFontFamily(value);
 		return _fontFamily = value;
 	}
 	
 	override private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
 	{
 		this._domElement.nativeElement.style.fontWeight = getCSSFontWeight(value);
+		super.setFontWeight(value);
 		return _fontWeight = value;
 	}
 	
 	override private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
 	{
 		this._domElement.nativeElement.style.fontStyle = getCSSFontStyle(value);
+		super.setFontStyle(value);
 		return _fontStyle = value;
 	}
 	
 	override private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
 	{
 		this._domElement.nativeElement.style.fontSize = getCSSFontSize(value);
+		super.setFontSize(value);
 		return _fontSize = value;
 	}
 	
 	override private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
 	{
 		this._domElement.nativeElement.style.lineHeight = getCSSLineHeight(value);
+		super.setLineHeight(value);
 		return _lineHeight = value;
 	}
 	
 	override private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
 	{
 		this._domElement.nativeElement.style.marginLeft = getCSSMargin(value);
+		super.setMarginLeft(value);
 		return _marginLeft = value;
 	}
 	
 	override private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
 	{
 		this._domElement.nativeElement.style.marginRight = getCSSMargin(value);
+		super.setMarginRight(value);
 		return _marginRight = value;
 	}
 	
 	override private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
 	{
 		this._domElement.nativeElement.style.marginTop = getCSSMargin(value);
+		super.setMarginTop(value);
 		return _marginTop = value;
 	}
 	
 	override private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
 	{
 		this._domElement.nativeElement.style.marginBottom = getCSSMargin(value);
+		super.setMarginBottom(value);
 		return _marginBottom = value;
 	}
 	
 	override private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
 	{
 		this._domElement.nativeElement.style.paddingLeft = getCSSPadding(value);
+		super.setPaddingLeft(value);
 		return _paddingLeft = value;
 	}
 	
 	override private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
 	{
 		this._domElement.nativeElement.style.paddingRight = getCSSPadding(value);
+		super.setPaddingRight(value);
 		return _paddingRight = value;
 	}
 	
 	override private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
 	{
 		this._domElement.nativeElement.style.paddingTop = getCSSPadding(value);
+		super.setPaddingTop(value);
 		return _paddingTop = value;
 	}
 	
 	override private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
 	{
 		this._domElement.nativeElement.style.paddingBottom = getCSSPadding(value);
+		super.setPaddingBottom(value);
 		return _paddingBottom = value;
 	}
 	
 	override private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
 	{
 		this._domElement.nativeElement.style.display = getCSSDisplay(value);
+		super.setDisplay(value);
 		return _display = value;
 	}
 	
 	override private function setPosition(value:PositionStyleValue):PositionStyleValue 
 	{
 		this._domElement.nativeElement.style.position = getCSSPosition(value);
+		super.setPosition(value);
 		return _position = value;
 	}
 	
 	override private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.width = getCSSDimension(value);
+		super.setWidth(value);
 		return _width = value;
 	}
 	
 	override private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.height = getCSSDimension(value);
+		super.setHeight(value);
 		return _height = value;
 	}
 	
 	override private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.minHeight = getCSSConstrainedDimension(value);
+		super.setMinHeight(value);
 		return _minHeight = value;
 	}
 	
 	override private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.maxHeight = getCSSConstrainedDimension(value);
+		super.setMaxHeight(value);
 		return _maxHeight = value;
 	}
 	
 	override private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.minWidth = getCSSConstrainedDimension(value);
+		super.setMinWidth(value);
 		return _minWidth = value;
 	}
 	
 	override private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
 	{
 		this._domElement.nativeElement.style.maxWidth = getCSSConstrainedDimension(value);
+		super.setMaxWidth(value);
 		return _maxWidth = value;
 	}
 	
 	override private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
 		this._domElement.nativeElement.style.top = getCSSPositionOffset(value);
+		super.setTop(value);
 		return _top = value;
 	}
 	
 	override private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
 		this._domElement.nativeElement.style.left = getCSSPositionOffset(value);
+		super.setLeft(value);
 		return _left = value;
 	}
 	
 	override private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
 		this._domElement.nativeElement.style.bottom = getCSSPositionOffset(value);
+		super.setBottom(value);
 		return _bottom = value;
 	}
 	
 	override private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
 	{
 		this._domElement.nativeElement.style.right = getCSSPositionOffset(value);
+		super.setRight(value);
 		return _right = value;
 	}
 	
 	override private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
 	{
 		this._domElement.nativeElement.style.textIndent = getCSSTextIndent(value);
+		super.setTextIndent(value);
 		return _textIndent = value;
 	}
 	
 	override private function setFloat(value:FloatStyleValue):FloatStyleValue 
 	{
 		untyped this._domElement.nativeElement.style.cssFloat = getCSSFloat(value);
+		super.setFloat(value);
 		return _float = value;
 	}
 	
 	override private function setClear(value:ClearStyleValue):ClearStyleValue 
 	{
 		this._domElement.nativeElement.style.clear = getCSSClear(value);
+		super.setClear(value);
 		return _clear = value;
 	}
 	
 	override private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
 	{
 		this._domElement.nativeElement.style.whiteSpace = getCSSWhiteSpace(value);
+		super.setWhiteSpace(value);
 		return _whiteSpace = value;
 	}
 	
 	override private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
 	{
 		this._domElement.nativeElement.style.textAlign = getCSSTextAlign(value);
+		super.setTextAlign(value);
 		return _textAlign = value;
 	}
 	

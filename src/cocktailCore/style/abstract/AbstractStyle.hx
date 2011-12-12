@@ -212,6 +212,28 @@ class AbstractStyle
 	private var _isInvalid:Bool;
 	
 	/**
+	 * Store the x position of the NativeElement
+	 * relative to its parent
+	 */
+	private var _nativeX:Int;
+	
+	/**
+	 * Store the y position of the NativeElement
+	 * relative to its parent
+	 */
+	private var _nativeY:Int;
+	
+	/**
+	 * Store the width of the NativeElement
+	 */
+	private var _nativeWidth:Int;
+	
+	/**
+	 * Store the height of the NativeElement
+	 */
+	private var _nativeHeight:Int;
+	
+	/**
 	 * Class constructor. Stores the target DOMElement.
 	 * 
 	 * The style is invalid by default and will be updated
@@ -272,7 +294,6 @@ class AbstractStyle
 		this._wordSpacing = WordSpacingStyleValue.normal;
 		this._textTransform = TextTransformStyleValue.none;
 		this._whiteSpace = WhiteSpaceStyleValue.normal;
-		
 		
 	}
 	
@@ -946,7 +967,11 @@ class AbstractStyle
 	// DIMENSION AND POSITION SETTER/GETTER
 	// Those method actually apply a processed dimension or position value to 
 	// the NativeElement of a target DOMElement.
-	// they are runtime specific
+	// They also store the applied value when it is set on the DOMElement
+	// wrapped by this Style object. For instance, a ContainerStyle object not
+	// only wraps a ContainerDOMElement but also every generated TextFragmentDOMElement.
+	// The applied dimension or position is only stored when applied to the
+	// ContainerDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -955,7 +980,10 @@ class AbstractStyle
 	 */
 	public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
-		//abstract
+		if (domElement == this._domElement)
+		{
+			this._nativeX = x;
+		}
 	}
 	
 	/**
@@ -964,7 +992,10 @@ class AbstractStyle
 	 */
 	public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
-		//abstract
+		if (domElement == this._domElement)
+		{
+			this._nativeY = y;
+		}
 	}
 	
 	/**
@@ -973,7 +1004,10 @@ class AbstractStyle
 	 */
 	public function setNativeWidth(domElement:DOMElement, width:Int):Void
 	{
-		//abstract
+		if (domElement == this._domElement)
+		{
+			this._nativeWidth = width;
+		}
 	}
 	
 	/**
@@ -982,7 +1016,10 @@ class AbstractStyle
 	 */
 	public function setNativeHeight(domElement:DOMElement, height:Int):Void
 	{
-		//abstract
+		if (domElement == this._domElement)
+		{
+			this._nativeHeight = height;
+		}
 	}
 	
 	/**
@@ -991,7 +1028,7 @@ class AbstractStyle
 	 */
 	public function getNativeX(domElement:DOMElement):Int
 	{
-		return 0;
+		return this._nativeX;
 	}
 	
 	/**
@@ -1000,7 +1037,7 @@ class AbstractStyle
 	 */
 	public function getNativeY(domElement:DOMElement):Int
 	{
-		return 0;
+		return this._nativeY;
 	}
 	
 	/**
@@ -1009,7 +1046,7 @@ class AbstractStyle
 	 */
 	public function getNativeWidth(domElement:DOMElement):Int
 	{
-		return 0;
+		return this._nativeWidth;
 	}
 	
 	/**
@@ -1018,7 +1055,7 @@ class AbstractStyle
 	 */
 	public function getNativeHeight(domElement:DOMElement):Int
 	{
-		return 0;
+		return this._nativeHeight;
 	}
 	
 	/////////////////////////////////

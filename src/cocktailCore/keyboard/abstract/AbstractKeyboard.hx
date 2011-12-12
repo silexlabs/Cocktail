@@ -32,43 +32,28 @@ class AbstractKeyboard
 	 * The callback to call when
 	 * a key is pressed
 	 */
-	public var onKeyDown:KeyEventData->Void;
+	private var _onKeyDown:KeyEventData->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyEventData->Void;
 	
 	/**
 	 * The callback to call when 
 	 * a key is released
 	 */
-	public var onKeyUp:KeyEventData->Void;
+	private var _onKeyUp:KeyEventData->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
 	
 	/**
-	 * class constructor. Set the native
-	 * keyboard listeners 
+	 * class constructor
 	 */
 	public function new() 
 	{
-		setNativeKeyboardListeners();
+
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native keyboard event handler method
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the listeners for native keyboard event
-	 */
-	private function setNativeKeyboardListeners():Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * remove the listeners for native keyboard event
-	 */
-	private function unsetNativeKeyboardListeners():Void
-	{
-		//abstract
-	}
 	
 	/**
 	 * Calls the onKeyDown callback with the pressed key data
@@ -93,6 +78,30 @@ class AbstractKeyboard
 		{
 			onKeyUp(getKeyData(event));
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CALLBACKS SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
+	{
+		return _onKeyDown = value;
+	}
+	
+	private function getOnKeyDown():KeyEventData->Void
+	{
+		return _onKeyDown;
+	}
+	
+	private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
+	{
+		return _onKeyUp = value;
+	}
+	
+	private function getOnKeyUp():KeyEventData->Void
+	{
+		return _onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -58,7 +58,7 @@ class MouseCursor extends AbstractMouseCursor
 	/**
 	 * Set a bitmap as mouse cursor using CSS styling via JavaScript
 	 */
-	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
+	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
 	{
 		var cursorURL:String = untyped imageDOMElement.nativeElement.src;
 		

@@ -19,7 +19,6 @@ package keyboard;
 
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -75,12 +74,12 @@ class KeyboardTests
 	}
 
 	
-	private function onKeyDown(key:Key):Void
+	private function onKeyDown(key:KeyEventData):Void
 	{
 		Log.trace(key);
 	}
 	
-	private function onKeyUp(key:Key):Void
+	private function onKeyUp(key:KeyEventData):Void
 	{
 		Log.trace(key);
 	}

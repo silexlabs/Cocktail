@@ -21,8 +21,6 @@ import cocktailCore.style.StyleData;
  * computation, as an embedded DOMElement has intrinsic
  * dimensions
  * 
- * 
- * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
@@ -57,7 +55,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			{
 				ret = embeddedDOMElement.intrinsicWidth;
 			}
-			//else deduce the intrinsic width from the intrinsic height and rotaio
+			//else deduce the intrinsic width from the intrinsic height and ratio
 			else if (embeddedDOMElement.intrinsicHeight != null && embeddedDOMElement.intrinsicRatio != null)
 			{
 				ret = Math.round(embeddedDOMElement.intrinsicHeight * embeddedDOMElement.intrinsicRatio);

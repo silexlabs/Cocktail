@@ -14,6 +14,7 @@ import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import haxe.Log;
 
 /**
  * The graphic DOMElement is used as a canvas to draw bitmap graphics programmatically. 

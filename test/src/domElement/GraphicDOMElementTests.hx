@@ -18,7 +18,6 @@ package domElement;
  */
 
 import haxe.Log;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -233,7 +232,9 @@ class GraphicDOMElementTests
 	 */
 	public function testDrawBitmapRectangle()
 	{
-		ResourceLoaderManager.loadImage("../resource/testPicture.jpg", onImageLoaded, function(msg:String) { } ); 
+		var img:ImageDOMElement = new ImageDOMElement();
+		img.onLoad = onImageLoaded;
+		img.load("../resource/testPicture.jpg");
 		
 		Assert.equals(1, 1);
 	}
@@ -389,7 +390,9 @@ class GraphicDOMElementTests
 	 */
 	public function testDrawBitmapRectangleStroke()
 	{
-		ResourceLoaderManager.loadImage("../resource/testPicture.jpg", onStrokeImageLoaded, function(msg:String) { } ); 
+		var img:ImageDOMElement = new ImageDOMElement();
+		img.onLoad = onStrokeImageLoaded;
+		img.load("../resource/testPicture.jpg");
 		Assert.equals(1, 1);
 	}
 	
@@ -562,7 +565,10 @@ class GraphicDOMElementTests
 	 */
 	public function testDrawImage()
 	{
-		ResourceLoaderManager.loadImage("../resource/testPicture.jpg", onDrawImageLoaded, function(msg:String) { } ); 
+		
+		var img:ImageDOMElement = new ImageDOMElement();
+		img.onLoad = onDrawImageLoaded;
+		img.load("../resource/testPicture.jpg");
 		Assert.equals(1, 1);
 	}
 	

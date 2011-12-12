@@ -22,25 +22,4 @@ class EmbeddedDOMElement extends AbstractEmbeddedDOMElement
 	{
 		super(nativeElement);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	// in JS, setting the width and height also set the width and height attribute of the
-	// native replaced HTML element. For instance, for a picture, if the width is set to 300,
-	// then the HTML corresponding tag will be : <img width="300" />
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		untyped this._nativeElement.width = value;
-		return value;
-	}
-	
-	override private function setHeight(value:Int):Int
-	{
-		super.setHeight(value);
-		untyped this._nativeElement.height = value;
-		return value;
-	}
 }
