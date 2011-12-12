@@ -9,6 +9,22 @@ This simple web app using Cocktail is aiming to reproduce an iPhone app screen.
 It is inspired by an existing demo made by the jPint project (which seems to be dead as of today).
 
 
+TO DO
+-----
+
+-links => use native functions
+-the home page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
+=> do it with a conditional compilation switch (using windows.location for JS)
+-load the gallery demo inside the body (as a skin, keep the web app header) - there has to be a conditional compilation switch (the flash version of the gallery in the flash version of the web app)
+-for the sound, embed a player, like
+html5 alex = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F1187266&auto_play=false&show_artwork=true&color=2b877f
+html5 raph = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&auto_play=false&show_artwork=true&color=2b877f
+flash alex = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F805447&color=0066cc&show_comments=true
+flash raph = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
+
+DONE
+-use "ul" and "li" tags for all the lists (including the home page icons) => OK
+
 TASKS
 -----
 
@@ -84,11 +100,15 @@ TASKS
 
 ---------------------------------------------------------------------------------------------------------
 
+Bugs:
+
 Questions Yannick:
 => pourquoi avoir différents enum pour tout ce qui concerne des type de données similaires (MarginStyleValue & DimensionStyleValue par exemple)
 => comment positionner un container sous un autre, meme s'il est déclaré en premier ?
 
 Bugs Cocktail:
+ => using flash target, space characters are considered as CR
+
  => domElement.style.verticalAlign does not seem to work correctly
     => à vérifier avec Yannick dans Iphone Style.hx, ligne 196
 	=> il doit finaliser cette fonctionnalité, pas besoin de poster de bug
