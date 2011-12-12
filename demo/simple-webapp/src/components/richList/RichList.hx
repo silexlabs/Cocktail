@@ -8,6 +8,7 @@
 package components.richList;
 
 // DOM
+import cocktail.classInstance.ClassInstance;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
@@ -45,7 +46,8 @@ class RichList extends ContainerDOMElement
 	 */
 	public function new(richListModel:RichListModel, listStyle:RichListStyleModel)
 	{
-		super();
+		// create a ul node
+		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
 		createRichListDOM(richListModel, listStyle);
 		//RichListStyle.getDefaultStyle(this);
 		listStyle.list(this);
@@ -68,7 +70,10 @@ class RichList extends ContainerDOMElement
 		{
 			// create cell with text and image
 			// empty cell part
-			var cell:ContainerDOMElement = Utils.getContainer();
+			//var cell:ContainerDOMElement = Utils.getContainer();
+			var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+
+			listStyle.cell(cell);
 			
 			// text part => moved to the image callback
 			//cell.addText(NativeElementManager.createNativeTextNode(cellData.text));
@@ -76,20 +81,21 @@ class RichList extends ContainerDOMElement
 			// image part
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			
-			// create line to separate cells
-			listStyle.cell(cell);
-			
 			// set image style
 			listStyle.cellImage(cellImage);
 			
 			// add line, then image and then text
 			//cell.addChild(line);
 			cell.addChild(cellImage);
-			cell.addText(new TextElement(cellData.text));
-			// create line to separate cells
-			listStyle.cell(cell);
+			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
+			var textElement:TextElement = new TextElement(cellData.text);
+			cellTextContainer.addText(textElement);
+			listStyle.cellText(cellTextContainer);
+			cell.addChild(cellTextContainer);
+			//cell.addText(new TextElement(cellData.text));
 
-			
+			// create line to separate cells
+			//listStyle.cell(cell);
 			
 			cellImage.load(cellData.imagePath);
 

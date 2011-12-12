@@ -53,6 +53,7 @@ typedef RichListStyleModel =
 	//public var title:DOMElement->Void;
 	public var cell:ContainerDOMElement->Void;
 	public var cellImage:DOMElement->Void;
+	public var cellText:DOMElement->Void;
 	public var cellMouseOver:ContainerDOMElement->Void;
 	public var cellMouseOut:ContainerDOMElement->Void;
 	public var cellMouseDown:ContainerDOMElement->Void;

@@ -8,16 +8,19 @@
 // DOM
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import haxe.Timer;
 import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
+import cocktailCore.resource.ResourceLoader;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
+import js.Lib;
 
 // Style
 import cocktail.style.StyleData;
@@ -92,6 +95,7 @@ class ApplicationStructure
 
 		// the music pages
 		_songPage = createHeaderContentPage("Song","You are listening to this song");
+		//_songPage = createEmbedContentPage("Song","http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&auto_play=false&show_artwork=true&color=2b877f");
 		_songListPage = createHeaderListPage(
 			"Artist - Album",
 			[
@@ -148,7 +152,18 @@ class ApplicationStructure
 		);
 		
 		// the credit page
-		_creditsPage = createHeaderContentPage("Credits", "This is a Cocktail demo. Cocktail is a cross-platform library for the HaXe programming language. It bridges the gap between all the targets supported by haXe, removing inconsistencies behind a common API. With it, the same code base is used to deploy to these targets: Flash, javaScript, PHP. It helps multi device application development and should be used by haXe projects requiring cross-target compilation. Silex Labs Cocktail library is released under GPL. Project home: http://www.silexlabs.org/groups/labs/cocktail/");
+		//_creditsPage = createHeaderContentPage("Credits", "This is a Cocktail demo. Cocktail is a cross-platform library for the HaXe programming language. It bridges the gap between all the targets supported by haXe, removing inconsistencies behind a common API. With it, the same code base is used to deploy to these targets: Flash, javaScript, PHP. It helps multi device application development and should be used by haXe projects requiring cross-target compilation. Silex Labs Cocktail library is released under GPL. Project home: http://www.silexlabs.org/groups/labs/cocktail/");
+		_creditsPage = createHeaderListPage(
+			"Credits",
+			[
+				{text:"made with Cocktail", imagePath:"images/cocktail.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
+				{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
+				{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+				{text:"by Raphael Harmel", imagePath:"images/google+.ico", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+				{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" }
+			]
+		);
+
 
 		// the home page
 		_homePage = createHomePage(
@@ -168,7 +183,6 @@ class ApplicationStructure
 	/**
 	 * Hides the current page and shows the wanted page
 	 * 
-	 * @param	application		the main containerDOMElement where to attach the page
 	 * @param	page			the wanted page
 	 */
 	private function showPage(page:ContainerDOMElement):Void
@@ -179,19 +193,39 @@ class ApplicationStructure
 	}
 	
 	/**
+	 * Opens the wanted URL - not supported by Cocktail yet
+	 * 
+	 * @param	url		the url to open
+	 */
+	/*private function goToURL(url:String):Void
+	{
+		
+	}*/
+	
+	/**
 	 * Called when a new cell is selected in a list
 	 * 
 	 * @param	cell
 	 */
-	function onChangeListCallback(cell : CellModel)
+	private function onChangeListCallback(cell:CellModel)
 	{
 		if (cell.action == "goToPage")
 		{
 			showPage(cell.actionTarget);
 		}
-		//if (cellData.action == "gotoURLAction")
-			//gotoURL(cellData.actionTarget);
+		if (cell.action == "goToUrl")
+		{
+			goToUrl(cell.actionTarget);
+		}
 	}
+	
+	private function goToUrl(url:String)
+	{
+		#if js
+		Lib.window.open(url);
+		#end
+	}
+	
 	
 	/**
 	 * Creates home page
@@ -287,6 +321,40 @@ class ApplicationStructure
 	}
 	
 	/**
+	 * Creates an embedded header page
+	 * 
+	 * @param	title
+	 * @param	embeddedLink
+	 * @return	the corresponding page
+	 */
+	private function createEmbedContentPage(title:String, embeddedLink:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+
+		
+		// create content
+		/*var textElement:TextElement = new TextElement(content);
+		var textContainer:ContainerDOMElement = Utils.getContainer();
+		textContainer.addText(textElement);
+		WebAppStyle.getTextContentStyle(textContainer);*/
+		// create embedded element
+		var embeddedElement:EmbeddedDOMElement = new EmbeddedDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("embed")));
+		//var rl:ResourceLoader = new ResourceLoader();
+		//rl.load(embeddedLink, null,null);
+		
+		// build hierarchy
+		page.addChild(header);
+		//page.addChild(textContainer);
+		//page.addChild(rl);
+		WebAppStyle.getPageStyle(page);
+		
+		return page;
+	}
+	
+	/**
 	 * Creates a header with a Tile, a title and a back button
 	 * 
 	 * @param	title
@@ -301,8 +369,9 @@ class ApplicationStructure
 		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		var headerTilePath:String = "images/H1.png";
 		
-		headerTile.style.width = DimensionStyleValue.percent(100);
-		headerTile.style.height = DimensionStyleValue.length(px(43));
+		//headerTile.style.width = DimensionStyleValue.percent(100);
+		//headerTile.style.height = DimensionStyleValue.length(px(43));
+		WebAppStyle.getHeaderTileStyle(headerTile);
 		headerTile.load(headerTilePath);
 		
 		
@@ -371,6 +440,7 @@ class ApplicationStructure
 			list:StyleApp.getDefaultStyle,
 			cell:StyleApp.getCellStyle,
 			cellImage:StyleApp.getCellImageStyle,
+			cellText:StyleApp.getCellTextStyle,
 			cellMouseOver:StyleApp.getCellMouseOverStyle,
 			cellMouseOut:StyleApp.getCellMouseOutStyle,
 			cellMouseDown:StyleApp.getCellMouseDownStyle,
@@ -399,6 +469,7 @@ class ApplicationStructure
 			list:StyleNormal.getDefaultStyle,
 			cell:StyleNormal.getCellStyle,
 			cellImage:StyleNormal.getCellImageStyle,
+			cellText:StyleNormal.getCellTextStyle,
 			cellMouseOver:StyleNormal.getCellMouseOverStyle,
 			cellMouseOut:StyleNormal.getCellMouseOutStyle,
 			cellMouseDown:StyleNormal.getCellMouseDownStyle,

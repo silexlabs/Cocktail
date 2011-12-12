@@ -29,11 +29,11 @@ class WebAppStyle
 {
 
 	/**
-	 * Defines default Style
+	 * initializes Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getDefaultStyle(domElement:DOMElement):Void
+	public static function initStyle(domElement:DOMElement):Void
 	{
 		var computedStyle:ComputedStyleData = {
 		width : 0,
@@ -75,8 +75,19 @@ class WebAppStyle
 		}
 		
 		domElement.style.computedStyle = computedStyle;
-
+	}
+	
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getDefaultStyle(domElement:DOMElement):Void
+	{
+		initStyle(domElement);
+		
 		//domElement.style.width = DimensionStyleValue.length(px(320));
+		//domElement.style.width = DimensionStyleValue.percent(100);
 		//domElement.style.minHeight = ConstrainedDimensionStyleValue.length(px(420));
 		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
@@ -88,7 +99,8 @@ class WebAppStyle
 	 */
 	public static function getBodyStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		initStyle(domElement);
+		//getDefaultStyle(domElement);
 		
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -96,6 +108,7 @@ class WebAppStyle
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
 
 		domElement.style.position = PositionStyleValue.staticStyle;
+
 	}
 	
 	/**
@@ -105,9 +118,11 @@ class WebAppStyle
 	 */
 	public static function getMainContainerStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		initStyle(domElement);
+		//getDefaultStyle(domElement);
 		
-		domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.percent(100);
 
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
@@ -124,6 +139,7 @@ class WebAppStyle
 	 */
 	public static function getPageContainerStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
@@ -131,6 +147,7 @@ class WebAppStyle
 
 		domElement.style.left = PositionOffsetStyleValue.auto;
 		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
 	
 	/**
@@ -140,6 +157,7 @@ class WebAppStyle
 	 */
 	public static function getHomePageStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		//getPageStyle(domElement);
@@ -152,6 +170,7 @@ class WebAppStyle
 	 */
 	public static function getPageStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
@@ -165,11 +184,12 @@ class WebAppStyle
 	 */
 	public static function getBgStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		initStyle(domElement);
+		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
 	
 	
@@ -180,23 +200,28 @@ class WebAppStyle
 	 */
 	public static function getHeaderStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.color = ColorValue.hex('222222');
+	}
 
-		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
-		domElement.style.lineHeight = LineHeightStyleValue.normal;
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Helvetica'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-		domElement.style.textAlign = TextAlignStyleValue.center;
+	/**
+	 * Defines header tile Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getHeaderTileStyle(domElement:DOMElement):Void
+	{
+		initStyle(domElement);
+		//getDefaultStyle(domElement);
+		
+		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.display = DisplayStyleValue.block;
 
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(43));
 	}
 
 	/**
@@ -206,10 +231,11 @@ class WebAppStyle
 	 */
 	public static function getHeaderTextStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.color = ColorValue.hex('EEEEEE');
+		domElement.style.color = ColorValue.hex('#EEEEEE');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		//domElement.style.lineHeight = LineHeightStyleValue.normal;
@@ -238,6 +264,7 @@ class WebAppStyle
 	 */
 	public static function getBackButtonStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
@@ -252,10 +279,11 @@ class WebAppStyle
 	 */
 	public static function getBackButtonTextStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.color = ColorValue.hex('EEEEEE');
+		domElement.style.color = ColorValue.hex('#EEEEEE');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
@@ -280,6 +308,7 @@ class WebAppStyle
 	 */
 	public static function getBackButtonImageStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
 		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.relative;
@@ -294,6 +323,8 @@ class WebAppStyle
 	 */
 	public static function getTextContentStyle(domElement:DOMElement):Void
 	{
+		initStyle(domElement);
+		
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
