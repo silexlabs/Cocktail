@@ -159,18 +159,23 @@ class ApplicationStructure
 				{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
 				{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
 				{text:"by Raphael Harmel", imagePath:"images/google+.ico", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
-				{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" }
+				{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
+				{text:"", imagePath:null, action:"", actionTarget:"" },
+				{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
+				{text:"which is based on Joe Hewitt iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+				{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
+				{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
 			]
 		);
-
 
 		// the home page
 		_homePage = createHomePage(
 			[
-				{text:"Cal", imagePath:"images/NavButtonCalendar.png", action:"goToPage", actionTarget:_calListPage },
-				{text:"Music", imagePath:"images/NavButtonMusic.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Notes", imagePath:"images/NavButtonNotes.png", action:"goToPage", actionTarget:_noteListPage },
-				{text:"Credits", imagePath:"images/NavButtonCredits.png", action:"goToPage", actionTarget:_creditsPage }
+				{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
+				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
+				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_artistListPage },
+				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
+				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
 			]
 		);
 		_currentPage = _homePage;
@@ -192,14 +197,21 @@ class ApplicationStructure
 	}
 	
 	/**
-	 * Opens the wanted URL - not supported by Cocktail yet
+	 * Opens the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
 	 * 
 	 * @param	url		the url to open
 	 */
-	/*private function goToURL(url:String):Void
+	private function goToUrl(url:String)
 	{
+		#if js
+		js.Lib.window.open(url);
 		
-	}*/
+		#elseif flash9
+		var request:flash.net.URLRequest = new flash.net.URLRequest(url);
+		flash.Lib.getURL(request);
+
+		#end
+	}
 	
 	/**
 	 * Called when a new cell is selected in a list
@@ -217,14 +229,6 @@ class ApplicationStructure
 			goToUrl(cell.actionTarget);
 		}
 	}
-	
-	private function goToUrl(url:String)
-	{
-		#if js
-		js.Lib.window.open(url);
-		#end
-	}
-	
 	
 	/**
 	 * Creates home page
