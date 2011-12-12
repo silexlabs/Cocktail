@@ -25,7 +25,6 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.classInstance.ClassInstance;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -91,49 +90,7 @@ class ResourceTests
 		
 	}
 	
-	/**
-	 * Test the loading of a container DOMElement
-	 */
-	public function testContainerLoad()
-	{
-		var successCallback:Dynamic->Void = Assert.createEvent(onContainerLoaded);
-		
-		#if flash9
-		var containerUrl:String = "domElementAs3.swf";
-		#elseif js
-		var containerUrl:String = "domElement.html";
-		#elseif php
-		var containerUrl:String = "domElement.html";
-		#end
-		
-		ResourceLoaderManager.loadContainer(containerUrl, successCallback, onContainerLoadError);
-	}
 	
-	/**
-	 * When the DOMElement has been loaded, attach it to the root DOMElement
-	 * @param	domElement the loaded DOMElement
-	 */
-	private function onContainerLoaded(domElement:ContainerDOMElement):Void
-	{
-		rootDOMElement.addChild(domElement);
-		#if flash9
-		Assert.is(domElement.nativeElement, Loader);
-		#elseif js
-		Assert.same(domElement.nativeElement.firstChild.getAttribute("id"), "loadedDOMElement");
-		#elseif php
-		Assert.equals(domElement.nativeElement.firstChild().get("id"), "loadedDOMElement");
-		Assert.equals(domElement.nativeElement.firstChild().firstChild().toString(), "container loaded");
-		#end
-	}
-	
-	/**
-	 * Called when there is an error while loading the container DOMElement
-	 * @param	msg
-	 */
-	private function onContainerLoadError(msg:String):Void
-	{
-		Log.trace(msg);
-	}
 	
 	/**
 	 * load a class library (.swf in flash, .js in JavaScript, .php in php)
@@ -175,95 +132,6 @@ class ResourceTests
 	private function onLibraryError(msg:String):Void
 	{
 		
-	}
-	
-	/**
-	 * Test loading a picture for both flash and JS
-	 */
-	public function testLoadPicture()
-	{
-		var successCallback:Dynamic->Void = Assert.createEvent(onPictureLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError);
-	}
-	
-	public function onPictureLoaded(domElement:ImageDOMElement):Void
-	{
-		Assert.same(domElement.width, 65);
-		Assert.same(domElement.height, 65);
-		
-		Assert.same(domElement.src.indexOf("testPicture.jpg") != -1, true);
-		
-		rootDOMElement.addChild(domElement);
-		
-		#if flash9
-		domElement.x = 200;
-		Assert.is(domElement.nativeElement, Loader);
-		#elseif js
-		
-		#elseif php
-		Assert.same(domElement.nativeElement._nodeName, "img");
-		Assert.same(domElement.nativeElement.get("src"), "testPicture.jpg");
-		#end
-	}
-	
-	/**
-	 * test a 404 error on a picture
-	 * @param	error
-	 */
-	public function testPictureLoadError():Void
-	{
-		var errorCallback:Dynamic->Void = Assert.createEvent(onPictureLoadError);
-		ResourceLoaderManager.loadImage("falseURL.jpg", onPictureLoaded, errorCallback);
-	}
-	
-	/**
-	 * Called when there is an error while loading picture
-	 * @param	error
-	 */
-	public function onPictureLoadError(error:String)
-	{
-		Assert.equals(1, 1);
-		Log.trace(error);
-	}
-	
-	
-	public function testPictureLoadWithDOMElement():Void
-	{
-		var imageDOMElement:ImageDOMElement = new ImageDOMElement();
-		var successCallback:Dynamic->Void = Assert.createEvent(onPictureWithDOMElementLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, imageDOMElement);
-	}
-	
-	public function onPictureWithDOMElementLoaded(imageDOMElement:ImageDOMElement)
-	{
-		Assert.same(imageDOMElement.src.indexOf("testPicture.jpg") != -1, true);
-	}
-	
-	
-	/**
-	 * Test loading a picture without caching it
-	 */
-	public function testLoadNoCache()
-	{
-		var successCallback:Dynamic->Void = Assert.createEvent(onPictureNoCacheLoaded);
-		ResourceLoaderManager.loadImage("testPicture.jpg", successCallback, onPictureLoadError, null, false);
-	}
-	
-	private function onPictureNoCacheLoaded(domElement:DOMElement):Void
-	{
-		rootDOMElement.addChild(domElement);
-		#if flash9
-		Assert.is(domElement.nativeElement, Loader);
-		#elseif js
-		var croppedSrc:String = domElement.nativeElement.getAttribute("src");
-		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
-		Assert.same(croppedSrc, "testPicture.jpg");
-		#elseif php
-		Assert.same(domElement.nativeElement._nodeName, "img");
-		var croppedSrc:String = domElement.nativeElement.get("src");
-		croppedSrc = croppedSrc.substr(0, croppedSrc.indexOf("?"));
-		Assert.same(croppedSrc, "testPicture.jpg");
-		#end
 	}
 	
 

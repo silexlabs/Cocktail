@@ -87,7 +87,7 @@ class AbstractMouseCursor
 	 * Set a bitmap as mouse cursor using native API. The hotSpot is the registration
 	 * point of the mouse cursor
 	 */
-	private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
+	private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
 	{
 		//abstract
 	}

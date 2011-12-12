@@ -49,8 +49,9 @@ class ImageDOMElement extends AbstractImageDOMElement
 	override private function onLoadComplete(image:NativeElement):Void
 	{	
 		this._src = untyped image.src;
-		this._naturalHeight = untyped image.naturalHeight;
-		this._naturalWidth = untyped image.naturalWidth;
+		this._intrinsicHeight = untyped image.naturalHeight;
+		this._intrinsicWidth = untyped image.naturalWidth;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 		
 		super.onLoadComplete(image);
 	}

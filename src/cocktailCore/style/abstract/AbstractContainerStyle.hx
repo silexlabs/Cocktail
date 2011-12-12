@@ -665,7 +665,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Determin wether a block container
+	 * Determine wether a block container
 	 * starts a new formatting context for
 	 * its children
 	 */

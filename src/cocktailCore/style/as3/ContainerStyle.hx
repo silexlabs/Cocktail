@@ -49,17 +49,34 @@ class ContainerStyle extends AbstractContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
 	// In Flash the width and height are not applied to the native DisplayObject
-	// of the ContainerDOMElement, as it would scale its content
+	// of the ContainerDOMElement, as it would scale its content. It is however
+	// stored in the native width and height attributes to be returned when 
+	// width or height are requested instead of returning 0 (the actual width/height)
+	// of the native DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Set the width of the NativeElement of the
+	 * target DOMElement
+	 */
 	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
 	{
-		
+		if (domElement == this._domElement)
+		{
+			this._nativeWidth = width;
+		}
 	}
 	
+	/**
+	 * Set the height of the NativeElement of the
+	 * target DOMElement
+	 */
 	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
 	{
-		
+		if (domElement == this._domElement)
+		{
+			this._nativeHeight = height;
+		}
 	}
 	
 	/////////////////////////////////
