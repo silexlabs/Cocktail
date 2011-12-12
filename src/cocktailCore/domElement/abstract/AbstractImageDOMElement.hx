@@ -34,30 +34,16 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 * The callback called once a picture has been successfully
 	 * loaded
 	 */
-	public var onLoad:Void->Void;
+	public var onLoad:ImageDOMElement->Void;
 	
 	/**
 	 * The callback called when there was an error during loading
 	 */
 	public var onError:String->Void;
-	
+
 	//////////////////////
-	// PICTURE INFO
+	// PRIVATE ATTRIBUTES
 	/////////////////////
-	
-	/**
-	 * The actual width (no scaling) of the currently loaded picture
-	 * in pixels
-	 */
-	private var _naturalWidth:Null<Int>;
-	public var naturalWidth(getNaturalWidth, never):Null<Int>;
-	
-	/**
-	 * The actual height (no scaling) of the currently loaded picture
-	 * in pixels
-	 */
-	private var _naturalHeight:Null<Int>;
-	public var naturalHeight(getNaturalHeight, never):Null<Int>;
 	
 	/**
 	 * The URL of the loaded picture.
@@ -65,10 +51,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 */
 	private var _src:String;
 	public var src(getSrc, never):String;
-	
-	//////////////////////
-	// PRIVATE ATTRIBUTES
-	/////////////////////
 	
 	/**
 	 * Reponsible for loading pictures into a NativeElement. 
@@ -94,6 +76,11 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		_imageLoader = new ImageLoader();
+		//use the provided NativeElement if any
+		if (nativeElement != null)
+		{
+			_imageLoader.nativeElement = nativeElement;
+		}
 		super(_imageLoader.nativeElement);
 	}
 
@@ -139,9 +126,11 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		//refresh picture smoothing
 		this.smooth = this.smooth;
 		
+		//if provided, call the callback
+		//with the ImageDOMElement
 		if (onLoad != null)
 		{
-			onLoad();
+			onLoad(cast(this));
 		}
 	}
 	
@@ -177,25 +166,4 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	{
 		return this._smooth;
 	}
-	
-	private function getNaturalWidth():Null<Int>
-	{
-		if (_naturalWidth == null)
-		{
-			return 0;
-		}
-		
-		return _naturalWidth;
-	}
-	
-	private function getNaturalHeight():Null<Int>
-	{
-		if (_naturalHeight == null)
-		{
-			return 0;
-		}
-		
-		return _naturalHeight;
-	}
-	
 }

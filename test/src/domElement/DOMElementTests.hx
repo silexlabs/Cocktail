@@ -24,7 +24,7 @@ import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktailCore.domElement.abstract.AbstractDOMElement;
 
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
@@ -300,21 +300,21 @@ class DOMElementTests
 		spriteChildDOMElement1.graphics.drawRect(0, 0, 100, 100);
 		spriteChildDOMElement1.graphics.endFill();
 		//create a child DOMElement
-		var childDOMElement1:DOMElement = new DOMElement(spriteChildDOMElement1);
+		var childDOMElement1:ContainerDOMElement = new ContainerDOMElement(spriteChildDOMElement1);
 		
 		var spriteChildDOMElement2:Sprite = new Sprite();
 		spriteChildDOMElement2.graphics.beginFill(0x00FF00, 1);
 		spriteChildDOMElement2.graphics.drawRect(0, 0, 100, 100);
 		spriteChildDOMElement2.graphics.endFill();
 		//create a child DOMElement
-		var childDOMElement2:DOMElement = new DOMElement(spriteChildDOMElement2);
+		var childDOMElement2:ContainerDOMElement = new ContainerDOMElement(spriteChildDOMElement2);
 		
 		var spriteChildDOMElement3:Sprite = new Sprite();
 		spriteChildDOMElement3.graphics.beginFill(0x0000FF, 1);
 		spriteChildDOMElement3.graphics.drawRect(0, 0, 100, 100);
 		spriteChildDOMElement3.graphics.endFill();
 		//create a child DOMElement
-		var childDOMElement3:DOMElement = new DOMElement(spriteChildDOMElement3);
+		var childDOMElement3:ContainerDOMElement = new ContainerDOMElement(spriteChildDOMElement3);
 		
 		//in JavaScript
 		#elseif js
@@ -337,7 +337,7 @@ class DOMElementTests
 		divChildDOMElement1.style.backgroundColor = "#FF0000";
 		
 		//create a new DOM object
-		var childDOMElement1:DOMElement = new DOMElement(divChildDOMElement1);
+		var childDOMElement1:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement1);
 		
 		//create a new div
 		var divChildDOMElement2:HtmlDom = js.Lib.document.createElement("div");
@@ -345,7 +345,7 @@ class DOMElementTests
 		divChildDOMElement2.style.backgroundColor = "#00FF00";
 		
 		//create a new DOM object
-		var childDOMElement2:DOMElement = new DOMElement(divChildDOMElement2);
+		var childDOMElement2:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement2);
 		
 		//create a new div
 		var divChildDOMElement3:HtmlDom = js.Lib.document.createElement("div");
@@ -353,7 +353,7 @@ class DOMElementTests
 		divChildDOMElement3.style.backgroundColor = "#0000FF";
 		
 		//create a new DOM object
-		var childDOMElement3:DOMElement = new DOMElement(divChildDOMElement3);
+		var childDOMElement3:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement3);
 		
 		//in PHP
 		#elseif php
@@ -376,7 +376,7 @@ class DOMElementTests
 		//divChildDOMElement1.style.backgroundColor = "#FF0000";
 		
 		//create a new DOM object
-		var childDOMElement1:DOMElement = new DOMElement(divChildDOMElement1);
+		var childDOMElement1:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement1);
 		
 		//create a new div
 		var divChildDOMElement2:Xml = Xml.createElement("div");
@@ -384,7 +384,7 @@ class DOMElementTests
 		//divChildDOMElement2.style.backgroundColor = "#00FF00";
 		
 		//create a new DOM object
-		var childDOMElement2:DOMElement = new DOMElement(divChildDOMElement2);
+		var childDOMElement2:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement2);
 		
 		//create a new div
 		var divChildDOMElement3:Xml = Xml.createElement("div");
@@ -392,7 +392,7 @@ class DOMElementTests
 		//divChildDOMElement3.style.backgroundColor = "#0000FF";
 		
 		//create a new DOM object
-		var childDOMElement3:DOMElement = new DOMElement(divChildDOMElement3);
+		var childDOMElement3:ContainerDOMElement = new ContainerDOMElement(divChildDOMElement3);
 		
 		#end
 		

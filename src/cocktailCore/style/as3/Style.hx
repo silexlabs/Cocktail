@@ -81,47 +81,31 @@ class Style extends AbstractStyle
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
-	// apply and retrieve the properties from the native flash DisplayObject
+	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
+		super.setNativeX(domElement, x);
 		domElement.nativeElement.x = x;
 	}
 	
 	override public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
+		super.setNativeY(domElement, y);
 		domElement.nativeElement.y = y;
 	}
 	
 	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
 	{
+		super.setNativeWidth(domElement, width);
 		domElement.nativeElement.width = width;
 	}
 	
 	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
 	{
+		super.setNativeHeight(domElement, height);
 		domElement.nativeElement.height = height;
-	}
-	
-	override public function getNativeX(domElement:DOMElement):Int
-	{
-		return Math.round(domElement.nativeElement.x);
-	}
-	
-	override public function getNativeY(domElement:DOMElement):Int
-	{
-		return Math.round(domElement.nativeElement.y);
-	}
-	
-	override public function getNativeWidth(domElement:DOMElement):Int
-	{
-		return Math.round(domElement.nativeElement.width);
-	}
-	
-	override public function getNativeHeight(domElement:DOMElement):Int
-	{
-		return Math.round(domElement.nativeElement.height);
 	}
 	
 	/////////////////////////////////

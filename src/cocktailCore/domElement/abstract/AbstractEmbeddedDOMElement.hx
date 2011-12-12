@@ -20,8 +20,7 @@ import cocktailCore.domElement.js.DOMElement;
 /**
  * A base DOMElement class for embedded content such as picture or video. An embedded element, also called a
  * replaced element in HTML, typically has an intrinsic width, height and ratio. 
- * For example, for a picture it corresponds to the displayed picture's scaled dimensions in pixel, e.g
- * if the dimension of the picture is 100x100 and it is scaled 2x, its intrinsic dimensions will be 200x200
+ * For example, for a picture it corresponds to the displayed picture's dimensions in pixel.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -64,34 +63,6 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	override private function initStyle():Void
 	{
 		this._style = new EmbeddedStyle(this);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When the width is set on an embedded DOMElement, the intrinsic
-	 * width is set instead of the width style. The DOMElement is then invalidated.
-	 * 
-	 * If the DOMElement has a width style of 'auto', the intrinsic width will be
-	 * used for the picture, else the width defined by the width style will be used
-	 */
-	override private function setWidth(value:Int):Int
-	{
-		this._intrinsicWidth = value;
-		this._style.invalidate();
-		return value;
-	}
-	
-	/**
-	 * same as width
-	 */
-	override private function setHeight(value:Int):Int
-	{
-		this._intrinsicHeight = value;
-		this._style.invalidate();
-		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

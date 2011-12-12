@@ -810,6 +810,7 @@ class AbstractDOMElement
 	private function setX(value:Int):Int 
 	{
 		this._style.left = PositionOffsetStyleValue.length(px(value));
+		this._style.setNativeX(cast(this), value);
 		return value;
 	}
 	
@@ -827,6 +828,7 @@ class AbstractDOMElement
 	private function setY(value:Int):Int
 	{
 		this._style.top = PositionOffsetStyleValue.length(px(value));
+		this._style.setNativeY(cast(this), value);
 		return value;
 	}
 		
@@ -844,6 +846,7 @@ class AbstractDOMElement
 	private function setWidth(value:Int):Int
 	{
 		this._style.width = DimensionStyleValue.length(px(value));
+		this._style.setNativeWidth(cast(this), value);
 		return value;
 	}
 	
@@ -861,6 +864,7 @@ class AbstractDOMElement
 	private function setHeight(value:Int):Int
 	{
 		this._style.height = DimensionStyleValue.length(px(value));
+		this._style.setNativeHeight(cast(this), value);
 		return value;
 	}
 	

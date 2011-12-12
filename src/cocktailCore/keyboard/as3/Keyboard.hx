@@ -23,7 +23,7 @@ import cocktail.keyboard.KeyboardData;
 class Keyboard extends AbstractKeyboard
 {
 	/**
-	 * class constructor. Set native keyboard listeners
+	 * class constructor
 	 */
 	public function new() 
 	{
@@ -31,29 +31,36 @@ class Keyboard extends AbstractKeyboard
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// EVENTS
-	// overriden private native keyboard event handler method
+	// OVERRIDEN CALLBACKS SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set the listeners for flash keyboard event
-	 */
-	override private function setNativeKeyboardListeners():Void
+	override private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
 	{
-		//in flash keyboard event are listened from the stage to receive global 
-		//keyboard event. We might evolve this features with focus management
-		//eventually
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onNativeKeyDown);
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onNativeKeyUp);
+		if (value == null)
+		{
+			Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		}
+		else
+		{
+			//in flash keyboard event are listened from the stage to receive global 
+			//keyboard event. We might evolve this features with focus management
+			//eventually
+			Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		}
+		return _onKeyDown = value;
 	}
 	
-	/**
-	 * removes the listeners for flash keyboard event
-	 */
-	override private function unsetNativeKeyboardListeners():Void
+	override private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
 	{
-		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onNativeKeyDown);
-		Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, onNativeKeyUp);
+		if (value == null)
+		{
+			Lib.current.stage.removeEventListener(KeyboardEvent.KEY_UP, onNativeKeyUp);
+		}
+		else
+		{
+			Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onNativeKeyUp);
+		}
+		return _onKeyUp = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
