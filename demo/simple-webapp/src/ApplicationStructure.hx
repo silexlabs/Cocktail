@@ -20,7 +20,6 @@ import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
-import js.Lib;
 
 // Style
 import cocktail.style.StyleData;
@@ -222,7 +221,7 @@ class ApplicationStructure
 	private function goToUrl(url:String)
 	{
 		#if js
-		Lib.window.open(url);
+		js.Lib.window.open(url);
 		#end
 	}
 	
