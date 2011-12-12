@@ -12,23 +12,26 @@ It is inspired by an existing demo made by the jPint project (which seems to be 
 TO DO
 -----
 
--links => use native functions
--the home page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
-=> do it with a conditional compilation switch (using windows.location for JS)
+-have the flash version work correctly
+ => for links, do it with a conditional compilation switch (using windows.location for JS, and getURL for flash)
 -load the gallery demo inside the body (as a skin, keep the web app header) - there has to be a conditional compilation switch (the flash version of the gallery in the flash version of the web app)
 -for the sound, embed a player, like
-html5 alex = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F1187266&auto_play=false&show_artwork=true&color=2b877f
-html5 raph = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&auto_play=false&show_artwork=true&color=2b877f
-flash alex = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F805447&color=0066cc&show_comments=true
-flash raph = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
+alex:
+ => html5 = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F1187266&auto_play=false&show_artwork=true&color=2b877f
+ => flash = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F805447&color=0066cc&show_comments=true
+raph:
+ => html5 = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&auto_play=false&show_artwork=true&color=2b877f
+ => flash = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
 
 DONE
 -use "ul" and "li" tags for all the lists (including the home page icons) => OK
+-links => use native functions
+-the credit page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
 
 TASKS
 -----
 
- => pages => 2 jours
+ => pages => 2 jours => OK
 	Réalisation:
 		=> construire un dom contenant tout le site
 		=> pour la navigation et le passage d'une page à une autre, masquer/afficher les éléments correspondants

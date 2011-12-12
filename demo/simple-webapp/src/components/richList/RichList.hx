@@ -79,14 +79,20 @@ class RichList extends ContainerDOMElement
 			//cell.addText(NativeElementManager.createNativeTextNode(cellData.text));
 			
 			// image part
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			if (cellData.imagePath != "" && cellData.imagePath != null)
+			{
+				var cellImage:ImageDOMElement = new ImageDOMElement();
+				// set image style
+				listStyle.cellImage(cellImage);
+				// add image
+				cell.addChild(cellImage);
+				// load image
+				cellImage.load(cellData.imagePath);
+			}
+
 			
-			// set image style
-			listStyle.cellImage(cellImage);
-			
-			// add line, then image and then text
+			// add line and text
 			//cell.addChild(line);
-			cell.addChild(cellImage);
 			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.text);
 			cellTextContainer.addText(textElement);
@@ -97,8 +103,6 @@ class RichList extends ContainerDOMElement
 			// create line to separate cells
 			//listStyle.cell(cell);
 			
-			cellImage.load(cellData.imagePath);
-
 			// add cell to instance
 			this.addChild(cell);
 			
@@ -125,10 +129,10 @@ class RichList extends ContainerDOMElement
 	 * 
 	 * @param	error
 	 */
-	private function onPictureLoadError(error:String):Void
+	/*private function onPictureLoadError(error:String):Void
 	{
 		trace(error);
-	}
+	}*/
 	
 	/**
 	 * Cell mouse roll over callback

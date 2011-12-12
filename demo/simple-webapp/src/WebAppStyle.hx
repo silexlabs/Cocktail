@@ -100,7 +100,7 @@ class WebAppStyle
 	public static function getBodyStyle(domElement:DOMElement):Void
 	{
 		initStyle(domElement);
-		//getDefaultStyle(domElement);
+		getDefaultStyle(domElement);
 		
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -119,10 +119,9 @@ class WebAppStyle
 	public static function getMainContainerStyle(domElement:DOMElement):Void
 	{
 		initStyle(domElement);
-		//getDefaultStyle(domElement);
+		getDefaultStyle(domElement);
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(100);
 
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
@@ -140,14 +139,13 @@ class WebAppStyle
 	public static function getPageContainerStyle(domElement:DOMElement):Void
 	{
 		initStyle(domElement);
-		//getDefaultStyle(domElement);
+		getDefaultStyle(domElement);
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.percent(100);
 
 		domElement.style.left = PositionOffsetStyleValue.auto;
 		domElement.style.top = PositionOffsetStyleValue.auto;
-		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
 	
 	/**
@@ -184,12 +182,12 @@ class WebAppStyle
 	 */
 	public static function getBgStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
-		//getDefaultStyle(domElement);
+		//initStyle(domElement);
+		getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
+		domElement.style.height = DimensionStyleValue.percent(100);
 	}
 	
 	
@@ -324,7 +322,6 @@ class WebAppStyle
 	public static function getTextContentStyle(domElement:DOMElement):Void
 	{
 		initStyle(domElement);
-		
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
