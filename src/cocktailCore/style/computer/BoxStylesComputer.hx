@@ -299,7 +299,7 @@ class BoxStylesComputer
 	private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getNativeHeight(style, containingDOMElementData);
+		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
 		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
@@ -396,8 +396,8 @@ class BoxStylesComputer
 	/**
 	 * Get the computed height of the DOMElement when not 'auto' and returns it as pixels
 	 */ 
-	private function getNativeHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
-	{
+	private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	{		
 		return getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
 	
@@ -656,6 +656,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
+				
 				computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
 				
 			case auto:

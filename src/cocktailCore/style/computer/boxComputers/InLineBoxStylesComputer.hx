@@ -48,7 +48,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded DOMElement, the height doesn't apply
 	 */
-	override private function getNativeHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return 0;
 	}
