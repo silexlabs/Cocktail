@@ -601,7 +601,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	private function getGradientBox(gradientStyle:GradientStyleData):Matrix
 	{
 		var gradientBox:Matrix = new Matrix();
-		gradientBox.createGradientBox(this.getWidth(), this.getHeight(), gradientStyle.rotation / 180 * Math.PI);
+		gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
 		return gradientBox;
 	}
 }

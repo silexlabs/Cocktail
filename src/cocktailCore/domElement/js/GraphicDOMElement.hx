@@ -104,7 +104,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var canvasContext:Dynamic = getContext();
 		
 		//clears a rect with the size of this DOMElement
-		canvasContext.clearRect(0, 0, getWidth(), getHeight());
+		canvasContext.clearRect(0, 0, width, height);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -447,14 +447,14 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 				//the end point is right of the bounding box and the middle
 				//of it's height
 				var xStart:Float = 0;
-				var yStart:Float = this.getHeight() / 2;
-				var xEnd:Float = this.getWidth();
-				var yEnd:Float = this.getHeight() / 2;
+				var yStart:Float = this.height / 2;
+				var xEnd:Float = this.width;
+				var yEnd:Float = this.height / 2;
 		
 				//convert the starting point to the canvas center
 				//geometric space (use the center as origin)
-				xStart -= this.getWidth() / 2;
-				yStart -= this.getHeight() / 2;
+				xStart -= this.width / 2;
+				yStart -= this.height / 2;
 				
 				
 				//rotate the starting point with the rotation value of the gradient
@@ -462,27 +462,27 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 				var rotatedStartY:Float = (xStart * Math.sin(gradientRadRotation)) + (yStart * Math.cos(gradientRadRotation));
 				
 				//convert back to canvas top-left geometric space
-				rotatedStartX += this.getWidth() / 2;
-				rotatedStartY += this.getHeight() / 2;
+				rotatedStartX += this.width / 2;
+				rotatedStartY += this.height / 2;
 				
 				//convert the end point to the canvas center
 				//geometric space (use the center as origin)
-				xEnd -= this.getWidth() / 2;
-				yEnd -= this.getHeight() / 2;
+				xEnd -= this.width / 2;
+				yEnd -= this.height / 2;
 				
 				//rotate the end point with the rotation value of the gradient
 				var rotatedEndX:Float = (xEnd * Math.cos(gradientRadRotation)) - (yEnd * Math.sin(gradientRadRotation));
 				var rotatedEndY:Float = (xEnd * Math.sin(gradientRadRotation)) + (yEnd * Math.cos(gradientRadRotation));
 				
 				//convert back to canvas top-left geometric space
-				rotatedEndX += this.getWidth() / 2;
-				rotatedEndY += this.getHeight() / 2;
+				rotatedEndX += this.width / 2;
+				rotatedEndY += this.height / 2;
 				
 				//create the gradient
 				gradient = canvasContext.createLinearGradient(rotatedStartX, rotatedStartY, rotatedEndX, rotatedEndY);
 				
 			case radial:
-				gradient = canvasContext.createRadialGradient(this.getWidth()/2, this.getHeight() / 2, this.getWidth() /4, this.getWidth()/2, this.getHeight() / 2, this.getHeight() /2);
+				gradient = canvasContext.createRadialGradient(this.width/2, this.height / 2, this.width /4, this.width/2, this.height / 2, this.height /2);
 		}
 		
 		//get all the gradient stops data
