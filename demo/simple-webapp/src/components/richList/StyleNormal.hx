@@ -37,56 +37,6 @@ import Utils;
 
 class StyleNormal
 {
-
-	/**
-	 * initializes Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function initStyle(domElement:DOMElement):Void
-	{
-		var computedStyle:ComputedStyleData = {
-		width : 0,
-		height : 0,
-		minHeight : 0,
-		maxHeight : 0,
-		minWidth : 0,
-		maxWidth : 0,
-		marginLeft : 0,
-		marginRight : 0,
-		marginTop : 0,
-		marginBottom : 0,
-		paddingLeft : 0,
-		paddingRight : 0,
-		paddingTop : 0,
-		paddingBottom : 0,
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom : 0,
-		clear : ClearStyleValue.none,
-		float : FloatStyleValue.none,
-		display : DisplayStyleValue.block,
-		position: PositionStyleValue.staticStyle,
-		verticalAlign : 0.0,
-		fontSize:12.0,
-		lineHeight:14.0,
-		fontWeight:FontWeightStyleValue.normal,
-		fontStyle:FontStyleStyleValue.normal,
-		fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
-		fontVariant:FontVariantStyleValue.normal,
-		textTransform:TextTransformStyleValue.none,
-		letterSpacing:0,
-		wordSpacing:0,
-		textIndent:0,
-		whiteSpace:WhiteSpaceStyleValue.normal,
-		textAlign:TextAlignStyleValue.left,
-		color:0
-		}
-		
-		domElement.style.computedStyle = computedStyle;
-	}
-	
 	/**
 	 * Defines default Style
 	 * 
@@ -94,7 +44,7 @@ class StyleNormal
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
+		domElement.style.display = DisplayStyleValue.block;
 
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -105,25 +55,6 @@ class StyleNormal
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
-		
-		//domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		//domElement.style.left = PositionOffsetStyleValue.length(px(0));
-		//domElement.style.right = PositionOffsetStyleValue.length(px(0));
-		//domElement.style.bottom  = PositionOffsetStyleValue.length(px(0));
-		//
-		//domElement.style.minWidth = ConstrainedDimensionStyleValue.none;
-		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.none;
-		//domElement.style.minHeight = ConstrainedDimensionStyleValue.none;
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.none;
-		
-		//domElement.style.display = block;
-		//domElement.style.position = staticStyle;
-		
-		//domElement.style.width = DimensionStyleValue.auto;
-		//domElement.style.height = DimensionStyleValue.auto;
-		
-		//domElement.style.float = FloatStyleValue.none;
-		//domElement.style.clear = ClearStyleValue.none;
 	}
 	
 	/**
@@ -133,15 +64,15 @@ class StyleNormal
 	 */
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
 		getDefaultStyle(domElement);
 
+		//domElement.style.position = absolute;
+		//domElement.style.display = DisplayStyleValue.block;
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 				
-		//domElement.style.position = absolute;
 		domElement.style.color = ColorValue.hex('#666666');
 		//domElement.style.width = DimensionStyleValue.percent(100);
 
@@ -161,13 +92,12 @@ class StyleNormal
 	 */
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
 		getDefaultStyle(domElement);
 		//domElement.style.position = absolute;
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.float = FloatStyleValue.right;
-		
+		//domElement.style.width = DimensionStyleValue.length(px(16));
 		domElement.style.height = DimensionStyleValue.length(px(16));
 	}
 	
@@ -178,9 +108,13 @@ class StyleNormal
 	 */
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
 		//getDefaultStyle(domElement);
-		
+
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
+		//domElement.style.paddingRight = PaddingStyleValue.length(px(8));
+		//domElement.style.paddingTop = PaddingStyleValue.length(px(8));
+		//domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
+
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
@@ -201,7 +135,7 @@ class StyleNormal
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		
 		domElement.style.color = ColorValue.hex('#666666');
-		domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(100);
 	}
 
 	/**
@@ -211,8 +145,7 @@ class StyleNormal
 	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
+		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#333333');
 
@@ -227,8 +160,7 @@ class StyleNormal
 	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
+		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#666666');
 
@@ -243,8 +175,7 @@ class StyleNormal
 	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
+		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#000000');
 
@@ -259,8 +190,7 @@ class StyleNormal
 	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
+		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#333333');
 
@@ -275,10 +205,7 @@ class StyleNormal
 	 */
 	public static function getCellLineStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
-
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(1));
+		getCellTextStyle(domElement);
 	}
 	
 	/**
@@ -305,7 +232,7 @@ class StyleNormal
 	 */
 	/*private static function addLineAgain(domElement:ContainerDOMElement)
 	{
-		initStyle(domElement);
+		//initStyle(domElement);
 
 		// create line to separate cells
 		var line:GraphicDOMElement;

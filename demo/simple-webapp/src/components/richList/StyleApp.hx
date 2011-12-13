@@ -33,56 +33,6 @@ import components.richList.RichListModels;
 
 class StyleApp
 {
-
-	/**
-	 * initializes Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function initStyle(domElement:DOMElement):Void
-	{
-		var computedStyle:ComputedStyleData = {
-		width : 0,
-		height : 0,
-		minHeight : 0,
-		maxHeight : 0,
-		minWidth : 0,
-		maxWidth : 0,
-		marginLeft : 0,
-		marginRight : 0,
-		marginTop : 0,
-		marginBottom : 0,
-		paddingLeft : 0,
-		paddingRight : 0,
-		paddingTop : 0,
-		paddingBottom : 0,
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom : 0,
-		clear : ClearStyleValue.none,
-		float : FloatStyleValue.none,
-		display : DisplayStyleValue.block,
-		position: PositionStyleValue.staticStyle,
-		verticalAlign : 0.0,
-		fontSize:12.0,
-		lineHeight:14.0,
-		fontWeight:FontWeightStyleValue.normal,
-		fontStyle:FontStyleStyleValue.normal,
-		fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
-		fontVariant:FontVariantStyleValue.normal,
-		textTransform:TextTransformStyleValue.none,
-		letterSpacing:0,
-		wordSpacing:0,
-		textIndent:0,
-		whiteSpace:WhiteSpaceStyleValue.normal,
-		textAlign:TextAlignStyleValue.left,
-		color:0
-		}
-		
-		domElement.style.computedStyle = computedStyle;
-	}
-	
 	/**
 	 * Defines default Style
 	 * 
@@ -90,8 +40,6 @@ class StyleApp
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
-		
 		domElement.style.marginLeft =MarginStyleValue.length(px(10));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
@@ -113,24 +61,11 @@ class StyleApp
 	 */
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getDefaultStyle(domElement);
-		
-		//domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
-		//domElement.style.fontSize = FontSizeStyleValue.length(px(12));
-		//domElement.style.textAlign = TextAlignStyleValue.center;
-		//domElement.style.color = ColorValue.keyword(ColorKeywordValue.white);
-
-		//domElement.style.height = DimensionStyleValue.auto;
-		//domElement.style.width = DimensionStyleValue.auto;
-		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(18));
 		domElement.style.marginTop = MarginStyleValue.length(px(10));
 		domElement.style.marginBottom = MarginStyleValue.length(px(10));
 		
-		//domElement.style.textAlign = TextAlignStyleValue.center;
-
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
@@ -142,9 +77,6 @@ class StyleApp
 	 */
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
-		//getDefaultStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(57));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
@@ -157,25 +89,12 @@ class StyleApp
 	 */
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
-		initStyle(domElement);
-		//getDefaultStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = DimensionStyleValue.length(px(57));
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 		
 		domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
 		domElement.style.fontSize = FontSizeStyleValue.length(px(12));
-		domElement.style.textAlign = TextAlignStyleValue.center;
-
-		/*domElement.style.height = DimensionStyleValue.auto;
-		domElement.style.width = DimensionStyleValue.auto;
-		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(18));
-		domElement.style.marginTop = MarginStyleValue.length(px(10));
-		domElement.style.marginBottom = MarginStyleValue.length(px(10));*/
-		
 		domElement.style.textAlign = TextAlignStyleValue.center;
 	}
 
@@ -186,9 +105,6 @@ class StyleApp
 	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
-
 		domElement.style.color = ColorValue.hex('#DDDDDD');
 	}
 	
@@ -199,9 +115,6 @@ class StyleApp
 	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
-
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 	
@@ -212,9 +125,6 @@ class StyleApp
 	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
-
 		domElement.style.color = ColorValue.keyword(ColorKeywordValue.white);
 	}
 	
@@ -225,9 +135,6 @@ class StyleApp
 	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
-		initStyle(domElement);
-		//getCellStyle(domElement);
-
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 }
