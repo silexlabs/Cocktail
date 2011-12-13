@@ -19,7 +19,8 @@ import haxe.Log;
  * 
  * Prevents DOMElement from being globally
  * positioned as 'relative' DOMElement remain
- * in normal flow
+ * in normal flow, only an offset is applied to
+ * them
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -34,39 +35,59 @@ class RelativePositioner extends BoxPositioner
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERIDDEN PUBLIC METHODS
+	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Override to prevent DOMElement from being globally positioned, 'relative' DOMElement are
-	 * first normally positioned in the flow, then an offset is applied to them
+	 * Overriden as relative DOMElement are positioned in the flow
 	 */
-	override public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
+	override private function applyGlobalX(domElement:DOMElement, globalX:Int):Void
 	{
-		applyOffset(domElement, containingDOMElementData, staticPosition);
+		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERIDDEN PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Overriden as relative DOMElement are positioned in the flow
+	 */
+	override private function applyGlobalY(domElement:DOMElement, globalY:Int):Void
+	{
+		
+	}
 	
 	/**
-	 * Overriden because when relatively positioning a DOMElement, only its top and left
-	 * styles are accounted for
+	 * Overriden because the margin isn't use as is it already applied when the
+	 * relative DOMElement is inserted into the flow
 	 */
-	override private function applyOffset(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
+	override private function getLeftOffset(domElement:DOMElement):Int
 	{
-		//apply an horizontal offset if it is not 'auto'
-		if (domElement.style.left != PositionOffsetStyleValue.auto)
-		{
-			domElement.style.setNativeX(domElement, domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left);
-		}
-		
-		//apply a vertical offset if it is not 'auto'
-		if (domElement.style.top != PositionOffsetStyleValue.auto)
-		{
-			domElement.style.setNativeY(domElement, domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top);
-		}
+		return domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left;
+	}
+	
+	/**
+	 * Overriden because the margin isn't use as is it already applied when the
+	 * relative DOMElement is inserted into the flow
+	 */
+	override private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
+	{
+		return domElement.style.getNativeX(domElement) + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right ;
+	}
+	
+	/**
+	 * Overriden because the margin isn't use as is it already applied when the
+	 * relative DOMElement is inserted into the flow
+	 */
+	override private function getTopOffset(domElement:DOMElement):Int
+	{
+		return domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top;
+	}
+	
+	/**
+	 * Overriden because the margin isn't use as is it already applied when the
+	 * relative DOMElement is inserted into the flow
+	 */
+	override private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
+	{
+		return domElement.style.getNativeY(domElement) + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom ;
 	}
 	
 }
