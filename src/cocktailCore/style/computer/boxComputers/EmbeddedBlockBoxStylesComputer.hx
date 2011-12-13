@@ -12,6 +12,7 @@ import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import haxe.Log;
 
 /**
  * This is the box computer implementation for an
@@ -117,7 +118,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
-		
 		var ret:Int = 0;
 		
 		//if the 'width' style is also set to 'auto'
