@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
+import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
@@ -951,13 +952,13 @@ class AbstractDOMElement
 		//if this DOMElement has a parent
 		if (this._parent != null)
 		{
-			var parentDOMElement:AbstractDOMElement = this._parent;
+			var parentDOMElement:DOMElement = this._parent;
 			//Add the localX of each parent until a DOMElement
 			//with no parent is found (the root DOMElement).
 			//The added localX form the globalX valu
 			while (parentDOMElement != null)
 			{
-				newGlobalX += parentDOMElement.style.getNativeX(cast(parentDOMElement));
+				newGlobalX += parentDOMElement.style.getNativeX(parentDOMElement);
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
@@ -1007,7 +1008,7 @@ class AbstractDOMElement
 		
 		if (this._parent != null)
 		{
-			var parentDOMElement:AbstractDOMElement = this._parent;
+			var parentDOMElement:DOMElement = this._parent;
 			while (parentDOMElement != null)
 			{
 				newGlobalY += parentDOMElement.style.getNativeY(cast(parentDOMElement));
