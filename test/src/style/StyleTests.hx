@@ -35,6 +35,7 @@ import cocktail.resource.ResourceLoaderManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
+import haxe.Timer;
 
 
 class StyleTests 
@@ -157,8 +158,8 @@ class StyleTests
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
 		
 		 _footer = getGraph();
-		_footer.style.width = DimensionStyleValue.percent(100);
-		_footer.style.height = DimensionStyleValue.length(px(100));
+		//_footer.style.width = DimensionStyleValue.percent(100);
+		//_footer.style.height = DimensionStyleValue.length(px(100));
 		_footer.style.marginTop = MarginStyleValue.length(px(0));
 		
 		var mainCont:ContainerDOMElement = _mainContainer;
@@ -177,12 +178,12 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 			var image:ImageDOMElement = new ImageDOMElement();
 			
-			image.onLoad =  function() {
+			image.onLoad =  function(e) {
 		//	mainCont.addChild(headerContainer);
 		//	textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 		//	textContainer.style.position = relative;
-			textBlock.addChild(headerContainer);
+			//textBlock.addChild(headerContainer);
 		textBlock.addChild(image);
 		
 			headerContainer.style.display = inlineBlock;
@@ -205,14 +206,16 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 				//picture.style.width = DimensionStyleValue.length(px(500));
 				image.onLoad = null;
 				image.load("preview.png");
+				foot.width = 50;
 				//mainCont.x = 300;
 				textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
 				textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
 				image.width = 500;
-				foot.height = 50;
-				foot.style.height = DimensionStyleValue.auto;
-				foot.width = 350;
-			
+			//	foot.height = 50;
+				//foot.style.height = DimensionStyleValue.auto;
+			//	foot.width = 350;
+			paint(_footer, 0xBBBBBB);
+			paint(_header, 0xCCCCCC);
 			//refreshProxy(null);
 			}
 			image.onMouseOver = function(event) {
@@ -242,12 +245,34 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		};
 		
+		
 		var image2:ImageDOMElement = new ImageDOMElement();
 		getDefaultStyle(image2);
 		image2.load("preview.png");
 		image2.style.display = DisplayStyleValue.inlineStyle;
-		image2.width = 500;
-		image2.height = 300;
+		image2.style.position = absolute;
+		//image2.style.left = PositionOffsetStyleValue.length(px(0));
+		//image2.style.top = PositionOffsetStyleValue.length(px(0));
+		//image2.style.width = DimensionStyleValue.length(px(500));
+		//image2.style.height = DimensionStyleValue.length(px(300));
+		image2.style.width = DimensionStyleValue.length(px(500));
+		image2.style.height = DimensionStyleValue.length(px(300));
+
+		_footer.width = 300;
+		_footer.height = 200;
+		
+		image2.onLoad = function(e) {
+			
+			
+			
+			/**	
+			#if js
+			Timer.delay(function () { Log.trace(untyped image2.nativeElement.clientWidth);
+			Log.trace(untyped foot.nativeElement.clientWidth);
+			}, 1 );
+		
+			#end*/
+			};
 		textBlock.addChild(image2);
 		
 		image.onError = function(event) { };
@@ -265,11 +290,11 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		var browserWidth:Int = viewPort.width;
 		var browserHeight:Int = viewPort.height;
+
 		
 		//_mainContainer.style.computedStyle.lineHeight = 70;
 		//bodyDOMElement.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, bodyDOMElement.style.fontMetrics);
-			paint(_footer, 0xBBBBBB);
-				paint(_header, 0xCCCCCC);
+			
 	}
 	
 	
@@ -309,7 +334,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 	
 	private function getDefaultStyle(domElement:DOMElement):Void
 	{
-			domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.display = block;
+			/**domElement.style.marginLeft = MarginStyleValue.length(px(0));
 			domElement.style.marginRight = MarginStyleValue.length(px(0));
 			domElement.style.marginTop = MarginStyleValue.length(px(0));
 			domElement.style.marginBottom = MarginStyleValue.length(px(0));
@@ -348,7 +374,7 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			
 			domElement.style.color = ColorValue.keyword(ColorKeywordValue.black);
 			
-			domElement.style.display = block;
+			
 			
 			domElement.style.position = staticStyle;
 			
@@ -397,7 +423,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			color:0
 			}
 			
-			domElement.style.computedStyle = computedStyle;
+			domElement.style.computedStyle = computedStyle;*/
+			//domElement.style.position = absolute;
 		
 	}
 	

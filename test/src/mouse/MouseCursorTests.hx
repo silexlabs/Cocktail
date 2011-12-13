@@ -19,7 +19,6 @@ package mouse;
 
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
-import cocktail.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -91,7 +90,9 @@ class MouseCursorTests
 	
 	private function onBitmapPress(mouseEventData:MouseEventData):Void
 	{
-		ResourceLoaderManager.loadImage("testPointer.png", onCursorLoaded, function(err:String){});
+		var cursor:ImageDOMElement = new ImageDOMElement();
+		cursor.onLoad = onCursorLoaded;
+		cursor.load("testPointer.png");
 	}
 	
 	private function onCursorLoaded(imageDOMElement:ImageDOMElement):Void

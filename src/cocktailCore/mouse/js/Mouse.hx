@@ -31,34 +31,86 @@ class Mouse extends AbstractMouse
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// EVENTS
-	// Overriden private native mouse event handler method
+	// OVERRIDEN CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set the listeners for native JavaScript mouse events
-	 */
-	override private function setNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.onmousedown = onNativeMouseDown;
-		nativeElement.onmouseup = onNativeMouseUp;
-		nativeElement.onmouseover = onNativeMouseOver;
-		nativeElement.onmouseout = onNativeMouseOut;
-		nativeElement.onmousemove = onNativeMouseMove;
-		nativeElement.ondblclick = onNativeMouseDoubleClick;
+		if (value == null)
+		{
+			_nativeElement.onmousedown = null;
+		}
+		else
+		{
+			_nativeElement.onmousedown = onNativeMouseDown;
+		}
+		
+		return this._onMouseDown = value;
 	}
 	
-	/**
-	 * remove the listeners for native JavaScript mouse events
-	 */
-	override private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.onmousedown = null;
-		nativeElement.onmouseup = null;
-		nativeElement.onmouseover = null;
-		nativeElement.onmouseout = null;
-		nativeElement.onmousemove = null;
-		nativeElement.ondblclick = null;
+		if (value == null)
+		{
+			_nativeElement.onmouseup = null;
+		}
+		else
+		{
+			_nativeElement.onmouseup = onNativeMouseUp;
+		}
+		return this._onMouseUp = value;
+	}
+	
+	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmouseover = null;
+		}
+		else
+		{
+			_nativeElement.onmouseover = onNativeMouseOver;
+		}
+		return this._onMouseOver = value;
+	}
+	
+	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmouseout = null;
+		}
+		else
+		{
+			_nativeElement.onmouseout = onNativeMouseOut;
+		}
+		return this._onMouseOut = value;
+	}
+	
+	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmousemove = null;
+		}
+		else
+		{
+			_nativeElement.onmousemove = onNativeMouseMove;
+		}
+		return this._onMouseMove = value;
+	}
+	
+	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.ondblclick = null;
+		}
+		else
+		{
+			_nativeElement.ondblclick = onNativeMouseDoubleClick;
+		}
+		return this._onMouseDoubleClick = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

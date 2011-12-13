@@ -61,59 +61,6 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden getter/setter
-	// The width and height setter/getter are overriden, because width and height
-	// are attributes of the Canvas tag and not styles
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		
-		if (this._style.height == DimensionStyleValue.auto)
-		{
-		
-			//when changing the width or height of a Canvas,
-			//its content is erased, 
-			var canvasContext:Dynamic = getContext();
-			//so we first save it
-			var imageData:Dynamic = canvasContext.getImageData(0, 0, value, this.height);
-			//set the new width
-			untyped this._nativeElement.width = value;
-			//then put back the pixel data
-			canvasContext.putImageData(imageData, 0, 0);
-		
-		}
-		
-		return value;
-	}
-	
-	override private function getWidth():Int 
-	{
-		return untyped Std.parseInt(this._nativeElement.width);
-	}
-	
-	override private function setHeight(value:Int):Int 
-	{
-		super.setHeight(value);
-		
-		if (this._style.height == DimensionStyleValue.auto)
-		{
-			//same as width, save the pixel data and put it back
-			var canvasContext:Dynamic = getContext();
-			var imageData:Dynamic = canvasContext.getImageData(0,0, this.width, value);
-			untyped this._nativeElement.height = value;
-			canvasContext.putImageData(imageData, 0, 0);
-		}
-		
-		return value;
-	}
-	
-	override private function getHeight():Int 
-	{
-		return untyped Std.parseInt(this._nativeElement.height);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden fill control methods

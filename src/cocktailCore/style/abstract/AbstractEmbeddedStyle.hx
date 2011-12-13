@@ -44,24 +44,6 @@ class AbstractEmbeddedStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
-	// In an embedded object, left and top padding are also applied to the 
-	// NativeElement
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		x += this._computedStyle.paddingLeft;
-		super.setNativeX(domElement, x);
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		y += this._computedStyle.paddingTop;
-		super.setNativeY(domElement, y);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
