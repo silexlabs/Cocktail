@@ -158,8 +158,8 @@ class StyleTests
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
 		
 		 _footer = getGraph();
-		_footer.style.width = DimensionStyleValue.percent(100);
-		_footer.style.height = DimensionStyleValue.length(px(100));
+		//_footer.style.width = DimensionStyleValue.percent(100);
+		//_footer.style.height = DimensionStyleValue.length(px(100));
 		_footer.style.marginTop = MarginStyleValue.length(px(0));
 		
 		var mainCont:ContainerDOMElement = _mainContainer;
@@ -178,12 +178,12 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 			var image:ImageDOMElement = new ImageDOMElement();
 			
-			image.onLoad =  function() {
+			image.onLoad =  function(e) {
 		//	mainCont.addChild(headerContainer);
 		//	textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 		//	textContainer.style.position = relative;
-			textBlock.addChild(headerContainer);
+			//textBlock.addChild(headerContainer);
 		textBlock.addChild(image);
 		
 			headerContainer.style.display = inlineBlock;
@@ -206,6 +206,7 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 				//picture.style.width = DimensionStyleValue.length(px(500));
 				image.onLoad = null;
 				image.load("preview.png");
+				foot.width = 50;
 				//mainCont.x = 300;
 				textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
 				textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
@@ -213,7 +214,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			//	foot.height = 50;
 				//foot.style.height = DimensionStyleValue.auto;
 			//	foot.width = 350;
-			
+			paint(_footer, 0xBBBBBB);
+			paint(_header, 0xCCCCCC);
 			//refreshProxy(null);
 			}
 			image.onMouseOver = function(event) {
@@ -256,10 +258,10 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		image2.style.width = DimensionStyleValue.length(px(500));
 		image2.style.height = DimensionStyleValue.length(px(300));
 
-		_footer.width = 120;
+		_footer.width = 300;
 		_footer.height = 200;
 		
-		image2.onLoad = function() {
+		image2.onLoad = function(e) {
 			
 			
 			
@@ -292,15 +294,12 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 		//_mainContainer.style.computedStyle.lineHeight = 70;
 		//bodyDOMElement.style.layout( { width:browserWidth, height:browserHeight, isWidthAuto:false, isHeightAuto:false, globalX:0, globalY:0 }, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, {width:browserWidth, height:browserHeight, globalX:0, globalY:0, isWidthAuto:false, isHeightAuto:false}, bodyDOMElement.style.fontMetrics);
-			paint(_footer, 0xBBBBBB);
-			paint(_header, 0xCCCCCC);
+			
 	}
 	
 	
 	private function paint(domElement:GraphicDOMElement, color:Int):Void
 	{
-		Log.trace(domElement.width);
-		Log.trace(domElement.height);
 		domElement.clear();
 		domElement.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
 		domElement.drawRect(0, 0, domElement.width, domElement.height);
@@ -335,7 +334,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 	
 	private function getDefaultStyle(domElement:DOMElement):Void
 	{
-			domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.display = block;
+			/**domElement.style.marginLeft = MarginStyleValue.length(px(0));
 			domElement.style.marginRight = MarginStyleValue.length(px(0));
 			domElement.style.marginTop = MarginStyleValue.length(px(0));
 			domElement.style.marginBottom = MarginStyleValue.length(px(0));
@@ -374,7 +374,7 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			
 			domElement.style.color = ColorValue.keyword(ColorKeywordValue.black);
 			
-			domElement.style.display = block;
+			
 			
 			domElement.style.position = staticStyle;
 			
@@ -423,7 +423,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			color:0
 			}
 			
-			domElement.style.computedStyle = computedStyle;
+			domElement.style.computedStyle = computedStyle;*/
+			//domElement.style.position = absolute;
 		
 	}
 	
