@@ -80,12 +80,7 @@ class FormattingContext
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
 		{	
-			//the float are not retrieved if the DOMElement starting
-			//the formatting is itself a float
-			if (domElement.style.isFloat() == false)
-			{
-				_floatsManager.addFloats(previousFormatingContext);
-			}
+			_floatsManager.addFloats(previousFormatingContext);
 		}
 		
 		//init the flow data to place the first inserted

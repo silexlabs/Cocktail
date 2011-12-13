@@ -206,6 +206,7 @@ class AbstractContainerStyle extends Style
 		//that will also affect the position of its following siblings
 		formatingContext.retrieveFloats(childrenFormattingContext);
 		
+		
 		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
 		//it means that this ContainerDOMElement is the first positioned ancestor for its children
 		//and it its responsability to position them
@@ -634,31 +635,67 @@ class AbstractContainerStyle extends Style
 	 */
 	private function childrenInline():Bool
 	{
-		var ret:Bool = true;
-		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//return false for a container with no children
+		if (containerDOMElement.children.length == 0)
+		{
+			return false;
+		}
+		
+		//establish if the first child is inline or block
+		//all other child must be of the same type
+		var ret:Bool = isChildInline(containerDOMElement.children[0]);
+		
+		//loop in all children and throw an exception
+		//if one the children is not of the same type as the first
 		for (i in 0...containerDOMElement.children.length)
 		{
-			if (isDOMElement(containerDOMElement.children[i]))
+			if (isChildInline(containerDOMElement.children[i]) != ret)
 			{
-				//if one of the children is a block level DOMElement, then the container
-				//is block level
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				
-				if (childrenDOMElement.style.computedStyle.display == block)
+				throw "children of a block container can only be either all block or all inline";
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Determine wether a children is inline or not
+	 */
+	private function isChildInline(child:ContainerDOMElementChildData):Bool
+	{
+		var ret:Bool = true;
+		
+		//here the children is a DOMElement
+		if (isDOMElement(child))
+		{
+			var childrenDOMElement:DOMElement = cast(child.child);
+			//here the child is of type block
+			if (childrenDOMElement.style.computedStyle.display == block)
+			{
+				//floated children are not taken into account 
+				if (childrenDOMElement.style.isFloat() == false)
 				{
-					//floated children are not taken into account 
-					if (childrenDOMElement.style.isFloat() == false)
-					{
-						ret = false;
-					}
-					//absolutely positioned children are not taken into account but relative positioned are
-					else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
-					{
-						ret = false;
-					}
+					ret = false;
+				}
+				//absolutely positioned children are not taken into account but relative positioned are
+				else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
+				{
+					ret = false;
 				}
 			}
+			//here the chil is inline
+			else
+			{
+				ret = true;
+			}
+		}
+		//here the children is a textElement, which is
+		//always inline as text is always displayed on a line
+		else
+		{
+			ret = true;
 		}
 		
 		return ret;
