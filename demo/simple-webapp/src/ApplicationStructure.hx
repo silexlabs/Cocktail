@@ -162,7 +162,7 @@ class ApplicationStructure
 				{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
 				{text:"", imagePath:null, action:"", actionTarget:"" },
 				{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
-				{text:"which is based on Joe Hewitt iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+				{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
 				{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
 				{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
 			]

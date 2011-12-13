@@ -13,6 +13,7 @@ TO DO
 -----
 
 -have the flash version work correctly
+ => for generic problems, set following styles to all style element: display=static, position=block, width=auto ?
  => for links, do it with a conditional compilation switch (using windows.location for JS, and getURL for flash)
 -load the gallery demo inside the body (as a skin, keep the web app header) - there has to be a conditional compilation switch (the flash version of the gallery in the flash version of the web app)
 -for the sound, embed a player, like
@@ -110,7 +111,21 @@ Questions Yannick:
 => comment positionner un container sous un autre, meme s'il est déclaré en premier ?
 
 Bugs Cocktail:
+
+ => tile not working in flash
+	=> app black background
+	=> header tile
+ 
+ => relative + inline style does not seem to work correctly
+	=> header back button
+
+ => no scrollbar in flash
+	=> notes page
+	
+ => links page display issue
+	
  => using flash target, space characters are considered as CR
+    => not a bug, in flash width has to be set in general to width = 100%
 
  => domElement.style.verticalAlign does not seem to work correctly
     => à vérifier avec Yannick dans Iphone Style.hx, ligne 196
