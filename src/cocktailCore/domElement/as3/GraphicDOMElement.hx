@@ -115,33 +115,6 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the native Sprite fill style and line style
-	 * @param	fillStyle
-	 * @param	lineStyle
-	 */
-	override public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
-	{
-		super.beginFill(fillStyle, lineStyle);
-		
-		//init fill and line style if null
-		if (fillStyle == null)
-		{
-			fillStyle = FillStyleValue.none;
-		}
-		
-		if (lineStyle == null)
-		{
-			lineStyle = LineStyleValue.none;
-		}
-		
-		//set fill style
-		setFillStyle(fillStyle);
-		
-		//set line style
-		setLineStyle(lineStyle);
-	}
-	
-	/**
 	 * Ends a fill on the native Sprite's graphic object.
 	 * Convert the resulting vector into a bitmap
 	 */
@@ -268,14 +241,14 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private fill control methods
+	// Overriden Private fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Do set the fill style on the Sprite
 	 * @param	fillStyle
 	 */
-	private function setFillStyle(fillStyle:FillStyleValue):Void
+	override private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		switch(fillStyle)
 		{
@@ -310,7 +283,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 * Do set the lineStyle on the Sprite
 	 * @param	lineStyle
 	 */
-	private function setLineStyle(lineStyle:LineStyleValue):Void
+	override private function setLineStyle(lineStyle:LineStyleValue):Void
 	{
 		switch(lineStyle)
 		{

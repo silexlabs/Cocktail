@@ -74,24 +74,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	override public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
 	{
 		super.beginFill(fillStyle, lineStyle);
-		
-		//init fill and line style if null
-		if (fillStyle == null)
-		{
-			fillStyle = FillStyleValue.none;
-		}
-		
-		if (lineStyle == null)
-		{
-			lineStyle = LineStyleValue.none;
-		}
-		
-		//set fill style
-		setFillStyle(fillStyle);
-		
-		//set line style
-		setLineStyle(lineStyle);
-		
+
 		var canvasContext:Dynamic = getContext();
 		
 		//start path drawing, used when drawing with lineTo/moveto/curveTo
@@ -125,13 +108,13 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private fill control methods
+	// Overriden Private fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Do set the fill style on the canvas
 	 */
-	private function setFillStyle(fillStyle:FillStyleValue):Void
+	override private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		//get the canvas context to drawn on it
 		var canvasContext:Dynamic = getContext();
@@ -159,7 +142,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * Do set the line style on the canvas
 	 */
-	private function setLineStyle(lineStyle:LineStyleValue):Void
+	override private function setLineStyle(lineStyle:LineStyleValue):Void
 	{
 		//get the canvas context to drawn on it
 		var canvasContext:Dynamic = getContext();
