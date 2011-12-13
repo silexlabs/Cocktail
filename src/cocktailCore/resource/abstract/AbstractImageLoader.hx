@@ -19,8 +19,15 @@ import haxe.Log;
  */
 class AbstractImageLoader extends ResourceLoader
 {
+	/**
+	 * A reference to the native element actually loading
+	 * the asset. For instance in Flash, a Loader, in JS,
+	 * an img tag. when multiple picture are loaded, no
+	 * new NativeElement are created, the picture of the
+	 * NativeElement is only replaced
+	 */
 	private var _nativeElement:NativeElement;
-	public var nativeElement(getNativeElement, never):NativeElement;
+	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
 	
 	/**
 	 * class constructor
@@ -33,5 +40,10 @@ class AbstractImageLoader extends ResourceLoader
 	private function getNativeElement():NativeElement
 	{
 		return _nativeElement;
+	}
+	
+	private function setNativeElement(value:NativeElement):NativeElement
+	{
+		return _nativeElement = value;
 	}
 }

@@ -41,7 +41,7 @@ class MouseCursor extends AbstractMouseCursor
 	/**
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:Point):Void
+	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
 	{
 		//init the hotSpot if null
 		//to the top left of the cursor
