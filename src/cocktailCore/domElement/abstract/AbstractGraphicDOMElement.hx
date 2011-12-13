@@ -74,7 +74,22 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 */
 	public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
 	{
-		//abstract;
+		//init fill and line style if null
+		if (fillStyle == null)
+		{
+			fillStyle = FillStyleValue.none;
+		}
+		
+		if (lineStyle == null)
+		{
+			lineStyle = LineStyleValue.none;
+		}
+		
+		//set fill style
+		setFillStyle(fillStyle);
+		
+		//set line style
+		setLineStyle(lineStyle);
 	}
 	
 	/**
@@ -90,6 +105,28 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 * Clears the current shape and line of the graphic DOMElement.
 	 */
 	public function clear():Void
+	{
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private fill control methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Do set the line style on the DOMElement
+	 * @param	lineStyle
+	 */
+	private function setLineStyle(lineStyle:LineStyleValue):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Do set the fill style on the DOMElement
+	 * @param	fillStyle
+	 */
+	private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		//abstract
 	}
