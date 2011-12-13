@@ -33,7 +33,9 @@ class AbstractTextFragmentDOMElement extends DOMElement
 	 * Class constructor. Unlike other DOMElements, this
 	 * DOMElement doesn't instantiate its own style, it 
 	 * takes the style of the ContainerDOMElement to 
-	 * which it belongs
+	 * which it belongs.
+	 * 
+	 * Its nativeElement is also always provided
 	 * 
 	 * @param nativeElement
 	 * @param style a reference to the Style Object of the

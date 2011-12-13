@@ -251,50 +251,92 @@ class AbstractStyle
 	 */
 	private function initDefaultStyleValues():Void
 	{
-		this._width = DimensionStyleValue.auto;
-		this._height = DimensionStyleValue.auto;
+		this.width = DimensionStyleValue.auto;
+		this.height = DimensionStyleValue.auto;
 		
-		this._minWidth = ConstrainedDimensionStyleValue.length(px(0));
-		this._maxWidth = ConstrainedDimensionStyleValue.none;
-		this._minHeight = ConstrainedDimensionStyleValue.length(px(0));
-		this._maxHeight = ConstrainedDimensionStyleValue.none;
+		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
+		this.maxWidth = ConstrainedDimensionStyleValue.none;
+		this.minHeight = ConstrainedDimensionStyleValue.length(px(0));
+		this.maxHeight = ConstrainedDimensionStyleValue.none;
 		
-		this._marginTop = MarginStyleValue.length(px(0));
-		this._marginBottom = MarginStyleValue.length(px(0));
-		this._marginLeft = MarginStyleValue.length(px(0));
-		this._marginRight = MarginStyleValue.length(px(0));
+		this.marginTop = MarginStyleValue.length(px(0));
+		this.marginBottom = MarginStyleValue.length(px(0));
+		this.marginLeft = MarginStyleValue.length(px(0));
+		this.marginRight = MarginStyleValue.length(px(0));
 		
-		this._paddingTop = PaddingStyleValue.length(px(0));
-		this._paddingBottom = PaddingStyleValue.length(px(0));
-		this._paddingLeft = PaddingStyleValue.length(px(0));
-		this._paddingRight = PaddingStyleValue.length(px(0));
+		this.paddingTop = PaddingStyleValue.length(px(0));
+		this.paddingBottom = PaddingStyleValue.length(px(0));
+		this.paddingLeft = PaddingStyleValue.length(px(0));
+		this.paddingRight = PaddingStyleValue.length(px(0));
 		
-		this._lineHeight = LineHeightStyleValue.normal;
-		this._verticalAlign = VerticalAlignStyleValue.baseline;
+		this.lineHeight = LineHeightStyleValue.normal;
+		this.verticalAlign = VerticalAlignStyleValue.baseline;
 		
-		this._display = DisplayStyleValue.inlineStyle;
-		this._position = PositionStyleValue.staticStyle;
+		this.display = DisplayStyleValue.inlineStyle;
+		this.position = PositionStyleValue.staticStyle;
 		
-		this._top = PositionOffsetStyleValue.auto;
-		this._bottom = PositionOffsetStyleValue.auto;
-		this._left = PositionOffsetStyleValue.auto;
-		this._right = PositionOffsetStyleValue.auto;
+		this.top = PositionOffsetStyleValue.auto;
+		this.bottom = PositionOffsetStyleValue.auto;
+		this.left = PositionOffsetStyleValue.auto;
+		this.right = PositionOffsetStyleValue.auto;
 		
-		this._float = FloatStyleValue.none;
-		this._clear = ClearStyleValue.none;
+		this.float = FloatStyleValue.none;
+		this.clear = ClearStyleValue.none;
 		
-		this._fontStyle = FontStyleStyleValue.normal;
-		this._fontVariant = FontVariantStyleValue.normal;
-		this._fontWeight = FontWeightStyleValue.normal;
-		this._fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		this.fontStyle = FontStyleStyleValue.normal;
+		this.fontVariant = FontVariantStyleValue.normal;
+		this.fontWeight = FontWeightStyleValue.normal;
+		this.fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
 		
-		this._textIndent = TextIndentStyleValue.length(px(0));
-		this._textAlign = TextAlignStyleValue.left;
-		this._letterSpacing = LetterSpacingStyleValue.normal;
-		this._wordSpacing = WordSpacingStyleValue.normal;
-		this._textTransform = TextTransformStyleValue.none;
-		this._whiteSpace = WhiteSpaceStyleValue.normal;
+		this.textIndent = TextIndentStyleValue.length(px(0));
+		this.textAlign = TextAlignStyleValue.left;
+		this.letterSpacing = LetterSpacingStyleValue.normal;
+		this.wordSpacing = WordSpacingStyleValue.normal;
+		this.textTransform = TextTransformStyleValue.none;
+		this.whiteSpace = WhiteSpaceStyleValue.normal;
 		
+		var defaultStyles:DefaultStylesData = getDefaultStyle();
+		this.fontFamily = defaultStyles.fontFamily;
+		this.color = defaultStyles.color;
+		
+		 _computedStyle = {
+			width : 0,
+			height : 0,
+			minHeight : 0,
+			maxHeight : 0,
+			minWidth : 0,
+			maxWidth : 0,
+			marginLeft : 0,
+			marginRight : 0,
+			marginTop : 0,
+			marginBottom : 0,
+			paddingLeft : 0,
+			paddingRight : 0,
+			paddingTop : 0,
+			paddingBottom : 0,
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom : 0,
+			clear : ClearStyleValue.none,
+			float : FloatStyleValue.none,
+			display : DisplayStyleValue.block,
+			position: PositionStyleValue.staticStyle,
+			verticalAlign : 0.0,
+			fontSize:12.0,
+			lineHeight:14.0,
+			fontWeight:FontWeightStyleValue.normal,
+			fontStyle:FontStyleStyleValue.normal,
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontVariant:FontVariantStyleValue.normal,
+			textTransform:TextTransformStyleValue.none,
+			letterSpacing:0,
+			wordSpacing:0,
+			textIndent:0,
+			whiteSpace:WhiteSpaceStyleValue.normal,
+			textAlign:TextAlignStyleValue.left,
+			color:0
+		};
 	}
 	
 	/**
@@ -302,7 +344,7 @@ class AbstractStyle
 	 * in a browser, those styles are hard coded for other
 	 * runtimes
 	 */
-	public static function getDefaultStyle():DefaultStylesData
+	private static function getDefaultStyle():DefaultStylesData
 	{
 		return {
 			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
