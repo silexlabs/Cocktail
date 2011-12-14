@@ -32,11 +32,9 @@ class ImageLoader extends AbstractImageLoader
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super();
-		//instantiate the Image HTML element
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.image);
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
