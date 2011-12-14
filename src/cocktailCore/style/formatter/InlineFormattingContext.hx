@@ -437,7 +437,7 @@ class InlineFormattingContext extends FormattingContext
 		return Math.round(lineBoxHeight);
 	}
 	
-	
+
 
 	
 	
