@@ -2244,6 +2244,119 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 	}
 	,__class__: cocktailCore.style.abstract.AbstractContainerStyle
 });
+var List = $hxClasses["List"] = function() {
+	this.length = 0;
+}
+List.__name__ = ["List"];
+List.prototype = {
+	h: null
+	,q: null
+	,length: null
+	,add: function(item) {
+		var x = [item];
+		if(this.h == null) this.h = x; else this.q[1] = x;
+		this.q = x;
+		this.length++;
+	}
+	,push: function(item) {
+		var x = [item,this.h];
+		this.h = x;
+		if(this.q == null) this.q = x;
+		this.length++;
+	}
+	,first: function() {
+		return this.h == null?null:this.h[0];
+	}
+	,last: function() {
+		return this.q == null?null:this.q[0];
+	}
+	,pop: function() {
+		if(this.h == null) return null;
+		var x = this.h[0];
+		this.h = this.h[1];
+		if(this.h == null) this.q = null;
+		this.length--;
+		return x;
+	}
+	,isEmpty: function() {
+		return this.h == null;
+	}
+	,clear: function() {
+		this.h = null;
+		this.q = null;
+		this.length = 0;
+	}
+	,remove: function(v) {
+		var prev = null;
+		var l = this.h;
+		while(l != null) {
+			if(l[0] == v) {
+				if(prev == null) this.h = l[1]; else prev[1] = l[1];
+				if(this.q == l) this.q = prev;
+				this.length--;
+				return true;
+			}
+			prev = l;
+			l = l[1];
+		}
+		return false;
+	}
+	,iterator: function() {
+		return { h : this.h, hasNext : function() {
+			return this.h != null;
+		}, next : function() {
+			if(this.h == null) return null;
+			var x = this.h[0];
+			this.h = this.h[1];
+			return x;
+		}};
+	}
+	,toString: function() {
+		var s = new StringBuf();
+		var first = true;
+		var l = this.h;
+		s.b[s.b.length] = "{";
+		while(l != null) {
+			if(first) first = false; else s.b[s.b.length] = ", ";
+			s.add(Std.string(l[0]));
+			l = l[1];
+		}
+		s.b[s.b.length] = "}";
+		return s.b.join("");
+	}
+	,join: function(sep) {
+		var s = new StringBuf();
+		var first = true;
+		var l = this.h;
+		while(l != null) {
+			if(first) first = false; else s.b[s.b.length] = sep == null?"null":sep;
+			s.add(l[0]);
+			l = l[1];
+		}
+		return s.b.join("");
+	}
+	,filter: function(f) {
+		var l2 = new List();
+		var l = this.h;
+		while(l != null) {
+			var v = l[0];
+			l = l[1];
+			if(f(v)) l2.add(v);
+		}
+		return l2;
+	}
+	,map: function(f) {
+		var b = new List();
+		var l = this.h;
+		while(l != null) {
+			var v = l[0];
+			l = l[1];
+			b.add(f(v));
+		}
+		return b;
+	}
+	,__class__: List
+}
 cocktailCore.domElement.abstract.AbstractContainerDOMElement = $hxClasses["cocktailCore.domElement.abstract.AbstractContainerDOMElement"] = function(nativeElement) {
 	if(nativeElement == null) nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral);
 	this._children = new Array();
@@ -2391,11 +2504,13 @@ components.richList.RichList.prototype = $extend(cocktailCore.domElement.js.Cont
 				cell[0].addChild(cellImage);
 				cellImage.load(cellData1[0].imagePath);
 			}
-			var cellTextContainer = Utils.getContainer();
-			var textElement = new cocktailCore.textElement.js.TextElement(cellData1[0].text);
-			cellTextContainer.addText(textElement);
-			listStyle.cellText(cellTextContainer);
-			cell[0].addChild(cellTextContainer);
+			if(cellData1[0].text != "" && cellData1[0].text != null) {
+				var cellTextContainer = Utils.getContainer();
+				var textElement = new cocktailCore.textElement.js.TextElement(cellData1[0].text);
+				cellTextContainer.addText(textElement);
+				listStyle.cellText(cellTextContainer);
+				cell[0].addChild(cellTextContainer);
+			}
 			this.addChild(cell[0]);
 			var onCellMouseOverDelegate = [this.onCellMouseOver.$bind(this)];
 			cell[0].setOnMouseOver((function(onCellMouseOverDelegate,cell) {
@@ -2438,6 +2553,22 @@ components.richList.RichList.prototype = $extend(cocktailCore.domElement.js.Cont
 	}
 	,__class__: components.richList.RichList
 });
+var IntIter = $hxClasses["IntIter"] = function(min,max) {
+	this.min = min;
+	this.max = max;
+}
+IntIter.__name__ = ["IntIter"];
+IntIter.prototype = {
+	min: null
+	,max: null
+	,hasNext: function() {
+		return this.min < this.max;
+	}
+	,next: function() {
+		return this.min++;
+	}
+	,__class__: IntIter
+}
 if(!cocktailCore.keyboard) cocktailCore.keyboard = {}
 if(!cocktailCore.keyboard["abstract"]) cocktailCore.keyboard["abstract"] = {}
 cocktailCore.keyboard.abstract.AbstractKeyboard = $hxClasses["cocktailCore.keyboard.abstract.AbstractKeyboard"] = function() {
@@ -2726,22 +2857,6 @@ cocktailCore.keyboard.js.Keyboard.prototype = $extend(cocktailCore.keyboard.abst
 	}
 	,__class__: cocktailCore.keyboard.js.Keyboard
 });
-var IntIter = $hxClasses["IntIter"] = function(min,max) {
-	this.min = min;
-	this.max = max;
-}
-IntIter.__name__ = ["IntIter"];
-IntIter.prototype = {
-	min: null
-	,max: null
-	,hasNext: function() {
-		return this.min < this.max;
-	}
-	,next: function() {
-		return this.min++;
-	}
-	,__class__: IntIter
-}
 var Hash = $hxClasses["Hash"] = function() {
 	this.h = {}
 	if(this.h.__proto__ != null) {
@@ -2845,6 +2960,41 @@ cocktailCore.resource.js.ResourceLoader.__super__ = cocktailCore.resource.abstra
 cocktailCore.resource.js.ResourceLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractResourceLoader.prototype,{
 	__class__: cocktailCore.resource.js.ResourceLoader
 });
+if(!components.gallery) components.gallery = {}
+components.gallery.StyleIphone = $hxClasses["components.gallery.StyleIphone"] = function() { }
+components.gallery.StyleIphone.__name__ = ["components","gallery","StyleIphone"];
+components.gallery.StyleIphone.getDefaultStyle = function(domElement) {
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.auto);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+}
+components.gallery.StyleIphone.getThumbStyle = function(domElement) {
+	components.gallery.StyleIphone.getDefaultStyle(domElement);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(4)));
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(4)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(75)));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(75)));
+}
+components.gallery.StyleIphone.getFullSizePictureStyle = function(domElement) {
+	components.gallery.StyleIphone.getDefaultStyle(domElement);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+}
+components.gallery.StyleIphone.prototype = {
+	__class__: components.gallery.StyleIphone
+}
 if(!cocktailCore.style.computer) cocktailCore.style.computer = {}
 cocktailCore.style.computer.BoxStylesComputer = $hxClasses["cocktailCore.style.computer.BoxStylesComputer"] = function() {
 }
@@ -3889,24 +4039,6 @@ cocktailCore.style.computer.FontAndTextStylesComputer.getComputedFontSize = func
 cocktailCore.style.computer.FontAndTextStylesComputer.prototype = {
 	__class__: cocktailCore.style.computer.FontAndTextStylesComputer
 }
-js.Lib = $hxClasses["js.Lib"] = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	alert(js.Boot.__string_rec(v,""));
-}
-js.Lib.eval = function(code) {
-	return eval(code);
-}
-js.Lib.setErrorHandler = function(f) {
-	js.Lib.onerror = f;
-}
-js.Lib.prototype = {
-	__class__: js.Lib
-}
 var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
 ValueType.TNull.toString = $estr;
@@ -4072,6 +4204,85 @@ Type.allEnums = function(e) {
 Type.prototype = {
 	__class__: Type
 }
+js.Lib = $hxClasses["js.Lib"] = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	alert(js.Boot.__string_rec(v,""));
+}
+js.Lib.eval = function(code) {
+	return eval(code);
+}
+js.Lib.setErrorHandler = function(f) {
+	js.Lib.onerror = f;
+}
+js.Lib.prototype = {
+	__class__: js.Lib
+}
+components.gallery.Gallery = $hxClasses["components.gallery.Gallery"] = function(rssFeedPath) {
+	cocktailCore.domElement.js.ContainerDOMElement.call(this);
+	components.gallery.Gallery.galleryContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
+	components.gallery.StyleIphone.getDefaultStyle(components.gallery.Gallery.galleryContainer);
+	this.addChild(components.gallery.Gallery.galleryContainer);
+	var currentAlbumUrl = rssFeedPath;
+	this.loadRssFeed(currentAlbumUrl);
+}
+components.gallery.Gallery.__name__ = ["components","gallery","Gallery"];
+components.gallery.Gallery.galleryContainer = null;
+components.gallery.Gallery.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
+components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype,{
+	currentMainImage: null
+	,loadRssFeed: function(rssFeedUrl) {
+		cocktail.resource.ResourceLoaderManager.loadString("GalleryRssProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
+	}
+	,onRssFeedError: function(msg) {
+		haxe.Log.trace("Error while loading RSS feed : " + msg,{ fileName : "Gallery.hx", lineNumber : 72, className : "components.gallery.Gallery", methodName : "onRssFeedError"});
+	}
+	,onRssFeedLoaded: function(response) {
+		var galleryXml = Xml.parse(response);
+		var channelNode = galleryXml.firstElement().firstElement();
+		var $it0 = channelNode.elements();
+		while( $it0.hasNext() ) {
+			var channelChild = $it0.next();
+			if(channelChild.getNodeName() == "item") {
+				var imageThumbContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
+				var imageThumbDOMElement = [new components.gallery.ImageThumbDOMElement()];
+				components.gallery.Gallery.galleryContainer.addChild(imageThumbContainer);
+				var $it1 = channelChild.elements();
+				while( $it1.hasNext() ) {
+					var entryElement = $it1.next();
+					if(entryElement.getNodeName() == "media:content") imageThumbDOMElement[0].fullImagePath = entryElement.get("url"); else if(entryElement.getNodeName() == "media:thumbnail") {
+						imageThumbDOMElement[0].load(entryElement.get("url"));
+						components.gallery.StyleIphone.getThumbStyle(imageThumbDOMElement[0]);
+						imageThumbContainer.addChild(imageThumbDOMElement[0]);
+						var displayPictureDelegate = [this.displayPicture.$bind(this)];
+						imageThumbDOMElement[0].setOnMouseUp((function(displayPictureDelegate,imageThumbDOMElement) {
+							return function(event) {
+								displayPictureDelegate[0](imageThumbDOMElement[0]);
+							};
+						})(displayPictureDelegate,imageThumbDOMElement));
+					}
+				}
+			}
+		}
+	}
+	,displayPicture: function(imageThumbDOMElement) {
+		this.currentMainImage = new cocktailCore.domElement.js.ImageDOMElement();
+		this.currentMainImage.load(imageThumbDOMElement.fullImagePath);
+		components.gallery.StyleIphone.getFullSizePictureStyle(this.currentMainImage);
+		this.removeChild(components.gallery.Gallery.galleryContainer);
+		this.addChild(this.currentMainImage);
+		this.currentMainImage.setOnMouseUp(this.displayGallery.$bind(this));
+	}
+	,displayGallery: function(mouseEventData) {
+		this.removeChild(this.currentMainImage);
+		this.addChild(components.gallery.Gallery.galleryContainer);
+	}
+	,__class__: components.gallery.Gallery
+});
 cocktailCore.domElement.js.ImageDOMElement = $hxClasses["cocktailCore.domElement.js.ImageDOMElement"] = function(nativeElement) {
 	cocktailCore.domElement.abstract.AbstractImageDOMElement.call(this,nativeElement);
 }
@@ -6538,6 +6749,8 @@ ApplicationStructure.prototype = {
 	,_homePage: null
 	,_calListPage: null
 	,_dayPage: null
+	,_galleryPage: null
+	,_imagePage: null
 	,_artistListPage: null
 	,_albumListPage: null
 	,_songListPage: null
@@ -6553,10 +6766,14 @@ ApplicationStructure.prototype = {
 		this._songListPage = this.createHeaderListPage("Artist - Album",[{ text : "Song 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage}]);
 		this._albumListPage = this.createHeaderListPage("Albums",[{ text : "Album 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage}]);
 		this._artistListPage = this.createHeaderListPage("Artists",[{ text : "Artist 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage}]);
+		this._imagePage = this.createHeaderImagePage("Image 1","images/cocktail.jpg");
+		this._galleryPage = this.createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
 		this._notePage = this.createHeaderContentPage("Note","This is the content of the note");
 		this._noteListPage = this.createHeaderListPage("Notes",[{ text : "Note 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 6", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 7", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 8", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 9", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 10", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 11", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 12", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 13", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 14", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 15", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 16", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage}]);
-		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/cocktail.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.ico", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : null, action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
-		this._homePage = this.createHomePage([{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage}]);
+		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/cocktail.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.ico", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
+		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage}];
+		homePageCells.push({ text : "Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"});
+		this._homePage = this.createHomePage(homePageCells);
 		this._currentPage = this._homePage;
 		this.pagesContainer.addChild(this._homePage);
 	}
@@ -6607,6 +6824,22 @@ ApplicationStructure.prototype = {
 		WebAppStyle.getPageStyle(page);
 		return page;
 	}
+	,createHeaderImagePage: function(title,imageUrl) {
+		var page = Utils.getContainer();
+		var header = this.createHeader(title);
+		page.addChild(header);
+		WebAppStyle.getPageStyle(page);
+		return page;
+	}
+	,createHeaderGalleryPage: function(title,rssFeedPath) {
+		var page = Utils.getContainer();
+		var header = this.createHeader(title);
+		var gallery = new components.gallery.Gallery(rssFeedPath);
+		page.addChild(header);
+		page.addChild(gallery);
+		WebAppStyle.getPageStyle(page);
+		return page;
+	}
 	,createEmbedContentPage: function(title,embeddedLink) {
 		var page = Utils.getContainer();
 		var header = this.createHeader(title);
@@ -6648,7 +6881,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 425, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 488, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.richList.RichListUtils.createRichListModel();
@@ -6878,6 +7111,15 @@ cocktail.nativeElement.NativeElementManager.createNativeElement = function(nativ
 cocktail.nativeElement.NativeElementManager.prototype = {
 	__class__: cocktail.nativeElement.NativeElementManager
 }
+components.gallery.ImageThumbDOMElement = $hxClasses["components.gallery.ImageThumbDOMElement"] = function(nativeElement) {
+	cocktailCore.domElement.js.ImageDOMElement.call(this,nativeElement);
+}
+components.gallery.ImageThumbDOMElement.__name__ = ["components","gallery","ImageThumbDOMElement"];
+components.gallery.ImageThumbDOMElement.__super__ = cocktailCore.domElement.js.ImageDOMElement;
+components.gallery.ImageThumbDOMElement.prototype = $extend(cocktailCore.domElement.js.ImageDOMElement.prototype,{
+	fullImagePath: null
+	,__class__: components.gallery.ImageThumbDOMElement
+});
 var WebApp = $hxClasses["WebApp"] = function() {
 	this._body = new cocktailCore.domElement.js.BodyDOMElement();
 	WebAppStyle.getBodyStyle(this._body);
@@ -7101,6 +7343,399 @@ cocktailCore.mouse.js.Mouse.prototype = $extend(cocktailCore.mouse.abstract.Abst
 	}
 	,__class__: cocktailCore.mouse.js.Mouse
 });
+var EReg = $hxClasses["EReg"] = function(r,opt) {
+	opt = opt.split("u").join("");
+	this.r = new RegExp(r,opt);
+}
+EReg.__name__ = ["EReg"];
+EReg.prototype = {
+	r: null
+	,match: function(s) {
+		this.r.m = this.r.exec(s);
+		this.r.s = s;
+		return this.r.m != null;
+	}
+	,matched: function(n) {
+		return this.r.m != null && n >= 0 && n < this.r.m.length?this.r.m[n]:(function($this) {
+			var $r;
+			throw "EReg::matched";
+			return $r;
+		}(this));
+	}
+	,matchedLeft: function() {
+		if(this.r.m == null) throw "No string matched";
+		return this.r.s.substr(0,this.r.m.index);
+	}
+	,matchedRight: function() {
+		if(this.r.m == null) throw "No string matched";
+		var sz = this.r.m.index + this.r.m[0].length;
+		return this.r.s.substr(sz,this.r.s.length - sz);
+	}
+	,matchedPos: function() {
+		if(this.r.m == null) throw "No string matched";
+		return { pos : this.r.m.index, len : this.r.m[0].length};
+	}
+	,split: function(s) {
+		var d = "#__delim__#";
+		return s.replace(this.r,d).split(d);
+	}
+	,replace: function(s,by) {
+		return s.replace(this.r,by);
+	}
+	,customReplace: function(s,f) {
+		var buf = new StringBuf();
+		while(true) {
+			if(!this.match(s)) break;
+			buf.add(this.matchedLeft());
+			buf.add(f(this));
+			s = this.matchedRight();
+		}
+		buf.b[buf.b.length] = s == null?"null":s;
+		return buf.b.join("");
+	}
+	,__class__: EReg
+}
+var Xml = $hxClasses["Xml"] = function() {
+}
+Xml.__name__ = ["Xml"];
+Xml.Element = null;
+Xml.PCData = null;
+Xml.CData = null;
+Xml.Comment = null;
+Xml.DocType = null;
+Xml.Prolog = null;
+Xml.Document = null;
+Xml.parse = function(str) {
+	var rules = [Xml.enode,Xml.epcdata,Xml.eend,Xml.ecdata,Xml.edoctype,Xml.ecomment,Xml.eprolog];
+	var nrules = rules.length;
+	var current = Xml.createDocument();
+	var stack = new List();
+	while(str.length > 0) {
+		var i = 0;
+		try {
+			while(i < nrules) {
+				var r = rules[i];
+				if(r.match(str)) {
+					switch(i) {
+					case 0:
+						var x = Xml.createElement(r.matched(1));
+						current.addChild(x);
+						str = r.matchedRight();
+						while(Xml.eattribute.match(str)) {
+							x.set(Xml.eattribute.matched(1),Xml.eattribute.matched(3));
+							str = Xml.eattribute.matchedRight();
+						}
+						if(!Xml.eclose.match(str)) {
+							i = nrules;
+							throw "__break__";
+						}
+						if(Xml.eclose.matched(1) == ">") {
+							stack.push(current);
+							current = x;
+						}
+						str = Xml.eclose.matchedRight();
+						break;
+					case 1:
+						var x = Xml.createPCData(r.matched(0));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					case 2:
+						if(current._children != null && current._children.length == 0) {
+							var e = Xml.createPCData("");
+							current.addChild(e);
+						}
+						if(r.matched(1) != current._nodeName || stack.isEmpty()) {
+							i = nrules;
+							throw "__break__";
+						}
+						current = stack.pop();
+						str = r.matchedRight();
+						break;
+					case 3:
+						str = r.matchedRight();
+						if(!Xml.ecdata_end.match(str)) throw "End of CDATA section not found";
+						var x = Xml.createCData(Xml.ecdata_end.matchedLeft());
+						current.addChild(x);
+						str = Xml.ecdata_end.matchedRight();
+						break;
+					case 4:
+						var pos = 0;
+						var count = 0;
+						var old = str;
+						try {
+							while(true) {
+								if(!Xml.edoctype_elt.match(str)) throw "End of DOCTYPE section not found";
+								var p = Xml.edoctype_elt.matchedPos();
+								pos += p.pos + p.len;
+								str = Xml.edoctype_elt.matchedRight();
+								switch(Xml.edoctype_elt.matched(0)) {
+								case "[":
+									count++;
+									break;
+								case "]":
+									count--;
+									if(count < 0) throw "Invalid ] found in DOCTYPE declaration";
+									break;
+								default:
+									if(count == 0) throw "__break__";
+								}
+							}
+						} catch( e ) { if( e != "__break__" ) throw e; }
+						var x = Xml.createDocType(old.substr(10,pos - 11));
+						current.addChild(x);
+						break;
+					case 5:
+						if(!Xml.ecomment_end.match(str)) throw "Unclosed Comment";
+						var p = Xml.ecomment_end.matchedPos();
+						var x = Xml.createComment(str.substr(4,p.pos + p.len - 7));
+						current.addChild(x);
+						str = Xml.ecomment_end.matchedRight();
+						break;
+					case 6:
+						var prolog = r.matched(0);
+						var x = Xml.createProlog(prolog.substr(2,prolog.length - 4));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					}
+					throw "__break__";
+				}
+				i += 1;
+			}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+		if(i == nrules) {
+			if(str.length > 10) throw "Xml parse error : Unexpected " + str.substr(0,10) + "..."; else throw "Xml parse error : Unexpected " + str;
+		}
+	}
+	if(!stack.isEmpty()) throw "Xml parse error : Unclosed " + stack.last().getNodeName();
+	return current;
+}
+Xml.createElement = function(name) {
+	var r = new Xml();
+	r.nodeType = Xml.Element;
+	r._children = new Array();
+	r._attributes = new Hash();
+	r.setNodeName(name);
+	return r;
+}
+Xml.createPCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.PCData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.CData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createComment = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Comment;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocType = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.DocType;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createProlog = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Prolog;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocument = function() {
+	var r = new Xml();
+	r.nodeType = Xml.Document;
+	r._children = new Array();
+	return r;
+}
+Xml.prototype = {
+	nodeType: null
+	,nodeName: null
+	,nodeValue: null
+	,parent: null
+	,_nodeName: null
+	,_nodeValue: null
+	,_attributes: null
+	,_children: null
+	,_parent: null
+	,getNodeName: function() {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		return this._nodeName;
+	}
+	,setNodeName: function(n) {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		return this._nodeName = n;
+	}
+	,getNodeValue: function() {
+		if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+		return this._nodeValue;
+	}
+	,setNodeValue: function(v) {
+		if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+		return this._nodeValue = v;
+	}
+	,getParent: function() {
+		return this._parent;
+	}
+	,get: function(att) {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		return this._attributes.get(att);
+	}
+	,set: function(att,value) {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		this._attributes.set(att,value);
+	}
+	,remove: function(att) {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		this._attributes.remove(att);
+	}
+	,exists: function(att) {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		return this._attributes.exists(att);
+	}
+	,attributes: function() {
+		if(this.nodeType != Xml.Element) throw "bad nodeType";
+		return this._attributes.keys();
+	}
+	,iterator: function() {
+		if(this._children == null) throw "bad nodetype";
+		return { cur : 0, x : this._children, hasNext : function() {
+			return this.cur < this.x.length;
+		}, next : function() {
+			return this.x[this.cur++];
+		}};
+	}
+	,elements: function() {
+		if(this._children == null) throw "bad nodetype";
+		return { cur : 0, x : this._children, hasNext : function() {
+			var k = this.cur;
+			var l = this.x.length;
+			while(k < l) {
+				if(this.x[k].nodeType == Xml.Element) break;
+				k += 1;
+			}
+			this.cur = k;
+			return k < l;
+		}, next : function() {
+			var k = this.cur;
+			var l = this.x.length;
+			while(k < l) {
+				var n = this.x[k];
+				k += 1;
+				if(n.nodeType == Xml.Element) {
+					this.cur = k;
+					return n;
+				}
+			}
+			return null;
+		}};
+	}
+	,elementsNamed: function(name) {
+		if(this._children == null) throw "bad nodetype";
+		return { cur : 0, x : this._children, hasNext : function() {
+			var k = this.cur;
+			var l = this.x.length;
+			while(k < l) {
+				var n = this.x[k];
+				if(n.nodeType == Xml.Element && n._nodeName == name) break;
+				k++;
+			}
+			this.cur = k;
+			return k < l;
+		}, next : function() {
+			var k = this.cur;
+			var l = this.x.length;
+			while(k < l) {
+				var n = this.x[k];
+				k++;
+				if(n.nodeType == Xml.Element && n._nodeName == name) {
+					this.cur = k;
+					return n;
+				}
+			}
+			return null;
+		}};
+	}
+	,firstChild: function() {
+		if(this._children == null) throw "bad nodetype";
+		return this._children[0];
+	}
+	,firstElement: function() {
+		if(this._children == null) throw "bad nodetype";
+		var cur = 0;
+		var l = this._children.length;
+		while(cur < l) {
+			var n = this._children[cur];
+			if(n.nodeType == Xml.Element) return n;
+			cur++;
+		}
+		return null;
+	}
+	,addChild: function(x) {
+		if(this._children == null) throw "bad nodetype";
+		if(x._parent != null) x._parent._children.remove(x);
+		x._parent = this;
+		this._children.push(x);
+	}
+	,removeChild: function(x) {
+		if(this._children == null) throw "bad nodetype";
+		var b = this._children.remove(x);
+		if(b) x._parent = null;
+		return b;
+	}
+	,insertChild: function(x,pos) {
+		if(this._children == null) throw "bad nodetype";
+		if(x._parent != null) x._parent._children.remove(x);
+		x._parent = this;
+		this._children.insert(pos,x);
+	}
+	,toString: function() {
+		if(this.nodeType == Xml.PCData) return this._nodeValue;
+		if(this.nodeType == Xml.CData) return "<![CDATA[" + this._nodeValue + "]]>";
+		if(this.nodeType == Xml.Comment) return "<!--" + this._nodeValue + "-->";
+		if(this.nodeType == Xml.DocType) return "<!DOCTYPE " + this._nodeValue + ">";
+		if(this.nodeType == Xml.Prolog) return "<?" + this._nodeValue + "?>";
+		var s = new StringBuf();
+		if(this.nodeType == Xml.Element) {
+			s.b[s.b.length] = "<";
+			s.add(this._nodeName);
+			var $it0 = this._attributes.keys();
+			while( $it0.hasNext() ) {
+				var k = $it0.next();
+				s.b[s.b.length] = " ";
+				s.b[s.b.length] = k == null?"null":k;
+				s.b[s.b.length] = "=\"";
+				s.add(this._attributes.get(k));
+				s.b[s.b.length] = "\"";
+			}
+			if(this._children.length == 0) {
+				s.b[s.b.length] = "/>";
+				return s.b.join("");
+			}
+			s.b[s.b.length] = ">";
+		}
+		var $it1 = this.iterator();
+		while( $it1.hasNext() ) {
+			var x = $it1.next();
+			s.add(x.toString());
+		}
+		if(this.nodeType == Xml.Element) {
+			s.b[s.b.length] = "</";
+			s.add(this._nodeName);
+			s.b[s.b.length] = ">";
+		}
+		return s.b.join("");
+	}
+	,__class__: Xml
+	,__properties__: {get_parent:"getParent",set_nodeValue:"setNodeValue",get_nodeValue:"getNodeValue",set_nodeName:"setNodeName",get_nodeName:"getNodeName"}
+}
 js.Boot.__res = {}
 js.Boot.__init();
 {
@@ -7200,6 +7835,15 @@ js["XMLHttpRequest"] = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject
 	Void = $hxClasses["Void"] = { __ename__ : ["Void"]};
 }
 if(typeof(haxe_timers) == "undefined") haxe_timers = [];
+{
+	Xml.Element = "element";
+	Xml.PCData = "pcdata";
+	Xml.CData = "cdata";
+	Xml.Comment = "comment";
+	Xml.DocType = "doctype";
+	Xml.Prolog = "prolog";
+	Xml.Document = "document";
+}
 js.Lib.onerror = null;
 cocktailCore.domElement.js.ImageDOMElement.IMAGE_RENDERING_OPTIMIZE_QUALITY = "optimizeQuality";
 cocktailCore.domElement.js.ImageDOMElement.IMAGE_RENDERING_OPTIMIZE_SPEED = "optimizeSpeed";
@@ -7214,4 +7858,16 @@ cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_REPEAT = "repeat";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
 cocktail.resource.ResourceLoaderManager._isLoading = false;
+Xml.enode = new EReg("^<([a-zA-Z0-9:._-]+)","");
+Xml.ecdata = new EReg("^<!\\[CDATA\\[","i");
+Xml.edoctype = new EReg("^<!DOCTYPE ","i");
+Xml.eend = new EReg("^</([a-zA-Z0-9:._-]+)>","");
+Xml.epcdata = new EReg("^[^<]+","");
+Xml.ecomment = new EReg("^<!--","");
+Xml.eprolog = new EReg("^<\\?[^\\?]+\\?>","");
+Xml.eattribute = new EReg("^\\s*([a-zA-Z0-9:_-]+)\\s*=\\s*([\"'])([^\\2]*?)\\2","");
+Xml.eclose = new EReg("^[ \r\n\t]*(>|(/>))","");
+Xml.ecdata_end = new EReg("\\]\\]>","");
+Xml.edoctype_elt = new EReg("[\\[|\\]>]","");
+Xml.ecomment_end = new EReg("-->","");
 WebApp.main()

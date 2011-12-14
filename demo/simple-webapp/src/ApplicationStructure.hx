@@ -32,6 +32,9 @@ import components.richList.StyleNormal;
 import components.richList.StyleApp;
 import components.richList.RichListUtils;
 
+// Gallery specific
+import components.gallery.Gallery;
+
 /**
  * Handles all applications pages
  * 
@@ -50,6 +53,10 @@ class ApplicationStructure
 	// the calendar pages
 	private var _calListPage:ContainerDOMElement;
 	private var _dayPage:ContainerDOMElement;
+	
+	// the gallery pages
+	private var _galleryPage:ContainerDOMElement;
+	private var _imagePage:ContainerDOMElement;
 	
 	// the music pages
 	private var _artistListPage:ContainerDOMElement;
@@ -126,6 +133,10 @@ class ApplicationStructure
 			]
 		);
 
+		// the gallery page
+		_imagePage = createHeaderImagePage("Image 1","images/cocktail.jpg");
+		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
+		
 		// the notes pages
 		_notePage = createHeaderContentPage("Note","This is the content of the note");
 		_noteListPage = createHeaderListPage(
@@ -155,29 +166,45 @@ class ApplicationStructure
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
-				{text:"made with Cocktail", imagePath:"images/cocktail.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
-				{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
-				{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-				{text:"by Raphael Harmel", imagePath:"images/google+.ico", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
-				{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
-				{text:"", imagePath:null, action:"", actionTarget:"" },
-				{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
-				{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
-				{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
-				{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
+			{text:"made with Cocktail", imagePath:"images/cocktail.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
+			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
+			{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+			{text:"by Raphael Harmel", imagePath:"images/google+.ico", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
+			{text:"", imagePath:"", action:"", actionTarget:"" },
+			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
+			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
+			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
 			]
 		);
 
 		// the home page
-		_homePage = createHomePage(
+		//var homePageCells:Array<CellModel> = new Array<CellModel>();
+		var homePageCells:Array<CellModel> =
+			[	{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
+				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
+				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
+				//{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
+				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:null },
+				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
+			];
+		homePageCells.push( { text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" } );
+		
+		
+		/*_homePage = createHomePage(
 			[
 				{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
 				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
+				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
+				//{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
+				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:null },
+				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
 				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
 			]
-		);
+		);*/
+		_homePage = createHomePage(homePageCells);
 		_currentPage = _homePage;
 		
 		// adds the home page to pagesContainer
@@ -320,6 +347,42 @@ class ApplicationStructure
 		page.addChild(textContainer);
 		WebAppStyle.getPageStyle(page);
 		
+		return page;
+	}
+	
+	private function createHeaderImagePage(title:String, imageUrl:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+
+		// build hierarchy
+		page.addChild(header);
+		
+		// set style
+		WebAppStyle.getPageStyle(page);
+
+		return page;
+	}
+	
+	private function createHeaderGalleryPage(title:String, rssFeedPath:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+		
+		// create gallery
+		var gallery:Gallery = new Gallery(rssFeedPath);
+
+		// build hierarchy
+		page.addChild(header);
+		page.addChild(gallery);
+		
+		// set style
+		WebAppStyle.getPageStyle(page);
+
 		return page;
 	}
 	
