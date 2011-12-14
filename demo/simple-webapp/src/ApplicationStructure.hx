@@ -73,6 +73,9 @@ class ApplicationStructure
 	
 	// the current visible page
 	private var _currentPage:ContainerDOMElement;
+
+	// the previous page
+	private var _previousPages:Array<ContainerDOMElement>;
 	
 	public function new() 
 	{
@@ -169,7 +172,7 @@ class ApplicationStructure
 			{text:"made with Cocktail", imagePath:"images/cocktail.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
 			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
 			{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-			{text:"by Raphael Harmel", imagePath:"images/google+.ico", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+			{text:"by Raphael Harmel", imagePath:"images/google+.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
 			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
 			{text:"", imagePath:"", action:"", actionTarget:"" },
 			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
@@ -185,42 +188,105 @@ class ApplicationStructure
 			[	{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
 				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
 				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
-				//{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
-				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:null },
+				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
 				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
+				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage },
+				{text:"FTV Info", imagePath:"images/FranceTVInfo.jpg", action:"goToPage", actionTarget:null }
 			];
 		homePageCells.push( { text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" } );
 		
-		
-		/*_homePage = createHomePage(
-			[
-				{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
-				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
-				//{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
-				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:null },
-				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
-			]
-		);*/
 		_homePage = createHomePage(homePageCells);
+		
 		_currentPage = _homePage;
+		_previousPages = new Array<ContainerDOMElement>();
+		//_previousPages = [_homePage];
+		//_previousPages.push(_homePage);
 		
 		// adds the home page to pagesContainer
 		pagesContainer.addChild(_homePage);
 	}
 	
 	/**
+	 * Callback called on mouse release of the back header button
+	 * 
+	 * @param	mouseEvent
+	 */
+	private function goToPreviousPage(mouseEvent:MouseEventData):Void
+	{
+		// show previous page in the history and removes it from the history
+		showPage(getPreviousPage());
+	}
+
+	/**
+	 * Gets the previous page, back button callback
+	 * 
+	 * @return
+	 */
+	private function getPreviousPage():ContainerDOMElement
+	{
+		// remove current page from history
+		_previousPages.pop();
+		
+		// get previous page from history
+		var previousPage:ContainerDOMElement = _previousPages[_previousPages.length-1];
+		
+		// in case history is emtpy, go to home page
+		if (previousPage == null)
+			return _homePage;
+		
+		// else return previous page
+		return previousPage;
+	}
+	
+	/**
+	 * Adds a page to history
+	 * 
+	 */
+	private function addToHistory(page:ContainerDOMElement):Void
+	{
+		// if page to show is _homepage, reset history
+		if (page == _homePage)
+			_previousPages = [page];
+		// if not add the preceding page container to _previousPage 
+		else
+			_previousPages.push(page);
+	}
+	
+	/**
 	 * Hides the current page and shows the wanted page
 	 * 
-	 * @param	page			the wanted page
+	 * @param	page	the wanted page
 	 */
 	private function showPage(page:ContainerDOMElement):Void
 	{
+		// removes the current page from the page container
 		pagesContainer.removeChild(_currentPage);
+		// adds the noew page to the page container
 		pagesContainer.addChild(page);
 		_currentPage = page;
+	}
+	
+	/**
+	 * Called when a new cell is selected in a list
+	 * 
+	 * @param	cell
+	 */
+	private function onChangeListCallback(cell:CellModel)
+	{
+		if (cell.action == "goToPage")
+		{
+			var page:ContainerDOMElement = cell.actionTarget;
+		
+			// history handling
+			addToHistory(page);
+			
+			// show needed pages
+			showPage(page);
+		}
+		if (cell.action == "goToUrl")
+		{
+			goToUrl(cell.actionTarget);
+		}
 	}
 	
 	/**
@@ -238,23 +304,6 @@ class ApplicationStructure
 		flash.Lib.getURL(request);
 
 		#end
-	}
-	
-	/**
-	 * Called when a new cell is selected in a list
-	 * 
-	 * @param	cell
-	 */
-	private function onChangeListCallback(cell:CellModel)
-	{
-		if (cell.action == "goToPage")
-		{
-			showPage(cell.actionTarget);
-		}
-		if (cell.action == "goToUrl")
-		{
-			goToUrl(cell.actionTarget);
-		}
 	}
 	
 	/**
@@ -459,7 +508,7 @@ class ApplicationStructure
 		var backButtonText:TextElement = new TextElement('Back');
 		backButtonTextContainer.addText(backButtonText);
 		backButtonContainer.addChild(backButtonTextContainer);
-		backButtonContainer.onMouseUp = onBackButtonMouseUp;
+		backButtonContainer.onMouseUp = goToPreviousPage;
 
 		// header title
 		var headerTitle:TextElement = new TextElement(title);
@@ -546,13 +595,4 @@ class ApplicationStructure
 		return list;
 	}
 	
-	/**
-	 * Callback called on mouse release of the back header button
-	 * 
-	 * @param	mouseEvent
-	 */
-	private function onBackButtonMouseUp(mouseEvent:MouseEventData):Void
-	{
-		showPage(_homePage);
-	}
 }
