@@ -135,38 +135,13 @@ class AbstractContainerStyle extends Style
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned will be
-		//stored and once this ContainerDOMElement is laid out, it will position all those children
-		if (this.isPositioned() == true)
-		{
-			childLastPositionedDOMElementData = {
-				data: getContainerDOMElementData(),
-				children: new Array<PositionedDOMElementData>()
-			}
-		}
-		else
-		{
-			childLastPositionedDOMElementData = lastPositionedDOMElementData;
-		}
+		//stored and once this ContainerDOMElement is laid out, it will position all those children. the layout
+		//of absolutely positioned children must happen once the dimensions of this ContainerDOMElement are known so
+		//that children can be positioned using the 'bottom' and 'right' styles
+		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
 		//flow all children 
-		for (i in 0...containerDOMElement.children.length)
-		{
-			//if the children is a DOMElement, call its flow method
-			if (isDOMElement(containerDOMElement.children[i]) == true)
-			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				//the flow method also lays out recursively all the children of the childrenDOMElement
-				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
-			}
-			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
-			//as necessary to render the TextElement and insert them into the document
-			else 
-			{
-				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
-				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
-			}
-		}
+		doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 		
 		//destroy the current formatting context, prompting
 		//to clean up all references it might have and also
@@ -196,7 +171,19 @@ class AbstractContainerStyle extends Style
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.auto)
 		{
+			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			
+			//if the computed width of the ContainerDOMElement was shrinked, then
+			//a new layout must happen
+			if (currentWidth != this._computedStyle.width)
+			{
+				//update the structure used for the layout and starts a new layout
+				childrenFormattingContext = getFormatingContext(formatingContext);
+				childrenContainingDOMElementData = getContainerDOMElementData();
+				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+			}
 		}
 
 		//insert the ContainerDOMElement into the document
@@ -205,7 +192,6 @@ class AbstractContainerStyle extends Style
 		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
 		//that will also affect the position of its following siblings
 		formatingContext.retrieveFloats(childrenFormattingContext);
-		
 		
 		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
 		//it means that this ContainerDOMElement is the first positioned ancestor for its children
@@ -231,6 +217,34 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Actually flow all the children of the ContainerDOMElement
+	 */
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//flow all children 
+		for (i in 0...containerDOMElement.children.length)
+		{
+			//if the children is a DOMElement, call its flow method
+			if (isDOMElement(containerDOMElement.children[i]) == true)
+			{
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
+				//the flow method also lays out recursively all the children of the childrenDOMElement
+				//if it is a ContainerDOMElement
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+			}
+			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
+			//as necessary to render the TextElement and insert them into the document
+			else 
+			{
+				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
+				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+			}
+		}
+	}
+	
+	/**
 	 * When this ContainerDOMElement is positioned, position each of its children using t
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
@@ -242,7 +256,6 @@ class AbstractContainerStyle extends Style
 		{
 			//update the data of the ContainerDOMElement now that its width and height are known
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
-			
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
@@ -269,7 +282,6 @@ class AbstractContainerStyle extends Style
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
-		
 		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
@@ -310,7 +322,6 @@ class AbstractContainerStyle extends Style
 	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		
 		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
 	}
 	
@@ -710,6 +721,30 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Return the structure used to layout absolutely positioned
+	 * children. If this ContainerDOMElement is positioned, a new
+	 * structure is created, else the current one is used
+	 */
+	private function getChildLastPositionedDOMElementData(lastPositionedDOMElementData:LastPositionedDOMElementData):LastPositionedDOMElementData
+	{
+		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
+		
+		if (this.isPositioned() == true)
+		{
+			childLastPositionedDOMElementData = {
+				data: getContainerDOMElementData(),
+				children: new Array<PositionedDOMElementData>()
+			}
+		}
+		else
+		{
+			childLastPositionedDOMElementData = lastPositionedDOMElementData;
+		}
+		
+		return childLastPositionedDOMElementData;
 	}
 	
 	/**
