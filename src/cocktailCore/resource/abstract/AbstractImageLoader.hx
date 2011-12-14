@@ -8,6 +8,8 @@
 package cocktailCore.resource.abstract;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
 import cocktailCore.resource.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
@@ -27,23 +29,25 @@ class AbstractImageLoader extends ResourceLoader
 	 * NativeElement is only replaced
 	 */
 	private var _nativeElement:NativeElement;
-	public var nativeElement(getNativeElement, setNativeElement):NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new()
+	public function new(nativeElement:NativeElement = null)
 	{
+		//create an image nativeElement if none is provided and store
+		//it
+		if (nativeElement == null)
+		{
+			nativeElement = NativeElementManager.createNativeElement(image);
+		}
+		_nativeElement = nativeElement;
 		super();
 	}
 	
 	private function getNativeElement():NativeElement
 	{
 		return _nativeElement;
-	}
-	
-	private function setNativeElement(value:NativeElement):NativeElement
-	{
-		return _nativeElement = value;
 	}
 }

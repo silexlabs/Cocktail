@@ -7,6 +7,7 @@
 */
 package cocktailCore.resource.as3;
 
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import flash.display.Loader;
 import flash.events.Event;
@@ -30,19 +31,18 @@ import cocktail.resource.ResourceData;
 class ImageLoader extends AbstractImageLoader
 {
 	/**
-	 * The native flash image loader
+	 * The native flash image loader.
+	 * It is a type reference to the nativeElement
 	 */
 	private var _imageLoader:Loader;
 	
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super();
-		//instantiate a native Flash loader
-		_imageLoader = new Loader();
-		_nativeElement = _imageLoader;
+		super(nativeElement);
+		_imageLoader = cast(_nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
