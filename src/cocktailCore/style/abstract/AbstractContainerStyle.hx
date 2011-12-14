@@ -209,20 +209,9 @@ class AbstractContainerStyle extends Style
 		
 		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
 		//it means that this ContainerDOMElement is the first positioned ancestor for its children
-		//and it its responsability to position them
-		if (childLastPositionedDOMElementData != lastPositionedDOMElementData)
-		{
-			//update the data of the ContainerDOMElement now that its width and height are known
-			childLastPositionedDOMElementData.data = getContainerDOMElementData();
-			
-			//position each stored children
-			for (i in 0...childLastPositionedDOMElementData.children.length)
-			{
-				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
-				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-			}
-		}
-		
+		//and it is its responsability to position them
+		var isFirstPositionedAncestor:Bool = childLastPositionedDOMElementData != lastPositionedDOMElementData;
+		doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
 	}
 	
 	/**
@@ -240,6 +229,28 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When this ContainerDOMElement is positioned, position each of its children using t
+	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
+	 * are known so that absolutely positioned children can be positioned using the bottom
+	 * and right styles
+	 */
+	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		if (isFirstPositionedAncestor == true)
+		{
+			//update the data of the ContainerDOMElement now that its width and height are known
+			childLastPositionedDOMElementData.data = getContainerDOMElementData();
+			
+			//position each stored children
+			for (i in 0...childLastPositionedDOMElementData.children.length)
+			{
+				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
+				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+			}
+		}
+	}
 	
 	/**
 	 * Insert a TextElement ( a string of text without formatting ) by creating as many TextFragmentDOMElement as needed from it
@@ -653,7 +664,7 @@ class AbstractContainerStyle extends Style
 		{
 			if (isChildInline(containerDOMElement.children[i]) != ret)
 			{
-				throw "children of a block container can only be either all block or all inline";
+				//throw "children of a block container can only be either all block or all inline";
 			}
 		}
 		
