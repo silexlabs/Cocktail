@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
+import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
@@ -910,8 +911,6 @@ class AbstractDOMElement
 	private function setGlobalX(value:Int):Int
 	{
 		//init the local x position with the provided value
-		//, if the DOMElement has no parent, it will be the 
-		//returned value
 		var localX:Int = value;
 		
 			
@@ -933,7 +932,8 @@ class AbstractDOMElement
 		{
 			localX = 0;
 		}
-		this.x = localX;
+		//affect the new local X to the nativeElement
+		this._style.setNativeX(cast(this), localX);
 		
 		return value;
 	}
@@ -947,18 +947,18 @@ class AbstractDOMElement
 		//init the globalX with the current localX
 		//if this DOMElement has no parent, it will
 		//be the returned value
-		var newGlobalX:Int = this.x;
+		var newGlobalX:Int = this._style.getNativeX(cast(this));
 		
 		//if this DOMElement has a parent
 		if (this._parent != null)
 		{
-			var parentDOMElement:AbstractDOMElement = this._parent;
+			var parentDOMElement:DOMElement = this._parent;
 			//Add the localX of each parent until a DOMElement
 			//with no parent is found (the root DOMElement).
 			//The added localX form the globalX valu
 			while (parentDOMElement != null)
 			{
-				newGlobalX += parentDOMElement.x;
+				newGlobalX += parentDOMElement.style.getNativeX(parentDOMElement);
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
@@ -992,7 +992,7 @@ class AbstractDOMElement
 		{
 			localY = 0;
 		}
-		this.y = localY;
+		this._style.setNativeY(cast(this), localY);
 		
 		return value;
 	}
@@ -1004,14 +1004,14 @@ class AbstractDOMElement
 	private function getGlobalY():Int
 	{
 		//see getGlobalY
-		var newGlobalY:Int = this.y;
+		var newGlobalY:Int = this._style.getNativeY(cast(this));
 		
 		if (this._parent != null)
 		{
-			var parentDOMElement:AbstractDOMElement = this._parent;
+			var parentDOMElement:DOMElement = this._parent;
 			while (parentDOMElement != null)
 			{
-				newGlobalY += parentDOMElement.y;
+				newGlobalY += parentDOMElement.style.getNativeY(cast(parentDOMElement));
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}

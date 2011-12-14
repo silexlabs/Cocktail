@@ -135,18 +135,93 @@ class AbstractContainerStyle extends Style
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned will be
-		//stored and once this ContainerDOMElement is laid out, it will position all those children
-		if (this.isPositioned() == true)
+		//stored and once this ContainerDOMElement is laid out, it will position all those children. the layout
+		//of absolutely positioned children must happen once the dimensions of this ContainerDOMElement are known so
+		//that children can be positioned using the 'bottom' and 'right' styles
+		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+		
+		//flow all children 
+		doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+		
+		//destroy the current formatting context, prompting
+		//to clean up all references it might have and also
+		//lays out the last line of DOMElement for an
+		//inline formatting context
+		//This method is only called if a new formatting
+		//context was established by this ContainerDOMElement,
+		//meaning that the previous formatting context needs to
+		//be destroyed.
+		if (childrenFormattingContext != formatingContext)
 		{
-			childLastPositionedDOMElementData = {
-				data: getContainerDOMElementData(),
-				children: new Array<PositionedDOMElementData>()
+			childrenFormattingContext.destroy();
+		}
+		
+		//if the width is defined as 'auto', it might need to 
+		//be computed to 'shrink-to-fit' (takes its content width)
+		if (this._width == DimensionStyleValue.auto)
+		{
+			
+			var currentWidth:Int = this._computedStyle.width;
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			
+			//if the computed width of the ContainerDOMElement was shrinked, then
+			//a new layout must happen
+			if (currentWidth != this._computedStyle.width)
+			{
+				//update the structure used for the layout and starts a new layout
+				childrenFormattingContext = getFormatingContext(formatingContext);
+				childrenContainingDOMElementData = getContainerDOMElementData();
+				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 		}
-		else
+		
+		//if the 'height' style of this ContainerDOMElement is 
+		//defined as 'auto', then it depends on its content height
+		//and it must now be adjusted to the total height
+		//of its children before the ContainerDOMElement is actually
+		//sized
+		if (this._height == DimensionStyleValue.auto)
 		{
-			childLastPositionedDOMElementData = lastPositionedDOMElementData;
+			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
+
+		//insert the ContainerDOMElement into the document
+		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
+
+		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
+		//that will also affect the position of its following siblings
+		formatingContext.retrieveFloats(childrenFormattingContext);
+		
+		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
+		//it means that this ContainerDOMElement is the first positioned ancestor for its children
+		//and it is its responsability to position them
+		var isFirstPositionedAncestor:Bool = childLastPositionedDOMElementData != lastPositionedDOMElementData;
+		doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
+	}
+	
+	/**
+	 * Overriden as ContainerDOMElement is only added to the flow if it is not inline.
+	 * If it is inline, only its children are added in the flow.
+	 */
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	{
+		if (isInline() == false || isInlineFlow() == false )
+		{
+			super.insertInFlowDOMElement(formattingContext);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually flow all the children of the ContainerDOMElement
+	 */
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
 		//flow all children 
 		for (i in 0...containerDOMElement.children.length)
@@ -167,53 +242,20 @@ class AbstractContainerStyle extends Style
 				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 			}
 		}
-		
-		//destroy the current formatting context, prompting
-		//to clean up all references it might have and also
-		//lays out the last line of DOMElement for an
-		//inline formatting context
-		//This method is only called if a new formatting
-		//context was established by this ContainerDOMElement,
-		//meaning that the previous formatting context needs to
-		//be destroyed.
-		if (childrenFormattingContext != formatingContext)
-		{
-			childrenFormattingContext.destroy();
-		}
-		
-		
-		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content height
-		//and it must now be adjusted to the total height
-		//of its children before the ContainerDOMElement is actually
-		//sized
-		if (this._height == DimensionStyleValue.auto)
-		{
-			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
-		}
-		
-		//if the width is defined as 'auto', it might need to 
-		//be computed to 'shrink-to-fit' (takes its content width)
-		if (this._width == DimensionStyleValue.auto)
-		{
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
-		}
-
-		//insert the ContainerDOMElement into the document
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
-
-		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
-		//that will also affect the position of its following siblings
-		formatingContext.retrieveFloats(childrenFormattingContext);
-		
-		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
-		//it means that this ContainerDOMElement is the first positioned ancestor for its children
-		//and it its responsability to position them
-		if (childLastPositionedDOMElementData != lastPositionedDOMElementData)
+	}
+	
+	/**
+	 * When this ContainerDOMElement is positioned, position each of its children using t
+	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
+	 * are known so that absolutely positioned children can be positioned using the bottom
+	 * and right styles
+	 */
+	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		if (isFirstPositionedAncestor == true)
 		{
 			//update the data of the ContainerDOMElement now that its width and height are known
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
-			
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
@@ -221,24 +263,7 @@ class AbstractContainerStyle extends Style
 				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 			}
 		}
-		
 	}
-	
-	/**
-	 * Overriden as ContainerDOMElement is only added to the flow if it is not inline.
-	 * If it is inline, only its children are added in the flow.
-	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
-	{
-		if (isInline() == false || isInlineFlow() == false )
-		{
-			super.insertInFlowDOMElement(formattingContext);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Insert a TextElement ( a string of text without formatting ) by creating as many TextFragmentDOMElement as needed from it
@@ -257,7 +282,6 @@ class AbstractContainerStyle extends Style
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
-		
 		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
@@ -298,7 +322,6 @@ class AbstractContainerStyle extends Style
 	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		
 		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
 	}
 	
@@ -634,34 +657,94 @@ class AbstractContainerStyle extends Style
 	 */
 	private function childrenInline():Bool
 	{
-		var ret:Bool = true;
-		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//return false for a container with no children
+		if (containerDOMElement.children.length == 0)
+		{
+			return false;
+		}
+		
+		//establish if the first child is inline or block
+		//all other child must be of the same type
+		var ret:Bool = isChildInline(containerDOMElement.children[0]);
+		
+		//loop in all children and throw an exception
+		//if one the children is not of the same type as the first
 		for (i in 0...containerDOMElement.children.length)
 		{
-			if (isDOMElement(containerDOMElement.children[i]))
+			if (isChildInline(containerDOMElement.children[i]) != ret)
 			{
-				//if one of the children is a block level DOMElement, then the container
-				//is block level
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				
-				if (childrenDOMElement.style.computedStyle.display == block)
-				{
-					//floated children are not taken into account 
-					if (childrenDOMElement.style.isFloat() == false)
-					{
-						ret = false;
-					}
-					//absolutely positioned children are not taken into account but relative positioned are
-					else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
-					{
-						ret = false;
-					}
-				}
+				//throw "children of a block container can only be either all block or all inline";
 			}
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Determine wether a children is inline or not
+	 */
+	private function isChildInline(child:ContainerDOMElementChildData):Bool
+	{
+		var ret:Bool = true;
+		
+		//here the children is a DOMElement
+		if (isDOMElement(child))
+		{
+			var childrenDOMElement:DOMElement = cast(child.child);
+			//here the child is of type block
+			if (childrenDOMElement.style.computedStyle.display == block)
+			{
+				//floated children are not taken into account 
+				if (childrenDOMElement.style.isFloat() == false)
+				{
+					ret = false;
+				}
+				//absolutely positioned children are not taken into account but relative positioned are
+				else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
+				{
+					ret = false;
+				}
+			}
+			//here the child is inline
+			else
+			{
+				ret = true;
+			}
+		}
+		//here the children is a textElement, which is
+		//always inline as text is always displayed on a line
+		else
+		{
+			ret = true;
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Return the structure used to layout absolutely positioned
+	 * children. If this ContainerDOMElement is positioned, a new
+	 * structure is created, else the current one is used
+	 */
+	private function getChildLastPositionedDOMElementData(lastPositionedDOMElementData:LastPositionedDOMElementData):LastPositionedDOMElementData
+	{
+		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
+		
+		if (this.isPositioned() == true)
+		{
+			childLastPositionedDOMElementData = {
+				data: getContainerDOMElementData(),
+				children: new Array<PositionedDOMElementData>()
+			}
+		}
+		else
+		{
+			childLastPositionedDOMElementData = lastPositionedDOMElementData;
+		}
+		
+		return childLastPositionedDOMElementData;
 	}
 	
 	/**

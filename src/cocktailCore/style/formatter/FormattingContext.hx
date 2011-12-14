@@ -80,12 +80,7 @@ class FormattingContext
 		//context that still apply to this formatting context
 		if (previousFormatingContext != null)
 		{	
-			//the float are not retrieved if the DOMElement starting
-			//the formatting is itself a float
-			if (domElement.style.isFloat() == false)
-			{
-				_floatsManager.addFloats(previousFormatingContext);
-			}
+			_floatsManager.addFloats(previousFormatingContext);
 		}
 		
 		//init the flow data to place the first inserted
@@ -267,7 +262,7 @@ class FormattingContext
 	private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
 	{
 		domElement.style.setNativeX(domElement, floatData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.setNativeY(domElement, floatData.x + floatData.y + domElement.style.computedStyle.marginTop);
+		domElement.style.setNativeY(domElement, floatData.y + domElement.style.computedStyle.marginTop);
 	}
 	
 	/**
