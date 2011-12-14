@@ -89,16 +89,18 @@ class RichList extends ContainerDOMElement
 				// load image
 				cellImage.load(cellData.imagePath);
 			}
-
 			
 			// add line and text
 			//cell.addChild(line);
-			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.text);
-			cellTextContainer.addText(textElement);
-			listStyle.cellText(cellTextContainer);
-			cell.addChild(cellTextContainer);
-			//cell.addText(new TextElement(cellData.text));
+			if (cellData.text != "" && cellData.text != null)
+			{
+				var cellTextContainer:ContainerDOMElement = Utils.getContainer();
+				var textElement:TextElement = new TextElement(cellData.text);
+				cellTextContainer.addText(textElement);
+				listStyle.cellText(cellTextContainer);
+				cell.addChild(cellTextContainer);
+				//cell.addText(new TextElement(cellData.text));
+			}
 
 			// create line to separate cells
 			//listStyle.cell(cell);
