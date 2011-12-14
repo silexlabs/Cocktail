@@ -156,21 +156,11 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext.destroy();
 		}
 		
-		
-		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content height
-		//and it must now be adjusted to the total height
-		//of its children before the ContainerDOMElement is actually
-		//sized
-		if (this._height == DimensionStyleValue.auto)
-		{
-			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
-		}
-		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.auto)
 		{
+			
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
 			
@@ -184,6 +174,16 @@ class AbstractContainerStyle extends Style
 				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
+		}
+		
+		//if the 'height' style of this ContainerDOMElement is 
+		//defined as 'auto', then it depends on its content height
+		//and it must now be adjusted to the total height
+		//of its children before the ContainerDOMElement is actually
+		//sized
+		if (this._height == DimensionStyleValue.auto)
+		{
+			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
 		}
 
 		//insert the ContainerDOMElement into the document
@@ -707,7 +707,7 @@ class AbstractContainerStyle extends Style
 					ret = false;
 				}
 			}
-			//here the chil is inline
+			//here the child is inline
 			else
 			{
 				ret = true;
