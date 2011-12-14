@@ -1316,6 +1316,12 @@ class AbstractStyle
 		return _lineHeight = value;
 	}
 	
+	private function setColor(value:ColorValue):ColorValue
+	{
+		invalidateText();
+		return _color = value;
+	}
+	
 	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
 	{
 		invalidate();
@@ -1487,11 +1493,6 @@ class AbstractStyle
 	private function getLetterSpacing():LetterSpacingStyleValue
 	{
 		return _letterSpacing;
-	}
-	
-	private function setColor(value:ColorValue):ColorValue
-	{
-		return _color = value;
 	}
 	
 	private function getColor():ColorValue
