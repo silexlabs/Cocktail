@@ -60,6 +60,7 @@ class LibraryLoader extends AbstractResourceLoader
 		
 		//add a loading context so that the classes will be loaded in the current context
 		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+		loadingContext.checkPolicyFile = true;
 		
 		//start the loading
 		_libraryLoader.load(request, loadingContext);

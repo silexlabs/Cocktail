@@ -12,6 +12,7 @@ import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import haxe.Log;
 
 /**
  * This is the box computer implementation for an
@@ -62,7 +63,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			}
 			else if (embeddedDOMElement.intrinsicRatio != null)
 			{
-				//TO DO : 
 				//If 'height' and 'width' both have computed values of 'auto' 
 				//and the element has an intrinsic ratio but no intrinsic height
 				//or width, then the used value of 'width' is undefined in CSS 2.1.
@@ -70,7 +70,15 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//does not itself depend on the replaced element's width,
 				//then the used value of 'width' is calculated from the
 				//constraint equation used for block-level, non-replaced elements in normal flow. 
-				ret = 0;
+				if (containingDOMElementData.isWidthAuto == false)
+				{
+					var computedStyle:ComputedStyleData = style.computedStyle;
+					ret = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+				}
+				else
+				{
+					ret = 0;
+				}
 			}
 		}
 		
@@ -92,13 +100,10 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			}
 			else
 			{
-				//TO DO :
 				//Otherwise, if 'width' has a computed value of 'auto',
 				//but none of the conditions above are met, then the used 
-				//value of 'width' becomes 300px. If 300px is too wide to fit the device,
-				//UAs should use the width of the largest rectangle that has a 2:1 ratio
-				//and fits the device instead. 	
-				ret = 0;
+				//value of 'width' becomes 300px.
+				ret = 300;
 			}
 		}
 		
@@ -113,7 +118,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
-		
 		var ret:Int = 0;
 		
 		//if the 'width' style is also set to 'auto'
@@ -129,20 +133,19 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used value of 'width'
-			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-			
-			//deduce theheight from the computed width and the intrinsic ratio if it is defined
+			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+
+			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedDOMElement.intrinsicRatio != null)
 			{
-				ret = Math.round(computedWidth * embeddedDOMElement.intrinsicRatio);
+				ret = Math.round(computedWidth / embeddedDOMElement.intrinsicRatio);
 			}
 			else
 			{
-				//TO DO : 
 				//Otherwise, if 'height' has a computed value of 'auto',
 				//but none of the conditions above are met, then the used value of 'height'
-				//must be set to the height of the largest rectangle that has a 2:1 ratio, has a
-				//height not greater than 150px, and has a width not greater than the device width. 
+				//is 150px
+				ret = 150;
 			}
 		}
 		

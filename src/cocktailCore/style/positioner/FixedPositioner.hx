@@ -6,13 +6,12 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.positioner;
+import cocktail.domElement.DOMElement;
 
 /**
  * This is the box positioner class for
- * 'fixed' DOMElements.
- * 
- * TO DO : take the scrollX and scrollY parameters
- * into account to place the DOMElement
+ * 'fixed' DOMElements. There are positioned
+ * by using the viewport as origin
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -24,6 +23,28 @@ class FixedPositioner extends BoxPositioner
 	public function new() 
 	{
 		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden because the global x applied to a fixed DOMElement
+	 * is always 0 as its origin is the viewport
+	 */
+	override private function applyGlobalX(domElement:DOMElement, globalX:Int):Void
+	{
+		domElement.globalX = 0;
+	}
+	
+	/**
+	 * Overriden because the global y applied to a fixed DOMElement
+	 * is always 0 as its origin is the viewport
+	 */
+	override private function applyGlobalY(domElement:DOMElement, globalY:Int):Void
+	{
+		domElement.globalY = 0;
 	}
 	
 }
