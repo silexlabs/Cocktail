@@ -418,13 +418,12 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		//compute the line box height
-		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent; 
+		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent;
 		
 		//for each DOMElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._domElementInLineBox.length)
 		{
 			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			
 			domElement.style.setNativeY(domElement, Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _flowData.y + domElement.style.computedStyle.marginTop);
 			
 			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
@@ -438,7 +437,7 @@ class InlineFormattingContext extends FormattingContext
 		return Math.round(lineBoxHeight);
 	}
 	
-	
+
 
 	
 	

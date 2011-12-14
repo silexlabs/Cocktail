@@ -42,13 +42,21 @@ class ImageDOMElement extends AbstractImageDOMElement
 	override private function onLoadComplete(image:NativeElement):Void
 	{
 		var typedimage:Loader = cast(image);
-		
 		this._src = typedimage.contentLoaderInfo.url;
 		this._intrinsicHeight = typedimage.contentLoaderInfo.height;
 		this._intrinsicWidth = typedimage.contentLoaderInfo.width;
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 		
 		super.onLoadComplete(image);
+		
+		//rest the scale of the loaded picture and reaffect its computed
+		//dimensions to it
+		typedimage.scaleX = 1;
+		typedimage.scaleY = 1;
+		typedimage.width = this.width;
+		typedimage.height = this.height;
+		
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

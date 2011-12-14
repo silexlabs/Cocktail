@@ -233,6 +233,10 @@ class AbstractStyle
 	 */
 	private var _nativeHeight:Int;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CONSTRUCTOR AND INIT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Class constructor. Stores the target DOMElement.
 	 * 
@@ -298,7 +302,15 @@ class AbstractStyle
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		this.fontFamily = defaultStyles.fontFamily;
 		this.color = defaultStyles.color;
-		
+	
+		initComputedStyles();
+	}
+	
+	/**
+	 * reset/init the computed style structures
+	 */
+	private function initComputedStyles():Void
+	{
 		 _computedStyle = {
 			width : 0,
 			height : 0,
@@ -707,6 +719,12 @@ class AbstractStyle
 	 */
 	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
+		//reset the computed styles, useful for instance to
+		//reset an auto height to 0 if a layout has already
+		//occured which might create bugs in the computation of
+		//font and text styles which use the computed height value
+		initComputedStyles();
+		
 		computeDisplayStyles();
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
@@ -1316,6 +1334,12 @@ class AbstractStyle
 		return _lineHeight = value;
 	}
 	
+	private function setColor(value:ColorValue):ColorValue
+	{
+		invalidateText();
+		return _color = value;
+	}
+	
 	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
 	{
 		invalidate();
@@ -1487,11 +1511,6 @@ class AbstractStyle
 	private function getLetterSpacing():LetterSpacingStyleValue
 	{
 		return _letterSpacing;
-	}
-	
-	private function setColor(value:ColorValue):ColorValue
-	{
-		return _color = value;
 	}
 	
 	private function getColor():ColorValue
