@@ -307,15 +307,15 @@ cocktailCore.domElement.abstract.AbstractDOMElement.prototype = {
 			var parentGlobalX = this._parent.getGlobalX();
 			localX -= parentGlobalX;
 		} else localX = 0;
-		this.setX(localX);
+		this._style.setNativeX(this,localX);
 		return value;
 	}
 	,getGlobalX: function() {
-		var newGlobalX = this.getX();
+		var newGlobalX = this._style.getNativeX(this);
 		if(this._parent != null) {
 			var parentDOMElement = this._parent;
 			while(parentDOMElement != null) {
-				newGlobalX += parentDOMElement.getX();
+				newGlobalX += parentDOMElement.getStyle().getNativeX(parentDOMElement);
 				parentDOMElement = parentDOMElement.getParent();
 			}
 		} else newGlobalX = 0;
@@ -327,15 +327,15 @@ cocktailCore.domElement.abstract.AbstractDOMElement.prototype = {
 			var parentGlobalY = this._parent.getGlobalY();
 			localY -= parentGlobalY;
 		} else localY = 0;
-		this.setY(localY);
+		this._style.setNativeY(this,localY);
 		return value;
 	}
 	,getGlobalY: function() {
-		var newGlobalY = this.getY();
+		var newGlobalY = this._style.getNativeY(this);
 		if(this._parent != null) {
 			var parentDOMElement = this._parent;
 			while(parentDOMElement != null) {
-				newGlobalY += parentDOMElement.getY();
+				newGlobalY += parentDOMElement.getStyle().getNativeY(parentDOMElement);
 				parentDOMElement = parentDOMElement.getParent();
 			}
 		} else newGlobalY = 0;
@@ -481,8 +481,7 @@ cocktailCore.domElement.js.EmbeddedDOMElement.prototype = $extend(cocktailCore.d
 	__class__: cocktailCore.domElement.js.EmbeddedDOMElement
 });
 cocktailCore.domElement.abstract.AbstractImageDOMElement = $hxClasses["cocktailCore.domElement.abstract.AbstractImageDOMElement"] = function(nativeElement) {
-	this._imageLoader = new cocktailCore.resource.js.ImageLoader();
-	if(nativeElement != null) this._imageLoader.setNativeElement(nativeElement);
+	this._imageLoader = new cocktailCore.resource.js.ImageLoader(nativeElement);
 	cocktailCore.domElement.js.EmbeddedDOMElement.call(this,this._imageLoader.getNativeElement());
 }
 cocktailCore.domElement.abstract.AbstractImageDOMElement.__name__ = ["cocktailCore","domElement","abstract","AbstractImageDOMElement"];
@@ -750,6 +749,9 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		var defaultStyles = cocktailCore.style.abstract.AbstractStyle.getDefaultStyle();
 		this.setFontFamily(defaultStyles.fontFamily);
 		this.setColor(defaultStyles.color);
+		this.initComputedStyles();
+	}
+	,initComputedStyles: function() {
 		this._computedStyle = { width : 0, height : 0, minHeight : 0, maxHeight : 0, minWidth : 0, maxWidth : 0, marginLeft : 0, marginRight : 0, marginTop : 0, marginBottom : 0, paddingLeft : 0, paddingRight : 0, paddingTop : 0, paddingBottom : 0, left : 0, right : 0, top : 0, bottom : 0, clear : cocktail.style.ClearStyleValue.none, 'float' : cocktail.style.FloatStyleValue.none, display : cocktail.style.DisplayStyleValue.block, position : cocktail.style.PositionStyleValue.staticStyle, verticalAlign : 0.0, fontSize : 12.0, lineHeight : 14.0, fontWeight : cocktail.style.FontWeightStyleValue.normal, fontStyle : cocktail.style.FontStyleStyleValue.normal, fontFamily : [cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.serif)], fontVariant : cocktail.style.FontVariantStyleValue.normal, textTransform : cocktail.style.TextTransformStyleValue.none, letterSpacing : 0, wordSpacing : 0, textIndent : 0, whiteSpace : cocktail.style.WhiteSpaceStyleValue.normal, textAlign : cocktail.style.TextAlignStyleValue.left, color : 0};
 	}
 	,layout: function(containingDOMElementData,lastPositionedDOMElementData,viewportData,containingDOMElementFontMetricsData) {
@@ -843,6 +845,7 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		return ret;
 	}
 	,computeDOMElement: function(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData) {
+		this.initComputedStyles();
 		this.computeDisplayStyles();
 		this.computeTextAndFontStyles(containingDOMElementData,containingDOMElementFontMetricsData);
 		this.computeBoxModelStyles(containingDOMElementData,viewportData,lastPositionedDOMElementData);
@@ -1107,6 +1110,10 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		this.invalidate();
 		return this._lineHeight = value;
 	}
+	,setColor: function(value) {
+		this.invalidateText();
+		return this._color = value;
+	}
 	,setVerticalAlign: function(value) {
 		this.invalidate();
 		return this._verticalAlign = value;
@@ -1209,9 +1216,6 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	}
 	,getLetterSpacing: function() {
 		return this._letterSpacing;
-	}
-	,setColor: function(value) {
-		return this._color = value;
 	}
 	,getColor: function() {
 		return this._color;
@@ -2019,7 +2023,30 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		var childrenContainingDOMElementData = this.getContainerDOMElementData();
 		var childrenContainingDOMElementFontMetricsData = this.getFontMetricsData();
 		var childLastPositionedDOMElementData;
-		if(this.isPositioned() == true) childLastPositionedDOMElementData = { data : this.getContainerDOMElementData(), children : new Array()}; else childLastPositionedDOMElementData = lastPositionedDOMElementData;
+		childLastPositionedDOMElementData = this.getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+		this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext);
+		if(childrenFormattingContext != formatingContext) childrenFormattingContext.destroy();
+		if(this._width == cocktail.style.DimensionStyleValue.auto) {
+			var currentWidth = this._computedStyle.width;
+			this._computedStyle.width = this.shrinkToFitIfNeeded(containingDOMElementData.width,childrenFormattingContext.getFlowData().maxWidth);
+			if(currentWidth != this._computedStyle.width) {
+				childrenFormattingContext = this.getFormatingContext(formatingContext);
+				childrenContainingDOMElementData = this.getContainerDOMElementData();
+				childLastPositionedDOMElementData = this.getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+				this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext);
+			}
+		}
+		if(this._height == cocktail.style.DimensionStyleValue.auto) this._computedStyle.height = childrenFormattingContext.getFlowData().totalHeight;
+		this.insertDOMElement(formatingContext,lastPositionedDOMElementData,viewportData);
+		formatingContext.retrieveFloats(childrenFormattingContext);
+		var isFirstPositionedAncestor = childLastPositionedDOMElementData != lastPositionedDOMElementData;
+		this.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor,childLastPositionedDOMElementData,viewportData);
+	}
+	,insertInFlowDOMElement: function(formattingContext) {
+		if(this.isInline() == false || this.isInlineFlow() == false) cocktailCore.style.js.Style.prototype.insertInFlowDOMElement.call(this,formattingContext);
+	}
+	,doFlowChildren: function(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext) {
+		var containerDOMElement = this._domElement;
 		var _g1 = 0, _g = containerDOMElement.getChildren().length;
 		while(_g1 < _g) {
 			var i = _g1++;
@@ -2031,12 +2058,9 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				this.insertTextElement(childrenTextElement,childrenFormattingContext,childrenContainingDOMElementData);
 			}
 		}
-		if(childrenFormattingContext != formatingContext) childrenFormattingContext.destroy();
-		if(this._height == cocktail.style.DimensionStyleValue.auto) this._computedStyle.height = childrenFormattingContext.getFlowData().totalHeight;
-		if(this._width == cocktail.style.DimensionStyleValue.auto) this._computedStyle.width = this.shrinkToFitIfNeeded(containingDOMElementData.width,childrenFormattingContext.getFlowData().maxWidth);
-		this.insertDOMElement(formatingContext,lastPositionedDOMElementData,viewportData);
-		formatingContext.retrieveFloats(childrenFormattingContext);
-		if(childLastPositionedDOMElementData != lastPositionedDOMElementData) {
+	}
+	,doPositionAbsolutelyPositionedDOMElements: function(isFirstPositionedAncestor,childLastPositionedDOMElementData,viewportData) {
+		if(isFirstPositionedAncestor == true) {
 			childLastPositionedDOMElementData.data = this.getContainerDOMElementData();
 			var _g1 = 0, _g = childLastPositionedDOMElementData.children.length;
 			while(_g1 < _g) {
@@ -2045,9 +2069,6 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data,viewportData,positionedDOMElementData.staticPosition);
 			}
 		}
-	}
-	,insertInFlowDOMElement: function(formattingContext) {
-		if(this.isInline() == false || this.isInlineFlow() == false) cocktailCore.style.js.Style.prototype.insertInFlowDOMElement.call(this,formattingContext);
 	}
 	,insertTextElement: function(textElement,formattingContext,containingDOMElementData) {
 		var containerDOMElement = this._domElement;
@@ -2188,19 +2209,31 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		return formattingContext;
 	}
 	,childrenInline: function() {
-		var ret = true;
 		var containerDOMElement = this._domElement;
+		if(containerDOMElement.getChildren().length == 0) return false;
+		var ret = this.isChildInline(containerDOMElement.getChildren()[0]);
 		var _g1 = 0, _g = containerDOMElement.getChildren().length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			if(this.isDOMElement(containerDOMElement.getChildren()[i])) {
-				var childrenDOMElement = containerDOMElement.getChildren()[i].child;
-				if(childrenDOMElement.getStyle().getComputedStyle().display == cocktail.style.DisplayStyleValue.block) {
-					if(childrenDOMElement.getStyle().isFloat() == false) ret = false; else if(childrenDOMElement.getStyle().isPositioned() == false || childrenDOMElement.getStyle().isRelativePositioned() == true) ret = false;
-				}
+			if(this.isChildInline(containerDOMElement.getChildren()[i]) != ret) {
 			}
 		}
 		return ret;
+	}
+	,isChildInline: function(child) {
+		var ret = true;
+		if(this.isDOMElement(child)) {
+			var childrenDOMElement = child.child;
+			if(childrenDOMElement.getStyle().getComputedStyle().display == cocktail.style.DisplayStyleValue.block) {
+				if(childrenDOMElement.getStyle().isFloat() == false) ret = false; else if(childrenDOMElement.getStyle().isPositioned() == false || childrenDOMElement.getStyle().isRelativePositioned() == true) ret = false;
+			} else ret = true;
+		} else ret = true;
+		return ret;
+	}
+	,getChildLastPositionedDOMElementData: function(lastPositionedDOMElementData) {
+		var childLastPositionedDOMElementData;
+		if(this.isPositioned() == true) childLastPositionedDOMElementData = { data : this.getContainerDOMElementData(), children : new Array()}; else childLastPositionedDOMElementData = lastPositionedDOMElementData;
+		return childLastPositionedDOMElementData;
 	}
 	,startsNewFormattingContext: function() {
 		var ret = false;
@@ -2496,46 +2529,46 @@ components.richList.RichList.prototype = $extend(cocktailCore.domElement.js.Cont
 		while(_g < _g1.length) {
 			var cellData1 = [_g1[_g]];
 			++_g;
-			var cell = [new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")))];
-			listStyle.cell(cell[0]);
+			var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
+			listStyle.cell(cell);
 			if(cellData1[0].imagePath != "" && cellData1[0].imagePath != null) {
 				var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
 				listStyle.cellImage(cellImage);
-				cell[0].addChild(cellImage);
+				cell.addChild(cellImage);
 				cellImage.load(cellData1[0].imagePath);
 			}
+			var cellTextContainer = [Utils.getContainer()];
 			if(cellData1[0].text != "" && cellData1[0].text != null) {
-				var cellTextContainer = Utils.getContainer();
 				var textElement = new cocktailCore.textElement.js.TextElement(cellData1[0].text);
-				cellTextContainer.addText(textElement);
-				listStyle.cellText(cellTextContainer);
-				cell[0].addChild(cellTextContainer);
+				cellTextContainer[0].addText(textElement);
+				listStyle.cellText(cellTextContainer[0]);
+				cell.addChild(cellTextContainer[0]);
 			}
-			this.addChild(cell[0]);
+			this.addChild(cell);
 			var onCellMouseOverDelegate = [this.onCellMouseOver.$bind(this)];
-			cell[0].setOnMouseOver((function(onCellMouseOverDelegate,cell) {
+			cell.setOnMouseOver((function(onCellMouseOverDelegate,cellTextContainer) {
 				return function(mouseEventData) {
-					onCellMouseOverDelegate[0](mouseEventData,cell[0],listStyle);
+					onCellMouseOverDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
 				};
-			})(onCellMouseOverDelegate,cell));
+			})(onCellMouseOverDelegate,cellTextContainer));
 			var onCellMouseOutDelegate = [this.onCellMouseOut.$bind(this)];
-			cell[0].setOnMouseOut((function(onCellMouseOutDelegate,cell) {
+			cell.setOnMouseOut((function(onCellMouseOutDelegate,cellTextContainer) {
 				return function(mouseEventData) {
-					onCellMouseOutDelegate[0](mouseEventData,cell[0],listStyle);
+					onCellMouseOutDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
 				};
-			})(onCellMouseOutDelegate,cell));
+			})(onCellMouseOutDelegate,cellTextContainer));
 			var onCellMouseDownDelegate = [this.onCellMouseDown.$bind(this)];
-			cell[0].setOnMouseDown((function(onCellMouseDownDelegate,cell) {
+			cell.setOnMouseDown((function(onCellMouseDownDelegate,cellTextContainer) {
 				return function(mouseEventData) {
-					onCellMouseDownDelegate[0](mouseEventData,cell[0],listStyle);
+					onCellMouseDownDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
 				};
-			})(onCellMouseDownDelegate,cell));
+			})(onCellMouseDownDelegate,cellTextContainer));
 			var onCellMouseUpDelegate = [this.onCellMouseUp.$bind(this)];
-			cell[0].setOnMouseUp((function(onCellMouseUpDelegate,cell,cellData1) {
+			cell.setOnMouseUp((function(onCellMouseUpDelegate,cellTextContainer,cellData1) {
 				return function(mouseEventData) {
-					onCellMouseUpDelegate[0](mouseEventData,cell[0],listStyle,cellData1[0]);
+					onCellMouseUpDelegate[0](mouseEventData,cellTextContainer[0],listStyle,cellData1[0]);
 				};
-			})(onCellMouseUpDelegate,cell,cellData1));
+			})(onCellMouseUpDelegate,cellTextContainer,cellData1));
 		}
 	}
 	,onCellMouseOver: function(mouseEventData,cell,listStyle) {
@@ -3055,7 +3088,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 		style.getComputedStyle().marginBottom = this.getComputedMarginBottom(style,containingDOMElementData);
 	}
 	,measureHeight: function(style,containingDOMElementData) {
-		style.getComputedStyle().height = this.getNativeHeight(style,containingDOMElementData);
+		style.getComputedStyle().height = this.getComputedHeight(style,containingDOMElementData);
 		style.getComputedStyle().marginTop = this.getComputedMarginTop(style,containingDOMElementData);
 		style.getComputedStyle().marginBottom = this.getComputedMarginBottom(style,containingDOMElementData);
 	}
@@ -3078,7 +3111,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedAutoWidth: function(style,containingDOMElementData) {
 		return containingDOMElementData.width - style.getComputedStyle().paddingLeft - style.getComputedStyle().paddingRight - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight;
 	}
-	,getNativeHeight: function(style,containingDOMElementData) {
+	,getComputedHeight: function(style,containingDOMElementData) {
 		return this.getComputedDimension(style.getHeight(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 	}
 	,getComputedAutoHeight: function(style,containingDOMElementData) {
@@ -3215,10 +3248,15 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototyp
 		var ret = 0;
 		var embeddedDOMElement = style.getDOMElement();
 		if(style.getHeight() == cocktail.style.DimensionStyleValue.auto) {
-			if(embeddedDOMElement.getIntrinsicWidth() != null) ret = embeddedDOMElement.getIntrinsicWidth(); else if(embeddedDOMElement.getIntrinsicHeight() != null && embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(embeddedDOMElement.getIntrinsicHeight() * embeddedDOMElement.getIntrinsicRatio()); else if(embeddedDOMElement.getIntrinsicRatio() != null) ret = 0;
+			if(embeddedDOMElement.getIntrinsicWidth() != null) ret = embeddedDOMElement.getIntrinsicWidth(); else if(embeddedDOMElement.getIntrinsicHeight() != null && embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(embeddedDOMElement.getIntrinsicHeight() * embeddedDOMElement.getIntrinsicRatio()); else if(embeddedDOMElement.getIntrinsicRatio() != null) {
+				if(containingDOMElementData.isWidthAuto == false) {
+					var computedStyle = style.getComputedStyle();
+					ret = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+				} else ret = 0;
+			}
 		} else {
 			var computedHeight = this.getComputedDimension(style.getHeight(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedHeight * embeddedDOMElement.getIntrinsicRatio()); else if(embeddedDOMElement.getIntrinsicWidth() != null) ret = embeddedDOMElement.getIntrinsicWidth(); else ret = 0;
+			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedHeight * embeddedDOMElement.getIntrinsicRatio()); else if(embeddedDOMElement.getIntrinsicWidth() != null) ret = embeddedDOMElement.getIntrinsicWidth(); else ret = 300;
 		}
 		return ret;
 	}
@@ -3228,9 +3266,8 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototyp
 		if(style.getWidth() == cocktail.style.DimensionStyleValue.auto) {
 			if(embeddedDOMElement.getIntrinsicHeight() != null) ret = embeddedDOMElement.getIntrinsicHeight();
 		} else {
-			var computedWidth = this.getComputedDimension(style.getWidth(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedWidth * embeddedDOMElement.getIntrinsicRatio()); else {
-			}
+			var computedWidth = this.getComputedDimension(style.getWidth(),containingDOMElementData.width,containingDOMElementData.isWidthAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedWidth / embeddedDOMElement.getIntrinsicRatio()); else ret = 150;
 		}
 		return ret;
 	}
@@ -3379,7 +3416,9 @@ cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer.__super__ = cock
 cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer.prototype = $extend(cocktailCore.style.computer.BoxStylesComputer.prototype,{
 	__class__: cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer
 });
-cocktailCore.resource.abstract.AbstractImageLoader = $hxClasses["cocktailCore.resource.abstract.AbstractImageLoader"] = function() {
+cocktailCore.resource.abstract.AbstractImageLoader = $hxClasses["cocktailCore.resource.abstract.AbstractImageLoader"] = function(nativeElement) {
+	if(nativeElement == null) nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.image);
+	this._nativeElement = nativeElement;
 	cocktailCore.resource.js.ResourceLoader.call(this);
 }
 cocktailCore.resource.abstract.AbstractImageLoader.__name__ = ["cocktailCore","resource","abstract","AbstractImageLoader"];
@@ -3390,11 +3429,8 @@ cocktailCore.resource.abstract.AbstractImageLoader.prototype = $extend(cocktailC
 	,getNativeElement: function() {
 		return this._nativeElement;
 	}
-	,setNativeElement: function(value) {
-		return this._nativeElement = value;
-	}
 	,__class__: cocktailCore.resource.abstract.AbstractImageLoader
-	,__properties__: {set_nativeElement:"setNativeElement",get_nativeElement:"getNativeElement"}
+	,__properties__: {get_nativeElement:"getNativeElement"}
 });
 cocktailCore.style.InlineBoxValue = $hxClasses["cocktailCore.style.InlineBoxValue"] = { __ename__ : ["cocktailCore","style","InlineBoxValue"], __constructs__ : ["domElement","space","tab"] }
 cocktailCore.style.InlineBoxValue.domElement = ["domElement",0];
@@ -3412,11 +3448,38 @@ cocktailCore.style.positioner.BoxPositioner = $hxClasses["cocktailCore.style.pos
 cocktailCore.style.positioner.BoxPositioner.__name__ = ["cocktailCore","style","positioner","BoxPositioner"];
 cocktailCore.style.positioner.BoxPositioner.prototype = {
 	position: function(domElement,containingDOMElementData,staticPosition) {
-		this.applyOffset(domElement,containingDOMElementData,staticPosition);
+		if(domElement.getStyle().getLeft() != cocktail.style.PositionOffsetStyleValue.auto) {
+			this.applyGlobalX(domElement,containingDOMElementData.globalX);
+			domElement.getStyle().setNativeX(domElement,this.getLeftOffset(domElement));
+		} else if(domElement.getStyle().getRight() != cocktail.style.PositionOffsetStyleValue.auto) {
+			this.applyGlobalX(domElement,containingDOMElementData.globalX);
+			domElement.getStyle().setNativeX(domElement,this.getRightOffset(domElement,containingDOMElementData.width));
+		} else domElement.getStyle().setNativeX(domElement,Math.round(staticPosition.x));
+		if(domElement.getStyle().getTop() != cocktail.style.PositionOffsetStyleValue.auto) {
+			this.applyGlobalY(domElement,containingDOMElementData.globalY);
+			domElement.getStyle().setNativeY(domElement,this.getTopOffset(domElement));
+		} else if(domElement.getStyle().getBottom() != cocktail.style.PositionOffsetStyleValue.auto) {
+			this.applyGlobalY(domElement,containingDOMElementData.globalY);
+			domElement.getStyle().setNativeY(domElement,this.getBottomOffset(domElement,containingDOMElementData.height));
+		} else domElement.getStyle().setNativeY(domElement,Math.round(staticPosition.y));
 	}
-	,applyOffset: function(domElement,containingDOMElementData,staticPosition) {
-		if(domElement.getStyle().getLeft() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeX(domElement,domElement.getStyle().getNativeX(domElement) + domElement.getStyle().getComputedStyle().left); else if(domElement.getStyle().getRight() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeX(domElement,containingDOMElementData.width - domElement.getStyle().getComputedStyle().width - domElement.getStyle().getComputedStyle().right); else domElement.getStyle().setNativeX(domElement,Math.round(staticPosition.x));
-		if(domElement.getStyle().getTop() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeY(domElement,domElement.getStyle().getNativeY(domElement) + domElement.getStyle().getComputedStyle().top); else if(domElement.getStyle().getBottom() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeY(domElement,containingDOMElementData.height - domElement.getStyle().getComputedStyle().height - domElement.getStyle().getComputedStyle().bottom); else domElement.getStyle().setNativeY(domElement,Math.round(staticPosition.y));
+	,applyGlobalX: function(domElement,globalX) {
+		domElement.setGlobalX(globalX);
+	}
+	,applyGlobalY: function(domElement,globalY) {
+		domElement.setGlobalY(globalY);
+	}
+	,getLeftOffset: function(domElement) {
+		return domElement.getStyle().getNativeX(domElement) + domElement.getStyle().getComputedStyle().left + domElement.getStyle().getComputedStyle().marginLeft;
+	}
+	,getRightOffset: function(domElement,containingDOMElementWidth) {
+		return domElement.getStyle().getNativeX(domElement) + containingDOMElementWidth - domElement.getStyle().getComputedStyle().width - domElement.getStyle().getComputedStyle().right - domElement.getStyle().getComputedStyle().marginRight;
+	}
+	,getTopOffset: function(domElement) {
+		return domElement.getStyle().getNativeY(domElement) + domElement.getStyle().getComputedStyle().top + domElement.getStyle().getComputedStyle().marginTop;
+	}
+	,getBottomOffset: function(domElement,containingDOMElementHeight) {
+		return domElement.getStyle().getNativeY(domElement) + containingDOMElementHeight - domElement.getStyle().getComputedStyle().height - domElement.getStyle().getComputedStyle().bottom - domElement.getStyle().getComputedStyle().marginBottom;
 	}
 	,__class__: cocktailCore.style.positioner.BoxPositioner
 }
@@ -4309,12 +4372,21 @@ cocktailCore.style.positioner.RelativePositioner = $hxClasses["cocktailCore.styl
 cocktailCore.style.positioner.RelativePositioner.__name__ = ["cocktailCore","style","positioner","RelativePositioner"];
 cocktailCore.style.positioner.RelativePositioner.__super__ = cocktailCore.style.positioner.BoxPositioner;
 cocktailCore.style.positioner.RelativePositioner.prototype = $extend(cocktailCore.style.positioner.BoxPositioner.prototype,{
-	position: function(domElement,containingDOMElementData,staticPosition) {
-		this.applyOffset(domElement,containingDOMElementData,staticPosition);
+	applyGlobalX: function(domElement,globalX) {
 	}
-	,applyOffset: function(domElement,containingDOMElementData,staticPosition) {
-		if(domElement.getStyle().getLeft() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeX(domElement,domElement.getStyle().getNativeX(domElement) + domElement.getStyle().getComputedStyle().left);
-		if(domElement.getStyle().getTop() != cocktail.style.PositionOffsetStyleValue.auto) domElement.getStyle().setNativeY(domElement,domElement.getStyle().getNativeY(domElement) + domElement.getStyle().getComputedStyle().top);
+	,applyGlobalY: function(domElement,globalY) {
+	}
+	,getLeftOffset: function(domElement) {
+		return domElement.getStyle().getNativeX(domElement) + domElement.getStyle().getComputedStyle().left;
+	}
+	,getRightOffset: function(domElement,containingDOMElementWidth) {
+		return domElement.getStyle().getNativeX(domElement) + containingDOMElementWidth - domElement.getStyle().getComputedStyle().width - domElement.getStyle().getComputedStyle().right;
+	}
+	,getTopOffset: function(domElement) {
+		return domElement.getStyle().getNativeY(domElement) + domElement.getStyle().getComputedStyle().top;
+	}
+	,getBottomOffset: function(domElement,containingDOMElementHeight) {
+		return domElement.getStyle().getNativeY(domElement) + containingDOMElementHeight - domElement.getStyle().getComputedStyle().height - domElement.getStyle().getComputedStyle().bottom;
 	}
 	,__class__: cocktailCore.style.positioner.RelativePositioner
 });
@@ -5131,9 +5203,8 @@ cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype 
 	}
 	,__class__: cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer
 });
-cocktailCore.resource.js.ImageLoader = $hxClasses["cocktailCore.resource.js.ImageLoader"] = function() {
-	cocktailCore.resource.abstract.AbstractImageLoader.call(this);
-	this._nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.image);
+cocktailCore.resource.js.ImageLoader = $hxClasses["cocktailCore.resource.js.ImageLoader"] = function(nativeElement) {
+	cocktailCore.resource.abstract.AbstractImageLoader.call(this,nativeElement);
 }
 cocktailCore.resource.js.ImageLoader.__name__ = ["cocktailCore","resource","js","ImageLoader"];
 cocktailCore.resource.js.ImageLoader.__super__ = cocktailCore.resource.abstract.AbstractImageLoader;
@@ -5222,9 +5293,7 @@ cocktailCore.style.formatter.FormattingContext = $hxClasses["cocktailCore.style.
 	this._containingDOMElement = domElement;
 	this._containingDOMElementWidth = this._containingDOMElement.getStyle().getComputedStyle().width;
 	this._floatsManager = new cocktailCore.style.floats.FloatsManager();
-	if(previousFormatingContext != null) {
-		if(domElement.getStyle().isFloat() == false) this._floatsManager.addFloats(previousFormatingContext);
-	}
+	if(previousFormatingContext != null) this._floatsManager.addFloats(previousFormatingContext);
 	this._flowData = this.initFlowData(this._containingDOMElement);
 }
 cocktailCore.style.formatter.FormattingContext.__name__ = ["cocktailCore","style","formatter","FormattingContext"];
@@ -5279,7 +5348,7 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 	}
 	,placeFloat: function(domElement,floatData) {
 		domElement.getStyle().setNativeX(domElement,floatData.x + domElement.getStyle().getComputedStyle().marginLeft);
-		domElement.getStyle().setNativeY(domElement,floatData.x + floatData.y + domElement.getStyle().getComputedStyle().marginTop);
+		domElement.getStyle().setNativeY(domElement,floatData.y + domElement.getStyle().getComputedStyle().marginTop);
 	}
 	,removeFloats: function() {
 		this._floatsManager.removeFloats(this._flowData.y);
@@ -5334,7 +5403,7 @@ cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer.prototype = $ex
 	,getNativeWidth: function(style,containingDOMElementData) {
 		return 0;
 	}
-	,getNativeHeight: function(style,containingDOMElementData) {
+	,getComputedHeight: function(style,containingDOMElementData) {
 		return 0;
 	}
 	,__class__: cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer
@@ -5403,10 +5472,18 @@ cocktailCore.domElement.abstract.AbstractGraphicDOMElement.__name__ = ["cocktail
 cocktailCore.domElement.abstract.AbstractGraphicDOMElement.__super__ = cocktailCore.domElement.js.EmbeddedDOMElement;
 cocktailCore.domElement.abstract.AbstractGraphicDOMElement.prototype = $extend(cocktailCore.domElement.js.EmbeddedDOMElement.prototype,{
 	beginFill: function(fillStyle,lineStyle) {
+		if(fillStyle == null) fillStyle = cocktail.domElement.FillStyleValue.none;
+		if(lineStyle == null) lineStyle = cocktail.domElement.LineStyleValue.none;
+		this.setFillStyle(fillStyle);
+		this.setLineStyle(lineStyle);
 	}
 	,endFill: function() {
 	}
 	,clear: function() {
+	}
+	,setLineStyle: function(lineStyle) {
+	}
+	,setFillStyle: function(fillStyle) {
 	}
 	,drawRect: function(x,y,width,height,cornerRadiuses) {
 		if(cornerRadiuses == null) cornerRadiuses = { tlCornerRadius : 0, trCornerRadius : 0, blCornerRadius : 0, brCornerRadius : 0};
@@ -5505,10 +5582,6 @@ cocktailCore.domElement.js.GraphicDOMElement.__super__ = cocktailCore.domElement
 cocktailCore.domElement.js.GraphicDOMElement.prototype = $extend(cocktailCore.domElement.abstract.AbstractGraphicDOMElement.prototype,{
 	beginFill: function(fillStyle,lineStyle) {
 		cocktailCore.domElement.abstract.AbstractGraphicDOMElement.prototype.beginFill.call(this,fillStyle,lineStyle);
-		if(fillStyle == null) fillStyle = cocktail.domElement.FillStyleValue.none;
-		if(lineStyle == null) lineStyle = cocktail.domElement.LineStyleValue.none;
-		this.setFillStyle(fillStyle);
-		this.setLineStyle(lineStyle);
 		var canvasContext = this.getContext();
 		canvasContext.beginPath();
 	}
@@ -5709,7 +5782,13 @@ cocktailCore.style.positioner.FixedPositioner = $hxClasses["cocktailCore.style.p
 cocktailCore.style.positioner.FixedPositioner.__name__ = ["cocktailCore","style","positioner","FixedPositioner"];
 cocktailCore.style.positioner.FixedPositioner.__super__ = cocktailCore.style.positioner.BoxPositioner;
 cocktailCore.style.positioner.FixedPositioner.prototype = $extend(cocktailCore.style.positioner.BoxPositioner.prototype,{
-	__class__: cocktailCore.style.positioner.FixedPositioner
+	applyGlobalX: function(domElement,globalX) {
+		domElement.setGlobalX(0);
+	}
+	,applyGlobalY: function(domElement,globalY) {
+		domElement.setGlobalY(0);
+	}
+	,__class__: cocktailCore.style.positioner.FixedPositioner
 });
 components.richList.StyleApp = $hxClasses["components.richList.StyleApp"] = function() { }
 components.richList.StyleApp.__name__ = ["components","richList","StyleApp"];
@@ -5910,6 +5989,11 @@ cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer.prototype =
 				style.getComputedStyle().height = containingDOMElementData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
 			}
 		}
+	}
+	,shrinkToFit: function(computedStyles,availableWidth,minimumWidth) {
+		var shrinkedWidth;
+		if(minimumWidth < availableWidth) shrinkedWidth = minimumWidth; else shrinkedWidth = availableWidth;
+		return shrinkedWidth;
 	}
 	,__class__: cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer
 });
@@ -6759,6 +6843,7 @@ ApplicationStructure.prototype = {
 	,_notePage: null
 	,_creditsPage: null
 	,_currentPage: null
+	,_previousPages: null
 	,createAllPages: function() {
 		this._dayPage = this.createHeaderContentPage("Day","This is what I have planned today");
 		this._calListPage = this.createHeaderListPage("Calendar",[{ text : "June 1st", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 2nd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 3rd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 4th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 5th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage}]);
@@ -6770,24 +6855,41 @@ ApplicationStructure.prototype = {
 		this._galleryPage = this.createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
 		this._notePage = this.createHeaderContentPage("Note","This is the content of the note");
 		this._noteListPage = this.createHeaderListPage("Notes",[{ text : "Note 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 6", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 7", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 8", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 9", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 10", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 11", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 12", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 13", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 14", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 15", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 16", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage}]);
-		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/cocktail.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.ico", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
-		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage}];
+		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/cocktail.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.png", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
+		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage},{ text : "FTV Info", imagePath : "images/FranceTVInfo.jpg", action : "goToPage", actionTarget : null}];
 		homePageCells.push({ text : "Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"});
 		this._homePage = this.createHomePage(homePageCells);
 		this._currentPage = this._homePage;
+		this._previousPages = new Array();
 		this.pagesContainer.addChild(this._homePage);
+	}
+	,goToPreviousPage: function(mouseEvent) {
+		this.showPage(this.getPreviousPage());
+	}
+	,getPreviousPage: function() {
+		this._previousPages.pop();
+		var previousPage = this._previousPages[this._previousPages.length - 1];
+		if(previousPage == null) return this._homePage;
+		return previousPage;
+	}
+	,addToHistory: function(page) {
+		if(page == this._homePage) this._previousPages = [page]; else this._previousPages.push(page);
 	}
 	,showPage: function(page) {
 		this.pagesContainer.removeChild(this._currentPage);
 		this.pagesContainer.addChild(page);
 		this._currentPage = page;
 	}
+	,onChangeListCallback: function(cell) {
+		if(cell.action == "goToPage") {
+			var page = cell.actionTarget;
+			this.addToHistory(page);
+			this.showPage(page);
+		}
+		if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget);
+	}
 	,goToUrl: function(url) {
 		js.Lib.window.open(url);
-	}
-	,onChangeListCallback: function(cell) {
-		if(cell.action == "goToPage") this.showPage(cell.actionTarget);
-		if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget);
 	}
 	,createHomePage: function(cellDataArray) {
 		var page = Utils.getContainer();
@@ -6869,7 +6971,7 @@ ApplicationStructure.prototype = {
 		var backButtonText = new cocktailCore.textElement.js.TextElement("Back");
 		backButtonTextContainer.addText(backButtonText);
 		backButtonContainer.addChild(backButtonTextContainer);
-		backButtonContainer.setOnMouseUp(this.onBackButtonMouseUp.$bind(this));
+		backButtonContainer.setOnMouseUp(this.goToPreviousPage.$bind(this));
 		var headerTitle = new cocktailCore.textElement.js.TextElement(title);
 		var headerTitleContainer = Utils.getContainer();
 		headerTitleContainer.addText(headerTitle);
@@ -6881,7 +6983,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 488, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 537, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.richList.RichListUtils.createRichListModel();
@@ -6896,9 +6998,6 @@ ApplicationStructure.prototype = {
 		var listStyle = { list : components.richList.StyleNormal.getDefaultStyle, cell : components.richList.StyleNormal.getCellStyle, cellImage : components.richList.StyleNormal.getCellImageStyle, cellText : components.richList.StyleNormal.getCellTextStyle, cellMouseOver : components.richList.StyleNormal.getCellMouseOverStyle, cellMouseOut : components.richList.StyleNormal.getCellMouseOutStyle, cellMouseDown : components.richList.StyleNormal.getCellMouseDownStyle, cellMouseUp : components.richList.StyleNormal.getCellMouseUpStyle};
 		var list = new components.richList.RichList(listData,listStyle);
 		return list;
-	}
-	,onBackButtonMouseUp: function(mouseEvent) {
-		this.showPage(this._homePage);
 	}
 	,__class__: ApplicationStructure
 }
@@ -7163,6 +7262,10 @@ cocktailCore.style.abstract.AbstractBodyStyle.prototype = $extend(cocktailCore.s
 			var lastPositionedDOMElementData = { children : new Array(), data : viewPortData};
 			this.scheduleLayout(viewPortData,lastPositionedDOMElementData,viewPortData);
 		}
+	}
+	,doPositionAbsolutelyPositionedDOMElements: function(isFirstPositionedAncestor,childLastPositionedDOMElementData,viewportData) {
+		isFirstPositionedAncestor = true;
+		cocktailCore.style.js.ContainerStyle.prototype.doPositionAbsolutelyPositionedDOMElements.call(this,isFirstPositionedAncestor,childLastPositionedDOMElementData,viewportData);
 	}
 	,getFormatingContext: function(previousFormatingContext) {
 		return new cocktailCore.style.formatter.BlockFormattingContext(this._domElement,null);

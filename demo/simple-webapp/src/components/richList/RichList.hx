@@ -92,9 +92,9 @@ class RichList extends ContainerDOMElement
 			
 			// add line and text
 			//cell.addChild(line);
+			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
 			if (cellData.text != "" && cellData.text != null)
 			{
-				var cellTextContainer:ContainerDOMElement = Utils.getContainer();
 				var textElement:TextElement = new TextElement(cellData.text);
 				cellTextContainer.addText(textElement);
 				listStyle.cellText(cellTextContainer);
@@ -112,16 +112,16 @@ class RichList extends ContainerDOMElement
 			// delegates functions are used to be able to pass an extra parameter to the callback
 			// mouse over
 			var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
-			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse out
 			var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOut;
-			cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse down
 			var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseDown;
-			cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse up
 			var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->CellModel->Void = onCellMouseUp;
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cellTextContainer, listStyle, cellData); };
 			
 		}
 	}
