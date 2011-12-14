@@ -71,6 +71,7 @@ class BoxPositioner
 			applyGlobalX(domElement,  containingDOMElementData.globalX);
 			//then apply offset
 			domElement.style.setNativeX(domElement, getLeftOffset(domElement) );
+			
 		}
 		//if no left offset is defined, then try to apply a right offset
 		//right offset takes the containing DOMElement element width minus, the
