@@ -130,13 +130,12 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
-		
 		if (_domElementInLineBox.length > 0)
 		{
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
 		
-			var lineWidth:Int = alignText(_firstLineLaidOut == false, isLastLine);
+			var lineWidth:Int = alignLineBox(_firstLineLaidOut == false, isLastLine);
 			if (lineWidth > _flowData.maxWidth)
 			{
 				_flowData.maxWidth = lineWidth;
@@ -243,117 +242,188 @@ class InlineFormattingContext extends FormattingContext
 				default:
 			}
 		}	
-		
 	}
 	
-	private function alignText(firstLine:Bool, isLastLine:Bool):Int
+	/////////////////////////////////
+	// PRIVATE HORIZONTAL ALIGNEMENT METHODS
+	/////////////////////////////////
+	
+	/**
+	 * before a new line starts or before the inline
+	 * formarring context get destroyed, align all the
+	 * DOMElements in the current line horizontally
+	 * @param	firstLine wether it is the first line which is laid out
+	 * @param	isLastLine wheter it is the last line which is laid out
+	 * @return returns the concantenated width of all the aligned DOMElelements.
+	 * Used to determine the max line width used for shrink-to-fit algorithm
+	 */
+	private function alignLineBox(isFirstLine:Bool, isLastLine:Bool):Int
 	{	
-		
+		//determine the added offset width of
+		//all DOMElements in the line box
 		var concatenatedLength:Int = 0;
 		for (i in 0..._domElementInLineBox.length)
 		{
 			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
 		}
 		
+		//determine the remaining space in the line once all the width of the DOMElements
+		//are substracted from the total avalable line width, and the x position where to 
+		//insert the first DOMElement of the line, which might be influenced for instance
+		//by a float
 		var remainingSpace:Int;
-		var localFlow:Int;
+		var flowX:Int;
 		
-		if (firstLine == true)
+		//if the first line is being laid out,
+		//then the textIndent must be taken into account
+		//it only applies to the first line
+		if (isFirstLine == true)
 		{
 			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
-			localFlow = _containingDOMElement.style.computedStyle.textIndent;
+			flowX = _containingDOMElement.style.computedStyle.textIndent;
 		}
 		else
 		{
 			remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
-			localFlow = 0;
+			flowX = 0;
 		}
 		
-		localFlow += _floatsManager.getLeftFloatOffset(_flowData.y) + _flowData.xOffset;
+		//take the float into accounts and the padding of the containing DOMElement
+		flowX += _floatsManager.getLeftFloatOffset(_flowData.y) + _flowData.xOffset;
 		
+		//do align the DOMElements, the text align style of the containing DOMElement
+		//determining the alignement to apply
 		switch (_containingDOMElement.style.computedStyle.textAlign)
 		{
 			case left:
-			
-				for (i in 0..._domElementInLineBox.length)
-				{
-					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
-					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-				}
+				alignLeft(flowX);
+				
 			case right:
-				
-				for (i in 0..._domElementInLineBox.length)
-				{
-					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft + remainingSpace);
-					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-				}
-				
+				alignRight(flowX, remainingSpace);
 				
 			case center:
-				for (i in 0..._domElementInLineBox.length)
-				{
-					_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, Math.round(remainingSpace / 2) + localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
-					localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-				}
+				alignCenter(flowX, remainingSpace);
 				
 			case justify:	
-				
-				
+				//the last line of an inline formatting context
+				//is not justified to avoid stretching too much
+				//the space between DOMElements if there are few of them
 				if (isLastLine == true)
 				{
-					for (i in 0..._domElementInLineBox.length)
-					{
-						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft);
-						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-					}
+					alignLeft(flowX);
 				}
-				
-				
-				
 				else
 				{
-					
+					//when justified, the concatenated width of the DOMElements
+					//must take all the containing DOMElement width
 					concatenatedLength = _containingDOMElementWidth;
 					
-					var spacesNumber:Int = 0;
-					for (i in 0..._domElementInLineBox.length)
-					{
-						switch (_domElementInLineBox[i].domElementType)
-						{
-							case space:
-								spacesNumber++;
-								
-							default:	
-						}
-					}
-					
-					for (i in 0..._domElementInLineBox.length)
-					{
-						switch (_domElementInLineBox[i].domElementType)
-						{
-							case space:
-								
-								var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
-								spacesNumber--;
-								remainingSpace -= spaceWidth;
-								
-								localFlow += spaceWidth;
-		
-		
-								default:	
-						}
-						
-						_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, localFlow + _domElementInLineBox[i].domElement.style.computedStyle.marginLeft) ;
-						
-						localFlow += _domElementInLineBox[i].domElement.offsetWidth;
-					}
-					
+					alignJustify(flowX, remainingSpace);
 				}
-				
 		}
 		
 		return concatenatedLength;
 	}
+	
+	/**
+	 * align the DOMElements starting from the left edge of the containing DOMElement
+	 * @param	flowX the x position of the first DOMElement
+	 */
+	private function alignLeft(flowX:Int):Void
+	{
+		for (i in 0..._domElementInLineBox.length)
+		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft);
+			flowX += domElement.offsetWidth;
+		}
+	}
+	
+
+	/**
+	 * Center the DOMElements in the line by moving each to the right by half the remaining space
+	 * @param	flowX the first availbable x position for the DOMElement to the left most of the line box
+	 * @param	remainingSpace the available width in the line box after all DOMElements
+	 * have been laid out
+	 */
+	private function alignCenter(flowX:Int, remainingSpace:Int):Void
+	{
+		for (i in 0..._domElementInLineBox.length)
+		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			domElement.style.setNativeX(domElement, Math.round(remainingSpace / 2) + flowX + domElement.style.computedStyle.marginLeft);
+			flowX += domElement.offsetWidth;
+		}
+	}
+	
+	/**
+	 * align the DOMElements starting from the right edge to the left edge of the
+	 * containing DOMElement
+	 * @param	flowX the x position of the DOMElement to left most of the line box
+	 * @param	remainingSpace the available width in the line box after all DOMElements
+	 * have been laid out
+	 */
+	private function alignRight(flowX:Int, remainingSpace:Int):Void
+	{
+		for (i in 0..._domElementInLineBox.length)
+		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft + remainingSpace);
+			flowX += domElement.offsetWidth;
+		}
+	}
+	
+	/**
+	 * Justify the DOMElements in the line box by adjusting
+	 * the width of the space characters
+	 * @param	flowX
+	 * @param	remainingSpace
+	 */
+	private function alignJustify(flowX:Int, remainingSpace:Int):Void
+	{
+		//determine how many space there among the 
+		//DOMElements of the line box
+		var spacesNumber:Int = 0;
+		for (i in 0..._domElementInLineBox.length)
+		{
+			switch (_domElementInLineBox[i].domElementType)
+			{
+				case space:
+					spacesNumber++;
+					
+				default:	
+			}
+		}
+		
+		//justify all DOMElements
+		for (i in 0..._domElementInLineBox.length)
+		{
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			
+			//if the DOMElement is a space
+			switch (_domElementInLineBox[i].domElementType)
+			{
+				case space:
+					//each space has its width strecth the the same width,
+					//all the concatenated width of the space fill the remaining
+					//space of the line box
+					var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
+					spacesNumber--;
+					remainingSpace -= spaceWidth;
+					flowX += spaceWidth;
+					
+					default:	
+			}
+			//place the DOMElement
+			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft);
+			
+			flowX += domElement.offsetWidth;
+		}
+	}
+	
+	/////////////////////////////////
+	// PRIVATE VERTICAL ALIGNEMENT METHODS
+	/////////////////////////////////
 	
 	/**
 	 * When a line box is full and a new line will
