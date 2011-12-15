@@ -12,14 +12,14 @@ It is inspired by an existing demo made by the jPint project (which seems to be 
 TO DO
 -----
 
+-pages should be loaded when accessing them, and not before
 -read a text local file (in a xml or json file), using polling (reload the same file every x seconds)
--the home page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
 -back button should only go one step back
 -load a dynamic content (rss)
- => zabojad's gallery at least
+ => zabojad's gallery at least => OK
+	=> flickr: http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200
  => text
  => news
-	=> flickr: http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200
 	=> yahoo: http://news.yahoo.com/rss/gadgets
 	=> france 2: feeds.feedburner.com/France2-ActuSciencesTech?format=xml
 -have the flash version work correctly
@@ -33,6 +33,7 @@ TO DO
  => flash = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
 
 DONE
+-home page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
 -load the gallery demo inside the body (as a skin, keep the web app header) - there has to be a conditional compilation switch (the flash version of the gallery in the flash version of the web app)
 -have the flash version work correctly
  => for generic problems, set following styles to all style element: display=static, position=block, width=auto => Done

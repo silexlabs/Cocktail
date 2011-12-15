@@ -4287,22 +4287,23 @@ js.Lib.prototype = {
 }
 components.gallery.Gallery = $hxClasses["components.gallery.Gallery"] = function(rssFeedPath) {
 	cocktailCore.domElement.js.ContainerDOMElement.call(this);
-	components.gallery.Gallery.galleryContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
-	components.gallery.StyleIphone.getDefaultStyle(components.gallery.Gallery.galleryContainer);
-	this.addChild(components.gallery.Gallery.galleryContainer);
-	var currentAlbumUrl = rssFeedPath;
-	this.loadRssFeed(currentAlbumUrl);
+	components.gallery.Gallery._galleryContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
+	components.gallery.StyleIphone.getDefaultStyle(components.gallery.Gallery._galleryContainer);
+	this.addChild(components.gallery.Gallery._galleryContainer);
+	this.galleryDisplayed = true;
+	this.loadRssFeed(rssFeedPath);
 }
 components.gallery.Gallery.__name__ = ["components","gallery","Gallery"];
-components.gallery.Gallery.galleryContainer = null;
+components.gallery.Gallery._galleryContainer = null;
 components.gallery.Gallery.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
 components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype,{
-	currentMainImage: null
+	galleryDisplayed: null
+	,_currentMainImage: null
 	,loadRssFeed: function(rssFeedUrl) {
-		cocktail.resource.ResourceLoaderManager.loadString("GalleryRssProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
+		cocktail.resource.ResourceLoaderManager.loadString("XmlProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
 	}
 	,onRssFeedError: function(msg) {
-		haxe.Log.trace("Error while loading RSS feed : " + msg,{ fileName : "Gallery.hx", lineNumber : 72, className : "components.gallery.Gallery", methodName : "onRssFeedError"});
+		haxe.Log.trace("Error while loading RSS feed : " + msg,{ fileName : "Gallery.hx", lineNumber : 82, className : "components.gallery.Gallery", methodName : "onRssFeedError"});
 	}
 	,onRssFeedLoaded: function(response) {
 		var galleryXml = Xml.parse(response);
@@ -4313,7 +4314,7 @@ components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.Contai
 			if(channelChild.getNodeName() == "item") {
 				var imageThumbContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
 				var imageThumbDOMElement = [new components.gallery.ImageThumbDOMElement()];
-				components.gallery.Gallery.galleryContainer.addChild(imageThumbContainer);
+				components.gallery.Gallery._galleryContainer.addChild(imageThumbContainer);
 				var $it1 = channelChild.elements();
 				while( $it1.hasNext() ) {
 					var entryElement = $it1.next();
@@ -4333,16 +4334,21 @@ components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.Contai
 		}
 	}
 	,displayPicture: function(imageThumbDOMElement) {
-		this.currentMainImage = new cocktailCore.domElement.js.ImageDOMElement();
-		this.currentMainImage.load(imageThumbDOMElement.fullImagePath);
-		components.gallery.StyleIphone.getFullSizePictureStyle(this.currentMainImage);
-		this.removeChild(components.gallery.Gallery.galleryContainer);
-		this.addChild(this.currentMainImage);
-		this.currentMainImage.setOnMouseUp(this.displayGallery.$bind(this));
+		this._currentMainImage = new cocktailCore.domElement.js.ImageDOMElement();
+		this._currentMainImage.load(imageThumbDOMElement.fullImagePath);
+		components.gallery.StyleIphone.getFullSizePictureStyle(this._currentMainImage);
+		this.removeChild(components.gallery.Gallery._galleryContainer);
+		this.galleryDisplayed = false;
+		this.addChild(this._currentMainImage);
+		this._currentMainImage.setOnMouseUp(this.onFullsizeImageMouseUp.$bind(this));
 	}
-	,displayGallery: function(mouseEventData) {
-		this.removeChild(this.currentMainImage);
-		this.addChild(components.gallery.Gallery.galleryContainer);
+	,onFullsizeImageMouseUp: function(mouseEvent) {
+		this.displayGallery();
+	}
+	,displayGallery: function() {
+		this.removeChild(this._currentMainImage);
+		this.addChild(components.gallery.Gallery._galleryContainer);
+		this.galleryDisplayed = true;
 	}
 	,__class__: components.gallery.Gallery
 });
@@ -6835,6 +6841,7 @@ ApplicationStructure.prototype = {
 	,_dayPage: null
 	,_galleryPage: null
 	,_imagePage: null
+	,_gallery: null
 	,_artistListPage: null
 	,_albumListPage: null
 	,_songListPage: null
@@ -6856,15 +6863,15 @@ ApplicationStructure.prototype = {
 		this._notePage = this.createHeaderContentPage("Note","This is the content of the note");
 		this._noteListPage = this.createHeaderListPage("Notes",[{ text : "Note 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 6", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 7", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 8", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 9", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 10", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 11", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 12", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 13", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 14", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 15", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 16", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage}]);
 		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/cocktail.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.png", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
-		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage},{ text : "FTV Info", imagePath : "images/FranceTVInfo.jpg", action : "goToPage", actionTarget : null}];
-		homePageCells.push({ text : "Silex Labs", imagePath : "images/silex_labs.jpg", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"});
+		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage}];
+		homePageCells.push({ text : "Silex Labs", imagePath : "images/silex_labs.jpg", action : "openUrl", actionTarget : "http://www.silexlabs.org/"});
 		this._homePage = this.createHomePage(homePageCells);
 		this._currentPage = this._homePage;
 		this._previousPages = new Array();
 		this.pagesContainer.addChild(this._homePage);
 	}
 	,goToPreviousPage: function(mouseEvent) {
-		this.showPage(this.getPreviousPage());
+		if(this._currentPage == this._galleryPage && this._gallery.galleryDisplayed == false) this._gallery.displayGallery(); else this.showPage(this.getPreviousPage());
 	}
 	,getPreviousPage: function() {
 		this._previousPages.pop();
@@ -6885,11 +6892,13 @@ ApplicationStructure.prototype = {
 			var page = cell.actionTarget;
 			this.addToHistory(page);
 			this.showPage(page);
-		}
-		if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget);
+		} else if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget); else if(cell.action == "openUrl") this.openUrl(cell.actionTarget);
 	}
 	,goToUrl: function(url) {
 		js.Lib.window.open(url);
+	}
+	,openUrl: function(url) {
+		js.Lib.window.open(url,"_self");
 	}
 	,createHomePage: function(cellDataArray) {
 		var page = Utils.getContainer();
@@ -6936,17 +6945,9 @@ ApplicationStructure.prototype = {
 	,createHeaderGalleryPage: function(title,rssFeedPath) {
 		var page = Utils.getContainer();
 		var header = this.createHeader(title);
-		var gallery = new components.gallery.Gallery(rssFeedPath);
+		this._gallery = new components.gallery.Gallery(rssFeedPath);
 		page.addChild(header);
-		page.addChild(gallery);
-		WebAppStyle.getPageStyle(page);
-		return page;
-	}
-	,createEmbedContentPage: function(title,embeddedLink) {
-		var page = Utils.getContainer();
-		var header = this.createHeader(title);
-		var embeddedElement = new cocktailCore.domElement.js.EmbeddedDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("embed")));
-		page.addChild(header);
+		page.addChild(this._gallery);
 		WebAppStyle.getPageStyle(page);
 		return page;
 	}
@@ -6983,7 +6984,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 537, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 561, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.richList.RichListUtils.createRichListModel();

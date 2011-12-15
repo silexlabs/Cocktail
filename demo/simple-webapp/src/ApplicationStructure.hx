@@ -12,7 +12,6 @@ import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
-import haxe.Timer;
 import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
 import cocktailCore.resource.ResourceLoader;
@@ -57,7 +56,9 @@ class ApplicationStructure
 	// the gallery pages
 	private var _galleryPage:ContainerDOMElement;
 	private var _imagePage:ContainerDOMElement;
-	
+	// the gallery
+	private var _gallery:Gallery;
+		
 	// the music pages
 	private var _artistListPage:ContainerDOMElement;
 	private var _albumListPage:ContainerDOMElement;
@@ -165,7 +166,6 @@ class ApplicationStructure
 		);
 		
 		// the credit page
-		//_creditsPage = createHeaderContentPage("Credits", "This is a Cocktail demo. Cocktail is a cross-platform library for the HaXe programming language. It bridges the gap between all the targets supported by haXe, removing inconsistencies behind a common API. With it, the same code base is used to deploy to these targets: Flash, javaScript, PHP. It helps multi device application development and should be used by haXe projects requiring cross-target compilation. Silex Labs Cocktail library is released under GPL. Project home: http://www.silexlabs.org/groups/labs/cocktail/");
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
@@ -181,26 +181,23 @@ class ApplicationStructure
 			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
 			]
 		);
-
+		
 		// the home page
-		//var homePageCells:Array<CellModel> = new Array<CellModel>();
 		var homePageCells:Array<CellModel> =
 			[	{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
 				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
 				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
 				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
 				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage },
-				{text:"FTV Info", imagePath:"images/FranceTVInfo.jpg", action:"goToPage", actionTarget:null }
+				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
 			];
-		homePageCells.push( { text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push( { text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
 		
 		_homePage = createHomePage(homePageCells);
 		
+		// set current page to home page
 		_currentPage = _homePage;
 		_previousPages = new Array<ContainerDOMElement>();
-		//_previousPages = [_homePage];
-		//_previousPages.push(_homePage);
 		
 		// adds the home page to pagesContainer
 		pagesContainer.addChild(_homePage);
@@ -213,8 +210,12 @@ class ApplicationStructure
 	 */
 	private function goToPreviousPage(mouseEvent:MouseEventData):Void
 	{
-		// show previous page in the history and removes it from the history
-		showPage(getPreviousPage());
+		// if current page is gallery and fullsize picture is displayed, display the gallery
+		if (_currentPage == _galleryPage && _gallery.galleryDisplayed == false)
+			_gallery.displayGallery()
+		else
+			// show previous page in the history and removes it from the history
+			showPage(getPreviousPage());
 	}
 
 	/**
@@ -283,16 +284,20 @@ class ApplicationStructure
 			// show needed pages
 			showPage(page);
 		}
-		if (cell.action == "goToUrl")
+		else if (cell.action == "goToUrl")
 		{
 			goToUrl(cell.actionTarget);
+		}
+		else if (cell.action == "openUrl")
+		{
+			openUrl(cell.actionTarget);
 		}
 	}
 	
 	/**
-	 * Opens the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
+	 * Go the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
 	 * 
-	 * @param	url		the url to open
+	 * @param	url		the url to go to
 	 */
 	private function goToUrl(url:String)
 	{
@@ -302,6 +307,23 @@ class ApplicationStructure
 		#elseif flash9
 		var request:flash.net.URLRequest = new flash.net.URLRequest(url);
 		flash.Lib.getURL(request);
+
+		#end
+	}
+	
+	/**
+	 * Opens the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
+	 * 
+	 * @param	url		the url to open
+	 */
+	private function openUrl(url:String)
+	{
+		#if js
+		js.Lib.window.open(url,'_self');
+		
+		#elseif flash9
+		var request:flash.net.URLRequest = new flash.net.URLRequest(url);
+		flash.Lib.getURL(request,"_self");
 
 		#end
 	}
@@ -399,6 +421,13 @@ class ApplicationStructure
 		return page;
 	}
 	
+	/**
+	 * Creates an image header page for the gallery
+	 * 
+	 * @param	title
+	 * @param	imageUrl
+	 * @return
+	 */
 	private function createHeaderImagePage(title:String, imageUrl:String):ContainerDOMElement
 	{
 		var page:ContainerDOMElement = Utils.getContainer();
@@ -415,6 +444,13 @@ class ApplicationStructure
 		return page;
 	}
 	
+	/**
+	 * Creates an gallery header page
+	 * 
+	 * @param	title
+	 * @param	rssFeedPath
+	 * @return
+	 */
 	private function createHeaderGalleryPage(title:String, rssFeedPath:String):ContainerDOMElement
 	{
 		var page:ContainerDOMElement = Utils.getContainer();
@@ -423,11 +459,11 @@ class ApplicationStructure
 		var header:ContainerDOMElement = createHeader(title);
 		
 		// create gallery
-		var gallery:Gallery = new Gallery(rssFeedPath);
+		_gallery = new Gallery(rssFeedPath);
 
 		// build hierarchy
 		page.addChild(header);
-		page.addChild(gallery);
+		page.addChild(_gallery);
 		
 		// set style
 		WebAppStyle.getPageStyle(page);
@@ -442,32 +478,22 @@ class ApplicationStructure
 	 * @param	embeddedLink
 	 * @return	the corresponding page
 	 */
-	private function createEmbedContentPage(title:String, embeddedLink:String):ContainerDOMElement
+	/*private function createEmbedContentPage(title:String, embeddedLink:String):ContainerDOMElement
 	{
 		var page:ContainerDOMElement = Utils.getContainer();
 		
 		// create header
 		var header:ContainerDOMElement = createHeader(title);
 
-		
-		// create content
-		/*var textElement:TextElement = new TextElement(content);
-		var textContainer:ContainerDOMElement = Utils.getContainer();
-		textContainer.addText(textElement);
-		WebAppStyle.getTextContentStyle(textContainer);*/
 		// create embedded element
 		var embeddedElement:EmbeddedDOMElement = new EmbeddedDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("embed")));
-		//var rl:ResourceLoader = new ResourceLoader();
-		//rl.load(embeddedLink, null,null);
 		
 		// build hierarchy
 		page.addChild(header);
-		//page.addChild(textContainer);
-		//page.addChild(rl);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;
-	}
+	}*/
 	
 	/**
 	 * Creates a header with a Tile, a title and a back button
@@ -484,8 +510,6 @@ class ApplicationStructure
 		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		var headerTilePath:String = "images/H1.png";
 		
-		//headerTile.style.width = DimensionStyleValue.percent(100);
-		//headerTile.style.height = DimensionStyleValue.length(px(43));
 		WebAppStyle.getHeaderTileStyle(headerTile);
 		headerTile.load(headerTilePath);
 		

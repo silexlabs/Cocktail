@@ -4,6 +4,7 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
+	
 /**
  * This class creates an iphone like gallery
  * 
@@ -28,9 +29,14 @@ import components.gallery.StyleIphone;
  
 class Gallery extends ContainerDOMElement
 {
-	private static var galleryContainer:ContainerDOMElement;
+	// flag to know if the gallery is currently displayed
+	public var galleryDisplayed:Bool;
 	
-	private var currentMainImage:ImageDOMElement;
+	// container for the thumblist image gallery
+	private static var _galleryContainer:ContainerDOMElement;
+	
+	// container for the full-size image
+	private var _currentMainImage:ImageDOMElement;
 	
 	/**
 	 * Constuctor
@@ -42,14 +48,18 @@ class Gallery extends ContainerDOMElement
 		super();
 		
 		// create a ul node
-		galleryContainer = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
-		StyleIphone.getDefaultStyle(galleryContainer);
+		_galleryContainer = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
+		// apply style
+		StyleIphone.getDefaultStyle(_galleryContainer);
 		
-		this.addChild(galleryContainer);
+		// add the gallery container to the gallery
+		this.addChild(_galleryContainer);
 		
-		var currentAlbumUrl:String = rssFeedPath;
+		// set the galleryDisplayed flag to true
+		galleryDisplayed = true;
 
-		loadRssFeed(currentAlbumUrl);
+		// load the rss feed
+		loadRssFeed(rssFeedPath);
 	}
 	
 	/**
@@ -59,7 +69,7 @@ class Gallery extends ContainerDOMElement
 	 */
 	private function loadRssFeed(rssFeedUrl:String):Void
 	{
-		ResourceLoaderManager.loadString( "GalleryRssProxy.php?url="+StringTools.urlEncode(rssFeedUrl), onRssFeedLoaded, onRssFeedError);
+		ResourceLoaderManager.loadString( "XmlProxy.php?url="+StringTools.urlEncode(rssFeedUrl), onRssFeedLoaded, onRssFeedError);
 	}
 	
 	/**
@@ -80,33 +90,38 @@ class Gallery extends ContainerDOMElement
 	 */
 	private function onRssFeedLoaded(response:String):Void
 	{
-		//trace("onRssFeedLoaded called ");
+		// parse the rss feed
 		var galleryXml:Xml =  Xml.parse(response);
 		
 		var channelNode:Xml = galleryXml.firstElement().firstElement();
 		
-		// 2 listage du contenu 
+		// get the rss data
 		for ( channelChild in channelNode.elements() )
 		{
 			if (channelChild.nodeName == "item")
 			{
+				// create the li nodes 
 				var imageThumbContainer:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+				// create an image thumb container
 				var imageThumbDOMElement:ImageThumbDOMElement = new ImageThumbDOMElement();
-				galleryContainer.addChild(imageThumbContainer);
+				// attach it to the gallery container
+				_galleryContainer.addChild(imageThumbContainer);
 				
+				// for each node
 				for (entryElement in channelChild.elements())
 				{
+					// if node is a full size image, store its url string into imageThumbDOMElement
 					if (entryElement.nodeName == "media:content")
 					{
 						imageThumbDOMElement.fullImagePath = entryElement.get("url");
 					}
-					//if (entryElement.nodeName == "media:content")
+					// if node is a thumbnail image, loads it to the gallery
 					else if (entryElement.nodeName == "media:thumbnail")
 					{
 						imageThumbDOMElement.load(entryElement.get("url"));
 
 						StyleIphone.getThumbStyle(imageThumbDOMElement);
-						//galleryContainer.addChild(imageThumbDOMElement);
+						//_galleryContainer.addChild(imageThumbDOMElement);
 						imageThumbContainer.addChild(imageThumbDOMElement);
 						
 						//ImageDOMElement.onMouseUp = displayPicture;
@@ -128,28 +143,44 @@ class Gallery extends ContainerDOMElement
 	 */
 	private function displayPicture(imageThumbDOMElement:ImageThumbDOMElement):Void
 	{
-		// reset and load full size image into currentMainImage
-		currentMainImage = new ImageDOMElement();
-		currentMainImage.load(imageThumbDOMElement.fullImagePath);
+		// reset and load full size image into _currentMainImage
+		_currentMainImage = new ImageDOMElement();
+		_currentMainImage.load(imageThumbDOMElement.fullImagePath);
 		
-		StyleIphone.getFullSizePictureStyle(currentMainImage);
+		StyleIphone.getFullSizePictureStyle(_currentMainImage);
 		
-		this.removeChild(galleryContainer);
-		this.addChild(currentMainImage);
+		// removes the gallery container
+		this.removeChild(_galleryContainer);
+		// set the galleryDisplayed flag to false
+		galleryDisplayed = false;
+		// add the full-size image
+		this.addChild(_currentMainImage);
 		
-		currentMainImage.onMouseUp = displayGallery;
+		_currentMainImage.onMouseUp = onFullsizeImageMouseUp;
 	}
 	
 	/**
 	 * Full size images mouse up callback
+	 * 
+	 * @param	mouseEventData
+	 */
+	private function onFullsizeImageMouseUp(mouseEvent:MouseEventData):Void
+	{
+		displayGallery();
+	}
+	
+	/**
 	 * Displays the gallery
 	 * 
 	 * @param	mouseEventData
 	 */
-	private function displayGallery(mouseEventData:MouseEventData):Void
+	public function displayGallery():Void
 	{
-		this.removeChild(currentMainImage);
-		this.addChild(galleryContainer);
+		// removes the full-size image 
+		this.removeChild(_currentMainImage);
+		// add the gallery container
+		this.addChild(_galleryContainer);
+		// set the galleryDisplayed flag to true
+		galleryDisplayed = true;
 	}
-	
 }
