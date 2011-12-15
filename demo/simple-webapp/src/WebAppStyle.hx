@@ -200,13 +200,10 @@ class WebAppStyle
 			];
 		domElement.style.textAlign = TextAlignStyleValue.center;
 
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(15));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.auto;
 		domElement.style.height = DimensionStyleValue.length(px(43));
-		//domElement.style.height = DimensionStyleValue.percent(100);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 

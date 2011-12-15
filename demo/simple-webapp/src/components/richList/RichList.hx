@@ -70,13 +70,9 @@ class RichList extends ContainerDOMElement
 		{
 			// create cell with text and image
 			// empty cell part
-			//var cell:ContainerDOMElement = Utils.getContainer();
 			var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
 
 			listStyle.cell(cell);
-			
-			// text part => moved to the image callback
-			//cell.addText(NativeElementManager.createNativeTextNode(cellData.text));
 			
 			// image part
 			if (cellData.imagePath != "" && cellData.imagePath != null)
@@ -90,8 +86,7 @@ class RichList extends ContainerDOMElement
 				cellImage.load(cellData.imagePath);
 			}
 			
-			// add line and text
-			//cell.addChild(line);
+			// add text
 			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
 			if (cellData.text != "" && cellData.text != null)
 			{
@@ -99,17 +94,13 @@ class RichList extends ContainerDOMElement
 				cellTextContainer.addText(textElement);
 				listStyle.cellText(cellTextContainer);
 				cell.addChild(cellTextContainer);
-				//cell.addText(new TextElement(cellData.text));
 			}
 
-			// create line to separate cells
-			//listStyle.cell(cell);
-			
 			// add cell to instance
 			this.addChild(cell);
 			
 			// mouse
-			// delegates functions are used to be able to pass an extra parameter to the callback
+			// delegates functions are used to be able to pass an extra parameters to the callback
 			// mouse over
 			var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
 			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cellTextContainer, listStyle); };
@@ -127,16 +118,6 @@ class RichList extends ContainerDOMElement
 	}
 	
 	/**
-	 * Called when there is an error while loading picture
-	 * 
-	 * @param	error
-	 */
-	/*private function onPictureLoadError(error:String):Void
-	{
-		trace(error);
-	}*/
-	
-	/**
 	 * Cell mouse roll over callback
 	 * 
 	 * @param	mouseEventData
@@ -146,8 +127,6 @@ class RichList extends ContainerDOMElement
 	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
 	{
 		listStyle.cellMouseOver(cell);
-		//MouseCursorValue.native(NativeOSMouseCursorValue.pointer);
-		//MouseCursorManager.setMouseCursor(NativeOSMouseCursorValue.pointer);
 	}
 	
 	/**
