@@ -12,6 +12,7 @@ import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
@@ -146,7 +147,7 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
-		var transformedText:String = applyTextTransform(text);
+		var transformedText:String = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textElement:TextElement = new TextElement(transformedText);
 		
