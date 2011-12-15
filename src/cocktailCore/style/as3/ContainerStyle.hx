@@ -183,14 +183,14 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	/////////////////////////////////
-	// PRIVATE HELPER METHODS
+	// PRIVATE STATIC HELPER METHODS
 	////////////////////////////////
 	
 	/**
 	 * Return a flash FontPosture object from
 	 * the fontStyle style of the ContainerDOMElement
 	 */
-	private function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
+	private static function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
@@ -210,7 +210,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Return a flash TypographicCase object from
 	 * the font variant style of the ContainerDOMElement
 	 */
-	private function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
+	private static function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		

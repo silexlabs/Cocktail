@@ -17,6 +17,7 @@ import flash.text.engine.FontPosture;
 import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 import haxe.Log;
 
@@ -128,7 +129,7 @@ class Style extends AbstractStyle
 			
 			//get the x height (the height of a lower-case "x")
 			var xHeight:Int = getXHeight(elementFormat.clone());
-			
+		
 			var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
 			
 			_fontMetrics = {
@@ -220,13 +221,15 @@ class Style extends AbstractStyle
 	
 	/**
 	 * return the x height of the font which is equal to 
-	 * the height of a lower-case 'x'
+	 * the height of a lower-case 'x'.
 	 */
 	private function getXHeight(elementFormat:ElementFormat):Int
 	{
 		_textBlock.content = new TextElement("x", elementFormat);
-		
-		return Math.round(_textBlock.createTextLine(null, 10000).textHeight);
+		var textLine:TextLine = _textBlock.createTextLine(null, 10000);
+		var descent:Float = textLine.descent;
+		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
+		return Math.floor(top - descent);
 	}
 	
 	/**
