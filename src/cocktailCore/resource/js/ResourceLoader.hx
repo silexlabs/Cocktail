@@ -7,6 +7,7 @@
 */
 package cocktailCore.resource.js;
 
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 
 /**
@@ -17,9 +18,43 @@ import cocktailCore.resource.abstract.AbstractResourceLoader;
 class ResourceLoader extends AbstractResourceLoader
 {
 
-	public function new() 
+	/**
+	 * class constructor.
+	 */
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super();
+		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden method to implement JS specific behaviour
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * To load a picture, the source of the Image HTML element is
+	 * set to the url to load
+	 * @param	url the url of the picture
+	 */
+	override private function doLoad(url:String):Void
+	{	
+		//create a delegate to call the success callback once the native image element is done loading the source picture
+		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
+		//create a delegate for the error callback
+		var onLoadErrorDelegate:String->Void = onLoadError;
+		
+		//need to have a local reference to retrieve it in the static onload function
+		var nativeElementDelegate:NativeElement = _nativeElement;
+		
+		//listens to image load complete and load error.
+		untyped _nativeElement.onload = function() { 
+			
+			onLoadCompleteDelegate(nativeElementDelegate);
+			
+			};
+		untyped _nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
+		
+		// set it's source to start the loading of the picture
+		_nativeElement.setAttribute("src", url);
 	}
 	
 }

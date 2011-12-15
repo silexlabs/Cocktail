@@ -5,24 +5,31 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.as3;
-
+package cocktailCore.resource.abstract;
+import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.resource.abstract.AbstractLibraryLoader;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
+import cocktailCore.resource.ResourceLoader;
+import haxe.Log;
 
 /**
- * This is the implementation of the library loader for the Flash AVM2 runtime. A library in Flash AS3 is a .swf
- * file containing ActionScript3 classes. It is loaded like a visual element (DisplayObject) but it is not added to
- * the Flash DOM
+ * This class is in charge of loading a skin
+ * 
  * @author Yannick DOMINGUEZ
  */
-class LibraryLoader extends AbstractLibraryLoader
+class AbstractSkinLoader extends ResourceLoader
 {
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new(nativeElement:NativeElement = null)
 	{
+		//create a skin nativeElement if none is provided
+		if (nativeElement == null)
+		{
+			nativeElement = NativeElementManager.createNativeElement(skin);
+		}
 		super(nativeElement);
 	}
 }

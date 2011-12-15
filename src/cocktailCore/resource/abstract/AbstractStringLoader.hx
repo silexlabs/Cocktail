@@ -5,35 +5,46 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.js;
-
+package cocktailCore.resource.abstract;
+import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
-import cocktailCore.resource.abstract.AbstractImageLoader;
+import cocktail.nativeElement.NativeElementData;
+import cocktailCore.resource.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
-import js.Lib;
-import js.Dom.HtmlDom;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.resource.ResourceData;
-import cocktail.nativeElement.NativeElementData;
 
 /**
- * This is the Image loader implementation for the JavaScript runtime. It is used to 
- * load pictures that will be attached to the DOM. It loads the picture by creating
- * an <img> tag and setting it's source to the url of the file to load.
- * 
+ * This class is in charge of loading a data String 
+ * which can be serialised as XML, JSON....
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends AbstractImageLoader
+class AbstractStringLoader extends ResourceLoader
 {
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new(nativeElement:NativeElement = null)
 	{
 		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden Private method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Load an URL and return it as a String using the Http class
+	 * 
+	 * @param	url the url to load
+	 */
+	override private function doLoad(url:String):Void
+	{
+		//prepare and send an http request
+		var fileRequest:Http = new Http(url);
+		fileRequest.onData = this.onLoadComplete;
+		fileRequest.onError = this.onLoadError;
+		fileRequest.request(false);
 	}
 }

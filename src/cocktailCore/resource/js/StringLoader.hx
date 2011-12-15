@@ -8,6 +8,7 @@
 package cocktailCore.resource.js;
 
 import cocktailCore.resource.abstract.AbstractResourceLoader;
+import cocktailCore.resource.abstract.AbstractStringLoader;
 
 /**
  * Implementation of StringLoader for the JavaScript runtime, used to load resource
@@ -15,7 +16,7 @@ import cocktailCore.resource.abstract.AbstractResourceLoader;
  * it's parent class, the haxe.Http class acting as an abstraction layer
  * @author Yannick DOMINGUEZ
  */
-class StringLoader extends AbstractResourceLoader
+class StringLoader extends AbstractStringLoader
 {
 	public function new() 
 	{
