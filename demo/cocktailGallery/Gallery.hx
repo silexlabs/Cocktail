@@ -122,10 +122,6 @@ class Gallery
 		//var image:ImageDOMElement = new ImageDOMElement();
 		//currentMainImage.onLoad = onMainPictureLoaded;
 		
-		currentMainImage.style.width = DimensionStyleValue.length(px(300));
-		currentMainImage.style.height = DimensionStyleValue.length(px(240));
-		currentMainImage.width = 300;
-		currentMainImage.height = 240;
 		currentMainImage.load(imageDOMElement.src);
 		onMainPictureLoaded(imageDOMElement);
 	}
@@ -145,6 +141,10 @@ class Gallery
 		//currentMainImage.scaleX = (stageHeight - 15 - 80) / currentMainImage.height ;
 		//currentMainImage.scaleY = currentMainImage.scaleX;
 
+		//currentMainImage.width = 300;
+		//currentMainImage.height = 240;
+		currentMainImage.style.width = DimensionStyleValue.length(px(300));
+		currentMainImage.style.height = DimensionStyleValue.length(px(240));
 
 		rootDOMElement.addChild(currentMainImage);
 	}
