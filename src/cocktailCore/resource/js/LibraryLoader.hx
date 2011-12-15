@@ -15,12 +15,13 @@ import js.Lib;
 
 /**
  * This is the implementation of the library loader for the JavaScript runtime. A library in JavaScript
- * is a .js file. This class is in charge of adding a script tag to the HTML DOM with the new script to add
+ * is a .js file. This class is in charge of adding a script tag to the HTML DOM with the url of the .js
+ * to load
+ * 
  * @author Yannick DOMINGUEZ
  */
 class LibraryLoader extends AbstractLibraryLoader
 {
-
 	/**
 	 * Class constructor
 	 */
@@ -34,8 +35,9 @@ class LibraryLoader extends AbstractLibraryLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Add a new script tag to the HTML DOM and track the script loading end
-	 * to call the onLoadComplete method
+	 * Set the script attributes on the script tag wrapped in the NativeElement and
+	 * attach it to the HTML header
+	 * 
 	 * @param	url the url of the JS script to load
 	 */
 	override private function doLoad(url:String):Void
@@ -49,6 +51,7 @@ class LibraryLoader extends AbstractLibraryLoader
 		// Now add this new element to the head tag
 		Lib.document.getElementsByTagName("head")[0].appendChild(_nativeElement);
 		
+		//start the script loading
 		super.doLoad(url);
 	}
 	

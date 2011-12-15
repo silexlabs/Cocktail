@@ -20,7 +20,7 @@ import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktail.resource.ResourceData;
 
 /**
- * This is the Container loader implementation for the JavaScript runtime. It is used to 
+ * This is the Skin loader implementation for the JavaScript runtime. It is used to 
  * load complex object, such as a skin formed of multiple HTML tag. It is loaded from
  * an HTML file
  * 
@@ -41,7 +41,7 @@ class SkinLoader extends AbstractSkinLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Load an URL and return it as a String using the Http class
+	 * Load an URL and return it as an HTML String using the Http class
 	 * 
 	 * @param	url the url to load
 	 */
@@ -53,7 +53,6 @@ class SkinLoader extends AbstractSkinLoader
 		fileRequest.onError = this.onLoadError;
 		fileRequest.request(false);
 	}
-	
 	
 	/**
 	 * When the HTML has been loaded, set the loaded HTML as the
