@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
- * load pictures that will be attached to the DOM. It loads the picture by creating
+ * load pictures that will be attached to the DOM. It loads the picture using
  * an <img> tag and setting it's source to the url of the file to load.
  * 
  * 

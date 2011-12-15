@@ -31,7 +31,7 @@ class AbstractResourceLoader
 	
 	/**
 	 * A reference to the native element actually loading
-	 * the asset. For instance, for an image, in Flash, a Loader, in JS,
+	 * the asset. For instance, for an image in Flash, a Loader, in JS,
 	 * an img tag. When multiple loads occurs, this NativeElement is
 	 * reused instead of a new one being created.
 	 */
@@ -44,7 +44,7 @@ class AbstractResourceLoader
 	public function new(nativeElement:NativeElement = null)
 	{
 		//a ResourceLoader doesn't necessarily have a NativeElement.
-		//for instance when loading a String, flahs will use an URLLoader
+		//for instance when loading a String, flash will use an URLLoader
 		//and JS an XMLHttpRequest object
 		if (nativeElement != null)
 		{

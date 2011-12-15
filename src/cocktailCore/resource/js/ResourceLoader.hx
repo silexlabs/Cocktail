@@ -11,7 +11,9 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 
 /**
- * This is the JavaScript implementation of the ResourceLoader
+ * This is the JavaScript implementation of the ResourceLoader.
+ * Load a resource by setting the src attribute on the right
+ * HTML tag
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -31,13 +33,13 @@ class ResourceLoader extends AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * To load a picture, the source of the Image HTML element is
+	 * To load a resource, the source of the HTML element is
 	 * set to the url to load
 	 * @param	url the url of the picture
 	 */
 	override private function doLoad(url:String):Void
 	{	
-		//create a delegate to call the success callback once the native image element is done loading the source picture
+		//create a delegate to call the success callback once the native HTML element is done loading the resource
 		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
 		//create a delegate for the error callback
 		var onLoadErrorDelegate:String->Void = onLoadError;
@@ -45,7 +47,7 @@ class ResourceLoader extends AbstractResourceLoader
 		//need to have a local reference to retrieve it in the static onload function
 		var nativeElementDelegate:NativeElement = _nativeElement;
 		
-		//listens to image load complete and load error.
+		//listens to load complete and load error.
 		untyped _nativeElement.onload = function() { 
 			
 			onLoadCompleteDelegate(nativeElementDelegate);
@@ -53,7 +55,7 @@ class ResourceLoader extends AbstractResourceLoader
 			};
 		untyped _nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
 		
-		// set it's source to start the loading of the picture
+		// set it's source to start the loading of the resource
 		_nativeElement.setAttribute("src", url);
 	}
 	
