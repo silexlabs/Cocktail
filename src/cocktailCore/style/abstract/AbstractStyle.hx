@@ -18,6 +18,7 @@ import cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.computer.DisplayStylesComputer;
 import cocktailCore.style.computer.FontAndTextStylesComputer;
+import cocktailCore.style.computer.VisualEffectStylesComputer;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.positioner.AbsolutePositioner;
@@ -47,9 +48,31 @@ class AbstractStyle
 	// STYLES attributes
 	////////////////////////////////
 	
-    /**
-    * margins
-	*/
+
+	/**
+	 * display styles
+	 */
+	private var _display:DisplayStyleValue;
+	public var display(getDisplay, setDisplay):DisplayStyleValue;
+	
+	private var _position:PositionStyleValue;
+	public var position(getPosition, setPosition):PositionStyleValue;
+	
+	private var _float:FloatStyleValue;
+	public var float(getFloat, setFloat):FloatStyleValue;
+	
+	private var _clear:ClearStyleValue;
+	public var clear(getClear, setClear):ClearStyleValue;
+	
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	/**
+	 * box model styles
+	 */
 	private var _marginLeft:MarginStyleValue;
 	public var marginLeft(getMarginLeft, setMarginLeft):MarginStyleValue;
 	private var _marginRight:MarginStyleValue;
@@ -59,9 +82,6 @@ class AbstractStyle
 	private var _marginBottom:MarginStyleValue;
 	public var marginBottom(getMarginBottom, setMarginBottom):MarginStyleValue;
 	
-	/**
-	* paddings
-	*/
 	private var _paddingLeft:PaddingStyleValue;
 	public var paddingLeft(getPaddingLeft, setPaddingLeft):PaddingStyleValue;
 	private var _paddingRight:PaddingStyleValue;
@@ -70,33 +90,12 @@ class AbstractStyle
 	public var paddingTop(getPaddingTop, setPaddingTop):PaddingStyleValue;
 	private var _paddingBottom:PaddingStyleValue;
 	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
-	
-	/**
-	* The way a DOMElement is laid out in a document (as block,
-	* inline...)
-	*/
-	private var _display:DisplayStyleValue;
-	public var display(getDisplay, setDisplay):DisplayStyleValue;
-	
-	/**
-	* The way a DOMElement is positionned
-	* relative to a parent
-	*/
-	private var _position:PositionStyleValue;
-	public var position(getPosition, setPosition):PositionStyleValue;
-	
-	/**
-	* dimensions of the content area of a DOMElement
-	* (the domElement size without paddings, border and margins)
-	*/
+
 	private var _width:DimensionStyleValue;
 	public var width(getWidth, setWidth):DimensionStyleValue;
 	private var _height:DimensionStyleValue;
 	public var height(getHeight, setHeight):DimensionStyleValue;
 	
-	/**
-	* dimensions constraint of a DOMElement
-	*/
 	private var _minHeight:ConstrainedDimensionStyleValue;
 	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimensionStyleValue;
 	private var _maxHeight:ConstrainedDimensionStyleValue;
@@ -105,10 +104,7 @@ class AbstractStyle
 	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimensionStyleValue;
 	private var _maxWidth:ConstrainedDimensionStyleValue;
 	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimensionStyleValue;
-	
-	/**
-	* offsets of a DOMElement
-	*/
+
 	private var _top:PositionOffsetStyleValue;
 	public var top(getTop, setTop):PositionOffsetStyleValue;
 	private var _left:PositionOffsetStyleValue;
@@ -117,22 +113,6 @@ class AbstractStyle
 	public var bottom(getBottom, setBottom):PositionOffsetStyleValue;
 	private var _right:PositionOffsetStyleValue;
 	public var right(getRight, setRight):PositionOffsetStyleValue;
-	
-	/**
-	 * The way an element is aligned vertically in an 
-	 * inline formatting context
-	 */
-	private var _verticalAlign:VerticalAlignStyleValue;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
-	
-	/**
-	 * float positioning styles. A floated element is placed to 
-	 * the further left or right inside its container
-	 */
-	private var _float:FloatStyleValue;
-	public var float(getFloat, setFloat):FloatStyleValue;
-	private var _clear:ClearStyleValue;
-	public var clear(getClear, setClear):ClearStyleValue;
 	
 	/**
 	 * font styles
@@ -178,6 +158,9 @@ class AbstractStyle
 	
 	private var _textIndent:TextIndentStyleValue;
 	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
+		
+	private var _verticalAlign:VerticalAlignStyleValue;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
 	
 	////////////////////////////////
 	
@@ -233,6 +216,16 @@ class AbstractStyle
 	 */
 	private var _nativeHeight:Int;
 	
+	/**
+	 * Store the opacity of the NativeElement
+	 */
+	private var _nativeOpacity:Float;
+	
+	/**
+	 * Store the visibility of the NativeElement
+	 */
+	private var _nativeVisibility:Bool;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +248,8 @@ class AbstractStyle
 	 */
 	private function initDefaultStyleValues():Void
 	{
+		initComputedStyles();
+		
 		this.width = DimensionStyleValue.auto;
 		this.height = DimensionStyleValue.auto;
 		
@@ -299,11 +294,12 @@ class AbstractStyle
 		this.textTransform = TextTransformStyleValue.none;
 		this.whiteSpace = WhiteSpaceStyleValue.normal;
 		
+		this.visibility = VisibilityStyleValue.visible;
+		this.opacity = OpacityStyleValue.number(1.0);
+		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		this.fontFamily = defaultStyles.fontFamily;
 		this.color = defaultStyles.color;
-	
-		initComputedStyles();
 	}
 	
 	/**
@@ -347,7 +343,9 @@ class AbstractStyle
 			textIndent:0,
 			whiteSpace:WhiteSpaceStyleValue.normal,
 			textAlign:TextAlignStyleValue.left,
-			color:0
+			color:0,
+			visibility:true,
+			opacity:1.0
 		};
 	}
 	
@@ -439,6 +437,10 @@ class AbstractStyle
 		//apply the computed dimensions to the DOMElement
 		setNativeHeight(this._domElement, this._computedStyle.height);
 		setNativeWidth(this._domElement, this._computedStyle.width);
+		
+		//apply the computed visual effect on the DOMElement
+		setNativeOpacity(this._domElement, this._computedStyle.opacity);
+		setNativeVisibility(this._domElement, this._computedStyle.visibility);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
@@ -726,6 +728,7 @@ class AbstractStyle
 		initComputedStyles();
 		
 		computeDisplayStyles();
+		computeVisualEffectStyles();
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
 		
@@ -745,6 +748,14 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the visual effect styles (opacity, visibility)
+	 */
+	private function computeVisualEffectStyles():Void
+	{
+		VisualEffectStylesComputer.compute(this);
+	}
 	
 	/**
 	 * Computes the DOMElement font and text styles (font size, font name, text color...)
@@ -1024,8 +1035,8 @@ class AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DIMENSION AND POSITION SETTER/GETTER
-	// Those method actually apply a processed dimension or position value to 
+	// NATIVE SETTER/GETTER
+	// Those method actually apply a processed value to 
 	// the NativeElement of a target DOMElement.
 	// They also store the applied value when it is set on the DOMElement
 	// wrapped by this Style object. For instance, a ContainerStyle object not
@@ -1083,37 +1094,75 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Return the x of the NativeElement of the
-	 * target DOMElement
+	 * Set the alpha of the NativeElement
 	 */
-	public function getNativeX(domElement:DOMElement):Int
+	public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeOpacity = opacity;
+		}
+	}
+	
+	/**
+	 * Set the visibility of the NativeElement
+	 */
+	public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeVisibility = visible;
+		}
+	}
+	
+	/**
+	 * Get the visibility of the NativeElement
+	 */
+	public function getNativeVisibility():Bool
+	{
+		return this._nativeVisibility;
+	}
+	
+	/**
+	 * Get the alpha of the NativeElement
+	 */
+	public function getNativeOpacity():Float
+	{
+		return this._nativeOpacity;
+	}
+	
+	/**
+	 * Return the x of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeX():Int
 	{
 		return this._nativeX;
 	}
 	
 	/**
 	 * Return the y of the NativeElement of the
-	 * target DOMElement
+	 * DOMElement
 	 */
-	public function getNativeY(domElement:DOMElement):Int
+	public function getNativeY():Int
 	{
 		return this._nativeY;
 	}
 	
 	/**
 	 * Return the width of the NativeElement of the
-	 * target DOMElement
+	 * DOMElement
 	 */
-	public function getNativeWidth(domElement:DOMElement):Int
+	public function getNativeWidth():Int
 	{
 		return this._nativeWidth;
 	}
 	
 	/**
 	 * Return the height of the NativeElement of the
-	 * target DOMElement
+	 * DOMElement
 	 */
-	public function getNativeHeight(domElement:DOMElement):Int
+	public function getNativeHeight():Int
 	{
 		return this._nativeHeight;
 	}
@@ -1364,9 +1413,33 @@ class AbstractStyle
 		return _textAlign = value;
 	}
 	
+	private function setOpacity(value:OpacityStyleValue):OpacityStyleValue
+	{
+		_opacity = value;
+		invalidate();
+		return _opacity;
+	}
+	
+	private function setVisibility(value:VisibilityStyleValue):VisibilityStyleValue
+	{
+		_visibility = value;
+		invalidate();
+		return _visibility;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getOpacity():OpacityStyleValue
+	{
+		return _opacity;
+	}
+	
+	private function getVisibility():VisibilityStyleValue
+	{
+		return _visibility;
+	}
 	
 	private function getMarginLeft():MarginStyleValue 
 	{

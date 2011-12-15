@@ -417,6 +417,30 @@ import cocktail.unit.UnitData;
 		auto;
 	}
 	
+	/**
+	 * The constraint applied to the content
+	 * of a DOMElement contrained its max/min
+	 * width or height
+	 */
+	enum ConstrainedDimensionStyleValue {
+		
+		/**
+		 * absolute value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * relative to the parent DOMElement
+		 * dimensions 
+		 */
+		percent(value:Int);
+		
+		/**
+		 * No constraint is enforced
+		 */
+		none;
+	}
+	
 		// DISPLAY STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -544,27 +568,35 @@ import cocktail.unit.UnitData;
 		auto;
 	}
 	
+	/**
+	 * Specifies wether the DOMElement is
+	 * displayed. A hidden DOMElement
+	 * still affects layout
+	 */
+	enum VisibilityStyleValue {
+		
+		/**
+		 * The DOMElement is visible
+		 */
+		visible;
+		
+		/**
+		 * The DOMElement is invisible 
+		 * (fully transparent, nothing is drawn),
+		 * but still affects layout.
+		 * Furthermore, children of the DOMElement will
+		 * be visible if they have 'visibility: visible'.
+		 */
+		hidden;
+	}
 	
 	/**
-	 * The constraint applied to the content
-	 * of a DOMElement contrained its max/min
-	 * width or height
+	 * Specifies the transparency of a DOMElement
+	 * where 1.0 is opaque and 0 is transparent
+	 * 
+	 * TODO n.b : implemented as an enum instead of just
+	 * a float to make room for the 'inherit' value
 	 */
-	enum ConstrainedDimensionStyleValue {
-		
-		/**
-		 * absolute value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * relative to the parent DOMElement
-		 * dimensions 
-		 */
-		percent(value:Int);
-		
-		/**
-		 * No constraint is enforced
-		 */
-		none;
+	enum OpacityStyleValue {
+		number(value:Float);
 	}

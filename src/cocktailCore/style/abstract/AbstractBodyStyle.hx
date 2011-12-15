@@ -124,4 +124,14 @@ class AbstractBodyStyle extends ContainerStyle
 		
 	}
 	
+	override public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	{
+		
+	}
+	
+	override public function setNativeVisibility(domElement:DOMElement, visibility:Bool):Void
+	{
+		
+	}
+	
 }

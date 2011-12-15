@@ -35,64 +35,6 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public and private methods to manage the visibility and opacity of the dom element
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Show or hide the native HTML element. 
-	 * @param	value true if the element must be visible
-	 */
-	override private function setIsVisible(value:Bool):Bool
-	{
-		//set the right visibility CSS property value
-		if (value == true)
-		{
-			this._nativeElement.style.visibility = "visible";
-		}
-		else
-		{
-			this._nativeElement.style.visibility = "hidden";
-		}
-		
-		return value;
-	}
-	
-	/**
-	 * Return wether the native HTML element is visible.
-	 */
-	override private function getIsVisible():Bool
-	{
-		if (this._nativeElement.style.visibility == "visible")
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * Set the opacity of the HTML element
-	 * @param	value from 0 (transparent) to 1 (opaque)
-	 */
-	override private function setAlpha(value:Float):Float
-	{
-		super.setAlpha(value);
-		untyped this._nativeElement.style.opacity = value;
-		return value;
-	}
-	
-	/**
-	 * return the opacity of the HTML element, 
-	 * from 0 to 1
-	 */ 
-	override private function getAlpha():Float
-	{
-		return untyped Std.parseFloat(this._nativeElement.style.opacity);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden methods to transform the dom element and manipulate it's matrix
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

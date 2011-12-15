@@ -196,6 +196,41 @@ class Style extends AbstractStyle
 		return positionValue;
 	}
 	
+	/**
+	 * CSS : opacity
+	 */
+	private function getCSSOpacity(value:OpacityStyleValue):String
+	{
+		var opacityValue:String;
+		
+		switch (value)
+		{
+			case OpacityStyleValue.number(value):
+				opacityValue = Std.string(value);
+		}
+		
+		return opacityValue;
+	}
+	
+	/**
+	 * CSS : visibility
+	 */
+	private function getCSSVisibility(value:VisibilityStyleValue):String
+	{
+		var visibilityValue:String;
+		
+		switch (value)
+		{
+			case visible:
+				visibilityValue = "visible";
+				
+			case hidden:
+				visibilityValue = "hidden";
+		}
+		
+		return visibilityValue;
+	}
+	
 	/////////////////////////////////
 	// BOX MODEL STYLES
 	////////////////////////////////
@@ -1069,6 +1104,20 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.textAlign = getCSSTextAlign(value);
 		super.setTextAlign(value);
 		return _textAlign = value;
+	}
+	
+	override private function setOpacity(value:OpacityStyleValue):OpacityStyleValue
+	{
+		untyped this._domElement.nativeElement.style.opacity = getCSSOpacity(value);
+		super.setOpacity(value);
+		return _opacity = value;
+	}
+	
+	override private function setVisibility(value:VisibilityStyleValue):VisibilityStyleValue
+	{
+		this._domElement.nativeElement.style.visibility = getCSSVisibility(value);
+		super.setVisibility(value);
+		return _visibility = value;
 	}
 	
 }

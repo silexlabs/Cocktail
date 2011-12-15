@@ -48,7 +48,7 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// OVERRIDEN NATIVE SETTERS
 	// In Flash the width and height are not applied to the native DisplayObject
 	// of the ContainerDOMElement, as it would scale its content. It is however
 	// stored in the native width and height attributes to be returned when 

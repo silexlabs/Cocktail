@@ -341,22 +341,30 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Show or hide the native DOMElement. Implemented
-	 * by runtime specific sub class
+	 * Show or hide the native DOMElement.
 	 * @param	value true if the DOM object must be visible
 	 */
 	private function setIsVisible(value:Bool):Bool
 	{
+		var visibility:VisibilityStyleValue;
+		if (value == true)
+		{
+			visibility = visible;
+		}
+		else
+		{
+			visibility = hidden;
+		}
+		_style.visibility = visibility;
 		return value;
 	}
 	
 	/**
-	 * Return wether the DOMElement is visible. Implemented
-	 * by runtime specific sub class
+	 * Return wether the DOMElement is visible.
 	 */
 	private function getIsVisible():Bool
 	{
-		return false;
+		return _style.getNativeVisibility();
 	}
 	
 	/**
@@ -365,6 +373,7 @@ class AbstractDOMElement
 	 */
 	private function setAlpha(value:Float):Float
 	{
+		 _style.opacity = OpacityStyleValue.number(value);
 		return value;
 	}
 	
@@ -374,7 +383,7 @@ class AbstractDOMElement
 	 */ 
 	private function getAlpha():Float
 	{
-		return 0;
+		return _style.getNativeOpacity();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -820,7 +829,7 @@ class AbstractDOMElement
 	 */ 
 	private function getX():Int 
 	{ 
-		return this._style.getNativeX(cast(this)); 
+		return this._style.getNativeX(); 
 	}
 	
 	/**
@@ -838,7 +847,7 @@ class AbstractDOMElement
 	 */
 	private function getY():Int 
 	{ 
-		return this._style.getNativeY(cast(this)); 
+		return this._style.getNativeY(); 
 	}
 	
 	/**
@@ -856,7 +865,7 @@ class AbstractDOMElement
 	 */
 	private function getWidth():Int 
 	{ 
-		return this._style.getNativeWidth(cast(this)); 
+		return this._style.getNativeWidth(); 
 	}
 	
 	/**
@@ -874,7 +883,7 @@ class AbstractDOMElement
 	 */
 	private function getHeight():Int 
 	{ 
-		return this._style.getNativeHeight(cast(this)); 
+		return this._style.getNativeHeight(); 
 	}
 	
 	/**
@@ -947,7 +956,7 @@ class AbstractDOMElement
 		//init the globalX with the current localX
 		//if this DOMElement has no parent, it will
 		//be the returned value
-		var newGlobalX:Int = this._style.getNativeX(cast(this));
+		var newGlobalX:Int = this._style.getNativeX();
 		
 		//if this DOMElement has a parent
 		if (this._parent != null)
@@ -958,7 +967,7 @@ class AbstractDOMElement
 			//The added localX form the globalX valu
 			while (parentDOMElement != null)
 			{
-				newGlobalX += parentDOMElement.style.getNativeX(parentDOMElement);
+				newGlobalX += parentDOMElement.style.getNativeX();
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
@@ -1004,14 +1013,14 @@ class AbstractDOMElement
 	private function getGlobalY():Int
 	{
 		//see getGlobalY
-		var newGlobalY:Int = this._style.getNativeY(cast(this));
+		var newGlobalY:Int = this._style.getNativeY();
 		
 		if (this._parent != null)
 		{
 			var parentDOMElement:DOMElement = this._parent;
 			while (parentDOMElement != null)
 			{
-				newGlobalY += parentDOMElement.style.getNativeY(cast(parentDOMElement));
+				newGlobalY += parentDOMElement.style.getNativeY();
 				parentDOMElement = parentDOMElement.parent;
 			}
 		}
