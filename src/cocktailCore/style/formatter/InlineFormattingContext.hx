@@ -500,7 +500,7 @@ class InlineFormattingContext extends FormattingContext
 			//so that its bottom margin touches the baseline
 			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
 			{
-				domElement.style.setNativeY(domElement, domElement.style.getNativeY(domElement) - domElement.offsetHeight);
+				domElement.style.setNativeY(domElement, domElement.style.getNativeY() - domElement.offsetHeight);
 			}
 		}
 		

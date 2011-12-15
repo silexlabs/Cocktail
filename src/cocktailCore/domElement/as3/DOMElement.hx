@@ -33,47 +33,6 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public and private methods to manage the visibility and opacity of the DOMElement
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Show or hide the native DisplayObject. 
-	 * @param	value true if the DisplayObject must be visible
-	 */
-	override private function setIsVisible(value:Bool):Bool
-	{
-		this._nativeElement.visible = value;
-		return value;
-	}
-	
-	/**
-	 * Return wether the native DisplayObject is visible.
-	 */
-	override private function getIsVisible():Bool
-	{
-		return this._nativeElement.visible;
-	}
-	
-	/**
-	 * Set the opacity of the DisplayObject
-	 * @param	value from 0 (transparent) to 1 (opaque)
-	 */
-	override private function setAlpha(value:Float):Float
-	{
-		this._nativeElement.alpha = value;
-		return value;
-	}
-	
-	/**
-	 * return the opacity of the DisplayObject, 
-	 * from 0 to 1
-	 */ 
-	override private function getAlpha():Float
-	{
-		return this._nativeElement.alpha;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden transformation methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

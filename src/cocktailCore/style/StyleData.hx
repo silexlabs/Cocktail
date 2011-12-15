@@ -117,6 +117,8 @@ import cocktail.geom.GeomData;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
 		var lineHeight:Float;
+		var opacity:Float;
+		var visibility:Bool;
 		
 		/**
 		 * font

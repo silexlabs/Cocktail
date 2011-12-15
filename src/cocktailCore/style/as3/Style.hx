@@ -67,7 +67,7 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -93,6 +93,18 @@ class Style extends AbstractStyle
 	{
 		super.setNativeHeight(domElement, height);
 		domElement.nativeElement.height = height;
+	}
+	
+	override public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	{
+		super.setNativeOpacity(domElement, opacity);
+		domElement.nativeElement.alpha = opacity;
+	}
+	
+	override public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
+	{
+		super.setNativeVisibility(domElement, visible);
+		domElement.nativeElement.visible = visible;
 	}
 	
 	/////////////////////////////////
@@ -146,6 +158,7 @@ class Style extends AbstractStyle
 		
 		return _fontMetrics;
 	}
+	
 	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
@@ -229,7 +242,7 @@ class Style extends AbstractStyle
 		var textLine:TextLine = _textBlock.createTextLine(null, 10000);
 		var descent:Float = textLine.descent;
 		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
-		return Math.floor(top - descent);
+		return Math.round(top - descent);
 	}
 	
 	/**
