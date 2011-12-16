@@ -32,10 +32,16 @@ class Navigation
 	 */
 	public function new(container:ContainerDOMElement, startPage:ContainerDOMElement)
 	{
+		// initializes pagesContainer & current page
 		pagesContainer = container;
 		currentPage = startPage;
+
+		// initializes _previousPage
 		_previousPages = new Array<ContainerDOMElement>();
 		_previousPages.push(startPage);
+		
+		// adds the home page to pagesContainer
+		pagesContainer.addChild(startPage);
 	}
 	
 	/**

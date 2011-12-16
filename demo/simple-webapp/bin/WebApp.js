@@ -3437,6 +3437,7 @@ var Navigation = $hxClasses["Navigation"] = function(container,startPage) {
 	this.currentPage = startPage;
 	this._previousPages = new Array();
 	this._previousPages.push(startPage);
+	this.pagesContainer.addChild(startPage);
 }
 Navigation.__name__ = ["Navigation"];
 Navigation.prototype = {
@@ -6912,7 +6913,6 @@ ApplicationStructure.prototype = {
 		homePageCells.push({ text : "Intermedia", imagePath : "images/icone_intermedia_blanche_ombre.png", action : "", actionTarget : ""});
 		homePageCells.push({ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage});
 		this._homePage = this.createHomePage(homePageCells);
-		this.pagesContainer.addChild(this._homePage);
 		this.navigation = new Navigation(this.pagesContainer,this._homePage);
 	}
 	,createHomePage: function(cellDataArray) {
@@ -6999,7 +6999,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 446, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 440, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.richList.RichListUtils.createRichListModel();
