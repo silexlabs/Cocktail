@@ -457,6 +457,7 @@ class AbstractStyle
 		//apply the computed visual effect on the DOMElement
 		setNativeOpacity(this._domElement, this._computedStyle.opacity);
 		setNativeVisibility(this._domElement, this._computedStyle.visibility);
+		setNativeMatrix(this._domElement, this._computedStyle.transform);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
@@ -1132,6 +1133,18 @@ class AbstractStyle
 	}
 	
 	/**
+	 * Set the transformation matrix on the DOMElement which
+	 * in turns applies it to the NativeElement
+	 */
+	public function setNativeMatrix(domElement:DOMElement, matrix:Matrix):Void
+	{
+		if (domElement == this._domElement)
+		{
+			domElement.matrix = matrix;
+		}
+	}
+	
+	/**
 	 * Get the visibility of the NativeElement
 	 */
 	public function getNativeVisibility():Bool
@@ -1443,6 +1456,17 @@ class AbstractStyle
 		return _visibility;
 	}
 	
+	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	{
+		invalidate();
+		return _tranformOrigin = value;
+	}
+	
+	private function setTransform(value:TransformStyleValue):TransformStyleValue
+	{
+		return _transform = value;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -1637,19 +1661,9 @@ class AbstractStyle
 		return _textAlign;
 	}
 	
-	private function setTransform(value:TransformStyleValue):TransformStyleValue
-	{
-		return _transform = value;
-	}
-	
 	private function getTransform():TransformStyleValue
 	{
 		return _transform;
-	}
-	
-	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
-	{
-		return _tranformOrigin = value;
 	}
 	
 	private function getTransformOrigin():TransformOriginStyleData

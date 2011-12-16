@@ -173,16 +173,7 @@ class AbstractDOMElement
 	/////////////////////////////////
 	// TRANSFORMATION attributes
 	////////////////////////////////
-	
-	/**
-	 * Stores the origin of the domElement transformations.
-	 * It is used by defautlt when none is provided for a
-	 * transformation. It defaults to the top left of the
-	 * domElement
-	 */
-	private var _registrationPoint:RegistrationPointValue;
-	public var registrationPoint(getRegistrationPoint, setRegistrationPoint):RegistrationPointValue;
-	
+		
 	/**
 	 * Stores a reference to this domElement 2d transformation matrix
 	 */
@@ -198,16 +189,6 @@ class AbstractDOMElement
 	 * get/set y scale
 	 */
 	public var scaleY(getScaleY, setScaleY):Float;
-	
-	/**
-	 * get/set translation x
-	 */
-	public var translationX(getTranslationX, setTranslationX):Float;
-	
-	/**
-	 * get/set translation y
-	 */
-	public var translationY(getTranslationY, setTranslationY):Float;
 	
 	/**
 	 * get/set the rotation in deg (0 to 360)
@@ -273,10 +254,6 @@ class AbstractDOMElement
 		//initialise the mouse listeners on this dom element by 
 		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
-		
-		//init the origin transformation point to the 
-		//top left of this domElement
-		_registrationPoint = constant(left, top);
 		
 		//init the style for this DOMElement
 		initStyle();
@@ -387,8 +364,8 @@ class AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// TRANSFORMATIONS
-	// Public and private methods to transform the dom element and manipulate it's matrix
+	// TRANSFORMATION SETTER/GETTER
+	// Set/get matrix and transformations
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -411,198 +388,12 @@ class AbstractDOMElement
 	}
 	
 	/**
-	 * Reset the matrix to an identity matrix (no transformations)
-	 */
-	public function resetTransformations():Void
-	{
-		_matrix.identity();
-		this.matrix = this._matrix;
-	}
-	
-	/**
-	 * Return the transformation origin as a Point, from a
-	 * RegistrationPointValue
-	 */
-	private function getRegistrationPointValueAsPoint(registrationPoint:RegistrationPointValue):PointData
-	{
-		//init the returned point
-		var registrationPointPoint:PointData = { x:0.0, y:0.0 };
-		
-		//switch the origin point value
-		switch (registrationPoint)
-		{
-			//if it is given as point (in pixels), set it
-			//on the registrationPointPoint that will be returned
-			case point(point):
-				registrationPointPoint = point;
-			
-			//else if it is given as constants, deduce the point coordinate
-			//from the constant value
-			case constant(registrationPointX, registrationPointY):
-			
-			//for x point coordinate	
-			switch registrationPointX
-			{
-				case left : 
-					registrationPointPoint.x = 0;
-				
-				case center :
-					registrationPointPoint.x = this.width / 2;
-					
-				case right :
-					registrationPointPoint.x = this.width;
-			}
-			
-			//for y point coordinate	
-			switch registrationPointY
-			{
-				case top : 
-					registrationPointPoint.y = 0;
-				
-				case middle :
-					registrationPointPoint.y = this.height / 2;
-					
-				case bottom :
-					registrationPointPoint.y = this.height;
-			}
-		}
-		
-		return registrationPointPoint;
-	}
-	
-	
-	/**
-	 * Translate the DOMElement along the x and y axis, using x and y as offset
-	 * @param	x the x offset
-	 * @param	y the y offset
-	 */
-	public function translate(x:Float, y:Float):Void
-	{
-		//use the matrix API
-		_matrix.translate(x, y);
-		
-		//refresh the matrix to refresh the domElement display
-		this.matrix = this._matrix;
-	}
-	
-	/**
-	 * Rotate the DOMElement with the given angle using the registrationPoint as pivot point
-	 * @param	angle the rotation angle, in degree
-	 * @param	registrationPoint the pivot point, represented as an enum value or as a point
-	 */
-	public function rotate(angle:Int, registrationPoint:RegistrationPointValue = null):Void
-	{
-		//if no transformation origin, get the currently stored one
-		if (registrationPoint == null)
-		{
-			registrationPoint = this.registrationPoint;
-		}
-		
-		//use the matrix API, retrieve the pivot point
-		_matrix.rotate(angle, getRegistrationPointValueAsPoint(registrationPoint));
-		//refresh the matrix to refresh the domElement display
-		this.matrix = this._matrix;
-	}
-	
-	/**
-	 * Scale the DOMElement with the scaleX and scaleY factor, using the registrationPoint as scaling
-	 * center
-	 * @param	scaleX the horizontal scale factor
-	 * @param	scaleY the vertical scale factor
-	 * @param	registrationPoint the scale center, represented as an enum value or as a point
-	 */
-	public function scale(scaleX:Float, scaleY:Float, registrationPoint:RegistrationPointValue = null):Void
-	{
-		//if no transformation origin, get the currently stored one
-		if (registrationPoint == null)
-		{
-			registrationPoint = this.registrationPoint;
-		}
-		
-		//use the matrix API, retrieve the scale center
-		_matrix.scale(scaleX, scaleY, getRegistrationPointValueAsPoint(registrationPoint));
-		
-		//refresh the matrix to refresh the domElement display
-		this.matrix = this._matrix;
-	}
-	
-	/**
-	 * skew the DOMElement with the skewX and skewY factor, using the registrationPoint as skewing
-	 * center
-	 * @param	skewX the horizontal skew factor
-	 * @param	skewY the vertical skew factor
-	 * @param	registrationPoint the skew center, represented as an enum value or as a point
-	 */
-	public function skew(skewX:Float, skewY:Float, registrationPoint:RegistrationPointValue = null):Void
-	{
-		//if no transformation origin, get the currently stored one
-		if (registrationPoint == null)
-		{
-			registrationPoint = this.registrationPoint;
-		}
-		
-		//use the matrix API, retrieve the skew center
-		_matrix.skew(skewX, skewY, getRegistrationPointValueAsPoint(registrationPoint));
-		
-		//refresh the matrix to refresh the domElement display
-		this.matrix = this._matrix;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// TRANSFORMATION SETTER/GETTER
-	// Set/get transformations absolute value
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the absolute x translation instead of adding it to 
-	 * the current x translation
-	 * @param	translationX the target x translation
-	 */
-	private function setTranslationX(translationX:Float):Float
-	{
-		_matrix.setTranslationX(translationX);
-		this.matrix = this._matrix;
-		return translationX;
-	}
-	
-	/**
-	 * Return the current x translation
-	 * @return
-	 */
-	private function getTranslationX():Float
-	{
-		return this._matrix.getTranslationX();
-	}
-	
-	/**
-	 * Set the absolute y translation instead of adding it to 
-	 * the current y translation
-	 * @param	translationX the target y translation
-	 */
-	private function setTranslationY(translationY:Float):Float
-	{
-		_matrix.setTranslationY(translationY);
-		this.matrix = this._matrix;
-		return translationY;
-	}
-	
-	/**
-	 * Return the current y translation
-	 * @return
-	 */
-	private function getTranslationY():Float
-	{
-		return this._matrix.getTranslationY();
-	}
-	
-	/**
-	 * set the absolute x scale of the domElement instead of adding it to the current scale
+	 * set the absolute x scale of the domElement
 	 * @param	scaleX the target x scale
 	 */
 	private function setScaleX(scaleX:Float):Float
 	{
-		_matrix.setScaleX(scaleX, getRegistrationPointValueAsPoint(this.registrationPoint));
-		this.matrix = this._matrix;
+		
 		return scaleX;
 	}
 	
@@ -613,22 +404,14 @@ class AbstractDOMElement
 	private function getScaleX():Float { 
 		return _matrix.getScaleX();
 	}
-
 	
 	/**
-	 * set the absolute y scale of the domElement instead of adding it to the current scale
+	 * set the absolute y scale of the domElement
 	 * @param	scaleX the target y scale
 	 */
 	private function setScaleY(scaleY:Float):Float
 	{
-		//default transformation center is top left
-		if (registrationPoint == null)
-		{
-			registrationPoint = constant(left, top);
-		}
 		
-		_matrix.setScaleY(scaleY, getRegistrationPointValueAsPoint(this.registrationPoint));
-		this.matrix = this._matrix;
 		return scaleY;
 	}
 	
@@ -648,14 +431,6 @@ class AbstractDOMElement
 	private function setRotation(angle:Int):Int 
 	{
 		
-		//default transformation center is top left
-		if (registrationPoint == null)
-		{
-			registrationPoint = constant(left, top);
-		}
-		
-		_matrix.setRotation(angle, getRegistrationPointValueAsPoint(this.registrationPoint));
-		this.matrix = this._matrix;
 		return angle;
 	}
 	
@@ -665,25 +440,6 @@ class AbstractDOMElement
 	 */
 	private function getRotation():Int { 
 		return _matrix.getRotation();
-	}
-	
-	/**
-	 * Set the origin of the domElement transformations
-	 * @param	registrationPoint the new origin of transformation
-	 * @return an enum value containing a constant or a point
-	 */
-	private function setRegistrationPoint(registrationPoint:RegistrationPointValue):RegistrationPointValue
-	{
-		this._registrationPoint = registrationPoint;
-		return this._registrationPoint;
-	}
-	
-	/**
-	 * Return the transformation origin
-	 */
-	private function getRegistrationPoint():RegistrationPointValue
-	{
-		return this._registrationPoint;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
