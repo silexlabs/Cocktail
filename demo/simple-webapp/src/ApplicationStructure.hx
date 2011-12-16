@@ -199,12 +199,8 @@ class ApplicationStructure
 		
 		_homePage = createHomePage(homePageCells);
 		
-		// set current page to home page
-		//_currentPage = _homePage;
-		//_previousPages = new Array<ContainerDOMElement>();
-		
 		// adds the home page to pagesContainer
-		pagesContainer.addChild(_homePage);
+		//pagesContainer.addChild(_homePage);
 
 		// instanciate navigation class with pagesContainer and homePage
 		navigation = new Navigation(pagesContainer,_homePage);
