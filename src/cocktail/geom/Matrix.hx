@@ -481,7 +481,7 @@ class Matrix
 	}
 	
 	/**
-	 * Set the absolut x translation instead of adding it to the 
+	 * Set the absolute x translation instead of adding it to the 
 	 * current x translation
 	 * @param	translationX the target x translation
 	 */
@@ -507,7 +507,7 @@ class Matrix
 	}
 	
 	/**
-	 * Set the absolut y translation instead of adding it to the 
+	 * Set the absolute y translation instead of adding it to the 
 	 * current y translation
 	 * @param	translationY the target y translation
 	 */

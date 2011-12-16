@@ -8,6 +8,7 @@
 package cocktail.style;
 import cocktail.domElement.DOMElement;
 import cocktail.unit.UnitData;
+import cocktail.geom.GeomData;
 	
 	
 		// FONT STYLES
@@ -636,7 +637,7 @@ import cocktail.unit.UnitData;
 		 * specify a 2D transformation in the form of
 		 * a transformation matrix
 		 */
-		matrix(a:Float, b:Float, c:Float, d:Float, e:Float, f:Float);
+		matrix(data:MatrixData);
 		
 		/**
 		 * specify a 2D translation by the vector [tx, ty]
