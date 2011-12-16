@@ -1,0 +1,4 @@
+-main Gallery
+-js Gallery.js
+#-cp ../Cocktail/branches/develop/src
+-cp ../../src/
