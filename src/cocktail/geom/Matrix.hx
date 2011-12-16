@@ -279,7 +279,7 @@ class Matrix
 	 * @param skewY the vertical skew factor
 	 * @param transformOrigin the skew center
 	 */
-	public function skew(skewX:Float, skewY:Float, registrationPoint:PointData ):Void
+	public function skew(skewX:Float, skewY:Float, registrationPoint:PointData):Void
 	{
 		//the matrix that will be skewed along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
