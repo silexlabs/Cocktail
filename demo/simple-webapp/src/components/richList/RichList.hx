@@ -8,6 +8,7 @@
 package components.richList;
 
 // DOM
+import cocktail.classInstance.ClassInstance;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
@@ -45,7 +46,8 @@ class RichList extends ContainerDOMElement
 	 */
 	public function new(richListModel:RichListModel, listStyle:RichListStyleModel)
 	{
-		super();
+		// create a ul node
+		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
 		createRichListDOM(richListModel, listStyle);
 		//RichListStyle.getDefaultStyle(this);
 		listStyle.list(this);
@@ -68,60 +70,51 @@ class RichList extends ContainerDOMElement
 		{
 			// create cell with text and image
 			// empty cell part
-			var cell:ContainerDOMElement = Utils.getContainer();
-			
-			// text part => moved to the image callback
-			//cell.addText(NativeElementManager.createNativeTextNode(cellData.text));
+			var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+
+			listStyle.cell(cell);
 			
 			// image part
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			if (cellData.imagePath != "" && cellData.imagePath != null)
+			{
+				var cellImage:ImageDOMElement = new ImageDOMElement();
+				// set image style
+				listStyle.cellImage(cellImage);
+				// add image
+				cell.addChild(cellImage);
+				// load image
+				cellImage.load(cellData.imagePath);
+			}
 			
-			// create line to separate cells
-			listStyle.cell(cell);
-			
-			// set image style
-			listStyle.cellImage(cellImage);
-			
-			// add line, then image and then text
-			//cell.addChild(line);
-			cell.addChild(cellImage);
-			cell.addText(new TextElement(cellData.text));
-			// create line to separate cells
-			listStyle.cell(cell);
-
-			
-			
-			cellImage.load(cellData.imagePath);
+			// add text
+			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
+			if (cellData.text != "" && cellData.text != null)
+			{
+				var textElement:TextElement = new TextElement(cellData.text);
+				cellTextContainer.addText(textElement);
+				listStyle.cellText(cellTextContainer);
+				cell.addChild(cellTextContainer);
+			}
 
 			// add cell to instance
 			this.addChild(cell);
 			
 			// mouse
-			// delegates functions are used to be able to pass an extra parameter to the callback
+			// delegates functions are used to be able to pass an extra parameters to the callback
 			// mouse over
 			var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
-			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse out
 			var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOut;
-			cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse down
 			var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseDown;
-			cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };
+			cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cellTextContainer, listStyle); };
 			// mouse up
 			var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->CellModel->Void = onCellMouseUp;
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cellTextContainer, listStyle, cellData); };
 			
 		}
-	}
-	
-	/**
-	 * Called when there is an error while loading picture
-	 * 
-	 * @param	error
-	 */
-	private function onPictureLoadError(error:String):Void
-	{
-		trace(error);
 	}
 	
 	/**
@@ -134,8 +127,6 @@ class RichList extends ContainerDOMElement
 	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
 	{
 		listStyle.cellMouseOver(cell);
-		//MouseCursorValue.native(NativeOSMouseCursorValue.pointer);
-		//MouseCursorManager.setMouseCursor(NativeOSMouseCursorValue.pointer);
 	}
 	
 	/**
