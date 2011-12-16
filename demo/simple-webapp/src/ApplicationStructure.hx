@@ -171,9 +171,9 @@ class ApplicationStructure
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
-			{text:"made with Cocktail", imagePath:"images/cocktail.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
+			{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
 			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
-			{text:"done for Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+			{text:"done for Silex Labs", imagePath:"images/icone_silexlabs_noire.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
 			{text:"by Raphael Harmel", imagePath:"images/google+.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
 			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
 			{text:"", imagePath:"", action:"", actionTarget:"" },
@@ -189,11 +189,13 @@ class ApplicationStructure
 			[	{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
 				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
 				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
-				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage },
-				//{text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-				{text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage }
+				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage }
 			];
-		homePageCells.push( { text:"Silex Labs", imagePath:"images/silex_labs.jpg", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche_ombre.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" } );
+		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche_ombre.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
+		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche_ombre.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche_ombre.png", action:"", actionTarget:"" } );
+		homePageCells.push( {text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage } );
 		
 		_homePage = createHomePage(homePageCells);
 		
