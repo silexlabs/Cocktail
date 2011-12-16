@@ -34,6 +34,9 @@ import components.richList.RichListUtils;
 // Gallery specific
 import components.gallery.Gallery;
 
+// Navigation
+import Navigation;
+
 /**
  * Handles all applications pages
  * 
@@ -46,6 +49,10 @@ class ApplicationStructure
 	// pagesContainer is the container for all pages
 	public var pagesContainer:ContainerDOMElement;
 
+	// navigation is used for navigation
+	private var navigation:Navigation;
+
+	
 	// the home page looking like a smartphone desktop
 	private var _homePage:ContainerDOMElement;
 	
@@ -72,17 +79,12 @@ class ApplicationStructure
 	// the credit page
 	private var _creditsPage:ContainerDOMElement;
 	
-	// the current visible page
-	private var _currentPage:ContainerDOMElement;
 
-	// the previous page
-	private var _previousPages:Array<ContainerDOMElement>;
-	
 	public function new() 
 	{
 		pagesContainer = Utils.getContainer();
 		//IphoneStyle.getPageContainerStyle(pagesContainer);
-
+		
 		createAllPages();
 	}
 	
@@ -196,136 +198,14 @@ class ApplicationStructure
 		_homePage = createHomePage(homePageCells);
 		
 		// set current page to home page
-		_currentPage = _homePage;
-		_previousPages = new Array<ContainerDOMElement>();
+		//_currentPage = _homePage;
+		//_previousPages = new Array<ContainerDOMElement>();
 		
 		// adds the home page to pagesContainer
 		pagesContainer.addChild(_homePage);
-	}
-	
-	/**
-	 * Callback called on mouse release of the back header button
-	 * 
-	 * @param	mouseEvent
-	 */
-	private function goToPreviousPage(mouseEvent:MouseEventData):Void
-	{
-		// if current page is gallery and fullsize picture is displayed, display the gallery
-		if (_currentPage == _galleryPage && _gallery.galleryDisplayed == false)
-			_gallery.displayGallery()
-		else
-			// show previous page in the history and removes it from the history
-			showPage(getPreviousPage());
-	}
 
-	/**
-	 * Gets the previous page, back button callback
-	 * 
-	 * @return
-	 */
-	private function getPreviousPage():ContainerDOMElement
-	{
-		// remove current page from history
-		_previousPages.pop();
-		
-		// get previous page from history
-		var previousPage:ContainerDOMElement = _previousPages[_previousPages.length-1];
-		
-		// in case history is emtpy, go to home page
-		if (previousPage == null)
-			return _homePage;
-		
-		// else return previous page
-		return previousPage;
-	}
-	
-	/**
-	 * Adds a page to history
-	 * 
-	 */
-	private function addToHistory(page:ContainerDOMElement):Void
-	{
-		// if page to show is _homepage, reset history
-		if (page == _homePage)
-			_previousPages = [page];
-		// if not add the preceding page container to _previousPage 
-		else
-			_previousPages.push(page);
-	}
-	
-	/**
-	 * Hides the current page and shows the wanted page
-	 * 
-	 * @param	page	the wanted page
-	 */
-	private function showPage(page:ContainerDOMElement):Void
-	{
-		// removes the current page from the page container
-		pagesContainer.removeChild(_currentPage);
-		// adds the noew page to the page container
-		pagesContainer.addChild(page);
-		_currentPage = page;
-	}
-	
-	/**
-	 * Called when a new cell is selected in a list
-	 * 
-	 * @param	cell
-	 */
-	private function onChangeListCallback(cell:CellModel)
-	{
-		if (cell.action == "goToPage")
-		{
-			var page:ContainerDOMElement = cell.actionTarget;
-		
-			// history handling
-			addToHistory(page);
-			
-			// show needed pages
-			showPage(page);
-		}
-		else if (cell.action == "goToUrl")
-		{
-			goToUrl(cell.actionTarget);
-		}
-		else if (cell.action == "openUrl")
-		{
-			openUrl(cell.actionTarget);
-		}
-	}
-	
-	/**
-	 * Go the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
-	 * 
-	 * @param	url		the url to go to
-	 */
-	private function goToUrl(url:String)
-	{
-		#if js
-		js.Lib.window.open(url);
-		
-		#elseif flash9
-		var request:flash.net.URLRequest = new flash.net.URLRequest(url);
-		flash.Lib.getURL(request);
-
-		#end
-	}
-	
-	/**
-	 * Opens the wanted URL - not supported by Cocktail yet so conditionnal compilation is used
-	 * 
-	 * @param	url		the url to open
-	 */
-	private function openUrl(url:String)
-	{
-		#if js
-		js.Lib.window.open(url,'_self');
-		
-		#elseif flash9
-		var request:flash.net.URLRequest = new flash.net.URLRequest(url);
-		flash.Lib.getURL(request,"_self");
-
-		#end
+		// instanciate navigation class with pagesContainer and homePage
+		navigation = new Navigation(pagesContainer,_homePage);
 	}
 	
 	/**
@@ -351,6 +231,7 @@ class ApplicationStructure
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
+		//richList.onChange = navigation.onChangeListCallback;
 		
 		
 		// build page domElement
@@ -382,7 +263,7 @@ class ApplicationStructure
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
-		
+		//richList.onChange = navigation.onChangeListCallback;
 		
 		// build hierarchy
 		page.addChild(header);
@@ -617,6 +498,31 @@ class ApplicationStructure
 		var list:RichList = new RichList(listData, listStyle);
 		
 		return list;
+	}
+	
+	/**
+	 * Callback called on mouse release of the back header button
+	 * 
+	 * @param	mouseEvent
+	 */
+	public function goToPreviousPage(mouseEvent:MouseEventData):Void
+	{
+		// if current page is gallery and fullsize picture is displayed, display the gallery
+		if (navigation.currentPage == _galleryPage && _gallery.galleryDisplayed == false)
+			_gallery.displayGallery()
+		else
+			// show previous page in the history
+			navigation.goToPreviousPage();
+	}
+
+	/**
+	 * Called when a new cell is selected in a list
+	 * 
+	 * @param	cell
+	 */
+	public function onChangeListCallback(cell:CellModel)
+	{
+		navigation.onChangeListCallback(cell);
 	}
 	
 }
