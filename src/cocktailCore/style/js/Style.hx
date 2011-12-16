@@ -104,24 +104,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSDisplay(value:DisplayStyleValue):String
 	{
-		var displayValue:String;
+		var cssDisplayValue:String;
 		
 		switch (value)
 		{
 			case block:
-				displayValue = "block";
+				cssDisplayValue = "block";
 			
 			case inlineStyle:
-				displayValue = "inline";
+				cssDisplayValue = "inline";
 			
 			case inlineBlock:
-				displayValue = "inline-block";
+				cssDisplayValue = "inline-block";
 				
 			case DisplayStyleValue.none:
-				displayValue = "none";
+				cssDisplayValue = "none";
 		}
 		
-		return displayValue;
+		return cssDisplayValue;
 	}
 	
 	/**
@@ -129,21 +129,21 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFloat(value:FloatStyleValue):String
 	{
-		var floatValue:String;
+		var cssFloatValue:String;
 		
 		switch (value)
 		{
 			case FloatStyleValue.left:
-				floatValue = "left";
+				cssFloatValue = "left";
 				
 			case FloatStyleValue.right:
-				floatValue = "right";
+				cssFloatValue = "right";
 				
 			case FloatStyleValue.none:
-				floatValue = "none";
+				cssFloatValue = "none";
 		}
 		
-		return floatValue;
+		return cssFloatValue;
 	}
 	
 	/**
@@ -151,24 +151,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSClear(value:ClearStyleValue):String
 	{
-		var clearValue:String;
+		var cssClearValue:String;
 		
 		switch (value)
 		{
 			case ClearStyleValue.left:
-				clearValue = "left";
+				cssClearValue = "left";
 				
 			case ClearStyleValue.right:
-				clearValue = "right";
+				cssClearValue = "right";
 				
 			case ClearStyleValue.both:
-				clearValue = "both";
+				cssClearValue = "both";
 				
 			case ClearStyleValue.none:
-				clearValue = "none";
+				cssClearValue = "none";
 		}
 		
-		return clearValue;
+		return cssClearValue;
 	}
 	
 	/**
@@ -176,24 +176,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSPosition(value:PositionStyleValue):String
 	{
-		var positionValue:String;
+		var cssPositionValue:String;
 		
 		switch (value)
 		{
 			case staticStyle:
-				positionValue = "static";
+				cssPositionValue = "static";
 			
 			case relative:
-				positionValue = "relative";
+				cssPositionValue = "relative";
 			
 			case absolute:
-				positionValue = "absolute";
+				cssPositionValue = "absolute";
 				
 			case fixed:
-				positionValue = "fixed";
+				cssPositionValue = "fixed";
 		}
 		
-		return positionValue;
+		return cssPositionValue;
 	}
 	
 	/**
@@ -201,15 +201,15 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSOpacity(value:OpacityStyleValue):String
 	{
-		var opacityValue:String;
+		var cssOpacityValue:String;
 		
 		switch (value)
 		{
 			case OpacityStyleValue.number(value):
-				opacityValue = Std.string(value);
+				cssOpacityValue = Std.string(value);
 		}
 		
-		return opacityValue;
+		return cssOpacityValue;
 	}
 	
 	/**
@@ -217,18 +217,163 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSVisibility(value:VisibilityStyleValue):String
 	{
-		var visibilityValue:String;
+		var cssVisibilityValue:String;
 		
 		switch (value)
 		{
 			case visible:
-				visibilityValue = "visible";
+				cssVisibilityValue = "visible";
 				
 			case hidden:
-				visibilityValue = "hidden";
+				cssVisibilityValue = "hidden";
 		}
 		
-		return visibilityValue;
+		return cssVisibilityValue;
+	}
+	
+	/**
+	 * CSS : transform
+	 */
+	private function getCSSTransform(value:TransformStyleValue):String
+	{
+		var cssTransformValue:String;
+		
+		switch(value)
+		{
+			case TransformStyleValue.none:
+				cssTransformValue = "none";
+				
+			case TransformStyleValue.transformFunctions(value):
+				cssTransformValue = "";
+				for (i in 0...value.length)
+				{
+					cssTransformValue += getCSSTransformFunction(value[i]);
+					if (i < value.length - 1)
+					{
+						cssTransformValue += " ";
+					}
+				}		
+		}
+		
+		return cssTransformValue;
+	}
+	
+	/**
+	 * Returns the CSS representation of one transform
+	 * function
+	 */
+	private function getCSSTransformFunction(transformFunction:TransformFunctionValue):String
+	{
+		var cssTransformFunction:String;
+		
+		switch (transformFunction)
+		{
+			case TransformFunctionValue.matrix(value):
+				cssTransformFunction = "matrix(" + value.a + "," + value.b + "," + value.c + "," + value.d + "," + value.e + "," + value.f + ")";
+				
+			case TransformFunctionValue.rotate(angle):
+				cssTransformFunction = "rotate(" + getCSSAngleValue(angle) + ")";
+				
+			case TransformFunctionValue.scale(sx, sy):
+				cssTransformFunction = "scale(" + sx + "," + sy + ")";
+				
+			case TransformFunctionValue.scaleX(sx):
+				cssTransformFunction = "scaleX(" + sx + ")";
+				
+			case TransformFunctionValue.scaleY(sy):
+				cssTransformFunction = "scaleY(" + sy + ")";	
+				
+			case TransformFunctionValue.skew(skewX, skewY):
+				cssTransformFunction = "skew(" + getCSSAngleValue(skewX) + "," + getCSSAngleValue(skewY) + ")";
+			
+			case TransformFunctionValue.skewX(skewX):
+				cssTransformFunction = "skewX(" + getCSSAngleValue(skewX) + ")";
+				
+			case TransformFunctionValue.skewY(skewY):
+				cssTransformFunction = "skewY(" + getCSSAngleValue(skewY) + ")";	
+				
+			case TransformFunctionValue.translate(tx, ty):
+				cssTransformFunction = "translate(" + getCSSTranslation(tx) + "," + getCSSTranslation(ty) + ")";
+				
+			case TransformFunctionValue.translateX(tx):
+				cssTransformFunction = "translateX(" + getCSSTranslation(tx)  +")";
+				
+			case TransformFunctionValue.translateY(ty):
+				cssTransformFunction = "translateY(" + getCSSTranslation(ty)  +")";		
+		}
+		
+		return cssTransformFunction;
+	}
+	
+	/**
+	 * Return the CSS representation of a
+	 * translation amount
+	 */
+	private function getCSSTranslation(translation:TranslationValue):String
+	{
+		var cssTranslationValue:String;
+		
+		switch (translation)
+		{
+			case TranslationValue.length(value):
+				cssTranslationValue = getCSSLengthValue(value);
+				
+			case TranslationValue.percent(value):
+				cssTranslationValue = getCSSPercentValue(value);
+		}
+		
+		return cssTranslationValue;
+	}
+	
+	/**
+	 * CSS : transform-origin
+	 */
+	private function getCSSTransformOrigin(value:TransformOriginStyleData):String
+	{
+		var cssTransformOriginValue:String;
+		
+		//x axis
+		switch (value.x)
+		{
+			case TransformOriginXStyleValue.length(value):
+				cssTransformOriginValue = getCSSLengthValue(value);
+				
+			case TransformOriginXStyleValue.percent(value):
+				cssTransformOriginValue = getCSSPercentValue(value);
+				
+			case TransformOriginXStyleValue.left:
+				cssTransformOriginValue = "left";
+				
+			case TransformOriginXStyleValue.center:
+				cssTransformOriginValue = "center";
+				
+			case TransformOriginXStyleValue.right:
+				cssTransformOriginValue = "right";
+		}
+		
+		//add space to separat x and y axis values
+		cssTransformOriginValue += " ";
+		
+		//y axis
+		switch (value.y)
+		{
+			case TransformOriginYStyleValue.length(value):
+				cssTransformOriginValue = getCSSLengthValue(value);
+				
+			case TransformOriginYStyleValue.percent(value):
+				cssTransformOriginValue = getCSSPercentValue(value);
+				
+			case TransformOriginYStyleValue.top:
+				cssTransformOriginValue = "top";
+				
+			case TransformOriginYStyleValue.center:
+				cssTransformOriginValue = "center";
+				
+			case TransformOriginYStyleValue.bottom:
+				cssTransformOriginValue = "bottom";
+		}
+		
+		return cssTransformOriginValue;
 	}
 	
 	/////////////////////////////////
@@ -240,21 +385,21 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSMargin(value:MarginStyleValue):String
 	{
-		var marginValue:String;
+		var cssMarginValue:String;
 		
 		switch(value)
 		{
 			case length(unit):
-				marginValue = getCSSLengthValue(unit);
+				cssMarginValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
-				marginValue = getCSSPercentValue(Std.string(percentValue));
+				cssMarginValue = getCSSPercentValue(percentValue);
 				
 			case auto:
-				marginValue = "auto";
+				cssMarginValue = "auto";
 		}
 		
-		return marginValue;
+		return cssMarginValue;
 	}
 	
 	/**
@@ -262,18 +407,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSPadding(value:PaddingStyleValue):String
 	{
-		var paddingValue:String;
+		var cssPaddingValue:String;
 		
 		switch(value)
 		{
 			case length(unit):
-				paddingValue = getCSSLengthValue(unit);
+				cssPaddingValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
-				paddingValue = getCSSPercentValue(Std.string(percentValue));
+				cssPaddingValue = getCSSPercentValue(percentValue);
 		}
 		
-		return paddingValue;
+		return cssPaddingValue;
 	}
 	
 	/**
@@ -281,21 +426,21 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSDimension(value:DimensionStyleValue):String
 	{
-		var dimensionValue:String;
+		var cssDimensionValue:String;
 		
 		switch (value)
 		{
 			case DimensionStyleValue.length(unit):
-				dimensionValue = getCSSLengthValue(unit);
+				cssDimensionValue = getCSSLengthValue(unit);
 				
 			case DimensionStyleValue.percent(percentValue):
-				dimensionValue = getCSSPercentValue(Std.string(percentValue));
+				cssDimensionValue = getCSSPercentValue(percentValue);
 				
 			case DimensionStyleValue.auto:
-				dimensionValue = "auto";
+				cssDimensionValue = "auto";
 		}
 		
-		return dimensionValue;
+		return cssDimensionValue;
 	}
 	
 	/**
@@ -303,22 +448,22 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSPositionOffset(value:PositionOffsetStyleValue):String
 	{
-		var positionOffsetValue:String;
+		var cssPositionOffsetValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				positionOffsetValue = getCSSLengthValue(unit);	
+				cssPositionOffsetValue = getCSSLengthValue(unit);	
 			
 			
 			case percent(percentValue):
-				positionOffsetValue = getCSSPercentValue(Std.string(percentValue));
+				cssPositionOffsetValue = getCSSPercentValue(percentValue);
 				
 			case auto:
-				positionOffsetValue = "auto";
+				cssPositionOffsetValue = "auto";
 		}
 		
-		return positionOffsetValue;
+		return cssPositionOffsetValue;
 	}
 	
 	/**
@@ -326,21 +471,21 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSConstrainedDimension(value:ConstrainedDimensionStyleValue):String
 	{
-		var constrainedValue:String;
+		var cssConstrainedValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				constrainedValue = getCSSLengthValue(unit);
+				cssConstrainedValue = getCSSLengthValue(unit);
 			
 			case percent(percentValue):
-				constrainedValue = getCSSPercentValue(Std.string(percentValue));
+				cssConstrainedValue = getCSSPercentValue(percentValue);
 				
 			case none:	
-				constrainedValue = "none";
+				cssConstrainedValue = "none";
 		}
 		
-		return constrainedValue;
+		return cssConstrainedValue;
 		
 	}
 	
@@ -349,42 +494,42 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSVerticalAlign(value:VerticalAlignStyleValue):String
 	{
-		var verticalAlignValue:String;
+		var cssVerticalAlignValue:String;
 		
 		switch (value)
 		{
 			case baseline:
-				verticalAlignValue = "baseline";
+				cssVerticalAlignValue = "baseline";
 				
 			case middle:
-				verticalAlignValue = "middle";
+				cssVerticalAlignValue = "middle";
 				
 			case sub:
-				verticalAlignValue = "sub";
+				cssVerticalAlignValue = "sub";
 				
 			case superStyle:
-				verticalAlignValue = "super";
+				cssVerticalAlignValue = "super";
 				
 			case textTop:
-				verticalAlignValue = "text-top";
+				cssVerticalAlignValue = "text-top";
 				
 			case textBottom:
-				verticalAlignValue = "text-bottom";
+				cssVerticalAlignValue = "text-bottom";
 				
 			case VerticalAlignStyleValue.top:
-				verticalAlignValue = "top";
+				cssVerticalAlignValue = "top";
 				
 			case VerticalAlignStyleValue.bottom:
-				verticalAlignValue = "bottom";
+				cssVerticalAlignValue = "bottom";
 				
 			case percent(value):
-				verticalAlignValue = getCSSPercentValue(Std.string(value));
+				cssVerticalAlignValue = getCSSPercentValue(value);
 				
 			case length(value):
-				verticalAlignValue = getCSSLengthValue(value);
+				cssVerticalAlignValue = getCSSLengthValue(value);
 		}
 		
-		return verticalAlignValue;
+		return cssVerticalAlignValue;
 		
 	}
 	
@@ -393,24 +538,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSLineHeight(value:LineHeightStyleValue):String
 	{
-		var lineHeightValue:String;
+		var cssLineHeightValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				lineHeightValue = getCSSLengthValue(unit);
+				cssLineHeightValue = getCSSLengthValue(unit);
 				
 			case normal:
-				lineHeightValue = "normal";
+				cssLineHeightValue = "normal";
 				
 			case percentage(value):
-				lineHeightValue = getCSSPercentValue(Std.string(value));
+				cssLineHeightValue = getCSSPercentValue(value);
 				
 			case number(value):
-				lineHeightValue = Std.string(value);	
+				cssLineHeightValue = Std.string(value);	
 		}
 		
-		return lineHeightValue;
+		return cssLineHeightValue;
 	}
 	
 	/////////////////////////////////
@@ -423,53 +568,53 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFontSize(value:FontSizeStyleValue):String
 	{
-		var fontValue:String;
+		var cssFontSizeValue:String;
 		
 		switch (value)
 		{
 			case length(unit):
-				fontValue = getCSSLengthValue(unit);
+				cssFontSizeValue = getCSSLengthValue(unit);
 				
 			case percentage(percent):
-				fontValue = getCSSPercentValue(Std.string(percent));
+				cssFontSizeValue = getCSSPercentValue(percent);
 				
 			case absoluteSize(value):
 				switch (value)
 				{
 					case xxSmall:
-						fontValue = "xx-small";
+						cssFontSizeValue = "xx-small";
 					
 					case xSmall:
-						fontValue = "x-small";
+						cssFontSizeValue = "x-small";
 						
 					case small:
-						fontValue = "small";
+						cssFontSizeValue = "small";
 						
 					case medium:
-						fontValue = "medium";
+						cssFontSizeValue = "medium";
 						
 					case large:
-						fontValue = "large";
+						cssFontSizeValue = "large";
 						
 					case xLarge:
-						fontValue = "x-large";
+						cssFontSizeValue = "x-large";
 						
 					case xxLarge:	
-						fontValue = "xx-large";
+						cssFontSizeValue = "xx-large";
 				}
 				
 			case relativeSize(value):
 				switch (value)
 				{
 					case larger:
-						fontValue = "larger";
+						cssFontSizeValue = "larger";
 						
 					case smaller:
-						fontValue = "smaller";
+						cssFontSizeValue = "smaller";
 				}
 		}
 		
-		return fontValue;
+		return cssFontSizeValue;
 	}
 	
 	/**
@@ -477,18 +622,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFontWeight(value:FontWeightStyleValue):String
 	{
-		var fontWeightValue:String;
+		var cssFontWeightValue:String;
 		
 		switch (value)
 		{
 			case normal:
-				fontWeightValue = "normal";
+				cssFontWeightValue = "normal";
 				
 			case bold:
-				fontWeightValue = "bold";
+				cssFontWeightValue = "bold";
 		}
 		
-		return fontWeightValue;
+		return cssFontWeightValue;
 	}
 	
 	/**
@@ -496,18 +641,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFontStyle(value:FontStyleStyleValue):String
 	{
-		var fontStyleValue:String;
+		var cssFontStyleValue:String;
 		
 		switch (value)
 		{
 			case normal:
-				fontStyleValue = "normal";
+				cssFontStyleValue = "normal";
 				
 			case italic:
-				fontStyleValue = "italic";
+				cssFontStyleValue = "italic";
 		}
 		
-		return fontStyleValue;
+		return cssFontStyleValue;
 	}
 	
 	/**
@@ -515,18 +660,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFontVariant(value:FontVariantStyleValue):String
 	{
-		var fontVariantValue:String;
+		var cssFontVariantValue:String;
 		
 		switch (value)
 		{
 			case normal:
-				fontVariantValue = "normal";
+				cssFontVariantValue = "normal";
 				
 			case smallCaps:
-				fontVariantValue = "small-caps";
+				cssFontVariantValue = "small-caps";
 		}
 		
-		return fontVariantValue;
+		return cssFontVariantValue;
 	}
 	
 	/**
@@ -534,7 +679,7 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFontFamily(value:Array<FontFamilyStyleValue>):String
 	{
-		var fontFamilyValue:String = "";
+		var cssFontFamilyValue:String = "";
 		
 		for (i in 0...value.length)
 		{
@@ -565,15 +710,15 @@ class Style extends AbstractStyle
 				fontName = "'" + fontName + "'";
 			}
 			
-			fontFamilyValue += fontName;
+			cssFontFamilyValue += fontName;
 			
 			if (i < value.length -1)
 			{
-				fontFamilyValue += ",";
+				cssFontFamilyValue += ",";
 			}
 		}
 		
-		return fontFamilyValue;
+		return cssFontFamilyValue;
 	}
 	
 	/////////////////////////////////
@@ -585,24 +730,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSTextAlign(value:TextAlignStyleValue):String
 	{
-		var textAlignValue:String;
+		var cssTextAlignValue:String;
 		
 		switch (value)
 		{
 			case TextAlignStyleValue.left:
-				textAlignValue = "left";
+				cssTextAlignValue = "left";
 				
 			case TextAlignStyleValue.right:
-				textAlignValue = "right";
+				cssTextAlignValue = "right";
 				
 			case TextAlignStyleValue.center:
-				textAlignValue = "center";
+				cssTextAlignValue = "center";
 				
 			case TextAlignStyleValue.justify:
-				textAlignValue = "justify";
+				cssTextAlignValue = "justify";
 		}
 		
-		return textAlignValue;
+		return cssTextAlignValue;
 	}
 	
 	/**
@@ -610,27 +755,27 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSWhiteSpace(value:WhiteSpaceStyleValue):String
 	{
-		var whiteSpaceValue:String;
+		var cssWhiteSpaceValue:String;
 		
 		switch (value)
 		{
 			case WhiteSpaceStyleValue.normal:
-				whiteSpaceValue = "normal";
+				cssWhiteSpaceValue = "normal";
 				
 			case pre:
-				whiteSpaceValue = "pre";
+				cssWhiteSpaceValue = "pre";
 				
 			case nowrap:
-				whiteSpaceValue = "nowrap";
+				cssWhiteSpaceValue = "nowrap";
 				
 			case preWrap:
-				whiteSpaceValue = "pre-wrap";
+				cssWhiteSpaceValue = "pre-wrap";
 				
 			case preLine:
-				whiteSpaceValue = "pre-line";
+				cssWhiteSpaceValue = "pre-line";
 		}
 		
-		return whiteSpaceValue;
+		return cssWhiteSpaceValue;
 	}
 	
 	/**
@@ -638,24 +783,24 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSTextTransform(value:TextTransformStyleValue):String
 	{
-		var textTransformValue:String;
+		var cssTextTransformValue:String;
 		
 		switch (value)
 		{
 			case none:
-				textTransformValue = "none";
+				cssTextTransformValue = "none";
 				
 			case uppercase:
-				textTransformValue = "uppercase";
+				cssTextTransformValue = "uppercase";
 				
 			case lowercase:
-				textTransformValue = "lowercase";
+				cssTextTransformValue = "lowercase";
 				
 			case capitalize:
-				textTransformValue = "capitalize";
+				cssTextTransformValue = "capitalize";
 		}
 		
-		return textTransformValue;
+		return cssTextTransformValue;
 	}
 	
 	/**
@@ -663,18 +808,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSTextIndent(value:TextIndentStyleValue):String
 	{
-		var textIndentValue:String;
+		var cssTextIndentValue:String;
 		
 		switch (value)
 		{
 			case length(value):
-				textIndentValue = getCSSLengthValue(value);
+				cssTextIndentValue = getCSSLengthValue(value);
 				
 			case percentage(value):
-				textIndentValue = getCSSPercentValue(Std.string(value));
+				cssTextIndentValue = getCSSPercentValue(value);
 		}
 		
-		return textIndentValue;
+		return cssTextIndentValue;
 	}
 	
 	/**
@@ -682,18 +827,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSLetterSpacing(value:LetterSpacingStyleValue):String
 	{
-		var letterSpacingValue:String;
+		var cssLetterSpacingValue:String;
 		
 		switch (value)
 		{
 			case normal:
-				letterSpacingValue = "normal";
+				cssLetterSpacingValue = "normal";
 				
 			case length(unit):
-				letterSpacingValue = getCSSLengthValue(unit);
+				cssLetterSpacingValue = getCSSLengthValue(unit);
 		}
 		
-		return letterSpacingValue;
+		return cssLetterSpacingValue;
 	}
 	
 	/**
@@ -701,18 +846,18 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSWordSpacing(value:WordSpacingStyleValue):String
 	{
-		var wordSpacingValue:String;
+		var cssWordSpacingValue:String;
 		
 		switch (value)
 		{
 			case normal:
-				wordSpacingValue = "normal";
+				cssWordSpacingValue = "normal";
 				
 			case length(unit):
-				wordSpacingValue = getCSSLengthValue(unit);
+				cssWordSpacingValue = getCSSLengthValue(unit);
 		}
 		
-		return wordSpacingValue;
+		return cssWordSpacingValue;
 	}
 	
 	/**
@@ -720,22 +865,22 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSColor(value:ColorValue):String
 	{
-		var colorValue:String;
+		var cssColorValue:String;
 		
 		switch (value)
 		{
 			case hex(value):
-				colorValue = value;
+				cssColorValue = value;
 				
 			case RGB(red, green, blue):
-				colorValue = "rgb(" + red + "," + green + "," + blue + ")";
+				cssColorValue = "rgb(" + red + "," + green + "," + blue + ")";
 				
 		
 			case keyword(value):
-				colorValue = getColorFromKeyword(value);
+				cssColorValue = getColorFromKeyword(value);
 		}
 		
-		return colorValue;
+		return cssColorValue;
 	}
 	
 	/////////////////////////////////
@@ -746,103 +891,173 @@ class Style extends AbstractStyle
 	
 	private function getCSSLengthValue(lengthValue:LengthValue):String
 	{
-		var ret:String;
+		var cssLength:String;
 		
 		switch (lengthValue)
 		{
 			case px(pixelValue):
-				ret = Std.string(pixelValue) + "px";
+				cssLength = Std.string(pixelValue) + "px";
 				
 			case pt(pointValue):
-				ret = Std.string(pointValue) + "pt";
+				cssLength = Std.string(pointValue) + "pt";
 				
 			case mm(milimetersValue):
-				ret = Std.string(milimetersValue) + "mm";
+				cssLength = Std.string(milimetersValue) + "mm";
 				
 			case pc(picasValue):
-				ret = Std.string(picasValue) + "pc";
+				cssLength = Std.string(picasValue) + "pc";
 				
 			case cm(centimetersValue):
-				ret = Std.string(centimetersValue) + "cm";
+				cssLength = Std.string(centimetersValue) + "cm";
 				
 			case _in(inchesValue):
-				ret = Std.string(inchesValue) + "in";
+				cssLength = Std.string(inchesValue) + "in";
 				
 			case em(emValue	):
-				ret = Std.string(emValue) + "em";
+				cssLength = Std.string(emValue) + "em";
 				
 			case ex(exValue):
-				ret = Std.string(exValue) + "ex";
+				cssLength = Std.string(exValue) + "ex";
 		}
 	
-		return ret;	
+		return cssLength;	
 	}
 	
-	private function getCSSPercentValue(value:String):String
+	private function getCSSPercentValue(value:Int):String
 	{
-		return value + "%";
+		return Std.string(value) + "%";
+	}
+	
+	private function getCSSAngleValue(value:AngleValue):String
+	{
+		var cssAngle:String;
+		
+		switch (value)
+		{
+			case AngleValue.deg(value):
+				cssAngle = Std.string(value) + "deg";
+				
+			case AngleValue.rad(value):
+				cssAngle = Std.string(value) + "rad";
+				
+			case AngleValue.grad(value):
+				cssAngle = Std.string(value) + "grad";
+				
+			case AngleValue.turn(value):
+				cssAngle = Std.string(value) + "turn";
+		}
+		
+		return cssAngle;
 	}
 	
 	private function getColorFromKeyword(value:ColorKeywordValue):String
 	{
-		var hexColor:String;
+		var cssColor:String;
 		
 		switch (value)
 		{
 			case aqua:
-				hexColor = "aqua";
+				cssColor = "aqua";
 				
 			case black:
-				hexColor = "black";
+				cssColor = "black";
 				
 			case blue:
-				hexColor = "blue";
+				cssColor = "blue";
 				
 			case fuchsia:
-				hexColor = "fuchsia";
+				cssColor = "fuchsia";
 				
 			case gray:
-				hexColor = "gray";
+				cssColor = "gray";
 				
 			case green:
-				hexColor = "green";
+				cssColor = "green";
 				
 			case lime:
-				hexColor = "lime";
+				cssColor = "lime";
 				
 			case maroon:
-				hexColor = "maroon";
+				cssColor = "maroon";
 				
 			case navy:
-				hexColor = "navy";
+				cssColor = "navy";
 				
 			case olive:
-				hexColor = "olive";
+				cssColor = "olive";
 				
 			case orange:
-				hexColor = "orange";
+				cssColor = "orange";
 				
 			case purple:
-				hexColor = "purple";
+				cssColor = "purple";
 				
 			case red:
-				hexColor = "red";
+				cssColor = "red";
 				
 			case silver:
-				hexColor = "silver";
+				cssColor = "silver";
 				
 			case teal:
-				hexColor = "teal";
+				cssColor = "teal";
 				
 			case white:
-				hexColor = "white";
+				cssColor = "white";
 				
 			case yellow:
-				hexColor = "yellow";
-				
+				cssColor = "yellow";	
 		}
 		
-		return hexColor;
+		return cssColor;
+	}
+	
+	/////////////////////////////////
+	// UTIL METHOD
+	////////////////////////////////
+	
+	/**
+	 * For CSS styles not yet available across browser, find
+	 * the vendor specific style name to use
+	 * @param	nativeStyle the JavaScript Style object
+	 */
+	private function getVendorSpecificStyleName(nativeStyle:Dynamic, styleName:String):String
+	{
+		var vendorSpecificStyleName:String = styleName;
+		
+		//first check if the standard style exists
+		if (Reflect.hasField(nativeStyle, styleName))
+		{
+			vendorSpecificStyleName = styleName;
+		}
+		else
+		{
+			//capitalise the style name to respect camel case
+			//convention
+			styleName.charAt(0).toUpperCase();
+			
+			//firefox
+			if (Reflect.hasField(nativeStyle, "Moz" + styleName))
+			{
+				vendorSpecificStyleName = "Moz" + styleName;
+			}
+			//webkit (chrome, safari...)
+			else if (Reflect.hasField(nativeStyle, "Webkit" + styleName))
+			{
+				vendorSpecificStyleName = "Webkit" + styleName;
+			}
+			//ie
+			else if (Reflect.hasField(nativeStyle, "Ms" + styleName))
+			{
+				vendorSpecificStyleName = "Ms" + styleName;
+			}
+			//opera
+			else if (Reflect.hasField(nativeStyle, "O" + styleName))
+			{
+				vendorSpecificStyleName = "O" + styleName;
+			}
+		}
+		
+		return vendorSpecificStyleName;
 	}
 	
 	/////////////////////////////////
@@ -1118,6 +1333,24 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.visibility = getCSSVisibility(value);
 		super.setVisibility(value);
 		return _visibility = value;
+	}
+	
+	override private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	{
+		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		//get vendor specific style name
+		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transformOrigin"), getCSSTransformOrigin(value));
+		super.setTransformOrigin(value);
+		return _tranformOrigin = value;
+	}
+	
+	override private function setTransform(value:TransformStyleValue):TransformStyleValue
+	{
+		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		//get vendor specific style name
+		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transform"), getCSSTransform(value));
+		super.setTransform(value);
+		return _transform = value;
 	}
 	
 }
