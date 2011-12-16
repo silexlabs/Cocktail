@@ -40,9 +40,9 @@ class Utils
 	public static function getContainer():ContainerDOMElement
 	{
 		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
-		
-		ret.x = 0;
-		ret.y = 0;
+		ret.style.display = block;
+		//ret.x = 0;
+		//ret.y = 0;
 		return ret;
 	}
 	

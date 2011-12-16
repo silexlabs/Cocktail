@@ -45,7 +45,6 @@ class RichListUtils extends Utils
 	{
 		var richListModel:RichListModel = 
 		{
-			//title:titleModel,
 			content: new Array<CellModel>()
 		};
 		

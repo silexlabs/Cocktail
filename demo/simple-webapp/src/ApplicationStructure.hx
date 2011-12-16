@@ -8,12 +8,13 @@
 // DOM
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
-import haxe.Timer;
 import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
+import cocktailCore.resource.ResourceLoader;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -30,6 +31,12 @@ import components.richList.StyleNormal;
 import components.richList.StyleApp;
 import components.richList.RichListUtils;
 
+// Gallery specific
+import components.gallery.Gallery;
+
+// Navigation
+import Navigation;
+
 /**
  * Handles all applications pages
  * 
@@ -42,6 +49,10 @@ class ApplicationStructure
 	// pagesContainer is the container for all pages
 	public var pagesContainer:ContainerDOMElement;
 
+	// navigation is used for navigation
+	private var navigation:Navigation;
+
+	
 	// the home page looking like a smartphone desktop
 	private var _homePage:ContainerDOMElement;
 	
@@ -49,6 +60,12 @@ class ApplicationStructure
 	private var _calListPage:ContainerDOMElement;
 	private var _dayPage:ContainerDOMElement;
 	
+	// the gallery pages
+	private var _galleryPage:ContainerDOMElement;
+	private var _imagePage:ContainerDOMElement;
+	// the gallery
+	private var _gallery:Gallery;
+		
 	// the music pages
 	private var _artistListPage:ContainerDOMElement;
 	private var _albumListPage:ContainerDOMElement;
@@ -62,14 +79,12 @@ class ApplicationStructure
 	// the credit page
 	private var _creditsPage:ContainerDOMElement;
 	
-	// the current visible page
-	private var _currentPage:ContainerDOMElement;
-	
+
 	public function new() 
 	{
 		pagesContainer = Utils.getContainer();
 		//IphoneStyle.getPageContainerStyle(pagesContainer);
-
+		
 		createAllPages();
 	}
 	
@@ -92,6 +107,7 @@ class ApplicationStructure
 
 		// the music pages
 		_songPage = createHeaderContentPage("Song","You are listening to this song");
+		//_songPage = createEmbedContentPage("Song","http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&auto_play=false&show_artwork=true&color=2b877f");
 		_songListPage = createHeaderListPage(
 			"Artist - Album",
 			[
@@ -123,6 +139,10 @@ class ApplicationStructure
 			]
 		);
 
+		// the gallery page
+		_imagePage = createHeaderImagePage("Image 1","images/cocktail.jpg");
+		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
+		
 		// the notes pages
 		_notePage = createHeaderContentPage("Note","This is the content of the note");
 		_noteListPage = createHeaderListPage(
@@ -148,49 +168,42 @@ class ApplicationStructure
 		);
 		
 		// the credit page
-		_creditsPage = createHeaderContentPage("Credits", "This is a Cocktail demo. Cocktail is a cross-platform library for the HaXe programming language. It bridges the gap between all the targets supported by haXe, removing inconsistencies behind a common API. With it, the same code base is used to deploy to these targets: Flash, javaScript, PHP. It helps multi device application development and should be used by haXe projects requiring cross-target compilation. Silex Labs Cocktail library is released under GPL. Project home: http://www.silexlabs.org/groups/labs/cocktail/");
-
-		// the home page
-		_homePage = createHomePage(
+		_creditsPage = createHeaderListPage(
+			"Credits",
 			[
-				{text:"Cal", imagePath:"images/NavButtonCalendar.png", action:"goToPage", actionTarget:_calListPage },
-				{text:"Music", imagePath:"images/NavButtonMusic.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Notes", imagePath:"images/NavButtonNotes.png", action:"goToPage", actionTarget:_noteListPage },
-				{text:"Credits", imagePath:"images/NavButtonCredits.png", action:"goToPage", actionTarget:_creditsPage }
+			{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
+			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
+			{text:"done for Silex Labs", imagePath:"images/icone_silexlabs_noire.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+			{text:"by Raphael Harmel", imagePath:"images/google+.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
+			{text:"", imagePath:"", action:"", actionTarget:"" },
+			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
+			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
+			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
 			]
 		);
-		_currentPage = _homePage;
+		
+		// the home page
+		var homePageCells:Array<CellModel> =
+			[	{text:"Cal", imagePath:"images/NavButtonCalendarHD.png", action:"goToPage", actionTarget:_calListPage },
+				{text:"Music", imagePath:"images/NavButtonMusicHD.png", action:"goToPage", actionTarget:_artistListPage },
+				{text:"Gallery", imagePath:"images/NavButtonGalleryHD.png", action:"goToPage", actionTarget:_galleryPage },
+				{text:"Notes", imagePath:"images/NavButtonNotesHD.png", action:"goToPage", actionTarget:_noteListPage }
+			];
+		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche_ombre.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" } );
+		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche_ombre.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
+		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche_ombre.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche_ombre.png", action:"", actionTarget:"" } );
+		homePageCells.push( {text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage } );
+		
+		_homePage = createHomePage(homePageCells);
 		
 		// adds the home page to pagesContainer
-		pagesContainer.addChild(_homePage);
-	}
-	
-	/**
-	 * Hides the current page and shows the wanted page
-	 * 
-	 * @param	application		the main containerDOMElement where to attach the page
-	 * @param	page			the wanted page
-	 */
-	private function showPage(page:ContainerDOMElement):Void
-	{
-		pagesContainer.removeChild(_currentPage);
-		pagesContainer.addChild(page);
-		_currentPage = page;
-	}
-	
-	/**
-	 * Called when a new cell is selected in a list
-	 * 
-	 * @param	cell
-	 */
-	function onChangeListCallback(cell : CellModel)
-	{
-		if (cell.action == "goToPage")
-		{
-			showPage(cell.actionTarget);
-		}
-		//if (cellData.action == "gotoURLAction")
-			//gotoURL(cellData.actionTarget);
+		//pagesContainer.addChild(_homePage);
+
+		// instanciate navigation class with pagesContainer and homePage
+		navigation = new Navigation(pagesContainer,_homePage);
 	}
 	
 	/**
@@ -216,6 +229,7 @@ class ApplicationStructure
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
+		//richList.onChange = navigation.onChangeListCallback;
 		
 		
 		// build page domElement
@@ -247,7 +261,7 @@ class ApplicationStructure
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
-		
+		//richList.onChange = navigation.onChangeListCallback;
 		
 		// build hierarchy
 		page.addChild(header);
@@ -287,6 +301,80 @@ class ApplicationStructure
 	}
 	
 	/**
+	 * Creates an image header page for the gallery
+	 * 
+	 * @param	title
+	 * @param	imageUrl
+	 * @return
+	 */
+	private function createHeaderImagePage(title:String, imageUrl:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+
+		// build hierarchy
+		page.addChild(header);
+		
+		// set style
+		WebAppStyle.getPageStyle(page);
+
+		return page;
+	}
+	
+	/**
+	 * Creates an gallery header page
+	 * 
+	 * @param	title
+	 * @param	rssFeedPath
+	 * @return
+	 */
+	private function createHeaderGalleryPage(title:String, rssFeedPath:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+		
+		// create gallery
+		_gallery = new Gallery(rssFeedPath);
+
+		// build hierarchy
+		page.addChild(header);
+		page.addChild(_gallery);
+		
+		// set style
+		WebAppStyle.getPageStyle(page);
+
+		return page;
+	}
+	
+	/**
+	 * Creates an embedded header page
+	 * 
+	 * @param	title
+	 * @param	embeddedLink
+	 * @return	the corresponding page
+	 */
+	/*private function createEmbedContentPage(title:String, embeddedLink:String):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+
+		// create embedded element
+		var embeddedElement:EmbeddedDOMElement = new EmbeddedDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("embed")));
+		
+		// build hierarchy
+		page.addChild(header);
+		WebAppStyle.getPageStyle(page);
+		
+		return page;
+	}*/
+	
+	/**
 	 * Creates a header with a Tile, a title and a back button
 	 * 
 	 * @param	title
@@ -301,8 +389,7 @@ class ApplicationStructure
 		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
 		var headerTilePath:String = "images/H1.png";
 		
-		headerTile.style.width = DimensionStyleValue.percent(100);
-		headerTile.style.height = DimensionStyleValue.length(px(43));
+		WebAppStyle.getHeaderTileStyle(headerTile);
 		headerTile.load(headerTilePath);
 		
 		
@@ -324,7 +411,7 @@ class ApplicationStructure
 		var backButtonText:TextElement = new TextElement('Back');
 		backButtonTextContainer.addText(backButtonText);
 		backButtonContainer.addChild(backButtonTextContainer);
-		backButtonContainer.onMouseUp = onBackButtonMouseUp;
+		backButtonContainer.onMouseUp = goToPreviousPage;
 
 		// header title
 		var headerTitle:TextElement = new TextElement(title);
@@ -371,6 +458,7 @@ class ApplicationStructure
 			list:StyleApp.getDefaultStyle,
 			cell:StyleApp.getCellStyle,
 			cellImage:StyleApp.getCellImageStyle,
+			cellText:StyleApp.getCellTextStyle,
 			cellMouseOver:StyleApp.getCellMouseOverStyle,
 			cellMouseOut:StyleApp.getCellMouseOutStyle,
 			cellMouseDown:StyleApp.getCellMouseDownStyle,
@@ -399,6 +487,7 @@ class ApplicationStructure
 			list:StyleNormal.getDefaultStyle,
 			cell:StyleNormal.getCellStyle,
 			cellImage:StyleNormal.getCellImageStyle,
+			cellText:StyleNormal.getCellTextStyle,
 			cellMouseOver:StyleNormal.getCellMouseOverStyle,
 			cellMouseOut:StyleNormal.getCellMouseOutStyle,
 			cellMouseDown:StyleNormal.getCellMouseDownStyle,
@@ -414,8 +503,24 @@ class ApplicationStructure
 	 * 
 	 * @param	mouseEvent
 	 */
-	private function onBackButtonMouseUp(mouseEvent:MouseEventData):Void
+	public function goToPreviousPage(mouseEvent:MouseEventData):Void
 	{
-		showPage(_homePage);
+		// if current page is gallery and fullsize picture is displayed, display the gallery
+		if (navigation.currentPage == _galleryPage && _gallery.galleryDisplayed == false)
+			_gallery.displayGallery()
+		else
+			// show previous page in the history
+			navigation.goToPreviousPage();
 	}
+
+	/**
+	 * Called when a new cell is selected in a list
+	 * 
+	 * @param	cell
+	 */
+	public function onChangeListCallback(cell:CellModel)
+	{
+		navigation.onChangeListCallback(cell);
+	}
+	
 }

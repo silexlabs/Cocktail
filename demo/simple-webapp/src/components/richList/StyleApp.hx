@@ -16,6 +16,7 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 
 // Style
+import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
@@ -32,7 +33,6 @@ import components.richList.RichListModels;
 
 class StyleApp
 {
-
 	/**
 	 * Defines default Style
 	 * 
@@ -40,8 +40,13 @@ class StyleApp
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(10));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(10));
+		domElement.style.marginLeft =MarginStyleValue.length(px(10));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(10));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(10));
 		
@@ -56,25 +61,13 @@ class StyleApp
 	 */
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
-		//getDefaultStyle(domElement);
-		
-		domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
-		domElement.style.fontSize = FontSizeStyleValue.length(px(12));
-		domElement.style.textAlign = TextAlignStyleValue.center;
-		domElement.style.color = ColorValue.keyword(ColorKeywordValue.white);
-
-		domElement.style.height = DimensionStyleValue.auto;
-		domElement.style.width = DimensionStyleValue.auto;
-		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(18));
 		domElement.style.marginTop = MarginStyleValue.length(px(10));
 		domElement.style.marginBottom = MarginStyleValue.length(px(10));
 		
-		domElement.style.textAlign = TextAlignStyleValue.center;
-
 		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.color = ColorValue.hex('BDBDCE');
+		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 	
 	/**
@@ -84,13 +77,27 @@ class StyleApp
 	 */
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(57));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
 	
+	/**
+	 * Defines cell text Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getCellTextStyle(domElement:DOMElement):Void
+	{
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.width = DimensionStyleValue.length(px(57));
+		domElement.style.color = ColorValue.hex('#BDBDCE');
+		
+		domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
+		domElement.style.fontSize = FontSizeStyleValue.length(px(12));
+		domElement.style.textAlign = TextAlignStyleValue.center;
+	}
+
 	/**
 	 * Defines mouse over Style
 	 * 
@@ -98,9 +105,7 @@ class StyleApp
 	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
-		//getCellStyle(domElement);
-
-		domElement.style.color = ColorValue.hex('DDDDDD');
+		domElement.style.color = ColorValue.hex('#DDDDDD');
 	}
 	
 	/**
@@ -110,9 +115,7 @@ class StyleApp
 	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
-		//getCellStyle(domElement);
-
-		domElement.style.color = ColorValue.hex('BDBDCE');
+		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 	
 	/**
@@ -122,8 +125,6 @@ class StyleApp
 	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
-		//getCellStyle(domElement);
-
 		domElement.style.color = ColorValue.keyword(ColorKeywordValue.white);
 	}
 	
@@ -134,8 +135,6 @@ class StyleApp
 	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
-		//getCellStyle(domElement);
-
-		domElement.style.color = ColorValue.hex('BDBDCE');
+		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 }
