@@ -3432,6 +3432,49 @@ cocktailCore.resource.abstract.AbstractImageLoader.prototype = $extend(cocktailC
 	,__class__: cocktailCore.resource.abstract.AbstractImageLoader
 	,__properties__: {get_nativeElement:"getNativeElement"}
 });
+var Navigation = $hxClasses["Navigation"] = function(container,startPage) {
+	this.pagesContainer = container;
+	this.currentPage = startPage;
+	this._previousPages = new Array();
+	this._previousPages.push(startPage);
+}
+Navigation.__name__ = ["Navigation"];
+Navigation.prototype = {
+	pagesContainer: null
+	,currentPage: null
+	,_previousPages: null
+	,goToPreviousPage: function() {
+		this.showPage(this.getPreviousPage());
+	}
+	,getPreviousPage: function() {
+		this._previousPages.pop();
+		var previousPage = this._previousPages[this._previousPages.length - 1];
+		if(previousPage == null) return this._previousPages[0];
+		return previousPage;
+	}
+	,addToHistory: function(page) {
+		if(page == this._previousPages[0]) this._previousPages = [page]; else this._previousPages.push(page);
+	}
+	,showPage: function(page) {
+		this.pagesContainer.removeChild(this.currentPage);
+		this.pagesContainer.addChild(page);
+		this.currentPage = page;
+	}
+	,onChangeListCallback: function(cell) {
+		if(cell.action == "goToPage") {
+			var page = cell.actionTarget;
+			this.addToHistory(page);
+			this.showPage(page);
+		} else if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget); else if(cell.action == "openUrl") this.openUrl(cell.actionTarget);
+	}
+	,goToUrl: function(url) {
+		js.Lib.window.open(url);
+	}
+	,openUrl: function(url) {
+		js.Lib.window.open(url,"_self");
+	}
+	,__class__: Navigation
+}
 cocktailCore.style.InlineBoxValue = $hxClasses["cocktailCore.style.InlineBoxValue"] = { __ename__ : ["cocktailCore","style","InlineBoxValue"], __constructs__ : ["domElement","space","tab"] }
 cocktailCore.style.InlineBoxValue.domElement = ["domElement",0];
 cocktailCore.style.InlineBoxValue.domElement.toString = $estr;
@@ -6836,6 +6879,7 @@ var ApplicationStructure = $hxClasses["ApplicationStructure"] = function() {
 ApplicationStructure.__name__ = ["ApplicationStructure"];
 ApplicationStructure.prototype = {
 	pagesContainer: null
+	,navigation: null
 	,_homePage: null
 	,_calListPage: null
 	,_dayPage: null
@@ -6849,8 +6893,6 @@ ApplicationStructure.prototype = {
 	,_noteListPage: null
 	,_notePage: null
 	,_creditsPage: null
-	,_currentPage: null
-	,_previousPages: null
 	,createAllPages: function() {
 		this._dayPage = this.createHeaderContentPage("Day","This is what I have planned today");
 		this._calListPage = this.createHeaderListPage("Calendar",[{ text : "June 1st", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 2nd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 3rd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 4th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 5th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage}]);
@@ -6866,39 +6908,8 @@ ApplicationStructure.prototype = {
 		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage},{ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage}];
 		homePageCells.push({ text : "Silex Labs", imagePath : "images/silex_labs.jpg", action : "openUrl", actionTarget : "http://www.silexlabs.org/"});
 		this._homePage = this.createHomePage(homePageCells);
-		this._currentPage = this._homePage;
-		this._previousPages = new Array();
 		this.pagesContainer.addChild(this._homePage);
-	}
-	,goToPreviousPage: function(mouseEvent) {
-		if(this._currentPage == this._galleryPage && this._gallery.galleryDisplayed == false) this._gallery.displayGallery(); else this.showPage(this.getPreviousPage());
-	}
-	,getPreviousPage: function() {
-		this._previousPages.pop();
-		var previousPage = this._previousPages[this._previousPages.length - 1];
-		if(previousPage == null) return this._homePage;
-		return previousPage;
-	}
-	,addToHistory: function(page) {
-		if(page == this._homePage) this._previousPages = [page]; else this._previousPages.push(page);
-	}
-	,showPage: function(page) {
-		this.pagesContainer.removeChild(this._currentPage);
-		this.pagesContainer.addChild(page);
-		this._currentPage = page;
-	}
-	,onChangeListCallback: function(cell) {
-		if(cell.action == "goToPage") {
-			var page = cell.actionTarget;
-			this.addToHistory(page);
-			this.showPage(page);
-		} else if(cell.action == "goToUrl") this.goToUrl(cell.actionTarget); else if(cell.action == "openUrl") this.openUrl(cell.actionTarget);
-	}
-	,goToUrl: function(url) {
-		js.Lib.window.open(url);
-	}
-	,openUrl: function(url) {
-		js.Lib.window.open(url,"_self");
+		this.navigation = new Navigation(this.pagesContainer,this._homePage);
 	}
 	,createHomePage: function(cellDataArray) {
 		var page = Utils.getContainer();
@@ -6984,7 +6995,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 561, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 442, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.richList.RichListUtils.createRichListModel();
@@ -6999,6 +7010,12 @@ ApplicationStructure.prototype = {
 		var listStyle = { list : components.richList.StyleNormal.getDefaultStyle, cell : components.richList.StyleNormal.getCellStyle, cellImage : components.richList.StyleNormal.getCellImageStyle, cellText : components.richList.StyleNormal.getCellTextStyle, cellMouseOver : components.richList.StyleNormal.getCellMouseOverStyle, cellMouseOut : components.richList.StyleNormal.getCellMouseOutStyle, cellMouseDown : components.richList.StyleNormal.getCellMouseDownStyle, cellMouseUp : components.richList.StyleNormal.getCellMouseUpStyle};
 		var list = new components.richList.RichList(listData,listStyle);
 		return list;
+	}
+	,goToPreviousPage: function(mouseEvent) {
+		if(this.navigation.currentPage == this._galleryPage && this._gallery.galleryDisplayed == false) this._gallery.displayGallery(); else this.navigation.goToPreviousPage();
+	}
+	,onChangeListCallback: function(cell) {
+		this.navigation.onChangeListCallback(cell);
 	}
 	,__class__: ApplicationStructure
 }

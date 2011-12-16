@@ -14,7 +14,6 @@ TO DO
 
 -pages should be loaded when accessing them, and not before
 -read a text local file (in a xml or json file), using polling (reload the same file every x seconds)
--back button should only go one step back
 -load a dynamic content (rss)
  => zabojad's gallery at least => OK
 	=> flickr: http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200
@@ -22,8 +21,6 @@ TO DO
  => news
 	=> yahoo: http://news.yahoo.com/rss/gadgets
 	=> france 2: feeds.feedburner.com/France2-ActuSciencesTech?format=xml
--have the flash version work correctly
- => bugs assigned to Yannick
 -for the sound, embed a player, like => not possible for now, bug assigned to Yannick
  alex:
  => html5 = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F1187266&auto_play=false&show_artwork=true&color=2b877f
@@ -33,6 +30,9 @@ TO DO
  => flash = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
 
 DONE
+-have the flash version work correctly
+ => bugs assigned to Yannick
+-back button should only go one step back
 -home page: silex labs community platform, cocktail site (in SL Labs), links (a list with haxe, website of raph)
 -load the gallery demo inside the body (as a skin, keep the web app header) - there has to be a conditional compilation switch (the flash version of the gallery in the flash version of the web app)
 -have the flash version work correctly
