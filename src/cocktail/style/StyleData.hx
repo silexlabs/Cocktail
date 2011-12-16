@@ -717,24 +717,87 @@ import cocktail.unit.UnitData;
 		percent(value:Int);
 	}
 	
+	/**
+	 * Specifies the origin of transformation
+	 * for a DOMElement along the x and y
+	 * axis
+	 */
 	typedef TransformOriginStyleData = {
+		
+		/**
+		 * x axis origin
+		 */
 		var x:TransformOriginXStyleValue;
+		
+		/**
+		 * y axis origin
+		 */
 		var y:TransformOriginYStyleValue;
 		
 	}
 	
+	/**
+	 * The list of available transformation
+	 * origin values for x axis
+	 */
 	enum TransformOriginXStyleValue {
+		
+		/**
+		 * a length value
+		 */
 		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's width
+		 */
 		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
 		left;
+		
+		/**
+		 * same as 50%
+		 */
 		center;
+		
+		/**
+		 * same as 100%
+		 */
 		right;
 	}
 	
+	/**
+	 * The list of available transformation
+	 * origin values for y axis
+	 */
 	enum TransformOriginYStyleValue {
+		
+		/**
+		 * a length value
+		 */
 		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
 		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
 		top;
+		
+		/**
+		 * same as 50%
+		 */
 		center;
+		
+		/**
+		 * same as 100%
+		 */
 		bottom;
 	}

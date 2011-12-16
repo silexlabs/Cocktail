@@ -70,6 +70,12 @@ class AbstractStyle
 	private var _visibility:VisibilityStyleValue;
 	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
 	
+	private var _tranformOrigin:TransformOriginStyleData;
+	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
+	
+	private var _transform:TransformStyleValue;
+	public var transform(getTransform, setTransform):TransformStyleValue;
+	
 	/**
 	 * box model styles
 	 */
@@ -1619,5 +1625,25 @@ class AbstractStyle
 	private function getTextAlign():TextAlignStyleValue
 	{
 		return _textAlign;
+	}
+	
+	private function setTransform(value:TransformStyleValue):TransformStyleValue
+	{
+		return _transform = value;
+	}
+	
+	private function getTransform():TransformStyleValue
+	{
+		return _transform;
+	}
+	
+	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	{
+		return _tranformOrigin = value;
+	}
+	
+	private function getTransformOrigin():TransformOriginStyleData
+	{
+		return _tranformOrigin;
 	}
 }
