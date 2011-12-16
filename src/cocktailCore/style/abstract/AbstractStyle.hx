@@ -8,6 +8,7 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
 import cocktail.viewport.Viewport;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
@@ -360,7 +361,7 @@ class AbstractStyle
 			visibility:true,
 			opacity:1.0,
 			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Array<TransformFunctionValue>()
+			transform:new Matrix()
 		};
 	}
 	
@@ -743,9 +744,10 @@ class AbstractStyle
 		initComputedStyles();
 		
 		computeDisplayStyles();
-		computeVisualEffectStyles();
-		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
+		computeVisualEffectStyles();
+	
 	}
 	
 	/**

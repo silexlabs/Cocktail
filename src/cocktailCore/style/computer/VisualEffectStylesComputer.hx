@@ -7,10 +7,13 @@
 */
 package cocktailCore.style.computer;
 
+import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
+import cocktailCore.unit.UnitManager;
 
 /**
  * This is a static class in charge of
@@ -51,6 +54,12 @@ class VisualEffectStylesComputer
 		
 		//visibility
 		computedStyle.visibility = getComputedVisibility(style);
+		
+		//transformOrigin
+		computedStyle.transformOrigin = getComputedTransformOrigin(style);
+		
+		//transform
+		computedStyle.transform = getComputedTransform(style);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -91,4 +100,167 @@ class VisualEffectStylesComputer
 		
 		return visibility;
 	}
+	
+	/**
+	 * Compute the transformation origin and returns it as a 2d point
+	 * in pixel
+	 */
+	private static function getComputedTransformOrigin(style:AbstractStyle):PointData
+	{
+		var x:Float;
+		var y:Float;
+		
+		//x axis
+		switch (style.transformOrigin.x)
+		{
+			case TransformOriginXStyleValue.length(value):
+				x = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			
+			case TransformOriginXStyleValue.percent(value):
+				x = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
+				
+			case TransformOriginXStyleValue.left:
+				x = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
+				
+			case TransformOriginXStyleValue.center:
+				x = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
+				
+			case TransformOriginXStyleValue.right:
+				x = UnitManager.getPixelFromPercent(100, style.computedStyle.width);		
+		}
+		
+		//y axis
+		switch (style.transformOrigin.y)
+		{
+			case TransformOriginYStyleValue.length(value):
+				y = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			
+			case TransformOriginYStyleValue.percent(value):
+				y = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
+				
+			case TransformOriginYStyleValue.top:
+				y = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
+				
+			case TransformOriginYStyleValue.center:
+				y = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
+				
+			case TransformOriginYStyleValue.bottom:
+				y = UnitManager.getPixelFromPercent(100, style.computedStyle.width);			
+		}
+		
+		//return the point
+		var transformOriginPoint:PointData = {
+			x:x,
+			y:y
+		}
+		
+		return transformOriginPoint;
+	}
+	
+	/**
+	 * Compute a transformation matrix to apply to the DOMElement
+	 * from the array of transform functions concatenated in order
+	 */
+	private static function getComputedTransform(style:AbstractStyle):Matrix
+	{
+		var transformFunctions:Array<TransformFunctionValue>;
+		var transformOrigin:PointData = style.computedStyle.transformOrigin;
+		
+		//the matrix that will concatenate the transform functions
+		var matrix:Matrix = new Matrix();
+		
+		//retrieve the transform functions or init an empty array
+		switch (style.transform)
+		{
+			case TransformStyleValue.transformFunctions(value):
+				transformFunctions = value;
+				
+			case TransformStyleValue.none:
+				transformFunctions = new Array<TransformFunctionValue>();
+		}
+		
+		//apply each transform functions to the matrix in order
+		for (i in 0...transformFunctions.length)
+		{
+			var transformFunction:TransformFunctionValue = transformFunctions[i];
+			
+			switch (transformFunction)
+			{
+				//concatenate another matrix
+				case TransformFunctionValue.matrix(data):
+					matrix.concatenate(new Matrix(data));
+				
+				//rotate	
+				case TransformFunctionValue.rotate(value):
+					var angle:Int = Math.round(UnitManager.getDegreeFromAngleValue(value));
+					matrix.rotate(angle, transformOrigin);
+				
+				//scale x and y	
+				case TransformFunctionValue.scale(sx, sys):
+					matrix.scale(sx, sys, transformOrigin);
+				
+				//scale x	
+				case TransformFunctionValue.scaleX(sx):
+					matrix.scale(sx, 1, transformOrigin);
+				
+				//scale y	
+				case TransformFunctionValue.scaleY(sy):
+					matrix.scale(1, sy, transformOrigin);
+				
+				//skew x and y	
+				case TransformFunctionValue.skew(angleX, angleY):
+					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
+					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
+					matrix.skew(skewX, skewY, transformOrigin);
+				
+				//skew x	
+				case TransformFunctionValue.skewX(angleX):
+					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
+					matrix.skew(skewX, 1, transformOrigin);
+				
+				//skew y	
+				case TransformFunctionValue.skewY(angleY):
+					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
+					matrix.skew(1, skewY, transformOrigin);
+				
+				//translate x and y	
+				case TransformFunctionValue.translate(tx, ty):
+					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
+					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
+					matrix.translate(translationX, translationY);
+				
+				//translate x	
+				case TransformFunctionValue.translateX(tx):
+					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
+					matrix.translate(translationX, 0.0);
+				
+				//translate y	
+				case TransformFunctionValue.translateY(ty):
+					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
+					matrix.translate(0.0, translationY);	
+			}
+		}
+		
+		return matrix;
+	}
+	
+	/**
+	 * Utils method to compute a TransformValue into a float
+	 */
+	private static function getComputedTranslation(style:AbstractStyle, translation:TranslationValue, percentReference:Int):Float
+	{
+		var computedTranslation:Float;
+		
+		switch (translation)
+		{
+			case TranslationValue.length(value):
+				computedTranslation = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				
+			case TranslationValue.percent(value):
+				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);
+		}
+		
+		return computedTranslation;
+	}
+	
 }
