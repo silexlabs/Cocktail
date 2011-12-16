@@ -303,6 +303,13 @@ class AbstractStyle
 		this.visibility = VisibilityStyleValue.visible;
 		this.opacity = OpacityStyleValue.number(1.0);
 		
+		this.transformOrigin = {
+			x:TransformOriginXStyleValue.center,
+			y:TransformOriginYStyleValue.center
+		}
+		
+		this.transform = TransformStyleValue.none;
+		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		this.fontFamily = defaultStyles.fontFamily;
 		this.color = defaultStyles.color;
@@ -351,7 +358,9 @@ class AbstractStyle
 			textAlign:TextAlignStyleValue.left,
 			color:0,
 			visibility:true,
-			opacity:1.0
+			opacity:1.0,
+			transformOrigin: { x:0.0, y:0.0 },
+			transform:new Array<TransformFunctionValue>()
 		};
 	}
 	
@@ -735,9 +744,8 @@ class AbstractStyle
 		
 		computeDisplayStyles();
 		computeVisualEffectStyles();
-		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
-		
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 	}
 	
 	/**
