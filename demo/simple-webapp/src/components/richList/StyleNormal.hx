@@ -98,7 +98,7 @@ class StyleNormal
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.float = FloatStyleValue.right;
 		//domElement.style.width = DimensionStyleValue.length(px(16));
-		domElement.style.height = DimensionStyleValue.length(px(16));
+		domElement.style.height = DimensionStyleValue.length(px(20));
 		//domElement.style.height = DimensionStyleValue.length(px(29));
 	}
 	
