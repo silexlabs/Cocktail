@@ -5843,11 +5843,11 @@ cocktailCore.style.positioner.FixedPositioner.prototype = $extend(cocktailCore.s
 components.richList.StyleApp = $hxClasses["components.richList.StyleApp"] = function() { }
 components.richList.StyleApp.__name__ = ["components","richList","StyleApp"];
 components.richList.StyleApp.getDefaultStyle = function(domElement) {
-	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(10)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(10)));
@@ -5856,15 +5856,17 @@ components.richList.StyleApp.getDefaultStyle = function(domElement) {
 }
 components.richList.StyleApp.getCellStyle = function(domElement) {
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(18)));
-	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
-	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#BDBDCE"));
 }
 components.richList.StyleApp.getCellImageStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-	domElement.getStyle().setWidth(domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(57))));
+	domElement.getStyle().setWidth(domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(60))));
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 }
 components.richList.StyleApp.getCellTextStyle = function(domElement) {
@@ -6906,11 +6908,11 @@ ApplicationStructure.prototype = {
 		this._notePage = this.createHeaderContentPage("Note","This is the content of the note");
 		this._noteListPage = this.createHeaderListPage("Notes",[{ text : "Note 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 6", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 7", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 8", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 9", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 10", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 11", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 12", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 13", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 14", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 15", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 16", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage}]);
 		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/icone_cocktail.png", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/icone_silexlabs_noire.png", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.png", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
-		var homePageCells = [{ text : "Cal", imagePath : "images/NavButtonCalendarHD.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/NavButtonMusicHD.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/NavButtonGalleryHD.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/NavButtonNotesHD.png", action : "goToPage", actionTarget : this._noteListPage}];
-		homePageCells.push({ text : "Cocktail", imagePath : "images/icone_cocktail_blanche_ombre.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"});
-		homePageCells.push({ text : "haXe", imagePath : "images/icone_haxe_blanche_ombre.png", action : "openUrl", actionTarget : "http://haxe.org/"});
-		homePageCells.push({ text : "Silex Labs", imagePath : "images/icone_silexlabs_blanche_ombre.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/"});
-		homePageCells.push({ text : "Intermedia", imagePath : "images/icone_intermedia_blanche_ombre.png", action : "", actionTarget : ""});
+		var homePageCells = [{ text : "Cal", imagePath : "images/calendrier_blanc.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/icone_music_blanc.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/icone_gallery_blanche.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/icone_bloc_note.png", action : "goToPage", actionTarget : this._noteListPage}];
+		homePageCells.push({ text : "Cocktail", imagePath : "images/icone_cocktail_blanche.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"});
+		homePageCells.push({ text : "haXe", imagePath : "images/icone_haxe_blanche.png", action : "openUrl", actionTarget : "http://haxe.org/"});
+		homePageCells.push({ text : "Silex Labs", imagePath : "images/icone_silexlabs_blanche.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/"});
+		homePageCells.push({ text : "Intermedia", imagePath : "images/icone_intermedia_blanche.png", action : "", actionTarget : ""});
 		homePageCells.push({ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage});
 		this._homePage = this.createHomePage(homePageCells);
 		this.navigation = new Navigation(this.pagesContainer,this._homePage);

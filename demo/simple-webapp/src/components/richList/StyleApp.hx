@@ -40,12 +40,12 @@ class StyleApp
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		domElement.style.marginLeft =MarginStyleValue.length(px(10));
+		domElement.style.marginLeft =MarginStyleValue.length(px(6));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(10));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(10));
@@ -62,9 +62,12 @@ class StyleApp
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(18));
-		domElement.style.marginTop = MarginStyleValue.length(px(10));
-		domElement.style.marginBottom = MarginStyleValue.length(px(10));
+		domElement.style.marginRight = MarginStyleValue.length(px(6));
+		domElement.style.marginTop = MarginStyleValue.length(px(6));
+		domElement.style.marginBottom = MarginStyleValue.length(px(6));
+
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(5));		
 		
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.color = ColorValue.hex('#BDBDCE');
@@ -78,7 +81,7 @@ class StyleApp
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(57));
+		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(60));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
 	
