@@ -444,6 +444,8 @@ class AbstractStyle
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 		
+
+		
 		//compute all the styles of a DOMElement
 		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
@@ -454,10 +456,14 @@ class AbstractStyle
 		setNativeHeight(this._domElement, this._computedStyle.height);
 		setNativeWidth(this._domElement, this._computedStyle.width);
 		
-		//apply the computed visual effect on the DOMElement
+		//when all the dimensions of the domElement are known, compute the 
+		//visual effects to apply (visibility, opacity, transform)
+		computeVisualEffectStyles();
+
+		//apply the computed visual effects on the DOMElement
+		setNativeMatrix(this._domElement, this._computedStyle.transform);
 		setNativeOpacity(this._domElement, this._computedStyle.opacity);
 		setNativeVisibility(this._domElement, this._computedStyle.visibility);
-		setNativeMatrix(this._domElement, this._computedStyle.transform);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
@@ -747,8 +753,6 @@ class AbstractStyle
 		computeDisplayStyles();
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
-		computeVisualEffectStyles();
-	
 	}
 	
 	/**
@@ -767,7 +771,7 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute the visual effect styles (opacity, visibility)
+	 * Compute the visual effect styles (opacity, visibility, transformations)
 	 */
 	private function computeVisualEffectStyles():Void
 	{
@@ -1464,6 +1468,7 @@ class AbstractStyle
 	
 	private function setTransform(value:TransformStyleValue):TransformStyleValue
 	{
+		invalidate();
 		return _transform = value;
 	}
 	

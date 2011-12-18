@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.as3;
 
+import cocktail.geom.Matrix;
 import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
 
 /**
@@ -22,6 +23,17 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	public function new() 
 	{
 		super();
+	}
+	
+		/**
+	 * when the matrix is set, update also
+	 * the values of the native flash matrix of the
+	 * native DisplayObject
+	 * @param	matrix
+	 */
+	override private function setMatrix(matrix:Matrix):Matrix
+	{
+		return matrix;
 	}
 	
 }

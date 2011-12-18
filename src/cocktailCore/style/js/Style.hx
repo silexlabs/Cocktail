@@ -358,19 +358,19 @@ class Style extends AbstractStyle
 		switch (value.y)
 		{
 			case TransformOriginYStyleValue.length(value):
-				cssTransformOriginValue = getCSSLengthValue(value);
+				cssTransformOriginValue += getCSSLengthValue(value);
 				
 			case TransformOriginYStyleValue.percent(value):
-				cssTransformOriginValue = getCSSPercentValue(value);
+				cssTransformOriginValue += getCSSPercentValue(value);
 				
 			case TransformOriginYStyleValue.top:
-				cssTransformOriginValue = "top";
+				cssTransformOriginValue += "top";
 				
 			case TransformOriginYStyleValue.center:
-				cssTransformOriginValue = "center";
+				cssTransformOriginValue += "center";
 				
 			case TransformOriginYStyleValue.bottom:
-				cssTransformOriginValue = "bottom";
+				cssTransformOriginValue += "bottom";
 		}
 		
 		return cssTransformOriginValue;
@@ -1031,27 +1031,31 @@ class Style extends AbstractStyle
 		}
 		else
 		{
+			
 			//capitalise the style name to respect camel case
 			//convention
-			styleName.charAt(0).toUpperCase();
+			var styleNameCap:String = styleName.charAt(0).toUpperCase();
+			var styleNameEnd:String = styleName.substr(1);
+			styleName = styleNameCap + styleNameEnd;
 			
 			//firefox
-			if (Reflect.hasField(nativeStyle, "Moz" + styleName))
+			if (Reflect.field(nativeStyle, "Moz" + styleName) != null)
 			{
 				vendorSpecificStyleName = "Moz" + styleName;
 			}
 			//webkit (chrome, safari...)
-			else if (Reflect.hasField(nativeStyle, "Webkit" + styleName))
+			else if (Reflect.field(nativeStyle, "Webkit" + styleName) != null)
 			{
 				vendorSpecificStyleName = "Webkit" + styleName;
+				Log.trace(vendorSpecificStyleName);
 			}
 			//ie
-			else if (Reflect.hasField(nativeStyle, "Ms" + styleName))
+			else if (Reflect.field(nativeStyle, "Ms" + styleName) != null)
 			{
 				vendorSpecificStyleName = "Ms" + styleName;
 			}
 			//opera
-			else if (Reflect.hasField(nativeStyle, "O" + styleName))
+			else if (Reflect.field(nativeStyle, "O" + styleName) != null)
 			{
 				vendorSpecificStyleName = "O" + styleName;
 			}

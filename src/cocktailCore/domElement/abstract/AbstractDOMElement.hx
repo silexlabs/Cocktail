@@ -393,7 +393,6 @@ class AbstractDOMElement
 	 */
 	private function setScaleX(scaleX:Float):Float
 	{
-		
 		return scaleX;
 	}
 	
