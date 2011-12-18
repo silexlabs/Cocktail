@@ -22,46 +22,28 @@ import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
 // RichList
-import components.richList.RichListModels;
+import components.richList.ContainerRichListModels;
 
 // Iphone specific
 import Utils;
 
 
 /**
- * This contains the utils methods used by the RichLists
+ * This contains the utils methods used by the ContainerRichLists
  * 
  * @author Raphael Harmel
  */
 
-class RichListUtils extends Utils 
+class ContainerRichListUtils extends Utils 
 {
 	/**
-	 * Initializes a rich list model
+	 * Initializes a container rich list model
 	 * 
 	 * @return
 	 */
-	public static function createRichListModel():RichListModel
+	public static function createContainerRichListModel():ContainerRichListModel
 	{
-		var richListModel:RichListModel = 
-		{
-			content: new Array<CellModel>()
-		};
-		
-		return richListModel;	
-	}
-	
-	/**
-	 * Initializes a rich list model
-	 * 
-	 * @return
-	 */
-	public static function createDynamicRichListModel():DynamicRichListModel
-	{
-		var richListModel:DynamicRichListModel = 
-		{
-			content: new Array<DynamicCellModel>()
-		};
+		var richListModel:ContainerRichListModel = new Array<ContainerCellModel>();
 		
 		return richListModel;	
 	}

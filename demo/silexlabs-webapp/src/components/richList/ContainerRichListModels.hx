@@ -6,83 +6,43 @@
 */
 
 package components.richList;
+
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 
 /**
- * The class defines the models used by the RichList
+ * The class defines the models used by the ContainerRichList
  * 
  * @author Raphael Harmel
  */
 
 /**
- * Defines a title model
- */
-/*typedef TitleModel =
-{
-	public var text:String;
-	public var imagePath:String;
-}*/
-
-/**
- * Defines a cell model
- */
-typedef CellModel =
-{
-	public var text:String;
-	public var imagePath:String;
-	public var action:String;
-	public var actionTarget:Dynamic;
-}
-
-/**
- * Defines a cell model
- */
-typedef DynamicCellModel =
-{
-	public var content:Dynamic;
-	public var action:String;
-	public var actionTarget:Dynamic;
-}
-
-/**
  * Defines a cell model with a content as a container
  */
-/*typedef ContainerCellModel =
+typedef ContainerCellModel =
 {
 	public var content:ContainerDOMElement;
 	public var action:String;
 	public var actionTarget:Dynamic;
-}*/
-
-/**
- * Defines a rich list model
- */
-typedef RichListModel =
-{
-	//public var title:TitleModel;
-	public var content:Array<CellModel>;
 }
 
 /**
  * Defines a rich list model
  */
-typedef DynamicRichListModel =
-{
-	//public var title:TitleModel;
-	public var content:Array<DynamicCellModel>;
-}
+typedef ContainerRichListModel = Array<ContainerCellModel>;
+
 
 /**
  * Defines a rich list style model
  */
-typedef RichListStyleModel =
+typedef ContainerRichListStyleModel =
 {
 	public var list:DOMElement->Void;
-	//public var title:DOMElement->Void;
 	public var cell:ContainerDOMElement->Void;
 	public var cellImage:DOMElement->Void;
-	public var cellText:DOMElement->Void;
+	public var cellTextTitle:DOMElement->Void;
+	public var cellTextInfo:DOMElement->Void;
+	public var cellTextDescription:DOMElement->Void;
 	public var cellMouseOver:ContainerDOMElement->Void;
 	public var cellMouseOut:ContainerDOMElement->Void;
 	public var cellMouseDown:ContainerDOMElement->Void;

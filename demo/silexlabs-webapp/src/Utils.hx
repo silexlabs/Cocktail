@@ -17,6 +17,7 @@ import cocktail.domElement.DOMElementData;
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktail.textElement.TextElement;
 
 // Style
 import cocktail.style.StyleData;
@@ -44,6 +45,20 @@ class Utils
 		//ret.x = 0;
 		//ret.y = 0;
 		return ret;
+	}
+	
+	/**
+	 * Initializes a ContainerDOMElement containing a text node
+	 * 
+	 * @return the initalized ContainerDOMElement
+	 */
+	public static function getTextContainer(text:String):ContainerDOMElement
+	{
+		var textContainer:ContainerDOMElement = Utils.getContainer();
+
+		textContainer.addText(new TextElement(text));
+
+		return textContainer;
 	}
 	
 	/**
