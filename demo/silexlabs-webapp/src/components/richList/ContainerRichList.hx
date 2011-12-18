@@ -9,7 +9,6 @@ package components.richList;
 
 // DOM
 import cocktail.classInstance.ClassInstance;
-import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
@@ -29,11 +28,11 @@ import components.richList.RichListUtils;
 
 
 /**
- * RichList class defines a list in which each cell can be composed of a text and an image
+ * ContainerRichList class defines a list in which each cell is composed of a dom element
  * 
  * @author Raphael Harmel
  */
-class RichList extends ContainerDOMElement
+class ContainerRichList extends ContainerDOMElement
 {
 	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
@@ -45,7 +44,7 @@ class RichList extends ContainerDOMElement
 	 * @param	listStyle
 	 * @param	firstElement	first element to be placed in the cell (test or image)
 	 */
-	public function new(richList:DynamicRichListModel, listStyle:RichListStyleModel)
+	public function new(richList:RichListModel, listStyle:RichListStyleModel)
 	{
 		// create a ul node
 		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
@@ -60,7 +59,7 @@ class RichList extends ContainerDOMElement
 	 * @param	richListModel
 	 * @param	listStyle
 	 */
-	private function createRichListDOM(richListModel:DynamicRichListModel, listStyle:RichListStyleModel):Void
+	private function createRichListDOM(richListModel:RichListModel, listStyle:RichListStyleModel):Void
 	{
 		// set list's cell content
 		var content:ContainerDOMElement = Utils.getContainer();
@@ -69,65 +68,53 @@ class RichList extends ContainerDOMElement
 		var cellData:CellModel;
 		for (cellData in richListModel.content)
 		{
-			// create cell
-			var cell:ContainerDOMElement = createCellDOM(cellData.content, listStyle);
+			// create cell with text and image
+			// empty cell part
+			var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+
+			listStyle.cell(cell);
 			
+			// image part
+			if (cellData.imagePath != "" && cellData.imagePath != null)
+			{
+				var cellImage:ImageDOMElement = new ImageDOMElement();
+				// set image style
+				listStyle.cellImage(cellImage);
+				// add image
+				cell.addChild(cellImage);
+				// load image
+				cellImage.load(cellData.imagePath);
+			}
+			
+			// add text
+			var cellTextContainer:ContainerDOMElement = Utils.getContainer();
+			if (cellData.text != "" && cellData.text != null)
+			{
+				var textElement:TextElement = new TextElement(cellData.text);
+				cellTextContainer.addText(textElement);
+				listStyle.cellText(cellTextContainer);
+				cell.addChild(cellTextContainer);
+			}
+
 			// add cell to instance
 			this.addChild(cell);
-		}
-	}
-	
-	/**
-	 * Creates a cell with corresponding data
-	 * 
-	 * @param	cellData
-	 */
-	private function createCellDOM(cellData:Dynamic, listStyle:RichListStyleModel):ContainerDOMElement
-	{
-		// create cell with text and image
-
-		// create cell
-		var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
-		// apply style
-		listStyle.cell(cell);
-		
-		var cellContent:Array<DOMElement> = getCellData(cellData, listStyle);
-		
-		// push content in cell
-		for (container in cellContent)
-		{
-			cell.addChild(container);
-		}
-		
-		// mouse
-		// delegates functions are used to be able to pass an extra parameters to the callback
-		// mouse over
-		var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
-		cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cell, listStyle); };
-		// mouse out
-		var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOut;
-		cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cell, listStyle); };
-		// mouse down
-		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseDown;
-		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };
-		// mouse up
-		var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->CellModel->Void = onCellMouseUp;
-		cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
 			
-		return cell;
-	}
-	
-	/**
-	 * To be overridden by subclass 
-	 * Create an array containing all the data of the cell
-	 * 
-	 * @return the array of data DOM to be added into the cell
-	 */
-	private function getCellData(cellData:Dynamic, listStyle:RichListStyleModel):Array<DOMElement>
-	{
-		var cellContent:Array<DOMElement> = new Array<DOMElement>();
-		
-		return cellContent;
+			// mouse
+			// delegates functions are used to be able to pass an extra parameters to the callback
+			// mouse over
+			var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
+			cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cellTextContainer, listStyle); };
+			// mouse out
+			var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOut;
+			cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cellTextContainer, listStyle); };
+			// mouse down
+			var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseDown;
+			cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cellTextContainer, listStyle); };
+			// mouse up
+			var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->CellModel->Void = onCellMouseUp;
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cellTextContainer, listStyle, cellData); };
+			
+		}
 	}
 	
 	/**

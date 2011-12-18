@@ -2513,9 +2513,9 @@ cocktailCore.domElement.js.ContainerDOMElement.prototype = $extend(cocktailCore.
 });
 var components = components || {}
 if(!components.richList) components.richList = {}
-components.richList.RichList = $hxClasses["components.richList.RichList"] = function(richListModel,listStyle) {
+components.richList.RichList = $hxClasses["components.richList.RichList"] = function(richList,listStyle) {
 	cocktailCore.domElement.js.ContainerDOMElement.call(this,cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
-	this.createRichListDOM(richListModel,listStyle);
+	this.createRichListDOM(richList,listStyle);
 	listStyle.list(this);
 }
 components.richList.RichList.__name__ = ["components","richList","RichList"];
@@ -2527,49 +2527,43 @@ components.richList.RichList.prototype = $extend(cocktailCore.domElement.js.Cont
 		var cellData;
 		var _g = 0, _g1 = richListModel.content;
 		while(_g < _g1.length) {
-			var cellData1 = [_g1[_g]];
+			var cellData1 = _g1[_g];
 			++_g;
-			var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
-			listStyle.cell(cell);
-			if(cellData1[0].imagePath != "" && cellData1[0].imagePath != null) {
-				var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-				listStyle.cellImage(cellImage);
-				cell.addChild(cellImage);
-				cellImage.load(cellData1[0].imagePath);
-			}
-			var cellTextContainer = [Utils.getContainer()];
-			if(cellData1[0].text != "" && cellData1[0].text != null) {
-				var textElement = new cocktailCore.textElement.js.TextElement(cellData1[0].text);
-				cellTextContainer[0].addText(textElement);
-				listStyle.cellText(cellTextContainer[0]);
-				cell.addChild(cellTextContainer[0]);
-			}
+			var cell = this.createCellDOM(cellData1.content,listStyle);
 			this.addChild(cell);
-			var onCellMouseOverDelegate = [this.onCellMouseOver.$bind(this)];
-			cell.setOnMouseOver((function(onCellMouseOverDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseOverDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseOverDelegate,cellTextContainer));
-			var onCellMouseOutDelegate = [this.onCellMouseOut.$bind(this)];
-			cell.setOnMouseOut((function(onCellMouseOutDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseOutDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseOutDelegate,cellTextContainer));
-			var onCellMouseDownDelegate = [this.onCellMouseDown.$bind(this)];
-			cell.setOnMouseDown((function(onCellMouseDownDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseDownDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseDownDelegate,cellTextContainer));
-			var onCellMouseUpDelegate = [this.onCellMouseUp.$bind(this)];
-			cell.setOnMouseUp((function(onCellMouseUpDelegate,cellTextContainer,cellData1) {
-				return function(mouseEventData) {
-					onCellMouseUpDelegate[0](mouseEventData,cellTextContainer[0],listStyle,cellData1[0]);
-				};
-			})(onCellMouseUpDelegate,cellTextContainer,cellData1));
 		}
+	}
+	,createCellDOM: function(cellData,listStyle) {
+		var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
+		listStyle.cell(cell);
+		var cellContent = this.getCellData(cellData,listStyle);
+		var _g = 0;
+		while(_g < cellContent.length) {
+			var container = cellContent[_g];
+			++_g;
+			cell.addChild(container);
+		}
+		var onCellMouseOverDelegate = this.onCellMouseOver.$bind(this);
+		cell.setOnMouseOver(function(mouseEventData) {
+			onCellMouseOverDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseOutDelegate = this.onCellMouseOut.$bind(this);
+		cell.setOnMouseOut(function(mouseEventData) {
+			onCellMouseOutDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseDownDelegate = this.onCellMouseDown.$bind(this);
+		cell.setOnMouseDown(function(mouseEventData) {
+			onCellMouseDownDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseUpDelegate = this.onCellMouseUp.$bind(this);
+		cell.setOnMouseUp(function(mouseEventData) {
+			onCellMouseUpDelegate(mouseEventData,cell,listStyle,cellData);
+		});
+		return cell;
+	}
+	,getCellData: function(cellData,listStyle) {
+		var cellContent = new Array();
+		return cellContent;
 	}
 	,onCellMouseOver: function(mouseEventData,cell,listStyle) {
 		listStyle.cellMouseOver(cell);
@@ -3983,6 +3977,39 @@ cocktailCore.domElement.abstract.AbstractTextFragmentDOMElement.prototype = $ext
 	}
 	,__class__: cocktailCore.domElement.abstract.AbstractTextFragmentDOMElement
 });
+if(!components.richList.thumbList) components.richList.thumbList = {}
+components.richList.thumbList.ThumbList = $hxClasses["components.richList.thumbList.ThumbList"] = function(richList,listStyle) {
+	components.richList.RichList.call(this,richList,listStyle);
+}
+components.richList.thumbList.ThumbList.__name__ = ["components","richList","thumbList","ThumbList"];
+components.richList.thumbList.ThumbList.__super__ = components.richList.RichList;
+components.richList.thumbList.ThumbList.prototype = $extend(components.richList.RichList.prototype,{
+	getCellData: function(cellData,listStyle) {
+		var cellContent = new Array();
+		if(cellData.thumbnail != "" && cellData.thumbnail != null) {
+			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			listStyle.cellImage(cellImage);
+			cellContent.push(cellImage);
+			cellImage.load(cellData.thumbnail);
+		}
+		var cellTitleContainer = Utils.getContainer();
+		if(cellData.title != "" && cellData.title != null) {
+			var textElement = new cocktailCore.textElement.js.TextElement(cellData.title);
+			cellTitleContainer.addText(textElement);
+			listStyle.cellText(cellTitleContainer);
+			cellContent.push(cellTitleContainer);
+		}
+		var cellCommentContainer = Utils.getContainer();
+		if(cellData.comment != "" && cellData.comment != null) {
+			var textElement = new cocktailCore.textElement.js.TextElement(cellData.comment);
+			cellCommentContainer.addText(textElement);
+			listStyle.cellText(cellCommentContainer);
+			cellContent.push(cellCommentContainer);
+		}
+		return cellContent;
+	}
+	,__class__: components.richList.thumbList.ThumbList
+});
 cocktailCore.style.computer.FontAndTextStylesComputer = $hxClasses["cocktailCore.style.computer.FontAndTextStylesComputer"] = function() {
 }
 cocktailCore.style.computer.FontAndTextStylesComputer.__name__ = ["cocktailCore","style","computer","FontAndTextStylesComputer"];
@@ -4311,24 +4338,6 @@ Type.allEnums = function(e) {
 Type.prototype = {
 	__class__: Type
 }
-js.Lib = $hxClasses["js.Lib"] = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	alert(js.Boot.__string_rec(v,""));
-}
-js.Lib.eval = function(code) {
-	return eval(code);
-}
-js.Lib.setErrorHandler = function(f) {
-	js.Lib.onerror = f;
-}
-js.Lib.prototype = {
-	__class__: js.Lib
-}
 components.gallery.Gallery = $hxClasses["components.gallery.Gallery"] = function(rssFeedPath) {
 	cocktailCore.domElement.js.ContainerDOMElement.call(this);
 	components.gallery.Gallery._galleryContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
@@ -4396,6 +4405,24 @@ components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.Contai
 	}
 	,__class__: components.gallery.Gallery
 });
+js.Lib = $hxClasses["js.Lib"] = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	alert(js.Boot.__string_rec(v,""));
+}
+js.Lib.eval = function(code) {
+	return eval(code);
+}
+js.Lib.setErrorHandler = function(f) {
+	js.Lib.onerror = f;
+}
+js.Lib.prototype = {
+	__class__: js.Lib
+}
 cocktailCore.domElement.js.ImageDOMElement = $hxClasses["cocktailCore.domElement.js.ImageDOMElement"] = function(nativeElement) {
 	cocktailCore.domElement.abstract.AbstractImageDOMElement.call(this,nativeElement);
 }
@@ -4822,6 +4849,11 @@ Utils.getContainer = function() {
 	ret.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	return ret;
 }
+Utils.getTextContainer = function(text) {
+	var textContainer = Utils.getContainer();
+	textContainer.addText(new cocktailCore.textElement.js.TextElement(text));
+	return textContainer;
+}
 Utils.getGraphic = function() {
 	var ret = new cocktailCore.domElement.js.GraphicDOMElement();
 	return ret;
@@ -4839,6 +4871,10 @@ Utils.prototype = {
 components.richList.RichListUtils = $hxClasses["components.richList.RichListUtils"] = function() { }
 components.richList.RichListUtils.__name__ = ["components","richList","RichListUtils"];
 components.richList.RichListUtils.createRichListModel = function() {
+	var richListModel = { content : new Array()};
+	return richListModel;
+}
+components.richList.RichListUtils.createDynamicRichListModel = function() {
 	var richListModel = { content : new Array()};
 	return richListModel;
 }
@@ -6846,6 +6882,16 @@ cocktail.unit.ColorKeywordValue.white.__enum__ = cocktail.unit.ColorKeywordValue
 cocktail.unit.ColorKeywordValue.yellow = ["yellow",16];
 cocktail.unit.ColorKeywordValue.yellow.toString = $estr;
 cocktail.unit.ColorKeywordValue.yellow.__enum__ = cocktail.unit.ColorKeywordValue;
+components.richList.ContainerRichListUtils = $hxClasses["components.richList.ContainerRichListUtils"] = function() { }
+components.richList.ContainerRichListUtils.__name__ = ["components","richList","ContainerRichListUtils"];
+components.richList.ContainerRichListUtils.createContainerRichListModel = function() {
+	var richListModel = new Array();
+	return richListModel;
+}
+components.richList.ContainerRichListUtils.__super__ = Utils;
+components.richList.ContainerRichListUtils.prototype = $extend(Utils.prototype,{
+	__class__: components.richList.ContainerRichListUtils
+});
 cocktailCore.resource.js.LibraryLoader = $hxClasses["cocktailCore.resource.js.LibraryLoader"] = function() {
 	cocktailCore.resource.abstract.AbstractResourceLoader.call(this);
 }
@@ -6958,10 +7004,8 @@ ApplicationStructure.prototype = {
 	,_themesPage: null
 	,_pluginsPage: null
 	,createAllPages: function() {
-		this._homePage = this.createHeaderListPage("Silex Labs",[{ text : "Item 1", imagePath : "", action : "", actionTarget : ""},{ text : "Item 2", imagePath : "", action : "", actionTarget : ""},{ text : "Item 3", imagePath : "", action : "", actionTarget : ""},{ text : "Item 4", imagePath : "", action : "", actionTarget : ""},{ text : "Item 5", imagePath : "", action : "", actionTarget : ""}]);
 		var rss = new components.dataProvider.XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2");
 		rss.onLoad = this.onThemeRssLoad.$bind(this);
-		this._pluginsPage = this.createHeaderListPage("Plugins",[{ text : "Plugin 1", imagePath : "", action : "", actionTarget : ""},{ text : "Plugin 2", imagePath : "", action : "", actionTarget : ""},{ text : "Plugin 3", imagePath : "", action : "", actionTarget : ""},{ text : "Plugin 4", imagePath : "", action : "", actionTarget : ""},{ text : "Plugin 5", imagePath : "", action : "", actionTarget : ""}]);
 	}
 	,onThemeRssLoad: function(rss) {
 		var pluginsCells = components.dataProvider.RssUtils.rss2Cells(rss);
@@ -6972,10 +7016,18 @@ ApplicationStructure.prototype = {
 		this._themesPage = this.createHeaderListPage("Themes",cells);
 		return this._themesPage;
 	}
+	,createHeaderContainerPage: function(title,containerCells) {
+		var page = Utils.getContainer();
+		var header = this.createHeader(title);
+		page.addChild(header);
+		page.addChild(containerCells[0].content);
+		WebAppStyle.getPageStyle(page);
+		return page;
+	}
 	,createHeaderListPage: function(title,cellDataArray) {
 		var page = Utils.getContainer();
 		var header = this.createHeader(title);
-		var richList = this.createImageTextRichList(cellDataArray);
+		var richList = this.createThumbList(cellDataArray);
 		richList.onChange = this.onChangeListCallback.$bind(this);
 		page.addChild(header);
 		page.addChild(richList);
@@ -7017,10 +7069,17 @@ ApplicationStructure.prototype = {
 		return backButtonContainer;
 	}
 	,createImageTextRichList: function(content) {
-		var listData = components.richList.RichListUtils.createRichListModel();
+		var listData = components.richList.RichListUtils.createDynamicRichListModel();
 		listData.content = content;
 		var listStyle = { list : components.richList.StyleThumbText.getDefaultStyle, cell : components.richList.StyleThumbText.getCellStyle, cellImage : components.richList.StyleThumbText.getCellImageStyle, cellText : components.richList.StyleThumbText.getCellTextStyle, cellMouseOver : components.richList.StyleThumbText.getCellMouseOverStyle, cellMouseOut : components.richList.StyleThumbText.getCellMouseOutStyle, cellMouseDown : components.richList.StyleThumbText.getCellMouseDownStyle, cellMouseUp : components.richList.StyleThumbText.getCellMouseUpStyle};
 		var list = new components.richList.RichList(listData,listStyle);
+		return list;
+	}
+	,createThumbList: function(content) {
+		var listData = components.richList.RichListUtils.createDynamicRichListModel();
+		listData.content = content;
+		var listStyle = { list : components.richList.StyleThumbText.getDefaultStyle, cell : components.richList.StyleThumbText.getCellStyle, cellImage : components.richList.StyleThumbText.getCellImageStyle, cellText : components.richList.StyleThumbText.getCellTextStyle, cellMouseOver : components.richList.StyleThumbText.getCellMouseOverStyle, cellMouseOut : components.richList.StyleThumbText.getCellMouseOutStyle, cellMouseDown : components.richList.StyleThumbText.getCellMouseDownStyle, cellMouseUp : components.richList.StyleThumbText.getCellMouseUpStyle};
+		var list = new components.richList.thumbList.ThumbList(listData,listStyle);
 		return list;
 	}
 	,goToPreviousPage: function(mouseEvent) {
@@ -7218,19 +7277,79 @@ cocktailCore.style.floats.FloatsManager.prototype = {
 }
 components.dataProvider.RssUtils = $hxClasses["components.dataProvider.RssUtils"] = function() { }
 components.dataProvider.RssUtils.__name__ = ["components","dataProvider","RssUtils"];
-components.dataProvider.RssUtils.rss2Cells = function(xml) {
-	var cells = new Array();
-	var channelNode = xml.firstElement().firstElement();
+components.dataProvider.RssUtils.rss2ContainerCells = function(rss) {
+	var cells = components.richList.ContainerRichListUtils.createContainerRichListModel();
+	var channelNode = rss.firstElement().firstElement();
 	var $it0 = channelNode.elements();
 	while( $it0.hasNext() ) {
 		var channelChild = $it0.next();
 		if(channelChild.getNodeName() == "item") {
-			var cell = { text : "", imagePath : "", action : "", actionTarget : ""};
+			var cellContent = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
+			var cell = { content : cellContent, action : "", actionTarget : ""};
 			var $it1 = channelChild.elements();
 			while( $it1.hasNext() ) {
 				var itemParam = $it1.next();
-				if(itemParam.getNodeName() == "post_title") cell.text = itemParam.firstChild().getNodeValue(); else if(itemParam.getNodeName() == "post_thumbnail") cell.imagePath = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "post_thumbnail") {
+					var image = new cocktailCore.domElement.js.ImageDOMElement();
+					cellContent.addChild(image);
+					image.load(itemParam.firstChild().getNodeValue());
+				}
+				if(itemParam.getNodeName() == "post_title") {
+					var titleContainer = Utils.getTextContainer(itemParam.firstChild().getNodeValue());
+					cellContent.addChild(titleContainer);
+				}
+				if(itemParam.getNodeName() == "post_date_gmt") {
+					var text = "on " + itemParam.firstChild().getNodeValue();
+					var dateContainer = Utils.getTextContainer(text);
+					cellContent.addChild(dateContainer);
+				}
+				if(itemParam.getNodeName() == "guid") {
+					var linkContainer = Utils.getTextContainer(itemParam.firstChild().getNodeValue());
+					cellContent.addChild(linkContainer);
+				}
+				if(itemParam.getNodeName() == "post_author") {
+					var $it2 = itemParam.elements();
+					while( $it2.hasNext() ) {
+						var authorInfo = $it2.next();
+						if(authorInfo.getNodeName() == "nickname") {
+							var text = "Posted by " + authorInfo.firstChild().getNodeValue();
+							var nicknameContainer = Utils.getTextContainer(text);
+							cellContent.addChild(nicknameContainer);
+						}
+					}
+				}
 			}
+			cell.content = cellContent;
+			cells.push(cell);
+		}
+	}
+	return cells;
+}
+components.dataProvider.RssUtils.rss2Cells = function(rss) {
+	var cells = new Array();
+	var channelNode = rss.firstElement().firstElement();
+	var $it0 = channelNode.elements();
+	while( $it0.hasNext() ) {
+		var channelChild = $it0.next();
+		if(channelChild.getNodeName() == "item") {
+			var cell = { content : null, action : "openUrl", actionTarget : "http://www.google.com/"};
+			var cellContent = { imagePath : "", title : "", comment : "Posted "};
+			var $it1 = channelChild.elements();
+			while( $it1.hasNext() ) {
+				var itemParam = $it1.next();
+				if(itemParam.getNodeName() == "post_thumbnail") cellContent.thumbnail = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "post_title") cellContent.title = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "post_author") {
+					var $it2 = itemParam.elements();
+					while( $it2.hasNext() ) {
+						var authorInfo = $it2.next();
+						if(authorInfo.getNodeName() == "nickname") cellContent.comment = cellContent.comment + "by " + authorInfo.firstChild().getNodeValue() + " ";
+					}
+				}
+				if(itemParam.getNodeName() == "post_date_gmt") cellContent.comment = cellContent.comment + "on " + itemParam.firstChild().getNodeValue() + " ";
+				if(itemParam.getNodeName() == "guid") cellContent.actionTarget = itemParam.firstChild().getNodeValue();
+			}
+			cell.content = cellContent;
 			cells.push(cell);
 		}
 	}

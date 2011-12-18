@@ -21,6 +21,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
 import components.dataProvider.RssUtils;
 import components.dataProvider.XmlLoader;
+import components.richList.thumbList.ThumbList;
 
 // Style
 import cocktail.style.StyleData;
@@ -29,6 +30,7 @@ import cocktail.unit.UnitData;
 // RichList specific
 import components.richList.RichList;
 import components.richList.RichListModels;
+import components.richList.ContainerRichListModels;
 import components.richList.StyleNormal;
 import components.richList.StyleThumbText;
 import components.richList.StyleApp;
@@ -85,7 +87,7 @@ class ApplicationStructure
 	private function createAllPages()
 	{
 		// create pages
-		_homePage = createHeaderListPage(
+		/*_homePage = createHeaderListPage(
 			"Silex Labs",
 			[
 				{text:"Item 1", imagePath:"", action:"", actionTarget:"" },
@@ -94,7 +96,7 @@ class ApplicationStructure
 				{text:"Item 4", imagePath:"", action:"", actionTarget:"" },
 				{text:"Item 5", imagePath:"", action:"", actionTarget:"" }
 			]
-		);
+		);*/
 		
 		//var rss:XmlLoader = new XmlLoader("http://www.silexlabs.org/category/feed/ep_posts_in_category/?format=rss2&cat=646");
 		var rss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2");
@@ -103,16 +105,16 @@ class ApplicationStructure
 		rss.onLoad = onThemeRssLoad;
 		
 		// create picture and text richlist page
-		_pluginsPage = createHeaderListPage(
+		/*_pluginsPage = createHeaderListPage(
 			"Plugins",
 			[
-				{text:"Plugin 1", imagePath:"", action:"", actionTarget:"" },
+				{text:"Plugin 1", imagePath:"", action:"goToUrl", actionTarget:"http://www.google.com" },
 				{text:"Plugin 2", imagePath:"", action:"", actionTarget:"" },
 				{text:"Plugin 3", imagePath:"", action:"", actionTarget:"" },
 				{text:"Plugin 4", imagePath:"", action:"", actionTarget:"" },
 				{text:"Plugin 5", imagePath:"", action:"", actionTarget:"" }
 			]
-		);
+		);*/
 	}
 	
 	/**
@@ -122,21 +124,57 @@ class ApplicationStructure
 	 */
 	private function onThemeRssLoad(rss:Xml):Void
 	{
-		var pluginsCells:Array<CellModel> = RssUtils.rss2Cells(rss);
+		var pluginsCells:Array<DynamicCellModel> = RssUtils.rss2Cells(rss);
+		//trace(pluginsCells);
+		//var pluginsCells:Array<ContainerCellModel> = RssUtils.rss2ContainerCells(rss);
+		//var pluginsCells:ContainerRichListModel = RssUtils.rss2ContainerCells(rss);
 		_themesPage = createThemePage(pluginsCells);
 		
 		// instanciate navigation class with pagesContainer and homePage
 		//navigation = new Navigation(pagesContainer,_homePage);
 		navigation = new Navigation(pagesContainer,_themesPage);
+		//navigation = new Navigation(pagesContainer,_pluginsPage);
 
 	}
 	
-	private function createThemePage(cells:Array<CellModel>):ContainerDOMElement
+	private function createThemePage(cells:Array<DynamicCellModel>):ContainerDOMElement
+	//private function createThemePage(cells:Array<ContainerCellModel>):ContainerDOMElement
 	{
 		// create picture and text richlist page
 		_themesPage = createHeaderListPage("Themes", cells);
+		//_themesPage = createHeaderContainerPage("Themes", cells);
 		
 		return _themesPage;
+	}
+	
+	/**
+	 * Creates a container header page
+	 * 
+	 * @param	title
+	 * @param	cellDataArray
+	 * @return	the corresponding page
+	 */
+	private function createHeaderContainerPage(title:String, containerCells:Array<ContainerCellModel>):ContainerDOMElement
+	{
+		var page:ContainerDOMElement = Utils.getContainer();
+		
+		// create header
+		var header:ContainerDOMElement = createHeader(title);
+
+		
+		// create richList data & style
+		//var richList:RichList = createImageTextRichList(cellDataArray);
+		
+		// rich list onChange callback
+		//richList.onChange = onChangeListCallback;
+		//richList.onChange = navigation.onChangeListCallback;
+		
+		// build hierarchy
+		page.addChild(header);
+		page.addChild(containerCells[0].content);
+		WebAppStyle.getPageStyle(page);
+		
+		return page;
 	}
 	
 	/**
@@ -146,7 +184,7 @@ class ApplicationStructure
 	 * @param	cellDataArray
 	 * @return	the corresponding page
 	 */
-	private function createHeaderListPage(title:String, cellDataArray:Array<CellModel>):ContainerDOMElement
+	private function createHeaderListPage(title:String, cellDataArray:Array<DynamicCellModel>):ContainerDOMElement
 	{
 		var page:ContainerDOMElement = Utils.getContainer();
 		
@@ -155,7 +193,8 @@ class ApplicationStructure
 
 		
 		// create richList data & style
-		var richList:RichList = createImageTextRichList(cellDataArray);
+		//var richList:RichList = createImageTextRichList(cellDataArray);
+		var richList:ThumbList = createThumbList(cellDataArray);
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
@@ -236,15 +275,15 @@ class ApplicationStructure
 	}
 	
 	/**
-	 * Create music's richList
+	 * Create richList
 	 * 
 	 * @param	content
 	 * @return	the corresponding richlist
 	 */
-	private function createImageTextRichList(content:Array<CellModel>):RichList
+	private function createImageTextRichList(content:Array<DynamicCellModel>):RichList
 	{
 		// data
-		var listData:RichListModel = RichListUtils.createRichListModel();
+		var listData:DynamicRichListModel = RichListUtils.createDynamicRichListModel();
 		
 		listData.content = content;
 		
@@ -260,6 +299,35 @@ class ApplicationStructure
 			cellMouseUp:StyleThumbText.getCellMouseUpStyle}
 		
 		var list:RichList = new RichList(listData, listStyle);
+		
+		return list;
+	}
+	
+	/**
+	 * Create thumbList
+	 * 
+	 * @param	content
+	 * @return	the corresponding richlist
+	 */
+	private function createThumbList(content:Array<DynamicCellModel>):ThumbList
+	{
+		// data
+		var listData:DynamicRichListModel = RichListUtils.createDynamicRichListModel();
+		
+		listData.content = content;
+		
+		// style
+		var listStyle:RichListStyleModel = {
+			list:StyleThumbText.getDefaultStyle,
+			cell:StyleThumbText.getCellStyle,
+			cellImage:StyleThumbText.getCellImageStyle,
+			cellText:StyleThumbText.getCellTextStyle,
+			cellMouseOver:StyleThumbText.getCellMouseOverStyle,
+			cellMouseOut:StyleThumbText.getCellMouseOutStyle,
+			cellMouseDown:StyleThumbText.getCellMouseDownStyle,
+			cellMouseUp:StyleThumbText.getCellMouseUpStyle}
+		
+		var list:ThumbList = new ThumbList(listData, listStyle);
 		
 		return list;
 	}
