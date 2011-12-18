@@ -46,20 +46,23 @@ class DOMElement extends AbstractDOMElement
 	{
 		super.setMatrix(matrix);
 		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = matrix.data;
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.translate(this.x, this.y);
 		
-		//retrieve the current transformation matrix of the native flash Display Object
-		var currentMatrix:flash.geom.Matrix = this._nativeElement.transform.matrix;
+
+		
+	
+		currentMatrix.concatenate(matrix);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = currentMatrix.data;
 		
 		//create a native matrix with the abstract matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	
 		
-		//concatenate both matrix to prevent losing the current transformations
-		currentMatrix.concat(nativeTransformMatrix);
+		this._nativeElement.transform.matrix = nativeTransformMatrix;
 		
-		//set the native matrix on the native DisplayObject to refresh its display
-		this._nativeElement.transform.matrix = currentMatrix;
 		
 		return this._matrix;
 	}
