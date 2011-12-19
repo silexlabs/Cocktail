@@ -40,7 +40,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded DOMElement, the width doesn't apply
 	 */
-	override private function getNativeWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return 0;
 	}
