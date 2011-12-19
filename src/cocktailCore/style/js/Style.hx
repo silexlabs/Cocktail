@@ -1047,7 +1047,6 @@ class Style extends AbstractStyle
 			else if (Reflect.field(nativeStyle, "Webkit" + styleName) != null)
 			{
 				vendorSpecificStyleName = "Webkit" + styleName;
-				Log.trace(vendorSpecificStyleName);
 			}
 			//ie
 			else if (Reflect.field(nativeStyle, "Ms" + styleName) != null)
