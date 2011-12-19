@@ -192,7 +192,7 @@ class VisualEffectStylesComputer
 				
 				//rotate	
 				case TransformFunctionValue.rotate(value):
-					var angle:Int = Math.round(UnitManager.getDegreeFromAngleValue(value));
+					var angle:Float = Math.round(UnitManager.getRadFromAngleValue(value));
 					matrix.rotate(angle, transformOrigin);
 				
 				//scale x and y	

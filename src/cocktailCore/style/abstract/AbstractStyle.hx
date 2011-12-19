@@ -1233,7 +1233,7 @@ class AbstractStyle
 	/**
 	 * return the rotation of the NativeElement
 	 */
-	public function getNativeRotation():Float
+	public function getNativeRotation():Int
 	{
 		return this._nativeRotation;
 	}
