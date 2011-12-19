@@ -27,22 +27,4 @@ class EmbeddedDOMElement extends AbstractEmbeddedDOMElement
 	{
 		super(nativeElement);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden transformation methods
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When concatenating the base Matrix of an embedded element, it must also
-	 * be scaled using the intrinsic width and height of the DOMElement as reference
-	 * 
-	 */
-	override private function getConcatenatedMatrix(matrix:Matrix):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		currentMatrix.concatenate(matrix);
-		currentMatrix.translate(this.x, this.y);
-		currentMatrix.scale(this.width / this.intrinsicWidth, this.height / this.intrinsicHeight, { x:0.0, y:0.0} );
-		return currentMatrix;
-	}
 }

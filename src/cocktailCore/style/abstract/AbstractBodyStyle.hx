@@ -114,22 +114,22 @@ class AbstractBodyStyle extends ContainerStyle
 		
 	}
 	
-	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(width:Int):Void
 	{
 		
 	}
 	
-	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(height:Int):Void
 	{
 		
 	}
 	
-	override public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	override public function setNativeOpacity(opacity:Float):Void
 	{
 		
 	}
 	
-	override public function setNativeVisibility(domElement:DOMElement, visibility:Bool):Void
+	override public function setNativeVisibility(visibility:Bool):Void
 	{
 		
 	}

@@ -8,6 +8,8 @@
 package cocktailCore.style.as3;
 
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
+import cocktail.geom.GeomData;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
@@ -83,28 +85,52 @@ class Style extends AbstractStyle
 		domElement.nativeElement.y = y;
 	}
 	
-	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(width:Int):Void
 	{
-		super.setNativeWidth(domElement, width);
+		super.setNativeWidth(width);
 		domElement.nativeElement.width = width;
 	}
 	
-	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(height:Int):Void
 	{
-		super.setNativeHeight(domElement, height);
+		super.setNativeHeight(height);
 		domElement.nativeElement.height = height;
 	}
 	
-	override public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	override public function setNativeOpacity(opacity:Float):Void
 	{
-		super.setNativeOpacity(domElement, opacity);
+		super.setNativeOpacity(opacity);
 		domElement.nativeElement.alpha = opacity;
 	}
 	
-	override public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
+	override public function setNativeVisibility(visible:Bool):Void
 	{
-		super.setNativeVisibility(domElement, visible);
+		super.setNativeVisibility(visible);
 		domElement.nativeElement.visible = visible;
+	}
+	
+
+	/**
+	 * when the matrix is set, update also
+	 * the values of the native flash matrix of the
+	 * native DisplayObject
+	 * @param	matrix
+	 */
+	override public function setNativeMatrix(matrix:Matrix):Void
+	{
+		//concenate the new matrix with the base matrix of the DOMElement
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = concatenatedMatrix.data;
+		
+		//create a native flash matrix with the abstract matrix data
+		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	
+		//apply the native flash matrix to the native flash DisplayObject
+		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
+		
+		super.setNativeMatrix(concatenatedMatrix);
 	}
 	
 	/////////////////////////////////
@@ -163,6 +189,21 @@ class Style extends AbstractStyle
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
+	
+	/**
+	 * Concatenate the new matrix with the "base" matrix of the DOMElement
+	 * where only translations (the x and y of the DOMElement) and scales
+	 * (the width and height of the DOMElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.concatenate(matrix);
+		currentMatrix.translate(this._nativeX, this._nativeY);
+		return currentMatrix;
+	}
 	
 	/**
 	 * Return a flash FontWeight object from

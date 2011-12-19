@@ -20,6 +20,7 @@ import cocktailCore.style.Style;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
 import cocktail.unit.UnitData;
+import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
@@ -175,9 +176,8 @@ class AbstractDOMElement
 	////////////////////////////////
 		
 	/**
-	 * Stores a reference to this domElement 2d transformation matrix
+	 * get/set this domElement 2d transformation matrix
 	 */
-	private var _matrix:Matrix;
 	public var matrix(getMatrix, setMatrix):Matrix;
 	
 	/**
@@ -245,9 +245,6 @@ class AbstractDOMElement
 	 */
 	private function init():Void
 	{	
-		//initialise the transformation matrix of this dom element
-		_matrix = new Matrix();
-		
 		//initialise the keyboard listener of this dom element 
 		_keyboard = new Keyboard();
 		
@@ -369,14 +366,12 @@ class AbstractDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the transformation matrix of this DOMElement. Overriden
-	 * by the inheriting runtime specific class to update
-	 * their native matrix transformations
+	 * Set the transformation matrix of this DOMElement.
 	 */
 	private function setMatrix(matrix:Matrix):Matrix
 	{
-		this._matrix = matrix;
-		return this._matrix;
+		this._style.setNativeMatrix(matrix);
+		return matrix;
 	}
 	
 	/**
@@ -384,7 +379,7 @@ class AbstractDOMElement
 	 */
 	private function getMatrix():Matrix
 	{
-		return this._matrix;
+		return this._style.getNativeMatrix();
 	}
 	
 	/**
@@ -393,7 +388,7 @@ class AbstractDOMElement
 	 */
 	private function setScaleX(scaleX:Float):Float
 	{
-		_style.setNativeScaleX(cast(this), scaleX);
+		_style.setNativeScaleX(scaleX);
 		updateTransforms();
 		
 		return scaleX;
@@ -413,7 +408,7 @@ class AbstractDOMElement
 	 */
 	private function setScaleY(scaleY:Float):Float
 	{
-		_style.setNativeScaleY(cast(this), scaleY);
+		_style.setNativeScaleY(scaleY);
 		updateTransforms();
 		
 		return scaleY;
@@ -434,7 +429,7 @@ class AbstractDOMElement
 	 */
 	private function setRotation(angle:Int):Int 
 	{
-		_style.setNativeRotation(cast(this), angle);
+		_style.setNativeRotation(UnitManager.getRadFromAngleValue(AngleValue.deg(angle)));
 		updateTransforms();
 		
 		return angle;
@@ -445,7 +440,8 @@ class AbstractDOMElement
 	 * @return an Int from 0 to 360
 	 */
 	private function getRotation():Int { 
-		return _style.getNativeRotation();
+		//convert rad to degree
+		return Math.round(UnitManager.getDegreeFromAngleValue(AngleValue.rad(_style.getNativeRotation())));
 	}
 	
 	/**
@@ -464,7 +460,7 @@ class AbstractDOMElement
 		//reset the transform functions array and apply each of the 
 		//value stored for scale x, y and rotation
 		_style.transform = TransformStyleValue.transformFunctions( 
-		[TransformFunctionValue.rotate(AngleValue.deg(_style.getNativeRotation())),
+		[TransformFunctionValue.rotate(AngleValue.rad(_style.getNativeRotation())),
 		TransformFunctionValue.scaleY(_style.getNativeScaleY()), 
 		TransformFunctionValue.scaleX(_style.getNativeScaleX())
 		]);
@@ -640,7 +636,7 @@ class AbstractDOMElement
 	private function setWidth(value:Int):Int
 	{
 		this._style.width = DimensionStyleValue.length(px(value));
-		this._style.setNativeWidth(cast(this), value);
+		this._style.setNativeWidth(value);
 		return value;
 	}
 	
@@ -658,7 +654,7 @@ class AbstractDOMElement
 	private function setHeight(value:Int):Int
 	{
 		this._style.height = DimensionStyleValue.length(px(value));
-		this._style.setNativeHeight(cast(this), value);
+		this._style.setNativeHeight(value);
 		return value;
 	}
 	
