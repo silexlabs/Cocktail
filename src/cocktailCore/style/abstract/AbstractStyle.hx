@@ -224,6 +224,21 @@ class AbstractStyle
 	private var _nativeHeight:Int;
 	
 	/**
+	 * Store the x scale of the NativeElement
+	 */
+	private var _nativeScaleX:Float;
+	
+	/**
+	 * Store the y scale of the NativeElement
+	 */
+	private var _nativeScaleY:Float;
+	
+	/**
+	 * Store the rotation of the NativeElement
+	 */
+	private var _nativeRotation:Int;
+	
+	/**
 	 * Store the opacity of the NativeElement
 	 */
 	private var _nativeOpacity:Float;
@@ -256,6 +271,7 @@ class AbstractStyle
 	private function initDefaultStyleValues():Void
 	{
 		initComputedStyles();
+		initNativeProperties();
 		
 		this.width = DimensionStyleValue.auto;
 		this.height = DimensionStyleValue.auto;
@@ -363,6 +379,22 @@ class AbstractStyle
 			transformOrigin: { x:0.0, y:0.0 },
 			transform:new Matrix()
 		};
+	}
+	
+	/**
+	 * init the values representing NativeElements attributes
+	 */
+	private function initNativeProperties():Void
+	{
+		_nativeHeight = 0;
+		_nativeOpacity = 1.0;
+		_nativeRotation = 0;
+		_nativeScaleX = 1.0;
+		_nativeScaleY = 1.0;
+		_nativeVisibility = true;
+		_nativeWidth = 0;
+		_nativeX = 0;
+		_nativeY = 0;
 	}
 	
 	/**
@@ -589,7 +621,6 @@ class AbstractStyle
 				}
 				lastPositionedDOMElementData.children.push(positionedDOMElementData);
 			}
-			
 		}
 		
 	}
@@ -1079,6 +1110,15 @@ class AbstractStyle
 	}
 	
 	/**
+	 * Return the x of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeX():Int
+	{
+		return this._nativeX;
+	}
+	
+	/**
 	 * Set the y of the NativeElement of the
 	 * target DOMElement
 	 */
@@ -1088,6 +1128,15 @@ class AbstractStyle
 		{
 			this._nativeY = y;
 		}
+	}
+	
+	/**
+	 * Return the y of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeY():Int
+	{
+		return this._nativeY;
 	}
 	
 	/**
@@ -1103,6 +1152,15 @@ class AbstractStyle
 	}
 	
 	/**
+	 * Return the width of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeWidth():Int
+	{
+		return this._nativeWidth;
+	}	
+	
+	/**
 	 * Set the height of the NativeElement of the
 	 * target DOMElement
 	 */
@@ -1115,25 +1173,69 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Set the alpha of the NativeElement
+	 * Return the height of the NativeElement of the
+	 * DOMElement
 	 */
-	public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	public function getNativeHeight():Int
+	{
+		return this._nativeHeight;
+	}
+	
+	/**
+	 * Set the x scale of the NativeElement
+	 */
+	public function setNativeScaleX(domElement:DOMElement, scaleX:Float):Void
 	{
 		if (domElement == this._domElement)
 		{
-			this._nativeOpacity = opacity;
+			this._nativeScaleX = scaleX;
 		}
 	}
 	
 	/**
-	 * Set the visibility of the NativeElement
+	 * return the x scale of the NativeElement
 	 */
-	public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
+	public function getNativeScaleX():Float
+	{
+		return this._nativeScaleX;
+	}
+	
+	/**
+	 * Set the y scale of the NativeElement
+	 */
+	public function setNativeScaleY(domElement:DOMElement, scaleY:Float):Void
 	{
 		if (domElement == this._domElement)
 		{
-			this._nativeVisibility = visible;
+			this._nativeScaleY = scaleY;
 		}
+	}
+	
+	/**
+	 * return the y scale of the NativeElement
+	 */
+	public function getNativeScaleY():Float
+	{
+		return this._nativeScaleY;
+	}
+	
+	/**
+	 * Set the rotation of the NativeElement
+	 */
+	public function setNativeRotation(domElement:DOMElement, rotation:Int):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeRotation = rotation;
+		}
+	}
+	
+	/**
+	 * return the rotation of the NativeElement
+	 */
+	public function getNativeRotation():Float
+	{
+		return this._nativeRotation;
 	}
 	
 	/**
@@ -1149,11 +1251,22 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Get the visibility of the NativeElement
+	 * Get the matrix of the DOMElement
 	 */
-	public function getNativeVisibility():Bool
+	public function getNativeMatrix():Matrix
 	{
-		return this._nativeVisibility;
+		return domElement.matrix;
+	}
+	
+	/**
+	 * Set the alpha of the NativeElement
+	 */
+	public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeOpacity = opacity;
+		}
 	}
 	
 	/**
@@ -1165,39 +1278,22 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Return the x of the NativeElement of the
-	 * DOMElement
+	 * Set the visibility of the NativeElement
 	 */
-	public function getNativeX():Int
+	public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
 	{
-		return this._nativeX;
+		if (domElement == this._domElement)
+		{
+			this._nativeVisibility = visible;
+		}
 	}
 	
 	/**
-	 * Return the y of the NativeElement of the
-	 * DOMElement
+	 * Get the visibility of the NativeElement
 	 */
-	public function getNativeY():Int
+	public function getNativeVisibility():Bool
 	{
-		return this._nativeY;
-	}
-	
-	/**
-	 * Return the width of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeWidth():Int
-	{
-		return this._nativeWidth;
-	}
-	
-	/**
-	 * Return the height of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeHeight():Int
-	{
-		return this._nativeHeight;
+		return this._nativeVisibility;
 	}
 	
 	/////////////////////////////////

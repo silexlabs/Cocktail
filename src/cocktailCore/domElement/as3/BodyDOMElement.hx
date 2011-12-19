@@ -24,16 +24,4 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	{
 		super();
 	}
-	
-		/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * @param	matrix
-	 */
-	override private function setMatrix(matrix:Matrix):Matrix
-	{
-		return matrix;
-	}
-	
 }
