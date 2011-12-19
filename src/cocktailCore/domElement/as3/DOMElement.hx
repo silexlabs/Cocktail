@@ -46,25 +46,34 @@ class DOMElement extends AbstractDOMElement
 	{
 		super.setMatrix(matrix);
 		
-		var currentMatrix:Matrix = new Matrix();
-		currentMatrix.translate(this.x, this.y);
-		
-
-		
-	
-		currentMatrix.concatenate(matrix);
+		//concenate the new matrix with the base matrix of the DOMElement
+		var currentMatrix:Matrix = getConcatenatedMatrix(matrix);
 		
 		//get the data of the abstract matrix
 		var matrixData:MatrixData = currentMatrix.data;
 		
-		//create a native matrix with the abstract matrix data
+		//create a native flash matrix with the abstract matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	
-		
+		//apply the native flash matrix to the native flash DisplayObject
 		this._nativeElement.transform.matrix = nativeTransformMatrix;
 		
-		
 		return this._matrix;
+	}
+	
+	/**
+	 * Concatenate the new matrix with the "base" matrix of the DOMElement
+	 * where only translations (the x and y of the DOMElement) and scales
+	 * (the width and height of the DOMElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.concatenate(matrix);
+		currentMatrix.translate(this.x, this.y);
+		return currentMatrix;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

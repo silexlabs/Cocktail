@@ -20,37 +20,29 @@ import haxe.Log;
  */
 class EmbeddedDOMElement extends AbstractEmbeddedDOMElement
 {
+	/**
+	 * class constructor
+	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
 	}
 	
-	/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * @param	matrix
-	 */
-	override private function setMatrix(matrix:Matrix):Matrix
-	{
-		super.setMatrix(matrix);
-		
-		var currentMatrix:Matrix = new Matrix();
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden transformation methods
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * When concatenating the base Matrix of an embedded element, it must also
+	 * be scaled using the intrinsic width and height of the DOMElement as reference
+	 * 
+	 */
+	override private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
 		currentMatrix.concatenate(matrix);
 		currentMatrix.translate(this.x, this.y);
 		currentMatrix.scale(this.width / this.intrinsicWidth, this.height / this.intrinsicHeight, { x:0.0, y:0.0} );
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = currentMatrix.data;
-			
-		//create a native matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-	
-		
-		this._nativeElement.transform.matrix = nativeTransformMatrix;
-		
-		
-		return this._matrix;
+		return currentMatrix;
 	}
 }

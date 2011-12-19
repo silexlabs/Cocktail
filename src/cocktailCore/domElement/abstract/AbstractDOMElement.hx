@@ -393,6 +393,9 @@ class AbstractDOMElement
 	 */
 	private function setScaleX(scaleX:Float):Float
 	{
+		_style.setNativeScaleX(cast(this), scaleX);
+		updateTransforms();
+		
 		return scaleX;
 	}
 	
@@ -410,6 +413,8 @@ class AbstractDOMElement
 	 */
 	private function setScaleY(scaleY:Float):Float
 	{
+		_style.setNativeScaleY(cast(this), scaleY);
+		updateTransforms();
 		
 		return scaleY;
 	}
@@ -429,6 +434,8 @@ class AbstractDOMElement
 	 */
 	private function setRotation(angle:Int):Int 
 	{
+		_style.setNativeRotation(cast(this), angle);
+		updateTransforms();
 		
 		return angle;
 	}
@@ -439,6 +446,28 @@ class AbstractDOMElement
 	 */
 	private function getRotation():Int { 
 		return _matrix.getRotation();
+	}
+	
+	/**
+	 * Utils method updating the set of transforms
+	 * to apply when the rotation, scaleX or scaleY changes
+	 */
+	private function updateTransforms():Void
+	{
+		//reset the pivot point to top left (0,0) to be
+		//coherent with the Flash API
+		_style.transformOrigin = {
+			x:TransformOriginXStyleValue.left,
+			y:TransformOriginYStyleValue.top
+		}
+		
+		//reset the transform functions array and apply each of the 
+		//value stored for scale x, y and rotation
+		_style.transform = TransformStyleValue.transformFunctions( 
+		[TransformFunctionValue.rotate(AngleValue.deg(_style.getNativeRotation())),
+		TransformFunctionValue.scaleY(_style.getNativeScaleY()), 
+		TransformFunctionValue.scaleX(_style.getNativeScaleX())
+		]);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
