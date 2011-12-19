@@ -404,7 +404,7 @@ class AbstractDOMElement
 	 * @return a float, 1 corresponds to no x scale
 	 */
 	private function getScaleX():Float { 
-		return _matrix.getScaleX();
+		return _style.getNativeScaleX();
 	}
 	
 	/**
@@ -424,7 +424,7 @@ class AbstractDOMElement
 	 * @return a float, 1 corresponds to no y scale
 	 */
 	private function getScaleY():Float { 
-		return _matrix.getScaleY();
+		return _style.getNativeScaleY();
 	}
 	
 	/**
@@ -445,7 +445,7 @@ class AbstractDOMElement
 	 * @return an Int from 0 to 360
 	 */
 	private function getRotation():Int { 
-		return _matrix.getRotation();
+		return _style.getNativeRotation();
 	}
 	
 	/**

@@ -155,17 +155,14 @@ class Matrix
 	}
 	
 	/**
-	 * Apply a transformation rotating the matrix of the angle number of degree (clockwise), using 
+	 * Apply a transformation rotating the matrix using the specified angle (in rad), using 
 	 * registrationPoint as rotation center.
 	 * 
-	 * @param angle the rotation angle in degree
+	 * @param angle the rotation angle in rad
 	 * @param registrationPoint the pivot point
 	 */
-	public function rotate(angle:Int, registrationPoint:PointData):Void
+	public function rotate(angle:Float, registrationPoint:PointData):Void
 	{
-		//convert degree to radian
-		var angleInRad:Float = angle / 180 * Math.PI;
-		
 		//the matrix that will be rotated along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
 		var rotatedMatrix:Matrix = new Matrix();
@@ -180,26 +177,26 @@ class Matrix
 		
 		//check for special angles
 		
-		if (angle == 90)
+		if (angle == Math.PI / 2)
 		{
 			a = d = 0.0;
 			c = b = 1.0;
 			
 		}
-		else if (angle == 180)
+		else if (angle == Math.PI)
 		{
 			a = d = -1.0;
 			c = b = 0.0;
 		}
-		else if (angle == 270)
+		else if (angle == (Math.PI * 3) / 2)
 		{
 			a = d = 0.0;
 			c = b = -1.0;
 		}
 		else
 		{
-			a = d = Math.cos(angleInRad);
-			c = b = Math.sin(angleInRad);
+			a = d = Math.cos(angle);
+			c = b = Math.sin(angle);
 		}
 		
 		//create the matrix data corresponding to an identity matrix
@@ -321,16 +318,16 @@ class Matrix
 	/**
 	 * Set the rotation of the matrix to an absolute value instead of adding a rotation
 	 * to an existing rotation. Preserve the existing transformations
-	 * @param	angle the angle that must be applied
+	 * @param	angle the angle that must be applied (in rad)
 	 * @param	registrationPoint the rotation center
 	 */
-	public function setRotation(angle:Int, registrationPoint:PointData):Void 
+	public function setRotation(angle:Float, registrationPoint:PointData):Void 
 	{
 		//get the current angle
-		var currentRotation:Int = getRotation();
+		var currentRotation:Float = getRotation();
 		
 		//find the complementary angle to reset the rotation to 0
-		var resetAngle:Int = 360 - currentRotation;
+		var resetAngle:Float = (Math.PI * 2) - currentRotation;
 			
 		//reset the rotation while preserving other transformations
 		this.rotate(resetAngle, registrationPoint );
@@ -340,10 +337,10 @@ class Matrix
 	}
 	
 	/**
-	 * return an estimation of the current matrix rotation in degree. 
+	 * return an estimation of the current matrix rotation in rad. 
 	 * This method assumes that the matrix has not been skewed
 	 */
-	public function getRotation():Int
+	public function getRotation():Float
 	{
 		//return -1 is one of the axis is flipped, else 1
 		var flip:Int = getFlip();
@@ -365,14 +362,13 @@ class Matrix
         var rotationInRad:Float =  Math.atan2((skewY / actualScaleY) - (skewX / actualScaleX),
 												(scaleY / actualScaleY) + (scaleX / actualScaleX));
 		
-		//convert to deg and report to a 360 angle if the rotation is negative										
-		var rotationInDeg:Int = Math.round((rotationInRad * 180 ) / Math.PI);
-		if (rotationInDeg < 0)
+		//report to a 360 angle if the rotation is negative										
+		if (rotationInRad < 0)
 		{
-			rotationInDeg = 360 + rotationInDeg;
+			rotationInRad = Math.PI + rotationInRad;
 		}
 			
-		return  rotationInDeg;
+		return  rotationInRad;
 		
 	}
 	
