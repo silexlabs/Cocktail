@@ -33,50 +33,6 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden transformation methods
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * @param	matrix
-	 */
-	override private function setMatrix(matrix:Matrix):Matrix
-	{
-		super.setMatrix(matrix);
-		
-		//concenate the new matrix with the base matrix of the DOMElement
-		var currentMatrix:Matrix = getConcatenatedMatrix(matrix);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = currentMatrix.data;
-		
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-	
-		//apply the native flash matrix to the native flash DisplayObject
-		this._nativeElement.transform.matrix = nativeTransformMatrix;
-		
-		return this._matrix;
-	}
-	
-	/**
-	 * Concatenate the new matrix with the "base" matrix of the DOMElement
-	 * where only translations (the x and y of the DOMElement) and scales
-	 * (the width and height of the DOMElement) are applied.
-	 * It is neccessary in flash to do so to prevent losing the x, y, width
-	 * and height applied during layout
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		currentMatrix.concatenate(matrix);
-		currentMatrix.translate(this.x, this.y);
-		return currentMatrix;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN Z-INDEX SETTER/GETTER
 	// Setter/Getter to manipulate a nativeElement z-index in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////

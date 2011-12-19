@@ -60,24 +60,18 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Set the width of the NativeElement of the
 	 * target DOMElement
 	 */
-	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(width:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeWidth = width;
-		}
+		this._nativeWidth = width;
 	}
 	
 	/**
 	 * Set the height of the NativeElement of the
 	 * target DOMElement
 	 */
-	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(height:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeHeight = height;
-		}
+		this._nativeHeight = height;
 	}
 	
 	/////////////////////////////////

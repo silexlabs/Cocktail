@@ -236,7 +236,7 @@ class AbstractStyle
 	/**
 	 * Store the rotation of the NativeElement
 	 */
-	private var _nativeRotation:Int;
+	private var _nativeRotation:Float;
 	
 	/**
 	 * Store the opacity of the NativeElement
@@ -247,6 +247,11 @@ class AbstractStyle
 	 * Store the visibility of the NativeElement
 	 */
 	private var _nativeVisibility:Bool;
+	
+	/**
+	 * Store the current transform matrix of the NativeElement
+	 */
+	private var _nativeMatrix:Matrix;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -388,7 +393,7 @@ class AbstractStyle
 	{
 		_nativeHeight = 0;
 		_nativeOpacity = 1.0;
-		_nativeRotation = 0;
+		_nativeRotation = 0.0;
 		_nativeScaleX = 1.0;
 		_nativeScaleY = 1.0;
 		_nativeVisibility = true;
@@ -485,17 +490,17 @@ class AbstractStyle
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
-		setNativeHeight(this._domElement, this._computedStyle.height);
-		setNativeWidth(this._domElement, this._computedStyle.width);
+		setNativeHeight(this._computedStyle.height);
+		setNativeWidth(this._computedStyle.width);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
 		computeVisualEffectStyles();
 
 		//apply the computed visual effects on the DOMElement
-		setNativeMatrix(this._domElement, this._computedStyle.transform);
-		setNativeOpacity(this._domElement, this._computedStyle.opacity);
-		setNativeVisibility(this._domElement, this._computedStyle.visibility);
+		setNativeMatrix(this._computedStyle.transform);
+		setNativeOpacity(this._computedStyle.opacity);
+		setNativeVisibility(this._computedStyle.visibility);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
@@ -1143,12 +1148,9 @@ class AbstractStyle
 	 * Set the width of the NativeElement of the
 	 * target DOMElement
 	 */
-	public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	public function setNativeWidth(width:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeWidth = width;
-		}
+		this._nativeWidth = width;
 	}
 	
 	/**
@@ -1164,12 +1166,9 @@ class AbstractStyle
 	 * Set the height of the NativeElement of the
 	 * target DOMElement
 	 */
-	public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	public function setNativeHeight(height:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeHeight = height;
-		}
+		this._nativeHeight = height;
 	}
 	
 	/**
@@ -1184,12 +1183,9 @@ class AbstractStyle
 	/**
 	 * Set the x scale of the NativeElement
 	 */
-	public function setNativeScaleX(domElement:DOMElement, scaleX:Float):Void
+	public function setNativeScaleX(scaleX:Float):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeScaleX = scaleX;
-		}
+		this._nativeScaleX = scaleX;
 	}
 	
 	/**
@@ -1203,12 +1199,9 @@ class AbstractStyle
 	/**
 	 * Set the y scale of the NativeElement
 	 */
-	public function setNativeScaleY(domElement:DOMElement, scaleY:Float):Void
+	public function setNativeScaleY(scaleY:Float):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeScaleY = scaleY;
-		}
+		this._nativeScaleY = scaleY;
 	}
 	
 	/**
@@ -1220,34 +1213,28 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Set the rotation of the NativeElement
+	 * Set the rotation of the NativeElement in rad
 	 */
-	public function setNativeRotation(domElement:DOMElement, rotation:Int):Void
+	public function setNativeRotation(rotation:Float):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeRotation = rotation;
-		}
+		this._nativeRotation = rotation;
 	}
 	
 	/**
-	 * return the rotation of the NativeElement
+	 * return the rotation of the NativeElement in rad
 	 */
-	public function getNativeRotation():Int
+	public function getNativeRotation():Float
 	{
 		return this._nativeRotation;
 	}
 	
 	/**
-	 * Set the transformation matrix on the DOMElement which
-	 * in turns applies it to the NativeElement
+	 * Set the transformation matrix on the DOMElement. Overriden
+	 * to apply it to the NativeElement
 	 */
-	public function setNativeMatrix(domElement:DOMElement, matrix:Matrix):Void
+	public function setNativeMatrix(matrix:Matrix):Void
 	{
-		if (domElement == this._domElement)
-		{
-			domElement.matrix = matrix;
-		}
+		this._nativeMatrix = matrix;
 	}
 	
 	/**
@@ -1255,18 +1242,15 @@ class AbstractStyle
 	 */
 	public function getNativeMatrix():Matrix
 	{
-		return domElement.matrix;
+		return _nativeMatrix;
 	}
 	
 	/**
 	 * Set the alpha of the NativeElement
 	 */
-	public function setNativeOpacity(domElement:DOMElement, opacity:Float):Void
+	public function setNativeOpacity(opacity:Float):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeOpacity = opacity;
-		}
+		this._nativeOpacity = opacity;
 	}
 	
 	/**
@@ -1280,12 +1264,9 @@ class AbstractStyle
 	/**
 	 * Set the visibility of the NativeElement
 	 */
-	public function setNativeVisibility(domElement:DOMElement, visible:Bool):Void
+	public function setNativeVisibility(visible:Bool):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeVisibility = visible;
-		}
+		this._nativeVisibility = visible;
 	}
 	
 	/**

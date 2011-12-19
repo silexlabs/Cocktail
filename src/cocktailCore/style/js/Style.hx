@@ -73,8 +73,8 @@ class Style extends AbstractStyle
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
 		
 		//store the JavaScript dimension and position of the native HTMLElement, now that they are available
-		setNativeHeight(this._domElement, untyped this._domElement.nativeElement.clientHeight);
-		setNativeWidth(this._domElement, untyped this._domElement.nativeElement.clientWidth);
+		setNativeHeight(untyped this._domElement.nativeElement.clientHeight);
+		setNativeWidth(untyped this._domElement.nativeElement.clientWidth);
 		setNativeX(this._domElement, untyped this._domElement.nativeElement.offsetLeft);
 		setNativeY(this._domElement, untyped this._domElement.nativeElement.offsetTop);
 		
