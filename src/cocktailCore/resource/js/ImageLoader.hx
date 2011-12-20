@@ -21,7 +21,7 @@ import cocktail.nativeElement.NativeElementData;
 
 /**
  * This is the Image loader implementation for the JavaScript runtime. It is used to 
- * load pictures that will be attached to the DOM. It loads the picture by creating
+ * load pictures that will be attached to the DOM. It loads the picture using
  * an <img> tag and setting it's source to the url of the file to load.
  * 
  * 
@@ -35,36 +35,5 @@ class ImageLoader extends AbstractImageLoader
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden method to implement JS specific behaviour
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * To load a picture, the source of the Image HTML element is
-	 * set to the url to load
-	 * @param	url the url of the picture
-	 */
-	override private function doLoad(url:String):Void
-	{	
-		//create a delegate to call the success callback once the native image element is done loading the source picture
-		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
-		//create a delegate for the error callback
-		var onLoadErrorDelegate:String->Void = onLoadError;
-		
-		//need to have a local reference to retrieve it in the static onload function
-		var nativeElementDelegate:NativeElement = _nativeElement;
-		
-		//listens to image load complete and load error.
-		untyped _nativeElement.onload = function() { 
-			
-			onLoadCompleteDelegate(nativeElementDelegate);
-			
-			};
-		untyped _nativeElement.onerror = function() { onLoadErrorDelegate("couldn't load picture"); };
-		
-		// set it's source to start the loading of the picture
-		_nativeElement.setAttribute("src", url);
 	}
 }

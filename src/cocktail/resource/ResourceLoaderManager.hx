@@ -8,37 +8,32 @@
 package cocktail.resource;
 
 import cocktailCore.resource.abstract.AbstractResourceLoader;
-import haxe.Log;
-import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
 import cocktailCore.resource.as3.StringLoader;
 import cocktailCore.resource.as3.ImageLoader;
-import cocktailCore.resource.as3.ContainerLoader;
+import cocktailCore.resource.as3.SkinLoader;
 import cocktailCore.resource.as3.LibraryLoader;
 
 #elseif js
 import cocktailCore.resource.js.StringLoader;
 import cocktailCore.resource.js.ImageLoader;
-import cocktailCore.resource.js.ContainerLoader;
+import cocktailCore.resource.js.SkinLoader;
 import cocktailCore.resource.js.LibraryLoader;
 
 #elseif php
 import cocktailCore.resource.php.StringLoader;
 import cocktailCore.resource.php.ImageLoader;
-import cocktailCore.resource.php.ContainerLoader;
+import cocktailCore.resource.php.SkinLoader;
 import cocktailCore.resource.php.AnimationLoader;
 import cocktailCore.resource.php.LibraryLoader;
 
 #elseif doc
-class StringLoader extends AbstractResourceLoader {}
-class ImageLoader extends AbstractResourceLoader {}
-class ContainerLoader extends AbstractResourceLoader {}
-class AnimationLoader extends AbstractResourceLoader {}
-class LibraryLoader extends AbstractResourceLoader {}
+class StringLoader extends AbstractStringLoader {}
+class SkinLoader extends AbstractSkinLoader {}
+class LibraryLoader extends AbstractLibraryLoader {}
 
 #end	
 
