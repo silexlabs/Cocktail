@@ -94,15 +94,15 @@ class BoxStylesComputer
 	/**
 	 * Shrink the width a DOMElement to fit its content. Doesn't apply to a
 	 * non-replaced block
-	 * @param	computedStyles
-	 * @param	availableWidth the maximum that can be occupied by the DOMElement
+	 * @param	style
+	 * @param	containingDOMElementData
 	 * @param	minimumWidth the minimum width of the DOMElement, corresponding 
 	 * to its content width
 	 * @return
 	 */
-	public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
-		return computedStyles.width;
+		return style.computedStyle.width;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +190,6 @@ class BoxStylesComputer
 	 */
 	private function measureWidthAndHorizontalMargins(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		
 		if (style.width == DimensionStyleValue.auto)
 		{
 			measureAutoWidth(style, containingDOMElementData);

@@ -50,20 +50,20 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	 * if the width is set to 'auto', then this method is called once all the children
 	 * of the float are laid out
 	 */
-	override public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	override public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var shrinkedWidth:Int;
 		
 		//if the minimum width that must use the float
 		//is not superior to the width of the containing
 		//DOMElement, use the minimum width
-		if (minimumWidth < availableWidth)
+		if (minimumWidth < containingDOMElementData.width)
 		{
 			shrinkedWidth = minimumWidth;
 		}
 		else
 		{
-			shrinkedWidth = availableWidth;
+			shrinkedWidth = containingDOMElementData.width;
 		}
 		
 		return shrinkedWidth;

@@ -1106,9 +1106,10 @@ class AbstractStyle
 					parent = parent.parent;
 					isPositioned = parent.style.isPositioned();
 				}
+				//break the loop if the current parent has no parent
 				else
 				{
-					isPositioned = false;
+					isPositioned = true;
 				}
 				
 			}
