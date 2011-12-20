@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
@@ -109,8 +110,8 @@ class AbstractDOMElement
 	 * a reference to the parent of this DOMElement, of type container, the
 	 * only kind of DOMElement which can have children
 	 */ 
-	private var _parent:AbstractContainerDOMElement;
-	public var parent(getParent, setParent):AbstractContainerDOMElement;
+	private var _parent:ContainerDOMElement;
+	public var parent(getParent, setParent):ContainerDOMElement;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -274,7 +275,7 @@ class AbstractDOMElement
 	/**
 	 * Returns the parent of this DOMElement
 	 */
-	private function getParent():AbstractContainerDOMElement
+	private function getParent():ContainerDOMElement
 	{
 		return this._parent;
 	}
@@ -282,7 +283,7 @@ class AbstractDOMElement
 	/**
 	 * set the parent of this DOMElement
 	 */
-	private function setParent(domElement:AbstractContainerDOMElement):AbstractContainerDOMElement
+	private function setParent(domElement:ContainerDOMElement):ContainerDOMElement
 	{
 		this._parent = domElement;
 		return this._parent;

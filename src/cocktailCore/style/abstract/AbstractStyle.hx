@@ -7,6 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.viewport.Viewport;
@@ -466,12 +467,12 @@ class AbstractStyle
 		if (isNotDisplayed() == true)
 		{
 			//hide the DOMElement
-			this._domElement.isVisible = false;
+			setNativeVisibility(false);
 			return;
 		}
 		else
 		{
-			this._domElement.isVisible = true;
+			setNativeVisibility(true);
 		}
 		
 		//clear preceding left floats, right floats
@@ -480,9 +481,7 @@ class AbstractStyle
 		{
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
-		
 
-		
 		//compute all the styles of a DOMElement
 		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
@@ -681,20 +680,13 @@ class AbstractStyle
 					//retrieve its parent and the viewport dimension
 					var parentStyle:ContainerStyle = cast(this._domElement.parent.style);
 					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
-					var viewPort:Viewport = new Viewport();
 					
-					var viewPortData:ContainingDOMElementData = {
-						globalX:0,
-						globalY:0,
-						isHeightAuto:false,
-						isWidthAuto:false,
-						width:viewPort.width,
-						height:viewPort.height
-					}
+					var viewPortData:ContainingDOMElementData = getViewportData();
 					
+					//get the data of the first positinned ancestor of this styled DOMElement
 					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
 						children: new Array<PositionedDOMElementData>(),
-						data:viewPortData
+						data:getFirstPositionedAncestorData()
 					}
 					
 					//schedule an asynchronous layout
@@ -930,6 +922,8 @@ class AbstractStyle
 		return containingBlockDimensions;
 	}
 	
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -968,6 +962,41 @@ class AbstractStyle
 				ret = true;
 			
 			case FloatStyleValue.none:
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+		/**
+	 * A positioned element is one that 
+	 * is positioned outside of the normal
+	 * flow.
+	 * 
+	 * The 'relative', 'absolute' and'fixed'
+	 * values of the 'position' style makes
+	 * a DOMElement 'positioned'. 
+	 * 
+	 * The 'absolute' and 'fixed' value make
+	 * a DOMElement an 'absolutely positioned'
+	 * DOMElement. This kind of DOMElement
+	 * doesn't affect the normal flow (it is
+	 * treated as if it doesn't exist). It
+	 * uses as origin its first ancestor
+	 * which is also positioned
+	 * 
+	 * See below for the 'relative' value
+	 */
+	public function isPositioned():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.position) 
+		{
+			case relative, absolute, fixed:
+				ret = true;
+			
+			case staticStyle:
 				ret = false;
 		}
 		
@@ -1038,41 +1067,6 @@ class AbstractStyle
 	}
 	
 	/**
-	 * A positioned element is one that 
-	 * is positioned outside of the normal
-	 * flow.
-	 * 
-	 * The 'relative', 'absolute' and'fixed'
-	 * values of the 'position' style makes
-	 * a DOMElement 'positioned'. 
-	 * 
-	 * The 'absolute' and 'fixed' value make
-	 * a DOMElement an 'absolutely positioned'
-	 * DOMElement. This kind of DOMElement
-	 * doesn't affect the normal flow (it is
-	 * treated as if it doesn't exist). It
-	 * uses as origin its first ancestor
-	 * which is also positioned
-	 * 
-	 * See below for the 'relative' value
-	 */
-	private function isPositioned():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.position) 
-		{
-			case relative, absolute, fixed:
-				ret = true;
-			
-			case staticStyle:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * Determine wether a DOMElement has
 	 * the 'position' value 'relative'.
 	 * 
@@ -1090,6 +1084,67 @@ class AbstractStyle
 	{
 		return this._computedStyle.position == relative;
 	}
+	
+	/**
+	 * Get the data (dimensions and positions) of the first ancestor
+	 * of the styled DOMElement which is positioned
+	 */
+	private function getFirstPositionedAncestorData():ContainingDOMElementData
+	{
+		var firstPositionedAncestorData:ContainingDOMElementData;
+		var parent:ContainerDOMElement = _domElement.parent;
+		
+		//if the domElement has a parent
+		if (parent != null)
+		{
+			//loop in all the parents until a positioned or a null parent is found
+			var isPositioned:Bool = parent.style.isPositioned();
+			while (isPositioned == false)
+			{
+				if (parent.parent != null)
+				{
+					parent = parent.parent;
+					isPositioned = parent.style.isPositioned();
+				}
+				else
+				{
+					isPositioned = false;
+				}
+				
+			}
+			//get the data of the parent
+			var parentStyle:ContainerStyle = cast(parent.style);
+			firstPositionedAncestorData = parentStyle.getContainerDOMElementData();
+		}
+		//if the DOMElement has no parent, return the viewport data
+		else
+		{
+			firstPositionedAncestorData = getViewportData();
+		}
+		
+		return firstPositionedAncestorData;
+	}
+	
+	/**
+	 * Retrieve the data of the viewport. The viewport
+	 * position is always to the top left of the window
+	 */
+	private function getViewportData():ContainingDOMElementData
+	{
+		var viewPort:Viewport = new Viewport();
+					
+		var viewPortData:ContainingDOMElementData = {
+			globalX:0,
+			globalY:0,
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:viewPort.width,
+			height:viewPort.height
+		}
+		
+		return viewPortData;
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// NATIVE SETTER/GETTER

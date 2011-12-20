@@ -50,19 +50,10 @@ class AbstractBodyStyle extends ContainerStyle
 	{
 		if (this._isInvalid == false)
 		{
-			var viewPort:Viewport = new Viewport();
-			
 			this._isInvalid = true;
-			var viewPortData:ContainingDOMElementData = {
-			globalX:0,
-			globalY:0,
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:viewPort.width,
-			height:viewPort.height
-			}
+			var viewPortData:ContainingDOMElementData = getViewportData();
 		
-								
+			//the first positioned parent of the body is always the viewport					
 			var lastPositionedDOMElementData:LastPositionedDOMElementData = {
 				children: new Array<PositionedDOMElementData>(),
 				data:viewPortData
