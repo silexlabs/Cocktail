@@ -129,7 +129,7 @@ class BoxPositioner
 	 */
 	private function getLeftOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left + domElement.style.computedStyle.marginLeft;
+		return domElement.style.getNativeX() + domElement.style.computedStyle.left + domElement.style.computedStyle.marginLeft;
 	}
 	
 	/**
@@ -137,7 +137,7 @@ class BoxPositioner
 	 */
 	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
 	{
-		return domElement.style.getNativeX(domElement) + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right - domElement.style.computedStyle.marginRight;
+		return domElement.style.getNativeX() + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right - domElement.style.computedStyle.marginRight;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ class BoxPositioner
 	 */
 	private function getTopOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top + domElement.style.computedStyle.marginTop;
+		return domElement.style.getNativeY() + domElement.style.computedStyle.top + domElement.style.computedStyle.marginTop;
 	}
 	
 	/**
@@ -153,7 +153,7 @@ class BoxPositioner
 	 */
 	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
 	{
-		return domElement.style.getNativeY(domElement) + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom - domElement.style.computedStyle.marginBottom;
+		return domElement.style.getNativeY() + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom - domElement.style.computedStyle.marginBottom;
 	}
 	
 }

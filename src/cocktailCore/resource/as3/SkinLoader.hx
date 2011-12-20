@@ -8,15 +8,25 @@
 package cocktailCore.resource.as3;
 
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.resource.abstract.AbstractLibraryLoader;
+import cocktailCore.resource.abstract.AbstractSkinLoader;
+import flash.display.Loader;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
+import flash.system.LoaderContext;
+import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktailCore.resource.abstract.AbstractResourceLoader;
+import cocktail.resource.ResourceData;
 
 /**
- * This is the implementation of the library loader for the Flash AVM2 runtime. A library in Flash AS3 is a .swf
- * file containing ActionScript3 classes. It is loaded like a visual element (DisplayObject) but it is not added to
- * the Flash DOM
+ * This is the Skin loader implementation for the Flash runtime. It is used to 
+ * load complex object, such as a .swf file.
+ * 
  * @author Yannick DOMINGUEZ
  */
-class LibraryLoader extends AbstractLibraryLoader
+class SkinLoader extends AbstractSkinLoader
 {
 	/**
 	 * class constructor

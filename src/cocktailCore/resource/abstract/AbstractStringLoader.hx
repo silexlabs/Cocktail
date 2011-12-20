@@ -5,49 +5,46 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.js;
-
+package cocktailCore.resource.abstract;
+import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import cocktailCore.resource.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
-import js.Lib;
-import js.Dom.HtmlDom;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktailCore.resource.abstract.AbstractResourceLoader;
-import cocktail.resource.ResourceData;
 
 /**
- * This is the Container loader implementation for the JavaScript runtime. It is used to 
- * load complex object, such as a skin formed of multiple HTML tag. It is loaded from
- * an HTML file
+ * This class is in charge of loading a data String 
+ * which can be serialised as XML, JSON....
  * 
  * @author Yannick DOMINGUEZ
  */
-class ContainerLoader extends AbstractResourceLoader
+class AbstractStringLoader extends ResourceLoader
 {
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(nativeElement:NativeElement = null)
 	{
-		super();
+		super(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden method to implement JS specific behaviour
+	// Overriden Private method
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	/**
-	 * When the HTML has been loaded, set the loaded HTML as the
-	 * native DOM of the Container DOMElement
-	 * @param	data the loaded HTML
+	 * Load an URL and return it as a String using the Http class
+	 * 
+	 * @param	url the url to load
 	 */
-	override private function onLoadComplete(data:Dynamic):Void
+	override private function doLoad(url:String):Void
 	{
-		var domElement:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
-		domElement.nativeElement.innerHTML = data;
-		_onLoadCompleteCallback(domElement);
+		//prepare and send an http request
+		var fileRequest:Http = new Http(url);
+		fileRequest.onData = this.onLoadComplete;
+		fileRequest.onError = this.onLoadError;
+		fileRequest.request(false);
 	}
 }

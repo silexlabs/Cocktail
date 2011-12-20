@@ -27,6 +27,7 @@ import cocktailCore.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import haxe.Timer;
 
@@ -278,7 +279,7 @@ class AbstractContainerStyle extends Style
 		var text:String = textElement.getNativeText();
 		
 		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
-		text = applyWhiteSpace(text, this._computedStyle.whiteSpace);
+		text = AbstractTextElement.applyWhiteSpace(text, this._computedStyle.whiteSpace);
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
@@ -388,142 +389,6 @@ class AbstractContainerStyle extends Style
 	private function doCreateTextFragment(text:String):TextFragmentDOMElement
 	{
 		return null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE TEXT HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Apply the whiteSpace style rule to a text
-	 */
-	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
-	{
-		var ret:String = text;
-		
-		switch (whiteSpace)
-		{
-				case WhiteSpaceStyleValue.normal:
-					ret = collapseSpaceSequences(text);
-					
-				case WhiteSpaceStyleValue.pre:
-					ret = removeLineFeeds(text);
-					
-				case WhiteSpaceStyleValue.nowrap:
-					ret = collapseSpaceSequences(text);
-					ret = removeLineFeeds(text);
-					ret = convertTabToSpace(text);
-					
-				case WhiteSpaceStyleValue.preWrap:
-					
-				case WhiteSpaceStyleValue.preLine:
-					ret = collapseSpaceSequences(text);
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Transform a text letters into uppercase, lowercase
-	 * or capitalise them (only the first letter of each word
-	 * is transformed to uppercase), based on the textTransform
-	 * style of this container DOMElement
-	 * @param	text the text to transform
-	 * @return the transformed text
-	 */
-	private function applyTextTransform(text:String):String
-	{
-		switch (_computedStyle.textTransform)
-		{
-			case uppercase:
-				text = text.toUpperCase();
-				
-			case lowercase:
-				text = text.toLowerCase();
-				
-			case capitalize:
-				text = capitalizeText(text);
-				
-			case none:
-		}
-		
-		return text;
-	}
-	
-	/**
-	 * Capitalise a text (turn each first letter
-	 * of a word to uppercase)
-	 * @param	text the text to capitaliee
-	 * @return the capitalized
-	 */
-	private function capitalizeText(text:String):String
-	{
-		var capitalizedText:String = text.charAt(0);
-		
-		/**
-		 * loop in all charachter looking for word breaks
-		 * and capitalize each word's first letter
-		 */
-		for (i in 1...text.length)
-		{	
-			if (text.charAt(i - 1) == " ")
-			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
-			}
-		}
-		return capitalizedText;
-	}
-	
-	/**
-	 * Convert sequences of spaces in a text
-	 * into a single space
-	 */
-	private function collapseSpaceSequences(text:String):String
-	{
-		var collapsedText:String = "";
-		var isSpaceSequence:Bool = false;
-		
-		for (i in 0...text.length)
-		{
-			if (StringTools.isSpace(text, i))
-			{
-				if (isSpaceSequence == false)
-				{
-					collapsedText += text.charAt(i);
-					isSpaceSequence = true;
-				}
-			}
-			else
-			{
-				isSpaceSequence = false;
-				collapsedText += text.charAt(i);
-			}
-		}
-		
-		return collapsedText;
-	}
-	
-	/**
-	 * Removes the new line control character
-	 * from a text
-	 */
-	private function removeLineFeeds(text:String):String
-	{
-		return StringTools.replace(text, "\n", "");
-	}
-	
-	/**
-	 * Removes the tabulation control character
-	 * from a text by converting them to space
-	 * character
-	 */
-	private function convertTabToSpace(text:String):String
-	{
-		return StringTools.replace(text, "\t", " ");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -174,6 +174,56 @@ class UnitManager
 		return color;
 	}
 	
+	/**
+	 * Get a radian angle from any other angle value
+	 */
+	public static function getRadFromAngleValue(value:AngleValue):Float
+	{
+		var angle:Float;
+		
+		switch (value)
+		{
+			case deg(value):
+				angle = value * (Math.PI / 180);
+				
+			case rad(value):
+				angle = value;
+				
+			case turn(value):
+				angle = (value * 360) * (Math.PI / 180);
+				
+			case grad(value):	
+				angle = value * (Math.PI / 200);
+		}
+		
+		return angle;
+	}
+	
+	/**
+	 * Get a degree angle from any other angle value
+	 */
+	public static function getDegreeFromAngleValue(value:AngleValue):Float
+	{
+		var angle:Float;
+		
+		switch (value)
+		{
+			case deg(value):
+				angle = value;
+				
+			case rad(value):
+				angle = value * (180 / Math.PI);
+				
+			case turn(value):
+				angle = value * 360;
+				
+			case grad(value):	
+				angle = value * 0.9;
+		}
+		
+		return angle;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

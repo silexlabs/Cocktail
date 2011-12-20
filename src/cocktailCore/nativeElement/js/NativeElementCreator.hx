@@ -54,6 +54,12 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				
 			case custom(name):
 				nativeElement = Lib.document.createElement(name);
+				
+			case library:
+				nativeElement = Lib.document.createElement("script");
+				
+			case skin:
+				nativeElement = Lib.document.createElement("div");
 		}
 		
 		return nativeElement;
