@@ -88,7 +88,8 @@ class StyleTests
 		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
 		_mainContainer.style.bottom = PositionOffsetStyleValue.length(px(200));
 		_mainContainer.style.marginLeft = MarginStyleValue.length(px(50));
-		_mainContainer.style.position = PositionStyleValue.relative;
+		_mainContainer.style.marginTop = MarginStyleValue.length(px(100));
+		//_mainContainer.style.position = PositionStyleValue.relative;
 		
 		var bodyDOMElement:BodyDOMElement = new BodyDOMElement();
 		bodyDOMElement.addChild(_mainContainer);
@@ -98,7 +99,7 @@ class StyleTests
 		
 		
 		var headerContainer:ContainerDOMElement = getContainer();
-		headerContainer.style.width = DimensionStyleValue.auto;
+		headerContainer.style.width = DimensionStyleValue.length(px(500));
 		headerContainer.style.height = DimensionStyleValue.length(px(150));
 		headerContainer.style.paddingTop = PaddingStyleValue.length(px(5));
 		headerContainer.style.paddingBottom = PaddingStyleValue.length(px(5));
@@ -106,14 +107,21 @@ class StyleTests
 		headerContainer.style.paddingRight = PaddingStyleValue.length(px(5));
 		headerContainer.style.marginBottom = MarginStyleValue.length(px(30));
 		headerContainer.style.marginRight = MarginStyleValue.length(px(50));
-		
+		//headerContainer.style.float = FloatStyleValue.left;
 		_header = getGraph();
-		_header.style.width = DimensionStyleValue.auto;
-		_header.style.height = DimensionStyleValue.length(px(300));
-		//_header.style.float = FloatStyleValue.right;
-		//headerContainer.style.position = PositionStyleValue.absolute;
-		//headerContainer.style.left = PositionOffsetStyleValue.length(px(200)); 
-		//headerContainer.style.top = PositionOffsetStyleValue.length(px(200));
+		//_header.style.width = DimensionStyleValue.auto;
+		//_header.style.height = DimensionStyleValue.length(px(300));
+		_header.width = 300;
+		_header.height = 300;
+		//_header.style.float = FloatStyleValue.left;
+		//_header.style.position = PositionStyleValue.fixed;
+		
+		_header.style.bottom = PositionOffsetStyleValue.length(px(100)); 
+		_header.style.right = PositionOffsetStyleValue.length(px(100));
+		_header.style.marginBottom = MarginStyleValue.length(px(60));
+		//_header.style.marginTop = MarginStyleValue.length(px(60));
+		_header.style.marginLeft = MarginStyleValue.length(px(60));
+		_header.style.marginRight = MarginStyleValue.length(px(60));
 		
 		headerContainer.addChild(_header);
 		var textContainer:ContainerDOMElement = getContainer();
@@ -126,7 +134,7 @@ class StyleTests
 		//textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		
 		
-		textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
+		//textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
 		textContainer.style.color = ColorValue.keyword(ColorKeywordValue.gray);
 		
 		textContainer.style.display = DisplayStyleValue.inlineStyle;
@@ -153,7 +161,7 @@ class StyleTests
 		textBlock.style.textIndent = TextIndentStyleValue.length(px(150));
 		//firstLetterContainer.style.clear = ClearStyleValue.right;
 		textBlock.style.textAlign = TextAlignStyleValue.justify;
-		
+		textBlock.style.fontSize = FontSizeStyleValue.length(ex(2));
 			
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
 		
@@ -175,7 +183,8 @@ class StyleTests
 		//textContainer.style.top = PositionOffsetStyleValue.length(px(500));
 		//textContainer.style.left = PositionOffsetStyleValue.length(px(150));
 textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
-		
+
+textBlock.style.width = DimensionStyleValue.percent(70);		
 			var image:ImageDOMElement = new ImageDOMElement();
 			
 			image.onLoad =  function(e) {
@@ -183,8 +192,8 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		//	textBlock.addChild(firstLetterContainer);
 			textBlock.addChild(textContainer);
 		//	textContainer.style.position = relative;
-			//textBlock.addChild(headerContainer);
-		textBlock.addChild(image);
+		//	textBlock.addChild(headerContainer);
+	//	textBlock.addChild(image);
 		
 			headerContainer.style.display = inlineBlock;
 			
@@ -193,8 +202,10 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			
 			//textBlock.style.fontFamily = [FontFamilyStyleValue.familyName("Blackoak Std")];
 			//mainCont.addChild(headerContainer);
+			//mainCont.addChild(textBlock);
+			mainCont.addChild(image);
 			mainCont.addChild(textBlock);
-			mainCont.addChild(foot);
+			//mainCont.addChild(foot);
 			//foot.style.position = absolute;
 			//mainCont.style.position = PositionStyleValue.relative;
 			//mainCont.style.top = PositionOffsetStyleValue.length(px(500));
@@ -203,34 +214,41 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 			getDefaultStyleProxy(image);
 			
 			image.onMouseDown = function(event) {
+				textBlock.style.color = ColorValue.hex("#FF0000");
+				image.alpha = 0.5;
 				//picture.style.width = DimensionStyleValue.length(px(500));
-				image.onLoad = null;
-				image.load("preview.png");
-				foot.width = 50;
+				//image.onLoad = null;
+				//image.load("preview.png");
+				//foot.width = 50;
 				//mainCont.x = 300;
-				textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
-				textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
-				image.width = 500;
+				//textBlock.style.lineHeight = LineHeightStyleValue.length(px(50));
+				//textBlock.style.fontSize = FontSizeStyleValue.length(px(25));
+				//image.width = 500;
 			//	foot.height = 50;
 				//foot.style.height = DimensionStyleValue.auto;
 			//	foot.width = 350;
-			paint(_footer, 0xBBBBBB);
-			paint(_header, 0xCCCCCC);
+		
 			//refreshProxy(null);
 			}
 			image.onMouseOver = function(event) {
 				image.style.marginRight = MarginStyleValue.length(px(100));
+				image.style.transform = TransformStyleValue.transformFunctions([TransformFunctionValue.rotate(AngleValue.deg(45))]);
+				image.rotation = 45;
+				//image.scaleY = 2.0;
 			}
 			
 			image.onMouseOut = function(event) {
 				image.style.marginRight = MarginStyleValue.length(px(0));
+				image.style.transform = TransformStyleValue.transformFunctions([TransformFunctionValue.rotate(AngleValue.deg(0))]);
+				image.rotation = 0;
+			//	image.scaleY = 1.0;
 			}
 			
-			image.style.width = DimensionStyleValue.length(px(100));
-			image.style.height = DimensionStyleValue.length(px(100));
-			image.style.display = DisplayStyleValue.inlineStyle;
+			//image.style.width = DimensionStyleValue.length(px(100));
+			//image.style.height = DimensionStyleValue.length(px(100));
+		//	image.style.display = DisplayStyleValue.inlineStyle;
 			//picture.style.verticalAlign = VerticalAlignStyleValue.top;
-			
+			//image.style.float = FloatStyleValue.left;
 			image.style.width = DimensionStyleValue.length(px(200));
 			image.style.height = DimensionStyleValue.length(px(200));
 		//	picture.style.display = DisplayStyleValue.inlineBlock;
@@ -250,13 +268,15 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		getDefaultStyle(image2);
 		image2.load("preview.png");
 		image2.style.display = DisplayStyleValue.inlineStyle;
-		image2.style.position = absolute;
-		//image2.style.left = PositionOffsetStyleValue.length(px(0));
-		//image2.style.top = PositionOffsetStyleValue.length(px(0));
+		//image2.style.float = FloatStyleValue.left;
+		//image2.style.position = absolute;
+		image2.style.left = PositionOffsetStyleValue.length(px(0));
+		image2.style.top = PositionOffsetStyleValue.length(px(0));
 		//image2.style.width = DimensionStyleValue.length(px(500));
 		//image2.style.height = DimensionStyleValue.length(px(300));
 		image2.style.width = DimensionStyleValue.length(px(500));
 		image2.style.height = DimensionStyleValue.length(px(300));
+		image2.style.marginLeft = MarginStyleValue.length(px(100));
 
 		_footer.width = 300;
 		_footer.height = 200;
@@ -273,12 +293,13 @@ textBlock.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipi
 		
 			#end*/
 			};
-		textBlock.addChild(image2);
+		//textBlock.addChild(image2);
 		
 		image.onError = function(event) { };
-		
+		image.style.display = block;
 		image.load("testPicture.jpg");
-		
+			paint(_footer, 0xBBBBBB);
+			paint(_header, 0xCCCCCC);
 		
 	/**	_mainContainer.addChild(headerContainer);
 		_mainContainer.addChild(_footer);

@@ -9,6 +9,7 @@ package cocktailCore.textElement.abstract;
 
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
+import cocktail.style.StyleData;
 
 /**
  * A TextElement is an abstraction of an unformatted string of
@@ -89,6 +90,138 @@ class AbstractTextElement
 	{
 		//implemented by each runtime
 		return null;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC STATIC TEXT HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Apply the whiteSpace style rule to a text
+	 */
+	public static function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
+	{
+		var ret:String = text;
+		
+		switch (whiteSpace)
+		{
+				case WhiteSpaceStyleValue.normal:
+					ret = collapseSpaceSequences(text);
+					
+				case WhiteSpaceStyleValue.pre:
+					ret = removeLineFeeds(text);
+					
+				case WhiteSpaceStyleValue.nowrap:
+					ret = collapseSpaceSequences(text);
+					ret = removeLineFeeds(text);
+					ret = convertTabToSpace(text);
+					
+				case WhiteSpaceStyleValue.preWrap:
+					
+				case WhiteSpaceStyleValue.preLine:
+					ret = collapseSpaceSequences(text);
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Transform a text letters into uppercase, lowercase
+	 * or capitalise them (only the first letter of each word
+	 * is transformed to uppercase), based on the textTransform
+	 * style of this container DOMElement
+	 */
+	public static function applyTextTransform(text:String, textTransform:TextTransformStyleValue):String
+	{
+		switch (textTransform)
+		{
+			case uppercase:
+				text = text.toUpperCase();
+				
+			case lowercase:
+				text = text.toLowerCase();
+				
+			case capitalize:
+				text = capitalizeText(text);
+				
+			case none:
+		}
+		
+		return text;
+	}
+	
+	/**
+	 * Capitalise a text (turn each first letter
+	 * of a word to uppercase)
+	 */
+	public static function capitalizeText(text:String):String
+	{
+		var capitalizedText:String = text.charAt(0);
+		
+		/**
+		 * loop in all charachter looking for word breaks
+		 * and capitalize each word's first letter
+		 */
+		for (i in 1...text.length)
+		{	
+			if (text.charAt(i - 1) == " ")
+			{
+				capitalizedText += text.charAt(i).toUpperCase();
+			}
+			else
+			{
+				capitalizedText += text.charAt(i);
+			}
+		}
+		return capitalizedText;
+	}
+	
+	/**
+	 * Convert sequences of spaces in a text
+	 * into a single space
+	 */
+	public static function collapseSpaceSequences(text:String):String
+	{
+		var collapsedText:String = "";
+		var isSpaceSequence:Bool = false;
+		
+		for (i in 0...text.length)
+		{
+			if (StringTools.isSpace(text, i))
+			{
+				if (isSpaceSequence == false)
+				{
+					collapsedText += text.charAt(i);
+					isSpaceSequence = true;
+				}
+			}
+			else
+			{
+				isSpaceSequence = false;
+				collapsedText += text.charAt(i);
+			}
+		}
+		
+		return collapsedText;
+	}
+	
+	/**
+	 * Removes the new line control character
+	 * from a text
+	 */
+	public static function removeLineFeeds(text:String):String
+	{
+		return StringTools.replace(text, "\n", "");
+	}
+	
+	/**
+	 * Removes the tabulation control character
+	 * from a text by converting them to space
+	 * character
+	 */
+	public static function convertTabToSpace(text:String):String
+	{
+		return StringTools.replace(text, "\t", " ");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
