@@ -12,6 +12,7 @@ import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
@@ -47,7 +48,7 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// OVERRIDEN NATIVE SETTERS
 	// In Flash the width and height are not applied to the native DisplayObject
 	// of the ContainerDOMElement, as it would scale its content. It is however
 	// stored in the native width and height attributes to be returned when 
@@ -59,24 +60,18 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Set the width of the NativeElement of the
 	 * target DOMElement
 	 */
-	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(width:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeWidth = width;
-		}
+		this._nativeWidth = width;
 	}
 	
 	/**
 	 * Set the height of the NativeElement of the
 	 * target DOMElement
 	 */
-	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(height:Int):Void
 	{
-		if (domElement == this._domElement)
-		{
-			this._nativeHeight = height;
-		}
+		this._nativeHeight = height;
 	}
 	
 	/////////////////////////////////
@@ -146,7 +141,7 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
-		var transformedText:String = applyTextTransform(text);
+		var transformedText:String = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textElement:TextElement = new TextElement(transformedText);
 		
@@ -182,14 +177,14 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	/////////////////////////////////
-	// PRIVATE HELPER METHODS
+	// PRIVATE STATIC HELPER METHODS
 	////////////////////////////////
 	
 	/**
 	 * Return a flash FontPosture object from
 	 * the fontStyle style of the ContainerDOMElement
 	 */
-	private function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
+	private static function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
@@ -209,7 +204,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Return a flash TypographicCase object from
 	 * the font variant style of the ContainerDOMElement
 	 */
-	private function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
+	private static function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		

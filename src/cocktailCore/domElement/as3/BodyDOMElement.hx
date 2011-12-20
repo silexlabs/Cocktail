@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.as3;
 
+import cocktail.geom.Matrix;
 import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
 
 /**
@@ -23,5 +24,4 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	{
 		super();
 	}
-	
 }

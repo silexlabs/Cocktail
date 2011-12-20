@@ -56,38 +56,4 @@ package cocktail.geom;
 		var e:Float;
 		var f:Float;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Enums
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The different value used to determine a transformation origin.
-	 * It can be specified by a constant, representing a point (top-left, center...) 
-	 * or directly by a point (in px).
-	 */
-	enum RegistrationPointValue {
-		constant(registrationPointX:RegistrationPointXValue, registrationPointY:RegistrationPointYValue);
-		point(point:PointData);
-	}
-	
-	/**
-	 * The different values for the transformation origin
-	 * along the x axis
-	 */
-	enum RegistrationPointXValue {
-		left;
-		center;
-		right;
-	}
-	
-	/**
-	 * The different values for the transformation origin
-	 * along the y axis
-	 */
-	enum RegistrationPointYValue {
-		top;
-		middle;
-		bottom;
-	}
 

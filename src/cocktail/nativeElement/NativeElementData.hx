@@ -45,6 +45,18 @@ import cocktail.nativeElement.NativeElement;
 	 image;
 	 
 	 /**
+	  * Class library such as a script
+	  * tag in HTML
+	  */
+	 library;
+	 
+	 /**
+	  * Skin such as an HTML String in
+	  * HTML
+	  */
+	 skin;
+	 
+	 /**
 	  * Can be any other type of native element.
 	  * The name can be used for instance in HTML
 	  * as a tag name

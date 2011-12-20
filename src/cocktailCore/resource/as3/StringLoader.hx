@@ -8,16 +8,16 @@
 package cocktailCore.resource.as3;
 
 import cocktailCore.resource.abstract.AbstractResourceLoader;
+import cocktailCore.resource.abstract.AbstractStringLoader;
 
 /**
  * Implementation of StringLoader for the Flash AVM2 runtime, used to load resource
- * such as ax XML or JSON file using ActionScript3 URLLoader. It used the default implementation, found in 
+ * such as ax XML or JSON file using ActionScript3 URLLoader. It use the default implementation, found in 
  * it's parent class, the haxe.Http class acting as an abstraction layer
  * @author Yannick DOMINGUEZ
  */
-class StringLoader extends AbstractResourceLoader
+class StringLoader extends AbstractStringLoader
 {
-
 	public function new() 
 	{
 		super();

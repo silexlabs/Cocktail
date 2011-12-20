@@ -7,7 +7,9 @@
 */
 package cocktailCore.style.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
 import cocktail.viewport.Viewport;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
@@ -18,6 +20,7 @@ import cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.computer.DisplayStylesComputer;
 import cocktailCore.style.computer.FontAndTextStylesComputer;
+import cocktailCore.style.computer.VisualEffectStylesComputer;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.positioner.AbsolutePositioner;
@@ -47,9 +50,37 @@ class AbstractStyle
 	// STYLES attributes
 	////////////////////////////////
 	
-    /**
-    * margins
-	*/
+
+	/**
+	 * display styles
+	 */
+	private var _display:DisplayStyleValue;
+	public var display(getDisplay, setDisplay):DisplayStyleValue;
+	
+	private var _position:PositionStyleValue;
+	public var position(getPosition, setPosition):PositionStyleValue;
+	
+	private var _float:FloatStyleValue;
+	public var float(getFloat, setFloat):FloatStyleValue;
+	
+	private var _clear:ClearStyleValue;
+	public var clear(getClear, setClear):ClearStyleValue;
+	
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	private var _tranformOrigin:TransformOriginStyleData;
+	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
+	
+	private var _transform:TransformStyleValue;
+	public var transform(getTransform, setTransform):TransformStyleValue;
+	
+	/**
+	 * box model styles
+	 */
 	private var _marginLeft:MarginStyleValue;
 	public var marginLeft(getMarginLeft, setMarginLeft):MarginStyleValue;
 	private var _marginRight:MarginStyleValue;
@@ -59,9 +90,6 @@ class AbstractStyle
 	private var _marginBottom:MarginStyleValue;
 	public var marginBottom(getMarginBottom, setMarginBottom):MarginStyleValue;
 	
-	/**
-	* paddings
-	*/
 	private var _paddingLeft:PaddingStyleValue;
 	public var paddingLeft(getPaddingLeft, setPaddingLeft):PaddingStyleValue;
 	private var _paddingRight:PaddingStyleValue;
@@ -70,33 +98,12 @@ class AbstractStyle
 	public var paddingTop(getPaddingTop, setPaddingTop):PaddingStyleValue;
 	private var _paddingBottom:PaddingStyleValue;
 	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
-	
-	/**
-	* The way a DOMElement is laid out in a document (as block,
-	* inline...)
-	*/
-	private var _display:DisplayStyleValue;
-	public var display(getDisplay, setDisplay):DisplayStyleValue;
-	
-	/**
-	* The way a DOMElement is positionned
-	* relative to a parent
-	*/
-	private var _position:PositionStyleValue;
-	public var position(getPosition, setPosition):PositionStyleValue;
-	
-	/**
-	* dimensions of the content area of a DOMElement
-	* (the domElement size without paddings, border and margins)
-	*/
+
 	private var _width:DimensionStyleValue;
 	public var width(getWidth, setWidth):DimensionStyleValue;
 	private var _height:DimensionStyleValue;
 	public var height(getHeight, setHeight):DimensionStyleValue;
 	
-	/**
-	* dimensions constraint of a DOMElement
-	*/
 	private var _minHeight:ConstrainedDimensionStyleValue;
 	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimensionStyleValue;
 	private var _maxHeight:ConstrainedDimensionStyleValue;
@@ -105,10 +112,7 @@ class AbstractStyle
 	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimensionStyleValue;
 	private var _maxWidth:ConstrainedDimensionStyleValue;
 	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimensionStyleValue;
-	
-	/**
-	* offsets of a DOMElement
-	*/
+
 	private var _top:PositionOffsetStyleValue;
 	public var top(getTop, setTop):PositionOffsetStyleValue;
 	private var _left:PositionOffsetStyleValue;
@@ -117,22 +121,6 @@ class AbstractStyle
 	public var bottom(getBottom, setBottom):PositionOffsetStyleValue;
 	private var _right:PositionOffsetStyleValue;
 	public var right(getRight, setRight):PositionOffsetStyleValue;
-	
-	/**
-	 * The way an element is aligned vertically in an 
-	 * inline formatting context
-	 */
-	private var _verticalAlign:VerticalAlignStyleValue;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
-	
-	/**
-	 * float positioning styles. A floated element is placed to 
-	 * the further left or right inside its container
-	 */
-	private var _float:FloatStyleValue;
-	public var float(getFloat, setFloat):FloatStyleValue;
-	private var _clear:ClearStyleValue;
-	public var clear(getClear, setClear):ClearStyleValue;
 	
 	/**
 	 * font styles
@@ -178,6 +166,9 @@ class AbstractStyle
 	
 	private var _textIndent:TextIndentStyleValue;
 	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
+		
+	private var _verticalAlign:VerticalAlignStyleValue;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
 	
 	////////////////////////////////
 	
@@ -233,6 +224,36 @@ class AbstractStyle
 	 */
 	private var _nativeHeight:Int;
 	
+	/**
+	 * Store the x scale of the NativeElement
+	 */
+	private var _nativeScaleX:Float;
+	
+	/**
+	 * Store the y scale of the NativeElement
+	 */
+	private var _nativeScaleY:Float;
+	
+	/**
+	 * Store the rotation of the NativeElement
+	 */
+	private var _nativeRotation:Float;
+	
+	/**
+	 * Store the opacity of the NativeElement
+	 */
+	private var _nativeOpacity:Float;
+	
+	/**
+	 * Store the visibility of the NativeElement
+	 */
+	private var _nativeVisibility:Bool;
+	
+	/**
+	 * Store the current transform matrix of the NativeElement
+	 */
+	private var _nativeMatrix:Matrix;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +276,9 @@ class AbstractStyle
 	 */
 	private function initDefaultStyleValues():Void
 	{
+		initComputedStyles();
+		initNativeProperties();
+		
 		this.width = DimensionStyleValue.auto;
 		this.height = DimensionStyleValue.auto;
 		
@@ -299,11 +323,19 @@ class AbstractStyle
 		this.textTransform = TextTransformStyleValue.none;
 		this.whiteSpace = WhiteSpaceStyleValue.normal;
 		
+		this.visibility = VisibilityStyleValue.visible;
+		this.opacity = OpacityStyleValue.number(1.0);
+		
+		this.transformOrigin = {
+			x:TransformOriginXStyleValue.center,
+			y:TransformOriginYStyleValue.center
+		}
+		
+		this.transform = TransformStyleValue.none;
+		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		this.fontFamily = defaultStyles.fontFamily;
 		this.color = defaultStyles.color;
-	
-		initComputedStyles();
 	}
 	
 	/**
@@ -347,8 +379,28 @@ class AbstractStyle
 			textIndent:0,
 			whiteSpace:WhiteSpaceStyleValue.normal,
 			textAlign:TextAlignStyleValue.left,
-			color:0
+			color:0,
+			visibility:true,
+			opacity:1.0,
+			transformOrigin: { x:0.0, y:0.0 },
+			transform:new Matrix()
 		};
+	}
+	
+	/**
+	 * init the values representing NativeElements attributes
+	 */
+	private function initNativeProperties():Void
+	{
+		_nativeHeight = 0;
+		_nativeOpacity = 1.0;
+		_nativeRotation = 0.0;
+		_nativeScaleX = 1.0;
+		_nativeScaleY = 1.0;
+		_nativeVisibility = true;
+		_nativeWidth = 0;
+		_nativeX = 0;
+		_nativeY = 0;
 	}
 	
 	/**
@@ -415,12 +467,12 @@ class AbstractStyle
 		if (isNotDisplayed() == true)
 		{
 			//hide the DOMElement
-			this._domElement.isVisible = false;
+			setNativeVisibility(false);
 			return;
 		}
 		else
 		{
-			this._domElement.isVisible = true;
+			setNativeVisibility(true);
 		}
 		
 		//clear preceding left floats, right floats
@@ -429,7 +481,7 @@ class AbstractStyle
 		{
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
-		
+
 		//compute all the styles of a DOMElement
 		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
@@ -437,8 +489,17 @@ class AbstractStyle
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
-		setNativeHeight(this._domElement, this._computedStyle.height);
-		setNativeWidth(this._domElement, this._computedStyle.width);
+		setNativeHeight(this._computedStyle.height);
+		setNativeWidth(this._computedStyle.width);
+		
+		//when all the dimensions of the domElement are known, compute the 
+		//visual effects to apply (visibility, opacity, transform)
+		computeVisualEffectStyles();
+
+		//apply the computed visual effects on the DOMElement
+		setNativeMatrix(this._computedStyle.transform);
+		setNativeOpacity(this._computedStyle.opacity);
+		setNativeVisibility(this._computedStyle.visibility);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isInvalid = false;
@@ -564,7 +625,6 @@ class AbstractStyle
 				}
 				lastPositionedDOMElementData.children.push(positionedDOMElementData);
 			}
-			
 		}
 		
 	}
@@ -620,20 +680,13 @@ class AbstractStyle
 					//retrieve its parent and the viewport dimension
 					var parentStyle:ContainerStyle = cast(this._domElement.parent.style);
 					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
-					var viewPort:Viewport = new Viewport();
 					
-					var viewPortData:ContainingDOMElementData = {
-						globalX:0,
-						globalY:0,
-						isHeightAuto:false,
-						isWidthAuto:false,
-						width:viewPort.width,
-						height:viewPort.height
-					}
+					var viewPortData:ContainingDOMElementData = getViewportData();
 					
+					//get the data of the first positinned ancestor of this styled DOMElement
 					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
 						children: new Array<PositionedDOMElementData>(),
-						data:viewPortData
+						data:getFirstPositionedAncestorData()
 					}
 					
 					//schedule an asynchronous layout
@@ -728,7 +781,6 @@ class AbstractStyle
 		computeDisplayStyles();
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
-		
 	}
 	
 	/**
@@ -745,6 +797,14 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the visual effect styles (opacity, visibility, transformations)
+	 */
+	private function computeVisualEffectStyles():Void
+	{
+		VisualEffectStylesComputer.compute(this);
+	}
 	
 	/**
 	 * Computes the DOMElement font and text styles (font size, font name, text color...)
@@ -862,6 +922,8 @@ class AbstractStyle
 		return containingBlockDimensions;
 	}
 	
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -900,6 +962,41 @@ class AbstractStyle
 				ret = true;
 			
 			case FloatStyleValue.none:
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+		/**
+	 * A positioned element is one that 
+	 * is positioned outside of the normal
+	 * flow.
+	 * 
+	 * The 'relative', 'absolute' and'fixed'
+	 * values of the 'position' style makes
+	 * a DOMElement 'positioned'. 
+	 * 
+	 * The 'absolute' and 'fixed' value make
+	 * a DOMElement an 'absolutely positioned'
+	 * DOMElement. This kind of DOMElement
+	 * doesn't affect the normal flow (it is
+	 * treated as if it doesn't exist). It
+	 * uses as origin its first ancestor
+	 * which is also positioned
+	 * 
+	 * See below for the 'relative' value
+	 */
+	public function isPositioned():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.position) 
+		{
+			case relative, absolute, fixed:
+				ret = true;
+			
+			case staticStyle:
 				ret = false;
 		}
 		
@@ -970,41 +1067,6 @@ class AbstractStyle
 	}
 	
 	/**
-	 * A positioned element is one that 
-	 * is positioned outside of the normal
-	 * flow.
-	 * 
-	 * The 'relative', 'absolute' and'fixed'
-	 * values of the 'position' style makes
-	 * a DOMElement 'positioned'. 
-	 * 
-	 * The 'absolute' and 'fixed' value make
-	 * a DOMElement an 'absolutely positioned'
-	 * DOMElement. This kind of DOMElement
-	 * doesn't affect the normal flow (it is
-	 * treated as if it doesn't exist). It
-	 * uses as origin its first ancestor
-	 * which is also positioned
-	 * 
-	 * See below for the 'relative' value
-	 */
-	private function isPositioned():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.position) 
-		{
-			case relative, absolute, fixed:
-				ret = true;
-			
-			case staticStyle:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * Determine wether a DOMElement has
 	 * the 'position' value 'relative'.
 	 * 
@@ -1023,9 +1085,70 @@ class AbstractStyle
 		return this._computedStyle.position == relative;
 	}
 	
+	/**
+	 * Get the data (dimensions and positions) of the first ancestor
+	 * of the styled DOMElement which is positioned
+	 */
+	private function getFirstPositionedAncestorData():ContainingDOMElementData
+	{
+		var firstPositionedAncestorData:ContainingDOMElementData;
+		var parent:ContainerDOMElement = _domElement.parent;
+		
+		//if the domElement has a parent
+		if (parent != null)
+		{
+			//loop in all the parents until a positioned or a null parent is found
+			var isPositioned:Bool = parent.style.isPositioned();
+			while (isPositioned == false)
+			{
+				if (parent.parent != null)
+				{
+					parent = parent.parent;
+					isPositioned = parent.style.isPositioned();
+				}
+				else
+				{
+					isPositioned = false;
+				}
+				
+			}
+			//get the data of the parent
+			var parentStyle:ContainerStyle = cast(parent.style);
+			firstPositionedAncestorData = parentStyle.getContainerDOMElementData();
+		}
+		//if the DOMElement has no parent, return the viewport data
+		else
+		{
+			firstPositionedAncestorData = getViewportData();
+		}
+		
+		return firstPositionedAncestorData;
+	}
+	
+	/**
+	 * Retrieve the data of the viewport. The viewport
+	 * position is always to the top left of the window
+	 */
+	private function getViewportData():ContainingDOMElementData
+	{
+		var viewPort:Viewport = new Viewport();
+					
+		var viewPortData:ContainingDOMElementData = {
+			globalX:0,
+			globalY:0,
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:viewPort.width,
+			height:viewPort.height
+		}
+		
+		return viewPortData;
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DIMENSION AND POSITION SETTER/GETTER
-	// Those method actually apply a processed dimension or position value to 
+	// NATIVE SETTER/GETTER
+	// Those method actually apply a processed value to 
 	// the NativeElement of a target DOMElement.
 	// They also store the applied value when it is set on the DOMElement
 	// wrapped by this Style object. For instance, a ContainerStyle object not
@@ -1047,6 +1170,15 @@ class AbstractStyle
 	}
 	
 	/**
+	 * Return the x of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeX():Int
+	{
+		return this._nativeX;
+	}
+	
+	/**
 	 * Set the y of the NativeElement of the
 	 * target DOMElement
 	 */
@@ -1059,63 +1191,145 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Set the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeWidth(domElement:DOMElement, width:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeWidth = width;
-		}
-	}
-	
-	/**
-	 * Set the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeHeight(domElement:DOMElement, height:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeHeight = height;
-		}
-	}
-	
-	/**
-	 * Return the x of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function getNativeX(domElement:DOMElement):Int
-	{
-		return this._nativeX;
-	}
-	
-	/**
 	 * Return the y of the NativeElement of the
-	 * target DOMElement
+	 * DOMElement
 	 */
-	public function getNativeY(domElement:DOMElement):Int
+	public function getNativeY():Int
 	{
 		return this._nativeY;
 	}
 	
 	/**
-	 * Return the width of the NativeElement of the
+	 * Set the width of the NativeElement of the
 	 * target DOMElement
 	 */
-	public function getNativeWidth(domElement:DOMElement):Int
+	public function setNativeWidth(width:Int):Void
+	{
+		this._nativeWidth = width;
+	}
+	
+	/**
+	 * Return the width of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeWidth():Int
 	{
 		return this._nativeWidth;
+	}	
+	
+	/**
+	 * Set the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeHeight(height:Int):Void
+	{
+		this._nativeHeight = height;
 	}
 	
 	/**
 	 * Return the height of the NativeElement of the
-	 * target DOMElement
+	 * DOMElement
 	 */
-	public function getNativeHeight(domElement:DOMElement):Int
+	public function getNativeHeight():Int
 	{
 		return this._nativeHeight;
+	}
+	
+	/**
+	 * Set the x scale of the NativeElement
+	 */
+	public function setNativeScaleX(scaleX:Float):Void
+	{
+		this._nativeScaleX = scaleX;
+	}
+	
+	/**
+	 * return the x scale of the NativeElement
+	 */
+	public function getNativeScaleX():Float
+	{
+		return this._nativeScaleX;
+	}
+	
+	/**
+	 * Set the y scale of the NativeElement
+	 */
+	public function setNativeScaleY(scaleY:Float):Void
+	{
+		this._nativeScaleY = scaleY;
+	}
+	
+	/**
+	 * return the y scale of the NativeElement
+	 */
+	public function getNativeScaleY():Float
+	{
+		return this._nativeScaleY;
+	}
+	
+	/**
+	 * Set the rotation of the NativeElement in rad
+	 */
+	public function setNativeRotation(rotation:Float):Void
+	{
+		this._nativeRotation = rotation;
+	}
+	
+	/**
+	 * return the rotation of the NativeElement in rad
+	 */
+	public function getNativeRotation():Float
+	{
+		return this._nativeRotation;
+	}
+	
+	/**
+	 * Set the transformation matrix on the DOMElement. Overriden
+	 * to apply it to the NativeElement
+	 */
+	public function setNativeMatrix(matrix:Matrix):Void
+	{
+		this._nativeMatrix = matrix;
+	}
+	
+	/**
+	 * Get the matrix of the DOMElement
+	 */
+	public function getNativeMatrix():Matrix
+	{
+		return _nativeMatrix;
+	}
+	
+	/**
+	 * Set the alpha of the NativeElement
+	 */
+	public function setNativeOpacity(opacity:Float):Void
+	{
+		this._nativeOpacity = opacity;
+	}
+	
+	/**
+	 * Get the alpha of the NativeElement
+	 */
+	public function getNativeOpacity():Float
+	{
+		return this._nativeOpacity;
+	}
+	
+	/**
+	 * Set the visibility of the NativeElement
+	 */
+	public function setNativeVisibility(visible:Bool):Void
+	{
+		this._nativeVisibility = visible;
+	}
+	
+	/**
+	 * Get the visibility of the NativeElement
+	 */
+	public function getNativeVisibility():Bool
+	{
+		return this._nativeVisibility;
 	}
 	
 	/////////////////////////////////
@@ -1364,9 +1578,45 @@ class AbstractStyle
 		return _textAlign = value;
 	}
 	
+	private function setOpacity(value:OpacityStyleValue):OpacityStyleValue
+	{
+		_opacity = value;
+		invalidate();
+		return _opacity;
+	}
+	
+	private function setVisibility(value:VisibilityStyleValue):VisibilityStyleValue
+	{
+		_visibility = value;
+		invalidate();
+		return _visibility;
+	}
+	
+	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	{
+		invalidate();
+		return _tranformOrigin = value;
+	}
+	
+	private function setTransform(value:TransformStyleValue):TransformStyleValue
+	{
+		invalidate();
+		return _transform = value;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getOpacity():OpacityStyleValue
+	{
+		return _opacity;
+	}
+	
+	private function getVisibility():VisibilityStyleValue
+	{
+		return _visibility;
+	}
 	
 	private function getMarginLeft():MarginStyleValue 
 	{
@@ -1546,5 +1796,15 @@ class AbstractStyle
 	private function getTextAlign():TextAlignStyleValue
 	{
 		return _textAlign;
+	}
+	
+	private function getTransform():TransformStyleValue
+	{
+		return _transform;
+	}
+	
+	private function getTransformOrigin():TransformOriginStyleData
+	{
+		return _tranformOrigin;
 	}
 }

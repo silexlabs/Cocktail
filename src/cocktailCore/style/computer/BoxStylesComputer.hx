@@ -234,7 +234,7 @@ class BoxStylesComputer
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getNativeWidth(style, containingDOMElementData);
+		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -374,7 +374,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getNativeWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}

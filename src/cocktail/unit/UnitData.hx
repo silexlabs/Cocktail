@@ -161,3 +161,36 @@ enum ColorKeywordValue {
 	white;
 	yellow;
 }
+
+/**
+ * Lists the different available
+ * units to specify an angle
+ */
+enum AngleValue {
+	
+	/**
+	 * Degress. There are
+	 * 360 degrees in a full 
+	 * circle
+	 */
+	deg(value:Float);
+	
+	/**
+	 * Gradians. There
+	 * are 400 gradians in
+	 * a full circle
+	 */
+	grad(value:Float);
+	
+	/**
+	 * Radians. There are 2π
+	 * radians in a full circle.
+	 */
+	rad(value:Float);
+	
+	/**
+	 * Turns. There is 1 
+	 * turn in a full circle. 
+	 */
+	turn(value:Float);
+}

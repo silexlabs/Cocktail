@@ -7,19 +7,102 @@
 */
 package cocktailCore.resource.as3;
 
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
+import flash.display.Loader;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
+import flash.system.LoaderContext;
 
 /**
- * This is the Flash As3 implementation of the ResourceLoader
+ * This is the Flash As3 implementation of the ResourceLoader.
+ * Load a resource into a native flash Loader, the Loader
+ * can then be used as a NativeElement to attach it to the
+ * DOM
  * 
  * @author Yannick DOMINGUEZ
  */
 class ResourceLoader extends AbstractResourceLoader
 {
-
-	public function new() 
+	/**
+	 * class constructor.
+	 */
+	public function new(nativeElement:NativeElement = null) 
 	{
-		super();
+		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden method to implement Flash AS3 specific behaviour
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Load a resource using a native ActionScript3 Loader object
+	 * @param	url the url of the AS3 resource to load
+	 */
+	override private function doLoad(url:String):Void
+	{
+		var loader:Loader = cast(_nativeElement);
+		
+		loader.unload();
+		
+		//listen for complete/error event on the loader
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onNativeLoadComplete);
+		loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
+		
+		//instantiate a native request object
+		var request:URLRequest = new URLRequest(url);
+		
+		//add a loading context so that the resource will be loaded in the current context
+		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+		//always check policy file (crossdomain.xml) for cross-domain loading
+		loadingContext.checkPolicyFile = true;
+		
+		//start the loading
+		loader.load(request, loadingContext);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Native loading callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the resource has been loaded, remove the listener on it, 
+	 * then call the load complete method passing the loaded resource as a NativeElement
+	 * @param	event the Complete event, contains the native Loader
+	 */
+	private function onNativeLoadComplete(event:Event):Void
+	{	
+		var loader:Loader = cast(_nativeElement);
+		removeLoaderListeners(loader);
+		onLoadComplete(loader);
+	}
+	
+	/**
+	 * When there was an error during loading, call the error callback with the
+	 * the message error, remove the event listeners
+	 * @param	event the IO_ERROR event, containd info on the error
+	 */
+	private function onNativeLoadIOError(event:IOErrorEvent):Void
+	{
+		var loader:Loader = cast(_nativeElement);
+		removeLoaderListeners(loader);
+		onLoadError(event.toString());
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Remove loading listeners from the flash loader
+	 */
+	private function removeLoaderListeners(loader:Loader):Void
+	{
+		loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onNativeLoadComplete);
+		loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
 	}
 	
 }
