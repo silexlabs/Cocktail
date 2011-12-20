@@ -10,6 +10,7 @@ package cocktailCore.textElement.abstract;
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * A TextElement is an abstraction of an unformatted string of
@@ -238,6 +239,7 @@ class AbstractTextElement
 	private static function doGetTextFragments(text:String):Array<TextFragmentData>
 	{
 		var textFragments:Array<TextFragmentData> = new Array<TextFragmentData>();
+
 		
 		var textFragment:String = "";
 		
@@ -246,9 +248,10 @@ class AbstractTextElement
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
+			
 			if (text.charAt(i) == "\\")
 			{
-				if (text.charAt(i + 1) != null)
+				if (i <text.length - 1)
 				{
 					//if a line feed is found
 					if (text.charAt(i + 1) == "n")
@@ -261,7 +264,7 @@ class AbstractTextElement
 						}
 						//then push a line feed
 						textFragments.push(insertTextToken(lineFeed));
-						i ++;
+						i++;
 					}
 					//if a tab is found
 					else if (text.charAt(i + 1) == "t")
@@ -274,13 +277,13 @@ class AbstractTextElement
 						}
 						//then push a tab
 						textFragments.push(insertTextToken(TextTokenValue.tab));
-						i ++;
+						i++;
 					}
 				}
 			}
 			
 			//If the character is a space
-			else if (StringTools.isSpace(text, i) == true)
+			if (StringTools.isSpace(text, i) == true)
 			{
 				
 				//If a word was being formed by concatenating
@@ -316,7 +319,7 @@ class AbstractTextElement
 		{
 			textFragments.push(insertTextToken(word(textFragment)));
 		}
-		
+	
 		return textFragments;
 	}
 	
