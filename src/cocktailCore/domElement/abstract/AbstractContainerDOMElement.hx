@@ -97,7 +97,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function addChild(domElement:DOMElement):Void
 	{
-		domElement.parent = this;
+		domElement.parent = cast(this);
 		_children.push( { child:domElement, type:ContainerDOMElementChildValue.domElement } );
 		this._style.invalidate();
 	}
