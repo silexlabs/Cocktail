@@ -46,13 +46,12 @@ class DisplayStylesComputer
 	 * 
 	 * @param	style contain the styles definition of the 
 	 * target DOMElement
-	 * @return
 	 */
 	public static function compute(style:AbstractStyle):Void
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
-		var computedStyle = style.computedStyle;
+		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//position
 		computedStyle.position = getComputedPosition(style);
