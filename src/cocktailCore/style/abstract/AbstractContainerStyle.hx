@@ -163,7 +163,7 @@ class AbstractContainerStyle extends Style
 		{
 			
 			var currentWidth:Int = this._computedStyle.width;
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
 			
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
@@ -316,14 +316,15 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line form by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * @param	availableWidth the width of the container of this containerDOMElement
-	 * @param	maxWidth the width of the widest line of children laid out
-	 * by this ContainerDOMElement
+	 * @param	containingDOMElementData
+	 * @param	minimumWidth the width of the widest line of children laid out
+	 * by this ContainerDOMElement which will be the minimum width that should
+	 * have this DOMElement if it is shrink-to-fit
 	 */
-	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
+	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
+		return boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
