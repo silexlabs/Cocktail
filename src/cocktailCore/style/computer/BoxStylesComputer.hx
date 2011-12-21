@@ -105,6 +105,19 @@ class BoxStylesComputer
 		return style.computedStyle.width;
 	}
 	
+	/**
+	 * Return the height that should be used when the 'height' of a ContainerDOMElement is specified
+	 * as 'auto'. The default behaviour is to use the total height of its children
+	 * @param	style
+	 * @param	cotainingDOMElementData
+	 * @param	childrenHeight
+	 * @return
+	 */
+	public function applyContentHeight(style:AbstractStyle, cotainingDOMElementData:ContainingDOMElementData, childrenHeight:Int):Int
+	{
+		return childrenHeight;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE MEASURE METHODS
 	// Measure the box model and determine
