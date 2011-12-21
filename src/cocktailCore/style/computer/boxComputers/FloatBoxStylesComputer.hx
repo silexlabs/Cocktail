@@ -15,11 +15,11 @@ import cocktailCore.unit.UnitManager;
 
 /**
  * this is the box computer for floated non-embedded DOMElement
- * such as a floated ContainerDOMElement
+ * such as a floated ContainerDOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
-class FloatBoxStylesComputer extends BoxStylesComputer
+class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 {
 	/**
 	 * class constructor
@@ -30,14 +30,6 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * for floated non-embedded DOMElements, auto margin compute to 0
-	 */
-	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
-	{
-		return 0;
-	}
-	
-	/**
 	 * for floated non-embedded DOMElements, an auto width is computed as 'shrink-to-fit' once all the children
 	 * have been laid out
 	 */
@@ -45,32 +37,5 @@ class FloatBoxStylesComputer extends BoxStylesComputer
 	{
 		return 0;
 	}
-	
-	/**
-	 * if the width is set to 'auto', then this method is called once all the children
-	 * of the float are laid out
-	 */
-	override public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
-	{
-		var shrinkedWidth:Int;
-		
-		//if the minimum width that must use the float
-		//is not superior to the width of the containing
-		//DOMElement, use the minimum width
-		if (minimumWidth < containingDOMElementData.width)
-		{
-			shrinkedWidth = minimumWidth;
-		}
-		else
-		{
-			shrinkedWidth = containingDOMElementData.width;
-		}
-		
-		return shrinkedWidth;
-	}
-	
 
-	
-	
-	
 }
