@@ -93,10 +93,10 @@ class BoxStylesComputer
 	
 	/**
 	 * Shrink the width a DOMElement to fit its content. Doesn't apply to a
-	 * non-replaced block
+	 * non-replaced block so return the current width
 	 * @param	style
 	 * @param	containingDOMElementData
-	 * @param	minimumWidth the minimum width of the DOMElement, corresponding 
+	 * @param	minimumWidth the minimum width of the DOMElement if shrinked, corresponding 
 	 * to its content width
 	 * @return
 	 */

@@ -436,7 +436,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	{
 		var shrinkedWidth:Int;
 		
-		//if the minimum width that must use the inlineBlock
+		//if the minimum width that must use the DOMElement
 		//is not superior to the width of the containing
 		//DOMElement, use the minimum width
 		if (minimumWidth < containingDOMElementData.width)

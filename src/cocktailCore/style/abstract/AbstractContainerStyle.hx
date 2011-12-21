@@ -322,7 +322,7 @@ class AbstractContainerStyle extends Style
 	 * @param	containingDOMElementData
 	 * @param	minimumWidth the width of the widest line of children laid out
 	 * by this ContainerDOMElement which will be the minimum width that should
-	 * have this DOMElement if it is shrink-to-fit
+	 * have this DOMElement if it is shrinked to fit
 	 */
 	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
