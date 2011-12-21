@@ -163,7 +163,7 @@ class AbstractContainerStyle extends Style
 		{
 			
 			var currentWidth:Int = this._computedStyle.width;
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
 			
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
@@ -178,13 +178,15 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content height
+		//defined as 'auto', then in most cases, it depends on its content height
 		//and it must now be adjusted to the total height
 		//of its children before the ContainerDOMElement is actually
-		//sized
+		//sized. Fort some border case though, the total height
+		//of the children is not used and auto height is computed in
+		//another way
 		if (this._height == DimensionStyleValue.auto)
 		{
-			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.totalHeight);
 		}
 
 		//insert the ContainerDOMElement into the document
@@ -246,7 +248,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * When this ContainerDOMElement is positioned, position each of its children using t
+	 * When this ContainerDOMElement is positioned, position each of its children using it
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
@@ -283,6 +285,7 @@ class AbstractContainerStyle extends Style
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
+		
 		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
@@ -307,7 +310,7 @@ class AbstractContainerStyle extends Style
 					//start a new line
 					formattingContext.insertLineFeed();
 			}
-		}			
+		}		
 	}
 	
 	/**
@@ -316,14 +319,30 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line form by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * @param	availableWidth the width of the container of this containerDOMElement
-	 * @param	maxWidth the width of the widest line of children laid out
-	 * by this ContainerDOMElement
+	 * @param	containingDOMElementData
+	 * @param	minimumWidth the width of the widest line of children laid out
+	 * by this ContainerDOMElement which will be the minimum width that should
+	 * have this DOMElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
+	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
+		return boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
+	}
+	
+	/**
+	 * In most cases, when the height of a ContainerDOMElement
+	 * is 'auto', its computed height become the total height
+	 * of its in flow children, computed once all its
+	 * children have been laid out 
+	 * 
+	 * @param	containingDOMElementData
+	 * @param	childrenHeight the total height of the children once laid out
+	 */
+	private function applyContentHeightIfNeeded(containingDOMElementData:ContainingDOMElementData, childrenHeight:Int):Int
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		return boxComputer.applyContentHeight(this, containingDOMElementData, childrenHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
