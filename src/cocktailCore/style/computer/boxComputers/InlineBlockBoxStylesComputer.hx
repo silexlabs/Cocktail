@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.computer.boxComputers;
+import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
@@ -38,20 +39,20 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	 * if the width is set to 'auto', then this method is called once all the children
 	 * of the inlineBlock are laid out
 	 */
-	override public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	override public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var shrinkedWidth:Int;
 		
 		//if the minimum width that must use the inlineBlock
 		//is not superior to the width of the containing
 		//DOMElement, use the minimum width
-		if (minimumWidth < availableWidth)
+		if (minimumWidth < containingDOMElementData.width)
 		{
 			shrinkedWidth = minimumWidth;
 		}
 		else
 		{
-			shrinkedWidth = availableWidth;
+			shrinkedWidth = containingDOMElementData.width;
 		}
 		
 		return shrinkedWidth;
