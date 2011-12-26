@@ -27,6 +27,7 @@ import cocktailCore.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import haxe.Timer;
 
@@ -162,7 +163,7 @@ class AbstractContainerStyle extends Style
 		{
 			
 			var currentWidth:Int = this._computedStyle.width;
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
 			
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
@@ -177,13 +178,15 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content height
+		//defined as 'auto', then in most cases, it depends on its content height
 		//and it must now be adjusted to the total height
 		//of its children before the ContainerDOMElement is actually
-		//sized
+		//sized. Fort some border case though, the total height
+		//of the children is not used and auto height is computed in
+		//another way
 		if (this._height == DimensionStyleValue.auto)
 		{
-			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.totalHeight);
 		}
 
 		//insert the ContainerDOMElement into the document
@@ -245,7 +248,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * When this ContainerDOMElement is positioned, position each of its children using t
+	 * When this ContainerDOMElement is positioned, position each of its children using it
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
@@ -278,10 +281,11 @@ class AbstractContainerStyle extends Style
 		var text:String = textElement.getNativeText();
 		
 		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
-		text = applyWhiteSpace(text, this._computedStyle.whiteSpace);
+		text = AbstractTextElement.applyWhiteSpace(text, this._computedStyle.whiteSpace);
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
+		
 		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
@@ -306,7 +310,7 @@ class AbstractContainerStyle extends Style
 					//start a new line
 					formattingContext.insertLineFeed();
 			}
-		}			
+		}		
 	}
 	
 	/**
@@ -315,14 +319,30 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line form by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * @param	availableWidth the width of the container of this containerDOMElement
-	 * @param	maxWidth the width of the widest line of children laid out
-	 * by this ContainerDOMElement
+	 * @param	containingDOMElementData
+	 * @param	minimumWidth the width of the widest line of children laid out
+	 * by this ContainerDOMElement which will be the minimum width that should
+	 * have this DOMElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
+	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
+		return boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
+	}
+	
+	/**
+	 * In most cases, when the height of a ContainerDOMElement
+	 * is 'auto', its computed height become the total height
+	 * of its in flow children, computed once all its
+	 * children have been laid out 
+	 * 
+	 * @param	containingDOMElementData
+	 * @param	childrenHeight the total height of the children once laid out
+	 */
+	private function applyContentHeightIfNeeded(containingDOMElementData:ContainingDOMElementData, childrenHeight:Int):Int
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		return boxComputer.applyContentHeight(this, containingDOMElementData, childrenHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -388,142 +408,6 @@ class AbstractContainerStyle extends Style
 	private function doCreateTextFragment(text:String):TextFragmentDOMElement
 	{
 		return null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE TEXT HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Apply the whiteSpace style rule to a text
-	 */
-	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
-	{
-		var ret:String = text;
-		
-		switch (whiteSpace)
-		{
-				case WhiteSpaceStyleValue.normal:
-					ret = collapseSpaceSequences(text);
-					
-				case WhiteSpaceStyleValue.pre:
-					ret = removeLineFeeds(text);
-					
-				case WhiteSpaceStyleValue.nowrap:
-					ret = collapseSpaceSequences(text);
-					ret = removeLineFeeds(text);
-					ret = convertTabToSpace(text);
-					
-				case WhiteSpaceStyleValue.preWrap:
-					
-				case WhiteSpaceStyleValue.preLine:
-					ret = collapseSpaceSequences(text);
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Transform a text letters into uppercase, lowercase
-	 * or capitalise them (only the first letter of each word
-	 * is transformed to uppercase), based on the textTransform
-	 * style of this container DOMElement
-	 * @param	text the text to transform
-	 * @return the transformed text
-	 */
-	private function applyTextTransform(text:String):String
-	{
-		switch (_computedStyle.textTransform)
-		{
-			case uppercase:
-				text = text.toUpperCase();
-				
-			case lowercase:
-				text = text.toLowerCase();
-				
-			case capitalize:
-				text = capitalizeText(text);
-				
-			case none:
-		}
-		
-		return text;
-	}
-	
-	/**
-	 * Capitalise a text (turn each first letter
-	 * of a word to uppercase)
-	 * @param	text the text to capitaliee
-	 * @return the capitalized
-	 */
-	private function capitalizeText(text:String):String
-	{
-		var capitalizedText:String = text.charAt(0);
-		
-		/**
-		 * loop in all charachter looking for word breaks
-		 * and capitalize each word's first letter
-		 */
-		for (i in 1...text.length)
-		{	
-			if (text.charAt(i - 1) == " ")
-			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
-			}
-		}
-		return capitalizedText;
-	}
-	
-	/**
-	 * Convert sequences of spaces in a text
-	 * into a single space
-	 */
-	private function collapseSpaceSequences(text:String):String
-	{
-		var collapsedText:String = "";
-		var isSpaceSequence:Bool = false;
-		
-		for (i in 0...text.length)
-		{
-			if (StringTools.isSpace(text, i))
-			{
-				if (isSpaceSequence == false)
-				{
-					collapsedText += text.charAt(i);
-					isSpaceSequence = true;
-				}
-			}
-			else
-			{
-				isSpaceSequence = false;
-				collapsedText += text.charAt(i);
-			}
-		}
-		
-		return collapsedText;
-	}
-	
-	/**
-	 * Removes the new line control character
-	 * from a text
-	 */
-	private function removeLineFeeds(text:String):String
-	{
-		return StringTools.replace(text, "\n", "");
-	}
-	
-	/**
-	 * Removes the tabulation control character
-	 * from a text by converting them to space
-	 * character
-	 */
-	private function convertTabToSpace(text:String):String
-	{
-		return StringTools.replace(text, "\t", " ");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

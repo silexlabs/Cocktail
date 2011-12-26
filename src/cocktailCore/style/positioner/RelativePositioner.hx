@@ -60,7 +60,7 @@ class RelativePositioner extends BoxPositioner
 	 */
 	override private function getLeftOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.getNativeX(domElement) + domElement.style.computedStyle.left;
+		return domElement.style.getNativeX() + domElement.style.computedStyle.left;
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class RelativePositioner extends BoxPositioner
 	 */
 	override private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
 	{
-		return domElement.style.getNativeX(domElement) + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right ;
+		return domElement.style.getNativeX() + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right ;
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class RelativePositioner extends BoxPositioner
 	 */
 	override private function getTopOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.getNativeY(domElement) + domElement.style.computedStyle.top;
+		return domElement.style.getNativeY() + domElement.style.computedStyle.top;
 	}
 	
 	/**
@@ -87,7 +87,7 @@ class RelativePositioner extends BoxPositioner
 	 */
 	override private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
 	{
-		return domElement.style.getNativeY(domElement) + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom ;
+		return domElement.style.getNativeY() + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom ;
 	}
 	
 }

@@ -15,24 +15,38 @@ import haxe.Http;
 import haxe.Log;
 
 /**
- * This class is in charge of loading a picture. When multiple
- * pictures are loaded with the same instance, the picture is 
- * replaced
+ * This class is in charge of loading a library of
+ * classes
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractImageLoader extends ResourceLoader
+class AbstractLibraryLoader extends ResourceLoader
 {
 	/**
 	 * class constructor
 	 */
 	public function new(nativeElement:NativeElement = null)
 	{
-		//create an image nativeElement if none is provided
+		//create a library NativeElement if none is provided
 		if (nativeElement == null)
 		{
-			nativeElement = NativeElementManager.createNativeElement(image);
+			nativeElement = NativeElementManager.createNativeElement(library);
 		}
+		
 		super(nativeElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden method for load complete
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the file is done loading, calls the success callback with no argument, as the loaded
+	 * library is stored in memory but is not to be manipulated by the object that started the load
+	 * @param	data the loaded library data
+	 */
+	override private function onLoadComplete(data:Dynamic):Void
+	{
+		_onLoadCompleteCallback(null);
 	}
 }

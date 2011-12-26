@@ -93,16 +93,29 @@ class BoxStylesComputer
 	
 	/**
 	 * Shrink the width a DOMElement to fit its content. Doesn't apply to a
-	 * non-replaced block
-	 * @param	computedStyles
-	 * @param	availableWidth the maximum that can be occupied by the DOMElement
-	 * @param	minimumWidth the minimum width of the DOMElement, corresponding 
+	 * non-replaced block so return the current width
+	 * @param	style
+	 * @param	containingDOMElementData
+	 * @param	minimumWidth the minimum width of the DOMElement if shrinked, corresponding 
 	 * to its content width
 	 * @return
 	 */
-	public function shrinkToFit(computedStyles:ComputedStyleData, availableWidth:Int, minimumWidth:Int):Int
+	public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
-		return computedStyles.width;
+		return style.computedStyle.width;
+	}
+	
+	/**
+	 * Return the height that should be used when the 'height' of a ContainerDOMElement is specified
+	 * as 'auto'. The default behaviour is to use the total height of its children
+	 * @param	style
+	 * @param	cotainingDOMElementData
+	 * @param	childrenHeight
+	 * @return
+	 */
+	public function applyContentHeight(style:AbstractStyle, cotainingDOMElementData:ContainingDOMElementData, childrenHeight:Int):Int
+	{
+		return childrenHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +203,6 @@ class BoxStylesComputer
 	 */
 	private function measureWidthAndHorizontalMargins(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		
 		if (style.width == DimensionStyleValue.auto)
 		{
 			measureAutoWidth(style, containingDOMElementData);
@@ -234,7 +246,7 @@ class BoxStylesComputer
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getNativeWidth(style, containingDOMElementData);
+		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -374,7 +386,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getNativeWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
 		return getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}

@@ -8,18 +8,20 @@
 package cocktailCore.resource.js;
 
 
+import cocktailCore.resource.abstract.AbstractLibraryLoader;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 import js.Dom.HtmlDom;
 import js.Lib;
 
 /**
  * This is the implementation of the library loader for the JavaScript runtime. A library in JavaScript
- * is a .js file. This class is in charge of adding a script tag to the HTML DOM with the new script to add
+ * is a .js file. This class is in charge of adding a script tag to the HTML DOM with the url of the .js
+ * to load
+ * 
  * @author Yannick DOMINGUEZ
  */
-class LibraryLoader extends AbstractResourceLoader
+class LibraryLoader extends AbstractLibraryLoader
 {
-
 	/**
 	 * Class constructor
 	 */
@@ -33,47 +35,26 @@ class LibraryLoader extends AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Add a new script tag to the HTML DOM and track the script loading end
-	 * to call the onLoadComplete method
+	 * Set the script attributes on the script tag wrapped in the NativeElement and
+	 * attach it to the HTML header
+	 * 
 	 * @param	url the url of the JS script to load
 	 */
 	override private function doLoad(url:String):Void
 	{
-		//Create a 'script' element	
-		var scrptE:HtmlDom = Lib.document.createElement("script");
-
 		// Set it's 'type' attribute	
-		scrptE.setAttribute("type", "text/javascript");
+		_nativeElement.setAttribute("type", "text/javascript");
 
 		// Set it's 'language' attribute
-		scrptE.setAttribute("language", "JavaScript");
-
-		// Set it's 'src' attribute
-		scrptE.setAttribute("src", url);
-
-		// Set it's onLoad callback
-		untyped scrptE.onload = onLoadComplete;
-		
-		//Set it's error callback
-		untyped scrptE.onerror = onLoadError;
-		
+		_nativeElement.setAttribute("language", "JavaScript");
 
 		// Now add this new element to the head tag
-		Lib.document.getElementsByTagName("head")[0].appendChild(scrptE);
+		Lib.document.getElementsByTagName("head")[0].appendChild(_nativeElement);
+		
+		//start the script loading
+		super.doLoad(url);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden method for load complete
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When the file is done loading, calls the success callback with no argument, as the loaded
-	 * library is stored in memory but is not to be manipulated by the object that started the load
-	 * @param	data the loaded library data
-	 */
-	override private function onLoadComplete(data:Dynamic):Void
-	{
-		_onLoadCompleteCallback(null);
-	}
+
 	
 }
