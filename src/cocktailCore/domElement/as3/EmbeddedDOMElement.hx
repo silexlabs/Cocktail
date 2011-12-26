@@ -7,8 +7,11 @@
 */
 package cocktailCore.domElement.as3;
 
+import cocktail.geom.Matrix;
+import cocktail.geom.GeomData;
 import cocktailCore.domElement.abstract.AbstractEmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
+import haxe.Log;
 
 /**
  * This is the Flash AVM2 implementation of the Embedded DOMElement
@@ -17,6 +20,9 @@ import cocktail.nativeElement.NativeElement;
  */
 class EmbeddedDOMElement extends AbstractEmbeddedDOMElement
 {
+	/**
+	 * class constructor
+	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);

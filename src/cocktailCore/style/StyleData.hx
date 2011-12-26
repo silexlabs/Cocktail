@@ -7,6 +7,7 @@
 */
 package cocktailCore.style;
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.abstract.AbstractStyle;
@@ -117,6 +118,10 @@ import cocktail.geom.GeomData;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
 		var lineHeight:Float;
+		var opacity:Float;
+		var visibility:Bool;
+		var transformOrigin:PointData;
+		var transform:Matrix;
 		
 		/**
 		 * font

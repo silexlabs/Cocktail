@@ -7,6 +7,7 @@
 */
 package cocktailCore.resource.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import haxe.Http;
 import haxe.Log;
 
@@ -17,7 +18,7 @@ import haxe.Log;
  * @author Yannick DOMINGUEZ
  */
 class AbstractResourceLoader 
-{
+{	
 	/**
 	 * Stores the callback to call once the file is successfully loaded
 	 */
@@ -29,11 +30,26 @@ class AbstractResourceLoader
 	private var _onLoadErrorCallback:Dynamic->Void;
 	
 	/**
+	 * A reference to the native element actually loading
+	 * the asset. For instance, for an image in Flash, a Loader, in JS,
+	 * an img tag. When multiple loads occurs, this NativeElement is
+	 * reused instead of a new one being created.
+	 */
+	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
+	
+	/**
 	 * class constructor
 	 */
-	public function new()
+	public function new(nativeElement:NativeElement = null)
 	{
-		
+		//a ResourceLoader doesn't necessarily have a NativeElement.
+		//for instance when loading a String, flash will use an URLLoader
+		//and JS an XMLHttpRequest object
+		if (nativeElement != null)
+		{
+			_nativeElement = nativeElement;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -69,17 +85,12 @@ class AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually start the file loading. Meant to be overriden. The default implementation
-	 * is to load an url and return the result as a String. It might be used to load, XML, JSON...
+	 * Actually start the file loading. Meant to be overriden.
 	 * @param	url the url to load
 	 */
 	private function doLoad(url:String):Void
 	{
-		//prepare and send an http request
-		var fileRequest:Http = new Http(url);
-		fileRequest.onData = this.onLoadComplete;
-		fileRequest.onError = this.onLoadError;
-		fileRequest.request(false);
+		//abstract
 	}
 	
 	
@@ -135,5 +146,14 @@ class AbstractResourceLoader
 		url += getId + "rand=" + Math.round(Math.random() * 10000);
 		
 		return url;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getNativeElement():NativeElement
+	{
+		return _nativeElement;
 	}
 }

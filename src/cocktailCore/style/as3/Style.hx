@@ -8,6 +8,8 @@
 package cocktailCore.style.as3;
 
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
+import cocktail.geom.GeomData;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
@@ -17,6 +19,7 @@ import flash.text.engine.FontPosture;
 import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 import haxe.Log;
 
@@ -66,7 +69,7 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DIMENSION AND POSITION METHODS
+	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -82,16 +85,52 @@ class Style extends AbstractStyle
 		domElement.nativeElement.y = y;
 	}
 	
-	override public function setNativeWidth(domElement:DOMElement, width:Int):Void
+	override public function setNativeWidth(width:Int):Void
 	{
-		super.setNativeWidth(domElement, width);
+		super.setNativeWidth(width);
 		domElement.nativeElement.width = width;
 	}
 	
-	override public function setNativeHeight(domElement:DOMElement, height:Int):Void
+	override public function setNativeHeight(height:Int):Void
 	{
-		super.setNativeHeight(domElement, height);
+		super.setNativeHeight(height);
 		domElement.nativeElement.height = height;
+	}
+	
+	override public function setNativeOpacity(opacity:Float):Void
+	{
+		super.setNativeOpacity(opacity);
+		domElement.nativeElement.alpha = opacity;
+	}
+	
+	override public function setNativeVisibility(visible:Bool):Void
+	{
+		super.setNativeVisibility(visible);
+		domElement.nativeElement.visible = visible;
+	}
+	
+
+	/**
+	 * when the matrix is set, update also
+	 * the values of the native flash matrix of the
+	 * native DisplayObject
+	 * @param	matrix
+	 */
+	override public function setNativeMatrix(matrix:Matrix):Void
+	{
+		//concenate the new matrix with the base matrix of the DOMElement
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = concatenatedMatrix.data;
+		
+		//create a native flash matrix with the abstract matrix data
+		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	
+		//apply the native flash matrix to the native flash DisplayObject
+		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
+		
+		super.setNativeMatrix(concatenatedMatrix);
 	}
 	
 	/////////////////////////////////
@@ -128,7 +167,7 @@ class Style extends AbstractStyle
 			
 			//get the x height (the height of a lower-case "x")
 			var xHeight:Int = getXHeight(elementFormat.clone());
-			
+		
 			var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
 			
 			_fontMetrics = {
@@ -146,9 +185,25 @@ class Style extends AbstractStyle
 		return _fontMetrics;
 	}
 	
+	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
+	
+	/**
+	 * Concatenate the new matrix with the "base" matrix of the DOMElement
+	 * where only translations (the x and y of the DOMElement) and scales
+	 * (the width and height of the DOMElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.concatenate(matrix);
+		currentMatrix.translate(this._nativeX, this._nativeY);
+		return currentMatrix;
+	}
 	
 	/**
 	 * Return a flash FontWeight object from
@@ -220,13 +275,15 @@ class Style extends AbstractStyle
 	
 	/**
 	 * return the x height of the font which is equal to 
-	 * the height of a lower-case 'x'
+	 * the height of a lower-case 'x'.
 	 */
 	private function getXHeight(elementFormat:ElementFormat):Int
 	{
 		_textBlock.content = new TextElement("x", elementFormat);
-		
-		return Math.round(_textBlock.createTextLine(null, 10000).textHeight);
+		var textLine:TextLine = _textBlock.createTextLine(null, 10000);
+		var descent:Float = textLine.descent;
+		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
+		return Math.round(top - descent);
 	}
 	
 	/**
