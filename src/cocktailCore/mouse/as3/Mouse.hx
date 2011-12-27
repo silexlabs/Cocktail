@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.mouse.as3;
 
@@ -35,37 +32,89 @@ class Mouse extends AbstractMouse
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// EVENTS
-	// Overriden private native mouse event handler method
+	// OVERRIDEN CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set the listeners for native flash mouse events
-	 */
-	override private function setNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.addEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		nativeElement.addEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		nativeElement.addEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		nativeElement.addEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		nativeElement.addEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		if (value == null)
+		{
+			_nativeElement.removeEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		}
+		else
+		{
+			_nativeElement.addEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		}
 		
-		//In As3, a DisplayObject must be double click enabled to dispatch double click event
-		nativeElement.doubleClickEnabled = true;
-		nativeElement.addEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		return this._onMouseDown = value;
 	}
 	
-	/**
-	 * remove the listeners for native flash mouse events
-	 */
-	override private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.removeEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		nativeElement.removeEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		nativeElement.removeEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		nativeElement.removeEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		nativeElement.removeEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		nativeElement.removeEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		if (value == null)
+		{
+			_nativeElement.removeEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
+		}
+		else
+		{
+			_nativeElement.addEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
+		}
+		return this._onMouseUp = value;
+	}
+	
+	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.removeEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
+		}
+		else
+		{
+			_nativeElement.addEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
+		}
+		return this._onMouseOver = value;
+	}
+	
+	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.removeEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
+		}
+		else
+		{
+			_nativeElement.addEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
+		}
+		return this._onMouseOut = value;
+	}
+	
+	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.removeEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		}
+		else
+		{
+			_nativeElement.addEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		}
+		return this._onMouseMove = value;
+	}
+	
+	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.doubleClickEnabled = false;
+			_nativeElement.removeEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		}
+		else
+		{
+			//In As3, a DisplayObject must be double click enabled to dispatch double click event
+			_nativeElement.doubleClickEnabled = true;
+			_nativeElement.addEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
+		}
+		return this._onMouseDoubleClick = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

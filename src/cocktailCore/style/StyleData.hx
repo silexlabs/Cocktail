@@ -1,17 +1,17 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style;
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
+import cocktailCore.style.abstract.AbstractStyle;
+import cocktail.geom.GeomData;
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
@@ -31,6 +31,37 @@ import cocktail.style.StyleData;
 		var isHeightAuto:Bool;
 		var globalX:Int;
 		var globalY:Int;
+	}
+	
+	/**
+	 * Contains the data of the first 
+	 * positioned ancestor (a DOMElement with
+	 * a position style of relative, absolute,
+	 * or fixed) and a reference to each of
+	 * the style objects using the data
+	 * as origin to layout an absolutely
+	 * positioned DOMElement.
+	 */
+	typedef LastPositionedDOMElementData = {
+		var children:Array<PositionedDOMElementData>;
+		var data:ContainingDOMElementData;
+		
+	}
+	
+	/**
+	 * Holds a reference to the Style of a
+	 * positioned DOMElement. The static position
+	 * is the x,y point where the DOMElement
+	 * would have been if its position style
+	 * had been 'static'.
+	 * 
+	 * It is used if left and right or
+	 * top and bottom styles are both
+	 * set to 'auto'
+	 */
+	typedef PositionedDOMElementData =  {
+		var style:AbstractStyle;
+		var staticPosition:PointData;
 	}
 	
 	/**
@@ -87,6 +118,10 @@ import cocktail.style.StyleData;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
 		var lineHeight:Float;
+		var opacity:Float;
+		var visibility:Bool;
+		var transformOrigin:PointData;
+		var transform:Matrix;
 		
 		/**
 		 * font
@@ -109,6 +144,18 @@ import cocktail.style.StyleData;
 		var textAlign:TextAlignStyleValue;
 		var color:Int;
 		
+	}
+	
+	/**
+	 * Holds a reference to default styles values.
+	 * Those styles default values are defined by 
+	 * the User Agent in JS, for Flash and other
+	 * runtime they will be hard-coded in this
+	 * structure.
+	 */
+	typedef DefaultStylesData = {
+		var fontFamily:Array<FontFamilyStyleValue>;
+		var color:ColorValue;
 	}
 	
 	/**

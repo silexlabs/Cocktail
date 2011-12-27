@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.as3;
 
@@ -26,6 +22,7 @@ import flash.Lib;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.geom.GeomData;
+import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 
 /**
@@ -72,10 +69,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_backGroundSprite = new Sprite();
 		this._nativeElement.addChild(_backGroundSprite);
 
-		setUpBackgroundSprite(_backGroundSprite, this._width, this._height);
+		setUpBackgroundSprite(_backGroundSprite, this.intrinsicWidth, this.intrinsicHeight);
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(100, 100, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(this.intrinsicWidth, this.intrinsicHeight, true, 0x00FFFFFF));
 		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
@@ -89,11 +86,11 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setWidth(value:Int):Int
 	{
-		this._width = value;
+		super.setWidth(value);
 		
 		//update the background delimiting this DOMElement
-		setUpBackgroundSprite(this._backGroundSprite, value, getHeight());
-		
+		setUpBackgroundSprite(this._backGroundSprite, value, this.height);
+	
 		//update the bitmap drawing
 		updateBitmapDrawingSize();
 		
@@ -102,10 +99,10 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	
 	override private function setHeight(value:Int):Int 
 	{
-		this._height = value;
+		super.setHeight(value);
 		
 		//update the background delimiting this dom element
-		setUpBackgroundSprite(this._backGroundSprite, getWidth(), value);
+		setUpBackgroundSprite(this._backGroundSprite, this.width, value);
 		
 		//update the bitmap drawing
 		updateBitmapDrawingSize();
@@ -116,33 +113,6 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the native Sprite fill style and line style
-	 * @param	fillStyle
-	 * @param	lineStyle
-	 */
-	override public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
-	{
-		super.beginFill(fillStyle, lineStyle);
-		
-		//init fill and line style if null
-		if (fillStyle == null)
-		{
-			fillStyle = FillStyleValue.none;
-		}
-		
-		if (lineStyle == null)
-		{
-			lineStyle = LineStyleValue.none;
-		}
-		
-		//set fill style
-		setFillStyle(fillStyle);
-		
-		//set line style
-		setLineStyle(lineStyle);
-	}
 	
 	/**
 	 * Ends a fill on the native Sprite's graphic object.
@@ -194,7 +164,26 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//create a new transparent bitmapData with the new size of the DOMElement
-		var newBitmapData:BitmapData = new BitmapData(this._width, this._height, true, 0x00FFFFFF);
+		//or the intrinsic size of the DOMElement if it hasn't a specific size yet
+		var width:Int;
+		var height:Int;
+		if (this.width != 0)
+		{
+			width = this.width;
+		}
+		else
+		{
+			width = this.intrinsicWidth;
+		}
+		if (this.height != 0)
+		{
+			height = this.height;
+		}
+		else
+		{
+			height = this.intrinsicHeight;
+		}
+		var newBitmapData:BitmapData = new BitmapData(width, height, true, 0x00FFFFFF);
 		
 		//retrieve the width of pixels that must be copied
 		//from the current bitmap data
@@ -203,9 +192,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//if the current bitmap data width is superior to the new
 		//width of the DOMElement, then only the new width of pixels
 		//must be copied, the rest will be cropped
-		if (currentBitmapData.width > this._width)
+		if (currentBitmapData.width > width)
 		{
-			drawingWidth = this._width;
+			drawingWidth = width;
 		}
 		//else if the new width is superior to the current bitmap width
 		//all current bitmap pixel width must be copied
@@ -217,9 +206,9 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		//same for height
 		var drawingHeight:Int = 0;
 		
-		if (currentBitmapData.height > this._height)
+		if (currentBitmapData.height > height)
 		{
-			drawingHeight = this._height;
+			drawingHeight = height;
 		}
 		else
 		{
@@ -248,18 +237,18 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		_typedNativeElement.graphics.clear();
 		
 		//draws a transparent rectangle over all the bitmap, erasing it's content
-		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this._width, this._height), 0x00FFFFFF);
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, this.intrinsicWidth, this.intrinsicHeight), 0x00FFFFFF);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private fill control methods
+	// Overriden Private fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Do set the fill style on the Sprite
 	 * @param	fillStyle
 	 */
-	private function setFillStyle(fillStyle:FillStyleValue):Void
+	override private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		switch(fillStyle)
 		{
@@ -294,7 +283,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	 * Do set the lineStyle on the Sprite
 	 * @param	lineStyle
 	 */
-	private function setLineStyle(lineStyle:LineStyleValue):Void
+	override private function setLineStyle(lineStyle:LineStyleValue):Void
 	{
 		switch(lineStyle)
 		{
@@ -612,7 +601,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	private function getGradientBox(gradientStyle:GradientStyleData):Matrix
 	{
 		var gradientBox:Matrix = new Matrix();
-		gradientBox.createGradientBox(this.getWidth(), this.getHeight(), gradientStyle.rotation / 180 * Math.PI);
+		gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
 		return gradientBox;
 	}
 }

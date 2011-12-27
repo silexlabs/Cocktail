@@ -1,16 +1,15 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.as3;
 
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
+import cocktail.geom.GeomData;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
@@ -20,6 +19,7 @@ import flash.text.engine.FontPosture;
 import flash.text.engine.FontWeight;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 import haxe.Log;
 
@@ -68,8 +68,73 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN NATIVE SETTERS
+	// apply the properties to the native flash DisplayObject
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setNativeX(domElement:DOMElement, x:Int):Void
+	{
+		super.setNativeX(domElement, x);
+		domElement.nativeElement.x = x;
+	}
+	
+	override public function setNativeY(domElement:DOMElement, y:Int):Void
+	{
+		super.setNativeY(domElement, y);
+		domElement.nativeElement.y = y;
+	}
+	
+	override public function setNativeWidth(width:Int):Void
+	{
+		super.setNativeWidth(width);
+		domElement.nativeElement.width = width;
+	}
+	
+	override public function setNativeHeight(height:Int):Void
+	{
+		super.setNativeHeight(height);
+		domElement.nativeElement.height = height;
+	}
+	
+	override public function setNativeOpacity(opacity:Float):Void
+	{
+		super.setNativeOpacity(opacity);
+		domElement.nativeElement.alpha = opacity;
+	}
+	
+	override public function setNativeVisibility(visible:Bool):Void
+	{
+		super.setNativeVisibility(visible);
+		domElement.nativeElement.visible = visible;
+	}
+	
+
+	/**
+	 * when the matrix is set, update also
+	 * the values of the native flash matrix of the
+	 * native DisplayObject
+	 * @param	matrix
+	 */
+	override public function setNativeMatrix(matrix:Matrix):Void
+	{
+		//concenate the new matrix with the base matrix of the DOMElement
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = concatenatedMatrix.data;
+		
+		//create a native flash matrix with the abstract matrix data
+		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	
+		//apply the native flash matrix to the native flash DisplayObject
+		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
+		
+		super.setNativeMatrix(concatenatedMatrix);
+	}
+	
 	/////////////////////////////////
-	// OVERRIDEN METHODS
+	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
 	
 	/**
@@ -100,23 +165,15 @@ class Style extends AbstractStyle
 			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 			
-			//the leading is an extra height to apply equally to the ascent
-			//and the descent when laying out lines of text
-			var leading:Float = _computedStyle.lineHeight - (ascent + descent);
-			
-			//apply leading to the ascent and descent
-			var leadedAscent:Float = (ascent + leading/2) ;
-			var leadedDescent:Float = (descent + leading / 2) ;
-			
 			//get the x height (the height of a lower-case "x")
 			var xHeight:Int = getXHeight(elementFormat.clone());
-			
+		
 			var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
 			
 			_fontMetrics = {
 				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(leadedAscent),
-				descent:Math.round(leadedDescent),
+				ascent:Math.round(ascent),
+				descent:Math.round(descent),
 				xHeight:xHeight,
 				spaceWidth:spaceWidth,
 				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
@@ -128,9 +185,25 @@ class Style extends AbstractStyle
 		return _fontMetrics;
 	}
 	
+	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
+	
+	/**
+	 * Concatenate the new matrix with the "base" matrix of the DOMElement
+	 * where only translations (the x and y of the DOMElement) and scales
+	 * (the width and height of the DOMElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.concatenate(matrix);
+		currentMatrix.translate(this._nativeX, this._nativeY);
+		return currentMatrix;
+	}
 	
 	/**
 	 * Return a flash FontWeight object from
@@ -202,13 +275,15 @@ class Style extends AbstractStyle
 	
 	/**
 	 * return the x height of the font which is equal to 
-	 * the height of a lower-case 'x'
+	 * the height of a lower-case 'x'.
 	 */
 	private function getXHeight(elementFormat:ElementFormat):Int
 	{
 		_textBlock.content = new TextElement("x", elementFormat);
-		
-		return Math.round(_textBlock.createTextLine(null, 10000).textHeight);
+		var textLine:TextLine = _textBlock.createTextLine(null, 10000);
+		var descent:Float = textLine.descent;
+		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
+		return Math.round(top - descent);
 	}
 	
 	/**

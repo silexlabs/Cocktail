@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.keyboard.abstract;
 
@@ -35,43 +32,28 @@ class AbstractKeyboard
 	 * The callback to call when
 	 * a key is pressed
 	 */
-	public var onKeyDown:KeyEventData->Void;
+	private var _onKeyDown:KeyEventData->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyEventData->Void;
 	
 	/**
 	 * The callback to call when 
 	 * a key is released
 	 */
-	public var onKeyUp:KeyEventData->Void;
+	private var _onKeyUp:KeyEventData->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
 	
 	/**
-	 * class constructor. Set the native
-	 * keyboard listeners 
+	 * class constructor
 	 */
 	public function new() 
 	{
-		setNativeKeyboardListeners();
+
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native keyboard event handler method
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the listeners for native keyboard event
-	 */
-	private function setNativeKeyboardListeners():Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * remove the listeners for native keyboard event
-	 */
-	private function unsetNativeKeyboardListeners():Void
-	{
-		//abstract
-	}
 	
 	/**
 	 * Calls the onKeyDown callback with the pressed key data
@@ -96,6 +78,30 @@ class AbstractKeyboard
 		{
 			onKeyUp(getKeyData(event));
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CALLBACKS SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
+	{
+		return _onKeyDown = value;
+	}
+	
+	private function getOnKeyDown():KeyEventData->Void
+	{
+		return _onKeyDown;
+	}
+	
+	private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
+	{
+		return _onKeyUp = value;
+	}
+	
+	private function getOnKeyUp():KeyEventData->Void
+	{
+		return _onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

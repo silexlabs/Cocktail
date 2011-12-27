@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.mouse.js;
 
@@ -34,34 +31,86 @@ class Mouse extends AbstractMouse
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// EVENTS
-	// Overriden private native mouse event handler method
+	// OVERRIDEN CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set the listeners for native JavaScript mouse events
-	 */
-	override private function setNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.onmousedown = onNativeMouseDown;
-		nativeElement.onmouseup = onNativeMouseUp;
-		nativeElement.onmouseover = onNativeMouseOver;
-		nativeElement.onmouseout = onNativeMouseOut;
-		nativeElement.onmousemove = onNativeMouseMove;
-		nativeElement.ondblclick = onNativeMouseDoubleClick;
+		if (value == null)
+		{
+			_nativeElement.onmousedown = null;
+		}
+		else
+		{
+			_nativeElement.onmousedown = onNativeMouseDown;
+		}
+		
+		return this._onMouseDown = value;
 	}
 	
-	/**
-	 * remove the listeners for native JavaScript mouse events
-	 */
-	override private function unsetNativeMouseListeners(nativeElement:NativeElement):Void
+	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		nativeElement.onmousedown = null;
-		nativeElement.onmouseup = null;
-		nativeElement.onmouseover = null;
-		nativeElement.onmouseout = null;
-		nativeElement.onmousemove = null;
-		nativeElement.ondblclick = null;
+		if (value == null)
+		{
+			_nativeElement.onmouseup = null;
+		}
+		else
+		{
+			_nativeElement.onmouseup = onNativeMouseUp;
+		}
+		return this._onMouseUp = value;
+	}
+	
+	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmouseover = null;
+		}
+		else
+		{
+			_nativeElement.onmouseover = onNativeMouseOver;
+		}
+		return this._onMouseOver = value;
+	}
+	
+	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmouseout = null;
+		}
+		else
+		{
+			_nativeElement.onmouseout = onNativeMouseOut;
+		}
+		return this._onMouseOut = value;
+	}
+	
+	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.onmousemove = null;
+		}
+		else
+		{
+			_nativeElement.onmousemove = onNativeMouseMove;
+		}
+		return this._onMouseMove = value;
+	}
+	
+	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	{
+		if (value == null)
+		{
+			_nativeElement.ondblclick = null;
+		}
+		else
+		{
+			_nativeElement.ondblclick = onNativeMouseDoubleClick;
+		}
+		return this._onMouseDoubleClick = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -1,27 +1,24 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.resource.abstract;
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import haxe.Http;
 import haxe.Log;
 
 /**
  * This class is in charge of loading one file and calling the right callback after the load succedeed/failed. This is a base
- * class which will be implemented for each file types.
+ * class implemented for each media/data types.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractResourceLoader 
-{
-
+{	
 	/**
 	 * Stores the callback to call once the file is successfully loaded
 	 */
@@ -33,18 +30,26 @@ class AbstractResourceLoader
 	private var _onLoadErrorCallback:Dynamic->Void;
 	
 	/**
-	 * Stores the target domElement if it exists. If a domElement is 
-	 * provided, the loaded resource will be set on it, else a new 
-	 * DOMElement will be created
+	 * A reference to the native element actually loading
+	 * the asset. For instance, for an image in Flash, a Loader, in JS,
+	 * an img tag. When multiple loads occurs, this NativeElement is
+	 * reused instead of a new one being created.
 	 */
-	private var _domElement:DOMElement;
+	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new()
+	public function new(nativeElement:NativeElement = null)
 	{
-		
+		//a ResourceLoader doesn't necessarily have a NativeElement.
+		//for instance when loading a String, flash will use an URLLoader
+		//and JS an XMLHttpRequest object
+		if (nativeElement != null)
+		{
+			_nativeElement = nativeElement;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -53,20 +58,16 @@ class AbstractResourceLoader
 	
 	/**
 	 * Start the loading of a file. Stores the success and error callbacks. Prevent file caching if requested
-	 * then start the file loading
+	 * then actually start the file loading
 	 * @param	url the url of the file to load
 	 * @param	onLoadComplete called when the file is done loading
 	 * @param	onLoadError called when there is an error during loading
-	 * @param   domElement if provided, the loaded resource will be set on it
-	 * instead of creating a new DOMElement
 	 * @param	allowCache wether to allow the browser to cache the loaded file
 	 */
-	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, domElement:DOMElement = null, allowCache:Bool = true):Void
+	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool = true):Void
 	{
 		this._onLoadCompleteCallback = onLoadComplete;
 		this._onLoadErrorCallback = onLoadError;
-		
-		this._domElement = domElement;
 		
 		//if the loaded resource must not be cached,
 		//add a random number at the end of the url to fool
@@ -84,17 +85,12 @@ class AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually start the file loading. Meant to be overriden. The default implementation
-	 * is to load an url and return the result as a String. It might be used to load, XML, JSON...
+	 * Actually start the file loading. Meant to be overriden.
 	 * @param	url the url to load
 	 */
 	private function doLoad(url:String):Void
 	{
-		//prepare and send an http request
-		var fileRequest:Http = new Http(url);
-		fileRequest.onData = this.onLoadComplete;
-		fileRequest.onError = this.onLoadError;
-		fileRequest.request(false);
+		//abstract
 	}
 	
 	
@@ -150,5 +146,14 @@ class AbstractResourceLoader
 		url += getId + "rand=" + Math.round(Math.random() * 10000);
 		
 		return url;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getNativeElement():NativeElement
+	{
+		return _nativeElement;
 	}
 }
