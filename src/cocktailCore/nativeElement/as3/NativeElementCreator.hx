@@ -13,9 +13,6 @@ import flash.display.Sprite;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.nativeElement.abstract.AbstractNativeElementCreator;
-import flash.text.engine.ElementFormat;
-import flash.text.engine.TextBaseline;
-import flash.text.engine.TextElement;
 
 /**
  * This is the flash AVM2 implementation of the native element

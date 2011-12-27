@@ -10,7 +10,7 @@ package cocktailCore.style;
 /**
  * Set the right runtime specific BodyStyle at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef BodyStyle =  cocktailCore.style.as3.BodyStyle;
 
 #elseif js
