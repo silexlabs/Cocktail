@@ -1,7 +1,6 @@
 -cp ../../../src/
--cp ../../src/
--cp ../../src/domElement
--main org.cocktail.domElement.DOMElementTests
+-cp ../../../
+-main test.src.domElement.DOMElementTests
 -lib utest
 -swf ../../bin/domElement/domElementTestAs3.swf
 -swf-version 10.1

@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package domElement;
+package test.src.domElement;
 
 /**
  * Units tests for DOMElements
@@ -36,7 +36,7 @@ import cocktail.resource.ResourceLoaderManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import flash.display.Sprite;
 import flash.Lib;
 
