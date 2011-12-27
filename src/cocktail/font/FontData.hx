@@ -34,6 +34,9 @@ typedef FontData =
 enum FontType
 {
 	ttf;
+	otf;
 	eot;
+	swf;
+	system;
 	unknown;
 }
