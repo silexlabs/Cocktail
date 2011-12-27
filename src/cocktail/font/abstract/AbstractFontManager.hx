@@ -1,14 +1,19 @@
 /*
-	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
-	This project is © 2010-2011 Silex Labs and is released under the GPL License:
-	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+
+This project is © 2010-2011 Silex Labs and is released under the GPL License:
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.font.abstract;
 
 /**
- * This class handles the fonts loading, stores a list of loaded fonts. 
+ * This class is the manager for system and embedded fonts. Use this static class to load new fonts, or to check if a system font is supported, etc.
+ * It has a loadedFonts array used to make sure a font is not loaded twice.
  * It is a base class, which is extended for each target.
  * Since the FontManager is a static class, this base class is only for the documentation
  * @author lexa
@@ -40,7 +45,6 @@ class AbstractFontManager
 	 * This is the name you want to put in the css class to apply the style to some text.
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
 	public function loadFont(url:String, name:String, successCallback:FontData->Void, errorCallback:String->Void):Void
 	{
