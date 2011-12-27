@@ -1,16 +1,16 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktail.geom.Matrix;
+import cocktail.viewport.Viewport;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -20,6 +20,8 @@ import cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.computer.DisplayStylesComputer;
 import cocktailCore.style.computer.FontAndTextStylesComputer;
+import cocktailCore.style.computer.VisualEffectStylesComputer;
+import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.positioner.AbsolutePositioner;
 import cocktailCore.style.positioner.BoxPositioner;
@@ -28,7 +30,9 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
+import haxe.Timer;
 
 /**
  * This is the base class for all Style classes. Style classes
@@ -46,9 +50,37 @@ class AbstractStyle
 	// STYLES attributes
 	////////////////////////////////
 	
-    /**
-    * margins
-	*/
+
+	/**
+	 * display styles
+	 */
+	private var _display:DisplayStyleValue;
+	public var display(getDisplay, setDisplay):DisplayStyleValue;
+	
+	private var _position:PositionStyleValue;
+	public var position(getPosition, setPosition):PositionStyleValue;
+	
+	private var _float:FloatStyleValue;
+	public var float(getFloat, setFloat):FloatStyleValue;
+	
+	private var _clear:ClearStyleValue;
+	public var clear(getClear, setClear):ClearStyleValue;
+	
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	private var _tranformOrigin:TransformOriginStyleData;
+	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
+	
+	private var _transform:TransformStyleValue;
+	public var transform(getTransform, setTransform):TransformStyleValue;
+	
+	/**
+	 * box model styles
+	 */
 	private var _marginLeft:MarginStyleValue;
 	public var marginLeft(getMarginLeft, setMarginLeft):MarginStyleValue;
 	private var _marginRight:MarginStyleValue;
@@ -58,9 +90,6 @@ class AbstractStyle
 	private var _marginBottom:MarginStyleValue;
 	public var marginBottom(getMarginBottom, setMarginBottom):MarginStyleValue;
 	
-	/**
-	* paddings
-	*/
 	private var _paddingLeft:PaddingStyleValue;
 	public var paddingLeft(getPaddingLeft, setPaddingLeft):PaddingStyleValue;
 	private var _paddingRight:PaddingStyleValue;
@@ -69,33 +98,12 @@ class AbstractStyle
 	public var paddingTop(getPaddingTop, setPaddingTop):PaddingStyleValue;
 	private var _paddingBottom:PaddingStyleValue;
 	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
-	
-	/**
-	* The way a DOMElement is laid out in a document (as block,
-	* inline...)
-	*/
-	private var _display:DisplayStyleValue;
-	public var display(getDisplay, setDisplay):DisplayStyleValue;
-	
-	/**
-	* The way a DOMElement is positionned
-	* relative to a parent
-	*/
-	private var _position:PositionStyleValue;
-	public var position(getPosition, setPosition):PositionStyleValue;
-	
-	/**
-	* dimensions of the content area of a DOMElement
-	* (the domElement size without paddings, border and margins)
-	*/
+
 	private var _width:DimensionStyleValue;
 	public var width(getWidth, setWidth):DimensionStyleValue;
 	private var _height:DimensionStyleValue;
 	public var height(getHeight, setHeight):DimensionStyleValue;
 	
-	/**
-	* dimensions constraint of a DOMElement
-	*/
 	private var _minHeight:ConstrainedDimensionStyleValue;
 	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimensionStyleValue;
 	private var _maxHeight:ConstrainedDimensionStyleValue;
@@ -104,10 +112,7 @@ class AbstractStyle
 	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimensionStyleValue;
 	private var _maxWidth:ConstrainedDimensionStyleValue;
 	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimensionStyleValue;
-	
-	/**
-	* offsets of a DOMElement
-	*/
+
 	private var _top:PositionOffsetStyleValue;
 	public var top(getTop, setTop):PositionOffsetStyleValue;
 	private var _left:PositionOffsetStyleValue;
@@ -116,22 +121,6 @@ class AbstractStyle
 	public var bottom(getBottom, setBottom):PositionOffsetStyleValue;
 	private var _right:PositionOffsetStyleValue;
 	public var right(getRight, setRight):PositionOffsetStyleValue;
-	
-	/**
-	 * The way an element is aligned vertically in an 
-	 * inline formatting context
-	 */
-	private var _verticalAlign:VerticalAlignStyleValue;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
-	
-	/**
-	 * float positioning styles. A floated element is placed to 
-	 * the further left or right inside its container
-	 */
-	private var _float:FloatStyleValue;
-	public var float(getFloat, setFloat):FloatStyleValue;
-	private var _clear:ClearStyleValue;
-	public var clear(getClear, setClear):ClearStyleValue;
 	
 	/**
 	 * font styles
@@ -177,6 +166,9 @@ class AbstractStyle
 	
 	private var _textIndent:TextIndentStyleValue;
 	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
+		
+	private var _verticalAlign:VerticalAlignStyleValue;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
 	
 	////////////////////////////////
 	
@@ -205,11 +197,223 @@ class AbstractStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
+	 * determine wether the DOMElement and its chidlren must
+	 * be laid out again
+	 */
+	private var _isInvalid:Bool;
+	
+	/**
+	 * Store the x position of the NativeElement
+	 * relative to its parent
+	 */
+	private var _nativeX:Int;
+	
+	/**
+	 * Store the y position of the NativeElement
+	 * relative to its parent
+	 */
+	private var _nativeY:Int;
+	
+	/**
+	 * Store the width of the NativeElement
+	 */
+	private var _nativeWidth:Int;
+	
+	/**
+	 * Store the height of the NativeElement
+	 */
+	private var _nativeHeight:Int;
+	
+	/**
+	 * Store the x scale of the NativeElement
+	 */
+	private var _nativeScaleX:Float;
+	
+	/**
+	 * Store the y scale of the NativeElement
+	 */
+	private var _nativeScaleY:Float;
+	
+	/**
+	 * Store the rotation of the NativeElement
+	 */
+	private var _nativeRotation:Float;
+	
+	/**
+	 * Store the opacity of the NativeElement
+	 */
+	private var _nativeOpacity:Float;
+	
+	/**
+	 * Store the visibility of the NativeElement
+	 */
+	private var _nativeVisibility:Bool;
+	
+	/**
+	 * Store the current transform matrix of the NativeElement
+	 */
+	private var _nativeMatrix:Matrix;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CONSTRUCTOR AND INIT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
 	 * Class constructor. Stores the target DOMElement.
+	 * 
+	 * The style is invalid by default and will be updated
+	 * when the DOMElement is added to the DOM.
 	 */
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
+		this._isInvalid = true;
+		initDefaultStyleValues();
+	}
+	
+	/**
+	 * Init the standard default value for styles
+	 */
+	private function initDefaultStyleValues():Void
+	{
+		initComputedStyles();
+		initNativeProperties();
+		
+		this.width = DimensionStyleValue.auto;
+		this.height = DimensionStyleValue.auto;
+		
+		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
+		this.maxWidth = ConstrainedDimensionStyleValue.none;
+		this.minHeight = ConstrainedDimensionStyleValue.length(px(0));
+		this.maxHeight = ConstrainedDimensionStyleValue.none;
+		
+		this.marginTop = MarginStyleValue.length(px(0));
+		this.marginBottom = MarginStyleValue.length(px(0));
+		this.marginLeft = MarginStyleValue.length(px(0));
+		this.marginRight = MarginStyleValue.length(px(0));
+		
+		this.paddingTop = PaddingStyleValue.length(px(0));
+		this.paddingBottom = PaddingStyleValue.length(px(0));
+		this.paddingLeft = PaddingStyleValue.length(px(0));
+		this.paddingRight = PaddingStyleValue.length(px(0));
+		
+		this.lineHeight = LineHeightStyleValue.normal;
+		this.verticalAlign = VerticalAlignStyleValue.baseline;
+		
+		this.display = DisplayStyleValue.inlineStyle;
+		this.position = PositionStyleValue.staticStyle;
+		
+		this.top = PositionOffsetStyleValue.auto;
+		this.bottom = PositionOffsetStyleValue.auto;
+		this.left = PositionOffsetStyleValue.auto;
+		this.right = PositionOffsetStyleValue.auto;
+		
+		this.float = FloatStyleValue.none;
+		this.clear = ClearStyleValue.none;
+		
+		this.fontStyle = FontStyleStyleValue.normal;
+		this.fontVariant = FontVariantStyleValue.normal;
+		this.fontWeight = FontWeightStyleValue.normal;
+		this.fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		
+		this.textIndent = TextIndentStyleValue.length(px(0));
+		this.textAlign = TextAlignStyleValue.left;
+		this.letterSpacing = LetterSpacingStyleValue.normal;
+		this.wordSpacing = WordSpacingStyleValue.normal;
+		this.textTransform = TextTransformStyleValue.none;
+		this.whiteSpace = WhiteSpaceStyleValue.normal;
+		
+		this.visibility = VisibilityStyleValue.visible;
+		this.opacity = OpacityStyleValue.number(1.0);
+		
+		this.transformOrigin = {
+			x:TransformOriginXStyleValue.center,
+			y:TransformOriginYStyleValue.center
+		}
+		
+		this.transform = TransformStyleValue.none;
+		
+		var defaultStyles:DefaultStylesData = getDefaultStyle();
+		this.fontFamily = defaultStyles.fontFamily;
+		this.color = defaultStyles.color;
+	}
+	
+	/**
+	 * reset/init the computed style structures
+	 */
+	private function initComputedStyles():Void
+	{
+		 _computedStyle = {
+			width : 0,
+			height : 0,
+			minHeight : 0,
+			maxHeight : 0,
+			minWidth : 0,
+			maxWidth : 0,
+			marginLeft : 0,
+			marginRight : 0,
+			marginTop : 0,
+			marginBottom : 0,
+			paddingLeft : 0,
+			paddingRight : 0,
+			paddingTop : 0,
+			paddingBottom : 0,
+			left: 0,
+			right: 0,
+			top: 0,
+			bottom : 0,
+			clear : ClearStyleValue.none,
+			float : FloatStyleValue.none,
+			display : DisplayStyleValue.block,
+			position: PositionStyleValue.staticStyle,
+			verticalAlign : 0.0,
+			fontSize:12.0,
+			lineHeight:14.0,
+			fontWeight:FontWeightStyleValue.normal,
+			fontStyle:FontStyleStyleValue.normal,
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontVariant:FontVariantStyleValue.normal,
+			textTransform:TextTransformStyleValue.none,
+			letterSpacing:0,
+			wordSpacing:0,
+			textIndent:0,
+			whiteSpace:WhiteSpaceStyleValue.normal,
+			textAlign:TextAlignStyleValue.left,
+			color:0,
+			visibility:true,
+			opacity:1.0,
+			transformOrigin: { x:0.0, y:0.0 },
+			transform:new Matrix()
+		};
+	}
+	
+	/**
+	 * init the values representing NativeElements attributes
+	 */
+	private function initNativeProperties():Void
+	{
+		_nativeHeight = 0;
+		_nativeOpacity = 1.0;
+		_nativeRotation = 0.0;
+		_nativeScaleX = 1.0;
+		_nativeScaleY = 1.0;
+		_nativeVisibility = true;
+		_nativeWidth = 0;
+		_nativeX = 0;
+		_nativeY = 0;
+	}
+	
+	/**
+	 * Return default value for style defined by the User Agent
+	 * in a browser, those styles are hard coded for other
+	 * runtimes
+	 */
+	private static function getDefaultStyle():DefaultStylesData
+	{
+		return {
+			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			color:ColorValue.keyword(ColorKeywordValue.black)
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -223,14 +427,14 @@ class AbstractStyle
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be layout
-	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
+	 * @param	lastPositionedDOMElementData the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' style other than 'static'. When positioning an absolutelty positioned DOMElement (a DOMElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
-	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
+	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
 	 * @param containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 */
-	public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}
@@ -247,27 +451,28 @@ class AbstractStyle
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
 	 * this DOMElement must be laid out
-	 * @param	rootDOMElementDimensions a reference to the DOMElement at the top of the hierarchy. When positioning a fixed positioned DOMElement
+	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned DOMElement
 	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
-	 * @param	lastPositionedDOMElementDimensions the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
+	 * @param	lastPositionedDOMElementData the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
-	 * of 'absolute'), it it used as origin.
+	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
+	 * to position their DOMElement
 	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//do nothing if the DOMElement must not be displayed
 		if (isNotDisplayed() == true)
 		{
 			//hide the DOMElement
-			this._domElement.isVisible = false;
+			setNativeVisibility(false);
 			return;
 		}
 		else
 		{
-			this._domElement.isVisible = true;
+			setNativeVisibility(true);
 		}
 		
 		//clear preceding left floats, right floats
@@ -276,48 +481,36 @@ class AbstractStyle
 		{
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
-		
+
 		//compute all the styles of a DOMElement
-		computeDOMElement(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
+		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
 		//flow all the children of the DOMElement if it has any, then insert the DOMElement in the document
-		flowChildren(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions, containingDOMElementFontMetricsData, formatingContext);
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
 		
 		//apply the computed dimensions to the DOMElement
-		applyComputedDimensions();
-	}
-	
+		setNativeHeight(this._computedStyle.height);
+		setNativeWidth(this._computedStyle.width);
+		
+		//when all the dimensions of the domElement are known, compute the 
+		//visual effects to apply (visibility, opacity, transform)
+		computeVisualEffectStyles();
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually aply the computed dimensions on the
-	 * DOMElement
-	 */
-	private function applyComputedDimensions():Void
-	{
-		//apply the computed width and height to the DOMElement
-		this._domElement.width = this._computedStyle.width;
-		this._domElement.height = this._computedStyle.height;
-	}
-	
-	/**
-	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
-	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
-	{
-		//insert the DOMElement in the document based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		//apply the computed visual effects on the DOMElement
+		setNativeMatrix(this._computedStyle.transform);
+		setNativeOpacity(this._computedStyle.opacity);
+		setNativeVisibility(this._computedStyle.visibility);
+		
+		//The DOMElement has been laid out and is now valid
+		this._isInvalid = false;
 	}
 	
 	/**
 	 * Place a positioned DOMElement (with a position of 'relative', 'absolute', or 'fixed') using either the normal
-	 * flow, the last positioned DOMElement or the root of the document, then apply an offset defined by the 'top',
+	 * flow, the last positioned DOMElement or the viewport of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 */
-	private function positionElement(lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData):Void
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):Void
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
@@ -327,7 +520,7 @@ class AbstractStyle
 		if (this.isRelativePositioned() == true)
 		{
 			positioner = new RelativePositioner();
-			positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+			positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 		}
 		else
 		{
@@ -336,19 +529,12 @@ class AbstractStyle
 				//positioned 'fixed' DOMElement
 				case fixed:
 					positioner = new FixedPositioner();
-					
-					/**
-					 * TO DO : remove the x and y scroll from the root dom element dimensions
-					 * so that it seems to stay at the same place in the window
-					 */
-					var scrolledRootDOMElementDimensions:ContainingDOMElementData = rootDOMElementDimensions;
-					
-					positioner.position(this._domElement, scrolledRootDOMElementDimensions);
+					positioner.position(this._domElement, viewportData, staticPosition);
 					
 				//positioned 'absolute' DOMElement	
 				case absolute:
 					positioner = new AbsolutePositioner();
-					positioner.position(this._domElement, lastPositionedDOMElementDimensions);
+					positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 					
 				default:	
 					positioner = new AbsolutePositioner();
@@ -356,15 +542,42 @@ class AbstractStyle
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set a timer to trigger a layout of the DOMElement asynchronously. this method is used by the invalidation
+	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
+	 * value are set instead of happening for each changes.
+	 */
+	private function scheduleLayout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		var layoutDelegate:ContainingDOMElementData->LastPositionedDOMElementData->ContainingDOMElementData->FontMetricsData->Void = layout;
+		
+		Timer.delay(function () { 
+			layoutDelegate(containingDOMElementData, lastPositionedDOMElementData, viewportData, null);
+		}, 1);
+	}
+	
+	/**
+	 * Flow all the children of a DOMElement if it has any, then insert the DOMElement.
+	 */
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
+	{
+		//insert the DOMElement in the document based on its positioning scheme
+		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
+	}
+	
 	/**
 	 * Insert the DOMElement in the document, in or out of the flow.
 	 * Might clear preceding floats
 	 * 
 	 * @param	formatingContext
-	 * @param	lastPositionedDOMElementDimensions
-	 * @param	rootDOMElementDimensions
+	 * @param	lastPositionedDOMElementData
+	 * @param	viewportData
 	 */
-	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementDimensions:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData):Void
+	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
 		//insert as a float
 		if (isFloat() == true)
@@ -377,17 +590,43 @@ class AbstractStyle
 			insertInFlowDOMElement(formattingContext);
 			
 		}
-		//insert in the flow, then apply an offset to it
-		else if (isRelativePositioned() == true)
-		{
-			insertInFlowDOMElement(formattingContext);
-			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
-		}
-		//insert as an absolutely positioned DOMElement
+		//else the DOMElement is positioned
 		else
-		{ 
-			positionElement(lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		{
+			//retrieve the static position (the position of the DOMElement
+			//if its position style was 'static'
+			var x:Float = formattingContext.flowData.x;
+			var y:Float = formattingContext.flowData.y;
+			
+			var staticPosition:PointData = {
+				x:x,
+				y:y
+			}
+			
+			//insert in the flow, then apply an offset to it
+			if (isRelativePositioned() == true)
+			{
+				insertInFlowDOMElement(formattingContext);
+				positionElement(lastPositionedDOMElementData.data, viewportData, staticPosition);
+			}
+			//insert as an absolutely positioned DOMElement
+			//an absolutely positioned DOMElement is not positioned right away, it must
+			//wait for its first positioned ancestor to be laid out. The reason is that
+			//if the positioned ancestor height is 'auto', the height of the positioned
+			//ancestor is not yet determined and so this DOMElement can't be positioned
+			//using the bottom style yet. Once the first ancestor is laid out, it
+			//calls the positionElement method on all the stored children
+			else
+			{ 
+			
+				var positionedDOMElementData:PositionedDOMElementData = {
+					staticPosition:staticPosition,
+					style:this
+				}
+				lastPositionedDOMElementData.children.push(positionedDOMElementData);
+			}
 		}
+		
 	}
 	
 	/**
@@ -397,6 +636,126 @@ class AbstractStyle
 	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
 		formattingContext.insert(this._domElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the value of a style that require
+	 * a layout (such as width, height, display...) is
+	 * changed.
+	 * 
+	 * An invalidated DOMElement will in turn invalidate its
+	 * parent and so on until the root DOMElement is invalidated.
+	 * The root DOMElement will then layout itself, laying out
+	 * at the same time all its invalidated children.
+	 */
+	public function invalidate():Void
+	{
+		//only invalidate the parent if it isn't
+		//done already
+		if (this._isInvalid == false)
+		{
+			//set the invalid flag to prevent multiple
+			//invalidation of the DOMElement in a row
+			//The DOMElement will be be able to be invalidated
+			//again once it is laid out
+			this._isInvalid = true;
+			
+			//if the DOMElement doesn't have a parent, then it
+			//is not currently added to the DOM and doesn't require
+			//a layout
+			if (this._domElement.parent != null)
+			{
+				//invalidate its parent if it must
+				if (isParentInvalid() == true)
+				{
+					this._domElement.parent.style.invalidate();	
+				}
+				//else schedule a layout for this DOMElement
+				else
+				{
+					//retrieve its parent and the viewport dimension
+					var parentStyle:ContainerStyle = cast(this._domElement.parent.style);
+					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
+					
+					var viewPortData:ContainingDOMElementData = getViewportData();
+					
+					//get the data of the first positinned ancestor of this styled DOMElement
+					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
+						children: new Array<PositionedDOMElementData>(),
+						data:getFirstPositionedAncestorData()
+					}
+					
+					//schedule an asynchronous layout
+					scheduleLayout(containingDOMElementData, lastPositionedDOMElementData, viewPortData);
+				}
+				
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	// Those method allow for
+	// the re-layout of only a part of the DOM tree
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When a style invalidating the text is called
+	 * (font size, font weight...), the font metrics
+	 * structure must be reseted so that it is re-created
+	 * with updated values on next layout
+	 */
+	private function invalidateText():Void
+	{
+		_fontMetrics = null;
+		invalidate();
+	}
+	
+	/**
+	 * When a position offset style changes (top, left, 
+	 * right, bottom), it only requires a layout if the
+	 * DOMElement is positioned (not static).
+	 */
+	private function invalidatePositionOffset():Void
+	{
+		if (this.position != staticStyle)
+		{
+			invalidate();
+		}
+	}
+	
+	/**
+	 * When the margin style changes, if the DOMElement
+	 * is absolutely positioned, there is no need for a layout
+	 */
+	private function invalidateMargin():Void
+	{
+		if (this.position == relative || this.position == staticStyle)
+		{
+			invalidate();
+		}
+	}
+	
+	/**
+	 * Determine wheter the parent of the DOMElement needs
+	 * to be invalidated too. In some caes, for instance
+	 * if the DOMElement is absolutely positioned, invalidating
+	 * its parent isn't necessary
+	 */
+	private function isParentInvalid():Bool
+	{
+		var ret:Bool = true;
+		
+		if (this.isPositioned() == true && this.isRelativePositioned() == false)
+		{
+			ret = false;
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -411,12 +770,17 @@ class AbstractStyle
 	 * paddings...), and the styles styling the DOMElement text and
 	 * font style
 	 */
-	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		computeDisplayStyles();
-		computeBoxModelStyles(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions);
-		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		//reset the computed styles, useful for instance to
+		//reset an auto height to 0 if a layout has already
+		//occured which might create bugs in the computation of
+		//font and text styles which use the computed height value
+		initComputedStyles();
 		
+		computeDisplayStyles();
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
 	}
 	
 	/**
@@ -435,6 +799,14 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Compute the visual effect styles (opacity, visibility, transformations)
+	 */
+	private function computeVisualEffectStyles():Void
+	{
+		VisualEffectStylesComputer.compute(this);
+	}
+	
+	/**
 	 * Computes the DOMElement font and text styles (font size, font name, text color...)
 	 */
 	private function computeTextAndFontStyles(containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
@@ -446,14 +818,14 @@ class AbstractStyle
 	 * Compute the box model styles (width, height, paddings, margins...) of the DOMElement, based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):Void
+	private function computeBoxModelStyles(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData):Void
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		//get the right containing dimensions. For example,
 		//for a DOMElement with a 'position' style of 'absolute',
 		//it is the last positioned DOMElement
-		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, rootDOMElementDimensions, lastPositionedDOMElementDimensions );
+		var containingBlockDimensions:ContainingDOMElementData = getContainingDOMElementData(containingDOMElementData, viewportData, lastPositionedDOMElementData );
 		
 		//do compute the box model styles
 		boxComputer.measure(this, containingBlockDimensions);
@@ -506,34 +878,34 @@ class AbstractStyle
 	 * Get the right containing parent dimensions for a DOMElement
 	 * based on its position style value
 	 */
-	private function getContainingDOMElementData(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData):ContainingDOMElementData
+	private function getContainingDOMElementData(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData):ContainingDOMElementData
 	{
 		var containingBlockDimensions:ContainingDOMElementData;
 		
 		//for 'positioned' DOMElement
 		if (isPositioned() == true)
 		{
-			//for 'fixed' DOMElement, takes the root DOMElement (the first DOMElement in the hierarchy)
+			//for 'fixed' DOMElement, takes the viewport (the 'window' through which the document is viewed)
 			if (this._computedStyle.position == PositionStyleValue.fixed)
 			{
 				containingBlockDimensions = {
-					width:rootDOMElementDimensions.width,
-					height:rootDOMElementDimensions.height,
-					isHeightAuto:rootDOMElementDimensions.isHeightAuto,
-					isWidthAuto:rootDOMElementDimensions.isWidthAuto,
-					globalX:rootDOMElementDimensions.globalX,
-					globalY:rootDOMElementDimensions.globalY};
+					width:viewportData.width,
+					height:viewportData.height,
+					isHeightAuto:viewportData.isHeightAuto,
+					isWidthAuto:viewportData.isWidthAuto,
+					globalX:viewportData.globalX,
+					globalY:viewportData.globalY};
 			}
 			//for 'absolute' takes the first positioned ancestor
 			else if (this._computedStyle.position == PositionStyleValue.absolute)
 			{
 				containingBlockDimensions = {
-					width:lastPositionedDOMElementDimensions.width,
-					height:lastPositionedDOMElementDimensions.height,
-					isHeightAuto:lastPositionedDOMElementDimensions.isHeightAuto,
-					isWidthAuto:lastPositionedDOMElementDimensions.isWidthAuto,
-					globalX:lastPositionedDOMElementDimensions.globalX,
-					globalY:lastPositionedDOMElementDimensions.globalY};
+					width:lastPositionedDOMElementData.width,
+					height:lastPositionedDOMElementData.height,
+					isHeightAuto:lastPositionedDOMElementData.isHeightAuto,
+					isWidthAuto:lastPositionedDOMElementData.isWidthAuto,
+					globalX:lastPositionedDOMElementData.globalX,
+					globalY:lastPositionedDOMElementData.globalY};
 			}
 			//else for 'relative', takes the parent as 'relative' are "in-flow" DOMElements
 			else
@@ -549,6 +921,8 @@ class AbstractStyle
 		
 		return containingBlockDimensions;
 	}
+	
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
@@ -588,6 +962,41 @@ class AbstractStyle
 				ret = true;
 			
 			case FloatStyleValue.none:
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+		/**
+	 * A positioned element is one that 
+	 * is positioned outside of the normal
+	 * flow.
+	 * 
+	 * The 'relative', 'absolute' and'fixed'
+	 * values of the 'position' style makes
+	 * a DOMElement 'positioned'. 
+	 * 
+	 * The 'absolute' and 'fixed' value make
+	 * a DOMElement an 'absolutely positioned'
+	 * DOMElement. This kind of DOMElement
+	 * doesn't affect the normal flow (it is
+	 * treated as if it doesn't exist). It
+	 * uses as origin its first ancestor
+	 * which is also positioned
+	 * 
+	 * See below for the 'relative' value
+	 */
+	public function isPositioned():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.position) 
+		{
+			case relative, absolute, fixed:
+				ret = true;
+			
+			case staticStyle:
 				ret = false;
 		}
 		
@@ -658,41 +1067,6 @@ class AbstractStyle
 	}
 	
 	/**
-	 * A positioned element is one that 
-	 * is positioned outside of the normal
-	 * flow.
-	 * 
-	 * The 'relative', 'absolute' and'fixed'
-	 * values of the 'position' style makes
-	 * a DOMElement 'positioned'. 
-	 * 
-	 * The 'absolute' and 'fixed' value make
-	 * a DOMElement an 'absolutely positioned'
-	 * DOMElement. This kind of DOMElement
-	 * doesn't affect the normal flow (it is
-	 * treated as if it doesn't exist). It
-	 * uses as origin its first ancestor
-	 * which is also positioned
-	 * 
-	 * See below for the 'relative' value
-	 */
-	private function isPositioned():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.position) 
-		{
-			case relative, absolute, fixed:
-				ret = true;
-			
-			case staticStyle:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * Determine wether a DOMElement has
 	 * the 'position' value 'relative'.
 	 * 
@@ -709,6 +1083,254 @@ class AbstractStyle
 	private function isRelativePositioned():Bool
 	{
 		return this._computedStyle.position == relative;
+	}
+	
+	/**
+	 * Get the data (dimensions and positions) of the first ancestor
+	 * of the styled DOMElement which is positioned
+	 */
+	private function getFirstPositionedAncestorData():ContainingDOMElementData
+	{
+		var firstPositionedAncestorData:ContainingDOMElementData;
+		var parent:ContainerDOMElement = _domElement.parent;
+		
+		//if the domElement has a parent
+		if (parent != null)
+		{
+			//loop in all the parents until a positioned or a null parent is found
+			var isPositioned:Bool = parent.style.isPositioned();
+			while (isPositioned == false)
+			{
+				if (parent.parent != null)
+				{
+					parent = parent.parent;
+					isPositioned = parent.style.isPositioned();
+				}
+				//break the loop if the current parent has no parent
+				else
+				{
+					isPositioned = true;
+				}
+				
+			}
+			//get the data of the parent
+			var parentStyle:ContainerStyle = cast(parent.style);
+			firstPositionedAncestorData = parentStyle.getContainerDOMElementData();
+		}
+		//if the DOMElement has no parent, return the viewport data
+		else
+		{
+			firstPositionedAncestorData = getViewportData();
+		}
+		
+		return firstPositionedAncestorData;
+	}
+	
+	/**
+	 * Retrieve the data of the viewport. The viewport
+	 * position is always to the top left of the window
+	 */
+	private function getViewportData():ContainingDOMElementData
+	{
+		var viewPort:Viewport = new Viewport();
+					
+		var viewPortData:ContainingDOMElementData = {
+			globalX:0,
+			globalY:0,
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:viewPort.width,
+			height:viewPort.height
+		}
+		
+		return viewPortData;
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// NATIVE SETTER/GETTER
+	// Those method actually apply a processed value to 
+	// the NativeElement of a target DOMElement.
+	// They also store the applied value when it is set on the DOMElement
+	// wrapped by this Style object. For instance, a ContainerStyle object not
+	// only wraps a ContainerDOMElement but also every generated TextFragmentDOMElement.
+	// The applied dimension or position is only stored when applied to the
+	// ContainerDOMElement
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the x of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeX(domElement:DOMElement, x:Int):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeX = x;
+		}
+	}
+	
+	/**
+	 * Return the x of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeX():Int
+	{
+		return this._nativeX;
+	}
+	
+	/**
+	 * Set the y of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeY(domElement:DOMElement, y:Int):Void
+	{
+		if (domElement == this._domElement)
+		{
+			this._nativeY = y;
+		}
+	}
+	
+	/**
+	 * Return the y of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeY():Int
+	{
+		return this._nativeY;
+	}
+	
+	/**
+	 * Set the width of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeWidth(width:Int):Void
+	{
+		this._nativeWidth = width;
+	}
+	
+	/**
+	 * Return the width of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeWidth():Int
+	{
+		return this._nativeWidth;
+	}	
+	
+	/**
+	 * Set the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	public function setNativeHeight(height:Int):Void
+	{
+		this._nativeHeight = height;
+	}
+	
+	/**
+	 * Return the height of the NativeElement of the
+	 * DOMElement
+	 */
+	public function getNativeHeight():Int
+	{
+		return this._nativeHeight;
+	}
+	
+	/**
+	 * Set the x scale of the NativeElement
+	 */
+	public function setNativeScaleX(scaleX:Float):Void
+	{
+		this._nativeScaleX = scaleX;
+	}
+	
+	/**
+	 * return the x scale of the NativeElement
+	 */
+	public function getNativeScaleX():Float
+	{
+		return this._nativeScaleX;
+	}
+	
+	/**
+	 * Set the y scale of the NativeElement
+	 */
+	public function setNativeScaleY(scaleY:Float):Void
+	{
+		this._nativeScaleY = scaleY;
+	}
+	
+	/**
+	 * return the y scale of the NativeElement
+	 */
+	public function getNativeScaleY():Float
+	{
+		return this._nativeScaleY;
+	}
+	
+	/**
+	 * Set the rotation of the NativeElement in rad
+	 */
+	public function setNativeRotation(rotation:Float):Void
+	{
+		this._nativeRotation = rotation;
+	}
+	
+	/**
+	 * return the rotation of the NativeElement in rad
+	 */
+	public function getNativeRotation():Float
+	{
+		return this._nativeRotation;
+	}
+	
+	/**
+	 * Set the transformation matrix on the DOMElement. Overriden
+	 * to apply it to the NativeElement
+	 */
+	public function setNativeMatrix(matrix:Matrix):Void
+	{
+		this._nativeMatrix = matrix;
+	}
+	
+	/**
+	 * Get the matrix of the DOMElement
+	 */
+	public function getNativeMatrix():Matrix
+	{
+		return _nativeMatrix;
+	}
+	
+	/**
+	 * Set the alpha of the NativeElement
+	 */
+	public function setNativeOpacity(opacity:Float):Void
+	{
+		this._nativeOpacity = opacity;
+	}
+	
+	/**
+	 * Get the alpha of the NativeElement
+	 */
+	public function getNativeOpacity():Float
+	{
+		return this._nativeOpacity;
+	}
+	
+	/**
+	 * Set the visibility of the NativeElement
+	 */
+	public function setNativeVisibility(visible:Bool):Void
+	{
+		this._nativeVisibility = visible;
+	}
+	
+	/**
+	 * Get the visibility of the NativeElement
+	 */
+	public function getNativeVisibility():Bool
+	{
+		return this._nativeVisibility;
 	}
 	
 	/////////////////////////////////
@@ -736,28 +1358,275 @@ class AbstractStyle
 	}
 	
 	/////////////////////////////////
+	// INVALIDATING STYLES SETTERS
+	// setting one of those style will 
+	// cause a layout
+	////////////////////////////////
+	
+	private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
+	{
+		invalidate();
+		return _width = value;
+	}
+	
+	private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginLeft = value;
+	}
+	
+	private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginRight = value;
+	}
+	
+	private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginTop = value;
+	}
+	
+	private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
+	{
+		invalidateMargin();
+		return _marginBottom = value;
+	}
+	
+	private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingLeft = value;
+	}
+	
+	private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingRight = value;
+	}
+	
+	private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingTop = value;
+	}
+	
+	private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
+	{
+		invalidate();
+		return _paddingBottom = value;
+	}
+	
+	private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
+	{
+		invalidate();
+		return _display = value;
+	}
+	
+	private function setPosition(value:PositionStyleValue):PositionStyleValue 
+	{
+		invalidate();
+		return _position = value;
+	}
+	
+	private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
+	{
+		invalidate();
+		return _height = value;
+	}
+	
+	private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _minHeight = value;
+	}
+	
+	private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _maxHeight = value;
+	}
+	
+	private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _minWidth = value;
+	}
+	
+	private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	{
+		invalidate();
+		return _maxWidth = value;
+	}
+	
+	private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _top = value;
+	}
+	
+	private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _left = value;
+	}
+	
+	private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _bottom = value;
+	}
+	
+	private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	{
+		invalidatePositionOffset();
+		return _right = value;
+	}
+	
+	private function setFloat(value:FloatStyleValue):FloatStyleValue 
+	{
+		invalidate();
+		return _float = value;
+	}
+	
+	private function setClear(value:ClearStyleValue):ClearStyleValue 
+	{
+		invalidate();
+		return _clear = value;
+	}
+	
+	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	{
+		invalidateText();
+		return _fontSize = value;
+	}
+	
+	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	{
+		invalidateText();
+		return _fontWeight = value;
+	}
+	
+	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	{
+		invalidateText();
+		return _fontStyle = value;
+	}
+	
+	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	{
+		invalidateText();
+		return _fontFamily = value;
+	}
+	
+	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	{
+		invalidateText();
+		return _fontVariant = value;
+	}
+	
+	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	{
+		invalidateText();
+		return _textTransform = value;
+	}
+	
+	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	{
+		invalidateText();
+		return _letterSpacing = value;
+	}
+	
+	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	{
+		invalidate();
+		return _wordSpacing = value;
+	}
+	
+	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	{
+		invalidate();
+		return _lineHeight = value;
+	}
+	
+	private function setColor(value:ColorValue):ColorValue
+	{
+		invalidateText();
+		return _color = value;
+	}
+	
+	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	{
+		invalidate();
+		return _verticalAlign = value;
+	}
+	
+	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	{
+		invalidate();
+		return _textIndent = value;
+	}
+	
+	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	{
+		invalidate();
+		return _whiteSpace = value;
+	}
+	
+	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	{
+		invalidate();
+		return _textAlign = value;
+	}
+	
+	private function setOpacity(value:OpacityStyleValue):OpacityStyleValue
+	{
+		_opacity = value;
+		invalidate();
+		return _opacity;
+	}
+	
+	private function setVisibility(value:VisibilityStyleValue):VisibilityStyleValue
+	{
+		_visibility = value;
+		invalidate();
+		return _visibility;
+	}
+	
+	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	{
+		invalidate();
+		return _tranformOrigin = value;
+	}
+	
+	private function setTransform(value:TransformStyleValue):TransformStyleValue
+	{
+		invalidate();
+		return _transform = value;
+	}
+	
+	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getOpacity():OpacityStyleValue
+	{
+		return _opacity;
+	}
+	
+	private function getVisibility():VisibilityStyleValue
+	{
+		return _visibility;
+	}
 	
 	private function getMarginLeft():MarginStyleValue 
 	{
 		return _marginLeft;
 	}
 	
-	private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginLeft = value;
-	}
-	
-	
 	private function getMarginRight():MarginStyleValue 
 	{
 		return _marginRight;
-	}
-	
-	private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginRight = value;
 	}
 	
 	private function getMarginTop():MarginStyleValue 
@@ -765,19 +1634,9 @@ class AbstractStyle
 		return _marginTop;
 	}
 	
-	private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginTop = value;
-	}
-	
 	private function getMarginBottom():MarginStyleValue 
 	{
 		return _marginBottom;
-	}
-	
-	private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
-	{
-		return _marginBottom = value;
 	}
 	
 	private function getPaddingLeft():PaddingStyleValue 
@@ -785,19 +1644,9 @@ class AbstractStyle
 		return _paddingLeft;
 	}
 	
-	private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingLeft = value;
-	}
-	
 	private function getPaddingRight():PaddingStyleValue 
 	{
 		return _paddingRight;
-	}
-	
-	private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingRight = value;
 	}
 	
 	private function getPaddingTop():PaddingStyleValue 
@@ -805,29 +1654,14 @@ class AbstractStyle
 		return _paddingTop;
 	}
 	
-	private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingTop = value;
-	}
-	
 	private function getPaddingBottom():PaddingStyleValue 
 	{
 		return _paddingBottom;
 	}
 	
-	private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
-	{
-		return _paddingBottom = value;
-	}
-	
-		private function getDisplay():DisplayStyleValue 
+	private function getDisplay():DisplayStyleValue 
 	{
 		return _display;
-	}
-	
-	private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
-	{
-		return _display = value;
 	}
 	
 	private function getPosition():PositionStyleValue 
@@ -835,19 +1669,9 @@ class AbstractStyle
 		return _position;
 	}
 	
-	private function setPosition(value:PositionStyleValue):PositionStyleValue 
-	{
-		return _position = value;
-	}
-	
 	private function getWidth():DimensionStyleValue 
 	{
 		return _width;
-	}
-	
-	private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
-	{
-		return _width = value;
 	}
 	
 	private function getHeight():DimensionStyleValue 
@@ -855,19 +1679,9 @@ class AbstractStyle
 		return _height;
 	}
 	
-	private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
-	{
-		return _height = value;
-	}
-	
 	private function getMinHeight():ConstrainedDimensionStyleValue 
 	{
 		return _minHeight;
-	}
-	
-	private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _minHeight = value;
 	}
 	
 	private function getMaxHeight():ConstrainedDimensionStyleValue 
@@ -875,19 +1689,9 @@ class AbstractStyle
 		return _maxHeight;
 	}
 	
-	private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _maxHeight = value;
-	}
-	
 	private function getMinWidth():ConstrainedDimensionStyleValue 
 	{
 		return _minWidth;
-	}
-	
-	private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _minWidth = value;
 	}
 	
 	private function getMaxWidth():ConstrainedDimensionStyleValue 
@@ -895,19 +1699,9 @@ class AbstractStyle
 		return _maxWidth;
 	}
 	
-	private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
-	{
-		return _maxWidth = value;
-	}
-	
-		private function getTop():PositionOffsetStyleValue 
+	private function getTop():PositionOffsetStyleValue 
 	{
 		return _top;
-	}
-	
-	private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _top = value;
 	}
 	
 	private function getLeft():PositionOffsetStyleValue 
@@ -915,19 +1709,9 @@ class AbstractStyle
 		return _left;
 	}
 	
-	private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _left = value;
-	}
-	
 	private function getBottom():PositionOffsetStyleValue 
 	{
 		return _bottom;
-	}
-	
-	private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _bottom = value;
 	}
 	
 	private function getRight():PositionOffsetStyleValue 
@@ -935,19 +1719,9 @@ class AbstractStyle
 		return _right;
 	}
 	
-	private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
-	{
-		return _right = value;
-	}
-	
 	private function getFloat():FloatStyleValue 
 	{
 		return _float;
-	}
-	
-	private function setFloat(value:FloatStyleValue):FloatStyleValue 
-	{
-		return _float = value;
 	}
 	
 	private function getClear():ClearStyleValue 
@@ -955,24 +1729,9 @@ class AbstractStyle
 		return _clear;
 	}
 	
-	private function setClear(value:ClearStyleValue):ClearStyleValue 
-	{
-		return _clear = value;
-	}
-	
-	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
-	{
-		return _fontSize = value;
-	}
-	
 	private function getFontSize():FontSizeStyleValue
 	{
 		return _fontSize;
-	}
-	
-	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
-	{
-		return _fontWeight = value;
 	}
 	
 	private function getFontWeight():FontWeightStyleValue
@@ -980,19 +1739,9 @@ class AbstractStyle
 		return _fontWeight;
 	}
 	
-	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
-	{
-		return _fontStyle = value;
-	}
-	
 	private function getFontStyle():FontStyleStyleValue
 	{
 		return _fontStyle;
-	}
-	
-	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
-	{
-		return _fontFamily = value;
 	}
 	
 	private function getFontFamily():Array<FontFamilyStyleValue>
@@ -1000,19 +1749,9 @@ class AbstractStyle
 		return _fontFamily;
 	}
 	
-	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
-	{
-		return _fontVariant = value;
-	}
-	
 	private function getFontVariant():FontVariantStyleValue
 	{
 		return _fontVariant;
-	}
-	
-	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
-	{
-		return _textTransform = value;
 	}
 	
 	private function getTextTransform():TextTransformStyleValue
@@ -1020,19 +1759,9 @@ class AbstractStyle
 		return _textTransform;
 	}
 	
-	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
-	{
-		return _letterSpacing = value;
-	}
-	
 	private function getLetterSpacing():LetterSpacingStyleValue
 	{
 		return _letterSpacing;
-	}
-	
-	private function setColor(value:ColorValue):ColorValue
-	{
-		return _color = value;
 	}
 	
 	private function getColor():ColorValue
@@ -1040,29 +1769,14 @@ class AbstractStyle
 		return _color;
 	}
 	
-	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
-	{
-		return _wordSpacing = value;
-	}
-	
 	private function getWordSpacing():WordSpacingStyleValue
 	{
 		return _wordSpacing;
 	}
 	
-	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
-	{
-		return _lineHeight = value;
-	}
-	
 	private function getLineHeight():LineHeightStyleValue
 	{
 		return _lineHeight;
-	}
-	
-	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
-	{
-		return _verticalAlign = value;
 	}
 	
 	private function getVerticalAlign():VerticalAlignStyleValue
@@ -1075,28 +1789,23 @@ class AbstractStyle
 		return _textIndent;
 	}
 	
-	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
-	{
-		return _textIndent = value;
-	}
-	
-	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
-	{
-		return _whiteSpace = value;
-	}
-	
 	private function getWhiteSpace():WhiteSpaceStyleValue
 	{
 		return _whiteSpace;
 	}
 	
-	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
-	{
-		return _textAlign = value;
-	}
-	
 	private function getTextAlign():TextAlignStyleValue
 	{
 		return _textAlign;
+	}
+	
+	private function getTransform():TransformStyleValue
+	{
+		return _transform;
+	}
+	
+	private function getTransformOrigin():TransformOriginStyleData
+	{
+		return _tranformOrigin;
 	}
 }

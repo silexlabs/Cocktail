@@ -1,16 +1,14 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.style;
 import cocktail.domElement.DOMElement;
 import cocktail.unit.UnitData;
+import cocktail.geom.GeomData;
 	
 	
 		// FONT STYLES
@@ -420,6 +418,30 @@ import cocktail.unit.UnitData;
 		auto;
 	}
 	
+	/**
+	 * The constraint applied to the content
+	 * of a DOMElement contrained its max/min
+	 * width or height
+	 */
+	enum ConstrainedDimensionStyleValue {
+		
+		/**
+		 * absolute value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * relative to the parent DOMElement
+		 * dimensions 
+		 */
+		percent(value:Int);
+		
+		/**
+		 * No constraint is enforced
+		 */
+		none;
+	}
+	
 		// DISPLAY STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -547,27 +569,236 @@ import cocktail.unit.UnitData;
 		auto;
 	}
 	
-	
 	/**
-	 * The constraint applied to the content
-	 * of a DOMElement contrained its max/min
-	 * width or height
+	 * Specifies wether the DOMElement is
+	 * displayed. A hidden DOMElement
+	 * still affects layout
 	 */
-	enum ConstrainedDimensionStyleValue {
+	enum VisibilityStyleValue {
 		
 		/**
-		 * absolute value
+		 * The DOMElement is visible
+		 */
+		visible;
+		
+		/**
+		 * The DOMElement is invisible 
+		 * (fully transparent, nothing is drawn),
+		 * but still affects layout.
+		 * Furthermore, children of the DOMElement will
+		 * be visible if they have 'visibility: visible'.
+		 */
+		hidden;
+	}
+	
+	/**
+	 * Specifies the transparency of a DOMElement
+	 * where 1.0 is opaque and 0 is transparent
+	 * 
+	 * TODO n.b : implemented as an enum instead of just
+	 * a float to make room for the 'inherit' value
+	 */
+	enum OpacityStyleValue {
+		number(value:Float);
+	}
+	
+	// TRANSFORMATION STYLES
+//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Specifiy a list of transormation to apply
+	 * to the DOMElement. The transformation
+	 * are applied in order. The final 
+	 * transformation is obtained by performing
+	 * a matrix concatenation of each entry in the list
+	 */
+	enum TransformStyleValue {
+		
+		/**
+		 * no transformations
+		 */
+		none;
+		
+		/**
+		 * A list of transformations
+		 * to apply in order
+		 */
+		transformFunctions(transformFunctions:Array<TransformFunctionValue>);
+		
+	}
+	
+	/**
+	 * The list of allowed transform functions to
+	 * apply to a DOMElement
+	 */
+	enum TransformFunctionValue {
+		
+		/**
+		 * specify a 2D transformation in the form of
+		 * a transformation matrix
+		 */
+		matrix(data:MatrixData);
+		
+		/**
+		 * specify a 2D translation by the vector [tx, ty]
+		 */
+		translate(tx:TranslationValue, ty:TranslationValue);
+		
+		/**
+		 * specifies a translation by the given amount in the
+		 * X direction
+		 */
+		translateX(tx:TranslationValue);
+		
+		/**
+		 * specifies a translation by the given amount in the
+		 * Y direction
+		 */
+		translateY(ty:TranslationValue);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [sx, sy] scaling vector
+		 */
+		scale(sx:Float, sy:Float);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [sx, 1] scaling vector
+		 */
+		scaleX(sx:Float);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [1, sy] scaling vector
+		 */
+		scaleY(sy:Float);
+		
+		/**
+		 * specifies a 2D rotation by the angle specified in the
+		 * parameter about the origin of the element,
+		 * as defined by the TransformOriginStyleValue property
+		 */
+		rotate(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation
+		 * along the X axis by the given angle.
+		 */
+		skewX(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation
+		 * along the Y axis by the given angle.
+		 */
+		skewY(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation 
+		 * along the X and Y axes.
+		 */
+		skew(angleX:AngleValue, angleY:AngleValue);
+	}
+	
+	/**
+	 * The list of value allowed to 
+	 * specify the amount of a translation
+	 */
+	enum TranslationValue {
+		
+		/**
+		 * a length value
 		 */
 		length(value:LengthValue);
 		
 		/**
-		 * relative to the parent DOMElement
-		 * dimensions 
+		 * a percentage relative to the DOMElement
+		 * dimensions
+		 */
+		percent(value:Int);
+	}
+	
+	/**
+	 * Specifies the origin of transformation
+	 * for a DOMElement along the x and y
+	 * axis
+	 */
+	typedef TransformOriginStyleData = {
+		
+		/**
+		 * x axis origin
+		 */
+		var x:TransformOriginXStyleValue;
+		
+		/**
+		 * y axis origin
+		 */
+		var y:TransformOriginYStyleValue;
+		
+	}
+	
+	/**
+	 * The list of available transformation
+	 * origin values for x axis
+	 */
+	enum TransformOriginXStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's width
 		 */
 		percent(value:Int);
 		
 		/**
-		 * No constraint is enforced
+		 * same as 0%
 		 */
-		none;
+		left;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		right;
+	}
+	
+	/**
+	 * The list of available transformation
+	 * origin values for y axis
+	 */
+	enum TransformOriginYStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		top;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		bottom;
 	}

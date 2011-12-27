@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.abstract;
 
@@ -18,6 +14,7 @@ import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
+import haxe.Log;
 
 /**
  * The graphic DOMElement is used as a canvas to draw bitmap graphics programmatically. 
@@ -37,6 +34,12 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 
 	/**
 	 * class constructor
+	 * 
+	 * Init the default intrinsic width, height and ratio.
+	 * 
+	 * By convention a GraphicDOMElement dimensions is
+	 * 300 * 150 by default, according to the HTML5 Canvas
+	 * element specifications
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
@@ -47,29 +50,10 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 		}
 		
 		super(nativeElement);
-	}
-	
-	/**
-	 * By convention a GraphicDOMElement dimensions is
-	 * 300 * 150 by default, according to the HTML5 Canvas
-	 * element specifications
-	 */
-	override private function initDimensions():Void
-	{
-		this._height = 150;
-		this._width = 300;
-	}
-	
-	
-	/**
-	 * Init the default intrinsic width, height and ratio.
-	 * Different for each inheriting embedded DOMElement
-	 */
-	override private function initInstrinsicDimensions():Void
-	{
-		this._intrinsicHeight = this._height;
-		this._intrinsicWidth = this._width;
-		this._intrinsicRatio = this._width / this._height;
+		
+		this._intrinsicHeight = 150;
+		this._intrinsicWidth = 300;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +74,22 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 */
 	public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
 	{
-		//abstract;
+		//init fill and line style if null
+		if (fillStyle == null)
+		{
+			fillStyle = FillStyleValue.none;
+		}
+		
+		if (lineStyle == null)
+		{
+			lineStyle = LineStyleValue.none;
+		}
+		
+		//set fill style
+		setFillStyle(fillStyle);
+		
+		//set line style
+		setLineStyle(lineStyle);
 	}
 	
 	/**
@@ -106,6 +105,28 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	 * Clears the current shape and line of the graphic DOMElement.
 	 */
 	public function clear():Void
+	{
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private fill control methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Do set the line style on the DOMElement
+	 * @param	lineStyle
+	 */
+	private function setLineStyle(lineStyle:LineStyleValue):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Do set the fill style on the DOMElement
+	 * @param	fillStyle
+	 */
+	private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		//abstract
 	}
@@ -190,55 +211,6 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 		ay = yCenter + Math.sin(angle)*yRadius;
 		curveTo(rx, ry, ax, ay);
 		}
-	}
-	
-	/**
-	 * High level method to draw a star. 
-	 * Needs to be called after beginFill or beginGradientFill was called.
-	 * @param	x the left point of the star
-	 * @param	y the top point of the star
-	 * @param	outerRadius the star outer radius
-	 * @param	innerRadius the star inner radius
-	 * @param	branches the number of branches of the star.
-	 */
-	public function drawStar(x:Int, y:Int, outerRadius:Int, innerRadius:Int, branches:Int):Void
-	{
-		var angle:Float = 360 / branches;
-		var angleDecal:Float = angle * 0.5;
-		
-		moveTo(Math.cos(0) * outerRadius + outerRadius, Math.sin(0) * outerRadius + outerRadius);
-		for (i in 0...branches) {
-			lineTo(Math.cos(conversion(i * angle)) * outerRadius + outerRadius, Math.sin(conversion(i * angle)) * outerRadius + outerRadius);
-			lineTo(Math.cos(conversion(i * angle + angleDecal)) * innerRadius + outerRadius, Math.sin(conversion(i * angle + angleDecal)) * innerRadius + outerRadius);
-		}
-		lineTo(Math.cos(0) * outerRadius + outerRadius, Math.sin(0) * outerRadius + outerRadius);
-	}
-	
-	/**
-	 * High level method to draw a polygon. 
-	 * Needs to be called after beginFill or beginGradientFill was called.
-	 * @param	x the left point of the polygon
-	 * @param	y the top point of the polygon
-	 * @param	radius the radius of the polygon
-	 * @param	sides the number of sides of the polygon.
-	 */
-	public function drawPolygon(x:Int, y:Int, radius:Int, sides:Int):Void
-	{
-		var angle:Float = 360 / sides;
-		
-		moveTo(Math.cos(0) * radius + radius, Math.sin(0) * radius + radius);
-		for (i in 0...sides) {
-			lineTo(Math.cos(conversion(i * angle)) * radius + radius, Math.sin(conversion(i * angle)) * radius + radius);
-			lineTo(Math.cos(conversion(i * angle + angle)) * radius + radius, Math.sin(conversion(i * angle + angle)) * radius + radius);
-		}
-		lineTo(Math.cos(0) * radius + radius, Math.sin(0) * radius + radius);
-	}
-	
-	/**
-	 * Converts an angle from deg to rad
-	 */
-	private function conversion (val:Float):Float {
-		return val / 180 * Math.PI;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

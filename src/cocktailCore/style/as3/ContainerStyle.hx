@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.as3;
 
@@ -15,6 +12,7 @@ import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
@@ -49,8 +47,35 @@ class ContainerStyle extends AbstractContainerStyle
 		super(domElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN NATIVE SETTERS
+	// In Flash the width and height are not applied to the native DisplayObject
+	// of the ContainerDOMElement, as it would scale its content. It is however
+	// stored in the native width and height attributes to be returned when 
+	// width or height are requested instead of returning 0 (the actual width/height)
+	// of the native DisplayObject
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the width of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function setNativeWidth(width:Int):Void
+	{
+		this._nativeWidth = width;
+	}
+	
+	/**
+	 * Set the height of the NativeElement of the
+	 * target DOMElement
+	 */
+	override public function setNativeHeight(height:Int):Void
+	{
+		this._nativeHeight = height;
+	}
+	
 	/////////////////////////////////
-	// OVERRIDEN METHODS
+	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
 	
 	/**
@@ -116,7 +141,7 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
-		var transformedText:String = applyTextTransform(text);
+		var transformedText:String = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textElement:TextElement = new TextElement(transformedText);
 		
@@ -152,14 +177,14 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	/////////////////////////////////
-	// PRIVATE HELPER METHODS
+	// PRIVATE STATIC HELPER METHODS
 	////////////////////////////////
 	
 	/**
 	 * Return a flash FontPosture object from
 	 * the fontStyle style of the ContainerDOMElement
 	 */
-	private function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
+	private static function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
@@ -179,7 +204,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Return a flash TypographicCase object from
 	 * the font variant style of the ContainerDOMElement
 	 */
-	private function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
+	private static function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		

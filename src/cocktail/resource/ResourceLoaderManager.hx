@@ -1,4 +1,6 @@
 /*
+This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+
 This project is © 2010-2011 Silex Labs and is released under the GPL License:
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
@@ -10,37 +12,32 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.resource;
 
 import cocktailCore.resource.abstract.AbstractResourceLoader;
-import haxe.Log;
-import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceData;
 
 #if flash9
 import cocktailCore.resource.as3.StringLoader;
 import cocktailCore.resource.as3.ImageLoader;
-import cocktailCore.resource.as3.ContainerLoader;
+import cocktailCore.resource.as3.SkinLoader;
 import cocktailCore.resource.as3.LibraryLoader;
 
 #elseif js
 import cocktailCore.resource.js.StringLoader;
 import cocktailCore.resource.js.ImageLoader;
-import cocktailCore.resource.js.ContainerLoader;
+import cocktailCore.resource.js.SkinLoader;
 import cocktailCore.resource.js.LibraryLoader;
 
 #elseif php
 import cocktailCore.resource.php.StringLoader;
 import cocktailCore.resource.php.ImageLoader;
-import cocktailCore.resource.php.ContainerLoader;
+import cocktailCore.resource.php.SkinLoader;
 import cocktailCore.resource.php.AnimationLoader;
 import cocktailCore.resource.php.LibraryLoader;
 
 #elseif doc
-class StringLoader extends AbstractResourceLoader {}
-class ImageLoader extends AbstractResourceLoader {}
-class ContainerLoader extends AbstractResourceLoader {}
-class AnimationLoader extends AbstractResourceLoader {}
-class LibraryLoader extends AbstractResourceLoader {}
+class StringLoader extends AbstractStringLoader {}
+class SkinLoader extends AbstractSkinLoader {}
+class LibraryLoader extends AbstractLibraryLoader {}
 
 #end	
 
@@ -77,50 +74,6 @@ class ResourceLoaderManager
 	 * @param	url the url of the file to load
 	 * @param	successCallback the callback which must be called once the file is successfully done loading
 	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	domElement, if provided, the loaded resource (in this case a picture) will be set on this
-	 * DOMElement, else a new ImageDOMElement will be created
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadImage(url:String, successCallback:ImageDOMElement->Void, errorCallback:String->Void , imageDOMElement:ImageDOMElement = null, allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			domElement:cast(imageDOMElement),
-			allowCache:allowCache,
-			loadingType:image
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadContainer(url:String, successCallback:ContainerDOMElement->Void, errorCallback:String->Void , containerDOMElement:ContainerDOMElement = null, allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			domElement:cast(containerDOMElement),
-			loadingType:container
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
 	 * @param	allowCache wheter to allow the browser to cache the loaded file
 	 */
 	public static function loadString(url:String, successCallback:String->Void, errorCallback:String->Void , allowCache:Bool = true):Void
@@ -130,7 +83,6 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
-			domElement:null,
 			loadingType:data
 		};
 		
@@ -151,7 +103,6 @@ class ResourceLoaderManager
 			onLoadComplete:successCallback,
 			onLoadError:errorCallback,
 			allowCache:allowCache,
-			domElement:null,
 			loadingType:library
 		};
 		
@@ -209,17 +160,11 @@ class ResourceLoaderManager
 				case data:
 				resourceLoader = new StringLoader();
 				
-				case image: 
-				resourceLoader = new ImageLoader();
-				
-				case container:
-				resourceLoader = new ContainerLoader();
-				
 				case library:
 				resourceLoader = new LibraryLoader();
 			}
 			
-			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.domElement, resourceDataToLoad.allowCache);
+			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
 		}
 	}
 	

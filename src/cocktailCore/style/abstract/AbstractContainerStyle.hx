@@ -1,15 +1,13 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.style.abstract;
 
+import cocktail.viewport.Viewport;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
@@ -29,7 +27,9 @@ import cocktailCore.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
+import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
+import haxe.Timer;
 
 #if flash9
 import cocktailCore.style.as3.Style;
@@ -66,9 +66,9 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all its children
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElement:ContainingDOMElementData, rootDOMElement:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
-		flow(containingDOMElementData, rootDOMElement, lastPositionedDOMElement, null);
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -124,7 +124,7 @@ class AbstractContainerStyle extends Style
 		//of the DOMElement. If the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height as containing height
-		var childrenContainingDOMElementData:ContainingDOMElementData = getChildrenContainingDOMElementData();
+		var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
 		//are based on the font and the font size used
@@ -132,39 +132,17 @@ class AbstractContainerStyle extends Style
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children
-		var childLastPositionedDOMElementDimensions:ContainingDOMElementData;
+		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
-		//lays out, and will be used as origin for absolutely positioned children
-		if (this.isPositioned() == true)
-		{
-			childLastPositionedDOMElementDimensions = getChildrenContainingDOMElementData();
-		}
-		//
-		else
-		{
-			childLastPositionedDOMElementDimensions = lastPositionedDOMElementDimensions;
-		}
+		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned will be
+		//stored and once this ContainerDOMElement is laid out, it will position all those children. the layout
+		//of absolutely positioned children must happen once the dimensions of this ContainerDOMElement are known so
+		//that children can be positioned using the 'bottom' and 'right' styles
+		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
 		//flow all children 
-		for (i in 0...containerDOMElement.children.length)
-		{
-			//if the children is a DOMElement, call its flow method
-			if (isDOMElement(containerDOMElement.children[i]) == true)
-			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				//the flow method also lays out recursively all the children of the childrenDOMElement
-				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
-			}
-			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
-			//as necessary to render the TextElement and insert them into the document
-			else 
-			{
-				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
-				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData, rootDOMElementDimensions, childLastPositionedDOMElementDimensions, containingDOMElementFontMetricsData);
-			}
-		}
+		doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 		
 		//destroy the current formatting context, prompting
 		//to clean up all references it might have and also
@@ -179,32 +157,50 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext.destroy();
 		}
 		
-		
-		//if the 'height' style of this ContainerDOMElement is 
-		//defined as 'auto', then it depends on its content height
-		//and it must now be adjusted to the total height
-		//of its children before the ContainerDOMElement is actually
-		//sized
-		if (this._height == DimensionStyleValue.auto)
-		{
-			this._computedStyle.height = childrenFormattingContext.flowData.totalHeight;
-		}
-		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.auto)
 		{
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData.width, childrenFormattingContext.flowData.maxWidth);
+			
+			var currentWidth:Int = this._computedStyle.width;
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
+			
+			//if the computed width of the ContainerDOMElement was shrinked, then
+			//a new layout must happen
+			if (currentWidth != this._computedStyle.width)
+			{
+				//update the structure used for the layout and starts a new layout
+				childrenFormattingContext = getFormatingContext(formatingContext);
+				childrenContainingDOMElementData = getContainerDOMElementData();
+				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+			}
 		}
 		
-		
+		//if the 'height' style of this ContainerDOMElement is 
+		//defined as 'auto', then in most cases, it depends on its content height
+		//and it must now be adjusted to the total height
+		//of its children before the ContainerDOMElement is actually
+		//sized. Fort some border case though, the total height
+		//of the children is not used and auto height is computed in
+		//another way
+		if (this._height == DimensionStyleValue.auto)
+		{
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.totalHeight);
+		}
+
 		//insert the ContainerDOMElement into the document
-		insertDOMElement(formatingContext, lastPositionedDOMElementDimensions, rootDOMElementDimensions);
+		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 
 		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
 		//that will also affect the position of its following siblings
 		formatingContext.retrieveFloats(childrenFormattingContext);
 		
+		//if the childLastPositionedDOMElementData is different from the lastPositionedDOMElementData
+		//it means that this ContainerDOMElement is the first positioned ancestor for its children
+		//and it is its responsability to position them
+		var isFirstPositionedAncestor:Bool = childLastPositionedDOMElementData != lastPositionedDOMElementData;
+		doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
 	}
 	
 	/**
@@ -224,11 +220,60 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Actually flow all the children of the ContainerDOMElement
+	 */
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//flow all children 
+		for (i in 0...containerDOMElement.children.length)
+		{
+			//if the children is a DOMElement, call its flow method
+			if (isDOMElement(containerDOMElement.children[i]) == true)
+			{
+				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
+				//the flow method also lays out recursively all the children of the childrenDOMElement
+				//if it is a ContainerDOMElement
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+			}
+			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
+			//as necessary to render the TextElement and insert them into the document
+			else 
+			{
+				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
+				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+			}
+		}
+	}
+	
+	/**
+	 * When this ContainerDOMElement is positioned, position each of its children using it
+	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
+	 * are known so that absolutely positioned children can be positioned using the bottom
+	 * and right styles
+	 */
+	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		if (isFirstPositionedAncestor == true)
+		{
+			//update the data of the ContainerDOMElement now that its width and height are known
+			childLastPositionedDOMElementData.data = getContainerDOMElementData();
+			//position each stored children
+			for (i in 0...childLastPositionedDOMElementData.children.length)
+			{
+				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
+				positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+			}
+		}
+	}
+	
+	/**
 	 * Insert a TextElement ( a string of text without formatting ) by creating as many TextFragmentDOMElement as needed from it
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
-	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData, rootDOMElementDimensions:ContainingDOMElementData, lastPositionedDOMElementDimensions:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
@@ -236,7 +281,7 @@ class AbstractContainerStyle extends Style
 		var text:String = textElement.getNativeText();
 		
 		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
-		text = applyWhiteSpace(text, this._computedStyle.whiteSpace);
+		text = AbstractTextElement.applyWhiteSpace(text, this._computedStyle.whiteSpace);
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
@@ -265,7 +310,7 @@ class AbstractContainerStyle extends Style
 					//start a new line
 					formattingContext.insertLineFeed();
 			}
-		}			
+		}		
 	}
 	
 	/**
@@ -274,15 +319,46 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line form by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * @param	availableWidth the width of the container of this containerDOMElement
-	 * @param	maxWidth the width of the widest line of children laid out
-	 * by this ContainerDOMElement
+	 * @param	containingDOMElementData
+	 * @param	minimumWidth the width of the widest line of children laid out
+	 * by this ContainerDOMElement which will be the minimum width that should
+	 * have this DOMElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(availableWidth:Int, minimumWidth:Int):Int
+	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		return boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
+	}
+	
+	/**
+	 * In most cases, when the height of a ContainerDOMElement
+	 * is 'auto', its computed height become the total height
+	 * of its in flow children, computed once all its
+	 * children have been laid out 
+	 * 
+	 * @param	containingDOMElementData
+	 * @param	childrenHeight the total height of the children once laid out
+	 */
+	private function applyContentHeightIfNeeded(containingDOMElementData:ContainingDOMElementData, childrenHeight:Int):Int
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		return boxComputer.applyContentHeight(this, containingDOMElementData, childrenHeight);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
+	 * must be deleted so that they can be redrawn on next layout
+	 */
+	override private function invalidateText():Void
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		containerDOMElement.resetTextFragments();	
+		super.invalidateText();
 		
-		return boxComputer.shrinkToFit(this._computedStyle, availableWidth, minimumWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -335,139 +411,45 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE TEXT HELPER METHODS
+	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Apply the whiteSpace style rule to a text
+	 * Return the dimensions and position data
+	 * of the ContainerDOMElement
 	 */
-	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
+	public function getContainerDOMElementData():ContainingDOMElementData
 	{
-		var ret:String = text;
+		var height:Int;
 		
-		switch (whiteSpace)
+		//if the ContainerDOMElement
+		//is inline, then its line height will
+		//be used to lay out its children in lines
+		if (isInline() == true)
 		{
-				case WhiteSpaceStyleValue.normal:
-					ret = collapseSpaceSequences(text);
-					
-				case WhiteSpaceStyleValue.pre:
-					ret = removeLineFeeds(text);
-					
-				case WhiteSpaceStyleValue.nowrap:
-					ret = collapseSpaceSequences(text);
-					ret = removeLineFeeds(text);
-					ret = convertTabToSpace(text);
-					
-				case WhiteSpaceStyleValue.preWrap:
-					
-				case WhiteSpaceStyleValue.preLine:
-					ret = collapseSpaceSequences(text);
+			height = Math.round(this._computedStyle.lineHeight);
 		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Transform a text letters into uppercase, lowercase
-	 * or capitalise them (only the first letter of each word
-	 * is transformed to uppercase), based on the textTransform
-	 * style of this container DOMElement
-	 * @param	text the text to transform
-	 * @return the transformed text
-	 */
-	private function applyTextTransform(text:String):String
-	{
-		switch (_computedStyle.textTransform)
+		//same if the ContainerDOMElement starts
+		//an inline formatting context
+		else if (isInline() == false && childrenInline() == true)
 		{
-			case uppercase:
-				text = text.toUpperCase();
-				
-			case lowercase:
-				text = text.toLowerCase();
-				
-			case capitalize:
-				text = capitalizeText(text);
-				
-			case none:
+			height = Math.round(this._computedStyle.lineHeight);
 		}
-		
-		return text;
-	}
-	
-	/**
-	 * Capitalise a text (turn each first letter
-	 * of a word to uppercase)
-	 * @param	text the text to capitaliee
-	 * @return the capitalized
-	 */
-	private function capitalizeText(text:String):String
-	{
-		var capitalizedText:String = text.charAt(0);
-		
-		/**
-		 * loop in all charachter looking for word breaks
-		 * and capitalize each word's first letter
-		 */
-		for (i in 1...text.length)
-		{	
-			if (text.charAt(i - 1) == " ")
-			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
-			}
-		}
-		return capitalizedText;
-	}
-	
-	/**
-	 * Convert sequences of spaces in a text
-	 * into a single space
-	 */
-	private function collapseSpaceSequences(text:String):String
-	{
-		var collapsedText:String = "";
-		var isSpaceSequence:Bool = false;
-		
-		for (i in 0...text.length)
+		//else it starts a block formatting context
+		//and its height is used
+		else
 		{
-			if (StringTools.isSpace(text, i))
-			{
-				if (isSpaceSequence == false)
-				{
-					collapsedText += text.charAt(i);
-					isSpaceSequence = true;
-				}
-			}
-			else
-			{
-				isSpaceSequence = false;
-				collapsedText += text.charAt(i);
-			}
+			height = this._computedStyle.height;
 		}
 		
-		return collapsedText;
-	}
-	
-	/**
-	 * Removes the new line control character
-	 * from a text
-	 */
-	private function removeLineFeeds(text:String):String
-	{
-		return StringTools.replace(text, "\n", "");
-	}
-	
-	/**
-	 * Removes the tabulation control character
-	 * from a text by converting them to space
-	 * character
-	 */
-	private function convertTabToSpace(text:String):String
-	{
-		return StringTools.replace(text, "\t", " ");
+		return {
+			width:this._computedStyle.width,
+			isWidthAuto:this._width == DimensionStyleValue.auto,
+			height:height,
+			isHeightAuto:this._height == DimensionStyleValue.auto,
+			globalX:this._domElement.globalX,
+			globalY:this._domElement.globalY
+		};
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -552,44 +534,6 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Return the dimensions and position data
-	 * of the ContainerDOMElement
-	 */
-	private function getChildrenContainingDOMElementData():ContainingDOMElementData
-	{
-		var height:Int;
-		
-		//if the ContainerDOMElement
-		//is inline, then its line height will
-		//be used to lay out its children in lines
-		if (isInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//same if the ContainerDOMElement starts
-		//an inline formatting context
-		else if (isInline() == false && childrenInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
-		//else it starts a block formatting context
-		//and its height is used
-		else
-		{
-			height = this._computedStyle.height;
-		}
-		
-		return {
-			width:this._computedStyle.width,
-			isWidthAuto:this._width == DimensionStyleValue.auto,
-			height:height,
-			isHeightAuto:this._height == DimensionStyleValue.auto,
-			globalX:this._domElement.globalX,
-			globalY:this._domElement.globalY
-		};
-	}
-	
-	/**
 	 * Determine wether the children of this DOMElement
 	 * are all block level or if they are all inline level
 	 * elements
@@ -597,30 +541,25 @@ class AbstractContainerStyle extends Style
 	 */
 	private function childrenInline():Bool
 	{
-		var ret:Bool = true;
-		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//return false for a container with no children
+		if (containerDOMElement.children.length == 0)
+		{
+			return false;
+		}
+		
+		//establish if the first child is inline or block
+		//all other child must be of the same type
+		var ret:Bool = isChildInline(containerDOMElement.children[0]);
+		
+		//loop in all children and throw an exception
+		//if one the children is not of the same type as the first
 		for (i in 0...containerDOMElement.children.length)
 		{
-			
-			if (isDOMElement(containerDOMElement.children[i]))
+			if (isChildInline(containerDOMElement.children[i]) != ret)
 			{
-				//if one of the children is a block level DOMElement, then the container
-				//is block level
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				
-				if (childrenDOMElement.style.computedStyle.display == block)
-				{
-					if (childrenDOMElement.style.isFloat() == false)
-					{
-						ret = false;
-					}
-					else if (childrenDOMElement.style.isEmbedded() == true)
-					{
-						ret = false;
-					}
-					
-				}
+				//throw "children of a block container can only be either all block or all inline";
 			}
 		}
 		
@@ -628,7 +567,72 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Determin wether a block container
+	 * Determine wether a children is inline or not
+	 */
+	private function isChildInline(child:ContainerDOMElementChildData):Bool
+	{
+		var ret:Bool = true;
+		
+		//here the children is a DOMElement
+		if (isDOMElement(child))
+		{
+			var childrenDOMElement:DOMElement = cast(child.child);
+			//here the child is of type block
+			if (childrenDOMElement.style.computedStyle.display == block)
+			{
+				//floated children are not taken into account 
+				if (childrenDOMElement.style.isFloat() == false)
+				{
+					ret = false;
+				}
+				//absolutely positioned children are not taken into account but relative positioned are
+				else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
+				{
+					ret = false;
+				}
+			}
+			//here the child is inline
+			else
+			{
+				ret = true;
+			}
+		}
+		//here the children is a textElement, which is
+		//always inline as text is always displayed on a line
+		else
+		{
+			ret = true;
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Return the structure used to layout absolutely positioned
+	 * children. If this ContainerDOMElement is positioned, a new
+	 * structure is created, else the current one is used
+	 */
+	private function getChildLastPositionedDOMElementData(lastPositionedDOMElementData:LastPositionedDOMElementData):LastPositionedDOMElementData
+	{
+		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
+		
+		if (this.isPositioned() == true)
+		{
+			childLastPositionedDOMElementData = {
+				data: getContainerDOMElementData(),
+				children: new Array<PositionedDOMElementData>()
+			}
+		}
+		else
+		{
+			childLastPositionedDOMElementData = lastPositionedDOMElementData;
+		}
+		
+		return childLastPositionedDOMElementData;
+	}
+	
+	/**
+	 * Determine wether a block container
 	 * starts a new formatting context for
 	 * its children
 	 */

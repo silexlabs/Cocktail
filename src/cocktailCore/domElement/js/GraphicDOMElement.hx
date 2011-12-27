@@ -1,13 +1,9 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.domElement.js;
 
@@ -17,6 +13,7 @@ import js.Lib;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import cocktail.style.StyleData;
 
 /**
  * This is the JavaScript implementation of the graphic DOMElement.
@@ -64,45 +61,6 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden getter/setter
-	// The width and height setter/getter are overriden, because width and height
-	// are attributes of the Canvas tag and not styles
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setWidth(value:Int):Int
-	{
-		//when changing the width or height of a Canvas,
-		//its content is erased, 
-		var canvasContext:Dynamic = getContext();
-		//so we first save it
-		var imageData:Dynamic = canvasContext.getImageData(0, 0, this.width, this.height);
-		//set the new width
-		untyped this._nativeElement.width = value;
-		//then put back the pixel data
-		canvasContext.putImageData(imageData, 0,0);
-		return value;
-	}
-	
-	override private function getWidth():Int 
-	{
-		return untyped Std.parseInt(this._nativeElement.width);
-	}
-	
-	override private function setHeight(value:Int):Int 
-	{
-		//same as width, save the pixel data and put it back
-		var canvasContext:Dynamic = getContext();
-		var imageData:Dynamic = canvasContext.getImageData(0,0, this.width, this.height);
-		untyped this._nativeElement.height = value;
-		canvasContext.putImageData(imageData, 0,0);
-		return value;
-	}
-	
-	override private function getHeight():Int 
-	{
-		return untyped Std.parseInt(this._nativeElement.height);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden fill control methods
@@ -116,24 +74,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	override public function beginFill(fillStyle:FillStyleValue = null, lineStyle:LineStyleValue = null):Void
 	{
 		super.beginFill(fillStyle, lineStyle);
-		
-		//init fill and line style if null
-		if (fillStyle == null)
-		{
-			fillStyle = FillStyleValue.none;
-		}
-		
-		if (lineStyle == null)
-		{
-			lineStyle = LineStyleValue.none;
-		}
-		
-		//set fill style
-		setFillStyle(fillStyle);
-		
-		//set line style
-		setLineStyle(lineStyle);
-		
+
 		var canvasContext:Dynamic = getContext();
 		
 		//start path drawing, used when drawing with lineTo/moveto/curveTo
@@ -163,17 +104,17 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 		var canvasContext:Dynamic = getContext();
 		
 		//clears a rect with the size of this DOMElement
-		canvasContext.clearRect(0, 0, getWidth(), getHeight());
+		canvasContext.clearRect(0, 0, width, height);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private fill control methods
+	// Overriden Private fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Do set the fill style on the canvas
 	 */
-	private function setFillStyle(fillStyle:FillStyleValue):Void
+	override private function setFillStyle(fillStyle:FillStyleValue):Void
 	{
 		//get the canvas context to drawn on it
 		var canvasContext:Dynamic = getContext();
@@ -201,7 +142,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * Do set the line style on the canvas
 	 */
-	private function setLineStyle(lineStyle:LineStyleValue):Void
+	override private function setLineStyle(lineStyle:LineStyleValue):Void
 	{
 		//get the canvas context to drawn on it
 		var canvasContext:Dynamic = getContext();
@@ -506,14 +447,14 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 				//the end point is right of the bounding box and the middle
 				//of it's height
 				var xStart:Float = 0;
-				var yStart:Float = this.getHeight() / 2;
-				var xEnd:Float = this.getWidth();
-				var yEnd:Float = this.getHeight() / 2;
+				var yStart:Float = this.height / 2;
+				var xEnd:Float = this.width;
+				var yEnd:Float = this.height / 2;
 		
 				//convert the starting point to the canvas center
 				//geometric space (use the center as origin)
-				xStart -= this.getWidth() / 2;
-				yStart -= this.getHeight() / 2;
+				xStart -= this.width / 2;
+				yStart -= this.height / 2;
 				
 				
 				//rotate the starting point with the rotation value of the gradient
@@ -521,27 +462,27 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 				var rotatedStartY:Float = (xStart * Math.sin(gradientRadRotation)) + (yStart * Math.cos(gradientRadRotation));
 				
 				//convert back to canvas top-left geometric space
-				rotatedStartX += this.getWidth() / 2;
-				rotatedStartY += this.getHeight() / 2;
+				rotatedStartX += this.width / 2;
+				rotatedStartY += this.height / 2;
 				
 				//convert the end point to the canvas center
 				//geometric space (use the center as origin)
-				xEnd -= this.getWidth() / 2;
-				yEnd -= this.getHeight() / 2;
+				xEnd -= this.width / 2;
+				yEnd -= this.height / 2;
 				
 				//rotate the end point with the rotation value of the gradient
 				var rotatedEndX:Float = (xEnd * Math.cos(gradientRadRotation)) - (yEnd * Math.sin(gradientRadRotation));
 				var rotatedEndY:Float = (xEnd * Math.sin(gradientRadRotation)) + (yEnd * Math.cos(gradientRadRotation));
 				
 				//convert back to canvas top-left geometric space
-				rotatedEndX += this.getWidth() / 2;
-				rotatedEndY += this.getHeight() / 2;
+				rotatedEndX += this.width / 2;
+				rotatedEndY += this.height / 2;
 				
 				//create the gradient
 				gradient = canvasContext.createLinearGradient(rotatedStartX, rotatedStartY, rotatedEndX, rotatedEndY);
 				
 			case radial:
-				gradient = canvasContext.createRadialGradient(this.getWidth()/2, this.getHeight() / 2, this.getWidth() /4, this.getWidth()/2, this.getHeight() / 2, this.getHeight() /2);
+				gradient = canvasContext.createRadialGradient(this.width/2, this.height / 2, this.width /4, this.width/2, this.height / 2, this.height /2);
 		}
 		
 		//get all the gradient stops data
