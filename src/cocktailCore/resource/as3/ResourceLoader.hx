@@ -13,8 +13,11 @@ import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
-import flash.system.ApplicationDomain;
+
+#if flash9
 import flash.system.LoaderContext;
+import flash.system.ApplicationDomain;
+#end
 
 /**
  * This is the Flash As3 implementation of the ResourceLoader.
@@ -56,7 +59,9 @@ class ResourceLoader extends AbstractResourceLoader
 		var request:URLRequest = new URLRequest(url);
 		
 		//add a loading context so that the resource will be loaded in the current context
+#if flash9
 		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+#end
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		loadingContext.checkPolicyFile = true;
 		

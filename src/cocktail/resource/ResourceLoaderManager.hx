@@ -15,7 +15,7 @@ import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktail.domElement.DOMElement;
 import cocktail.resource.ResourceData;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.resource.as3.StringLoader;
 import cocktailCore.resource.as3.ImageLoader;
 import cocktailCore.resource.as3.SkinLoader;

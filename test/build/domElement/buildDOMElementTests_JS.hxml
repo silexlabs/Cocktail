@@ -1,5 +1,5 @@
 -cp ../../../src/
--cp ../../src/
--main domElement.DOMElementTests
+-cp ../../../
+-main test.src.domElement.DOMElementTests
 -lib utest
 -js ../../bin/domElement/domElementTestJS.js
