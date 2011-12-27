@@ -52,6 +52,14 @@ class FontTests
 	
 	public function new() 
 	{
+		#if flash9
+			if (flash.Lib.current.loaderInfo.url.indexOf("http")==-1)
+			{
+				trace("Error : you have to run this test from a web server - e.g. http://localhost");
+				return;
+			}
+		#end
+
 		_fontManager = new FontManager();
 	}
 	
@@ -69,6 +77,7 @@ class FontTests
 			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
 		#end
 		#if flash9
+			
 			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded3, 1000);
 			_fontManager.loadFont("embed_test_font.swf", "EmbedFontTest", successCallback, onFontLoadError);
 		#end
