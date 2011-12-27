@@ -10,7 +10,7 @@ package cocktailCore.mouse;
 /**
  * Set the right runtime specific mouse manager at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef Mouse =  cocktailCore.mouse.as3.Mouse;
 
 #elseif js

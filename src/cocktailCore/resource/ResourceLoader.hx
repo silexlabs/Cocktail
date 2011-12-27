@@ -10,7 +10,7 @@ package cocktailCore.resource;
 /**
  * Set the right runtime specific ResourceLoader at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef ResourceLoader = cocktailCore.resource.as3.ResourceLoader;
 
 #elseif js

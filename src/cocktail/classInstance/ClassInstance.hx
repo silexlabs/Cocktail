@@ -10,7 +10,7 @@ package cocktail.classInstance;
 /**
  * Set the right runtime specific ClassInstance at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef ClassInstance =  cocktailCore.classInstance.as3.ClassInstance;
 
 #elseif js
