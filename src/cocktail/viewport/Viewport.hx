@@ -8,7 +8,7 @@
 package cocktail.viewport;
 
 
-#if flash9
+#if (flash9 || cpp || nme)
 typedef Viewport = cocktailCore.viewport.as3.Viewport;
 #elseif js
 typedef Viewport = cocktailCore.viewport.js.Viewport;
