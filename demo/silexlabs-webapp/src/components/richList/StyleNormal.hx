@@ -120,11 +120,11 @@ class StyleNormal
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
+		/*domElement.style.fontFamily =
 			[
 				FontFamilyStyleValue.familyName('Helvetica'),
 				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
+			];*/
 		domElement.style.fontVariant = FontVariantStyleValue.normal;
 		domElement.style.textTransform = TextTransformStyleValue.none;
 		domElement.style.letterSpacing = LetterSpacingStyleValue.normal;

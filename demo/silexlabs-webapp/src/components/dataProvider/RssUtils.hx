@@ -20,151 +20,9 @@ import cocktail.nativeElement.NativeElementData;
 //import cocktail.textElement.TextElement;
 
 import components.richList.RichListModels;
-import components.richList.ContainerRichListModels;
-import components.richList.ContainerRichListUtils;
 
 class RssUtils 
 {
-	
-	/**
-	 * Converts a rss to an Array of ContainerCellModels
-	 * 
-	 * @param	rss
-	 * @return
-	 */
-	//public static function rss2ContainerCells(rss:Xml):Array<ContainerCellModel>
-	public static function rss2ContainerCells(rss:Xml):ContainerRichListModel
-	{
-		//var cells:Array<ContainerCellModel> = new Array<ContainerCellModel>();
-		var cells:ContainerRichListModel = ContainerRichListUtils.createContainerRichListModel();
-
-		// set channel node
-		var channelNode:Xml = rss.firstElement().firstElement();
-		
-		// create the "ul" container
-		//var cellsContainer:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
-				
-		// get the rss data
-		for ( channelChild in channelNode.elements() )
-		{
-			if (channelChild.nodeName == "item")
-			{
-				// create cellContent as "li" container
-				var cellContent:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
-				
-				// create cellContainer which contains the cellContent
-				var cell:ContainerCellModel = { content: cellContent, action:"", actionTarget:"" };
-
-				// for each node
-				for (itemParam in channelChild.elements())
-				{
-					// Silex Labs feed
-					// if node is a thumb image
-					if (itemParam.nodeName == "post_thumbnail")
-					{
-						var image:ImageDOMElement = new ImageDOMElement();
-						// set image style
-						//listStyle.cellImage(image);
-						// add image
-						cellContent.addChild(image);
-						// load image
-						image.load(itemParam.firstChild().nodeValue);
-					}
-					// if node is a title
-					if (itemParam.nodeName == "post_title")
-					{
-						// create container
-						var titleContainer:ContainerDOMElement = Utils.getTextContainer(itemParam.firstChild().nodeValue);
-						// apply style
-						//listStyle.cellText(titleContainer);
-						// add container to cellcontent
-						cellContent.addChild(titleContainer);
-					}
-					// if node is a date
-					if (itemParam.nodeName == "post_date_gmt")
-					{
-						// create text
-						var text:String = "on " + itemParam.firstChild().nodeValue;
-						// create container
-						var dateContainer:ContainerDOMElement = Utils.getTextContainer(text);
-						// apply style
-						//listStyle.cellText(dateContainer);
-						// add container to cellcontent
-						cellContent.addChild(dateContainer);
-					}
-					// if node is a post content - removed as can contain html
-					/*if (itemParam.nodeName == "post_content")
-					{
-						// create text
-						var text:String = (itemParam.firstChild().nodeValue).substr(0, 100) + "...";
-						// create container
-						var dateContainer:ContainerDOMElement = Utils.getTextContainer(text);
-						// apply style
-						//listStyle.cellText(dateContainer);
-						// add container to cellcontent
-						cellContent.addChild(dateContainer);
-					}*/
-					// if node is the link to be opened
-					if (itemParam.nodeName == "guid")
-					{
-						// create container
-						var linkContainer:ContainerDOMElement = Utils.getTextContainer(itemParam.firstChild().nodeValue);
-						// apply style
-						//listStyle.cellText(titleContainer);
-						// add container to cellcontent
-						cellContent.addChild(linkContainer);
-					}
-					// if node is a author info
-					if (itemParam.nodeName == "post_author")
-					{
-						for (authorInfo in itemParam.elements())
-						{
-							if (authorInfo.nodeName == "nickname")
-							{
-								// create text
-								var text:String = "Posted by " + authorInfo.firstChild().nodeValue;
-								// create container
-								var nicknameContainer:ContainerDOMElement = Utils.getTextContainer(text);
-								// apply style
-								//listStyle.cellText(dateContainer);
-								// add container to cellcontent
-								cellContent.addChild(nicknameContainer);
-							}
-						}
-					}
-					// FTV feed
-					// if node is a title
-					/*if (itemParam.nodeName == "title")
-					{
-						cell.text = itemParam.firstChild().nodeValue;
-					}
-					// if node is a thumb image
-					else if (itemParam.nodeName == "enclosure")
-					{
-						cell.imagePath = itemParam.get("url");
-					}*/
-					
-					// flikr feed
-					// if node is a title
-					/*if (itemParam.nodeName == "media:title")
-					{
-						cell.text = itemParam.firstChild().nodeValue;
-					}
-					// if node is a thumb image
-					//if (itemParam.nodeName == "media:thumbnail")
-					else if (itemParam.nodeName == "media:content")
-					{
-						cell.imagePath = itemParam.get("url");
-					}*/
-				}
-				cell.content = cellContent;
-				cells.push(cell);
-				//cellsContainer.addChild(cellContainer);
-			}
-		}
-		return cells;
-	}
-
 	/**
 	 * Converts a rss to an Array of CellModels
 	 * 
@@ -185,8 +43,8 @@ class RssUtils
 			if (channelChild.nodeName == "item")
 			{
 				//var cell:CellModel = { text:"", imagePath:"", action:"openUrl", actionTarget:"http://www.google.com/" };
-				var cell:DynamicCellModel = { content:null, action:"openUrl", actionTarget:"http://www.google.com/" };
-				var cellContent:Dynamic = { imagePath:"", title:"", comment:"Posted " };
+				var cell:DynamicCellModel = { content:Dynamic, action:"", actionTarget:"" };
+				var cellContent:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
 				
 				// for each node
 				for (itemParam in channelChild.elements())
@@ -218,23 +76,39 @@ class RssUtils
 					if (itemParam.nodeName == "post_date_gmt")
 					{
 						// create text
-						cellContent.comment = cellContent.comment  + "on " + itemParam.firstChild().nodeValue + " ";
+						//cellContent.comment = cellContent.comment  + "on " + itemParam.firstChild().nodeValue.substr(0,10) + " ";
+						cellContent.comment = cellContent.comment + itemParam.firstChild().nodeValue.substr(0,10) + " ";
 					}
 					// if node is a post content - removed as can contain html
-					/*if (itemParam.nodeName == "post_content")
+					if (itemParam.nodeName == "post_excerpt")
 					{
 						// create text
-						var text:String = (itemParam.firstChild().nodeValue).substr(0, 100) + "...";
+						var text:String = itemParam.firstChild().nodeValue;
+						// remove "Online demo" texts
+						var toRemove:Array<String> = ["Online Demo", "Online demo", "Description :"];
+						for (string in toRemove)
+						{
+							text = StringTools.replace(text, string, "");
+						}
+						text = StringTools.ltrim(text);
+						// shorten description
+						text = text.substr(0, 95) + "...";
 						// create container
-						var dateContainer:ContainerDOMElement = Utils.getTextContainer(text);
+						//var textContainer:ContainerDOMElement = Utils.getTextContainer(text);
 						// apply style
 						//listStyle.cellText(dateContainer);
 						// add container to cellcontent
-						cellContent.addChild(dateContainer);
-					}*/
+						cellContent.description = text;
+					}
+					// if node is the number of comments
+					if (itemParam.nodeName == "comment_count")
+					{
+						cellContent.commentCount = itemParam.firstChild().nodeValue;
+					}
 					// if node is the link to be opened
 					if (itemParam.nodeName == "guid")
 					{
+						cellContent.action = "openUrl";
 						cellContent.actionTarget = itemParam.firstChild().nodeValue;
 					}
 					// FTV feed

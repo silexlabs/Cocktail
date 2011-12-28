@@ -38,6 +38,9 @@ class RichList extends ContainerDOMElement
 	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
 	
+	// current cell
+	private var _currentCell:Int;
+	
 	/**
 	 * constructor
 	 * 
@@ -45,8 +48,10 @@ class RichList extends ContainerDOMElement
 	 * @param	listStyle
 	 * @param	firstElement	first element to be placed in the cell (test or image)
 	 */
-	public function new(richList:DynamicRichListModel, listStyle:RichListStyleModel)
+	public function new(richList:DynamicRichListModel, listStyle:Dynamic)
 	{
+		// init _currentCell
+		_currentCell = 0;
 		// create a ul node
 		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
 		createRichListDOM(richList, listStyle);
@@ -55,7 +60,7 @@ class RichList extends ContainerDOMElement
 	}
 	
 	/**
-	 * Create the list DOM with provided data (title & cells) and style (title and cells)
+	 * Create the list DOM with provided data and style
 	 * 
 	 * @param	richListModel
 	 * @param	listStyle
@@ -74,6 +79,8 @@ class RichList extends ContainerDOMElement
 			
 			// add cell to instance
 			this.addChild(cell);
+			
+			_currentCell++;
 		}
 	}
 	
@@ -82,7 +89,7 @@ class RichList extends ContainerDOMElement
 	 * 
 	 * @param	cellData
 	 */
-	private function createCellDOM(cellData:Dynamic, listStyle:RichListStyleModel):ContainerDOMElement
+	private function createCellDOM(cellData:Dynamic, listStyle:Dynamic):ContainerDOMElement
 	{
 		// create cell with text and image
 
@@ -123,7 +130,7 @@ class RichList extends ContainerDOMElement
 	 * 
 	 * @return the array of data DOM to be added into the cell
 	 */
-	private function getCellData(cellData:Dynamic, listStyle:RichListStyleModel):Array<DOMElement>
+	private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
 	{
 		var cellContent:Array<DOMElement> = new Array<DOMElement>();
 		
@@ -137,7 +144,7 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
+	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOver(cell);
 	}
@@ -149,7 +156,7 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
+	private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOut(cell);
 	}
@@ -161,7 +168,7 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
+	private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseDown(cell);
 	}
@@ -174,7 +181,7 @@ class RichList extends ContainerDOMElement
 	 * @param	listStyle
 	 * @param	cellData
 	 */
-	private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel, cellData:CellModel):Void
+	private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic, cellData:CellModel):Void
 	{
 		listStyle.cellMouseUp(cell);
 		if (onChange != null)

@@ -21,7 +21,8 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
 import components.dataProvider.RssUtils;
 import components.dataProvider.XmlLoader;
-import components.richList.thumbList.ThumbList;
+import components.richList.thumbList.ThumbList1;
+import components.richList.thumbList.ThumbList1Models;
 
 // Style
 import cocktail.style.StyleData;
@@ -30,9 +31,8 @@ import cocktail.unit.UnitData;
 // RichList specific
 import components.richList.RichList;
 import components.richList.RichListModels;
-import components.richList.ContainerRichListModels;
 import components.richList.StyleNormal;
-import components.richList.StyleThumbText;
+import components.richList.thumbList.ThumbList1Style;
 import components.richList.StyleApp;
 import components.richList.RichListUtils;
 
@@ -79,6 +79,9 @@ class ApplicationStructure
 		// instanciate navigation class with pagesContainer and homePage
 		//navigation = new Navigation(pagesContainer,_homePage);
 		//navigation = new Navigation(pagesContainer,_themesPage);
+		
+		var footer:ContainerDOMElement = createFooterMenu();
+		pagesContainer.addChild(footer);
 	}
 	
 	/**
@@ -148,36 +151,6 @@ class ApplicationStructure
 	}
 	
 	/**
-	 * Creates a container header page
-	 * 
-	 * @param	title
-	 * @param	cellDataArray
-	 * @return	the corresponding page
-	 */
-	private function createHeaderContainerPage(title:String, containerCells:Array<ContainerCellModel>):ContainerDOMElement
-	{
-		var page:ContainerDOMElement = Utils.getContainer();
-		
-		// create header
-		var header:ContainerDOMElement = createHeader(title);
-
-		
-		// create richList data & style
-		//var richList:RichList = createImageTextRichList(cellDataArray);
-		
-		// rich list onChange callback
-		//richList.onChange = onChangeListCallback;
-		//richList.onChange = navigation.onChangeListCallback;
-		
-		// build hierarchy
-		page.addChild(header);
-		page.addChild(containerCells[0].content);
-		WebAppStyle.getPageStyle(page);
-		
-		return page;
-	}
-	
-	/**
 	 * Creates a list header page
 	 * 
 	 * @param	title
@@ -194,7 +167,7 @@ class ApplicationStructure
 		
 		// create richList data & style
 		//var richList:RichList = createImageTextRichList(cellDataArray);
-		var richList:ThumbList = createThumbList(cellDataArray);
+		var richList:ThumbList1 = createThumbList(cellDataArray);
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
@@ -222,7 +195,8 @@ class ApplicationStructure
 		// Tile image
 		var header:ContainerDOMElement = Utils.getContainer();
 		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
-		var headerTilePath:String = "images/H1.png";
+		//var headerTilePath:String = "images/H1.png";
+		var headerTilePath:String = "images/greyPixel.png";
 		
 		WebAppStyle.getHeaderTileStyle(headerTile);
 		headerTile.load(headerTilePath);
@@ -244,12 +218,44 @@ class ApplicationStructure
 	}
 	
 	/**
+	 * Creates a menu footer
+	 * 
+	 * @return	the footer
+	 */
+	private function createFooterMenu():ContainerDOMElement
+	{
+		// create footer
+		var container:ContainerDOMElement = Utils.getContainer();
+		
+		// Tile image
+		var tile:ImageDOMElement = new ImageDOMElement();
+		var headerTilePath:String = "images/blackPixel.png";
+		WebAppStyle.getFooterTileStyle(tile);
+		tile.load(headerTilePath);
+		
+		// Menu1 image
+		/*var menu1Image:ImageDOMElement = new ImageDOMElement();
+		var menu1ImagePath:String = "images/speaker.png";
+		WebAppStyle.getFooterMenuStyle(menu1Image);
+		tile.load(menu1ImagePath);*/
+		
+		// build hierarchy
+		container.addChild(tile);
+		//container.addChild(menu1Image);
+		
+		// build page style & domElement
+		WebAppStyle.getHeaderStyle(container);
+
+		return container;
+	}
+	
+	/**
 	 * Creates a back button arrow with a title
 	 * 
 	 * @param	title
 	 * @return	the back button
 	 */
-	private function createBackButton(title:String):ContainerDOMElement
+	/*private function createBackButton(title:String):ContainerDOMElement
 	{
 		// Back button
 		var backButtonContainer:ContainerDOMElement = Utils.getContainer();
@@ -272,7 +278,7 @@ class ApplicationStructure
 		backButtonContainer.onMouseUp = goToPreviousPage;
 
 		return backButtonContainer;
-	}
+	}*/
 	
 	/**
 	 * Create richList
@@ -280,7 +286,7 @@ class ApplicationStructure
 	 * @param	content
 	 * @return	the corresponding richlist
 	 */
-	private function createImageTextRichList(content:Array<DynamicCellModel>):RichList
+	/*private function createImageTextRichList(content:Array<DynamicCellModel>):RichList
 	{
 		// data
 		var listData:DynamicRichListModel = RichListUtils.createDynamicRichListModel();
@@ -288,20 +294,29 @@ class ApplicationStructure
 		listData.content = content;
 		
 		// style
-		var listStyle:RichListStyleModel = {
-			list:StyleThumbText.getDefaultStyle,
-			cell:StyleThumbText.getCellStyle,
-			cellImage:StyleThumbText.getCellImageStyle,
-			cellText:StyleThumbText.getCellTextStyle,
-			cellMouseOver:StyleThumbText.getCellMouseOverStyle,
-			cellMouseOut:StyleThumbText.getCellMouseOutStyle,
-			cellMouseDown:StyleThumbText.getCellMouseDownStyle,
-			cellMouseUp:StyleThumbText.getCellMouseUpStyle}
+		//var listStyle:ThumbListStyleModel = {
+		var listStyle:Dynamic = {
+			list:ThumbListStyle1.getDefaultStyle,
+			cell:ThumbListStyle1.getCellStyle,
+			cellInfoBlock:ThumbListStyle1.getCellInfoBlockStyle,
+			cellNumber:ThumbListStyle1.getCellNumberStyle,
+			cellInfoBlockImage:ThumbListStyle1.getCellInfoBlockImageStyle,
+			cellCommentCount:ThumbListStyle1.getCellCommentCountStyle,
+			cellThumbnail:ThumbListStyle1.getCellThumbnailStyle,
+			cellTextBlock:ThumbListStyle1.getCellTextBlockStyle,
+			cellTitle:ThumbListStyle1.getCellTitleStyle,
+			cellComment:ThumbListStyle1.getCellCommentStyle,
+			cellDescription:ThumbListStyle1.getCellDescriptionStyle,
+			cellLine:ThumbListStyle1.getCellLineStyle,
+			cellMouseOver:ThumbListStyle1.getCellMouseOverStyle,
+			cellMouseOut:ThumbListStyle1.getCellMouseOutStyle,
+			cellMouseDown:ThumbListStyle1.getCellMouseDownStyle,
+			cellMouseUp:ThumbListStyle1.getCellMouseUpStyle}
 		
 		var list:RichList = new RichList(listData, listStyle);
 		
 		return list;
-	}
+	}*/
 	
 	/**
 	 * Create thumbList
@@ -309,7 +324,7 @@ class ApplicationStructure
 	 * @param	content
 	 * @return	the corresponding richlist
 	 */
-	private function createThumbList(content:Array<DynamicCellModel>):ThumbList
+	private function createThumbList(content:Array<DynamicCellModel>):ThumbList1
 	{
 		// data
 		var listData:DynamicRichListModel = RichListUtils.createDynamicRichListModel();
@@ -317,17 +332,26 @@ class ApplicationStructure
 		listData.content = content;
 		
 		// style
-		var listStyle:RichListStyleModel = {
-			list:StyleThumbText.getDefaultStyle,
-			cell:StyleThumbText.getCellStyle,
-			cellImage:StyleThumbText.getCellImageStyle,
-			cellText:StyleThumbText.getCellTextStyle,
-			cellMouseOver:StyleThumbText.getCellMouseOverStyle,
-			cellMouseOut:StyleThumbText.getCellMouseOutStyle,
-			cellMouseDown:StyleThumbText.getCellMouseDownStyle,
-			cellMouseUp:StyleThumbText.getCellMouseUpStyle}
+		//var listStyle:ThumbListStyleModel = {
+		var listStyle:Dynamic = {
+			list:ThumbListStyle1.getDefaultStyle,
+			cell:ThumbListStyle1.getCellStyle,
+			cellInfoBlock:ThumbListStyle1.getCellInfoBlockStyle,
+			cellNumber:ThumbListStyle1.getCellNumberStyle,
+			cellInfoBlockImage:ThumbListStyle1.getCellInfoBlockImageStyle,
+			cellCommentCount:ThumbListStyle1.getCellCommentCountStyle,
+			cellThumbnail:ThumbListStyle1.getCellThumbnailStyle,
+			cellTextBlock:ThumbListStyle1.getCellTextBlockStyle,
+			cellTitle:ThumbListStyle1.getCellTitleStyle,
+			cellComment:ThumbListStyle1.getCellCommentStyle,
+			cellDescription:ThumbListStyle1.getCellDescriptionStyle,
+			cellLine:ThumbListStyle1.getCellLineStyle,
+			cellMouseOver:ThumbListStyle1.getCellMouseOverStyle,
+			cellMouseOut:ThumbListStyle1.getCellMouseOutStyle,
+			cellMouseDown:ThumbListStyle1.getCellMouseDownStyle,
+			cellMouseUp:ThumbListStyle1.getCellMouseUpStyle}
 		
-		var list:ThumbList = new ThumbList(listData, listStyle);
+		var list:ThumbList1 = new ThumbList1(listData, listStyle);
 		
 		return list;
 	}
