@@ -8,7 +8,7 @@
 package cocktail.nativeElement;
 
 //import the right runtime implementations
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.nativeElement.as3.NativeElementCreator;
 import cocktailCore.nativeElement.as3.NativeElementPathManager;
 

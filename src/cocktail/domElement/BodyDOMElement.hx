@@ -10,7 +10,7 @@ package cocktail.domElement;
 /**
  * Set the right runtime specific BodyDOMElement at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef BodyDOMElement =  cocktailCore.domElement.as3.BodyDOMElement;
 
 #elseif js

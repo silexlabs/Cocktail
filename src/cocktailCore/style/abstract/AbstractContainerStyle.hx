@@ -31,7 +31,7 @@ import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import haxe.Timer;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.style.as3.Style;
 #elseif js
 import cocktailCore.style.js.Style;

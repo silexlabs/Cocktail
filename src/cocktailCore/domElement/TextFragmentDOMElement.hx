@@ -10,7 +10,7 @@ package cocktailCore.domElement;
 /**
  * Set the right runtime specific TextFragmentDOMElement at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef TextFragmentDOMElement =  cocktailCore.domElement.as3.TextFragmentDOMElement;
 
 #elseif js
