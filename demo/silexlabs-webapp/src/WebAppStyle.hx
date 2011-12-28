@@ -27,7 +27,8 @@ import cocktail.unit.UnitData;
 
 class WebAppStyle 
 {
-
+	static inline var headerHeight:Int = 43;
+	
 	/**
 	 * Defines default Style
 	 * 
@@ -169,11 +170,50 @@ class WebAppStyle
 		//getDefaultStyle(domElement);		
 		getHeaderStyle(domElement);
 		
+		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		domElement.style.bottom = PositionOffsetStyleValue.auto;
 		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+	}
 
-		domElement.style.height = DimensionStyleValue.length(px(43));
+	/**
+	 * Defines footer menu image Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getFooterMenuStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);		
+		//getHeaderStyle(domElement);
+		
+		//domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		domElement.style.width = DimensionStyleValue.auto;
+		//domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+	}
+
+	/**
+	 * Defines footer tile Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getFooterTileStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);		
+		getHeaderStyle(domElement);
+		
+		domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
 	}
 
 	/**
@@ -186,8 +226,9 @@ class WebAppStyle
 		//getDefaultStyle(domElement);
 		getHeaderStyle(domElement);
 		
+		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.color = ColorValue.hex('#EEEEEE');
+		domElement.style.color = ColorValue.hex('#454545');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		//domElement.style.lineHeight = LineHeightStyleValue.normal;
@@ -195,7 +236,7 @@ class WebAppStyle
 		domElement.style.fontStyle = FontStyleStyleValue.normal;
 		domElement.style.fontFamily =
 			[
-				FontFamilyStyleValue.familyName('Helvetica'),
+				FontFamilyStyleValue.familyName('HelveticaNeue'),
 				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
 			];
 		domElement.style.textAlign = TextAlignStyleValue.center;
@@ -205,7 +246,7 @@ class WebAppStyle
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
 		//domElement.style.width = DimensionStyleValue.auto;
-		domElement.style.height = DimensionStyleValue.length(px(43));
+		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
 		//domElement.style.height = DimensionStyleValue.percent(100);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
@@ -244,7 +285,7 @@ class WebAppStyle
 		domElement.style.fontStyle = FontStyleStyleValue.normal;
 		domElement.style.fontFamily =
 			[
-				FontFamilyStyleValue.familyName('Helvetica'),
+				FontFamilyStyleValue.familyName('HelveticaNeue'),
 				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
 			];
 		domElement.style.textAlign = TextAlignStyleValue.center;

@@ -38,10 +38,7 @@ class XmlLoader
 	 */
 	private function loadXmlFeed(xmlUrl:String):Void
 	{
-		//ResourceLoaderManager.loadString( xmlUrl, onXmlLoaded, onXmlError);
-		//ResourceLoaderManager.loadString( StringTools.urlEncode(xmlUrl), onXmlLoaded, onXmlError);
-		//ResourceLoaderManager.loadString( "XmlProxy.php?url=" + xmlUrl, onXmlLoaded, onXmlError);
-		ResourceLoaderManager.loadString( "XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl), onXmlLoaded, onXmlError);
+		ResourceLoaderManager.loadString( "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl), onXmlLoaded, onXmlError);
 	}
 	
 	/**
