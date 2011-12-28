@@ -14,7 +14,6 @@ import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
-import cocktailCore.resource.ResourceLoader;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -191,25 +190,33 @@ class ApplicationStructure
 	private function createHeader(title:String):ContainerDOMElement
 	{
 		// create header
+		var header:ContainerDOMElement = Utils.getContainer();
 		
 		// Tile image
-		var header:ContainerDOMElement = Utils.getContainer();
-		var headerTile:ImageDOMElement = new ImageDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.image));
-		//var headerTilePath:String = "images/H1.png";
-		var headerTilePath:String = "images/greyPixel.png";
-		
+		var headerTile:ImageDOMElement = new ImageDOMElement();
 		WebAppStyle.getHeaderTileStyle(headerTile);
+		var headerTilePath:String = "images/header.jpg";
 		headerTile.load(headerTilePath);
+		// attach to header container
+		header.addChild(headerTile);
+		
+		// Logo image
+		var headerLogo:ImageDOMElement = new ImageDOMElement();
+		WebAppStyle.getHeaderLogoStyle(headerLogo);
+		var headerLogoPath:String = "images/silex-labs.png";
+		headerLogo.load(headerLogoPath);
+		// attach to header container
+		header.addChild(headerLogo);
+		
 		
 		// header title
 		var headerTitle:TextElement = new TextElement(title);
 		var headerTitleContainer:ContainerDOMElement = Utils.getContainer();
 		headerTitleContainer.addText(headerTitle);
 		WebAppStyle.getHeaderTextStyle(headerTitleContainer);
-		
-		// build hierarchy
-		header.addChild(headerTile);
+		// attach to header container
 		header.addChild(headerTitleContainer);
+		
 		
 		// build page style & domElement
 		WebAppStyle.getHeaderStyle(header);
@@ -229,7 +236,8 @@ class ApplicationStructure
 		
 		// Tile image
 		var tile:ImageDOMElement = new ImageDOMElement();
-		var headerTilePath:String = "images/blackPixel.png";
+		//var headerTilePath:String = "images/blackPixel.png";
+		var headerTilePath:String = "images/footer.jpg";
 		WebAppStyle.getFooterTileStyle(tile);
 		tile.load(headerTilePath);
 		
