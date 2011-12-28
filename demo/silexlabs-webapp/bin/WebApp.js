@@ -2525,6 +2525,113 @@ List.prototype = {
 	}
 	,__class__: List
 }
+var components = components || {}
+if(!components.richList) components.richList = {}
+if(!components.richList.thumbList) components.richList.thumbList = {}
+components.richList.thumbList.ThumbListStyle1 = $hxClasses["components.richList.thumbList.ThumbListStyle1"] = function() { }
+components.richList.thumbList.ThumbListStyle1.__name__ = ["components","richList","thumbList","ThumbListStyle1"];
+components.richList.thumbList.ThumbListStyle1.getDefaultStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+}
+components.richList.thumbList.ThumbListStyle1.getCellStyle = function(domElement) {
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.percent(1));
+}
+components.richList.thumbList.ThumbListStyle1.getCellInfoBlockStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellStyle(domElement);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(10));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+}
+components.richList.thumbList.ThumbListStyle1.getCellNumberStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(20)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#989898"));
+	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.percent(10));
+}
+components.richList.thumbList.ThumbListStyle1.getCellCommentCountStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(17)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#CC3517"));
+	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
+}
+components.richList.thumbList.ThumbListStyle1.getCellInfoBlockImageStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.auto);
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.auto);
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.auto);
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.auto);
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.percent(10));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+}
+components.richList.thumbList.ThumbListStyle1.getCellThumbnailStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellStyle(domElement);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(200)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(30));
+}
+components.richList.thumbList.ThumbListStyle1.getCellLineStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getDefaultStyle(domElement);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(2)));
+}
+components.richList.thumbList.ThumbListStyle1.getCellTextBlockStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellStyle(domElement);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.percent(2));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.top);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(55));
+}
+components.richList.thumbList.ThumbListStyle1.getCellTextStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#202020"));
+	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("HelveticaNeue"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
+}
+components.richList.thumbList.ThumbListStyle1.getCellTitleStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(18)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+}
+components.richList.thumbList.ThumbListStyle1.getCellCommentStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(14)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.normal);
+}
+components.richList.thumbList.ThumbListStyle1.getCellDescriptionStyle = function(domElement) {
+	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(14)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+}
+components.richList.thumbList.ThumbListStyle1.getCellMouseOverStyle = function(domElement) {
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#333333"));
+}
+components.richList.thumbList.ThumbListStyle1.getCellMouseOutStyle = function(domElement) {
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#666666"));
+}
+components.richList.thumbList.ThumbListStyle1.getCellMouseDownStyle = function(domElement) {
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#000000"));
+}
+components.richList.thumbList.ThumbListStyle1.getCellMouseUpStyle = function(domElement) {
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#333333"));
+}
+components.richList.thumbList.ThumbListStyle1.prototype = {
+	__class__: components.richList.thumbList.ThumbListStyle1
+}
 cocktailCore.domElement.abstract.AbstractContainerDOMElement = $hxClasses["cocktailCore.domElement.abstract.AbstractContainerDOMElement"] = function(nativeElement) {
 	if(nativeElement == null) nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral);
 	this._children = new Array();
@@ -2646,65 +2753,60 @@ cocktailCore.domElement.js.ContainerDOMElement.prototype = $extend(cocktailCore.
 	}
 	,__class__: cocktailCore.domElement.js.ContainerDOMElement
 });
-var components = components || {}
-if(!components.richList) components.richList = {}
-components.richList.RichList = $hxClasses["components.richList.RichList"] = function(richListModel,listStyle) {
+components.richList.RichList = $hxClasses["components.richList.RichList"] = function(richList,listStyle) {
+	this._currentCell = 0;
 	cocktailCore.domElement.js.ContainerDOMElement.call(this,cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
-	this.createRichListDOM(richListModel,listStyle);
+	this.createRichListDOM(richList,listStyle);
 	listStyle.list(this);
 }
 components.richList.RichList.__name__ = ["components","richList","RichList"];
 components.richList.RichList.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
 components.richList.RichList.prototype = $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype,{
 	onChange: null
+	,_currentCell: null
 	,createRichListDOM: function(richListModel,listStyle) {
 		var content = Utils.getContainer();
 		var cellData;
 		var _g = 0, _g1 = richListModel.content;
 		while(_g < _g1.length) {
-			var cellData1 = [_g1[_g]];
+			var cellData1 = _g1[_g];
 			++_g;
-			var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
-			listStyle.cell(cell);
-			if(cellData1[0].imagePath != "" && cellData1[0].imagePath != null) {
-				var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-				listStyle.cellImage(cellImage);
-				cell.addChild(cellImage);
-				cellImage.load(cellData1[0].imagePath);
-			}
-			var cellTextContainer = [Utils.getContainer()];
-			if(cellData1[0].text != "" && cellData1[0].text != null) {
-				var textElement = new cocktailCore.textElement.js.TextElement(cellData1[0].text);
-				cellTextContainer[0].addText(textElement);
-				listStyle.cellText(cellTextContainer[0]);
-				cell.addChild(cellTextContainer[0]);
-			}
+			var cell = this.createCellDOM(cellData1.content,listStyle);
 			this.addChild(cell);
-			var onCellMouseOverDelegate = [this.onCellMouseOver.$bind(this)];
-			cell.setOnMouseOver((function(onCellMouseOverDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseOverDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseOverDelegate,cellTextContainer));
-			var onCellMouseOutDelegate = [this.onCellMouseOut.$bind(this)];
-			cell.setOnMouseOut((function(onCellMouseOutDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseOutDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseOutDelegate,cellTextContainer));
-			var onCellMouseDownDelegate = [this.onCellMouseDown.$bind(this)];
-			cell.setOnMouseDown((function(onCellMouseDownDelegate,cellTextContainer) {
-				return function(mouseEventData) {
-					onCellMouseDownDelegate[0](mouseEventData,cellTextContainer[0],listStyle);
-				};
-			})(onCellMouseDownDelegate,cellTextContainer));
-			var onCellMouseUpDelegate = [this.onCellMouseUp.$bind(this)];
-			cell.setOnMouseUp((function(onCellMouseUpDelegate,cellTextContainer,cellData1) {
-				return function(mouseEventData) {
-					onCellMouseUpDelegate[0](mouseEventData,cellTextContainer[0],listStyle,cellData1[0]);
-				};
-			})(onCellMouseUpDelegate,cellTextContainer,cellData1));
+			this._currentCell++;
 		}
+	}
+	,createCellDOM: function(cellData,listStyle) {
+		var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
+		listStyle.cell(cell);
+		var cellContent = this.getCellData(cellData,listStyle);
+		var _g = 0;
+		while(_g < cellContent.length) {
+			var container = cellContent[_g];
+			++_g;
+			cell.addChild(container);
+		}
+		var onCellMouseOverDelegate = this.onCellMouseOver.$bind(this);
+		cell.setOnMouseOver(function(mouseEventData) {
+			onCellMouseOverDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseOutDelegate = this.onCellMouseOut.$bind(this);
+		cell.setOnMouseOut(function(mouseEventData) {
+			onCellMouseOutDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseDownDelegate = this.onCellMouseDown.$bind(this);
+		cell.setOnMouseDown(function(mouseEventData) {
+			onCellMouseDownDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseUpDelegate = this.onCellMouseUp.$bind(this);
+		cell.setOnMouseUp(function(mouseEventData) {
+			onCellMouseUpDelegate(mouseEventData,cell,listStyle,cellData);
+		});
+		return cell;
+	}
+	,getCellData: function(cellData,listStyle) {
+		var cellContent = new Array();
+		return cellContent;
 	}
 	,onCellMouseOver: function(mouseEventData,cell,listStyle) {
 		listStyle.cellMouseOver(cell);
@@ -4565,24 +4667,6 @@ Type.allEnums = function(e) {
 Type.prototype = {
 	__class__: Type
 }
-js.Lib = $hxClasses["js.Lib"] = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	alert(js.Boot.__string_rec(v,""));
-}
-js.Lib.eval = function(code) {
-	return eval(code);
-}
-js.Lib.setErrorHandler = function(f) {
-	js.Lib.onerror = f;
-}
-js.Lib.prototype = {
-	__class__: js.Lib
-}
 components.gallery.Gallery = $hxClasses["components.gallery.Gallery"] = function(rssFeedPath) {
 	cocktailCore.domElement.js.ContainerDOMElement.call(this);
 	components.gallery.Gallery._galleryContainer = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
@@ -4598,7 +4682,7 @@ components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.Contai
 	galleryDisplayed: null
 	,_currentMainImage: null
 	,loadRssFeed: function(rssFeedUrl) {
-		cocktail.resource.ResourceLoaderManager.loadString("http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
+		cocktail.resource.ResourceLoaderManager.loadString("XmlProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
 	}
 	,onRssFeedError: function(msg) {
 		haxe.Log.trace("Error while loading RSS feed : " + msg,{ fileName : "Gallery.hx", lineNumber : 82, className : "components.gallery.Gallery", methodName : "onRssFeedError"});
@@ -4650,6 +4734,24 @@ components.gallery.Gallery.prototype = $extend(cocktailCore.domElement.js.Contai
 	}
 	,__class__: components.gallery.Gallery
 });
+js.Lib = $hxClasses["js.Lib"] = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	alert(js.Boot.__string_rec(v,""));
+}
+js.Lib.eval = function(code) {
+	return eval(code);
+}
+js.Lib.setErrorHandler = function(f) {
+	js.Lib.onerror = f;
+}
+js.Lib.prototype = {
+	__class__: js.Lib
+}
 cocktailCore.domElement.js.ImageDOMElement = $hxClasses["cocktailCore.domElement.js.ImageDOMElement"] = function(nativeElement) {
 	cocktailCore.domElement.abstract.AbstractImageDOMElement.call(this,nativeElement);
 }
@@ -5112,7 +5214,6 @@ components.richList.StyleNormal.getCellTextStyle = function(domElement) {
 	domElement.getStyle().setLineHeight(cocktail.style.LineHeightStyleValue.normal);
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
 	domElement.getStyle().setFontStyle(cocktail.style.FontStyleStyleValue.normal);
-	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("Helvetica"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
 	domElement.getStyle().setFontVariant(cocktail.style.FontVariantStyleValue.normal);
 	domElement.getStyle().setTextTransform(cocktail.style.TextTransformStyleValue.none);
 	domElement.getStyle().setLetterSpacing(cocktail.style.LetterSpacingStyleValue.normal);
@@ -5148,12 +5249,32 @@ Utils.getContainer = function() {
 	ret.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	return ret;
 }
+Utils.getTextContainer = function(text) {
+	var textContainer = Utils.getContainer();
+	textContainer.addText(new cocktailCore.textElement.js.TextElement(text));
+	return textContainer;
+}
+Utils.getGraphic = function() {
+	var ret = new cocktailCore.domElement.js.GraphicDOMElement();
+	return ret;
+}
+Utils.fillGraphic = function(domElement,color) {
+	domElement.clear();
+	domElement.beginFill(cocktail.domElement.FillStyleValue.monochrome({ color : color, alpha : 100}),cocktail.domElement.LineStyleValue.none);
+	domElement.drawRect(0,0,domElement.getWidth(),domElement.getHeight());
+	domElement.endFill();
+	domElement.setAlpha(1);
+}
 Utils.prototype = {
 	__class__: Utils
 }
 components.richList.RichListUtils = $hxClasses["components.richList.RichListUtils"] = function() { }
 components.richList.RichListUtils.__name__ = ["components","richList","RichListUtils"];
 components.richList.RichListUtils.createRichListModel = function() {
+	var richListModel = { content : new Array()};
+	return richListModel;
+}
+components.richList.RichListUtils.createDynamicRichListModel = function() {
 	var richListModel = { content : new Array()};
 	return richListModel;
 }
@@ -5257,6 +5378,25 @@ Reflect.makeVarArgs = function(f) {
 }
 Reflect.prototype = {
 	__class__: Reflect
+}
+if(!components.dataProvider) components.dataProvider = {}
+components.dataProvider.XmlLoader = $hxClasses["components.dataProvider.XmlLoader"] = function(xmlUrl) {
+	this.loadXmlFeed(xmlUrl);
+}
+components.dataProvider.XmlLoader.__name__ = ["components","dataProvider","XmlLoader"];
+components.dataProvider.XmlLoader.prototype = {
+	onLoad: null
+	,loadXmlFeed: function(xmlUrl) {
+		cocktail.resource.ResourceLoaderManager.loadString("http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl),this.onXmlLoaded.$bind(this),this.onXmlError.$bind(this));
+	}
+	,onXmlError: function(msg) {
+		haxe.Log.trace("Error while loading XML feed : " + msg,{ fileName : "XmlLoader.hx", lineNumber : 51, className : "components.dataProvider.XmlLoader", methodName : "onXmlError"});
+	}
+	,onXmlLoaded: function(xmlString) {
+		var xml = Xml.parse(xmlString);
+		if(this.onLoad != null) this.onLoad(xml);
+	}
+	,__class__: components.dataProvider.XmlLoader
 }
 if(!cocktail.mouse) cocktail.mouse = {}
 cocktail.mouse.MouseCursorValue = $hxClasses["cocktail.mouse.MouseCursorValue"] = { __ename__ : ["cocktail","mouse","MouseCursorValue"], __constructs__ : ["custom","auto","none","native"] }
@@ -6094,11 +6234,11 @@ cocktailCore.style.positioner.FixedPositioner.prototype = $extend(cocktailCore.s
 components.richList.StyleApp = $hxClasses["components.richList.StyleApp"] = function() { }
 components.richList.StyleApp.__name__ = ["components","richList","StyleApp"];
 components.richList.StyleApp.getDefaultStyle = function(domElement) {
-	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(10)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(10)));
@@ -6107,11 +6247,9 @@ components.richList.StyleApp.getDefaultStyle = function(domElement) {
 }
 components.richList.StyleApp.getCellStyle = function(domElement) {
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
-	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
-	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(6)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(18)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#BDBDCE"));
 }
@@ -6278,6 +6416,75 @@ cocktail.domElement.JointStyleValue.round.__enum__ = cocktail.domElement.JointSt
 cocktail.domElement.JointStyleValue.bevel = ["bevel",2];
 cocktail.domElement.JointStyleValue.bevel.toString = $estr;
 cocktail.domElement.JointStyleValue.bevel.__enum__ = cocktail.domElement.JointStyleValue;
+components.richList.thumbList.ThumbList1 = $hxClasses["components.richList.thumbList.ThumbList1"] = function(richList,listStyle) {
+	components.richList.RichList.call(this,richList,listStyle);
+}
+components.richList.thumbList.ThumbList1.__name__ = ["components","richList","thumbList","ThumbList1"];
+components.richList.thumbList.ThumbList1.__super__ = components.richList.RichList;
+components.richList.thumbList.ThumbList1.prototype = $extend(components.richList.RichList.prototype,{
+	getCellData: function(cellData,listStyle) {
+		var cellContent = new Array();
+		var cellInfoBlockContainer = Utils.getContainer();
+		listStyle.cellInfoBlock(cellInfoBlockContainer);
+		cellContent.push(cellInfoBlockContainer);
+		var cellNumberContainer = Utils.getContainer();
+		var textElement = new cocktailCore.textElement.js.TextElement(Std.string(this._currentCell));
+		cellNumberContainer.addText(textElement);
+		listStyle.cellNumber(cellNumberContainer);
+		cellInfoBlockContainer.addChild(cellNumberContainer);
+		var celldotsLine = new cocktailCore.domElement.js.ImageDOMElement();
+		listStyle.cellInfoBlockImage(celldotsLine);
+		cellInfoBlockContainer.addChild(celldotsLine);
+		celldotsLine.load("images/dotsLine.png");
+		var celldotsLine1 = new cocktailCore.domElement.js.ImageDOMElement();
+		listStyle.cellInfoBlockImage(celldotsLine1);
+		cellInfoBlockContainer.addChild(celldotsLine1);
+		celldotsLine1.load("images/bubble.png");
+		if(cellData.commentCount != "" && cellData.commentCount != null) {
+			var cellCommentCountContainer = Utils.getContainer();
+			var textElement1 = new cocktailCore.textElement.js.TextElement(cellData.commentCount);
+			cellCommentCountContainer.addText(textElement1);
+			listStyle.cellCommentCount(cellCommentCountContainer);
+			cellInfoBlockContainer.addChild(cellCommentCountContainer);
+		}
+		if(cellData.thumbnail != "" && cellData.thumbnail != null) {
+			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			listStyle.cellThumbnail(cellImage);
+			cellContent.push(cellImage);
+			cellImage.load(cellData.thumbnail);
+		}
+		var cellTextBlockContainer = Utils.getContainer();
+		listStyle.cellTextBlock(cellTextBlockContainer);
+		cellContent.push(cellTextBlockContainer);
+		if(cellData.title != "" && cellData.title != null) {
+			var cellTitleContainer = Utils.getContainer();
+			var textElement1 = new cocktailCore.textElement.js.TextElement(cellData.title);
+			cellTitleContainer.addText(textElement1);
+			listStyle.cellTitle(cellTitleContainer);
+			cellTextBlockContainer.addChild(cellTitleContainer);
+		}
+		if(cellData.comment != "" && cellData.comment != null) {
+			var cellCommentContainer = Utils.getContainer();
+			var textElement1 = new cocktailCore.textElement.js.TextElement(cellData.comment);
+			cellCommentContainer.addText(textElement1);
+			listStyle.cellComment(cellCommentContainer);
+			cellTextBlockContainer.addChild(cellCommentContainer);
+		}
+		if(cellData.description != "" && cellData.description != null) {
+			var cellDescriptionContainer = Utils.getContainer();
+			var textElement1 = new cocktailCore.textElement.js.TextElement(cellData.description);
+			cellDescriptionContainer.addText(textElement1);
+			listStyle.cellDescription(cellDescriptionContainer);
+			cellTextBlockContainer.addChild(cellDescriptionContainer);
+		}
+		var line = new cocktailCore.domElement.js.ImageDOMElement();
+		listStyle.cellLine(line);
+		cellContent.push(line);
+		line.load("images/greyPixel.png");
+		return cellContent;
+	}
+	,__class__: components.richList.thumbList.ThumbList1
+});
 cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer = $hxClasses["cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer"] = function() {
 	cocktailCore.style.computer.BoxStylesComputer.call(this);
 }
@@ -6707,17 +6914,35 @@ WebAppStyle.getHeaderTileStyle = function(domElement) {
 	WebAppStyle.getHeaderStyle(domElement);
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.auto);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
+}
+WebAppStyle.getFooterMenuStyle = function(domElement) {
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.fixed);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.auto);
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.auto);
+}
+WebAppStyle.getFooterTileStyle = function(domElement) {
+	WebAppStyle.getHeaderStyle(domElement);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.fixed);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.auto);
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
 }
 WebAppStyle.getHeaderTextStyle = function(domElement) {
 	WebAppStyle.getHeaderStyle(domElement);
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#EEEEEE"));
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#454545"));
 	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(20)));
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
 	domElement.getStyle().setFontStyle(cocktail.style.FontStyleStyleValue.normal);
-	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("Helvetica"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
+	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("HelveticaNeue"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
 	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
@@ -6738,7 +6963,7 @@ WebAppStyle.getBackButtonTextStyle = function(domElement) {
 	domElement.getStyle().setLineHeight(cocktail.style.LineHeightStyleValue.normal);
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
 	domElement.getStyle().setFontStyle(cocktail.style.FontStyleStyleValue.normal);
-	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("Helvetica"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
+	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("HelveticaNeue"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
 	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(12)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(30)));
@@ -7366,147 +7591,73 @@ cocktailCore.mouse.abstract.AbstractMouse.prototype = {
 var ApplicationStructure = $hxClasses["ApplicationStructure"] = function() {
 	this.pagesContainer = Utils.getContainer();
 	this.createAllPages();
+	var footer = this.createFooterMenu();
+	this.pagesContainer.addChild(footer);
 }
 ApplicationStructure.__name__ = ["ApplicationStructure"];
 ApplicationStructure.prototype = {
 	pagesContainer: null
 	,navigation: null
 	,_homePage: null
-	,_calListPage: null
-	,_dayPage: null
-	,_galleryPage: null
-	,_imagePage: null
-	,_gallery: null
-	,_artistListPage: null
-	,_albumListPage: null
-	,_songListPage: null
-	,_songPage: null
-	,_noteListPage: null
-	,_notePage: null
-	,_creditsPage: null
+	,_themesPage: null
+	,_pluginsPage: null
 	,createAllPages: function() {
-		this._dayPage = this.createHeaderContentPage("Day","This is what I have planned today");
-		this._calListPage = this.createHeaderListPage("Calendar",[{ text : "June 1st", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 2nd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 3rd", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 4th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage},{ text : "June 5th", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._dayPage}]);
-		this._songPage = this.createHeaderContentPage("Song","You are listening to this song");
-		this._songListPage = this.createHeaderListPage("Artist - Album",[{ text : "Song 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage},{ text : "Song 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songPage}]);
-		this._albumListPage = this.createHeaderListPage("Albums",[{ text : "Album 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage},{ text : "Album 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._songListPage}]);
-		this._artistListPage = this.createHeaderListPage("Artists",[{ text : "Artist 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage},{ text : "Artist 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._albumListPage}]);
-		this._imagePage = this.createHeaderImagePage("Image 1","images/cocktail.jpg");
-		this._galleryPage = this.createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200");
-		this._notePage = this.createHeaderContentPage("Note","This is the content of the note");
-		this._noteListPage = this.createHeaderListPage("Notes",[{ text : "Note 1", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 2", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 3", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 4", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 5", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 6", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 7", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 8", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 9", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 10", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 11", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 12", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 13", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 14", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 15", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage},{ text : "Note 16", imagePath : "images/chevron.png", action : "goToPage", actionTarget : this._notePage}]);
-		this._creditsPage = this.createHeaderListPage("Credits",[{ text : "made with Cocktail", imagePath : "images/icone_cocktail.png", action : "goToUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"},{ text : "using haXe language", imagePath : "images/haxe.png", action : "goToUrl", actionTarget : "http://haxe.org/"},{ text : "done for Silex Labs", imagePath : "images/icone_silexlabs_noire.png", action : "goToUrl", actionTarget : "http://www.silexlabs.org/"},{ text : "by Raphael Harmel", imagePath : "images/google+.png", action : "goToUrl", actionTarget : "http://plus.google.com/104338051403006926915"},{ text : "source Code", imagePath : "images/github.jpg", action : "goToUrl", actionTarget : "https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp"},{ text : "", imagePath : "", action : "", actionTarget : ""},{ text : "based on jPint project idea", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.journyx.com/jpint/"},{ text : "which is based on iUI", imagePath : "images/chevron.png", action : "", actionTarget : "http://www.iui-js.org/"},{ text : "iconspedia.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconspedia.com/pack/iphone/"},{ text : "iconarchive.com", imagePath : "images/chevron.png", action : "goToUrl", actionTarget : "http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html"}]);
-		var homePageCells = [{ text : "Cal", imagePath : "images/calendrier_blanc.png", action : "goToPage", actionTarget : this._calListPage},{ text : "Music", imagePath : "images/icone_music_blanc.png", action : "goToPage", actionTarget : this._artistListPage},{ text : "Gallery", imagePath : "images/icone_gallery_blanche.png", action : "goToPage", actionTarget : this._galleryPage},{ text : "Notes", imagePath : "images/icone_bloc_note.png", action : "goToPage", actionTarget : this._noteListPage}];
-		homePageCells.push({ text : "Cocktail", imagePath : "images/icone_cocktail_blanche.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/groups/labs/cocktail/"});
-		homePageCells.push({ text : "haXe", imagePath : "images/icone_haxe_blanche.png", action : "openUrl", actionTarget : "http://haxe.org/"});
-		homePageCells.push({ text : "Silex Labs", imagePath : "images/icone_silexlabs_blanche.png", action : "openUrl", actionTarget : "http://www.silexlabs.org/"});
-		homePageCells.push({ text : "Intermedia", imagePath : "images/icone_intermedia_blanche.png", action : "", actionTarget : ""});
-		homePageCells.push({ text : "Credits", imagePath : "images/NavButtonCreditsHD.png", action : "goToPage", actionTarget : this._creditsPage});
-		this._homePage = this.createHomePage(homePageCells);
-		this.navigation = new Navigation(this.pagesContainer,this._homePage);
+		var rss = new components.dataProvider.XmlLoader("http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200");
+		rss.onLoad = this.onThemeRssLoad.$bind(this);
 	}
-	,createHomePage: function(cellDataArray) {
-		var page = Utils.getContainer();
-		var homeTilePath = "images/blackPixel.png";
-		var backGround = new cocktailCore.domElement.js.ImageDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.image));
-		WebAppStyle.getBgStyle(backGround);
-		backGround.load(homeTilePath);
-		var richList = this.createRichListHome(cellDataArray);
-		richList.onChange = this.onChangeListCallback.$bind(this);
-		page.addChild(backGround);
-		page.addChild(richList);
-		WebAppStyle.getHomePageStyle(page);
-		return page;
+	,onThemeRssLoad: function(rss) {
+		var pluginsCells = components.dataProvider.RssUtils.rss2Cells(rss);
+		this._themesPage = this.createThemePage(pluginsCells);
+		this.navigation = new Navigation(this.pagesContainer,this._themesPage);
+	}
+	,createThemePage: function(cells) {
+		this._themesPage = this.createHeaderListPage("Themes",cells);
+		return this._themesPage;
 	}
 	,createHeaderListPage: function(title,cellDataArray) {
 		var page = Utils.getContainer();
 		var header = this.createHeader(title);
-		var richList = this.createArrowRichList(cellDataArray);
+		var richList = this.createThumbList(cellDataArray);
 		richList.onChange = this.onChangeListCallback.$bind(this);
 		page.addChild(header);
 		page.addChild(richList);
-		WebAppStyle.getPageStyle(page);
-		return page;
-	}
-	,createHeaderContentPage: function(title,content) {
-		var page = Utils.getContainer();
-		var header = this.createHeader(title);
-		var textElement = new cocktailCore.textElement.js.TextElement(content);
-		var textContainer = Utils.getContainer();
-		textContainer.addText(textElement);
-		WebAppStyle.getTextContentStyle(textContainer);
-		page.addChild(header);
-		page.addChild(textContainer);
-		WebAppStyle.getPageStyle(page);
-		return page;
-	}
-	,createHeaderImagePage: function(title,imageUrl) {
-		var page = Utils.getContainer();
-		var header = this.createHeader(title);
-		page.addChild(header);
-		WebAppStyle.getPageStyle(page);
-		return page;
-	}
-	,createHeaderGalleryPage: function(title,rssFeedPath) {
-		var page = Utils.getContainer();
-		var header = this.createHeader(title);
-		this._gallery = new components.gallery.Gallery(rssFeedPath);
-		page.addChild(header);
-		page.addChild(this._gallery);
 		WebAppStyle.getPageStyle(page);
 		return page;
 	}
 	,createHeader: function(title) {
 		var header = Utils.getContainer();
 		var headerTile = new cocktailCore.domElement.js.ImageDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.image));
-		var headerTilePath = "images/H1.png";
+		var headerTilePath = "images/greyPixel.png";
 		WebAppStyle.getHeaderTileStyle(headerTile);
 		headerTile.load(headerTilePath);
-		var backButtonContainer = Utils.getContainer();
-		WebAppStyle.getBackButtonStyle(backButtonContainer);
-		var backButtonArrowLeft = new cocktailCore.domElement.js.ImageDOMElement();
-		WebAppStyle.getBackButtonImageStyle(backButtonArrowLeft);
-		backButtonArrowLeft.load("images/blackButtonLeft.png");
-		backButtonContainer.addChild(backButtonArrowLeft);
-		var backButtonArrowRight = new cocktailCore.domElement.js.ImageDOMElement();
-		WebAppStyle.getBackButtonImageStyle(backButtonArrowRight);
-		backButtonArrowRight.load("images/blackButtonRight.png");
-		backButtonContainer.addChild(backButtonArrowRight);
-		var backButtonTextContainer = Utils.getContainer();
-		WebAppStyle.getBackButtonTextStyle(backButtonTextContainer);
-		var backButtonText = new cocktailCore.textElement.js.TextElement("Back");
-		backButtonTextContainer.addText(backButtonText);
-		backButtonContainer.addChild(backButtonTextContainer);
-		backButtonContainer.setOnMouseUp(this.goToPreviousPage.$bind(this));
 		var headerTitle = new cocktailCore.textElement.js.TextElement(title);
 		var headerTitleContainer = Utils.getContainer();
 		headerTitleContainer.addText(headerTitle);
 		WebAppStyle.getHeaderTextStyle(headerTitleContainer);
 		header.addChild(headerTile);
 		header.addChild(headerTitleContainer);
-		header.addChild(backButtonContainer);
 		WebAppStyle.getHeaderStyle(header);
 		return header;
 	}
-	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 435, className : "ApplicationStructure", methodName : "onImageLoadError"});
+	,createFooterMenu: function() {
+		var container = Utils.getContainer();
+		var tile = new cocktailCore.domElement.js.ImageDOMElement();
+		var headerTilePath = "images/blackPixel.png";
+		WebAppStyle.getFooterTileStyle(tile);
+		tile.load(headerTilePath);
+		container.addChild(tile);
+		WebAppStyle.getHeaderStyle(container);
+		return container;
 	}
-	,createRichListHome: function(content) {
-		var listData = components.richList.RichListUtils.createRichListModel();
+	,createThumbList: function(content) {
+		var listData = components.richList.RichListUtils.createDynamicRichListModel();
 		listData.content = content;
-		var listStyle = { list : components.richList.StyleApp.getDefaultStyle, cell : components.richList.StyleApp.getCellStyle, cellImage : components.richList.StyleApp.getCellImageStyle, cellText : components.richList.StyleApp.getCellTextStyle, cellMouseOver : components.richList.StyleApp.getCellMouseOverStyle, cellMouseOut : components.richList.StyleApp.getCellMouseOutStyle, cellMouseDown : components.richList.StyleApp.getCellMouseDownStyle, cellMouseUp : components.richList.StyleApp.getCellMouseUpStyle};
-		var list = new components.richList.RichList(listData,listStyle);
-		return list;
-	}
-	,createArrowRichList: function(content) {
-		var listData = components.richList.RichListUtils.createRichListModel();
-		listData.content = content;
-		var listStyle = { list : components.richList.StyleNormal.getDefaultStyle, cell : components.richList.StyleNormal.getCellStyle, cellImage : components.richList.StyleNormal.getCellImageStyle, cellText : components.richList.StyleNormal.getCellTextStyle, cellMouseOver : components.richList.StyleNormal.getCellMouseOverStyle, cellMouseOut : components.richList.StyleNormal.getCellMouseOutStyle, cellMouseDown : components.richList.StyleNormal.getCellMouseDownStyle, cellMouseUp : components.richList.StyleNormal.getCellMouseUpStyle};
-		var list = new components.richList.RichList(listData,listStyle);
+		var listStyle = { list : components.richList.thumbList.ThumbListStyle1.getDefaultStyle, cell : components.richList.thumbList.ThumbListStyle1.getCellStyle, cellInfoBlock : components.richList.thumbList.ThumbListStyle1.getCellInfoBlockStyle, cellNumber : components.richList.thumbList.ThumbListStyle1.getCellNumberStyle, cellInfoBlockImage : components.richList.thumbList.ThumbListStyle1.getCellInfoBlockImageStyle, cellCommentCount : components.richList.thumbList.ThumbListStyle1.getCellCommentCountStyle, cellThumbnail : components.richList.thumbList.ThumbListStyle1.getCellThumbnailStyle, cellTextBlock : components.richList.thumbList.ThumbListStyle1.getCellTextBlockStyle, cellTitle : components.richList.thumbList.ThumbListStyle1.getCellTitleStyle, cellComment : components.richList.thumbList.ThumbListStyle1.getCellCommentStyle, cellDescription : components.richList.thumbList.ThumbListStyle1.getCellDescriptionStyle, cellLine : components.richList.thumbList.ThumbListStyle1.getCellLineStyle, cellMouseOver : components.richList.thumbList.ThumbListStyle1.getCellMouseOverStyle, cellMouseOut : components.richList.thumbList.ThumbListStyle1.getCellMouseOutStyle, cellMouseDown : components.richList.thumbList.ThumbListStyle1.getCellMouseDownStyle, cellMouseUp : components.richList.thumbList.ThumbListStyle1.getCellMouseUpStyle};
+		var list = new components.richList.thumbList.ThumbList1(listData,listStyle);
 		return list;
 	}
 	,goToPreviousPage: function(mouseEvent) {
-		if(this.navigation.currentPage == this._galleryPage && this._gallery.galleryDisplayed == false) this._gallery.displayGallery(); else this.navigation.goToPreviousPage();
+		this.navigation.goToPreviousPage();
 	}
 	,onChangeListCallback: function(cell) {
 		this.navigation.onChangeListCallback(cell);
@@ -7697,6 +7848,58 @@ cocktailCore.style.floats.FloatsManager.prototype = {
 	}
 	,__class__: cocktailCore.style.floats.FloatsManager
 	,__properties__: {get_floats:"getFloats"}
+}
+components.dataProvider.RssUtils = $hxClasses["components.dataProvider.RssUtils"] = function() { }
+components.dataProvider.RssUtils.__name__ = ["components","dataProvider","RssUtils"];
+components.dataProvider.RssUtils.rss2Cells = function(rss) {
+	var cells = new Array();
+	var channelNode = rss.firstElement().firstElement();
+	var $it0 = channelNode.elements();
+	while( $it0.hasNext() ) {
+		var channelChild = $it0.next();
+		if(channelChild.getNodeName() == "item") {
+			var cell = { content : Dynamic, action : "", actionTarget : ""};
+			var cellContent = { imagePath : "", title : "", comment : "Posted ", description : "", commentCount : "0"};
+			var $it1 = channelChild.elements();
+			while( $it1.hasNext() ) {
+				var itemParam = $it1.next();
+				if(itemParam.getNodeName() == "post_thumbnail") cellContent.thumbnail = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "post_title") cellContent.title = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "post_author") {
+					var $it2 = itemParam.elements();
+					while( $it2.hasNext() ) {
+						var authorInfo = $it2.next();
+						if(authorInfo.getNodeName() == "nickname") cellContent.comment = cellContent.comment + "by " + authorInfo.firstChild().getNodeValue() + " ";
+					}
+				}
+				if(itemParam.getNodeName() == "post_date_gmt") cellContent.comment = cellContent.comment + itemParam.firstChild().getNodeValue().substr(0,10) + " ";
+				if(itemParam.getNodeName() == "post_excerpt") {
+					var text = itemParam.firstChild().getNodeValue();
+					var toRemove = ["Online Demo","Online demo","Description :"];
+					var _g = 0;
+					while(_g < toRemove.length) {
+						var string = toRemove[_g];
+						++_g;
+						text = StringTools.replace(text,string,"");
+					}
+					text = StringTools.ltrim(text);
+					text = text.substr(0,95) + "...";
+					cellContent.description = text;
+				}
+				if(itemParam.getNodeName() == "comment_count") cellContent.commentCount = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "guid") {
+					cellContent.action = "openUrl";
+					cellContent.actionTarget = itemParam.firstChild().getNodeValue();
+				}
+			}
+			cell.content = cellContent;
+			cells.push(cell);
+		}
+	}
+	return cells;
+}
+components.dataProvider.RssUtils.prototype = {
+	__class__: components.dataProvider.RssUtils
 }
 cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer = $hxClasses["cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer"] = function() {
 	cocktailCore.style.computer.BoxStylesComputer.call(this);
@@ -8649,8 +8852,8 @@ cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_MITER = "miter";
 cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_REPEAT = "repeat";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
-components.richList.StyleApp.appIconSize = 57;
 cocktail.resource.ResourceLoaderManager._isLoading = false;
+WebAppStyle.headerHeight = 43;
 Xml.enode = new EReg("^<([a-zA-Z0-9:._-]+)","");
 Xml.ecdata = new EReg("^<!\\[CDATA\\[","i");
 Xml.edoctype = new EReg("^<!DOCTYPE ","i");

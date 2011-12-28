@@ -5,13 +5,13 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package ;
+package components.richList;
 
 // DOM
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.DOMElementData;
+import cocktail.domElement.GraphicDOMElement;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -21,26 +21,49 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
+// RichList
+import components.richList.RichListModels;
+
+// Iphone specific
+import Utils;
+
 
 /**
- * This contains the utils methods
+ * This contains the utils methods used by the RichLists
  * 
  * @author Raphael Harmel
  */
 
-class Utils 
+class RichListUtils extends Utils 
 {
-
 	/**
-	 * Initializes a ContainerDOMElement
+	 * Initializes a rich list model
 	 * 
-	 * @return the initalized ContainerDOMElement
+	 * @return
 	 */
-	public static function getContainer():ContainerDOMElement
+	public static function createRichListModel():RichListModel
 	{
-		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
-		ret.style.display = block;
-		return ret;
+		var richListModel:RichListModel = 
+		{
+			content: new Array<CellModel>()
+		};
+		
+		return richListModel;	
+	}
+	
+	/**
+	 * Initializes a rich list model
+	 * 
+	 * @return
+	 */
+	public static function createDynamicRichListModel():DynamicRichListModel
+	{
+		var richListModel:DynamicRichListModel = 
+		{
+			content: new Array<DynamicCellModel>()
+		};
+		
+		return richListModel;	
 	}
 	
 }
