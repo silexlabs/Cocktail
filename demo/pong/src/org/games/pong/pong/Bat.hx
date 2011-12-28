@@ -10,7 +10,6 @@ class Bat extends MovingObject
 	public function new(timeline:ContainerDOMElement)
 	{
 		super(timeline);
-		trace("new ball ");
 		imageDOMElement.load(IMAGE_URL);
 		imageDOMElement.style.position = PositionStyleValue.absolute;
 		imageDOMElement.zIndex = 10;
@@ -21,7 +20,7 @@ class Bat extends MovingObject
 		//trace("Update Ball !");
 		
 		updateVertical();
-		speedY /= 1.1;
-		accelY /= 1.1;
+		speedY /= 1.5;
+		accelY /= 1.5;
 	}
 }

@@ -4,6 +4,8 @@ import cocktail.domElement.ContainerDOMElement;
 
 class MovingObject 
 {
+	public var MARGIN_H:Int;
+	public var MARGIN_V:Int;
 	private var _timeline:ContainerDOMElement;
 
 	public var x:Float;
@@ -11,12 +13,14 @@ class MovingObject
 	public var speedX:Float;
 	public var speedY:Float;
 	public var accelX:Float;
-	public var accelY:Float;
+	public var accelY:Float; 
 	
 	public var imageDOMElement:ImageDOMElement;
 
 	public function new(timeline:ContainerDOMElement)
 	{
+		MARGIN_H = 220;
+		MARGIN_V = 200;
 		_timeline = timeline;
 		x = y = speedX = speedY = accelX = accelY = 0;
 		imageDOMElement = new ImageDOMElement();
@@ -32,14 +36,14 @@ class MovingObject
 		speedX += accelX;
 		x += speedX;
 		
-		if (x < 0)
+		if (x < MARGIN_H)
 		{
-			x = 0;
+			x = MARGIN_H;
 			speedX = -speedX;
 		}
-		else if (x + imageDOMElement.width > _timeline.width)
+		else if (x + imageDOMElement.width > _timeline.width - MARGIN_H)
 		{
-			x = _timeline.width - imageDOMElement.width;
+			x = _timeline.width - imageDOMElement.width - MARGIN_H;
 			speedX = -speedX;
 		}
 
@@ -50,14 +54,14 @@ class MovingObject
 		speedY += accelY;
 		y += speedY;
 		
-		if (y < 0)
+		if (y < MARGIN_V)
 		{
-			y = 0;
+			y = MARGIN_V;
 			speedY = -speedY;
 		}
-		else if (y + imageDOMElement.height > _timeline.height)
+		else if (y + imageDOMElement.height > _timeline.height - MARGIN_V)
 		{
-			y = _timeline.height - imageDOMElement.height;
+			y = _timeline.height - imageDOMElement.height - MARGIN_V;
 			speedY = -speedY;
 		}
 

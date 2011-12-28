@@ -16,7 +16,6 @@ class Ball extends MovingObject
 	public function new(timeline:ContainerDOMElement)
 	{
 		super(timeline);
-		trace("new ball ");
 		imageDOMElement.load(IMAGE_URL);
 		imageDOMElement.style.position = PositionStyleValue.absolute;
 		imageDOMElement.zIndex = 10;
@@ -26,11 +25,11 @@ class Ball extends MovingObject
 		super.update();
 		//trace("Update Ball !");
 		
-		if (x <= 0)
+		if (x <= MARGIN_H)
 			if (onTouchLeftSide != null)
 				onTouchLeftSide();
 			
-		if (x + imageDOMElement.width >= _timeline.width)
+		if (x + imageDOMElement.width >= _timeline.width - MARGIN_H)
 			if (onTouchRightSide != null)
 				onTouchRightSide();
 			

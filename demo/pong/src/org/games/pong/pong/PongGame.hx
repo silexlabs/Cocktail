@@ -18,7 +18,10 @@ class PongGame
 	private var _bat02:Bat;
 	private var _mouseX:Int;
 	private var _mouseY:Int;
+	public static inline var FG_IMAGE_URL = "assets/pong/foreground.png";
 	public static inline var BG_IMAGE_URL = "assets/pong/background.png";
+	public static inline var MARGIN_H = 200;
+	public static inline var MARGIN_V = 200;
 	
 	public function new()
 	{
@@ -46,11 +49,11 @@ class PongGame
 		bgDOMElement.style.height = DimensionStyleValue.percent(100);
 		bgDOMElement.x = 0;
 		bgDOMElement.y = 0;
-		bgDOMElement.alpha = .8;
+		//bgDOMElement.alpha = .8;
 		bgDOMElement.onMouseDown = onMouseDown;
 		bgDOMElement.onMouseUp = onMouseUp;
 		//bgDOMElement.onMouseMove = onMouseMove;
-		timeline.addChild(bgDOMElement);
+		timeline.addChild(bgDOMElement); 
 
 		// ball
 		_ball = new Ball(timeline);
@@ -62,12 +65,26 @@ class PongGame
 		_bat01 = new Bat(timeline);
 		_bat01.imageDOMElement.alpha = 0;
 		_bat01.imageDOMElement.style.left = PositionOffsetStyleValue.length(px(0));
+		_bat01.imageDOMElement.style.marginLeft = MarginStyleValue.length(px(MARGIN_H));
 		
 		// bat1
 		_bat02 = new Bat(timeline);
 		_bat02.imageDOMElement.alpha = 0;
 		_bat02.imageDOMElement.style.right = PositionOffsetStyleValue.length(px(0));
+		_bat02.imageDOMElement.style.marginRight = MarginStyleValue.length(px(MARGIN_H));
 		
+		// foreround stripes
+/*		var fgDOMElement = new ImageDOMElement();
+		fgDOMElement.load(FG_IMAGE_URL);
+		fgDOMElement.style.position = PositionStyleValue.absolute;
+		//fgDOMElement.style.display = DisplayStyleValue.block;
+		fgDOMElement.style.width = DimensionStyleValue.percent(100);
+		fgDOMElement.style.height = DimensionStyleValue.percent(100);
+		fgDOMElement.x = 0;
+		fgDOMElement.y = 0;
+//		fgDOMElement.zIndex = 100;
+		timeline.addChild(fgDOMElement); 
+*/
 		// events
 		attachKeyboardEvents(bgDOMElement);
 		
@@ -78,8 +95,8 @@ class PongGame
 	public function reset()
 	{
 		_ball.imageDOMElement.alpha = 1;
-		_ball.x = 50;
-		_ball.y = 15;
+		_ball.x = MARGIN_H + 100;
+		_ball.y = MARGIN_V + 15;
 		_ball.speedX = 5;
 		_ball.speedY = 3;
 
@@ -159,13 +176,11 @@ class PongGame
 	}
 	public function goUp()
 	{
-		trace("UP !");
-		_bat01.speedY -= 5;
+		_bat01.speedY -= 22;
 	}
 	public function goDown()
 	{
-		trace("DOWN !");
-		_bat01.speedY += 5;
+		_bat01.speedY += 22;
 	}
 	public function onKeyDown(key:KeyEventData)
 	{
@@ -183,10 +198,10 @@ class PongGame
 		
 //		if(_ball.y < _bat02.y + (_bat02.imageDOMElement.height / 2))
 		if(_ball.y < _bat02.y + 20)
-			_bat02.accelY -= Math.random() * .15;
+			_bat02.accelY -= Math.random() * 3.6;
 //		else if(_ball.y > _bat02.y +(_bat02.imageDOMElement.height / 2))
 		else if(_ball.y > _bat02.y + _bat02.imageDOMElement.height - 20)
-			_bat02.accelY += Math.random() * .15;
+			_bat02.accelY += Math.random() * 3.6;
 			
 		_bat02.update();
 		
