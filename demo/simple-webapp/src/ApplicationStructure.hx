@@ -10,11 +10,8 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
-import cocktailCore.resource.ResourceLoader;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -141,7 +138,7 @@ class ApplicationStructure
 
 		// the gallery page
 		_imagePage = createHeaderImagePage("Image 1","images/cocktail.jpg");
-		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
+		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200");
 		
 		// the notes pages
 		_notePage = createHeaderContentPage("Note","This is the content of the note");
@@ -199,9 +196,6 @@ class ApplicationStructure
 		
 		_homePage = createHomePage(homePageCells);
 		
-		// adds the home page to pagesContainer
-		//pagesContainer.addChild(_homePage);
-
 		// instanciate navigation class with pagesContainer and homePage
 		navigation = new Navigation(pagesContainer,_homePage);
 	}
@@ -260,8 +254,9 @@ class ApplicationStructure
 		var richList:RichList = createArrowRichList(cellDataArray);
 		
 		// rich list onChange callback
-		richList.onChange = onChangeListCallback;
+		// not working, so replaced by following line
 		//richList.onChange = navigation.onChangeListCallback;
+		richList.onChange = onChangeListCallback;
 		
 		// build hierarchy
 		page.addChild(header);
