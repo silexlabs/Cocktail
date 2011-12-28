@@ -11,7 +11,6 @@ import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.geom.GeomData;
 import cocktailCore.unit.UnitManager;
 

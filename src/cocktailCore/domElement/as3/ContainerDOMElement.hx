@@ -11,6 +11,11 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.abstract.AbstractContainerDOMElement;
 import cocktail.style.StyleData;
 
+import flash.Vector;
+import haxe.Log;
+
+
+#if (flash9)
 import flash.text.engine.BreakOpportunity;
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ContentElement;
@@ -26,8 +31,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
-import flash.Vector;
-import haxe.Log;
+#end
 
 /**
  * This is the Flash AS3 implementation of the container DOMElement.

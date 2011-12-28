@@ -29,7 +29,6 @@ import cocktailCore.style.positioner.FixedPositioner;
 import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.geom.GeomData;
 import haxe.Log;
 import haxe.Timer;
@@ -60,8 +59,8 @@ class AbstractStyle
 	private var _position:PositionStyleValue;
 	public var position(getPosition, setPosition):PositionStyleValue;
 	
-	private var _float:FloatStyleValue;
-	public var float(getFloat, setFloat):FloatStyleValue;
+	private var _floatValue:FloatStyleValue;
+	public var floatValue(getFloatValue, setFloatValue):FloatStyleValue;
 	
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
@@ -279,8 +278,8 @@ class AbstractStyle
 		initComputedStyles();
 		initNativeProperties();
 		
-		this.width = DimensionStyleValue.auto;
-		this.height = DimensionStyleValue.auto;
+		this.width = DimensionStyleValue.autoValue;
+		this.height = DimensionStyleValue.autoValue;
 		
 		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
 		this.maxWidth = ConstrainedDimensionStyleValue.none;
@@ -303,12 +302,12 @@ class AbstractStyle
 		this.display = DisplayStyleValue.inlineStyle;
 		this.position = PositionStyleValue.staticStyle;
 		
-		this.top = PositionOffsetStyleValue.auto;
-		this.bottom = PositionOffsetStyleValue.auto;
-		this.left = PositionOffsetStyleValue.auto;
-		this.right = PositionOffsetStyleValue.auto;
+		this.top = PositionOffsetStyleValue.autoValue;
+		this.bottom = PositionOffsetStyleValue.autoValue;
+		this.left = PositionOffsetStyleValue.autoValue;
+		this.right = PositionOffsetStyleValue.autoValue;
 		
-		this.float = FloatStyleValue.none;
+		this.floatValue = FloatStyleValue.none;
 		this.clear = ClearStyleValue.none;
 		
 		this.fontStyle = FontStyleStyleValue.normal;
@@ -363,7 +362,7 @@ class AbstractStyle
 			top: 0,
 			bottom : 0,
 			clear : ClearStyleValue.none,
-			float : FloatStyleValue.none,
+			floatValue : FloatStyleValue.none,
 			display : DisplayStyleValue.block,
 			position: PositionStyleValue.staticStyle,
 			verticalAlign : 0.0,
@@ -956,7 +955,7 @@ class AbstractStyle
 	{
 		var ret:Bool = false;
 		
-		switch (this._computedStyle.float) 
+		switch (this._computedStyle.floatValue) 
 		{
 			case FloatStyleValue.left, FloatStyleValue.right:
 				ret = true;
@@ -1483,10 +1482,10 @@ class AbstractStyle
 		return _right = value;
 	}
 	
-	private function setFloat(value:FloatStyleValue):FloatStyleValue 
+	private function setFloatValue(value:FloatStyleValue):FloatStyleValue 
 	{
 		invalidate();
-		return _float = value;
+		return _floatValue = value;
 	}
 	
 	private function setClear(value:ClearStyleValue):ClearStyleValue 
@@ -1719,9 +1718,9 @@ class AbstractStyle
 		return _right;
 	}
 	
-	private function getFloat():FloatStyleValue 
+	private function getFloatValue():FloatStyleValue 
 	{
-		return _float;
+		return _floatValue;
 	}
 	
 	private function getClear():ClearStyleValue 
