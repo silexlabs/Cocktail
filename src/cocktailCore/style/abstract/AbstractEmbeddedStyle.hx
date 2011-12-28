@@ -20,7 +20,7 @@ import cocktail.style.StyleData;
 import cocktailCore.style.StyleData;
 import haxe.Log;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.style.as3.Style;
 #elseif js
 import cocktailCore.style.js.Style;
