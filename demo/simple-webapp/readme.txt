@@ -12,7 +12,6 @@ It is inspired by an existing demo made by the jPint project (which seems to be 
 TO DO
 -----
 
--update online demo with latest version
 -pages should be loaded when accessing them, and not before
 -read a text local file (in a xml or json file), using polling (reload the same file every x seconds)
 -for the sound, embed a player, like => not possible for now, bug assigned to Yannick

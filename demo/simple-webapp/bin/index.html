@@ -7,7 +7,12 @@
 <body style="margin:0px ; padding:0px>
 	<div id="haxe:trace"></div>
 	<script type="text/javascript">
-		if (navigator.mimeTypes ["application/x-shockwave-flash"] == undefined)
+		function isCanvasSupported()
+		{
+			var elem = document.createElement('canvas');
+			return !!(elem.getContext && elem.getContext('2d'));
+		}
+		if (isCanvasSupported())
 			window.open("WebApp_js.html",'_self');
 		else window.open("WebApp_As3.html",'_self');
 	</script>
