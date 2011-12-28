@@ -14,7 +14,10 @@ import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
-import flash.text.engine.CFFHinting;
+import cocktail.unit.UnitData;
+import haxe.Log;
+
+#if (flash9)
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -23,8 +26,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
-import cocktail.unit.UnitData;
-import haxe.Log;
+#end
 
 /**
  * This is the Flash AS3 implementation of the ContainerStyle.
@@ -78,6 +80,7 @@ class ContainerStyle extends AbstractContainerStyle
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
 	
+#if (flash9)
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
@@ -219,5 +222,6 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
+#end
 
 }

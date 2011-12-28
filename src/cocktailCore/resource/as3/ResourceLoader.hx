@@ -61,12 +61,15 @@ class ResourceLoader extends AbstractResourceLoader
 		//add a loading context so that the resource will be loaded in the current context
 #if flash9
 		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
-#end
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		loadingContext.checkPolicyFile = true;
-		
+
 		//start the loading
 		loader.load(request, loadingContext);
+#else
+		//start the loading
+		loader.load(request);
+#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
