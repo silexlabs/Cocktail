@@ -3992,12 +3992,16 @@ if(!org.games.pong) org.games.pong = {}
 if(!org.games.pong.engine) org.games.pong.engine = {}
 org.games.pong.engine.MovingObject = function(timeline) {
 	if( timeline === $_ ) return;
+	this.MARGIN_H = 220;
+	this.MARGIN_V = 200;
 	this._timeline = timeline;
 	this.x = this.y = this.speedX = this.speedY = this.accelX = this.accelY = 0;
 	this.imageDOMElement = new cocktailCore.domElement.js.ImageDOMElement();
 	timeline.addChild(this.imageDOMElement);
 }
 org.games.pong.engine.MovingObject.__name__ = ["org","games","pong","engine","MovingObject"];
+org.games.pong.engine.MovingObject.prototype.MARGIN_H = null;
+org.games.pong.engine.MovingObject.prototype.MARGIN_V = null;
 org.games.pong.engine.MovingObject.prototype._timeline = null;
 org.games.pong.engine.MovingObject.prototype.x = null;
 org.games.pong.engine.MovingObject.prototype.y = null;
@@ -4013,11 +4017,11 @@ org.games.pong.engine.MovingObject.prototype.update = function() {
 org.games.pong.engine.MovingObject.prototype.updateHorizontal = function() {
 	this.speedX += this.accelX;
 	this.x += this.speedX;
-	if(this.x < 0) {
-		this.x = 0;
+	if(this.x < this.MARGIN_H) {
+		this.x = this.MARGIN_H;
 		this.speedX = -this.speedX;
-	} else if(this.x + this.imageDOMElement.getWidth() > this._timeline.getWidth()) {
-		this.x = this._timeline.getWidth() - this.imageDOMElement.getWidth();
+	} else if(this.x + this.imageDOMElement.getWidth() > this._timeline.getWidth() - this.MARGIN_H) {
+		this.x = this._timeline.getWidth() - this.imageDOMElement.getWidth() - this.MARGIN_H;
 		this.speedX = -this.speedX;
 	}
 	this.imageDOMElement.setX(Math.round(this.x));
@@ -4025,11 +4029,11 @@ org.games.pong.engine.MovingObject.prototype.updateHorizontal = function() {
 org.games.pong.engine.MovingObject.prototype.updateVertical = function() {
 	this.speedY += this.accelY;
 	this.y += this.speedY;
-	if(this.y < 0) {
-		this.y = 0;
+	if(this.y < this.MARGIN_V) {
+		this.y = this.MARGIN_V;
 		this.speedY = -this.speedY;
-	} else if(this.y + this.imageDOMElement.getHeight() > this._timeline.getHeight()) {
-		this.y = this._timeline.getHeight() - this.imageDOMElement.getHeight();
+	} else if(this.y + this.imageDOMElement.getHeight() > this._timeline.getHeight() - this.MARGIN_V) {
+		this.y = this._timeline.getHeight() - this.imageDOMElement.getHeight() - this.MARGIN_V;
 		this.speedY = -this.speedY;
 	}
 	this.imageDOMElement.setY(Math.round(this.y));
@@ -4039,7 +4043,6 @@ if(!org.games.pong.pong) org.games.pong.pong = {}
 org.games.pong.pong.Bat = function(timeline) {
 	if( timeline === $_ ) return;
 	org.games.pong.engine.MovingObject.call(this,timeline);
-	haxe.Log.trace("new ball ",{ fileName : "Bat.hx", lineNumber : 13, className : "org.games.pong.pong.Bat", methodName : "new"});
 	this.imageDOMElement.load("assets/pong/bat.png");
 	this.imageDOMElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	this.imageDOMElement.setZIndex(10);
@@ -4049,8 +4052,8 @@ org.games.pong.pong.Bat.__super__ = org.games.pong.engine.MovingObject;
 for(var k in org.games.pong.engine.MovingObject.prototype ) org.games.pong.pong.Bat.prototype[k] = org.games.pong.engine.MovingObject.prototype[k];
 org.games.pong.pong.Bat.prototype.update = function() {
 	this.updateVertical();
-	this.speedY /= 1.1;
-	this.accelY /= 1.1;
+	this.speedY /= 1.5;
+	this.accelY /= 1.5;
 }
 org.games.pong.pong.Bat.prototype.__class__ = org.games.pong.pong.Bat;
 cocktailCore.style.positioner.FixedPositioner = function(p) {
@@ -4965,7 +4968,6 @@ org.games.pong.Main = function(p) {
 }
 org.games.pong.Main.__name__ = ["org","games","pong","Main"];
 org.games.pong.Main.main = function() {
-	haxe.Log.trace("Hello From FDT haXe !",{ fileName : "Main.hx", lineNumber : 13, className : "org.games.pong.Main", methodName : "main"});
 	new org.games.pong.Main();
 }
 org.games.pong.Main.prototype.__class__ = org.games.pong.Main;
@@ -5010,7 +5012,6 @@ StringBuf.prototype.__class__ = StringBuf;
 org.games.pong.pong.Ball = function(timeline) {
 	if( timeline === $_ ) return;
 	org.games.pong.engine.MovingObject.call(this,timeline);
-	haxe.Log.trace("new ball ",{ fileName : "Ball.hx", lineNumber : 19, className : "org.games.pong.pong.Ball", methodName : "new"});
 	this.imageDOMElement.load("assets/pong/ball.png");
 	this.imageDOMElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	this.imageDOMElement.setZIndex(10);
@@ -5024,10 +5025,10 @@ org.games.pong.pong.Ball.prototype.onTouchTopSide = null;
 org.games.pong.pong.Ball.prototype.onTouchBottomSide = null;
 org.games.pong.pong.Ball.prototype.update = function() {
 	org.games.pong.engine.MovingObject.prototype.update.call(this);
-	if(this.x <= 0) {
+	if(this.x <= this.MARGIN_H) {
 		if(this.onTouchLeftSide != null) this.onTouchLeftSide();
 	}
-	if(this.x + this.imageDOMElement.getWidth() >= this._timeline.getWidth()) {
+	if(this.x + this.imageDOMElement.getWidth() >= this._timeline.getWidth() - this.MARGIN_H) {
 		if(this.onTouchRightSide != null) this.onTouchRightSide();
 	}
 	if(this.y <= 0) {
@@ -6563,7 +6564,7 @@ cocktailCore.style.positioner.RelativePositioner.prototype.getBottomOffset = fun
 cocktailCore.style.positioner.RelativePositioner.prototype.__class__ = cocktailCore.style.positioner.RelativePositioner;
 org.games.pong.pong.PongGame = function(p) {
 	if( p === $_ ) return;
-	haxe.Log.trace("New Pong Game !",{ fileName : "PongGame.hx", lineNumber : 25, className : "org.games.pong.pong.PongGame", methodName : "new"});
+	haxe.Log.trace("New Pong Game !",{ fileName : "PongGame.hx", lineNumber : 28, className : "org.games.pong.pong.PongGame", methodName : "new"});
 	this._isMouseDown = false;
 	var timeline = new cocktailCore.domElement.js.ContainerDOMElement();
 	var bodyDOMElement = new cocktailCore.domElement.js.BodyDOMElement();
@@ -6581,7 +6582,6 @@ org.games.pong.pong.PongGame = function(p) {
 	bgDOMElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
 	bgDOMElement.setX(0);
 	bgDOMElement.setY(0);
-	bgDOMElement.setAlpha(.8);
 	bgDOMElement.setOnMouseDown($closure(this,"onMouseDown"));
 	bgDOMElement.setOnMouseUp($closure(this,"onMouseUp"));
 	timeline.addChild(bgDOMElement);
@@ -6592,9 +6592,11 @@ org.games.pong.pong.PongGame = function(p) {
 	this._bat01 = new org.games.pong.pong.Bat(timeline);
 	this._bat01.imageDOMElement.setAlpha(0);
 	this._bat01.imageDOMElement.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	this._bat01.imageDOMElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(200)));
 	this._bat02 = new org.games.pong.pong.Bat(timeline);
 	this._bat02.imageDOMElement.setAlpha(0);
 	this._bat02.imageDOMElement.getStyle().setRight(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	this._bat02.imageDOMElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(200)));
 	this.attachKeyboardEvents(bgDOMElement);
 	this.reset();
 }
@@ -6607,8 +6609,8 @@ org.games.pong.pong.PongGame.prototype._mouseX = null;
 org.games.pong.pong.PongGame.prototype._mouseY = null;
 org.games.pong.pong.PongGame.prototype.reset = function() {
 	this._ball.imageDOMElement.setAlpha(1);
-	this._ball.x = 50;
-	this._ball.y = 15;
+	this._ball.x = 300;
+	this._ball.y = 215;
 	this._ball.speedX = 5;
 	this._ball.speedY = 3;
 	this._bat01.imageDOMElement.setAlpha(1);
@@ -6637,21 +6639,21 @@ org.games.pong.pong.PongGame.prototype.ballOutYourSide = function() {
 	}
 }
 org.games.pong.pong.PongGame.prototype.iWon = function() {
-	haxe.Log.trace("I WON",{ fileName : "PongGame.hx", lineNumber : 123, className : "org.games.pong.pong.PongGame", methodName : "iWon"});
+	haxe.Log.trace("I WON",{ fileName : "PongGame.hx", lineNumber : 141, className : "org.games.pong.pong.PongGame", methodName : "iWon"});
 }
 org.games.pong.pong.PongGame.prototype.iLost = function() {
-	haxe.Log.trace("I LOST",{ fileName : "PongGame.hx", lineNumber : 127, className : "org.games.pong.pong.PongGame", methodName : "iLost"});
+	haxe.Log.trace("I LOST",{ fileName : "PongGame.hx", lineNumber : 145, className : "org.games.pong.pong.PongGame", methodName : "iLost"});
 }
 org.games.pong.pong.PongGame.prototype.attachKeyboardEvents = function(bgDOMElement) {
 	bgDOMElement.setOnKeyDown($closure(this,"onKeyDown"));
 }
 org.games.pong.pong.PongGame.prototype.onMouseDown = function(mouseEventData) {
-	haxe.Log.trace("onMouseDown " + mouseEventData.mousePosition.localY + " - " + this._bat01.y,{ fileName : "PongGame.hx", lineNumber : 135, className : "org.games.pong.pong.PongGame", methodName : "onMouseDown"});
+	haxe.Log.trace("onMouseDown " + mouseEventData.mousePosition.localY + " - " + this._bat01.y,{ fileName : "PongGame.hx", lineNumber : 153, className : "org.games.pong.pong.PongGame", methodName : "onMouseDown"});
 	this._isMouseDown = true;
 	this.onMouseMove(mouseEventData);
 }
 org.games.pong.pong.PongGame.prototype.onMouseUp = function(mouseEventData) {
-	haxe.Log.trace("onMouseUp " + mouseEventData.mousePosition,{ fileName : "PongGame.hx", lineNumber : 141, className : "org.games.pong.pong.PongGame", methodName : "onMouseUp"});
+	haxe.Log.trace("onMouseUp " + mouseEventData.mousePosition,{ fileName : "PongGame.hx", lineNumber : 159, className : "org.games.pong.pong.PongGame", methodName : "onMouseUp"});
 	this._isMouseDown = false;
 }
 org.games.pong.pong.PongGame.prototype.onMouseMove = function(mouseEventData) {
@@ -6663,12 +6665,10 @@ org.games.pong.pong.PongGame.prototype.followMousePosition = function() {
 	if(this._mouseY > this._bat01.y + this._bat01.imageDOMElement.getHeight() / 2) this.goDown(); else this.goUp();
 }
 org.games.pong.pong.PongGame.prototype.goUp = function() {
-	haxe.Log.trace("UP !",{ fileName : "PongGame.hx", lineNumber : 161, className : "org.games.pong.pong.PongGame", methodName : "goUp"});
-	this._bat01.speedY -= 5;
+	this._bat01.speedY -= 22;
 }
 org.games.pong.pong.PongGame.prototype.goDown = function() {
-	haxe.Log.trace("DOWN !",{ fileName : "PongGame.hx", lineNumber : 166, className : "org.games.pong.pong.PongGame", methodName : "goDown"});
-	this._bat01.speedY += 5;
+	this._bat01.speedY += 22;
 }
 org.games.pong.pong.PongGame.prototype.onKeyDown = function(key) {
 	if(key.value == cocktail.keyboard.KeyboardKeyValue.down) this.goDown(); else if(key.value == cocktail.keyboard.KeyboardKeyValue.up) this.goUp();
@@ -6676,7 +6676,7 @@ org.games.pong.pong.PongGame.prototype.onKeyDown = function(key) {
 org.games.pong.pong.PongGame.prototype.mainLoop = function() {
 	this._ball.update();
 	this._bat01.update();
-	if(this._ball.y < this._bat02.y + 20) this._bat02.accelY -= Math.random() * .15; else if(this._ball.y > this._bat02.y + this._bat02.imageDOMElement.getHeight() - 20) this._bat02.accelY += Math.random() * .15;
+	if(this._ball.y < this._bat02.y + 20) this._bat02.accelY -= Math.random() * 3.6; else if(this._ball.y > this._bat02.y + this._bat02.imageDOMElement.getHeight() - 20) this._bat02.accelY += Math.random() * 3.6;
 	this._bat02.update();
 	if(this._isMouseDown) this.followMousePosition();
 }
@@ -7322,6 +7322,9 @@ cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_MITER = "miter";
 cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_REPEAT = "repeat";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
+org.games.pong.pong.PongGame.FG_IMAGE_URL = "assets/pong/foreground.png";
 org.games.pong.pong.PongGame.BG_IMAGE_URL = "assets/pong/background.png";
+org.games.pong.pong.PongGame.MARGIN_H = 200;
+org.games.pong.pong.PongGame.MARGIN_V = 200;
 js.Lib.onerror = null;
 org.games.pong.Main.main()
