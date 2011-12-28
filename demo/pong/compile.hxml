@@ -1,0 +1,4 @@
+-js bin/js/App.js
+-main Main
+-cp src
+-cp libs
