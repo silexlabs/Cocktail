@@ -1017,12 +1017,13 @@ class Style extends AbstractStyle
 	
 	/**
 	 * For CSS styles not yet available across browser, find
-	 * the vendor specific style name to use
+	 * the vendor specific style name to use. Might return
+	 * null if no style was found
 	 * @param	nativeStyle the JavaScript Style object
 	 */
 	private function getVendorSpecificStyleName(nativeStyle:Dynamic, styleName:String):String
 	{
-		var vendorSpecificStyleName:String = styleName;
+		var vendorSpecificStyleName:String;
 		
 		//first check if the standard style exists
 		if (Reflect.hasField(nativeStyle, styleName))
@@ -1031,7 +1032,6 @@ class Style extends AbstractStyle
 		}
 		else
 		{
-			
 			//capitalise the style name to respect camel case
 			//convention
 			var styleNameCap:String = styleName.charAt(0).toUpperCase();
@@ -1057,6 +1057,10 @@ class Style extends AbstractStyle
 			else if (Reflect.field(nativeStyle, "O" + styleName) != null)
 			{
 				vendorSpecificStyleName = "O" + styleName;
+			}
+			else
+			{
+				vendorSpecificStyleName = null;
 			}
 		}
 		
@@ -1342,8 +1346,14 @@ class Style extends AbstractStyle
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
-		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transformOrigin"), getCSSTransformOrigin(value));
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transformOrigin");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName, getCSSTransformOrigin(value));
+		}
 		super.setTransformOrigin(value);
+		
 		return _tranformOrigin = value;
 	}
 	
@@ -1351,7 +1361,13 @@ class Style extends AbstractStyle
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
-		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transform"), getCSSTransform(value));
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transform");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName , getCSSTransform(value));
+		}
+		
 		super.setTransform(value);
 		return _transform = value;
 	}

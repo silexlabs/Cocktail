@@ -12,15 +12,9 @@ It is inspired by an existing demo made by the jPint project (which seems to be 
 TO DO
 -----
 
+-update online demo with latest version
 -pages should be loaded when accessing them, and not before
 -read a text local file (in a xml or json file), using polling (reload the same file every x seconds)
--load a dynamic content (rss)
- => zabojad's gallery at least => OK
-	=> flickr: http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200
- => text
- => news
-	=> yahoo: http://news.yahoo.com/rss/gadgets
-	=> france 2: feeds.feedburner.com/France2-ActuSciencesTech?format=xml
 -for the sound, embed a player, like => not possible for now, bug assigned to Yannick
  alex:
  => html5 = http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F1187266&auto_play=false&show_artwork=true&color=2b877f
@@ -30,6 +24,10 @@ TO DO
  => flash = https://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F16530992&color=0066cc&show_comments=true
 
 DONE
+-load a dynamic content (rss)
+ => zabojad's gallery => OK
+	=> using flickr's superwup images: http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200
+-added index.html to detect flash and load the corresponding version (JS or Flash)
 -have the flash version work correctly
  => bugs assigned to Yannick
 -back button should only go one step back

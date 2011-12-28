@@ -16,6 +16,15 @@ import cocktail.domElement.DOMElement;
  */
 
 /**
+ * Defines a title model
+ */
+/*typedef TitleModel =
+{
+	public var text:String;
+	public var imagePath:String;
+}*/
+
+/**
  * Defines a cell model
  */
 typedef CellModel =
@@ -27,11 +36,41 @@ typedef CellModel =
 }
 
 /**
+ * Defines a cell model
+ */
+typedef DynamicCellModel =
+{
+	public var content:Dynamic;
+	public var action:String;
+	public var actionTarget:Dynamic;
+}
+
+/**
+ * Defines a cell model with a content as a container
+ */
+/*typedef ContainerCellModel =
+{
+	public var content:ContainerDOMElement;
+	public var action:String;
+	public var actionTarget:Dynamic;
+}*/
+
+/**
  * Defines a rich list model
  */
 typedef RichListModel =
 {
+	//public var title:TitleModel;
 	public var content:Array<CellModel>;
+}
+
+/**
+ * Defines a rich list model
+ */
+typedef DynamicRichListModel =
+{
+	//public var title:TitleModel;
+	public var content:Array<DynamicCellModel>;
 }
 
 /**
@@ -40,6 +79,7 @@ typedef RichListModel =
 typedef RichListStyleModel =
 {
 	public var list:DOMElement->Void;
+	//public var title:DOMElement->Void;
 	public var cell:ContainerDOMElement->Void;
 	public var cellImage:DOMElement->Void;
 	public var cellText:DOMElement->Void;
