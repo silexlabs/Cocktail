@@ -11,7 +11,6 @@ package ;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 
 // Native Elements
@@ -41,36 +40,7 @@ class Utils
 	{
 		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
 		ret.style.display = block;
-		//ret.x = 0;
-		//ret.y = 0;
 		return ret;
 	}
 	
-	/**
-	 * Initializes a GraphicDOMElement
-	 * 
-	 * @return the initalized GraphicDOMElement
-	 */
-	public static function getGraphic():GraphicDOMElement
-	{
-		var ret:GraphicDOMElement = new GraphicDOMElement();
-		
-		return ret;
-	}
-	
-	/**
-	 * Fills a GraphicDOMElement with a rectangle of the specified color
-	 * 
-	 * @param	domElement
-	 * @param	color
-	 */
-	public static function fillGraphic(domElement:GraphicDOMElement, color:Int):Void
-	{
-		domElement.clear();
-		domElement.beginFill(FillStyleValue.monochrome( { color:color, alpha:100 } ), LineStyleValue.none);
-		domElement.drawRect(0, 0, domElement.width, domElement.height);
-		domElement.endFill();
-		domElement.alpha = 1;
-	}
-
 }

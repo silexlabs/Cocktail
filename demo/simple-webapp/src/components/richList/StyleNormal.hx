@@ -66,23 +66,12 @@ class StyleNormal
 	{
 		getDefaultStyle(domElement);
 
-		//domElement.style.position = absolute;
-		//domElement.style.display = DisplayStyleValue.block;
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 				
 		domElement.style.color = ColorValue.hex('#666666');
-		//domElement.style.width = DimensionStyleValue.percent(100);
-
-
-		// create line to separate cells
-		//var line:GraphicDOMElement;
-		//line = createLine(0xDDDDDD);
-		
-		//domElement.removeChild(line);
-		//domElement.addChild(line);
 	}
 	
 	/**
@@ -110,11 +99,6 @@ class StyleNormal
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
-
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
-		//domElement.style.paddingRight = PaddingStyleValue.length(px(8));
-		//domElement.style.paddingTop = PaddingStyleValue.length(px(8));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
@@ -149,9 +133,6 @@ class StyleNormal
 		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#333333');
-
-		// create line to separate cells
-		//addLineAgain(domElement);
 	}
 	
 	/**
@@ -164,9 +145,6 @@ class StyleNormal
 		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#666666');
-
-		// create line to separate cells
-		//addLineAgain(domElement);
 	}
 	
 	/**
@@ -179,9 +157,6 @@ class StyleNormal
 		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#000000');
-
-		// create line to separate cells
-		//addLineAgain(domElement);
 	}
 	
 	/**
@@ -194,9 +169,6 @@ class StyleNormal
 		//getCellTextStyle(domElement);
 
 		domElement.style.color = ColorValue.hex('#333333');
-
-		// create line to separate cells
-		//addLineAgain(domElement);
 	}
 	
 	/**
@@ -209,37 +181,4 @@ class StyleNormal
 		getCellTextStyle(domElement);
 	}
 	
-	/**
-	 * Creates a line.
-	 * 
-	 * @param	color
-	 * @return
-	 */
-	/*private static function createLine(color:Int):GraphicDOMElement
-	{
-		initStyle(domElement);
-
-		var line:GraphicDOMElement = Utils.getGraphic();
-		getCellLineStyle(line);
-		Utils.fillGraphic(line, color);
-		
-		return(line);
-	}*/
-	
-	/**
-	 * Adds a line. Used to split each cell.
-	 * 
-	 * @param	domElement
-	 */
-	/*private static function addLineAgain(domElement:ContainerDOMElement)
-	{
-		//initStyle(domElement);
-
-		// create line to separate cells
-		var line:GraphicDOMElement;
-		line = createLine(0xDDDDDD);
-		
-		domElement.removeChild(line);
-		domElement.addChild(line);
-	}*/
 }

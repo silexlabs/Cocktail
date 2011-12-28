@@ -33,6 +33,8 @@ import components.richList.RichListModels;
 
 class StyleApp
 {
+	private static inline var appIconSize:Int = 57;
+	
 	/**
 	 * Defines default Style
 	 * 
@@ -81,7 +83,10 @@ class StyleApp
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(60));
+		//domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(60));
+		//domElement.style.width = DimensionStyleValue.percent(50);
+		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(appIconSize));
+		//domElement.style.height = DimensionStyleValue.percent(50);
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
 	
@@ -93,7 +98,7 @@ class StyleApp
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = DimensionStyleValue.length(px(57));
+		domElement.style.width = DimensionStyleValue.length(px(appIconSize));
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 		
 		domElement.style.fontFamily = [FontFamilyStyleValue.familyName('Helvetica'), FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)];
