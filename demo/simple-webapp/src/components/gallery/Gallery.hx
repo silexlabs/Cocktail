@@ -69,7 +69,7 @@ class Gallery extends ContainerDOMElement
 	 */
 	private function loadRssFeed(rssFeedUrl:String):Void
 	{
-		ResourceLoaderManager.loadString( "XmlProxy.php?url="+StringTools.urlEncode(rssFeedUrl), onRssFeedLoaded, onRssFeedError);
+		ResourceLoaderManager.loadString( "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url="+StringTools.urlEncode(rssFeedUrl), onRssFeedLoaded, onRssFeedError);
 	}
 	
 	/**

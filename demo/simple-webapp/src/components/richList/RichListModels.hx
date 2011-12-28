@@ -16,15 +16,6 @@ import cocktail.domElement.DOMElement;
  */
 
 /**
- * Defines a title model
- */
-/*typedef TitleModel =
-{
-	public var text:String;
-	public var imagePath:String;
-}*/
-
-/**
  * Defines a cell model
  */
 typedef CellModel =
@@ -40,7 +31,6 @@ typedef CellModel =
  */
 typedef RichListModel =
 {
-	//public var title:TitleModel;
 	public var content:Array<CellModel>;
 }
 
@@ -50,7 +40,6 @@ typedef RichListModel =
 typedef RichListStyleModel =
 {
 	public var list:DOMElement->Void;
-	//public var title:DOMElement->Void;
 	public var cell:ContainerDOMElement->Void;
 	public var cellImage:DOMElement->Void;
 	public var cellText:DOMElement->Void;
