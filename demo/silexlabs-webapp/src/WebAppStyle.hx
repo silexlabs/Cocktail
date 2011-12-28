@@ -180,6 +180,28 @@ class WebAppStyle
 	}
 
 	/**
+	 * Defines header logo Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getHeaderLogoStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);		
+		//getHeaderStyle(domElement);
+		
+		//domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.top = PositionOffsetStyleValue.length(px(4));
+		domElement.style.bottom = PositionOffsetStyleValue.auto;
+		domElement.style.left = PositionOffsetStyleValue.length(px(15));
+		domElement.style.right = PositionOffsetStyleValue.auto;
+		//domElement.style.width = DimensionStyleValue.auto;
+		domElement.style.width = DimensionStyleValue.length(px(44));
+		//domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+	}
+
+	/**
 	 * Defines footer menu image Style
 	 * 
 	 * @param	domElement

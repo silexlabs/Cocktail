@@ -27,30 +27,9 @@ import cocktail.domElement.DOMElement;
 /**
  * Defines a cell model
  */
-typedef CellModel =
-{
-	public var text:String;
-	public var imagePath:String;
-	public var action:String;
-	public var actionTarget:Dynamic;
-}
-
-/**
- * Defines a cell model
- */
 /*typedef DynamicCellModel =
 {
 	public var content:Dynamic;
-	public var action:String;
-	public var actionTarget:Dynamic;
-}*/
-
-/**
- * Defines a cell model with a content as a container
- */
-/*typedef ContainerCellModel =
-{
-	public var content:ContainerDOMElement;
 	public var action:String;
 	public var actionTarget:Dynamic;
 }*/
