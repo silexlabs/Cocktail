@@ -2588,7 +2588,7 @@ components.richList.thumbList.ThumbListStyle1.getCellLineStyle = function(domEle
 	components.richList.thumbList.ThumbListStyle1.getDefaultStyle(domElement);
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
-	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(2)));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(1)));
 }
 components.richList.thumbList.ThumbListStyle1.getCellTextBlockStyle = function(domElement) {
 	components.richList.thumbList.ThumbListStyle1.getCellStyle(domElement);
@@ -2609,7 +2609,7 @@ components.richList.thumbList.ThumbListStyle1.getCellTitleStyle = function(domEl
 }
 components.richList.thumbList.ThumbListStyle1.getCellCommentStyle = function(domElement) {
 	components.richList.thumbList.ThumbListStyle1.getCellTextStyle(domElement);
-	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(14)));
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(13)));
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.normal);
 }
 components.richList.thumbList.ThumbListStyle1.getCellDescriptionStyle = function(domElement) {
@@ -6919,6 +6919,15 @@ WebAppStyle.getHeaderTileStyle = function(domElement) {
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
 }
+WebAppStyle.getHeaderLogoStyle = function(domElement) {
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(4)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.auto);
+	domElement.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(15)));
+	domElement.getStyle().setRight(cocktail.style.PositionOffsetStyleValue.auto);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(44)));
+}
 WebAppStyle.getFooterMenuStyle = function(domElement) {
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.fixed);
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
@@ -7602,7 +7611,7 @@ ApplicationStructure.prototype = {
 	,_themesPage: null
 	,_pluginsPage: null
 	,createAllPages: function() {
-		var rss = new components.dataProvider.XmlLoader("http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200");
+		var rss = new components.dataProvider.XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2");
 		rss.onLoad = this.onThemeRssLoad.$bind(this);
 	}
 	,onThemeRssLoad: function(rss) {
@@ -7626,15 +7635,20 @@ ApplicationStructure.prototype = {
 	}
 	,createHeader: function(title) {
 		var header = Utils.getContainer();
-		var headerTile = new cocktailCore.domElement.js.ImageDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.image));
-		var headerTilePath = "images/greyPixel.png";
+		var headerTile = new cocktailCore.domElement.js.ImageDOMElement();
 		WebAppStyle.getHeaderTileStyle(headerTile);
+		var headerTilePath = "images/header.jpg";
 		headerTile.load(headerTilePath);
+		header.addChild(headerTile);
+		var headerLogo = new cocktailCore.domElement.js.ImageDOMElement();
+		WebAppStyle.getHeaderLogoStyle(headerLogo);
+		var headerLogoPath = "images/silex-labs.png";
+		headerLogo.load(headerLogoPath);
+		header.addChild(headerLogo);
 		var headerTitle = new cocktailCore.textElement.js.TextElement(title);
 		var headerTitleContainer = Utils.getContainer();
 		headerTitleContainer.addText(headerTitle);
 		WebAppStyle.getHeaderTextStyle(headerTitleContainer);
-		header.addChild(headerTile);
 		header.addChild(headerTitleContainer);
 		WebAppStyle.getHeaderStyle(header);
 		return header;
@@ -7642,7 +7656,7 @@ ApplicationStructure.prototype = {
 	,createFooterMenu: function() {
 		var container = Utils.getContainer();
 		var tile = new cocktailCore.domElement.js.ImageDOMElement();
-		var headerTilePath = "images/blackPixel.png";
+		var headerTilePath = "images/footer.jpg";
 		WebAppStyle.getFooterTileStyle(tile);
 		tile.load(headerTilePath);
 		container.addChild(tile);

@@ -53,10 +53,7 @@ class ThumbList1 extends RichList
 		var cellNumberContainer:ContainerDOMElement = Utils.getContainer();
 		var textElement:TextElement = new TextElement(Std.string(_currentCell));
 		cellNumberContainer.addText(textElement);
-		//listStyle.cellText(cellTitleContainer);
 		listStyle.cellNumber(cellNumberContainer);
-		//cell.addChild(cellTextContainer);
-		//cellContent.push(cellTitleContainer);
 		cellInfoBlockContainer.addChild(cellNumberContainer);
 		
 		// add dots line
@@ -83,10 +80,7 @@ class ThumbList1 extends RichList
 			var cellCommentCountContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.commentCount);
 			cellCommentCountContainer.addText(textElement);
-			//listStyle.cellText(cellTitleContainer);
 			listStyle.cellCommentCount(cellCommentCountContainer);
-			//cell.addChild(cellTextContainer);
-			//cellContent.push(cellTitleContainer);
 			cellInfoBlockContainer.addChild(cellCommentCountContainer);
 		}
 		
@@ -100,7 +94,6 @@ class ThumbList1 extends RichList
 			// set image style
 			listStyle.cellThumbnail(cellImage);
 			// add image
-			//cell.addChild(cellImage);
 			cellContent.push(cellImage);
 			// load image
 			cellImage.load(cellData.thumbnail);
@@ -111,10 +104,7 @@ class ThumbList1 extends RichList
 		
 		// add text block
 		var cellTextBlockContainer:ContainerDOMElement = Utils.getContainer();
-		//var textElement:TextElement = new TextElement(cellData.title);
-		//cellTitleContainer.addText(textElement);
 		listStyle.cellTextBlock(cellTextBlockContainer);
-		//cell.addChild(cellTextContainer);
 		cellContent.push(cellTextBlockContainer);
 		
 		// add title
@@ -123,10 +113,7 @@ class ThumbList1 extends RichList
 			var cellTitleContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.title);
 			cellTitleContainer.addText(textElement);
-			//listStyle.cellText(cellTitleContainer);
 			listStyle.cellTitle(cellTitleContainer);
-			//cell.addChild(cellTextContainer);
-			//cellContent.push(cellTitleContainer);
 			cellTextBlockContainer.addChild(cellTitleContainer);
 		}
 		
@@ -137,8 +124,6 @@ class ThumbList1 extends RichList
 			var textElement:TextElement = new TextElement(cellData.comment);
 			cellCommentContainer.addText(textElement);
 			listStyle.cellComment(cellCommentContainer);
-			//cell.addChild(cellTextContainer);
-			//cellContent.push(cellCommentContainer);
 			cellTextBlockContainer.addChild(cellCommentContainer);
 		}
 		
@@ -149,8 +134,6 @@ class ThumbList1 extends RichList
 			var textElement:TextElement = new TextElement(cellData.description);
 			cellDescriptionContainer.addText(textElement);
 			listStyle.cellDescription(cellDescriptionContainer);
-			//cell.addChild(cellTextContainer);
-			//cellContent.push(cellCommentContainer);
 			cellTextBlockContainer.addChild(cellDescriptionContainer);
 		}
 		
