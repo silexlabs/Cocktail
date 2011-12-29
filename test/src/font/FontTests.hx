@@ -80,7 +80,8 @@ class FontTests
 		#if js
 			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded);
 			_fontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
-			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
+			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br />
+				<span style=\"font-size: 16pt; font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 123456789.:,;(:*!?&apos;&quot;) The quick brown fox jumps over the lazy dog.<br /><hr /><br />";
 		#end
 		#if flash9
 			
@@ -113,26 +114,17 @@ class FontTests
 	private function onFontLoaded3(fontData : FontData):Void
 	{
 		#if flash9
-			var someText:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ - ";
-		
-            var fontSize:Int = 36;
+			var someText:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 123456789.:,;(:*!?'\") The quick brown fox jumps over the lazy dog.";
+            var fontSize:Int = 22;
 
             var format:ElementFormat = new ElementFormat();        
             format.fontDescription = new FontDescription("EmbedFontTest", flash.text.engine.FontWeight.NORMAL, flash.text.engine.FontPosture.NORMAL, flash.text.engine.FontLookup.EMBEDDED_CFF, flash.text.engine.RenderingMode.CFF);
             format.fontSize = fontSize;
 
-            var y:Float = 0;
-            var leading:Float = fontSize * 0.2;
-
             var textBlock:TextBlock = new TextBlock();
             textBlock.content = new TextElement(someText, format);
-                        
-            // bidiLevel even
-            textBlock.bidiLevel = 0;
-            var textLine = textBlock.createTextLine(null, 400);
-            y += leading + textLine.ascent;
-            textLine.y = y;
-            y += textLine.descent;
+            var textLine = textBlock.createTextLine(null, flash.Lib.current.stage.stageWidth);
+            textLine.y = 100;
             flash.Lib.current.addChild(textLine);      
 		#end
 
