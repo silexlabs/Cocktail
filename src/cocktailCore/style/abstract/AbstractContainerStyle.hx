@@ -23,7 +23,6 @@ import cocktailCore.style.positioner.BoxPositioner;
 import cocktailCore.style.positioner.FixedPositioner;
 import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
@@ -159,7 +158,7 @@ class AbstractContainerStyle extends Style
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
-		if (this._width == DimensionStyleValue.auto)
+		if (this._width == DimensionStyleValue.autoValue)
 		{
 			
 			var currentWidth:Int = this._computedStyle.width;
@@ -184,7 +183,7 @@ class AbstractContainerStyle extends Style
 		//sized. Fort some border case though, the total height
 		//of the children is not used and auto height is computed in
 		//another way
-		if (this._height == DimensionStyleValue.auto)
+		if (this._height == DimensionStyleValue.autoValue)
 		{
 			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.totalHeight);
 		}
@@ -444,9 +443,9 @@ class AbstractContainerStyle extends Style
 		
 		return {
 			width:this._computedStyle.width,
-			isWidthAuto:this._width == DimensionStyleValue.auto,
+			isWidthAuto:this._width == DimensionStyleValue.autoValue,
 			height:height,
-			isHeightAuto:this._height == DimensionStyleValue.auto,
+			isHeightAuto:this._height == DimensionStyleValue.autoValue,
 			globalX:this._domElement.globalX,
 			globalY:this._domElement.globalY
 		};

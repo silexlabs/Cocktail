@@ -9,7 +9,6 @@ package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 /**

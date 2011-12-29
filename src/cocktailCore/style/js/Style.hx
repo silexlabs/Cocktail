@@ -11,7 +11,6 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.unit.UnitData;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 import cocktail.style.StyleData;
@@ -395,7 +394,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssMarginValue = getCSSPercentValue(percentValue);
 				
-			case auto:
+			case autoValue:
 				cssMarginValue = "auto";
 		}
 		
@@ -436,7 +435,7 @@ class Style extends AbstractStyle
 			case DimensionStyleValue.percent(percentValue):
 				cssDimensionValue = getCSSPercentValue(percentValue);
 				
-			case DimensionStyleValue.auto:
+			case DimensionStyleValue.autoValue:
 				cssDimensionValue = "auto";
 		}
 		
@@ -459,7 +458,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssPositionOffsetValue = getCSSPercentValue(percentValue);
 				
-			case auto:
+			case autoValue:
 				cssPositionOffsetValue = "auto";
 		}
 		
@@ -1300,11 +1299,11 @@ class Style extends AbstractStyle
 		return _textIndent = value;
 	}
 	
-	override private function setFloat(value:FloatStyleValue):FloatStyleValue 
+	override private function setFloatValue(value:FloatStyleValue):FloatStyleValue 
 	{
 		untyped this._domElement.nativeElement.style.cssFloat = getCSSFloat(value);
-		super.setFloat(value);
-		return _float = value;
+		super.setFloatValue(value);
+		return floatValue = value;
 	}
 	
 	override private function setClear(value:ClearStyleValue):ClearStyleValue 
