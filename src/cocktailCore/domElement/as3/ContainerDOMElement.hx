@@ -15,24 +15,6 @@ import flash.Vector;
 import haxe.Log;
 
 
-#if (flash9)
-import flash.text.engine.BreakOpportunity;
-import flash.text.engine.CFFHinting;
-import flash.text.engine.ContentElement;
-import flash.text.engine.ElementFormat;
-import flash.text.engine.FontDescription;
-import flash.text.engine.FontPosture;
-import flash.text.engine.FontWeight;
-import flash.text.engine.GroupElement;
-import flash.text.engine.LineJustification;
-import flash.text.engine.SpaceJustifier;
-import flash.text.engine.TextBaseline;
-import flash.text.engine.TextBlock;
-import flash.text.engine.TextElement;
-import flash.text.engine.TextLine;
-import flash.text.engine.TypographicCase;
-#end
-
 /**
  * This is the Flash AS3 implementation of the container DOMElement.
  * 
