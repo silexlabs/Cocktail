@@ -20,6 +20,11 @@ import flash.display.Loader;
 import flash.Lib;
 import flash.system.ApplicationDomain;
 import flash.text.TextFormat;
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+
 #end
 
 import cocktail.nativeElement.NativeElementManager;
@@ -69,11 +74,12 @@ class FontTests
 	 */
 	public function testFontLoad()
 	{
-		
+		trace("*************** *************** *************** ***************");
+		trace("IMPORTANT CHECK TO DO : check that the text on top of the page has an embeded font");
+		trace("*************** *************** *************** ***************");
 		#if js
 			var successCallback : FontData->Void = Assert.createEvent(onFontLoaded);
 			_fontManager.loadFont("embed_test_font.ttf", "EmbedFontTest", successCallback, onFontLoadError);
-
 			js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
 		#end
 		#if flash9
@@ -107,19 +113,27 @@ class FontTests
 	private function onFontLoaded3(fontData : FontData):Void
 	{
 		#if flash9
-		    var format1:TextFormat = new TextFormat();
-		    format1.font="EmbedFontTest";
-		    format1.size=25;
+			var someText:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ - ";
+		
+            var fontSize:Int = 36;
 
-			var tf:flash.text.TextField;
-			tf = new flash.text.TextField();
-			tf.setTextFormat(format1);
-			tf.autoSize = flash.text.TextFieldAutoSize.LEFT;
-			tf.multiline = true;
-			tf.embedFonts=true;
-			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br /><font size=\"25\" face=\"EmbedFontTest\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</font><br /><br />--end text--";
-//			tf.htmlText = "<b>Here is text with embed font</b><br /><br /><br /><br />ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.<br /><br />";
-	        flash.Lib.current.addChild(tf);
+            var format:ElementFormat = new ElementFormat();        
+            format.fontDescription = new FontDescription("EmbedFontTest", flash.text.engine.FontWeight.NORMAL, flash.text.engine.FontPosture.NORMAL, flash.text.engine.FontLookup.EMBEDDED_CFF, flash.text.engine.RenderingMode.CFF);
+            format.fontSize = fontSize;
+
+            var y:Float = 0;
+            var leading:Float = fontSize * 0.2;
+
+            var textBlock:TextBlock = new TextBlock();
+            textBlock.content = new TextElement(someText, format);
+                        
+            // bidiLevel even
+            textBlock.bidiLevel = 0;
+            var textLine = textBlock.createTextLine(null, 400);
+            y += leading + textLine.ascent;
+            textLine.y = y;
+            y += textLine.descent;
+            flash.Lib.current.addChild(textLine);      
 		#end
 
 		Assert.isTrue(true);
