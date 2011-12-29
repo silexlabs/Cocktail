@@ -8376,27 +8376,27 @@ font.FontTests.main = function() {
 	runner.run();
 }
 font.FontTests.prototype.testFontLoad = function() {
-	haxe.Log.trace("*************** *************** *************** ***************",{ fileName : "FontTests.hx", lineNumber : 74, className : "font.FontTests", methodName : "testFontLoad"});
-	haxe.Log.trace("IMPORTANT CHECK TO DO : check that the text on top of the page has an embeded font",{ fileName : "FontTests.hx", lineNumber : 75, className : "font.FontTests", methodName : "testFontLoad"});
-	haxe.Log.trace("*************** *************** *************** ***************",{ fileName : "FontTests.hx", lineNumber : 76, className : "font.FontTests", methodName : "testFontLoad"});
+	haxe.Log.trace("*************** *************** *************** ***************",{ fileName : "FontTests.hx", lineNumber : 77, className : "font.FontTests", methodName : "testFontLoad"});
+	haxe.Log.trace("IMPORTANT CHECK TO DO : check that the text on top of the page has an embeded font",{ fileName : "FontTests.hx", lineNumber : 78, className : "font.FontTests", methodName : "testFontLoad"});
+	haxe.Log.trace("*************** *************** *************** ***************",{ fileName : "FontTests.hx", lineNumber : 79, className : "font.FontTests", methodName : "testFontLoad"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded"));
 	font.FontTests._fontManager.loadFont("embed_test_font.ttf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
-	js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br /><span style=\"font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />abcdefghijklmnopqrstuvwxyz<br />123456789.:,;(:*!?&apos;&quot;)<br />The quick brown fox jumps over the lazy dog.</span><br /><hr /><br />";
+	js.Lib.document.body.innerHTML += "<h1>Here is text with embed font</h1><br />\n\t\t\t\t<span style=\"font-size: 16pt; font-family: EmbedFontTest;\">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 123456789.:,;(:*!?&apos;&quot;) The quick brown fox jumps over the lazy dog.<br /><hr /><br />";
 }
 font.FontTests.prototype.onFontLoaded = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 93, className : "font.FontTests", methodName : "onFontLoaded"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 98, className : "font.FontTests", methodName : "onFontLoaded"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded2"));
 	font.FontTests._fontManager.loadFont("embed_test_font.eot","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded2 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 102, className : "font.FontTests", methodName : "onFontLoaded2"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 107, className : "font.FontTests", methodName : "onFontLoaded2"});
 	var successCallback = utest.Assert.createEvent($closure(this,"onFontLoaded3"));
 	font.FontTests._fontManager.loadFont("embed_test_font.otf","EmbedFontTest",successCallback,$closure(this,"onFontLoadError"));
 }
 font.FontTests.prototype.onFontLoaded3 = function(fontData) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 127, className : "font.FontTests", methodName : "onFontLoaded3"});
-	haxe.Log.trace(font.FontTests._fontManager.getEmbeddedFonts(),{ fileName : "FontTests.hx", lineNumber : 130, className : "font.FontTests", methodName : "onFontLoaded3"});
-	utest.Assert.isTrue(font.FontTests._fontManager.hasFont("EmbedFontTest"),null,{ fileName : "FontTests.hx", lineNumber : 131, className : "font.FontTests", methodName : "onFontLoaded3"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 132, className : "font.FontTests", methodName : "onFontLoaded3"});
+	haxe.Log.trace(font.FontTests._fontManager.getEmbeddedFonts(),{ fileName : "FontTests.hx", lineNumber : 135, className : "font.FontTests", methodName : "onFontLoaded3"});
+	utest.Assert.isTrue(font.FontTests._fontManager.hasFont("EmbedFontTest"),null,{ fileName : "FontTests.hx", lineNumber : 136, className : "font.FontTests", methodName : "onFontLoaded3"});
 }
 font.FontTests.prototype.errorCallbackAssync = null;
 font.FontTests.prototype.onFontLoaded4 = function(fontData) {
@@ -8405,8 +8405,8 @@ font.FontTests.prototype.onFontLoadError = function(fontData,msg) {
 	this.errorCallbackAssync(msg);
 }
 font.FontTests.prototype.onFontLoadErrorUTest = function(msg) {
-	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 156, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
-	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 157, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	utest.Assert.isTrue(true,null,{ fileName : "FontTests.hx", lineNumber : 161, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
+	haxe.Log.trace("Font loading error : " + msg,{ fileName : "FontTests.hx", lineNumber : 162, className : "font.FontTests", methodName : "onFontLoadErrorUTest"});
 }
 font.FontTests.prototype.__class__ = font.FontTests;
 utest.Assertation = { __ename__ : ["utest","Assertation"], __constructs__ : ["Success","Failure","Error","SetupError","TeardownError","TimeoutError","AsyncError","Warning"] }
