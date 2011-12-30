@@ -30,12 +30,12 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-// RichList specific
+// list specific
 import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
-// Iphone specific
+// Utils
 import Utils;
 
 
