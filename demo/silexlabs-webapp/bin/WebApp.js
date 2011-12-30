@@ -3421,22 +3421,6 @@ Utils.getContainer = function() {
 	ret.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	return ret;
 }
-Utils.getTextContainer = function(text) {
-	var textContainer = Utils.getContainer();
-	textContainer.addText(new cocktailCore.textElement.js.TextElement(text));
-	return textContainer;
-}
-Utils.getGraphic = function() {
-	var ret = new cocktailCore.domElement.js.GraphicDOMElement();
-	return ret;
-}
-Utils.fillGraphic = function(domElement,color) {
-	domElement.clear();
-	domElement.beginFill(cocktail.domElement.FillStyleValue.monochrome({ color : color, alpha : 100}),cocktail.domElement.LineStyleValue.none);
-	domElement.drawRect(0,0,domElement.getWidth(),domElement.getHeight());
-	domElement.endFill();
-	domElement.setAlpha(1);
-}
 Utils.prototype = {
 	__class__: Utils
 }
@@ -3751,16 +3735,12 @@ components.lists.ThumbTextList1Style.getCellDescriptionStyle = function(domEleme
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
 }
 components.lists.ThumbTextList1Style.getCellMouseOverStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#333333"));
 }
 components.lists.ThumbTextList1Style.getCellMouseOutStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#666666"));
 }
 components.lists.ThumbTextList1Style.getCellMouseDownStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#000000"));
 }
 components.lists.ThumbTextList1Style.getCellMouseUpStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#333333"));
 }
 components.lists.ThumbTextList1Style.prototype = {
 	__class__: components.lists.ThumbTextList1Style
@@ -5369,16 +5349,12 @@ components.lists.AppListStyle.getCellTextStyle = function(domElement) {
 	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 }
 components.lists.AppListStyle.getCellMouseOverStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#DDDDDD"));
 }
 components.lists.AppListStyle.getCellMouseOutStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#BDBDCE"));
 }
 components.lists.AppListStyle.getCellMouseDownStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.keyword(cocktail.unit.ColorKeywordValue.white));
 }
 components.lists.AppListStyle.getCellMouseUpStyle = function(domElement) {
-	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#BDBDCE"));
 }
 components.lists.AppListStyle.prototype = {
 	__class__: components.lists.AppListStyle

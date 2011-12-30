@@ -7,7 +7,7 @@
 
 package components.lists;
 
-// RichList
+// list
 import components.lists.ListBaseModels;
 
 

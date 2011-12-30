@@ -22,10 +22,6 @@ import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import Constants;
 
-// RichList
-//import components.lists.RichListModels;
-
-
 /**
  * This class defines the styles used by an App cell,
  * i.e. a list with each cell containing an image over a text, and having each cell next to the previous one
@@ -50,8 +46,6 @@ class AppListStyle
 		
 		domElement.style.marginLeft =MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		//domElement.style.marginLeft = MarginStyleValue.auto;
-		//domElement.style.marginRight = MarginStyleValue.auto;
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
@@ -85,12 +79,6 @@ class AppListStyle
 		domElement.style.marginTop = MarginStyleValue.length(px(2));
 		//domElement.style.marginBottom = MarginStyleValue.length(px(10));
 		
-		//domElement.style.top = PositionOffsetStyleValue.auto;
-		//domElement.style.bottom = PositionOffsetStyleValue.length(px(2));
-		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.length(px(Constants.footerHeight));
-		//domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
 		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
 		domElement.style.color = ColorValue.hex('#BDBDCE');
@@ -107,16 +95,9 @@ class AppListStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.marginLeft = MarginStyleValue.auto;
 		domElement.style.marginRight = MarginStyleValue.auto;
-		//domElement.style.width = DimensionStyleValue.length(px(Constants.footerHeight));
-		//domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
 		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
-		//domElement.style.width = DimensionStyleValue.length(px(domElement.intrinsicWidth / 2));
-		//domElement.style.height = DimensionStyleValue.length(px(domElement.intrinsicHeight / 2));
-		//domElement.style.height = DimensionStyleValue.length(px(31));
-		//domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(2));
-		//domElement.style.left = PositionOffsetStyleValue.length(px(-4));
 	}
 	
 	/**
@@ -129,7 +110,6 @@ class AppListStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.marginLeft = MarginStyleValue.auto;
 		domElement.style.marginRight = MarginStyleValue.auto;
-		//domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(28));
 		domElement.style.height = DimensionStyleValue.length(px(31));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
@@ -152,7 +132,6 @@ class AppListStyle
 		domElement.style.fontSize = FontSizeStyleValue.length(px(10));
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.textAlign = TextAlignStyleValue.center;
-		//domElement.style.width = DimensionStyleValue.length(px(57));
 	}
 
 	/**
@@ -162,7 +141,7 @@ class AppListStyle
 	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#DDDDDD');
+
 	}
 	
 	/**
@@ -172,7 +151,6 @@ class AppListStyle
 	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 	
 	/**
@@ -182,7 +160,6 @@ class AppListStyle
 	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.keyword(ColorKeywordValue.white);
 	}
 	
 	/**
@@ -192,6 +169,5 @@ class AppListStyle
 	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#BDBDCE');
 	}
 }

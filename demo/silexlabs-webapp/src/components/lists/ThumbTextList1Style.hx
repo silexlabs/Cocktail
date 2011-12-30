@@ -26,7 +26,7 @@ import Constants;
 // list
 import components.lists.ListBaseModels;
 
-//Iphone
+// Utils
 import Utils;
 
 /**
@@ -57,10 +57,7 @@ class ThumbTextList1Style
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(Constants.footerHeight));
-		
-		//domElement.style.bottom = PositionOffsetStyleValue.length(px(100));
 	}
 	
 	/**
@@ -80,11 +77,8 @@ class ThumbTextList1Style
 	 */
 	public static function getCellInfoBlockStyle(domElement:DOMElement):Void
 	{
-		//getCellStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.width = DimensionStyleValue.percent(10);
-		//domElement.style.height = DimensionStyleValue.length(px(2));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 	
@@ -126,8 +120,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellInfoBlockImageStyle(domElement:DOMElement):Void
 	{
-		//getCellTextStyle(domElement);
-		
 		domElement.style.display = DisplayStyleValue.block;
 		
 		domElement.style.marginLeft = MarginStyleValue.auto;
@@ -145,9 +137,8 @@ class ThumbTextList1Style
 	 */
 	public static function getCellThumbnailStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
 		getCellStyle(domElement);
-		//domElement.style.position = absolute;
+		
 		domElement.style.display = DisplayStyleValue.inlineStyle;
 		
 		domElement.style.paddingLeft = PaddingStyleValue.percent(1);
@@ -157,9 +148,6 @@ class ThumbTextList1Style
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(200));
 		domElement.style.width = DimensionStyleValue.percent(30);
-		//domElement.style.height = DimensionStyleValue.percent(100);
-		//domElement.style.height = DimensionStyleValue.length(px(Std.int(domElement.width * 3 / 2)));
-		//domElement.style.height = DimensionStyleValue.length(px(180));
 	}
 	
 	/**
@@ -169,8 +157,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellLineStyle(domElement:DOMElement):Void
 	{
-		//getListStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
@@ -253,7 +239,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#333333');
 	}
 	
 	/**
@@ -263,7 +248,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#666666');
 	}
 	
 	/**
@@ -273,7 +257,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#000000');
 	}
 	
 	/**
@@ -283,7 +266,6 @@ class ThumbTextList1Style
 	 */
 	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
 	{
-		domElement.style.color = ColorValue.hex('#333333');
 	}
 	
 }

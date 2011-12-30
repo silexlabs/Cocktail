@@ -74,6 +74,7 @@ class ThumbTextList1Rss
 					{
 						cellContent.title = itemParam.firstChild().nodeValue;
 					}
+					
 					// if node is a author info
 					if (itemParam.nodeName == "post_author")
 					{
@@ -85,12 +86,14 @@ class ThumbTextList1Rss
 							}
 						}
 					}
+					
 					// if node is a date
 					if (itemParam.nodeName == "post_date_gmt")
 					{
 						// create text
 						cellContent.comment = cellContent.comment + itemParam.firstChild().nodeValue.substr(0,10) + " ";
 					}
+					
 					// if node is a post content - removed as can contain html
 					if (itemParam.nodeName == "post_excerpt")
 					{
@@ -107,11 +110,13 @@ class ThumbTextList1Rss
 						text = text.substr(0, 95) + "...";
 						cellContent.description = text;
 					}
+					
 					// if node is the number of comments
 					if (itemParam.nodeName == "comment_count")
 					{
 						cellContent.commentCount = itemParam.firstChild().nodeValue;
 					}
+					
 					// if node is the link to be opened
 					if (itemParam.nodeName == "guid")
 					{
@@ -120,30 +125,6 @@ class ThumbTextList1Rss
 						cell.action = "openUrl";
 						cell.actionTarget = itemParam.firstChild().nodeValue;
 					}
-					// FTV feed
-					// if node is a title
-					/*if (itemParam.nodeName == "title")
-					{
-						cell.text = itemParam.firstChild().nodeValue;
-					}
-					// if node is a thumb image
-					else if (itemParam.nodeName == "enclosure")
-					{
-						cell.imagePath = itemParam.get("url");
-					}*/
-					
-					// flikr feed
-					// if node is a title
-					/*if (itemParam.nodeName == "media:title")
-					{
-						cell.text = itemParam.firstChild().nodeValue;
-					}
-					// if node is a thumb image
-					//if (itemParam.nodeName == "media:thumbnail")
-					else if (itemParam.nodeName == "media:content")
-					{
-						cell.imagePath = itemParam.get("url");
-					}*/
 				}
 				cell.content = cellContent;
 				cells.push(cell);
