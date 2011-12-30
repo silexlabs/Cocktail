@@ -8,7 +8,7 @@
 package components.dataProvider;
 
 /**
- * This class contains Rss utils
+ * This class contains Rss utils for ThumbTextList1
  * 
  * @author Raphael Harmel
  */
@@ -17,11 +17,11 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
-//import cocktail.textElement.TextElement;
 
-import components.richList.RichListModels;
+import components.lists.ListBaseModels;
+import components.lists.ListBaseUtils;
 
-class RssUtils 
+class ThumbTextList1Rss 
 {
 	/**
 	 * Converts a rss to an Array of CellModels
@@ -29,10 +29,11 @@ class RssUtils
 	 * @param	rss
 	 * @return
 	 */
-	//public static function rss2Cells(rss:Xml):Array<CellModel>
-	public static function rss2Cells(rss:Xml):Array<DynamicCellModel>
+	//public static function rss2Cells(rss:Xml):ListModel
+	public static function rss2Cells(rss:Xml):Array<CellModel>
 	{
-		var cells:Array<DynamicCellModel> = new Array<DynamicCellModel>();
+		//var cells:ListModel = ListBaseUtils.createListModel();
+		var cells:Array<CellModel> = new Array<CellModel>();
 
 		// set channel node
 		var channelNode:Xml = rss.firstElement().firstElement();
@@ -42,8 +43,7 @@ class RssUtils
 		{
 			if (channelChild.nodeName == "item")
 			{
-				//var cell:CellModel = { text:"", imagePath:"", action:"openUrl", actionTarget:"http://www.google.com/" };
-				var cell:DynamicCellModel = { content:Dynamic, action:"", actionTarget:"" };
+				var cell:CellModel = { content:Dynamic, action:"", actionTarget:"" };
 				var cellContent:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
 				
 				// for each node
@@ -56,6 +56,19 @@ class RssUtils
 					{
 						cellContent.thumbnail = itemParam.firstChild().nodeValue;
 					}
+					// in case there is no thumbnail, fill with first image in the post
+					if (itemParam.nodeName == "post_images")
+					{
+						if (!Reflect.hasField(cellContent, 'thumbnail') || (Reflect.field(cellContent, 'thumbnail') == ""))
+						{
+							for (elements in itemParam.elements())
+							{
+								cellContent.thumbnail = itemParam.firstElement().firstChild().nodeValue;
+								break;
+							}
+						}
+					}
+					
 					// if node is a title
 					if (itemParam.nodeName == "post_title")
 					{
@@ -76,7 +89,6 @@ class RssUtils
 					if (itemParam.nodeName == "post_date_gmt")
 					{
 						// create text
-						//cellContent.comment = cellContent.comment  + "on " + itemParam.firstChild().nodeValue.substr(0,10) + " ";
 						cellContent.comment = cellContent.comment + itemParam.firstChild().nodeValue.substr(0,10) + " ";
 					}
 					// if node is a post content - removed as can contain html
@@ -93,11 +105,6 @@ class RssUtils
 						text = StringTools.ltrim(text);
 						// shorten description
 						text = text.substr(0, 95) + "...";
-						// create container
-						//var textContainer:ContainerDOMElement = Utils.getTextContainer(text);
-						// apply style
-						//listStyle.cellText(dateContainer);
-						// add container to cellcontent
 						cellContent.description = text;
 					}
 					// if node is the number of comments
@@ -108,8 +115,10 @@ class RssUtils
 					// if node is the link to be opened
 					if (itemParam.nodeName == "guid")
 					{
-						cellContent.action = "openUrl";
-						cellContent.actionTarget = itemParam.firstChild().nodeValue;
+						//cellContent.action = "openUrl";
+						//cellContent.actionTarget = itemParam.firstChild().nodeValue;
+						cell.action = "openUrl";
+						cell.actionTarget = itemParam.firstChild().nodeValue;
 					}
 					// FTV feed
 					// if node is a title

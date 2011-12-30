@@ -1,10 +1,11 @@
-/**
- * This class defines a thumbList
- * 
- * @author Raphael Harmel
- */
+/*
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 
-package components.richList.thumbList;
+package components.lists;
 
 // DOM
 import cocktail.domElement.DOMElement;
@@ -13,24 +14,29 @@ import cocktail.domElement.ImageDOMElement;
 import cocktail.textElement.TextElement;
 
 // RichList specific
-import components.richList.RichList;
-import components.richList.RichListModels;
-import components.richList.RichListUtils;
-import components.richList.thumbList.ThumbList1Models;
+import components.lists.ListBase;
+import components.lists.ListBaseModels;
+import components.lists.ListBaseUtils;
 
 
-class ThumbList1 extends RichList
+/**
+ * This class defines a thumb & text cell
+ * 
+ * @author Raphael Harmel
+ */
+
+class ThumbTextList1 extends ListBase
 {
 
 	/**
 	 * constructor
 	 * 
-	 * @param	richListModel
+	 * @param	list
 	 * @param	listStyle
 	 */
-	public function new(richList:DynamicRichListModel, listStyle:Dynamic)
+	public function new(list:ListModel, listStyle:Dynamic)
 	{
-		super(richList, listStyle);
+		super(list, listStyle);
 	}
 	
 	/**
@@ -51,7 +57,7 @@ class ThumbList1 extends RichList
 		
 		// add cell number
 		var cellNumberContainer:ContainerDOMElement = Utils.getContainer();
-		var textElement:TextElement = new TextElement(Std.string(_currentCell));
+		var textElement:TextElement = new TextElement(Std.string(_currentCellIndex + 1));
 		cellNumberContainer.addText(textElement);
 		listStyle.cellNumber(cellNumberContainer);
 		cellInfoBlockContainer.addChild(cellNumberContainer);
@@ -100,7 +106,7 @@ class ThumbList1 extends RichList
 		}
 		
 		
-		// TEXT INFO
+		// TEXT
 		
 		// add text block
 		var cellTextBlockContainer:ContainerDOMElement = Utils.getContainer();
@@ -136,6 +142,9 @@ class ThumbList1 extends RichList
 			listStyle.cellDescription(cellDescriptionContainer);
 			cellTextBlockContainer.addChild(cellDescriptionContainer);
 		}
+		
+		
+		// LINE
 		
 		// add separation line
 		var line:ImageDOMElement = new ImageDOMElement();

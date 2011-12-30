@@ -18,6 +18,7 @@ import cocktail.nativeElement.NativeElementData;
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
+import Constants;
 
 /**
  * Defines the style of the web app
@@ -27,8 +28,6 @@ import cocktail.unit.UnitData;
 
 class WebAppStyle 
 {
-	static inline var headerHeight:Int = 43;
-	
 	/**
 	 * Defines default Style
 	 * 
@@ -176,7 +175,7 @@ class WebAppStyle
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.auto;
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
 
 	/**
@@ -198,7 +197,7 @@ class WebAppStyle
 		domElement.style.right = PositionOffsetStyleValue.auto;
 		//domElement.style.width = DimensionStyleValue.auto;
 		domElement.style.width = DimensionStyleValue.length(px(44));
-		//domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+		//domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
 
 	/**
@@ -217,7 +216,7 @@ class WebAppStyle
 		domElement.style.top = PositionOffsetStyleValue.auto;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		domElement.style.width = DimensionStyleValue.auto;
-		//domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+		//domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
 
 	/**
@@ -235,7 +234,7 @@ class WebAppStyle
 		domElement.style.top = PositionOffsetStyleValue.auto;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 	}
 
 	/**
@@ -268,7 +267,7 @@ class WebAppStyle
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
 		//domElement.style.width = DimensionStyleValue.auto;
-		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
+		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 		//domElement.style.height = DimensionStyleValue.percent(100);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
