@@ -5,7 +5,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList.thumbList;
+package components.lists;
 
 // DOM
 import cocktail.domElement.DOMElement;
@@ -21,46 +21,46 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktailCore.style.StyleData;
+import Constants;
 
-// RichList
-import components.richList.RichListModels;
+// list
+import components.lists.ListBaseModels;
 
 //Iphone
 import Utils;
 
 /**
- * This class defines the styles used by a Thumblist containing a thumbnail and text informations,
+ * This class defines the styles used by a Thumb & text cell,
  * i.e. a list with each cell containing a thumbnail on the left and text informations on the right,
  * and having each cell under the previous one
  * 
  * @author Raphael Harmel
  */
 
-class ThumbListStyle1
+class ThumbTextList1Style
 {
-	//static inline var headerHeight:Int = 43;
-	
 	/**
 	 * Defines default Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getDefaultStyle(domElement:DOMElement):Void
+	public static function getListStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
 		
-		//domElement.style.top = PositionOffsetStyleValue.length(px(headerHeight));
-		//domElement.style.bottom = PositionOffsetStyleValue.auto;		
-
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		//domElement.style.marginBottom = MarginStyleValue.length(px(Constants.footerHeight));
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		domElement.style.paddingBottom = PaddingStyleValue.length(px(Constants.footerHeight));
+		
+		//domElement.style.bottom = PositionOffsetStyleValue.length(px(100));
 	}
 	
 	/**
@@ -80,7 +80,7 @@ class ThumbListStyle1
 	 */
 	public static function getCellInfoBlockStyle(domElement:DOMElement):Void
 	{
-		getCellStyle(domElement);
+		//getCellStyle(domElement);
 
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.width = DimensionStyleValue.percent(10);
@@ -157,6 +157,9 @@ class ThumbListStyle1
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(200));
 		domElement.style.width = DimensionStyleValue.percent(30);
+		//domElement.style.height = DimensionStyleValue.percent(100);
+		//domElement.style.height = DimensionStyleValue.length(px(Std.int(domElement.width * 3 / 2)));
+		//domElement.style.height = DimensionStyleValue.length(px(180));
 	}
 	
 	/**
@@ -166,7 +169,7 @@ class ThumbListStyle1
 	 */
 	public static function getCellLineStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		//getListStyle(domElement);
 
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = DimensionStyleValue.percent(100);
