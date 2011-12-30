@@ -7,7 +7,7 @@
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.mouse.MouseData;
-import components.richList.RichListModels;
+import components.lists.ListBaseModels;
 
 /**
  * Handles all applications pages
@@ -113,8 +113,10 @@ class Navigation
 	 */
 	public function onChangeListCallback(cell:CellModel)
 	{
+		//trace("Navigation.onChangeListCallback" + cell.action);
 		if (cell.action == "goToPage")
 		{
+			//trace("Navigation.onChangeListCallback goToPage");
 			var page:ContainerDOMElement = cell.actionTarget;
 		
 			// history handling

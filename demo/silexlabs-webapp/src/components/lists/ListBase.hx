@@ -5,7 +5,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList;
+package components.lists;
 
 // DOM
 import cocktail.classInstance.ClassInstance;
@@ -24,8 +24,8 @@ import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
 // RichList specific
-import components.richList.RichListModels;
-import components.richList.RichListUtils;
+import components.lists.ListBaseModels;
+import components.lists.ListBaseUtils;
 
 
 /**
@@ -33,55 +33,70 @@ import components.richList.RichListUtils;
  * 
  * @author Raphael Harmel
  */
-class RichList extends ContainerDOMElement
+class ListBase extends ContainerDOMElement
 {
 	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
 	
-	// current cell
-	private var _currentCell:Int;
+	// current cell index
+	private var _currentCellIndex:Int;
+	
+	// selected cell data
+	private var _selectedCellData:CellModel;
+	
+	// selected cell DOM
+	private var _selectedCellDOM:ContainerDOMElement;
 	
 	/**
 	 * constructor
 	 * 
-	 * @param	richListModel
+	 * @param	list
 	 * @param	listStyle
 	 * @param	firstElement	first element to be placed in the cell (test or image)
 	 */
-	public function new(richList:DynamicRichListModel, listStyle:Dynamic)
+	public function new(list:ListModel, listStyle:Dynamic)
 	{
-		// init _currentCell
-		_currentCell = 0;
+		// init _currentCellIndex
+		_currentCellIndex = 0;
+		// init _selectedCell
+		_selectedCellData = list.content[0];
+		
 		// create a ul node
 		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
-		createRichListDOM(richList, listStyle);
-		//RichListStyle.getDefaultStyle(this);
+		createListDOM(list, listStyle);
 		listStyle.list(this);
+		
+		selectCell(_selectedCellDOM, listStyle);
 	}
 	
 	/**
 	 * Create the list DOM with provided data and style
 	 * 
-	 * @param	richListModel
+	 * @param	list
 	 * @param	listStyle
 	 */
-	private function createRichListDOM(richListModel:DynamicRichListModel, listStyle:RichListStyleModel):Void
+	private function createListDOM(list:ListModel, listStyle:Dynamic):Void
 	{
 		// set list's cell content
 		var content:ContainerDOMElement = Utils.getContainer();
 		
 		// set list's cells
 		var cellData:CellModel;
-		for (cellData in richListModel.content)
+		for (cellData in list.content)
 		{
 			// create cell
-			var cell:ContainerDOMElement = createCellDOM(cellData.content, listStyle);
+			var cell:ContainerDOMElement = createCellDOM(cellData, listStyle);
 			
 			// add cell to instance
 			this.addChild(cell);
 			
-			_currentCell++;
+			// init _selectedCellDOM with first cell
+			if (_currentCellIndex == 0)
+				_selectedCellDOM = cell;
+			
+			_currentCellIndex++;
 		}
+		_currentCellIndex = 0;
 	}
 	
 	/**
@@ -98,7 +113,7 @@ class RichList extends ContainerDOMElement
 		// apply style
 		listStyle.cell(cell);
 		
-		var cellContent:Array<DOMElement> = getCellData(cellData, listStyle);
+		var cellContent:Array<DOMElement> = getCellData(cellData.content, listStyle);
 		
 		// push content in cell
 		for (container in cellContent)
@@ -109,16 +124,16 @@ class RichList extends ContainerDOMElement
 		// mouse
 		// delegates functions are used to be able to pass an extra parameters to the callback
 		// mouse over
-		var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOver;
+		/*var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseOver;
 		cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cell, listStyle); };
 		// mouse out
-		var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseOut;
+		var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseOut;
 		cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cell, listStyle); };
 		// mouse down
-		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->Void = onCellMouseDown;
-		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };
+		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseDown;
+		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };*/
 		// mouse up
-		var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->RichListStyleModel->CellModel->Void = onCellMouseUp;
+		var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
 		cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
 			
 		return cell;
@@ -144,7 +159,7 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	/*private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOver(cell);
 	}
@@ -156,7 +171,7 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	/*private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOut(cell);
 	}
@@ -168,10 +183,10 @@ class RichList extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	/*private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseDown(cell);
-	}
+	}*/
 	
 	/**
 	 * Cell mouse up callback
@@ -188,5 +203,16 @@ class RichList extends ContainerDOMElement
 		{
 			onChange(cellData);
 		}
+		
+		selectCell(cell, listStyle);
 	}
+	
+	/**
+	 * Select the cell and add a selected image to it
+	 */
+	private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	{
+		_selectedCellDOM = cell;
+	}
+	
 }
