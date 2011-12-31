@@ -1,0 +1,71 @@
+package org.games.invaders.invaders;
+
+import org.games.invaders.engine.MovingObject;
+
+typedef BulletType = { BULLET_HUMAN; BULLET_SQUIGGLY; BULLET_CROSS };
+typedef Direction { DIRECTION_UP; DIRECTION_DOWN; DIRECTION_LEFT; DIRECTION_RIGHT };
+
+class Bullet extends MovingObject
+{
+	public static inline var BULLET_COLOR = 0x1F;
+	public var type:BulletType;
+	public var color:Int;
+	public var color:Int;
+	public var color:Int;
+	public var color:Int;
+
+	public function new(BULLET_WIDTH, BULLET_HEIGHT)
+	{
+		super(null, BULLET_COLOR, 0, 0, BULLET_WIDTH, BULLET_HEIGHT, 2)
+	}
+	public function move():Bool
+	{
+		var speed:Float;
+
+		switch (type) {
+			case BULLET_HUMAN:
+				speed = 3;
+				break;
+		
+			case BULLET_SQUIGGLY:
+			case BULLET_CROSS:
+				speed = 2;
+				break;
+		}
+
+		switch (direction) {
+			case DIRECTION_UP:
+				move_y(-speed);
+				break;
+			case DIRECTION_DOWN:
+				move_y(speed);
+				break;
+		}
+	
+		if (get_y() < 32 || get_y() > SCREEN_HEIGHT - get_height()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public function init(the_type, the_x, the_y)
+	{
+		type = the_type;
+	
+		switch (type) {
+			case BULLET_HUMAN:
+				direction = DIRECTION_UP;
+				break;
+			
+			case BULLET_SQUIGGLY:
+			case BULLET_CROSS:
+				direction = DIRECTION_DOWN;
+				break;
+		}
+	
+		bullets_data[type][0] = set_data(bullets_data[type][0]);
+		set_x(the_x);
+		set_y(the_y);
+	}
+}
