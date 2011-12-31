@@ -4917,6 +4917,8 @@ org.games.invaders.engine.MovingObject.prototype.height = null;
 org.games.invaders.engine.MovingObject.prototype.frame = null;
 org.games.invaders.engine.MovingObject.prototype.num_frames = null;
 org.games.invaders.engine.MovingObject.prototype.cleanup = function() {
+	this.data = "";
+	this.domElement.setIsVisible(false);
 }
 org.games.invaders.engine.MovingObject.prototype.draw = function() {
 	var offset = 0 * this.frame * this.width * this.height;

@@ -50,6 +50,7 @@ class MovingObject
 	}
 	public function cleanup()
 	{
+		data = "";domElement.isVisible=false;
 	}
 	public function draw()
 	{//trace(width);
