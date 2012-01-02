@@ -17,7 +17,6 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 
 // Style
-import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import Constants;
@@ -54,10 +53,10 @@ class AppListStyle
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
-		domElement.style.left = PositionOffsetStyleValue.auto;
-		domElement.style.right = PositionOffsetStyleValue.auto;
+		domElement.style.left = PositionOffsetStyleValue.autoValue;
+		domElement.style.right = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 
@@ -93,8 +92,8 @@ class AppListStyle
 	{
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginLeft = MarginStyleValue.auto;
-		domElement.style.marginRight = MarginStyleValue.auto;
+		domElement.style.marginLeft = MarginStyleValue.autoValue;
+		domElement.style.marginRight = MarginStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
 		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(2));
@@ -108,8 +107,8 @@ class AppListStyle
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginLeft = MarginStyleValue.auto;
-		domElement.style.marginRight = MarginStyleValue.auto;
+		domElement.style.marginLeft = MarginStyleValue.autoValue;
+		domElement.style.marginRight = MarginStyleValue.autoValue;
 		domElement.style.height = DimensionStyleValue.length(px(31));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 	}
