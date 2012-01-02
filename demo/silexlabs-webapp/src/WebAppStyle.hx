@@ -9,7 +9,6 @@ package ;
 
 // DOM
 import cocktail.domElement.DOMElement;
-import cocktailCore.style.StyleData;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -84,8 +83,8 @@ class WebAppStyle
 		//domElement.style.width = DimensionStyleValue.percent(100);
 		//domElement.style.height = DimensionStyleValue.percent(100);
 
-		domElement.style.left = PositionOffsetStyleValue.auto;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.left = PositionOffsetStyleValue.autoValue;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 	}
 	
 	/**
@@ -161,7 +160,7 @@ class WebAppStyle
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.bottom = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
@@ -176,9 +175,9 @@ class WebAppStyle
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(4));
-		domElement.style.bottom = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
 		domElement.style.left = PositionOffsetStyleValue.length(px(15));
-		domElement.style.right = PositionOffsetStyleValue.auto;
+		domElement.style.right = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.length(px(44));
 	}
 
@@ -191,9 +190,9 @@ class WebAppStyle
 	{
 		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
-		domElement.style.width = DimensionStyleValue.auto;
+		domElement.style.width = DimensionStyleValue.autoValue;
 	}
 
 	/**
@@ -207,7 +206,7 @@ class WebAppStyle
 		
 		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));

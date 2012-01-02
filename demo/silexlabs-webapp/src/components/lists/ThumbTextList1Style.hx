@@ -20,7 +20,6 @@ import cocktail.nativeElement.NativeElementData;
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
-import cocktailCore.style.StyleData;
 import Constants;
 
 // list
@@ -122,10 +121,10 @@ class ThumbTextList1Style
 	{
 		domElement.style.display = DisplayStyleValue.block;
 		
-		domElement.style.marginLeft = MarginStyleValue.auto;
-		domElement.style.marginRight = MarginStyleValue.auto;
-		domElement.style.marginTop = MarginStyleValue.auto;
-		domElement.style.marginBottom = MarginStyleValue.auto;
+		domElement.style.marginLeft = MarginStyleValue.autoValue;
+		domElement.style.marginRight = MarginStyleValue.autoValue;
+		domElement.style.marginTop = MarginStyleValue.autoValue;
+		domElement.style.marginBottom = MarginStyleValue.autoValue;
 		domElement.style.paddingBottom = PaddingStyleValue.percent(10);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}

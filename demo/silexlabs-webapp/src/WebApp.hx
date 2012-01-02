@@ -15,7 +15,6 @@ package;
  */
 
 import cocktail.domElement.BodyDOMElement;
-import cocktailCore.style.StyleData;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
