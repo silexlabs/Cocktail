@@ -41,7 +41,7 @@ class Bullet extends MovingObject
 			default:
 		}
 	
-		if (y < 30 || y > Player.PLAYER_Y + SpriteData.PLAYER_HEIGHT - height) {
+		if (y < 30 || y > Player.PLAYER_Y - SpriteData.PLAYER_HEIGHT - height) {
 			return false;
 		} else {
 			return true;

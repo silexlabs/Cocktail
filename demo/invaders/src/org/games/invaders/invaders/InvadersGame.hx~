@@ -155,7 +155,6 @@ class InvadersGame
 	public function restart() 
 	{
 		construct();
-		start();
 	}
 	public function end()
 	{
