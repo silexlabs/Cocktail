@@ -5111,7 +5111,7 @@ if(!org.games.invaders.invaders) org.games.invaders.invaders = {}
 org.games.invaders.invaders.InvadersGame = function(containerDOMElement) { if( containerDOMElement === $_ ) return; {
 	haxe.Log.trace("New invaders Game !",{ fileName : "InvadersGame.hx", lineNumber : 45, className : "org.games.invaders.invaders.InvadersGame", methodName : "new"});
 	this.paused = false;
-	this.timer = new haxe.Timer(50);
+	this.timer = new haxe.Timer(30);
 	org.games.invaders.invaders.InvadersGame.timeline = new cocktailCore.domElement.js.ContainerDOMElement();
 	containerDOMElement.addChild(org.games.invaders.invaders.InvadersGame.timeline);
 	org.games.invaders.invaders.InvadersGame.timeline.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
@@ -5149,7 +5149,7 @@ org.games.invaders.invaders.InvadersGame.prototype.construct = function() {
 	this.player = new org.games.invaders.invaders.Player();
 	this.ufo = new org.games.invaders.invaders.Ufo();
 	this.invaders_x = 64;
-	this.invaders_y = 256;
+	this.invaders_y = 176;
 	this.direction = org.games.invaders.invaders.Direction.DIRECTION_RIGHT;
 	this.speed = 50;
 	this.state = org.games.invaders.invaders.GameState.GAMESTATE_PLAYING;
@@ -5190,7 +5190,7 @@ org.games.invaders.invaders.InvadersGame.prototype.construct = function() {
 				while(_g1 < 11) {
 					var j = _g1++;
 					var invader_x = 64 + j * 40 + j * 30;
-					var invader_y = 256 + i * 32 + i * 30;
+					var invader_y = 176 + i * 32 + i * 30;
 					this.invaders[i][j] = new org.games.invaders.invaders.Invader();
 					this.invaders[i][j].init(invader_type,invader_x,invader_y);
 				}
@@ -5235,10 +5235,16 @@ org.games.invaders.invaders.InvadersGame.prototype.start = function() {
 	this.update_info_bar();
 	this.timer.run = $closure(this,"game");
 }
+org.games.invaders.invaders.InvadersGame.prototype.restart = function() {
+	this.construct();
+	this.start();
+}
 org.games.invaders.invaders.InvadersGame.prototype.end = function() {
-	haxe.Log.trace("end " + this,{ fileName : "InvadersGame.hx", lineNumber : 157, className : "org.games.invaders.invaders.InvadersGame", methodName : "end"});
+	haxe.Log.trace("end " + this,{ fileName : "InvadersGame.hx", lineNumber : 162, className : "org.games.invaders.invaders.InvadersGame", methodName : "end"});
 	this.timer.run = null;
 	if(this.state == org.games.invaders.invaders.GameState.GAMESTATE_LOST) {
+		this.destruct();
+		haxe.Timer.delay($closure(this,"restart"),5000);
 		return;
 	}
 	var the_wave = this.wave + 1;
@@ -5264,7 +5270,7 @@ org.games.invaders.invaders.InvadersGame.prototype.handle_input = function(key) 
 	if(!this.paused) {
 		if(key.value == cocktail.keyboard.KeyboardKeyValue.left || key.value == cocktail.keyboard.KeyboardKeyValue.y) this.player.move_left(16);
 		else if(key.value == cocktail.keyboard.KeyboardKeyValue.right || key.value == cocktail.keyboard.KeyboardKeyValue.a) this.player.move_right(16);
-		else if((key.value == cocktail.keyboard.KeyboardKeyValue.l || key.value == cocktail.keyboard.KeyboardKeyValue.r || key.value == cocktail.keyboard.KeyboardKeyValue.space) && !this.shot) {
+		else if((key.value == cocktail.keyboard.KeyboardKeyValue.up || key.value == cocktail.keyboard.KeyboardKeyValue.space) && !this.shot) {
 			{
 				var _g = 0;
 				while(_g < 10) {
@@ -5298,8 +5304,28 @@ org.games.invaders.invaders.InvadersGame.prototype.update = function() {
 	var animate = false;
 	if(this.vblank_count % this.speed == 0) {
 		animate = true;
+		var minX = 10000.0;
+		var maxX = 0.0;
+		var minY = 10000.0;
+		var maxY = 0.0;
+		{
+			var _g = 0;
+			while(_g < 5) {
+				var i = _g++;
+				{
+					var _g1 = 0;
+					while(_g1 < 11) {
+						var j = _g1++;
+						if(this.invaders[i][j].state == org.games.invaders.invaders.InvaderState.INVADER_OK) {
+							if(this.invaders[i][j].x < minX) minX = this.invaders[i][j].x;
+							if(this.invaders[i][j].x + this.invaders[i][j].width > maxX) maxX = this.invaders[i][j].x + this.invaders[i][j].width;
+						}
+					}
+				}
+			}
+		}
 		if(this.direction == org.games.invaders.invaders.Direction.DIRECTION_DOWN) {
-			if(this.invaders_x <= 64) {
+			if(minX <= 64) {
 				this.direction = org.games.invaders.invaders.Direction.DIRECTION_RIGHT;
 			}
 			else {
@@ -5307,30 +5333,12 @@ org.games.invaders.invaders.InvadersGame.prototype.update = function() {
 			}
 		}
 		else {
-			if(this.direction == org.games.invaders.invaders.Direction.DIRECTION_LEFT && this.invaders_x <= 64) {
+			if(this.direction == org.games.invaders.invaders.Direction.DIRECTION_LEFT && minX <= 64) {
 				this.direction = org.games.invaders.invaders.Direction.DIRECTION_DOWN;
 			}
-			if(this.direction == org.games.invaders.invaders.Direction.DIRECTION_RIGHT && this.invaders_x >= 476) {
+			if(this.direction == org.games.invaders.invaders.Direction.DIRECTION_RIGHT && maxX >= 1216) {
 				this.direction = org.games.invaders.invaders.Direction.DIRECTION_DOWN;
 			}
-		}
-		var $e = this.direction;
-		switch( $e[1] ) {
-		case 3:
-		{
-			this.invaders_x += 8;
-		}break;
-		case 1:
-		{
-			this.invaders_y += 20;
-		}break;
-		case 2:
-		{
-			this.invaders_x -= 8;
-		}break;
-		default:{
-			null;
-		}break;
 		}
 	}
 	this.num_alive_invaders = 0;
@@ -5344,7 +5352,7 @@ org.games.invaders.invaders.InvadersGame.prototype.update = function() {
 					var j = _g1++;
 					this.invaders[i][j].update(this.vblank_count,animate,this.direction);
 					if(this.invaders[i][j].state == org.games.invaders.invaders.InvaderState.INVADER_OK) {
-						if(this.invaders[i][j].y >= 664) {
+						if(this.invaders[i][j].y + this.invaders[i][j].height >= 584) {
 							this.state = org.games.invaders.invaders.GameState.GAMESTATE_LOST;
 							this.end();
 						}
@@ -5719,7 +5727,7 @@ org.games.invaders.engine.MovingObject.prototype.collision = function(sprite) {
 }
 org.games.invaders.engine.MovingObject.prototype.__class__ = org.games.invaders.engine.MovingObject;
 org.games.invaders.invaders.Ufo = function(p) { if( p === $_ ) return; {
-	org.games.invaders.engine.MovingObject.call(this,["assets/invaders/ufo.png"][0],3211264,-64,50,64,28,1);
+	org.games.invaders.engine.MovingObject.call(this,["assets/invaders/ufo.png"][0],3211264,-64,120,64,28,1);
 	this.state = org.games.invaders.invaders.UfoState.UFO_NOT_FLYING;
 }}
 org.games.invaders.invaders.Ufo.__name__ = ["org","games","invaders","invaders","Ufo"];
@@ -6290,7 +6298,7 @@ org.games.invaders.invaders.Bullet.prototype.move = function() {
 		null;
 	}break;
 	}
-	if(this.y < 30 || this.y > 720 - this.height) {
+	if(this.y < 30 || this.y > 632 - this.height) {
 		return false;
 	}
 	else {
@@ -6318,7 +6326,7 @@ org.games.invaders.invaders.Bullet.prototype.init = function(the_type,the_x,the_
 		idx = 2;
 	}break;
 	}
-	this.data = ["assets/invaders/bullet-player.png","assets/invaders/bullet-invader.png"][idx];
+	this.data = ["assets/invaders/bullet-player.png","assets/invaders/bullet-invader.png","assets/invaders/bullet-invader.png"][idx];
 	this.x = the_x;
 	this.y = the_y;
 }
@@ -8157,22 +8165,22 @@ cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer.__super__ = cock
 for(var k in cocktailCore.style.computer.BoxStylesComputer.prototype ) cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer.prototype[k] = cocktailCore.style.computer.BoxStylesComputer.prototype[k];
 cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer.prototype.__class__ = cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 org.games.invaders.invaders.Player = function(p) { if( p === $_ ) return; {
-	org.games.invaders.engine.MovingObject.call(this,["assets/invaders/player.png"][0],12544,1280 / 2 - 60 / 2,680,60,32,3);
+	org.games.invaders.engine.MovingObject.call(this,["assets/invaders/player.png"][0],12544,1280 / 2 - 60 / 2,600,60,32,3);
 }}
 org.games.invaders.invaders.Player.__name__ = ["org","games","invaders","invaders","Player"];
 org.games.invaders.invaders.Player.__super__ = org.games.invaders.engine.MovingObject;
 for(var k in org.games.invaders.engine.MovingObject.prototype ) org.games.invaders.invaders.Player.prototype[k] = org.games.invaders.engine.MovingObject.prototype[k];
 org.games.invaders.invaders.Player.prototype.move_left = function(amount) {
-	if(this.x - amount < 16) {
-		this.x = 16;
+	if(this.x - amount < 64) {
+		this.x = 64;
 	}
 	else {
 		this.x -= amount;
 	}
 }
 org.games.invaders.invaders.Player.prototype.move_right = function(amount) {
-	if(this.x + amount > 1264 - this.width) {
-		this.x = 1264 - this.width;
+	if(this.x + amount > 1216 - this.width) {
+		this.x = 1216 - this.width;
 	}
 	else {
 		this.x += amount;
@@ -9089,7 +9097,7 @@ js.Boot.__init();
 cocktailCore.domElement.js.ImageDOMElement.IMAGE_RENDERING_OPTIMIZE_QUALITY = "optimizeQuality";
 cocktailCore.domElement.js.ImageDOMElement.IMAGE_RENDERING_OPTIMIZE_SPEED = "optimizeSpeed";
 org.games.invaders.invaders.Ufo.UFO_COLOR = 3211264;
-org.games.invaders.invaders.Ufo.UFO_Y = 50;
+org.games.invaders.invaders.Ufo.UFO_Y = 120;
 org.games.invaders.invaders.SpriteData.PLAYER_WIDTH = 60;
 org.games.invaders.invaders.SpriteData.PLAYER_HEIGHT = 32;
 org.games.invaders.invaders.SpriteData.NUM_INVADERS = 3;
@@ -9105,7 +9113,7 @@ org.games.invaders.invaders.SpriteData.BULLET_HEIGHT = 15;
 org.games.invaders.invaders.SpriteData.player_data = ["assets/invaders/player.png"];
 org.games.invaders.invaders.SpriteData.invaders_data = ["assets/invaders/octopus.png","assets/invaders/crab.png","assets/invaders/squid.png"];
 org.games.invaders.invaders.SpriteData.invader_exploded = [""];
-org.games.invaders.invaders.SpriteData.bullets_data = ["assets/invaders/bullet-player.png","assets/invaders/bullet-invader.png"];
+org.games.invaders.invaders.SpriteData.bullets_data = ["assets/invaders/bullet-player.png","assets/invaders/bullet-invader.png","assets/invaders/bullet-invader.png"];
 org.games.invaders.invaders.SpriteData.bunker_data = ["assets/invaders/bunker.png"];
 org.games.invaders.invaders.SpriteData.ufo_data = ["assets/invaders/ufo.png"];
 haxe.Timer.arr = new Array();
@@ -9121,17 +9129,16 @@ cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_NO_REPEAT = "no-repe
 org.games.invaders.invaders.GameData.INVADER_ROWS = 5;
 org.games.invaders.invaders.GameData.INVADER_COLUMNS = 11;
 org.games.invaders.invaders.GameData.INVADERS_X = 64;
-org.games.invaders.invaders.GameData.INVADERS_Y = 256;
+org.games.invaders.invaders.GameData.INVADERS_Y = 176;
 org.games.invaders.invaders.GameData.INVADERS_SPACING = 30;
 org.games.invaders.invaders.GameData.SCREEN_WIDTH = 1280;
 org.games.invaders.invaders.GameData.SCREEN_HEIGHT = 720;
 org.games.invaders.invaders.GameData.INVADER_WIDTH = 40;
-org.games.invaders.invaders.GameData.INVADERS_X_RIGHT = 476;
 org.games.invaders.invaders.GameData.MAX_BULLETS = 10;
 org.games.invaders.invaders.Player.PLAYER_COLOR = 12544;
 org.games.invaders.invaders.Player.PLAYER_X = 1280 / 2 - 60 / 2;
-org.games.invaders.invaders.Player.PLAYER_Y = 680;
-org.games.invaders.invaders.Player.PLAYER_MARGIN = 16;
+org.games.invaders.invaders.Player.PLAYER_Y = 600;
+org.games.invaders.invaders.Player.PLAYER_MARGIN = 64;
 org.games.invaders.invaders.Invader.INVADER_COLOR = 3223857;
 js.Lib.onerror = null;
 org.games.invaders.Main.main()

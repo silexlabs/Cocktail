@@ -27,7 +27,7 @@ class SpriteData
 	public static inline var player_data = ["assets/invaders/player.png"];
 	public static inline var invaders_data = ["assets/invaders/octopus.png", "assets/invaders/crab.png", "assets/invaders/squid.png"];
 	public static inline var invader_exploded = [""];
-	public static inline var bullets_data = ["assets/invaders/bullet-player.png", "assets/invaders/bullet-invader.png", "assets/invaders/bullet-invader.png"];
+	public static inline var bullets_data = ["assets/invaders/bullet-player.png", "assets/invaders/bullet-player.png", "assets/invaders/bullet-invader.png"];
 	public static inline var bunker_data = ["assets/invaders/bunker.png"];
 	public static inline var ufo_data = ["assets/invaders/ufo.png"];
 
