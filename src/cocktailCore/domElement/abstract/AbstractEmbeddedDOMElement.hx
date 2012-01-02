@@ -11,7 +11,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.EmbeddedStyle;
 import cocktail.domElement.DOMElementData;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.domElement.as3.DOMElement;
 #elseif js
 import cocktailCore.domElement.js.DOMElement;

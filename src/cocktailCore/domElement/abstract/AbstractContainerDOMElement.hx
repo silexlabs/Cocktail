@@ -17,7 +17,7 @@ import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import haxe.Log;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.domElement.as3.DOMElement;
 #elseif js
 import cocktailCore.domElement.js.DOMElement;

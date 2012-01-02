@@ -10,7 +10,7 @@ package cocktail.domElement;
 /**
  * Set the right runtime specific EmbeddedDOMElement at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef EmbeddedDOMElement =  cocktailCore.domElement.as3.EmbeddedDOMElement;
 
 #elseif js
