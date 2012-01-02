@@ -8,8 +8,8 @@ class Player extends MovingObject
 {
 	public static inline var PLAYER_COLOR = 0x003100;
 	public static inline var PLAYER_X = (GameData.SCREEN_WIDTH / 2) - (SpriteData.PLAYER_WIDTH / 2); // center
-	public static inline var PLAYER_Y = GameData.SCREEN_HEIGHT - SpriteData.PLAYER_HEIGHT - 8;
-	public static inline var PLAYER_MARGIN = 16;
+	public static inline var PLAYER_Y = GameData.SCREEN_HEIGHT - SpriteData.PLAYER_HEIGHT - 88;
+	public static inline var PLAYER_MARGIN = 64;
 
 	public function new()
 	{
