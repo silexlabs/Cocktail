@@ -78,7 +78,7 @@ class Style extends AbstractStyle
 		setNativeY(this._domElement, untyped this._domElement.nativeElement.offsetTop);
 		
 		//The DOMElement is set to valid to allow future re layout
-		this._isInvalid = false;
+		this._isDirty = false;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1353,7 +1353,7 @@ class Style extends AbstractStyle
 		}
 		super.setTransformOrigin(value);
 		
-		return _tranformOrigin = value;
+		return _transformOrigin = value;
 	}
 	
 	override private function setTransform(value:TransformStyleValue):TransformStyleValue
