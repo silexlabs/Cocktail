@@ -197,9 +197,9 @@ class InvadersGame
 		{
 			//trace(key);
 			if (key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.y)
-				player.move_left(8);
+				player.move_left(16);
 			else if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.a)
-				player.move_right(8);
+				player.move_right(16);
 			else if ((key.value == KeyboardKeyValue.l || key.value == KeyboardKeyValue.r || key.value == KeyboardKeyValue.space)
 				&& !shot)
 			{
@@ -277,13 +277,13 @@ class InvadersGame
 		
 			switch (direction) {
 				case DIRECTION_RIGHT:
-					invaders_x += 8;
+					invaders_x += 16;
 			
 				case DIRECTION_DOWN:
 					invaders_y += 20;
 			
 				case DIRECTION_LEFT:
-					invaders_x -= 8;
+					invaders_x -= 16;
 
 				default:
 			}
@@ -311,7 +311,7 @@ class InvadersGame
 						// Check if the current invader is at the bottom of its column
 						var at_bottom = true;
 					
-						for (k in i+1...GameData.INVADER_COLUMNS)
+						for (k in i+1...GameData.INVADER_ROWS)
 						{
 							if (invaders[k][j].state == INVADER_OK) 
 							{
