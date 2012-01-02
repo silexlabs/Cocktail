@@ -200,7 +200,7 @@ class AbstractStyle
 	 * determine wether the DOMElement and its chidlren must
 	 * be laid out again
 	 */
-	private var _isInvalid:Bool;
+	private var _isDirty:Bool;
 	
 	/**
 	 * Store the x position of the NativeElement
@@ -267,7 +267,7 @@ class AbstractStyle
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
-		this._isInvalid = true;
+		this._isDirty = true;
 		initDefaultStyleValues();
 	}
 	
@@ -502,7 +502,7 @@ class AbstractStyle
 		setNativeVisibility(this._computedStyle.visibility);
 		
 		//The DOMElement has been laid out and is now valid
-		this._isInvalid = false;
+		this._isDirty = false;
 	}
 	
 	/**
@@ -656,21 +656,21 @@ class AbstractStyle
 	{
 		//only invalidate the parent if it isn't
 		//done already
-		if (this._isInvalid == false)
+		if (this._isDirty == false)
 		{
-			//set the invalid flag to prevent multiple
-			//invalidation of the DOMElement in a row
-			//The DOMElement will be be able to be invalidated
-			//again once it is laid out
-			this._isInvalid = true;
+			//set the dirty flag to prevent multiple
+			//layout of the DOMElement in a row
+			//The DOMElement will be able to be invalidated
+			//again once it has been laid out
+			this._isDirty = true;
 			
 			//if the DOMElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			if (this._domElement.parent != null)
 			{
-				//invalidate its parent if it must
-				if (isParentInvalid() == true)
+				//dirties its parent if it must
+				if (isParentDirty() == true)
 				{
 					this._domElement.parent.style.invalidate();	
 				}
@@ -742,11 +742,11 @@ class AbstractStyle
 	
 	/**
 	 * Determine wheter the parent of the DOMElement needs
-	 * to be invalidated too. In some caes, for instance
-	 * if the DOMElement is absolutely positioned, invalidating
+	 * to be dirtied too. In some cases, for instance
+	 * if the DOMElement is absolutely positioned, dirtiyng
 	 * its parent isn't necessary
 	 */
-	private function isParentInvalid():Bool
+	private function isParentDirty():Bool
 	{
 		var ret:Bool = true;
 		
