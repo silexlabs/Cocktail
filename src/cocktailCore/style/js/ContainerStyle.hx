@@ -11,7 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.StyleData;
+import cocktail.style.StyleData;
 import haxe.Log;
 
 
