@@ -71,7 +71,7 @@ class AbstractStyle
 	private var _visibility:VisibilityStyleValue;
 	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
 	
-	private var _tranformOrigin:TransformOriginStyleData;
+	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
 	
 	private var _transform:TransformStyleValue;
@@ -199,7 +199,7 @@ class AbstractStyle
 	 * determine wether the DOMElement and its chidlren must
 	 * be laid out again
 	 */
-	private var _isInvalid:Bool;
+	private var _isDirty:Bool;
 	
 	/**
 	 * Store the x position of the NativeElement
@@ -266,7 +266,7 @@ class AbstractStyle
 	public function new(domElement:DOMElement) 
 	{
 		this._domElement = domElement;
-		this._isInvalid = true;
+		this._isDirty = true;
 		initDefaultStyleValues();
 	}
 	
@@ -278,63 +278,63 @@ class AbstractStyle
 		initComputedStyles();
 		initNativeProperties();
 		
-		this.width = DimensionStyleValue.autoValue;
-		this.height = DimensionStyleValue.autoValue;
+		this._width = DimensionStyleValue.autoValue;
+		this._height = DimensionStyleValue.autoValue;
 		
-		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxWidth = ConstrainedDimensionStyleValue.none;
-		this.minHeight = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxHeight = ConstrainedDimensionStyleValue.none;
+		this._minWidth = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxWidth = ConstrainedDimensionStyleValue.none;
+		this._minHeight = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxHeight = ConstrainedDimensionStyleValue.none;
 		
-		this.marginTop = MarginStyleValue.length(px(0));
-		this.marginBottom = MarginStyleValue.length(px(0));
-		this.marginLeft = MarginStyleValue.length(px(0));
-		this.marginRight = MarginStyleValue.length(px(0));
+		this._marginTop = MarginStyleValue.length(px(0));
+		this._marginBottom = MarginStyleValue.length(px(0));
+		this._marginLeft = MarginStyleValue.length(px(0));
+		this._marginRight = MarginStyleValue.length(px(0));
 		
-		this.paddingTop = PaddingStyleValue.length(px(0));
-		this.paddingBottom = PaddingStyleValue.length(px(0));
-		this.paddingLeft = PaddingStyleValue.length(px(0));
-		this.paddingRight = PaddingStyleValue.length(px(0));
+		this._paddingTop = PaddingStyleValue.length(px(0));
+		this._paddingBottom = PaddingStyleValue.length(px(0));
+		this._paddingLeft = PaddingStyleValue.length(px(0));
+		this._paddingRight = PaddingStyleValue.length(px(0));
 		
-		this.lineHeight = LineHeightStyleValue.normal;
-		this.verticalAlign = VerticalAlignStyleValue.baseline;
+		this._lineHeight = LineHeightStyleValue.normal;
+		this._verticalAlign = VerticalAlignStyleValue.baseline;
 		
-		this.display = DisplayStyleValue.inlineStyle;
-		this.position = PositionStyleValue.staticStyle;
+		this._display = DisplayStyleValue.inlineStyle;
+		this._position = PositionStyleValue.staticStyle;
 		
-		this.top = PositionOffsetStyleValue.autoValue;
-		this.bottom = PositionOffsetStyleValue.autoValue;
-		this.left = PositionOffsetStyleValue.autoValue;
-		this.right = PositionOffsetStyleValue.autoValue;
+		this._top = PositionOffsetStyleValue.autoValue;
+		this._bottom = PositionOffsetStyleValue.autoValue;
+		this._left = PositionOffsetStyleValue.autoValue;
+		this._right = PositionOffsetStyleValue.autoValue;
 		
-		this.floatValue = FloatStyleValue.none;
-		this.clear = ClearStyleValue.none;
+		this._floatValue = FloatStyleValue.none;
+		this._clear = ClearStyleValue.none;
 		
-		this.fontStyle = FontStyleStyleValue.normal;
-		this.fontVariant = FontVariantStyleValue.normal;
-		this.fontWeight = FontWeightStyleValue.normal;
-		this.fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		this._fontStyle = FontStyleStyleValue.normal;
+		this._fontVariant = FontVariantStyleValue.normal;
+		this._fontWeight = FontWeightStyleValue.normal;
+		this._fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
 		
-		this.textIndent = TextIndentStyleValue.length(px(0));
-		this.textAlign = TextAlignStyleValue.left;
-		this.letterSpacing = LetterSpacingStyleValue.normal;
-		this.wordSpacing = WordSpacingStyleValue.normal;
-		this.textTransform = TextTransformStyleValue.none;
-		this.whiteSpace = WhiteSpaceStyleValue.normal;
+		this._textIndent = TextIndentStyleValue.length(px(0));
+		this._textAlign = TextAlignStyleValue.left;
+		this._letterSpacing = LetterSpacingStyleValue.normal;
+		this._wordSpacing = WordSpacingStyleValue.normal;
+		this._textTransform = TextTransformStyleValue.none;
+		this._whiteSpace = WhiteSpaceStyleValue.normal;
 		
-		this.visibility = VisibilityStyleValue.visible;
-		this.opacity = OpacityStyleValue.number(1.0);
+		this._visibility = VisibilityStyleValue.visible;
+		this._opacity = OpacityStyleValue.number(1.0);
 		
-		this.transformOrigin = {
+		this._transformOrigin = {
 			x:TransformOriginXStyleValue.center,
 			y:TransformOriginYStyleValue.center
 		}
 		
-		this.transform = TransformStyleValue.none;
+		this._transform = TransformStyleValue.none;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
-		this.fontFamily = defaultStyles.fontFamily;
-		this.color = defaultStyles.color;
+		this._fontFamily = defaultStyles.fontFamily;
+		this._color = defaultStyles.color;
 	}
 	
 	/**
@@ -501,7 +501,7 @@ class AbstractStyle
 		setNativeVisibility(this._computedStyle.visibility);
 		
 		//The DOMElement has been laid out and is now valid
-		this._isInvalid = false;
+		this._isDirty = false;
 	}
 	
 	/**
@@ -655,21 +655,21 @@ class AbstractStyle
 	{
 		//only invalidate the parent if it isn't
 		//done already
-		if (this._isInvalid == false)
+		if (this._isDirty == false)
 		{
-			//set the invalid flag to prevent multiple
-			//invalidation of the DOMElement in a row
-			//The DOMElement will be be able to be invalidated
-			//again once it is laid out
-			this._isInvalid = true;
+			//set the dirty flag to prevent multiple
+			//layout of the DOMElement in a row
+			//The DOMElement will be able to be invalidated
+			//again once it has been laid out
+			this._isDirty = true;
 			
 			//if the DOMElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			if (this._domElement.parent != null)
 			{
-				//invalidate its parent if it must
-				if (isParentInvalid() == true)
+				//dirties its parent if it must
+				if (isParentDirty() == true)
 				{
 					this._domElement.parent.style.invalidate();	
 				}
@@ -741,11 +741,11 @@ class AbstractStyle
 	
 	/**
 	 * Determine wheter the parent of the DOMElement needs
-	 * to be invalidated too. In some caes, for instance
-	 * if the DOMElement is absolutely positioned, invalidating
+	 * to be dirtied too. In some cases, for instance
+	 * if the DOMElement is absolutely positioned, dirtiyng
 	 * its parent isn't necessary
 	 */
-	private function isParentInvalid():Bool
+	private function isParentDirty():Bool
 	{
 		var ret:Bool = true;
 		
@@ -1595,7 +1595,7 @@ class AbstractStyle
 	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
 	{
 		invalidate();
-		return _tranformOrigin = value;
+		return _transformOrigin = value;
 	}
 	
 	private function setTransform(value:TransformStyleValue):TransformStyleValue
@@ -1805,6 +1805,6 @@ class AbstractStyle
 	
 	private function getTransformOrigin():TransformOriginStyleData
 	{
-		return _tranformOrigin;
+		return _transformOrigin;
 	}
 }
