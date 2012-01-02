@@ -34,7 +34,7 @@ class AbstractBodyStyle extends ContainerStyle
 		//the BodyDOMElelement is set to valid by default
 		//to allow triggering the first layout when a children
 		//will be added to it
-		_isInvalid = false;
+		_isDirty = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,9 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override public function invalidate():Void
 	{
-		if (this._isInvalid == false)
+		if (this._isDirty == false)
 		{
-			this._isInvalid = true;
+			this._isDirty = true;
 			var viewPortData:ContainingDOMElementData = getViewportData();
 		
 			//the first positioned parent of the body is always the viewport					
