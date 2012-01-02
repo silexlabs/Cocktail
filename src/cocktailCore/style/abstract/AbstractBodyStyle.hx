@@ -12,7 +12,7 @@ import cocktail.viewport.Viewport;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.StyleData;
+import cocktail.style.StyleData;
 
 /**
  * This is the style implementation for BodyDOMElement.

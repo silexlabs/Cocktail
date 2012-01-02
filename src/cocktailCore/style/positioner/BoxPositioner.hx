@@ -9,7 +9,6 @@ package cocktailCore.style.positioner;
 
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.geom.GeomData;
 import haxe.Log;
 
@@ -64,7 +63,7 @@ class BoxPositioner
 	{
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
 		//left takes precedance so we try to apply left offset first
-		if (domElement.style.left != PositionOffsetStyleValue.auto)
+		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
 			//first place the DOMElement at its first positioned ancestor
 			//x origin
@@ -75,7 +74,7 @@ class BoxPositioner
 		//if no left offset is defined, then try to apply a right offset
 		//right offset takes the containing DOMElement element width minus, the
 		//width of the DOMElement as value for a 0 offset
-		else if (domElement.style.right != PositionOffsetStyleValue.auto)
+		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
 			applyGlobalX(domElement,  containingDOMElementData.globalX);
 			domElement.style.setNativeX(domElement, getRightOffset(domElement, containingDOMElementData.width));
@@ -88,12 +87,12 @@ class BoxPositioner
 		}
 		
 		//for vertical offset, the same rule as hortizontal offsets apply
-		if (domElement.style.top != PositionOffsetStyleValue.auto)
+		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
 			applyGlobalY(domElement,  containingDOMElementData.globalY);
 			domElement.style.setNativeY(domElement, getTopOffset(domElement));
 		}
-		else if (domElement.style.bottom != PositionOffsetStyleValue.auto)
+		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
 			applyGlobalY(domElement,  containingDOMElementData.globalY);
 			domElement.style.setNativeY(domElement, getBottomOffset(domElement, containingDOMElementData.height));
