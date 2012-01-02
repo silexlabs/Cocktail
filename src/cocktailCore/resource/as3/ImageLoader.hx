@@ -9,12 +9,6 @@ package cocktailCore.resource.as3;
 
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractImageLoader;
-import flash.display.Loader;
-import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.net.URLRequest;
-import flash.system.ApplicationDomain;
-import flash.system.LoaderContext;
 import haxe.Log;
 
 import cocktail.domElement.DOMElement;
