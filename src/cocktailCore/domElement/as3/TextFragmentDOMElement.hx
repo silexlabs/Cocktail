@@ -11,7 +11,6 @@ import cocktailCore.domElement.abstract.AbstractTextFragmentDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktailCore.style.Style;
 import haxe.Log;
 

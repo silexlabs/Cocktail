@@ -11,7 +11,6 @@ import cocktail.domElement.EmbeddedDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 /**
@@ -47,7 +46,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
 		//if the 'height' style also is defined as 'auto'
-		if (style.height == DimensionStyleValue.auto)
+		if (style.height == DimensionStyleValue.autoValue)
 		{
 			//first try to use the intrinsic width of the embedded
 			//DOMElement if it exist (it might for instance be a
@@ -121,7 +120,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var ret:Int = 0;
 		
 		//if the 'width' style is also set to 'auto'
-		if (style.width == DimensionStyleValue.auto)
+		if (style.width == DimensionStyleValue.autoValue)
 		{
 			//try to use the intrinsic height if not null
 			if (embeddedDOMElement.intrinsicHeight != null)
