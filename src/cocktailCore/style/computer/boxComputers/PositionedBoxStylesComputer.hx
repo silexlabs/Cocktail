@@ -10,7 +10,6 @@ package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 /**
@@ -44,26 +43,26 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var shrinkedWidth:Int;
 		
 		//shrink-to-fit only happen if either left or right is auto
-		if (style.left == PositionOffsetStyleValue.auto || style.right == PositionOffsetStyleValue.auto)
+		if (style.left == PositionOffsetStyleValue.autoValue || style.right == PositionOffsetStyleValue.autoValue)
 		{
 			var computedStyle:ComputedStyleData = style.computedStyle;
 			//compute the shrinked width
 			shrinkedWidth = doShrinkToFit(style, containingDOMElementData, minimumWidth);
 			
 			//if both right and left are auto, use left static position, then deduce right
-			if (style.left == PositionOffsetStyleValue.auto && style.right == PositionOffsetStyleValue.auto)
+			if (style.left == PositionOffsetStyleValue.autoValue && style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedStaticLeft(style, containingDOMElementData);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
 			}
 			//if only right is auto, compute left then deduce right
-			else if (style.right == PositionOffsetStyleValue.auto)
+			else if (style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
 			}
 			//same for left
-			else if (style.left == PositionOffsetStyleValue.auto)
+			else if (style.left == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.left = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
@@ -88,7 +87,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var height:Int;
 		
 		//if neither top and bottom are auto, then height can be computed using all the other vertical dimensions
-		if (style.top != PositionOffsetStyleValue.auto && style.bottom != PositionOffsetStyleValue.auto)
+		if (style.top != PositionOffsetStyleValue.autoValue && style.bottom != PositionOffsetStyleValue.autoValue)
 		{
 			var computedStyle:ComputedStyleData = style.computedStyle;
 			height = containingDOMElementData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
@@ -128,7 +127,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//first, any auto value for margins are computed to 0
-		if (style.marginLeft == MarginStyleValue.auto)
+		if (style.marginLeft == MarginStyleValue.autoValue)
 		{
 			style.computedStyle.marginLeft = 0;
 		}
@@ -137,7 +136,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
 		}
 		
-		if (style.marginRight == MarginStyleValue.auto)
+		if (style.marginRight == MarginStyleValue.autoValue)
 		{
 			style.computedStyle.marginRight = 0;
 		}
@@ -147,7 +146,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		}
 		
 		//if neither left or right are auto but width is
-		if (style.left != PositionOffsetStyleValue.auto && style.right != PositionOffsetStyleValue.auto)
+		if (style.left != PositionOffsetStyleValue.autoValue && style.right != PositionOffsetStyleValue.autoValue)
 		{
 			//left and right are computed as they are defined either as length or percentage
 			style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -170,14 +169,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
 		
 		//if neither left nor right are defined as auto
-		if (style.left != PositionOffsetStyleValue.auto && style.right != PositionOffsetStyleValue.auto)
+		if (style.left != PositionOffsetStyleValue.autoValue && style.right != PositionOffsetStyleValue.autoValue)
 		{
 			//compute left and right defined either as length or percentage
 			style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//if both margin are auto, they will take the same size
-			if (style.marginLeft == MarginStyleValue.auto && style.marginRight == MarginStyleValue.auto)
+			if (style.marginLeft == MarginStyleValue.autoValue && style.marginRight == MarginStyleValue.autoValue)
 			{
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
@@ -197,7 +196,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			}
 			//if only margin left is auto
-			else if (style.marginLeft == MarginStyleValue.auto)
+			else if (style.marginLeft == MarginStyleValue.autoValue)
 			{
 				//compute margin right then deduce margin left from the remaining horizontal
 				//space
@@ -205,7 +204,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				style.computedStyle.marginLeft = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginRight;
 			}
 			//same if only margin right is auto
-			else if (style.marginRight == MarginStyleValue.auto)
+			else if (style.marginRight == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
 				style.computedStyle.marginRight = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginLeft;
@@ -221,7 +220,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//any auto margin computes to 0
-			if (style.marginLeft == MarginStyleValue.auto)
+			if (style.marginLeft == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginLeft = 0;
 			}
@@ -230,7 +229,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
 			}
 			
-			if (style.marginRight == MarginStyleValue.auto)
+			if (style.marginRight == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginRight = 0;
 			}
@@ -240,19 +239,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			}
 			
 			//if left and right are both auto, the statc position of left is used, then right is computed
-			if (style.left == PositionOffsetStyleValue.auto && style.right == PositionOffsetStyleValue.auto)
+			if (style.left == PositionOffsetStyleValue.autoValue && style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedStaticLeft(style, containingDOMElementData);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
 			}
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
-			else if (style.left == PositionOffsetStyleValue.auto)
+			else if (style.left == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.left = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
 			}
 			//same for right
-			else if(style.right == PositionOffsetStyleValue.auto)
+			else if(style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
@@ -272,7 +271,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//first, any auto value for margins are computed to 0
-		if (style.marginTop == MarginStyleValue.auto)
+		if (style.marginTop == MarginStyleValue.autoValue)
 		{
 			style.computedStyle.marginTop = 0;
 		}
@@ -281,7 +280,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
 		}
 		
-		if (style.marginBottom == MarginStyleValue.auto)
+		if (style.marginBottom == MarginStyleValue.autoValue)
 		{
 			style.computedStyle.marginBottom = 0;
 		}
@@ -291,7 +290,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		}
 		
 		//if neither top or bottom are auto but height is
-		if (style.top != PositionOffsetStyleValue.auto && style.bottom != PositionOffsetStyleValue.auto)
+		if (style.top != PositionOffsetStyleValue.autoValue && style.bottom != PositionOffsetStyleValue.autoValue)
 		{
 			//top and bottom are computed as they are defined either as length or percentage
 			style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -317,14 +316,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
 		
 		//if neither top nor bottom are defined as auto
-		if (style.top != PositionOffsetStyleValue.auto && style.bottom != PositionOffsetStyleValue.auto)
+		if (style.top != PositionOffsetStyleValue.autoValue && style.bottom != PositionOffsetStyleValue.autoValue)
 		{
 			//compute top and bottom defined either as length or percentage
 			style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//if both margin are auto, they will take the same size
-			if (style.marginTop == MarginStyleValue.auto && style.marginBottom == MarginStyleValue.auto)
+			if (style.marginTop == MarginStyleValue.autoValue && style.marginBottom == MarginStyleValue.autoValue)
 			{
 				//compute the size of one of the margin, which is half the remaining vertical space
 				//once all other values (padding, width, offset) are removed
@@ -344,7 +343,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			}
 			//if only margin top is auto
-			else if (style.marginTop == MarginStyleValue.auto)
+			else if (style.marginTop == MarginStyleValue.autoValue)
 			{
 				//compute margin top then deduce margin bottom from the remaining vertical
 				//space
@@ -352,7 +351,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				style.computedStyle.marginTop = containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom;
 			}
 			//same if only margin bottom is auto
-			else if (style.marginBottom == MarginStyleValue.auto)
+			else if (style.marginBottom == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
 				style.computedStyle.marginBottom = containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginTop;
@@ -368,7 +367,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//any auto margin computes to 0
-			if (style.marginTop == MarginStyleValue.auto)
+			if (style.marginTop == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginTop = 0;
 			}
@@ -377,7 +376,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
 			}
 			
-			if (style.marginBottom == MarginStyleValue.auto)
+			if (style.marginBottom == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginBottom = 0;
 			}
@@ -387,19 +386,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			}
 			
 			//if top and bottom are both auto, the static position of top is used, then bottom is computed
-			if (style.top == PositionOffsetStyleValue.auto && style.bottom == PositionOffsetStyleValue.auto)
+			if (style.top == PositionOffsetStyleValue.autoValue && style.bottom == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.top = getComputedStaticTop(style, containingDOMElementData);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
 			}
 			//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
-			else if (style.bottom == PositionOffsetStyleValue.auto)
+			else if (style.bottom == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
 			}
 			//same for top
-			else if(style.top == PositionOffsetStyleValue.auto)
+			else if(style.top == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.top = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
