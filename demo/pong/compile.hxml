@@ -1,0 +1,5 @@
+-js bin/js/App.js
+-main org.games.pong.Main
+-cp src
+-cp ../../src/
+-cp libs

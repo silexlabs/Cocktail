@@ -57,12 +57,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 * Its NativeElement is used by this ImageDOMElement
 	 */
 	private var _imageLoader:ImageLoader;
-
-	/**
-	 * Determine wether the bitmap should be smoothed
-	 */
-	private var _smooth:Bool;
-	public var smooth(getSmooth, setSmooth):Bool;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT
@@ -78,17 +72,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 		//use the provided NativeElement if any
 		_imageLoader = new ImageLoader(nativeElement);
 		super(_imageLoader.nativeElement);
-	}
-
-	/**
-	 * Init the smoothing of the picture
-	 */
-	override private function init():Void
-	{	
-		super.init();
-		
-		//smooth the picture by default
-		this.smooth = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -119,9 +102,6 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	{
 		this._style.invalidate();
 		
-		//refresh picture smoothing
-		this.smooth = this.smooth;
-		
 		//if provided, call the callback
 		//with the ImageDOMElement
 		if (onLoad != null)
@@ -150,16 +130,5 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	private function getSrc():String
 	{
 		return this._src;
-	}
-	
-	private function setSmooth(value:Bool):Bool
-	{
-		this._smooth = value;
-		return value;
-	}
-	
-	private function getSmooth():Bool
-	{
-		return this._smooth;
 	}
 }

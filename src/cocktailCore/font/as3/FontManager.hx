@@ -38,6 +38,23 @@ class FontManager extends AbstractFontManager
 		super();
 	}
 	/** 
+	 * Returns a list of fonts which have been loaded.
+	 */
+	override public function getEmbeddedFonts() : Array<FontData>
+	{
+		// get a list of all the fonts
+		var fontsArray : Array<flash.text.Font> = flash.text.Font.enumerateFonts(false);
+		var resultArray : Array<FontData> = new Array();
+		var idx : Int;
+
+		// keep only the system fonts
+		for (idx in 0...fontsArray.length)
+				resultArray.push({name : fontsArray[idx].fontName, url : null, type : unknown});
+
+		// returns result
+		return resultArray;
+	}
+	/** 
 	 * Returns a list of fonts which are installed on the current runtime.
 	 */
 	override public function getSystemFonts() : Array<FontData>

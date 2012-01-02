@@ -12,7 +12,9 @@ import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
+import haxe.Log;
+
+#if (flash9)
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -21,7 +23,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
-import haxe.Log;
+#end
 
 /**
  * This is the Flash AS3 implementation of the Style object.
@@ -58,12 +60,16 @@ class Style extends AbstractStyle
 	 * flash text line that will be wrapped in
 	 * TextFragmentDOMElement
 	 */
+#if (flash9)
 	private var _textBlock:TextBlock;
+#end
 	
 	
 	public function new(domElement:DOMElement) 
 	{
+#if (flash9)
 	   _textBlock = new TextBlock();
+#end
 		
 		super(domElement);
 	}
@@ -110,6 +116,7 @@ class Style extends AbstractStyle
 	}
 	
 
+#if (flash9)
 	/**
 	 * when the matrix is set, update also
 	 * the values of the native flash matrix of the
@@ -184,7 +191,7 @@ class Style extends AbstractStyle
 		
 		return _fontMetrics;
 	}
-	
+#end	
 	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
@@ -205,6 +212,7 @@ class Style extends AbstractStyle
 		return currentMatrix;
 	}
 	
+#if (flash9)
 	/**
 	 * Return a flash FontWeight object from
 	 * the font weight style of the DOMElement
@@ -296,4 +304,5 @@ class Style extends AbstractStyle
 		
 		return Math.round(_textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width);
 	}
+#end
 }

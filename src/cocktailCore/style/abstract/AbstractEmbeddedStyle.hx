@@ -17,7 +17,6 @@ import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)

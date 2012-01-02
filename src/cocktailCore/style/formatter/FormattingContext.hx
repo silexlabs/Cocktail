@@ -11,7 +11,6 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 /**

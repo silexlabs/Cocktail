@@ -30,7 +30,6 @@ import cocktail.style.StyleData;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.unit.UnitData;
-import cocktailCore.style.StyleData;
 import cocktail.resource.ResourceLoaderManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.nativeElement.NativeElementManager;
@@ -82,7 +81,7 @@ class StyleTests
 	{
 		_mainContainer = getContainer();
 		_mainContainer.style.width = DimensionStyleValue.percent(80);
-		_mainContainer.style.height = DimensionStyleValue.auto;
+		_mainContainer.style.height = DimensionStyleValue.autoValue;
 		_mainContainer.style.left = PositionOffsetStyleValue.length(px(20));
 		_mainContainer.style.top = PositionOffsetStyleValue.length(px(50));
 		//_mainContainer.style.right = PositionOffsetStyleValue.length(px(20));
@@ -130,8 +129,8 @@ class StyleTests
 		
 		
 		
-		//textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
-		//textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
+		textContainer.addText(new TextElement("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus facilisis tortor sodales lacus pretium scelerisque dapibus est rhoncus. Aenean feugiat nulla vel libero imperdiet et iaculis nisl tristique. Pellentesque congue varius consectetur. Sed vulputate tristique ante, at ullamcorper odio adipiscing vitae. Cras interdum blandit ultricies. Pellentesque id lacus orci. Sed volutpat mi vel odio viverra molestie. Fusce rutrum purus accumsan lectus venenatis mattis at vel eros. Sed ac scelerisque neque. Donec et mi mollis ligula imperdiet euismod. Nunc ac consectetur orci. Morbi a enim lacus. Pellentesque dolor massa, vestibulum vitae placerat pretium, gravida suscipit nulla. Pellentesque est ipsum, egestas ut ullamcorper bibendum, dapibus at erat. Morbi purus lectus, aliquam at molestie in, sagittis ac magna. "));
 		
 		
 		//textContainer.style.fontSize = FontSizeStyleValue.length(px(12));
@@ -147,7 +146,7 @@ class StyleTests
 		firstLetterContainer.style.textTransform = TextTransformStyleValue.uppercase;
 		firstLetterContainer.style.fontSize = FontSizeStyleValue.length(px(50));
 		firstLetterContainer.style.display = DisplayStyleValue.inlineStyle;
-		firstLetterContainer.style.float = FloatStyleValue.left;
+		firstLetterContainer.style.floatValue = FloatStyleValue.left;
 		firstLetterContainer.style.width = DimensionStyleValue.length(px(400));
 		firstLetterContainer.style.height = DimensionStyleValue.length(px(50));
 		//firstLetterContainer.style.fontFamily = [FontFamilyStyleValue.familyName("Magneto Gras")];
@@ -161,7 +160,7 @@ class StyleTests
 		textBlock.style.textIndent = TextIndentStyleValue.length(px(150));
 		//firstLetterContainer.style.clear = ClearStyleValue.right;
 		textBlock.style.textAlign = TextAlignStyleValue.justify;
-		textBlock.style.fontSize = FontSizeStyleValue.length(ex(2));
+		textBlock.style.fontSize = FontSizeStyleValue.length(px(15));
 			
 		var getDefaultStyleProxy:DOMElement->Void = getDefaultStyle;
 		
