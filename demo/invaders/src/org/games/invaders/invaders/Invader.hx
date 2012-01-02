@@ -62,10 +62,10 @@ class Invader extends MovingObject
 					y += 20;
 			
 				case DIRECTION_LEFT:
-					x -= 8;
+					x -= 16;
 			
 				case DIRECTION_RIGHT:
-					x += 8;
+					x += 16;
 			}
 		}
 	

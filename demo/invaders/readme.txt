@@ -1,10 +1,10 @@
 This game is licenced GPL like cocktail 
 
 Please try this in the browser and on mobile phones:
-- http://demos.silexlabs.org/cocktail/games/
+- http://demos.silexlabs.org/cocktail/invaders/
 
 Feedbacks please
-- http://www.silexlabs.org/groups/labs/cocktail/forum/topic/cocktail-games-first-move/
+- http://www.silexlabs.org/groups/labs/cocktail/forum/topic/cocktail-games-for-tvs-%E2%80%93-2nd/
 
 Why did I do this?
 - historically, the 1st game to be on TVs

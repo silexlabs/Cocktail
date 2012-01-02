@@ -15,6 +15,7 @@ class MovingObject
 //	public var timeline:ContainerDOMElement;
 	public var domElement:ImageDOMElement;
 
+	public var oldData:String;
 	public var data:String;
 	public var color:Int;
 	public var x:Float;
@@ -35,12 +36,13 @@ class MovingObject
 		height = the_height;
 		num_frames = the_num_frames;
 		frame = 0;
+		oldData = "";
 
 		domElement = new ImageDOMElement();
 		
 		InvadersGame.timeline.addChild(domElement);
 		domElement.style.position = PositionStyleValue.absolute;
-		domElement.x = 0;
+		domElement.x = -1000;
 		domElement.y = 0;
 		domElement.width = width * 2;
 		domElement.height = height * 2;
@@ -50,7 +52,8 @@ class MovingObject
 	}
 	public function cleanup()
 	{
-		data = "";domElement.isVisible=false;
+		data = "";
+		domElement.isVisible=false;
 	}
 	public function draw()
 	{//trace(width);
@@ -70,9 +73,10 @@ if (data=="")
 		domElement.x = Math.round(x);
 		domElement.y = Math.round(y);
 		
+		if (data != oldData)
+			domElement.load(data);
 
-		domElement.load(data);
-
+		oldData = data;
 
 /*		domElement.clear();
 		domElement.beginFill(monochrome({color:0, alpha:100}));

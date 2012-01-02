@@ -1,7 +1,7 @@
 This game is licenced GPL like cocktail 
 
 Please try this in the browser and on mobile phones:
-- http://demos.silexlabs.org/cocktail/games/
+- http://demos.silexlabs.org/cocktail/pong/
 
 Feedbacks please
 - http://www.silexlabs.org/groups/labs/cocktail/forum/topic/cocktail-games-first-move/

@@ -31,14 +31,14 @@ class Ufo extends MovingObject
 					if (x < -width) {
 						state = UFO_NOT_FLYING;
 					} else {
-						x -= 8;
+						x -= 16;
 					}
 		
 				case DIRECTION_RIGHT:
 					if (x > GameData.SCREEN_WIDTH) {
 						state = UFO_NOT_FLYING;
 					} else {
-						x += 8;
+						x += 16;
 					}
 				default:
 			}
@@ -47,6 +47,7 @@ class Ufo extends MovingObject
 		if (state == UFO_SHOT_DOWN && timer >= 16) {
 			state = UFO_NOT_FLYING;
 			timer = 0;
+			cleanup();
 		}
 	
 		if (state == UFO_SHOT_DOWN) {
