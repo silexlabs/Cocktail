@@ -18,17 +18,6 @@ import haxe.Log;
  */
 class ImageDOMElement extends AbstractImageDOMElement
 {
-
-	/**
-	 * This value smooth the bitmap
-	 */
-	private static inline var IMAGE_RENDERING_OPTIMIZE_QUALITY = "optimizeQuality";
-	
-	/**
-	 * This value doesn't smooth the bitmap
-	 */
-	private static inline var IMAGE_RENDERING_OPTIMIZE_SPEED = "optimizeSpeed";
-	
 	/**
 	 * class constructor
 	 */
@@ -55,31 +44,4 @@ class ImageDOMElement extends AbstractImageDOMElement
 		
 		super.onLoadComplete(image);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Override to use the CSS to smooth/unsmooth the bitmap
-	 * @param	value
-	 * @return
-	 */
-	override private function setSmooth(value:Bool):Bool
-	{
-		super.setSmooth(value);
-		
-		//set the CSS influencing image quality rendering
-		if (value == true)
-		{
-			untyped this._nativeElement.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_QUALITY;
-		}
-		else
-		{
-			untyped this._nativeElement.style.imageRendering = IMAGE_RENDERING_OPTIMIZE_SPEED;
-		}
-		
-		return value;
-	}
-	
 }
