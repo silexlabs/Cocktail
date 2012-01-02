@@ -1353,7 +1353,7 @@ class Style extends AbstractStyle
 		}
 		super.setTransformOrigin(value);
 		
-		return _tranformOrigin = value;
+		return _transformOrigin = value;
 	}
 	
 	override private function setTransform(value:TransformStyleValue):TransformStyleValue

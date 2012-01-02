@@ -71,7 +71,7 @@ class AbstractStyle
 	private var _visibility:VisibilityStyleValue;
 	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
 	
-	private var _tranformOrigin:TransformOriginStyleData;
+	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
 	
 	private var _transform:TransformStyleValue;
@@ -278,63 +278,63 @@ class AbstractStyle
 		initComputedStyles();
 		initNativeProperties();
 		
-		this.width = DimensionStyleValue.autoValue;
-		this.height = DimensionStyleValue.autoValue;
+		this._width = DimensionStyleValue.autoValue;
+		this._height = DimensionStyleValue.autoValue;
 		
-		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxWidth = ConstrainedDimensionStyleValue.none;
-		this.minHeight = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxHeight = ConstrainedDimensionStyleValue.none;
+		this._minWidth = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxWidth = ConstrainedDimensionStyleValue.none;
+		this._minHeight = ConstrainedDimensionStyleValue.length(px(0));
+		this._maxHeight = ConstrainedDimensionStyleValue.none;
 		
-		this.marginTop = MarginStyleValue.length(px(0));
-		this.marginBottom = MarginStyleValue.length(px(0));
-		this.marginLeft = MarginStyleValue.length(px(0));
-		this.marginRight = MarginStyleValue.length(px(0));
+		this._marginTop = MarginStyleValue.length(px(0));
+		this._marginBottom = MarginStyleValue.length(px(0));
+		this._marginLeft = MarginStyleValue.length(px(0));
+		this._marginRight = MarginStyleValue.length(px(0));
 		
-		this.paddingTop = PaddingStyleValue.length(px(0));
-		this.paddingBottom = PaddingStyleValue.length(px(0));
-		this.paddingLeft = PaddingStyleValue.length(px(0));
-		this.paddingRight = PaddingStyleValue.length(px(0));
+		this._paddingTop = PaddingStyleValue.length(px(0));
+		this._paddingBottom = PaddingStyleValue.length(px(0));
+		this._paddingLeft = PaddingStyleValue.length(px(0));
+		this._paddingRight = PaddingStyleValue.length(px(0));
 		
-		this.lineHeight = LineHeightStyleValue.normal;
-		this.verticalAlign = VerticalAlignStyleValue.baseline;
+		this._lineHeight = LineHeightStyleValue.normal;
+		this._verticalAlign = VerticalAlignStyleValue.baseline;
 		
-		this.display = DisplayStyleValue.inlineStyle;
-		this.position = PositionStyleValue.staticStyle;
+		this._display = DisplayStyleValue.inlineStyle;
+		this._position = PositionStyleValue.staticStyle;
 		
-		this.top = PositionOffsetStyleValue.autoValue;
-		this.bottom = PositionOffsetStyleValue.autoValue;
-		this.left = PositionOffsetStyleValue.autoValue;
-		this.right = PositionOffsetStyleValue.autoValue;
+		this._top = PositionOffsetStyleValue.autoValue;
+		this._bottom = PositionOffsetStyleValue.autoValue;
+		this._left = PositionOffsetStyleValue.autoValue;
+		this._right = PositionOffsetStyleValue.autoValue;
 		
-		this.floatValue = FloatStyleValue.none;
-		this.clear = ClearStyleValue.none;
+		this._floatValue = FloatStyleValue.none;
+		this._clear = ClearStyleValue.none;
 		
-		this.fontStyle = FontStyleStyleValue.normal;
-		this.fontVariant = FontVariantStyleValue.normal;
-		this.fontWeight = FontWeightStyleValue.normal;
-		this.fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		this._fontStyle = FontStyleStyleValue.normal;
+		this._fontVariant = FontVariantStyleValue.normal;
+		this._fontWeight = FontWeightStyleValue.normal;
+		this._fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
 		
-		this.textIndent = TextIndentStyleValue.length(px(0));
-		this.textAlign = TextAlignStyleValue.left;
-		this.letterSpacing = LetterSpacingStyleValue.normal;
-		this.wordSpacing = WordSpacingStyleValue.normal;
-		this.textTransform = TextTransformStyleValue.none;
-		this.whiteSpace = WhiteSpaceStyleValue.normal;
+		this._textIndent = TextIndentStyleValue.length(px(0));
+		this._textAlign = TextAlignStyleValue.left;
+		this._letterSpacing = LetterSpacingStyleValue.normal;
+		this._wordSpacing = WordSpacingStyleValue.normal;
+		this._textTransform = TextTransformStyleValue.none;
+		this._whiteSpace = WhiteSpaceStyleValue.normal;
 		
-		this.visibility = VisibilityStyleValue.visible;
-		this.opacity = OpacityStyleValue.number(1.0);
+		this._visibility = VisibilityStyleValue.visible;
+		this._opacity = OpacityStyleValue.number(1.0);
 		
-		this.transformOrigin = {
+		this._transformOrigin = {
 			x:TransformOriginXStyleValue.center,
 			y:TransformOriginYStyleValue.center
 		}
 		
-		this.transform = TransformStyleValue.none;
+		this._transform = TransformStyleValue.none;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
-		this.fontFamily = defaultStyles.fontFamily;
-		this.color = defaultStyles.color;
+		this._fontFamily = defaultStyles.fontFamily;
+		this._color = defaultStyles.color;
 	}
 	
 	/**
@@ -1595,7 +1595,7 @@ class AbstractStyle
 	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
 	{
 		invalidate();
-		return _tranformOrigin = value;
+		return _transformOrigin = value;
 	}
 	
 	private function setTransform(value:TransformStyleValue):TransformStyleValue
@@ -1805,6 +1805,6 @@ class AbstractStyle
 	
 	private function getTransformOrigin():TransformOriginStyleData
 	{
-		return _tranformOrigin;
+		return _transformOrigin;
 	}
 }
