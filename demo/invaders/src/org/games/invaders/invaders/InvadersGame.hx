@@ -44,7 +44,7 @@ class InvadersGame
 	{
 		trace("New invaders Game !");
 		paused = false;
-		timer = new Timer(50);
+		timer = new Timer(30);
 		
 		timeline = new ContainerDOMElement();
 		containerDOMElement.addChild(timeline);
@@ -152,13 +152,20 @@ class InvadersGame
 		timer.run = game;
 		//game();
 	}
+	public function restart() 
+	{
+		construct();
+		start();
+	}
 	public function end()
 	{
 		trace("end "+this);
 		timer.run = null;
 //		screen.clear(0x0);
 
-		if (state == GAMESTATE_LOST) {
+		if (state == GAMESTATE_LOST) {	
+			destruct();
+			Timer.delay(restart, 5000);
 			return;
 		}
 
@@ -200,7 +207,7 @@ class InvadersGame
 				player.move_left(16);
 			else if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.a)
 				player.move_right(16);
-			else if ((key.value == KeyboardKeyValue.l || key.value == KeyboardKeyValue.r || key.value == KeyboardKeyValue.space)
+			else if ((key.value == KeyboardKeyValue.up || key.value == KeyboardKeyValue.space)
 				&& !shot)
 			{
 				for (i in 0...GameData.MAX_BULLETS)
@@ -254,28 +261,47 @@ class InvadersGame
 		if (vblank_count % speed == 0) 
 		{
 			animate = true;
+
+			// take the max and min X and Y
+			var minX = 10000.0;
+			var maxX = 0.0;
+			var minY = 10000.0;
+			var maxY = 0.0;
+			for (i in 0...GameData.INVADER_ROWS) 
+			{
+				for (j in 0...GameData.INVADER_COLUMNS) 
+				{
+					if (invaders[i][j].state == INVADER_OK)
+					{
+						if (invaders[i][j].x < minX) minX = invaders[i][j].x;
+						//if (invaders[i][j].y < minY) minY = invaders[i][j].y;
+						if (invaders[i][j].x + invaders[i][j].width > maxX) maxX = invaders[i][j].x + invaders[i][j].width;
+						//if (invaders[i][j].y + invaders[i][j].height > maxY) maxY = invaders[i][j].y + invaders[i][j].height;
+					}
+				}
+			}
 		
 			if (direction == DIRECTION_DOWN) 
 			{
-				if (invaders_x <= GameData.INVADERS_X) 
+				if (minX <= GameData.INVADERS_X) 
 				{
 					direction = DIRECTION_RIGHT;
 				} else {
 					direction = DIRECTION_LEFT;
 				}
 			} else {		
-				if (direction == DIRECTION_LEFT && invaders_x <= GameData.INVADERS_X) 
+				if (direction == DIRECTION_LEFT && minX <= GameData.INVADERS_X) 
 				{
 					direction = DIRECTION_DOWN;
 				}
 			
-				if (direction == DIRECTION_RIGHT && invaders_x >= GameData.INVADERS_X_RIGHT) 
+				if (direction == DIRECTION_RIGHT && maxX >= GameData.SCREEN_WIDTH - GameData.INVADERS_X)//GameData.INVADERS_X_RIGHT) 
 				{
 					direction = DIRECTION_DOWN;
 				}
 			}
 		
-			switch (direction) {
+/*			switch (direction) {
 				case DIRECTION_RIGHT:
 					invaders_x += 16;
 			
@@ -287,7 +313,7 @@ class InvadersGame
 
 				default:
 			}
-		}
+*/		}
 	
 		// ** ** ** ** ** ** ** **
 
@@ -300,7 +326,7 @@ class InvadersGame
 			
 				if (invaders[i][j].state == INVADER_OK) 
 				{
-					if (invaders[i][j].y >= Player.PLAYER_Y - 16)
+					if (invaders[i][j].y + invaders[i][j].height >= Player.PLAYER_Y - 16)
 					{
 						state = GAMESTATE_LOST;
 						end();
