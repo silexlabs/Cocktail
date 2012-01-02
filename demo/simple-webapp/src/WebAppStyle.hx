@@ -9,7 +9,6 @@ package ;
 
 // DOM
 import cocktail.domElement.DOMElement;
-import cocktailCore.style.StyleData;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -85,8 +84,8 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		domElement.style.left = PositionOffsetStyleValue.auto;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.left = PositionOffsetStyleValue.autoValue;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 	}
 	
 	/**
