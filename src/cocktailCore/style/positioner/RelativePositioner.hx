@@ -9,7 +9,6 @@ package cocktailCore.style.positioner;
 
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.geom.GeomData;
 import haxe.Log;
 
