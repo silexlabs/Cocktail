@@ -1,0 +1,12 @@
+-js bin/core/App.js
+-main org.games.invaders.Main
+-cp src
+-cp ../../src/
+-cp libs
+--next
+-swf bin/core/App.swf
+-main org.games.invaders.Main
+-cp src
+-cp ../../src/
+-cp libs
+-swf-version 10.1

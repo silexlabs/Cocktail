@@ -31,11 +31,9 @@ import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
 // RichList specific
-import components.richList.RichList;
-import components.richList.RichListModels;
-import components.richList.StyleNormal;
-import components.richList.StyleApp;
-import components.richList.RichListUtils;
+import components.lists.ListBase;
+import components.lists.ListBaseModels;
+import components.lists.ListBaseUtils;
 
 // Iphone specific
 import Utils;

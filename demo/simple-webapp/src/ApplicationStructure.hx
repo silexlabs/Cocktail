@@ -10,11 +10,8 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
 import cocktail.resource.ResourceLoaderManager;
-import cocktailCore.resource.ResourceLoader;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -141,7 +138,7 @@ class ApplicationStructure
 
 		// the gallery page
 		_imagePage = createHeaderImagePage("Image 1","images/cocktail.jpg");
-		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200");
+		_galleryPage = createHeaderGalleryPage("Gallery","http://api.flickr.com/services/feeds/photos_public.gne?id=32780881@N06&lang=fr-fr&format=rss_200");
 		
 		// the notes pages
 		_notePage = createHeaderContentPage("Note","This is the content of the note");
@@ -189,19 +186,16 @@ class ApplicationStructure
 			[	{text:"Cal", imagePath:"images/calendrier_blanc.png", action:"goToPage", actionTarget:_calListPage },
 				{text:"Music", imagePath:"images/icone_music_blanc.png", action:"goToPage", actionTarget:_artistListPage },
 				{text:"Gallery", imagePath:"images/icone_gallery_blanche.png", action:"goToPage", actionTarget:_galleryPage },
-				{text:"Notes", imagePath:"images/icone_bloc_note.png", action:"goToPage", actionTarget:_noteListPage }
+				{text:"Notes", imagePath:"images/icone_bloc_note-2.png", action:"goToPage", actionTarget:_noteListPage }
 			];
 		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" } );
 		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
 		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
 		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"", actionTarget:"" } );
-		homePageCells.push( {text:"Credits", imagePath:"images/NavButtonCreditsHD.png", action:"goToPage", actionTarget:_creditsPage } );
+		homePageCells.push( {text:"Credits", imagePath:"images/icone_credits.png", action:"goToPage", actionTarget:_creditsPage } );
 		
 		_homePage = createHomePage(homePageCells);
 		
-		// adds the home page to pagesContainer
-		//pagesContainer.addChild(_homePage);
-
 		// instanciate navigation class with pagesContainer and homePage
 		navigation = new Navigation(pagesContainer,_homePage);
 	}
@@ -260,8 +254,9 @@ class ApplicationStructure
 		var richList:RichList = createArrowRichList(cellDataArray);
 		
 		// rich list onChange callback
-		richList.onChange = onChangeListCallback;
+		// not working, so replaced by following line
 		//richList.onChange = navigation.onChangeListCallback;
+		richList.onChange = onChangeListCallback;
 		
 		// build hierarchy
 		page.addChild(header);

@@ -1,0 +1,20 @@
+<html>
+<head>
+	<title>Cocktail Simple WebApp</title>
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> -->
+	<!-- <meta HTTP-EQUIV="Refresh" content="0;URL=WebApp_js.html"> --> 
+</head>
+<body style="margin:0px ; padding:0px>
+	<div id="haxe:trace"></div>
+	<script type="text/javascript">
+		function isCanvasSupported()
+		{
+			var elem = document.createElement('canvas');
+			return !!(elem.getContext && elem.getContext('2d'));
+		}
+		if (isCanvasSupported())
+			window.open("WebApp_js.html",'_self');
+		else window.open("WebApp_As3.html",'_self');
+	</script>
+</body>
+</html>

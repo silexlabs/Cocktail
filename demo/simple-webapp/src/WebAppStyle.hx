@@ -68,8 +68,6 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
@@ -87,9 +85,6 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.height = DimensionStyleValue.percent(100);
-
 		domElement.style.left = PositionOffsetStyleValue.auto;
 		domElement.style.top = PositionOffsetStyleValue.auto;
 	}
@@ -138,8 +133,6 @@ class WebAppStyle
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.length(px(100));
-		//domElement.style.height = DimensionStyleValue.length(px(100));
 	}
 	
 	

@@ -10,7 +10,7 @@ package cocktailCore.keyboard;
 /**
  * Set the right runtime specific keyboard manager at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef Keyboard =  cocktailCore.keyboard.as3.Keyboard;
 
 #elseif js

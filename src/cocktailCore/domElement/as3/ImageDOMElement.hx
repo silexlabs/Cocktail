@@ -49,6 +49,8 @@ class ImageDOMElement extends AbstractImageDOMElement
 		
 		super.onLoadComplete(image);
 		
+		smoothPicture();
+		
 		//rest the scale of the loaded picture and reaffect its computed
 		//dimensions to it
 		typedimage.scaleX = 1;
@@ -60,18 +62,14 @@ class ImageDOMElement extends AbstractImageDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden GETTER/SETTER
+	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Override to use the flash API to smooth/unsmooth bitmap
-	 * @param	value
-	 * @return
+	 * apply a bilinear filtering to the loaded picture
 	 */
-	override private function setSmooth(value:Bool):Bool
+	private function smoothPicture():Void
 	{
-		super.setSmooth(value);
-		
 		//cast the native element as a loader
 		// and retrieve its bitmap content
 		var typedNativeElement:Loader = cast(this._nativeElement);
@@ -79,11 +77,9 @@ class ImageDOMElement extends AbstractImageDOMElement
 		
 		if (bitmap != null)
 		{
-			//activate/deactivate picture smoothing
-			bitmap.smoothing = value;
+			//activate picture smoothing
+			bitmap.smoothing = true;
 		}
-		
-		return value;
 	}
 	
 }

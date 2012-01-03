@@ -10,7 +10,6 @@ package cocktailCore.style.computer;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 
 /**
  * This is a static class in charge of
@@ -57,10 +56,10 @@ class DisplayStylesComputer
 		computedStyle.position = getComputedPosition(style);
 		
 		//float
-		computedStyle.float = getComputedFloat(style, computedStyle.position);
+		computedStyle.floatValue = getComputedFloat(style, computedStyle.position);
 		
 		//display
-		computedStyle.display = getComputedDisplay(style, computedStyle.float);
+		computedStyle.display = getComputedDisplay(style, computedStyle.floatValue);
 		
 		//clear
 		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
@@ -99,7 +98,7 @@ class DisplayStylesComputer
 		}
 		else
 		{
-			ret = style.float;
+			ret = style.floatValue;
 		}
 		
 		return ret;
