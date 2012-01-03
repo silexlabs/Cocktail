@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+  <app title="Cocktail Example" main="test.src.domElement.DOMElementTests" package="test.src.domElement" version="1.0.0" icon="assets/icon.png" company="Silex Labs" />
+  <window width="0" height="0" fps="30" orientation="portrait" resizable="false" unless="target_flash" />
+ 
+  <set name="BUILD_DIR" value="../../bin/domElement/" />
+
+  <classpath name="../../../src/" />
+  <classpath name="../../../" />
+
+  <haxelib name="nme" />
+  <haxelib name="actuate" />
+
+  <assets path="Assets" rename="assets" include="*" />
+
+  <ndll name="std" />
+  <ndll name="regexp" />
+  <ndll name="zlib" />
+  <ndll name="nme" haxelib="nme" />
+
+</project>

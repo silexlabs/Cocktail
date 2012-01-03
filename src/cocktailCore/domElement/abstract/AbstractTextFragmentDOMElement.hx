@@ -9,9 +9,8 @@ package cocktailCore.domElement.abstract;
 
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.Style;
-import cocktailCore.style.StyleData;
 
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.domElement.as3.DOMElement;
 #elseif js
 import cocktailCore.domElement.js.DOMElement;

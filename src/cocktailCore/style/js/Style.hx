@@ -11,7 +11,6 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.unit.UnitData;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.StyleData;
 import haxe.Log;
 
 import cocktail.style.StyleData;
@@ -79,7 +78,7 @@ class Style extends AbstractStyle
 		setNativeY(this._domElement, untyped this._domElement.nativeElement.offsetTop);
 		
 		//The DOMElement is set to valid to allow future re layout
-		this._isInvalid = false;
+		this._isDirty = false;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -395,7 +394,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssMarginValue = getCSSPercentValue(percentValue);
 				
-			case auto:
+			case autoValue:
 				cssMarginValue = "auto";
 		}
 		
@@ -436,7 +435,7 @@ class Style extends AbstractStyle
 			case DimensionStyleValue.percent(percentValue):
 				cssDimensionValue = getCSSPercentValue(percentValue);
 				
-			case DimensionStyleValue.auto:
+			case DimensionStyleValue.autoValue:
 				cssDimensionValue = "auto";
 		}
 		
@@ -459,7 +458,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssPositionOffsetValue = getCSSPercentValue(percentValue);
 				
-			case auto:
+			case autoValue:
 				cssPositionOffsetValue = "auto";
 		}
 		
@@ -1017,12 +1016,13 @@ class Style extends AbstractStyle
 	
 	/**
 	 * For CSS styles not yet available across browser, find
-	 * the vendor specific style name to use
+	 * the vendor specific style name to use. Might return
+	 * null if no style was found
 	 * @param	nativeStyle the JavaScript Style object
 	 */
 	private function getVendorSpecificStyleName(nativeStyle:Dynamic, styleName:String):String
 	{
-		var vendorSpecificStyleName:String = styleName;
+		var vendorSpecificStyleName:String;
 		
 		//first check if the standard style exists
 		if (Reflect.hasField(nativeStyle, styleName))
@@ -1031,7 +1031,6 @@ class Style extends AbstractStyle
 		}
 		else
 		{
-			
 			//capitalise the style name to respect camel case
 			//convention
 			var styleNameCap:String = styleName.charAt(0).toUpperCase();
@@ -1057,6 +1056,10 @@ class Style extends AbstractStyle
 			else if (Reflect.field(nativeStyle, "O" + styleName) != null)
 			{
 				vendorSpecificStyleName = "O" + styleName;
+			}
+			else
+			{
+				vendorSpecificStyleName = null;
 			}
 		}
 		
@@ -1296,11 +1299,11 @@ class Style extends AbstractStyle
 		return _textIndent = value;
 	}
 	
-	override private function setFloat(value:FloatStyleValue):FloatStyleValue 
+	override private function setFloatValue(value:FloatStyleValue):FloatStyleValue 
 	{
 		untyped this._domElement.nativeElement.style.cssFloat = getCSSFloat(value);
-		super.setFloat(value);
-		return _float = value;
+		super.setFloatValue(value);
+		return floatValue = value;
 	}
 	
 	override private function setClear(value:ClearStyleValue):ClearStyleValue 
@@ -1342,16 +1345,28 @@ class Style extends AbstractStyle
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
-		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transformOrigin"), getCSSTransformOrigin(value));
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transformOrigin");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName, getCSSTransformOrigin(value));
+		}
 		super.setTransformOrigin(value);
-		return _tranformOrigin = value;
+		
+		return _transformOrigin = value;
 	}
 	
 	override private function setTransform(value:TransformStyleValue):TransformStyleValue
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
-		Reflect.setField(nativeStyle, getVendorSpecificStyleName(nativeStyle, "transform"), getCSSTransform(value));
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transform");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName , getCSSTransform(value));
+		}
+		
 		super.setTransform(value);
 		return _transform = value;
 	}

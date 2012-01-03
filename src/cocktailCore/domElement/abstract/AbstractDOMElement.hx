@@ -19,7 +19,6 @@ import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
-import cocktailCore.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktailCore.unit.UnitManager;
 import haxe.Log;

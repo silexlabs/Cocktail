@@ -15,31 +15,7 @@ package;
  */
 
 import cocktail.domElement.BodyDOMElement;
-import cocktailCore.style.StyleData;
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.geom.GeomData;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.DOMElementData;
-
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElementManager;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-
-// RichList specific
-import components.richList.RichList;
-import components.richList.RichListModels;
-import components.richList.StyleNormal;
-import components.richList.StyleApp;
-import components.richList.RichListUtils;
-
-// Iphone specific
-import Utils;
-
 
 class WebApp 
 {

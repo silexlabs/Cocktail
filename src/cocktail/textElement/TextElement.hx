@@ -10,7 +10,7 @@ package cocktail.textElement;
 /**
  * Set the right runtime specific TextElement at compile-time
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef TextElement = cocktailCore.textElement.as3.TextElement;
 
 #elseif js

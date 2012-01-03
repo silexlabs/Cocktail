@@ -9,7 +9,7 @@ package cocktail.mouse;
 
 
 //import the right runtime implementations
-#if flash9
+#if (flash9 || cpp || nme)
 import cocktailCore.mouse.as3.MouseCursor;
 
 #elseif js

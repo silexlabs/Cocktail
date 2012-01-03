@@ -13,7 +13,7 @@ package cocktailCore.textElement;
  * A NativeTextElement is an abstraction of a text element, variying
  * based on runtime
  */
-#if flash9
+#if (flash9 || cpp || nme)
 typedef NativeTextElement = String;
 
 #elseif js

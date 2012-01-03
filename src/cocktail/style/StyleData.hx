@@ -9,6 +9,8 @@ package cocktail.style;
 import cocktail.domElement.DOMElement;
 import cocktail.unit.UnitData;
 import cocktail.geom.GeomData;
+import cocktail.geom.Matrix;
+import cocktailCore.style.abstract.AbstractStyle;
 	
 	
 		// FONT STYLES
@@ -372,7 +374,7 @@ import cocktail.geom.GeomData;
 		 * Margin takes the remaining space
 		 * in the parent DOMElement width or height
 		 */
-		auto;
+		autoValue;
 	}
 	
 	/**
@@ -415,7 +417,7 @@ import cocktail.geom.GeomData;
 		 * the parent element width or 
 		 * height
 		 */
-		auto;
+		autoValue;
 	}
 	
 	/**
@@ -566,7 +568,7 @@ import cocktail.geom.GeomData;
 		/**
 		 * no offset
 		 */
-		auto;
+		autoValue;
 	}
 	
 	/**
@@ -801,4 +803,311 @@ import cocktail.geom.GeomData;
 		 * same as 100%
 		 */
 		bottom;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Structures
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Represents the width, height of a DOMElement's
+	 * parent content, and it's global position, relative
+	 * to the root DOMElement.
+	 * Specify for each dimension if it is 'autoValue', 
+	 * meaning it depends on its content
+	 */
+	typedef ContainingDOMElementData = {
+		var width:Int;
+		var isWidthAuto:Bool;
+		var height:Int;
+		var isHeightAuto:Bool;
+		var globalX:Int;
+		var globalY:Int;
+	}
+	
+	/**
+	 * Contains the data of the first 
+	 * positioned ancestor (a DOMElement with
+	 * a position style of relative, absolute,
+	 * or fixed) and a reference to each of
+	 * the style objects using the data
+	 * as origin to layout an absolutely
+	 * positioned DOMElement.
+	 */
+	typedef LastPositionedDOMElementData = {
+		var children:Array<PositionedDOMElementData>;
+		var data:ContainingDOMElementData;
+		
+	}
+	
+	/**
+	 * Holds a reference to the Style of a
+	 * positioned DOMElement. The static position
+	 * is the x,y point where the DOMElement
+	 * would have been if its position style
+	 * had been 'static'.
+	 * 
+	 * It is used if left and right or
+	 * top and bottom styles are both
+	 * set to 'autoValue'
+	 */
+	typedef PositionedDOMElementData =  {
+		var style:AbstractStyle;
+		var staticPosition:PointData;
+	}
+	
+	/**
+	 * Stores all the computed styles
+	 * of a DOMElement as they are 
+	 * used multiple times when applying
+	 * styles
+	 */
+	typedef ComputedStyleData = {
+		
+		/**
+		 * content dimensions
+		 */
+		var width:Int;
+		var height:Int;
+		
+		/**
+		 * content dimensions constraints
+		 */
+		var minWidth:Int;
+		var maxWidth:Int;
+		var maxHeight:Int;
+		var minHeight:Int;
+		
+		/**
+		 * margins
+		 */
+		var marginLeft:Int;
+		var marginRight:Int;
+		var marginTop:Int;
+		var marginBottom:Int;
+		
+		/**
+		 * paddings
+		 */
+		var paddingLeft:Int;
+		var paddingRight:Int;
+		var paddingTop:Int;
+		var paddingBottom:Int;
+		
+		/**
+		 * position offset
+		 */
+		var left:Int;
+		var right:Int;
+		var top:Int;
+		var bottom:Int;
+		
+		/**
+		 * display
+		 */
+		var display:DisplayStyleValue;
+		var floatValue:FloatStyleValue;
+		var clear:ClearStyleValue;
+		var position:PositionStyleValue;
+		var lineHeight:Float;
+		var opacity:Float;
+		var visibility:Bool;
+		var transformOrigin:PointData;
+		var transform:Matrix;
+		
+		/**
+		 * font
+		 */
+		var fontSize:Float;
+		var fontWeight:FontWeightStyleValue;
+		var fontStyle:FontStyleStyleValue;
+		var fontFamily:Array<FontFamilyStyleValue>;
+		var fontVariant:FontVariantStyleValue;
+		
+		/**
+		 * text
+		 */
+		var textTransform:TextTransformStyleValue;
+		var letterSpacing:Int;
+		var verticalAlign:Float;
+		var wordSpacing:Int;
+		var textIndent:Int;
+		var whiteSpace:WhiteSpaceStyleValue;
+		var textAlign:TextAlignStyleValue;
+		var color:Int;
+		
+	}
+	
+	/**
+	 * Holds a reference to default styles values.
+	 * Those styles default values are defined by 
+	 * the User Agent in JS, for Flash and other
+	 * runtime they will be hard-coded in this
+	 * structure.
+	 */
+	typedef DefaultStylesData = {
+		var fontFamily:Array<FontFamilyStyleValue>;
+		var color:ColorValue;
+	}
+	
+	/**
+	 * Contains the data necessary to place
+	 * a DOMElement in flow
+	 */
+	typedef FlowData = {
+		/**
+		 * the x position where the next in flow DOMElement
+		 * should be
+		 */
+		var x:Int;
+		
+		/**
+		 * the y position where the next in flow DOMElement
+		 * should be
+		 */
+		var y:Int;
+		
+		/**
+		 * The x offset applied to each starting line
+		 * (matches the containing DOMElement left padding)
+		 */
+		var xOffset:Int;
+		
+		/**
+		 * The y offset applied to the formatting context
+		 * (matches the containing DOMElement top padding)
+		 */
+		var yOffset:Int;
+		
+		/**
+		 * Determine the largest width of a line in
+		 * a formatting context
+		 */
+		var maxWidth:Int;
+		
+		/**
+		 * The accumulated height of all the in flow DOMElements
+		 * (includes paddings and margins)
+		 */
+		var totalHeight:Int;
+	}
+	
+	/**
+	 * Represents the left and right
+	 * floats registered for a 
+	 * container DOMElement
+	 */
+	typedef FloatsData = {
+		var left:Array<FloatData>;
+		var right:Array<FloatData>;
+	}
+	
+	/**
+	 * Represents the coordinates and
+	 * dimensions of the float in its
+	 * parent coordinate space
+	 */
+	typedef FloatData = {
+		var x:Int;
+		var y:Int;
+		var width:Int;
+		var height:Int;
+	}
+	
+	/**
+	 * Given a font family and a font size
+	 * provided by the DOMElement's styles, 
+	 * this structures return metrics info
+	 * on the font
+	 */
+	typedef FontMetricsData = {
+		
+		/**
+		 * The font size of 
+		 * the DOMElement, in pixels
+		 */
+		var fontSize:Float;
+		
+		/**
+		 * A characteristic height
+		 * of the font above the 
+		 * baseline defined by
+		 * the font creator. This is a metric
+		 * for the font has a whole, 
+		 * not specific to any glyphs
+		 */
+		var ascent:Int;
+		
+		/**
+		 * A characteristic height
+		 * of the font below the 
+		 * baseline defined by
+		 * the font creator. This is a metric
+		 * for the font has a whole, 
+		 * not specific to any glyphs
+		 */
+		var descent:Int;
+		
+		/**
+		 * This is a standard metrics used 
+		 * to define a font size. Represents
+		 * the height of a lowercase "x" glyph
+		 * at the given font size
+		 */ 
+		var xHeight:Int;
+		
+		/**
+		 * A suggested offset to apply
+		 * from the baseline for subscript
+		 * glyphs
+		 */
+		var subscriptOffset:Int;
+		
+		/**
+		 * A suggested offset to apply
+		 * from the baseline for superscript
+		 * glyphs
+		 */
+		var superscriptOffset:Int;
+		
+		/**
+		 * A suggested offset to apply from
+		 * the baseline when drawing underlines
+		 */
+		var underlineOffset:Int;
+		
+		/**
+		 * the width of a space character for
+		 * a given font at a given size
+		 */
+		var spaceWidth:Int;
+	}
+	
+	/**
+	 * Defines a DOMElement added to a LineBox
+	 * and its type
+	 */
+	typedef LineBoxElementData = {
+		var domElement:DOMElement;
+		var domElementType:InlineBoxValue;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Enums
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lists the different kind of
+	 * boxes that can be added in an
+	 * inline formatting context.
+	 * 
+	 * Spaces and tabs are separated
+	 * from other domElement as they
+	 * can influence a linebox layout
+	 * once it is complete
+	 */
+	enum InlineBoxValue {
+		domElement;
+		space;
+		tab;
 	}

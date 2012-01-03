@@ -9,7 +9,6 @@ package cocktailCore.style.floats;
 
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.formatter.FormattingContext;
-import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
 import haxe.Log;
 
@@ -254,7 +253,7 @@ class FloatsManager
 	{
 		var ret:FloatData;
 		
-		switch (domElement.style.computedStyle.float)
+		switch (domElement.style.computedStyle.floatValue)
 		{
 			case left:
 				ret = getLeftFloatData(domElement, flowData, containingBlockWidth);
