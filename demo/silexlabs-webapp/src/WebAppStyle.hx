@@ -9,7 +9,6 @@ package ;
 
 // DOM
 import cocktail.domElement.DOMElement;
-import cocktailCore.style.StyleData;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -35,10 +34,6 @@ class WebAppStyle
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		
-		//domElement.style.width = DimensionStyleValue.length(px(320));
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.minHeight = ConstrainedDimensionStyleValue.length(px(420));
 		domElement.style.minHeight = ConstrainedDimensionStyleValue.percent(130);
 	}
 	
@@ -68,8 +63,6 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
@@ -90,8 +83,8 @@ class WebAppStyle
 		//domElement.style.width = DimensionStyleValue.percent(100);
 		//domElement.style.height = DimensionStyleValue.percent(100);
 
-		domElement.style.left = PositionOffsetStyleValue.auto;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.left = PositionOffsetStyleValue.autoValue;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 	}
 	
 	/**
@@ -138,8 +131,6 @@ class WebAppStyle
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.length(px(100));
-		//domElement.style.height = DimensionStyleValue.length(px(100));
 	}
 	
 	
@@ -150,8 +141,6 @@ class WebAppStyle
 	 */
 	public static function getHeaderStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
-		
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
 		
@@ -166,14 +155,12 @@ class WebAppStyle
 	 */
 	public static function getHeaderTileStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);		
 		getHeaderStyle(domElement);
 		
-		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.bottom = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
@@ -185,19 +172,13 @@ class WebAppStyle
 	 */
 	public static function getHeaderLogoStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);		
-		//getHeaderStyle(domElement);
-		
-		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(4));
-		domElement.style.bottom = PositionOffsetStyleValue.auto;
+		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
 		domElement.style.left = PositionOffsetStyleValue.length(px(15));
-		domElement.style.right = PositionOffsetStyleValue.auto;
-		//domElement.style.width = DimensionStyleValue.auto;
+		domElement.style.right = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.length(px(44));
-		//domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
 
 	/**
@@ -207,16 +188,11 @@ class WebAppStyle
 	 */
 	public static function getFooterMenuStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);		
-		//getHeaderStyle(domElement);
-		
-		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
-		domElement.style.width = DimensionStyleValue.auto;
-		//domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
+		domElement.style.width = DimensionStyleValue.autoValue;
 	}
 
 	/**
@@ -226,12 +202,11 @@ class WebAppStyle
 	 */
 	public static function getFooterTileStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);		
 		getHeaderStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.auto;
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
@@ -244,15 +219,12 @@ class WebAppStyle
 	 */
 	public static function getHeaderTextStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
 		getHeaderStyle(domElement);
 		
-		//domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.color = ColorValue.hex('#454545');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
-		//domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.fontStyle = FontStyleStyleValue.normal;
 		domElement.style.fontFamily =
@@ -262,13 +234,10 @@ class WebAppStyle
 			];
 		domElement.style.textAlign = TextAlignStyleValue.center;
 
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(15));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.auto;
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
-		//domElement.style.height = DimensionStyleValue.percent(100);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 
@@ -279,7 +248,6 @@ class WebAppStyle
 	 */
 	public static function getBackButtonStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
 		getHeaderStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
@@ -294,7 +262,6 @@ class WebAppStyle
 	 */
 	public static function getBackButtonTextStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
 		getHeaderStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
@@ -313,7 +280,6 @@ class WebAppStyle
 
 		domElement.style.paddingTop = PaddingStyleValue.length(px(12));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(30));
-		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 
 	/**
@@ -323,7 +289,6 @@ class WebAppStyle
 	 */
 	public static function getBackButtonImageStyle(domElement:DOMElement):Void
 	{
-		//getDefaultStyle(domElement);
 		getHeaderStyle(domElement);
 
 		domElement.style.display = DisplayStyleValue.inlineStyle;

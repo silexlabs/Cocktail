@@ -20,7 +20,6 @@ import cocktail.nativeElement.NativeElementData;
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
-import cocktailCore.style.StyleData;
 
 // RichList
 import components.richList.RichListModels;
@@ -85,7 +84,7 @@ class StyleNormal
 		//domElement.style.position = absolute;
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.float = FloatStyleValue.right;
+		domElement.style.floatValue = FloatStyleValue.right;
 		//domElement.style.width = DimensionStyleValue.length(px(16));
 		domElement.style.height = DimensionStyleValue.length(px(20));
 		//domElement.style.height = DimensionStyleValue.length(px(29));

@@ -16,7 +16,6 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 
 // Style
-import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
@@ -87,7 +86,7 @@ class StyleApp
 		//domElement.style.width = DimensionStyleValue.percent(50);
 		domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(appIconSize));
 		//domElement.style.height = DimensionStyleValue.percent(50);
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(3));
 	}
 	
 	/**
