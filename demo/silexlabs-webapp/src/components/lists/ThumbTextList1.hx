@@ -13,7 +13,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.textElement.TextElement;
 
-// RichList specific
+// list specific
 import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
