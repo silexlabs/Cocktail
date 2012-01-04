@@ -35,6 +35,21 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
+	 * Overriden to process width before margins. For an embedded element a
+	 * computed width can always be computed event when width is auto
+	 */
+	override private function measureAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	{
+		//width
+		setComputedWidth(style, getComputedAutoWidth(style, containingDOMElementData));
+			
+		//left margin
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
+		//right margin
+		style.computedStyle.marginRight = getComputedMarginRight(style, containingDOMElementData);
+	}
+	
+	/**
 	 * Override the way a value of 'auto' for the width style
 	 * is computed, as an embedded DOMElement may have an intrinsic width
 	 * and/or intrinsic ratio
@@ -72,6 +87,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				if (containingDOMElementData.isWidthAuto == false)
 				{
 					var computedStyle:ComputedStyleData = style.computedStyle;
+					
 					ret = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 				}
 				else
@@ -157,17 +173,19 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * for block embedded DOMElement, an 'auto' for vertical margin compute to 0, 
 	 * horizontal margin are computed like for non-embedded block DOMElements
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool = false ):Int
+	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		var computedMargin:Int;
-		
+	
 		if (isHorizontalMargin == false)
 		{
 			computedMargin = 0;
 		}
 		else
 		{
-			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMarginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
+			//the "isDimensionAuto" flag is set to false, as for embedded element, there is always a computed width 
+			//at this point
+			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMarginStyleValue, containingDOMElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
 		}
 		
 		return computedMargin;
