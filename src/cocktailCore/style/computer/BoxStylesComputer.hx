@@ -172,10 +172,10 @@ class BoxStylesComputer
 	private function measureVerticalPaddings(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//top
-		style.computedStyle.paddingTop = getComputedPadding(style.paddingTop, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		style.computedStyle.paddingTop = getComputedPadding(style.paddingTop, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 		
 		//bottom
-		style.computedStyle.paddingBottom = getComputedPadding(style.paddingBottom, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		style.computedStyle.paddingBottom = getComputedPadding(style.paddingBottom, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
 	
 	/**
@@ -185,10 +185,10 @@ class BoxStylesComputer
 	private function measureHorizontalPaddings(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//left
-		style.computedStyle.paddingLeft = getComputedPadding(style.paddingLeft, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		style.computedStyle.paddingLeft = getComputedPadding(style.paddingLeft, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 		
 		//right
-		style.computedStyle.paddingRight = getComputedPadding(style.paddingRight, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		style.computedStyle.paddingRight = getComputedPadding(style.paddingRight, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
 	
 	// HORIZONTAL DIMENSIONS
@@ -707,14 +707,13 @@ class BoxStylesComputer
 	 * @param	paddingStyleValue can be defined as a unit (px, em...) or a percentage
 	 * @param	containingDOMElementDimension the dimensions of the DOMElement into which 
 	 * the current DOMElement must fit
-	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
 	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
 	 * defined in 'em'
 	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
 	 * defined in 'ex'
 	 * @return a computed padding in pixel
 	 */
-	private function getComputedPadding(paddingStyleValue:PaddingStyleValue, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int
+	private function getComputedPadding(paddingStyleValue:PaddingStyleValue, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
 	{
 		var computedPaddingValue:Int;
 		
@@ -728,16 +727,8 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension		
 			case percent(value):
-				//if containing dimension is not defined, padding defaults
-				//to 0
-				if (isContainingDimensionAuto == true)
-				{
-					computedPaddingValue = 0;
-				}
-				else
-				{
-					computedPaddingValue = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
-				}
+				computedPaddingValue = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
+				
 		}
 		
 		return computedPaddingValue;
