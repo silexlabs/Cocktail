@@ -86,6 +86,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//compute the used height
 			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			setComputedHeight(style, computedHeight);
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedDOMElement.intrinsicRatio != null)
@@ -133,11 +134,12 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//compute the used value of 'width'
 			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-
+			setComputedWidth(style, computedWidth);
+			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedDOMElement.intrinsicRatio != null)
 			{
-				ret = Math.round(computedWidth / embeddedDOMElement.intrinsicRatio);
+				ret = Math.round(style.computedStyle.width / embeddedDOMElement.intrinsicRatio);
 			}
 			else
 			{

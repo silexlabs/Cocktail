@@ -64,6 +64,12 @@ class BoxStylesComputer
 		measureHorizontalPaddings(style, containingDOMElementData);
 		measureVerticalPaddings(style, containingDOMElementData);
 		
+		//The next step is to compute the dimensions
+		//constraint style (max-width, min-height...)
+		//which will be applied each time the computed height
+		//or width ae set
+		measureDimensionsConstraints(style, containingDOMElementData);
+		
 		//measure width, height and margins at the same time, as margins can influence or be
 		//influenced by the width and height of the DOMElement
 		measureWidthAndHorizontalMargins(style, containingDOMElementData);
@@ -73,14 +79,6 @@ class BoxStylesComputer
 		//used when the DOMElement is 'positioned' (any position style
 		//but 'static')
 		measurePositionOffsets(style, containingDOMElementData);
-		
-		//The next step is to compute the dimensions
-		//constraint style (max-width, min-height...)
-		measureDimensionsConstraints(style, containingDOMElementData);
-		
-		//apply the dimensions constraints (min-width, max-height...)
-		//to the computed width and height dimensions
-		constrainDimensions(style);
 		
 		//At this point, all the dimensions of the DOMElement are known maybe except the
 		//content height if it was set to 'auto' and thus depends on its content's height.
@@ -225,7 +223,7 @@ class BoxStylesComputer
 	{
 		//the width is first set to 0, 
 		//it will be computed once the margins are computed
-		style.computedStyle.width = 0;
+		setComputedWidth(style, 0);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -233,7 +231,7 @@ class BoxStylesComputer
 		style.computedStyle.marginRight = getComputedMarginRight(style, containingDOMElementData);
 		
 		//the width is computed now that the sizes of the margins are computed
-		style.computedStyle.width = getComputedAutoWidth(style, containingDOMElementData);
+		setComputedWidth(style, getComputedAutoWidth(style, containingDOMElementData));
 	}
 	
 	/**
@@ -245,7 +243,7 @@ class BoxStylesComputer
 	private function measureWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
+		setComputedWidth(style, getComputedWidth(style, containingDOMElementData));
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
@@ -291,7 +289,7 @@ class BoxStylesComputer
 	private function measureAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//the height is set to null by default
-		style.computedStyle.height = getComputedAutoHeight(style, containingDOMElementData);
+		setComputedHeight(style, getComputedAutoHeight(style, containingDOMElementData));
 		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
@@ -310,8 +308,7 @@ class BoxStylesComputer
 	private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
-		
+		setComputedHeight(style, getComputedHeight(style, containingDOMElementData));
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingDOMElementData);
 		//right margin
@@ -323,11 +320,9 @@ class BoxStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Apply the dimensions constraints, such as 
-	 * max-height to the computed width and height
-	 * values
+	 * Constrain computed width if it is above/below max/min width
 	 */
-	private function constrainDimensions(style:AbstractStyle):Void
+	private function constrainWidth(style:AbstractStyle):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -348,12 +343,20 @@ class BoxStylesComputer
 		{
 			computedStyle.width = computedStyle.minWidth;
 		}
+	}
+	
+	/**
+	 * Constrain computed height if it is above/below max/min height
+	 */
+	private function constrainHeight(style:AbstractStyle):Void
+	{
+		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//at this point the computed height might still
-		//be null if no fixed height was defined for this
-		//DOMElement, in this case, the max height will
+		//be undefined if it was defined as 'auto'
+		//in this case, the max height will
 		//be checked again once the height of the DOMElement
-		//has been defined
+		//has been defined by its content
 		if (style.height != DimensionStyleValue.autoValue)
 		{
 			//check that height is within authorised range
@@ -371,6 +374,26 @@ class BoxStylesComputer
 				computedStyle.height = computedStyle.minHeight;
 			}
 		}
+	}
+	
+	/**
+	 * Utils method to insure that height is constrained each time
+	 * it is set
+	 */
+	private function setComputedHeight(style:AbstractStyle, computedHeight:Int):Void
+	{
+		style.computedStyle.height = computedHeight;
+		constrainHeight(style);
+	}
+	
+	/**
+	 * Utils method to insure that width is constrained each time
+	 * it is set
+	 */
+	private function setComputedWidth(style:AbstractStyle, computedWidth:Int):Void
+	{
+		style.computedStyle.width = computedWidth;
+		constrainWidth(style);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
