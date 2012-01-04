@@ -141,26 +141,12 @@ class AbstractContainerStyle extends Style
 		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
 		//flow all children 
-		doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
-		
-		//destroy the current formatting context, prompting
-		//to clean up all references it might have and also
-		//lays out the last line of DOMElement for an
-		//inline formatting context
-		//This method is only called if a new formatting
-		//context was established by this ContainerDOMElement,
-		//meaning that the previous formatting context needs to
-		//be destroyed.
-		if (childrenFormattingContext != formatingContext)
-		{
-			childrenFormattingContext.destroy();
-		}
+		doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, formatingContext);
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
 		{
-			
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
 			
@@ -170,9 +156,10 @@ class AbstractContainerStyle extends Style
 			{
 				//update the structure used for the layout and starts a new layout
 				childrenFormattingContext = getFormatingContext(formatingContext);
+			
 				childrenContainingDOMElementData = getContainerDOMElementData();
 				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, formatingContext);
 			}
 		}
 		
@@ -221,7 +208,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Actually flow all the children of the ContainerDOMElement
 	 */
-	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext, formattingContext:FormattingContext):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
@@ -243,6 +230,19 @@ class AbstractContainerStyle extends Style
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 			}
+		}
+		
+		//destroy the current formatting context, prompting
+		//to clean up all references it might have and also
+		//lays out the last line of DOMElement for an
+		//inline formatting context
+		//This method is only called if a new formatting
+		//context was established by this ContainerDOMElement,
+		//meaning that the previous formatting context needs to
+		//be destroyed.
+		if (childrenFormattingContext != formattingContext)
+		{
+			childrenFormattingContext.destroy();
 		}
 	}
 	
