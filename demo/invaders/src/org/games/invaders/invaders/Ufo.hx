@@ -10,7 +10,7 @@ enum UfoState { UFO_FLYING; UFO_NOT_FLYING; UFO_SHOT_DOWN; }
 class Ufo extends MovingObject
 {
 	public static inline var UFO_COLOR = 0x310000;
-	public static inline var UFO_Y = 50;
+	public static inline var UFO_Y = 120;
 
 	public var direction:Direction;
 	public var state:UfoState;
