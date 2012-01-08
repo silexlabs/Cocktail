@@ -3,6 +3,7 @@
  * @author Thomas Fétiveau
  */
 
+import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
@@ -18,7 +19,7 @@ import cocktail.style.StyleData;
  
 class Gallery 
 {
-	private static var rootDOMElement:ContainerDOMElement;
+	private static var bodyDOMElement:BodyDOMElement;
 	
 	private var stageHeight:Int;
 	private var stageWidth:Int;
@@ -31,7 +32,7 @@ class Gallery
 	
 	public function new() 
 	{
-		getDefaultStyle(rootDOMElement);
+		getDefaultStyle(bodyDOMElement);
 		
 		// keep the stage width and height in variables as there is no possibility to get it dynamically through cocktail yet
 		stageWidth = 640;
@@ -99,7 +100,7 @@ class Gallery
 		imageDOMElement.style.position = PositionStyleValue.absolute;
 		imageDOMElement.style.width = DimensionStyleValue.length(px(81));
 		imageDOMElement.style.height = DimensionStyleValue.length(px(54));
-		rootDOMElement.addChild(imageDOMElement);
+		bodyDOMElement.addChild(imageDOMElement);
 		
 		//ImageDOMElement.onMouseUp = displayPicture;
 		
@@ -146,7 +147,7 @@ class Gallery
 		currentMainImage.style.width = DimensionStyleValue.length(px(300));
 		currentMainImage.style.height = DimensionStyleValue.length(px(240));
 
-		rootDOMElement.addChild(currentMainImage);
+		bodyDOMElement.addChild(currentMainImage);
 	}
 	
 	private function getDefaultStyle(domElement:DOMElement):Void
@@ -192,10 +193,10 @@ class Gallery
 
 		domElement.style.position = staticStyle;
 
-		domElement.style.width = DimensionStyleValue.auto;
-		domElement.style.height = DimensionStyleValue.auto;
+		domElement.style.width = DimensionStyleValue.autoValue;
+		domElement.style.height = DimensionStyleValue.autoValue;
 
-		domElement.style.float = FloatStyleValue.none;
+		domElement.style.floatValue = FloatStyleValue.none;
 		domElement.style.clear = ClearStyleValue.none;
 	}
 	
@@ -203,9 +204,9 @@ class Gallery
 	{
 		//create the root DOM Element of the gallery
 		//the getRoot method returns the root of the current runtime (Stage for flash, body for js)
-		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
+		bodyDOMElement = new BodyDOMElement();
 		
-		//rootDOMElement.style.layout
+		//bodyDOMElement.style.layout
 		// instanciate the gallery
 		new Gallery();
 	}
