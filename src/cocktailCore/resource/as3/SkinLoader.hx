@@ -9,16 +9,6 @@ package cocktailCore.resource.as3;
 
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractSkinLoader;
-import flash.display.Loader;
-import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.net.URLRequest;
-import flash.system.ApplicationDomain;
-import flash.system.LoaderContext;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktailCore.resource.abstract.AbstractResourceLoader;
-import cocktail.resource.ResourceData;
 
 /**
  * This is the Skin loader implementation for the Flash runtime. It is used to 
