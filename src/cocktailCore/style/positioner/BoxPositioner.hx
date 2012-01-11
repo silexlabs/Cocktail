@@ -59,48 +59,54 @@ class BoxPositioner
 	 * @param staticPosition the position the DOMElement would have in the flow if it weren't positioned. Used if
 	 * the position styles (left, right, top and bottom) are set to 'auto'
 	 */
-	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
+	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
 	{
+		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
+		{
+			domElement:domElement,
+			x:0,
+			y:0,
+			lineIndex:0
+		}
+		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
 			//first place the DOMElement at its first positioned ancestor
 			//x origin
-			applyGlobalX(domElement,  containingDOMElementData.globalX);
 			//then apply offset
-			domElement.style.setNativeX(domElement, getLeftOffset(domElement) );
+			childrenTemporaryPositionData.x = getLeftOffset(domElement);
 		}
 		//if no left offset is defined, then try to apply a right offset
 		//right offset takes the containing DOMElement element width minus, the
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalX(domElement,  containingDOMElementData.globalX);
-			domElement.style.setNativeX(domElement, getRightOffset(domElement, containingDOMElementData.width));
+			childrenTemporaryPositionData.x = getRightOffset(domElement, containingDOMElementData.width);
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the document if it were positioned as 'static'
 		else
 		{
-			domElement.style.setNativeX(domElement, Math.round(staticPosition.x));
+			childrenTemporaryPositionData.x = Math.round(staticPosition.x);
 		}
 		
 		//for vertical offset, the same rule as hortizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalY(domElement,  containingDOMElementData.globalY);
-			domElement.style.setNativeY(domElement, getTopOffset(domElement));
+			childrenTemporaryPositionData.y = getTopOffset(domElement);
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalY(domElement,  containingDOMElementData.globalY);
-			domElement.style.setNativeY(domElement, getBottomOffset(domElement, containingDOMElementData.height));
+			childrenTemporaryPositionData.y = getBottomOffset(domElement, containingDOMElementData.height);
 		}
 		else
 		{
-			domElement.style.setNativeY(domElement, Math.round(staticPosition.y));
+			childrenTemporaryPositionData.y = Math.round(staticPosition.y);
 		}
+		
+		return childrenTemporaryPositionData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

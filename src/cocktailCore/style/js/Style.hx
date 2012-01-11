@@ -21,7 +21,7 @@ import cocktail.style.StyleData;
  * to re-implement styles in JS, for instance processing the layout of the document 
  * entirely in JS, like in the Flash runtime but it would have had the following drawbacks : 
  * 
- * - way worse performance
+ * - huge performance hit
  * - generate non-standard HTML (e.g : to manage the layout in pure JS, all HTML elements should
  * have been positionned as 'absolute' instead on relying on the standard document's flow
  * - Some limitations would have occured such as floats which would have been very difficult 
@@ -38,7 +38,7 @@ import cocktail.style.StyleData;
  * They are also stored when the width/height/x/y are set directly on the DOMElement
  * (with DOMElement.x, DOMElement.y ...).
  * Those value are stored immediately because in JavaScript when changing a style on an object,
- * methods to get the actual width of an element (like clientWidth) are set asynchronously,
+ * methods to get the actual dimensions of an element (like clientWidth) are set asynchronously,
  * meaning that in the following example, the width var will be equal to 0 instead of 100 : 
  * myHTMLElement.style.width = 100px;
  * var width = myHTMLElement.clientWidth;
@@ -79,19 +79,6 @@ class Style extends AbstractStyle
 		
 		//The DOMElement is set to valid to allow future re layout
 		this._isDirty = false;
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to prevent the DOMElement to be inserted into the flow, it is managed by the browser in
-	 * JavaScript
-	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null ):Void
-	{
-		
 	}
 	
 	/////////////////////////////////

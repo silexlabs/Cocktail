@@ -51,7 +51,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 		
 		smoothPicture();
 		
-		//rest the scale of the loaded picture and reaffect its computed
+		//reset the scale of the loaded picture and reaffect its computed
 		//dimensions to it
 		typedimage.scaleX = 1;
 		typedimage.scaleY = 1;
@@ -70,6 +70,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 	 */
 	private function smoothPicture():Void
 	{
+		/**
 		//cast the native element as a loader
 		// and retrieve its bitmap content
 		var typedNativeElement:Loader = cast(this._nativeElement);
@@ -78,8 +79,8 @@ class ImageDOMElement extends AbstractImageDOMElement
 		if (bitmap != null)
 		{
 			//activate picture smoothing
-			bitmap.smoothing = true;
-		}
+			//bitmap.smoothing = true;
+		}*/
 	}
 	
 }
