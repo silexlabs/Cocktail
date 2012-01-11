@@ -41,43 +41,47 @@ class BlockFormattingContext extends FormattingContext
 		var leftFloatOffset:Int = 0;
 		if (domElement.style.isEmbedded() == true)
 		{
-			_flowData.y = _floatsManager.getFirstAvailableY(flowData, domElement.offsetWidth, _containingDOMElementWidth);
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+			_formattingContextData.y = _floatsManager.getFirstAvailableY(formattingContextData, domElement.offsetWidth, _containingDOMElementWidth);
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		}
 			
-		//apply the new x and y position to the DOMElement and flowData
-		_flowData.x = _flowData.xOffset + leftFloatOffset;
+		//apply the new x and y position to the DOMElement and formattingContextData
+		_formattingContextData.x =  leftFloatOffset;
 		
 		
 		
 		
-		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _flowData.x, _flowData.y, 0, position);
+		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position);
 		
 		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
 		
 		if (position == true)
 		{
-			_flowData.y += domElement.offsetHeight ;
-			_flowData.totalHeight = _flowData.y  ;
+			_formattingContextData.y += domElement.offsetHeight ;
+			
 		}
-		
+		else
+		{
+			_formattingContextData.y += domElement.offsetHeight - domElement.style.computedStyle.height;
+		}
+		_formattingContextData.maxHeight = _formattingContextData.y  ;
 		
 		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
 		//of a container is set as 'shrink-to-fit' (takes its content width)
-		if (_flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft > _flowData.maxWidth)
+		if (_formattingContextData.x + domElement.offsetWidth > _formattingContextData.maxWidth)
 		{
-			_flowData.maxWidth = _flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft;
+			_formattingContextData.maxWidth = _formattingContextData.x + domElement.offsetWidth;
 		}
 		
 	}
 
 	/**
-	 * clear left, right or both floats and set the y of the flowData below
+	 * clear left, right or both floats and set the y of the formattingContextData below
 	 * the last cleared float
 	 */
 	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
-		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
+		_formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
 	}
 	
 	

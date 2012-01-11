@@ -52,8 +52,8 @@ class FormattingContext
 	 * Contains the data necessary to place the DOMElements in flow, 
 	 * such as the coordinates where to insert the next DOMElement
 	 */
-	private var _flowData:FlowData;
-	public var flowData(getFlowData, never):FlowData;
+	private var _formattingContextData:FormattingContextData;
+	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
 
 	private var _childrenTemporaryPositionsData:Array<ChildrenTemporaryPositionsData>;
 	
@@ -86,7 +86,7 @@ class FormattingContext
 		
 		//init the flow data to place the first inserted
 		//DOMElement in the right position
-		_flowData = initFlowData(_containingDOMElement);
+		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
 		_childrenTemporaryPositionsData = new Array<ChildrenTemporaryPositionsData>();
 		
@@ -96,27 +96,16 @@ class FormattingContext
 	 * Init the flow data using the containing DOMElement's
 	 * properties
 	 */
-	private function initFlowData(domElement:DOMElement):FlowData
+	private function initFormattingContextData(domElement:DOMElement):FormattingContextData
 	{
-		var flowY:Int = domElement.style.computedStyle.paddingTop;
+		var flowY:Int = 0;
 		
-		var flowX:Int;
-		
-		if (domElement.style.computedStyle.paddingLeft > _floatsManager.getLeftFloatOffset(flowY))
-		{
-			flowX = domElement.style.computedStyle.paddingLeft;
-		}
-		else
-		{
-			flowX = _floatsManager.getLeftFloatOffset(flowY);
-		}
+		var flowX:Int = _floatsManager.getLeftFloatOffset(flowY);
 		
 		return {
 			x : flowX,
 			y : flowY,
-			xOffset : domElement.style.computedStyle.paddingLeft,
-			yOffset : domElement.style.computedStyle.paddingTop,
-			totalHeight : 0,
+			maxHeight : 0,
 			maxWidth:0
 		};
 	}
@@ -194,7 +183,7 @@ class FormattingContext
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
-		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _flowData, _containingDOMElementWidth);
+		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, _containingDOMElementWidth);
 		//actually place the floated DOMElement
 		placeFloat(domElement, floatData);
 	}
@@ -269,7 +258,7 @@ class FormattingContext
 	 */
 	private function getRemainingLineWidth():Int
 	{
-		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
+		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
 	}
 	
 	/**
@@ -300,7 +289,7 @@ class FormattingContext
 	 */
 	private function removeFloats():Void
 	{
-		_floatsManager.removeFloats(_flowData.y);
+		_floatsManager.removeFloats(_formattingContextData.y);
 	}
 	
 	
@@ -339,9 +328,9 @@ class FormattingContext
 		return _floatsManager;
 	}
 	
-	private function getFlowData():FlowData
+	private function getFormattingContextData():FormattingContextData
 	{
-		return _flowData;
+		return _formattingContextData;
 	}
 	
 	private function getContainingDOMElement():DOMElement

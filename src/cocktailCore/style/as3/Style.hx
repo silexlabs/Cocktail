@@ -87,13 +87,13 @@ class Style extends AbstractStyle
 	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
 		super.setNativeX(domElement, x);
-		//domElement.nativeElement.x = x;
+		domElement.nativeElement.x = x;
 	}
 	
 	override public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
 		super.setNativeY(domElement, y);
-		//domElement.nativeElement.y = y;
+		domElement.nativeElement.y = y;
 	}
 	
 	override public function setNativeWidth(width:Int):Void

@@ -808,7 +808,7 @@ import cocktailCore.style.abstract.AbstractStyle;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	/**
 	 * Represents the width, height of a DOMElement's
 	 * parent content, and it's global position, relative
@@ -952,44 +952,34 @@ import cocktailCore.style.abstract.AbstractStyle;
 	
 	/**
 	 * Contains the data necessary to place
-	 * a DOMElement in flow
+	 * a DOMElement in flow into the current
+	 * formatting context
 	 */
-	typedef FlowData = {
+	typedef FormattingContextData = {
 		/**
 		 * the x position where the next in flow DOMElement
-		 * should be
+		 * should be placed in the formatting context
 		 */
 		var x:Int;
 		
 		/**
 		 * the y position where the next in flow DOMElement
-		 * should be
+		 * should be placed in the formatting context
 		 */
 		var y:Int;
 		
 		/**
-		 * The x offset applied to each starting line
-		 * (matches the containing DOMElement left padding)
-		 */
-		var xOffset:Int;
-		
-		/**
-		 * The y offset applied to the formatting context
-		 * (matches the containing DOMElement top padding)
-		 */
-		var yOffset:Int;
-		
-		/**
-		 * Determine the largest width of a line in
-		 * a formatting context
+		 * Determine the largest width of a line that was formatted
+		 * in the current formatting context
 		 */
 		var maxWidth:Int;
 		
 		/**
 		 * The accumulated height of all the in flow DOMElements
-		 * (includes paddings and margins)
+		 * (includes paddings and margins) of the current
+		 * formatting context
 		 */
-		var totalHeight:Int;
+		var maxHeight:Int;
 	}
 	
 	/**
@@ -1089,7 +1079,24 @@ import cocktailCore.style.abstract.AbstractStyle;
 	 */
 	typedef LineBoxElementData = {
 		var domElement:DOMElement;
+		var position:Bool;
 		var domElementType:InlineBoxValue;
+		var parentDOMElement:DOMElement;
+		var x:Int;
+		var y:Int;
+	}
+	
+	typedef ChildrenTemporaryPositionsData = {
+		var parentDOMElement:DOMElement;
+		var children:Array<ChildTemporaryPositionData>;
+	}
+	
+	typedef ChildTemporaryPositionData = {
+		var domElement:DOMElement;
+		var lineIndex:Int;
+		//var lineRect:RectangleData;
+		var x:Int;
+		var y:Int;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
