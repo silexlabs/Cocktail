@@ -72,20 +72,8 @@ class AbstractContainerStyle extends Style
 				childrenDOMElement.style.render();
 			}
 		}
-		for (i in 0..._childrenTemporaryPositionData.length)
-		{
-			#if flash9
-			var numChild:Int = this._domElement.nativeElement.numChildren;
-			for (j in 0...numChild -1)
-			{
-			//	this._domElement.nativeElement.removeChildAt(0);
-			}
-			
-			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			_childrenTemporaryPositionData[i].domElement.nativeElement.x = _childrenTemporaryPositionData[i].x;
-			_childrenTemporaryPositionData[i].domElement.nativeElement.y = _childrenTemporaryPositionData[i].y;
-			#end
-		}
+		super.render();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -97,8 +85,11 @@ class AbstractContainerStyle extends Style
 	 * will be measured and placed as well as all of its children.
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
-	{
+	{		
 		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
+		
+		
+		
 		render();
 	}
 	
@@ -182,7 +173,7 @@ class AbstractContainerStyle extends Style
 		if (this._width == DimensionStyleValue.autoValue)
 		{
 			var currentWidth:Int = this._computedStyle.width;
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.maxWidth);
+			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
 			
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
@@ -205,7 +196,7 @@ class AbstractContainerStyle extends Style
 		//another way
 		if (this._height == DimensionStyleValue.autoValue)
 		{
-			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.flowData.totalHeight);
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
 		}
 
 		//retrieve the floats overflowing from the children of this ContainerDOMElement, 

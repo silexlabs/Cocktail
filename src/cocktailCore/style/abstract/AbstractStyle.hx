@@ -433,13 +433,14 @@ class AbstractStyle
 	{
 		for (i in 0..._childrenTemporaryPositionData.length)
 		{
-			
-			#if flash9
+			#if (flash9)
 			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			_childrenTemporaryPositionData[i].domElement.x = _childrenTemporaryPositionData[i].x;
-			_childrenTemporaryPositionData[i].domElement.y = _childrenTemporaryPositionData[i].y;
 			#end
+			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
 		}
+		
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +491,23 @@ class AbstractStyle
 	 */
 	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
 	{
+		
+		#if (flash9)
+		
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			try {
+				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			}
+			catch (e:Dynamic)
+			{
+				
+			}
+			
+		}
+		
+		#end
+		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
 		if (isNotDisplayed() == true)
@@ -641,8 +659,8 @@ class AbstractStyle
 			
 			//retrieve the static position (the position of the DOMElement
 			//if its position style was 'static'
-			var x:Float = formattingContext.flowData.x;
-			var y:Float = formattingContext.flowData.y;
+			var x:Float = formattingContext.formattingContextData.x;
+			var y:Float = formattingContext.formattingContextData.y;
 			
 			var staticPosition:PointData = {
 				x:x,
@@ -1227,6 +1245,7 @@ class AbstractStyle
 		{
 			this._nativeX = x;
 		}
+		
 	}
 	
 	/**
