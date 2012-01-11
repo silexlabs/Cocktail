@@ -173,7 +173,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//compute the width which is either defined as a length or a percentage
-		style.computedStyle.width = getComputedWidth(style, containingDOMElementData);
+		setComputedWidth(style, getComputedWidth(style, containingDOMElementData));
 		
 		//if neither left nor right are defined as auto
 		if (style.left != PositionOffsetStyleValue.autoValue && style.right != PositionOffsetStyleValue.autoValue)
@@ -305,7 +305,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed height is deduced from all the other computed vertical values. It is the remaining space when all the other value
 			//are substracted from the containing DOMElement height
-			style.computedStyle.height = containingDOMElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom;
+			setComputedHeight(style, containingDOMElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
 		}
 		
 		//if top or bottom are auto, then the height will be computed once the layout
@@ -320,7 +320,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//compute the height which is either defined as a length or a percentage
-		style.computedStyle.height = getComputedHeight(style, containingDOMElementData);
+		setComputedHeight(style, getComputedHeight(style, containingDOMElementData));
 		
 		//if neither top nor bottom are defined as auto
 		if (style.top != PositionOffsetStyleValue.autoValue && style.bottom != PositionOffsetStyleValue.autoValue)
