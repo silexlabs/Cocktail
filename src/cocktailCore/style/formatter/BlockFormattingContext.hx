@@ -31,9 +31,9 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * Place the DOMElement below the preceding DOMElement
 	 */
-	override private function place(domElement:DOMElement):Void
+	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		super.place(domElement);
+		super.place(domElement, parentDOMElement, position);
 		
 		//add the left float offset if the element is embedded
 		//(for instance an image), for non-embedded DOMElement
@@ -47,10 +47,20 @@ class BlockFormattingContext extends FormattingContext
 			
 		//apply the new x and y position to the DOMElement and flowData
 		_flowData.x = _flowData.xOffset + leftFloatOffset;
-		domElement.style.setNativeX(domElement, _flowData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.setNativeY(domElement, _flowData.y + domElement.style.computedStyle.marginTop);
-		_flowData.y += domElement.offsetHeight ;
-		_flowData.totalHeight = _flowData.y  ;
+		
+		
+		
+		
+		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _flowData.x, _flowData.y, 0, position);
+		
+		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
+		
+		if (position == true)
+		{
+			_flowData.y += domElement.offsetHeight ;
+			_flowData.totalHeight = _flowData.y  ;
+		}
+		
 		
 		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
 		//of a container is set as 'shrink-to-fit' (takes its content width)

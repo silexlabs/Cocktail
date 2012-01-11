@@ -5,28 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.as3;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktailCore.domElement.abstract.AbstractContainerDOMElement;
-import cocktail.style.StyleData;
-
-import flash.Vector;
-import haxe.Log;
+package cocktailCore.drawing;
 
 
-/**
- * This is the Flash AS3 implementation of the container DOMElement.
- * 
- * @author Yannick DOMINGUEZ
- */
-class ContainerDOMElement extends AbstractContainerDOMElement
-{
-	/**
-	 * class constructor
-	 */
-	public function new(nativeElement:NativeElement = null) 
-	{
-		super(nativeElement);
-	}
-}
+#if (flash9 || cpp || nme)
+typedef DrawingManager = cocktailCore.drawing.as3.DrawingManager;
+#elseif js
+typedef DrawingManager = cocktailCore.drawing.js.DrawingManager;
+#elseif php
+typedef DrawingManager = cocktailCore.drawing.php.DrawingManager;
+#elseif doc
+import cocktailCore.drawing.abstract.AbstractDrawingManager;
+class DrawingManager extends AbstractDrawingManager {}
+#end	

@@ -54,6 +54,8 @@ class FormattingContext
 	 */
 	private var _flowData:FlowData;
 	public var flowData(getFlowData, never):FlowData;
+
+	private var _childrenTemporaryPositionsData:Array<ChildrenTemporaryPositionsData>;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -85,6 +87,8 @@ class FormattingContext
 		//init the flow data to place the first inserted
 		//DOMElement in the right position
 		_flowData = initFlowData(_containingDOMElement);
+		
+		_childrenTemporaryPositionsData = new Array<ChildrenTemporaryPositionsData>();
 		
 	}
 	
@@ -121,31 +125,56 @@ class FormattingContext
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
+	public function getChildrenTemporaryPositionData(parentDOMElement:DOMElement):Array<ChildTemporaryPositionData>
+	{
+		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = new Array<ChildTemporaryPositionData>();
+		var foundFlag:Bool = false;
+		for (i in 0..._childrenTemporaryPositionsData.length)
+		{
+			if (_childrenTemporaryPositionsData[i].parentDOMElement == parentDOMElement)
+			{
+				childrenTemporaryPositionData = _childrenTemporaryPositionsData[i].children;
+				foundFlag = true;
+			}
+		}
+		
+		if (foundFlag == false)
+		{
+			var childrenTemporaryPositionsData:ChildrenTemporaryPositionsData = {
+				parentDOMElement:parentDOMElement,
+				children:childrenTemporaryPositionData
+			}
+			_childrenTemporaryPositionsData.push(childrenTemporaryPositionsData);
+		}
+		
+		return childrenTemporaryPositionData;
+	}
+	
 	/**
 	 * Insert a DOMElement in the formatting context's
 	 * flow
 	 */
-	public function insert(domElement:DOMElement):Void
+	public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement, position);
 	}
 	
 	/**
 	 * Insert a space character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertSpace(domElement:DOMElement):Void
+	public function insertSpace(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement);
 	}
 	
 	/**
 	 * Insert a tab character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertTab(domElement:DOMElement):Void
+	public function insertTab(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement);
 	}
 	
 	/**
@@ -222,12 +251,12 @@ class FormattingContext
 	 * Actually insert a DOMElement in the
 	 * formatting context
 	 */
-	private function doInsert(domElement:DOMElement):Void
+	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool = false):Void
 	{
 		//actually place the DOMElement by computing
 		//its place in the flow than updating its
 		//position attributes
-		place(domElement);
+		place(domElement, parentDOMElement, establishesNewFormattingContext);
 		
 		//remove all the floats that the insertion
 		//of the DOMElement made obsolote
@@ -247,7 +276,7 @@ class FormattingContext
 	 * Place a DOMElement is the flow according to 
 	 * a block or inline formatting scheme
 	 */
-	private function place(domElement:DOMElement):Void
+	private function place(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool):Void
 	{
 		//abstract
 	}
@@ -274,6 +303,32 @@ class FormattingContext
 		_floatsManager.removeFloats(_flowData.y);
 	}
 	
+	
+	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool):ChildTemporaryPositionData
+	{
+		var childTemporaryPositionData:ChildTemporaryPositionData;
+		
+		if (position == true)
+		{
+			childTemporaryPositionData = {
+			domElement:domElement,
+			x:x,
+			y:y,
+			lineIndex:lineIndex
+			}
+		}
+		else
+		{
+			childTemporaryPositionData = {
+			domElement:domElement,
+			x:0,
+			y:0,
+			lineIndex:lineIndex
+			}
+		}
+		
+		return childTemporaryPositionData;
+	}
 	
 	/////////////////////////////////
 	// GETTERS/SETTERS

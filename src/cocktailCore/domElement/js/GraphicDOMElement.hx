@@ -258,7 +258,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * in JavaScript rgba color space, alpha range from 0 to 1
 	 */
-	override private function toNativeAlpha(genericAlpha:Int):Dynamic
+	private function toNativeAlpha(genericAlpha:Int):Dynamic
 	{
 		return genericAlpha * 0.01;
 	}
@@ -266,7 +266,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * in a JavaScript gradient, color ratio range from 0 to 1
 	 */
-	override private function toNativeRatio(genericRatio:Int):Dynamic
+	private function toNativeRatio(genericRatio:Int):Dynamic
 	{
 		return genericRatio * 0.01;
 	}
@@ -274,7 +274,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * in JavaScript, caps styles are String
 	 */
-	override private function toNativeCapStyle(genericCapStyle:CapsStyleValue):Dynamic
+	private function toNativeCapStyle(genericCapStyle:CapsStyleValue):Dynamic
 	{
 		var capStyle:String = "";
 				
@@ -296,7 +296,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	/**
 	 * in JavaScript, joint styles are String
 	 */
-	override private function toNativeJointStyle(genericJointStyle:JointStyleValue):Dynamic
+	private function toNativeJointStyle(genericJointStyle:JointStyleValue):Dynamic
 	{
 		var jointStyle:String = "";
 				
