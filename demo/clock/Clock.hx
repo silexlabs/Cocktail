@@ -1,20 +1,22 @@
 package ;
 
+import cocktail.domElement.BodyDOMElement;
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.TextDOMElement;
-import cocktail.domElement.abstract.AbstractDOMElement;
+import cocktail.textElement.TextElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElementManager;
-import cocktail.resource.ResourceLoaderManager;
-
+import cocktail.style.StyleData;
+import cocktail.unit.UnitData;
 
 /**
- * Display an "analogue" and numeric clock updated each seconds
+ * Display an "analog" and numeric clock updated each seconds
  * @author Yannick DOMINGUEZ
  */
 class Clock 
@@ -45,9 +47,15 @@ class Clock
 	private var _hourNeedle:ImageDOMElement;
 	
 	/**
-	 * the numeric clock 
+	 * the numeric clock container 
 	 */
-	private var _clockDisplay:TextDOMElement;
+	private var _clockDisplay:ContainerDOMElement;
+	
+	/**
+	 * the numeric clock text 
+	 */
+	private var _time:TextElement;
+
 	
 	/**
 	 * count the loading of assets
@@ -58,22 +66,24 @@ class Clock
 	 * the center of the rotation for the second nedle
 	 * as this needle goes further than the clock half
 	 */
-	private var _secondNeedleRotationCenter:Point;
+	private var _secondNeedleRotationCenter:PointData;
+	private var _minuteNeedleRotationCenter:PointData;
+	private var _hourNeedleRotationCenter:PointData;
 	
 	
 	/**
 	 * The root of the dom (stage in flash, body in html)
 	 */
-	private static var rootDOMElement:DOMElement;
+	private static var rootDOMElement:BodyDOMElement;
 	
 	/**
 	 * init the root dom element of the publication 
 	 */
 	public static function main()
 	{
-		rootDOMElement = new DOMElement(NativeElementManager.getRoot());
+		rootDOMElement = new BodyDOMElement();
 		
-		//ibnstantiate the clock class
+		//instantiate the clock class
 		var cl:Clock = new Clock();
 	}
 	
@@ -84,11 +94,34 @@ class Clock
 	{
 		_loadedAssetsCounter = 0;
 		
-		ResourceLoaderManager.loadImage("assets/second_needle.png", onSecondNeedleLoaded, function(err){});
-		ResourceLoaderManager.loadImage("assets/hour_needle.png", onHourNeedleLoaded, function(err){});
-		ResourceLoaderManager.loadImage("assets/minute_needle.png", onMinuteNeedleLoaded, function(err){});
-		ResourceLoaderManager.loadImage("assets/clock_background.png", onClockBackgroundLoaded, function(err){});
-		ResourceLoaderManager.loadImage("assets/clock_foreground.png", onClockForegroundLoaded, function(err){});
+		//ResourceLoaderManager.loadImage("assets/second_needle.png", onSecondNeedleLoaded, function(err){});
+		//ResourceLoaderManager.loadImage("assets/hour_needle.png", onHourNeedleLoaded, function(err){});
+		//ResourceLoaderManager.loadImage("assets/minute_needle.png", onMinuteNeedleLoaded, function(err){});
+		//ResourceLoaderManager.loadImage("assets/clock_background.png", onClockBackgroundLoaded, function(err){});
+		//ResourceLoaderManager.loadImage("assets/clock_foreground.png", onClockForegroundLoaded, function(err){});
+		_secondNeedle = new ImageDOMElement();
+		_hourNeedle = new ImageDOMElement();
+		_minuteNeedle = new ImageDOMElement();
+		_clockBackground = new ImageDOMElement();
+		_clockForeGround = new ImageDOMElement();
+		
+		_secondNeedle.matrix = new Matrix();
+		_hourNeedle.matrix = new Matrix();
+		_minuteNeedle.matrix = new Matrix();
+		_clockForeGround.matrix = new Matrix();
+		//trace(_secondNeedle.matrix);
+		
+		_secondNeedle.onLoad = onSecondNeedleLoaded;
+		_hourNeedle.onLoad = onHourNeedleLoaded;
+		_minuteNeedle.onLoad = onMinuteNeedleLoaded;
+		_clockBackground.onLoad = onClockBackgroundLoaded;
+		_clockForeGround.onLoad = onClockForegroundLoaded;
+		
+		_secondNeedle.load("assets/second_needle.png");
+		_hourNeedle.load("assets/hour_needle.png");
+		_minuteNeedle.load("assets/minute_needle.png");
+		_clockBackground.load("assets/clock_background.png");
+		_clockForeGround.load("assets/clock_foreground.png");
 	}
 	
 	/**
@@ -98,8 +131,10 @@ class Clock
 	private function init()
 	{
 		//init the numeric hour display
-		_clockDisplay = new TextDOMElement();
-		
+		_clockDisplay = new ContainerDOMElement();
+		_time = new TextElement("");
+		_clockDisplay.addText(_time);
+
 		//ad all dom elements to the DOM
 		rootDOMElement.addChild(_clockBackground);
 		rootDOMElement.addChild(_secondNeedle);
@@ -112,21 +147,36 @@ class Clock
 		var secondNeedleOffset:Float = 15.0;
 		
 		_secondNeedleRotationCenter = {
-			x:_secondNeedle.width / 2,
-			y:_secondNeedle.height - secondNeedleOffset
+			x:_secondNeedle.intrinsicWidth / 2,
+			y:cast _secondNeedle.intrinsicHeight - secondNeedleOffset
+		}
+		//trace(_secondNeedleRotationCenter);
+		_minuteNeedleRotationCenter = {
+			x:_minuteNeedle.intrinsicWidth / 2,
+			y:cast _minuteNeedle.intrinsicHeight
+		}
+		_hourNeedleRotationCenter = {
+			x:_hourNeedle.intrinsicWidth / 2,
+			y:cast _hourNeedle.intrinsicHeight
 		}
 		
 		//set the pivot point for each needle
-		_secondNeedle.registrationPoint = point(_secondNeedleRotationCenter);
-		_minuteNeedle.registrationPoint = constant(center, bottom);
-		_hourNeedle.registrationPoint = constant(center, bottom);
+		//_secondNeedle.registrationPoint = point(_secondNeedleRotationCenter);
+		//_minuteNeedle.registrationPoint = constant(center, bottom);
+		//_hourNeedle.registrationPoint = constant(center, bottom);
+		
+		var secondNeedleRegistrationPoint:PointData = _secondNeedleRotationCenter;
+		var minuteNeedleRegistrationPoint:PointData = _minuteNeedleRotationCenter;
+		var hourNeedleRegistrationPoint:PointData = _hourNeedleRotationCenter;
+		//_secondNeedle.matrix = new Matrix();
 		
 		//move all the needles and the foreground to the center
-		_secondNeedle.translate(_clockBackground.width / 2 - _secondNeedle.width /2, (_clockBackground.height / 2 - _secondNeedle.height + secondNeedleOffset));
-		_minuteNeedle.translate(_clockBackground.width / 2 - _minuteNeedle.width / 2, (_clockBackground.height / 2 - _minuteNeedle.height ));
-		_hourNeedle.translate(_clockBackground.width / 2 - _hourNeedle.width / 2, (_clockBackground.height / 2 - _hourNeedle.height));
-		_clockForeGround.translate(_clockBackground.width / 2 - _clockForeGround.width / 2, (_clockBackground.height / 2 - _clockForeGround.height / 2));
+		_secondNeedle.matrix.translate(_clockBackground.intrinsicWidth / 2 - _secondNeedle.intrinsicWidth /2, (_clockBackground.intrinsicHeight / 2 - _secondNeedle.intrinsicHeight + secondNeedleOffset));
+		_minuteNeedle.matrix.translate(_clockBackground.intrinsicWidth / 2 - _minuteNeedle.intrinsicWidth / 2, (_clockBackground.intrinsicHeight / 2 - _minuteNeedle.intrinsicHeight ));
+		_hourNeedle.matrix.translate(_clockBackground.intrinsicWidth / 2 - _hourNeedle.intrinsicWidth / 2, (_clockBackground.intrinsicHeight / 2 - _hourNeedle.intrinsicHeight));
+		_clockForeGround.matrix.translate(_clockBackground.intrinsicWidth / 2 - _clockForeGround.intrinsicWidth / 2, (_clockBackground.intrinsicHeight / 2 - _clockForeGround.intrinsicHeight / 2));_secondNeedle.matrix.translate(_clockBackground.intrinsicWidth / 2 - _secondNeedle.intrinsicWidth /2, (_clockBackground.intrinsicHeight / 2 - _secondNeedle.intrinsicHeight + secondNeedleOffset));
 		
+	
 		//set up the text display
 		_clockDisplay.width = 300;
 		_clockDisplay.y = _clockBackground.height;
@@ -144,9 +194,13 @@ class Clock
 	 */
 	private function updateTime():Void
 	{
-		_clockDisplay.text = Date.now().toString();
+		_clockDisplay.removeText(_time);
+		_time = new TextElement(Date.now().toString());
+		_clockDisplay.addText(_time);
 		
 		_secondNeedle.rotation = Math.round(Date.now().getSeconds() * 6);
+		//_secondNeedle.matrix.rotate(Math.round(Date.now().getSeconds() * 6), _secondNeedleRotationCenter);
+		//trace(_secondNeedle.matrix);
 		_minuteNeedle.rotation = Math.round(Date.now().getMinutes() * 6);
 		_hourNeedle.rotation = Math.round(Date.now().getHours() * (360/12));
 		
