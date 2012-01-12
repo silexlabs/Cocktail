@@ -811,18 +811,15 @@ import cocktailCore.style.abstract.AbstractStyle;
 	
 	/**
 	 * Represents the width, height of a DOMElement's
-	 * parent content, and it's global position, relative
-	 * to the root DOMElement.
+	 * parent content.
 	 * Specify for each dimension if it is 'autoValue', 
-	 * meaning it depends on its content
+	 * meaning it depends on its content dimension
 	 */
 	typedef ContainingDOMElementData = {
 		var width:Int;
 		var isWidthAuto:Bool;
 		var height:Int;
 		var isHeightAuto:Bool;
-		var globalX:Int;
-		var globalY:Int;
 	}
 	
 	/**

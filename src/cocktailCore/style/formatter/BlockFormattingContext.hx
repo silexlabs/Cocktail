@@ -25,6 +25,7 @@ class BlockFormattingContext extends FormattingContext
 	 */
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
+		
 		super(domElement, previousFormattingContext);
 	}
 	
