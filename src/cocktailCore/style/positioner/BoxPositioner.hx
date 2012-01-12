@@ -114,27 +114,11 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * set a global X on the DOMElement
-	 */
-	private function applyGlobalX(domElement:DOMElement, globalX:Int):Void
-	{
-		domElement.globalX = globalX;
-	}
-	
-	/**
-	 * set a global Y on the DOMElement
-	 */
-	private function applyGlobalY(domElement:DOMElement, globalY:Int):Void
-	{
-		domElement.globalY = globalY;
-	}
-	
-	/**
 	 * get the left offset to apply the DOMElement
 	 */
 	private function getLeftOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.computedStyle.left + domElement.style.computedStyle.marginLeft;
+		return domElement.style.computedStyle.left;
 	}
 	
 	/**
@@ -142,7 +126,7 @@ class BoxPositioner
 	 */
 	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
 	{
-		return containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right - domElement.style.computedStyle.marginRight;
+		return containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right;
 	}
 	
 	/**
@@ -150,7 +134,7 @@ class BoxPositioner
 	 */
 	private function getTopOffset(domElement:DOMElement):Int
 	{
-		return domElement.style.computedStyle.top + domElement.style.computedStyle.marginTop;
+		return domElement.style.computedStyle.top;
 	}
 	
 	/**
@@ -158,7 +142,7 @@ class BoxPositioner
 	 */
 	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
 	{
-		return containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom - domElement.style.computedStyle.marginBottom;
+		return containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom;
 	}
 	
 }

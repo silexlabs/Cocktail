@@ -369,9 +369,13 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			_domElementInLineBox[i].x = Math.round(remainingSpace / 2) + flowX;
-			flowX += domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].x = Math.round(remainingSpace / 2) + flowX;
+				flowX += domElement.offsetWidth;
+			}
+			
 		}
 	}
 	
@@ -386,9 +390,13 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			_domElementInLineBox[i].x = flowX + remainingSpace;
-			flowX += domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].x = flowX + remainingSpace;
+				flowX += domElement.offsetWidth;
+			}
+		
 		}
 	}
 	
@@ -462,47 +470,51 @@ class InlineFormattingContext extends FormattingContext
 		//the highest ascent and descent among them
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			var domElementAscent:Int;
-			var domElementDescent:Int;
-			
-			//the computed vertical align is the offset of the DOMElemenet relative
-			//to the baseline
-			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
-			
-			//for embedded or inlineBlock elements, which have no baseline, the height zabove
-			//the baseline is the offset height and they have no descent
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+			if (_domElementInLineBox[i].position == true)
 			{
-				domElementAscent = domElement.offsetHeight;
-				domElementDescent = 0;
-			}
-			//else retrieve the ascent and descent and apply leading to it
-			else
-			{
-				domElementAscent = domElement.style.fontMetrics.ascent;
-				domElementDescent = domElement.style.fontMetrics.descent;	
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				var domElementAscent:Int;
+				var domElementDescent:Int;
+				
+				//the computed vertical align is the offset of the DOMElemenet relative
+				//to the baseline
+				var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+				
+				//for embedded or inlineBlock elements, which have no baseline, the height zabove
+				//the baseline is the offset height and they have no descent
+				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+				{
+					domElementAscent = domElement.offsetHeight;
+					domElementDescent = 0;
+				}
+				//else retrieve the ascent and descent and apply leading to it
+				else
+				{
+					domElementAscent = domElement.style.fontMetrics.ascent;
+					domElementDescent = domElement.style.fontMetrics.descent;	
+				
+					//the leading is an extra height to apply equally to the ascent
+					//and the descent when laying out lines of text
+					var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
 			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
-		
-				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
+					//apply leading to the ascent and descent
+					domElementAscent = Math.round((domElementAscent + leading / 2));
+					domElementDescent = Math.round((domElementDescent + leading / 2));
+				}
+				
+				//if the ascent or descent is superior to the current maximum
+				//ascent or descent, it becomes the line box ascent/descent
+				if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
+				{
+					lineBoxAscent = domElementAscent - domElementVerticalAlign;
+				}
+				
+				if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
+				{
+					lineBoxDescent = domElementDescent + domElementVerticalAlign;
+				}
 			}
 			
-			//if the ascent or descent is superior to the current maximum
-			//ascent or descent, it becomes the line box ascent/descent
-			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
-			{
-				lineBoxAscent = domElementAscent - domElementVerticalAlign;
-			}
-			
-			if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
-			{
-				lineBoxDescent = domElementDescent + domElementVerticalAlign;
-			}
 		}
 		
 		//compute the line box height
@@ -511,15 +523,20 @@ class InlineFormattingContext extends FormattingContext
 		//for each DOMElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			_domElementInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _formattingContextData.y ;
-
-			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
-			//so that its bottom margin touches the baseline
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+			if (_domElementInLineBox[i].position == true)
 			{
-				_domElementInLineBox[i].y -= domElement.offsetHeight;
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _formattingContextData.y ;
+
+				//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
+				//so that its bottom margin touches the baseline
+				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+				{
+					_domElementInLineBox[i].y -= domElement.offsetHeight;
+				}
 			}
+			
+			
 		}
 	
 		return Math.round(lineBoxHeight);

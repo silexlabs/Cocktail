@@ -972,9 +972,7 @@ class AbstractStyle
 					width:viewportData.width,
 					height:viewportData.height,
 					isHeightAuto:viewportData.isHeightAuto,
-					isWidthAuto:viewportData.isWidthAuto,
-					globalX:viewportData.globalX,
-					globalY:viewportData.globalY};
+					isWidthAuto:viewportData.isWidthAuto};
 			}
 			//for 'absolute' takes the first positioned ancestor
 			else if (this._computedStyle.position == PositionStyleValue.absolute)
@@ -983,9 +981,7 @@ class AbstractStyle
 					width:lastPositionedDOMElementData.width,
 					height:lastPositionedDOMElementData.height,
 					isHeightAuto:lastPositionedDOMElementData.isHeightAuto,
-					isWidthAuto:lastPositionedDOMElementData.isWidthAuto,
-					globalX:lastPositionedDOMElementData.globalX,
-					globalY:lastPositionedDOMElementData.globalY};
+					isWidthAuto:lastPositionedDOMElementData.isWidthAuto};
 			}
 			//else for 'relative', takes the parent as 'relative' are "in-flow" DOMElements
 			else
@@ -1213,8 +1209,6 @@ class AbstractStyle
 		var viewPort:Viewport = new Viewport();
 					
 		var viewPortData:ContainingDOMElementData = {
-			globalX:0,
-			globalY:0,
 			isHeightAuto:false,
 			isWidthAuto:false,
 			width:viewPort.width,

@@ -440,20 +440,12 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */
 	private function doShrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
-		var shrinkedWidth:Int;
-		
-		//if the minimum width that must use the DOMElement
-		//is not superior to the width of the containing
-		//DOMElement, use the minimum width
-		if (minimumWidth < containingDOMElementData.width)
-		{
-			shrinkedWidth = minimumWidth;
-		}
-		else
-		{
-			shrinkedWidth = containingDOMElementData.width;
-		}
-		return shrinkedWidth;
+		/**
+		 * TO DO: the shrink to width
+		 * algorithm might need to be improved for
+		 * some border cases
+		 */
+		return minimumWidth;
 	}
 	
 }

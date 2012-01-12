@@ -88,8 +88,6 @@ class AbstractContainerStyle extends Style
 	{		
 		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
 		
-		
-		
 		render();
 	}
 	
@@ -309,7 +307,14 @@ class AbstractContainerStyle extends Style
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
-				childrenTemporaryPositionData.push(positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition ));
+				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+				
+				//absolutely positioned DOMElement are positioned relative to the margin box
+				//of their parent and not the content box, so an offset need to be applied
+				childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+				childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+				
+				childrenTemporaryPositionData.push(childTemporaryPositionData);
 			}
 		}
 		
@@ -494,9 +499,7 @@ class AbstractContainerStyle extends Style
 			width:this._computedStyle.width,
 			isWidthAuto:this._width == DimensionStyleValue.autoValue,
 			height:height,
-			isHeightAuto:this._height == DimensionStyleValue.autoValue,
-			globalX:this._domElement.globalX,
-			globalY:this._domElement.globalY
+			isHeightAuto:this._height == DimensionStyleValue.autoValue
 		};
 	}
 	

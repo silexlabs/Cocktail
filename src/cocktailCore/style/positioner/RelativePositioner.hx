@@ -97,22 +97,6 @@ class RelativePositioner extends BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as relative DOMElement are positioned in the flow
-	 */
-	override private function applyGlobalX(domElement:DOMElement, globalX:Int):Void
-	{
-		
-	}
-	
-	/**
-	 * Overriden as relative DOMElement are positioned in the flow
-	 */
-	override private function applyGlobalY(domElement:DOMElement, globalY:Int):Void
-	{
-		
-	}
-	
-	/**
 	 * Overriden because the margin isn't use as is it already applied when the
 	 * relative DOMElement is inserted into the flow
 	 */
