@@ -15,7 +15,6 @@ package;
  */
 
 import cocktail.domElement.BodyDOMElement;
-import cocktailCore.style.StyleData;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
 import cocktail.domElement.DOMElement;
@@ -30,12 +29,12 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-// RichList specific
+// list specific
 import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
-// Iphone specific
+// Utils
 import Utils;
 
 

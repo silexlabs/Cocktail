@@ -258,6 +258,10 @@ class AbstractContainerStyle extends Style
 		{
 			//update the data of the ContainerDOMElement now that its width and height are known
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
+			
+			//insure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+			childLastPositionedDOMElementData.data.height = this._computedStyle.height;
+			
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{

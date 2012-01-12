@@ -257,37 +257,6 @@ class ApplicationStructure
 	}
 	
 	/**
-	 * Creates a back button arrow with a title
-	 * 
-	 * @param	title
-	 * @return	the back button
-	 */
-	/*private function createBackButton(title:String):ContainerDOMElement
-	{
-		// Back button
-		var backButtonContainer:ContainerDOMElement = Utils.getContainer();
-		WebAppStyle.getBackButtonStyle(backButtonContainer);
-		// image
-		var backButtonArrowLeft:ImageDOMElement = new ImageDOMElement();
-		WebAppStyle.getBackButtonImageStyle(backButtonArrowLeft);
-		backButtonArrowLeft.load('images/blackButtonLeft.png');
-		backButtonContainer.addChild(backButtonArrowLeft);
-		var backButtonArrowRight:ImageDOMElement = new ImageDOMElement();
-		WebAppStyle.getBackButtonImageStyle(backButtonArrowRight);
-		backButtonArrowRight.load('images/blackButtonRight.png');
-		backButtonContainer.addChild(backButtonArrowRight);
-		// text
-		var backButtonTextContainer:ContainerDOMElement = Utils.getContainer();
-		WebAppStyle.getBackButtonTextStyle(backButtonTextContainer);
-		var backButtonText:TextElement = new TextElement('Back');
-		backButtonTextContainer.addText(backButtonText);
-		backButtonContainer.addChild(backButtonTextContainer);
-		backButtonContainer.onMouseUp = goToPreviousPage;
-
-		return backButtonContainer;
-	}*/
-	
-	/**
 	 * Create thumbList
 	 * 
 	 * @param	content
@@ -295,15 +264,12 @@ class ApplicationStructure
 	 */
 	private function createThumbList(content:Array<CellModel>):ThumbTextList1
 	{
-		//trace("createThumbList");
-		//trace(content);
 		// data
 		var listData:ListModel = ListBaseUtils.createListModel();
 		
 		listData.content = content;
 		
 		// style
-		//var listStyle:ThumbListStyleModel = {
 		var listStyle:Dynamic = {
 			list:ThumbTextList1Style.getListStyle,
 			cell:ThumbTextList1Style.getCellStyle,
@@ -335,15 +301,12 @@ class ApplicationStructure
 	 */
 	private function createAppList(content:Array<CellModel>):AppList
 	{
-		//trace("createAppList");
-		//trace(content);
 		// data
 		var listData:ListModel = ListBaseUtils.createListModel();
 		
 		listData.content = content;
 		
 		// style
-		//var listStyle:ThumbListStyleModel = {
 		var listStyle:Dynamic = {
 			list:AppListStyle.getListStyle,
 			cell:AppListStyle.getCellStyle,
