@@ -24,7 +24,7 @@ import cocktail.unit.UnitData;
 
 import cocktail.style.StyleData;
 
-import components.gallery.StyleIphone;
+import components.gallery.StyleGallery;
 
  
 class Gallery extends ContainerDOMElement
@@ -50,7 +50,7 @@ class Gallery extends ContainerDOMElement
 		// create a ul node
 		_galleryContainer = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
 		// apply style
-		StyleIphone.getDefaultStyle(_galleryContainer);
+		StyleGallery.getDefaultStyle(_galleryContainer);
 		
 		// add the gallery container to the gallery
 		this.addChild(_galleryContainer);
@@ -102,6 +102,8 @@ class Gallery extends ContainerDOMElement
 			{
 				// create the li nodes 
 				var imageThumbContainer:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+				// apply style
+				StyleGallery.getCellStyle(imageThumbContainer);
 				// create an image thumb container
 				var imageThumbDOMElement:ImageThumbDOMElement = new ImageThumbDOMElement();
 				// attach it to the gallery container
@@ -120,7 +122,7 @@ class Gallery extends ContainerDOMElement
 					{
 						imageThumbDOMElement.load(entryElement.get("url"));
 
-						StyleIphone.getThumbStyle(imageThumbDOMElement);
+						StyleGallery.getThumbStyle(imageThumbDOMElement);
 						//_galleryContainer.addChild(imageThumbDOMElement);
 						imageThumbContainer.addChild(imageThumbDOMElement);
 						
@@ -147,7 +149,7 @@ class Gallery extends ContainerDOMElement
 		_currentMainImage = new ImageDOMElement();
 		_currentMainImage.load(imageThumbDOMElement.fullImagePath);
 		
-		StyleIphone.getFullSizePictureStyle(_currentMainImage);
+		StyleGallery.getFullSizePictureStyle(_currentMainImage);
 		
 		// removes the gallery container
 		this.removeChild(_galleryContainer);

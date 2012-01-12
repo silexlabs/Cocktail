@@ -70,7 +70,6 @@ class Navigation
 		
 		// in case history is emtpy, go to home page
 		if (previousPage == null)
-			//return _homePage;
 			return _previousPages[0];
 		
 		// else return previous page

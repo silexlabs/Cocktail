@@ -19,11 +19,10 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 		var $spos = $s.length;
 		this.measureHorizontalPaddings(style,containingDOMElementData);
 		this.measureVerticalPaddings(style,containingDOMElementData);
+		this.measureDimensionsConstraints(style,containingDOMElementData);
 		this.measureWidthAndHorizontalMargins(style,containingDOMElementData);
 		this.measureHeightAndVerticalMargins(style,containingDOMElementData);
 		this.measurePositionOffsets(style,containingDOMElementData);
-		this.measureDimensionsConstraints(style,containingDOMElementData);
-		this.constrainDimensions(style);
 		$s.pop();
 	}
 	,shrinkToFit: function(style,containingDOMElementData,minimumWidth) {
@@ -62,15 +61,15 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,measureVerticalPaddings: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureVerticalPaddings");
 		var $spos = $s.length;
-		style.getComputedStyle().paddingTop = this.getComputedPadding(style.getPaddingTop(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-		style.getComputedStyle().paddingBottom = this.getComputedPadding(style.getPaddingBottom(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		style.getComputedStyle().paddingTop = this.getComputedPadding(style.getPaddingTop(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		style.getComputedStyle().paddingBottom = this.getComputedPadding(style.getPaddingBottom(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 		$s.pop();
 	}
 	,measureHorizontalPaddings: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureHorizontalPaddings");
 		var $spos = $s.length;
-		style.getComputedStyle().paddingLeft = this.getComputedPadding(style.getPaddingLeft(),containingDOMElementData.width,containingDOMElementData.isWidthAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-		style.getComputedStyle().paddingRight = this.getComputedPadding(style.getPaddingRight(),containingDOMElementData.width,containingDOMElementData.isWidthAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		style.getComputedStyle().paddingLeft = this.getComputedPadding(style.getPaddingLeft(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		style.getComputedStyle().paddingRight = this.getComputedPadding(style.getPaddingRight(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 		$s.pop();
 	}
 	,measureWidthAndHorizontalMargins: function(style,containingDOMElementData) {
@@ -82,16 +81,16 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,measureAutoWidth: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureAutoWidth");
 		var $spos = $s.length;
-		style.getComputedStyle().width = 0;
+		this.setComputedWidth(style,0);
 		style.getComputedStyle().marginLeft = this.getComputedMarginLeft(style,containingDOMElementData);
 		style.getComputedStyle().marginRight = this.getComputedMarginRight(style,containingDOMElementData);
-		style.getComputedStyle().width = this.getComputedAutoWidth(style,containingDOMElementData);
+		this.setComputedWidth(style,this.getComputedAutoWidth(style,containingDOMElementData));
 		$s.pop();
 	}
 	,measureWidth: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureWidth");
 		var $spos = $s.length;
-		style.getComputedStyle().width = this.getComputedWidth(style,containingDOMElementData);
+		this.setComputedWidth(style,this.getComputedWidth(style,containingDOMElementData));
 		style.getComputedStyle().marginLeft = this.getComputedMarginLeft(style,containingDOMElementData);
 		style.getComputedStyle().marginRight = this.getComputedMarginRight(style,containingDOMElementData);
 		$s.pop();
@@ -105,7 +104,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,measureAutoHeight: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureAutoHeight");
 		var $spos = $s.length;
-		style.getComputedStyle().height = this.getComputedAutoHeight(style,containingDOMElementData);
+		this.setComputedHeight(style,this.getComputedAutoHeight(style,containingDOMElementData));
 		style.getComputedStyle().marginTop = this.getComputedMarginTop(style,containingDOMElementData);
 		style.getComputedStyle().marginBottom = this.getComputedMarginBottom(style,containingDOMElementData);
 		$s.pop();
@@ -113,25 +112,45 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,measureHeight: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::measureHeight");
 		var $spos = $s.length;
-		style.getComputedStyle().height = this.getComputedHeight(style,containingDOMElementData);
+		this.setComputedHeight(style,this.getComputedHeight(style,containingDOMElementData));
 		style.getComputedStyle().marginTop = this.getComputedMarginTop(style,containingDOMElementData);
 		style.getComputedStyle().marginBottom = this.getComputedMarginBottom(style,containingDOMElementData);
 		$s.pop();
 	}
-	,constrainDimensions: function(style) {
-		$s.push("cocktailCore.style.computer.BoxStylesComputer::constrainDimensions");
+	,constrainWidth: function(style) {
+		$s.push("cocktailCore.style.computer.BoxStylesComputer::constrainWidth");
 		var $spos = $s.length;
 		var computedStyle = style.getComputedStyle();
 		if(style.getMaxWidth() != cocktail.style.ConstrainedDimensionStyleValue.none) {
 			if(computedStyle.width > computedStyle.maxWidth) computedStyle.width = computedStyle.maxWidth;
 		}
 		if(computedStyle.width < computedStyle.minWidth) computedStyle.width = computedStyle.minWidth;
+		$s.pop();
+	}
+	,constrainHeight: function(style) {
+		$s.push("cocktailCore.style.computer.BoxStylesComputer::constrainHeight");
+		var $spos = $s.length;
+		var computedStyle = style.getComputedStyle();
 		if(style.getHeight() != cocktail.style.DimensionStyleValue.autoValue) {
 			if(style.getMaxHeight() != cocktail.style.ConstrainedDimensionStyleValue.none) {
 				if(computedStyle.height > computedStyle.maxHeight) computedStyle.height = computedStyle.maxHeight;
 			}
 			if(computedStyle.height < computedStyle.minHeight) computedStyle.height = computedStyle.minHeight;
 		}
+		$s.pop();
+	}
+	,setComputedHeight: function(style,computedHeight) {
+		$s.push("cocktailCore.style.computer.BoxStylesComputer::setComputedHeight");
+		var $spos = $s.length;
+		style.getComputedStyle().height = computedHeight;
+		this.constrainHeight(style);
+		$s.pop();
+	}
+	,setComputedWidth: function(style,computedWidth) {
+		$s.push("cocktailCore.style.computer.BoxStylesComputer::setComputedWidth");
+		var $spos = $s.length;
+		style.getComputedStyle().width = computedWidth;
+		this.constrainWidth(style);
 		$s.pop();
 	}
 	,getComputedWidth: function(style,containingDOMElementData) {
@@ -168,7 +187,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedMarginLeft: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedMarginLeft");
 		var $spos = $s.length;
-		var $tmp = this.getComputedMargin(style.getMarginLeft(),style.getMarginRight(),containingDOMElementData.width,style.getComputedStyle().width,style.getWidth() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingRight + style.getComputedStyle().paddingLeft,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		var $tmp = this.getComputedMargin(style.getMarginLeft(),style.getMarginRight(),containingDOMElementData.width,style.getComputedStyle().width,style.getWidth() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingRight + style.getComputedStyle().paddingLeft,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight,true);
 		$s.pop();
 		return $tmp;
 		$s.pop();
@@ -176,7 +195,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedMarginRight: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedMarginRight");
 		var $spos = $s.length;
-		var $tmp = this.getComputedMargin(style.getMarginRight(),style.getMarginLeft(),containingDOMElementData.width,style.getComputedStyle().width,style.getWidth() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingRight + style.getComputedStyle().paddingLeft,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		var $tmp = this.getComputedMargin(style.getMarginRight(),style.getMarginLeft(),containingDOMElementData.width,style.getComputedStyle().width,style.getWidth() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingRight + style.getComputedStyle().paddingLeft,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight,true);
 		$s.pop();
 		return $tmp;
 		$s.pop();
@@ -184,7 +203,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedMarginTop: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedMarginTop");
 		var $spos = $s.length;
-		var $tmp = this.getComputedMargin(style.getMarginTop(),style.getMarginBottom(),containingDOMElementData.height,style.getComputedStyle().height,style.getHeight() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingTop + style.getComputedStyle().paddingBottom,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		var $tmp = this.getComputedMargin(style.getMarginTop(),style.getMarginBottom(),containingDOMElementData.height,style.getComputedStyle().height,style.getHeight() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingTop + style.getComputedStyle().paddingBottom,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight,false);
 		$s.pop();
 		return $tmp;
 		$s.pop();
@@ -192,7 +211,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedMarginBottom: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedMarginBottom");
 		var $spos = $s.length;
-		var $tmp = this.getComputedMargin(style.getMarginBottom(),style.getMarginTop(),containingDOMElementData.height,style.getComputedStyle().height,style.getHeight() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingTop + style.getComputedStyle().paddingBottom,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+		var $tmp = this.getComputedMargin(style.getMarginBottom(),style.getMarginTop(),containingDOMElementData.height,style.getComputedStyle().height,style.getHeight() == cocktail.style.DimensionStyleValue.autoValue,style.getComputedStyle().paddingTop + style.getComputedStyle().paddingBottom,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight,false);
 		$s.pop();
 		return $tmp;
 		$s.pop();
@@ -200,7 +219,6 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		var computedMargin;
 		var $e = (marginStyleValue);
 		switch( $e[1] ) {
@@ -213,7 +231,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 			if(isDimensionAuto == true) computedMargin = 0; else computedMargin = Math.round(cocktailCore.unit.UnitManager.getPixelFromPercent(value,containingDOMElementDimension));
 			break;
 		case 2:
-			computedMargin = this.getComputedAutoMargin(opositeMarginStyleValue,marginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight);
+			computedMargin = this.getComputedAutoMargin(opositeMarginStyleValue,marginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 			break;
 		}
 		$s.pop();
@@ -223,15 +241,14 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 	,getComputedAutoMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedAutoMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		var computedMargin;
-		if(isHorizontalMargin == true || isDimensionAuto == true) computedMargin = 0; else {
+		if(isHorizontalMargin == false || isDimensionAuto == true) computedMargin = 0; else {
 			switch( (opositeMarginStyleValue)[1] ) {
 			case 2:
 				computedMargin = Math.round((containingDOMElementDimension - computedDimension - computedPaddingsDimension) / 2);
 				break;
 			default:
-				var opositeComputedMargin = this.getComputedMargin(opositeMarginStyleValue,marginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight);
+				var opositeComputedMargin = this.getComputedMargin(opositeMarginStyleValue,marginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 				computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin;
 			}
 		}
@@ -308,7 +325,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 		return computedDimensions;
 		$s.pop();
 	}
-	,getComputedPadding: function(paddingStyleValue,containingDOMElementDimension,isContainingDimensionAuto,fontSize,xHeight) {
+	,getComputedPadding: function(paddingStyleValue,containingDOMElementDimension,fontSize,xHeight) {
 		$s.push("cocktailCore.style.computer.BoxStylesComputer::getComputedPadding");
 		var $spos = $s.length;
 		var computedPaddingValue;
@@ -320,7 +337,7 @@ cocktailCore.style.computer.BoxStylesComputer.prototype = {
 			break;
 		case 1:
 			var value = $e[2];
-			if(isContainingDimensionAuto == true) computedPaddingValue = 0; else computedPaddingValue = Math.round(cocktailCore.unit.UnitManager.getPixelFromPercent(value,containingDOMElementDimension));
+			computedPaddingValue = Math.round(cocktailCore.unit.UnitManager.getPixelFromPercent(value,containingDOMElementDimension));
 			break;
 		}
 		$s.pop();
@@ -342,7 +359,6 @@ cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer.prototype 
 	getComputedAutoMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer::getComputedAutoMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		$s.pop();
 		return 0;
 		$s.pop();
@@ -1136,159 +1152,6 @@ cocktail.keyboard.KeyboardKeyValue.tab.__enum__ = cocktail.keyboard.KeyboardKeyV
 cocktail.keyboard.KeyboardKeyValue.up = ["up",76];
 cocktail.keyboard.KeyboardKeyValue.up.toString = $estr;
 cocktail.keyboard.KeyboardKeyValue.up.__enum__ = cocktail.keyboard.KeyboardKeyValue;
-if(!cocktailCore.resource) cocktailCore.resource = {}
-if(!cocktailCore.resource["abstract"]) cocktailCore.resource["abstract"] = {}
-cocktailCore.resource.abstract.AbstractResourceLoader = $hxClasses["cocktailCore.resource.abstract.AbstractResourceLoader"] = function(nativeElement) {
-	$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::new");
-	var $spos = $s.length;
-	if(nativeElement != null) this._nativeElement = nativeElement;
-	$s.pop();
-}
-cocktailCore.resource.abstract.AbstractResourceLoader.__name__ = ["cocktailCore","resource","abstract","AbstractResourceLoader"];
-cocktailCore.resource.abstract.AbstractResourceLoader.prototype = {
-	_onLoadCompleteCallback: null
-	,_onLoadErrorCallback: null
-	,_nativeElement: null
-	,nativeElement: null
-	,load: function(url,onLoadComplete,onLoadError,allowCache) {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::load");
-		var $spos = $s.length;
-		if(allowCache == null) allowCache = true;
-		this._onLoadCompleteCallback = onLoadComplete;
-		this._onLoadErrorCallback = onLoadError;
-		if(allowCache == false) url = this.disableUrlCaching(url);
-		this.doLoad(url);
-		$s.pop();
-	}
-	,doLoad: function(url) {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::doLoad");
-		var $spos = $s.length;
-		$s.pop();
-	}
-	,onLoadComplete: function(data) {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::onLoadComplete");
-		var $spos = $s.length;
-		this._onLoadCompleteCallback(data);
-		$s.pop();
-	}
-	,onLoadError: function(msg) {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::onLoadError");
-		var $spos = $s.length;
-		this._onLoadErrorCallback(msg);
-		$s.pop();
-	}
-	,disableUrlCaching: function(url) {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::disableUrlCaching");
-		var $spos = $s.length;
-		var getId = "";
-		if(url.indexOf("?") == -1) getId = "?"; else getId = "&";
-		url += getId + "rand=" + Math.round(Math.random() * 10000);
-		$s.pop();
-		return url;
-		$s.pop();
-	}
-	,getNativeElement: function() {
-		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::getNativeElement");
-		var $spos = $s.length;
-		var $tmp = this._nativeElement;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.abstract.AbstractResourceLoader
-	,__properties__: {get_nativeElement:"getNativeElement"}
-}
-if(!cocktailCore.resource.js) cocktailCore.resource.js = {}
-cocktailCore.resource.js.ResourceLoader = $hxClasses["cocktailCore.resource.js.ResourceLoader"] = function(nativeElement) {
-	$s.push("cocktailCore.resource.js.ResourceLoader::new");
-	var $spos = $s.length;
-	cocktailCore.resource.abstract.AbstractResourceLoader.call(this,nativeElement);
-	$s.pop();
-}
-cocktailCore.resource.js.ResourceLoader.__name__ = ["cocktailCore","resource","js","ResourceLoader"];
-cocktailCore.resource.js.ResourceLoader.__super__ = cocktailCore.resource.abstract.AbstractResourceLoader;
-cocktailCore.resource.js.ResourceLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractResourceLoader.prototype,{
-	doLoad: function(url) {
-		$s.push("cocktailCore.resource.js.ResourceLoader::doLoad");
-		var $spos = $s.length;
-		var onLoadCompleteDelegate = this.onLoadComplete.$bind(this);
-		var onLoadErrorDelegate = this.onLoadError.$bind(this);
-		var nativeElementDelegate = this._nativeElement;
-		this._nativeElement.onload = function() {
-			$s.push("cocktailCore.resource.js.ResourceLoader::doLoad@51");
-			var $spos = $s.length;
-			onLoadCompleteDelegate(nativeElementDelegate);
-			$s.pop();
-		};
-		this._nativeElement.onerror = function() {
-			$s.push("cocktailCore.resource.js.ResourceLoader::doLoad@56");
-			var $spos = $s.length;
-			onLoadErrorDelegate("couldn't load picture");
-			$s.pop();
-		};
-		this._nativeElement.setAttribute("src",url);
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.js.ResourceLoader
-});
-cocktailCore.resource.abstract.AbstractSkinLoader = $hxClasses["cocktailCore.resource.abstract.AbstractSkinLoader"] = function(nativeElement) {
-	$s.push("cocktailCore.resource.abstract.AbstractSkinLoader::new");
-	var $spos = $s.length;
-	if(nativeElement == null) nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.skin);
-	cocktailCore.resource.js.ResourceLoader.call(this,nativeElement);
-	$s.pop();
-}
-cocktailCore.resource.abstract.AbstractSkinLoader.__name__ = ["cocktailCore","resource","abstract","AbstractSkinLoader"];
-cocktailCore.resource.abstract.AbstractSkinLoader.__super__ = cocktailCore.resource.js.ResourceLoader;
-cocktailCore.resource.abstract.AbstractSkinLoader.prototype = $extend(cocktailCore.resource.js.ResourceLoader.prototype,{
-	__class__: cocktailCore.resource.abstract.AbstractSkinLoader
-});
-cocktailCore.resource.js.SkinLoader = $hxClasses["cocktailCore.resource.js.SkinLoader"] = function() {
-	$s.push("cocktailCore.resource.js.SkinLoader::new");
-	var $spos = $s.length;
-	cocktailCore.resource.abstract.AbstractSkinLoader.call(this);
-	$s.pop();
-}
-cocktailCore.resource.js.SkinLoader.__name__ = ["cocktailCore","resource","js","SkinLoader"];
-cocktailCore.resource.js.SkinLoader.__super__ = cocktailCore.resource.abstract.AbstractSkinLoader;
-cocktailCore.resource.js.SkinLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractSkinLoader.prototype,{
-	doLoad: function(url) {
-		$s.push("cocktailCore.resource.js.SkinLoader::doLoad");
-		var $spos = $s.length;
-		var fileRequest = new haxe.Http(url);
-		fileRequest.onData = this.onLoadComplete.$bind(this);
-		fileRequest.onError = this.onLoadError.$bind(this);
-		fileRequest.request(false);
-		$s.pop();
-	}
-	,onLoadComplete: function(data) {
-		$s.push("cocktailCore.resource.js.SkinLoader::onLoadComplete");
-		var $spos = $s.length;
-		var domElement = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral));
-		domElement.getNativeElement().innerHTML = data;
-		this._onLoadCompleteCallback(domElement);
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.js.SkinLoader
-});
-cocktailCore.resource.abstract.AbstractLibraryLoader = $hxClasses["cocktailCore.resource.abstract.AbstractLibraryLoader"] = function(nativeElement) {
-	$s.push("cocktailCore.resource.abstract.AbstractLibraryLoader::new");
-	var $spos = $s.length;
-	if(nativeElement == null) nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.library);
-	cocktailCore.resource.js.ResourceLoader.call(this,nativeElement);
-	$s.pop();
-}
-cocktailCore.resource.abstract.AbstractLibraryLoader.__name__ = ["cocktailCore","resource","abstract","AbstractLibraryLoader"];
-cocktailCore.resource.abstract.AbstractLibraryLoader.__super__ = cocktailCore.resource.js.ResourceLoader;
-cocktailCore.resource.abstract.AbstractLibraryLoader.prototype = $extend(cocktailCore.resource.js.ResourceLoader.prototype,{
-	onLoadComplete: function(data) {
-		$s.push("cocktailCore.resource.abstract.AbstractLibraryLoader::onLoadComplete");
-		var $spos = $s.length;
-		this._onLoadCompleteCallback(null);
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.abstract.AbstractLibraryLoader
-});
 var haxe = haxe || {}
 haxe.Http = $hxClasses["haxe.Http"] = function(url) {
 	$s.push("haxe.Http::new");
@@ -1442,339 +1305,6 @@ haxe.Http.prototype = {
 		$s.pop();
 	}
 	,__class__: haxe.Http
-}
-var Gallery = $hxClasses["Gallery"] = function() {
-	$s.push("Gallery::new");
-	var $spos = $s.length;
-	this.getDefaultStyle(Gallery.bodyDOMElement);
-	this.stageWidth = 640;
-	this.stageHeight = 480;
-	if(this.currentAlbumUrl == null) {
-		this.currentAlbumUrl = "http://api.flickr.com/services/feeds/photos_public.gne?lang=fr-fr&format=rss_200";
-		this.picturesElements = new Array();
-	}
-	this.loadGallery(this.currentAlbumUrl);
-	$s.pop();
-}
-Gallery.__name__ = ["Gallery"];
-Gallery.bodyDOMElement = null;
-Gallery.main = function() {
-	$s.push("Gallery::main");
-	var $spos = $s.length;
-	Gallery.bodyDOMElement = new cocktailCore.domElement.js.BodyDOMElement();
-	new Gallery();
-	$s.pop();
-}
-Gallery.prototype = {
-	stageHeight: null
-	,stageWidth: null
-	,currentMainImage: null
-	,currentAlbumUrl: null
-	,picturesElements: null
-	,loadGallery: function(rssFeedUrl) {
-		$s.push("Gallery::loadGallery");
-		var $spos = $s.length;
-		cocktail.resource.ResourceLoaderManager.loadString("GalleryRssProxy.php?url=" + StringTools.urlEncode(rssFeedUrl),this.onRssFeedLoaded.$bind(this),this.onRssFeedError.$bind(this));
-		$s.pop();
-	}
-	,onRssFeedError: function(msg) {
-		$s.push("Gallery::onRssFeedError");
-		var $spos = $s.length;
-		$s.pop();
-	}
-	,onRssFeedLoaded: function(response) {
-		$s.push("Gallery::onRssFeedLoaded");
-		var $spos = $s.length;
-		var galleryXml = Xml.parse(response);
-		var channelNode = galleryXml.firstElement().firstElement();
-		var $it0 = channelNode.elements();
-		while( $it0.hasNext() ) {
-			var channelChild = $it0.next();
-			if(channelChild.getNodeName() == "item") {
-				var $it1 = channelChild.elements();
-				while( $it1.hasNext() ) {
-					var entryElement = $it1.next();
-					if(entryElement.getNodeName() == "media:content") {
-						var imageDOMElement = new cocktailCore.domElement.js.ImageDOMElement();
-						imageDOMElement.load(entryElement.get("url"));
-						this.onPictureLoaded(imageDOMElement);
-					}
-				}
-			}
-		}
-		$s.pop();
-	}
-	,onPictureLoaded: function(imageDOMElement) {
-		$s.push("Gallery::onPictureLoaded");
-		var $spos = $s.length;
-		this.getDefaultStyle(imageDOMElement);
-		imageDOMElement.setWidth(80);
-		imageDOMElement.setHeight(80);
-		imageDOMElement.setX(5 + this.picturesElements.length * 85);
-		imageDOMElement.setY(this.stageHeight - 85);
-		imageDOMElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
-		imageDOMElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(81)));
-		imageDOMElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(54)));
-		Gallery.bodyDOMElement.addChild(imageDOMElement);
-		var displayPictureDelegate = this.displayPicture.$bind(this);
-		imageDOMElement.setOnMouseUp(function(event) {
-			$s.push("Gallery::onPictureLoaded@109");
-			var $spos = $s.length;
-			displayPictureDelegate(imageDOMElement);
-			$s.pop();
-		});
-		this.picturesElements.push(imageDOMElement);
-		$s.pop();
-	}
-	,displayPicture: function(imageDOMElement) {
-		$s.push("Gallery::displayPicture");
-		var $spos = $s.length;
-		if(this.currentMainImage == null) this.currentMainImage = new cocktailCore.domElement.js.ImageDOMElement();
-		this.currentMainImage.load(imageDOMElement.getSrc());
-		this.onMainPictureLoaded(imageDOMElement);
-		$s.pop();
-	}
-	,onMainPictureLoaded: function(imageDOMElement) {
-		$s.push("Gallery::onMainPictureLoaded");
-		var $spos = $s.length;
-		this.getDefaultStyle(this.currentMainImage);
-		this.currentMainImage.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
-		this.currentMainImage.setX(5);
-		this.currentMainImage.setY(5);
-		this.currentMainImage.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(300)));
-		this.currentMainImage.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(240)));
-		Gallery.bodyDOMElement.addChild(this.currentMainImage);
-		$s.pop();
-	}
-	,getDefaultStyle: function(domElement) {
-		$s.push("Gallery::getDefaultStyle");
-		var $spos = $s.length;
-		domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setRight(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setMinWidth(cocktail.style.ConstrainedDimensionStyleValue.none);
-		domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.none);
-		domElement.getStyle().setMinHeight(cocktail.style.ConstrainedDimensionStyleValue.none);
-		domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.none);
-		domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(12)));
-		domElement.getStyle().setLineHeight(cocktail.style.LineHeightStyleValue.normal);
-		domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.normal);
-		domElement.getStyle().setFontStyle(cocktail.style.FontStyleStyleValue.normal);
-		domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
-		domElement.getStyle().setFontVariant(cocktail.style.FontVariantStyleValue.normal);
-		domElement.getStyle().setTextTransform(cocktail.style.TextTransformStyleValue.none);
-		domElement.getStyle().setLetterSpacing(cocktail.style.LetterSpacingStyleValue.normal);
-		domElement.getStyle().setWordSpacing(cocktail.style.WordSpacingStyleValue.normal);
-		domElement.getStyle().setTextIndent(cocktail.style.TextIndentStyleValue.length(cocktail.unit.LengthValue.px(0)));
-		domElement.getStyle().setWhiteSpace(cocktail.style.WhiteSpaceStyleValue.normal);
-		domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.left);
-		domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.baseline);
-		domElement.getStyle().setColor(cocktail.unit.ColorValue.keyword(cocktail.unit.ColorKeywordValue.black));
-		domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-		domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
-		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.autoValue);
-		domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.autoValue);
-		domElement.getStyle().setFloatValue(cocktail.style.FloatStyleValue.none);
-		domElement.getStyle().setClear(cocktail.style.ClearStyleValue.none);
-		$s.pop();
-	}
-	,__class__: Gallery
-}
-var List = $hxClasses["List"] = function() {
-	$s.push("List::new");
-	var $spos = $s.length;
-	this.length = 0;
-	$s.pop();
-}
-List.__name__ = ["List"];
-List.prototype = {
-	h: null
-	,q: null
-	,length: null
-	,add: function(item) {
-		$s.push("List::add");
-		var $spos = $s.length;
-		var x = [item];
-		if(this.h == null) this.h = x; else this.q[1] = x;
-		this.q = x;
-		this.length++;
-		$s.pop();
-	}
-	,push: function(item) {
-		$s.push("List::push");
-		var $spos = $s.length;
-		var x = [item,this.h];
-		this.h = x;
-		if(this.q == null) this.q = x;
-		this.length++;
-		$s.pop();
-	}
-	,first: function() {
-		$s.push("List::first");
-		var $spos = $s.length;
-		var $tmp = this.h == null?null:this.h[0];
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,last: function() {
-		$s.push("List::last");
-		var $spos = $s.length;
-		var $tmp = this.q == null?null:this.q[0];
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,pop: function() {
-		$s.push("List::pop");
-		var $spos = $s.length;
-		if(this.h == null) {
-			$s.pop();
-			return null;
-		}
-		var x = this.h[0];
-		this.h = this.h[1];
-		if(this.h == null) this.q = null;
-		this.length--;
-		$s.pop();
-		return x;
-		$s.pop();
-	}
-	,isEmpty: function() {
-		$s.push("List::isEmpty");
-		var $spos = $s.length;
-		var $tmp = this.h == null;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,clear: function() {
-		$s.push("List::clear");
-		var $spos = $s.length;
-		this.h = null;
-		this.q = null;
-		this.length = 0;
-		$s.pop();
-	}
-	,remove: function(v) {
-		$s.push("List::remove");
-		var $spos = $s.length;
-		var prev = null;
-		var l = this.h;
-		while(l != null) {
-			if(l[0] == v) {
-				if(prev == null) this.h = l[1]; else prev[1] = l[1];
-				if(this.q == l) this.q = prev;
-				this.length--;
-				$s.pop();
-				return true;
-			}
-			prev = l;
-			l = l[1];
-		}
-		$s.pop();
-		return false;
-		$s.pop();
-	}
-	,iterator: function() {
-		$s.push("List::iterator");
-		var $spos = $s.length;
-		var $tmp = { h : this.h, hasNext : function() {
-			$s.push("List::iterator@155");
-			var $spos = $s.length;
-			var $tmp = this.h != null;
-			$s.pop();
-			return $tmp;
-			$s.pop();
-		}, next : function() {
-			$s.push("List::iterator@158");
-			var $spos = $s.length;
-			if(this.h == null) {
-				$s.pop();
-				return null;
-			}
-			var x = this.h[0];
-			this.h = this.h[1];
-			$s.pop();
-			return x;
-			$s.pop();
-		}};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,toString: function() {
-		$s.push("List::toString");
-		var $spos = $s.length;
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		s.b[s.b.length] = "{";
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = ", ";
-			s.add(Std.string(l[0]));
-			l = l[1];
-		}
-		s.b[s.b.length] = "}";
-		var $tmp = s.b.join("");
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,join: function(sep) {
-		$s.push("List::join");
-		var $spos = $s.length;
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = sep == null?"null":sep;
-			s.add(l[0]);
-			l = l[1];
-		}
-		var $tmp = s.b.join("");
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,filter: function(f) {
-		$s.push("List::filter");
-		var $spos = $s.length;
-		var l2 = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			if(f(v)) l2.add(v);
-		}
-		$s.pop();
-		return l2;
-		$s.pop();
-	}
-	,map: function(f) {
-		$s.push("List::map");
-		var $spos = $s.length;
-		var b = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			b.add(f(v));
-		}
-		$s.pop();
-		return b;
-		$s.pop();
-	}
-	,__class__: List
 }
 if(!cocktailCore.style["abstract"]) cocktailCore.style["abstract"] = {}
 cocktailCore.style.abstract.AbstractStyle = $hxClasses["cocktailCore.style.abstract.AbstractStyle"] = function(domElement) {
@@ -4488,8 +4018,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		var childrenContainingDOMElementFontMetricsData = this.getFontMetricsData();
 		var childLastPositionedDOMElementData;
 		childLastPositionedDOMElementData = this.getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-		this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext);
-		if(childrenFormattingContext != formatingContext) childrenFormattingContext.destroy();
+		this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext,formatingContext);
 		if(this._width == cocktail.style.DimensionStyleValue.autoValue) {
 			var currentWidth = this._computedStyle.width;
 			this._computedStyle.width = this.shrinkToFitIfNeeded(containingDOMElementData,childrenFormattingContext.getFlowData().maxWidth);
@@ -4497,7 +4026,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				childrenFormattingContext = this.getFormatingContext(formatingContext);
 				childrenContainingDOMElementData = this.getContainerDOMElementData();
 				childLastPositionedDOMElementData = this.getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-				this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext);
+				this.doFlowChildren(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext,formatingContext);
 			}
 		}
 		if(this._height == cocktail.style.DimensionStyleValue.autoValue) this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getFlowData().totalHeight);
@@ -4513,7 +4042,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		if(this.isInline() == false || this.isInlineFlow() == false) cocktailCore.style.js.Style.prototype.insertInFlowDOMElement.call(this,formattingContext);
 		$s.pop();
 	}
-	,doFlowChildren: function(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext) {
+	,doFlowChildren: function(childrenContainingDOMElementData,viewportData,childLastPositionedDOMElementData,childrenContainingDOMElementFontMetricsData,childrenFormattingContext,formattingContext) {
 		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::doFlowChildren");
 		var $spos = $s.length;
 		var containerDOMElement = this._domElement;
@@ -4528,6 +4057,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				this.insertTextElement(childrenTextElement,childrenFormattingContext,childrenContainingDOMElementData);
 			}
 		}
+		if(childrenFormattingContext != formattingContext) childrenFormattingContext.destroy();
 		$s.pop();
 	}
 	,doPositionAbsolutelyPositionedDOMElements: function(isFirstPositionedAncestor,childLastPositionedDOMElementData,viewportData) {
@@ -7463,37 +6993,6 @@ cocktailCore.keyboard.js.Keyboard.prototype = $extend(cocktailCore.keyboard.abst
 	}
 	,__class__: cocktailCore.keyboard.js.Keyboard
 });
-cocktailCore.resource.abstract.AbstractStringLoader = $hxClasses["cocktailCore.resource.abstract.AbstractStringLoader"] = function(nativeElement) {
-	$s.push("cocktailCore.resource.abstract.AbstractStringLoader::new");
-	var $spos = $s.length;
-	cocktailCore.resource.js.ResourceLoader.call(this,nativeElement);
-	$s.pop();
-}
-cocktailCore.resource.abstract.AbstractStringLoader.__name__ = ["cocktailCore","resource","abstract","AbstractStringLoader"];
-cocktailCore.resource.abstract.AbstractStringLoader.__super__ = cocktailCore.resource.js.ResourceLoader;
-cocktailCore.resource.abstract.AbstractStringLoader.prototype = $extend(cocktailCore.resource.js.ResourceLoader.prototype,{
-	doLoad: function(url) {
-		$s.push("cocktailCore.resource.abstract.AbstractStringLoader::doLoad");
-		var $spos = $s.length;
-		var fileRequest = new haxe.Http(url);
-		fileRequest.onData = this.onLoadComplete.$bind(this);
-		fileRequest.onError = this.onLoadError.$bind(this);
-		fileRequest.request(false);
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.abstract.AbstractStringLoader
-});
-cocktailCore.resource.js.StringLoader = $hxClasses["cocktailCore.resource.js.StringLoader"] = function() {
-	$s.push("cocktailCore.resource.js.StringLoader::new");
-	var $spos = $s.length;
-	cocktailCore.resource.abstract.AbstractStringLoader.call(this);
-	$s.pop();
-}
-cocktailCore.resource.js.StringLoader.__name__ = ["cocktailCore","resource","js","StringLoader"];
-cocktailCore.resource.js.StringLoader.__super__ = cocktailCore.resource.abstract.AbstractStringLoader;
-cocktailCore.resource.js.StringLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractStringLoader.prototype,{
-	__class__: cocktailCore.resource.js.StringLoader
-});
 cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer = $hxClasses["cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer"] = function() {
 	$s.push("cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer::new");
 	var $spos = $s.length;
@@ -7503,7 +7002,15 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer = $hxCla
 cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.__name__ = ["cocktailCore","style","computer","boxComputers","EmbeddedBlockBoxStylesComputer"];
 cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.__super__ = cocktailCore.style.computer.BoxStylesComputer;
 cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototype = $extend(cocktailCore.style.computer.BoxStylesComputer.prototype,{
-	getComputedAutoWidth: function(style,containingDOMElementData) {
+	measureAutoWidth: function(style,containingDOMElementData) {
+		$s.push("cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer::measureAutoWidth");
+		var $spos = $s.length;
+		this.setComputedWidth(style,this.getComputedAutoWidth(style,containingDOMElementData));
+		style.getComputedStyle().marginLeft = this.getComputedMarginLeft(style,containingDOMElementData);
+		style.getComputedStyle().marginRight = this.getComputedMarginRight(style,containingDOMElementData);
+		$s.pop();
+	}
+	,getComputedAutoWidth: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer::getComputedAutoWidth");
 		var $spos = $s.length;
 		var ret = 0;
@@ -7517,6 +7024,7 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototyp
 			}
 		} else {
 			var computedHeight = this.getComputedDimension(style.getHeight(),containingDOMElementData.height,containingDOMElementData.isHeightAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+			this.setComputedHeight(style,computedHeight);
 			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedHeight * embeddedDOMElement.getIntrinsicRatio()); else if(embeddedDOMElement.getIntrinsicWidth() != null) ret = embeddedDOMElement.getIntrinsicWidth(); else ret = 300;
 		}
 		$s.pop();
@@ -7532,7 +7040,8 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototyp
 			if(embeddedDOMElement.getIntrinsicHeight() != null) ret = embeddedDOMElement.getIntrinsicHeight();
 		} else {
 			var computedWidth = this.getComputedDimension(style.getWidth(),containingDOMElementData.width,containingDOMElementData.isWidthAuto,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(computedWidth / embeddedDOMElement.getIntrinsicRatio()); else ret = 150;
+			this.setComputedWidth(style,computedWidth);
+			if(embeddedDOMElement.getIntrinsicRatio() != null) ret = Math.round(style.getComputedStyle().width / embeddedDOMElement.getIntrinsicRatio()); else ret = 150;
 		}
 		$s.pop();
 		return ret;
@@ -7541,9 +7050,8 @@ cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer.prototyp
 	,getComputedAutoMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer::getComputedAutoMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		var computedMargin;
-		if(isHorizontalMargin == false) computedMargin = 0; else computedMargin = cocktailCore.style.computer.BoxStylesComputer.prototype.getComputedAutoMargin.call(this,marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
+		if(isHorizontalMargin == false) computedMargin = 0; else computedMargin = cocktailCore.style.computer.BoxStylesComputer.prototype.getComputedAutoMargin.call(this,marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,false,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 		$s.pop();
 		return computedMargin;
 		$s.pop();
@@ -7562,7 +7070,6 @@ cocktailCore.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer.prototy
 	getComputedAutoMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer::getComputedAutoMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		$s.pop();
 		return 0;
 		$s.pop();
@@ -7902,617 +7409,6 @@ js.Boot.__init = function() {
 js.Boot.prototype = {
 	__class__: js.Boot
 }
-var EReg = $hxClasses["EReg"] = function(r,opt) {
-	$s.push("EReg::new");
-	var $spos = $s.length;
-	opt = opt.split("u").join("");
-	this.r = new RegExp(r,opt);
-	$s.pop();
-}
-EReg.__name__ = ["EReg"];
-EReg.prototype = {
-	r: null
-	,match: function(s) {
-		$s.push("EReg::match");
-		var $spos = $s.length;
-		this.r.m = this.r.exec(s);
-		this.r.s = s;
-		var $tmp = this.r.m != null;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,matched: function(n) {
-		$s.push("EReg::matched");
-		var $spos = $s.length;
-		var $tmp = this.r.m != null && n >= 0 && n < this.r.m.length?this.r.m[n]:(function($this) {
-			var $r;
-			throw "EReg::matched";
-			return $r;
-		}(this));
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,matchedLeft: function() {
-		$s.push("EReg::matchedLeft");
-		var $spos = $s.length;
-		if(this.r.m == null) throw "No string matched";
-		var $tmp = this.r.s.substr(0,this.r.m.index);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,matchedRight: function() {
-		$s.push("EReg::matchedRight");
-		var $spos = $s.length;
-		if(this.r.m == null) throw "No string matched";
-		var sz = this.r.m.index + this.r.m[0].length;
-		var $tmp = this.r.s.substr(sz,this.r.s.length - sz);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,matchedPos: function() {
-		$s.push("EReg::matchedPos");
-		var $spos = $s.length;
-		if(this.r.m == null) throw "No string matched";
-		var $tmp = { pos : this.r.m.index, len : this.r.m[0].length};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,split: function(s) {
-		$s.push("EReg::split");
-		var $spos = $s.length;
-		var d = "#__delim__#";
-		var $tmp = s.replace(this.r,d).split(d);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,replace: function(s,by) {
-		$s.push("EReg::replace");
-		var $spos = $s.length;
-		var $tmp = s.replace(this.r,by);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,customReplace: function(s,f) {
-		$s.push("EReg::customReplace");
-		var $spos = $s.length;
-		var buf = new StringBuf();
-		while(true) {
-			if(!this.match(s)) break;
-			buf.add(this.matchedLeft());
-			buf.add(f(this));
-			s = this.matchedRight();
-		}
-		buf.b[buf.b.length] = s == null?"null":s;
-		var $tmp = buf.b.join("");
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,__class__: EReg
-}
-var Xml = $hxClasses["Xml"] = function() {
-	$s.push("Xml::new");
-	var $spos = $s.length;
-	$s.pop();
-}
-Xml.__name__ = ["Xml"];
-Xml.Element = null;
-Xml.PCData = null;
-Xml.CData = null;
-Xml.Comment = null;
-Xml.DocType = null;
-Xml.Prolog = null;
-Xml.Document = null;
-Xml.parse = function(str) {
-	$s.push("Xml::parse");
-	var $spos = $s.length;
-	var rules = [Xml.enode,Xml.epcdata,Xml.eend,Xml.ecdata,Xml.edoctype,Xml.ecomment,Xml.eprolog];
-	var nrules = rules.length;
-	var current = Xml.createDocument();
-	var stack = new List();
-	while(str.length > 0) {
-		var i = 0;
-		try {
-			while(i < nrules) {
-				var r = rules[i];
-				if(r.match(str)) {
-					switch(i) {
-					case 0:
-						var x = Xml.createElement(r.matched(1));
-						current.addChild(x);
-						str = r.matchedRight();
-						while(Xml.eattribute.match(str)) {
-							x.set(Xml.eattribute.matched(1),Xml.eattribute.matched(3));
-							str = Xml.eattribute.matchedRight();
-						}
-						if(!Xml.eclose.match(str)) {
-							i = nrules;
-							throw "__break__";
-						}
-						if(Xml.eclose.matched(1) == ">") {
-							stack.push(current);
-							current = x;
-						}
-						str = Xml.eclose.matchedRight();
-						break;
-					case 1:
-						var x = Xml.createPCData(r.matched(0));
-						current.addChild(x);
-						str = r.matchedRight();
-						break;
-					case 2:
-						if(current._children != null && current._children.length == 0) {
-							var e = Xml.createPCData("");
-							current.addChild(e);
-						}
-						if(r.matched(1) != current._nodeName || stack.isEmpty()) {
-							i = nrules;
-							throw "__break__";
-						}
-						current = stack.pop();
-						str = r.matchedRight();
-						break;
-					case 3:
-						str = r.matchedRight();
-						if(!Xml.ecdata_end.match(str)) throw "End of CDATA section not found";
-						var x = Xml.createCData(Xml.ecdata_end.matchedLeft());
-						current.addChild(x);
-						str = Xml.ecdata_end.matchedRight();
-						break;
-					case 4:
-						var pos = 0;
-						var count = 0;
-						var old = str;
-						try {
-							while(true) {
-								if(!Xml.edoctype_elt.match(str)) throw "End of DOCTYPE section not found";
-								var p = Xml.edoctype_elt.matchedPos();
-								pos += p.pos + p.len;
-								str = Xml.edoctype_elt.matchedRight();
-								switch(Xml.edoctype_elt.matched(0)) {
-								case "[":
-									count++;
-									break;
-								case "]":
-									count--;
-									if(count < 0) throw "Invalid ] found in DOCTYPE declaration";
-									break;
-								default:
-									if(count == 0) throw "__break__";
-								}
-							}
-						} catch( e ) { if( e != "__break__" ) throw e; }
-						var x = Xml.createDocType(old.substr(10,pos - 11));
-						current.addChild(x);
-						break;
-					case 5:
-						if(!Xml.ecomment_end.match(str)) throw "Unclosed Comment";
-						var p = Xml.ecomment_end.matchedPos();
-						var x = Xml.createComment(str.substr(4,p.pos + p.len - 7));
-						current.addChild(x);
-						str = Xml.ecomment_end.matchedRight();
-						break;
-					case 6:
-						var prolog = r.matched(0);
-						var x = Xml.createProlog(prolog.substr(2,prolog.length - 4));
-						current.addChild(x);
-						str = r.matchedRight();
-						break;
-					}
-					throw "__break__";
-				}
-				i += 1;
-			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-		if(i == nrules) {
-			if(str.length > 10) throw "Xml parse error : Unexpected " + str.substr(0,10) + "..."; else throw "Xml parse error : Unexpected " + str;
-		}
-	}
-	if(!stack.isEmpty()) throw "Xml parse error : Unclosed " + stack.last().getNodeName();
-	$s.pop();
-	return current;
-	$s.pop();
-}
-Xml.createElement = function(name) {
-	$s.push("Xml::createElement");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.Element;
-	r._children = new Array();
-	r._attributes = new Hash();
-	r.setNodeName(name);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createPCData = function(data) {
-	$s.push("Xml::createPCData");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.PCData;
-	r.setNodeValue(data);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createCData = function(data) {
-	$s.push("Xml::createCData");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.CData;
-	r.setNodeValue(data);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createComment = function(data) {
-	$s.push("Xml::createComment");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.Comment;
-	r.setNodeValue(data);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createDocType = function(data) {
-	$s.push("Xml::createDocType");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.DocType;
-	r.setNodeValue(data);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createProlog = function(data) {
-	$s.push("Xml::createProlog");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.Prolog;
-	r.setNodeValue(data);
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.createDocument = function() {
-	$s.push("Xml::createDocument");
-	var $spos = $s.length;
-	var r = new Xml();
-	r.nodeType = Xml.Document;
-	r._children = new Array();
-	$s.pop();
-	return r;
-	$s.pop();
-}
-Xml.prototype = {
-	nodeType: null
-	,nodeName: null
-	,nodeValue: null
-	,parent: null
-	,_nodeName: null
-	,_nodeValue: null
-	,_attributes: null
-	,_children: null
-	,_parent: null
-	,getNodeName: function() {
-		$s.push("Xml::getNodeName");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		var $tmp = this._nodeName;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,setNodeName: function(n) {
-		$s.push("Xml::setNodeName");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		var $tmp = this._nodeName = n;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,getNodeValue: function() {
-		$s.push("Xml::getNodeValue");
-		var $spos = $s.length;
-		if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
-		var $tmp = this._nodeValue;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,setNodeValue: function(v) {
-		$s.push("Xml::setNodeValue");
-		var $spos = $s.length;
-		if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
-		var $tmp = this._nodeValue = v;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,getParent: function() {
-		$s.push("Xml::getParent");
-		var $spos = $s.length;
-		var $tmp = this._parent;
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,get: function(att) {
-		$s.push("Xml::get");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		var $tmp = this._attributes.get(att);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,set: function(att,value) {
-		$s.push("Xml::set");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		this._attributes.set(att,value);
-		$s.pop();
-	}
-	,remove: function(att) {
-		$s.push("Xml::remove");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		this._attributes.remove(att);
-		$s.pop();
-	}
-	,exists: function(att) {
-		$s.push("Xml::exists");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		var $tmp = this._attributes.exists(att);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,attributes: function() {
-		$s.push("Xml::attributes");
-		var $spos = $s.length;
-		if(this.nodeType != Xml.Element) throw "bad nodeType";
-		var $tmp = this._attributes.keys();
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,iterator: function() {
-		$s.push("Xml::iterator");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var $tmp = { cur : 0, x : this._children, hasNext : function() {
-			$s.push("Xml::iterator@281");
-			var $spos = $s.length;
-			var $tmp = this.cur < this.x.length;
-			$s.pop();
-			return $tmp;
-			$s.pop();
-		}, next : function() {
-			$s.push("Xml::iterator@284");
-			var $spos = $s.length;
-			var $tmp = this.x[this.cur++];
-			$s.pop();
-			return $tmp;
-			$s.pop();
-		}};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,elements: function() {
-		$s.push("Xml::elements");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var $tmp = { cur : 0, x : this._children, hasNext : function() {
-			$s.push("Xml::elements@295");
-			var $spos = $s.length;
-			var k = this.cur;
-			var l = this.x.length;
-			while(k < l) {
-				if(this.x[k].nodeType == Xml.Element) break;
-				k += 1;
-			}
-			this.cur = k;
-			var $tmp = k < l;
-			$s.pop();
-			return $tmp;
-			$s.pop();
-		}, next : function() {
-			$s.push("Xml::elements@306");
-			var $spos = $s.length;
-			var k = this.cur;
-			var l = this.x.length;
-			while(k < l) {
-				var n = this.x[k];
-				k += 1;
-				if(n.nodeType == Xml.Element) {
-					this.cur = k;
-					$s.pop();
-					return n;
-				}
-			}
-			$s.pop();
-			return null;
-			$s.pop();
-		}};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,elementsNamed: function(name) {
-		$s.push("Xml::elementsNamed");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var $tmp = { cur : 0, x : this._children, hasNext : function() {
-			$s.push("Xml::elementsNamed@327");
-			var $spos = $s.length;
-			var k = this.cur;
-			var l = this.x.length;
-			while(k < l) {
-				var n = this.x[k];
-				if(n.nodeType == Xml.Element && n._nodeName == name) break;
-				k++;
-			}
-			this.cur = k;
-			var $tmp = k < l;
-			$s.pop();
-			return $tmp;
-			$s.pop();
-		}, next : function() {
-			$s.push("Xml::elementsNamed@339");
-			var $spos = $s.length;
-			var k = this.cur;
-			var l = this.x.length;
-			while(k < l) {
-				var n = this.x[k];
-				k++;
-				if(n.nodeType == Xml.Element && n._nodeName == name) {
-					this.cur = k;
-					$s.pop();
-					return n;
-				}
-			}
-			$s.pop();
-			return null;
-			$s.pop();
-		}};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,firstChild: function() {
-		$s.push("Xml::firstChild");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var $tmp = this._children[0];
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,firstElement: function() {
-		$s.push("Xml::firstElement");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var cur = 0;
-		var l = this._children.length;
-		while(cur < l) {
-			var n = this._children[cur];
-			if(n.nodeType == Xml.Element) {
-				$s.pop();
-				return n;
-			}
-			cur++;
-		}
-		$s.pop();
-		return null;
-		$s.pop();
-	}
-	,addChild: function(x) {
-		$s.push("Xml::addChild");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		if(x._parent != null) x._parent._children.remove(x);
-		x._parent = this;
-		this._children.push(x);
-		$s.pop();
-	}
-	,removeChild: function(x) {
-		$s.push("Xml::removeChild");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		var b = this._children.remove(x);
-		if(b) x._parent = null;
-		$s.pop();
-		return b;
-		$s.pop();
-	}
-	,insertChild: function(x,pos) {
-		$s.push("Xml::insertChild");
-		var $spos = $s.length;
-		if(this._children == null) throw "bad nodetype";
-		if(x._parent != null) x._parent._children.remove(x);
-		x._parent = this;
-		this._children.insert(pos,x);
-		$s.pop();
-	}
-	,toString: function() {
-		$s.push("Xml::toString");
-		var $spos = $s.length;
-		if(this.nodeType == Xml.PCData) {
-			var $tmp = this._nodeValue;
-			$s.pop();
-			return $tmp;
-		}
-		if(this.nodeType == Xml.CData) {
-			var $tmp = "<![CDATA[" + this._nodeValue + "]]>";
-			$s.pop();
-			return $tmp;
-		}
-		if(this.nodeType == Xml.Comment) {
-			var $tmp = "<!--" + this._nodeValue + "-->";
-			$s.pop();
-			return $tmp;
-		}
-		if(this.nodeType == Xml.DocType) {
-			var $tmp = "<!DOCTYPE " + this._nodeValue + ">";
-			$s.pop();
-			return $tmp;
-		}
-		if(this.nodeType == Xml.Prolog) {
-			var $tmp = "<?" + this._nodeValue + "?>";
-			$s.pop();
-			return $tmp;
-		}
-		var s = new StringBuf();
-		if(this.nodeType == Xml.Element) {
-			s.b[s.b.length] = "<";
-			s.add(this._nodeName);
-			var $it0 = this._attributes.keys();
-			while( $it0.hasNext() ) {
-				var k = $it0.next();
-				s.b[s.b.length] = " ";
-				s.b[s.b.length] = k == null?"null":k;
-				s.b[s.b.length] = "=\"";
-				s.add(this._attributes.get(k));
-				s.b[s.b.length] = "\"";
-			}
-			if(this._children.length == 0) {
-				s.b[s.b.length] = "/>";
-				var $tmp = s.b.join("");
-				$s.pop();
-				return $tmp;
-			}
-			s.b[s.b.length] = ">";
-		}
-		var $it1 = this.iterator();
-		while( $it1.hasNext() ) {
-			var x = $it1.next();
-			s.add(x.toString());
-		}
-		if(this.nodeType == Xml.Element) {
-			s.b[s.b.length] = "</";
-			s.add(this._nodeName);
-			s.b[s.b.length] = ">";
-		}
-		var $tmp = s.b.join("");
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,__class__: Xml
-	,__properties__: {get_parent:"getParent",set_nodeValue:"setNodeValue",get_nodeValue:"getNodeValue",set_nodeName:"setNodeName",get_nodeName:"getNodeName"}
-}
 haxe.Timer = $hxClasses["haxe.Timer"] = function(time_ms) {
 	$s.push("haxe.Timer::new");
 	var $spos = $s.length;
@@ -8765,6 +7661,101 @@ cocktailCore.style.js.EmbeddedStyle.__super__ = cocktailCore.style.abstract.Abst
 cocktailCore.style.js.EmbeddedStyle.prototype = $extend(cocktailCore.style.abstract.AbstractEmbeddedStyle.prototype,{
 	__class__: cocktailCore.style.js.EmbeddedStyle
 });
+if(!cocktailCore.resource) cocktailCore.resource = {}
+if(!cocktailCore.resource["abstract"]) cocktailCore.resource["abstract"] = {}
+cocktailCore.resource.abstract.AbstractResourceLoader = $hxClasses["cocktailCore.resource.abstract.AbstractResourceLoader"] = function(nativeElement) {
+	$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::new");
+	var $spos = $s.length;
+	if(nativeElement != null) this._nativeElement = nativeElement;
+	$s.pop();
+}
+cocktailCore.resource.abstract.AbstractResourceLoader.__name__ = ["cocktailCore","resource","abstract","AbstractResourceLoader"];
+cocktailCore.resource.abstract.AbstractResourceLoader.prototype = {
+	_onLoadCompleteCallback: null
+	,_onLoadErrorCallback: null
+	,_nativeElement: null
+	,nativeElement: null
+	,load: function(url,onLoadComplete,onLoadError,allowCache) {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::load");
+		var $spos = $s.length;
+		if(allowCache == null) allowCache = true;
+		this._onLoadCompleteCallback = onLoadComplete;
+		this._onLoadErrorCallback = onLoadError;
+		if(allowCache == false) url = this.disableUrlCaching(url);
+		this.doLoad(url);
+		$s.pop();
+	}
+	,doLoad: function(url) {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::doLoad");
+		var $spos = $s.length;
+		$s.pop();
+	}
+	,onLoadComplete: function(data) {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::onLoadComplete");
+		var $spos = $s.length;
+		this._onLoadCompleteCallback(data);
+		$s.pop();
+	}
+	,onLoadError: function(msg) {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::onLoadError");
+		var $spos = $s.length;
+		this._onLoadErrorCallback(msg);
+		$s.pop();
+	}
+	,disableUrlCaching: function(url) {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::disableUrlCaching");
+		var $spos = $s.length;
+		var getId = "";
+		if(url.indexOf("?") == -1) getId = "?"; else getId = "&";
+		url += getId + "rand=" + Math.round(Math.random() * 10000);
+		$s.pop();
+		return url;
+		$s.pop();
+	}
+	,getNativeElement: function() {
+		$s.push("cocktailCore.resource.abstract.AbstractResourceLoader::getNativeElement");
+		var $spos = $s.length;
+		var $tmp = this._nativeElement;
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
+	,__class__: cocktailCore.resource.abstract.AbstractResourceLoader
+	,__properties__: {get_nativeElement:"getNativeElement"}
+}
+if(!cocktailCore.resource.js) cocktailCore.resource.js = {}
+cocktailCore.resource.js.ResourceLoader = $hxClasses["cocktailCore.resource.js.ResourceLoader"] = function(nativeElement) {
+	$s.push("cocktailCore.resource.js.ResourceLoader::new");
+	var $spos = $s.length;
+	cocktailCore.resource.abstract.AbstractResourceLoader.call(this,nativeElement);
+	$s.pop();
+}
+cocktailCore.resource.js.ResourceLoader.__name__ = ["cocktailCore","resource","js","ResourceLoader"];
+cocktailCore.resource.js.ResourceLoader.__super__ = cocktailCore.resource.abstract.AbstractResourceLoader;
+cocktailCore.resource.js.ResourceLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractResourceLoader.prototype,{
+	doLoad: function(url) {
+		$s.push("cocktailCore.resource.js.ResourceLoader::doLoad");
+		var $spos = $s.length;
+		var onLoadCompleteDelegate = this.onLoadComplete.$bind(this);
+		var onLoadErrorDelegate = this.onLoadError.$bind(this);
+		var nativeElementDelegate = this._nativeElement;
+		this._nativeElement.onload = function() {
+			$s.push("cocktailCore.resource.js.ResourceLoader::doLoad@51");
+			var $spos = $s.length;
+			onLoadCompleteDelegate(nativeElementDelegate);
+			$s.pop();
+		};
+		this._nativeElement.onerror = function() {
+			$s.push("cocktailCore.resource.js.ResourceLoader::doLoad@56");
+			var $spos = $s.length;
+			onLoadErrorDelegate("couldn't load picture");
+			$s.pop();
+		};
+		this._nativeElement.setAttribute("src",url);
+		$s.pop();
+	}
+	,__class__: cocktailCore.resource.js.ResourceLoader
+});
 cocktailCore.style.computer.VisualEffectStylesComputer = $hxClasses["cocktailCore.style.computer.VisualEffectStylesComputer"] = function() {
 	$s.push("cocktailCore.style.computer.VisualEffectStylesComputer::new");
 	var $spos = $s.length;
@@ -8964,6 +7955,137 @@ cocktailCore.style.computer.VisualEffectStylesComputer.getComputedTranslation = 
 }
 cocktailCore.style.computer.VisualEffectStylesComputer.prototype = {
 	__class__: cocktailCore.style.computer.VisualEffectStylesComputer
+}
+var Clock = $hxClasses["Clock"] = function() {
+	$s.push("Clock::new");
+	var $spos = $s.length;
+	this._loadedAssetsCounter = 0;
+	this._secondNeedle = new cocktailCore.domElement.js.ImageDOMElement();
+	this._hourNeedle = new cocktailCore.domElement.js.ImageDOMElement();
+	this._minuteNeedle = new cocktailCore.domElement.js.ImageDOMElement();
+	this._clockBackground = new cocktailCore.domElement.js.ImageDOMElement();
+	this._clockForeGround = new cocktailCore.domElement.js.ImageDOMElement();
+	this._secondNeedle.setMatrix(new cocktail.geom.Matrix());
+	this._hourNeedle.setMatrix(new cocktail.geom.Matrix());
+	this._minuteNeedle.setMatrix(new cocktail.geom.Matrix());
+	this._clockForeGround.setMatrix(new cocktail.geom.Matrix());
+	this._secondNeedle.onLoad = this.onSecondNeedleLoaded.$bind(this);
+	this._hourNeedle.onLoad = this.onHourNeedleLoaded.$bind(this);
+	this._minuteNeedle.onLoad = this.onMinuteNeedleLoaded.$bind(this);
+	this._clockBackground.onLoad = this.onClockBackgroundLoaded.$bind(this);
+	this._clockForeGround.onLoad = this.onClockForegroundLoaded.$bind(this);
+	this._secondNeedle.load("assets/second_needle.png");
+	this._hourNeedle.load("assets/hour_needle.png");
+	this._minuteNeedle.load("assets/minute_needle.png");
+	this._clockBackground.load("assets/clock_background.png");
+	this._clockForeGround.load("assets/clock_foreground.png");
+	$s.pop();
+}
+Clock.__name__ = ["Clock"];
+Clock.rootDOMElement = null;
+Clock.main = function() {
+	$s.push("Clock::main");
+	var $spos = $s.length;
+	Clock.rootDOMElement = new cocktailCore.domElement.js.BodyDOMElement();
+	var cl = new Clock();
+	$s.pop();
+}
+Clock.prototype = {
+	_clockBackground: null
+	,_clockForeGround: null
+	,_secondNeedle: null
+	,_minuteNeedle: null
+	,_hourNeedle: null
+	,_clockDisplay: null
+	,_time: null
+	,_loadedAssetsCounter: null
+	,_secondNeedleRotationCenter: null
+	,_minuteNeedleRotationCenter: null
+	,_hourNeedleRotationCenter: null
+	,init: function() {
+		$s.push("Clock::init");
+		var $spos = $s.length;
+		this._clockDisplay = new cocktailCore.domElement.js.ContainerDOMElement();
+		this._time = new cocktailCore.textElement.js.TextElement("");
+		this._clockDisplay.addText(this._time);
+		Clock.rootDOMElement.addChild(this._clockBackground);
+		Clock.rootDOMElement.addChild(this._secondNeedle);
+		Clock.rootDOMElement.addChild(this._minuteNeedle);
+		Clock.rootDOMElement.addChild(this._hourNeedle);
+		Clock.rootDOMElement.addChild(this._clockForeGround);
+		Clock.rootDOMElement.addChild(this._clockDisplay);
+		var secondNeedleOffset = 15.0;
+		this._secondNeedleRotationCenter = { x : this._secondNeedle.getIntrinsicWidth() / 2, y : this._secondNeedle.getIntrinsicHeight() - secondNeedleOffset};
+		this._minuteNeedleRotationCenter = { x : this._minuteNeedle.getIntrinsicWidth() / 2, y : this._minuteNeedle.getIntrinsicHeight()};
+		this._hourNeedleRotationCenter = { x : this._hourNeedle.getIntrinsicWidth() / 2, y : this._hourNeedle.getIntrinsicHeight()};
+		var secondNeedleRegistrationPoint = this._secondNeedleRotationCenter;
+		var minuteNeedleRegistrationPoint = this._minuteNeedleRotationCenter;
+		var hourNeedleRegistrationPoint = this._hourNeedleRotationCenter;
+		this._secondNeedle.getMatrix().translate(this._clockBackground.getIntrinsicWidth() / 2 - this._secondNeedle.getIntrinsicWidth() / 2,this._clockBackground.getIntrinsicHeight() / 2 - this._secondNeedle.getIntrinsicHeight() + secondNeedleOffset);
+		this._minuteNeedle.getMatrix().translate(this._clockBackground.getIntrinsicWidth() / 2 - this._minuteNeedle.getIntrinsicWidth() / 2,this._clockBackground.getIntrinsicHeight() / 2 - this._minuteNeedle.getIntrinsicHeight());
+		this._hourNeedle.getMatrix().translate(this._clockBackground.getIntrinsicWidth() / 2 - this._hourNeedle.getIntrinsicWidth() / 2,this._clockBackground.getIntrinsicHeight() / 2 - this._hourNeedle.getIntrinsicHeight());
+		this._clockForeGround.getMatrix().translate(this._clockBackground.getIntrinsicWidth() / 2 - this._clockForeGround.getIntrinsicWidth() / 2,this._clockBackground.getIntrinsicHeight() / 2 - this._clockForeGround.getIntrinsicHeight() / 2);
+		this._secondNeedle.getMatrix().translate(this._clockBackground.getIntrinsicWidth() / 2 - this._secondNeedle.getIntrinsicWidth() / 2,this._clockBackground.getIntrinsicHeight() / 2 - this._secondNeedle.getIntrinsicHeight() + secondNeedleOffset);
+		this._clockDisplay.setWidth(300);
+		this._clockDisplay.setY(this._clockBackground.getHeight());
+		this.updateTime();
+		$s.pop();
+	}
+	,updateTime: function() {
+		$s.push("Clock::updateTime");
+		var $spos = $s.length;
+		this._clockDisplay.removeText(this._time);
+		this._time = new cocktailCore.textElement.js.TextElement(Date.now().toString());
+		this._clockDisplay.addText(this._time);
+		this._secondNeedle.setRotation(Math.round(Date.now().getSeconds() * 6));
+		this._minuteNeedle.setRotation(Math.round(Date.now().getMinutes() * 6));
+		this._hourNeedle.setRotation(Math.round(Date.now().getHours() * (360 / 12)));
+		haxe.Timer.delay(this.updateTime.$bind(this),1000);
+		$s.pop();
+	}
+	,onHourNeedleLoaded: function(imageDOMElement) {
+		$s.push("Clock::onHourNeedleLoaded");
+		var $spos = $s.length;
+		this._hourNeedle = imageDOMElement;
+		this.checkLoadedAssets();
+		$s.pop();
+	}
+	,onMinuteNeedleLoaded: function(imageDOMElement) {
+		$s.push("Clock::onMinuteNeedleLoaded");
+		var $spos = $s.length;
+		this._minuteNeedle = imageDOMElement;
+		this.checkLoadedAssets();
+		$s.pop();
+	}
+	,onSecondNeedleLoaded: function(imageDOMElement) {
+		$s.push("Clock::onSecondNeedleLoaded");
+		var $spos = $s.length;
+		this._secondNeedle = imageDOMElement;
+		this.checkLoadedAssets();
+		$s.pop();
+	}
+	,onClockBackgroundLoaded: function(imageDOMElement) {
+		$s.push("Clock::onClockBackgroundLoaded");
+		var $spos = $s.length;
+		this._clockBackground = imageDOMElement;
+		this.checkLoadedAssets();
+		$s.pop();
+	}
+	,onClockForegroundLoaded: function(imageDOMElement) {
+		$s.push("Clock::onClockForegroundLoaded");
+		var $spos = $s.length;
+		this._clockForeGround = imageDOMElement;
+		this.checkLoadedAssets();
+		$s.pop();
+	}
+	,checkLoadedAssets: function() {
+		$s.push("Clock::checkLoadedAssets");
+		var $spos = $s.length;
+		this._loadedAssetsCounter++;
+		if(this._loadedAssetsCounter == 5) this.init();
+		$s.pop();
+	}
+	,__class__: Clock
 }
 if(!cocktail.nativeElement) cocktail.nativeElement = {}
 cocktail.nativeElement.NativeElementManager = $hxClasses["cocktail.nativeElement.NativeElementManager"] = function() {
@@ -9848,7 +8970,6 @@ cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer.prototype = $ex
 	getComputedAutoMargin: function(marginStyleValue,opositeMarginStyleValue,containingDOMElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin) {
 		$s.push("cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer::getComputedAutoMargin");
 		var $spos = $s.length;
-		if(isHorizontalMargin == null) isHorizontalMargin = false;
 		$s.pop();
 		return 0;
 		$s.pop();
@@ -10043,76 +9164,6 @@ cocktail.unit.AngleValue.deg = function(value) { var $x = ["deg",0,value]; $x.__
 cocktail.unit.AngleValue.grad = function(value) { var $x = ["grad",1,value]; $x.__enum__ = cocktail.unit.AngleValue; $x.toString = $estr; return $x; }
 cocktail.unit.AngleValue.rad = function(value) { var $x = ["rad",2,value]; $x.__enum__ = cocktail.unit.AngleValue; $x.toString = $estr; return $x; }
 cocktail.unit.AngleValue.turn = function(value) { var $x = ["turn",3,value]; $x.__enum__ = cocktail.unit.AngleValue; $x.toString = $estr; return $x; }
-if(!cocktail.resource) cocktail.resource = {}
-cocktail.resource.ResourceLoaderManager = $hxClasses["cocktail.resource.ResourceLoaderManager"] = function() {
-	$s.push("cocktail.resource.ResourceLoaderManager::new");
-	var $spos = $s.length;
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.__name__ = ["cocktail","resource","ResourceLoaderManager"];
-cocktail.resource.ResourceLoaderManager._resourceDataArray = null;
-cocktail.resource.ResourceLoaderManager.loadString = function(url,successCallback,errorCallback,allowCache) {
-	$s.push("cocktail.resource.ResourceLoaderManager::loadString");
-	var $spos = $s.length;
-	if(allowCache == null) allowCache = true;
-	var resourceDataToAdd = { url : url, onLoadComplete : successCallback, onLoadError : errorCallback, allowCache : allowCache, loadingType : cocktail.resource.LoadingTypeValue.data};
-	cocktail.resource.ResourceLoaderManager.addResourceData(resourceDataToAdd);
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.loadLibrary = function(url,successCallback,errorCallback,allowCache) {
-	$s.push("cocktail.resource.ResourceLoaderManager::loadLibrary");
-	var $spos = $s.length;
-	if(allowCache == null) allowCache = true;
-	var resourceDataToAdd = { url : url, onLoadComplete : successCallback, onLoadError : errorCallback, allowCache : allowCache, loadingType : cocktail.resource.LoadingTypeValue.library};
-	cocktail.resource.ResourceLoaderManager.addResourceData(resourceDataToAdd);
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.addResourceData = function(resourceData) {
-	$s.push("cocktail.resource.ResourceLoaderManager::addResourceData");
-	var $spos = $s.length;
-	if(cocktail.resource.ResourceLoaderManager._resourceDataArray == null) cocktail.resource.ResourceLoaderManager._resourceDataArray = new Array();
-	cocktail.resource.ResourceLoaderManager._resourceDataArray.push(resourceData);
-	if(cocktail.resource.ResourceLoaderManager._isLoading == false) cocktail.resource.ResourceLoaderManager.loadNextResource();
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.loadNextResource = function() {
-	$s.push("cocktail.resource.ResourceLoaderManager::loadNextResource");
-	var $spos = $s.length;
-	if(cocktail.resource.ResourceLoaderManager._resourceDataArray.length == 0) cocktail.resource.ResourceLoaderManager._isLoading = false; else {
-		cocktail.resource.ResourceLoaderManager._isLoading = true;
-		var resourceDataToLoad = cocktail.resource.ResourceLoaderManager._resourceDataArray[0];
-		var resourceLoader;
-		switch( (resourceDataToLoad.loadingType)[1] ) {
-		case 0:
-			resourceLoader = new cocktailCore.resource.js.StringLoader();
-			break;
-		case 1:
-			resourceLoader = new cocktailCore.resource.js.LibraryLoader();
-			break;
-		}
-		resourceLoader.load(resourceDataToLoad.url,cocktail.resource.ResourceLoaderManager.onLoadComplete,cocktail.resource.ResourceLoaderManager.onLoadError,resourceDataToLoad.allowCache);
-	}
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.onLoadComplete = function(data) {
-	$s.push("cocktail.resource.ResourceLoaderManager::onLoadComplete");
-	var $spos = $s.length;
-	var loadedResourceData = cocktail.resource.ResourceLoaderManager._resourceDataArray.shift();
-	loadedResourceData.onLoadComplete(data);
-	cocktail.resource.ResourceLoaderManager.loadNextResource();
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.onLoadError = function(data) {
-	$s.push("cocktail.resource.ResourceLoaderManager::onLoadError");
-	var $spos = $s.length;
-	var errorResourceData = cocktail.resource.ResourceLoaderManager._resourceDataArray.shift();
-	errorResourceData.onLoadError(data);
-	cocktail.resource.ResourceLoaderManager.loadNextResource();
-	$s.pop();
-}
-cocktail.resource.ResourceLoaderManager.prototype = {
-	__class__: cocktail.resource.ResourceLoaderManager
-}
 cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer = $hxClasses["cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer"] = function() {
 	$s.push("cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer::new");
 	var $spos = $s.length;
@@ -10654,6 +9705,7 @@ cocktailCore.textElement.TextTokenValue.tab.__enum__ = cocktailCore.textElement.
 cocktailCore.textElement.TextTokenValue.lineFeed = ["lineFeed",3];
 cocktailCore.textElement.TextTokenValue.lineFeed.toString = $estr;
 cocktailCore.textElement.TextTokenValue.lineFeed.__enum__ = cocktailCore.textElement.TextTokenValue;
+if(!cocktail.resource) cocktail.resource = {}
 cocktail.resource.LoadingTypeValue = $hxClasses["cocktail.resource.LoadingTypeValue"] = { __ename__ : ["cocktail","resource","LoadingTypeValue"], __constructs__ : ["data","library"] }
 cocktail.resource.LoadingTypeValue.data = ["data",0];
 cocktail.resource.LoadingTypeValue.data.toString = $estr;
@@ -10713,26 +9765,6 @@ cocktailCore.style.positioner.RelativePositioner.prototype = $extend(cocktailCor
 		$s.pop();
 	}
 	,__class__: cocktailCore.style.positioner.RelativePositioner
-});
-cocktailCore.resource.js.LibraryLoader = $hxClasses["cocktailCore.resource.js.LibraryLoader"] = function() {
-	$s.push("cocktailCore.resource.js.LibraryLoader::new");
-	var $spos = $s.length;
-	cocktailCore.resource.abstract.AbstractLibraryLoader.call(this);
-	$s.pop();
-}
-cocktailCore.resource.js.LibraryLoader.__name__ = ["cocktailCore","resource","js","LibraryLoader"];
-cocktailCore.resource.js.LibraryLoader.__super__ = cocktailCore.resource.abstract.AbstractLibraryLoader;
-cocktailCore.resource.js.LibraryLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractLibraryLoader.prototype,{
-	doLoad: function(url) {
-		$s.push("cocktailCore.resource.js.LibraryLoader::doLoad");
-		var $spos = $s.length;
-		this._nativeElement.setAttribute("type","text/javascript");
-		this._nativeElement.setAttribute("language","JavaScript");
-		js.Lib.document.getElementsByTagName("head")[0].appendChild(this._nativeElement);
-		cocktailCore.resource.abstract.AbstractLibraryLoader.prototype.doLoad.call(this,url);
-		$s.pop();
-	}
-	,__class__: cocktailCore.resource.js.LibraryLoader
 });
 cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager = $hxClasses["cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager"] = function() {
 	$s.push("cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager::new");
@@ -10832,20 +9864,20 @@ cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer.prototype =
 		$s.push("cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer::measureAutoWidth");
 		var $spos = $s.length;
 		var computedStyle = style.getComputedStyle();
-		if(style.getMarginLeft() == cocktail.style.MarginStyleValue.autoValue) style.getComputedStyle().marginLeft = 0; else style.getComputedStyle().marginLeft = this.getComputedMarginLeft(style,containingDOMElementData);
-		if(style.getMarginRight() == cocktail.style.MarginStyleValue.autoValue) style.getComputedStyle().marginRight = 0; else style.getComputedStyle().marginRight = this.getComputedMarginRight(style,containingDOMElementData);
+		if(style.getMarginLeft() == cocktail.style.MarginStyleValue.autoValue) computedStyle.marginLeft = 0; else computedStyle.marginLeft = this.getComputedMarginLeft(style,containingDOMElementData);
+		if(style.getMarginRight() == cocktail.style.MarginStyleValue.autoValue) computedStyle.marginRight = 0; else computedStyle.marginRight = this.getComputedMarginRight(style,containingDOMElementData);
 		if(style.getLeft() != cocktail.style.PositionOffsetStyleValue.autoValue && style.getRight() != cocktail.style.PositionOffsetStyleValue.autoValue) {
-			style.getComputedStyle().left = this.getComputedPositionOffset(style.getLeft(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			style.getComputedStyle().right = this.getComputedPositionOffset(style.getRight(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			style.getComputedStyle().width = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
-		}
+			computedStyle.left = this.getComputedPositionOffset(style.getLeft(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+			computedStyle.right = this.getComputedPositionOffset(style.getRight(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
+			computedStyle.width = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+		} else computedStyle.width = 10000000;
 		$s.pop();
 	}
 	,measureWidth: function(style,containingDOMElementData) {
 		$s.push("cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer::measureWidth");
 		var $spos = $s.length;
 		var computedStyle = style.getComputedStyle();
-		style.getComputedStyle().width = this.getComputedWidth(style,containingDOMElementData);
+		this.setComputedWidth(style,this.getComputedWidth(style,containingDOMElementData));
 		if(style.getLeft() != cocktail.style.PositionOffsetStyleValue.autoValue && style.getRight() != cocktail.style.PositionOffsetStyleValue.autoValue) {
 			style.getComputedStyle().left = this.getComputedPositionOffset(style.getLeft(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 			style.getComputedStyle().right = this.getComputedPositionOffset(style.getRight(),containingDOMElementData.width,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
@@ -10893,7 +9925,7 @@ cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer.prototype =
 		if(style.getTop() != cocktail.style.PositionOffsetStyleValue.autoValue && style.getBottom() != cocktail.style.PositionOffsetStyleValue.autoValue) {
 			style.getComputedStyle().top = this.getComputedPositionOffset(style.getTop(),containingDOMElementData.height,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 			style.getComputedStyle().bottom = this.getComputedPositionOffset(style.getBottom(),containingDOMElementData.height,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
-			style.getComputedStyle().height = containingDOMElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom;
+			this.setComputedHeight(style,containingDOMElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
 		}
 		$s.pop();
 	}
@@ -10901,7 +9933,7 @@ cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer.prototype =
 		$s.push("cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer::measureHeight");
 		var $spos = $s.length;
 		var computedStyle = style.getComputedStyle();
-		style.getComputedStyle().height = this.getComputedHeight(style,containingDOMElementData);
+		this.setComputedHeight(style,this.getComputedHeight(style,containingDOMElementData));
 		if(style.getTop() != cocktail.style.PositionOffsetStyleValue.autoValue && style.getBottom() != cocktail.style.PositionOffsetStyleValue.autoValue) {
 			style.getComputedStyle().top = this.getComputedPositionOffset(style.getTop(),containingDOMElementData.height,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
 			style.getComputedStyle().bottom = this.getComputedPositionOffset(style.getBottom(),containingDOMElementData.height,style.getFontMetricsData().fontSize,style.getFontMetricsData().xHeight);
@@ -11542,15 +10574,6 @@ js["XMLHttpRequest"] = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject
 		$s.pop();
 	};
 }
-{
-	Xml.Element = "element";
-	Xml.PCData = "pcdata";
-	Xml.CData = "cdata";
-	Xml.Comment = "comment";
-	Xml.DocType = "doctype";
-	Xml.Prolog = "prolog";
-	Xml.Document = "document";
-}
 if(typeof(haxe_timers) == "undefined") haxe_timers = [];
 {
 	String.prototype.__class__ = $hxClasses["String"] = String;
@@ -11650,18 +10673,6 @@ if(typeof(haxe_timers) == "undefined") haxe_timers = [];
 		return f(msg,stack);
 	}
 }
-Xml.enode = new EReg("^<([a-zA-Z0-9:._-]+)","");
-Xml.ecdata = new EReg("^<!\\[CDATA\\[","i");
-Xml.edoctype = new EReg("^<!DOCTYPE ","i");
-Xml.eend = new EReg("^</([a-zA-Z0-9:._-]+)>","");
-Xml.epcdata = new EReg("^[^<]+","");
-Xml.ecomment = new EReg("^<!--","");
-Xml.eprolog = new EReg("^<\\?[^\\?]+\\?>","");
-Xml.eattribute = new EReg("^\\s*([a-zA-Z0-9:_-]+)\\s*=\\s*([\"'])([^\\2]*?)\\2","");
-Xml.eclose = new EReg("^[ \r\n\t]*(>|(/>))","");
-Xml.ecdata_end = new EReg("\\]\\]>","");
-Xml.edoctype_elt = new EReg("[\\[|\\]>]","");
-Xml.ecomment_end = new EReg("-->","");
 cocktailCore.domElement.js.GraphicDOMElement.CAPS_STYLE_VALUE_NONE = "butt";
 cocktailCore.domElement.js.GraphicDOMElement.CAPS_STYLE_VALUE_ROUND = "round";
 cocktailCore.domElement.js.GraphicDOMElement.CAPS_STYLE_VALUE_SQUARE = "square";
@@ -11670,6 +10681,5 @@ cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_MITER = "miter";
 cocktailCore.domElement.js.GraphicDOMElement.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_REPEAT = "repeat";
 cocktailCore.domElement.js.GraphicDOMElement.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
-cocktail.resource.ResourceLoaderManager._isLoading = false;
 js.Lib.onerror = null;
-Gallery.main()
+Clock.main()
