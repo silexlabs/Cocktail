@@ -15,11 +15,11 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 
 // Style
-import cocktailCore.style.StyleData;
+//import cocktailCore.style.StyleData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-class StyleIphone 
+class StyleGallery 
 {
 
 	/**
@@ -31,7 +31,7 @@ class StyleIphone
 	{
 		domElement.style.position = PositionStyleValue.staticStyle;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = DimensionStyleValue.auto;
+		domElement.style.width = DimensionStyleValue.autoValue;
 
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -45,6 +45,25 @@ class StyleIphone
 	}
 	
 	/**
+	 * Defines cell Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getCellStyle(domElement:DOMElement):Void
+	{
+		//getDefaultStyle(domElement);
+		
+		//domElement.style.position = PositionStyleValue.relative;
+		domElement.style.display = DisplayStyleValue.inlineBlock;
+		
+		//domElement.style.marginTop = MarginStyleValue.length(px(4));
+		//domElement.style.marginLeft = MarginStyleValue.length(px(4));
+//
+		//domElement.style.width = DimensionStyleValue.length(px(75));
+		//domElement.style.height = DimensionStyleValue.length(px(75));
+	}
+	
+	/**
 	 * Defines thumbnails Style
 	 * 
 	 * @param	domElement
@@ -54,7 +73,6 @@ class StyleIphone
 		getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.relative;
-		domElement.style.display = DisplayStyleValue.inlineStyle;
 		
 		domElement.style.marginTop = MarginStyleValue.length(px(4));
 		domElement.style.marginLeft = MarginStyleValue.length(px(4));
@@ -76,7 +94,7 @@ class StyleIphone
 		domElement.style.display = DisplayStyleValue.block;
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.height = DimensionStyleValue.percent(100);
+		//domElement.style.height = DimensionStyleValue.percent(200);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 	
