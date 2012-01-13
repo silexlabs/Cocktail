@@ -179,13 +179,13 @@ class FormattingContext
 	 * Insert a floated DOMElement in the formatting
 	 * context's flow
 	 */
-	public function insertFloat(domElement:DOMElement):Void
+	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
-		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, _containingDOMElementWidth);
+		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
 		//actually place the floated DOMElement
-		placeFloat(domElement, floatData);
+		placeFloat(domElement, parentDOMElement, floatData);
 	}
 	
 	/**
@@ -276,10 +276,10 @@ class FormattingContext
 	 * change based on tht type of formatting context
 	 * (block or inline)
 	 */
-	private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
 	{
-		domElement.style.setNativeX(domElement, floatData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.setNativeY(domElement, floatData.y + domElement.style.computedStyle.marginTop);
+		getChildrenTemporaryPositionData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true));
+		
 	}
 	
 	/**

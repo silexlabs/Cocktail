@@ -80,6 +80,46 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function render():Void
+	{
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Detach all the children using
+	 * flash API
+	 */
+	override private function detachChildren():Void
+	{
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			/**
+			 * TO DO : clean-up the try/catch, it shouldn't be
+			 * necessary
+			 */
+			try {
+				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			}
+			catch (e:Dynamic)
+			{
+				
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////

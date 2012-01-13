@@ -38,7 +38,18 @@ import haxe.Timer;
  * are in charge of storing the style value for a DOMElement
  * and applying them when neccessary.
  * 
- * This class holds a reference to the styled DOMElement
+ * This class holds a reference to the styled DOMElement.
+ * 
+ * Styling is done in 2 phases : 
+ * - first the styles of the DOMElement are computed into
+ * usable values, for instance values defined as percentage
+ * are converted to absolute values. During this phase, an
+ * abstract rendering tree of the element is built, containing
+ * an array of all its children (background, border, other DOMElements...)
+ * ordered by z-index
+ * - once all the styles are computed and the rendering tree is ready, 
+ * it is applied using runtime specific API. For instance in flash, all
+ * the children are added using native addchild() method
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -188,7 +199,7 @@ class AbstractStyle
 	
 	/**
 	 * Returns metrics info for the currently defined
-	 * font and font size. Uused in inline formatting context
+	 * font and font size. Used in inline formatting context
 	 * to determine lineBoxes sizes and text vertical
 	 * alignement
 	 */
@@ -429,18 +440,32 @@ class AbstractStyle
 	// PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Render all the children in the
+	 * childrenTemporaryPositionData array
+	 * by attaching them to the DOM using
+	 * runtime specific API.
+	 * 
+	 * Implemented by each runtime
+	 */
 	public function render():Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
-		{
-			#if (flash9)
-			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			#end
-			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
-		}
-		
-		
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Detach all the children previously
+	 * attached with the render() method
+	 * when a new layout occurs using
+	 * runtime specific API
+	 */
+	private function detachChildren():Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -449,7 +474,7 @@ class AbstractStyle
 	
 	/**
 	 * The main layout method. When called, the DOMElement's styles (width, height, margins, paddings...)
-	 * are computed into actual values, the DOMElement layout its children if it has any then add himself
+	 * are computed into actual values, the DOMElement layout its children if it has any then add itself
 	 * to the layout.
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
@@ -489,24 +514,10 @@ class AbstractStyle
 	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formatingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext = null):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Void
 	{
-		
-		#if (flash9)
-		
-		for (i in 0..._childrenTemporaryPositionData.length)
-		{
-			try {
-				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			}
-			catch (e:Dynamic)
-			{
-				
-			}
-			
-		}
-		
-		#end
+		//first detach all previously added children
+		detachChildren();
 		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
@@ -646,7 +657,7 @@ class AbstractStyle
 		//insert in formating context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement);
+			formattingContext.insertFloat(this._domElement, this._domElement.parent);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
@@ -656,11 +667,20 @@ class AbstractStyle
 		//else the DOMElement is positioned
 		else
 		{
-			
 			//retrieve the static position (the position of the DOMElement
 			//if its position style was 'static'
-			var x:Float = formattingContext.formattingContextData.x;
-			var y:Float = formattingContext.formattingContextData.y;
+			var x:Float = 0;
+			var y:Float = 0;
+			
+			/**
+			 * TO DO: clean up, formatting context not
+			 * supposed to be null here
+			 */
+			if (formattingContext != null)
+			{
+				x = formattingContext.formattingContextData.x;
+				y = formattingContext.formattingContextData.y;
+			}
 			
 			var staticPosition:PointData = {
 				x:x,
@@ -676,8 +696,7 @@ class AbstractStyle
 				insertInFlowDOMElement(formattingContext);
 				//positionElement(lastPositionedDOMElementData.data, viewportData, staticPosition);
 			}
-			else
-			{
+			
 				//insert as an absolutely positioned DOMElement.
 				//an absolutely positioned DOMElement is not positioned right away, it must
 				//wait for its first positioned ancestor to be laid out. The reason is that
@@ -692,8 +711,8 @@ class AbstractStyle
 				
 				//store the DOMElement to be positioned later
 				lastPositionedDOMElementData.children.push(positionedDOMElementData);
-			}
-		}
+			
+	}
 	}
 	
 	/**

@@ -27,7 +27,8 @@ import haxe.Log;
  * as origin ('absolute') or the viewport('fixed').
  * 
  * Relatively positioned DOMElement are first placed into the normal
- * flow, then an offset is applied to them.
+ * flow, then an offset is applied to them using the top, left, right
+ * and bottom styles.
  * 
  * This base class implements the behaviour of the 'absolute' 
  * position value
@@ -50,14 +51,14 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Main entry point, place a positioned element in the document based on a containingDOMElement
-	 * dimensions and positions and/or apply an offset to it
+	 * Main entry point, determine the position of the DOMElement relative to its first positioned
+	 * ancestor
 	 * 
 	 * @param	domElement the DOMElement to position
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
-	 * @param staticPosition the position the DOMElement would have in the flow if it weren't positioned. Used if
-	 * the position styles (left, right, top and bottom) are set to 'auto'
+	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
+	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
 	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
 	{
@@ -73,13 +74,10 @@ class BoxPositioner
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			//first place the DOMElement at its first positioned ancestor
-			//x origin
-			//then apply offset
 			childrenTemporaryPositionData.x = getLeftOffset(domElement);
 		}
-		//if no left offset is defined, then try to apply a right offset
-		//right offset takes the containing DOMElement element width minus, the
+		//if no left offset is defined, then try to apply a right offset.
+		//Right offset takes the containing DOMElement element width minus the
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
@@ -92,7 +90,7 @@ class BoxPositioner
 			childrenTemporaryPositionData.x = Math.round(staticPosition.x);
 		}
 		
-		//for vertical offset, the same rule as hortizontal offsets apply
+		//for vertical offset, the same rule as horizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
 			childrenTemporaryPositionData.y = getTopOffset(domElement);
@@ -126,7 +124,7 @@ class BoxPositioner
 	 */
 	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
 	{
-		return containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right;
+		return containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
 	}
 	
 	/**
@@ -142,7 +140,7 @@ class BoxPositioner
 	 */
 	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
 	{
-		return containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom;
+		return containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
 	}
 	
 }
