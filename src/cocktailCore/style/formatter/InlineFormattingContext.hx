@@ -41,7 +41,6 @@ class InlineFormattingContext extends FormattingContext
 	{
 		_firstLineLaidOut = false;
 		_domElementInLineBox = new Array<LineBoxElementData>();
-		
 		super(domElement, previousFormattingContext);
 	}
 	
@@ -205,9 +204,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
 	{
-		super.placeFloat(domElement, floatData);
+		super.placeFloat(domElement, parentDOMElement, floatData);
 		
 		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		
@@ -523,11 +522,12 @@ class InlineFormattingContext extends FormattingContext
 		//for each DOMElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._domElementInLineBox.length)
 		{
+			
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
 			if (_domElementInLineBox[i].position == true)
 			{
-				var domElement:DOMElement = _domElementInLineBox[i].domElement;
-				_domElementInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _formattingContextData.y ;
-
+				
+				_domElementInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _formattingContextData.y;
 				//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
 				//so that its bottom margin touches the baseline
 				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
@@ -535,8 +535,6 @@ class InlineFormattingContext extends FormattingContext
 					_domElementInLineBox[i].y -= domElement.offsetHeight;
 				}
 			}
-			
-			
 		}
 	
 		return Math.round(lineBoxHeight);

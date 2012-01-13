@@ -61,6 +61,11 @@ class AbstractContainerStyle extends Style
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * A ContainerStyle must also render all 
+	 * its children recursively before rendering
+	 * itself
+	 */
 	override public function render():Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -72,8 +77,8 @@ class AbstractContainerStyle extends Style
 				childrenDOMElement.style.render();
 			}
 		}
-		super.render();
 		
+		super.render();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -83,11 +88,12 @@ class AbstractContainerStyle extends Style
 	/**
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all of its children.
+	 * 
+	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
-		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null);
-		
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null, null);
 		render();
 	}
 	
@@ -205,7 +211,8 @@ class AbstractContainerStyle extends Style
 		//for its children and it is its responsability to position them. An array containing all their
 		//laid out positions is returned
 		var absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData> = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
-	
+		
+		//concatenate the absolutely positioned children with the in-flow children
 		for (i in 0...absolutelyPositionedChildrenTemporaryPositionsData.length)
 		{
 			childrenTemporaryPositionsData.push(absolutelyPositionedChildrenTemporaryPositionsData[i]);
@@ -223,6 +230,7 @@ class AbstractContainerStyle extends Style
 		
 		if (establishesNewFormattingContext() == true)
 		{
+			
 			if (this._domElement.parent != null)
 			{
 				formattingContext.insert(this._domElement, this._domElement.parent, true);
@@ -562,7 +570,6 @@ class AbstractContainerStyle extends Style
 		{
 			formattingContext = previousFormatingContext;
 		}
-		
 		
 		return formattingContext;
 	}

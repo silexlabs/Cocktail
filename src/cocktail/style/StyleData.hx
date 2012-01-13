@@ -1083,11 +1083,21 @@ import cocktailCore.style.abstract.AbstractStyle;
 		var y:Int;
 	}
 	
+	/**
+	 * Holds the data of an array of children
+	 * position, which can be retrieved by their
+	 * parent DOMElement
+	 */
 	typedef ChildrenTemporaryPositionsData = {
 		var parentDOMElement:DOMElement;
 		var children:Array<ChildTemporaryPositionData>;
 	}
 	
+	/**
+	 * Holds the computed position of a 
+	 * laid out children relative to the formatting
+	 * context in which it participates
+	 */
 	typedef ChildTemporaryPositionData = {
 		var domElement:DOMElement;
 		var lineIndex:Int;

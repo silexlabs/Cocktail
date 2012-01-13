@@ -50,22 +50,21 @@ class BlockFormattingContext extends FormattingContext
 		_formattingContextData.x =  leftFloatOffset;
 		
 		
-		
-		
+	
 		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position);
 		
 		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
 		
 		if (position == true)
 		{
-			_formattingContextData.y += domElement.offsetHeight ;
+			_formattingContextData.y += domElement.offsetHeight;
 			
 		}
 		else
 		{
 			_formattingContextData.y += domElement.offsetHeight - domElement.style.computedStyle.height;
 		}
-		_formattingContextData.maxHeight = _formattingContextData.y  ;
+		_formattingContextData.maxHeight = _formattingContextData.y ;
 		
 		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
 		//of a container is set as 'shrink-to-fit' (takes its content width)
