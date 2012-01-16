@@ -62,6 +62,8 @@ class BoxPositioner
 	 */
 	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
 	{
+		//init the structure that will contain the x and y of the DOMElement
+		//using its first positioned ancestor as origin
 		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
 		{
 			domElement:domElement,
@@ -74,14 +76,14 @@ class BoxPositioner
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.x = getLeftOffset(domElement);
+			childrenTemporaryPositionData.x = getLeftOffset(domElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing DOMElement element width minus the
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.x = getRightOffset(domElement, containingDOMElementData.width);
+			childrenTemporaryPositionData.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the document if it were positioned as 'static'
@@ -93,11 +95,11 @@ class BoxPositioner
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.y = getTopOffset(domElement);
+			childrenTemporaryPositionData.y = getTopOffset(domElement, Math.round(staticPosition.y));
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.y = getBottomOffset(domElement, containingDOMElementData.height);
+			childrenTemporaryPositionData.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
@@ -114,7 +116,7 @@ class BoxPositioner
 	/**
 	 * get the left offset to apply the DOMElement
 	 */
-	private function getLeftOffset(domElement:DOMElement):Int
+	private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
 		return domElement.style.computedStyle.left;
 	}
@@ -122,7 +124,7 @@ class BoxPositioner
 	/**
 	 * get the right offset to apply the DOMElement
 	 */
-	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
+	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
 	{
 		return containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
 	}
@@ -130,7 +132,7 @@ class BoxPositioner
 	/**
 	 * get the top offset to apply the DOMElement
 	 */
-	private function getTopOffset(domElement:DOMElement):Int
+	private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
 		return domElement.style.computedStyle.top;
 	}
@@ -138,7 +140,7 @@ class BoxPositioner
 	/**
 	 * get the bottom offset to apply the DOMElement
 	 */
-	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
+	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{
 		return containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
 	}

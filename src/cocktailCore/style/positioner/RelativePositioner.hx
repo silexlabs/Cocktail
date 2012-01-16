@@ -16,10 +16,11 @@ import haxe.Log;
  * This is the box positioner implementation
  * for 'relative' DOMElement.
  * 
- * Prevents DOMElement from being globally
- * positioned as 'relative' DOMElement remain
- * in normal flow, only an offset is applied to
- * them
+ * Override all the methods computing the offset
+ * to apply to the DOMElement relative to its first positioned
+ * ancestor, as for a 'relative' positioned ancestor, the static
+ * x or y position is always added because the offset is applied
+ * relative to the static position of the DOMElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -31,5 +32,29 @@ class RelativePositioner extends BoxPositioner
 	public function new() 
 	{
 		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
+	{
+		return staticPosition + domElement.style.computedStyle.left;
+	}
+	
+	override private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
+	{
+		return staticPosition + containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
+	}
+	
+	override private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
+	{
+		return staticPosition + domElement.style.computedStyle.top;
+	}
+	
+	override private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
+	{
+		return staticPosition + containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
 	}
 }

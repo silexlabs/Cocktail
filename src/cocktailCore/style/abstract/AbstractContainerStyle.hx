@@ -227,7 +227,6 @@ class AbstractContainerStyle extends Style
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		
 		if (establishesNewFormattingContext() == true)
 		{
 			
@@ -315,12 +314,57 @@ class AbstractContainerStyle extends Style
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
+				
+
+				
+				if (positionedDOMElementData.style.position == PositionStyleValue.relative)
+				{
+					if (positionedDOMElementData.formattingContext != null)
+					{
+						var children = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
+	
+					
+					for (i in 0...children.length)
+					{
+						if (children[i].domElement == positionedDOMElementData.style.domElement)
+						{
+							var x:Float = children[i].x;
+							var y:Float = children[i].y;
+							positionedDOMElementData.staticPosition = {
+								x:x,
+								y:y
+							}
+						}
+					}
+					}
+					
+					
+				}
 				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 				
-				//absolutely positioned DOMElement are positioned relative to the margin box
-				//of their parent and not the content box, so an offset need to be applied
-				childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-				childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+
+				
+				if (positionedDOMElementData.formattingContext != null)
+				{
+					
+					var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
+					var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
+					var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
+			
+					childTemporaryPositionData.x += xOffset;
+					childTemporaryPositionData.y += yOffset;
+					
+				}
+	
+				
+				if (childTemporaryPositionData.domElement.style.position != PositionStyleValue.relative)
+				{
+					//absolutely positioned DOMElement are positioned relative to the margin box
+					//of their parent and not the content box, so an offset need to be applied
+					childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+					childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+				}
+			
 				
 				childrenTemporaryPositionData.push(childTemporaryPositionData);
 			}

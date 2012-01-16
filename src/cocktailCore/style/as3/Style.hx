@@ -88,6 +88,7 @@ class Style extends AbstractStyle
 		for (i in 0..._childrenTemporaryPositionData.length)
 		{
 			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			
 			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
 			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
 		}
