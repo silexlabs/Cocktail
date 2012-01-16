@@ -31,35 +31,4 @@ class DOMElement extends AbstractDOMElement
 	{
 		super(nativeElement);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a nativeElement z-index in the publication
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	override private function setZIndex(value:Int):Int
-	{
-		//if the value is outside of the children range, set it to the 
-		//last children range
-		if (value > _parent.children.length - 1)
-		{
-			value = _parent.children.length - 1;
-		}
-		
-		//retrieve the parent Display Object, and use it to set
-		//the new index on the current DisplayObject
-		var parent:DisplayObjectContainer = this._nativeElement.parent;
-		parent.setChildIndex(this._nativeElement, value);
-		
-		return value;
-	}
-	
-	override private function getZIndex():Int 
-	{
-		//retrieve the parent Display object, and use it to retrieve the current
-		//child index
-		var parent:DisplayObjectContainer = this._nativeElement.parent;
-		return parent.getChildIndex(this._nativeElement);
-	}
-	
 }
