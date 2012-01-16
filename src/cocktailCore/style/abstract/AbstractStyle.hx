@@ -706,7 +706,8 @@ class AbstractStyle
 				//calls the positionElement method on all the stored children
 				var positionedDOMElementData:PositionedDOMElementData = {
 					staticPosition:staticPosition,
-					style:this
+					style:this,
+					formattingContext:formattingContext
 				}
 				
 				//store the DOMElement to be positioned later

@@ -55,6 +55,9 @@ class BlockFormattingContext extends FormattingContext
 		
 		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
 		
+		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
+		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+		
 		if (position == true)
 		{
 			_formattingContextData.y += domElement.offsetHeight;

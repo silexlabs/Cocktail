@@ -11,6 +11,7 @@ import cocktail.unit.UnitData;
 import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
+import cocktailCore.style.formatter.FormattingContext;
 	
 	
 		// FONT STYLES
@@ -851,6 +852,7 @@ import cocktailCore.style.abstract.AbstractStyle;
 	typedef PositionedDOMElementData =  {
 		var style:AbstractStyle;
 		var staticPosition:PointData;
+		var formattingContext:FormattingContext;
 	}
 	
 	/**
