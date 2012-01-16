@@ -7,6 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
@@ -97,6 +98,16 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function addChild(domElement:DOMElement):Void
 	{
+		//check if the DOMElement has already a parent. If it has
+		//remove it form its current parent before adding it to this
+		//ContainerDOMElement as a DOMElement can only have one parent.
+		//Useful when the DOMElement is added to multiple ContainerDOMElement
+		//in a row without being cleanly removed each time
+		if (domElement.parent != null)
+		{
+			var parent:ContainerDOMElement = cast(domElement.parent);
+			parent.removeChild(domElement);
+		}
 		domElement.parent = cast(this);
 		_children.push( { child:domElement, type:ContainerDOMElementChildValue.domElement } );
 		this._style.invalidate();
