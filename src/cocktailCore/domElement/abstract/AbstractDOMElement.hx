@@ -209,17 +209,6 @@ class AbstractDOMElement
 	public var isVisible(getIsVisible, setIsVisible):Bool;
 	
 	/////////////////////////////////
-	// Z-Index attribute
-	/////////////////////////////////
-	
-	/**
-	 * The z-index of this DOM Object, relative to
-	 * its parent (the first child of a ContainerDOMElement always has
-	 * a 0 z-index)
-	 */
-	public var zIndex(getZIndex, setZIndex):Int;
-	
-	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
 	
@@ -809,21 +798,6 @@ class AbstractDOMElement
 		}
 		
 		return newGlobalY;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z-index in the publication
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setZIndex(value:Int):Int 
-	{
-		return value;
-	}
-	
-	private function getZIndex():Int 
-	{
-		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
