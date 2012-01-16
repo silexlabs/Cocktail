@@ -12,6 +12,7 @@ import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractEmbeddedStyle;
 import cocktailCore.style.abstract.AbstractStyle;
+import haxe.Log;
 
 /**
  * This is the Flash AS3 implementation of the EmbeddedStyle.
@@ -34,14 +35,18 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	
 	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
-		super.setNativeX(domElement, x);
-		domElement.nativeElement.x = x + _computedStyle.paddingLeft + _computedStyle.marginLeft;
+		var nativeX:Int = x + _computedStyle.paddingLeft + _computedStyle.marginLeft;
+		super.setNativeX(domElement, nativeX);
+		
+		domElement.nativeElement.x = nativeX;
 	}
 	
 	override public function setNativeY(domElement:DOMElement, y:Int):Void
 	{
-		super.setNativeY(domElement, y);
-		domElement.nativeElement.y = y + _computedStyle.paddingTop + _computedStyle.marginTop;
+		var nativeY:Int = y + _computedStyle.paddingTop + _computedStyle.marginTop;
+		super.setNativeY(domElement, nativeY);
+		
+		domElement.nativeElement.y = nativeY;
 	}
 	
 	/////////////////////////////////
@@ -56,11 +61,13 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	{
 		var currentMatrix:Matrix = new Matrix();
 		
-		var embeddedDOMElement:EmbeddedDOMElement = cast (this._domElement);
+		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
 		
 		currentMatrix.concatenate(matrix);
 		currentMatrix.translate(this._nativeX, this._nativeY);
+		
 		currentMatrix.scale(this._nativeWidth / embeddedDOMElement.intrinsicWidth, this._nativeHeight / embeddedDOMElement.intrinsicHeight, { x:0.0, y:0.0} );
+		
 		return currentMatrix;
 	}
 }
