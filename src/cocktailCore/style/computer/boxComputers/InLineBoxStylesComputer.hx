@@ -29,6 +29,45 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
+	 * vertical paddings don't apply to non-embedded inline DOMElements
+	 */
+	override private function measureVerticalPaddings(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	{
+		//top
+		style.computedStyle.paddingTop = 0;
+		//bottom
+		style.computedStyle.paddingBottom = 0;
+	}
+	
+	/**
+	 * vertical margins don't apply to non-embedded inline DOMElements
+	 */
+	override private function measureAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	{
+		//the height is set to null by default
+		setComputedHeight(style, getComputedAutoHeight(style, containingDOMElementData));
+		
+		//left margin
+		style.computedStyle.marginTop = 0;
+		//right margin
+		style.computedStyle.marginBottom = 0;
+	
+	}
+	
+	/**
+	 * vertical margins don't apply to non-embedded inline DOMElements
+	 */
+	override private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	{
+		//get the computed height in pixel
+		setComputedHeight(style, getComputedHeight(style, containingDOMElementData));
+		//left margin
+		style.computedStyle.marginTop = 0;
+		//right margin
+		style.computedStyle.marginBottom = 0;
+	}
+	
+	/**
 	 * auto margin compute to 0 for inline non-embedded DOMElement
 	 */
 	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int

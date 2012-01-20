@@ -15,6 +15,7 @@ import cocktail.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import cocktail.unit.UnitData;
+
 import haxe.Log;
 
 #if (flash9)
@@ -26,6 +27,8 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
+#elseif nme
+import flash.text.TextFormat;
 #end
 
 /**
@@ -127,6 +130,8 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	}
 	
+
+	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
@@ -222,6 +227,34 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
+	
+	#elseif (nme)
+	override private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	{
+		text = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
+		
+		var textField:flash.text.TextField = new flash.text.TextField();
+		textField.text = text;
+		textField.setTextFormat(getTextFormat());
+		
+		
+		var textFragment:TextFragmentDOMElement = new TextFragmentDOMElement(cast(textField), this);
+
+		//wrap the flash text line in a TextFragmentDOMElement
+		return textFragment;
+
+	}	
+	
+	private function getTextFormat():TextFormat
+	{
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		textFormat.size = _computedStyle.fontSize;
+		textFormat.color = _computedStyle.color;
+		return textFormat;
+	}
+	
 #end
 
 }

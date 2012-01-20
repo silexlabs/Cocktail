@@ -121,6 +121,7 @@ class AbstractContainerDOMElement extends DOMElement
 			}
 		}
 		this._children = newChildrenArray;
+		this._style.invalidate();
 		
 	}
 	

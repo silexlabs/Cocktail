@@ -72,10 +72,10 @@ class AbstractBodyStyle extends ContainerStyle
 	 * DOM tree must always position its absolutely positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ChildTemporaryPositionData>
 	{
-			isFirstPositionedAncestor = true;
-			super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
+		isFirstPositionedAncestor = true;
+		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ class AbstractBodyStyle extends ContainerStyle
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN DIMENSION AND POSITION SETTERS
-	// Those properties can't be affected to the root of a runtime
+	// Those properties can't be set on the root of the runtime
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function setNativeX(domElement:DOMElement, x:Int):Void

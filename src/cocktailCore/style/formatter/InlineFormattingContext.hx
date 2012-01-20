@@ -41,7 +41,6 @@ class InlineFormattingContext extends FormattingContext
 	{
 		_firstLineLaidOut = false;
 		_domElementInLineBox = new Array<LineBoxElementData>();
-		
 		super(domElement, previousFormattingContext);
 	}
 	
@@ -56,18 +55,19 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 
-	override public function insert(domElement:DOMElement):Void
+	override public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		
 		var remainingWidth:Int = getRemainingLineWidth();
 		
-		if (_firstLineLaidOut == false)
+		if (position == true)
+		{
+			if (_firstLineLaidOut == false)
 		{
 			remainingWidth -= _containingDOMElement.style.computedStyle.textIndent;
 		}
 		
 		
-		if (remainingWidth - domElement.offsetWidth < 0)
+		if (remainingWidth - domElement.offsetWidth < 0 )
 		{	
 			switch(domElement.style.computedStyle.whiteSpace)
 			{
@@ -75,6 +75,7 @@ class InlineFormattingContext extends FormattingContext
 				WhiteSpaceStyleValue.preLine:
 					if (_firstLineLaidOut == false)
 					{
+								
 						startNewLine(domElement.offsetWidth +  _containingDOMElement.style.computedStyle.textIndent );
 					}
 					else
@@ -86,12 +87,24 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 		}
+		}
 		
-		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.domElement});
-		super.insert(domElement);
+		
+		_domElementInLineBox.push( { 
+			domElement:domElement,
+			domElementType:InlineBoxValue.domElement,
+			parentDOMElement:parentDOMElement,
+			x:0,
+			y:0,
+			position:position } );
+		
+			if (position == true)
+			{
+					super.insert(domElement, parentDOMElement, position);
+			}
 	}
 	
-	override public function insertSpace(domElement:DOMElement):Void
+	override public function insertSpace(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		var remainingWidth:Int = getRemainingLineWidth();
 		
@@ -112,68 +125,76 @@ class InlineFormattingContext extends FormattingContext
 					
 			}
 		}
-		_domElementInLineBox.push({domElement:domElement, domElementType:InlineBoxValue.space});
-		
-		super.insertSpace(domElement);
+		_domElementInLineBox.push( { 
+			domElement:domElement,
+			domElementType:InlineBoxValue.domElement,
+			parentDOMElement:parentDOMElement,
+			x:0,
+			y:0,
+			position:true } );
+			
+		super.insertSpace(domElement, parentDOMElement);
 	}
 	
 	/**
 	 * Overiden to imcrement the x position of the
-	 * flowData with the placed DOMElement's offset width
+	 * formattingContextData with the placed DOMElement's offset width
 	 */
-	override private function place(domElement:DOMElement):Void
+	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		super.place(domElement);
-		_flowData.x += domElement.offsetWidth;
+		super.place(domElement, parentDOMElement, position);
+		_formattingContextData.x += domElement.offsetWidth;
+
 	}
 	
 	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
+
 		if (_domElementInLineBox.length > 0)
 		{
 			removeSpaces();
 			var lineBoxHeight:Int = computeLineBoxHeight();
 		
 			var lineWidth:Int = alignLineBox(_firstLineLaidOut == false, isLastLine);
-			if (lineWidth > _flowData.maxWidth)
+			if (lineWidth > _formattingContextData.maxWidth)
 			{
-				_flowData.maxWidth = lineWidth;
+				_formattingContextData.maxWidth = lineWidth;
+			}
+			
+			for (i in 0..._domElementInLineBox.length)
+			{
+				var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
+				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, 0, _domElementInLineBox[i].position);
+				getChildrenTemporaryPositionData(_domElementInLineBox[i].parentDOMElement).push(childTemporaryPositionData);
+
+				_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, childTemporaryPositionData.x);
+				_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, childTemporaryPositionData.y);
+				
+	
 			}
 			
 			_domElementInLineBox = new Array<LineBoxElementData>();
 			
-			_flowData.y += lineBoxHeight;
+			_formattingContextData.y += lineBoxHeight;
 			
-			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
+			_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, domElementWidth, _containingDOMElementWidth);
 			
 			
-			_flowData.totalHeight = _flowData.y;
-			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
-			{
-				
-				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
-			}
-			else
-			{
-				_flowData.x = _flowData.xOffset;
-			}
+			_formattingContextData.maxHeight = _formattingContextData.y;
+
+			_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+			
 			
 			_firstLineLaidOut = true;
 		}
 		else
 		{
 			
-			_flowData.y = _floatsManager.getFirstAvailableY(_flowData, domElementWidth, _containingDOMElementWidth);
+			_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, domElementWidth, _containingDOMElementWidth);
 			
-			if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
-			{
-				
-				flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
-			}
-			else
-			{
-				_flowData.x = _flowData.xOffset;
-			}
+
+			_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+			
 			
 			
 		}
@@ -183,22 +204,16 @@ class InlineFormattingContext extends FormattingContext
 	{
 		if (isFloat == true)
 		{
-			 _flowData.y = _floatsManager.clearFloat(clear, _flowData);
+			 _formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
 		}
 	}
 	
-	override private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
 	{
-		super.placeFloat(domElement, floatData);
+		super.placeFloat(domElement, parentDOMElement, floatData);
 		
-		if (_floatsManager.getLeftFloatOffset(_flowData.y) > _flowData.xOffset)
-		{
-			flowData.x =  _floatsManager.getLeftFloatOffset(_flowData.y);
-		}
-		else
-		{
-			_flowData.x = _flowData.xOffset;
-		}
+		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+		
 	}
 	
 	private function removeSpaces():Void
@@ -263,7 +278,11 @@ class InlineFormattingContext extends FormattingContext
 		var concatenatedLength:Int = 0;
 		for (i in 0..._domElementInLineBox.length)
 		{
-			concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				concatenatedLength += _domElementInLineBox[i].domElement.offsetWidth;
+			}
+			
 		}
 		
 		//determine the remaining space in the line once all the width of the DOMElements
@@ -278,17 +297,17 @@ class InlineFormattingContext extends FormattingContext
 		//it only applies to the first line
 		if (isFirstLine == true)
 		{
-			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
+			remainingSpace = _containingDOMElementWidth - concatenatedLength - _containingDOMElement.style.computedStyle.textIndent - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
 			flowX = _containingDOMElement.style.computedStyle.textIndent;
 		}
 		else
 		{
-			remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_flowData.y) - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
+			remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
 			flowX = 0;
 		}
 		
 		//take the float into accounts and the padding of the containing DOMElement
-		flowX += _floatsManager.getLeftFloatOffset(_flowData.y) + _flowData.xOffset;
+		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		
 		//do align the DOMElements, the text align style of the containing DOMElement
 		//determining the alignement to apply
@@ -332,9 +351,13 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft);
-			flowX += domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].x = flowX;
+				flowX += domElement.offsetWidth;
+			}
+			
 		}
 	}
 	
@@ -349,9 +372,13 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			domElement.style.setNativeX(domElement, Math.round(remainingSpace / 2) + flowX + domElement.style.computedStyle.marginLeft);
-			flowX += domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].x = Math.round(remainingSpace / 2) + flowX;
+				flowX += domElement.offsetWidth;
+			}
+			
 		}
 	}
 	
@@ -366,9 +393,13 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft + remainingSpace);
-			flowX += domElement.offsetWidth;
+			if (_domElementInLineBox[i].position == true)
+			{
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				_domElementInLineBox[i].x = flowX + remainingSpace;
+				flowX += domElement.offsetWidth;
+			}
+		
 		}
 	}
 	
@@ -413,8 +444,7 @@ class InlineFormattingContext extends FormattingContext
 					
 					default:	
 			}
-			//place the DOMElement
-			domElement.style.setNativeX(domElement, flowX + domElement.style.computedStyle.marginLeft);
+			_domElementInLineBox[i].x = flowX ;
 			
 			flowX += domElement.offsetWidth;
 		}
@@ -443,47 +473,51 @@ class InlineFormattingContext extends FormattingContext
 		//the highest ascent and descent among them
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			var domElementAscent:Int;
-			var domElementDescent:Int;
-			
-			//the computed vertical align is the offset of the DOMElemenet relative
-			//to the baseline
-			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
-			
-			//for embedded or inlineBlock elements, which have no baseline, the height zabove
-			//the baseline is the offset height and they have no descent
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+			if (_domElementInLineBox[i].position == true)
 			{
-				domElementAscent = domElement.offsetHeight;
-				domElementDescent = 0;
-			}
-			//else retrieve the ascent and descent and apply leading to it
-			else
-			{
-				domElementAscent = domElement.style.fontMetrics.ascent;
-				domElementDescent = domElement.style.fontMetrics.descent;	
+				var domElement:DOMElement = _domElementInLineBox[i].domElement;
+				var domElementAscent:Int;
+				var domElementDescent:Int;
+				
+				//the computed vertical align is the offset of the DOMElemenet relative
+				//to the baseline
+				var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+				
+				//for embedded or inlineBlock elements, which have no baseline, the height zabove
+				//the baseline is the offset height and they have no descent
+				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+				{
+					domElementAscent = domElement.offsetHeight;
+					domElementDescent = 0;
+				}
+				//else retrieve the ascent and descent and apply leading to it
+				else
+				{
+					domElementAscent = domElement.style.fontMetrics.ascent;
+					domElementDescent = domElement.style.fontMetrics.descent;	
+				
+					//the leading is an extra height to apply equally to the ascent
+					//and the descent when laying out lines of text
+					var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
 			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
-		
-				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
+					//apply leading to the ascent and descent
+					domElementAscent = Math.round((domElementAscent + leading / 2));
+					domElementDescent = Math.round((domElementDescent + leading / 2));
+				}
+				
+				//if the ascent or descent is superior to the current maximum
+				//ascent or descent, it becomes the line box ascent/descent
+				if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
+				{
+					lineBoxAscent = domElementAscent - domElementVerticalAlign;
+				}
+				
+				if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
+				{
+					lineBoxDescent = domElementDescent + domElementVerticalAlign;
+				}
 			}
 			
-			//if the ascent or descent is superior to the current maximum
-			//ascent or descent, it becomes the line box ascent/descent
-			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
-			{
-				lineBoxAscent = domElementAscent - domElementVerticalAlign;
-			}
-			
-			if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
-			{
-				lineBoxDescent = domElementDescent + domElementVerticalAlign;
-			}
 		}
 		
 		//compute the line box height
@@ -492,17 +526,21 @@ class InlineFormattingContext extends FormattingContext
 		//for each DOMElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._domElementInLineBox.length)
 		{
-			var domElement:DOMElement = _domElementInLineBox[i].domElement;
-			domElement.style.setNativeY(domElement, Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _flowData.y + domElement.style.computedStyle.marginTop);
 			
-			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
-			//so that its bottom margin touches the baseline
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+			var domElement:DOMElement = _domElementInLineBox[i].domElement;
+			if (_domElementInLineBox[i].position == true)
 			{
-				domElement.style.setNativeY(domElement, domElement.style.getNativeY() - domElement.offsetHeight);
+				
+				_domElementInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(domElement.style.computedStyle.verticalAlign) + _formattingContextData.y;
+				//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
+				//so that its bottom margin touches the baseline
+				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+				{
+					_domElementInLineBox[i].y -= domElement.offsetHeight;
+				}
 			}
 		}
-		
+	
 		return Math.round(lineBoxHeight);
 	}
 	
