@@ -10,8 +10,10 @@ package cocktailCore.style.as3;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
+import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+
 import haxe.Log;
 
 #if (flash9)
@@ -23,6 +25,9 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
+#elseif nme
+import flash.text.TextField;
+import flash.text.TextFormat;
 #end
 
 /**
@@ -75,6 +80,47 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function render():Void
+	{
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			
+			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Detach all the children using
+	 * flash API
+	 */
+	override private function detachChildren():Void
+	{
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			/**
+			 * TO DO : clean-up the try/catch, it shouldn't be
+			 * necessary
+			 */
+			try {
+				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+			}
+			catch (e:Dynamic)
+			{
+				
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +162,7 @@ class Style extends AbstractStyle
 	}
 	
 
-#if (flash9)
+
 	/**
 	 * when the matrix is set, update also
 	 * the values of the native flash matrix of the
@@ -139,7 +185,7 @@ class Style extends AbstractStyle
 		
 		super.setNativeMatrix(concatenatedMatrix);
 	}
-	
+#if (flash9)	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
@@ -191,6 +237,71 @@ class Style extends AbstractStyle
 		
 		return _fontMetrics;
 	}
+	
+#elseif nme
+
+	override private function getFontMetricsData():FontMetricsData
+	{
+
+		//create the font metrics object only if null,
+		//else it is already cached
+		if (_fontMetrics == null)
+		{
+			var textField:TextField = new TextField();
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.size = _computedStyle.fontSize;
+			textFormat.font = getNativeFontFamily(this._fontFamily);
+			
+			textField.text = "X";
+			
+			
+			/**var textLineMetrics:TextLineMetrics = textField.getLineMetrics();
+			
+		
+			var ascent:Float = textLineMetrics.ascent;
+			var descent:Float = textLineMetrics.descent;
+			
+			textField.text = "x";
+			textLineMetrics = textField.getLineMetrics();
+			
+			var xHeight:Int = textLineMetrics.height;
+		
+			textField.text = " ";
+			textLineMetrics = textField.getLineMetrics();
+			var spaceWidth:Int = textLineMetrics.width;
+			*/
+			var ascent:Float = 12;
+			var descent:Float = 12;
+			var xHeight:Int = 5;
+			var spaceWidth:Int = 8;
+			
+			_fontMetrics = {
+				fontSize:_computedStyle.fontSize,
+				ascent:Math.round(ascent),
+				descent:Math.round(descent),
+				xHeight:xHeight,
+				spaceWidth:spaceWidth,
+				superscriptOffset:1,
+				subscriptOffset:1,
+				underlineOffset:1
+			};
+			/**
+			_fontMetrics = {
+				fontSize:10.0,
+				ascent:5,
+				descent:5,
+				xHeight:10,
+				spaceWidth:10,
+				superscriptOffset:1,
+				subscriptOffset:1,
+				underlineOffset:1
+			};*/
+		}
+		
+		return _fontMetrics;
+		
+	}
+	
 #end	
 	
 	/////////////////////////////////
@@ -232,7 +343,7 @@ class Style extends AbstractStyle
 		
 		return nativeFontWeight;
 	}
-	
+#end	
 	/**
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
@@ -280,7 +391,7 @@ class Style extends AbstractStyle
 		
 		return fontFamily;
 	}
-	
+#if flash9	
 	/**
 	 * return the x height of the font which is equal to 
 	 * the height of a lower-case 'x'.

@@ -27,7 +27,8 @@ import haxe.Log;
  * as origin ('absolute') or the viewport('fixed').
  * 
  * Relatively positioned DOMElement are first placed into the normal
- * flow, then an offset is applied to them.
+ * flow, then an offset is applied to them using the top, left, right
+ * and bottom styles.
  * 
  * This base class implements the behaviour of the 'absolute' 
  * position value
@@ -50,57 +51,62 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Main entry point, place a positioned element in the document based on a containingDOMElement
-	 * dimensions and positions and/or apply an offset to it
+	 * Main entry point, determine the position of the DOMElement relative to its first positioned
+	 * ancestor
 	 * 
 	 * @param	domElement the DOMElement to position
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
-	 * @param staticPosition the position the DOMElement would have in the flow if it weren't positioned. Used if
-	 * the position styles (left, right, top and bottom) are set to 'auto'
+	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
+	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
-	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):Void
+	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
 	{
+		//init the structure that will contain the x and y of the DOMElement
+		//using its first positioned ancestor as origin
+		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
+		{
+			domElement:domElement,
+			x:0,
+			y:0,
+			lineIndex:0
+		}
+		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			//first place the DOMElement at its first positioned ancestor
-			//x origin
-			applyGlobalX(domElement,  containingDOMElementData.globalX);
-			//then apply offset
-			domElement.style.setNativeX(domElement, getLeftOffset(domElement) );
+			childrenTemporaryPositionData.x = getLeftOffset(domElement, Math.round(staticPosition.x));
 		}
-		//if no left offset is defined, then try to apply a right offset
-		//right offset takes the containing DOMElement element width minus, the
+		//if no left offset is defined, then try to apply a right offset.
+		//Right offset takes the containing DOMElement element width minus the
 		//width of the DOMElement as value for a 0 offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalX(domElement,  containingDOMElementData.globalX);
-			domElement.style.setNativeX(domElement, getRightOffset(domElement, containingDOMElementData.width));
+			childrenTemporaryPositionData.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the document if it were positioned as 'static'
 		else
 		{
-			domElement.style.setNativeX(domElement, Math.round(staticPosition.x));
+			childrenTemporaryPositionData.x = Math.round(staticPosition.x);
 		}
 		
-		//for vertical offset, the same rule as hortizontal offsets apply
+		//for vertical offset, the same rule as horizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalY(domElement,  containingDOMElementData.globalY);
-			domElement.style.setNativeY(domElement, getTopOffset(domElement));
+			childrenTemporaryPositionData.y = getTopOffset(domElement, Math.round(staticPosition.y));
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			applyGlobalY(domElement,  containingDOMElementData.globalY);
-			domElement.style.setNativeY(domElement, getBottomOffset(domElement, containingDOMElementData.height));
+			childrenTemporaryPositionData.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
-			domElement.style.setNativeY(domElement, Math.round(staticPosition.y));
+			childrenTemporaryPositionData.y = Math.round(staticPosition.y);
 		}
+		
+		return childrenTemporaryPositionData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -108,51 +114,35 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * set a global X on the DOMElement
-	 */
-	private function applyGlobalX(domElement:DOMElement, globalX:Int):Void
-	{
-		domElement.globalX = globalX;
-	}
-	
-	/**
-	 * set a global Y on the DOMElement
-	 */
-	private function applyGlobalY(domElement:DOMElement, globalY:Int):Void
-	{
-		domElement.globalY = globalY;
-	}
-	
-	/**
 	 * get the left offset to apply the DOMElement
 	 */
-	private function getLeftOffset(domElement:DOMElement):Int
+	private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
-		return domElement.style.getNativeX() + domElement.style.computedStyle.left + domElement.style.computedStyle.marginLeft;
+		return domElement.style.computedStyle.left;
 	}
 	
 	/**
 	 * get the right offset to apply the DOMElement
 	 */
-	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int):Int
+	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
 	{
-		return domElement.style.getNativeX() + containingDOMElementWidth - domElement.style.computedStyle.width - domElement.style.computedStyle.right - domElement.style.computedStyle.marginRight;
+		return containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
 	}
 	
 	/**
 	 * get the top offset to apply the DOMElement
 	 */
-	private function getTopOffset(domElement:DOMElement):Int
+	private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
-		return domElement.style.getNativeY() + domElement.style.computedStyle.top + domElement.style.computedStyle.marginTop;
+		return domElement.style.computedStyle.top;
 	}
 	
 	/**
 	 * get the bottom offset to apply the DOMElement
 	 */
-	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int):Int
+	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{
-		return domElement.style.getNativeY() + containingDOMElementHeight - domElement.style.computedStyle.height - domElement.style.computedStyle.bottom - domElement.style.computedStyle.marginBottom;
+		return containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
 	}
 	
 }

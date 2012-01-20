@@ -122,8 +122,7 @@ class AbstractDOMElement
 	public var x(getX, setX):Int;
 	
 	/**
-	 * get/set the global x. It is relative to the root 
-	 * DOMElement.
+	 * get/set the global x. It is relative to the viewport.
 	 */
 	public var globalX(getGlobalX, setGlobalX):Int;
 	

@@ -51,7 +51,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 		
 		smoothPicture();
 		
-		//rest the scale of the loaded picture and reaffect its computed
+		//reset the scale of the loaded picture and reaffect its computed
 		//dimensions to it
 		typedimage.scaleX = 1;
 		typedimage.scaleY = 1;
