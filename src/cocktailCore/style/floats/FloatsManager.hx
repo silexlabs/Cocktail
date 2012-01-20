@@ -63,13 +63,13 @@ class FloatsManager
 		//convert and store left floats
 		for (i in 0...parentFormattingContext.floatsManager.floats.left.length)
 		{	
-			_floats.left.push(globalTolocal(parentFormattingContext.floatsManager.floats.left[i], parentFormattingContext.flowData));		
+			_floats.left.push(globalTolocal(parentFormattingContext.floatsManager.floats.left[i], parentFormattingContext.formattingContextData));		
 		}
 		
 		//convert and store right floats
 		for (i in 0...parentFormattingContext.floatsManager.floats.right.length)
 		{	
-			_floats.right.push(globalTolocal(parentFormattingContext.floatsManager.floats.right[i], parentFormattingContext.flowData));		
+			_floats.right.push(globalTolocal(parentFormattingContext.floatsManager.floats.right[i], parentFormattingContext.formattingContextData));		
 		}
 	}
 	
@@ -105,16 +105,16 @@ class FloatsManager
 	 * converting to the space of the current formatting context
 	 * 
 	 * @param floatData the global coord of the float
-	 * @param flowData the flow data of the parent formatting context
+	 * @param formattingContextData the flow data of the parent formatting context
 	 */
-	private function globalTolocal(floatData:FloatData, flowData:FlowData):FloatData
+	private function globalTolocal(floatData:FloatData, formattingContextData:FormattingContextData):FloatData
 	{
 		//remove the parent flow data current y position
 		//to convert it to the current formatting context.
 		//For example if the float was inserted above the
 		//current formatting context, then the converted float y
 		//will be negative
-		var floatY:Int = floatData.y - flowData.y;
+		var floatY:Int = floatData.y - formattingContextData.y;
 		
 		var convertedFloatData:FloatData = {
 			x: floatData.x,
@@ -138,30 +138,30 @@ class FloatsManager
 	 * Empties the cleared floats array(s)
 	 * 
 	 * @param	clear the type of clearance (left, right or both)
-	 * @param	flowData used to compute the new flowData y position
-	 * @return  the new flowData y position
+	 * @param	formattingContextData used to compute the new formattingContextData y position
+	 * @return  the new formattingContextData y position
 	 */
-	public function clearFloat(clear:ClearStyleValue, flowData:FlowData):Int
+	public function clearFloat(clear:ClearStyleValue, formattingContextData:FormattingContextData):Int
 	{
 		var ret:Int;
 		
 		switch(clear)
 		{
 			case left:
-				ret = clearLeft(flowData);
+				ret = clearLeft(formattingContextData);
 				_floats.left = new Array<FloatData>();
 				
 			case right:
-				ret = clearRight(flowData);
+				ret = clearRight(formattingContextData);
 				_floats.right = new Array<FloatData>();
 				
 			case both:	
-				ret = clearBoth(flowData);
+				ret = clearBoth(formattingContextData);
 				_floats.right = new Array<FloatData>();
 				_floats.left = new Array<FloatData>();
 			
 			case none:
-				ret = flowData.y;
+				ret = formattingContextData.y;
 		}
 		
 		return ret;
@@ -170,26 +170,26 @@ class FloatsManager
 	/**
 	 * Clear left floats
 	 */
-	private function clearLeft(flowData:FlowData):Int
+	private function clearLeft(formattingContextData:FormattingContextData):Int
 	{
-		return doClearFloat(flowData, _floats.left);
+		return doClearFloat(formattingContextData, _floats.left);
 	}
 	
 	/**
 	 * Clear right floats
 	 */
-	private function clearRight(flowData:FlowData):Int
+	private function clearRight(formattingContextData:FormattingContextData):Int
 	{
-		return doClearFloat(flowData, _floats.right);
+		return doClearFloat(formattingContextData, _floats.right);
 	}
 	
 	/**
 	 * Clear right and left floats
 	 */
-	private function clearBoth(flowData:FlowData):Int
+	private function clearBoth(formattingContextData:FormattingContextData):Int
 	{
-		var leftY:Int = doClearFloat(flowData, _floats.left);
-		var rightY:Int = doClearFloat(flowData, _floats.right);
+		var leftY:Int = doClearFloat(formattingContextData, _floats.left);
+		var rightY:Int = doClearFloat(formattingContextData, _floats.right);
 		
 		if (leftY > rightY)
 		{
@@ -204,13 +204,13 @@ class FloatsManager
 	/**
 	 * Actually clears a set of float (right or left). Finds the highest
 	 * float among the cleared float and return its height + y as the new
-	 * flowData y position
+	 * formattingContextData y position
 	 * 
-	 * @param flowData the current flowData, its y value is returned if there are no 
+	 * @param formattingContextData the current formattingContextData, its y value is returned if there are no 
 	 * floats to clear
 	 * @param floats an array of floats to clear (right or left)
 	 */
-	private function doClearFloat(flowData:FlowData, floats:Array<FloatData>):Int
+	private function doClearFloat(formattingContextData:FormattingContextData, floats:Array<FloatData>):Int
 	{
 		//if there are floats in the array, finds the highest one
 		//and return its value
@@ -229,11 +229,11 @@ class FloatsManager
 			return highestFloat.y + highestFloat.height;
 			
 		}
-		//else use the current flowData y position as it doesn't change if
+		//else use the current formattingContextData y position as it doesn't change if
 		//no floats are cleared
 		else
 		{
-			return flowData.y;
+			return formattingContextData.y;
 		}
 	}
 	
@@ -246,21 +246,21 @@ class FloatsManager
 	/**
 	 * Create and store a float data structure from a floated DOMElement
 	 * @param	domElement the floated DOMElement
-	 * @param	flowData the flow data of the formatting context placing the floated
+	 * @param	formattingContextData the flow data of the formatting context placing the floated
 	 * DOMElement
 	 */
-	public function computeFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
+	public function computeFloatData(domElement:DOMElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		var ret:FloatData;
 		
 		switch (domElement.style.computedStyle.floatValue)
 		{
 			case left:
-				ret = getLeftFloatData(domElement, flowData, containingBlockWidth);
+				ret = getLeftFloatData(domElement, formattingContextData, containingBlockWidth);
 				_floats.left.push(ret);
 				
 			case right:
-				ret = getRightFloatData(domElement, flowData, containingBlockWidth);
+				ret = getRightFloatData(domElement, formattingContextData, containingBlockWidth);
 				_floats.right.push(ret);
 				
 			default:
@@ -273,14 +273,14 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a left float
 	 */
-	private function getLeftFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
+	private function getLeftFloatData(domElement:DOMElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(domElement, flowData, containingBlockWidth);
+		var floatData:FloatData = getFloatData(domElement, formattingContextData, containingBlockWidth);
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
-		floatData.x = flowData.xOffset + getLeftFloatOffset(floatData.y);
+		floatData.x = getLeftFloatOffset(floatData.y);
 		
 		return floatData;
 	}
@@ -288,14 +288,14 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
+	private function getRightFloatData(domElement:DOMElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(domElement, flowData, containingBlockWidth);
+		var floatData:FloatData = getFloatData(domElement, formattingContextData, containingBlockWidth);
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth) + flowData.xOffset;
+		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth);
 		
 		return floatData;
 	}
@@ -304,7 +304,7 @@ class FloatsManager
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(domElement:DOMElement, flowData:FlowData, containingBlockWidth:Int):FloatData
+	private function getFloatData(domElement:DOMElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//a float width and height use the margin box of a
 		//DOMElement
@@ -312,7 +312,7 @@ class FloatsManager
 		var floatHeight:Int = domElement.offsetHeight;
 	
 		//get the first y position where the float can be placed
-		var floatY:Int = getFirstAvailableY(flowData, floatWidth, containingBlockWidth);
+		var floatY:Int = getFirstAvailableY(formattingContextData, floatWidth, containingBlockWidth);
 		
 		//the x position of the float vary for left and right float
 		var floatX:Int = 0;
@@ -329,17 +329,17 @@ class FloatsManager
 	 * Get the first y position in the current flow where an element
 	 * (float or DOMElement) with a width equal to elementWidth can be inserted
 	 * without overlapping floats or other DOMElements
-	 * @param	flowData the current flowData
+	 * @param	formattingContextData the current formattingContextData
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in a line
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableY(flowData:FlowData, elementWidth:Int, containingBlockWidth:Int):Int
+	public function getFirstAvailableY(formattingContextData:FormattingContextData, elementWidth:Int, containingBlockWidth:Int):Int
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
 		//in the flow
-		var retY:Int = flowData.y;
+		var retY:Int = formattingContextData.y;
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element

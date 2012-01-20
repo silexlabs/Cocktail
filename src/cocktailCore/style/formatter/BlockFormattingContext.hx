@@ -25,15 +25,16 @@ class BlockFormattingContext extends FormattingContext
 	 */
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
+		
 		super(domElement, previousFormattingContext);
 	}
 	
 	/**
 	 * Place the DOMElement below the preceding DOMElement
 	 */
-	override private function place(domElement:DOMElement):Void
+	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		super.place(domElement);
+		super.place(domElement, parentDOMElement, position);
 		
 		//add the left float offset if the element is embedded
 		//(for instance an image), for non-embedded DOMElement
@@ -41,33 +42,49 @@ class BlockFormattingContext extends FormattingContext
 		var leftFloatOffset:Int = 0;
 		if (domElement.style.isEmbedded() == true)
 		{
-			_flowData.y = _floatsManager.getFirstAvailableY(flowData, domElement.offsetWidth, _containingDOMElementWidth);
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_flowData.y  + domElement.style.computedStyle.marginTop);
+			_formattingContextData.y = _floatsManager.getFirstAvailableY(formattingContextData, domElement.offsetWidth, _containingDOMElementWidth);
+			leftFloatOffset = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		}
 			
-		//apply the new x and y position to the DOMElement and flowData
-		_flowData.x = _flowData.xOffset + leftFloatOffset;
-		domElement.style.setNativeX(domElement, _flowData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.setNativeY(domElement, _flowData.y + domElement.style.computedStyle.marginTop);
-		_flowData.y += domElement.offsetHeight ;
-		_flowData.totalHeight = _flowData.y  ;
+		//apply the new x and y position to the DOMElement and formattingContextData
+		_formattingContextData.x =  leftFloatOffset;
+		
+		
+	
+		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position);
+		
+		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
+		
+		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
+		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+		
+		if (position == true)
+		{
+			_formattingContextData.y += domElement.offsetHeight;
+			
+		}
+		else
+		{
+			_formattingContextData.y += domElement.offsetHeight - domElement.style.computedStyle.height;
+		}
+		_formattingContextData.maxHeight = _formattingContextData.y ;
 		
 		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
 		//of a container is set as 'shrink-to-fit' (takes its content width)
-		if (_flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft > _flowData.maxWidth)
+		if (_formattingContextData.x + domElement.offsetWidth > _formattingContextData.maxWidth)
 		{
-			_flowData.maxWidth = _flowData.x + domElement.offsetWidth + domElement.style.computedStyle.marginLeft;
+			_formattingContextData.maxWidth = _formattingContextData.x + domElement.offsetWidth;
 		}
 		
 	}
 
 	/**
-	 * clear left, right or both floats and set the y of the flowData below
+	 * clear left, right or both floats and set the y of the formattingContextData below
 	 * the last cleared float
 	 */
 	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
-		_flowData.y = _floatsManager.clearFloat(clear, _flowData);
+		_formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
 	}
 	
 	

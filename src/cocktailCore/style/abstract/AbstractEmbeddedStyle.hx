@@ -28,7 +28,9 @@ import cocktailCore.style.js.Style;
 /**
  * This is the style implementation for embedded
  * DOMElement. Embedded DOMElement include external
- * content in the document, such as picture or video
+ * content in the document, such as picture or video.
+ * 
+ * They can't have any children
  * 
  * @author Yannick DOMINGUEZ
  */

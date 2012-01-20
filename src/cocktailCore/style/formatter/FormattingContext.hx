@@ -52,8 +52,10 @@ class FormattingContext
 	 * Contains the data necessary to place the DOMElements in flow, 
 	 * such as the coordinates where to insert the next DOMElement
 	 */
-	private var _flowData:FlowData;
-	public var flowData(getFlowData, never):FlowData;
+	private var _formattingContextData:FormattingContextData;
+	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
+
+	private var _childrenTemporaryPositionsData:Array<ChildrenTemporaryPositionsData>;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -84,7 +86,9 @@ class FormattingContext
 		
 		//init the flow data to place the first inserted
 		//DOMElement in the right position
-		_flowData = initFlowData(_containingDOMElement);
+		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		
+		_childrenTemporaryPositionsData = new Array<ChildrenTemporaryPositionsData>();
 		
 	}
 	
@@ -92,27 +96,16 @@ class FormattingContext
 	 * Init the flow data using the containing DOMElement's
 	 * properties
 	 */
-	private function initFlowData(domElement:DOMElement):FlowData
+	private function initFormattingContextData(domElement:DOMElement):FormattingContextData
 	{
-		var flowY:Int = domElement.style.computedStyle.paddingTop;
+		var flowY:Int = 0;
 		
-		var flowX:Int;
-		
-		if (domElement.style.computedStyle.paddingLeft > _floatsManager.getLeftFloatOffset(flowY))
-		{
-			flowX = domElement.style.computedStyle.paddingLeft;
-		}
-		else
-		{
-			flowX = _floatsManager.getLeftFloatOffset(flowY);
-		}
+		var flowX:Int = _floatsManager.getLeftFloatOffset(flowY);
 		
 		return {
 			x : flowX,
 			y : flowY,
-			xOffset : domElement.style.computedStyle.paddingLeft,
-			yOffset : domElement.style.computedStyle.paddingTop,
-			totalHeight : 0,
+			maxHeight : 0,
 			maxWidth:0
 		};
 	}
@@ -121,31 +114,56 @@ class FormattingContext
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
+	public function getChildrenTemporaryPositionData(parentDOMElement:DOMElement):Array<ChildTemporaryPositionData>
+	{
+		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = new Array<ChildTemporaryPositionData>();
+		var foundFlag:Bool = false;
+		for (i in 0..._childrenTemporaryPositionsData.length)
+		{
+			if (_childrenTemporaryPositionsData[i].parentDOMElement == parentDOMElement)
+			{
+				childrenTemporaryPositionData = _childrenTemporaryPositionsData[i].children;
+				foundFlag = true;
+			}
+		}
+		
+		if (foundFlag == false)
+		{
+			var childrenTemporaryPositionsData:ChildrenTemporaryPositionsData = {
+				parentDOMElement:parentDOMElement,
+				children:childrenTemporaryPositionData
+			}
+			_childrenTemporaryPositionsData.push(childrenTemporaryPositionsData);
+		}
+		
+		return childrenTemporaryPositionData;
+	}
+	
 	/**
 	 * Insert a DOMElement in the formatting context's
 	 * flow
 	 */
-	public function insert(domElement:DOMElement):Void
+	public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement, position);
 	}
 	
 	/**
 	 * Insert a space character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertSpace(domElement:DOMElement):Void
+	public function insertSpace(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement);
 	}
 	
 	/**
 	 * Insert a tab character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertTab(domElement:DOMElement):Void
+	public function insertTab(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement);
+		doInsert(domElement, parentDOMElement);
 	}
 	
 	/**
@@ -161,13 +179,13 @@ class FormattingContext
 	 * Insert a floated DOMElement in the formatting
 	 * context's flow
 	 */
-	public function insertFloat(domElement:DOMElement):Void
+	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
-		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _flowData, _containingDOMElementWidth);
+		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
 		//actually place the floated DOMElement
-		placeFloat(domElement, floatData);
+		placeFloat(domElement, parentDOMElement, floatData);
 	}
 	
 	/**
@@ -222,12 +240,12 @@ class FormattingContext
 	 * Actually insert a DOMElement in the
 	 * formatting context
 	 */
-	private function doInsert(domElement:DOMElement):Void
+	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool = false):Void
 	{
 		//actually place the DOMElement by computing
 		//its place in the flow than updating its
 		//position attributes
-		place(domElement);
+		place(domElement, parentDOMElement, establishesNewFormattingContext);
 		
 		//remove all the floats that the insertion
 		//of the DOMElement made obsolote
@@ -240,14 +258,14 @@ class FormattingContext
 	 */
 	private function getRemainingLineWidth():Int
 	{
-		return _containingDOMElementWidth - _flowData.x + _flowData.xOffset - _floatsManager.getRightFloatOffset(_flowData.y, _containingDOMElementWidth);
+		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
 	}
 	
 	/**
 	 * Place a DOMElement is the flow according to 
 	 * a block or inline formatting scheme
 	 */
-	private function place(domElement:DOMElement):Void
+	private function place(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool):Void
 	{
 		//abstract
 	}
@@ -258,10 +276,10 @@ class FormattingContext
 	 * change based on tht type of formatting context
 	 * (block or inline)
 	 */
-	private function placeFloat(domElement:DOMElement, floatData:FloatData):Void
+	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
 	{
-		domElement.style.setNativeX(domElement, floatData.x + domElement.style.computedStyle.marginLeft);
-		domElement.style.setNativeY(domElement, floatData.y + domElement.style.computedStyle.marginTop);
+		getChildrenTemporaryPositionData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true));
+		
 	}
 	
 	/**
@@ -271,9 +289,35 @@ class FormattingContext
 	 */
 	private function removeFloats():Void
 	{
-		_floatsManager.removeFloats(_flowData.y);
+		_floatsManager.removeFloats(_formattingContextData.y);
 	}
 	
+	
+	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool):ChildTemporaryPositionData
+	{
+		var childTemporaryPositionData:ChildTemporaryPositionData;
+		
+		if (position == true)
+		{
+			childTemporaryPositionData = {
+			domElement:domElement,
+			x:x,
+			y:y,
+			lineIndex:lineIndex
+			}
+		}
+		else
+		{
+			childTemporaryPositionData = {
+			domElement:domElement,
+			x:0,
+			y:0,
+			lineIndex:lineIndex
+			}
+		}
+		
+		return childTemporaryPositionData;
+	}
 	
 	/////////////////////////////////
 	// GETTERS/SETTERS
@@ -284,9 +328,9 @@ class FormattingContext
 		return _floatsManager;
 	}
 	
-	private function getFlowData():FlowData
+	private function getFormattingContextData():FormattingContextData
 	{
-		return _flowData;
+		return _formattingContextData;
 	}
 	
 	private function getContainingDOMElement():DOMElement
