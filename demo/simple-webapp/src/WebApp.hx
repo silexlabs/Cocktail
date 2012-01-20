@@ -16,6 +16,7 @@ package;
 
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
+import flash.Lib;
 
 class WebApp 
 {
@@ -34,6 +35,11 @@ class WebApp
 	 */
 	public function new() 
 	{
+		// done to force no scale in flash mode, useful for air projection
+		#if flash
+		flash.Lib.current.stage.scaleMode = NO_SCALE;
+		#end
+		
 		_body = new BodyDOMElement();
 		WebAppStyle.getBodyStyle(_body);
 		drawInterface();
