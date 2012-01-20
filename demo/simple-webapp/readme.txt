@@ -26,10 +26,9 @@ Then launch build/WebApp_as3.hxml
 
 
 Air SDK installation:
-Adobe Air Sdk needs to be installed first.
-If you have flash builder, the needed files already exist in Flash builder/sdk/xxxx/bin directory.
-If not, download the Adobe Air Sdk from: http://www.adobe.com/special/products/air/sdk/
-Then add this path to your "PATH" environement variables. (It should look like: "C:\Program Files (x86)\Adobe\Adobe Flash Builder 4\sdks\flex_sdk_4.6.0.23201B\bin\")
+* Adobe Air Sdk needs to be installed first.
+* Download the Adobe Air Sdk from: http://www.adobe.com/special/products/air/sdk/
+* Then add its path to your "PATH" environment variables. (It should look like: "C:\AdobeAIRSDK\bin\")
 
 Air certificate generation:
 Launch WebApp_air_generate_certificate.bat
@@ -40,19 +39,31 @@ Then launch build/WebApp_air_desktop.bat and use as password: "password".
 The binary file will be generated in bin/WebApp.air
 To install it on your desktop, double-click on it.
 
-Air Mobile Android:
-If not already done, follow the steps described in "Air SDK installation".
-Then launch build/WebApp_air_android.bat and use as password: "password".
-The binary file will be generated in bin/WebApp.apk.
-To install it on your android device, copy this file on your SD card and then launch it via your Android device.
 
-Air Mobile iOS:
-If not already done, follow the steps described in "Air SDK installation".
-For the next step, you need to have an apple provisionning file and an apple p12 certificate password.
-Then launch build/WebApp_air_iOS.bat and use as password the .p12 certicate password
-The binary file will be generated in bin/WebApp.ipa
-To install it on iOS device, drag and drop this file (provisionning file not needed as included in the app) on iTunes, and then sync the "Cocktail Demo" app on it.
+Android
 
+Air Mobile compilation
+* Launch /build/WebApp_air_android.bat and use as password: "password".
+* The binary file will be generated in /bin/WebApp.apk.
+
+App installation
+* To install it on your android device, copy this file on your SD card and then launch it via your Android device.
+* The app will appear on the home screen of your device.
+
+
+iOS
+
+Air Mobile iOS compilation:
+* First, subscribe to [[http://developer.apple.com/programs/ios/|Apple iOS developer program]] for 99$...
+* Once you account is created, generate an apple provisionning file and an apple p12 certificate password (details available [[http://developer.apple.com/ios/manage/overview/index.action|here]] - link only accessible with a valid account).
+* Copy these files to /build directory and rename them to "Provisioning_Profile.mobileprovision" and "iphone_dev.p12"
+* Then launch build/WebApp_air_iOS.bat and use as password the .p12 certicate password
+* The binary file will be generated in /bin/WebApp.ipa
+
+iOS app installation
+
+* To install the application on an iOS device, drag and drop this file (provisionning file is not needed as included in the app) on iTunes, and then sync the "Cocktail Demo" app on your device.
+* The app will appear on the home screen of your iDevice.
 
 TO DO
 -----
