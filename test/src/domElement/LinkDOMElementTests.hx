@@ -17,6 +17,8 @@ import cocktail.domElement.LinkDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import cocktail.style.StyleData;
+import cocktail.unit.UnitData;
+import haxe.Log;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
@@ -43,6 +45,7 @@ class LinkDOMElementTests
 	
 	public function new() 
 	{
+		
 	}
 	
 	public function testLinkDOMElement()
@@ -57,8 +60,13 @@ class LinkDOMElementTests
 		linkDOMElement2.style.display = DisplayStyleValue.block;
 		linkDOMElement2.addText(new TextElement("blank"));
 		
+		var linkDOMElement3:LinkDOMElement = new LinkDOMElement();
+		linkDOMElement3.style.display = DisplayStyleValue.block;
+		linkDOMElement3.addText(new TextElement("callback"));
+		
 		bodyDOMElement.addChild(linkDOMElement1);
 		bodyDOMElement.addChild(linkDOMElement2);
+		bodyDOMElement.addChild(linkDOMElement3);
 		
 		linkDOMElement1.href = "bim";
 		linkDOMElement1.target = LinkTargetValue.self;
@@ -67,6 +75,13 @@ class LinkDOMElementTests
 		linkDOMElement2.target = LinkTargetValue.blank;
 		
 		linkDOMElement2.href = "zing";
-
+		
+		linkDOMElement3.href = "boum";
+		linkDOMElement3.onMouseDown = function(e) {
+			linkDOMElement3.style.color = ColorValue.keyword(ColorKeywordValue.red);
+		}
+		
+		linkDOMElement3.target = LinkTargetValue.blank;
+		
 	}
 }
