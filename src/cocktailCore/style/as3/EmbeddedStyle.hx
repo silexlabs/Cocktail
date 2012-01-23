@@ -30,14 +30,13 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN NATIVE SETTERS
-	// apply the properties to the native flash DisplayObject
+	// Embedded DOMElement also apply their paddings and margins
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function setNativeX(domElement:DOMElement, x:Int):Void
 	{
 		var nativeX:Int = x + _computedStyle.paddingLeft + _computedStyle.marginLeft;
 		super.setNativeX(domElement, nativeX);
-		
 		domElement.nativeElement.x = nativeX;
 	}
 	
@@ -45,7 +44,6 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	{
 		var nativeY:Int = y + _computedStyle.paddingTop + _computedStyle.marginTop;
 		super.setNativeY(domElement, nativeY);
-		
 		domElement.nativeElement.y = nativeY;
 	}
 	

@@ -586,6 +586,9 @@ class AbstractStyle
 		//to determine the transformation center
 		computeVisualEffectStyles();
 		
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		
+		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
 		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 		
