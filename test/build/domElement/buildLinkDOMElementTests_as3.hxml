@@ -1,0 +1,6 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.LinkDOMElementTests
+-lib utest
+-swf9 ../../bin/domElement/linkDOMElementTestAs3.swf
+-swf-version 10.1

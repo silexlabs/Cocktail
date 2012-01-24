@@ -46,10 +46,10 @@ class NativeElementCreator extends AbstractNativeElementCreator
 			case image, library, skin:
 				nativeElement = new Loader();
 				
-				
-			
 			//for other types, it is a Sprite	
-			default:
+			case text, graphic, neutral, link:
+				nativeElement = new Sprite();
+			case custom(name):
 				nativeElement = new Sprite();
 				
 		}

@@ -7,30 +7,41 @@
 */
 package cocktailCore.domElement.js;
 
-import cocktail.nativeElement.NativeElement;
-import haxe.Log;
-import js.Dom;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
+import cocktailCore.domElement.abstract.AbstractLinkDOMElement;
+import cocktail.mouse.MouseData;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.Matrix;
-import cocktail.geom.GeomData;
 
 /**
- * This is the DOMElement implementation for JavaScript. 
- * It manipulates the native HTML DOM
+ * This is the JavaScript implementation of the 
+ * LinkDOMElement. Override setters to set the corresponding
+ * attributes of the native HTML <a> element
+ * 
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends AbstractDOMElement
+class LinkDOMElement extends AbstractLinkDOMElement
 {
-	/////////////////////////////////
-	// CONSTRUTOR & INIT
-	/////////////////////////////////
-	
 	/**
-	 * Class constructor
+	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new() 
 	{
-		super(nativeElement);
+		super();
 	}
+	
+	override private function setHref(value:String):String
+	{
+		untyped _nativeElement.href = value;
+	
+		super.setHref(value);
+		return value;
+	}
+	
+	override private function setTarget(value:LinkTargetValue):LinkTargetValue
+	{
+		untyped _nativeElement.target = getTargetAsString(value);
+		
+		super.setTarget(value);
+		return value;
+	}
+	
 }

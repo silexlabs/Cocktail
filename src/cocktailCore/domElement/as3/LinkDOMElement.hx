@@ -5,32 +5,37 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
+package cocktailCore.domElement.as3;
 
-import cocktail.nativeElement.NativeElement;
-import haxe.Log;
-import js.Dom;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.DOMElementData;
-import cocktail.geom.Matrix;
-import cocktail.geom.GeomData;
+import cocktailCore.domElement.abstract.AbstractLinkDOMElement;
+import flash.net.URLRequest;
+import cocktail.mouse.MouseData;
 
 /**
- * This is the DOMElement implementation for JavaScript. 
- * It manipulates the native HTML DOM
+ * This is the flash AS3 implementation of the LinkDOMElement.
+ * Open links using flash API
+ * 
  * @author Yannick DOMINGUEZ
  */
-class DOMElement extends AbstractDOMElement
+class LinkDOMElement extends AbstractLinkDOMElement
 {
-	/////////////////////////////////
-	// CONSTRUTOR & INIT
-	/////////////////////////////////
+	/**
+	 * class constructor
+	 */
+	public function new() 
+	{
+		super();
+	}
 	
 	/**
-	 * Class constructor
+	 * Open link using flash API if needed
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	override private function openLink():Void
 	{
-		super(nativeElement);
+		if (_href != null)
+		{
+			flash.Lib.getURL(new URLRequest(_href), getTargetAsString(_target));
+		}
 	}
+	
 }
