@@ -148,7 +148,7 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//get the dimensions that will be used to lay out the children
-		//of the DOMElement. For instant, if the ContainerDOMElement establishes an
+		//of the DOMElement. For instance, if the ContainerDOMElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height as containing height
 		var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
@@ -218,6 +218,8 @@ class AbstractContainerStyle extends Style
 			childrenTemporaryPositionsData.push(absolutelyPositionedChildrenTemporaryPositionsData[i]);
 		}
 		
+		//return the array containing all the children of this ContainerDOMElement and their
+		//positions relative to the ContainerDOMElement
 		return childrenTemporaryPositionsData;
 	}
 	
@@ -315,34 +317,38 @@ class AbstractContainerStyle extends Style
 			{
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 				
-
-				
-				if (positionedDOMElementData.style.position == PositionStyleValue.relative)
+				//relatively positioned DOMElement are both stored in the childLastPositionedDOMElementData array and
+				//also inserted in a formatting context. At this point, their static position must be updated to
+				//the one computed when inserted into the flow
+				if (positionedDOMElementData.style.isRelativePositioned() == true)
 				{
 					if (positionedDOMElementData.formattingContext != null)
 					{
-						var children = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
-	
+						//all the in-flow children that share the same parent in the stored
+						//formatting context are retrived
+						var children:Array<ChildTemporaryPositionData> = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
 					
-					for (i in 0...children.length)
-					{
-						if (children[i].domElement == positionedDOMElementData.style.domElement)
+						//loop in all the children to the find a reference
+						//to the relative positioned DOMElement
+						for (i in 0...children.length)
 						{
-							var x:Float = children[i].x;
-							var y:Float = children[i].y;
-							positionedDOMElementData.staticPosition = {
-								x:x,
-								y:y
+							//when found, use its in-flow position as the static position used for
+							//relative positioned DOMElement
+							if (children[i].domElement == positionedDOMElementData.style.domElement)
+							{
+								var x:Float = children[i].x;
+								var y:Float = children[i].y;
+								positionedDOMElementData.staticPosition = {
+									x:x,
+									y:y
+								}
 							}
 						}
 					}
-					}
-					
-					
 				}
-				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 				
-
+				//position the DOMElement which return its x and y coordinates relative to its first positioned ancestor
+				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 				
 				if (positionedDOMElementData.formattingContext != null)
 				{
@@ -355,9 +361,8 @@ class AbstractContainerStyle extends Style
 					childTemporaryPositionData.y += yOffset;
 					
 				}
-	
 				
-				if (childTemporaryPositionData.domElement.style.position != PositionStyleValue.relative)
+				if (childTemporaryPositionData.domElement.style.isRelativePositioned() == false)
 				{
 					//absolutely positioned DOMElement are positioned relative to the margin box
 					//of their parent and not the content box, so an offset need to be applied

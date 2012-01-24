@@ -5,32 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
-
-import cocktail.nativeElement.NativeElement;
-import haxe.Log;
-import js.Dom;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.DOMElementData;
-import cocktail.geom.Matrix;
-import cocktail.geom.GeomData;
+package cocktail.domElement;
 
 /**
- * This is the DOMElement implementation for JavaScript. 
- * It manipulates the native HTML DOM
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific LinkDOMElement at compile-time
  */
-class DOMElement extends AbstractDOMElement
-{
-	/////////////////////////////////
-	// CONSTRUTOR & INIT
-	/////////////////////////////////
-	
-	/**
-	 * Class constructor
-	 */
-	public function new(nativeElement:NativeElement = null) 
-	{
-		super(nativeElement);
-	}
-}
+#if (flash9 || cpp || nme)
+typedef LinkDOMElement =  cocktailCore.domElement.as3.LinkDOMElement;
+
+#elseif js
+typedef LinkDOMElement =  cocktailCore.domElement.js.LinkDOMElement;
+
+#elseif php
+typedef LinkDOMElement =  cocktailCore.domElement.php.LinkDOMElement;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class LinkDOMElement extends cocktailCore.domElement.abstract.AbstractLinkDOMElement { }
+
+#end
