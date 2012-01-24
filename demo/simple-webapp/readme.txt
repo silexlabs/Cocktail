@@ -29,6 +29,7 @@ Air SDK installation:
 * Adobe Air Sdk needs to be installed first.
 * Download the Adobe Air Sdk from: http://www.adobe.com/special/products/air/sdk/
 * Then add its path to your "PATH" environment variables. (It should look like: "C:\AdobeAIRSDK\bin\")
+* Install Java JRE: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 Air certificate generation:
 Launch WebApp_air_generate_certificate.bat

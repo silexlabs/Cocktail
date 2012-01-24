@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <application xmlns="http://ns.adobe.com/air/application/2.7"> 
-    <id>CocktailSimpleWebApp</id> 
+    <id>org.silexlabs.CocktailSimpleWebApp</id> 
     <versionNumber>1.0.3</versionNumber> 
     <filename>CocktailDemo</filename> 
     <name>Cocktail Demo</name> 

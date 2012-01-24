@@ -1,0 +1,2 @@
+"C:\Program Files (x86)\Android\android-sdk\platform-tools\adb" install C:\AdobeAIRSDK\runtimes\air\android\emulator\Runtime.apk
+"C:\Program Files (x86)\Android\android-sdk\platform-tools\adb" install ../bin/WebApp.apk
