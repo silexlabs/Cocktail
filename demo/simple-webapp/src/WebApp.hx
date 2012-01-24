@@ -16,7 +16,6 @@ package;
 
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
-import flash.Lib;
 
 class WebApp 
 {
