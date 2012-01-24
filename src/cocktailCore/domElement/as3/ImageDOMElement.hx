@@ -50,15 +50,6 @@ class ImageDOMElement extends AbstractImageDOMElement
 		super.onLoadComplete(image);
 		
 		smoothPicture();
-		
-		//reset the scale of the loaded picture and reaffect its computed
-		//dimensions to it
-		typedimage.scaleX = 1;
-		typedimage.scaleY = 1;
-		typedimage.width = this.width;
-		typedimage.height = this.height;
-		
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

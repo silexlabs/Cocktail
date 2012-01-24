@@ -80,23 +80,16 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function render():Void
-	{
-		for (i in 0..._childrenTemporaryPositionData.length)
-		{
-			this._domElement.nativeElement.addChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			
-			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a child using flash API
+	 */
+	override private function attachChild(domElement:DOMElement):Void
+	{
+		this._domElement.nativeElement.addChild(domElement.nativeElement);
+	}
 	
 	/**
 	 * Detach all the children using
@@ -137,18 +130,6 @@ class Style extends AbstractStyle
 		domElement.nativeElement.y = y;
 	}
 	
-	override public function setNativeWidth(width:Int):Void
-	{
-		super.setNativeWidth(width);
-		domElement.nativeElement.width = width;
-	}
-	
-	override public function setNativeHeight(height:Int):Void
-	{
-		super.setNativeHeight(height);
-		domElement.nativeElement.height = height;
-	}
-	
 	override public function setNativeOpacity(opacity:Float):Void
 	{
 		super.setNativeOpacity(opacity);
@@ -160,8 +141,6 @@ class Style extends AbstractStyle
 		super.setNativeVisibility(visible);
 		domElement.nativeElement.visible = visible;
 	}
-	
-
 
 	/**
 	 * when the matrix is set, update also
