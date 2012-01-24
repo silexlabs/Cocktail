@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import cocktailCore.focus.FocusManager;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
 import cocktailCore.mouse.Mouse;
@@ -92,6 +93,40 @@ class AbstractDOMElement
 	 * The callback called on key up through the keyboard instance
 	 */
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Focus attributes and callback
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the DOMElement can receive focus, 
+	 * some DOMElements such as the LinkDOMElement can
+	 * recive focus by default
+	 */
+	private var _tabEnabled:Bool;
+	public var tabEnabled(getTabEnabled, setTabEnabled):Bool;
+	
+	/**
+	 * The tab index order of the DOMElement. If the DOMElement
+	 * is tab enabled, this index will be used when the
+	 * user presses the TAB key to determine the order
+	 * of the focusable DOMElements in the DOM
+	 */
+	private var _tabIndex:Int;
+	public var tabIndex(getTabIndex, setTabIndex):Int;
+	
+	/**
+	 * callback called when the DOMElement recives 
+	 * the focus
+	 */
+	private var _onFocusIn:Void->Void;
+	public var onFocusIn(getOnFocusIn, setOnFocusIn):Void->Void;
+	
+	/**
+	 * callback called when the DOMElement loses the focus
+	 */
+	private var _onFocusOut:Void->Void;
+	public var onFocusOut(getOnFocusOut, setOnFocusOut):Void->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
@@ -242,6 +277,9 @@ class AbstractDOMElement
 		
 		//init the style for this DOMElement
 		initStyle();
+		
+		//init the focus attributes
+		initFocus();
 	}
 	
 	/**
@@ -252,6 +290,15 @@ class AbstractDOMElement
 	private function initStyle():Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * init the focus attributes
+	 */
+	private function initFocus():Void
+	{
+		_tabIndex = 0;
+		_tabEnabled = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -550,6 +597,72 @@ class AbstractDOMElement
 	private function getOnKeyUp():KeyEventData->Void
 	{
 		return _keyboard.onKeyUp;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FOCUS SETTER/GETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the focus on this DOMElement, the focus
+	 * manager must determine if the DOMElement can
+	 * actually receive focus
+	 */
+	public function focus():Void
+	{
+		FocusManager.getInstance().activeDOMElement = cast(this);
+	}
+	
+	private function setOnFocusIn(value:Void->Void):Void->Void
+	{
+		return _onFocusIn = value;
+	}
+	
+	private function getOnFocusIn():Void->Void
+	{
+		return _onFocusIn;
+	}
+	
+	private function setOnFocusOut(value:Void->Void):Void->Void
+	{
+		return _onFocusOut = value;
+	}
+	
+	private function getOnFocusOut():Void->Void
+	{
+		return _onFocusOut;
+	}
+	
+	/**
+	 * When set, invalidate the focus manager
+	 * tab list as this DOMElement must now
+	 * be included or excluded from it
+	 */
+	private function setTabEnabled(value:Bool):Bool
+	{
+		FocusManager.getInstance().invalidate();
+		return _tabEnabled = value;
+	}
+	
+	private function getTabEnabled():Bool
+	{
+		return _tabEnabled;
+	}
+	
+	/**
+	 * when set, invalidate the focus manager
+	 * tab list, as this DOMElement may appear
+	 * at another index of the list
+	 */
+	private function setTabIndex(value:Int):Int
+	{
+		FocusManager.getInstance().invalidate();
+		return _tabIndex = value;
+	}
+	
+	private function getTabIndex():Int
+	{
+		return _tabIndex;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
