@@ -11,6 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
+import cocktailCore.focus.FocusManager;
 import cocktailCore.style.abstract.AbstractBodyStyle;
 import cocktailCore.style.BodyStyle;
 
@@ -55,6 +56,17 @@ class AbstractBodyDOMElement extends ContainerDOMElement
 		//for resize on it
 		_viewPort = new Viewport();
 		_viewPort.onResize = onViewPortResize;
+	}
+	
+	/**
+	 * Overriden to set this as the reference
+	 * to the BodyDOMElement of the focus manager,
+	 * used to build the tab list tree
+	 */
+	override private function initFocus():Void
+	{
+		FocusManager.getInstance().bodyDOMElement = cast(this);
+		super.initFocus();
 	}
 	
 	/**
