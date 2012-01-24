@@ -276,7 +276,7 @@ class AbstractFocusManagerImpl
 						else
 						{
 							var foundSpotFlag:Bool = false;
-							for (j in 0...unorderedTabList.length)
+							for (j in 0...indexedTabList.length)
 							{
 								if (child.tabIndex < indexedTabList[j].tabIndex)
 								{
