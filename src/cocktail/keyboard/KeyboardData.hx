@@ -42,7 +42,7 @@ typedef KeyEventData = {
 	/**
 	 * wether ctrl is pressed
 	 */
-	var controlKey:Bool;
+	var ctrlKey:Bool;
 	
 	/**
 	 * wether shift is pressed

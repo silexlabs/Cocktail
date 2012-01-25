@@ -82,7 +82,7 @@ class Keyboard extends AbstractKeyboard
 			code : typedEvent.keyCode,
 			ascii : typedEvent.charCode,
 			altKey : typedEvent.altKey ,
-			controlKey : typedEvent.ctrlKey,
+			ctrlKey : typedEvent.ctrlKey,
 			shiftKey : typedEvent.shiftKey
 		}
 		
