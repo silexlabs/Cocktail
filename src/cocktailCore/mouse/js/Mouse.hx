@@ -42,46 +42,14 @@ class Mouse extends AbstractMouse
 	public function new(nativeElement:NativeElement) 
 	{
 		super(nativeElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN CALLBACK SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_DOWN_EVENT, onNativeMouseDown, value);
-		return this._onMouseDown = value;
-	}
-	
-	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_UP_EVENT, onNativeMouseUp, value);
-		return this._onMouseUp = value;
-	}
-	
-	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_OVER_EVENT, onNativeMouseOver, value);
-		return this._onMouseOver = value;
-	}
-	
-	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_OUT_EVENT, onNativeMouseOut, value);
-		return this._onMouseOut = value;
-	}
-	
-	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_MOVE_EVENT, onNativeMouseMove, value);
-		return this._onMouseMove = value;
-	}
-	
-	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
-	{
-		updateListeners(ON_MOUSE_DOUBLE_CLICK_EVENT, onNativeMouseDoubleClick, value);
-		return this._onMouseDoubleClick = value;
+		
+		//set the JavaScript event types
+		_mouseDownEvent = ON_MOUSE_DOWN_EVENT;
+		_mouseUpEvent = ON_MOUSE_UP_EVENT;
+		_mouseOverEvent = ON_MOUSE_OVER_EVENT;
+		_mouseOutEvent = ON_MOUSE_OUT_EVENT;
+		_mouseDoubleClickEvent = ON_MOUSE_DOUBLE_CLICK_EVENT;
+		_mouseMoveEvent = ON_MOUSE_MOVE_EVENT;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -122,14 +90,14 @@ class Mouse extends AbstractMouse
 	/**
 	 * Actually remove and set listeners on the native HTML element. Listeners
 	 * are always removed, as they must be removed if the user either removes the 
-	 * listener or set a new one. Listeners are only added if the user callback
+	 * listener or set a new one. Listeners are only added if the domElement callback
 	 * is not null
 	 */
-	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, userCallback:MouseEventData->Void):Void
+	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
 	{
 		untyped _nativeElement.removeEventListener(mouseEvent, nativeCallback);
 		
-		if (userCallback != null)
+		if (domElementCallback != null)
 		{
 			untyped _nativeElement.addEventListener(mouseEvent, nativeCallback);
 		}
