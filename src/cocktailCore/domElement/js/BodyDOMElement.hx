@@ -8,6 +8,8 @@
 package cocktailCore.domElement.js;
 
 import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
+import cocktailCore.keyboard.Keyboard;
+import js.Lib;
 
 /**
  * This is the JavaScript implementation of the BodyDOMElement
@@ -22,6 +24,15 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	public function new() 
 	{
 		super();
+	}
+	
+	/**
+	 * In Js, keyboard must be listened to on the "document"
+	 * object instead of the "body" object
+	 */
+	override private function initKeyboard():Void
+	{
+		_keyboard = new Keyboard(Lib.document);
 	}
 	
 }
