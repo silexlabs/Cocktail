@@ -320,7 +320,7 @@ class AbstractFocusManagerImpl
 		
 			var mouseEventData:MouseEventData = {
 				mousePosition:mousePositionData,
-				ctrlKey:keyEventData.controlKey,
+				ctrlKey:keyEventData.ctrlKey,
 				altKey:keyEventData.altKey,
 				shiftKey:keyEventData.shiftKey
 			}
