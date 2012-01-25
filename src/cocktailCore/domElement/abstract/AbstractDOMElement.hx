@@ -93,12 +93,14 @@ class AbstractDOMElement
 	/**
 	 * The callback called on key down through the keyboard instance
 	 */
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyEventData->Void;
+	private var _onKeyDown:KeyboardEventData->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEventData->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
+	private var _onKeyUp:KeyboardEventData->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEventData->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes and callback
@@ -274,18 +276,26 @@ class AbstractDOMElement
 	 */
 	private function init():Void
 	{	
-		//initialise the keyboard listener of this dom element 
-		_keyboard = new Keyboard();
-		
 		//initialise the mouse listeners on this dom element by 
 		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
+		
+		//init key listeners
+		initKeyboard();
 		
 		//init the style for this DOMElement
 		initStyle();
 		
 		//init the focus attributes
 		initFocus();
+	}
+	
+	/**
+	 * initialise the keyboard listener of this dom element 
+	 */
+	private function initKeyboard():Void
+	{
+		_keyboard = new Keyboard(this._nativeElement);
 	}
 	
 	/**
@@ -627,7 +637,7 @@ class AbstractDOMElement
 		}
 		else
 		{
-			_mouse.onMouseDoubleClick = onMouseDoubleClick;
+			_mouse.onMouseDoubleClick = onMouseDoubleClickCallback;
 		}
 		
 		return value;
@@ -679,26 +689,62 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
+	private function setOnKeyDown(value:KeyboardEventData->Void):KeyboardEventData->Void
 	{
-		_keyboard.onKeyDown = value;
+		_onKeyDown = value;
+		
+		if (_onKeyDown == null)
+		{
+			_keyboard.onKeyDown = null;
+		}
+		else
+		{
+			_keyboard.onKeyDown = onKeyDownCallback;
+		}
+		
 		return value;
 	}
 	
-	private function getOnKeyDown():KeyEventData->Void
+	private function getOnKeyDown():KeyboardEventData->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
+	private function setOnKeyUp(value:KeyboardEventData->Void):KeyboardEventData->Void
 	{
-		_keyboard.onKeyUp = value;
+		_onKeyUp = value;
+		
+		if (_onKeyUp == null)
+		{
+			_keyboard.onKeyUp = null;
+		}
+		else
+		{
+			_keyboard.onKeyUp = onKeyUpCallback;
+		}
+		
 		return value;
 	}
 	
-	private function getOnKeyUp():KeyEventData->Void
+	private function getOnKeyUp():KeyboardEventData->Void
 	{
 		return _keyboard.onKeyUp;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// KEYBOARD EVENT CALLBACK
+	// called by the Keyboard instance when the user interacts
+	// with the keyboard while this DOMElement has the focus
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onKeyDownCallback(keyEventData:KeyboardEventData):Void
+	{
+		_onKeyDown(keyEventData);
+	}
+	
+	private function onKeyUpCallback(keyEventData:KeyboardEventData):Void
+	{
+		_onKeyUp(keyEventData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

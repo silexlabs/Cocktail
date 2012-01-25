@@ -14,6 +14,7 @@ import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
+import cocktail.nativeElement.NativeElementManager;
 
 /**
  * The abstract implementation of the focus
@@ -71,7 +72,8 @@ class AbstractFocusManagerImpl
 	 */
 	private function initKeyboardListeners():Void
 	{
-		var keyboard:Keyboard = new Keyboard();
+		//listens for event on the root of the runtime
+		var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
 		keyboard.onKeyDown = onKeyDown;
 		keyboard.onKeyUp = onKeyUp;
 	}
@@ -101,7 +103,7 @@ class AbstractFocusManagerImpl
 	 * key down event to the currently active
 	 * DOMElement
 	 */
-	private function onKeyDown(keyEventData:KeyEventData):Void
+	private function onKeyDown(keyEventData:KeyboardEventData):Void
 	{
 		switch (keyEventData.value)
 		{
@@ -123,7 +125,7 @@ class AbstractFocusManagerImpl
 	 * When a key up event happens, redirect to the
 	 * currently active DOMElement
 	 */
-	private function onKeyUp(keyEventData:KeyEventData):Void
+	private function onKeyUp(keyEventData:KeyboardEventData):Void
 	{
 		if (_activeDOMElement.onKeyUp != null)
 		{
@@ -307,7 +309,7 @@ class AbstractFocusManagerImpl
 	 * cal the active DOMElement's mouse down callback
 	 * if it exists
 	 */
-	private function simulateMouseClick(keyEventData:KeyEventData):Void
+	private function simulateMouseClick(keyEventData:KeyboardEventData):Void
 	{
 		if (activeDOMElement.onMouseDown != null)
 		{

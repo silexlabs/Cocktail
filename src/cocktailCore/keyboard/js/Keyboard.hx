@@ -7,6 +7,7 @@
 */
 package cocktailCore.keyboard.js;
 
+import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 import js.Lib;
 import cocktailCore.keyboard.abstract.AbstractKeyboard;
@@ -22,44 +23,22 @@ import cocktail.keyboard.KeyboardData;
 class Keyboard extends AbstractKeyboard
 {
 	/**
+	 * native keyboard JavaScript events
+	 */
+	private static inline var KEY_DOWN_EVENT:String = "keydown";
+	
+	private static inline var KEY_UP_EVENT:String = "keyup";
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(nativeElement:NativeElement) 
 	{
-		super();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN CALLBACKS SETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
-	{
-		if (value == null)
-		{
-			untyped Lib.document.removeEventListener("keydown", onNativeKeyDown);
-		}
-		else
-		{
-			//add listener on the Document to receive global keyboard events
-			//eventually might be applied at element level to add focus
-			//management with keyboard
-			untyped Lib.document.addEventListener("keydown", onNativeKeyDown);
-		}
-		return _onKeyDown = value;
-	}
-	
-	override private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
-	{
-		if (value == null)
-		{
-			untyped Lib.document.removeEventListener("keyup", onNativeKeyUp);
-		}
-		else
-		{
-			untyped Lib.document.addEventListener("keyup", onNativeKeyUp);
-		}
-		return _onKeyUp = value;
+		super(nativeElement);
+		
+		//set native JS events
+		_keyDownEvent = KEY_DOWN_EVENT;
+		_keyUpEvent = KEY_UP_EVENT;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -67,13 +46,28 @@ class Keyboard extends AbstractKeyboard
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Actually remove and set listeners on the nativeElement.
+	 * The listener is always removed and if the domElement
+	 * callback is not null a new listener is set
+	 */
+	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEventData->Void):Void
+	{
+		untyped _nativeElement.removeEventListener(keyboardEvent, nativeCallback);
+		
+		if (domElementCallback != null)
+		{
+			untyped _nativeElement.addEventListener(keyboardEvent, nativeCallback);
+		}
+	}
+	
+	/**
 	 * Returns the key that triggered the keyboard event
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and ascii value
 	 */
-	override private function getKeyData(event:Dynamic):KeyEventData
+	override private function getKeyData(event:Dynamic):KeyboardEventData
 	{
-		var key:KeyEventData = {
+		var key:KeyboardEventData = {
 			value : getKeyValue(event.keyCode),
 			code : event.keyCode,
 			ascii : event.charCode,
