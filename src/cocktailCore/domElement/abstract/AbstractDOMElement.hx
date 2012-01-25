@@ -814,31 +814,6 @@ class AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM SETTER/GETTER
-	// Generic Setters/Getters to manipulate any attribute of the DOMElement
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set a field value on the nativeElement
-	 * @param	propertyName the name of the field
-	 * @param	propertyValue the new value of the field
-	 */
-	private function setField(propertyName:String, propertyValue:Dynamic):Void
-	{
-		Reflect.setField(this._nativeElement, propertyName, propertyValue);
-	}
-	
-	/**
-	 * Return the value of a field of the nativeElement
-	 * @param	propertyName the name of the field value to return
-	 * @return might be any type
-	 */
-	private function getField(propertyName:String):Dynamic
-	{
-		return Reflect.field(this._nativeElement, propertyName);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// POSITIONING SETTERS/GETTERS
 	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
