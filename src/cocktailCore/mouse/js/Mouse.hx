@@ -21,6 +21,20 @@ import cocktail.mouse.MouseData;
  */
 class Mouse extends AbstractMouse
 {
+	/**
+	 * native JavaScript mouse events
+	 */
+	private static inline var ON_MOUSE_UP_EVENT:String = "mouseup";
+	
+	private static inline var ON_MOUSE_DOWN_EVENT:String = "mousedown";
+	
+	private static inline var ON_MOUSE_OVER_EVENT:String = "mouseover";
+	
+	private static inline var ON_MOUSE_OUT_EVENT:String = "mouseout";
+	
+	private static inline var ON_MOUSE_DOUBLE_CLICK_EVENT:String = "dblclick";
+	
+	private static inline var ON_MOUSE_MOVE_EVENT:String = "mousemove";
 	
 	/**
 	 * class constructor.
@@ -36,80 +50,37 @@ class Mouse extends AbstractMouse
 	
 	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.onmousedown = null;
-		}
-		else
-		{
-			_nativeElement.onmousedown = onNativeMouseDown;
-		}
-		
+		updateListeners(ON_MOUSE_DOWN_EVENT, onNativeMouseDown, value);
 		return this._onMouseDown = value;
 	}
 	
 	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.onmouseup = null;
-		}
-		else
-		{
-			_nativeElement.onmouseup = onNativeMouseUp;
-		}
+		updateListeners(ON_MOUSE_UP_EVENT, onNativeMouseUp, value);
 		return this._onMouseUp = value;
 	}
 	
 	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.onmouseover = null;
-		}
-		else
-		{
-			_nativeElement.onmouseover = onNativeMouseOver;
-		}
+		updateListeners(ON_MOUSE_OVER_EVENT, onNativeMouseOver, value);
 		return this._onMouseOver = value;
 	}
 	
 	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.onmouseout = null;
-		}
-		else
-		{
-			_nativeElement.onmouseout = onNativeMouseOut;
-		}
+		updateListeners(ON_MOUSE_OUT_EVENT, onNativeMouseOut, value);
 		return this._onMouseOut = value;
 	}
 	
 	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.onmousemove = null;
-		}
-		else
-		{
-			_nativeElement.onmousemove = onNativeMouseMove;
-		}
+		updateListeners(ON_MOUSE_MOVE_EVENT, onNativeMouseMove, value);
 		return this._onMouseMove = value;
 	}
 	
 	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
-		if (value == null)
-		{
-			_nativeElement.ondblclick = null;
-		}
-		else
-		{
-			_nativeElement.ondblclick = onNativeMouseDoubleClick;
-		}
+		updateListeners(ON_MOUSE_DOUBLE_CLICK_EVENT, onNativeMouseDoubleClick, value);
 		return this._onMouseDoubleClick = value;
 	}
 	
@@ -142,5 +113,25 @@ class Mouse extends AbstractMouse
 		}
 		
 		return mouseEventData;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// private mouse util methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually remove and set listeners on the native HTML element. Listeners
+	 * are always removed, as they must be removed if the user either removes the 
+	 * listener or set a new one. Listeners are only added if the user callback
+	 * is not null
+	 */
+	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, userCallback:MouseEventData->Void):Void
+	{
+		untyped _nativeElement.removeEventListener(mouseEvent, nativeCallback);
+		
+		if (userCallback != null)
+		{
+			untyped _nativeElement.addEventListener(mouseEvent, nativeCallback);
+		}
 	}
 }
