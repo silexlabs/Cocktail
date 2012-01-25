@@ -64,6 +64,9 @@ class AbstractLinkDOMElement extends ContainerDOMElement
 		_target = LinkTargetValue.self;
 	}
 	
+	/**
+	 * LinkDOMElement are tab enabled by default
+	 */
 	override private function initFocus():Void
 	{
 		super.initFocus();
