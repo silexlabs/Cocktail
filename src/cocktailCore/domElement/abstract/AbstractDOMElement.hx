@@ -47,31 +47,37 @@ class AbstractDOMElement
 	/**
 	 * The callback called on mouse down through the mouse instance
 	 */
+	private var _onMouseDown:MouseEventData->Void;
 	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEventData->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
+	private var _onMouseUp:MouseEventData->Void;
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this dom element
 	 */
+	private var _onMouseOver:MouseEventData->Void;
 	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
 	
 	/**
 	 * The callback called on mouse out of this dom element
 	 */
+	private var _onMouseOut:MouseEventData->Void;
 	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this dom element
 	 */
+	private var _onMouseMove:MouseEventData->Void;
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
 	
 	/**
 	 * The callback called when this dom element is double-clicked
 	 */
+	private var _onMouseDoubleClick:MouseEventData->Void;
 	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -508,68 +514,164 @@ class AbstractDOMElement
 	
 	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseDown = value;
+		_onMouseDown = value;
+		
+		if (_onMouseDown == null)
+		{
+			_mouse.onMouseDown = null;
+		}
+		else
+		{
+			_mouse.onMouseDown = onMouseDownCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseDown():MouseEventData->Void
 	{
-		return _mouse.onMouseDown;
+		return _onMouseDown;
 	}
 	
 	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseUp = value;
+		_onMouseUp = value;
+		
+		if (_onMouseUp == null)
+		{
+			_mouse.onMouseUp = null;
+		}
+		else
+		{
+			_mouse.onMouseUp = onMouseUpCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseUp():MouseEventData->Void
 	{
-		return _mouse.onMouseUp;
+		return _onMouseUp;
 	}
 	
 	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseOver = value;
+		_onMouseOver = value;
+		
+		if (_onMouseOver == null)
+		{
+			_mouse.onMouseOver = null;
+		}
+		else
+		{
+			_mouse.onMouseOver = onMouseOverCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseOver():MouseEventData->Void
 	{
-		return _mouse.onMouseOver;
+		return _onMouseOver;
 	}
 	
 	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseOut = value;
+		_onMouseOut = value;
+		
+		if (_onMouseOut == null)
+		{
+			_mouse.onMouseOut = null;
+		}
+		else
+		{
+			_mouse.onMouseOut = onMouseOutCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseOut():MouseEventData->Void
 	{
-		return _mouse.onMouseOut;
+		return _onMouseOut;
 	}
 	
 	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseMove = value;
+		_onMouseMove = value;
+		
+		if (_onMouseMove == null)
+		{
+			_mouse.onMouseMove = null;
+		}
+		else
+		{
+			_mouse.onMouseMove = onMouseMoveCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseMove():MouseEventData->Void
 	{
-		return _mouse.onMouseMove;
+		return _onMouseMove;
 	}
 	
 	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseDoubleClick = value;
+		_onMouseDoubleClick = value;
+		
+		if (_onMouseDoubleClick == null)
+		{
+			_mouse.onMouseDoubleClick = null;
+		}
+		else
+		{
+			_mouse.onMouseDoubleClick = onMouseDoubleClick;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseDoubleClick():MouseEventData->Void
 	{
-		return _mouse.onMouseDoubleClick;
+		return _onMouseDoubleClick;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE EVENT CALLBACK
+	// called by the Mouse instance when the user interacts
+	// with the DOMElement with its mouse
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onMouseDownCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseDown(mouseEventData);
+	}
+	
+	private function onMouseUpCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseUp(mouseEventData);
+	}
+	
+	private function onMouseMoveCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseMove(mouseEventData);
+	}
+	
+	private function onMouseOverCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseOver(mouseEventData);
+	}
+	
+	private function onMouseOutCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseOver(mouseEventData);
+	}
+	
+	private function onMouseDoubleClickCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseDoubleClick(mouseEventData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

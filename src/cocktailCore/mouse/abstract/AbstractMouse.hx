@@ -71,6 +71,16 @@ class AbstractMouse
 	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
 	
 	/**
+	 * mouse event types
+	 */
+	private var _mouseDownEvent:String;
+	private var _mouseUpEvent:String;
+	private var _mouseOverEvent:String;
+	private var _mouseOutEvent:String;
+	private var _mouseMoveEvent:String;
+	private var _mouseDoubleClickEvent:String;
+	
+	/**
 	 * The NativeElement on which mouse event are listened to
 	 */
 	private var _nativeElement:NativeElement;
@@ -181,6 +191,7 @@ class AbstractMouse
 	
 	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseDownEvent, onNativeMouseDown, value);
 		return this._onMouseDown = value;
 	}
 	
@@ -191,6 +202,7 @@ class AbstractMouse
 	
 	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseUpEvent, onNativeMouseDown, value);
 		return this._onMouseUp = value;
 	}
 	
@@ -201,6 +213,7 @@ class AbstractMouse
 	
 	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseOverEvent, onNativeMouseDown, value);
 		return this._onMouseOver = value;
 	}
 	
@@ -211,6 +224,7 @@ class AbstractMouse
 	
 	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseOutEvent, onNativeMouseDown, value);
 		return this._onMouseOut = value;
 	}
 	
@@ -221,6 +235,7 @@ class AbstractMouse
 	
 	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseMoveEvent, onNativeMouseDown, value);
 		return this._onMouseMove = value;
 	}
 	
@@ -231,11 +246,30 @@ class AbstractMouse
 	
 	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
+		updateListeners(_mouseDoubleClickEvent, onNativeMouseDown, value);
 		return this._onMouseDoubleClick = value;
 	}
 	
 	private function getOnMouseDoubleClick():MouseEventData->Void
 	{
 		return this._onMouseDoubleClick;
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// private mouse util methods
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually remove and set listeners on the nativeElement.
+	 * Implemented by each runtime
+	 * 
+	 * @param mouseEvent the mouse event type that must be listened to
+	 * @param nativeCallback the native, runtime-specific callback
+	 * @param domElementCallback the cross-platform mouse callback defined on the DOMElement
+	 */
+	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
+	{
+		//abstract
 	}
 }
