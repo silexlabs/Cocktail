@@ -13,8 +13,7 @@ import cocktail.domElement.DOMElementData;
 
 /**
  * This is the JavaScript implementation of the 
- * LinkDOMElement. Override setters to set the corresponding
- * attributes of the native HTML <a> element
+ * LinkDOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -27,6 +26,36 @@ class LinkDOMElement extends AbstractLinkDOMElement
 	{
 		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN FOCUS SETTER/GETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * For element focusable by default such as the
+	 * LinkDOMElement, the tabIndex must be set to 
+	 * a negative value to prevent the DOMElement
+	 * from being focused with TAB
+	 */
+	override private function setTabEnabled(value:Bool):Bool
+	{
+		if (value == true)
+		{
+			untyped _nativeElement.tabIndex = tabIndex;
+		}
+		else
+		{
+			untyped _nativeElement.tabIndex = -1;
+		}
+		
+		return _tabEnabled = value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN LINK SETTER/GETTER
+	// Override setters to set the corresponding
+	// attributes of the native HTML <a> element
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override private function setHref(value:String):String
 	{

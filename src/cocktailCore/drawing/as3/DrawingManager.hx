@@ -13,9 +13,10 @@ import flash.display.Sprite;
 import flash.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import haxe.Log;
 
 /**
- * This is the Flash AVM2 implementation of the graphic DOMElement.
+ * This is the Flash AVM2 implementation of the DrawingManager.
  * It draws shape programatically onto a native Sprite object.
  * The sprite DOMElement is then cached as a bitmap. It allows to work
  * with both the flash vector drawing API and bitmaps.
@@ -42,15 +43,15 @@ class DrawingManager extends AbstractDrawingManager
 	 * a default width and height. Add a bitmap display object that
 	 * will copy the vector drawing as they are drawn
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(nativeElement:NativeElement, width:Int, height:Int) 
 	{
-		super(nativeElement);
+		super(nativeElement, width, height);
 		
-		//_typedNativeElement = cast(this._nativeElement);
+		_typedNativeElement = cast(this._nativeElement);
 		
 		//init the bitmap display object and attach it to the display list
-	//	_bitmapDrawing = new Bitmap(new BitmapData(width, height, true, 0x00FFFFFF));
-	//	this._nativeElement.addChild(_bitmapDrawing);
+		_bitmapDrawing = new Bitmap(new BitmapData(width, height, true, 0x00FFFFFF));
+		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -63,10 +64,18 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function endFill():Void
 	{
-		//_typedNativeElement.graphics.endFill();
-		//blit();
-		//_typedNativeElement.graphics.clear();
-		
+		_typedNativeElement.graphics.endFill();
+		blit();
+		_typedNativeElement.graphics.clear();
+	}
+	
+	/**
+	 * clear the vector and bitmap drawing
+	 */
+	override public function clear():Void
+	{
+		_typedNativeElement.graphics.clear();
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, width, height), 0xFFFFFFFF);
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +88,7 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	private function blit():Void
 	{ 
-		/**
+		
 		//create a new transparent bitmap data, the size of the vector drawing
 		var currentGraphicBitmapData:BitmapData = new BitmapData(Math.round(_typedNativeElement.width), Math.round(_typedNativeElement.height), true, 0x00FFFFFF);
 		
@@ -92,23 +101,11 @@ class DrawingManager extends AbstractDrawingManager
 		
 		//copy each pixel from the new vector drawing into the current bitmapData,
 		//preserving the alpha values
-		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, _typedNativeElement.width, _typedNativeElement.height), new flash.geom.Point(0, 0));
+		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, width, height), new flash.geom.Point(0, 0));
 		
 		//set the bitmapData on the bitmap display object
 		_bitmapDrawing.bitmapData = bitmapData;
-		*/
-	}
-	
-	/**
-	 * Clears the native sprite fill and stroke and reset the
-	 * fill style and line style. Clears also the bitmap display object
-	 */
-	public function clearRect(x:Int, y:Int, width:Int, height:Int):Void
-	{
-		//_typedNativeElement.graphics.clear();
 		
-		//draws a transparent rectangle over all the bitmap, erasing it's content
-		//_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(x, y, width, height), 0x00FFFFFF);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +118,6 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function setFillStyle(fillStyle:FillStyleValue):Void
 	{
-		/**
 		switch(fillStyle)
 		{
 			//if there must be no fill style (probably only a stroke style)
@@ -148,7 +144,7 @@ class DrawingManager extends AbstractDrawingManager
 			//an ImageDOMElement as source for the bitmap data
 			case bitmap(imageDOMElement, repeat):
 				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageDOMElement), new Matrix(), repeat);
-		}	*/
+		}	
 	}
 	
 	/**
@@ -157,67 +153,64 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function setLineStyle(lineStyle:LineStyleValue):Void
 	{
-		//switch(lineStyle)
-		//{
+		switch(lineStyle)
+		{
 			//if there must be no line (probably just a fill instead), do nothing
-			//case none:
-				//
-			//
+			case none:
+				
 			//if there must be a one-color line, use the native lineStyle method
-			//case monochrome(colorStop, lineStyleData):
+			case monochrome(colorStop, lineStyleData):
 				//set the line style
-				//_typedNativeElement.graphics.lineStyle(
-					//lineStyleData.thickness,
-					//colorStop.color,
-					//toNativeAlpha(colorStop.alpha),
-					//true,
-					//LineScaleMode.NORMAL,
-					//toNativeCapStyle(lineStyleData.capStyle),
-					//toNativeJointStyle(lineStyleData.jointStyle),
-					//lineStyleData.miterLimit);			
-			//
+				_typedNativeElement.graphics.lineStyle(
+					lineStyleData.thickness,
+					colorStop.color,
+					toNativeAlpha(colorStop.alpha),
+					true,
+					LineScaleMode.NORMAL,
+					toNativeCapStyle(lineStyleData.capStyle),
+					toNativeJointStyle(lineStyleData.jointStyle),
+					lineStyleData.miterLimit);			
+			
 			//for a gradient line, 	use the native lineGradientStyle method	
-			//case gradient(gradientStyle, lineStyleData):
-				//
+			case gradient(gradientStyle, lineStyleData):
+				
 				//set first the line style so that the line is visible	
-				//_typedNativeElement.graphics.lineStyle(
-					//lineStyleData.thickness,
-					//0,
-					//1,
-					//true,
-					//LineScaleMode.NONE,
-					//toNativeCapStyle(lineStyleData.capStyle),
-					//toNativeJointStyle(lineStyleData.jointStyle),
-					//lineStyleData.miterLimit);
-					//
-				//
-//
-				//_typedNativeElement.graphics.lineGradientStyle(
-					//getGradientType(gradientStyle.gradientType),
-					//getGradientColors(gradientStyle.gradientStops),
-					//getGradientAlphas(gradientStyle.gradientStops), 
-					//getGradientRatios(gradientStyle.gradientStops),
-					//getGradientBox(gradientStyle)
-				//);
-			//
+				_typedNativeElement.graphics.lineStyle(
+					lineStyleData.thickness,
+					0,
+					1,
+					true,
+					LineScaleMode.NONE,
+					toNativeCapStyle(lineStyleData.capStyle),
+					toNativeJointStyle(lineStyleData.jointStyle),
+					lineStyleData.miterLimit);
+					
+				_typedNativeElement.graphics.lineGradientStyle(
+					getGradientType(gradientStyle.gradientType),
+					getGradientColors(gradientStyle.gradientStops),
+					getGradientAlphas(gradientStyle.gradientStops), 
+					getGradientRatios(gradientStyle.gradientStops),
+					getGradientBox(gradientStyle)
+				);
+			
 			//for a bitmap line style, use an ImageDOMElement as the source
 			//for the BitmapData. The line style must also be set before
 			//setting the bitmap data on the line
-			//case bitmap(imageDOMElement, lineStyleData, repeat):
+			case bitmap(imageDOMElement, lineStyleData, repeat):
 				//set first the line style so that the line is visible	
-				//_typedNativeElement.graphics.lineStyle(
-					//lineStyleData.thickness,
-					//0,
-					//1,
-					//true,
-					//LineScaleMode.NONE,
-					//toNativeCapStyle(lineStyleData.capStyle),
-					//toNativeJointStyle(lineStyleData.jointStyle),
-					//lineStyleData.miterLimit);
-				//
+				_typedNativeElement.graphics.lineStyle(
+					lineStyleData.thickness,
+					0,
+					1,
+					true,
+					LineScaleMode.NONE,
+					toNativeCapStyle(lineStyleData.capStyle),
+					toNativeJointStyle(lineStyleData.jointStyle),
+					lineStyleData.miterLimit);
+				
 				//then set the bitmap data on it
-				//_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement), new Matrix(), repeat);
-		//}
+				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement), new Matrix(), repeat);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -230,38 +223,37 @@ class DrawingManager extends AbstractDrawingManager
 	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
 	{	
 		//init destination point and sourceRect if null
-		//
-		//if (destinationPoint == null)
-		//{
-			//destinationPoint = {
-				//x:0.0,
-				//y:0.0
-			//};
-		//}
-		//
-		//if (sourceRect == null)
-		//{
-			//var width:Float = source.width;
-			//var height:Float = source.height;
-			//sourceRect = {
-				//x:0.0,
-				//y:0.0,
-				//width:width,
-				//height:height
-			//};
-		//}
-		//
-		//
+		
+		if (destinationPoint == null)
+		{
+			destinationPoint = {
+				x:0.0,
+				y:0.0
+			};
+		}
+		
+		if (sourceRect == null)
+		{
+			var width:Float = source.width;
+			var height:Float = source.height;
+			sourceRect = {
+				x:0.0,
+				y:0.0,
+				width:width,
+				height:height
+			};
+		}
+		
 		//get the ImageDOMElement bitmap data and current bitmap data
-		//var sourceBitmapData:BitmapData = getBitmapData(source);
-		//var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
-		//
+		var sourceBitmapData:BitmapData = getBitmapData(source);
+		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
+		
 		//convert the abstract rectangle and point into flash natives one
-		//var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-		//var nativeDestinationPoint:flash.geom.Point = new flash.geom.Point(destinationPoint.x, destinationPoint.y);
-		//
+		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+		var nativeDestinationPoint:flash.geom.Point = new flash.geom.Point(destinationPoint.x, destinationPoint.y);
+		
 		//draw the ImageDOMElement bitmap data onto the current bitmap data
-		//currentBitmapData.copyPixels(sourceBitmapData, nativeSourceRect, nativeDestinationPoint, null, null, true);
+		currentBitmapData.copyPixels(sourceBitmapData, nativeSourceRect, nativeDestinationPoint, null, null, true);
 
 	}
 	
@@ -274,7 +266,7 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function lineTo(x:Float, y:Float):Void
 	{
-		//_typedNativeElement.graphics.lineTo(x, y);
+		_typedNativeElement.graphics.lineTo(x, y);
 	}
 	
 	/**
@@ -282,7 +274,7 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function moveTo(x:Float, y:Float):Void
 	{
-		//_typedNativeElement.graphics.moveTo(x, y);
+		_typedNativeElement.graphics.moveTo(x, y);
 	}
 	
 	/**
@@ -290,7 +282,7 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	override public function curveTo(controlX:Float, controlY:Float, x:Float, y:Float):Void
 	{
-		//_typedNativeElement.graphics.curveTo(controlX, controlY, x, y);
+		_typedNativeElement.graphics.curveTo(controlX, controlY, x, y);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +387,9 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	private function getBitmapData(imageDOMElement:DOMElement):BitmapData
 	{
-		var bitmapData:BitmapData = new BitmapData(imageDOMElement.width, imageDOMElement.height, true, 0x00FFFFFF);
-		bitmapData.draw(imageDOMElement.nativeElement);
+		var typedImageDOMElement:ImageDOMElement = cast(imageDOMElement);
+		var bitmapData:BitmapData = new BitmapData(typedImageDOMElement.intrinsicWidth, typedImageDOMElement.intrinsicHeight, true, 0x00FFFFFF);
+		bitmapData.draw(typedImageDOMElement.nativeElement);
 		
 		return bitmapData;
 	}
@@ -462,4 +455,27 @@ class DrawingManager extends AbstractDrawingManager
 	//	gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
 		return gradientBox;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	// update the bitmap surface when the width or height changes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function setWidth(value:Int):Int
+	{
+		super.setWidth(value);
+		_bitmapDrawing = new Bitmap(new BitmapData(value, height, true, 0x00FFFFFF));
+		this._nativeElement.addChild(_bitmapDrawing);
+		return _width = value;
+	}
+	
+
+	override private function setHeight(value:Int):Int
+	{
+		super.setHeight(value);
+		_bitmapDrawing = new Bitmap(new BitmapData(width, value, true, 0x00FFFFFF));
+		this._nativeElement.addChild(_bitmapDrawing);
+		return _height = value;
+	}
+	
 }

@@ -322,7 +322,7 @@ class BoxStylesComputer
 	/**
 	 * Constrain computed width if it is above/below max/min width
 	 */
-	private function constrainWidth(style:AbstractStyle):Void
+	private function constrainWidth(style:AbstractStyle, computedWidth:Int):Int
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -332,48 +332,44 @@ class BoxStylesComputer
 		//no width limit on this DOMElement
 		if (style.maxWidth != ConstrainedDimensionStyleValue.none)
 		{
-			if (computedStyle.width > computedStyle.maxWidth)
+			if (computedWidth > computedStyle.maxWidth)
 			{
-				computedStyle.width = computedStyle.maxWidth;
+				computedWidth = computedStyle.maxWidth;
 			}
 		}
 		
 		//check that width is superior to min width
-		if (computedStyle.width < computedStyle.minWidth)
+		if (computedWidth < computedStyle.minWidth)
 		{
-			computedStyle.width = computedStyle.minWidth;
+			computedWidth = computedStyle.minWidth;
 		}
+		
+		return computedWidth;
 	}
 	
 	/**
 	 * Constrain computed height if it is above/below max/min height
 	 */
-	private function constrainHeight(style:AbstractStyle):Void
+	private function constrainHeight(style:AbstractStyle, computedHeight:Int):Int
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
-		
-		//at this point the computed height might still
-		//be undefined if it was defined as 'auto'
-		//in this case, the max height will
-		//be checked again once the height of the DOMElement
-		//has been defined by its content
-		if (style.height != DimensionStyleValue.autoValue)
+	
+		//check that height is within authorised range
+		if (style.maxHeight != ConstrainedDimensionStyleValue.none)
 		{
-			//check that height is within authorised range
-			if (style.maxHeight != ConstrainedDimensionStyleValue.none)
+			if (computedHeight > computedStyle.maxHeight)
 			{
-				if (computedStyle.height > computedStyle.maxHeight)
-				{
-					computedStyle.height = computedStyle.maxHeight;
-				}
-			}
-			
-			//check that height is superior to min height
-			if (computedStyle.height < computedStyle.minHeight)
-			{
-				computedStyle.height = computedStyle.minHeight;
+				computedHeight = computedStyle.maxHeight;
 			}
 		}
+		
+		//check that height is superior to min height
+		if (computedHeight < computedStyle.minHeight)
+		{
+			computedHeight = computedStyle.minHeight;
+		}
+		
+		return computedHeight;
 	}
 	
 	/**
@@ -382,8 +378,7 @@ class BoxStylesComputer
 	 */
 	private function setComputedHeight(style:AbstractStyle, computedHeight:Int):Void
 	{
-		style.computedStyle.height = computedHeight;
-		constrainHeight(style);
+		style.computedStyle.height = constrainHeight(style, computedHeight);
 	}
 	
 	/**
@@ -392,8 +387,7 @@ class BoxStylesComputer
 	 */
 	private function setComputedWidth(style:AbstractStyle, computedWidth:Int):Void
 	{
-		style.computedStyle.width = computedWidth;
-		constrainWidth(style);
+		style.computedStyle.width = constrainWidth(style, computedWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
