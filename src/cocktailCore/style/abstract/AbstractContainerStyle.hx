@@ -104,7 +104,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Array<ChildTemporaryPositionData>
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -137,14 +137,14 @@ class AbstractContainerStyle extends Style
 		//is the first to be laid out, it is not necessarily the root
 		//DOMElement of the document as any DOMElement can trigger
 		//a layout
-		if (formatingContext == null)
+		if (formattingContext == null)
 		{
-			formatingContext = getFormatingContext();
-			childrenFormattingContext = getFormatingContext();
+			formattingContext = getformattingContext();
+			childrenFormattingContext = getformattingContext();
 		}
 		else
 		{
-			childrenFormattingContext = getFormatingContext(formatingContext);
+			childrenFormattingContext = getformattingContext(formattingContext);
 		}
 		
 		//get the dimensions that will be used to lay out the children
@@ -184,7 +184,7 @@ class AbstractContainerStyle extends Style
 			if (currentWidth != this._computedStyle.width)
 			{
 				//update the structures used for the layout and starts a new layout
-				childrenFormattingContext = getFormatingContext(formatingContext);
+				childrenFormattingContext = getformattingContext(formattingContext);
 				childrenContainingDOMElementData = getContainerDOMElementData();
 				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 				childrenTemporaryPositionsData = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
@@ -205,7 +205,7 @@ class AbstractContainerStyle extends Style
 
 		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
 		//that will also affect the position of its following siblings
-		formatingContext.retrieveFloats(childrenFormattingContext);
+		formattingContext.retrieveFloats(childrenFormattingContext);
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
@@ -574,13 +574,13 @@ class AbstractContainerStyle extends Style
 	 * is returned else a new block or inline formatting context is
 	 * instantiated
 	 * 
-	 * @param	previousFormatingContext the formatting context of the parent of this
+	 * @param	previousformattingContext the formatting context of the parent of this
 	 * Container DOMElement, might be returned if the container DOMElement participates
 	 * in the same formatting context as its parent
 	 * 
 	 * @return an inline or block formatting context
 	 */
-	private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
+	private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var formattingContext:FormattingContext;
@@ -590,34 +590,34 @@ class AbstractContainerStyle extends Style
 		{
 			//the formatting context that will be passed to the
 			//new formatting context
-			var usedFormatingContext:FormattingContext;
+			var usedformattingContext:FormattingContext;
 			
 			//If the container DOMElement is absolutely positioned, then it belongs to a
 			//different stacking context than the curent flow and is not influenced by the previously
 			//declared float, so it doesn't use the previousFormattingContext
 			if (isPositioned() == true && isRelativePositioned() == false)
 			{
-				usedFormatingContext = null;
+				usedformattingContext = null;
 			}
 			else
 			{
-				usedFormatingContext = previousFormatingContext;
+				usedformattingContext = previousformattingContext;
 			}
 			
 			//instantiate the right formatting context
 			//based on the children display
 			if (childrenInline() == true)
 			{
-				formattingContext = new InlineFormattingContext(containerDOMElement, usedFormatingContext);	
+				formattingContext = new InlineFormattingContext(containerDOMElement, usedformattingContext);	
 			}
 			else
 			{
-				formattingContext = new BlockFormattingContext(containerDOMElement, usedFormatingContext);
+				formattingContext = new BlockFormattingContext(containerDOMElement, usedformattingContext);
 			}
 		}
 		else
 		{
-			formattingContext = previousFormatingContext;
+			formattingContext = previousformattingContext;
 		}
 		
 		return formattingContext;

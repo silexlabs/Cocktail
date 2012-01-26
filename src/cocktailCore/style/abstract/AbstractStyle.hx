@@ -538,10 +538,10 @@ class AbstractStyle
 	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
 	 * to position their DOMElement
 	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
-	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
-	 * formatingContext to be placed in the document flow
+	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
+	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//first detach all previously added children
 		detachChildren();
@@ -563,7 +563,7 @@ class AbstractStyle
 		//or both
 		if (isClear() == true)
 		{
-			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
+			formattingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 
 		//reset the computed styles, useful for instance to
@@ -577,7 +577,7 @@ class AbstractStyle
 		
 		//flow all the children of the DOMElement if it has any and store the returned array containing
 		//each of their laid out positions in this domElement coordinate space
-		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -590,7 +590,7 @@ class AbstractStyle
 		
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
+		insertDOMElement(formattingContext, lastPositionedDOMElementData, viewportData);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
@@ -666,7 +666,7 @@ class AbstractStyle
 	 * Flow all the children of a DOMElement if it has any, and return 
 	 * the positions of the flowed children
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Array<ChildTemporaryPositionData>
 	{
 		return new Array<ChildTemporaryPositionData>();
 	}
@@ -674,14 +674,14 @@ class AbstractStyle
 	/**
 	 * Insert the DOMElement in the document, in or out of the flow.
 	 * 
-	 * @param	formatingContext the formating context into which the DOMElement insert itself if it
+	 * @param	formattingContext the formatting context into which the DOMElement insert itself if it
 	 * is 'in flow'
 	 * @param	lastPositionedDOMElementData
 	 * @param	viewportData
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		//insert in formating context as a float
+		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
 			formattingContext.insertFloat(this._domElement, this._domElement.parent);
