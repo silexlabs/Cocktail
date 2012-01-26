@@ -1,22 +1,52 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktailCore.drawing.abstract;
+
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 
 /**
- * ...
+ * The drawing manager exposes a cross-platform
+ * 2d drawing API, drawing the same graphics
+ * in each runtime using runtime specific API
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractDrawingManager 
 {
-
+	/**
+	 * A reference to the nativeElement used
+	 * as drawing surface
+	 */
 	private var _nativeElement:NativeElement;
 	
-	public function new(nativeElement:NativeElement) 
+	/**
+	 * The width of the drawing surface
+	 */
+	private var _width:Int;
+	public var width(getWidth, setWidth):Int;
+	
+	/**
+	 * The height of the drawing surface
+	 */
+	private var _height:Int;
+	public var height(getHeight, setHeight):Int;
+	
+	/**
+	 * class constructor.
+	 */
+	public function new(nativeElement:NativeElement, width:Int, height:Int) 
 	{
 		this._nativeElement = nativeElement;
+		this._width = width;
+		this._height = height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +103,7 @@ class AbstractDrawingManager
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private fill control methods
+	// Public fill control methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -290,4 +320,27 @@ class AbstractDrawingManager
 		return null;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function setWidth(value:Int):Int
+	{
+		return _width = value;
+	}
+	
+	private function getWidth():Int
+	{
+		return _width;
+	}
+	
+	private function setHeight(value:Int):Int
+	{
+		return _height = value;
+	}
+	
+	private function getHeight():Int
+	{
+		return _height;
+	}
 }
