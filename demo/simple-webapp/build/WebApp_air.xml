@@ -3,11 +3,11 @@
     <id>org.silexlabs.CocktailSimpleWebApp</id> 
     <versionNumber>1.0.3</versionNumber> 
     <filename>CocktailDemo</filename> 
-    <name>Cocktail Demo</name> 
+    <name>CocktailDemo</name> 
     <copyright>Copyright 2012 Silex Labs</copyright> 
 	<initialWindow>
 		<content>WebApp.swf</content>
-		<title>Cocktail Demo</title>
+		<title>CocktailDemo</title>
 		<systemChrome>standard</systemChrome>
 		<transparent>false</transparent>
 		<visible>true</visible>
@@ -51,6 +51,6 @@
 				</array>
 			]]>
 		</InfoAdditions>
-		<requestedDisplayResolution>standard</requestedDisplayResolution>
+		<requestedDisplayResolution>high</requestedDisplayResolution>
 	</iPhone>
 </application>
