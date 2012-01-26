@@ -819,23 +819,23 @@ class AbstractStyle
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	// Those method allow for
-	// the re-layout of only a part of the DOM tree
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * When a style invalidating the text is called
 	 * (font size, font weight...), the font metrics
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
 	 */
-	private function invalidateText():Void
+	public function invalidateText():Void
 	{
 		_fontMetrics = null;
 		invalidate();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	// Those method allow for
+	// the re-layout of only a part of the DOM tree
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When a position offset style changes (top, left, 
