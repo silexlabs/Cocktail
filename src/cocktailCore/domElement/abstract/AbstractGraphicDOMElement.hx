@@ -28,6 +28,10 @@ import haxe.Log;
  * drawing is only available on the graphics DOMElement as in HTML
  * we need to make sure that the native DOM element is a canvas.
  * 
+ * The drawing is done by composition by an instance of the DrawingManager
+ * which is also used for instance to draw the backgrounds of the
+ * DOMElements
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractGraphicDOMElement extends EmbeddedDOMElement
@@ -56,13 +60,13 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 			nativeElement = NativeElementManager.createNativeElement(graphic);
 		}
 		
-		_drawingManager = new DrawingManager(nativeElement);
-		
 		super(nativeElement);
 		
 		this._intrinsicHeight = 150;
 		this._intrinsicWidth = 300;
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
+		
+		_drawingManager = new DrawingManager(nativeElement, this._intrinsicHeight, this._intrinsicWidth );
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -215,6 +219,31 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	public function curveTo(controlX:Float, controlY:Float, x:Float, y:Float):Void
 	{
 		_drawingManager.curveTo(controlX, controlY, x, y);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden getter/setter
+	// Overriden to also set the dimensions of the drawing manager.
+	// Also, for this particular DOMelement, width and height becomes
+	// the instrinsic width and height 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function setWidth(value:Int):Int
+	{
+		super.setWidth(value);
+		this._intrinsicWidth = value;
+		_drawingManager.width = value;
+		
+		return value;
+	}
+	
+	override private function setHeight(value:Int):Int 
+	{
+		super.setHeight(value);
+		this._intrinsicHeight = value;
+		_drawingManager.height = value;
+	
+		return value;
 	}
 	
 }

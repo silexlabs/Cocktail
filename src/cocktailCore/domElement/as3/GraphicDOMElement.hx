@@ -67,9 +67,7 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	override private function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
-		
-		setUpBackgroundSprite(_backGroundSprite, width, height);
-		_drawingManager.clearRect(0, 0, this.width, this.height);
+		setUpBackgroundSprite(_backGroundSprite, value, height);
 		
 		return value;
 	}
@@ -77,10 +75,8 @@ class GraphicDOMElement extends AbstractGraphicDOMElement
 	override private function setHeight(value:Int):Int 
 	{
 		super.setHeight(value);
+		setUpBackgroundSprite(_backGroundSprite, width, value);
 		
-		setUpBackgroundSprite(_backGroundSprite, width, height);
-		_drawingManager.clearRect(0, 0, this.width, this.height);
-	
 		return value;
 	}
 	
