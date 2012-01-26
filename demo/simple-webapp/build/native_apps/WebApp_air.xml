@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<application xmlns="http://ns.adobe.com/air/application/2.7"> 
+    <id>org.silexlabs.CocktailSimpleWebApp</id> 
+    <versionNumber>1.0.4</versionNumber> 
+    <filename>CocktailDemo</filename> 
+    <name>CocktailDemo</name> 
+    <copyright>Copyright 2012 Silex Labs</copyright> 
+	<initialWindow>
+		<content>WebApp.swf</content>
+		<title>CocktailDemo</title>
+		<systemChrome>standard</systemChrome>
+		<transparent>false</transparent>
+		<visible>true</visible>
+		<minimizable>true</minimizable>
+		<maximizable>true</maximizable>
+		<resizable>true</resizable>
+		<fullScreen>false</fullScreen>
+		<autoOrients>true</autoOrients>
+		<width>330</width>
+		<height>460</height>
+		<x>150</x>
+		<y>150</y>
+		<minSize>0 0</minSize>
+	</initialWindow> 
+	<android> 
+		<manifestAdditions> 
+			<![CDATA[ 
+				<manifest> 
+					<uses-permission android:name="android.permission.INTERNET" /> 
+				</manifest> 
+			]]> 
+		</manifestAdditions> 
+	</android>
+    <icon> 
+        <image29x29>icons/App_29.png</image29x29> 
+        <image36x36>icons/App_36.png</image36x36> 
+        <image48x48>icons/App_48.png</image48x48> 
+        <image57x57>icons/App_57.png</image57x57> 
+        <image72x72>icons/App_72.png</image114x114> 
+        <image114x114>icons/App_114.png</image114x114> 
+        <image512x512>icons/App_512.png</image512x512> 
+    </icon>
+	<!-- iOS specific capabilities -->
+    <iPhone>
+        <!-- A list of plist key/value pairs to be added to the application Info.plist -->
+		<InfoAdditions>
+			<![CDATA[
+				<key>UIDeviceFamily</key>
+				<array>
+					<string>1</string>
+					<string>2</string>
+				</array>
+			]]>
+		</InfoAdditions>
+		<requestedDisplayResolution>high</requestedDisplayResolution>
+	</iPhone>
+</application>
