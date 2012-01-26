@@ -64,10 +64,10 @@ class FormattingContext
 	/**
 	 * Class constructor
 	 * @param	domElement the containing DOMElement which starts the formatting context
-	 * @param	previousFormatingContext the previous formatting context, used to retrieve
+	 * @param	previousformattingContext the previous formatting context, used to retrieve
 	 * floated DOMElement which still applies to the new formatting context
 	 */
-	public function new(domElement:DOMElement, previousFormatingContext:FormattingContext = null) 
+	public function new(domElement:DOMElement, previousformattingContext:FormattingContext = null) 
 	{
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
@@ -79,9 +79,9 @@ class FormattingContext
 		
 		//retrieve the floats inserted in a previous formatting
 		//context that still apply to this formatting context
-		if (previousFormatingContext != null)
+		if (previousformattingContext != null)
 		{	
-			_floatsManager.addFloats(previousFormatingContext);
+			_floatsManager.addFloats(previousformattingContext);
 		}
 		
 		//init the flow data to place the first inserted
