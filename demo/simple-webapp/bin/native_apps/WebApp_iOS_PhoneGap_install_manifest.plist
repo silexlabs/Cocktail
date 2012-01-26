@@ -11,7 +11,7 @@
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_PhoneGap.ipa</string>
+					<string>http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_PhoneGap.ipa</string>
 				</dict>
 			</array>
 			<key>metadata</key>
@@ -23,7 +23,7 @@
 				<key>kind</key>
 				<string>software</string>
 				<key>title</key>
-				<string>Cocktail PG</string>
+				<string>Cocktail Demo</string>
 			</dict>
 		</dict>
 	</array>
