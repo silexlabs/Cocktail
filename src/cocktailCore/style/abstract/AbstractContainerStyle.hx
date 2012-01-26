@@ -388,7 +388,7 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
 		//get the text to display from the TextElement
-		var text:String = textElement.getNativeText();
+		var text:String = textElement.text;
 		
 		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
 		text = AbstractTextElement.applyWhiteSpace(text, this._computedStyle.whiteSpace);
@@ -456,19 +456,18 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE INVALIDATION METHODS
+	// OVERRIDEN PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
 	 * must be deleted so that they can be redrawn on next layout
 	 */
-	override private function invalidateText():Void
+	override public function invalidateText():Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		containerDOMElement.resetTextFragments();	
 		super.invalidateText();
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

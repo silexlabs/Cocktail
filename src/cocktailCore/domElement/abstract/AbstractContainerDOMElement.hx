@@ -145,7 +145,8 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	public function addText(textElement:TextElement):Void
 	{
-		_children.push({child:textElement, type:ContainerDOMElementChildValue.textElement});
+		_children.push( { child:textElement, type:ContainerDOMElementChildValue.textElement } );
+		textElement.parent = cast(this);
 	}
 	
 	/**
@@ -160,6 +161,10 @@ class AbstractContainerDOMElement extends DOMElement
 			if (_children[i].child != textElement)
 			{
 				newChildrenArray.push(_children[i]);
+			}
+			else
+			{
+				_children[i].child.parent = null;
 			}
 		}
 		this._children = newChildrenArray;
