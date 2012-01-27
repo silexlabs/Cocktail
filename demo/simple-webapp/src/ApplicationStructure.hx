@@ -168,7 +168,7 @@ class ApplicationStructure
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
-			{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
+			/*{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" },
 			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
 			{text:"done for Silex Labs", imagePath:"images/icone_silexlabs_noire.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
 			{text:"by Raphael Harmel", imagePath:"images/google_plus.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
@@ -177,7 +177,16 @@ class ApplicationStructure
 			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
 			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
 			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
-			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
+			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }*/
+			{text:"made with Cocktail", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" },
+			{text:"using haXe language", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
+			{text:"done for Silex Labs", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+			{text:"by Raphael Harmel", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+			{text:"source Code", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
+			{text:"", imagePath:"", action:"", actionTarget:"" },
+			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
+			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" }
 			]
 		);
 		
@@ -188,10 +197,10 @@ class ApplicationStructure
 				{text:"Gallery", imagePath:"images/icone_gallery_blanche.png", action:"goToPage", actionTarget:_galleryPage },
 				{text:"Notes", imagePath:"images/icone_bloc_note-2.png", action:"goToPage", actionTarget:_noteListPage }
 			];
-		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" } );
+		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" } );
 		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
 		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
-		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"", actionTarget:"" } );
+		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"openUrl", actionTarget:"http://www.intermedia-paris.fr/" } );
 		homePageCells.push( {text:"Credits", imagePath:"images/icone_credits.png", action:"goToPage", actionTarget:_creditsPage } );
 		
 		_homePage = createHomePage(homePageCells);
