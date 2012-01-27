@@ -29,97 +29,56 @@ class Mouse extends AbstractMouse
 	public function new(nativeElement:NativeElement) 
 	{
 		super(nativeElement);
+		
+		//set the Flash event types
+		_mouseDownEvent = MouseEvent.MOUSE_DOWN;
+		_mouseUpEvent = MouseEvent.MOUSE_UP;
+		_mouseOverEvent = MouseEvent.MOUSE_OVER;
+		_mouseOutEvent = MouseEvent.MOUSE_OUT;
+		_mouseDoubleClickEvent = MouseEvent.DOUBLE_CLICK;
+		_mouseMoveEvent = MouseEvent.MOUSE_MOVE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.removeEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		}
-		else
-		{
-			_nativeElement.addEventListener(MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		}
-		
-		return this._onMouseDown = value;
-	}
-	
-	override private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.removeEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		}
-		else
-		{
-			_nativeElement.addEventListener(MouseEvent.MOUSE_UP, onNativeMouseUp);
-		}
-		return this._onMouseUp = value;
-	}
-	
-	override private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.removeEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		}
-		else
-		{
-			_nativeElement.addEventListener(MouseEvent.ROLL_OVER, onNativeMouseOver);
-		}
-		return this._onMouseOver = value;
-	}
-	
-	override private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.removeEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		}
-		else
-		{
-			_nativeElement.addEventListener(MouseEvent.ROLL_OUT, onNativeMouseOut);
-		}
-		return this._onMouseOut = value;
-	}
-	
-	override private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.removeEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		}
-		else
-		{
-			_nativeElement.addEventListener(MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		}
-		return this._onMouseMove = value;
-	}
-	
 	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
 		if (value == null)
 		{
 			_nativeElement.doubleClickEnabled = false;
-			_nativeElement.removeEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
 		}
 		else
 		{
 			//In As3, a DisplayObject must be double click enabled to dispatch double click event
 			_nativeElement.doubleClickEnabled = true;
-			_nativeElement.addEventListener(MouseEvent.DOUBLE_CLICK, onNativeMouseDoubleClick);
 		}
+		
+		super.setOnMouseDoubleClick(value);
+		
 		return this._onMouseDoubleClick = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually remove and set listeners on the native flash DisplayObject. Listeners
+	 * are always removed, as they must be removed if the user either removes the 
+	 * listener or set a new one. Listeners are only added if the domElement callback
+	 * is not null
+	 */
+	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
+	{
+		_nativeElement.removeEventListener(mouseEvent, nativeCallback);
+		
+		if (domElementCallback != null)
+		{
+			_nativeElement.addEventListener(mouseEvent, nativeCallback);
+		}
+	}
 	
 	/**
 	 * Returns the current mouse data

@@ -60,6 +60,9 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				
 			case skin:
 				nativeElement = Lib.document.createElement("div");
+				
+			case link:
+				nativeElement = Lib.document.createElement("a");
 		}
 		
 		return nativeElement;

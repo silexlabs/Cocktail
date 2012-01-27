@@ -5,18 +5,17 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
+package cocktailCore.focus.as3;
 
-import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
-import cocktailCore.keyboard.Keyboard;
-import js.Lib;
+import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
 
 /**
- * This is the JavaScript implementation of the BodyDOMElement
+ * This is the flash as3 implementation of the
+ * Focus manager, relies on the default behaviour
  * 
  * @author Yannick DOMINGUEZ
  */
-class BodyDOMElement extends AbstractBodyDOMElement
+class FocusManagerImpl extends AbstractFocusManagerImpl
 {
 	/**
 	 * class constructor
@@ -24,15 +23,6 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	public function new() 
 	{
 		super();
-	}
-	
-	/**
-	 * In Js, keyboard must be listened to on the "document"
-	 * object instead of the "body" object
-	 */
-	override private function initKeyboard():Void
-	{
-		_keyboard = new Keyboard(Lib.document);
 	}
 	
 }

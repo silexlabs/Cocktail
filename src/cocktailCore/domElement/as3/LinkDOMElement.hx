@@ -5,18 +5,19 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
+package cocktailCore.domElement.as3;
 
-import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
-import cocktailCore.keyboard.Keyboard;
-import js.Lib;
+import cocktailCore.domElement.abstract.AbstractLinkDOMElement;
+import flash.net.URLRequest;
+import cocktail.mouse.MouseData;
 
 /**
- * This is the JavaScript implementation of the BodyDOMElement
+ * This is the flash AS3 implementation of the LinkDOMElement.
+ * Open links using flash API
  * 
  * @author Yannick DOMINGUEZ
  */
-class BodyDOMElement extends AbstractBodyDOMElement
+class LinkDOMElement extends AbstractLinkDOMElement
 {
 	/**
 	 * class constructor
@@ -27,12 +28,14 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	}
 	
 	/**
-	 * In Js, keyboard must be listened to on the "document"
-	 * object instead of the "body" object
+	 * Open link using flash API if needed
 	 */
-	override private function initKeyboard():Void
+	override private function openLink():Void
 	{
-		_keyboard = new Keyboard(Lib.document);
+		if (_href != null)
+		{
+			flash.Lib.getURL(new URLRequest(_href), getTargetAsString(_target));
+		}
 	}
 	
 }

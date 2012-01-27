@@ -5,34 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
-
-import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
-import cocktailCore.keyboard.Keyboard;
-import js.Lib;
+package cocktail.domElement;
 
 /**
- * This is the JavaScript implementation of the BodyDOMElement
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific LinkDOMElement at compile-time
  */
-class BodyDOMElement extends AbstractBodyDOMElement
-{
-	/**
-	 * class constructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-	
-	/**
-	 * In Js, keyboard must be listened to on the "document"
-	 * object instead of the "body" object
-	 */
-	override private function initKeyboard():Void
-	{
-		_keyboard = new Keyboard(Lib.document);
-	}
-	
-}
+#if (flash9 || cpp || nme)
+typedef LinkDOMElement =  cocktailCore.domElement.as3.LinkDOMElement;
+
+#elseif js
+typedef LinkDOMElement =  cocktailCore.domElement.js.LinkDOMElement;
+
+#elseif php
+typedef LinkDOMElement =  cocktailCore.domElement.php.LinkDOMElement;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class LinkDOMElement extends cocktailCore.domElement.abstract.AbstractLinkDOMElement { }
+
+#end

@@ -10,7 +10,7 @@ import cocktail.domElement.DOMElement;
 
 /**
  * This is the box positioner class for
- * 'fixed' DOMElements. There are positioned
+ * 'fixed' DOMElements. They are positioned
  * by using the viewport as origin
  * 
  * @author Yannick DOMINGUEZ

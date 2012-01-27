@@ -5,18 +5,20 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.domElement.js;
+package cocktailCore.focus.js;
 
-import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
-import cocktailCore.keyboard.Keyboard;
-import js.Lib;
+import cocktail.domElement.BodyDOMElement;
+import cocktail.domElement.DOMElement;
+import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
 
 /**
- * This is the JavaScript implementation of the BodyDOMElement
+ * This is the JavaScript implementation of the 
+ * focus manager. Prevents the default behaviour
+ * as the focus in JS relies on the browser
  * 
  * @author Yannick DOMINGUEZ
  */
-class BodyDOMElement extends AbstractBodyDOMElement
+class FocusManagerImpl extends AbstractFocusManagerImpl
 {
 	/**
 	 * class constructor
@@ -27,12 +29,27 @@ class BodyDOMElement extends AbstractBodyDOMElement
 	}
 	
 	/**
-	 * In Js, keyboard must be listened to on the "document"
-	 * object instead of the "body" object
+	 * don't listen to keyboard, as it is managed by the browser
 	 */
-	override private function initKeyboard():Void
+	override private function initKeyboardListeners():Void
 	{
-		_keyboard = new Keyboard(Lib.document);
+		
+	}
+	
+	/**
+	 * only store the value
+	 */
+	override private function setActiveDOMElement(value:DOMElement):DOMElement
+	{
+		return _activeDOMElement = value;
+	}
+	
+	/**
+	 * only store the value
+	 */
+	override private function setBodyDOMElement(value:BodyDOMElement):BodyDOMElement
+	{
+		return _bodyDOMElement = value;
 	}
 	
 }
