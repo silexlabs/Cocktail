@@ -19,7 +19,7 @@
 				<key>bundle-identifier</key>
 				<string>org.silexlabs.CocktailSimpleWebApp</string>
 				<key>bundle-version</key>
-				<string>1.0.3</string>
+				<string>1.0.4</string>
 				<key>kind</key>
 				<string>software</string>
 				<key>title</key>

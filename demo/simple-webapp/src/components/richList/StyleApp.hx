@@ -84,7 +84,9 @@ class StyleApp
 		domElement.style.display = DisplayStyleValue.block;
 		//domElement.style.width = domElement.style.height = DimensionStyleValue.length(px(60));
 		//domElement.style.width = DimensionStyleValue.percent(50);
-		domElement.style.width = domElement.style.height = DimensionStyleValue.length(pt(appIconSize));
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.length(pt(appIconSize));
+		domElement.style.width = DimensionStyleValue.length(pt(appIconSize));
+		domElement.style.height = DimensionStyleValue.length(pt(appIconSize));
 		//domElement.style.height = DimensionStyleValue.percent(50);
 		domElement.style.marginBottom = MarginStyleValue.length(px(3));
 	}
@@ -97,6 +99,7 @@ class StyleApp
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.length(pt(appIconSize));
 		domElement.style.width = DimensionStyleValue.length(pt(appIconSize));
 		domElement.style.color = ColorValue.hex('#BDBDCE');
 		

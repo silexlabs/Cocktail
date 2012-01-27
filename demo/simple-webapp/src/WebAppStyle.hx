@@ -109,6 +109,7 @@ class WebAppStyle
 	{
 		//getDefaultStyle(domElement);
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
@@ -130,6 +131,7 @@ class WebAppStyle
 		domElement.style.right = PositionOffsetStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
@@ -163,8 +165,9 @@ class WebAppStyle
 		
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = DimensionStyleValue.percent(100);
 
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(43));
 	}
 
@@ -194,6 +197,7 @@ class WebAppStyle
 
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(43));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;

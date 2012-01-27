@@ -14,7 +14,7 @@
 		<minimizable>true</minimizable>
 		<maximizable>true</maximizable>
 		<resizable>true</resizable>
-		<fullScreen>false</fullScreen>
+		<fullScreen>true</fullScreen>
 		<autoOrients>true</autoOrients>
 		<width>330</width>
 		<height>460</height>
@@ -36,7 +36,7 @@
         <image36x36>icons/App_36.png</image36x36> 
         <image48x48>icons/App_48.png</image48x48> 
         <image57x57>icons/App_57.png</image57x57> 
-        <image72x72>icons/App_72.png</image114x114> 
+        <image72x72>icons/App_72.png</image72x72> 
         <image114x114>icons/App_114.png</image114x114> 
         <image512x512>icons/App_512.png</image512x512> 
     </icon>
@@ -52,6 +52,6 @@
 				</array>
 			]]>
 		</InfoAdditions>
-		<requestedDisplayResolution>high</requestedDisplayResolution>
+		<requestedDisplayResolution>standard</requestedDisplayResolution>
 	</iPhone>
 </application>
