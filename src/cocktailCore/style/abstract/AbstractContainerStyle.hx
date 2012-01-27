@@ -315,8 +315,8 @@ class AbstractContainerStyle extends Style
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 				
 				//relatively positioned DOMElement are both stored in the childLastPositionedDOMElementData array and
-				//also inserted in a formatting context. At this point, their static position must be updated to
-				//the one computed when inserted into the flow
+				//also inserted in a formatting context. At this point, their static position must be retrieved form
+				//the formatting context which formatted the relative DOMElement
 				if (positionedDOMElementData.style.isRelativePositioned() == true)
 				{
 					//all the in-flow children that share the same parent in the stored
@@ -341,23 +341,28 @@ class AbstractContainerStyle extends Style
 					}
 				}
 				
+				//now the static position of all the positioned DOMElement must be updated as they
+				//are in their formatting context space and they must be converted to this
+				//ContainerDOMElement space, as they will be attached to it
+				
 				//the domElement which started the formatting context of the child is retrieved
 				var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
 				
+				//the offsets between this ContainerDOMElement and the domElement which started the formatting
+				//context of the positioned DOMElement is computed and applied to the static position of the
+				//positioned DOMElement
 				var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
 				var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
-				
 				positionedDOMElementData.staticPosition.x += xOffset;
 				positionedDOMElementData.staticPosition.y += yOffset;
 				
-				//position the DOMElement which return its x and y coordinates relative to its first positioned ancestor
+				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement
 				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 			
-				
+				//absolutely positioned DOMElement are positioned relative to the margin box
+				//of their parent and not the content box, so an offset need to be applied
 				if (childTemporaryPositionData.domElement.style.isRelativePositioned() == false)
 				{
-					//absolutely positioned DOMElement are positioned relative to the margin box
-					//of their parent and not the content box, so an offset need to be applied
 					childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 					childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 				}
