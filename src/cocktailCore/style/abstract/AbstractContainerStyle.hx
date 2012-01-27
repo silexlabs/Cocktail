@@ -284,6 +284,8 @@ class AbstractContainerStyle extends Style
 			childrenFormattingContext.destroy();
 		}
 		
+		//retrieve the position of each of the children now that we are sure they were laid out,
+		//because the formattin context was destroyed
 		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = childrenFormattingContext.getChildrenTemporaryPositionData(_domElement);
 		
 		return childrenTemporaryPositionData;
@@ -304,7 +306,7 @@ class AbstractContainerStyle extends Style
 			//update the data of the ContainerDOMElement now that its width and height are known
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
 			
-			//insure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+			//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
 			childLastPositionedDOMElementData.data.height = this._computedStyle.height;
 			
 			//position each stored children
@@ -317,45 +319,40 @@ class AbstractContainerStyle extends Style
 				//the one computed when inserted into the flow
 				if (positionedDOMElementData.style.isRelativePositioned() == true)
 				{
-					if (positionedDOMElementData.formattingContext != null)
+					//all the in-flow children that share the same parent in the stored
+					//formatting context are retrieved
+					var children:Array<ChildTemporaryPositionData> = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
+					
+					//loop in all the children to find a reference
+					//to the relative positioned DOMElement
+					for (i in 0...children.length)
 					{
-						//all the in-flow children that share the same parent in the stored
-						//formatting context are retrived
-						var children:Array<ChildTemporaryPositionData> = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
-						
-						//loop in all the children to find a reference
-						//to the relative positioned DOMElement
-						for (i in 0...children.length)
+						//when found, use its in-flow position as the static position used for
+						//relative positioned DOMElement
+						if (children[i].domElement == positionedDOMElementData.style.domElement)
 						{
-							//when found, use its in-flow position as the static position used for
-							//relative positioned DOMElement
-							if (children[i].domElement == positionedDOMElementData.style.domElement)
-							{
-								var x:Float = children[i].x;
-								var y:Float = children[i].y;
-								positionedDOMElementData.staticPosition = {
-									x:x,
-									y:y
-								}
+							var x:Float = children[i].x;
+							var y:Float = children[i].y;
+							positionedDOMElementData.staticPosition = {
+								x:x,
+								y:y
 							}
 						}
 					}
 				}
 				
+				//the domElement which started the formatting context of the child is retrieved
+				var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
+				
+				var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
+				var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
+				
+				positionedDOMElementData.staticPosition.x += xOffset;
+				positionedDOMElementData.staticPosition.y += yOffset;
+				
 				//position the DOMElement which return its x and y coordinates relative to its first positioned ancestor
 				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-				
-				if (positionedDOMElementData.formattingContext != null)
-				{
-					
-					var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
-					var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
-					var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
 			
-					childTemporaryPositionData.x += xOffset;
-					childTemporaryPositionData.y += yOffset;
-					
-				}
 				
 				if (childTemporaryPositionData.domElement.style.isRelativePositioned() == false)
 				{
