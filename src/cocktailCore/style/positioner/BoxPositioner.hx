@@ -69,7 +69,8 @@ class BoxPositioner
 			domElement:domElement,
 			x:0,
 			y:0,
-			lineIndex:0
+			lineIndex:0,
+			render:true
 		}
 		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),

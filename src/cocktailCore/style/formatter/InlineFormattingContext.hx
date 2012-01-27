@@ -55,7 +55,7 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 
-	override public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
+	override public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
 		var remainingWidth:Int = getRemainingLineWidth();
 		
@@ -94,13 +94,14 @@ class InlineFormattingContext extends FormattingContext
 			domElement:domElement,
 			domElementType:InlineBoxValue.domElement,
 			parentDOMElement:parentDOMElement,
+			render:render,
 			x:0,
 			y:0,
 			position:position } );
 		
 			if (position == true)
 			{
-					super.insert(domElement, parentDOMElement, position);
+					super.insert(domElement, parentDOMElement, position, render);
 			}
 	}
 	
@@ -129,6 +130,7 @@ class InlineFormattingContext extends FormattingContext
 			domElement:domElement,
 			domElementType:InlineBoxValue.domElement,
 			parentDOMElement:parentDOMElement,
+			render:true,
 			x:0,
 			y:0,
 			position:true } );
@@ -140,9 +142,9 @@ class InlineFormattingContext extends FormattingContext
 	 * Overiden to imcrement the x position of the
 	 * formattingContextData with the placed DOMElement's offset width
 	 */
-	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
+	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
-		super.place(domElement, parentDOMElement, position);
+		super.place(domElement, parentDOMElement, position, render);
 		_formattingContextData.x += domElement.offsetWidth;
 
 	}
@@ -164,7 +166,7 @@ class InlineFormattingContext extends FormattingContext
 			for (i in 0..._domElementInLineBox.length)
 			{
 				var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
-				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, 0, _domElementInLineBox[i].position);
+				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, 0, _domElementInLineBox[i].position, _domElementInLineBox[i].render);
 				getChildrenTemporaryPositionData(_domElementInLineBox[i].parentDOMElement).push(childTemporaryPositionData);
 
 				_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, childTemporaryPositionData.x);
@@ -208,9 +210,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
+	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData, render:Bool):Void
 	{
-		super.placeFloat(domElement, parentDOMElement, floatData);
+		super.placeFloat(domElement, parentDOMElement, floatData, render);
 		
 		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		

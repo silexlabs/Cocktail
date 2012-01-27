@@ -99,17 +99,11 @@ class Style extends AbstractStyle
 	{
 		for (i in 0..._childrenTemporaryPositionData.length)
 		{
-			/**
-			 * TO DO : clean-up the try/catch, it shouldn't be
-			 * necessary
-			 */
-			try {
+			if (_childrenTemporaryPositionData[i].render == true)
+			{
 				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
 			}
-			catch (e:Dynamic)
-			{
-				
-			}
+			
 		}
 	}
 	

@@ -231,13 +231,19 @@ class AbstractContainerStyle extends Style
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
+		//a relative positioned DOMElement is inserted into the flow, like a
+		//static DOMElement but it is not rendered in the flow, as it will
+		//already be rendered as an absolute DOMElement which is always visually on top
+		//of the static DOMElement in the same formatting context
+		var render:Bool = isRelativePositioned() == false;
+		
 		if (establishesNewFormattingContext() == true)
 		{
-			formattingContext.insert(this._domElement, this._domElement.parent, true);
+			formattingContext.insert(this._domElement, this._domElement.parent, true, render);
 		}
 		else
 		{
-			formattingContext.insert(this._domElement, this._domElement.parent, false);
+			formattingContext.insert(this._domElement, this._domElement.parent, false, render);
 		}
 	}
 	
@@ -400,7 +406,7 @@ class AbstractContainerStyle extends Style
 			{
 				case word(value):
 					//insert a word in the flow
-					formattingContext.insert(getTextFragmentDOMElement(textFragments[i], value), this._domElement, true);
+					formattingContext.insert(getTextFragmentDOMElement(textFragments[i], value), this._domElement, true, true);
 					
 					
 				case space:

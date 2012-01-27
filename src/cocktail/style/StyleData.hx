@@ -1086,6 +1086,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	typedef LineBoxElementData = {
 		var domElement:DOMElement;
 		var position:Bool;
+		var render:Bool;
 		var domElementType:InlineBoxValue;
 		var parentDOMElement:DOMElement;
 		var x:Int;
@@ -1113,6 +1114,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		//var lineRect:RectangleData;
 		var x:Int;
 		var y:Int;
+		var render:Bool;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

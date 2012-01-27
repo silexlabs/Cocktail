@@ -32,9 +32,9 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * Place the DOMElement below the preceding DOMElement
 	 */
-	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
+	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
-		super.place(domElement, parentDOMElement, position);
+		super.place(domElement, parentDOMElement, position, render);
 		
 		//add the left float offset if the element is embedded
 		//(for instance an image), for non-embedded DOMElement
@@ -51,7 +51,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 	
-		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position);
+		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position, render);
 		
 		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
 		
