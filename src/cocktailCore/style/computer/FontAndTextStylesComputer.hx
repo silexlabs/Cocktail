@@ -61,7 +61,7 @@ class FontAndTextStylesComputer
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementData, containingDOMElementFontMetricsData);
 		
 		//font weight
 		computedStyle.fontWeight = style.fontWeight;
@@ -125,7 +125,7 @@ class FontAndTextStylesComputer
 	 * Compute the vertical offset to apply to a DOMElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -135,10 +135,9 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case middle:
-				//verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
-				verticalAlign = 0;
-			case sub:
+				verticalAlign = style.domElement.offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
 				
+			case sub:
 				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;
 				
 			case superStyle:

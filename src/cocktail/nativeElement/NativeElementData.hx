@@ -57,6 +57,12 @@ import cocktail.nativeElement.NativeElement;
 	 skin;
 	 
 	 /**
+	  * http link type such as an <a> tag in
+	  * HTML
+	  */
+	 link;
+	 
+	 /**
 	  * Can be any other type of native element.
 	  * The name can be used for instance in HTML
 	  * as a tag name

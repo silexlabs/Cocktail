@@ -74,6 +74,9 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			shrinkedWidth = style.computedStyle.width;
 		}
 		
+		//constrain width before returning it
+		shrinkedWidth = constrainWidth(style, shrinkedWidth);
+		
 		return shrinkedWidth;
 	}
 	
@@ -96,6 +99,9 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		{
 			height = childrenHeight;
 		}
+		
+		//constrain height before returning it
+		height = constrainHeight(style, height);
 		
 		return height;
 	}
@@ -154,14 +160,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed width is deduced from all the other computed horizontal values. It is the remaining space when all the other value
 			//are substracted from the containing DOMElement width
-			computedStyle.width = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+			setComputedWidth(style, containingDOMElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
 		}
 		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
 		//so the width is first set to an "inifinite" width which will allow to find the max line width of the formatted children
 		//used by the shrink-to-fit method
 		else
 		{
-			computedStyle.width = 10000000;
+			setComputedWidth(style, 10000000);
 		}
 	}
 	

@@ -444,18 +444,45 @@ class AbstractStyle
 	 * Render all the children in the
 	 * childrenTemporaryPositionData array
 	 * by attaching them to the DOM using
-	 * runtime specific API.
-	 * 
-	 * Implemented by each runtime
+	 * runtime specific API and setting
+	 * their native properties
 	 */
 	public function render():Void
 	{
-		//abstract
+		for (i in 0..._childrenTemporaryPositionData.length)
+		{
+			//apply x and y
+			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+			
+			//apply width and height
+			_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
+		
+			//apply transformations
+			_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
+			
+			//apply opacity and visibility
+			_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
+			_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
+		
+			//attach the child
+			attachChild(_childrenTemporaryPositionData[i].domElement);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a child to the NativeElement of the 
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachChild(domElement:DOMElement):Void
+	{
+		//abstract
+	}
 	
 	/**
 	 * Detach all the children previously
@@ -539,19 +566,18 @@ class AbstractStyle
 			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 
+		//reset the computed styles, useful for instance to
+		//reset an auto height to 0 if a layout has already
+		//occured which might create bugs in the computation of
+		//font and text styles which use the computed height value
+		initComputedStyles();
+		
 		//compute all the styles of a DOMElement
-		computeDOMElement(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
+		computeDOMElementStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
 		//flow all the children of the DOMElement if it has any and store the returned array containing
 		//each of their laid out positions in this domElement coordinate space
 		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
-		
-		//insert the DOMElement in the document based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
-		
-		//apply the computed dimensions to the DOMElement
-		setNativeHeight(this._computedStyle.height);
-		setNativeWidth(this._computedStyle.width);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -559,11 +585,12 @@ class AbstractStyle
 		//instance the transform style use the height and width of the DOMElement
 		//to determine the transformation center
 		computeVisualEffectStyles();
-
-		//apply the computed visual effects on the DOMElement
-		setNativeMatrix(this._computedStyle.transform);
-		setNativeOpacity(this._computedStyle.opacity);
-		setNativeVisibility(this._computedStyle.visibility);
+		
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		
+		
+		//insert the DOMElement in its parent's formatting context based on its positioning scheme
+		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
@@ -687,33 +714,34 @@ class AbstractStyle
 				y:y
 			}
 			
-			//insert in the flow, then apply an offset to it
+			//insert in the flow
 			if (isRelativePositioned() == true)
 			{
 				//TO DO : 
 				//with this method the relative DOMElement will be added to display list twice,
 				//which will work in flash but is not clean
 				insertInFlowDOMElement(formattingContext);
-				//positionElement(lastPositionedDOMElementData.data, viewportData, staticPosition);
 			}
 			
-				//insert as an absolutely positioned DOMElement.
-				//an absolutely positioned DOMElement is not positioned right away, it must
-				//wait for its first positioned ancestor to be laid out. The reason is that
-				//if the positioned ancestor height is 'auto', the height of the positioned
-				//ancestor is not yet determined and so this DOMElement can't be positioned
-				//using the bottom style yet. Once the first ancestor is laid out, it
-				//calls the positionElement method on all the stored children
-				var positionedDOMElementData:PositionedDOMElementData = {
-					staticPosition:staticPosition,
-					style:this,
-					formattingContext:formattingContext
-				}
-				
-				//store the DOMElement to be positioned later
-				lastPositionedDOMElementData.children.push(positionedDOMElementData);
+			//insert as a positioned DOMElement.
+			//an absolutely positioned DOMElement is not positioned right away, it must
+			//wait for its first positioned ancestor to be laid out. The reason is that
+			//if the positioned ancestor height is 'auto', the height of the positioned
+			//ancestor is not yet determined and so this DOMElement can't be positioned
+			//using the bottom style yet. Once the first ancestor is laid out, it
+			//calls the positionElement method on all the stored children
+			//
+			//relative positioned DOMElement are also stored in that array
 			
-	}
+			var positionedDOMElementData:PositionedDOMElementData = {
+				staticPosition:staticPosition,
+				style:this,
+				formattingContext:formattingContext
+			}
+			
+			//store the DOMElement to be positioned later
+			lastPositionedDOMElementData.children.push(positionedDOMElementData);
+		}
 	}
 	
 	/**
@@ -858,27 +886,6 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute first the styles determining the DOMElement's
-	 * positioning scheme (position, float, clear...),
-	 * the style detemining font and text display,
-	 * then the styles determining its box model (width, height, margins
-	 * paddings...) which are computed last because they may use
-	 * some font metrics to compute the box model
-	 */
-	public function computeDOMElement(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
-	{
-		//reset the computed styles, useful for instance to
-		//reset an auto height to 0 if a layout has already
-		//occured which might create bugs in the computation of
-		//font and text styles which use the computed height value
-		initComputedStyles();
-		
-		computeDisplayStyles();
-		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
-		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
-	}
-	
-	/**
 	 * This method computes the styles determing
 	 * the DOMElement's layout scheme :
 	 * position, display, float and clear.
@@ -897,6 +904,21 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute first the styles determining the DOMElement's
+	 * positioning scheme (position, float, clear...),
+	 * the style detemining font and text display,
+	 * then the styles determining its box model (width, height, margins
+	 * paddings...) which are computed last because they may use
+	 * some font metrics to compute the box model
+	 */
+	private function computeDOMElementStyles(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{
+		computeDisplayStyles();
+		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		computeBoxModelStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData);
+	}
 	
 	/**
 	 * Compute the visual effect styles (opacity, visibility, transformations)
@@ -1097,10 +1119,6 @@ class AbstractStyle
 		return ret;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Determine wether a DOMElement has
 	 * the 'position' value 'relative'.
@@ -1115,10 +1133,14 @@ class AbstractStyle
 	 * grand-children until another positioned
 	 * DOMElement is found
 	 */
-	private function isRelativePositioned():Bool
+	public function isRelativePositioned():Bool
 	{
 		return this._computedStyle.position == relative;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Determine wether the DOMElement introduces
@@ -1259,7 +1281,6 @@ class AbstractStyle
 		{
 			this._nativeX = x;
 		}
-		
 	}
 	
 	/**

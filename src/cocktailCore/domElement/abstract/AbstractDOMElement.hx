@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import cocktailCore.focus.FocusManager;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
 import cocktailCore.mouse.Mouse;
@@ -46,31 +47,37 @@ class AbstractDOMElement
 	/**
 	 * The callback called on mouse down through the mouse instance
 	 */
+	private var _onMouseDown:MouseEventData->Void;
 	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEventData->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
+	private var _onMouseUp:MouseEventData->Void;
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this dom element
 	 */
+	private var _onMouseOver:MouseEventData->Void;
 	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
 	
 	/**
 	 * The callback called on mouse out of this dom element
 	 */
+	private var _onMouseOut:MouseEventData->Void;
 	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this dom element
 	 */
+	private var _onMouseMove:MouseEventData->Void;
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
 	
 	/**
 	 * The callback called when this dom element is double-clicked
 	 */
+	private var _onMouseDoubleClick:MouseEventData->Void;
 	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -86,12 +93,48 @@ class AbstractDOMElement
 	/**
 	 * The callback called on key down through the keyboard instance
 	 */
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyEventData->Void;
+	private var _onKeyDown:KeyboardEventData->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEventData->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyEventData->Void;
+	private var _onKeyUp:KeyboardEventData->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEventData->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Focus attributes and callback
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the DOMElement can receive focus, 
+	 * some DOMElements such as the LinkDOMElement can
+	 * recive focus by default
+	 */
+	private var _tabEnabled:Bool;
+	public var tabEnabled(getTabEnabled, setTabEnabled):Bool;
+	
+	/**
+	 * The tab index order of the DOMElement. If the DOMElement
+	 * is tab enabled, this index will be used when the
+	 * user presses the TAB key to determine the order
+	 * of the focusable DOMElements in the DOM
+	 */
+	private var _tabIndex:Int;
+	public var tabIndex(getTabIndex, setTabIndex):Int;
+	
+	/**
+	 * callback called when the DOMElement recives 
+	 * the focus
+	 */
+	private var _onFocusIn:Void->Void;
+	public var onFocusIn(getOnFocusIn, setOnFocusIn):Void->Void;
+	
+	/**
+	 * callback called when the DOMElement loses the focus
+	 */
+	private var _onFocusOut:Void->Void;
+	public var onFocusOut(getOnFocusOut, setOnFocusOut):Void->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
@@ -209,17 +252,6 @@ class AbstractDOMElement
 	public var isVisible(getIsVisible, setIsVisible):Bool;
 	
 	/////////////////////////////////
-	// Z-Index attribute
-	/////////////////////////////////
-	
-	/**
-	 * The z-index of this DOM Object, relative to
-	 * its parent (the first child of a ContainerDOMElement always has
-	 * a 0 z-index)
-	 */
-	public var zIndex(getZIndex, setZIndex):Int;
-	
-	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
 	
@@ -244,15 +276,26 @@ class AbstractDOMElement
 	 */
 	private function init():Void
 	{	
-		//initialise the keyboard listener of this dom element 
-		_keyboard = new Keyboard();
-		
 		//initialise the mouse listeners on this dom element by 
 		//listening to the current native element
 		_mouse = new Mouse(this._nativeElement);
 		
+		//init key listeners
+		initKeyboard();
+		
 		//init the style for this DOMElement
 		initStyle();
+		
+		//init the focus attributes
+		initFocus();
+	}
+	
+	/**
+	 * initialise the keyboard listener of this dom element 
+	 */
+	private function initKeyboard():Void
+	{
+		_keyboard = new Keyboard(this._nativeElement);
 	}
 	
 	/**
@@ -263,6 +306,15 @@ class AbstractDOMElement
 	private function initStyle():Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * init the focus attributes
+	 */
+	private function initFocus():Void
+	{
+		_tabIndex = 0;
+		_tabEnabled = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -472,68 +524,164 @@ class AbstractDOMElement
 	
 	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseDown = value;
+		_onMouseDown = value;
+		
+		if (_onMouseDown == null)
+		{
+			_mouse.onMouseDown = null;
+		}
+		else
+		{
+			_mouse.onMouseDown = onMouseDownCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseDown():MouseEventData->Void
 	{
-		return _mouse.onMouseDown;
+		return _onMouseDown;
 	}
 	
 	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseUp = value;
+		_onMouseUp = value;
+		
+		if (_onMouseUp == null)
+		{
+			_mouse.onMouseUp = null;
+		}
+		else
+		{
+			_mouse.onMouseUp = onMouseUpCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseUp():MouseEventData->Void
 	{
-		return _mouse.onMouseUp;
+		return _onMouseUp;
 	}
 	
 	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseOver = value;
+		_onMouseOver = value;
+		
+		if (_onMouseOver == null)
+		{
+			_mouse.onMouseOver = null;
+		}
+		else
+		{
+			_mouse.onMouseOver = onMouseOverCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseOver():MouseEventData->Void
 	{
-		return _mouse.onMouseOver;
+		return _onMouseOver;
 	}
 	
 	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseOut = value;
+		_onMouseOut = value;
+		
+		if (_onMouseOut == null)
+		{
+			_mouse.onMouseOut = null;
+		}
+		else
+		{
+			_mouse.onMouseOut = onMouseOutCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseOut():MouseEventData->Void
 	{
-		return _mouse.onMouseOut;
+		return _onMouseOut;
 	}
 	
 	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseMove = value;
+		_onMouseMove = value;
+		
+		if (_onMouseMove == null)
+		{
+			_mouse.onMouseMove = null;
+		}
+		else
+		{
+			_mouse.onMouseMove = onMouseMoveCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseMove():MouseEventData->Void
 	{
-		return _mouse.onMouseMove;
+		return _onMouseMove;
 	}
 	
 	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
 	{
-		_mouse.onMouseDoubleClick = value;
+		_onMouseDoubleClick = value;
+		
+		if (_onMouseDoubleClick == null)
+		{
+			_mouse.onMouseDoubleClick = null;
+		}
+		else
+		{
+			_mouse.onMouseDoubleClick = onMouseDoubleClickCallback;
+		}
+		
 		return value;
 	}
 	
 	private function getOnMouseDoubleClick():MouseEventData->Void
 	{
-		return _mouse.onMouseDoubleClick;
+		return _onMouseDoubleClick;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE EVENT CALLBACK
+	// called by the Mouse instance when the user interacts
+	// with the DOMElement with its mouse
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onMouseDownCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseDown(mouseEventData);
+	}
+	
+	private function onMouseUpCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseUp(mouseEventData);
+	}
+	
+	private function onMouseMoveCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseMove(mouseEventData);
+	}
+	
+	private function onMouseOverCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseOver(mouseEventData);
+	}
+	
+	private function onMouseOutCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseOver(mouseEventData);
+	}
+	
+	private function onMouseDoubleClickCallback(mouseEventData:MouseEventData):Void
+	{
+		_onMouseDoubleClick(mouseEventData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -541,51 +689,128 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:KeyEventData->Void):KeyEventData->Void
+	private function setOnKeyDown(value:KeyboardEventData->Void):KeyboardEventData->Void
 	{
-		_keyboard.onKeyDown = value;
+		_onKeyDown = value;
+		
+		if (_onKeyDown == null)
+		{
+			_keyboard.onKeyDown = null;
+		}
+		else
+		{
+			_keyboard.onKeyDown = onKeyDownCallback;
+		}
+		
 		return value;
 	}
 	
-	private function getOnKeyDown():KeyEventData->Void
+	private function getOnKeyDown():KeyboardEventData->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:KeyEventData->Void):KeyEventData->Void
+	private function setOnKeyUp(value:KeyboardEventData->Void):KeyboardEventData->Void
 	{
-		_keyboard.onKeyUp = value;
+		_onKeyUp = value;
+		
+		if (_onKeyUp == null)
+		{
+			_keyboard.onKeyUp = null;
+		}
+		else
+		{
+			_keyboard.onKeyUp = onKeyUpCallback;
+		}
+		
 		return value;
 	}
 	
-	private function getOnKeyUp():KeyEventData->Void
+	private function getOnKeyUp():KeyboardEventData->Void
 	{
 		return _keyboard.onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM SETTER/GETTER
-	// Generic Setters/Getters to manipulate any attribute of the DOMElement
+	// KEYBOARD EVENT CALLBACK
+	// called by the Keyboard instance when the user interacts
+	// with the keyboard while this DOMElement has the focus
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onKeyDownCallback(keyEventData:KeyboardEventData):Void
+	{
+		_onKeyDown(keyEventData);
+	}
+	
+	private function onKeyUpCallback(keyEventData:KeyboardEventData):Void
+	{
+		_onKeyUp(keyEventData);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FOCUS SETTER/GETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set a field value on the nativeElement
-	 * @param	propertyName the name of the field
-	 * @param	propertyValue the new value of the field
+	 * Set the focus on this DOMElement, the focus
+	 * manager must determine if the DOMElement can
+	 * actually receive focus
 	 */
-	private function setField(propertyName:String, propertyValue:Dynamic):Void
+	public function focus():Void
 	{
-		Reflect.setField(this._nativeElement, propertyName, propertyValue);
+		FocusManager.getInstance().activeDOMElement = cast(this);
+	}
+	
+	private function setOnFocusIn(value:Void->Void):Void->Void
+	{
+		return _onFocusIn = value;
+	}
+	
+	private function getOnFocusIn():Void->Void
+	{
+		return _onFocusIn;
+	}
+	
+	private function setOnFocusOut(value:Void->Void):Void->Void
+	{
+		return _onFocusOut = value;
+	}
+	
+	private function getOnFocusOut():Void->Void
+	{
+		return _onFocusOut;
 	}
 	
 	/**
-	 * Return the value of a field of the nativeElement
-	 * @param	propertyName the name of the field value to return
-	 * @return might be any type
+	 * When set, invalidate the focus manager
+	 * tab list as this DOMElement must now
+	 * be included or excluded from it
 	 */
-	private function getField(propertyName:String):Dynamic
+	private function setTabEnabled(value:Bool):Bool
 	{
-		return Reflect.field(this._nativeElement, propertyName);
+		FocusManager.getInstance().invalidate();
+		return _tabEnabled = value;
+	}
+	
+	private function getTabEnabled():Bool
+	{
+		return _tabEnabled;
+	}
+	
+	/**
+	 * when set, invalidate the focus manager
+	 * tab list, as this DOMElement may appear
+	 * at another index of the list
+	 */
+	private function setTabIndex(value:Int):Int
+	{
+		FocusManager.getInstance().invalidate();
+		return _tabIndex = value;
+	}
+	
+	private function getTabIndex():Int
+	{
+		return _tabIndex;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -809,21 +1034,6 @@ class AbstractDOMElement
 		}
 		
 		return newGlobalY;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Z-INDEX SETTER/GETTER
-	// Setter/Getter to manipulate a native DOMElement z-index in the publication
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setZIndex(value:Int):Int 
-	{
-		return value;
-	}
-	
-	private function getZIndex():Int 
-	{
-		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
