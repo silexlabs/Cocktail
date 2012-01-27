@@ -224,25 +224,20 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Overriden as ContainerDOMElement is only added to the flow if it is not an inline level inline container.
-	 * If it is, only its children are added in the flow.
+	 * If the ContainerDOMElement doesn't start a new formatting context, it is
+	 * added to the flow, however it won't be place, so that the corresponding
+	 * nativeElement will be located at the origin of the formatting context
+	 * once rendered
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
 		if (establishesNewFormattingContext() == true)
 		{
-			
-			if (this._domElement.parent != null)
-			{
-				formattingContext.insert(this._domElement, this._domElement.parent, true);
-			}
+			formattingContext.insert(this._domElement, this._domElement.parent, true);
 		}
 		else
 		{
-			if (this._domElement.parent != null)
-			{
-				formattingContext.insert(this._domElement, this._domElement.parent, false);
-			}
+			formattingContext.insert(this._domElement, this._domElement.parent, false);
 		}
 	}
 	
@@ -327,8 +322,8 @@ class AbstractContainerStyle extends Style
 						//all the in-flow children that share the same parent in the stored
 						//formatting context are retrived
 						var children:Array<ChildTemporaryPositionData> = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
-					
-						//loop in all the children to the find a reference
+						
+						//loop in all the children to find a reference
 						//to the relative positioned DOMElement
 						for (i in 0...children.length)
 						{
