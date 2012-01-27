@@ -143,9 +143,9 @@ class FormattingContext
 	 * Insert a DOMElement in the formatting context's
 	 * flow
 	 */
-	public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
+	public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
-		doInsert(domElement, parentDOMElement, position);
+		doInsert(domElement, parentDOMElement, position, render);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ class FormattingContext
 	 */
 	public function insertSpace(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement, parentDOMElement);
+		doInsert(domElement, parentDOMElement, true, true);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ class FormattingContext
 	 */
 	public function insertTab(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement, parentDOMElement);
+		doInsert(domElement, parentDOMElement, true, true);
 	}
 	
 	/**
@@ -179,13 +179,13 @@ class FormattingContext
 	 * Insert a floated DOMElement in the formatting
 	 * context's flow
 	 */
-	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement, render:Bool):Void
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
 		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
 		//actually place the floated DOMElement
-		placeFloat(domElement, parentDOMElement, floatData);
+		placeFloat(domElement, parentDOMElement, floatData, render);
 	}
 	
 	/**
@@ -240,12 +240,12 @@ class FormattingContext
 	 * Actually insert a DOMElement in the
 	 * formatting context
 	 */
-	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool = false):Void
+	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
 		//actually place the DOMElement by computing
 		//its place in the flow than updating its
 		//position attributes
-		place(domElement, parentDOMElement, establishesNewFormattingContext);
+		place(domElement, parentDOMElement, position, render);
 		
 		//remove all the floats that the insertion
 		//of the DOMElement made obsolote
@@ -265,7 +265,7 @@ class FormattingContext
 	 * Place a DOMElement is the flow according to 
 	 * a block or inline formatting scheme
 	 */
-	private function place(domElement:DOMElement, parentDOMElement:DOMElement, establishesNewFormattingContext:Bool):Void
+	private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
 	{
 		//abstract
 	}
@@ -276,9 +276,9 @@ class FormattingContext
 	 * change based on tht type of formatting context
 	 * (block or inline)
 	 */
-	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
+	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData, render:Bool):Void
 	{
-		getChildrenTemporaryPositionData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true));
+		getChildrenTemporaryPositionData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true, render ));
 		
 	}
 	
@@ -293,7 +293,7 @@ class FormattingContext
 	}
 	
 	
-	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool):ChildTemporaryPositionData
+	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool, render:Bool):ChildTemporaryPositionData
 	{
 		var childTemporaryPositionData:ChildTemporaryPositionData;
 		
@@ -303,7 +303,8 @@ class FormattingContext
 			domElement:domElement,
 			x:x,
 			y:y,
-			lineIndex:lineIndex
+			lineIndex:lineIndex,
+			render:render
 			}
 		}
 		else
@@ -312,7 +313,8 @@ class FormattingContext
 			domElement:domElement,
 			x:0,
 			y:0,
-			lineIndex:lineIndex
+			lineIndex:lineIndex,
+			render:render
 			}
 		}
 		

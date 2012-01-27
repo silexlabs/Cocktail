@@ -451,23 +451,27 @@ class AbstractStyle
 	{
 		for (i in 0..._childrenTemporaryPositionData.length)
 		{
-			//apply x and y
-			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+			if (_childrenTemporaryPositionData[i].render == true)
+			{
+					//apply x and y
+				_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+				_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				
+				//apply width and height
+				_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
+				_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
 			
-			//apply width and height
-			_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
-		
-			//apply transformations
-			_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
+				//apply transformations
+				_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
+				
+				//apply opacity and visibility
+				_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
+				_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
 			
-			//apply opacity and visibility
-			_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
-		
-			//attach the child
-			attachChild(_childrenTemporaryPositionData[i].domElement);
+				//attach the child
+				attachChild(_childrenTemporaryPositionData[i].domElement);
+			}
+			
 		}
 	}
 	
@@ -639,7 +643,8 @@ class AbstractStyle
 					domElement:domElement,
 					x:0,
 					y:0,
-					lineIndex:0
+					lineIndex:0,
+					render:true
 				};
 		}
 		
@@ -686,7 +691,7 @@ class AbstractStyle
 		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent);
+			formattingContext.insertFloat(this._domElement, this._domElement.parent, true);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
@@ -745,10 +750,7 @@ class AbstractStyle
 	 */
 	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		if (this._domElement.parent != null)
-		{
-			formattingContext.insert(this._domElement, this._domElement.parent, true);
-		}
+		formattingContext.insert(this._domElement, this._domElement.parent, true, isRelativePositioned() == false);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
