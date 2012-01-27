@@ -586,8 +586,10 @@ class AbstractStyle
 		//to determine the transformation center
 		computeVisualEffectStyles();
 		
+		//some text and font styles needs to be re-computed now that all the dimension
+		//of the DOMElement are known, for instance some values of the VerticalAlign style
+		//might need those dimensions to compute the right values
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
-		
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
 		insertDOMElement(formattingContext, lastPositionedDOMElementData, viewportData);
@@ -699,15 +701,8 @@ class AbstractStyle
 			var x:Float = 0;
 			var y:Float = 0;
 			
-			/**
-			 * TO DO: clean up, formatting context not
-			 * supposed to be null here
-			 */
-			if (formattingContext != null)
-			{
-				x = formattingContext.formattingContextData.x;
-				y = formattingContext.formattingContextData.y;
-			}
+			x = formattingContext.formattingContextData.x;
+			y = formattingContext.formattingContextData.y;
 			
 			var staticPosition:PointData = {
 				x:x,
@@ -864,18 +859,13 @@ class AbstractStyle
 	
 	/**
 	 * Determine wheter the parent of the DOMElement needs
-	 * to be dirtied too. In some cases, for instance
-	 * if the DOMElement is absolutely positioned, dirtiyng
-	 * its parent isn't necessary
+	 * to be dirtied too. 
+	 * 
+	 * TODO : implement this method
 	 */
 	private function isParentDirty():Bool
 	{
 		var ret:Bool = true;
-		
-		if (this.isPositioned() == true && this.isRelativePositioned() == false)
-		{
-			ret = false;
-		}
 		
 		return ret;
 	}
