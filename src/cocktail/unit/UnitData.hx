@@ -122,7 +122,13 @@ enum ColorValue {
 	 * each value (red, green and blue)
 	 * must be an integer from 0 to 255
 	 */
-	RGB(red:Int, green:Int, blue:Int);
+	rgb(red:Int, green:Int, blue:Int);
+	
+	/**
+	 * same as rgb + alpha is a float from 
+	 * 0 (transparent) to 1 (opaque)
+	 */
+	rgba(red:Int, green:Int, blue:Int, alpha:Float);
 	
 	/**
 	 * The color value must be represented
@@ -137,7 +143,72 @@ enum ColorValue {
 	 * set of predefined colors
 	 */ 
 	keyword(value:ColorKeywordValue);
+	
+	/**
+	 * a fully transparent color, equivalent
+	 * to rgba(0,0,0,0)
+	 */
+	transparent;
 }
+
+/**
+ * This value represents a 2D image which
+ * can either be loaded from an external
+ * source, or a programmaticaly drawn
+ * gradient
+ */
+enum ImageValue {
+	url(value:URLData);
+	imageList(value:Array<ImageDeclarationValue>);
+	gradient(value:GradientValue);
+}
+
+enum ImageDeclarationValue {
+	url(value:URLData);
+	color(value:ColorValue);
+}
+
+enum GradientValue {
+	linear(value:LinearGradientData);
+}
+
+typedef LinearGradientData = {
+	var angle:GradientAngleValue;
+	var colorStops:Array<GradientColorStopData>;
+}
+
+typedef GradientColorStopData = {
+	var color:ColorValue;
+	var stop:GradientStopValue;
+}
+
+enum GradientStopValue {
+	length(value:LengthValue);
+	percent(value:Int);
+}
+
+enum GradientAngleValue {
+	angle(value:AngleValue);
+	side(value:GradientSideValue);
+	corner(horizontal:GradientHorizontalSideValue, vertical:GradientVerticalSideValue);
+}
+
+enum GradientSideValue {
+	horizontal(value:GradientHorizontalSideValue);
+	vertical(value:GradientVerticalSideValue);
+}
+
+enum GradientVerticalSideValue {
+	top;
+	bottom;
+}
+
+enum GradientHorizontalSideValue {
+	left;
+	right;
+}
+
+typedef URLData = String;
 
 /**
  * Lists the default available colors

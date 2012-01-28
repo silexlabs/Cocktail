@@ -158,16 +158,26 @@ class UnitManager
 		
 		switch (value)
 		{
-			case RGB(red, green, blue):
+			case rgb(red, green, blue):
 				color = red;
 				color = (color << 8) + green;
 				color = (color << 8) + blue;
 			
+			case rgba(red, green, blue, alpha):
+				color = Math.round((alpha * 255));
+				color = (color << 8) + red;
+				color = (color << 8) + green;
+				color = (color << 8) + blue;
+				
+				
 			case hex(value):
 				color = Std.parseInt(StringTools.replace(value, "#", "0x"));
 				
 			case keyword(value):
 				color = getColorFromColorValueKeyword(value);
+				
+			case transparent:
+				color = Std.parseInt("0xFFFFFFFF");
 
 		}
 		

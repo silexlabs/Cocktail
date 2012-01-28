@@ -133,6 +133,30 @@ class AbstractStyle
 	public var right(getRight, setRight):PositionOffsetStyleValue;
 	
 	/**
+	 * background styles
+	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
+	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
+	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
+	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
+	 
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
+	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
+	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
+	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
+	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
+	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
+	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
+	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
+	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
+	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
+	
+	/**
 	 * font styles
 	 */
 	private var _fontSize:FontSizeStyleValue;
@@ -331,6 +355,24 @@ class AbstractStyle
 		this.floatValue = FloatStyleValue.none;
 		this.clear = ClearStyleValue.none;
 		
+		this.backgroundColor = BackgroundColorStyleValue.color(ColorValue.transparent);
+		this.backgroundImage = [BackgroundImageStyleValue.none];
+		this.backgroundRepeat = [{
+			x:BackgroundRepeatStyleValue.repeat,
+			y:BackgroundRepeatStyleValue.repeat
+		}];
+		this.backgroundPosition = [{
+			x:BackgroundPositionXStyleValue.percent(0),
+			y:BackgroundPositionYStyleValue.percent(0)
+		}];
+		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
+		this.backgroundSize = [
+			BackgroundSizeStyleValue.dimensions({
+				x:BackgroundSizeStyleDimensionData.auto,
+				y:BackgroundSizeStyleDimensionData.auto
+			})];
+		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
+		
 		this.fontStyle = FontStyleStyleValue.normal;
 		this.fontVariant = FontVariantStyleValue.normal;
 		this.fontWeight = FontWeightStyleValue.normal;
@@ -403,7 +445,14 @@ class AbstractStyle
 			visibility:true,
 			opacity:1.0,
 			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix()
+			transform:new Matrix(),
+			backgroundColor:0,
+			backgroundSize:[],
+			backgroundOrigin:[],
+			backgroundImage:[],
+			backgroundClip:[],
+			backgroundPosition:[],
+			backgroundRepeat:[]
 		};
 	}
 	
@@ -453,7 +502,7 @@ class AbstractStyle
 		{
 			if (_childrenTemporaryPositionData[i].render == true)
 			{
-					//apply x and y
+				//apply x and y
 				_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
 				_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
 				
@@ -470,8 +519,7 @@ class AbstractStyle
 			
 				//attach the child
 				attachChild(_childrenTemporaryPositionData[i].domElement);
-			}
-			
+			}	
 		}
 	}
 	
@@ -696,7 +744,7 @@ class AbstractStyle
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext);
+			insertInFlowDOMElement(formattingContext, true);
 		}
 		//else the DOMElement is positioned
 		else
@@ -720,7 +768,7 @@ class AbstractStyle
 				//TO DO : 
 				//with this method the relative DOMElement will be added to display list twice,
 				//which will work in flash but is not clean
-				insertInFlowDOMElement(formattingContext);
+				insertInFlowDOMElement(formattingContext, false);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -748,9 +796,9 @@ class AbstractStyle
 	 * Do insert an inflow DOMElement into the document. Method added to allow
 	 * overriding for some inherithing class
 	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
 	{
-		formattingContext.insert(this._domElement, this._domElement.parent, true, isRelativePositioned() == false);
+		formattingContext.insert(this._domElement, this._domElement.parent, true, render);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1912,5 +1960,75 @@ class AbstractStyle
 	private function getTransformOrigin():TransformOriginStyleData
 	{
 		return _transformOrigin;
+	}
+	
+	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	{
+		return _backgroundColor = value;
+	}
+	
+	private function getBackgroundColor():BackgroundColorStyleValue
+	{
+		return _backgroundColor;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	{
+		return _backgroundImage = value;
+	}
+	
+	private function getBackgroundImage():Array<BackgroundImageStyleValue>
+	{
+		return _backgroundImage;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundRepeat = value;
+	}
+	
+	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundRepeat;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundSize = value;
+	}
+	
+	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundSize;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	{
+		return _backgroundClip = value;
+	}
+	
+	private function getBackgroundClip():Array<BackgroundClipStyleValue>
+	{
+		return _backgroundClip;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	{
+		return _backgroundPosition = value;
+	}
+	
+	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
+	{
+		return _backgroundPosition;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundOrigin = value;
+	}
+	
+	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundOrigin;
 	}
 }

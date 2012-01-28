@@ -71,7 +71,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * A BodyDOMElement is never inserted into the flow as it is
 	 * always located at the origin of the viewport
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
 	{
 		
 	}

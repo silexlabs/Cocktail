@@ -605,6 +605,141 @@ import cocktailCore.style.formatter.FormattingContext;
 		number(value:Float);
 	}
 	
+		// BACKGROUND STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Sets the background color of a DOMElement. 
+	 * The color is drawn behind any background images. 
+	 */
+	enum BackgroundColorStyleValue {
+		color(value:ColorValue);
+	}
+	
+	/**
+	 * Set a background image of a DOMElement. A DOMElement can
+	 * have any number of background image.
+	 * Images are drawn with the first specified one on top 
+	 * (closest to the user) and each subsequent image behind
+	 * the previous one.
+	 */
+	enum BackgroundImageStyleValue {
+		none;
+		image(value:ImageValue);
+	}
+	
+	typedef BackgroundRepeatStyleData = {
+		var x:BackgroundRepeatStyleValue;
+		var y:BackgroundRepeatStyleValue;
+	}
+	
+	enum BackgroundRepeatStyleValue {
+		repeat;
+		space;
+		round;
+		noRepeat;
+	}
+	
+	typedef BackgroundPositionStyleData = {
+		var x:BackgroundPositionXStyleValue;
+		var y:BackgroundPositionYStyleValue;
+	}
+	
+	enum BackgroundPositionXStyleValue {
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's width
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		left;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		right;
+	}
+	
+	enum BackgroundPositionYStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		top;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		bottom;
+	}
+	
+	enum BackgroundClipStyleValue {
+		borderBox;
+		paddingBox;
+		contentBox;
+	}
+	
+	enum BackgroundOriginStyleValue {
+		borderBox;
+		paddingBox;
+		contentBox;
+	}
+	
+	enum BackgroundSizeStyleValue {
+		contain;
+		cover;
+		dimensions(value:BackgroundSizeStyleData);
+	}
+	
+	typedef BackgroundSizeStyleData = {
+		var x:BackgroundSizeStyleDimensionData;
+		var y:BackgroundSizeStyleDimensionData;
+	}
+	
+	enum BackgroundSizeStyleDimensionData {
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
+		percent(value:Int);
+		
+		auto;
+	}
+
 	// TRANSFORMATION STYLES
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -920,6 +1055,17 @@ import cocktailCore.style.formatter.FormattingContext;
 		var visibility:Bool;
 		var transformOrigin:PointData;
 		var transform:Matrix;
+		
+		/**
+		 * background
+		 */
+		var backgroundColor:Int;
+		var backgroundImage:Array<BackgroundImageStyleValue>;
+		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
+		var backgroundPosition:Array<BackgroundPositionStyleData>;
+		var backgroundClip:Array<BackgroundClipStyleValue>;
+		var backgroundOrigin:Array<BackgroundOriginStyleValue>;
+		var backgroundSize:Array<BackgroundSizeStyleValue>;
 		
 		/**
 		 * font
