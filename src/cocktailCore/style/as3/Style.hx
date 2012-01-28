@@ -101,9 +101,14 @@ class Style extends AbstractStyle
 		{
 			if (_childrenTemporaryPositionData[i].render == true)
 			{
-				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+				/**
+				* TODO : condition should not be necessary
+				*/
+				if (_domElement.nativeElement.contains(_childrenTemporaryPositionData[i].domElement.nativeElement) == true)
+				{
+					_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+				}
 			}
-			
 		}
 	}
 	

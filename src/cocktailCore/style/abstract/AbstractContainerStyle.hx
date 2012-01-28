@@ -228,13 +228,15 @@ class AbstractContainerStyle extends Style
 	 * added to the flow, however it won't be place, so that the corresponding
 	 * nativeElement will be located at the origin of the formatting context
 	 * once rendered
+	 * 
+	 * @param render a relative positioned DOMElement is inserted into the flow, like a
+	 * static DOMElement but it is not rendered in the flow, as it will
+	 * already be rendered as an absolute DOMElement which is always visually on top
+	 * of the static DOMElement in the same formatting context
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
 	{
-		//a relative positioned DOMElement is inserted into the flow, like a
-		//static DOMElement but it is not rendered in the flow, as it will
-		//already be rendered as an absolute DOMElement which is always visually on top
-		//of the static DOMElement in the same formatting context
+
 		var render:Bool = isRelativePositioned() == false;
 		
 		if (establishesNewFormattingContext() == true)

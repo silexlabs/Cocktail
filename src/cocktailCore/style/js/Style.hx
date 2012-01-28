@@ -858,12 +858,17 @@ class Style extends AbstractStyle
 			case hex(value):
 				cssColorValue = value;
 				
-			case RGB(red, green, blue):
+			case rgb(red, green, blue):
 				cssColorValue = "rgb(" + red + "," + green + "," + blue + ")";
 				
-		
+			case rgba(red, green, blue, alpha):
+				cssColorValue = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+				
 			case keyword(value):
 				cssColorValue = getColorFromKeyword(value);
+				
+			case transparent:
+				cssColorValue = "transparent";
 		}
 		
 		return cssColorValue;
