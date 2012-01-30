@@ -846,9 +846,412 @@ class Style extends AbstractStyle
 		return cssWordSpacingValue;
 	}
 	
+	
+	
+	/////////////////////////////////
+	// BACKGROUND STYLES
+	////////////////////////////////
+	
 	/**
-	 * CSS : color
+	 * CSS : background-color
 	 */
+	private function getCSSBackgroundColor(value:BackgroundColorStyleValue):String
+	{
+		var cssBackgroundColor:String;
+		
+		switch(value)
+		{
+			case colorValue(value):
+				cssBackgroundColor = getCSSColor(value);
+		}
+		
+		return cssBackgroundColor;
+	}
+	
+	/**
+	 * CSS : background-origin
+	 */
+	private function getCSSBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):String
+	{
+		var cssBackgroundOrigin:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch(value[i])
+			{
+				case BackgroundOriginStyleValue.borderBox:
+					cssBackgroundOrigin += "border-box";
+					
+				case BackgroundOriginStyleValue.contentBox:
+					cssBackgroundOrigin += "content-box";
+					
+				case BackgroundOriginStyleValue.paddingBox:
+					cssBackgroundOrigin += "padding-box";
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundOrigin += ",";
+			}
+		}
+		
+		return cssBackgroundOrigin;
+	}
+	
+	/**
+	 * CSS : background-clip
+	 */
+	private function getCSSBackgroundClip(value:Array<BackgroundClipStyleValue>):String
+	{
+		var cssBackgroundClip:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch(value[i])
+			{
+				case BackgroundClipStyleValue.borderBox:
+					cssBackgroundClip += "border-box";
+					
+				case BackgroundClipStyleValue.contentBox:
+					cssBackgroundClip += "content-box";
+					
+				case BackgroundClipStyleValue.paddingBox:
+					cssBackgroundClip += "padding-box";
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundClip += ",";
+			}
+		}
+		
+		return cssBackgroundClip;
+	}
+	
+	/**
+	 * CSS : background-image
+	 */
+	private function getCSSBackgroundImage(value:Array<BackgroundImageStyleValue>):String
+	{
+		var cssBackgroundImage:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch (value[i])
+			{
+				case BackgroundImageStyleValue.none:
+					cssBackgroundImage += "none";
+					
+				case BackgroundImageStyleValue.image(value):
+					cssBackgroundImage += getCSSImageValue(value);
+			}	
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundImage += ",";
+			}
+			
+		}
+		
+		return cssBackgroundImage;
+	}
+	
+	/**
+	 * CSS : background-size
+	 */
+	private function getCSSBackgroundSize(value:Array<BackgroundSizeStyleValue>):String
+	{
+		var cssBackgroundSize:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch (value[i])
+			{
+				case BackgroundSizeStyleValue.contain:
+					cssBackgroundSize += "contain";
+					
+				case BackgroundSizeStyleValue.cover:
+					cssBackgroundSize += "cover";
+					
+				case BackgroundSizeStyleValue.dimensions(value):
+					cssBackgroundSize += getCSSBackgroundSizeDimensions(value);
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundSize += ",";
+			}
+		}
+		
+		return cssBackgroundSize;
+	}
+	
+	private function getCSSBackgroundSizeDimensions(value:BackgroundSizeStyleData):String
+	{
+		var cssBackgroundSizeDimensions:String = getCSSBackgroundSizeDimension(value.x) + " " + getCSSBackgroundSizeDimension(value.y);
+		return cssBackgroundSizeDimensions;
+	}
+	
+	private function getCSSBackgroundSizeDimension(value:BackgroundSizeStyleDimensionData):String
+	{
+		var cssBackgroundSizeDimension:String;
+		
+		switch (value)
+		{
+			case BackgroundSizeStyleDimensionData.length(value):
+				cssBackgroundSizeDimension = getCSSLengthValue(value);
+				
+			case BackgroundSizeStyleDimensionData.percent(value):
+				cssBackgroundSizeDimension = getCSSPercentValue(value);
+				
+			case BackgroundSizeStyleDimensionData.auto:
+				cssBackgroundSizeDimension = "auto";
+		}
+		
+		return cssBackgroundSizeDimension;
+	}
+	
+	/**
+	 * CSS : background-position
+	 */
+	private function getCSSBackgroundPosition(value:Array<BackgroundPositionStyleData>):String
+	{
+		var cssBackgroundPositionData:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssBackgroundPositionData += getCSSBackgroundPositionXStyleValue(value[i].x) + " " + getCSSBackgroundPositionYStyleValue(value[i].y);
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundPositionData += ",";
+			}
+		}
+		
+		return cssBackgroundPositionData;
+	}
+	
+	private function getCSSBackgroundPositionXStyleValue(value:BackgroundPositionXStyleValue):String
+	{
+		var cssBackgroundPositionX:String;
+		
+		switch (value)
+		{
+			case BackgroundPositionXStyleValue.length(value):
+				cssBackgroundPositionX = getCSSLengthValue(value);
+				
+			case BackgroundPositionXStyleValue.percent(value):
+				cssBackgroundPositionX = getCSSPercentValue(value);
+				
+			case BackgroundPositionXStyleValue.center:
+				cssBackgroundPositionX = "center";
+				
+			case BackgroundPositionXStyleValue.left:
+				cssBackgroundPositionX = "left";
+				
+			case BackgroundPositionXStyleValue.right:
+				cssBackgroundPositionX = "right";
+		}
+		
+		return cssBackgroundPositionX;
+	}
+	
+	private function getCSSBackgroundPositionYStyleValue(value:BackgroundPositionYStyleValue):String
+	{
+		var cssBackgroundPositionY:String;
+		
+		switch (value)
+		{
+			case BackgroundPositionYStyleValue.length(value):
+				cssBackgroundPositionY = getCSSLengthValue(value);
+				
+			case BackgroundPositionYStyleValue.percent(value):
+				cssBackgroundPositionY = getCSSPercentValue(value);
+				
+			case BackgroundPositionYStyleValue.bottom:
+				cssBackgroundPositionY = "bottom";
+				
+			case BackgroundPositionYStyleValue.top:
+				cssBackgroundPositionY = "top";
+				
+			case BackgroundPositionYStyleValue.center:
+				cssBackgroundPositionY = "center";
+		}
+		
+		return cssBackgroundPositionY;
+	}
+	
+	/////////////////////////////////
+	// UNIT CONVERSION
+	// Convert abstract styles units
+	// to CSS units
+	////////////////////////////////
+	
+	private function getCSSImageValue(value:ImageValue):String
+	{
+		var cssImageValue:String;
+		
+		switch (value)
+		{
+			case ImageValue.url(value):
+				cssImageValue = "url(" + value + ")";
+				
+			case ImageValue.imageList(value):
+				cssImageValue = "image(" + getCSSImageList(value) + ")";
+				
+			case ImageValue.gradient(value):
+				cssImageValue = getCSSGradientValue(value);
+		}
+		
+		return cssImageValue;
+	}
+	
+	private function getCSSImageList(value:Array<ImageDeclarationValue>):String
+	{
+		var cssImageList:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch (value[i])
+			{
+				case ImageDeclarationValue.url(value):
+					cssImageList += "'" + value + "'";
+				
+				case ImageDeclarationValue.color(value):
+					cssImageList += getCSSColor(value);
+			}
+			
+			if (i < value.length -1)
+			{
+				cssImageList += ",";
+			}
+		}
+		
+		return cssImageList;
+	}
+	
+	private function getCSSGradientValue(value:GradientValue):String
+	{
+		var cssGradientValue:String;
+		
+		switch (value)
+		{
+			case GradientValue.linear(value):
+				cssGradientValue = "linear-gradient(" + getCSSLinearGradientValue(value) + ")";
+		}
+		
+		return cssGradientValue;
+	}
+	
+	private function getCSSLinearGradientValue(value:LinearGradientData):String 
+	{
+		var cssLinearGradientValue:String = getCSSGradientAngleValue(value.angle) + "," + getCSSColorStopsValue(value.colorStops);
+		return cssLinearGradientValue;
+	}
+	
+	private function getCSSColorStopsValue(value:Array<GradientColorStopData>):String
+	{
+		var cssColorStopsData:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssColorStopsData += getCSSColor(value[i].color) + " " + getCSSColorStopValue(value[i].stop);
+			
+			if (i < value.length -1)
+			{
+				cssColorStopsData += ",";
+			}
+		}
+		
+		return cssColorStopsData;
+	}
+	
+	private function getCSSColorStopValue(value:GradientStopValue):String
+	{
+		var cssColorStopValue:String;
+		
+		switch (value)
+		{
+			case GradientStopValue.percent(value):
+				cssColorStopValue = getCSSPercentValue(value);
+				
+			case GradientStopValue.length(value):
+				cssColorStopValue = getCSSLengthValue(value);
+		}
+		
+		return cssColorStopValue;
+	}
+	
+	private function getCSSGradientAngleValue(value:GradientAngleValue):String
+	{
+		var cssGradientAngleValue:String;
+		
+		switch (value)
+		{
+			case GradientAngleValue.angle(value):
+				cssGradientAngleValue = getCSSAngleValue(value);
+				
+			case GradientAngleValue.corner(horizontal, vertical):
+				cssGradientAngleValue = getCSSCornerValue(horizontal, vertical);
+				
+			case GradientAngleValue.side(value):
+				cssGradientAngleValue = getCSSSideValue(value);
+		}
+		
+		return cssGradientAngleValue;
+	}
+	
+	private function getCSSSideValue(value:GradientSideValue):String
+	{
+		var cssSideValue:String;
+		
+		switch (value)
+		{
+			case GradientSideValue.bottom:
+				cssSideValue = "bottom";
+				
+			case GradientSideValue.left:
+				cssSideValue = "left";
+				
+			case GradientSideValue.right:
+				cssSideValue = "right";
+				
+			case GradientSideValue.top:
+				cssSideValue = "top";
+		}
+		
+		return cssSideValue;
+	}
+	
+	private function getCSSCornerValue(horizontal:GradientHorizontalSideValue, vertical:GradientVerticalSideValue):String
+	{
+		var cssHorizontalCornerValue:String;
+		
+		switch (horizontal)
+		{
+			case GradientHorizontalSideValue.left:
+				cssHorizontalCornerValue = "left";
+				
+			case GradientHorizontalSideValue.right:
+				cssHorizontalCornerValue = "right";
+		}
+		
+		var cssVerticalCornerValue:String;
+		
+		switch (vertical)
+		{
+			case GradientVerticalSideValue.bottom:
+				cssVerticalCornerValue = "bottom";
+				
+			case GradientVerticalSideValue.top:
+				cssVerticalCornerValue = "top";
+		}
+		
+		var cssCornerValue:String = "to " + cssHorizontalCornerValue + " " + cssVerticalCornerValue;
+		
+		return cssCornerValue;
+	}
+	
 	private function getCSSColor(value:ColorValue):String
 	{
 		var cssColorValue:String;
@@ -873,12 +1276,6 @@ class Style extends AbstractStyle
 		
 		return cssColorValue;
 	}
-	
-	/////////////////////////////////
-	// UNIT CONVERSION
-	// Convert abstract styles units
-	// to CSS units
-	////////////////////////////////
 	
 	private function getCSSLengthValue(lengthValue:LengthValue):String
 	{
@@ -1363,4 +1760,69 @@ class Style extends AbstractStyle
 		return _transform = value;
 	}
 	
+	override private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	{
+		this._domElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
+		super.setBackgroundColor(value);
+		return _backgroundColor;
+	}
+	
+	override private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	{
+		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		//get vendor specific style name
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundOrigin");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName , getCSSBackgroundOrigin(value));
+		}
+		
+		super.setBackgroundOrigin(value);
+		return _backgroundOrigin;
+	}
+	
+	override private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	{
+		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		//get vendor specific style name
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundClip");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName , getCSSBackgroundClip(value));
+		}
+		
+		super.setBackgroundClip(value);
+		return _backgroundClip;
+	}
+	
+	override private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	{
+		this._domElement.nativeElement.style.backgroundImage = getCSSBackgroundImage(value);
+		super.setBackgroundImage(value);
+		return _backgroundImage;
+	}
+	
+	override private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	{
+		this._domElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
+		super.setBackgroundPosition(value);
+		return _backgroundPosition;
+	}
+	
+	override private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	{
+		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		//get vendor specific style name
+		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundSize");
+		//only apply the style if it exists
+		if (vendorSpecificName != null)
+		{
+			Reflect.setField(nativeStyle, vendorSpecificName , getCSSBackgroundSize(value));
+		}
+		
+		super.setBackgroundSize(value);
+		return _backgroundSize;
+	}
 }
