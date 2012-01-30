@@ -355,7 +355,7 @@ class AbstractStyle
 		this.floatValue = FloatStyleValue.none;
 		this.clear = ClearStyleValue.none;
 		
-		this.backgroundColor = BackgroundColorStyleValue.color(ColorValue.transparent);
+		this.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.transparent);
 		this.backgroundImage = [BackgroundImageStyleValue.none];
 		this.backgroundRepeat = [{
 			x:BackgroundRepeatStyleValue.repeat,

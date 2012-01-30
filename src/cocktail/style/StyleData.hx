@@ -613,7 +613,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * The color is drawn behind any background images. 
 	 */
 	enum BackgroundColorStyleValue {
-		color(value:ColorValue);
+		colorValue(value:ColorValue);
 	}
 	
 	/**

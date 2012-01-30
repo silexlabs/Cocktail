@@ -194,8 +194,10 @@ enum GradientAngleValue {
 }
 
 enum GradientSideValue {
-	horizontal(value:GradientHorizontalSideValue);
-	vertical(value:GradientVerticalSideValue);
+	top;
+	left;
+	bottom;
+	right;
 }
 
 enum GradientVerticalSideValue {
