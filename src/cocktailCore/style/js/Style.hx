@@ -1081,6 +1081,48 @@ class Style extends AbstractStyle
 		return cssBackgroundPositionY;
 	}
 	
+	/**
+	 * CSS : background-repeat
+	 */
+	private function getCSSBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):String
+	{
+		var cssBackgroundRepeat:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssBackgroundRepeat += getCSSBackgroundRepeatValue(value[i].x) + " " + getCSSBackgroundRepeatValue(value[i].y);
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundRepeat += ",";
+			}
+		}
+		
+		return cssBackgroundRepeat;
+	}
+	
+	private function getCSSBackgroundRepeatValue(value:BackgroundRepeatStyleValue):String
+	{
+		var cssBackgroundRepeatValue:String;
+		
+		switch (value)
+		{
+			case BackgroundRepeatStyleValue.noRepeat:
+				cssBackgroundRepeatValue = "no-repeat";
+				
+			case BackgroundRepeatStyleValue.repeat:
+				cssBackgroundRepeatValue = "repeat";
+				
+			case BackgroundRepeatStyleValue.round:
+				cssBackgroundRepeatValue = "round";
+				
+			case BackgroundRepeatStyleValue.space:
+				cssBackgroundRepeatValue = "space";
+		}
+		
+		return cssBackgroundRepeatValue;
+	}
+	
 	/////////////////////////////////
 	// UNIT CONVERSION
 	// Convert abstract styles units
@@ -1824,5 +1866,12 @@ class Style extends AbstractStyle
 		
 		super.setBackgroundSize(value);
 		return _backgroundSize;
+	}
+	
+	override private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	{
+		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
+		super.setBackgroundRepeat(value);
+		return _backgroundRepeat;
 	}
 }

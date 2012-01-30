@@ -158,41 +158,87 @@ enum ColorValue {
  * gradient
  */
 enum ImageValue {
+	
+	/**
+	 * the image is loaded from a URL
+	 */
 	url(value:URLData);
+	
+	/**
+	 * The image is specified as multiple URL, the
+	 * first valid URL being used
+	 */
 	imageList(value:Array<ImageDeclarationValue>);
+	
+	/**
+	 * The image is a programmaticaly drawn
+	 * gradient
+	 */
 	gradient(value:GradientValue);
 }
 
+/**
+ * An element for a list of image, can either
+ * be an image URL or a fallback color used if
+ * all the URL in the image list are invalid
+ */
 enum ImageDeclarationValue {
 	url(value:URLData);
 	color(value:ColorValue);
 }
 
+/**
+ * The different types of gradient which
+ * can be used as image
+ */
 enum GradientValue {
 	linear(value:LinearGradientData);
 }
 
+/**
+ * a linear gradient, which has a direction
+ * and a variable number of colors
+ */
 typedef LinearGradientData = {
 	var angle:GradientAngleValue;
 	var colorStops:Array<GradientColorStopData>;
 }
 
+/**
+ * Each color stops is constituted of a
+ * color and the position of this color
+ * in the gradient
+ */
 typedef GradientColorStopData = {
 	var color:ColorValue;
 	var stop:GradientStopValue;
 }
 
+/**
+ * A color stop position can be defined as
+ * an absolute value or a percentage of
+ * the gradient box
+ */
 enum GradientStopValue {
 	length(value:LengthValue);
 	percent(value:Int);
 }
 
+/**
+ * The angle of a linear gradient can either
+ * be an angle (defined in deg, rad...) or a keyword
+ * representing a side or corner of the gradient box
+ */
 enum GradientAngleValue {
 	angle(value:AngleValue);
 	side(value:GradientSideValue);
 	corner(horizontal:GradientHorizontalSideValue, vertical:GradientVerticalSideValue);
 }
 
+/**
+ * the side of the gradient box.
+ * Top is equal to a 0deg angle
+ */
 enum GradientSideValue {
 	top;
 	left;
@@ -200,16 +246,25 @@ enum GradientSideValue {
 	right;
 }
 
+/**
+ * the vertical side of the gradient box
+ */
 enum GradientVerticalSideValue {
 	top;
 	bottom;
 }
 
+/**
+ * the horizontal side of the gradient box
+ */
 enum GradientHorizontalSideValue {
 	left;
 	right;
 }
 
+/**
+ * Define a CSS URL value
+ */
 typedef URLData = String;
 
 /**
