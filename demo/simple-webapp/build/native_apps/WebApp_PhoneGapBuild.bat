@@ -15,6 +15,10 @@ ECHO renaming files creating issues...
 move splashScreens_PhoneGap\Default@2x.png splashScreens_PhoneGap\Default2x.png
 ECHO.
 
+ECHO Removing %output_file_path%...
+del %output_file_path% /Q /S
+ECHO.
+
 ECHO Compressing %output_file_path%...
 C:\"Program Files"\7-Zip\7z.exe a -tzip %output_file_path% %input_files_path%
 ECHO.
@@ -26,5 +30,3 @@ ECHO.
 
 ECHO Compression complete
 ECHO.
-
-PAUSE

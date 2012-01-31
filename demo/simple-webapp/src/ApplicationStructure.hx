@@ -43,6 +43,10 @@ import Navigation;
 
 class ApplicationStructure 
 {
+	// base url
+	static inline var BASE_URL:String = "http://demos.silexlabs.org/cocktail/simple-webapp/";
+	
+	
 	// pagesContainer is the container for all pages
 	public var pagesContainer:ContainerDOMElement;
 
@@ -53,25 +57,31 @@ class ApplicationStructure
 	// the home page looking like a smartphone desktop
 	private var _homePage:ContainerDOMElement;
 	
-	// the calendar pages
+	// the calendar page
 	private var _calListPage:ContainerDOMElement;
 	private var _dayPage:ContainerDOMElement;
 	
-	// the gallery pages
+	// the gallery page
 	private var _galleryPage:ContainerDOMElement;
 	private var _imagePage:ContainerDOMElement;
 	// the gallery
 	private var _gallery:Gallery;
 		
-	// the music pages
+	// the music page
 	private var _artistListPage:ContainerDOMElement;
 	private var _albumListPage:ContainerDOMElement;
 	private var _songListPage:ContainerDOMElement;
 	private var _songPage:ContainerDOMElement;
 	
-	// the notes pages
+	// the notes page
 	private var _noteListPage:ContainerDOMElement;
 	private var _notePage:ContainerDOMElement;
+	
+	// the download page
+	private var _downloadPage:ContainerDOMElement;
+	
+	// the cocktail links page
+	private var _cocktailLinksPage:ContainerDOMElement;
 	
 	// the credit page
 	private var _creditsPage:ContainerDOMElement;
@@ -164,28 +174,41 @@ class ApplicationStructure
 			]
 		);
 		
+		// the download page
+		_downloadPage = createHeaderListPage(
+			"Downloads",
+			[
+			{text:"Desktop (Air: Win,OSX,Linux)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_desktop.air" },
+			{text:"Android app (Air)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_Air.apk" },
+			{text:"Android app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_PhoneGap.apk" },
+			{text:"iOS app (Air)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"" },
+			{text:"iOS app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"" },
+			{text:"BlackBerry app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_BlackBerry_PhoneGap.jad" },
+			{text:"webOS app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_webOS_PhoneGap.ipk" },
+			{text:"symbian app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_symbian_PhoneGap.wgz" },
+			]
+		);
+		
+		// the cocktail links page
+		_cocktailLinksPage = createHeaderListPage(
+			"Links",
+			[
+			{text:"JavaScript Web version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_js.html" },
+			{text:"Flash AS3 Web version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_As3.html" }
+			]
+		);
+		
 		// the credit page
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
-			/*{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" },
-			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
-			{text:"done for Silex Labs", imagePath:"images/icone_silexlabs_noire.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-			{text:"by Raphael Harmel", imagePath:"images/google_plus.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
-			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
-			{text:"", imagePath:"", action:"", actionTarget:"" },
-			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
-			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
-			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
-			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }*/
 			{text:"made with Cocktail", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" },
 			{text:"using haXe language", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
 			{text:"done for Silex Labs", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
 			{text:"by Raphael Harmel", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
 			{text:"source Code", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
 			{text:"", imagePath:"", action:"", actionTarget:"" },
-			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
-			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
+			{text:"design based on iUI", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iui-js.org/" },
 			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" }
 			]
 		);
@@ -197,10 +220,12 @@ class ApplicationStructure
 				{text:"Gallery", imagePath:"images/icone_gallery_blanche.png", action:"goToPage", actionTarget:_galleryPage },
 				{text:"Notes", imagePath:"images/icone_bloc_note-2.png", action:"goToPage", actionTarget:_noteListPage }
 			];
-		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" } );
-		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
-		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
-		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"openUrl", actionTarget:"http://www.intermedia-paris.fr/" } );
+		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" } );
+		homePageCells.push( { text:"Download", imagePath:"images/icone_cocktail_blanche.png", action:"goToPage", actionTarget:_downloadPage } );
+		homePageCells.push( { text:"Links", imagePath:"images/icone_cocktail_blanche.png", action:"goToPage", actionTarget:_cocktailLinksPage } );
+		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche.png", action:"goToUrl", actionTarget:"http://haxe.org/" } );
+		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"goToUrl", actionTarget:"http://www.intermedia-paris.fr/" } );
 		homePageCells.push( {text:"Credits", imagePath:"images/icone_credits.png", action:"goToPage", actionTarget:_creditsPage } );
 		
 		_homePage = createHomePage(homePageCells);

@@ -149,6 +149,8 @@ class WebAppStyle
 		domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
 		
+		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 	}
