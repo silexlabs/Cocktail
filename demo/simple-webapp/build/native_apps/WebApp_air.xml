@@ -26,7 +26,12 @@
 		<manifestAdditions> 
 			<![CDATA[ 
 				<manifest> 
-					<uses-permission android:name="android.permission.INTERNET" /> 
+					<uses-permission android:name="android.permission.INTERNET" />
+					<application android:hardwareAccelerated="true"/> 
+					<supports-screens android:smallScreens="true"/>
+					<supports-screens android:normalScreens="true"/>
+					<supports-screens android:largeScreens="false"/>
+					<supports-screens android:xlargeScreens="false"/>
 				</manifest> 
 			]]> 
 		</manifestAdditions> 
