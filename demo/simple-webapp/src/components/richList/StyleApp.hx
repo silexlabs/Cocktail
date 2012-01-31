@@ -32,6 +32,7 @@ import components.richList.RichListModels;
 
 class StyleApp
 {
+	//private static inline var appIconSize:Int = 75;
 	private static inline var appIconSize:Int = 43;
 	
 	/**

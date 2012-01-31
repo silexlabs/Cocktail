@@ -65,12 +65,15 @@ class StyleNormal
 	{
 		getDefaultStyle(domElement);
 
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
+		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 				
-		domElement.style.color = ColorValue.hex('#666666');
+		//domElement.style.color = ColorValue.hex('#666666');
+		
+		getCellLine(domElement);
+
 	}
 	
 	/**
@@ -83,10 +86,13 @@ class StyleNormal
 		getDefaultStyle(domElement);
 		//domElement.style.position = absolute;
 
+		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.floatValue = FloatStyleValue.right;
-		//domElement.style.width = DimensionStyleValue.length(px(16));
-		//domElement.style.height = DimensionStyleValue.length(px(20));
+		//domElement.style.width = DimensionStyleValue.length(px(8));
+		//domElement.style.height = DimensionStyleValue.length(px(13));
 		//domElement.style.height = DimensionStyleValue.length(px(29));
 	}
 	
@@ -99,6 +105,8 @@ class StyleNormal
 	{
 		//getDefaultStyle(domElement);
 
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
@@ -171,13 +179,21 @@ class StyleNormal
 	}
 	
 	/**
-	 * Defines cell line Style
+	 * Create a cell line
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellLineStyle(domElement:DOMElement):Void
+	public static function getCellLine(domElement:ContainerDOMElement):Void
 	{
-		getCellTextStyle(domElement);
+		var line:ImageDOMElement = new ImageDOMElement();
+		line.style.display = DisplayStyleValue.block;
+		line.style.paddingTop = PaddingStyleValue.length(px(8));
+		line.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		line.style.width = DimensionStyleValue.percent(100);
+		line.style.height = DimensionStyleValue.length(px(1));
+		line.load("images/greyPixel.png");
+		
+		domElement.addChild(line);
 	}
 	
 }
