@@ -158,6 +158,11 @@ COCKTAIL ?
 
 => Android Air version shows 2 times smaller than on other devices
    => there was the same issue on iOS which was resoluved by not using HD quality
+   => tried using following parameter in the air manifest file, but did not solve the issue:
+		<supports-screens android:smallScreens="true"/>
+		<supports-screens android:normalScreens="true"/>
+		<supports-screens android:largeScreens="false"/>
+		<supports-screens android:xlargeScreens="false"/>
  
 => In the native iOS apps, some of the links and download links do not work
    => full http adresses have to be used, and not relative links
@@ -166,7 +171,7 @@ COCKTAIL ?
 PHONEGAP:
 
 Splash Screen iPad issue: white lines displayed 
- => issue posted: http://community.phonegap.com/nitobi/topics/splash_screen_ipad_issue_white_lines_displayed
+ => issue posted here: http://community.phonegap.com/nitobi/topics/splash_screen_ipad_issue_white_lines_displayed
 
 
 COCKTAIL
