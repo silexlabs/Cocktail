@@ -41,7 +41,6 @@ class ImageDOMElement extends AbstractImageDOMElement
 	override private function onLoadComplete(image:NativeElement):Void
 	{
 		super.onLoadComplete(image);
-		
 		smoothPicture();
 	}
 	

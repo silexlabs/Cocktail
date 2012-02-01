@@ -10,9 +10,10 @@ import flash.display.GradientType;
 import flash.display.JointStyle;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
-import flash.geom.Matrix;
+import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import flash.geom.ColorTransform;
 import haxe.Log;
 
 /**
@@ -143,7 +144,7 @@ class DrawingManager extends AbstractDrawingManager
 			//for a bitmap fill, use the natvie beginBitmapFill method, using
 			//an ImageDOMElement as source for the bitmap data
 			case bitmap(imageDOMElement, repeat):
-				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageDOMElement), new Matrix(), repeat);
+				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageDOMElement.nativeElement), new flash.geom.Matrix(), repeat);
 		}	
 	}
 	
@@ -209,7 +210,7 @@ class DrawingManager extends AbstractDrawingManager
 					lineStyleData.miterLimit);
 				
 				//then set the bitmap data on it
-				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement), new Matrix(), repeat);
+				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement.nativeElement), new flash.geom.Matrix(), repeat);
 		}
 	}
 	
@@ -218,18 +219,15 @@ class DrawingManager extends AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an ImageDOMElement into the bitmap display object.
+	 * Draw a bitmap extracted from a NativeElement into the bitmap display object.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
+	override public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{	
 		//init destination point and sourceRect if null
 		
-		if (destinationPoint == null)
+		if (matrix == null)
 		{
-			destinationPoint = {
-				x:0.0,
-				y:0.0
-			};
+			matrix = new Matrix();
 		}
 		
 		if (sourceRect == null)
@@ -250,11 +248,12 @@ class DrawingManager extends AbstractDrawingManager
 		
 		//convert the abstract rectangle and point into flash natives one
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-		var nativeDestinationPoint:flash.geom.Point = new flash.geom.Point(destinationPoint.x, destinationPoint.y);
+		
+		var matrixData:MatrixData = matrix.data;
+		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//draw the ImageDOMElement bitmap data onto the current bitmap data
-		currentBitmapData.copyPixels(sourceBitmapData, nativeSourceRect, nativeDestinationPoint, null, null, true);
-
+		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect, true);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -381,15 +380,16 @@ class DrawingManager extends AbstractDrawingManager
 	}
 	
 	/**
-	 * Get the bitmap data from an ImageDOMElement
-	 * @param	imageDOMElement contains a Sprite containing a bitmap
-	 * @return a bitmap data using the DOMElement sprite as it's source
+	 * Get the bitmap data from a NativeElement
+	 * @return a bitmap data using the NativeElement sprite as it's source
 	 */
-	private function getBitmapData(imageDOMElement:DOMElement):BitmapData
+	private function getBitmapData(nativeElement:NativeElement):BitmapData
 	{
-		var typedImageDOMElement:ImageDOMElement = cast(imageDOMElement);
-		var bitmapData:BitmapData = new BitmapData(typedImageDOMElement.intrinsicWidth, typedImageDOMElement.intrinsicHeight, true, 0x00FFFFFF);
-		bitmapData.draw(typedImageDOMElement.nativeElement);
+		var nativeElementWidth:Int = Math.round(nativeElement.width);
+		var nativeElementHeight:Int = Math.round(nativeElement.height);
+		
+		var bitmapData:BitmapData = new BitmapData(nativeElementWidth, nativeElementHeight, true, 0x00FFFFFF);
+		bitmapData.draw(nativeElement);
 		
 		return bitmapData;
 	}
@@ -449,10 +449,10 @@ class DrawingManager extends AbstractDrawingManager
 	 * create and return a gradient box corresponding to the size of the
 	 * whole DOMElement
 	 */
-	private function getGradientBox(gradientStyle:GradientStyleData):Matrix
+	private function getGradientBox(gradientStyle:GradientStyleData):flash.geom.Matrix
 	{
-		var gradientBox:Matrix = new Matrix();
-	//	gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
+		var gradientBox:flash.geom.Matrix = new flash.geom.Matrix();
+		gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
 		return gradientBox;
 	}
 	

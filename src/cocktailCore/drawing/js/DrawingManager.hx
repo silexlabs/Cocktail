@@ -1,4 +1,5 @@
 package cocktailCore.drawing.js;
+import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 
 import cocktailCore.drawing.abstract.AbstractDrawingManager;
@@ -171,7 +172,7 @@ class DrawingManager extends AbstractDrawingManager
 	/**
 	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
+	override public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
 		//init destination point and sourceRect if null
 		
@@ -202,7 +203,7 @@ class DrawingManager extends AbstractDrawingManager
 		//draw the image with the Canvas API
 	
 		canvasContext.drawImage(
-			source.nativeElement,
+			source,
 			sourceRect.x,
 			sourceRect.y,
 			sourceRect.width,

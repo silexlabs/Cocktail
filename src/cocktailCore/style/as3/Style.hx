@@ -97,19 +97,36 @@ class Style extends AbstractStyle
 	 */
 	override private function detachChildren():Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
+		if (_childrenFormattingContext != null)
 		{
-			if (_childrenTemporaryPositionData[i].render == true)
+				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
+			
+			for (i in 0..._boxesData.length)
 			{
-				/**
-				* TODO : condition should not be necessary
-				*/
-				if (_domElement.nativeElement.contains(_childrenTemporaryPositionData[i].domElement.nativeElement) == true)
+				for (j in 0..._boxesData[i].children.length)
 				{
-					_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
+					if (_boxesData[i].children[j].render == true)
+					{
+						if (_domElement.nativeElement.contains(_boxesData[i].children[j].domElement.nativeElement) == true)
+						{
+							_domElement.nativeElement.removeChild(_boxesData[i].children[j].domElement.nativeElement);
+						}
+					}
 				}
 			}
 		}
+
+		if (_absolutelyPositionedChildrenTemporaryPositionsData != null)
+		{
+			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
+			{
+				if (_domElement.nativeElement.contains(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement) == true)
+				{
+					_domElement.nativeElement.removeChild(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement);
+				}
+			}
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
