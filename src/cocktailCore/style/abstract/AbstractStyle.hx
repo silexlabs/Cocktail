@@ -371,8 +371,8 @@ class AbstractStyle
 		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
 		this.backgroundSize = [
 			BackgroundSizeStyleValue.dimensions({
-				x:BackgroundSizeStyleDimensionData.auto,
-				y:BackgroundSizeStyleDimensionData.auto
+				x:BackgroundSizeStyleDimensionValue.auto,
+				y:BackgroundSizeStyleDimensionValue.auto
 			})];
 		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
 		
@@ -993,7 +993,7 @@ class AbstractStyle
 	
 	private function computeBackgroundStyles():Void
 	{
-		BackgroundStylesComputer.compute(style);
+		BackgroundStylesComputer.compute(this);
 	}
 	
 	/**

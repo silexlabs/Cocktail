@@ -828,15 +828,15 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * Contain the size data for one image background
 	 */
 	typedef BackgroundSizeStyleData = {
-		var x:BackgroundSizeStyleDimensionData;
-		var y:BackgroundSizeStyleDimensionData;
+		var x:BackgroundSizeStyleDimensionValue;
+		var y:BackgroundSizeStyleDimensionValue;
 	}
 	
 	/**
 	 * A vertical or horizontal size for 
 	 * a background image
 	 */
-	enum BackgroundSizeStyleDimensionData {
+	enum BackgroundSizeStyleDimensionValue {
 		/**
 		 * a length value
 		 */

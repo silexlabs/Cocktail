@@ -29,7 +29,7 @@ class BackgroundStylesComputer
 		
 		style.computedStyle.backgroundSize = getComputedBackgroundSize(style);
 		
-		style.computedStyle.backgroundPosition = style.backgroundPosition;
+		style.computedStyle.backgroundPosition = getComputedBackgroundPosition(style);
 
 		style.computedStyle.backgroundOrigin = style.backgroundOrigin;
 		style.computedStyle.backgroundImage = style.backgroundImage;
@@ -51,7 +51,24 @@ class BackgroundStylesComputer
 	
 	private static function getComputedBackgroundPosition(style:AbstractStyle):Array<PointData>
 	{
-		return [];
+		var computedBackgroundPosition:Array<PointData> = new Array<PointData>();
+		
+		for (i in 0...style.backgroundPosition.length)
+		{
+			var backgroundPositioningArea:DimensionData = getBackgroundPositioningArea(style, style.computedStyle.backgroundClip[i]);
+			computedBackgroundPosition.push(doGetComputedBackgroundPosition(style.backgroundPosition[i], backgroundPositioningArea, style.computedStyle.fontSize, style.fontMetrics.xHeight));
+		}
+		
+		return computedBackgroundPosition;
+	}
+	
+	private static function doGetComputedBackgroundPosition(backgroundSize:BackgroundPositionStyleData, backgroundPositioningArea:DimensionData, emReference:Float, exReference:Float):PointData
+	{
+		var computedBackgroundPosition:PointData = {
+			x:doGetComputedBackgroundXPosition(backgroundSize.x, backgroundPositioningArea.width,
+		};
+		
+		
 	}
 	
 	private static function getComputedBackgroundSize(style:AbstractStyle):Array<DimensionData>
@@ -61,48 +78,58 @@ class BackgroundStylesComputer
 		for (i in 0...style.backgroundSize.length)
 		{
 			var backgroundPositioningArea:DimensionData = getBackgroundPositioningArea(style, style.computedStyle.backgroundClip[i]);
-			computedBackgroundSize.push(doGetComputedBackgroundSize(style.backgroundSize[i], backgroundPositioningArea));
+			computedBackgroundSize.push(doGetComputedBackgroundSize(style.backgroundSize[i], backgroundPositioningArea, style.computedStyle.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return computedBackgroundSize;
 	}
 	
-	private static function doGetComputedBackgroundSize(backgroundSize:BackgroundSizeStyleValue, backgroundImage:BackgroundImageStyleValue, backgroundPositioningArea:DimensionData):DimensionData
+	private static function doGetComputedBackgroundSize(backgroundSize:BackgroundSizeStyleValue, backgroundPositioningArea:DimensionData, emReference:Float, exReference:Float):DimensionData
 	{
 		var computedBackgroundSize:DimensionData;
 		
 		switch (backgroundSize)
 		{
 			case BackgroundSizeStyleValue.contain:
-				switch (backgroundImage)
-				{
-					case BackgroundImageStyleValue.none:
-						computedBackgroundSize = {
-							width:0,
-							height:0
-						}
-						
-					case BackgroundImageStyleValue.image(value)
-					{
-						case ImageValue.url(value),
-						ImageValue.imageList(value):
-							computedBackgroundSize = {
-							width:0,
-							height:0
-						}
-						
-						case ImageValue.gradient(value):
-							computedBackgroundSize = {
-							width:backgroundPositioningArea.width,
-							height:backgroundPositioningArea.height
-						}
-					}
+				computedBackgroundSize = {
+					width:0,
+					height:0
+				}
+				
+			case BackgroundSizeStyleValue.dimensions(value):
+				computedBackgroundSize = {
+					width:getBackgroundSizeStyleDimensionData(value.x, backgroundPositioningArea.width, emReference, exReference),
+					height:getBackgroundSizeStyleDimensionData(value.y, backgroundPositioningArea.height, emReference, exReference)
+				}
+				
+			case BackgroundSizeStyleValue.cover:
+				computedBackgroundSize = {
+					width:0,
+					height:0
 				}
 		}
 		
 		return computedBackgroundSize;
 	}
 	
+	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeStyleDimensionValue, backgroundPositioningAreaDimension:Int, emReference:Float, exReference:Float):Int
+	{
+		var backgroundSizeStyleDimension:Int;
+		
+		switch (value)
+		{
+			case BackgroundSizeStyleDimensionValue.length(value):
+				backgroundSizeStyleDimension = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
+				
+			case BackgroundSizeStyleDimensionValue.percent(value):
+				backgroundSizeStyleDimension = Math.round(UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension));
+			
+			case BackgroundSizeStyleDimensionValue.auto:
+				backgroundSizeStyleDimension = 0;
+		}
+		
+		return backgroundSizeStyleDimension;
+	}
 	
 	private static function getBackgroundPositioningArea(style:AbstractStyle, backgroundClip:BackgroundClipStyleValue):DimensionData
 	{
