@@ -72,8 +72,6 @@ class RichList extends ContainerDOMElement
 			// empty cell part
 			var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
 
-			listStyle.cell(cell);
-			
 			// image part
 			if (cellData.imagePath != "" && cellData.imagePath != null)
 			{
@@ -98,6 +96,8 @@ class RichList extends ContainerDOMElement
 
 			// add cell to instance
 			this.addChild(cell);
+			
+			listStyle.cell(cell);
 			
 			// mouse
 			// delegates functions are used to be able to pass an extra parameters to the callback
@@ -138,6 +138,7 @@ class RichList extends ContainerDOMElement
 	 */
 	private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:RichListStyleModel):Void
 	{
+		//trace("out");
 		listStyle.cellMouseOut(cell);
 	}
 	
