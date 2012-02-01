@@ -30,8 +30,8 @@ Online versions:
 Native Applications:
 iPhone
 To install these versions, you will need a jailbreaked iPhone
--Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_Air.ipa
--PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_PhoneGap.ipa
+-Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_Air_OTA_install.html
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_PhoneGap_OTA_install.html
 
 Android:
 -Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_android_Air.apk
