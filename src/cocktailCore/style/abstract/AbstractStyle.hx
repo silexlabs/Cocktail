@@ -11,6 +11,8 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.viewport.Viewport;
+import cocktailCore.background.BackgroundManager;
+import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -135,25 +137,18 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
-	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
 	 
-	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
-	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
-	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
-	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
-	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
@@ -294,7 +289,11 @@ class AbstractStyle
 	 * they must have in this domElement coordinate space. The array order
 	 * is the same as the z-index of the children
 	 */
-	private var _childrenTemporaryPositionData:Array<ChildTemporaryPositionData>;
+	private var _childrenFormattingContext:FormattingContext;
+	
+	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
+	
+	private var _backgroundManager:BackgroundManager;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -311,8 +310,12 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._childrenTemporaryPositionData = new Array<ChildTemporaryPositionData>();
+	//	this._boxData = {};
+		this._absolutelyPositionedChildrenTemporaryPositionsData = new Array<ChildTemporaryPositionData>();
+		this._backgroundManager = new BackgroundManager();
+		
 		initDefaultStyleValues();
+		
 	}
 	
 	/**
@@ -498,28 +501,66 @@ class AbstractStyle
 	 */
 	public function render():Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
+		var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
+		
+		
+		/**
+		 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
+		 * son background, border....
+		 * 
+		 * _childrenFormattingContext ne devrait être que sur AbstractContainer, pas de children
+		 * sur un abstractStyle et embedded
+		 * 
+		 * ici devrait être renderBackground, renderBorder... et sur AbstractContainer renderChildren
+		 * et sur AbstractEmbedded renderEmbeddedAsset
+		 */
+		for (i in 0..._boxesData.length)
 		{
-			if (_childrenTemporaryPositionData[i].render == true)
+			for (j in 0..._boxesData[i].children.length)
 			{
-				//apply x and y
-				_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-				_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				if (_boxesData[i].children[j].render == true)
+				{
+					
+					//apply x and y
+					_boxesData[i].children[j].domElement.style.setNativeX(_boxesData[i].children[j].domElement, _boxesData[i].children[j].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+					_boxesData[i].children[j].domElement.style.setNativeY(_boxesData[i].children[j].domElement, _boxesData[i].children[j].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+					
+					//apply width and height
+					_boxesData[i].children[j].domElement.style.setNativeHeight(_boxesData[i].children[j].domElement.style.computedStyle.height);
+					_boxesData[i].children[j].domElement.style.setNativeWidth(_boxesData[i].children[j].domElement.style.computedStyle.width);
 				
-				//apply width and height
-				_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
-				_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
-			
-				//apply transformations
-				_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
+					//apply transformations
+					_boxesData[i].children[j].domElement.style.setNativeMatrix(_boxesData[i].children[j].domElement.style.computedStyle.transform);
+					
+					//apply opacity and visibility
+					_boxesData[i].children[j].domElement.style.setNativeOpacity(_boxesData[i].children[j].domElement.style.computedStyle.opacity);
+					_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
 				
-				//apply opacity and visibility
-				_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
-				_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
+					//attach the child
+					attachChild(_boxesData[i].children[j].domElement);
+				}	
+			}
+		}
+		
+		for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
+		{
+			var child:ChildTemporaryPositionData = _absolutelyPositionedChildrenTemporaryPositionsData[i];
+			child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
 			
-				//attach the child
-				attachChild(_childrenTemporaryPositionData[i].domElement);
-			}	
+			//apply width and height
+			child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
+			child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
+		
+			//apply transformations
+			child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
+			
+			//apply opacity and visibility
+			child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
+			child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
+		
+			//attach the child
+			attachChild(child.domElement);
 		}
 	}
 	
@@ -629,7 +670,7 @@ class AbstractStyle
 		
 		//flow all the children of the DOMElement if it has any and store the returned array containing
 		//each of their laid out positions in this domElement coordinate space
-		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
+		_childrenFormattingContext = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -642,6 +683,8 @@ class AbstractStyle
 		//of the DOMElement are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
+		
+		computeBackgroundStyles();
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
 		insertDOMElement(formattingContext, lastPositionedDOMElementData, viewportData);
@@ -687,10 +730,13 @@ class AbstractStyle
 				
 			default:	
 				positioner = new AbsolutePositioner();
+				
 				childTemporaryPositionData = {
 					domElement:domElement,
 					x:0,
 					y:0,
+					width:0,
+					height:0,
 					lineIndex:0,
 					render:true
 				};
@@ -721,9 +767,9 @@ class AbstractStyle
 	 * Flow all the children of a DOMElement if it has any, and return 
 	 * the positions of the flowed children
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
 	{
-		return new Array<ChildTemporaryPositionData>();
+		return formattingContext;
 	}
 	
 	/**
@@ -944,6 +990,11 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function computeBackgroundStyles():Void
+	{
+		BackgroundStylesComputer.compute(style);
+	}
 	
 	/**
 	 * Compute first the styles determining the DOMElement's
@@ -1964,71 +2015,71 @@ class AbstractStyle
 	
 	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
 	{
-		return _backgroundColor = value;
+		return _backgroundManager.backgroundColor = value;
 	}
 	
 	private function getBackgroundColor():BackgroundColorStyleValue
 	{
-		return _backgroundColor;
+		return _backgroundManager.backgroundColor;
 	}
 	
 	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
 	{
-		return _backgroundImage = value;
+		return _backgroundManager.backgroundImage = value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImageStyleValue>
 	{
-		return _backgroundImage;
+		return _backgroundManager.backgroundImage;
 	}
 	
 	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundRepeat = value;
+		return _backgroundManager.backgroundRepeat = value;
 	}
 	
 	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundRepeat;
+		return _backgroundManager.backgroundRepeat;
 	}
 	
 	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundSize = value;
+		return _backgroundManager.backgroundSize = value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundSize;
+		return _backgroundManager.backgroundSize;
 	}
 	
 	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
 	{
-		return _backgroundClip = value;
+		return _backgroundManager.backgroundClip = value;
 	}
 	
 	private function getBackgroundClip():Array<BackgroundClipStyleValue>
 	{
-		return _backgroundClip;
+		return _backgroundManager.backgroundClip;
 	}
 	
 	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
 	{
-		return _backgroundPosition = value;
+		return _backgroundManager.backgroundPosition = value;
 	}
 	
 	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
 	{
-		return _backgroundPosition;
+		return _backgroundManager.backgroundPosition;
 	}
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundOrigin = value;
+		return _backgroundManager.backgroundOrigin = value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundOrigin;
+		return _backgroundManager.backgroundOrigin;
 	}
 }

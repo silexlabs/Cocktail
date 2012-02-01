@@ -62,31 +62,31 @@ class InlineFormattingContext extends FormattingContext
 		if (position == true)
 		{
 			if (_firstLineLaidOut == false)
-		{
-			remainingWidth -= _containingDOMElement.style.computedStyle.textIndent;
-		}
-		
-		
-		if (remainingWidth - domElement.offsetWidth < 0 )
-		{	
-			switch(domElement.style.computedStyle.whiteSpace)
 			{
-				case WhiteSpaceStyleValue.normal,
-				WhiteSpaceStyleValue.preLine:
-					if (_firstLineLaidOut == false)
-					{
-								
-						startNewLine(domElement.offsetWidth +  _containingDOMElement.style.computedStyle.textIndent );
-					}
-					else
-					{
-						startNewLine(domElement.offsetWidth);
-					}
-				default:	
-					
+				remainingWidth -= _containingDOMElement.style.computedStyle.textIndent;
 			}
 			
-		}
+		
+			if (remainingWidth - domElement.offsetWidth < 0 )
+			{	
+				switch(domElement.style.computedStyle.whiteSpace)
+				{
+					case WhiteSpaceStyleValue.normal,
+					WhiteSpaceStyleValue.preLine:
+						if (_firstLineLaidOut == false)
+						{
+									
+							startNewLine(domElement.offsetWidth +  _containingDOMElement.style.computedStyle.textIndent );
+						}
+						else
+						{
+							startNewLine(domElement.offsetWidth);
+						}
+					default:	
+						
+				}
+				
+			}
 		}
 		
 		
@@ -163,18 +163,31 @@ class InlineFormattingContext extends FormattingContext
 				_formattingContextData.maxWidth = lineWidth;
 			}
 			
+			
 			for (i in 0..._domElementInLineBox.length)
 			{
 				var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
 				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, 0, _domElementInLineBox[i].position, _domElementInLineBox[i].render);
-				getChildrenTemporaryPositionData(_domElementInLineBox[i].parentDOMElement).push(childTemporaryPositionData);
-
+				
+				
+				getCurrentBoxesData(_domElementInLineBox[i].parentDOMElement)[0].children.push(childTemporaryPositionData);
+				
+				
 				_domElementInLineBox[i].domElement.style.setNativeX(_domElementInLineBox[i].domElement, childTemporaryPositionData.x);
 				_domElementInLineBox[i].domElement.style.setNativeY(_domElementInLineBox[i].domElement, childTemporaryPositionData.y);
-				
-	
 			}
 			
+			
+			for (i in 0..._currentBoxesData.length)
+			{
+				setBounds(_currentBoxesData[i]);
+				_formattingBoxesData.push(_currentBoxesData[i]);
+				
+			}
+			
+
+			
+			_currentBoxesData = new Array<BoxData>();
 			_domElementInLineBox = new Array<LineBoxElementData>();
 			
 			_formattingContextData.y += lineBoxHeight;

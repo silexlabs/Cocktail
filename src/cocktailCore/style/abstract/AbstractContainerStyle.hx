@@ -104,7 +104,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -170,7 +170,7 @@ class AbstractContainerStyle extends Style
 		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
 		//flow all children and store their laid out position relative to this styled DOMElement
-		var childrenTemporaryPositionsData:Array<ChildTemporaryPositionData> = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
@@ -187,7 +187,7 @@ class AbstractContainerStyle extends Style
 				childrenFormattingContext = getformattingContext(formattingContext);
 				childrenContainingDOMElementData = getContainerDOMElementData();
 				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-				childrenTemporaryPositionsData = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 		}
 		
@@ -210,17 +210,11 @@ class AbstractContainerStyle extends Style
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
 		//laid out positions is returned
-		var absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData> = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
-		
-		//concatenate the absolutely positioned children with the in-flow children
-		for (i in 0...absolutelyPositionedChildrenTemporaryPositionsData.length)
-		{
-			childrenTemporaryPositionsData.push(absolutelyPositionedChildrenTemporaryPositionsData[i]);
-		}
+		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 		
 		//return the array containing all the children of this ContainerDOMElement and their
 		//positions relative to the ContainerDOMElement
-		return childrenTemporaryPositionsData;
+		return childrenFormattingContext;
 	}
 	
 	/**
@@ -256,7 +250,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Actually flow all the children of the ContainerDOMElement
 	 */
-	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
@@ -280,6 +274,7 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
+		
 		//destroy the current formatting context, prompting
 		//to clean up all references it might have and also
 		//lays out the last line of DOMElement for an
@@ -291,12 +286,8 @@ class AbstractContainerStyle extends Style
 		{
 			childrenFormattingContext.destroy();
 		}
-		
-		//retrieve the position of each of the children now that we are sure they were laid out,
-		//because the formattin context was destroyed
-		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = childrenFormattingContext.getChildrenTemporaryPositionData(_domElement);
-		
-		return childrenTemporaryPositionData;
+
+		return childrenFormattingContext;
 	}
 	
 	/**
@@ -329,23 +320,27 @@ class AbstractContainerStyle extends Style
 				{
 					//all the in-flow children that share the same parent in the stored
 					//formatting context are retrieved
-					var children:Array<ChildTemporaryPositionData> = positionedDOMElementData.formattingContext.getChildrenTemporaryPositionData(positionedDOMElementData.style.domElement.parent);
+					var childrenBoxesData:Array<BoxData> = positionedDOMElementData.formattingContext.getBoxesData(positionedDOMElementData.style.domElement.parent);
 					
 					//loop in all the children to find a reference
 					//to the relative positioned DOMElement
-					for (i in 0...children.length)
+					for (i in 0...childrenBoxesData.length)
 					{
-						//when found, use its in-flow position as the static position used for
-						//relative positioned DOMElement
-						if (children[i].domElement == positionedDOMElementData.style.domElement)
+						for (j in 0...childrenBoxesData[i].children.length)
 						{
-							var x:Float = children[i].x;
-							var y:Float = children[i].y;
-							positionedDOMElementData.staticPosition = {
-								x:x,
-								y:y
+							//when found, use its in-flow position as the static position used for
+							//relative positioned DOMElement
+							if (childrenBoxesData[i].children[j].domElement == positionedDOMElementData.style.domElement)
+							{
+								var x:Float = childrenBoxesData[i].children[j].x;
+								var y:Float = childrenBoxesData[i].children[j].y;
+								positionedDOMElementData.staticPosition = {
+									x:x,
+									y:y
+								}
 							}
 						}
+						
 					}
 				}
 				
@@ -374,7 +369,6 @@ class AbstractContainerStyle extends Style
 					childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 					childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 				}
-			
 				
 				childrenTemporaryPositionData.push(childTemporaryPositionData);
 			}

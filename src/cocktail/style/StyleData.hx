@@ -1177,10 +1177,10 @@ import cocktailCore.style.formatter.FormattingContext;
 		var backgroundColor:Int;
 		var backgroundImage:Array<BackgroundImageStyleValue>;
 		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
-		var backgroundPosition:Array<BackgroundPositionStyleData>;
+		var backgroundPosition:Array<PointData>;
 		var backgroundClip:Array<BackgroundClipStyleValue>;
 		var backgroundOrigin:Array<BackgroundOriginStyleValue>;
-		var backgroundSize:Array<BackgroundSizeStyleValue>;
+		var backgroundSize:Array<DimensionData>;
 		
 		/**
 		 * font
@@ -1354,15 +1354,20 @@ import cocktailCore.style.formatter.FormattingContext;
 		var y:Int;
 	}
 	
-	/**
-	 * Holds the data of an array of children
-	 * position, which can be retrieved by their
-	 * parent DOMElement
-	 */
-	typedef ChildrenTemporaryPositionsData = {
+
+	typedef BoxData = {
 		var parentDOMElement:DOMElement;
+		var bounds:RectangleData;
 		var children:Array<ChildTemporaryPositionData>;
+		var textDecorations:Array<TextDecorationData>;
 	}
+	
+	typedef TextDecorationData = {
+		var color:Int;
+		var start:PointData;
+		var end:PointData;
+	}
+	
 	
 	/**
 	 * Holds the computed position of a 
@@ -1375,6 +1380,8 @@ import cocktailCore.style.formatter.FormattingContext;
 		//var lineRect:RectangleData;
 		var x:Int;
 		var y:Int;
+		var width:Int;
+		var height:Int;
 		var render:Bool;
 	}
 	

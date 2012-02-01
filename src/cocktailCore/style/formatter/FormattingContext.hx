@@ -11,6 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -55,7 +56,9 @@ class FormattingContext
 	private var _formattingContextData:FormattingContextData;
 	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
 
-	private var _childrenTemporaryPositionsData:Array<ChildrenTemporaryPositionsData>;
+	private var _formattingBoxesData:Array<BoxData>;
+	
+	private var _currentBoxesData:Array<BoxData>;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -88,7 +91,8 @@ class FormattingContext
 		//DOMElement in the right position
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
-		_childrenTemporaryPositionsData = new Array<ChildrenTemporaryPositionsData>();
+		_formattingBoxesData = new Array<BoxData>();
+		_currentBoxesData = new Array<BoxData>();
 		
 	}
 	
@@ -114,29 +118,43 @@ class FormattingContext
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
-	public function getChildrenTemporaryPositionData(parentDOMElement:DOMElement):Array<ChildTemporaryPositionData>
+	public function getBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{
-		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = new Array<ChildTemporaryPositionData>();
-		var foundFlag:Bool = false;
-		for (i in 0..._childrenTemporaryPositionsData.length)
+		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
+	
+	}
+	
+	private function getCurrentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+	{
+		return doGetBoxesData(parentDOMElement, _currentBoxesData);
+	}
+	
+	private function doGetBoxesData(parentDOMElement:DOMElement, targetBoxesData:Array<BoxData>):Array<BoxData>
+	{
+		var boxesData:Array<BoxData> = new Array<BoxData>();
+		
+		for (i in 0...targetBoxesData.length)
 		{
-			if (_childrenTemporaryPositionsData[i].parentDOMElement == parentDOMElement)
+			if (targetBoxesData[i].parentDOMElement == parentDOMElement)
 			{
-				childrenTemporaryPositionData = _childrenTemporaryPositionsData[i].children;
-				foundFlag = true;
+				boxesData.push(targetBoxesData[i]);
 			}
 		}
 		
-		if (foundFlag == false)
+		if (boxesData.length == 0)
 		{
-			var childrenTemporaryPositionsData:ChildrenTemporaryPositionsData = {
+			var boxData:BoxData = {
 				parentDOMElement:parentDOMElement,
-				children:childrenTemporaryPositionData
+				children:new Array<ChildTemporaryPositionData>(),
+				bounds: { x:0.0, y:0.0, width:0.0, height:0.0 },
+				textDecorations:new Array<TextDecorationData>()
 			}
-			_childrenTemporaryPositionsData.push(childrenTemporaryPositionsData);
+			
+			targetBoxesData.push(boxData);
+			boxesData.push(boxData);
 		}
 		
-		return childrenTemporaryPositionData;
+		return boxesData;
 	}
 	
 	/**
@@ -278,7 +296,7 @@ class FormattingContext
 	 */
 	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData, render:Bool):Void
 	{
-		getChildrenTemporaryPositionData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true, render ));
+		//getBoxesData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true, render ));
 		
 	}
 	
@@ -293,6 +311,41 @@ class FormattingContext
 	}
 	
 	
+	private function setBounds(boxData:BoxData):Void
+	{
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		for (i in 0...boxData.children.length)
+		{
+			if (boxData.children[i].x < left)
+			{
+				left = boxData.children[i].x;
+			}
+			if (boxData.children[i].y < top)
+			{
+				top = boxData.children[i].y;
+			}
+			if (boxData.children[i].x + boxData.children[i].width > right)
+			{
+				right = boxData.children[i].x + boxData.children[i].width;
+			}
+			if (boxData.children[i].y + boxData.children[i].height > bottom)
+			{
+				bottom = boxData.children[i].y + boxData.children[i].height;
+			}
+		}
+		
+		boxData.bounds = {
+			x:left,
+			y:top,
+			width : right - left,
+			height :  bottom - top,
+		}
+	}
+	
 	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool, render:Bool):ChildTemporaryPositionData
 	{
 		var childTemporaryPositionData:ChildTemporaryPositionData;
@@ -303,6 +356,8 @@ class FormattingContext
 			domElement:domElement,
 			x:x,
 			y:y,
+			width:domElement.offsetWidth,
+			height:domElement.offsetHeight,
 			lineIndex:lineIndex,
 			render:render
 			}
@@ -313,6 +368,8 @@ class FormattingContext
 			domElement:domElement,
 			x:0,
 			y:0,
+			width:0,
+			height:0,
 			lineIndex:lineIndex,
 			render:render
 			}

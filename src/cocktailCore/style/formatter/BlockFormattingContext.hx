@@ -53,7 +53,7 @@ class BlockFormattingContext extends FormattingContext
 	
 		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position, render);
 		
-		getChildrenTemporaryPositionData(parentDOMElement).push(childTemporaryPositionData);
+		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 		
 		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
