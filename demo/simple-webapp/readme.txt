@@ -85,7 +85,7 @@ Here are the needed steps to generate native applications using PhoneGap-Build e
  * the archive will be generated here: build/native_apps/WebApp_PhoneGapBuild.zip
 -upload the archive into PhoneGap-Build by clicking on update-code menu
 -wait a few minutes for PhoneGap-build to generate all the native applications
--you're all good !
+-you can now install these applications to your devices.
 
 
 - USING ADOBE AIR -
@@ -132,7 +132,8 @@ iOS Ad-Hoc compilation:
 iOS application installation
 There are two ways to install an Ad-Hoc ipa file: via iTunes or over the air (OTA)
 In each case, you need to have a provisionning file which links your app to your devices.
-This means you cannot install the ipa on devices for which you do not have the UIID, unless you use TestFlight (http://testflightapp.com), or have a jailbroken iDevice.
+This means you cannot install the ipa on devices for which you do not have the UDID (User Device ID), unless you have a jailbroken iDevice.
+We recommend using TestFlight (http://testflightapp.com) for beta tests.
 
 iTunes installation
 * To install the application on an iOS device, drag and drop the ipa and provisionning files on iTunes, and then sync the "Cocktail Demo" app on your device.
