@@ -1,3 +1,10 @@
+/*
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+
 @author Raphael Harmel
 @date 2011-12-06
 
@@ -5,16 +12,45 @@
 DESCRIPTION
 -----------
 
-This simple web app using Cocktail is aiming to reproduce an iPhone app screen.
+This "simple web app" is aiming to reproduce an iPhone menu screen, with each menu icon pointing to text & pictures lists or to web links.
+It is using Cocktail haxe library: http://haxe.org/com/libs/cocktail
 
-It is inspired by an existing demo made by the jPint project (which seems to be dead as of today).
+It is not intended to be useful, but more to be a proof of concept demonstrating the cross-platform capabilities of Cocktail.
 
+------------------------
+PROVIDED BINARY VERSIONS
+------------------------
+
+The provided binary versions are as follows:
+
+Online versions:
+-JavaScript: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_js.html
+-Flash: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_As3.html
+
+Native Applications:
+iPhone
+To install these versions, you will need a jailbreaked iPhone
+-Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_Air_OTA_install.html
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_PhoneGap_OTA_install.html
+
+Android:
+-Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_android_Air.apk
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_android_PhoneGap.apk
+
+BlackBerry
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_BlackBerry_PhoneGap.jad
+
+webOS
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_webOS_PhoneGap.ipk
+
+Symbian
+-PhoneGap version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_symbian_PhoneGap.wgz
 
 --------------------------
 COMPILATION & INSTALLATION
 --------------------------
 
-These steps have been tested on Windows 7.
+The compilation steps descibed here have been tested on Windows 7.
 For other plateforms, some modification might be necessary.
 
 
