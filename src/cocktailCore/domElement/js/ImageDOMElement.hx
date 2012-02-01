@@ -25,23 +25,4 @@ class ImageDOMElement extends AbstractImageDOMElement
 	{
 		super(nativeElement);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LOADING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Retrive the source url, width and
-	 * height from the loaded picture
-	 * @param	image
-	 */
-	override private function onLoadComplete(image:NativeElement):Void
-	{	
-		this._src = untyped image.src;
-		this._intrinsicHeight = untyped image.naturalHeight;
-		this._intrinsicWidth = untyped image.naturalWidth;
-		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
-		
-		super.onLoadComplete(image);
-	}
 }

@@ -85,6 +85,7 @@ class ResourceLoader extends AbstractResourceLoader
 	{	
 		var loader:Loader = cast(_nativeElement);
 		removeLoaderListeners(loader);
+		setIntrinsicDimensions(loader);
 		onLoadComplete(loader);
 	}
 	
@@ -111,6 +112,17 @@ class ResourceLoader extends AbstractResourceLoader
 	{
 		loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onNativeLoadComplete);
 		loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
+	}
+	
+	/**
+	 * Store the intrinsic dimensions of the loaded asset, retrieved
+	 * on the flash Loader
+	 */
+	private function setIntrinsicDimensions(loader:Loader):Void
+	{
+		this._intrinsicHeight = loader.contentLoaderInfo.height;
+		this._intrinsicWidth = loader.contentLoaderInfo.width;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 }
