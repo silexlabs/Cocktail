@@ -26,8 +26,16 @@ The provided binary versions are as follows:
 Online versions:
 -JavaScript: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_js.html
 -Flash: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_As3.html
+-HbbTV: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_js_hbbtv.html
 
-Native Applications:
+Desktop:
+-Win,OSX,Linux (using Adobe Air): http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_air_desktop_and_tv.air
+
+TV versions:
+-HbbTV: http://demos.silexlabs.org/cocktail/simple-webapp/WebApp_js_hbbtv.html
+-Using Adobe Air: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_air_desktop_and_tv.air
+
+Phones & tablets native applications:
 iPhone
 To install these versions, you will need a jailbreaked iPhone
 -Air version: http://demos.silexlabs.org/cocktail/simple-webapp/native_apps/WebApp_iOS_Air_OTA_install.html
