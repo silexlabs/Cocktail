@@ -597,9 +597,6 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Specifies the transparency of a DOMElement
 	 * where 1.0 is opaque and 0 is transparent
-	 * 
-	 * TODO n.b : implemented as an enum instead of just
-	 * a float to make room for the 'inherit' value
 	 */
 	enum OpacityStyleValue {
 		number(value:Float);
@@ -1174,7 +1171,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		/**
 		 * background
 		 */
-		var backgroundColor:Int;
+		var backgroundColor:ColorData;
 		var backgroundImage:Array<BackgroundImageStyleValue>;
 		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
 		var backgroundPosition:Array<BackgroundPositionStyleData>;
@@ -1201,7 +1198,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		var textIndent:Int;
 		var whiteSpace:WhiteSpaceStyleValue;
 		var textAlign:TextAlignStyleValue;
-		var color:Int;
+		var color:ColorData;
 		
 	}
 

@@ -992,19 +992,19 @@ class Style extends AbstractStyle
 		return cssBackgroundSizeDimensions;
 	}
 	
-	private function getCSSBackgroundSizeDimension(value:BackgroundSizeStyleDimensionData):String
+	private function getCSSBackgroundSizeDimension(value:BackgroundSizeStyleDimensionValue):String
 	{
 		var cssBackgroundSizeDimension:String;
 		
 		switch (value)
 		{
-			case BackgroundSizeStyleDimensionData.length(value):
+			case BackgroundSizeStyleDimensionValue.length(value):
 				cssBackgroundSizeDimension = getCSSLengthValue(value);
 				
-			case BackgroundSizeStyleDimensionData.percent(value):
+			case BackgroundSizeStyleDimensionValue.percent(value):
 				cssBackgroundSizeDimension = getCSSPercentValue(value);
 				
-			case BackgroundSizeStyleDimensionData.auto:
+			case BackgroundSizeStyleDimensionValue.auto:
 				cssBackgroundSizeDimension = "auto";
 		}
 		

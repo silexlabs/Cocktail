@@ -152,6 +152,15 @@ enum ColorValue {
 }
 
 /**
+ * Represents a color with
+ * its alpha (from 0 to 1)
+ */
+typedef ColorData = {
+	var color:Int;
+	var alpha:Float;
+}
+
+/**
  * This value represents a 2D image which
  * can either be loaded from an external
  * source, or a programmaticaly drawn

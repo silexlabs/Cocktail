@@ -311,40 +311,6 @@ class FormattingContext
 	}
 	
 	
-	private function setBounds(boxData:BoxData):Void
-	{
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		for (i in 0...boxData.children.length)
-		{
-			if (boxData.children[i].x < left)
-			{
-				left = boxData.children[i].x;
-			}
-			if (boxData.children[i].y < top)
-			{
-				top = boxData.children[i].y;
-			}
-			if (boxData.children[i].x + boxData.children[i].width > right)
-			{
-				right = boxData.children[i].x + boxData.children[i].width;
-			}
-			if (boxData.children[i].y + boxData.children[i].height > bottom)
-			{
-				bottom = boxData.children[i].y + boxData.children[i].height;
-			}
-		}
-		
-		boxData.bounds = {
-			x:left,
-			y:top,
-			width : right - left,
-			height :  bottom - top,
-		}
-	}
 	
 	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool, render:Bool):ChildTemporaryPositionData
 	{
@@ -368,8 +334,8 @@ class FormattingContext
 			domElement:domElement,
 			x:0,
 			y:0,
-			width:0,
-			height:0,
+			width:domElement.offsetWidth,
+			height:domElement.offsetHeight,
 			lineIndex:lineIndex,
 			render:render
 			}

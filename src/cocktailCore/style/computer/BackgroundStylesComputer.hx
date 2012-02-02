@@ -12,6 +12,7 @@ import cocktail.style.StyleData;
 import cocktailCore.unit.UnitManager;
 import cocktail.geom.GeomData;
 import cocktail.unit.UnitData;
+import haxe.Log;
 
 /**
  * This class computes all the background styles.
@@ -99,7 +100,7 @@ class BackgroundStylesComputer
 	 * current background-image
 	 */
 	public static function computeIndividualBackground(style:AbstractStyle, backgroundBox:RectangleData,
-	intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, 
+	intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, 
 	backgroundPosition:BackgroundPositionStyleData,
 	backgroundSize:BackgroundSizeStyleValue,
 	backgroundOrigin:BackgroundOriginStyleValue,
@@ -143,17 +144,17 @@ class BackgroundStylesComputer
 	/**
 	 * Return the background color as an integer
 	 */
-	private static function getComputedBackgroundColor(style:AbstractStyle):Int
+	private static function getComputedBackgroundColor(style:AbstractStyle):ColorData
 	{
-		var color:Int;
+		var computedColor:ColorData;
 		
 		switch (style.backgroundColor)
 		{
 			case BackgroundColorStyleValue.colorValue(value):
-				color = UnitManager.getColorFromColorValue(value);
+				computedColor = UnitManager.getColorDataFromColorValue(value);
 		}
 		
-		return color;
+		return computedColor;
 	}
 	
 		// BACKGROUND POSITION

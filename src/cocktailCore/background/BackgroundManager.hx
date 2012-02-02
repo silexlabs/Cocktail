@@ -6,6 +6,9 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.abstract.AbstractStyle;
+import cocktailCore.style.computer.BackgroundStylesComputer;
+import haxe.Log;
 
 /**
  * ...
@@ -40,86 +43,70 @@ class BackgroundManager
 	
 	public function new()
 	{
-		
+		_backgroundDrawingManagers = new Array<BackgroundDrawingManager>();
 	}
 	
-	public function render(width:Int, height:Int, computedStyle:ComputedStyleData):Array<NativeElement>
+	public function render(backgroundBox:RectangleData, style:AbstractStyle):Array<NativeElement>
 	{
-		var paddedBackgroundRepeat:Array<BackgroundRepeatStyleData> = cast(getPaddedBackgroundStyle(_backgroundImage, _backgroundRepeat));
-		var paddedBackgroundSize:Array<BackgroundSizeStyleValue> = cast(getPaddedBackgroundStyle(_backgroundImage, _backgroundSize));
-		var paddedBackgroundPosition:Array<BackgroundPositionStyleData> = cast(getPaddedBackgroundStyle(_backgroundImage, _backgroundPosition));
-		var paddedBackgroundClip:Array<BackgroundClipStyleValue> = cast(getPaddedBackgroundStyle(_backgroundImage, _backgroundClip));
-		var paddedBackgroundOrigin:Array<BackgroundOriginStyleValue> = cast(getPaddedBackgroundStyle(_backgroundImage, _backgroundOrigin));
-		
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		
-		
-		var backgroundColorValue:ColorValue;
-		
-		switch (_backgroundColor)
-		{
-			case colorValue(value):
-				backgroundColorValue = value;
-		}
-		var concatenatedImages:Array<BackgroundImageStyleValue> = new Array<BackgroundImageStyleValue>();
-		//concatenatedImages.push(BackgroundImageStyleValue.image(ImageValue.imageList([ImageDeclarationValue.color(ColorValue.(backgroundColorValue))]));
 		
 		for (i in 0..._backgroundImage.length)
 		{
-			concatenatedImages.push(_backgroundImage[i]);
-		}
-		
-		for (i in 0...concatenatedImages.length)
-		{
-			
-			
-			switch (concatenatedImages[i])
+			if (i == 0)
 			{
-				case BackgroundImageStyleValue.none:
-					
-				case BackgroundImageStyleValue.image(value):
-					
+				var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+				style, backgroundBox, null, null, null, _backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i],
+				_backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
+				
+				if (backgroundBox.width > 0 && backgroundBox.height > 0)
+				{
+					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
+					backgroundBox, computedBackgroundStyles.backgroundOrigin, computedBackgroundStyles.backgroundClip);
+					backgroundColorDrawingManager.drawBackgroundColor(style.computedStyle.backgroundColor);
+					_backgroundDrawingManagers.push(backgroundColorDrawingManager);
+					nativeElements.push(backgroundColorDrawingManager.nativeElement);
+				}
 			}
-			
-			
+			else
+			{
+				switch (_backgroundImage[i])
+				{
+					case BackgroundImageStyleValue.none:
+						
+					case BackgroundImageStyleValue.image(value):
+						switch (value)
+						{
+							case ImageValue.url(value):
+								
+							case ImageValue.imageList(value):
+								
+							case ImageValue.gradient(value):
+								var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+								style, backgroundBox, null, null, null, _backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i],
+								_backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
+								
+								if (backgroundBox.width > 0 && backgroundBox.height > 0)
+								{
+									var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
+									backgroundBox, computedGradientStyles.backgroundOrigin, computedGradientStyles.backgroundClip);
+									backgroundGradientDrawingManager.drawBackgroundGradient(
+									value,
+									computedGradientStyles.backgroundSize,
+									computedGradientStyles.backgroundPosition, 
+									computedGradientStyles.backgroundRepeat);
+									_backgroundDrawingManagers.push(backgroundGradientDrawingManager);
+									nativeElements.push(backgroundGradientDrawingManager.nativeElement);
+								}
+						}
+				}
+			}
 		}
 		
-		 return null;
+		
+		 return nativeElements;
 	}
 	
-	private function getBackgroundDrawingManager(marginBox:RectangleData, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData,
-	imageValue:ImageValue, backgroundSize:BackgroundSizeStyleValue, 
-	backgroundPosition:BackgroundPositionStyleData, backgroundRepeat:BackgroundRepeatStyleData):BackgroundDrawingManager
-	{
-		var backgroundDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-		Math.round(marginBox.width),
-		Math.round(marginBox.height),
-		backgroundPositioningBox,
-		backgroundPaintingBox);
-		
-		backgroundDrawingManager.drawBackgroundImage(imageValue, backgroundSize, backgroundPosition, backgroundRepeat);
-		
-		return backgroundDrawingManager;
-	}
-	
-	private function getPaddedBackgroundStyle(backgroundImage:Array<BackgroundImageStyleValue>, backgroundStyle:Array<Dynamic>):Array<Dynamic>
-	{
-		var backgroundStyleLength:Int = backgroundStyle.length;
-		var backgroundStyleIdx:Int = 0;
-		
-		while (backgroundStyle.length < backgroundImage.length)
-		{
-			backgroundStyle.push(backgroundStyle[backgroundStyleIdx]);
-			backgroundStyleIdx++;
-			if (backgroundStyleIdx > backgroundStyleLength - 1)
-			{
-				backgroundStyleIdx = 0;
-			}
-		}
-		
-		return backgroundStyle;
-	}
+
 	
 	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
 	{
