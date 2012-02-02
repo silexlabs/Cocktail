@@ -178,7 +178,8 @@ class ApplicationStructure
 		_downloadPage = createHeaderListPage(
 			"Downloads",
 			[
-			{text:"Desktop (Air: Win,OSX,Linux)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_desktop.air" },
+			{text:"Desktop (Air: Win,OSX,Linux)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_air_desktop_and_tv.air" },
+			{text:"TV (Air: Win,OSX,Linux)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_air_desktop_and_tv.air" },
 			{text:"Android app (Air)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_Air.apk" },
 			{text:"Android app (PhoneGap)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_PhoneGap.apk" },
 			{text:"iOS app (Air)", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_iOS_Air_OTA_install.html" },
@@ -194,7 +195,8 @@ class ApplicationStructure
 			"Links",
 			[
 			{text:"JavaScript Web version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_js.html" },
-			{text:"Flash AS3 Web version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_As3.html" }
+			{text:"Flash AS3 Web version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_As3.html" },
+			{text:"TV HbbTV version", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:BASE_URL + "WebApp_js_hbbtv.html" },
 			]
 		);
 		
