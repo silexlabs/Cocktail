@@ -1,20 +1,20 @@
-RIM-COD-SHA1-9: 15 75 4b 46 f9 43 82 b3 a0 a3 d0 95 1a 46 4b 87 fb ed 53 03
-RIM-COD-SHA1-8: 38 ba ce 44 d0 38 57 32 73 25 f8 d7 8a 01 46 a5 74 27 80 cb
+RIM-COD-SHA1-9: 08 99 dc fa 34 dd 26 33 cc f0 50 f2 f1 90 d6 ee 04 74 7c a2
+RIM-COD-SHA1-8: 88 9a 52 41 f2 52 9c b9 58 3b 4a 38 8d 40 b4 7c 0a 4f af e3
 RIM-COD-Size-29: 56924
-RIM-COD-SHA1-7: 5c 96 d9 23 9b c9 82 e1 95 4e 25 62 ac a3 04 94 62 29 fe 4d
+RIM-COD-SHA1-7: 70 2e 74 90 39 5b 35 5a 42 a8 97 b3 92 c7 b3 03 2e fe 31 b1
 RIM-COD-Size-28: 50972
-RIM-COD-SHA1-6: 67 6c c3 59 fc 2b 8e 7e 59 11 54 d9 71 b7 e9 8f 43 ac 96 9e
+RIM-COD-SHA1-6: a4 8d 86 7a 32 19 82 19 f0 0d 95 07 ac 9f d2 5a 52 10 1f ca
 RIM-COD-Size-27: 50964
-RIM-COD-SHA1-5: de 24 c4 95 5c 93 83 90 20 0e bb 11 d9 c8 b7 bc 0d f6 ae e4
+RIM-COD-SHA1-5: 77 82 10 4e 73 33 ec 1b 9e 82 5c 04 2a 6c c0 27 ef fc bc 27
 RIM-COD-Size-26: 50952
-RIM-COD-SHA1-4: 74 08 75 a2 48 9f 2f 43 94 ca 52 16 7d a1 c7 7c d4 02 3e 0e
+RIM-COD-SHA1-4: a5 b6 74 e4 53 d4 b6 d0 d4 79 1b 02 b1 04 b3 2c 03 05 ae 6f
 RIM-COD-Size-25: 55788
-RIM-COD-SHA1-3: 67 2f 16 2b e6 d2 09 cd 53 77 8b e5 0f 40 9b ec e0 0d 76 de
+RIM-COD-SHA1-3: 60 06 12 98 c3 f2 7c 0b 2a 5f 08 92 2a b1 23 80 f3 d8 15 7e
 RIM-COD-Size-24: 50976
-RIM-COD-SHA1-2: f0 88 0b 9e df 2d 0b c8 da 85 aa 84 a1 63 70 34 ff be ff ec
+RIM-COD-SHA1-2: 69 c6 d7 97 04 ef 1e cc 00 ba 40 62 27 bc 6f 6b 54 ec 89 28
 RIM-COD-Size-23: 50972
-RIM-COD-SHA1-1: d4 64 e7 34 e1 31 93 99 85 f3 63 21 9c 19 9f f2 76 c0 d7 c3
-RIM-COD-SHA1-40: 06 30 43 10 4e 04 d4 13 f0 f3 22 ee 38 cd 05 c5 71 77 a9 cd
+RIM-COD-SHA1-1: 3a c4 e0 c6 d6 9a 73 5f 47 a1 92 9a 1d 1d 75 b9 18 ca 63 d6
+RIM-COD-SHA1-40: e6 7e fd 95 76 cf 57 00 1b de ee 36 ef cc b6 e6 a1 79 ce 92
 RIM-COD-Size-22: 50972
 RIM-COD-Size-21: 57104
 RIM-COD-Size-20: 50900
@@ -35,55 +35,55 @@ RIM-MIDlet-Icon-Count-1: 1
 MIDlet-Vendor: Raphael Harmel
 RIM-MIDlet-Icon-1-1: resources\____HOVER_ICON_icon_hover.png,focused
 Manifest-Version: 1.0
-RIM-COD-SHA1-39: 23 04 7a 8b 0c b4 83 28 c6 af d5 18 e9 9b 4c 73 44 65 0b 35
+RIM-COD-SHA1-39: 6c 5c f8 80 7f 12 43 99 02 ee 9d 68 d8 ba c2 70 4d 89 48 05
 RIM-MIDlet-Flags-1: 0
-RIM-COD-SHA1-38: ca 31 04 20 c7 3b e6 90 dc c1 af 05 a9 ee 69 76 a2 74 b2 23
-RIM-COD-SHA1-37: bd 2b 61 40 18 d3 c7 bc 3e 32 88 14 da 90 9a cd 1d a8 f2 9a
-RIM-COD-Size-19: 56540
-RIM-COD-SHA1-36: 5e f5 86 35 39 e7 3a e5 0d ec 6f 76 c6 f5 03 7f 8e 3e 39 de
+RIM-COD-SHA1-38: 28 4b 86 65 00 f4 45 41 81 10 8a fa 7b cc 1a 3a cb 8b e9 67
+RIM-COD-SHA1-37: 02 cc e9 09 a8 80 1a 93 69 29 58 05 cf 13 4e b4 1b fe 7f a1
+RIM-COD-Size-19: 56908
+RIM-COD-SHA1-36: 1f b3 3a da 86 ec d4 5d a0 33 81 e1 dd fb ad 38 97 44 4a 3e
 RIM-COD-Size-18: 50476
-RIM-COD-SHA1-35: 21 5c 89 81 cf 4c fb 7a 3c 23 d9 5c 94 b4 a7 19 84 29 cf 16
+RIM-COD-SHA1-35: 32 9d 8e 84 d5 4a ba 71 66 89 33 67 c5 e5 05 e2 d0 1d 66 00
 RIM-COD-Size-17: 57372
-RIM-COD-SHA1-34: 5e 6a 18 4e 59 5c 2c aa 32 1d 04 23 8c 76 eb 34 ae 69 4a fe
+RIM-COD-SHA1-34: 11 27 f0 ae 80 02 03 e8 d8 57 67 e4 82 01 22 8b ca 01 fe 8d
 RIM-COD-Size-16: 50476
-RIM-COD-SHA1-33: e4 b5 47 f3 0e 87 97 86 e3 d8 5d ac 3b 19 fd 48 02 95 07 76
+RIM-COD-SHA1-33: 31 12 aa cc 87 76 c8 f9 a3 ec b2 5b e8 fb 84 b7 d5 f6 6b fb
 RIM-COD-Size-15: 50476
-RIM-COD-SHA1-32: c3 9b 0c 02 8a b9 6b a8 7d 90 47 ce b0 6f 13 5a af 14 cb 9d
+RIM-COD-SHA1-32: 77 3a 7f 26 b3 c8 c7 42 a6 61 43 99 c0 b7 84 ed bd bf 00 7a
 RIM-COD-Size-14: 50476
-RIM-COD-SHA1-31: 03 ad 7f 8f e2 5b 04 a1 9a 31 47 32 03 98 f7 b7 93 86 8d b0
+RIM-COD-SHA1-31: e0 f8 94 85 51 01 9f 71 0c 66 76 2c b4 e0 28 ba f9 11 94 56
 RIM-COD-Size-13: 50476
-RIM-COD-SHA1-30: 18 ff 80 fa df 4a a1 24 4f 5a c6 b5 c9 56 3d 36 e4 1a 69 87
+RIM-COD-SHA1-30: 3c 2b 6a 15 0e 18 46 89 f0 b5 7f df 5e d4 c4 b8 ad 1a cf 8d
 RIM-COD-Size-12: 50476
 RIM-COD-Size-11: 50472
 RIM-COD-Size-10: 56068
 MIDlet-Version: 1.0.4
 MicroEdition-Profile: MIDP-2.0
-RIM-COD-SHA1-29: 90 a9 37 d0 5c 9e f4 c9 55 75 3d 27 55 8a ec e7 23 a8 81 e5
-RIM-COD-SHA1-28: b7 ef 94 6c 40 15 78 91 53 cd 27 c0 3f 4a 63 ed 4b be 28 28
-RIM-COD-SHA1-27: da c0 dd 76 4e 3e 6d 2e 27 c5 d7 15 ec 20 44 4d 1d b1 52 c3
-RIM-COD-SHA1-26: fb 9d 12 66 48 79 07 03 1f d2 24 04 c3 b9 e7 fd bc 29 b5 29
-RIM-COD-SHA1-25: 29 18 29 e4 87 3d df 7b 10 d2 39 98 7e 2f 1b f0 05 24 eb 8b
-RIM-COD-SHA1-24: c2 b6 38 33 7c 1a 17 0d 00 fe 59 2d ba bb 4f 3f 38 06 b5 36
-RIM-COD-SHA1-23: 50 fb bb fa 30 59 21 a9 37 43 fe e7 1c ab 91 fc 2f 8b 6e 59
-RIM-COD-SHA1-22: 0c 55 bd 12 73 bf e5 e8 37 7c 16 17 60 82 8a 16 15 b7 52 4a
-RIM-COD-SHA1-21: 6c a2 02 58 18 fe 75 f4 55 27 cf 20 6f 9b 7b 62 82 af cb ab
-RIM-COD-SHA1-20: a6 62 32 34 44 27 4e 60 9f ac 0b 24 a0 31 22 78 7a f2 84 6c
+RIM-COD-SHA1-29: 7d 60 d8 96 5b 97 32 0d 36 a0 75 25 a1 de 53 31 bd 0a 3a 68
+RIM-COD-SHA1-28: 0a 54 01 60 1e 30 4d ec e5 21 12 4c 51 1e 9f 7a a0 bb b6 84
+RIM-COD-SHA1-27: 34 02 44 4f bb 26 c3 38 3c c7 33 73 85 59 70 17 05 4d e5 ef
+RIM-COD-SHA1-26: 35 e3 dc ae 79 f5 0c b3 d7 23 bc ba f0 dd 98 89 f7 12 78 27
+RIM-COD-SHA1-25: c7 71 e8 d2 75 ac 41 c9 39 18 aa 07 a0 20 35 4c 75 c8 42 4e
+RIM-COD-SHA1-24: 5d bb c1 5f 42 dd 0c c6 03 0b 16 85 c5 9a 52 e6 ce 5d ea 93
+RIM-COD-SHA1-23: 8c ff 78 cc ec ff 1d 98 58 f9 62 e5 8d 1d 13 ba e5 6d e3 b6
+RIM-COD-SHA1-22: d4 0c 74 6f 56 ee 3f dc 6c 6e d5 4b ea 36 10 a8 ff ab e9 77
+RIM-COD-SHA1-21: 6e 66 dc 04 88 42 98 64 50 be f0 ef b4 eb bb ab 9f bb 65 f5
+RIM-COD-SHA1-20: 15 0a c7 65 6e f4 62 ae 23 d5 09 dc a1 65 ad fa e4 7a 68 9b
 RIM-COD-URL: CocktailDemo.cod
-RIM-COD-Creation-Time: 1328111814
+RIM-COD-Creation-Time: 1328175283
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-Jar-URL: CocktailDemo.jar
-RIM-COD-SHA1-19: ea 5a ca 72 14 7c 0c 61 d2 b1 7e 61 6d 2c a3 f3 6f 49 fa 28
-RIM-COD-SHA1-18: 5d 3f 40 fb 64 80 4f 46 1e 02 11 b1 77 44 23 9e 19 59 16 fd
-RIM-COD-SHA1-17: 0d 60 ef fc 0e ce 17 b8 34 6c fc fe 4d 61 e5 7c 4f cb 58 95
-RIM-COD-SHA1-16: c2 38 3b c2 ad 56 70 8d 1c ec 29 98 05 d8 47 f5 8b cb 9f 5e
-RIM-COD-SHA1-15: 8b 62 09 20 24 e3 91 60 1b ff db 50 16 56 4e e6 22 f1 c8 7e
-RIM-COD-SHA1-14: e8 c0 6f ec a3 e9 ca 11 57 3c e8 ea e1 e2 6d 21 df fe 9b 83
-RIM-COD-SHA1-13: 49 17 a9 ed 67 5f 93 91 c8 a9 ad 4c 23 1a 10 fb 36 42 e7 59
-RIM-COD-SHA1-12: 4b 2f 06 8d 56 54 d8 e4 c2 de 7d a2 0d ec 6a 29 ef e0 a1 83
+RIM-COD-SHA1-19: 51 11 6f 80 d6 8f e2 a0 82 8f e1 f9 d9 ab 2f a9 98 52 a8 17
+RIM-COD-SHA1-18: 0f c6 62 a2 b8 1e 23 f2 61 81 5b 8c 5a af bc 55 d7 db 9a aa
+RIM-COD-SHA1-17: 91 01 92 29 14 93 c9 bf 6d 63 6f 96 ec 62 63 07 16 ac df 7a
+RIM-COD-SHA1-16: ea 5a f7 fd 57 b4 a0 c0 85 8a 40 79 1e d7 b0 ae 82 2d 76 a2
+RIM-COD-SHA1-15: 38 cc d4 a1 e4 a0 d2 6e 0b 2a 32 01 e2 62 d8 2c d8 86 68 95
+RIM-COD-SHA1-14: cb 2f db c7 22 6f 0b 68 f3 d6 a7 e1 74 00 19 2b 12 e3 83 9e
+RIM-COD-SHA1-13: 19 3f 5c 4e 31 bd 69 d0 ad 42 b2 49 23 3c 5a 78 72 5c 75 9b
+RIM-COD-SHA1-12: 5d b3 a6 67 dc 77 8d a1 dd 3f 93 a7 8c 7e b9 e7 19 a7 36 35
 RIM-COD-Size-9: 50524
-RIM-COD-SHA1-11: 38 13 f9 5d d4 f5 c6 a9 94 b7 ba 3f a4 2b 07 e3 dd 2b 02 ff
+RIM-COD-SHA1-11: 10 44 37 50 e3 37 2c c8 88 38 3a cb cc 74 d4 97 ed c0 16 8c
 RIM-COD-Size-8: 50524
-RIM-COD-SHA1-10: 9c 02 6c 69 22 41 df 76 95 78 f1 d9 c3 8b 63 dc 14 f6 ed 3c
+RIM-COD-SHA1-10: d0 59 65 23 53 5f cc e5 ec d4 34 05 5a e5 1e 37 bc 7d 6b fc
 RIM-COD-Size-7: 56048
 MIDlet-Description: This is a demonstration of Cocktail, a haxe library.
 RIM-COD-Size-6: 55716
@@ -95,10 +95,10 @@ RIM-COD-Size-1: 68904
 MIDlet-1: CocktailDemo,resources/icon.png,rim:foreground;WIDGET;
 MIDlet-Name: CocktailDemo
 RIM-COD-URL-40: CocktailDemo-40.cod
-RIM-COD-SHA1: ff 53 05 56 39 b0 d2 46 13 ac f6 e6 ce 90 e7 13 c5 df a1 cc
+RIM-COD-SHA1: b4 62 97 dd be 59 af 90 62 a3 84 cf ef 52 d2 7d cd 14 f1 3d
 RIM-COD-Size-40: 50500
 RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_bb_web_jse_api,net_rim_xml_org,net_rim_bb_browser_field2_api,net_rim_os,net_rim_bbapi_push,net_rim_bbapi_messagelist,net_rim_pdap,net_rim_bbapi_mailv2,net_rim_bbapi_phone,net_rim_bbapi_invoke,net_rim_bbapi_browser,net_rim_networkapi,net_rim_bb_browser_field_api,net_rim_locationapi,net_rim_xml
-MIDlet-Jar-Size: 3207805
+MIDlet-Jar-Size: 3208189
 RIM-COD-URL-39: CocktailDemo-39.cod
 RIM-COD-URL-38: CocktailDemo-38.cod
 RIM-COD-URL-37: CocktailDemo-37.cod
@@ -116,9 +116,9 @@ RIM-COD-URL-6: CocktailDemo-6.cod
 RIM-COD-URL-5: CocktailDemo-5.cod
 RIM-COD-Size-39: 50480
 RIM-COD-URL-4: CocktailDemo-4.cod
-RIM-COD-Size-38: 51048
+RIM-COD-Size-38: 52480
 RIM-COD-URL-3: CocktailDemo-3.cod
-RIM-COD-Size-37: 50500
+RIM-COD-Size-37: 49068
 RIM-COD-URL-2: CocktailDemo-2.cod
 RIM-COD-Size-36: 53424
 RIM-COD-URL-1: CocktailDemo-1.cod
