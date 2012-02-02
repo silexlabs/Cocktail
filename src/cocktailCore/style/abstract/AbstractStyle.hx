@@ -10,6 +10,7 @@ package cocktailCore.style.abstract;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.background.BackgroundManager;
 import cocktailCore.style.computer.BackgroundStylesComputer;
@@ -137,18 +138,25 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
 	 
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
@@ -444,12 +452,12 @@ class AbstractStyle
 			textIndent:0,
 			whiteSpace:WhiteSpaceStyleValue.normal,
 			textAlign:TextAlignStyleValue.left,
-			color:0,
+			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
 			transformOrigin: { x:0.0, y:0.0 },
 			transform:new Matrix(),
-			backgroundColor:0,
+			backgroundColor:{color:0, alpha:1.0},
 			backgroundSize:[],
 			backgroundOrigin:[],
 			backgroundImage:[],
@@ -503,7 +511,6 @@ class AbstractStyle
 	{
 		var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
 		
-		
 		/**
 		 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
 		 * son background, border....
@@ -516,6 +523,14 @@ class AbstractStyle
 		 */
 		for (i in 0..._boxesData.length)
 		{
+			setBounds(_boxesData[i]);
+			var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
+			
+			for (j in 0...backgrounds.length)
+			{
+				attachChild(backgrounds[i]);
+			}
+			
 			for (j in 0..._boxesData[i].children.length)
 			{
 				if (_boxesData[i].children[j].render == true)
@@ -537,7 +552,7 @@ class AbstractStyle
 					_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
 				
 					//attach the child
-					attachChild(_boxesData[i].children[j].domElement);
+					attachChild(_boxesData[i].children[j].domElement.nativeElement);
 				}	
 			}
 		}
@@ -560,7 +575,7 @@ class AbstractStyle
 			child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
 		
 			//attach the child
-			attachChild(child.domElement);
+			attachChild(child.domElement.nativeElement);
 		}
 	}
 	
@@ -568,11 +583,24 @@ class AbstractStyle
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	private function setBounds(boxData:BoxData):Void
+	{
+		var width:Float = _domElement.offsetWidth;
+			var height:Float = _domElement.offsetHeight;
+			
+			boxData.bounds = {
+					x:0.0,
+					y:0.0,
+					width : width,
+					height :  height,
+				}
+	}
+	
 	/**
 	 * Attach a child to the NativeElement of the 
 	 * styled DOMElement using runtime specific API
 	 */
-	private function attachChild(domElement:DOMElement):Void
+	private function attachChild(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}

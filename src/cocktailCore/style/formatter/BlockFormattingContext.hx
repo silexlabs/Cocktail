@@ -52,8 +52,10 @@ class BlockFormattingContext extends FormattingContext
 		
 	
 		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, 0, position, render);
-		
+
 		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+		
+		
 		
 		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
@@ -76,6 +78,7 @@ class BlockFormattingContext extends FormattingContext
 			_formattingContextData.maxWidth = _formattingContextData.x + domElement.offsetWidth;
 		}
 		
+
 	}
 
 	/**

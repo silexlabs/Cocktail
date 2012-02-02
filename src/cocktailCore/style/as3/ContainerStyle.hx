@@ -141,7 +141,7 @@ class ContainerStyle extends AbstractContainerStyle
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
-		elementFormat.color = _computedStyle.color;
+		elementFormat.color = _computedStyle.color.color;
 	
 		//normal or small caps
 		elementFormat.typographicCase = getNativeFontVariant(_computedStyle.fontVariant);

@@ -193,9 +193,9 @@ class FontAndTextStylesComputer
 	/**
 	 * Computed the color of a text of the DOMElement
 	 */
-	private static function getComputedColor(style:AbstractStyle):Int
+	private static function getComputedColor(style:AbstractStyle):ColorData
 	{
-		return UnitManager.getColorFromColorValue(style.color);
+		return UnitManager.getColorDataFromColorValue(style.color);
 	}
 	
 	/**

@@ -7,6 +7,8 @@
 */
 package cocktail.domElement;
 
+import cocktail.unit.UnitData;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Link DOMElement enums
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -64,20 +66,6 @@ enum LinkTargetValue {
 	}
 
 	/**
-	 * Contains the data for a color, which can be
-	 * used in a monochrome or gradient fill.
-	 */
-	typedef ColorStopData = {
-		
-		//the value of the color
-		var color:Int;
-		
-		//the alpha of the color, from 0 (transparent)
-		//to 100 (opaque)
-		var alpha:Int;
-	}
-
-	/**
 	 * a unit element of a gradient. A gradient, is formed
 	 * of multiple GradientStop
 	 */
@@ -85,7 +73,7 @@ enum LinkTargetValue {
 		
 		//a color info for this stop, containing the color value
 		//and it's alpha
-		var colorStop:ColorStopData;
+		var colorStop:ColorData;
 		
 		//the ratio of the stop from 0 (left) to 100 (right). For instance
 		//if a gradient is formed of 3 GradientStop, the gradient will be
@@ -149,7 +137,7 @@ enum LinkTargetValue {
 		none;
 		
 		//a fill with only one color with an alpha
-		monochrome(colorStop:ColorStopData);
+		monochrome(colorStop:ColorData);
 		
 		//a gradient fill, with multiple colors each with their own alpha,
 		//the gradient might be rotated
@@ -169,7 +157,7 @@ enum LinkTargetValue {
 		none;
 		
 		//a line with only one color with an alpha
-		monochrome(colorStop:ColorStopData, lineStyle:LineStyleData);
+		monochrome(color:ColorData, lineStyle:LineStyleData);
 		
 		//a gradient line, with multiple colors each with their own alpha,
 		//the gradient might be rotated

@@ -10,6 +10,7 @@ package cocktailCore.style.as3;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
@@ -86,9 +87,9 @@ class Style extends AbstractStyle
 	/**
 	 * Attach a child using flash API
 	 */
-	override private function attachChild(domElement:DOMElement):Void
+	override private function attachChild(nativeElement:NativeElement):Void
 	{
-		this._domElement.nativeElement.addChild(domElement.nativeElement);
+		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
 	/**

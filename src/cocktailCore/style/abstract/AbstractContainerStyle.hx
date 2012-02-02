@@ -82,6 +82,61 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function setBounds(boxData:BoxData):Void
+	{
+		if (isInlineContainer() == true)
+		{
+			var left:Float = 50000;
+			var top:Float = 50000;
+			var right:Float = -50000;
+			var bottom:Float = -50000;
+			
+			for (i in 0...boxData.children.length)
+			{
+				if (boxData.children[i].x < left)
+				{
+					left = boxData.children[i].x;
+				}
+				if (boxData.children[i].y < top)
+				{
+					top = boxData.children[i].y;
+				}
+				if (boxData.children[i].x + boxData.children[i].width > right)
+				{
+					right = boxData.children[i].x + boxData.children[i].width;
+				}
+				if (boxData.children[i].y + boxData.children[i].height > bottom)
+				{
+					bottom = boxData.children[i].y + boxData.children[i].height;
+				}
+			}
+			
+				boxData.bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+		}
+		else
+		{
+			var width:Float = _domElement.offsetWidth;
+			var height:Float = _domElement.offsetHeight;
+			
+			boxData.bounds = {
+					x:0.0,
+					y:0.0,
+					width : width,
+					height :  height,
+				}
+		}
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -180,7 +180,6 @@ class InlineFormattingContext extends FormattingContext
 			
 			for (i in 0..._currentBoxesData.length)
 			{
-				setBounds(_currentBoxesData[i]);
 				_formattingBoxesData.push(_currentBoxesData[i]);
 				
 			}

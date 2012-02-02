@@ -1,4 +1,12 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktailCore.drawing.as3;
+
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
@@ -51,7 +59,7 @@ class DrawingManager extends AbstractDrawingManager
 		_typedNativeElement = cast(this._nativeElement);
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(width, height, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00FFFFFF));
 		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
@@ -160,12 +168,12 @@ class DrawingManager extends AbstractDrawingManager
 			case none:
 				
 			//if there must be a one-color line, use the native lineStyle method
-			case monochrome(colorStop, lineStyleData):
+			case monochrome(color, lineStyleData):
 				//set the line style
 				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
-					colorStop.color,
-					toNativeAlpha(colorStop.alpha),
+					color.color,
+					toNativeAlpha(color.alpha),
 					true,
 					LineScaleMode.NORMAL,
 					toNativeCapStyle(lineStyleData.capStyle),
@@ -291,9 +299,9 @@ class DrawingManager extends AbstractDrawingManager
 	/**
 	 * In Flash AVM2, alpha values range from 0 to 1
 	 */
-	override private function toNativeAlpha(genericAlpha:Int):Dynamic
+	override private function toNativeAlpha(genericAlpha:Float):Dynamic
 	{
-		return genericAlpha * 0.01;
+		return genericAlpha;
 	}
 	
 	/**

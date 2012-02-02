@@ -27,6 +27,7 @@ class AbstractDrawingManager
 	 * as drawing surface
 	 */
 	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
 	
 	/**
 	 * The width of the drawing surface
@@ -275,7 +276,7 @@ class AbstractDrawingManager
 	 * specific one
 	 * @return returns a dynamic as it may be a float
 	 */
-	private function toNativeAlpha(genericAlpa:Int):Dynamic
+	private function toNativeAlpha(genericAlpa:Float):Dynamic
 	{
 		return null;
 	}
@@ -323,6 +324,11 @@ class AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getNativeElement():NativeElement
+	{
+		return _nativeElement;
+	}
 	
 	private function setWidth(value:Int):Int
 	{
