@@ -1177,10 +1177,10 @@ import cocktailCore.style.formatter.FormattingContext;
 		var backgroundColor:Int;
 		var backgroundImage:Array<BackgroundImageStyleValue>;
 		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
-		var backgroundPosition:Array<PointData>;
+		var backgroundPosition:Array<BackgroundPositionStyleData>;
 		var backgroundClip:Array<BackgroundClipStyleValue>;
 		var backgroundOrigin:Array<BackgroundOriginStyleValue>;
-		var backgroundSize:Array<DimensionData>;
+		var backgroundSize:Array<BackgroundSizeStyleValue>;
 		
 		/**
 		 * font
@@ -1203,6 +1203,15 @@ import cocktailCore.style.formatter.FormattingContext;
 		var textAlign:TextAlignStyleValue;
 		var color:Int;
 		
+	}
+
+	typedef ComputedBackgroundStyleData = {
+		var backgroundSize:DimensionData;
+		var backgroundOrigin:RectangleData;
+		var backgroundClip:RectangleData;
+		var backgroundRepeat:BackgroundRepeatStyleData;
+		var backgroundPosition:PointData;
+		var backgroundImage:BackgroundImageStyleValue;
 	}
 	
 	/**
