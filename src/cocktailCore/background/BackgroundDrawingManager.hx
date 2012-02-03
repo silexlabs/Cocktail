@@ -36,48 +36,48 @@ class BackgroundDrawingManager extends DrawingManager
 	public function drawBackgroundImage(nativeImage:NativeElement, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData , backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
 		
-		var totalWidth:Float;
-		var maxWidth:Float;
-		var imageWidth:Float;
-		var initialWidth:Float;
+		var totalWidth:Int;
+		var maxWidth:Int;
+		var imageWidth:Int;
+		var initialWidth:Int;
 		
 		switch (backgroundRepeat.x)
 		{
 			case BackgroundRepeatStyleValue.noRepeat:
-				imageWidth = computedBackgroundSize.width;
-				totalWidth = computedBackgroundPosition.x;
+				imageWidth = Math.round(computedBackgroundSize.width);
+				totalWidth = Math.round(computedBackgroundPosition.x);
 				initialWidth = totalWidth;
 				maxWidth = totalWidth + imageWidth;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = computedBackgroundPosition.x;
+				totalWidth = Math.round(computedBackgroundPosition.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = _backgroundPaintingBox.x + _backgroundPaintingBox.width;
+				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
 				
 			case BackgroundRepeatStyleValue.space:
-				imageWidth = _backgroundPositioningBox.width / computedBackgroundSize.width;
-				totalWidth = computedBackgroundPosition.x;
+				imageWidth = Math.round(_backgroundPositioningBox.width / computedBackgroundSize.width);
+				totalWidth = Math.round(computedBackgroundPosition.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = _backgroundPaintingBox.x + _backgroundPaintingBox.width;
+				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
 				
 			case BackgroundRepeatStyleValue.round:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = computedBackgroundPosition.x;
+				totalWidth = Math.round(computedBackgroundPosition.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = _backgroundPaintingBox.x + _backgroundPaintingBox.width;
+				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
 		}
 		
 		var totalHeight:Float;
@@ -91,7 +91,7 @@ class BackgroundDrawingManager extends DrawingManager
 				imageHeight = computedBackgroundSize.height;
 				totalHeight = computedBackgroundPosition.y;
 				initialHeight = totalHeight;
-				maxHeight = totalWidth + totalHeight;
+				maxHeight = totalHeight + imageHeight;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageHeight = computedBackgroundSize.height;
@@ -136,7 +136,7 @@ class BackgroundDrawingManager extends DrawingManager
 			
 			totalWidth += imageWidth;
 			
-			if (totalWidth > maxWidth)
+			if (totalWidth >= maxWidth)
 			{
 				totalWidth = initialWidth;
 				totalHeight += imageHeight;
