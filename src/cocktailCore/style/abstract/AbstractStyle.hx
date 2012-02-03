@@ -509,73 +509,77 @@ class AbstractStyle
 	 */
 	public function render():Void
 	{
-		var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
-		
-		/**
-		 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
-		 * son background, border....
-		 * 
-		 * _childrenFormattingContext ne devrait être que sur AbstractContainer, pas de children
-		 * sur un abstractStyle et embedded
-		 * 
-		 * ici devrait être renderBackground, renderBorder... et sur AbstractContainer renderChildren
-		 * et sur AbstractEmbedded renderEmbeddedAsset
-		 */
-		for (i in 0..._boxesData.length)
+		if (_childrenFormattingContext != null)
 		{
-			setBounds(_boxesData[i]);
-			var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
-			for (j in 0...backgrounds.length)
-			{
-				attachChild(backgrounds[j]);
-			}
+				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
 			
-			for (j in 0..._boxesData[i].children.length)
+			/**
+			 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
+			 * son background, border....
+			 * 
+			 * _childrenFormattingContext ne devrait être que sur AbstractContainer, pas de children
+			 * sur un abstractStyle et embedded
+			 * 
+			 * ici devrait être renderBackground, renderBorder... et sur AbstractContainer renderChildren
+			 * et sur AbstractEmbedded renderEmbeddedAsset
+			 */
+			for (i in 0..._boxesData.length)
 			{
-				if (_boxesData[i].children[j].render == true)
+				setBounds(_boxesData[i]);
+				var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
+				for (j in 0...backgrounds.length)
 				{
-					
-					//apply x and y
-					_boxesData[i].children[j].domElement.style.setNativeX(_boxesData[i].children[j].domElement, _boxesData[i].children[j].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-					_boxesData[i].children[j].domElement.style.setNativeY(_boxesData[i].children[j].domElement, _boxesData[i].children[j].y + _computedStyle.marginTop + _computedStyle.paddingTop);
-					
-					//apply width and height
-					_boxesData[i].children[j].domElement.style.setNativeHeight(_boxesData[i].children[j].domElement.style.computedStyle.height);
-					_boxesData[i].children[j].domElement.style.setNativeWidth(_boxesData[i].children[j].domElement.style.computedStyle.width);
+					attachChild(backgrounds[j]);
+				}
 				
-					//apply transformations
-					_boxesData[i].children[j].domElement.style.setNativeMatrix(_boxesData[i].children[j].domElement.style.computedStyle.transform);
+				for (j in 0..._boxesData[i].children.length)
+				{
+					if (_boxesData[i].children[j].render == true)
+					{
+						
+						//apply x and y
+						_boxesData[i].children[j].domElement.style.setNativeX(_boxesData[i].children[j].domElement, _boxesData[i].children[j].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+						_boxesData[i].children[j].domElement.style.setNativeY(_boxesData[i].children[j].domElement, _boxesData[i].children[j].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+						
+						//apply width and height
+						_boxesData[i].children[j].domElement.style.setNativeHeight(_boxesData[i].children[j].domElement.style.computedStyle.height);
+						_boxesData[i].children[j].domElement.style.setNativeWidth(_boxesData[i].children[j].domElement.style.computedStyle.width);
 					
-					//apply opacity and visibility
-					_boxesData[i].children[j].domElement.style.setNativeOpacity(_boxesData[i].children[j].domElement.style.computedStyle.opacity);
-					_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
+						//apply transformations
+						_boxesData[i].children[j].domElement.style.setNativeMatrix(_boxesData[i].children[j].domElement.style.computedStyle.transform);
+						
+						//apply opacity and visibility
+						_boxesData[i].children[j].domElement.style.setNativeOpacity(_boxesData[i].children[j].domElement.style.computedStyle.opacity);
+						_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
+					
+						//attach the child
+						attachChild(_boxesData[i].children[j].domElement.nativeElement);
+					}	
+				}
+			}
+			
+			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
+			{
+				var child:ChildTemporaryPositionData = _absolutelyPositionedChildrenTemporaryPositionsData[i];
+				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
 				
-					//attach the child
-					attachChild(_boxesData[i].children[j].domElement.nativeElement);
-				}	
+				//apply width and height
+				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
+				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
+			
+				//apply transformations
+				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
+				
+				//apply opacity and visibility
+				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
+				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
+			
+				//attach the child
+				attachChild(child.domElement.nativeElement);
 			}
 		}
 		
-		for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
-		{
-			var child:ChildTemporaryPositionData = _absolutelyPositionedChildrenTemporaryPositionsData[i];
-			child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-			
-			//apply width and height
-			child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
-			child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
-		
-			//apply transformations
-			child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
-			
-			//apply opacity and visibility
-			child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
-			child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
-		
-			//attach the child
-			attachChild(child.domElement.nativeElement);
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

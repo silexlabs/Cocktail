@@ -50,7 +50,7 @@ class BackgroundManager
 	public function render(backgroundBox:RectangleData, style:AbstractStyle):Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
+		var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
 		for (i in 0..._backgroundImage.length)
 		{
 			if (i == 0)
@@ -61,12 +61,10 @@ class BackgroundManager
 				
 				if (backgroundBox.width > 0 && backgroundBox.height > 0)
 				{
-					var nativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
-					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(nativeElement,
+					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
 					backgroundBox, computedBackgroundStyles.backgroundOrigin, computedBackgroundStyles.backgroundClip);
 					backgroundColorDrawingManager.drawBackgroundColor(style.computedStyle.backgroundColor);
 					_backgroundDrawingManagers.push(backgroundColorDrawingManager);
-					nativeElements.push(backgroundColorDrawingManager.nativeElement);
 				}
 			}
 			
@@ -126,6 +124,9 @@ class BackgroundManager
 			}
 			
 		}
+		
+		nativeElements.reverse();
+		nativeElements.unshift(backgroundColorNativeElement);
 		
 		 return nativeElements;
 	}
