@@ -525,10 +525,9 @@ class AbstractStyle
 		{
 			setBounds(_boxesData[i]);
 			var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
-			
 			for (j in 0...backgrounds.length)
 			{
-				attachChild(backgrounds[i]);
+				attachChild(backgrounds[j]);
 			}
 			
 			for (j in 0..._boxesData[i].children.length)

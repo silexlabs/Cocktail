@@ -6,6 +6,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktail.geom.GeomData;
+import cocktailCore.resource.ImageLoader;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import haxe.Log;
@@ -60,48 +61,71 @@ class BackgroundManager
 				
 				if (backgroundBox.width > 0 && backgroundBox.height > 0)
 				{
-					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
+					var nativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(nativeElement,
 					backgroundBox, computedBackgroundStyles.backgroundOrigin, computedBackgroundStyles.backgroundClip);
 					backgroundColorDrawingManager.drawBackgroundColor(style.computedStyle.backgroundColor);
 					_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 					nativeElements.push(backgroundColorDrawingManager.nativeElement);
 				}
 			}
-			else
+			
+			switch (_backgroundImage[i])
 			{
-				switch (_backgroundImage[i])
-				{
-					case BackgroundImageStyleValue.none:
-						
-					case BackgroundImageStyleValue.image(value):
-						switch (value)
-						{
-							case ImageValue.url(value):
-								
-							case ImageValue.imageList(value):
-								
-							case ImageValue.gradient(value):
+				case BackgroundImageStyleValue.none:
+					
+				case BackgroundImageStyleValue.image(value):
+					switch (value)
+					{
+						case ImageValue.url(value):
+							var nativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+							var imageLoader:ImageLoader = new ImageLoader();
+							imageLoader.load([value], function(image) {
 								var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-								style, backgroundBox, null, null, null, _backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i],
+								style, backgroundBox, imageLoader.intrinsicWidth, imageLoader.intrinsicHeight, imageLoader.intrinsicRatio, _backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i],
 								_backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
 								
 								if (backgroundBox.width > 0 && backgroundBox.height > 0)
 								{
-									var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
+									var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(nativeElement,
 									backgroundBox, computedGradientStyles.backgroundOrigin, computedGradientStyles.backgroundClip);
-									backgroundGradientDrawingManager.drawBackgroundGradient(
-									value,
+									backgroundImageDrawingManager.drawBackgroundImage(
+									image, imageLoader.intrinsicWidth, imageLoader.intrinsicHeight, imageLoader.intrinsicRatio,
 									computedGradientStyles.backgroundSize,
 									computedGradientStyles.backgroundPosition, 
 									computedGradientStyles.backgroundRepeat);
-									_backgroundDrawingManagers.push(backgroundGradientDrawingManager);
-									nativeElements.push(backgroundGradientDrawingManager.nativeElement);
+									_backgroundDrawingManagers.push(backgroundImageDrawingManager);
+									
 								}
-						}
-				}
+								
+							}, function(error) { Log.trace(error); } );
+							nativeElements.push(nativeElement);
+							
+						case ImageValue.imageList(value):
+							
+						case ImageValue.gradient(value):
+							var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+							style, backgroundBox, null, null, null, _backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i],
+							_backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
+							
+							if (backgroundBox.width > 0 && backgroundBox.height > 0)
+							{
+								var nativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+							
+								var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(nativeElement,
+								backgroundBox, computedGradientStyles.backgroundOrigin, computedGradientStyles.backgroundClip);
+								backgroundGradientDrawingManager.drawBackgroundGradient(
+								value,
+								computedGradientStyles.backgroundSize,
+								computedGradientStyles.backgroundPosition, 
+								computedGradientStyles.backgroundRepeat);
+								_backgroundDrawingManagers.push(backgroundGradientDrawingManager);
+								nativeElements.push(backgroundGradientDrawingManager.nativeElement);
+							}
+					}
 			}
+			
 		}
-		
 		
 		 return nativeElements;
 	}
