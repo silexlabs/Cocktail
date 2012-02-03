@@ -59,7 +59,7 @@ class DrawingManager extends AbstractDrawingManager
 		_typedNativeElement = cast(this._nativeElement);
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00000000));
 		this._nativeElement.addChild(_bitmapDrawing);
 	}
 	
@@ -84,7 +84,7 @@ class DrawingManager extends AbstractDrawingManager
 	override public function clear():Void
 	{
 		_typedNativeElement.graphics.clear();
-		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, width, height), 0xFFFFFFFF);
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, width, height), 0x00000000);
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ class DrawingManager extends AbstractDrawingManager
 	{ 
 		
 		//create a new transparent bitmap data, the size of the vector drawing
-		var currentGraphicBitmapData:BitmapData = new BitmapData(Math.round(_typedNativeElement.width), Math.round(_typedNativeElement.height), true, 0x00FFFFFF);
+		var currentGraphicBitmapData:BitmapData = new BitmapData(Math.round(_typedNativeElement.width), Math.round(_typedNativeElement.height), true, 0x00000000);
 		
 		//draw the current vector into a bitmap
 		currentGraphicBitmapData.draw(_typedNativeElement);
@@ -255,13 +255,13 @@ class DrawingManager extends AbstractDrawingManager
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//convert the abstract rectangle and point into flash natives one
-		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+	//	var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		
 		var matrixData:MatrixData = matrix.data;
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//draw the ImageDOMElement bitmap data onto the current bitmap data
-		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect, true);
+		currentBitmapData.draw(sourceBitmapData, nativeMatrix);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -396,7 +396,7 @@ class DrawingManager extends AbstractDrawingManager
 		var nativeElementWidth:Int = Math.round(nativeElement.width);
 		var nativeElementHeight:Int = Math.round(nativeElement.height);
 		
-		var bitmapData:BitmapData = new BitmapData(nativeElementWidth, nativeElementHeight, true, 0x00FFFFFF);
+		var bitmapData:BitmapData = new BitmapData(nativeElementWidth, nativeElementHeight, true, 0x00000000);
 		bitmapData.draw(nativeElement);
 		
 		return bitmapData;
@@ -472,7 +472,7 @@ class DrawingManager extends AbstractDrawingManager
 	override private function setWidth(value:Int):Int
 	{
 		super.setWidth(value);
-		_bitmapDrawing = new Bitmap(new BitmapData(value, height, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(value, height, true, 0x00000000));
 		this._nativeElement.addChild(_bitmapDrawing);
 		return _width = value;
 	}
@@ -481,7 +481,7 @@ class DrawingManager extends AbstractDrawingManager
 	override private function setHeight(value:Int):Int
 	{
 		super.setHeight(value);
-		_bitmapDrawing = new Bitmap(new BitmapData(width, value, true, 0x00FFFFFF));
+		_bitmapDrawing = new Bitmap(new BitmapData(width, value, true, 0x00000000));
 		this._nativeElement.addChild(_bitmapDrawing);
 		return _height = value;
 	}

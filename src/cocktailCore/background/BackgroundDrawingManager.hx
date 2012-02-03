@@ -25,12 +25,12 @@ class BackgroundDrawingManager extends DrawingManager
 	
 	private var _imageLoader:ImageLoader;
 	
-	public function new(backgroundBox:RectangleData, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData) 
+	public function new(nativeElement:NativeElement, backgroundBox:RectangleData, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData) 
 	{
 		_backgroundPositioningBox = backgroundPositioningBox;
 		_backgroundPaintingBox = backgroundPaintingBox;
 		
-		super(NativeElementManager.createNativeElement(NativeElementTypeValue.graphic), Math.round(backgroundBox.width), Math.round(backgroundBox.height));
+		super(nativeElement, Math.round(backgroundBox.width), Math.round(backgroundBox.height));
 	}
 	
 	public function drawBackgroundImage(nativeImage:NativeElement, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData , backgroundRepeat:BackgroundRepeatStyleData):Void
@@ -142,15 +142,13 @@ class BackgroundDrawingManager extends DrawingManager
 				totalHeight += imageHeight;
 			}
 		}
-		
-	
 	}
 	
 	public function drawBackgroundColor(color:ColorData):Void
 	{
 		var fillStyle:FillStyleValue = FillStyleValue.monochrome( color );
 		var lineStyle:LineStyleValue = LineStyleValue.none;
-		Log.trace(color);
+		
 		beginFill(fillStyle, lineStyle);
 		
 		drawRect(Math.round(_backgroundPaintingBox.x), Math.round(_backgroundPaintingBox.y), Math.round(_backgroundPaintingBox.width), Math.round(_backgroundPaintingBox.height));
@@ -158,6 +156,7 @@ class BackgroundDrawingManager extends DrawingManager
 		endFill();
 	}
 	
+	//TODO : create a bitmapData with the gradient and send it to drawBackgroundImage
 	public function drawBackgroundGradient(gradient:GradientValue, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
 		
