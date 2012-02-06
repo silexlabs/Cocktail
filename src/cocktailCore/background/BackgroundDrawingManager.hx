@@ -151,13 +151,13 @@ class BackgroundDrawingManager extends DrawingManager
 		var lineStyle:LineStyleValue = LineStyleValue.none;
 		
 		beginFill(fillStyle, lineStyle);
-		
+		Log.trace(_backgroundPaintingBox);
+		Log.trace(color.alpha);
 		drawRect(Math.round(_backgroundPaintingBox.x), Math.round(_backgroundPaintingBox.y), Math.round(_backgroundPaintingBox.width), Math.round(_backgroundPaintingBox.height));
 		
 		endFill();
 	}
 	
-	//TODO : create a bitmapData with the gradient and send it to drawBackgroundImage
 	public function drawBackgroundGradient(gradient:GradientValue, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
 		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.graphic), computedBackgroundSize.width, computedBackgroundSize.height);

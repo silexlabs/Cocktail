@@ -398,21 +398,21 @@ class BackgroundStylesComputer
 		switch (backgroundOrigin)
 		{
 			case BackgroundOriginStyleValue.borderBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundOriginStyleValue.paddingBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundOriginStyleValue.contentBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
 				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
 				y = style.computedStyle.marginRight + style.computedStyle.paddingTop;
@@ -455,21 +455,21 @@ class BackgroundStylesComputer
 		switch (backgroundClip)
 		{
 			case BackgroundClipStyleValue.borderBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundClipStyleValue.paddingBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundClipStyleValue.contentBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
+				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
 				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
 				y = style.computedStyle.marginRight + style.computedStyle.paddingTop;
