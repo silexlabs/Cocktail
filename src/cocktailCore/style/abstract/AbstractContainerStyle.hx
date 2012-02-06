@@ -118,6 +118,11 @@ class AbstractContainerStyle extends Style
 		//render the absolutely positioned children of this ContainerDOMElement
 		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedChildrenTemporaryPositionsData);
 		
+		for (i in 0...absolutelyPositionedNativeElements.length)
+		{
+			nativeElements.push(absolutelyPositionedNativeElements[i]);
+		}
+		
 		//store the nativeElements so that they can be detached on next layout
 		_nativeElements = nativeElements;
 		
@@ -409,7 +414,7 @@ class AbstractContainerStyle extends Style
 		//for its children and it is its responsability to position them. An array containing all their
 		//laid out positions is returned and stored, to be sued during rendering
 		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
-		
+
 		//the array containing all the children of this ContainerDOMElement and their
 		//positions relative to the ContainerDOMElement is stored, to be used
 		//during rendering

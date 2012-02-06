@@ -51,6 +51,7 @@ class BackgroundManager
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+		
 		for (i in 0..._backgroundImage.length)
 		{
 			if (i == 0)
@@ -130,7 +131,6 @@ class BackgroundManager
 		
 		 return nativeElements;
 	}
-	
 
 	
 	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
