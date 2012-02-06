@@ -1272,16 +1272,16 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case GradientCornerValue.bottomLeft:
-				cssCornerValue = "to bottom left";
+				cssCornerValue = "left bottom";
 				
 			case GradientCornerValue.bottomRight:
-				cssCornerValue = "to bottom right";
+				cssCornerValue = "right bottom";
 				
 			case GradientCornerValue.topLeft:
-				cssCornerValue = "to top left";
+				cssCornerValue = "left top";
 				
 			case GradientCornerValue.topRight:
-				cssCornerValue = "to top right";
+				cssCornerValue = "right top";
 		}
 		
 		return cssCornerValue;
