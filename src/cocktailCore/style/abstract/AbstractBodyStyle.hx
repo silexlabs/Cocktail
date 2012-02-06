@@ -68,6 +68,15 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * A BodyDOMElement is never inserted into the flow as it is
+	 * always located at the origin of the viewport
+	 */
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
+	{
+		
+	}
+	
+	/**
 	 * Overriden because a BodyDOMElement being at the top of the
 	 * DOM tree must always position its absolutely positioned
 	 * children
@@ -85,7 +94,7 @@ class AbstractBodyStyle extends ContainerStyle
 	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
-	override private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
+	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
 		return new BlockFormattingContext(this._domElement, null);
 	}

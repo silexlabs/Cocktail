@@ -40,7 +40,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Make all the DOMElement retrieve their native HTMLElement positions
 	 * and dimensions
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
@@ -49,11 +49,11 @@ class ContainerStyle extends AbstractContainerStyle
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+				childrenDOMElement.style.flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 			}
 		}
 		
-		return new Array<ChildTemporaryPositionData>();
+		return null;
 	}
 		
 	

@@ -85,7 +85,8 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 */
 	public function load(url:String, allowCache:Bool = true):Void
 	{
-		_imageLoader.load(url, onLoadComplete, onLoadError, allowCache);
+		this._src = url;
+		_imageLoader.load([url], onLoadComplete, onLoadError, allowCache);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -95,11 +96,17 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	/**
 	 * Called when the picture was successfuly loaded.
 	 * Invalidate the DOMElement and call the
-	 * onLoad callback if provided
+	 * onLoad callback if provided.
+	 * Store the instrinsic dimensions of the loaded asset
+	 * 
 	 * @param	image the loaded picture stored as a nativeElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
+		this._intrinsicHeight = _imageLoader.intrinsicHeight;
+		this._intrinsicWidth = _imageLoader.intrinsicWidth;
+		this._intrinsicRatio = _imageLoader.intrinsicRatio;
+		
 		this._style.invalidate();
 		
 		//if provided, call the callback

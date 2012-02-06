@@ -35,6 +35,21 @@ class DOMElement extends AbstractDOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN POSITIONING SETTERS/GETTERS
+	// Return the native offset width and height of the HTML element
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function getOffsetWidth():Int
+	{
+		return untyped _nativeElement.offsetWidth;
+	}
+
+	override private function getOffsetHeight():Int
+	{
+		return untyped _nativeElement.offsetHeight;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN FOCUS SETTER/GETTER AND METHODS
 	// The JavaScript focus implementation relies on the browser
 	// instead of Cocktail's FocusManager

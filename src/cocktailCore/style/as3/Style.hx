@@ -10,6 +10,7 @@ package cocktailCore.style.as3;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
@@ -86,9 +87,9 @@ class Style extends AbstractStyle
 	/**
 	 * Attach a child using flash API
 	 */
-	override private function attachChild(domElement:DOMElement):Void
+	override private function attachChild(nativeElement:NativeElement):Void
 	{
-		this._domElement.nativeElement.addChild(domElement.nativeElement);
+		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
 	/**
@@ -97,20 +98,36 @@ class Style extends AbstractStyle
 	 */
 	override private function detachChildren():Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
+		if (_childrenFormattingContext != null)
 		{
-			/**
-			 * TO DO : clean-up the try/catch, it shouldn't be
-			 * necessary
-			 */
-			try {
-				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			}
-			catch (e:Dynamic)
+				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
+			
+			for (i in 0..._boxesData.length)
 			{
-				
+				for (j in 0..._boxesData[i].children.length)
+				{
+					if (_boxesData[i].children[j].render == true)
+					{
+						if (_domElement.nativeElement.contains(_boxesData[i].children[j].domElement.nativeElement) == true)
+						{
+							_domElement.nativeElement.removeChild(_boxesData[i].children[j].domElement.nativeElement);
+						}
+					}
+				}
 			}
 		}
+
+		if (_absolutelyPositionedChildrenTemporaryPositionsData != null)
+		{
+			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
+			{
+				if (_domElement.nativeElement.contains(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement) == true)
+				{
+					_domElement.nativeElement.removeChild(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement);
+				}
+			}
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

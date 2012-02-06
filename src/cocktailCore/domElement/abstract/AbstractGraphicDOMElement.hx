@@ -11,6 +11,7 @@ import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
+import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -167,18 +168,17 @@ class AbstractGraphicDOMElement extends EmbeddedDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the native graphic dom element. Alpha is preserved 
+	 * Draw a bitmap extracted from a NativeElement onto the bitmap surface. Alpha is preserved 
 	 * for transparent bitmap
-	 * @param	source the source image dom element containing the bitmap data
-	 * @param	destinationPoint represent the top left point of the drawn image on the native graphic
-	 * dom element. for instance a 0,0 point will draw the image in the top left corner of the graphic
-	 * dom element. Takes 0,0 by default
-	 * @param	sourceRect defines the zone from the source dom element that must be copied onto the 
-	 * native graphic dom element. Takes the whole image by default
+	 * @param	source the source native element containing the bitmap data
+	 * @param	matrix a transformation matrix to apply yo the native element when drawing to 
+	 * to the bitmap. Defaults to an identity matrix
+	 * @param	sourceRect defines the zone from the source nativeElement that must be copied onto the 
+	 * native graphic dom element. Takes the whole nativeElement by default
 	 */
-	public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
+	public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
-		_drawingManager.drawImage(source, destinationPoint, sourceRect);
+		_drawingManager.drawImage(source, matrix, sourceRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

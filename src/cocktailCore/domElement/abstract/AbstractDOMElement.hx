@@ -676,7 +676,7 @@ class AbstractDOMElement
 	
 	private function onMouseOutCallback(mouseEventData:MouseEventData):Void
 	{
-		_onMouseOver(mouseEventData);
+		_onMouseOut(mouseEventData);
 	}
 	
 	private function onMouseDoubleClickCallback(mouseEventData:MouseEventData):Void

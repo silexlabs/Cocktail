@@ -1,4 +1,13 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktailCore.drawing.js;
+
+import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 
 import cocktailCore.drawing.abstract.AbstractDrawingManager;
@@ -10,6 +19,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.GeomData;
 import cocktail.style.StyleData;
 import cocktail.domElement.ImageDOMElement;
+import cocktail.unit.UnitData;
 
 /**
  * This is the JavaScript implementation of theDrawingManager.
@@ -171,23 +181,20 @@ class DrawingManager extends AbstractDrawingManager
 	/**
 	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
 	 */
-	override public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
+	override public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
 		//init destination point and sourceRect if null
 		
-		if (destinationPoint == null)
+		if (matrix == null)
 		{
-			destinationPoint = {
-				x:0.0,
-				y:0.0
-			};
+			matrix = new Matrix();
 		}
 		
 		if (sourceRect == null)
 		{
-			var width:Float = source.width;
+			var width:Float = untyped source.width;
 
-			var height:Float = source.height;
+			var height:Float = untyped source.height;
 
 			sourceRect = {
 				x:0.0,
@@ -200,9 +207,9 @@ class DrawingManager extends AbstractDrawingManager
 		var canvasContext:Dynamic = getContext();
 		
 		//draw the image with the Canvas API
-	
+		/**
 		canvasContext.drawImage(
-			source.nativeElement,
+			source,
 			sourceRect.x,
 			sourceRect.y,
 			sourceRect.width,
@@ -210,7 +217,7 @@ class DrawingManager extends AbstractDrawingManager
 			destinationPoint.x,
 			destinationPoint.y,
 			sourceRect.width,
-			sourceRect.height);
+			sourceRect.height);*/
 
 	}
 	
@@ -252,9 +259,9 @@ class DrawingManager extends AbstractDrawingManager
 	/**
 	 * in JavaScript rgba color space, alpha range from 0 to 1
 	 */
-	override private function toNativeAlpha(genericAlpha:Int):Dynamic
+	override private function toNativeAlpha(genericAlpha:Float):Dynamic
 	{
-		return genericAlpha * 0.01;
+		return genericAlpha;
 	}
 	
 	/**
@@ -318,7 +325,7 @@ class DrawingManager extends AbstractDrawingManager
 	 * @param	colorStop contains the color value and it's alpha
 	 * @return an rgba string, used for CSS styling
 	 */
-	private function colorStopToRGBA(colorStop:ColorStopData):String
+	private function colorStopToRGBA(colorStop:ColorData):String
 	{
 		var rgb:RGBData = hexToRGB(getHexColor(colorStop.color));
 		return "rgba(" + rgb.red + "," + rgb.green + "," + rgb.blue + "," + toNativeAlpha(colorStop.alpha) + ")";

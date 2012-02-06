@@ -40,9 +40,9 @@ class ResourceLoader extends AbstractResourceLoader
 	override private function doLoad(url:String):Void
 	{	
 		//create a delegate to call the success callback once the native HTML element is done loading the resource
-		var onLoadCompleteDelegate:NativeElement->Void = onLoadComplete;
+		var onLoadCompleteDelegate:NativeElement->Void = onNativeLoadComplete;
 		//create a delegate for the error callback
-		var onLoadErrorDelegate:String->Void = onLoadError;
+		var onLoadErrorDelegate:String->Void = onNativeLoadError;
 		
 		//need to have a local reference to retrieve it in the static onload function
 		var nativeElementDelegate:NativeElement = _nativeElement;
@@ -57,6 +57,45 @@ class ResourceLoader extends AbstractResourceLoader
 		
 		// set it's source to start the loading of the resource
 		_nativeElement.setAttribute("src", url);
+	}
+	
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Native loading callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the resource has been loaded store the intrinsic dimensions
+	 * of the asset and call the success callback
+	 */
+	private function onNativeLoadComplete(nativeElement:NativeElement):Void
+	{	
+		setIntrinsicDimensions(nativeElement);
+		onLoadComplete(nativeElement);
+	}
+	
+	/**
+	 * When there was an error during loading, call the error callback with the
+	 * the message error
+	 */
+	private function onNativeLoadError(event:String):Void
+	{
+		onLoadError(event.toString());
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Store the intrinsic dimensions of the loaded asset, retrieved
+	 * on the native HTML element
+	 */
+	private function setIntrinsicDimensions(nativeElement:NativeElement):Void
+	{
+		this._intrinsicHeight = untyped nativeElement.naturalHeight;
+		this._intrinsicWidth = untyped nativeElement.naturalWidth;
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 }

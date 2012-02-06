@@ -150,28 +150,57 @@ class UnitManager
 	}
 	
 	/**
-	 * Get an integer color value from a serialised color value
+	 * Get a percentage from a pixel value in a reference value
+	 * @param	pixel
+	 * @param	reference
+	 * @return
 	 */
-	public static function getColorFromColorValue(value:ColorValue):Int
+	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
 	{
-		var color:Int;
+		return (reference / pixel) * 100;
+	}
+	
+	/**
+	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
+	 */
+	public static function getColorDataFromColorValue(value:ColorValue):ColorData
+	{
+		var colorValue:Int;
+		var alphaValue:Float;
 		
 		switch (value)
 		{
-			case RGB(red, green, blue):
-				color = red;
-				color = (color << 8) + green;
-				color = (color << 8) + blue;
+			case rgb(red, green, blue):
+				colorValue = red;
+				colorValue = (colorValue << 8) + green;
+				colorValue = (colorValue << 8) + blue;
+				alphaValue = 1.0;
 			
+			case rgba(red, green, blue, alpha):
+				colorValue = red;
+				colorValue = (colorValue << 8) + green;
+				colorValue = (colorValue << 8) + blue;
+				alphaValue = alpha;
+				
 			case hex(value):
-				color = Std.parseInt(StringTools.replace(value, "#", "0x"));
+				colorValue = Std.parseInt(StringTools.replace(value, "#", "0x"));
+				alphaValue = 1.0;
 				
 			case keyword(value):
-				color = getColorFromColorValueKeyword(value);
-
+				colorValue = getColorDataFromColorValueKeyword(value).color;
+				alphaValue = 1.0;
+			
+			case transparent:
+				colorValue = 0xFFFFFF;
+				alphaValue = 0.0;
 		}
 		
-		return color;
+		var colorData:ColorData = {
+			color:colorValue,
+			alpha:alphaValue
+		}
+		
+		return colorData;
 	}
 	
 	/**
@@ -231,7 +260,7 @@ class UnitManager
 	/**
 	 * Get an integer color value from a keyword color value
 	 */
-	private static function getColorFromColorValueKeyword(value:ColorKeywordValue):Int
+	private static function getColorDataFromColorValueKeyword(value:ColorKeywordValue):ColorData
 	{
 		var hexColor:String;
 		
@@ -290,7 +319,7 @@ class UnitManager
 				
 		}
 		
-		return getColorFromColorValue(ColorValue.hex(hexColor));
+		return getColorDataFromColorValue(ColorValue.hex(hexColor));
 	}
 	
 	/**

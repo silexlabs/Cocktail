@@ -52,33 +52,6 @@ class ContainerStyle extends AbstractContainerStyle
 		super(domElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN NATIVE SETTERS
-	// In Flash the width and height are not applied to the native DisplayObject
-	// of the ContainerDOMElement, as it would scale its content. It is however
-	// stored in the native width and height attributes to be returned when 
-	// width or height are requested instead of returning 0 (the actual width/height)
-	// of the native DisplayObject
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	override public function setNativeWidth(width:Int):Void
-	{
-		this._nativeWidth = width;
-	}
-	
-	/**
-	 * Set the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	override public function setNativeHeight(height:Int):Void
-	{
-		this._nativeHeight = height;
-	}
-	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
@@ -168,7 +141,7 @@ class ContainerStyle extends AbstractContainerStyle
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
-		elementFormat.color = _computedStyle.color;
+		elementFormat.color = _computedStyle.color.color;
 	
 		//normal or small caps
 		elementFormat.typographicCase = getNativeFontVariant(_computedStyle.fontVariant);

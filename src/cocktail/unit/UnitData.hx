@@ -122,7 +122,13 @@ enum ColorValue {
 	 * each value (red, green and blue)
 	 * must be an integer from 0 to 255
 	 */
-	RGB(red:Int, green:Int, blue:Int);
+	rgb(red:Int, green:Int, blue:Int);
+	
+	/**
+	 * same as rgb + alpha is a float from 
+	 * 0 (transparent) to 1 (opaque)
+	 */
+	rgba(red:Int, green:Int, blue:Int, alpha:Float);
 	
 	/**
 	 * The color value must be represented
@@ -137,7 +143,132 @@ enum ColorValue {
 	 * set of predefined colors
 	 */ 
 	keyword(value:ColorKeywordValue);
+	
+	/**
+	 * a fully transparent color, equivalent
+	 * to rgba(0,0,0,0)
+	 */
+	transparent;
 }
+
+/**
+ * Represents a color with
+ * its alpha (from 0 to 1)
+ */
+typedef ColorData = {
+	var color:Int;
+	var alpha:Float;
+}
+
+/**
+ * This value represents a 2D image which
+ * can either be loaded from an external
+ * source, or a programmaticaly drawn
+ * gradient
+ */
+enum ImageValue {
+	
+	/**
+	 * the image is loaded from a URL
+	 */
+	url(value:URLData);
+	
+	/**
+	 * The image is specified as multiple URL, the
+	 * first valid URL being used
+	 */
+	imageList(value:Array<ImageDeclarationValue>);
+	
+	/**
+	 * The image is a programmaticaly drawn
+	 * gradient
+	 */
+	gradient(value:GradientValue);
+}
+
+/**
+ * An element for a list of image, can either
+ * be an image URL or a fallback color used if
+ * all the URL in the image list are invalid
+ */
+enum ImageDeclarationValue {
+	url(value:URLData);
+	color(value:ColorValue);
+}
+
+/**
+ * The different types of gradient which
+ * can be used as image
+ */
+enum GradientValue {
+	linear(value:LinearGradientData);
+}
+
+/**
+ * a linear gradient, which has a direction
+ * and a variable number of colors
+ */
+typedef LinearGradientData = {
+	var angle:GradientAngleValue;
+	var colorStops:Array<GradientColorStopData>;
+}
+
+/**
+ * Each color stops is constituted of a
+ * color and the position of this color
+ * in the gradient
+ */
+typedef GradientColorStopData = {
+	var color:ColorValue;
+	var stop:GradientStopValue;
+}
+
+/**
+ * A color stop position can be defined as
+ * an absolute value or a percentage of
+ * the gradient box
+ */
+enum GradientStopValue {
+	length(value:LengthValue);
+	percent(value:Int);
+}
+
+/**
+ * The angle of a linear gradient can either
+ * be an angle (defined in deg, rad...) or a keyword
+ * representing a side or corner of the gradient box
+ */
+enum GradientAngleValue {
+	angle(value:AngleValue);
+	side(value:GradientSideValue);
+	corner(value:GradientCornerValue);
+}
+
+/**
+ * the side of the gradient box.
+ * Top is equal to a 0deg angle
+ */
+enum GradientSideValue {
+	top;
+	left;
+	bottom;
+	right;
+}
+
+/**
+ * a corner of the gradient box
+ */
+enum GradientCornerValue {
+	topRight;
+	bottomRight;
+	bottomLeft;
+	topLeft;
+}
+
+/**
+ * Define a CSS URL value
+ */
+typedef URLData = String;
 
 /**
  * Lists the default available colors
