@@ -65,6 +65,11 @@ class BackgroundManager
 					var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
 					backgroundBox, computedBackgroundStyles.backgroundOrigin, computedBackgroundStyles.backgroundClip);
 					backgroundColorDrawingManager.drawBackgroundColor(style.computedStyle.backgroundColor);
+					
+					#if flash9
+					backgroundColorNativeElement.x = backgroundBox.x;
+					backgroundColorNativeElement.y = backgroundBox.y;
+					#end
 					_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 				}
 			}

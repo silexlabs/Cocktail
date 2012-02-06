@@ -380,8 +380,7 @@ class BackgroundStylesComputer
 	 * This area can be sized to the border, padding or content box
 	 * of the background box
 	 * 
-	 * The positioning area is defined in the space of the formatting
-	 * context of the DOMElement
+	 * The positioning area is defined in the space of the margin box of the DOMElement
 	 * 
 	 * @param	style
 	 * @param	backgroundOrigin
@@ -401,22 +400,22 @@ class BackgroundStylesComputer
 			case BackgroundOriginStyleValue.borderBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight;
+				x = style.computedStyle.marginLeft;
+				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundOriginStyleValue.paddingBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight;
+				x = style.computedStyle.marginLeft;
+				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundOriginStyleValue.contentBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight + style.computedStyle.paddingTop;
+				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
+				y = style.computedStyle.marginRight + style.computedStyle.paddingTop;
 				
 		}
 		
@@ -436,8 +435,8 @@ class BackgroundStylesComputer
 	 * overflowing are clipped. It can be smaller than the background
 	 * positioning area.
 	 * 
-	 * The painting area is defined in the space of the formatting
-	 * context of the DOMElement,like the positioning area
+	 * The painting area is defined in the space of the margin box
+	 * of the DOMElement,like the positioning area
 	 * 
 	 * @param	style
 	 * @param	backgroundClip
@@ -458,22 +457,22 @@ class BackgroundStylesComputer
 			case BackgroundClipStyleValue.borderBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight;
+				x = style.computedStyle.marginLeft;
+				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundClipStyleValue.paddingBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight;
+				x = style.computedStyle.marginLeft;
+				y = style.computedStyle.marginRight;
 				
 				
 			case BackgroundClipStyleValue.contentBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.paddingBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
-				x = backgroundBox.x + style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
-				y = backgroundBox.y + style.computedStyle.marginRight + style.computedStyle.paddingTop;
+				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
+				y = style.computedStyle.marginRight + style.computedStyle.paddingTop;
 				
 		}
 		

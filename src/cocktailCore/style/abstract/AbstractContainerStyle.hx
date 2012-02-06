@@ -107,7 +107,7 @@ class AbstractContainerStyle extends Style
 		//the children of each box
 		for (i in 0...boxesData.length)
 		{
-			var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i]);
+			var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i], i == 0);
 			
 			for (j in 0...boxNativeElements.length)
 			{
@@ -139,23 +139,33 @@ class AbstractContainerStyle extends Style
 	 * nativeElements which must be attached to this styled
 	 * ContainerDOMElement
 	 * @param	box
+	 * @param firstBox determine wether the first box of the DOMElement is being rendered
 	 * @return
 	 */
-	private function renderBox(box:BoxData):Array<NativeElement>
+	private function renderBox(box:BoxData, firstBox:Bool):Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
-		//render the background of the box
-		var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
-		
-		for (i in 0...backgroundNativeElements.length)
+		//if the ContainerDOMElement is an inline container, then each 
+		//boxs need its own background, else it should only have one box
+		//which has the same dimensions as the ContainerDOMElement, so
+		//only the first box is rendered
+		//
+		//TODO : improve 'firstBox', it should be done before
+		if (isInlineContainer() == true || firstBox == true)
 		{
-			nativeElements.push(backgroundNativeElements[i]);
+			//render the background of the box
+			var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
+		
+			for (i in 0...backgroundNativeElements.length)
+			{
+				nativeElements.push(backgroundNativeElements[i]);
+			}
 		}
+	
 		
 		//render each children of the box which are all in-flow DOMElements
 		var inFlowChildrenNativeElements:Array<NativeElement> = renderChildren(box.children);
-		
 		for (i in 0...inFlowChildrenNativeElements.length)
 		{
 			nativeElements.push(inFlowChildrenNativeElements[i]);
@@ -263,7 +273,8 @@ class AbstractContainerStyle extends Style
 					width : right - left,
 					height :  bottom - top,
 				}
-		}
+				
+			}
 		
 		//if the container is a block container, then its box is formed from its own
 		//width and height
