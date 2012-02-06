@@ -290,11 +290,19 @@ class AbstractStyle
 	 * Store the current transform matrix of the NativeElement
 	 */
 	private var _nativeMatrix:Matrix;
-	
 
-	
+	/**
+	 * creates the background color and background image
+	 * for each box of the styled DOMElement
+	 */
 	private var _backgroundManager:BackgroundManager;
 	
+	/**
+	 * keep references to each of the nativeElements which
+	 * are attached to this styled DOMElement. Those
+	 * can be background images, colors, nativeElements
+	 * of other DOMElements...
+	 */
 	private var _nativeElements:Array<NativeElement>;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -314,6 +322,7 @@ class AbstractStyle
 		this._isDirty = true;
 		this._backgroundManager = new BackgroundManager();
 		this._nativeElements = new Array<NativeElement>();
+		
 		initDefaultStyleValues();
 	}
 	
@@ -492,151 +501,67 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render all the children in the
-	 * childrenTemporaryPositionData array
-	 * by attaching them to the DOM using
-	 * runtime specific API and setting
-	 * their native properties
+	 * Create or retrieve all the native elements
+	 * which must be attached to this styled DOMElement
+	 * and attach them.
+	 * 
+	 * The native elements can be background elements, 
+	 * border, other DOMElement's native element, embedded
+	 * assets such as a bitmap...
+	 * 
+	 * The rendering is implemented differently for a 
+	 * ContainerStyle and an EmbeddedStyle
 	 */
 	public function render():Void
 	{
-		var boxesData:Array<BoxData> = getBoxesData();
-		
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		for (i in 0...boxesData.length)
-		{
-			var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i]);
-			
-			for (j in 0...boxNativeElements.length)
-			{
-				nativeElements.push(boxNativeElements[j]);
-			}
-		}
-		
-		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(getAbsolutelyPositionedChildren());
-		
-		_nativeElements = nativeElements;
-		
-		for (i in 0...nativeElements.length)
-		{
-			attachChild(nativeElements[i]);
-		}
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getBoxesData():Array<BoxData>
-	{
-		return [];
-	}
-	
-	private function getAbsolutelyPositionedChildren():Array<ChildTemporaryPositionData>
-	{
-		return [];
-	}
-	
-	private function renderBox(box:BoxData):Array<NativeElement>
-	{
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
-		
-		for (i in 0...backgroundNativeElements.length)
-		{
-			nativeElements.push(backgroundNativeElements[i]);
-		}
-		
-		var inFlowChildrenNativeElements:Array<NativeElement> = renderChildren(box.children);
-		
-		for (i in 0...inFlowChildrenNativeElements.length)
-		{
-			nativeElements.push(inFlowChildrenNativeElements[i]);
-		}
-		
-		return nativeElements;
-	}
-	
-	private function renderBackground(box:BoxData, style:AbstractStyle):Array<NativeElement>
-	{
-		setBounds(box);
-		return _backgroundManager.render(box.bounds, style);
-	}
-	
-	private function renderChildren(children:Array<ChildTemporaryPositionData>):Array<NativeElement>
-	{
-		var childrenNativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		for (i in 0...children.length)
-		{
-			if (children[i].render == true)
-			{
-				var child:ChildTemporaryPositionData = children[i];
-				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				
-				//apply width and height
-				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
-				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
-			
-				//apply transformations
-				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
-				
-				//apply opacity and visibility
-				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
-				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
-			
-				childrenNativeElements.push(child.domElement.nativeElement);
-			}	
-		}
-		
-		return childrenNativeElements;
-	}
-	
-	private function setBounds(boxData:BoxData):Void
-	{
-		var width:Float = _domElement.offsetWidth;
-			var height:Float = _domElement.offsetHeight;
-			
-			boxData.bounds = {
-					x:0.0,
-					y:0.0,
-					width : width,
-					height :  height,
-				}
-	}
-	
 	/**
-	 * Attach a child to the NativeElement of the 
+	 * Attach a NativeElement to the
 	 * styled DOMElement using runtime specific API
 	 */
-	private function attachChild(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	private function detachChild(nativeElement:NativeElement):Void
+	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * Detach all the children previously
-	 * attached with the render() method
-	 * when a new layout occurs using
-	 * runtime specific API
+	 * Remove a NativeElement from the
+	 * styled DOMElement using runtime specific API
 	 */
-	private function detachChildren():Void
+	private function detachNativeElement(nativeElement:NativeElement):Void
 	{
-		for (i in 0..._nativeElements.length)
+		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
 		{
-			detachChild(_nativeElements[i]);
+			attachNativeElement(nativeElements[i]);
 		}
 	}
 	
-
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC LAYOUT METHODS
@@ -687,7 +612,7 @@ class AbstractStyle
 	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//first detach all previously added children
-		detachChildren();
+		detachNativeElements(_nativeElements);
 		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
@@ -789,7 +714,6 @@ class AbstractStyle
 					y:0,
 					width:0,
 					height:0,
-					lineIndex:0,
 					render:true
 				};
 		}
