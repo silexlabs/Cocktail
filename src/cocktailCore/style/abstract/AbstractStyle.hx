@@ -10,7 +10,10 @@ package cocktailCore.style.abstract;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
+import cocktailCore.background.BackgroundManager;
+import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -131,6 +134,30 @@ class AbstractStyle
 	public var bottom(getBottom, setBottom):PositionOffsetStyleValue;
 	private var _right:PositionOffsetStyleValue;
 	public var right(getRight, setRight):PositionOffsetStyleValue;
+	
+	/**
+	 * background styles
+	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
+	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
+	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
+	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
+	 
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
+	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
+	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
+	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
+	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
+	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
+	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
+	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
+	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
+	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
 	 * font styles
@@ -270,7 +297,11 @@ class AbstractStyle
 	 * they must have in this domElement coordinate space. The array order
 	 * is the same as the z-index of the children
 	 */
-	private var _childrenTemporaryPositionData:Array<ChildTemporaryPositionData>;
+	private var _childrenFormattingContext:FormattingContext;
+	
+	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
+	
+	private var _backgroundManager:BackgroundManager;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -287,8 +318,12 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._childrenTemporaryPositionData = new Array<ChildTemporaryPositionData>();
+	//	this._boxData = {};
+		this._absolutelyPositionedChildrenTemporaryPositionsData = new Array<ChildTemporaryPositionData>();
+		this._backgroundManager = new BackgroundManager();
+		
 		initDefaultStyleValues();
+		
 	}
 	
 	/**
@@ -330,6 +365,24 @@ class AbstractStyle
 		
 		this.floatValue = FloatStyleValue.none;
 		this.clear = ClearStyleValue.none;
+		
+		this.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.transparent);
+		this.backgroundImage = [BackgroundImageStyleValue.none];
+		this.backgroundRepeat = [{
+			x:BackgroundRepeatStyleValue.repeat,
+			y:BackgroundRepeatStyleValue.repeat
+		}];
+		this.backgroundPosition = [{
+			x:BackgroundPositionXStyleValue.percent(0),
+			y:BackgroundPositionYStyleValue.percent(0)
+		}];
+		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
+		this.backgroundSize = [
+			BackgroundSizeStyleValue.dimensions({
+				x:BackgroundSizeStyleDimensionValue.auto,
+				y:BackgroundSizeStyleDimensionValue.auto
+			})];
+		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
 		
 		this.fontStyle = FontStyleStyleValue.normal;
 		this.fontVariant = FontVariantStyleValue.normal;
@@ -399,11 +452,18 @@ class AbstractStyle
 			textIndent:0,
 			whiteSpace:WhiteSpaceStyleValue.normal,
 			textAlign:TextAlignStyleValue.left,
-			color:0,
+			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
 			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix()
+			transform:new Matrix(),
+			backgroundColor:{color:0, alpha:1.0},
+			backgroundSize:[],
+			backgroundOrigin:[],
+			backgroundImage:[],
+			backgroundClip:[],
+			backgroundPosition:[],
+			backgroundRepeat:[]
 		};
 	}
 	
@@ -449,37 +509,101 @@ class AbstractStyle
 	 */
 	public function render():Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
+		if (_childrenFormattingContext != null)
 		{
-			//apply x and y
-			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
 			
-			//apply width and height
-			_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
-		
-			//apply transformations
-			_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
+			/**
+			 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
+			 * son background, border....
+			 * 
+			 * _childrenFormattingContext ne devrait être que sur AbstractContainer, pas de children
+			 * sur un abstractStyle et embedded
+			 * 
+			 * ici devrait être renderBackground, renderBorder... et sur AbstractContainer renderChildren
+			 * et sur AbstractEmbedded renderEmbeddedAsset
+			 */
+			for (i in 0..._boxesData.length)
+			{
+				setBounds(_boxesData[i]);
+				var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
+				for (j in 0...backgrounds.length)
+				{
+					attachChild(backgrounds[j]);
+				}
+				
+				for (j in 0..._boxesData[i].children.length)
+				{
+					if (_boxesData[i].children[j].render == true)
+					{
+						
+						//apply x and y
+						_boxesData[i].children[j].domElement.style.setNativeX(_boxesData[i].children[j].domElement, _boxesData[i].children[j].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+						_boxesData[i].children[j].domElement.style.setNativeY(_boxesData[i].children[j].domElement, _boxesData[i].children[j].y + _computedStyle.marginTop + _computedStyle.paddingTop);
+						
+						//apply width and height
+						_boxesData[i].children[j].domElement.style.setNativeHeight(_boxesData[i].children[j].domElement.style.computedStyle.height);
+						_boxesData[i].children[j].domElement.style.setNativeWidth(_boxesData[i].children[j].domElement.style.computedStyle.width);
+					
+						//apply transformations
+						_boxesData[i].children[j].domElement.style.setNativeMatrix(_boxesData[i].children[j].domElement.style.computedStyle.transform);
+						
+						//apply opacity and visibility
+						_boxesData[i].children[j].domElement.style.setNativeOpacity(_boxesData[i].children[j].domElement.style.computedStyle.opacity);
+						_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
+					
+						//attach the child
+						attachChild(_boxesData[i].children[j].domElement.nativeElement);
+					}	
+				}
+			}
 			
-			//apply opacity and visibility
-			_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
-		
-			//attach the child
-			attachChild(_childrenTemporaryPositionData[i].domElement);
+			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
+			{
+				var child:ChildTemporaryPositionData = _absolutelyPositionedChildrenTemporaryPositionsData[i];
+				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				
+				//apply width and height
+				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
+				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
+			
+				//apply transformations
+				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
+				
+				//apply opacity and visibility
+				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
+				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
+			
+				//attach the child
+				attachChild(child.domElement.nativeElement);
+			}
 		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	private function setBounds(boxData:BoxData):Void
+	{
+		var width:Float = _domElement.offsetWidth;
+			var height:Float = _domElement.offsetHeight;
+			
+			boxData.bounds = {
+					x:0.0,
+					y:0.0,
+					width : width,
+					height :  height,
+				}
+	}
+	
 	/**
 	 * Attach a child to the NativeElement of the 
 	 * styled DOMElement using runtime specific API
 	 */
-	private function attachChild(domElement:DOMElement):Void
+	private function attachChild(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
@@ -538,10 +662,10 @@ class AbstractStyle
 	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
 	 * to position their DOMElement
 	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
-	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
-	 * formatingContext to be placed in the document flow
+	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
+	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//first detach all previously added children
 		detachChildren();
@@ -563,7 +687,7 @@ class AbstractStyle
 		//or both
 		if (isClear() == true)
 		{
-			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
+			formattingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 
 		//reset the computed styles, useful for instance to
@@ -577,7 +701,7 @@ class AbstractStyle
 		
 		//flow all the children of the DOMElement if it has any and store the returned array containing
 		//each of their laid out positions in this domElement coordinate space
-		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+		_childrenFormattingContext = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -586,11 +710,15 @@ class AbstractStyle
 		//to determine the transformation center
 		computeVisualEffectStyles();
 		
+		//some text and font styles needs to be re-computed now that all the dimension
+		//of the DOMElement are known, for instance some values of the VerticalAlign style
+		//might need those dimensions to compute the right values
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		
+		computeBackgroundStyles();
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
+		insertDOMElement(formattingContext, lastPositionedDOMElementData, viewportData);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
@@ -633,11 +761,15 @@ class AbstractStyle
 				
 			default:	
 				positioner = new AbsolutePositioner();
+				
 				childTemporaryPositionData = {
 					domElement:domElement,
 					x:0,
 					y:0,
-					lineIndex:0
+					width:0,
+					height:0,
+					lineIndex:0,
+					render:true
 				};
 		}
 		
@@ -666,30 +798,30 @@ class AbstractStyle
 	 * Flow all the children of a DOMElement if it has any, and return 
 	 * the positions of the flowed children
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
 	{
-		return new Array<ChildTemporaryPositionData>();
+		return formattingContext;
 	}
 	
 	/**
 	 * Insert the DOMElement in the document, in or out of the flow.
 	 * 
-	 * @param	formatingContext the formating context into which the DOMElement insert itself if it
+	 * @param	formattingContext the formatting context into which the DOMElement insert itself if it
 	 * is 'in flow'
 	 * @param	lastPositionedDOMElementData
 	 * @param	viewportData
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		//insert in formating context as a float
+		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent);
+			formattingContext.insertFloat(this._domElement, this._domElement.parent, true);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext);
+			insertInFlowDOMElement(formattingContext, true);
 		}
 		//else the DOMElement is positioned
 		else
@@ -699,15 +831,8 @@ class AbstractStyle
 			var x:Float = 0;
 			var y:Float = 0;
 			
-			/**
-			 * TO DO: clean up, formatting context not
-			 * supposed to be null here
-			 */
-			if (formattingContext != null)
-			{
-				x = formattingContext.formattingContextData.x;
-				y = formattingContext.formattingContextData.y;
-			}
+			x = formattingContext.formattingContextData.x;
+			y = formattingContext.formattingContextData.y;
 			
 			var staticPosition:PointData = {
 				x:x,
@@ -720,7 +845,7 @@ class AbstractStyle
 				//TO DO : 
 				//with this method the relative DOMElement will be added to display list twice,
 				//which will work in flash but is not clean
-				insertInFlowDOMElement(formattingContext);
+				insertInFlowDOMElement(formattingContext, false);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -748,12 +873,9 @@ class AbstractStyle
 	 * Do insert an inflow DOMElement into the document. Method added to allow
 	 * overriding for some inherithing class
 	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
 	{
-		if (this._domElement.parent != null)
-		{
-			formattingContext.insert(this._domElement, this._domElement.parent, true);
-		}
+		formattingContext.insert(this._domElement, this._domElement.parent, true, render);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -819,23 +941,23 @@ class AbstractStyle
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	// Those method allow for
-	// the re-layout of only a part of the DOM tree
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * When a style invalidating the text is called
 	 * (font size, font weight...), the font metrics
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
 	 */
-	private function invalidateText():Void
+	public function invalidateText():Void
 	{
 		_fontMetrics = null;
 		invalidate();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	// Those method allow for
+	// the re-layout of only a part of the DOM tree
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When a position offset style changes (top, left, 
@@ -864,18 +986,13 @@ class AbstractStyle
 	
 	/**
 	 * Determine wheter the parent of the DOMElement needs
-	 * to be dirtied too. In some cases, for instance
-	 * if the DOMElement is absolutely positioned, dirtiyng
-	 * its parent isn't necessary
+	 * to be dirtied too. 
+	 * 
+	 * TODO : implement this method
 	 */
 	private function isParentDirty():Bool
 	{
 		var ret:Bool = true;
-		
-		if (this.isPositioned() == true && this.isRelativePositioned() == false)
-		{
-			ret = false;
-		}
 		
 		return ret;
 	}
@@ -904,6 +1021,11 @@ class AbstractStyle
 	// PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function computeBackgroundStyles():Void
+	{
+		BackgroundStylesComputer.compute(this);
+	}
 	
 	/**
 	 * Compute first the styles determining the DOMElement's
@@ -1920,5 +2042,75 @@ class AbstractStyle
 	private function getTransformOrigin():TransformOriginStyleData
 	{
 		return _transformOrigin;
+	}
+	
+	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	{
+		return _backgroundManager.backgroundColor = value;
+	}
+	
+	private function getBackgroundColor():BackgroundColorStyleValue
+	{
+		return _backgroundManager.backgroundColor;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	{
+		return _backgroundManager.backgroundImage = value;
+	}
+	
+	private function getBackgroundImage():Array<BackgroundImageStyleValue>
+	{
+		return _backgroundManager.backgroundImage;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundManager.backgroundRepeat = value;
+	}
+	
+	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundManager.backgroundRepeat;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundManager.backgroundSize = value;
+	}
+	
+	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundManager.backgroundSize;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	{
+		return _backgroundManager.backgroundClip = value;
+	}
+	
+	private function getBackgroundClip():Array<BackgroundClipStyleValue>
+	{
+		return _backgroundManager.backgroundClip;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	{
+		return _backgroundManager.backgroundPosition = value;
+	}
+	
+	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
+	{
+		return _backgroundManager.backgroundPosition;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundManager.backgroundOrigin = value;
+	}
+	
+	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundManager.backgroundOrigin;
 	}
 }

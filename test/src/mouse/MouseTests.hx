@@ -17,6 +17,7 @@ package mouse;
  * @author Yannick DOMINGUEZ
  */
 
+import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
@@ -43,7 +44,7 @@ class MouseTests
 	public function new() 
 	{
 		
-		var stageDOMElement:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
+		var stageDOMElement:BodyDOMElement = new BodyDOMElement();
 		
 		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
 		

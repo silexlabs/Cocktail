@@ -7,6 +7,7 @@
 */
 package cocktailCore.textElement.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.style.StyleData;
@@ -24,12 +25,21 @@ class AbstractTextElement
 {
 
 	/**
+	 * The raw text extracted from
+	 * the native text element which can
+	 * be get/set to change the text of
+	 * this TextElement after its creation
+	 */
+	private var _text:String;
+	public var text(getText, setText):String;
+	
+	/**
 	 * The native text element, for instance
 	 * in Flash it is just a String whereas in
 	 * Js it is an HTML text node object
 	 */
-	private var _text:NativeTextElement;
-	public var text(getText, never):NativeTextElement;
+	private var _nativeText:NativeTextElement;
+	public var nativeText(getNativeText, never):NativeTextElement;
 	
 	/**
 	 * An array where each item contains a text token,
@@ -40,12 +50,21 @@ class AbstractTextElement
 	private var _textFragments:Array<TextFragmentData>;
 	
 	/**
+	 * A reference to the parent ContainerDOMElement
+	 * to which this TextElement is attached
+	 */
+	private var _parent:ContainerDOMElement;
+	public var parent(getParent, setParent):ContainerDOMElement;
+	
+	
+	/**
 	 * class constructor
 	 * @param	text the wrapped by this TextElement
 	 */
 	public function new(text:String) 
 	{
 		_textFragments = new Array<TextFragmentData>();
+		this.text = text;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -80,17 +99,6 @@ class AbstractTextElement
 		}
 		
 		return _textFragments;
-	}
-	
-	/**
-	 * Return the String of text wrapped
-	 * in the NativeTextElement. Overriden
-	 * by each runtime
-	 */
-	public function getNativeText():String
-	{
-		//implemented by each runtime
-		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -336,9 +344,29 @@ class AbstractTextElement
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getText():NativeTextElement
+	private function setText(value:String):String
+	{
+		return _text = value;
+	}
+	
+	private function getText():String
 	{
 		return _text;
+	}
+	
+	private function getNativeText():NativeTextElement
+	{
+		return _nativeText;
+	}
+	
+	private function setParent(value:ContainerDOMElement):ContainerDOMElement
+	{
+		return _parent = value;
+	}
+	
+	private function getParent():ContainerDOMElement
+	{
+		return _parent;
 	}
 	
 }
