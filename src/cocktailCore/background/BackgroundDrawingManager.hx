@@ -9,6 +9,7 @@ import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.resource.ImageLoader;
 import cocktail.domElement.DOMElementData;
+import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
@@ -159,7 +160,104 @@ class BackgroundDrawingManager extends DrawingManager
 	//TODO : create a bitmapData with the gradient and send it to drawBackgroundImage
 	public function drawBackgroundGradient(gradient:GradientValue, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
+		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.graphic), computedBackgroundSize.width, computedBackgroundSize.height);
 		
+		var fillStyle:FillStyleValue;
+		var lineStyle = LineStyleValue.none;
+		
+		switch(gradient)
+		{
+			case GradientValue.linear(value):
+				var gradientStyle:GradientStyleData = {
+					gradientType:GradientTypeValue.linear,
+					gradientStops:getGradientStops(value.colorStops),
+					rotation:getRotation(value.angle)
+				}
+				fillStyle = FillStyleValue.gradient(gradientStyle);
+		}
+		
+		gradientSurface.beginFill(fillStyle, lineStyle);
+		gradientSurface.drawRect(0, 0, computedBackgroundSize.width, computedBackgroundSize.height);
+		gradientSurface.endFill();
+		
+		drawBackgroundImage(gradientSurface.nativeElement, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		
+		
+	}
+	
+	private function getGradientStops(value:Array<GradientColorStopData>):Array<GradientStopData>
+	{
+		var gradientStopsData:Array<GradientStopData> = new Array<GradientStopData>();
+		
+		for (i in 0...value.length)
+		{
+			var ratio:Int;
+	
+			switch (value[i].stop)
+			{
+				case GradientStopValue.length(value):
+					//TODO
+					ratio = 0;
+					
+				case GradientStopValue.percent(value):
+					ratio = value;
+			}
+			
+			var color:ColorData = UnitManager.getColorDataFromColorValue(value[i].color);
+			gradientStopsData.push( { colorStop:color, ratio:ratio } );
+		}
+		
+		return gradientStopsData;
+	}
+		
+	
+	private function getRotation(value:GradientAngleValue):Int
+	{
+		var rotation:Int;
+		
+		switch (value)
+		{
+			case GradientAngleValue.angle(value):
+				rotation = Math.round(UnitManager.getDegreeFromAngleValue(value));
+				
+			case GradientAngleValue.side(value):
+			
+				switch (value)
+				{
+					case GradientSideValue.top:
+						rotation = 0;
+						
+					case GradientSideValue.right:
+						rotation = 90;
+						
+					case GradientSideValue.bottom:
+						rotation = 180;
+						
+					case GradientSideValue.left:
+						rotation = 270;
+				}
+			
+			
+			case GradientAngleValue.corner(value):
+			
+				switch (value)
+				{
+					case GradientCornerValue.topRight:
+						rotation = 45;
+						
+					case GradientCornerValue.bottomRight:
+						rotation = 135;
+						
+					case GradientCornerValue.bottomLeft:
+						rotation = 225;
+						
+					case GradientCornerValue.topLeft:
+						rotation = 315;
+				}
+			
+		}
+		
+		return rotation;
 	}
 	
 }

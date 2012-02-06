@@ -241,7 +241,7 @@ enum GradientStopValue {
 enum GradientAngleValue {
 	angle(value:AngleValue);
 	side(value:GradientSideValue);
-	corner(horizontal:GradientHorizontalSideValue, vertical:GradientVerticalSideValue);
+	corner(value:GradientCornerValue);
 }
 
 /**
@@ -256,19 +256,13 @@ enum GradientSideValue {
 }
 
 /**
- * the vertical side of the gradient box
+ * a corner of the gradient box
  */
-enum GradientVerticalSideValue {
-	top;
-	bottom;
-}
-
-/**
- * the horizontal side of the gradient box
- */
-enum GradientHorizontalSideValue {
-	left;
-	right;
+enum GradientCornerValue {
+	topRight;
+	bottomRight;
+	bottomLeft;
+	topLeft;
 }
 
 /**
