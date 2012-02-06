@@ -97,7 +97,11 @@ class Style extends AbstractStyle
 	 */
 	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
-		this._domElement.nativeElement.removeChild(nativeElement);
+		if (this._domElement.nativeElement.contains(nativeElement) == true)
+		{
+			this._domElement.nativeElement.removeChild(nativeElement);
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
