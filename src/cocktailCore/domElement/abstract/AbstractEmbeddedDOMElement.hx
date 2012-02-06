@@ -48,6 +48,9 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	private var _intrinsicRatio:Null<Float>;
 	public var intrinsicRatio(getIntrinsicRatio, never):Null<Float>;
 	
+	private var _embeddedAsset:NativeElement;
+	public var embeddedAsset(getEmbeddedAsset, never):NativeElement;
+	
 	/**
 	 * Constructor. Init the default intrinsic dimensions of the DOMElement
 	 */
@@ -68,6 +71,11 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// INTRINSIC DIMENSIONS GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getEmbeddedAsset():NativeElement
+	{
+		return _embeddedAsset;
+	}
 	
 	private function getIntrinsicWidth():Null<Int>
 	{

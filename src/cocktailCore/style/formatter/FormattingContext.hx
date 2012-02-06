@@ -312,7 +312,7 @@ class FormattingContext
 	
 	
 	
-	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, lineIndex:Int, position:Bool, render:Bool):ChildTemporaryPositionData
+	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, position:Bool, render:Bool):ChildTemporaryPositionData
 	{
 		var childTemporaryPositionData:ChildTemporaryPositionData;
 		
@@ -324,7 +324,6 @@ class FormattingContext
 			y:y,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			lineIndex:lineIndex,
 			render:render
 			}
 		}
@@ -336,7 +335,6 @@ class FormattingContext
 			y:0,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			lineIndex:lineIndex,
 			render:render
 			}
 		}

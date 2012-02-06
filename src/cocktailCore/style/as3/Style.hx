@@ -85,14 +85,17 @@ class Style extends AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Attach a child using flash API
+	 * Attach a native flash element (DisplayObject) using flash API
 	 */
-	override private function attachChild(nativeElement:NativeElement):Void
+	override private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
-	override private function detachChild(nativeElement:NativeElement):Void
+	/**
+	 * Detach a native flash element (DisplayObject) using flash API
+	 */
+	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
 		this._domElement.nativeElement.removeChild(nativeElement);
 	}
