@@ -46,13 +46,13 @@ class BackgroundDrawingManager extends DrawingManager
 		{
 			case BackgroundRepeatStyleValue.noRepeat:
 				imageWidth = Math.round(computedBackgroundSize.width);
-				totalWidth = Math.round(computedBackgroundPosition.x);
+				totalWidth = Math.round(computedBackgroundPosition.x) +  Math.round(_backgroundPositioningBox.x);
 				initialWidth = totalWidth;
 				maxWidth = totalWidth + imageWidth;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = Math.round(computedBackgroundPosition.x);
+				totalWidth = Math.round(computedBackgroundPosition.x)  + Math.round(_backgroundPositioningBox.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
@@ -62,7 +62,7 @@ class BackgroundDrawingManager extends DrawingManager
 				
 			case BackgroundRepeatStyleValue.space:
 				imageWidth = Math.round(_backgroundPositioningBox.width / computedBackgroundSize.width);
-				totalWidth = Math.round(computedBackgroundPosition.x);
+				totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(_backgroundPositioningBox.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
@@ -72,7 +72,7 @@ class BackgroundDrawingManager extends DrawingManager
 				
 			case BackgroundRepeatStyleValue.round:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = Math.round(computedBackgroundPosition.x);
+				totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(_backgroundPositioningBox.x);
 				while (totalWidth > _backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
@@ -90,13 +90,13 @@ class BackgroundDrawingManager extends DrawingManager
 		{
 			case BackgroundRepeatStyleValue.noRepeat:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
+				totalHeight = computedBackgroundPosition.y + Math.round(_backgroundPositioningBox.y);
 				initialHeight = totalHeight;
 				maxHeight = totalHeight + imageHeight;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
+				totalHeight = computedBackgroundPosition.y + Math.round(_backgroundPositioningBox.y);
 				while (totalHeight > _backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
@@ -106,7 +106,7 @@ class BackgroundDrawingManager extends DrawingManager
 				
 			case BackgroundRepeatStyleValue.space:
 				imageHeight = _backgroundPositioningBox.height / computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
+				totalHeight = computedBackgroundPosition.y + Math.round(_backgroundPositioningBox.y);
 				while (totalHeight > _backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
@@ -116,7 +116,7 @@ class BackgroundDrawingManager extends DrawingManager
 				
 			case BackgroundRepeatStyleValue.round:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
+				totalHeight = computedBackgroundPosition.y + Math.round(_backgroundPositioningBox.y);
 				while (totalHeight > _backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
@@ -133,7 +133,7 @@ class BackgroundDrawingManager extends DrawingManager
 			
 			matrix.translate(totalWidth, totalHeight);
 			
-			drawImage(nativeImage, matrix);
+			drawImage(nativeImage, matrix, _backgroundPaintingBox);
 			
 			totalWidth += imageWidth;
 			
@@ -151,8 +151,6 @@ class BackgroundDrawingManager extends DrawingManager
 		var lineStyle:LineStyleValue = LineStyleValue.none;
 		
 		beginFill(fillStyle, lineStyle);
-		Log.trace(_backgroundPaintingBox);
-		Log.trace(color.alpha);
 		drawRect(Math.round(_backgroundPaintingBox.x), Math.round(_backgroundPaintingBox.y), Math.round(_backgroundPaintingBox.width), Math.round(_backgroundPaintingBox.height));
 		
 		endFill();
