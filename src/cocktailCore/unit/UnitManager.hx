@@ -150,6 +150,17 @@ class UnitManager
 	}
 	
 	/**
+	 * Get a percentage from a pixel value in a reference value
+	 * @param	pixel
+	 * @param	reference
+	 * @return
+	 */
+	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
+	{
+		return (reference / pixel) * 100;
+	}
+	
+	/**
 	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
 	 */
 	public static function getColorDataFromColorValue(value:ColorValue):ColorData

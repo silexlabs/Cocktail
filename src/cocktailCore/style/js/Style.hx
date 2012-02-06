@@ -1233,8 +1233,8 @@ class Style extends AbstractStyle
 			case GradientAngleValue.angle(value):
 				cssGradientAngleValue = getCSSAngleValue(value);
 				
-			case GradientAngleValue.corner(horizontal, vertical):
-				cssGradientAngleValue = getCSSCornerValue(horizontal, vertical);
+			case GradientAngleValue.corner(value):
+				cssGradientAngleValue = getCSSCornerValue(value);
 				
 			case GradientAngleValue.side(value):
 				cssGradientAngleValue = getCSSSideValue(value);
@@ -1265,31 +1265,24 @@ class Style extends AbstractStyle
 		return cssSideValue;
 	}
 	
-	private function getCSSCornerValue(horizontal:GradientHorizontalSideValue, vertical:GradientVerticalSideValue):String
+	private function getCSSCornerValue(value:GradientCornerValue):String
 	{
-		var cssHorizontalCornerValue:String;
+		var cssCornerValue:String;
 		
-		switch (horizontal)
+		switch (value)
 		{
-			case GradientHorizontalSideValue.left:
-				cssHorizontalCornerValue = "left";
+			case GradientCornerValue.bottomLeft:
+				cssCornerValue = "to bottom left";
 				
-			case GradientHorizontalSideValue.right:
-				cssHorizontalCornerValue = "right";
-		}
-		
-		var cssVerticalCornerValue:String;
-		
-		switch (vertical)
-		{
-			case GradientVerticalSideValue.bottom:
-				cssVerticalCornerValue = "bottom";
+			case GradientCornerValue.bottomRight:
+				cssCornerValue = "to bottom right";
 				
-			case GradientVerticalSideValue.top:
-				cssVerticalCornerValue = "top";
+			case GradientCornerValue.topLeft:
+				cssCornerValue = "to top left";
+				
+			case GradientCornerValue.topRight:
+				cssCornerValue = "to top right";
 		}
-		
-		var cssCornerValue:String = "to " + cssHorizontalCornerValue + " " + cssVerticalCornerValue;
 		
 		return cssCornerValue;
 	}
@@ -1841,7 +1834,14 @@ class Style extends AbstractStyle
 	
 	override private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
 	{
-		this._domElement.nativeElement.style.backgroundImage = getCSSBackgroundImage(value);
+		var cssBackgroundImage:String = getCSSBackgroundImage(value);
+		
+		//as gradient are not standard yet in CSS, the property has to be applied with each vendor speicific prefix, only the 
+		//right one will be used
+		this._domElement.nativeElement.style.backgroundImage = cssBackgroundImage;
+		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-webkit-linear-gradient');
+		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-moz-linear-gradient');
+		
 		super.setBackgroundImage(value);
 		return _backgroundImage;
 	}
