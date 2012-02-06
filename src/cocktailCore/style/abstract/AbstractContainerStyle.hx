@@ -49,6 +49,16 @@ import haxe.Log;
 class AbstractContainerStyle extends Style
 {
 	/**
+	 * Stores an array of DOMElements which must be added as child of the
+	 * domElement wrapped by this Style along with the x and y coordinates
+	 * they must have in this domElement coordinate space. The array order
+	 * is the same as the z-index of the children
+	 */
+	private var _childrenFormattingContext:FormattingContext;
+	
+	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
+	
+	/**
 	 * class constructor
 	 * @param	domElement
 	 */
@@ -84,6 +94,16 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function getBoxesData():Array<BoxData>
+	{
+		return _childrenFormattingContext.getBoxesData(this._domElement);
+	}
+	
+	override private function getAbsolutelyPositionedChildren():Array<ChildTemporaryPositionData>
+	{
+		return _absolutelyPositionedChildrenTemporaryPositionsData;
+	}
 	
 	override private function setBounds(boxData:BoxData):Void
 	{
@@ -159,7 +179,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -264,12 +284,13 @@ class AbstractContainerStyle extends Style
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
-		//laid out positions is returned
+		//laid out positions is returned and stored, to be sued during rendering
 		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 		
-		//return the array containing all the children of this ContainerDOMElement and their
-		//positions relative to the ContainerDOMElement
-		return childrenFormattingContext;
+		//the array containing all the children of this ContainerDOMElement and their
+		//positions relative to the ContainerDOMElement is stored, to be used
+		//during rendering
+		_childrenFormattingContext = childrenFormattingContext;
 	}
 	
 	/**

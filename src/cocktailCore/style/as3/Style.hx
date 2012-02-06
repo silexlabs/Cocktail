@@ -92,42 +92,9 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
-	/**
-	 * Detach all the children using
-	 * flash API
-	 */
-	override private function detachChildren():Void
+	override private function detachChild(nativeElement:NativeElement):Void
 	{
-		if (_childrenFormattingContext != null)
-		{
-				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
-			
-			for (i in 0..._boxesData.length)
-			{
-				for (j in 0..._boxesData[i].children.length)
-				{
-					if (_boxesData[i].children[j].render == true)
-					{
-						if (_domElement.nativeElement.contains(_boxesData[i].children[j].domElement.nativeElement) == true)
-						{
-							_domElement.nativeElement.removeChild(_boxesData[i].children[j].domElement.nativeElement);
-						}
-					}
-				}
-			}
-		}
-
-		if (_absolutelyPositionedChildrenTemporaryPositionsData != null)
-		{
-			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
-			{
-				if (_domElement.nativeElement.contains(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement) == true)
-				{
-					_domElement.nativeElement.removeChild(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement);
-				}
-			}
-		}
-		
+		this._domElement.nativeElement.removeChild(nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
