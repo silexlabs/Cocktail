@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktailCore.background;
 import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
@@ -13,23 +20,48 @@ import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
- * ...
+ * This class extends the cross-platform drawing manager
+ * with added methods targeted at drawing backround elements,
+ * such as background color, bitmap and gradient
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class BackgroundDrawingManager extends DrawingManager
 {
-	
-	private var _imageLoader:ImageLoader;
-	
+	/**
+	 * class constructor. Init a drawing surface (for instance BitmapData in Flash)
+	 * of the same size as the backgroundBox
+	 * 
+	 * @param	nativeElement
+	 * @param	backgroundBox
+	 */
 	public function new(nativeElement:NativeElement, backgroundBox:RectangleData) 
 	{
 		super(nativeElement, Math.round(backgroundBox.width), Math.round(backgroundBox.height));
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Draw a background image form a nativeImage source.
+	 * The nativeImage source is repeated and transformed
+	 * as necessary to match the computed background
+	 * styles
+	 * 
+	 * @param	nativeImage
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	intrinsicWidth
+	 * @param	intrinsicHeight
+	 * @param	intrinsicRatio
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
+	 * @param	backgroundRepeat
+	 */
 	public function drawBackgroundImage(nativeImage:NativeElement, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
-		
 		var totalWidth:Int;
 		var maxWidth:Int;
 		var imageWidth:Int;
@@ -139,6 +171,13 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 	}
 	
+	/**
+	 * Draw a background color (a monochrome rgba rectangle) using the
+	 * size of the background painting box.
+	 * 
+	 * @param	color
+	 * @param	backgroundPaintingBox
+	 */
 	public function drawBackgroundColor(color:ColorData, backgroundPaintingBox:RectangleData):Void
 	{
 		var fillStyle:FillStyleValue = FillStyleValue.monochrome( color );
@@ -150,6 +189,20 @@ class BackgroundDrawingManager extends DrawingManager
 		endFill();
 	}
 	
+	/**
+	 * Draw a background gradient programmaticaly. The 
+	 * gradient is first drawn on another drawing manager using
+	 * the dimensions defined by the computed background size,
+	 * then the drawn gradient is used like as a background
+	 * image and drawn using the drawBackgroundImage method
+	 * 
+	 * @param	gradient
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
+	 * @param	backgroundRepeat
+	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
 		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.graphic), computedBackgroundSize.width, computedBackgroundSize.height);
@@ -176,6 +229,10 @@ class BackgroundDrawingManager extends DrawingManager
 		
 		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getGradientStops(value:Array<GradientColorStopData>):Array<GradientStopData>
 	{
