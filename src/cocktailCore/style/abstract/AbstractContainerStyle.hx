@@ -249,22 +249,28 @@ class AbstractContainerStyle extends Style
 			
 			for (i in 0...boxData.children.length)
 			{
-				if (boxData.children[i].x < left)
+				//TODO : do not compute child if it is an
+				//inline container as its x will be 0
+				if (boxData.children[i].x != 0)
 				{
-					left = boxData.children[i].x;
+					if (boxData.children[i].x < left)
+					{
+						left = boxData.children[i].x;
+					}
+					if (boxData.children[i].y < top)
+					{
+						top = boxData.children[i].y;
+					}
+					if (boxData.children[i].x + boxData.children[i].width > right)
+					{
+						right = boxData.children[i].x + boxData.children[i].width;
+					}
+					if (boxData.children[i].y + boxData.children[i].height > bottom)
+					{
+						bottom = boxData.children[i].y + boxData.children[i].height;
+					}
 				}
-				if (boxData.children[i].y < top)
-				{
-					top = boxData.children[i].y;
-				}
-				if (boxData.children[i].x + boxData.children[i].width > right)
-				{
-					right = boxData.children[i].x + boxData.children[i].width;
-				}
-				if (boxData.children[i].y + boxData.children[i].height > bottom)
-				{
-					bottom = boxData.children[i].y + boxData.children[i].height;
-				}
+				
 			}
 			
 				bounds = {
