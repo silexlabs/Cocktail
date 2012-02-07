@@ -4697,7 +4697,7 @@ domElement.ImageDOMElementTests = $hxClasses["domElement.ImageDOMElementTests"] 
 	this._body = new cocktailCore.domElement.js.BodyDOMElement();
 	this._image = new cocktailCore.domElement.js.ImageDOMElement();
 	this._image.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
-	this._image.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(100)));
+	this._image.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(180)));
 	this._image.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(500)));
 	this._image.load("Assets/icon.png");
 	this._body.addChild(this._image);
@@ -4712,9 +4712,21 @@ domElement.ImageDOMElementTests.main = function() {
 domElement.ImageDOMElementTests.prototype = {
 	_body: null
 	,_image: null
-	,testSize: function() {
-		utest.Assert.equals(114,this._image.getIntrinsicWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 69, className : "domElement.ImageDOMElementTests", methodName : "testSize"});
-		utest.Assert.equals(115,this._image.getIntrinsicHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 70, className : "domElement.ImageDOMElementTests", methodName : "testSize"});
+	,test_Position: function() {
+		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(180)),this._image.getStyle().getTop(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 70, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
+		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(500)),this._image.getStyle().getLeft(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 71, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
+	}
+	,test_InitialSize: function() {
+		utest.Assert.equals(114,this._image.getIntrinsicWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 76, className : "domElement.ImageDOMElementTests", methodName : "test_InitialSize"});
+		utest.Assert.equals(115,this._image.getIntrinsicHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 77, className : "domElement.ImageDOMElementTests", methodName : "test_InitialSize"});
+	}
+	,test_Resize: function() {
+		this._image.setWidth(50);
+		this._image.setHeight(50);
+		utest.Assert.equals(50,this._image.getWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 85, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.equals(50,this._image.getHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 86, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getWidth(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 87, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getHeight(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 88, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
 	}
 	,__class__: domElement.ImageDOMElementTests
 }
@@ -11391,6 +11403,12 @@ js["XMLHttpRequest"] = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject
 if(typeof(haxe_timers) == "undefined") haxe_timers = [];
 cocktailCore.keyboard.js.Keyboard.KEY_DOWN_EVENT = "keydown";
 cocktailCore.keyboard.js.Keyboard.KEY_UP_EVENT = "keyup";
+domElement.ImageDOMElementTests._x = 180;
+domElement.ImageDOMElementTests._y = 500;
+domElement.ImageDOMElementTests._width = 114;
+domElement.ImageDOMElementTests._height = 115;
+domElement.ImageDOMElementTests._newWidth = 50;
+domElement.ImageDOMElementTests._newHeight = 50;
 utest.ui.text.HtmlReport.platform = "javascript";
 js.Lib.onerror = null;
 utest.TestHandler.POLLING_TIME = 10;
