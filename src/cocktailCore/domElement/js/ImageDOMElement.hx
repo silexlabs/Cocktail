@@ -24,5 +24,9 @@ class ImageDOMElement extends AbstractImageDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		super(nativeElement);
+		
+		//in JS, the nativeElement must be the embeddedAsset, which
+		//is an <img> HTML tag
+		_nativeElement = _embeddedAsset;
 	}
 }

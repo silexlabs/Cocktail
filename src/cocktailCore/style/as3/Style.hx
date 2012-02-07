@@ -85,47 +85,21 @@ class Style extends AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Attach a child using flash API
+	 * Attach a native flash element (DisplayObject) using flash API
 	 */
-	override private function attachChild(nativeElement:NativeElement):Void
+	override private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
 	/**
-	 * Detach all the children using
-	 * flash API
+	 * Detach a native flash element (DisplayObject) using flash API
 	 */
-	override private function detachChildren():Void
+	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
-		if (_childrenFormattingContext != null)
+		if (this._domElement.nativeElement.contains(nativeElement) == true)
 		{
-				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
-			
-			for (i in 0..._boxesData.length)
-			{
-				for (j in 0..._boxesData[i].children.length)
-				{
-					if (_boxesData[i].children[j].render == true)
-					{
-						if (_domElement.nativeElement.contains(_boxesData[i].children[j].domElement.nativeElement) == true)
-						{
-							_domElement.nativeElement.removeChild(_boxesData[i].children[j].domElement.nativeElement);
-						}
-					}
-				}
-			}
-		}
-
-		if (_absolutelyPositionedChildrenTemporaryPositionsData != null)
-		{
-			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
-			{
-				if (_domElement.nativeElement.contains(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement) == true)
-				{
-					_domElement.nativeElement.removeChild(_absolutelyPositionedChildrenTemporaryPositionsData[i].domElement.nativeElement);
-				}
-			}
+			this._domElement.nativeElement.removeChild(nativeElement);
 		}
 		
 	}

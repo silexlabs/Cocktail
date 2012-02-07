@@ -7,6 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.ContainerDOMElement;
@@ -28,6 +29,7 @@ import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
+import cocktail.geom.GeomData;
 import haxe.Timer;
 
 #if (flash9 || cpp || nme)
@@ -49,6 +51,20 @@ import haxe.Log;
 class AbstractContainerStyle extends Style
 {
 	/**
+	 * Store a reference to the formatting context used to format
+	 * in-flow children. It is used when rendering to compute all
+	 * the boxes into which this styled DOMElement is lad out.
+	 */
+	private var _childrenFormattingContext:FormattingContext;
+	
+	/**
+	 * Stores a reference ot each of the absolutely positioned children that
+	 * must be attached to this styled ContainerDOMElement. The array only has
+	 * children if this styled ContainerDOMElement is itself positioned
+	 */
+	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
+	
+	/**
 	 * class constructor
 	 * @param	domElement
 	 */
@@ -62,12 +78,15 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * A ContainerStyle must also render all 
-	 * its children recursively before rendering
-	 * itself
+	 * When rendering, a ContainerStyle first calls the render
+	 * method recursively on all its children, then retrieve
+	 * the data of all the boxes it is laid out into (for instance
+	 * an inline container DOMElement laid out on multiple lines has
+	 * one box for each line) and attach all its backgrounds, children...
 	 */
 	override public function render():Void
 	{
+		//render all its children recursively
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
 		{
@@ -78,15 +97,149 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-		super.render();
+		//get the boxes data from the formatting context which was used to layout the children of this ContainerDOMElement
+		var boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(this._domElement);
+		
+		//will contain all the NativeElements which must be attached to this ContainerDOMElement
+		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
+		
+		//for each box, render the background, border and
+		//the children of each box
+		for (i in 0...boxesData.length)
+		{
+			var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i], i == 0);
+			
+			for (j in 0...boxNativeElements.length)
+			{
+				nativeElements.push(boxNativeElements[j]);
+			}
+		}
+		
+		//render the absolutely positioned children of this ContainerDOMElement
+		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedChildrenTemporaryPositionsData);
+		
+		for (i in 0...absolutelyPositionedNativeElements.length)
+		{
+			nativeElements.push(absolutelyPositionedNativeElements[i]);
+		}
+		
+		//store the nativeElements so that they can be detached on next layout
+		_nativeElements = nativeElements;
+		
+		//do attach the nativeElements using runtime specific API
+		attachNativeElements(nativeElements);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
+	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function setBounds(boxData:BoxData):Void
+	/**
+	 * Render one box of the DOMElement and return the resulting
+	 * nativeElements which must be attached to this styled
+	 * ContainerDOMElement
+	 * @param	box
+	 * @param firstBox determine wether the first box of the DOMElement is being rendered
+	 * @return
+	 */
+	private function renderBox(box:BoxData, firstBox:Bool):Array<NativeElement>
 	{
+		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
+		
+		//if the ContainerDOMElement is an inline container, then each 
+		//boxs need its own background, else it should only have one box
+		//which has the same dimensions as the ContainerDOMElement, so
+		//only the first box is rendered
+		//
+		//TODO : improve 'firstBox', it should be done before
+		if (isInlineContainer() == true || firstBox == true)
+		{
+			//render the background of the box
+			var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
+		
+			for (i in 0...backgroundNativeElements.length)
+			{
+				nativeElements.push(backgroundNativeElements[i]);
+			}
+		}
+	
+		
+		//render each children of the box which are all in-flow DOMElements
+		var inFlowChildrenNativeElements:Array<NativeElement> = renderChildren(box.children);
+		for (i in 0...inFlowChildrenNativeElements.length)
+		{
+			nativeElements.push(inFlowChildrenNativeElements[i]);
+		}
+		
+		return nativeElements;
+	}
+	
+	/**
+	 * Render the background of the box and return an array
+	 * containing the background color if any and all
+	 * the background images if any
+	 * @param	box
+	 * @param	style
+	 * @return
+	 */
+	private function renderBackground(box:BoxData, style:AbstractStyle):Array<NativeElement>
+	{
+		box.bounds = getBounds(box);
+		return _backgroundManager.render(box.bounds, style);
+	}
+	
+	/**
+	 * Render an array of child by applying their computed layout position and 
+	 * returnin gall of their nativeElements
+	 * 
+	 * @param	children
+	 * @return
+	 */
+	private function renderChildren(children:Array<ChildTemporaryPositionData>):Array<NativeElement>
+	{
+		var childrenNativeElements:Array<NativeElement> = new Array<NativeElement>();
+		
+		for (i in 0...children.length)
+		{
+			if (children[i].render == true)
+			{
+				var child:ChildTemporaryPositionData = children[i];
+				
+				//apply x and y
+				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				
+				//apply width and height
+				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
+				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
+			
+				//apply transformations
+				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
+				
+				//apply opacity and visibility
+				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
+				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
+			
+				childrenNativeElements.push(child.domElement.nativeElement);
+			}	
+		}
+		
+		return childrenNativeElements;
+	}
+	
+	/**
+	 * Get the bound of a box in the coordinate space
+	 * of this styled ContainerDOMElement
+	 * @param	boxData
+	 * @return
+	 */
+	private function getBounds(boxData:BoxData):RectangleData
+	{
+		var bounds:RectangleData;
+		
+		//if the ContainerDOMElement is an inline container, then
+		//it is itself placed at the origin of its formatting context
+		//Its bounds are determined by the area formed by its children
 		if (isInlineContainer() == true)
 		{
 			var left:Float = 50000;
@@ -96,43 +249,55 @@ class AbstractContainerStyle extends Style
 			
 			for (i in 0...boxData.children.length)
 			{
-				if (boxData.children[i].x < left)
+				//TODO : do not compute child if it is an
+				//inline container as its x will be 0
+				if (boxData.children[i].x != 0)
 				{
-					left = boxData.children[i].x;
+					if (boxData.children[i].x < left)
+					{
+						left = boxData.children[i].x;
+					}
+					if (boxData.children[i].y < top)
+					{
+						top = boxData.children[i].y;
+					}
+					if (boxData.children[i].x + boxData.children[i].width > right)
+					{
+						right = boxData.children[i].x + boxData.children[i].width;
+					}
+					if (boxData.children[i].y + boxData.children[i].height > bottom)
+					{
+						bottom = boxData.children[i].y + boxData.children[i].height;
+					}
 				}
-				if (boxData.children[i].y < top)
-				{
-					top = boxData.children[i].y;
-				}
-				if (boxData.children[i].x + boxData.children[i].width > right)
-				{
-					right = boxData.children[i].x + boxData.children[i].width;
-				}
-				if (boxData.children[i].y + boxData.children[i].height > bottom)
-				{
-					bottom = boxData.children[i].y + boxData.children[i].height;
-				}
+				
 			}
 			
-				boxData.bounds = {
+				bounds = {
 					x:left,
 					y:top,
 					width : right - left,
 					height :  bottom - top,
 				}
-		}
+				
+			}
+		
+		//if the container is a block container, then its box is formed from its own
+		//width and height
 		else
 		{
 			var width:Float = _domElement.offsetWidth;
 			var height:Float = _domElement.offsetHeight;
 			
-			boxData.bounds = {
+			bounds = {
 					x:0.0,
 					y:0.0,
 					width : width,
 					height :  height,
 				}
 		}
+		
+		return bounds;
 		
 	}
 	
@@ -159,7 +324,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -264,12 +429,13 @@ class AbstractContainerStyle extends Style
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
-		//laid out positions is returned
+		//laid out positions is returned and stored, to be sued during rendering
 		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
-		
-		//return the array containing all the children of this ContainerDOMElement and their
-		//positions relative to the ContainerDOMElement
-		return childrenFormattingContext;
+
+		//the array containing all the children of this ContainerDOMElement and their
+		//positions relative to the ContainerDOMElement is stored, to be used
+		//during rendering
+		_childrenFormattingContext = childrenFormattingContext;
 	}
 	
 	/**

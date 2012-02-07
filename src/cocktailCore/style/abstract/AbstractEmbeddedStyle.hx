@@ -8,6 +8,8 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
@@ -43,6 +45,35 @@ class AbstractEmbeddedStyle extends Style
 	{
 		super(domElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When rendered, an embedded DOMElement first render its background,
+	 * border..., then it renders its embedded asset such as its picture
+	 * for an ImageDOMElement
+	 */
+	override public function render():Void
+	{
+		//the bounds for the background of an embedded DOMElement are its
+		//own dimensions
+		var height:Float = this._domElement.offsetHeight;
+		var width:Float = this._domElement.offsetWidth;
+		
+		var nativeElements:Array<NativeElement> = _backgroundManager.render( { x:0.0, y:0.0, width:width,
+		height:height }, cast(this));
+		
+		//add the embedded asset to the rendering tree
+		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
+		nativeElements.push(embeddedDOMElement.embeddedAsset);
+		
+		_nativeElements = nativeElements;
+		
+		attachNativeElements(nativeElements);
+	}
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS

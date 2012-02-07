@@ -175,9 +175,10 @@ enum ImageValue {
 	
 	/**
 	 * The image is specified as multiple URL, the
-	 * first valid URL being used
+	 * first valid URL being used. a fallback color
+	 * is provided if all urls fails
 	 */
-	imageList(value:Array<ImageDeclarationValue>);
+	imageList(value:ImageDeclarationData);
 	
 	/**
 	 * The image is a programmaticaly drawn
@@ -187,13 +188,13 @@ enum ImageValue {
 }
 
 /**
- * An element for a list of image, can either
- * be an image URL or a fallback color used if
- * all the URL in the image list are invalid
+ * define an array of URLs to load, the first
+ * valid URL is used. If all fail, the fallback
+ * color is used
  */
-enum ImageDeclarationValue {
-	url(value:URLData);
-	color(value:ColorValue);
+typedef ImageDeclarationData = {
+	var urls:Array<URLData>;
+	var fallbackColor:ColorValue;
 }
 
 /**

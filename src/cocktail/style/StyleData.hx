@@ -665,7 +665,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		 * The background image is repeated as often
 		 * as needed to cover the background without
 		 * being clipped and then the images are scaled
-		 * to fill the bacground
+		 * to fill the background
 		 */
 		round;
 		
@@ -1382,8 +1382,6 @@ import cocktailCore.style.formatter.FormattingContext;
 	 */
 	typedef ChildTemporaryPositionData = {
 		var domElement:DOMElement;
-		var lineIndex:Int;
-		//var lineRect:RectangleData;
 		var x:Int;
 		var y:Int;
 		var width:Int;
