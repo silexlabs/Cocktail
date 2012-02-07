@@ -9,6 +9,7 @@ import cocktail.geom.GeomData;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BackgroundStylesComputer;
+import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
@@ -69,19 +70,24 @@ class BackgroundManager
 					{
 						case ImageValue.url(value):
 							
-							var imageNativeElement:NativeElement = drawBackgroundImage([value], style, backgroundBox,
+							var imageDeclaration:ImageDeclarationData = {
+								urls:[value],
+								fallbackColor:ColorValue.transparent
+							}
+							
+							var imageNativeElement:NativeElement = drawBackgroundImage(imageDeclaration, style, backgroundBox,
 							_backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i],
 							_backgroundRepeat[i], _backgroundImage[i]);
 							
 							nativeElements.push(imageNativeElement);
 							
 						case ImageValue.imageList(value):
-							/**
+							
 							var imageNativeElement:NativeElement = drawBackgroundImage(value, style, backgroundBox,
 							_backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i],
 							_backgroundRepeat[i], _backgroundImage[i]);
 							
-							nativeElements.push(imageNativeElement);*/
+							nativeElements.push(imageNativeElement);
 							
 						case ImageValue.gradient(value):
 							
@@ -95,7 +101,8 @@ class BackgroundManager
 			//to remember : use the bottom most data, see CSS3 spec
 			if (i == _backgroundImage.length - 1)
 			{
-				var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, backgroundBox, _backgroundPosition[i],
+				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, _backgroundPosition[i],
 				_backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
 				
 				nativeElements.reverse();
@@ -109,7 +116,7 @@ class BackgroundManager
 	
 	
 	
-	private function drawBackgroundImage(urls:Array<String>, style:AbstractStyle, backgroundBox:RectangleData,
+	private function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:AbstractStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPositionStyleData, backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue,
 	backgroundClip:BackgroundClipStyleValue, backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):NativeElement
 	{
@@ -121,11 +128,18 @@ class BackgroundManager
 		BackgroundSizeStyleValue->BackgroundOriginStyleValue-> BackgroundClipStyleValue-> BackgroundRepeatStyleData->
 		BackgroundImageStyleValue->Void = onBackgroundImageLoaded;
 		
-		imageLoader.load(urls,
-		function(loadedImage) {
+		var onBackgroundImageLoadErrorDelegate:String->ColorValue->NativeElement->AbstractStyle->RectangleData->BackgroundPositionStyleData->
+		BackgroundSizeStyleValue->BackgroundOriginStyleValue-> BackgroundClipStyleValue-> BackgroundRepeatStyleData->
+		BackgroundImageStyleValue->Void = onBackgroundImageLoadError;
+		
+		imageLoader.load(imageDeclaration.urls,
+		function(loadedImage:NativeElement) {
 			onBackgroundImageLoadedDelegate(backgroundImageNativeElement, loadedImage, imageLoader, style, backgroundBox, backgroundPosition, backgroundSize, 
 			backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-		}, onBackgroundImageLoadError);
+		}, function(error:String) {
+			onBackgroundImageLoadErrorDelegate(error, imageDeclaration.fallbackColor, backgroundImageNativeElement, style, backgroundBox, backgroundPosition, backgroundSize, 
+		backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
+		});
 		
 		return backgroundImageNativeElement;
 	}
@@ -155,31 +169,31 @@ class BackgroundManager
 			_backgroundDrawingManagers.push(backgroundImageDrawingManager);
 	}
 	
-	private function onBackgroundImageLoadError(error:String):Void
+	private function onBackgroundImageLoadError(error:String, backgroundColor:ColorValue, backgroundImageNativeElement:NativeElement, style:AbstractStyle, backgroundBox:RectangleData,
+	backgroundPosition:BackgroundPositionStyleData, backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue,
+	backgroundClip:BackgroundClipStyleValue, backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
 	{
-		Log.trace(error);
+		drawBackgroundColor(style, UnitManager.getColorDataFromColorValue(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
+				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 	}
 	
-	private function drawBackgroundColor(style:AbstractStyle, backgroundBox:RectangleData, backgroundPosition:BackgroundPositionStyleData,
+	private function drawBackgroundColor(style:AbstractStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPositionStyleData,
 	backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue, backgroundClip:BackgroundClipStyleValue, 
-	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):NativeElement
+	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
 	{
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
 			
-			var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
 			var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
 			backgroundBox);
-			backgroundColorDrawingManager.drawBackgroundColor(style.computedStyle.backgroundColor, computedBackgroundStyles.backgroundClip);
+			backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
 			//TODO : don't do that here
 			#if flash9
 			backgroundColorNativeElement.x = backgroundBox.x;
 			backgroundColorNativeElement.y = backgroundBox.y;
 			#end
 			_backgroundDrawingManagers.push(backgroundColorDrawingManager);
-		
-		return backgroundColorNativeElement;
 	}
 	
 	private function drawBackgroundGradient(style:AbstractStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPositionStyleData,
