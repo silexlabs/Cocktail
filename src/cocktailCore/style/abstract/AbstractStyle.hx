@@ -290,18 +290,20 @@ class AbstractStyle
 	 * Store the current transform matrix of the NativeElement
 	 */
 	private var _nativeMatrix:Matrix;
+
+	/**
+	 * creates the background color and background image
+	 * for each box of the styled DOMElement
+	 */
+	private var _backgroundManager:BackgroundManager;
 	
 	/**
-	 * Stores an array of DOMElements which must be added as child of the
-	 * domElement wrapped by this Style along with the x and y coordinates
-	 * they must have in this domElement coordinate space. The array order
-	 * is the same as the z-index of the children
+	 * keep references to each of the nativeElements which
+	 * are attached to this styled DOMElement. Those
+	 * can be background images, colors, nativeElements
+	 * of other DOMElements...
 	 */
-	private var _childrenFormattingContext:FormattingContext;
-	
-	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
-	
-	private var _backgroundManager:BackgroundManager;
+	private var _nativeElements:Array<NativeElement>;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -318,12 +320,10 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-	//	this._boxData = {};
-		this._absolutelyPositionedChildrenTemporaryPositionsData = new Array<ChildTemporaryPositionData>();
 		this._backgroundManager = new BackgroundManager();
+		this._nativeElements = new Array<NativeElement>();
 		
 		initDefaultStyleValues();
-		
 	}
 	
 	/**
@@ -501,122 +501,66 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render all the children in the
-	 * childrenTemporaryPositionData array
-	 * by attaching them to the DOM using
-	 * runtime specific API and setting
-	 * their native properties
+	 * Create or retrieve all the native elements
+	 * which must be attached to this styled DOMElement
+	 * and attach them.
+	 * 
+	 * The native elements can be background elements, 
+	 * border, other DOMElement's native element, embedded
+	 * assets such as a bitmap...
+	 * 
+	 * The rendering is implemented differently for a 
+	 * ContainerStyle and an EmbeddedStyle
 	 */
 	public function render():Void
 	{
-		if (_childrenFormattingContext != null)
-		{
-				var _boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(_domElement);
-			
-			/**
-			 * TODO: doit être ContainerStyle, le abstractStyle doit seulement être responsable de 
-			 * son background, border....
-			 * 
-			 * _childrenFormattingContext ne devrait être que sur AbstractContainer, pas de children
-			 * sur un abstractStyle et embedded
-			 * 
-			 * ici devrait être renderBackground, renderBorder... et sur AbstractContainer renderChildren
-			 * et sur AbstractEmbedded renderEmbeddedAsset
-			 */
-			for (i in 0..._boxesData.length)
-			{
-				setBounds(_boxesData[i]);
-				var backgrounds:Array<NativeElement> = _backgroundManager.render(_boxesData[i].bounds, this);
-				for (j in 0...backgrounds.length)
-				{
-					attachChild(backgrounds[j]);
-				}
-				
-				for (j in 0..._boxesData[i].children.length)
-				{
-					if (_boxesData[i].children[j].render == true)
-					{
-						
-						//apply x and y
-						_boxesData[i].children[j].domElement.style.setNativeX(_boxesData[i].children[j].domElement, _boxesData[i].children[j].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-						_boxesData[i].children[j].domElement.style.setNativeY(_boxesData[i].children[j].domElement, _boxesData[i].children[j].y + _computedStyle.marginTop + _computedStyle.paddingTop);
-						
-						//apply width and height
-						_boxesData[i].children[j].domElement.style.setNativeHeight(_boxesData[i].children[j].domElement.style.computedStyle.height);
-						_boxesData[i].children[j].domElement.style.setNativeWidth(_boxesData[i].children[j].domElement.style.computedStyle.width);
-					
-						//apply transformations
-						_boxesData[i].children[j].domElement.style.setNativeMatrix(_boxesData[i].children[j].domElement.style.computedStyle.transform);
-						
-						//apply opacity and visibility
-						_boxesData[i].children[j].domElement.style.setNativeOpacity(_boxesData[i].children[j].domElement.style.computedStyle.opacity);
-						_boxesData[i].children[j].domElement.style.setNativeVisibility(_boxesData[i].children[j].domElement.style.computedStyle.visibility);
-					
-						//attach the child
-						attachChild(_boxesData[i].children[j].domElement.nativeElement);
-					}	
-				}
-			}
-			
-			for (i in 0..._absolutelyPositionedChildrenTemporaryPositionsData.length)
-			{
-				var child:ChildTemporaryPositionData = _absolutelyPositionedChildrenTemporaryPositionsData[i];
-				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				
-				//apply width and height
-				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
-				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
-			
-				//apply transformations
-				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
-				
-				//apply opacity and visibility
-				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
-				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
-			
-				//attach the child
-				attachChild(child.domElement.nativeElement);
-			}
-		}
-		
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setBounds(boxData:BoxData):Void
-	{
-		var width:Float = _domElement.offsetWidth;
-			var height:Float = _domElement.offsetHeight;
-			
-			boxData.bounds = {
-					x:0.0,
-					y:0.0,
-					width : width,
-					height :  height,
-				}
-	}
-	
 	/**
-	 * Attach a child to the NativeElement of the 
+	 * Attach a NativeElement to the
 	 * styled DOMElement using runtime specific API
 	 */
-	private function attachChild(nativeElement:NativeElement):Void
+	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * Detach all the children previously
-	 * attached with the render() method
-	 * when a new layout occurs using
-	 * runtime specific API
+	 * Remove a NativeElement from the
+	 * styled DOMElement using runtime specific API
 	 */
-	private function detachChildren():Void
+	private function detachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			attachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -668,7 +612,7 @@ class AbstractStyle
 	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//first detach all previously added children
-		detachChildren();
+		detachNativeElements(_nativeElements);
 		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
@@ -699,9 +643,8 @@ class AbstractStyle
 		//compute all the styles of a DOMElement
 		computeDOMElementStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
-		//flow all the children of the DOMElement if it has any and store the returned array containing
-		//each of their laid out positions in this domElement coordinate space
-		_childrenFormattingContext = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
+		//flow all the children of the DOMElement if it has any
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -715,6 +658,9 @@ class AbstractStyle
 		//might need those dimensions to compute the right values
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		
+		//compute the background styles which can be computed at this time,
+		//such as the background color, most of the background styles will be computed
+		//during the rendering
 		computeBackgroundStyles();
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
@@ -768,7 +714,6 @@ class AbstractStyle
 					y:0,
 					width:0,
 					height:0,
-					lineIndex:0,
 					render:true
 				};
 		}
@@ -795,12 +740,11 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Flow all the children of a DOMElement if it has any, and return 
-	 * the positions of the flowed children
+	 * Flow all the children of a DOMElement if it has any
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):FormattingContext
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		return formattingContext;
+		
 	}
 	
 	/**
@@ -1022,6 +966,10 @@ class AbstractStyle
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Computes the styles determining the background
+	 * color, images... of a DOMElement
+	 */
 	private function computeBackgroundStyles():Void
 	{
 		BackgroundStylesComputer.compute(this);

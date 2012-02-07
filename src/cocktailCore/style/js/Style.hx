@@ -1136,7 +1136,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case ImageValue.url(value):
-				cssImageValue = "url(" + value + ")";
+				cssImageValue = 'url("' + value + '")';
 				
 			case ImageValue.imageList(value):
 				cssImageValue = "image(" + getCSSImageList(value) + ")";
@@ -1144,28 +1144,26 @@ class Style extends AbstractStyle
 			case ImageValue.gradient(value):
 				cssImageValue = getCSSGradientValue(value);
 		}
+		Log.trace(cssImageValue);
 		
 		return cssImageValue;
 	}
 	
-	private function getCSSImageList(value:Array<ImageDeclarationValue>):String
+	private function getCSSImageList(value:ImageDeclarationData):String
 	{
 		var cssImageList:String = "";
 		
-		for (i in 0...value.length)
+		for (i in 0...value.urls.length)
 		{
-			switch (value[i])
-			{
-				case ImageDeclarationValue.url(value):
-					cssImageList += "'" + value + "'";
-				
-				case ImageDeclarationValue.color(value):
-					cssImageList += getCSSColor(value);
-			}
+			cssImageList += '"' + value.urls[i] + '"';
 			
-			if (i < value.length -1)
+			if (i < value.urls.length -1)
 			{
 				cssImageList += ",";
+			}
+			else
+			{
+				cssImageList += ","+ getCSSColor(value.fallbackColor);
 			}
 		}
 		
@@ -1272,16 +1270,16 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case GradientCornerValue.bottomLeft:
-				cssCornerValue = "to bottom left";
+				cssCornerValue = "left bottom";
 				
 			case GradientCornerValue.bottomRight:
-				cssCornerValue = "to bottom right";
+				cssCornerValue = "right bottom";
 				
 			case GradientCornerValue.topLeft:
-				cssCornerValue = "to top left";
+				cssCornerValue = "left top";
 				
 			case GradientCornerValue.topRight:
-				cssCornerValue = "to top right";
+				cssCornerValue = "right top";
 		}
 		
 		return cssCornerValue;

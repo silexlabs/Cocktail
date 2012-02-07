@@ -167,7 +167,7 @@ class InlineFormattingContext extends FormattingContext
 			for (i in 0..._domElementInLineBox.length)
 			{
 				var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
-				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, 0, _domElementInLineBox[i].position, _domElementInLineBox[i].render);
+				_domElementInLineBox[i].domElement, _domElementInLineBox[i].x, _domElementInLineBox[i].y, _domElementInLineBox[i].position, _domElementInLineBox[i].render);
 				
 				
 				getCurrentBoxesData(_domElementInLineBox[i].parentDOMElement)[0].children.push(childTemporaryPositionData);

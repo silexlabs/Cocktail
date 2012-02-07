@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktailCore.background;
 import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
@@ -13,30 +20,48 @@ import cocktailCore.unit.UnitManager;
 import haxe.Log;
 
 /**
- * ...
+ * This class extends the cross-platform drawing manager
+ * with added methods targeted at drawing backround elements,
+ * such as background color, bitmap and gradient
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class BackgroundDrawingManager extends DrawingManager
 {
-
-	private var _backgroundPositioningBox:RectangleData;
-	
-	private var _backgroundPaintingBox:RectangleData;
-	
-	private var _imageLoader:ImageLoader;
-	
-	public function new(nativeElement:NativeElement, backgroundBox:RectangleData, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData) 
+	/**
+	 * class constructor. Init a drawing surface (for instance BitmapData in Flash)
+	 * of the same size as the backgroundBox
+	 * 
+	 * @param	nativeElement
+	 * @param	backgroundBox
+	 */
+	public function new(nativeElement:NativeElement, backgroundBox:RectangleData) 
 	{
-		_backgroundPositioningBox = backgroundPositioningBox;
-		_backgroundPaintingBox = backgroundPaintingBox;
-		
 		super(nativeElement, Math.round(backgroundBox.width), Math.round(backgroundBox.height));
 	}
 	
-	public function drawBackgroundImage(nativeImage:NativeElement, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData , backgroundRepeat:BackgroundRepeatStyleData):Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Draw a background image form a nativeImage source.
+	 * The nativeImage source is repeated and transformed
+	 * as necessary to match the computed background
+	 * styles
+	 * 
+	 * @param	nativeImage
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	intrinsicWidth
+	 * @param	intrinsicHeight
+	 * @param	intrinsicRatio
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
+	 * @param	backgroundRepeat
+	 */
+	public function drawBackgroundImage(nativeImage:NativeElement, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
-		
 		var totalWidth:Int;
 		var maxWidth:Int;
 		var imageWidth:Int;
@@ -46,39 +71,39 @@ class BackgroundDrawingManager extends DrawingManager
 		{
 			case BackgroundRepeatStyleValue.noRepeat:
 				imageWidth = Math.round(computedBackgroundSize.width);
-				totalWidth = Math.round(computedBackgroundPosition.x);
+				totalWidth = Math.round(computedBackgroundPosition.x) +  Math.round(backgroundPositioningBox.x);
 				initialWidth = totalWidth;
 				maxWidth = totalWidth + imageWidth;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = Math.round(computedBackgroundPosition.x);
-				while (totalWidth > _backgroundPaintingBox.x)
+				totalWidth = Math.round(computedBackgroundPosition.x)  + Math.round(backgroundPositioningBox.x);
+				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
+				maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 				
 			case BackgroundRepeatStyleValue.space:
-				imageWidth = Math.round(_backgroundPositioningBox.width / computedBackgroundSize.width);
-				totalWidth = Math.round(computedBackgroundPosition.x);
-				while (totalWidth > _backgroundPaintingBox.x)
+				imageWidth = Math.round(backgroundPositioningBox.width / computedBackgroundSize.width);
+				totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
+				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
+				maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 				
 			case BackgroundRepeatStyleValue.round:
 				imageWidth = computedBackgroundSize.width;
-				totalWidth = Math.round(computedBackgroundPosition.x);
-				while (totalWidth > _backgroundPaintingBox.x)
+				totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
+				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				initialWidth = totalWidth;
-				maxWidth = Math.round(_backgroundPaintingBox.x + _backgroundPaintingBox.width);
+				maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 		}
 		
 		var totalHeight:Float;
@@ -90,50 +115,51 @@ class BackgroundDrawingManager extends DrawingManager
 		{
 			case BackgroundRepeatStyleValue.noRepeat:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
+				totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
 				initialHeight = totalHeight;
 				maxHeight = totalHeight + imageHeight;
 				
 			case BackgroundRepeatStyleValue.repeat:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
-				while (totalHeight > _backgroundPaintingBox.y)
+				totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
 				}
 				initialHeight = totalHeight;
-				maxHeight = _backgroundPaintingBox.y + _backgroundPaintingBox.height;
+				maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 				
 			case BackgroundRepeatStyleValue.space:
-				imageHeight = _backgroundPositioningBox.height / computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
-				while (totalHeight > _backgroundPaintingBox.y)
+				imageHeight = backgroundPositioningBox.height / computedBackgroundSize.height;
+				totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
 				}
 				initialHeight = totalHeight;
-				maxHeight = _backgroundPaintingBox.y + _backgroundPaintingBox.height;
+				maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 				
 			case BackgroundRepeatStyleValue.round:
 				imageHeight = computedBackgroundSize.height;
-				totalHeight = computedBackgroundPosition.y;
-				while (totalHeight > _backgroundPaintingBox.y)
+				totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
 				}
 				initialHeight = totalHeight;
-				maxHeight = _backgroundPaintingBox.y + _backgroundPaintingBox.height;
+				maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 		}
 		
 		while (totalHeight < maxHeight)
 		{
 			var matrix:Matrix = new Matrix();
 		
-			matrix.scale(intrinsicWidth / computedBackgroundSize.width, intrinsicHeight / computedBackgroundSize.height, { x:0.0, y:0.0 } );
 			
 			matrix.translate(totalWidth, totalHeight);
 			
-			drawImage(nativeImage, matrix);
+			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight, { x:0.0, y:0.0 } );
+			
+			drawImage(nativeImage, matrix, backgroundPaintingBox);
 			
 			totalWidth += imageWidth;
 			
@@ -145,20 +171,39 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 	}
 	
-	public function drawBackgroundColor(color:ColorData):Void
+	/**
+	 * Draw a background color (a monochrome rgba rectangle) using the
+	 * size of the background painting box.
+	 * 
+	 * @param	color
+	 * @param	backgroundPaintingBox
+	 */
+	public function drawBackgroundColor(color:ColorData, backgroundPaintingBox:RectangleData):Void
 	{
 		var fillStyle:FillStyleValue = FillStyleValue.monochrome( color );
 		var lineStyle:LineStyleValue = LineStyleValue.none;
 		
 		beginFill(fillStyle, lineStyle);
-		
-		drawRect(Math.round(_backgroundPaintingBox.x), Math.round(_backgroundPaintingBox.y), Math.round(_backgroundPaintingBox.width), Math.round(_backgroundPaintingBox.height));
+		drawRect(Math.round(backgroundPaintingBox.x), Math.round(backgroundPaintingBox.y), Math.round(backgroundPaintingBox.width), Math.round(backgroundPaintingBox.height));
 		
 		endFill();
 	}
 	
-	//TODO : create a bitmapData with the gradient and send it to drawBackgroundImage
-	public function drawBackgroundGradient(gradient:GradientValue, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
+	/**
+	 * Draw a background gradient programmaticaly. The 
+	 * gradient is first drawn on another drawing manager using
+	 * the dimensions defined by the computed background size,
+	 * then the drawn gradient is used like as a background
+	 * image and drawn using the drawBackgroundImage method
+	 * 
+	 * @param	gradient
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
+	 * @param	backgroundRepeat
+	 */
+	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeatStyleData):Void
 	{
 		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.graphic), computedBackgroundSize.width, computedBackgroundSize.height);
 		
@@ -180,10 +225,14 @@ class BackgroundDrawingManager extends DrawingManager
 		gradientSurface.drawRect(0, 0, computedBackgroundSize.width, computedBackgroundSize.height);
 		gradientSurface.endFill();
 		
-		drawBackgroundImage(gradientSurface.nativeElement, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
 		
 		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getGradientStops(value:Array<GradientColorStopData>):Array<GradientStopData>
 	{

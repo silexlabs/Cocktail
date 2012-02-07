@@ -12,10 +12,12 @@ import cocktail.domElement.DOMElementData;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.resource.ResourceLoader;
+import cocktail.nativeElement.NativeElementData;
 import haxe.Log;
 
 /**
@@ -70,8 +72,9 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		//use the provided NativeElement if any
-		_imageLoader = new ImageLoader(nativeElement);
-		super(_imageLoader.nativeElement);
+		_imageLoader = new ImageLoader();
+		_embeddedAsset = _imageLoader.nativeElement;
+		super(NativeElementManager.createNativeElement(NativeElementTypeValue.neutral));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -55,7 +55,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 	{
 		//cast the native element as a loader
 		// and retrieve its bitmap content
-		var typedNativeElement:Loader = cast(this._nativeElement);
+		var typedNativeElement:Loader = cast(this._embeddedAsset);
 		var bitmap:Bitmap = cast(typedNativeElement.content);
 		
 		if (bitmap != null)

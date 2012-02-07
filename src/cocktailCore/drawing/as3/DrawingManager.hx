@@ -255,13 +255,13 @@ class DrawingManager extends AbstractDrawingManager
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
 		//convert the abstract rectangle and point into flash natives one
-	//	var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		
 		var matrixData:MatrixData = matrix.data;
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//draw the ImageDOMElement bitmap data onto the current bitmap data
-		currentBitmapData.draw(sourceBitmapData, nativeMatrix);
+		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -460,7 +460,7 @@ class DrawingManager extends AbstractDrawingManager
 	private function getGradientBox(gradientStyle:GradientStyleData):flash.geom.Matrix
 	{
 		var gradientBox:flash.geom.Matrix = new flash.geom.Matrix();
-		gradientBox.createGradientBox(this.width, this.height, gradientStyle.rotation / 180 * Math.PI);
+		gradientBox.createGradientBox(this.width, this.height, (gradientStyle.rotation + 90) / 180 * Math.PI);
 		return gradientBox;
 	}
 	
