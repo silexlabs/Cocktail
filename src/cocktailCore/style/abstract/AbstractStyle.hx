@@ -138,25 +138,18 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
-	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
 	 
-	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
-	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
-	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
-	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
-	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
