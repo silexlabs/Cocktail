@@ -324,7 +324,8 @@ class FormattingContext
 			y:y,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			render:render
+			render:render,
+			position:true
 			}
 		}
 		else
@@ -335,7 +336,8 @@ class FormattingContext
 			y:0,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			render:render
+			render:render,
+			position:false
 			}
 		}
 		

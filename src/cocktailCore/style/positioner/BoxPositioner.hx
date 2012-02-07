@@ -71,7 +71,8 @@ class BoxPositioner
 			y:0,
 			width:0,
 			height:0,
-			render:true
+			render:true,
+			position:true
 		}
 		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),

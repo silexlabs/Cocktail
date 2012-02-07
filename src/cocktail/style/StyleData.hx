@@ -1387,6 +1387,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		var width:Int;
 		var height:Int;
 		var render:Bool;
+		var position:Bool;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
