@@ -507,7 +507,16 @@ class AbstractStyle
 	 */
 	public function render():Void
 	{
-		//abstract
+		//apply width and height
+		setNativeHeight(_computedStyle.height);
+		setNativeWidth(_computedStyle.width);
+	
+		//apply transformations
+		setNativeMatrix(_computedStyle.transform);
+		
+		//apply opacity and visibility
+		setNativeOpacity(_computedStyle.opacity);
+		setNativeVisibility(_computedStyle.visibility);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -707,7 +716,8 @@ class AbstractStyle
 					y:0,
 					width:0,
 					height:0,
-					render:true
+					render:true,
+					position:true
 				};
 		}
 		

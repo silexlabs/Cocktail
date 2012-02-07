@@ -86,6 +86,8 @@ class AbstractContainerStyle extends Style
 	 */
 	override public function render():Void
 	{
+		super.render();
+		
 		//render all its children recursively
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
@@ -209,17 +211,6 @@ class AbstractContainerStyle extends Style
 				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
 				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
 				
-				//apply width and height
-				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
-				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
-			
-				//apply transformations
-				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
-				
-				//apply opacity and visibility
-				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
-				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
-			
 				childrenNativeElements.push(child.domElement.nativeElement);
 			}	
 		}
@@ -247,11 +238,12 @@ class AbstractContainerStyle extends Style
 			var right:Float = -50000;
 			var bottom:Float = -50000;
 			
+			
 			for (i in 0...boxData.children.length)
 			{
 				//TODO : do not compute child if it is an
 				//inline container as its x will be 0
-				if (boxData.children[i].x != 0)
+				if (boxData.children[i].position == true)
 				{
 					if (boxData.children[i].x < left)
 					{
@@ -259,7 +251,7 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y < top)
 					{
-						top = boxData.children[i].y;
+						top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
 					}
 					if (boxData.children[i].x + boxData.children[i].width > right)
 					{
@@ -267,10 +259,9 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y + boxData.children[i].height > bottom)
 					{
-						bottom = boxData.children[i].y + boxData.children[i].height;
+						bottom = boxData.children[i].y + boxData.children[i].height -  fontMetrics.ascent - fontMetrics.descent;
 					}
 				}
-				
 			}
 			
 				bounds = {

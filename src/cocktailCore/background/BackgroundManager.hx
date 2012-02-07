@@ -168,6 +168,17 @@ class BackgroundManager
 			}
 		}
 		
+		for (i in 0...nativeElements.length)
+		{
+			//TODO : don't do that here
+		#if flash9
+		nativeElements[i].x = backgroundBox.x;
+		nativeElements[i].y = backgroundBox.y;
+		#end
+		}
+		
+		
+		
 		return nativeElements;
 	}
 		
@@ -313,11 +324,7 @@ class BackgroundManager
 		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
 		backgroundBox);
 		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
-		//TODO : don't do that here
-		#if flash9
-		backgroundColorNativeElement.x = backgroundBox.x;
-		backgroundColorNativeElement.y = backgroundBox.y;
-		#end
+
 		_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 	}
 	

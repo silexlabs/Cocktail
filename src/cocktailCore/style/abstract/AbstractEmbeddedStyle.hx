@@ -57,6 +57,8 @@ class AbstractEmbeddedStyle extends Style
 	 */
 	override public function render():Void
 	{
+		super.render();
+		
 		//the bounds for the background of an embedded DOMElement are its
 		//own dimensions
 		var height:Float = this._domElement.offsetHeight;
