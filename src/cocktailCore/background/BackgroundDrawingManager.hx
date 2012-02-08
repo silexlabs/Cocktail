@@ -184,12 +184,18 @@ class BackgroundDrawingManager extends DrawingManager
 		
 		switch(gradient)
 		{
+			
 			case GradientValue.linear(value):
 				var gradientStyle:GradientStyleData = {
 					gradientType:GradientTypeValue.linear,
 					gradientStops:getGradientStops(value.colorStops),
 					rotation:getRotation(value.angle)
 				}
+				
+				//TODO : clean this up
+				#if flash9
+				//gradientStyle.rotation -= 90;
+				#end
 				fillStyle = FillStyleValue.gradient(gradientStyle);
 		}
 		

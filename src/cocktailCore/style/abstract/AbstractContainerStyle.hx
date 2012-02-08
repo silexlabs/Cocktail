@@ -251,6 +251,7 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y < top)
 					{
+						//TODO : probably won't be robust enough
 						top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
 					}
 					if (boxData.children[i].x + boxData.children[i].width > right)
