@@ -313,8 +313,10 @@ class BackgroundStylesComputer
 				
 			case BackgroundSizeStyleValue.dimensions(value):
 				computedBackgroundSize = {
-					width:getBackgroundSizeStyleDimensionData(value.x, value.y, Math.round(backgroundPositioningArea.width), intrinsicWidth, intrinsicHeight, intrinsicRatio, emReference, exReference),
-					height:getBackgroundSizeStyleDimensionData(value.y, value.x, Math.round(backgroundPositioningArea.height), intrinsicHeight, intrinsicWidth, intrinsicRatio, emReference, exReference)
+					width:getBackgroundSizeStyleDimensionData(value.x, value.y, Math.round(backgroundPositioningArea.width), Math.round(backgroundPositioningArea.height),
+					intrinsicWidth, intrinsicHeight, intrinsicRatio, emReference, exReference),
+					height:getBackgroundSizeStyleDimensionData(value.y, value.x, Math.round(backgroundPositioningArea.height), Math.round(backgroundPositioningArea.width),
+					intrinsicHeight, intrinsicWidth, intrinsicRatio, emReference, exReference)
 				}
 		}
 		
@@ -336,7 +338,8 @@ class BackgroundStylesComputer
 	 * @return
 	 */
 	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeStyleDimensionValue, opositeBackgroundSizeStyleDimensionValue:BackgroundSizeStyleDimensionValue,
-	backgroundPositioningAreaDimension:Int, intrinsicDimension:Null<Int>, opositeIntrinsicDimension:Null<Int>, intrinsicRatio:Null<Float>,  emReference:Float, exReference:Float):Int
+	backgroundPositioningAreaDimension:Int, opositeBackgroundAreaDimension:Int, intrinsicDimension:Null<Int>, opositeIntrinsicDimension:Null<Int>, intrinsicRatio:Null<Float>,
+	emReference:Float, exReference:Float):Int
 	{
 		var backgroundSizeStyleDimension:Int;
 		
@@ -353,14 +356,22 @@ class BackgroundStylesComputer
 			//for auto, use intrinsic dimension if any or else,
 			//treated as a 100% value
 			case BackgroundSizeStyleDimensionValue.auto:
+				//if the other dimension is alos auto, use the intrinsic dimension if any
 				if (intrinsicDimension != null && opositeBackgroundSizeStyleDimensionValue == BackgroundSizeStyleDimensionValue.auto)
 				{
 					backgroundSizeStyleDimension = intrinsicDimension;
 				}
+				//if the other dimension is not auto, compute it and use a ratio of its dimension
+				//to keep the proportion of the background image
 				else if (opositeIntrinsicDimension != null && intrinsicRatio != null)
 				{
-					backgroundSizeStyleDimension = Math.round(opositeIntrinsicDimension * intrinsicRatio);
+					var opositeDimension:Int = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeStyleDimensionValue, value,
+					opositeBackgroundAreaDimension, backgroundPositioningAreaDimension, opositeIntrinsicDimension, intrinsicDimension,
+					intrinsicRatio, emReference, exReference);
+					
+					backgroundSizeStyleDimension = Math.round(opositeDimension * intrinsicRatio);
 				}
+				//if the background image doesn't have intrinsic dimensions, treat it like 100%
 				else
 				{
 					backgroundSizeStyleDimension = Math.round(UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension));
