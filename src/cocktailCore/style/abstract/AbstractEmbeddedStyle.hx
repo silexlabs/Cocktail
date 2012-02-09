@@ -64,7 +64,11 @@ class AbstractEmbeddedStyle extends Style
 		var height:Float = this._domElement.offsetHeight;
 		var width:Float = this._domElement.offsetWidth;
 		
-		var nativeElements:Array<NativeElement> = _backgroundManager.render( { x:0.0, y:0.0, width:width,
+		//TODO : shouldn't have to do that ?
+		var x:Float = -_computedStyle.marginLeft - _computedStyle.paddingLeft;
+		var y:Float = -_computedStyle.marginTop  - _computedStyle.paddingTop;
+		
+		var nativeElements:Array<NativeElement> = _backgroundManager.render( { x:x, y:y, width:width,
 		height:height }, cast(this));
 		
 		//add the embedded asset to the rendering tree

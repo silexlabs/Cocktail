@@ -164,7 +164,7 @@ class BackgroundDrawingManager extends DrawingManager
 	/**
 	 * Draw a background gradient programmaticaly. The 
 	 * gradient is first drawn on another drawing manager using
-	 * the dimensions defined by the computed background size,
+	 * the dimensions defined by the computed background size, 
 	 * then the drawn gradient is used like as a background
 	 * image and drawn using the drawBackgroundImage method
 	 * 
