@@ -716,7 +716,6 @@ class AbstractStyle
 					y:0,
 					width:0,
 					height:0,
-					render:true,
 					position:true
 				};
 		}
@@ -763,12 +762,12 @@ class AbstractStyle
 		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent, true);
+			formattingContext.insertFloat(this._domElement, this._domElement.parent);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext, true);
+			insertInFlowDOMElement(formattingContext);
 		}
 		//else the DOMElement is positioned
 		else
@@ -789,10 +788,7 @@ class AbstractStyle
 			//insert in the flow
 			if (isRelativePositioned() == true)
 			{
-				//TO DO : 
-				//with this method the relative DOMElement will be added to display list twice,
-				//which will work in flash but is not clean
-				insertInFlowDOMElement(formattingContext, false);
+				insertInFlowDOMElement(formattingContext);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -820,9 +816,9 @@ class AbstractStyle
 	 * Do insert an inflow DOMElement into the document. Method added to allow
 	 * overriding for some inherithing class
 	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
+	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		formattingContext.insert(this._domElement, this._domElement.parent, true, render);
+		formattingContext.insertDOMElement(this._domElement, this._domElement.parent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
