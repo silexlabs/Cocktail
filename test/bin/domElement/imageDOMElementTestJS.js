@@ -395,8 +395,13 @@ cocktailCore.domElement.abstract.AbstractEmbeddedDOMElement.prototype = $extend(
 	,intrinsicHeight: null
 	,_intrinsicRatio: null
 	,intrinsicRatio: null
+	,_embeddedAsset: null
+	,embeddedAsset: null
 	,initStyle: function() {
 		this._style = new cocktailCore.style.js.EmbeddedStyle(this);
+	}
+	,getEmbeddedAsset: function() {
+		return this._embeddedAsset;
 	}
 	,getIntrinsicWidth: function() {
 		return this._intrinsicWidth;
@@ -408,7 +413,7 @@ cocktailCore.domElement.abstract.AbstractEmbeddedDOMElement.prototype = $extend(
 		return this._intrinsicRatio;
 	}
 	,__class__: cocktailCore.domElement.abstract.AbstractEmbeddedDOMElement
-	,__properties__: $extend(cocktailCore.domElement.js.DOMElement.prototype.__properties__,{get_intrinsicRatio:"getIntrinsicRatio",get_intrinsicHeight:"getIntrinsicHeight",get_intrinsicWidth:"getIntrinsicWidth"})
+	,__properties__: $extend(cocktailCore.domElement.js.DOMElement.prototype.__properties__,{get_embeddedAsset:"getEmbeddedAsset",get_intrinsicRatio:"getIntrinsicRatio",get_intrinsicHeight:"getIntrinsicHeight",get_intrinsicWidth:"getIntrinsicWidth"})
 });
 cocktailCore.domElement.js.EmbeddedDOMElement = $hxClasses["cocktailCore.domElement.js.EmbeddedDOMElement"] = function(nativeElement) {
 	cocktailCore.domElement.abstract.AbstractEmbeddedDOMElement.call(this,nativeElement);
@@ -419,8 +424,9 @@ cocktailCore.domElement.js.EmbeddedDOMElement.prototype = $extend(cocktailCore.d
 	__class__: cocktailCore.domElement.js.EmbeddedDOMElement
 });
 cocktailCore.domElement.abstract.AbstractImageDOMElement = $hxClasses["cocktailCore.domElement.abstract.AbstractImageDOMElement"] = function(nativeElement) {
-	this._imageLoader = new cocktailCore.resource.js.ImageLoader(nativeElement);
-	cocktailCore.domElement.js.EmbeddedDOMElement.call(this,this._imageLoader.getNativeElement());
+	this._imageLoader = new cocktailCore.resource.js.ImageLoader();
+	this._embeddedAsset = this._imageLoader.getNativeElement();
+	cocktailCore.domElement.js.EmbeddedDOMElement.call(this,cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral));
 }
 cocktailCore.domElement.abstract.AbstractImageDOMElement.__name__ = ["cocktailCore","domElement","abstract","AbstractImageDOMElement"];
 cocktailCore.domElement.abstract.AbstractImageDOMElement.__super__ = cocktailCore.domElement.js.EmbeddedDOMElement;
@@ -619,8 +625,8 @@ if(!cocktailCore.style["abstract"]) cocktailCore.style["abstract"] = {}
 cocktailCore.style.abstract.AbstractStyle = $hxClasses["cocktailCore.style.abstract.AbstractStyle"] = function(domElement) {
 	this._domElement = domElement;
 	this._isDirty = true;
-	this._absolutelyPositionedChildrenTemporaryPositionsData = new Array();
 	this._backgroundManager = new cocktailCore.background.BackgroundManager();
+	this._nativeElements = new Array();
 	this.initDefaultStyleValues();
 }
 cocktailCore.style.abstract.AbstractStyle.__name__ = ["cocktailCore","style","abstract","AbstractStyle"];
@@ -739,9 +745,8 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	,_nativeOpacity: null
 	,_nativeVisibility: null
 	,_nativeMatrix: null
-	,_childrenFormattingContext: null
-	,_absolutelyPositionedChildrenTemporaryPositionsData: null
 	,_backgroundManager: null
+	,_nativeElements: null
 	,initDefaultStyleValues: function() {
 		this.initComputedStyles();
 		this.initNativeProperties();
@@ -809,61 +814,29 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		this._nativeY = 0;
 	}
 	,render: function() {
-		if(this._childrenFormattingContext != null) {
-			var _boxesData = this._childrenFormattingContext.getBoxesData(this._domElement);
-			var _g1 = 0, _g = _boxesData.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				this.setBounds(_boxesData[i]);
-				var backgrounds = this._backgroundManager.render(_boxesData[i].bounds,this);
-				var _g3 = 0, _g2 = backgrounds.length;
-				while(_g3 < _g2) {
-					var j = _g3++;
-					this.attachChild(backgrounds[j]);
-				}
-				var _g3 = 0, _g2 = _boxesData[i].children.length;
-				while(_g3 < _g2) {
-					var j = _g3++;
-					if(_boxesData[i].children[j].render == true) {
-						_boxesData[i].children[j].domElement.getStyle().setNativeX(_boxesData[i].children[j].domElement,_boxesData[i].children[j].x + this._computedStyle.marginLeft + this._computedStyle.paddingLeft);
-						_boxesData[i].children[j].domElement.getStyle().setNativeY(_boxesData[i].children[j].domElement,_boxesData[i].children[j].y + this._computedStyle.marginTop + this._computedStyle.paddingTop);
-						_boxesData[i].children[j].domElement.getStyle().setNativeHeight(_boxesData[i].children[j].domElement.getStyle().getComputedStyle().height);
-						_boxesData[i].children[j].domElement.getStyle().setNativeWidth(_boxesData[i].children[j].domElement.getStyle().getComputedStyle().width);
-						_boxesData[i].children[j].domElement.getStyle().setNativeMatrix(_boxesData[i].children[j].domElement.getStyle().getComputedStyle().transform);
-						_boxesData[i].children[j].domElement.getStyle().setNativeOpacity(_boxesData[i].children[j].domElement.getStyle().getComputedStyle().opacity);
-						_boxesData[i].children[j].domElement.getStyle().setNativeVisibility(_boxesData[i].children[j].domElement.getStyle().getComputedStyle().visibility);
-						this.attachChild(_boxesData[i].children[j].domElement.getNativeElement());
-					}
-				}
-			}
-			var _g1 = 0, _g = this._absolutelyPositionedChildrenTemporaryPositionsData.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				var child = this._absolutelyPositionedChildrenTemporaryPositionsData[i];
-				child.domElement.getStyle().setNativeX(child.domElement,child.x + this._computedStyle.marginLeft + this._computedStyle.paddingLeft);
-				child.domElement.getStyle().setNativeY(child.domElement,child.y + this._computedStyle.marginTop + this._computedStyle.paddingTop);
-				child.domElement.getStyle().setNativeHeight(child.domElement.getStyle().getComputedStyle().height);
-				child.domElement.getStyle().setNativeWidth(child.domElement.getStyle().getComputedStyle().width);
-				child.domElement.getStyle().setNativeMatrix(child.domElement.getStyle().getComputedStyle().transform);
-				child.domElement.getStyle().setNativeOpacity(child.domElement.getStyle().getComputedStyle().opacity);
-				child.domElement.getStyle().setNativeVisibility(child.domElement.getStyle().getComputedStyle().visibility);
-				this.attachChild(child.domElement.getNativeElement());
-			}
+	}
+	,attachNativeElement: function(nativeElement) {
+	}
+	,detachNativeElement: function(nativeElement) {
+	}
+	,attachNativeElements: function(nativeElements) {
+		var _g1 = 0, _g = nativeElements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.attachNativeElement(nativeElements[i]);
 		}
 	}
-	,setBounds: function(boxData) {
-		var width = this._domElement.getOffsetWidth();
-		var height = this._domElement.getOffsetHeight();
-		boxData.bounds = { x : 0.0, y : 0.0, width : width, height : height};
-	}
-	,attachChild: function(nativeElement) {
-	}
-	,detachChildren: function() {
+	,detachNativeElements: function(nativeElements) {
+		var _g1 = 0, _g = nativeElements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.detachNativeElement(nativeElements[i]);
+		}
 	}
 	,layout: function(containingDOMElementData,lastPositionedDOMElementData,viewportData,containingDOMElementFontMetricsData) {
 	}
 	,flow: function(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData,formattingContext) {
-		this.detachChildren();
+		this.detachNativeElements(this._nativeElements);
 		if(this.isNotDisplayed() == true) {
 			this.setNativeVisibility(false);
 			return;
@@ -871,7 +844,7 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		if(this.isClear() == true) formattingContext.clearFloat(this._computedStyle.clear,this.isFloat());
 		this.initComputedStyles();
 		this.computeDOMElementStyles(containingDOMElementData,viewportData,lastPositionedDOMElementData.data,containingDOMElementFontMetricsData);
-		this._childrenFormattingContext = this.flowChildren(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData,formattingContext);
+		this.flowChildren(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData,formattingContext);
 		this.computeVisualEffectStyles();
 		this.computeTextAndFontStyles(containingDOMElementData,containingDOMElementFontMetricsData);
 		this.computeBackgroundStyles();
@@ -896,7 +869,7 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 			break;
 		default:
 			positioner = new cocktailCore.style.positioner.AbsolutePositioner();
-			childTemporaryPositionData = { domElement : this.getDOMElement(), x : 0, y : 0, width : 0, height : 0, lineIndex : 0, render : true};
+			childTemporaryPositionData = { domElement : this.getDOMElement(), x : 0, y : 0, width : 0, height : 0, render : true};
 		}
 		return childTemporaryPositionData;
 	}
@@ -907,7 +880,6 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		},1);
 	}
 	,flowChildren: function(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData,formattingContext) {
-		return formattingContext;
 	}
 	,insertDOMElement: function(formattingContext,lastPositionedDOMElementData,viewportData) {
 		if(this.isFloat() == true) formattingContext.insertFloat(this._domElement,this._domElement.getParent(),true); else if(this.isPositioned() == false) this.insertInFlowDOMElement(formattingContext,true); else {
@@ -2294,7 +2266,7 @@ cocktailCore.style.js.Style.prototype = $extend(cocktailCore.style.abstract.Abst
 		switch( $e[1] ) {
 		case 0:
 			var value1 = $e[2];
-			cssImageValue = "url(" + value1 + ")";
+			cssImageValue = "url(\"" + value1 + "\")";
 			break;
 		case 1:
 			var value1 = $e[2];
@@ -2305,25 +2277,16 @@ cocktailCore.style.js.Style.prototype = $extend(cocktailCore.style.abstract.Abst
 			cssImageValue = this.getCSSGradientValue(value1);
 			break;
 		}
+		haxe.Log.trace(cssImageValue,{ fileName : "Style.hx", lineNumber : 1147, className : "cocktailCore.style.js.Style", methodName : "getCSSImageValue"});
 		return cssImageValue;
 	}
 	,getCSSImageList: function(value) {
 		var cssImageList = "";
-		var _g1 = 0, _g = value.length;
+		var _g1 = 0, _g = value.urls.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var $e = (value[i]);
-			switch( $e[1] ) {
-			case 0:
-				var value1 = $e[2];
-				cssImageList += "'" + value1 + "'";
-				break;
-			case 1:
-				var value1 = $e[2];
-				cssImageList += this.getCSSColor(value1);
-				break;
-			}
-			if(i < value.length - 1) cssImageList += ",";
+			cssImageList += "\"" + value.urls[i] + "\"";
+			if(i < value.urls.length - 1) cssImageList += ","; else cssImageList += "," + this.getCSSColor(value.fallbackColor);
 		}
 		return cssImageList;
 	}
@@ -2408,16 +2371,16 @@ cocktailCore.style.js.Style.prototype = $extend(cocktailCore.style.abstract.Abst
 		var cssCornerValue;
 		switch( (value)[1] ) {
 		case 2:
-			cssCornerValue = "to bottom left";
+			cssCornerValue = "left bottom";
 			break;
 		case 1:
-			cssCornerValue = "to bottom right";
+			cssCornerValue = "right bottom";
 			break;
 		case 3:
-			cssCornerValue = "to top left";
+			cssCornerValue = "left top";
 			break;
 		case 0:
-			cssCornerValue = "to top right";
+			cssCornerValue = "right top";
 			break;
 		}
 		return cssCornerValue;
@@ -2836,7 +2799,9 @@ cocktailCore.style.abstract.AbstractContainerStyle = $hxClasses["cocktailCore.st
 cocktailCore.style.abstract.AbstractContainerStyle.__name__ = ["cocktailCore","style","abstract","AbstractContainerStyle"];
 cocktailCore.style.abstract.AbstractContainerStyle.__super__ = cocktailCore.style.js.Style;
 cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailCore.style.js.Style.prototype,{
-	render: function() {
+	_childrenFormattingContext: null
+	,_absolutelyPositionedChildrenTemporaryPositionsData: null
+	,render: function() {
 		var containerDOMElement = this._domElement;
 		var _g1 = 0, _g = containerDOMElement.getChildren().length;
 		while(_g1 < _g) {
@@ -2846,9 +2811,70 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				childrenDOMElement.getStyle().render();
 			}
 		}
-		cocktailCore.style.js.Style.prototype.render.call(this);
+		var boxesData = this._childrenFormattingContext.getBoxesData(this._domElement);
+		var nativeElements = new Array();
+		var _g1 = 0, _g = boxesData.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var boxNativeElements = this.renderBox(boxesData[i],i == 0);
+			var _g3 = 0, _g2 = boxNativeElements.length;
+			while(_g3 < _g2) {
+				var j = _g3++;
+				nativeElements.push(boxNativeElements[j]);
+			}
+		}
+		var absolutelyPositionedNativeElements = this.renderChildren(this._absolutelyPositionedChildrenTemporaryPositionsData);
+		var _g1 = 0, _g = absolutelyPositionedNativeElements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			nativeElements.push(absolutelyPositionedNativeElements[i]);
+		}
+		this._nativeElements = nativeElements;
+		this.attachNativeElements(nativeElements);
 	}
-	,setBounds: function(boxData) {
+	,renderBox: function(box,firstBox) {
+		var nativeElements = new Array();
+		if(this.isInlineContainer() == true || firstBox == true) {
+			var backgroundNativeElements = this.renderBackground(box,this);
+			var _g1 = 0, _g = backgroundNativeElements.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				nativeElements.push(backgroundNativeElements[i]);
+			}
+		}
+		var inFlowChildrenNativeElements = this.renderChildren(box.children);
+		var _g1 = 0, _g = inFlowChildrenNativeElements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			nativeElements.push(inFlowChildrenNativeElements[i]);
+		}
+		return nativeElements;
+	}
+	,renderBackground: function(box,style) {
+		box.bounds = this.getBounds(box);
+		return this._backgroundManager.render(box.bounds,style);
+	}
+	,renderChildren: function(children) {
+		var childrenNativeElements = new Array();
+		var _g1 = 0, _g = children.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(children[i].render == true) {
+				var child = children[i];
+				child.domElement.getStyle().setNativeX(child.domElement,child.x + this._computedStyle.marginLeft + this._computedStyle.paddingLeft);
+				child.domElement.getStyle().setNativeY(child.domElement,child.y + this._computedStyle.marginTop + this._computedStyle.paddingTop);
+				child.domElement.getStyle().setNativeHeight(child.domElement.getStyle().getComputedStyle().height);
+				child.domElement.getStyle().setNativeWidth(child.domElement.getStyle().getComputedStyle().width);
+				child.domElement.getStyle().setNativeMatrix(child.domElement.getStyle().getComputedStyle().transform);
+				child.domElement.getStyle().setNativeOpacity(child.domElement.getStyle().getComputedStyle().opacity);
+				child.domElement.getStyle().setNativeVisibility(child.domElement.getStyle().getComputedStyle().visibility);
+				childrenNativeElements.push(child.domElement.getNativeElement());
+			}
+		}
+		return childrenNativeElements;
+	}
+	,getBounds: function(boxData) {
+		var bounds;
 		if(this.isInlineContainer() == true) {
 			var left = 50000;
 			var top = 50000;
@@ -2857,17 +2883,20 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 			var _g1 = 0, _g = boxData.children.length;
 			while(_g1 < _g) {
 				var i = _g1++;
-				if(boxData.children[i].x < left) left = boxData.children[i].x;
-				if(boxData.children[i].y < top) top = boxData.children[i].y;
-				if(boxData.children[i].x + boxData.children[i].width > right) right = boxData.children[i].x + boxData.children[i].width;
-				if(boxData.children[i].y + boxData.children[i].height > bottom) bottom = boxData.children[i].y + boxData.children[i].height;
+				if(boxData.children[i].x != 0) {
+					if(boxData.children[i].x < left) left = boxData.children[i].x;
+					if(boxData.children[i].y < top) top = boxData.children[i].y;
+					if(boxData.children[i].x + boxData.children[i].width > right) right = boxData.children[i].x + boxData.children[i].width;
+					if(boxData.children[i].y + boxData.children[i].height > bottom) bottom = boxData.children[i].y + boxData.children[i].height;
+				}
 			}
-			boxData.bounds = { x : left, y : top, width : right - left, height : bottom - top};
+			bounds = { x : left, y : top, width : right - left, height : bottom - top};
 		} else {
 			var width = this._domElement.getOffsetWidth();
 			var height = this._domElement.getOffsetHeight();
-			boxData.bounds = { x : 0.0, y : 0.0, width : width, height : height};
+			bounds = { x : 0.0, y : 0.0, width : width, height : height};
 		}
+		return bounds;
 	}
 	,layout: function(containingDOMElementData,lastPositionedDOMElementData,viewportData,containingDOMElementFontMetricsData) {
 		this.flow(containingDOMElementData,viewportData,lastPositionedDOMElementData,null,null);
@@ -2906,7 +2935,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		if(this._height == cocktail.style.DimensionStyleValue.autoValue) this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getFormattingContextData().maxHeight);
 		formattingContext.retrieveFloats(childrenFormattingContext);
 		this._absolutelyPositionedChildrenTemporaryPositionsData = this.doPositionAbsolutelyPositionedDOMElements(this.isPositioned(),childLastPositionedDOMElementData,viewportData);
-		return childrenFormattingContext;
+		this._childrenFormattingContext = childrenFormattingContext;
 	}
 	,insertInFlowDOMElement: function(formattingContext,render) {
 		var render1 = this.isRelativePositioned() == false;
@@ -4558,7 +4587,7 @@ cocktailCore.style.positioner.BoxPositioner = $hxClasses["cocktailCore.style.pos
 cocktailCore.style.positioner.BoxPositioner.__name__ = ["cocktailCore","style","positioner","BoxPositioner"];
 cocktailCore.style.positioner.BoxPositioner.prototype = {
 	position: function(domElement,containingDOMElementData,staticPosition) {
-		var childrenTemporaryPositionData = { domElement : domElement, x : 0, y : 0, width : 0, height : 0, lineIndex : 0, render : true};
+		var childrenTemporaryPositionData = { domElement : domElement, x : 0, y : 0, width : 0, height : 0, render : true};
 		if(domElement.getStyle().getLeft() != cocktail.style.PositionOffsetStyleValue.autoValue) childrenTemporaryPositionData.x = this.getLeftOffset(domElement,Math.round(staticPosition.x)); else if(domElement.getStyle().getRight() != cocktail.style.PositionOffsetStyleValue.autoValue) childrenTemporaryPositionData.x = this.getRightOffset(domElement,containingDOMElementData.width,Math.round(staticPosition.x)); else childrenTemporaryPositionData.x = Math.round(staticPosition.x);
 		if(domElement.getStyle().getTop() != cocktail.style.PositionOffsetStyleValue.autoValue) childrenTemporaryPositionData.y = this.getTopOffset(domElement,Math.round(staticPosition.y)); else if(domElement.getStyle().getBottom() != cocktail.style.PositionOffsetStyleValue.autoValue) childrenTemporaryPositionData.y = this.getBottomOffset(domElement,containingDOMElementData.height,Math.round(staticPosition.y)); else childrenTemporaryPositionData.y = Math.round(staticPosition.y);
 		return childrenTemporaryPositionData;
@@ -4601,7 +4630,6 @@ cocktailCore.style.js.ContainerStyle.prototype = $extend(cocktailCore.style.abst
 				childrenDOMElement.getStyle().flow(containingDOMElementData,viewportData,lastPositionedDOMElementData,containingDOMElementFontMetricsData,formattingContext);
 			}
 		}
-		return null;
 	}
 	,__class__: cocktailCore.style.js.ContainerStyle
 });
@@ -4699,7 +4727,6 @@ domElement.ImageDOMElementTests = $hxClasses["domElement.ImageDOMElementTests"] 
 	this._image.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	this._image.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(180)));
 	this._image.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(500)));
-	this._image.load("Assets/icon.png");
 	this._body.addChild(this._image);
 }
 domElement.ImageDOMElementTests.__name__ = ["domElement","ImageDOMElementTests"];
@@ -4712,21 +4739,26 @@ domElement.ImageDOMElementTests.main = function() {
 domElement.ImageDOMElementTests.prototype = {
 	_body: null
 	,_image: null
-	,test_Position: function() {
-		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(180)),this._image.getStyle().getTop(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 70, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
-		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(500)),this._image.getStyle().getLeft(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 71, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
+	,test_IntrinsicSize: function() {
+		var successCallback = utest.Assert.createEvent(this.onPictureLoadedTest.$bind(this));
+		this._image.onLoad = successCallback;
+		this._image.load("Assets/icon.png");
 	}
-	,test_InitialSize: function() {
-		utest.Assert.equals(114,this._image.getIntrinsicWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 76, className : "domElement.ImageDOMElementTests", methodName : "test_InitialSize"});
-		utest.Assert.equals(115,this._image.getIntrinsicHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 77, className : "domElement.ImageDOMElementTests", methodName : "test_InitialSize"});
+	,onPictureLoadedTest: function(data) {
+		utest.Assert.equals(114,this._image.getIntrinsicWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 73, className : "domElement.ImageDOMElementTests", methodName : "onPictureLoadedTest"});
+		utest.Assert.equals(115,this._image.getIntrinsicHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 74, className : "domElement.ImageDOMElementTests", methodName : "onPictureLoadedTest"});
+	}
+	,test_Position: function() {
+		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(180)),this._image.getStyle().getTop(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 79, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
+		utest.Assert.same(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(500)),this._image.getStyle().getLeft(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 80, className : "domElement.ImageDOMElementTests", methodName : "test_Position"});
 	}
 	,test_Resize: function() {
 		this._image.setWidth(50);
 		this._image.setHeight(50);
-		utest.Assert.equals(50,this._image.getWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 85, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
-		utest.Assert.equals(50,this._image.getHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 86, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
-		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getWidth(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 87, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
-		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getHeight(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 88, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.equals(50,this._image.getWidth(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 88, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.equals(50,this._image.getHeight(),null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 89, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getWidth(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 90, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
+		utest.Assert.same(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(50)),this._image.getStyle().getHeight(),null,null,{ fileName : "ImageDOMElementTests.hx", lineNumber : 91, className : "domElement.ImageDOMElementTests", methodName : "test_Resize"});
 	}
 	,__class__: domElement.ImageDOMElementTests
 }
@@ -6147,6 +6179,7 @@ js.Lib.prototype = {
 }
 cocktailCore.domElement.js.ImageDOMElement = $hxClasses["cocktailCore.domElement.js.ImageDOMElement"] = function(nativeElement) {
 	cocktailCore.domElement.abstract.AbstractImageDOMElement.call(this,nativeElement);
+	this._nativeElement = this._embeddedAsset;
 }
 cocktailCore.domElement.js.ImageDOMElement.__name__ = ["cocktailCore","domElement","js","ImageDOMElement"];
 cocktailCore.domElement.js.ImageDOMElement.__super__ = cocktailCore.domElement.abstract.AbstractImageDOMElement;
@@ -7125,7 +7158,16 @@ cocktailCore.style.abstract.AbstractEmbeddedStyle = $hxClasses["cocktailCore.sty
 cocktailCore.style.abstract.AbstractEmbeddedStyle.__name__ = ["cocktailCore","style","abstract","AbstractEmbeddedStyle"];
 cocktailCore.style.abstract.AbstractEmbeddedStyle.__super__ = cocktailCore.style.js.Style;
 cocktailCore.style.abstract.AbstractEmbeddedStyle.prototype = $extend(cocktailCore.style.js.Style.prototype,{
-	getBoxStylesComputer: function() {
+	render: function() {
+		var height = this._domElement.getOffsetHeight();
+		var width = this._domElement.getOffsetWidth();
+		var nativeElements = this._backgroundManager.render({ x : 0.0, y : 0.0, width : width, height : height},this);
+		var embeddedDOMElement = this._domElement;
+		nativeElements.push(embeddedDOMElement.getEmbeddedAsset());
+		this._nativeElements = nativeElements;
+		this.attachNativeElements(nativeElements);
+	}
+	,getBoxStylesComputer: function() {
 		var boxComputer;
 		if(this.isFloat() == true) boxComputer = new cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer(); else if(this.isPositioned() == true && this.isRelativePositioned() == false) boxComputer = new cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer();
 		switch( (this._computedStyle.display)[1] ) {
@@ -7682,22 +7724,22 @@ cocktailCore.style.computer.BackgroundStylesComputer.getBackgroundPositioningAre
 	var y;
 	switch( (backgroundOrigin)[1] ) {
 	case 0:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight;
+		x = style.getComputedStyle().marginLeft;
+		y = style.getComputedStyle().marginRight;
 		break;
 	case 1:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight;
+		x = style.getComputedStyle().marginLeft;
+		y = style.getComputedStyle().marginRight;
 		break;
 	case 2:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom - style.getComputedStyle().paddingTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom - style.getComputedStyle().paddingTop - style.getComputedStyle().paddingBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight - style.getComputedStyle().paddingLeft - style.getComputedStyle().paddingRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft + style.getComputedStyle().paddingLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight + style.getComputedStyle().paddingTop;
+		x = style.getComputedStyle().marginLeft + style.getComputedStyle().paddingLeft;
+		y = style.getComputedStyle().marginRight + style.getComputedStyle().paddingTop;
 		break;
 	}
 	backgroundPositioningArea = { height : height, width : width, x : x, y : y};
@@ -7711,22 +7753,22 @@ cocktailCore.style.computer.BackgroundStylesComputer.getBackgroundPaintingArea =
 	var y;
 	switch( (backgroundClip)[1] ) {
 	case 0:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight;
+		x = style.getComputedStyle().marginLeft;
+		y = style.getComputedStyle().marginRight;
 		break;
 	case 1:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight;
+		x = style.getComputedStyle().marginLeft;
+		y = style.getComputedStyle().marginRight;
 		break;
 	case 2:
-		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().paddingBottom - style.getComputedStyle().paddingTop - style.getComputedStyle().paddingBottom;
+		height = backgroundBox.height - style.getComputedStyle().marginTop - style.getComputedStyle().marginBottom - style.getComputedStyle().paddingTop - style.getComputedStyle().paddingBottom;
 		width = backgroundBox.width - style.getComputedStyle().marginLeft - style.getComputedStyle().marginRight - style.getComputedStyle().paddingLeft - style.getComputedStyle().paddingRight;
-		x = backgroundBox.x + style.getComputedStyle().marginLeft + style.getComputedStyle().paddingLeft;
-		y = backgroundBox.y + style.getComputedStyle().marginRight + style.getComputedStyle().paddingTop;
+		x = style.getComputedStyle().marginLeft + style.getComputedStyle().paddingLeft;
+		y = style.getComputedStyle().marginRight + style.getComputedStyle().paddingTop;
 		break;
 	}
 	backgroundPaintingArea = { height : height, width : width, x : x, y : y};
@@ -7863,9 +7905,9 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 	,removeFloats: function() {
 		this._floatsManager.removeFloats(this._formattingContextData.y);
 	}
-	,getChildTemporaryPositionData: function(domElement,x,y,lineIndex,position,render) {
+	,getChildTemporaryPositionData: function(domElement,x,y,position,render) {
 		var childTemporaryPositionData;
-		if(position == true) childTemporaryPositionData = { domElement : domElement, x : x, y : y, width : domElement.getOffsetWidth(), height : domElement.getOffsetHeight(), lineIndex : lineIndex, render : render}; else childTemporaryPositionData = { domElement : domElement, x : 0, y : 0, width : domElement.getOffsetWidth(), height : domElement.getOffsetHeight(), lineIndex : lineIndex, render : render};
+		if(position == true) childTemporaryPositionData = { domElement : domElement, x : x, y : y, width : domElement.getOffsetWidth(), height : domElement.getOffsetHeight(), render : render}; else childTemporaryPositionData = { domElement : domElement, x : 0, y : 0, width : domElement.getOffsetWidth(), height : domElement.getOffsetHeight(), render : render};
 		return childTemporaryPositionData;
 	}
 	,getFloatsManager: function() {
@@ -7894,7 +7936,7 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 			leftFloatOffset = this._floatsManager.getLeftFloatOffset(this._formattingContextData.y);
 		}
 		this._formattingContextData.x = leftFloatOffset;
-		var childTemporaryPositionData = this.getChildTemporaryPositionData(domElement,this._formattingContextData.x,this._formattingContextData.y,0,position,render);
+		var childTemporaryPositionData = this.getChildTemporaryPositionData(domElement,this._formattingContextData.x,this._formattingContextData.y,position,render);
 		this.getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 		domElement.getStyle().setNativeX(domElement,childTemporaryPositionData.x);
 		domElement.getStyle().setNativeY(domElement,childTemporaryPositionData.y);
@@ -8518,7 +8560,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 			var _g1 = 0, _g = this._domElementInLineBox.length;
 			while(_g1 < _g) {
 				var i = _g1++;
-				var childTemporaryPositionData = this.getChildTemporaryPositionData(this._domElementInLineBox[i].domElement,this._domElementInLineBox[i].x,this._domElementInLineBox[i].y,0,this._domElementInLineBox[i].position,this._domElementInLineBox[i].render);
+				var childTemporaryPositionData = this.getChildTemporaryPositionData(this._domElementInLineBox[i].domElement,this._domElementInLineBox[i].x,this._domElementInLineBox[i].y,this._domElementInLineBox[i].position,this._domElementInLineBox[i].render);
 				this.getCurrentBoxesData(this._domElementInLineBox[i].parentDOMElement)[0].children.push(childTemporaryPositionData);
 				this._domElementInLineBox[i].domElement.getStyle().setNativeX(this._domElementInLineBox[i].domElement,childTemporaryPositionData.x);
 				this._domElementInLineBox[i].domElement.getStyle().setNativeY(this._domElementInLineBox[i].domElement,childTemporaryPositionData.y);
@@ -9431,9 +9473,6 @@ cocktail.unit.ImageValue = $hxClasses["cocktail.unit.ImageValue"] = { __ename__ 
 cocktail.unit.ImageValue.url = function(value) { var $x = ["url",0,value]; $x.__enum__ = cocktail.unit.ImageValue; $x.toString = $estr; return $x; }
 cocktail.unit.ImageValue.imageList = function(value) { var $x = ["imageList",1,value]; $x.__enum__ = cocktail.unit.ImageValue; $x.toString = $estr; return $x; }
 cocktail.unit.ImageValue.gradient = function(value) { var $x = ["gradient",2,value]; $x.__enum__ = cocktail.unit.ImageValue; $x.toString = $estr; return $x; }
-cocktail.unit.ImageDeclarationValue = $hxClasses["cocktail.unit.ImageDeclarationValue"] = { __ename__ : ["cocktail","unit","ImageDeclarationValue"], __constructs__ : ["url","color"] }
-cocktail.unit.ImageDeclarationValue.url = function(value) { var $x = ["url",0,value]; $x.__enum__ = cocktail.unit.ImageDeclarationValue; $x.toString = $estr; return $x; }
-cocktail.unit.ImageDeclarationValue.color = function(value) { var $x = ["color",1,value]; $x.__enum__ = cocktail.unit.ImageDeclarationValue; $x.toString = $estr; return $x; }
 cocktail.unit.GradientValue = $hxClasses["cocktail.unit.GradientValue"] = { __ename__ : ["cocktail","unit","GradientValue"], __constructs__ : ["linear"] }
 cocktail.unit.GradientValue.linear = function(value) { var $x = ["linear",0,value]; $x.__enum__ = cocktail.unit.GradientValue; $x.toString = $estr; return $x; }
 cocktail.unit.GradientStopValue = $hxClasses["cocktail.unit.GradientStopValue"] = { __ename__ : ["cocktail","unit","GradientStopValue"], __constructs__ : ["length","percent"] }
@@ -9739,18 +9778,13 @@ cocktailCore.drawing.js.DrawingManager.prototype = $extend(cocktailCore.drawing.
 	,__class__: cocktailCore.drawing.js.DrawingManager
 });
 if(!cocktailCore.background) cocktailCore.background = {}
-cocktailCore.background.BackgroundDrawingManager = $hxClasses["cocktailCore.background.BackgroundDrawingManager"] = function(nativeElement,backgroundBox,backgroundPositioningBox,backgroundPaintingBox) {
-	this._backgroundPositioningBox = backgroundPositioningBox;
-	this._backgroundPaintingBox = backgroundPaintingBox;
+cocktailCore.background.BackgroundDrawingManager = $hxClasses["cocktailCore.background.BackgroundDrawingManager"] = function(nativeElement,backgroundBox) {
 	cocktailCore.drawing.js.DrawingManager.call(this,nativeElement,Math.round(backgroundBox.width),Math.round(backgroundBox.height));
 }
 cocktailCore.background.BackgroundDrawingManager.__name__ = ["cocktailCore","background","BackgroundDrawingManager"];
 cocktailCore.background.BackgroundDrawingManager.__super__ = cocktailCore.drawing.js.DrawingManager;
 cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCore.drawing.js.DrawingManager.prototype,{
-	_backgroundPositioningBox: null
-	,_backgroundPaintingBox: null
-	,_imageLoader: null
-	,drawBackgroundImage: function(nativeImage,intrinsicWidth,intrinsicHeight,intrinsicRatio,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat) {
+	drawBackgroundImage: function(nativeImage,backgroundPositioningBox,backgroundPaintingBox,intrinsicWidth,intrinsicHeight,intrinsicRatio,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat) {
 		var totalWidth;
 		var maxWidth;
 		var imageWidth;
@@ -9758,30 +9792,30 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 		switch( (backgroundRepeat.x)[1] ) {
 		case 3:
 			imageWidth = Math.round(computedBackgroundSize.width);
-			totalWidth = Math.round(computedBackgroundPosition.x);
+			totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
 			initialWidth = totalWidth;
 			maxWidth = totalWidth + imageWidth;
 			break;
 		case 0:
 			imageWidth = computedBackgroundSize.width;
-			totalWidth = Math.round(computedBackgroundPosition.x);
-			while(totalWidth > this._backgroundPaintingBox.x) totalWidth -= imageWidth;
+			totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
+			while(totalWidth > backgroundPaintingBox.x) totalWidth -= imageWidth;
 			initialWidth = totalWidth;
-			maxWidth = Math.round(this._backgroundPaintingBox.x + this._backgroundPaintingBox.width);
+			maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 			break;
 		case 1:
-			imageWidth = Math.round(this._backgroundPositioningBox.width / computedBackgroundSize.width);
-			totalWidth = Math.round(computedBackgroundPosition.x);
-			while(totalWidth > this._backgroundPaintingBox.x) totalWidth -= imageWidth;
+			imageWidth = Math.round(backgroundPositioningBox.width / computedBackgroundSize.width);
+			totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
+			while(totalWidth > backgroundPaintingBox.x) totalWidth -= imageWidth;
 			initialWidth = totalWidth;
-			maxWidth = Math.round(this._backgroundPaintingBox.x + this._backgroundPaintingBox.width);
+			maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 			break;
 		case 2:
 			imageWidth = computedBackgroundSize.width;
-			totalWidth = Math.round(computedBackgroundPosition.x);
-			while(totalWidth > this._backgroundPaintingBox.x) totalWidth -= imageWidth;
+			totalWidth = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
+			while(totalWidth > backgroundPaintingBox.x) totalWidth -= imageWidth;
 			initialWidth = totalWidth;
-			maxWidth = Math.round(this._backgroundPaintingBox.x + this._backgroundPaintingBox.width);
+			maxWidth = Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 			break;
 		}
 		var totalHeight;
@@ -9791,37 +9825,37 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 		switch( (backgroundRepeat.y)[1] ) {
 		case 3:
 			imageHeight = computedBackgroundSize.height;
-			totalHeight = computedBackgroundPosition.y;
+			totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
 			initialHeight = totalHeight;
 			maxHeight = totalHeight + imageHeight;
 			break;
 		case 0:
 			imageHeight = computedBackgroundSize.height;
-			totalHeight = computedBackgroundPosition.y;
-			while(totalHeight > this._backgroundPaintingBox.y) totalHeight -= imageHeight;
+			totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+			while(totalHeight > backgroundPaintingBox.y) totalHeight -= imageHeight;
 			initialHeight = totalHeight;
-			maxHeight = this._backgroundPaintingBox.y + this._backgroundPaintingBox.height;
+			maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 			break;
 		case 1:
-			imageHeight = this._backgroundPositioningBox.height / computedBackgroundSize.height;
-			totalHeight = computedBackgroundPosition.y;
-			while(totalHeight > this._backgroundPaintingBox.y) totalHeight -= imageHeight;
+			imageHeight = backgroundPositioningBox.height / computedBackgroundSize.height;
+			totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+			while(totalHeight > backgroundPaintingBox.y) totalHeight -= imageHeight;
 			initialHeight = totalHeight;
-			maxHeight = this._backgroundPaintingBox.y + this._backgroundPaintingBox.height;
+			maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 			break;
 		case 2:
 			imageHeight = computedBackgroundSize.height;
-			totalHeight = computedBackgroundPosition.y;
-			while(totalHeight > this._backgroundPaintingBox.y) totalHeight -= imageHeight;
+			totalHeight = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+			while(totalHeight > backgroundPaintingBox.y) totalHeight -= imageHeight;
 			initialHeight = totalHeight;
-			maxHeight = this._backgroundPaintingBox.y + this._backgroundPaintingBox.height;
+			maxHeight = backgroundPaintingBox.y + backgroundPaintingBox.height;
 			break;
 		}
 		while(totalHeight < maxHeight) {
 			var matrix = new cocktail.geom.Matrix();
-			matrix.scale(intrinsicWidth / computedBackgroundSize.width,intrinsicHeight / computedBackgroundSize.height,{ x : 0.0, y : 0.0});
 			matrix.translate(totalWidth,totalHeight);
-			this.drawImage(nativeImage,matrix);
+			matrix.scale(imageWidth / intrinsicWidth,imageHeight / intrinsicHeight,{ x : 0.0, y : 0.0});
+			this.drawImage(nativeImage,matrix,backgroundPaintingBox);
 			totalWidth += imageWidth;
 			if(totalWidth >= maxWidth) {
 				totalWidth = initialWidth;
@@ -9829,14 +9863,14 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 			}
 		}
 	}
-	,drawBackgroundColor: function(color) {
+	,drawBackgroundColor: function(color,backgroundPaintingBox) {
 		var fillStyle = cocktail.domElement.FillStyleValue.monochrome(color);
 		var lineStyle = cocktail.domElement.LineStyleValue.none;
 		this.beginFill(fillStyle,lineStyle);
-		this.drawRect(Math.round(this._backgroundPaintingBox.x),Math.round(this._backgroundPaintingBox.y),Math.round(this._backgroundPaintingBox.width),Math.round(this._backgroundPaintingBox.height));
+		this.drawRect(Math.round(backgroundPaintingBox.x),Math.round(backgroundPaintingBox.y),Math.round(backgroundPaintingBox.width),Math.round(backgroundPaintingBox.height));
 		this.endFill();
 	}
-	,drawBackgroundGradient: function(gradient,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat) {
+	,drawBackgroundGradient: function(gradient,backgroundPositioningBox,backgroundPaintingBox,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat) {
 		var gradientSurface = new cocktailCore.drawing.js.DrawingManager(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic),computedBackgroundSize.width,computedBackgroundSize.height);
 		var fillStyle;
 		var lineStyle = cocktail.domElement.LineStyleValue.none;
@@ -9851,7 +9885,7 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 		gradientSurface.beginFill(fillStyle,lineStyle);
 		gradientSurface.drawRect(0,0,computedBackgroundSize.width,computedBackgroundSize.height);
 		gradientSurface.endFill();
-		this.drawBackgroundImage(gradientSurface.getNativeElement(),computedBackgroundSize.width,computedBackgroundSize.height,computedBackgroundSize.width / computedBackgroundSize.height,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat);
+		this.drawBackgroundImage(gradientSurface.getNativeElement(),backgroundPositioningBox,backgroundPaintingBox,computedBackgroundSize.width,computedBackgroundSize.height,computedBackgroundSize.width / computedBackgroundSize.height,computedBackgroundSize,computedBackgroundPosition,backgroundRepeat);
 	}
 	,getGradientStops: function(value) {
 		var gradientStopsData = new Array();
@@ -10257,21 +10291,12 @@ cocktailCore.background.BackgroundManager.prototype = {
 	,backgroundClip: null
 	,_backgroundDrawingManagers: null
 	,render: function(backgroundBox,style) {
-		var me = this;
 		var nativeElements = new Array();
-		var backgroundColorNativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic);
+		if(backgroundBox.width <= 0 || backgroundBox.height <= 0) return nativeElements;
 		var _g1 = 0, _g = this._backgroundImage.length;
 		while(_g1 < _g) {
-			var i = [_g1++];
-			if(i[0] == 0) {
-				var computedBackgroundStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,this._backgroundPosition[i[0]],this._backgroundSize[i[0]],this._backgroundOrigin[i[0]],this._backgroundClip[i[0]],this._backgroundRepeat[i[0]],this._backgroundImage[i[0]]);
-				if(backgroundBox.width > 0 && backgroundBox.height > 0) {
-					var backgroundColorDrawingManager = new cocktailCore.background.BackgroundDrawingManager(backgroundColorNativeElement,backgroundBox,computedBackgroundStyles.backgroundOrigin,computedBackgroundStyles.backgroundClip);
-					backgroundColorDrawingManager.drawBackgroundColor(style.getComputedStyle().backgroundColor);
-					this._backgroundDrawingManagers.push(backgroundColorDrawingManager);
-				}
-			}
-			var $e = (this._backgroundImage[i[0]]);
+			var i = _g1++;
+			var $e = (this._backgroundImage[i]);
 			switch( $e[1] ) {
 			case 0:
 				break;
@@ -10281,45 +10306,65 @@ cocktailCore.background.BackgroundManager.prototype = {
 				switch( $e[1] ) {
 				case 0:
 					var value1 = $e[2];
-					var nativeElement = [cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic)];
-					var imageLoader = [new cocktailCore.resource.js.ImageLoader()];
-					imageLoader[0].load([value1],(function(imageLoader,nativeElement,i) {
-						return function(image) {
-							var computedGradientStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,imageLoader[0].getIntrinsicWidth(),imageLoader[0].getIntrinsicHeight(),imageLoader[0].getIntrinsicRatio(),me._backgroundPosition[i[0]],me._backgroundSize[i[0]],me._backgroundOrigin[i[0]],me._backgroundClip[i[0]],me._backgroundRepeat[i[0]],me._backgroundImage[i[0]]);
-							if(backgroundBox.width > 0 && backgroundBox.height > 0) {
-								var backgroundImageDrawingManager = new cocktailCore.background.BackgroundDrawingManager(nativeElement[0],backgroundBox,computedGradientStyles.backgroundOrigin,computedGradientStyles.backgroundClip);
-								backgroundImageDrawingManager.drawBackgroundImage(image,imageLoader[0].getIntrinsicWidth(),imageLoader[0].getIntrinsicHeight(),imageLoader[0].getIntrinsicRatio(),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
-								me._backgroundDrawingManagers.push(backgroundImageDrawingManager);
-							}
-						};
-					})(imageLoader,nativeElement,i),(function() {
-						return function(error) {
-							haxe.Log.trace(error,{ fileName : "BackgroundManager.hx", lineNumber : 99, className : "cocktailCore.background.BackgroundManager", methodName : "render"});
-						};
-					})());
-					nativeElements.push(nativeElement[0]);
+					var imageDeclaration = { urls : [value1], fallbackColor : cocktail.unit.ColorValue.transparent};
+					var imageNativeElement = this.drawBackgroundImage(imageDeclaration,style,backgroundBox,this._backgroundPosition[i],this._backgroundSize[i],this._backgroundOrigin[i],this._backgroundClip[i],this._backgroundRepeat[i],this._backgroundImage[i]);
+					nativeElements.push(imageNativeElement);
 					break;
 				case 1:
 					var value1 = $e[2];
+					var imageNativeElement = this.drawBackgroundImage(value1,style,backgroundBox,this._backgroundPosition[i],this._backgroundSize[i],this._backgroundOrigin[i],this._backgroundClip[i],this._backgroundRepeat[i],this._backgroundImage[i]);
+					nativeElements.push(imageNativeElement);
 					break;
 				case 2:
 					var value1 = $e[2];
-					var computedGradientStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,this._backgroundPosition[i[0]],this._backgroundSize[i[0]],this._backgroundOrigin[i[0]],this._backgroundClip[i[0]],this._backgroundRepeat[i[0]],this._backgroundImage[i[0]]);
-					if(backgroundBox.width > 0 && backgroundBox.height > 0) {
-						var nativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic);
-						var backgroundGradientDrawingManager = new cocktailCore.background.BackgroundDrawingManager(nativeElement,backgroundBox,computedGradientStyles.backgroundOrigin,computedGradientStyles.backgroundClip);
-						backgroundGradientDrawingManager.drawBackgroundGradient(value1,computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
-						this._backgroundDrawingManagers.push(backgroundGradientDrawingManager);
-						nativeElements.push(backgroundGradientDrawingManager.getNativeElement());
-					}
+					var gradientNativeElement = this.drawBackgroundGradient(style,value1,backgroundBox,this._backgroundPosition[i],this._backgroundSize[i],this._backgroundOrigin[i],this._backgroundClip[i],this._backgroundRepeat[i],this._backgroundImage[i]);
+					nativeElements.push(gradientNativeElement);
 					break;
 				}
 				break;
 			}
+			if(i == this._backgroundImage.length - 1) {
+				var backgroundColorNativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic);
+				this.drawBackgroundColor(style,style.getComputedStyle().backgroundColor,backgroundColorNativeElement,backgroundBox,this._backgroundPosition[i],this._backgroundSize[i],this._backgroundOrigin[i],this._backgroundClip[i],this._backgroundRepeat[i],this._backgroundImage[i]);
+				nativeElements.reverse();
+				nativeElements.unshift(backgroundColorNativeElement);
+			}
 		}
-		nativeElements.reverse();
-		nativeElements.unshift(backgroundColorNativeElement);
 		return nativeElements;
+	}
+	,drawBackgroundImage: function(imageDeclaration,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+		var backgroundImageNativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic);
+		var imageLoader = new cocktailCore.resource.js.ImageLoader();
+		var onBackgroundImageLoadedDelegate = this.onBackgroundImageLoaded.$bind(this);
+		var onBackgroundImageLoadErrorDelegate = this.onBackgroundImageLoadError.$bind(this);
+		imageLoader.load(imageDeclaration.urls,function(loadedImage) {
+			onBackgroundImageLoadedDelegate(backgroundImageNativeElement,loadedImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+		},function(error) {
+			onBackgroundImageLoadErrorDelegate(error,imageDeclaration.fallbackColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+		});
+		return backgroundImageNativeElement;
+	}
+	,onBackgroundImageLoaded: function(backgroundImageNativeElement,loadedBackgroundImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+		var computedGradientStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+		var backgroundImageDrawingManager = new cocktailCore.background.BackgroundDrawingManager(backgroundImageNativeElement,backgroundBox);
+		backgroundImageDrawingManager.drawBackgroundImage(loadedBackgroundImage,computedGradientStyles.backgroundOrigin,computedGradientStyles.backgroundClip,imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
+		this._backgroundDrawingManagers.push(backgroundImageDrawingManager);
+	}
+	,onBackgroundImageLoadError: function(error,backgroundColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+		this.drawBackgroundColor(style,cocktailCore.unit.UnitManager.getColorDataFromColorValue(backgroundColor),backgroundImageNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	}
+	,drawBackgroundColor: function(style,backgroundColor,backgroundColorNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+		var computedBackgroundStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+		var backgroundColorDrawingManager = new cocktailCore.background.BackgroundDrawingManager(backgroundColorNativeElement,backgroundBox);
+		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor,computedBackgroundStyles.backgroundClip);
+		this._backgroundDrawingManagers.push(backgroundColorDrawingManager);
+	}
+	,drawBackgroundGradient: function(style,gradientValue,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+		var computedGradientStyles = cocktailCore.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+		var gradientNativeElement = cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.graphic);
+		var backgroundGradientDrawingManager = new cocktailCore.background.BackgroundDrawingManager(gradientNativeElement,backgroundBox);
+		backgroundGradientDrawingManager.drawBackgroundGradient(gradientValue,computedGradientStyles.backgroundOrigin,computedGradientStyles.backgroundClip,computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
+		return gradientNativeElement;
 	}
 	,setBackgroundColor: function(value) {
 		return this._backgroundColor = value;
