@@ -1144,7 +1144,6 @@ class Style extends AbstractStyle
 			case ImageValue.gradient(value):
 				cssImageValue = getCSSGradientValue(value);
 		}
-		Log.trace(cssImageValue);
 		
 		return cssImageValue;
 	}
@@ -1797,7 +1796,7 @@ class Style extends AbstractStyle
 	{
 		this._domElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
 		super.setBackgroundColor(value);
-		return _backgroundColor;
+		return _backgroundManager.backgroundColor;
 	}
 	
 	override private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
@@ -1812,7 +1811,7 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundOrigin(value);
-		return _backgroundOrigin;
+		return _backgroundManager.backgroundOrigin;
 	}
 	
 	override private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
@@ -1827,7 +1826,7 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundClip(value);
-		return _backgroundClip;
+		return _backgroundManager.backgroundClip;
 	}
 	
 	override private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
@@ -1841,14 +1840,14 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-moz-linear-gradient');
 		
 		super.setBackgroundImage(value);
-		return _backgroundImage;
+		return _backgroundManager.backgroundImage;
 	}
 	
 	override private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
 	{
 		this._domElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
 		super.setBackgroundPosition(value);
-		return _backgroundPosition;
+		return _backgroundManager.backgroundPosition;
 	}
 	
 	override private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
@@ -1863,13 +1862,13 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundSize(value);
-		return _backgroundSize;
+		return _backgroundManager.backgroundSize;
 	}
 	
 	override private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
 	{
 		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
 		super.setBackgroundRepeat(value);
-		return _backgroundRepeat;
+		return _backgroundManager.backgroundRepeat;
 	}
 }

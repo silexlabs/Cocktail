@@ -138,25 +138,18 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
-	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
 	 
-	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
-	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
-	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
-	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
-	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
@@ -514,7 +507,16 @@ class AbstractStyle
 	 */
 	public function render():Void
 	{
-		//abstract
+		//apply width and height
+		setNativeHeight(_computedStyle.height);
+		setNativeWidth(_computedStyle.width);
+	
+		//apply transformations
+		setNativeMatrix(_computedStyle.transform);
+		
+		//apply opacity and visibility
+		setNativeOpacity(_computedStyle.opacity);
+		setNativeVisibility(_computedStyle.visibility);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -714,7 +716,7 @@ class AbstractStyle
 					y:0,
 					width:0,
 					height:0,
-					render:true
+					position:true
 				};
 		}
 		
@@ -760,12 +762,12 @@ class AbstractStyle
 		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent, true);
+			formattingContext.insertFloat(this._domElement, this._domElement.parent);
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext, true);
+			insertInFlowDOMElement(formattingContext);
 		}
 		//else the DOMElement is positioned
 		else
@@ -786,10 +788,7 @@ class AbstractStyle
 			//insert in the flow
 			if (isRelativePositioned() == true)
 			{
-				//TO DO : 
-				//with this method the relative DOMElement will be added to display list twice,
-				//which will work in flash but is not clean
-				insertInFlowDOMElement(formattingContext, false);
+				insertInFlowDOMElement(formattingContext);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -817,9 +816,9 @@ class AbstractStyle
 	 * Do insert an inflow DOMElement into the document. Method added to allow
 	 * overriding for some inherithing class
 	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
+	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		formattingContext.insert(this._domElement, this._domElement.parent, true, render);
+		formattingContext.insertDOMElement(this._domElement, this._domElement.parent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

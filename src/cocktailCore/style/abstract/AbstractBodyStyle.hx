@@ -13,6 +13,7 @@ import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
 
 /**
  * This is the style implementation for BodyDOMElement.
@@ -35,6 +36,33 @@ class AbstractBodyStyle extends ContainerStyle
 		//to allow triggering the first layout when a children
 		//will be added to it
 		_isDirty = false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * For the BodyDOMElement, the background always takes
+	 * the dimensions of the viewport
+	 */
+	override private function getBounds(boxData:BoxData):RectangleData
+	{
+		var viewPort:Viewport = new Viewport();
+		
+		var width:Float = viewPort.width;
+		var height:Float = viewPort.height;
+		
+		var bounds:RectangleData = {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		};
+		
+		
+		return bounds;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +99,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * A BodyDOMElement is never inserted into the flow as it is
 	 * always located at the origin of the viewport
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
 		
 	}

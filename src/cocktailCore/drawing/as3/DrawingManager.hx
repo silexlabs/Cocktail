@@ -460,7 +460,7 @@ class DrawingManager extends AbstractDrawingManager
 	private function getGradientBox(gradientStyle:GradientStyleData):flash.geom.Matrix
 	{
 		var gradientBox:flash.geom.Matrix = new flash.geom.Matrix();
-		gradientBox.createGradientBox(this.width, this.height, (gradientStyle.rotation + 90) / 180 * Math.PI);
+		gradientBox.createGradientBox(this.width, this.height, (gradientStyle.rotation) / 180 * Math.PI);
 		return gradientBox;
 	}
 	

@@ -124,6 +124,12 @@ class FormattingContext
 	
 	}
 	
+	//TODO: return all but relative positioned DOMElements
+	public function getRenderedBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+	{
+		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
+	}
+	
 	private function getCurrentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{
 		return doGetBoxesData(parentDOMElement, _currentBoxesData);
@@ -161,49 +167,64 @@ class FormattingContext
 	 * Insert a DOMElement in the formatting context's
 	 * flow
 	 */
-	public function insert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
+	public function insertDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		doInsert(domElement, parentDOMElement, position, render);
+		doInsert(domElement, parentDOMElement, true);
+	}
+	
+	public function insertNonLaidOutDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	{
+		doInsert(domElement, parentDOMElement, false);
+	}
+	
+	public function insertText(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	{
+		
 	}
 	
 	/**
 	 * Insert a space character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertSpace(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int):Void
 	{
-		doInsert(domElement, parentDOMElement, true, true);
+		
+	}
+	
+	public function insertOffset(offset:Int):Void
+	{
+		
 	}
 	
 	/**
 	 * Insert a tab character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertTab(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int):Void
 	{
-		doInsert(domElement, parentDOMElement, true, true);
+		
 	}
 	
 	/**
 	 * Start a new line by inserting a new line
 	 * control character
 	 */
-	public function insertLineFeed():Void
+	public function insertLineFeed(whiteSpace:WhiteSpaceStyleValue):Void
 	{
-		startNewLine(0);
+		
 	}
 	
 	/**
 	 * Insert a floated DOMElement in the formatting
 	 * context's flow
 	 */
-	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement, render:Bool):Void
+	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
 		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
 		//actually place the floated DOMElement
-		placeFloat(domElement, parentDOMElement, floatData, render);
+		placeFloat(domElement, parentDOMElement, floatData);
 	}
 	
 	/**
@@ -258,15 +279,18 @@ class FormattingContext
 	 * Actually insert a DOMElement in the
 	 * formatting context
 	 */
-	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
+	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
 		//actually place the DOMElement by computing
 		//its place in the flow than updating its
 		//position attributes
-		place(domElement, parentDOMElement, position, render);
+		place(domElement, parentDOMElement, position);
 		
 		//remove all the floats that the insertion
 		//of the DOMElement made obsolote
+		
+		//TODO : for inline formatting context, should happen when starting new line
+		//instead of on insertion
 		removeFloats();
 	}
 	
@@ -283,7 +307,7 @@ class FormattingContext
 	 * Place a DOMElement is the flow according to 
 	 * a block or inline formatting scheme
 	 */
-	private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool, render:Bool):Void
+	private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
 	{
 		//abstract
 	}
@@ -294,7 +318,7 @@ class FormattingContext
 	 * change based on tht type of formatting context
 	 * (block or inline)
 	 */
-	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData, render:Bool):Void
+	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
 	{
 		//getBoxesData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true, render ));
 		
@@ -312,7 +336,7 @@ class FormattingContext
 	
 	
 	
-	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, position:Bool, render:Bool):ChildTemporaryPositionData
+	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, position:Bool):ChildTemporaryPositionData
 	{
 		var childTemporaryPositionData:ChildTemporaryPositionData;
 		
@@ -324,7 +348,7 @@ class FormattingContext
 			y:y,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			render:render
+			position:true
 			}
 		}
 		else
@@ -335,7 +359,7 @@ class FormattingContext
 			y:0,
 			width:domElement.offsetWidth,
 			height:domElement.offsetHeight,
-			render:render
+			position:false
 			}
 		}
 		
