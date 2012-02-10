@@ -53,7 +53,7 @@ class FontAndTextStylesComputer
 		}
 		else
 		{
-			//TO DO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
+			//TODO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
 			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
 		}
 		
@@ -145,11 +145,11 @@ class FontAndTextStylesComputer
 				
 			case textTop:
 				verticalAlign = 0;
-				//TO DO : Align the top of the box with the top of the parent's content area
+				//TODO : Align the top of the box with the top of the parent's content area
 				
 			case textBottom:
 				verticalAlign = 0;
-				//TO DO : Align the bottom of the box with the bottom of the parent's content area 
+				//TODO : Align the bottom of the box with the bottom of the parent's content area 
 				
 			case percent(value):
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));

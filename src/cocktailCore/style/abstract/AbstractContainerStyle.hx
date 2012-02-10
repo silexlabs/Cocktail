@@ -464,9 +464,17 @@ class AbstractContainerStyle extends Style
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
+		//TODO : improve, put in a separate method ?
+			if (establishesNewFormattingContext() == false && isInlineContainer() == true)
+			{
+				childrenFormattingContext.insertOffset(_computedStyle.marginLeft + _computedStyle.paddingLeft);
+			}
+		
 		//flow all children 
 		for (i in 0...containerDOMElement.children.length)
 		{
+			
+			
 			//if the children is a DOMElement, call its flow method
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
@@ -482,8 +490,16 @@ class AbstractContainerStyle extends Style
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 			}
+			
+		
+			
 		}
 		
+			//TODO : improve, put in a separate method ?
+			if (establishesNewFormattingContext() == false  && isInlineContainer() == true)
+			{
+				childrenFormattingContext.insertOffset(_computedStyle.marginRight + _computedStyle.paddingRight);
+			}
 		
 		//destroy the current formatting context, prompting
 		//to clean up all references it might have and also

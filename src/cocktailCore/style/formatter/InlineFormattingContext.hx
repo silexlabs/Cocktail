@@ -79,7 +79,6 @@ class InlineFormattingContext extends FormattingContext
 	private function addWidth(width:Int):Void
 	{
 		_unbreakableWidth += width;
-		
 	}
 	
 	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool = false):Void
@@ -89,12 +88,6 @@ class InlineFormattingContext extends FormattingContext
 		if (isLastLine == true)
 		{
 			insertBreakOpportunity(false, false);
-			//for (i in 0..._unbreakableLineBoxElements.length)
-			//{
-				//_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
-			//}
-			//_unbreakableLineBoxElements = new Array<LineBoxElementData>();
-			
 		}
 		
 		if ((remainingLineWidth - _unbreakableWidth < 0) || forced == true)
@@ -106,10 +99,6 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
 		}
-		/**if (isLastLine == true)
-		{
-			startNewLine(_unbreakableWidth, true);
-		}*/
 		
 		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
 		_formattingContextData.x += _unbreakableWidth;
@@ -142,23 +131,22 @@ class InlineFormattingContext extends FormattingContext
 	override public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int):Void
 	{
 		//TODO : add isLastInsertedASpace
-		//if (isCollapsed(false, whiteSpace) == false)
-		//{
+		if (isCollapsed(false, whiteSpace) == false)
+		{
 			_unbreakableLineBoxElements.push( {
 			element:LineBoxElementValue.space(spaceWidth),
 			x:0,
 			y:0 } );
 			
 			addWidth(spaceWidth);
-			//if (isBreakableSpace(whiteSpace) == true)
-			//{
-				insertBreakOpportunity(false);
-			//}
-		//}
+			
+			insertBreakOpportunity(false);
+		}
 	}
 	
 	override public function insertOffset(offset:Int):Void
 	{
+		
 		_unbreakableLineBoxElements.push( {
 		element:LineBoxElementValue.offset(offset),
 		x:0,
@@ -195,22 +183,49 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	//TODO : implement
 	private function isLineFeedAllowed(whiteSpace:WhiteSpaceStyleValue):Bool
 	{
-		return true;
+		var lineFeedAllowed:Bool;
+		
+		switch (whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal,
+			WhiteSpaceStyleValue.nowrap:
+				lineFeedAllowed = false;
+				
+			case WhiteSpaceStyleValue.pre,
+			WhiteSpaceStyleValue.preWrap,
+			WhiteSpaceStyleValue.preLine:
+				lineFeedAllowed = true;
+		}
+		
+		return lineFeedAllowed;
 	}
 	
-	//TODO : implement
 	private function isCollapsed(isLastElementInsertedASpace:Bool, whiteSpace:WhiteSpaceStyleValue):Bool
 	{
-		return false;
-	}
-	
-	//TODO : implement
-	private function isBreakableSpace(whiteSpace:WhiteSpaceStyleValue):Bool
-	{
-		return true;
+		var isCollapsed:Bool;
+		
+		if (isLastElementInsertedASpace == true)
+		{
+			switch (whiteSpace)
+			{
+				case WhiteSpaceStyleValue.normal,
+				WhiteSpaceStyleValue.nowrap:
+					isCollapsed = true;
+					
+				case WhiteSpaceStyleValue.preWrap,
+				WhiteSpaceStyleValue.pre,
+				WhiteSpaceStyleValue.preLine:
+					isCollapsed = false;
+			}
+		}
+		else
+		{
+			isCollapsed = false;
+		}
+		
+		return isCollapsed;
 	}
 	
 //////////////////////////////////////////////////////////////////	
