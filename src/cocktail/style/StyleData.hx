@@ -1351,11 +1351,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * and its type
 	 */
 	typedef LineBoxElementData = {
-		var domElement:DOMElement;
-		var position:Bool;
-		var render:Bool;
-		var domElementType:InlineBoxValue;
-		var parentDOMElement:DOMElement;
+		var element:LineBoxElementValue;
 		var x:Int;
 		var y:Int;
 	}
@@ -1386,7 +1382,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		var y:Int;
 		var width:Int;
 		var height:Int;
-		var render:Bool;
+		var position:Bool;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1403,8 +1399,10 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * can influence a linebox layout
 	 * once it is complete
 	 */
-	enum InlineBoxValue {
-		domElement;
-		space;
-		tab;
+	enum LineBoxElementValue {
+		domElement(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool);
+		text(domElement:DOMElement, parentDOMElement:DOMElement);
+		offset(value:Int);
+		space(spaceWidth:Int);
+		tab(tabWidth:Int);
 	}

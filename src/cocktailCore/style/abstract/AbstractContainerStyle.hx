@@ -86,6 +86,8 @@ class AbstractContainerStyle extends Style
 	 */
 	override public function render():Void
 	{
+		super.render();
+		
 		//render all its children recursively
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
@@ -201,27 +203,13 @@ class AbstractContainerStyle extends Style
 		
 		for (i in 0...children.length)
 		{
-			if (children[i].render == true)
-			{
-				var child:ChildTemporaryPositionData = children[i];
-				
-				//apply x and y
-				child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-				child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				
-				//apply width and height
-				child.domElement.style.setNativeHeight(child.domElement.style.computedStyle.height);
-				child.domElement.style.setNativeWidth(child.domElement.style.computedStyle.width);
+			var child:ChildTemporaryPositionData = children[i];
 			
-				//apply transformations
-				child.domElement.style.setNativeMatrix(child.domElement.style.computedStyle.transform);
-				
-				//apply opacity and visibility
-				child.domElement.style.setNativeOpacity(child.domElement.style.computedStyle.opacity);
-				child.domElement.style.setNativeVisibility(child.domElement.style.computedStyle.visibility);
+			//apply x and y
+			child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+			child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
 			
-				childrenNativeElements.push(child.domElement.nativeElement);
-			}	
+			childrenNativeElements.push(child.domElement.nativeElement);
 		}
 		
 		return childrenNativeElements;
@@ -247,11 +235,12 @@ class AbstractContainerStyle extends Style
 			var right:Float = -50000;
 			var bottom:Float = -50000;
 			
+			
 			for (i in 0...boxData.children.length)
 			{
 				//TODO : do not compute child if it is an
 				//inline container as its x will be 0
-				if (boxData.children[i].x != 0)
+				if (boxData.children[i].position == true)
 				{
 					if (boxData.children[i].x < left)
 					{
@@ -259,7 +248,8 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y < top)
 					{
-						top = boxData.children[i].y;
+						//TODO : probably won't be robust enough
+						top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
 					}
 					if (boxData.children[i].x + boxData.children[i].width > right)
 					{
@@ -267,10 +257,9 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y + boxData.children[i].height > bottom)
 					{
-						bottom = boxData.children[i].y + boxData.children[i].height;
+						bottom = boxData.children[i].y + boxData.children[i].height -  fontMetrics.ascent - fontMetrics.descent;
 					}
 				}
-				
 			}
 			
 				bounds = {
@@ -449,18 +438,18 @@ class AbstractContainerStyle extends Style
 	 * already be rendered as an absolute DOMElement which is always visually on top
 	 * of the static DOMElement in the same formatting context
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext, render:Bool):Void
+	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
 
 		var render:Bool = isRelativePositioned() == false;
 		
 		if (establishesNewFormattingContext() == true)
 		{
-			formattingContext.insert(this._domElement, this._domElement.parent, true, render);
+			formattingContext.insertDOMElement(this._domElement, this._domElement.parent);
 		}
 		else
 		{
-			formattingContext.insert(this._domElement, this._domElement.parent, false, render);
+			formattingContext.insertNonLaidOutDOMElement(this._domElement, this._domElement.parent);
 		}
 	}
 	
@@ -575,6 +564,8 @@ class AbstractContainerStyle extends Style
 				//the offsets between this ContainerDOMElement and the domElement which started the formatting
 				//context of the positioned DOMElement is computed and applied to the static position of the
 				//positioned DOMElement
+				
+				//TODO : should not use globalX/Y, should instead find first common ancestor ?
 				var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
 				var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
 				positionedDOMElementData.staticPosition.x += xOffset;
@@ -623,22 +614,22 @@ class AbstractContainerStyle extends Style
 			{
 				case word(value):
 					//insert a word in the flow
-					formattingContext.insert(getTextFragmentDOMElement(textFragments[i], value), this._domElement, true, true);
+					formattingContext.insertText(getTextFragmentDOMElement(textFragments[i], value), this._domElement);
 					
 					
 				case space:
 					//insert a space in the flow
-					formattingContext.insertSpace(getTextFragmentDOMElement(textFragments[i], " "), this._domElement);
+					formattingContext.insertSpace(_computedStyle.whiteSpace, fontMetrics.spaceWidth);
 					
 					
 				case tab:
 					//insert a tab in the flow
-					formattingContext.insertTab(getTextFragmentDOMElement(textFragments[i], " "), this._domElement);
+					formattingContext.insertTab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8);
 					
 					
 				case lineFeed:
 					//start a new line
-					formattingContext.insertLineFeed();
+					formattingContext.insertLineFeed(_computedStyle.whiteSpace);
 			}
 		}		
 	}
