@@ -64,12 +64,13 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override public function insertDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-
+		insertBreakOpportunity(false);
+		
 		_unbreakableLineBoxElements.push( {
 			element:LineBoxElementValue.domElement(domElement, parentDOMElement, true),
 			x:0,
 			y:0 } );
-		Log.trace("add DOMElement width");	
+			
 		addWidth(domElement.offsetWidth);
 			
 		insertBreakOpportunity(false);
@@ -79,8 +80,6 @@ class InlineFormattingContext extends FormattingContext
 	{
 		_unbreakableWidth += width;
 		
-		Log.trace("unbreak : "+_unbreakableWidth);
-		Log.trace("formatting : "+_formattingContextData.x);
 	}
 	
 	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool = false):Void
@@ -89,19 +88,17 @@ class InlineFormattingContext extends FormattingContext
 		
 		if (isLastLine == true)
 		{
-			for (i in 0..._unbreakableLineBoxElements.length)
-			{
-				_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
-			}
-			_unbreakableLineBoxElements = new Array<LineBoxElementData>();
+			insertBreakOpportunity(false, false);
+			//for (i in 0..._unbreakableLineBoxElements.length)
+			//{
+				//_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
+			//}
+			//_unbreakableLineBoxElements = new Array<LineBoxElementData>();
 			
 		}
 		
 		if ((remainingLineWidth - _unbreakableWidth < 0) || forced == true)
 		{
-			Log.trace("oiiooooooooooooooooooooooooooooooooooooooo : "+_containingDOMElementWidth);
-			Log.trace(_formattingContextData.x);
-			Log.trace(remainingLineWidth);
 			startNewLine(_unbreakableWidth, isLastLine);
 		}
 		
@@ -117,7 +114,6 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
 		_formattingContextData.x += _unbreakableWidth;
 		_unbreakableWidth = 0;
-		Log.trace("reset unbreakable width : " + _unbreakableWidth);
 		
 	}
 	
@@ -136,7 +132,6 @@ class InlineFormattingContext extends FormattingContext
 			x:0,
 			y:0 } );
 		
-		Log.trace("add text width");	
 		addWidth(domElement.offsetWidth);
 	}
 	
@@ -154,7 +149,6 @@ class InlineFormattingContext extends FormattingContext
 			x:0,
 			y:0 } );
 			
-			Log.trace("add space width");
 			addWidth(spaceWidth);
 			//if (isBreakableSpace(whiteSpace) == true)
 			//{
@@ -170,7 +164,6 @@ class InlineFormattingContext extends FormattingContext
 		x:0,
 		y:0 } );
 		
-		Log.trace("add offset width");
 		addWidth(offset);
 	
 	}
