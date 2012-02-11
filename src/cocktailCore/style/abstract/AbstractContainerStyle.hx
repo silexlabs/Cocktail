@@ -617,9 +617,6 @@ class AbstractContainerStyle extends Style
 		//get the text to display from the TextElement
 		var text:String = textElement.text;
 		
-		//apply the white space rule defined by the WhiteSpaceStyleValue to the text
-		text = AbstractTextElement.applyWhiteSpace(text, this._computedStyle.whiteSpace);
-		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
 		
