@@ -632,12 +632,12 @@ class AbstractContainerStyle extends Style
 					
 				case space:
 					//insert a space in the flow
-					formattingContext.insertSpace(_computedStyle.whiteSpace, fontMetrics.spaceWidth);
+					formattingContext.insertSpace(_computedStyle.whiteSpace, fontMetrics.spaceWidth, isNextElementALineFeed(textFragments, i));
 					
 					
 				case tab:
 					//insert a tab in the flow
-					formattingContext.insertTab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8);
+					formattingContext.insertTab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8, isNextElementALineFeed(textFragments, i));
 					
 					
 				case lineFeed:
@@ -645,6 +645,36 @@ class AbstractContainerStyle extends Style
 					formattingContext.insertLineFeed(_computedStyle.whiteSpace);
 			}
 		}		
+	}
+	
+	/**
+	 * Determine wether the next text fragment is a line feed.
+	 * With some values of the WhiteSpace style, space and tab
+	 * are removed when surrounding a line feed
+	 */
+	private function isNextElementALineFeed(textFragments:Array<TextFragmentData>, currentIndex:Int):Bool
+	{
+		var isNextElementALineFeed:Bool;
+		
+		//here the current element is the last in the array
+		if (currentIndex + 1 >= textFragments.length)
+		{
+			isNextElementALineFeed = false;
+		}
+		//else check if the next element is indeed a line feed
+		else
+		{
+			switch (textFragments[currentIndex + 1].textToken)
+			{
+				case lineFeed:
+					isNextElementALineFeed = true;
+					
+				default:
+					isNextElementALineFeed = false;
+			}
+		}
+		
+		return isNextElementALineFeed;
 	}
 	
 	/**
