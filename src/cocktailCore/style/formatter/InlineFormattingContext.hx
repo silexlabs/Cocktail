@@ -13,9 +13,20 @@ import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
- * This formatting context place all formatted DOMElements
- * in lines, called line box. When the line is full and can't contain other
- * DOMElements, a new line is created
+ * This formatting context place all formatted elements
+ * in lines, called line box. As many line box as necessary
+ * are created to contain all the elements.
+ * 
+ * The formatting of a line if done in 2 phases : 
+ * - first the element (text, DOMElement, spaces...) are
+ * added to the line and the white space rules of the element
+ * are applied for instance to collapse sequences of white
+ * spaces if necessary.
+ * - when the line is full of elements, the x and yposition of 
+ * each element in the line is computed, the x position using
+ * the textAlign property of the DOMElement which started
+ * the inline formatting context and the y position using
+ * the vertical align property
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -23,14 +34,33 @@ class InlineFormattingContext extends FormattingContext
 {
 
 	/**
-	 * The DOMElements in the current line
+	 * The DOMElements in the current line. This array
+	 * is reseted each time a new line starts
 	 */
 	private var _elementsInLineBox:Array<LineBoxElementData>;
 	
+	/**
+	 * Stores the currently unbreakable elements in the current line.
+	 * Those element can' be broken on multiple lines, if they don't all
+	 * fit on the current line then a new line is created to hold them.
+	 * These array may for instance hold a sequence of space if the
+	 * whiteSpace style of the space are "pre"
+	 */
 	private var _unbreakableLineBoxElements:Array<LineBoxElementData>;
 	
+	/**
+	 * The total width of the element in the _unbreakableLineBoxElements
+	 * array used to check if they all fit in the current line or if a 
+	 * new line should be created
+	 */
 	private var _unbreakableWidth:Int;
 
+	/**
+	 * a reference to the last inserted element in the line, used for 
+	 * instance when a space is inserted to checkk if the previous
+	 * element was also a space and if it should be collapsed
+	 */
+	private var _lastInsertedElement:LineBoxElementValue;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -43,100 +73,107 @@ class InlineFormattingContext extends FormattingContext
 		
 		super(domElement, previousFormattingContext);
 		
+		//set the textIndent as an offset on the first line of text
 		insertOffset(_containingDOMElement.style.computedStyle.textIndent);
 	}
 	
 	/**
 	 * Called when the inline formatting context will
 	 * be replaced by anohter. Used to ensure that the last line
-	 * of DOMElements is laid out
+	 * of DOMElements is laid out by inserting a forced
+	 * break opportunity
 	 */
 	override public function destroy():Void
 	{
 		insertBreakOpportunity(true, true);
 	}
 	
+	// LINE MEASUREMENT METHODS
+	// Those methods are used to determine what element to render
+	// in a line and when to start a new line
 //////////////////////////////////////////////////////////////////
-
+	
+	
+	//////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LINE MEASUREMENT METHODS
+	//////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Insert a DOMElement in the formatting context's
-	 * flow
+	 * Insert a DOMElement and instroduce the corresponding break opportunities
 	 */
 	override public function insertDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		insertBreakOpportunity(false);
 		
+		var insertedElement:LineBoxElementValue = LineBoxElementValue.domElement(domElement, parentDOMElement, true);
 		_unbreakableLineBoxElements.push( {
-			element:LineBoxElementValue.domElement(domElement, parentDOMElement, true),
+			element:insertedElement,
 			x:0,
 			y:0 } );
+		_lastInsertedElement = insertedElement;
 			
 		addWidth(domElement.offsetWidth);
 			
 		insertBreakOpportunity(false);
 	}
 	
-	private function addWidth(width:Int):Void
-	{
-		_unbreakableWidth += width;
-	}
-	
-	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool = false):Void
-	{
-		var remainingLineWidth:Int = getRemainingLineWidth();
-		
-		if (isLastLine == true)
-		{
-			insertBreakOpportunity(false, false);
-		}
-		
-		if ((remainingLineWidth - _unbreakableWidth < 0) || forced == true)
-		{
-			startNewLine(_unbreakableWidth, isLastLine);
-		}
-		
-		for (i in 0..._unbreakableLineBoxElements.length)
-		{
-			_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
-		}
-		
-		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
-		_formattingContextData.x += _unbreakableWidth;
-		_unbreakableWidth = 0;
-		
-	}
-	
+	/**
+	 * Insert a DOMElement which isn't laid out. For instance an inline level inline
+	 * container is not laid out, its rendered x and y position will always be to the
+	 * top left of its formatting context. This is necessary as its content might span
+	 * multiple line boxes.
+	 * 
+	 * It must still be inserted into the formatting context to be in the array of
+	 * elements to render
+	 * TODO : shouldn't have to insert those elements 
+	 * 
+	 * @param	domElement
+	 * @param	parentDOMElement
+	 */
 	override public function insertNonLaidOutDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-			_unbreakableLineBoxElements.push( {
-			element:LineBoxElementValue.domElement(domElement, parentDOMElement, false),
-			x:0,
-			y:0 } );
+		_unbreakableLineBoxElements.push( {
+		element:LineBoxElementValue.domElement(domElement, parentDOMElement, false),
+		x:0,
+		y:0 } );
 	}
 	
+	/**
+	 * Insert a text
+	 * 
+	 * TODO : text shouldn't be a DOMElement but a lighter structure
+	 */
 	override public function insertText(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
+		var insertedElement:LineBoxElementValue = LineBoxElementValue.text(domElement, parentDOMElement);
 		_unbreakableLineBoxElements.push( {
-			element:LineBoxElementValue.text(domElement, parentDOMElement),
+			element:insertedElement,
 			x:0,
 			y:0 } );
+		_lastInsertedElement = insertedElement;	
 		
 		addWidth(domElement.offsetWidth);
 	}
 	
 	/**
-	 * Insert a space character, wrapped in a DOMElement
-	 * in the formatting context
+	 * Insert a space charachter. The space might not be actually
+	 * inserted if for instance it must be collapsed because
+	 * space sequances are not allowed for the whiteSpace
+	 * value of the space
 	 */
-	override public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int):Void
+	override public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, isNextElementALineFeed:Bool):Void
 	{
-		//TODO : add isLastInsertedASpace
-		if (isCollapsed(false, whiteSpace) == false)
+		//only insert space if allowed
+		if (shouldInsertSpace(whiteSpace, isNextElementALineFeed) == true)
 		{
+			var insertedElement:LineBoxElementValue = LineBoxElementValue.space(spaceWidth);
+			
 			_unbreakableLineBoxElements.push( {
-			element:LineBoxElementValue.space(spaceWidth),
+			element:insertedElement,
 			x:0,
 			y:0 } );
+			
+			_lastInsertedElement = insertedElement;	
 			
 			addWidth(spaceWidth);
 			
@@ -144,36 +181,55 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	/**
+	 * Insert a non-breakable offset which is used
+	 * for instance to render the textIndent on
+	 * the first line or the render the margin/padding/border
+	 * of an inline level inline container
+	 * 
+	 * @param	offset the width of the offset
+	 */
 	override public function insertOffset(offset:Int):Void
 	{
-		
 		_unbreakableLineBoxElements.push( {
 		element:LineBoxElementValue.offset(offset),
 		x:0,
 		y:0 } );
 		
 		addWidth(offset);
-	
 	}
 	
 	/**
-	 * Insert a tab character, wrapped in a DOMElement
-	 * in the formatting context
+	 * Insert a tab character. Like the space charachter it might not
+	 * actually be added or might also be converted to a space
 	 */
-	override public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int):Void
+	override public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, isNextElementALineFeed:Bool):Void
 	{
+		var insertedElement:LineBoxElementValue;
+		var addedWidth:Int;
 		
+		//here the tab is converted to a space
+		if (shouldTabBeConvertedToSpace(whiteSpace) == true)
+		{
+			insertedElement = LineBoxElementValue.space(Math.round(tabWidth / 8));
+			addedWidth = Math.round(tabWidth / 8);
+		}
+		else
+		{
+			insertedElement = LineBoxElementValue.tab(tabWidth);
+			addedWidth = tabWidth;
+		}
 		_unbreakableLineBoxElements.push( {
-			element:LineBoxElementValue.tab(tabWidth),
+			element:insertedElement,
 			x:0,
 			y:0 } );
 			
-		addWidth(tabWidth);
+		addWidth(addedWidth);
 	}
 	
 	/**
-	 * Start a new line by inserting a new line
-	 * control character
+	 * Might force a line break if line feed are allowed
+	 * for the whiteSpace value of the line feed
 	 */
 	override public function insertLineFeed(whiteSpace:WhiteSpaceStyleValue):Void
 	{
@@ -183,6 +239,91 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LINE MEASUREMENT METHODS
+	//////////////////////////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////////////////////
+	// PRIVATE LINE MEASUREMENT METHODS
+	//////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Inserting a break opportunity signals the the current line
+	 * might be broken and a new line started if there are too
+	 * many element to fit in the current line's width
+	 * 
+	 * @param	forced a break opportunity might be forced, for instance
+	 * with a line feed
+	 * @param	isLastLine if the line is the last, it might be neccesaary
+	 * to flush the array of unbreakable elements
+	 */
+	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool = false):Void
+	{
+		var remainingLineWidth:Int = getRemainingLineWidth();
+		
+		//flush the array of unbreakable elements into the array of element
+		//in the line to be sure to not left out any element
+		if (isLastLine == true)
+		{
+			insertBreakOpportunity(false, false);
+		}
+		
+		//if there is not enough width left in the line to fit all the 
+		//unbreakable elements width, or if a line break is force, 
+		//start a new line
+		if ((remainingLineWidth - _unbreakableWidth < 0) || forced == true)
+		{
+			startNewLine(_unbreakableWidth, isLastLine);
+		}
+		
+		//push all the unbreakable element into the elements in line array.
+		//they can either be pushed into the current line or a new one
+		//if there wasn't enough width in the previous line to fit them
+		for (i in 0..._unbreakableLineBoxElements.length)
+		{
+			_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
+		}
+		
+		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
+		_formattingContextData.x += _unbreakableWidth;
+		_unbreakableWidth = 0;
+	}
+
+	/**
+	 * Increment the unbreakable width
+	 */
+	private function addWidth(width:Int):Void
+	{
+		_unbreakableWidth += width;
+	}
+	
+	/**
+	 * Determine wether a tab should be converted to
+	 * a space based on the whiteSpace property
+	 */
+	private function shouldTabBeConvertedToSpace(whiteSpace:WhiteSpaceStyleValue):Bool
+	{
+		var shouldTabBeConvertedToSpace:Bool;
+		
+		switch (whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal,
+			WhiteSpaceStyleValue.nowrap,
+			WhiteSpaceStyleValue.preLine:
+				shouldTabBeConvertedToSpace = true;
+				
+			case WhiteSpaceStyleValue.pre,
+			WhiteSpaceStyleValue.preWrap:
+				shouldTabBeConvertedToSpace = false;
+		}
+		
+		return shouldTabBeConvertedToSpace;
+	}
+	
+	/**
+	 * Determine wether line feed is allowed
+	 * based on the whiteSpace property
+	 */
 	private function isLineFeedAllowed(whiteSpace:WhiteSpaceStyleValue):Bool
 	{
 		var lineFeedAllowed:Bool;
@@ -202,36 +343,99 @@ class InlineFormattingContext extends FormattingContext
 		return lineFeedAllowed;
 	}
 	
-	private function isCollapsed(isLastElementInsertedASpace:Bool, whiteSpace:WhiteSpaceStyleValue):Bool
+	/**
+	 * Determine wheter a space should actually be inserted
+	 */
+	private function shouldInsertSpace(whiteSpace:WhiteSpaceStyleValue, isNexElementALineFeed:Bool):Bool
+	{
+		var shouldInsertSpace:Bool;
+		
+		switch (whiteSpace)
+		{
+			case WhiteSpaceStyleValue.normal,
+			WhiteSpaceStyleValue.nowrap,
+			WhiteSpaceStyleValue.preLine:
+				shouldInsertSpace = isNexElementALineFeed == false;
+				
+			case WhiteSpaceStyleValue.preWrap,
+			WhiteSpaceStyleValue.pre:
+				shouldInsertSpace = true;
+		}
+		
+		if (shouldInsertSpace == true)
+		{
+			shouldInsertSpace != isCollapsed(_lastInsertedElement, whiteSpace);
+		}
+		
+		
+		return shouldInsertSpace;
+	}
+	
+	/**
+	 * Determine wheter a space should be collapsed
+	 * when it belong to a sequence of spaces
+	 */
+	private function isCollapsed(lastInsertedElement:LineBoxElementValue, whiteSpace:WhiteSpaceStyleValue):Bool
 	{
 		var isCollapsed:Bool;
 		
-		if (isLastElementInsertedASpace == true)
+		if (lastInsertedElement == null)
 		{
-			switch (whiteSpace)
-			{
-				case WhiteSpaceStyleValue.normal,
-				WhiteSpaceStyleValue.nowrap:
-					isCollapsed = true;
-					
-				case WhiteSpaceStyleValue.preWrap,
-				WhiteSpaceStyleValue.pre,
-				WhiteSpaceStyleValue.preLine:
-					isCollapsed = false;
-			}
+			isCollapsed = false;
 		}
 		else
 		{
-			isCollapsed = false;
+			switch (lastInsertedElement)
+			{
+				case LineBoxElementValue.space(spaceWidth):
+				
+				switch (whiteSpace)
+				{
+					case WhiteSpaceStyleValue.normal,
+					WhiteSpaceStyleValue.nowrap:
+						isCollapsed = true;
+						
+					case WhiteSpaceStyleValue.preWrap,
+					WhiteSpaceStyleValue.pre,
+					WhiteSpaceStyleValue.preLine:
+						isCollapsed = false;
+				}
+				
+				default:
+					isCollapsed = false;
+			}
 		}
 		
 		return isCollapsed;
 	}
 	
-//////////////////////////////////////////////////////////////////	
+	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
+	{
+		if (isFloat == true)
+		{
+			 _formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
+		}
+	}
 	
+	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
+	{
+		super.placeFloat(domElement, parentDOMElement, floatData);
+		
+		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+		
+	}
+	
+	
+	
+	// LINE LAYOUT METHODS
+	// Those methods are used to determine the x and y position
+	// of each element in the line
+//////////////////////////////////////////////////////////////////
 
-	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE METHOD
+	/////////////////////////////////
+
 	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
 
@@ -319,21 +523,9 @@ class InlineFormattingContext extends FormattingContext
 		}*/
 	}
 	
-	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
-	{
-		if (isFloat == true)
-		{
-			 _formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
-		}
-	}
-	
-	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
-	{
-		super.placeFloat(domElement, parentDOMElement, floatData);
-		
-		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		
-	}
+	/////////////////////////////////
+	// PRIVATE METHODS
+	/////////////////////////////////
 	
 	//TODO : re-implement
 	private function removeSpaces():Void
@@ -379,6 +571,39 @@ class InlineFormattingContext extends FormattingContext
 		}	
 		*/
 	}
+	
+	private function getElementWidth(element:LineBoxElementValue):Int
+	{
+		var elementWidth:Int;
+		
+		switch (element)
+			{
+				case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
+					if (position == true)
+					{
+						elementWidth = domElement.offsetWidth;
+					}
+					else
+					{
+						elementWidth = 0;
+					}
+					
+				case LineBoxElementValue.text(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;
+					
+				case LineBoxElementValue.offset(value):
+					elementWidth = value;
+					
+				case LineBoxElementValue.space(spaceWidth):
+					elementWidth = spaceWidth;
+					
+				case LineBoxElementValue.tab(tabWidth):
+					elementWidth = tabWidth;
+			}
+			
+		return 	elementWidth;
+	}
+	
 	
 	/////////////////////////////////
 	// PRIVATE HORIZONTAL ALIGNEMENT METHODS
@@ -448,38 +673,6 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		return concatenatedLength;
-	}
-	
-	private function getElementWidth(element:LineBoxElementValue):Int
-	{
-		var elementWidth:Int;
-		
-		switch (element)
-			{
-				case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
-					if (position == true)
-					{
-						elementWidth = domElement.offsetWidth;
-					}
-					else
-					{
-						elementWidth = 0;
-					}
-					
-				case LineBoxElementValue.text(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;
-					
-				case LineBoxElementValue.offset(value):
-					elementWidth = value;
-					
-				case LineBoxElementValue.space(spaceWidth):
-					elementWidth = spaceWidth;
-					
-				case LineBoxElementValue.tab(tabWidth):
-					elementWidth = tabWidth;
-			}
-			
-		return 	elementWidth;
 	}
 	
 	/**

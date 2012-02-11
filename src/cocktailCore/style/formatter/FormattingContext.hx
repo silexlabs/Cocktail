@@ -186,7 +186,7 @@ class FormattingContext
 	 * Insert a space character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int):Void
+	public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, isNextElementALineFeed:Bool):Void
 	{
 		
 	}
@@ -200,7 +200,7 @@ class FormattingContext
 	 * Insert a tab character, wrapped in a DOMElement
 	 * in the formatting context
 	 */
-	public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int):Void
+	public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, isNextElementALineFeed:Bool):Void
 	{
 		
 	}
