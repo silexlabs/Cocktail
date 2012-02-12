@@ -205,11 +205,47 @@ class AbstractContainerStyle extends Style
 		{
 			var child:ChildTemporaryPositionData = children[i];
 			
-			//apply x and y
-			child.domElement.style.setNativeX(child.domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			child.domElement.style.setNativeY(child.domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-			
-			childrenNativeElements.push(child.domElement.nativeElement);
+			switch (child.element)
+			{
+				case BoxElementValue.domElement(domElement, parentDOMElement, position):
+				
+				//TODO : clean-up, should'nt be here
+				if (isInlineContainer() == false)
+				{
+					//apply x and y
+					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				}
+				else
+				{
+						//apply x and y
+					domElement.style.setNativeX(domElement, child.x );
+					domElement.style.setNativeY(domElement, child.y );
+				}
+				
+				childrenNativeElements.push(domElement.nativeElement);
+				
+				case BoxElementValue.text(domElement, parentDOMElement):
+				
+				//TODO : clean-up, should'nt be here
+				if (isInlineContainer() == false)
+				{
+					//apply x and y
+					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				}
+				else
+				{
+						//apply x and y
+					domElement.style.setNativeX(domElement, child.x );
+					domElement.style.setNativeY(domElement, child.y );
+				}
+				
+				childrenNativeElements.push(domElement.nativeElement);
+				
+				default:
+			}
+		
 		}
 		
 		return childrenNativeElements;
@@ -238,9 +274,20 @@ class AbstractContainerStyle extends Style
 			
 			for (i in 0...boxData.children.length)
 			{
+				var doPosition:Bool;
+				
+				switch (boxData.children[i].element)
+				{
+					case BoxElementValue.domElement(domElement, parentDOMElement, position):
+						doPosition = position;
+						
+					default:
+						doPosition = true;
+				}
+				
 				//TODO : do not compute child if it is an
 				//inline container as its x will be 0
-				if (boxData.children[i].position == true)
+				if (doPosition == true)
 				{
 					if (boxData.children[i].x < left)
 					{
@@ -248,8 +295,15 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y < top)
 					{
-						//TODO : probably won't be robust enough
-						top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
+						//TODO : probably won't be robust enough + messy but offset should only be used for left and right
+						switch (boxData.children[i].element)
+						{
+							case BoxElementValue.offset(offsetWidth, parentDOMElement):
+								
+							default:
+								top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
+						}
+					
 					}
 					if (boxData.children[i].x + boxData.children[i].width > right)
 					{
@@ -257,7 +311,13 @@ class AbstractContainerStyle extends Style
 					}
 					if (boxData.children[i].y + boxData.children[i].height > bottom)
 					{
-						bottom = boxData.children[i].y + boxData.children[i].height -  fontMetrics.ascent - fontMetrics.descent;
+						switch (boxData.children[i].element)
+						{
+							case BoxElementValue.offset(offsetWidth, parentDOMElement):
+						
+							default:	
+								bottom = boxData.children[i].y + boxData.children[i].height -  fontMetrics.ascent - fontMetrics.descent;
+						}
 					}
 				}
 			}
@@ -467,7 +527,7 @@ class AbstractContainerStyle extends Style
 		//TODO : improve, put in a separate method ?
 			if (establishesNewFormattingContext() == false && isInlineContainer() == true)
 			{
-				childrenFormattingContext.insertOffset(_computedStyle.marginLeft + _computedStyle.paddingLeft);
+				childrenFormattingContext.insertOffset(_computedStyle.marginLeft + _computedStyle.paddingLeft, this._domElement);
 			}
 		
 		//flow all children 
@@ -498,7 +558,7 @@ class AbstractContainerStyle extends Style
 			//TODO : improve, put in a separate method ?
 			if (establishesNewFormattingContext() == false  && isInlineContainer() == true)
 			{
-				childrenFormattingContext.insertOffset(_computedStyle.marginRight + _computedStyle.paddingRight);
+				childrenFormattingContext.insertOffset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement);
 			}
 		
 		//destroy the current formatting context, prompting
@@ -556,15 +616,22 @@ class AbstractContainerStyle extends Style
 						{
 							//when found, use its in-flow position as the static position used for
 							//relative positioned DOMElement
-							if (childrenBoxesData[i].children[j].domElement == positionedDOMElementData.style.domElement)
+							switch (childrenBoxesData[i].children[j].element)
 							{
-								var x:Float = childrenBoxesData[i].children[j].x;
-								var y:Float = childrenBoxesData[i].children[j].y;
-								positionedDOMElementData.staticPosition = {
-									x:x,
-									y:y
-								}
+								case BoxElementValue.domElement(domElement, parentDOMElement, position):
+									if (domElement == positionedDOMElementData.style.domElement)
+									{
+										var x:Float = childrenBoxesData[i].children[j].x;
+										var y:Float = childrenBoxesData[i].children[j].y;
+										positionedDOMElementData.staticPosition = {
+											x:x,
+											y:y
+										}
+									}
+									
+								default:	
 							}
+						
 						}
 						
 					}
@@ -592,11 +659,18 @@ class AbstractContainerStyle extends Style
 			
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
-				if (childTemporaryPositionData.domElement.style.isRelativePositioned() == false)
+				switch (childTemporaryPositionData.element)
 				{
-					childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-					childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+					case BoxElementValue.domElement(domElement, parentDOMElement, position):
+						if (domElement.style.isRelativePositioned() == false)
+						{
+							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+						}
+						
+					default:	
 				}
+			
 				
 				childrenTemporaryPositionData.push(childTemporaryPositionData);
 			}

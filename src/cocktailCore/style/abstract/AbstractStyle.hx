@@ -709,15 +709,7 @@ class AbstractStyle
 				
 			default:	
 				positioner = new AbsolutePositioner();
-				
-				childTemporaryPositionData = {
-					domElement:domElement,
-					x:0,
-					y:0,
-					width:0,
-					height:0,
-					position:true
-				};
+				childTemporaryPositionData = null;
 		}
 		
 		return childTemporaryPositionData;

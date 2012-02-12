@@ -191,7 +191,7 @@ class FormattingContext
 		
 	}
 	
-	public function insertOffset(offset:Int):Void
+	public function insertOffset(offset:Int, parentDOMElement:DOMElement):Void
 	{
 		
 	}
@@ -334,37 +334,6 @@ class FormattingContext
 		_floatsManager.removeFloats(_formattingContextData.y);
 	}
 	
-	
-	
-	private function getChildTemporaryPositionData(domElement:DOMElement, x:Int, y:Int, position:Bool):ChildTemporaryPositionData
-	{
-		var childTemporaryPositionData:ChildTemporaryPositionData;
-		
-		if (position == true)
-		{
-			childTemporaryPositionData = {
-			domElement:domElement,
-			x:x,
-			y:y,
-			width:domElement.offsetWidth,
-			height:domElement.offsetHeight,
-			position:true
-			}
-		}
-		else
-		{
-			childTemporaryPositionData = {
-			domElement:domElement,
-			x:0,
-			y:0,
-			width:domElement.offsetWidth,
-			height:domElement.offsetHeight,
-			position:false
-			}
-		}
-		
-		return childTemporaryPositionData;
-	}
 	
 	/////////////////////////////////
 	// GETTERS/SETTERS

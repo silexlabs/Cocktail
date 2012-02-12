@@ -1350,8 +1350,8 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * Defines a DOMElement added to a LineBox
 	 * and its type
 	 */
-	typedef LineBoxElementData = {
-		var element:LineBoxElementValue;
+	typedef BoxElementData = {
+		var element:BoxElementValue;
 		var x:Int;
 		var y:Int;
 	}
@@ -1377,12 +1377,11 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * context in which it participates
 	 */
 	typedef ChildTemporaryPositionData = {
-		var domElement:DOMElement;
+		var element:BoxElementValue;
 		var x:Int;
 		var y:Int;
 		var width:Int;
 		var height:Int;
-		var position:Bool;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1399,10 +1398,10 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * can influence a linebox layout
 	 * once it is complete
 	 */
-	enum LineBoxElementValue {
+	enum BoxElementValue {
 		domElement(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool);
 		text(domElement:DOMElement, parentDOMElement:DOMElement);
-		offset(value:Int);
+		offset(value:Int, parentDOMElement:DOMElement );
 		space(spaceWidth:Int);
 		tab(tabWidth:Int);
 	}

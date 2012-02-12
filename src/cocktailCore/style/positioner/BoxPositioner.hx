@@ -66,12 +66,11 @@ class BoxPositioner
 		//using its first positioned ancestor as origin
 		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
 		{
-			domElement:domElement,
+			element:BoxElementValue.domElement(domElement, null , true),
 			x:0,
 			y:0,
 			width:0,
 			height:0,
-			position:true
 		}
 		
 		//for horizonal offset, if both left and right are not null (different form 'auto'),
