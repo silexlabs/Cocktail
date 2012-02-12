@@ -49,9 +49,28 @@ class BlockFormattingContext extends FormattingContext
 		//apply the new x and y position to the DOMElement and formattingContextData
 		_formattingContextData.x =  leftFloatOffset;
 		
-		
+		var childTemporaryPositionData:ChildTemporaryPositionData;
+		if (position == true)
+		{
+			childTemporaryPositionData = {
+				element:BoxElementValue.domElement(domElement, parentDOMElement, position),
+				x:_formattingContextData.x, 
+				y:_formattingContextData.y,
+				width:domElement.offsetWidth,
+				height:domElement.offsetHeight
+			}
+		}
+		else
+		{
+			childTemporaryPositionData = {
+				element:BoxElementValue.domElement(domElement, parentDOMElement, position),
+				x:0, 
+				y:0,
+				width:0,
+				height:0
+			}
+		}
 	
-		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, position);
 
 		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 		

@@ -37,7 +37,7 @@ class InlineFormattingContext extends FormattingContext
 	 * The DOMElements in the current line. This array
 	 * is reseted each time a new line starts
 	 */
-	private var _elementsInLineBox:Array<LineBoxElementData>;
+	private var _elementsInLineBox:Array<BoxElementData>;
 	
 	/**
 	 * Stores the currently unbreakable elements in the current line.
@@ -46,7 +46,7 @@ class InlineFormattingContext extends FormattingContext
 	 * These array may for instance hold a sequence of space if the
 	 * whiteSpace style of the space are "pre"
 	 */
-	private var _unbreakableLineBoxElements:Array<LineBoxElementData>;
+	private var _unbreakableLineBoxElements:Array<BoxElementData>;
 	
 	/**
 	 * The total width of the element in the _unbreakableLineBoxElements
@@ -60,21 +60,21 @@ class InlineFormattingContext extends FormattingContext
 	 * instance when a space is inserted to checkk if the previous
 	 * element was also a space and if it should be collapsed
 	 */
-	private var _lastInsertedElement:LineBoxElementValue;
+	private var _lastInsertedElement:BoxElementValue;
 	
 	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
 	{
-		_elementsInLineBox = new Array<LineBoxElementData>();
-		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
+		_elementsInLineBox = new Array<BoxElementData>();
+		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_unbreakableWidth = 0;
 		
 		super(domElement, previousFormattingContext);
 		
 		//set the textIndent as an offset on the first line of text
-		insertOffset(_containingDOMElement.style.computedStyle.textIndent);
+		insertOffset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ class InlineFormattingContext extends FormattingContext
 	{
 		insertBreakOpportunity(false);
 		
-		var insertedElement:LineBoxElementValue = LineBoxElementValue.domElement(domElement, parentDOMElement, true);
+		var insertedElement:BoxElementValue = BoxElementValue.domElement(domElement, parentDOMElement, true);
 		_unbreakableLineBoxElements.push( {
 			element:insertedElement,
 			x:0,
@@ -133,7 +133,7 @@ class InlineFormattingContext extends FormattingContext
 	override public function insertNonLaidOutDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
 		_unbreakableLineBoxElements.push( {
-		element:LineBoxElementValue.domElement(domElement, parentDOMElement, false),
+		element:BoxElementValue.domElement(domElement, parentDOMElement, false),
 		x:0,
 		y:0 } );
 	}
@@ -145,7 +145,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override public function insertText(domElement:DOMElement, parentDOMElement:DOMElement):Void
 	{
-		var insertedElement:LineBoxElementValue = LineBoxElementValue.text(domElement, parentDOMElement);
+		var insertedElement:BoxElementValue = BoxElementValue.text(domElement, parentDOMElement);
 		_unbreakableLineBoxElements.push( {
 			element:insertedElement,
 			x:0,
@@ -166,7 +166,7 @@ class InlineFormattingContext extends FormattingContext
 		//only insert space if allowed
 		if (shouldInsertSpace(whiteSpace, isNextElementALineFeed) == true)
 		{
-			var insertedElement:LineBoxElementValue = LineBoxElementValue.space(spaceWidth);
+			var insertedElement:BoxElementValue = BoxElementValue.space(spaceWidth);
 			
 			_unbreakableLineBoxElements.push( {
 			element:insertedElement,
@@ -189,10 +189,10 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * @param	offset the width of the offset
 	 */
-	override public function insertOffset(offset:Int):Void
+	override public function insertOffset(offset:Int, parentDOMElement:DOMElement):Void
 	{
 		_unbreakableLineBoxElements.push( {
-		element:LineBoxElementValue.offset(offset),
+		element:BoxElementValue.offset(offset, parentDOMElement),
 		x:0,
 		y:0 } );
 		
@@ -205,18 +205,18 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, isNextElementALineFeed:Bool):Void
 	{
-		var insertedElement:LineBoxElementValue;
+		var insertedElement:BoxElementValue;
 		var addedWidth:Int;
 		
 		//here the tab is converted to a space
 		if (shouldTabBeConvertedToSpace(whiteSpace) == true)
 		{
-			insertedElement = LineBoxElementValue.space(Math.round(tabWidth / 8));
+			insertedElement = BoxElementValue.space(Math.round(tabWidth / 8));
 			addedWidth = Math.round(tabWidth / 8);
 		}
 		else
 		{
-			insertedElement = LineBoxElementValue.tab(tabWidth);
+			insertedElement = BoxElementValue.tab(tabWidth);
 			addedWidth = tabWidth;
 		}
 		_unbreakableLineBoxElements.push( {
@@ -284,7 +284,7 @@ class InlineFormattingContext extends FormattingContext
 			_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
 		}
 		
-		_unbreakableLineBoxElements = new Array<LineBoxElementData>();
+		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_formattingContextData.x += _unbreakableWidth;
 		_unbreakableWidth = 0;
 	}
@@ -375,7 +375,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Determine wheter a space should be collapsed
 	 * when it belong to a sequence of spaces
 	 */
-	private function isCollapsed(lastInsertedElement:LineBoxElementValue, whiteSpace:WhiteSpaceStyleValue):Bool
+	private function isCollapsed(lastInsertedElement:BoxElementValue, whiteSpace:WhiteSpaceStyleValue):Bool
 	{
 		var isCollapsed:Bool;
 		
@@ -387,7 +387,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (lastInsertedElement)
 			{
-				case LineBoxElementValue.space(spaceWidth):
+				case BoxElementValue.space(spaceWidth):
 				
 				switch (whiteSpace)
 				{
@@ -456,12 +456,31 @@ class InlineFormattingContext extends FormattingContext
 			{
 				switch (_elementsInLineBox[i].element)
 				{
-					case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
+					case BoxElementValue.domElement(domElement, parentDOMElement, position):
 						
-					var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
-					domElement, _elementsInLineBox[i].x, _elementsInLineBox[i].y, position);
+						
+					var childTemporaryPositionData:ChildTemporaryPositionData;
 				
-
+					if (position == true)
+					{
+						childTemporaryPositionData = {
+							element:_elementsInLineBox[i].element,
+							x:_elementsInLineBox[i].x,
+							y:_elementsInLineBox[i].y,
+							width:domElement.offsetWidth,
+							height:domElement.offsetHeight
+						}
+					}
+					else
+					{
+						childTemporaryPositionData = {
+							element:_elementsInLineBox[i].element,
+							x:0,
+							y:0,
+							width:0,
+							height:0
+						}
+					}
 					
 					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 				
@@ -469,21 +488,37 @@ class InlineFormattingContext extends FormattingContext
 					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
 					
-					case LineBoxElementValue.text(domElement, parentDOMElement):
+					case BoxElementValue.text(domElement, parentDOMElement):
 					
-					var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(
-					domElement, _elementsInLineBox[i].x, _elementsInLineBox[i].y, true);
-				
-	
+					var childTemporaryPositionData:ChildTemporaryPositionData = {
+							element:_elementsInLineBox[i].element,
+							x:_elementsInLineBox[i].x,
+							y:_elementsInLineBox[i].y,
+							width:domElement.offsetWidth,
+							height:domElement.offsetHeight
+						}
 				
 					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 				
 				
 					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					
+				case BoxElementValue.offset(offsetWidth, parentDOMElement):
+					
+						var childTemporaryPositionData:ChildTemporaryPositionData = {
+							element:_elementsInLineBox[i].element,
+							x:_elementsInLineBox[i].x,
+							y:_elementsInLineBox[i].y,
+							width:offsetWidth,
+							height:1
+						}
+				
+					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 					
 					default:
 				}
+				
 				
 			}
 			
@@ -497,7 +532,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			_currentBoxesData = new Array<BoxData>();
 			
-			_elementsInLineBox = new Array<LineBoxElementData>();
+			_elementsInLineBox = new Array<BoxElementData>();
 			
 			_formattingContextData.y += lineBoxHeight;
 			
@@ -522,6 +557,8 @@ class InlineFormattingContext extends FormattingContext
 			
 		}*/
 	}
+	
+	
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
@@ -572,13 +609,13 @@ class InlineFormattingContext extends FormattingContext
 		*/
 	}
 	
-	private function getElementWidth(element:LineBoxElementValue):Int
+	private function getElementWidth(element:BoxElementValue):Int
 	{
 		var elementWidth:Int;
 		
 		switch (element)
 			{
-				case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.domElement(domElement, parentDOMElement, position):
 					if (position == true)
 					{
 						elementWidth = domElement.offsetWidth;
@@ -588,16 +625,16 @@ class InlineFormattingContext extends FormattingContext
 						elementWidth = 0;
 					}
 					
-				case LineBoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
 					
-				case LineBoxElementValue.offset(value):
+				case BoxElementValue.offset(value, parentDOMElement):
 					elementWidth = value;
 					
-				case LineBoxElementValue.space(spaceWidth):
+				case BoxElementValue.space(spaceWidth):
 					elementWidth = spaceWidth;
 					
-				case LineBoxElementValue.tab(tabWidth):
+				case BoxElementValue.tab(tabWidth):
 					elementWidth = tabWidth;
 			}
 			
@@ -735,7 +772,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case LineBoxElementValue.space(spaceWidth):
+				case BoxElementValue.space(spaceWidth):
 					spacesNumber++;
 					
 				default:	
@@ -748,7 +785,7 @@ class InlineFormattingContext extends FormattingContext
 			//if the DOMElement is a space
 			switch (_elementsInLineBox[i].element)
 			{
-				case LineBoxElementValue.space(width):
+				case BoxElementValue.space(width):
 					//each space has its width stretched to the same width,
 					//all the concatenated width of the space fill the remaining
 					//space of the line box
@@ -789,7 +826,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.domElement(domElement, parentDOMElement, position):
 				
 				var domElementAscent:Int;
 				var domElementDescent:Int;
@@ -844,7 +881,7 @@ class InlineFormattingContext extends FormattingContext
 					lineBoxDescent = domElementDescent + domElementVerticalAlign;
 				}
 				
-				case LineBoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, parentDOMElement):
 				
 				var domElementAscent:Int;
 				var domElementDescent:Int;
@@ -913,7 +950,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case LineBoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.domElement(domElement, parentDOMElement, position):
 				
 				if (position == true)
 				{
@@ -953,7 +990,7 @@ class InlineFormattingContext extends FormattingContext
 					}
 				}
 				
-				case LineBoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, parentDOMElement):
 				
 				if (true)
 				{
