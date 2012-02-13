@@ -101,7 +101,7 @@ class FormattingContext
 	{
 		var flowY:Int = 0;
 		
-		var flowX:Int = _floatsManager.getLeftFloatOffset(flowY);
+		var flowX:Int = 0;
 		
 		return {
 			x : flowX,
@@ -264,10 +264,10 @@ class FormattingContext
 				insertEmbeddedDOMElement(element);
 				
 			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-				insertNonLaidOutContainerDOMElement(element);
+				insertContainerDOMElement(element);
 				
 			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-				insertContainerDOMElement(element);
+				insertContainingBlockDOMElement(element);
 				
 			case BoxElementValue.text(domElement, parentDOMElement):
 				insertText(element);
@@ -295,7 +295,7 @@ class FormattingContext
 	}
 	
 
-	private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
+	private function insertContainingBlockDOMElement(element:BoxElementValue):Void
 	{
 
 	}
@@ -329,6 +329,20 @@ class FormattingContext
 	private function insertLineFeed(element:BoxElementValue):Void
 	{
 		
+	}
+	
+	
+	/**
+	 * Insert a floated DOMElement in the formatting
+	 * context's flow
+	 */
+	private function insertFloat(element:BoxElementValue):Void
+	{
+		//get the float data (x,y, width and height) from the 
+		//floats manager
+		//var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
+		//actually place the floated DOMElement
+		//placeFloat(domElement, parentDOMElement, floatData);
 	}
 	
 	public function getBoxesData(parentDOMElement:DOMElement):Array<BoxData>
@@ -535,18 +549,6 @@ class FormattingContext
 	}
 	
 
-	/**
-	 * Insert a floated DOMElement in the formatting
-	 * context's flow
-	 */
-	private function insertFloat(element:BoxElementValue):Void
-	{
-		//get the float data (x,y, width and height) from the 
-		//floats manager
-		//var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
-		//actually place the floated DOMElement
-		//placeFloat(domElement, parentDOMElement, floatData);
-	}
 	
 	/**
 	 * Clear all the current left, or right or both floats.
@@ -563,38 +565,7 @@ class FormattingContext
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-	/**
-	 * Start a new line in the formatting context. Lay out
-	 * the current line before starting a new
-	 * @param	domElementWidth the width of the DOMElement that triggered the new line,
-	 * it is used to find the first y position in the flow with enough space to fit and
-	 * thus start a new line
-	 * @param	isLastLine wether the current line is the last line. If it is, the
-	 * current line is laid out but no new line is actually started
-	 */
-	private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Actually insert a DOMElement in the
-	 * formatting context
-	 */
-	private function doInsert(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
-	{
-		//actually place the DOMElement by computing
-		//its place in the flow than updating its
-		//position attributes
-		place(domElement, parentDOMElement, position);
-		
-		//remove all the floats that the insertion
-		//of the DOMElement made obsolote
-		
-		//TODO : for inline formatting context, should happen when starting new line
-		//instead of on insertion
-		removeFloats();
-	}
+
 	
 	/**
 	 * Return the width remaining in the current line
@@ -604,27 +575,7 @@ class FormattingContext
 	{
 		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
 	}
-	
-	/**
-	 * Place a DOMElement is the flow according to 
-	 * a block or inline formatting scheme
-	 */
-	private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Place a floated DOMElement in the containing
-	 * DOMElement. The position of the floated DOMElement
-	 * change based on tht type of formatting context
-	 * (block or inline)
-	 */
-	private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
-	{
-		//getBoxesData(parentDOMElement).push(getChildTemporaryPositionData(domElement, floatData.x, floatData.y, 0, true, render ));
-		
-	}
+
 	
 	/**
 	 * Removed the floats which don't influence the 
