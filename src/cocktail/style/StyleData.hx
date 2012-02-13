@@ -1074,8 +1074,8 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * Contains the data of the first 
 	 * positioned ancestor (a DOMElement with
 	 * a position style of relative, absolute,
-	 * or fixed) and a reference to each of
-	 * the style objects using the data
+	 * or fixed) dimensions and a reference to each of
+	 * the style objects using those dimensions
 	 * as origin to layout an absolutely
 	 * positioned DOMElement.
 	 */
@@ -1405,7 +1405,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	 */
 	enum BoxElementValue {
 		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		nonLaidOutContainerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		float(domElement:DOMElement, parentDOMElement:DOMElement);
 		text(domElement:DOMElement, parentDOMElement:DOMElement);

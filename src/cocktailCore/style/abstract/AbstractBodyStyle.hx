@@ -60,9 +60,7 @@ class AbstractBodyStyle extends ContainerStyle
 			height:height
 		};
 		
-		
 		return bounds;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -96,8 +94,9 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * A BodyDOMElement is never inserted into the flow as it is
-	 * always located at the origin of the viewport
+	 * A BodyDOMElement is never inserted into its parent flow as it is
+	 * always located at the origin of the viewport, it is automatically
+	 * inserted
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
@@ -127,6 +126,10 @@ class AbstractBodyStyle extends ContainerStyle
 		return new BlockFormattingContext(this._domElement);
 	}
 
+	/**
+	 * a bodyDOMElement always establishes a block formatting context
+	 * for its children
+	 */
 	override private function establishesNewFormattingContext():Bool
 	{
 		return true;

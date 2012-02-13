@@ -44,7 +44,8 @@ import haxe.Log;
  * This is the style implementation for ContainerDOMElement.
  * 
  * ContainerDOMElement can have children, and when laid out,
- * also start the layout on each of its children
+ * also start the layout on each of its children using
+ * either a block or inline formatting
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -52,21 +53,24 @@ class AbstractContainerStyle extends Style
 {
 	/**
 	 * Store a reference to the formatting context used to format
-	 * in-flow children. It is used when rendering to compute all
-	 * the boxes into which this styled DOMElement is lad out.
+	 * in-flow children. It is used when rendering to retrieve all
+	 * the boxes into which this styled DOMElement is laid out.
+	 * An inline level container DOMElement can be laid out
+	 * on multiple line and thus have multiple boxes
 	 */
 	private var _childrenFormattingContext:FormattingContext;
 	
 	/**
 	 * Stores a reference ot each of the absolutely positioned children that
 	 * must be attached to this styled ContainerDOMElement. The array only has
-	 * children if this styled ContainerDOMElement is itself positioned
+	 * children if this styled ContainerDOMElement is itself positioned and
+	 * thus responsible for positioning its positioned children for whom
+	 * it is the first positioned ancestor
 	 */
 	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
 	
 	/**
-	 * class constructor
-	 * @param	domElement
+	 * class constructor.
 	 */
 	public function new(domElement:DOMElement) 
 	{
@@ -225,7 +229,7 @@ class AbstractContainerStyle extends Style
 				
 				childrenNativeElements.push(domElement.nativeElement);
 				
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 				
 				//TODO : clean-up, should'nt be here
 				if (isInlineContainer() == false)
@@ -243,7 +247,7 @@ class AbstractContainerStyle extends Style
 				
 				childrenNativeElements.push(domElement.nativeElement);
 				
-				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 				
 				//TODO : clean-up, should'nt be here
 				if (isInlineContainer() == false)
@@ -314,7 +318,7 @@ class AbstractContainerStyle extends Style
 				
 				switch (boxData.children[i].element)
 				{
-					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						doPosition = false;
 			
 					default:
@@ -393,7 +397,7 @@ class AbstractContainerStyle extends Style
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all of its children.
 	 * 
-	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered
+	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered and displayed
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
@@ -422,8 +426,8 @@ class AbstractContainerStyle extends Style
 		{
 			//only DOMElement styles are computed, not TextElement as they have no style.
 			//When determining the formatting context to use, TextElement are always assumed
-			//to be inline as they are always laid out on a line and when rendered,
-			//they use the ContainerDOMElement's styles
+			//to be inline as text is always laid out on a line when rendered.
+			//Text use its ContainerDOMElement's styles for rendering
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
@@ -435,13 +439,7 @@ class AbstractContainerStyle extends Style
 		//be laid out into if the ContainerDOMElement establishes
 		//a new formatting context or participate in the current formatting
 		//context
-		var childrenFormattingContext:FormattingContext;
-		
-		//if the FormattingContext is null, this ContainerDOMElement
-		//is the first to be laid out, it is not necessarily the root
-		//DOMElement of the document as any DOMElement can trigger
-		//a layout
-		childrenFormattingContext = getformattingContext(formattingContext);
+		var childrenFormattingContext:FormattingContext = getformattingContext(formattingContext);
 		
 		//get the dimensions that will be used to lay out the children
 		//of the DOMElement. For instance, if the ContainerDOMElement establishes an
@@ -450,11 +448,11 @@ class AbstractContainerStyle extends Style
 		var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
 		
 		//get the computed font metrics of the ContainerDOMElement. Those metrics
-		//are based on the font and the font size used
+		//are based on the font itself and the font size used
 		var childrenContainingDOMElementFontMetricsData:FontMetricsData = this.fontMetrics;
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
-		//laid out children
+		//laid out children and to each of the children using it as first positioned ancestor
 		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
 		
 		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
@@ -465,7 +463,8 @@ class AbstractContainerStyle extends Style
 		//of the ContainerDOMElement as reference
 		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
-		//flow all children and store their laid out position relative to this styled DOMElement
+		//flow all children and store their laid out position in the formatting context, relative to the ContainerDOMElement
+		//which started the children formatting context
 		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 
 		//if the width is defined as 'auto', it might need to 
@@ -494,6 +493,9 @@ class AbstractContainerStyle extends Style
 		//sized. Fort some border cases though, the total height
 		//of the children is not used and auto height is computed in
 		//another way
+		
+		//TODO : move into formatting context ? only apply to in-flow element and formatting context,
+		//holds the right data
 		if (this._height == DimensionStyleValue.autoValue)
 		{
 			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
@@ -501,39 +503,29 @@ class AbstractContainerStyle extends Style
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
-		//laid out positions is returned and stored, to be sued during rendering
+		//laid out positions is returned and stored, to be used during rendering
 		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 
-		//the array containing all the children of this ContainerDOMElement and their
-		//positions relative to the ContainerDOMElement is stored, to be used
-		//during rendering
+		//the children formatting context is stored, it will be used
+		//to retrieve all the in flow children that this ContainerDOMElement must
+		//layout when rendering
 		_childrenFormattingContext = childrenFormattingContext;
 	}
 	
 	/**
-	 * If the ContainerDOMElement doesn't start a new formatting context, it is
-	 * added to the flow, however it won't be place, so that the corresponding
-	 * nativeElement will be located at the origin of the formatting context
-	 * once rendered
-	 * 
-	 * @param render a relative positioned DOMElement is inserted into the flow, like a
-	 * static DOMElement but it is not rendered in the flow, as it will
-	 * already be rendered as an absolute DOMElement which is always visually on top
-	 * of the static DOMElement in the same formatting context
+	 * The ContaionerDOMElement is added to the flow either as a containing block if it
+	 * establishes a new formatting context for its children or as a container if it 
+	 * uses its parent formatting context to format its children
 	 */
 	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-
-		var render:Bool = isRelativePositioned() == false;
-		
 		if (establishesNewFormattingContext() == true)
 		{
-			formattingContext.insertElement(BoxElementValue.containerDOMElement(this._domElement, this._domElement.parent));
+			formattingContext.insertElement(BoxElementValue.containingBlockDOMElement(this._domElement, this._domElement.parent));
 		}
 		else
 		{
-			//TODO : add correspondig constructor in BoxElementValue instead of attribute position ?
-			formattingContext.insertElement(BoxElementValue.nonLaidOutContainerDOMElement(this._domElement, this._domElement.parent));
+			formattingContext.insertElement(BoxElementValue.containerDOMElement(this._domElement, this._domElement.parent));
 		}
 	}
 	
@@ -557,8 +549,6 @@ class AbstractContainerStyle extends Style
 		//flow all children 
 		for (i in 0...containerDOMElement.children.length)
 		{
-			
-			
 			//if the children is a DOMElement, call its flow method
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
@@ -574,9 +564,6 @@ class AbstractContainerStyle extends Style
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 			}
-			
-		
-			
 		}
 		
 			//TODO : must now be put in inline formatting context ?
@@ -585,13 +572,13 @@ class AbstractContainerStyle extends Style
 				//childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement));
 			}
 		
-		//destroy the current formatting context, prompting
-		//to clean up all references it might have and also
-		//lays out the last line of DOMElement for an
-		//inline formatting context
+		//prompt the children formatting context, to format all the children
+		//that were added to it. After this call, an array of all the boxes
+		//created by this formatting context becomes available
+		//
 		//This method is only called if a new formatting
 		//context was established by this ContainerDOMElement,
-		//meaning that it also is responsible to "clean" it.
+		//meaning that it also is responsible to start its formatting.
 		if (establishesNewFormattingContext() == true)
 		{
 			childrenFormattingContext.format();
@@ -616,7 +603,10 @@ class AbstractContainerStyle extends Style
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
 			
 			//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+			//TODO : shouldn't be necessary, add intermediate method ?
 			childLastPositionedDOMElementData.data.height = this._computedStyle.height;
+			
+			//TODO : improve the way relative DOMElement are managed, it is a bit clumsy so far
 			
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
@@ -624,7 +614,7 @@ class AbstractContainerStyle extends Style
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 				
 				//relatively positioned DOMElement are both stored in the childLastPositionedDOMElementData array and
-				//also inserted in a formatting context. At this point, their static position must be retrieved form
+				//also inserted in a formatting context. At this point, their static position must be retrieved from
 				//the formatting context which formatted the relative DOMElement
 				if (positionedDOMElementData.style.isRelativePositioned() == true)
 				{
@@ -653,7 +643,7 @@ class AbstractContainerStyle extends Style
 										}
 									}
 								
-								case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+								case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 									if (domElement == positionedDOMElementData.style.domElement)
 									{
 										var x:Float = childrenBoxesData[i].children[j].x;
@@ -688,6 +678,7 @@ class AbstractContainerStyle extends Style
 				//ContainerDOMElement space, as they will be attached to it
 				
 				//the domElement which started the formatting context of the child is retrieved
+				//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
 				var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
 				
 				//the offsets between this ContainerDOMElement and the domElement which started the formatting
@@ -705,6 +696,7 @@ class AbstractContainerStyle extends Style
 			
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
+				//TODO : to check : shouldn't it be relative to the padding box instead ?
 				switch (childTemporaryPositionData.element)
 				{
 					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
@@ -714,14 +706,14 @@ class AbstractContainerStyle extends Style
 							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}
 						
-					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
 							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}	
 						
-					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
 							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
@@ -881,7 +873,7 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the dimensions and position data
+	 * Return the dimensions data
 	 * of the ContainerDOMElement
 	 */
 	public function getContainerDOMElementData():ContainingDOMElementData
@@ -895,14 +887,14 @@ class AbstractContainerStyle extends Style
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
-		//same if the ContainerDOMElement starts
+		//same if the ContainerDOMElement establishes
 		//an inline formatting context
-		else if (isInlineLevel() == false && childrenInline() == true)
+		else if (establishesNewFormattingContext() == true && childrenInline() == true)
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
-		//else it starts a block formatting context
-		//and its height is used
+		//else it either establishes a block formatting context or participate
+		//in one and its height is used
 		else
 		{
 			height = this._computedStyle.height;
@@ -945,7 +937,7 @@ class AbstractContainerStyle extends Style
 		if (establishesNewFormattingContext() == true || previousformattingContext == null)
 		{
 			//instantiate the right formatting context
-			//based on the children display
+			//based on the children computed display styles
 			if (childrenInline() == true)
 			{
 				formattingContext = new InlineFormattingContext(containerDOMElement);	
@@ -1046,7 +1038,7 @@ class AbstractContainerStyle extends Style
 	{
 		var childLastPositionedDOMElementData:LastPositionedDOMElementData;
 		
-		if (this.isPositioned() == true)
+		if (isPositioned() == true)
 		{
 			childLastPositionedDOMElementData = {
 				data: getContainerDOMElementData(),
@@ -1062,26 +1054,26 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Determine wether a block container
-	 * starts a new formatting context for
+	 * Determine wether the ContainerDOMElement
+	 * establishes a new formatting context for
 	 * its children
 	 */
 	private function establishesNewFormattingContext():Bool
 	{
 		var ret:Bool = false;
 		
-		//floats starts new context
+		//floats always establishes new context
 		if (isFloat() == true)
 		{
 			ret = true;
 		}
-		//positioned element which are not relative start new context
+		//positioned element which are not relative always establishes new context
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			ret = true;
 		}
 		//element with an inline-block display style
-		//start a new context
+		//alwyas establishes a new context
 		else
 		{
 			switch (this._computedStyle.display)
