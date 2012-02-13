@@ -511,7 +511,7 @@ class InlineFormattingContext extends FormattingContext
 					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
 					
-					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 						
 						
 					var childTemporaryPositionData:ChildTemporaryPositionData;
@@ -532,7 +532,7 @@ class InlineFormattingContext extends FormattingContext
 					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
 					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
 					
-					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						
 						
 					var childTemporaryPositionData:ChildTemporaryPositionData;

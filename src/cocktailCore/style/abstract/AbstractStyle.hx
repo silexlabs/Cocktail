@@ -51,7 +51,7 @@ import haxe.Timer;
  * an array of all its children (background, border, other DOMElements...)
  * ordered by z-index
  * - once all the styles are computed and the rendering tree is ready, 
- * it is applied using runtime specific API. For instance in flash, all
+ * it is displayed using runtime specific API. For instance in flash, all
  * the children are added using native addchild() method
  * 
  * @author Yannick DOMINGUEZ
@@ -770,7 +770,8 @@ class AbstractStyle
 				y:y
 			}
 			
-			//insert in the flow
+			//a relative DOMElement is both inserted in the flow
+			//and positioned
 			if (isRelativePositioned() == true)
 			{
 				insertInFlowDOMElement(formattingContext);
@@ -938,7 +939,8 @@ class AbstractStyle
 	 * It is public as it may be called by the
 	 * ContainerStyle of the parent DOMElement
 	 * which may need to known the display style of its
-	 * children to determine its formatting context
+	 * children to determine which type of formatting context
+	 * to establish for its children
 	 */
 	public function computeDisplayStyles():Void
 	{
@@ -965,7 +967,8 @@ class AbstractStyle
 	 * the style detemining font and text display,
 	 * then the styles determining its box model (width, height, margins
 	 * paddings...) which are computed last because they may use
-	 * some font metrics to compute the box model
+	 * some font metrics to compute the box model, for instance
+	 * when a dimension is defined with an 'em' unit
 	 */
 	private function computeDOMElementStyles(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
@@ -1256,7 +1259,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Get the data (dimensions and positions) of the first ancestor
+	 * Get the dimensions of the first ancestor
 	 * of the styled DOMElement which is positioned
 	 */
 	private function getFirstPositionedAncestorData():ContainingDOMElementData
@@ -1299,6 +1302,7 @@ class AbstractStyle
 	/**
 	 * Retrieve the data of the viewport. The viewport
 	 * origin is always to the top left of the window
+	 * displaying the document
 	 */
 	private function getViewportData():ContainingDOMElementData
 	{

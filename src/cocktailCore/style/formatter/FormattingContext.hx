@@ -159,10 +159,10 @@ class FormattingContext
 				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
 				
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 					elementWidth = domElement.offsetWidth;	
 					
-				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementWidth = 0;
 					
 				case BoxElementValue.text(domElement, parentDOMElement):
@@ -196,10 +196,10 @@ class FormattingContext
 				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 					elementHeight = domElement.offsetHeight;
 				
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 					elementHeight = domElement.offsetHeight;	
 					
-				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementHeight = domElement.offsetHeight;
 					
 				case BoxElementValue.text(domElement, parentDOMElement):
@@ -263,10 +263,10 @@ class FormattingContext
 			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				insertEmbeddedDOMElement(element);
 				
-			case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 				insertNonLaidOutContainerDOMElement(element);
 				
-			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 				insertContainerDOMElement(element);
 				
 			case BoxElementValue.text(domElement, parentDOMElement):
@@ -401,10 +401,10 @@ class FormattingContext
 			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				formattableElement = FormattableElementValue.child(element);
 				
-			case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 				formattableElement = FormattableElementValue.container(element,[]);
 				
-			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 				formattableElement = FormattableElementValue.container(element,[]);
 				
 			case BoxElementValue.text(domElement, parentDOMElement):
@@ -438,10 +438,10 @@ class FormattingContext
 				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 					elementParent = parentDOMElement;
 					
-				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementParent = parentDOMElement;
 					
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 					elementParent = parentDOMElement;	
 					
 				case BoxElementValue.text(domElement, parentDOMElement):
@@ -495,13 +495,13 @@ class FormattingContext
 				case FormattableElementValue.container(element, children):
 					switch (element)
 					{
-						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+						case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 							if (searchedParent == domElement)
 							{
 								parentFormattableElement = formattableElements[i];
 							}
 							
-						case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 							if (searchedParent == domElement)
 							{
 								parentFormattableElement = formattableElements[i];
@@ -515,13 +515,13 @@ class FormattingContext
 				case FormattableElementValue.child(element):
 					switch (element)
 					{
-						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+						case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 							if (searchedParent == domElement)
 							{
 								parentFormattableElement = formattableElements[i];
 							}
 							
-						case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 							if (searchedParent == domElement)
 							{
 								parentFormattableElement = formattableElements[i];
