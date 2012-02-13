@@ -66,7 +66,7 @@ class BoxPositioner
 		//using its first positioned ancestor as origin
 		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
 		{
-			element:BoxElementValue.domElement(domElement, null , true),
+			element:BoxElementValue.embeddedDOMElement(domElement, null),
 			x:0,
 			y:0,
 			width:0,

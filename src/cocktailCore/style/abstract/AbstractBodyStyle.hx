@@ -124,7 +124,12 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
-		return new BlockFormattingContext(this._domElement, null);
+		return new BlockFormattingContext(this._domElement);
+	}
+
+	override private function establishesNewFormattingContext():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,6 @@ class FormattingContext
 	 * An instance of the class managing the floated DOMElements.
 	 */
 	private var _floatsManager:FloatsManager;
-	public var floatsManager(getFloatsManager, never):FloatsManager;
 	
 	/**
 	 * Contains the data necessary to place the DOMElements in flow, 
@@ -60,6 +59,11 @@ class FormattingContext
 	
 	private var _currentBoxesData:Array<BoxData>;
 	
+	private var _rootFormattableElement:FormattableElementValue;
+	
+
+	
+	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
@@ -67,10 +71,8 @@ class FormattingContext
 	/**
 	 * Class constructor
 	 * @param	domElement the containing DOMElement which starts the formatting context
-	 * @param	previousformattingContext the previous formatting context, used to retrieve
-	 * floated DOMElement which still applies to the new formatting context
 	 */
-	public function new(domElement:DOMElement, previousformattingContext:FormattingContext = null) 
+	public function new(domElement:DOMElement) 
 	{
 		//store a reference to the DOMElement starting the formatting context
 		_containingDOMElement = domElement;
@@ -80,19 +82,14 @@ class FormattingContext
 		//formatting context
 		_floatsManager = new FloatsManager();
 		
-		//retrieve the floats inserted in a previous formatting
-		//context that still apply to this formatting context
-		if (previousformattingContext != null)
-		{	
-			_floatsManager.addFloats(previousformattingContext);
-		}
-		
 		//init the flow data to place the first inserted
 		//DOMElement in the right position
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
 		_formattingBoxesData = new Array<BoxData>();
 		_currentBoxesData = new Array<BoxData>();
+		
+		_rootFormattableElement = FormattableElementValue.container(BoxElementValue.containerDOMElement(_containingDOMElement, _containingDOMElement.parent), []);
 		
 	}
 	
@@ -117,6 +114,222 @@ class FormattingContext
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////
+	
+	public function format():Void
+	{
+		var rootChildren:Array<FormattableElementValue> = new Array<FormattableElementValue>();
+		
+		doFormat(_rootFormattableElement);
+		
+	}
+	
+	private function doFormat(formattableElement:FormattableElementValue):Void
+	{
+		
+		switch (formattableElement)
+		{
+			case FormattableElementValue.container(element, formattableElements):
+				for (i in 0...formattableElements.length)
+				{
+					switch (formattableElements[i])
+					{
+						case container(element, children):
+							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
+							doFormat(formattableElements[i]);
+							
+						case child(element):
+							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
+					}
+				}
+				
+			case FormattableElementValue.child(element):
+				
+		}
+		
+	
+	}
+
+
+	private function getElementWidth(element:BoxElementValue):Int
+	{
+		var elementWidth:Int;
+		
+		switch (element)
+			{
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;
+				
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;	
+					
+				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					elementWidth = 0;
+					
+				case BoxElementValue.text(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;
+					
+				case BoxElementValue.offset(value, parentDOMElement):
+					elementWidth = value;
+					
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+					elementWidth = spaceWidth;
+					
+				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+					elementWidth = tabWidth;
+					
+				case BoxElementValue.float(domElement, parentDOMElement):
+					elementWidth = 0;
+					
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					elementWidth = 0;
+			}
+			
+		return 	elementWidth;
+	}
+	
+	private function getElementHeight(element:BoxElementValue):Int
+	{
+		var elementHeight:Int;
+		
+		switch (element)
+			{
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+					elementHeight = domElement.offsetHeight;
+				
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					elementHeight = domElement.offsetHeight;	
+					
+				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					elementHeight = domElement.offsetHeight;
+					
+				case BoxElementValue.text(domElement, parentDOMElement):
+					elementHeight = domElement.offsetHeight;
+					
+				case BoxElementValue.offset(value, parentDOMElement):
+					elementHeight = 0;
+					
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+					elementHeight = 0;
+					
+				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+					elementHeight = 0;
+					
+				case BoxElementValue.float(domElement, parentDOMElement):
+					elementHeight = 0;
+					
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					elementHeight = 0;
+			}
+			
+		return 	elementHeight;
+	}
+	
+	private function isNextElementALineFeed(formattableElements:Array<FormattableElementValue>, currentIndex:Int):Bool
+	{
+		var isNextElementALineFeed:Bool;
+		
+		//here the current element is the last in the array
+		if (currentIndex + 1 >= formattableElements.length)
+		{
+			isNextElementALineFeed = false;
+		}
+		//else check if the next element is indeed a line feed
+		else
+		{
+			switch (formattableElements[currentIndex + 1])
+			{
+				case container(element, children):
+					isNextElementALineFeed = false;
+					
+				case child(element):
+					switch (element)
+					{
+						case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+							isNextElementALineFeed = true;
+							
+						default:
+							isNextElementALineFeed = false;
+					}
+			}
+		}
+		
+		return isNextElementALineFeed;
+	}
+	
+	private function doInsertElement(element:BoxElementValue, nexElementIsLineFeed:Bool):Void
+	{
+		switch (element)
+		{
+			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+				insertEmbeddedDOMElement(element);
+				
+			case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				insertNonLaidOutContainerDOMElement(element);
+				
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				insertContainerDOMElement(element);
+				
+			case BoxElementValue.text(domElement, parentDOMElement):
+				insertText(element);
+				
+			case BoxElementValue.offset(value, parentDOMElement):
+				insertOffset(element);
+				
+			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+				insertSpace(element, nexElementIsLineFeed);
+				
+			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+				insertTab(element, nexElementIsLineFeed);
+				
+			case BoxElementValue.float(domElement, parentDOMElement):
+				insertFloat(element);
+				
+			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+				insertLineFeed(element);
+		}
+	}
+	
+	private function insertEmbeddedDOMElement(element:BoxElementValue):Void
+	{
+		
+	}
+	
+
+	private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
+	{
+
+	}
+	
+	private function insertContainerDOMElement(element:BoxElementValue):Void
+	{
+		
+	}
+
+	 private function insertText(element:BoxElementValue):Void
+	{
+		
+	}
+	
+	private function insertSpace(element:BoxElementValue, isNextElementALineFeed:Bool):Void
+	{
+
+	}
+	
+	private function insertOffset(element:BoxElementValue):Void
+	{
+	
+	}
+	
+	private function insertTab(element:BoxElementValue, isNextElementALineFeed:Bool):Void
+	{
+
+	}
+	
+
+	private function insertLineFeed(element:BoxElementValue):Void
+	{
+		
+	}
 	
 	public function getBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{
@@ -163,68 +376,176 @@ class FormattingContext
 		return boxesData;
 	}
 	
-	/**
-	 * Insert a DOMElement in the formatting context's
-	 * flow
-	 */
-	public function insertDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
+
+	public function insertElement(insertedElement:BoxElementValue):Void
 	{
-		doInsert(domElement, parentDOMElement, true);
+		var searchedParent:DOMElement = getElementParent(insertedElement);
+		
+		var parentFormattableElement:FormattableElementValue = getParentFormattableElement(searchedParent);
+
+		switch (parentFormattableElement)
+		{
+			case FormattableElementValue.container(element, children):
+				children.push(getFormattableElementFromBoxElement(insertedElement));
+			
+			case FormattableElementValue.child(element):
+		}
 	}
 	
-	public function insertNonLaidOutDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	private function getFormattableElementFromBoxElement(element:BoxElementValue):FormattableElementValue
 	{
-		doInsert(domElement, parentDOMElement, false);
+		var formattableElement:FormattableElementValue;
+		
+		switch (element)
+		{
+			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+				formattableElement = FormattableElementValue.container(element,[]);
+				
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				formattableElement = FormattableElementValue.container(element,[]);
+				
+			case BoxElementValue.text(domElement, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.offset(value, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.float(domElement, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+				
+			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+				formattableElement = FormattableElementValue.child(element);
+		}
+			
+		return formattableElement;	
 	}
 	
-	public function insertText(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	private function getElementParent(element:BoxElementValue):DOMElement
 	{
+		var elementParent:DOMElement;
+		
+		switch (element)
+			{
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					elementParent = parentDOMElement;	
+					
+				case BoxElementValue.text(domElement, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.offset(value, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.float(domElement, parentDOMElement):
+					elementParent = parentDOMElement;
+					
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					elementParent = parentDOMElement;
+			}
+			
+		return 	elementParent;
+	}
+	
+	private function getParentFormattableElement(searchedParent:DOMElement): FormattableElementValue
+	{
+		var parentFormattableElement:FormattableElementValue = _rootFormattableElement;
+		
+		var rootChildren:Array<FormattableElementValue> = new Array<FormattableElementValue>();
+		
+		switch (_rootFormattableElement)
+		{
+			case FormattableElementValue.container(element, children):
+				rootChildren = children;
+				
+			case FormattableElementValue.child(element):
+				
+		}
+		
+		doGetParentFormattableElement(searchedParent, rootChildren, parentFormattableElement);
+		
+		return parentFormattableElement;
+	}
+	
+	private function doGetParentFormattableElement(searchedParent:DOMElement, formattableElements:Array<FormattableElementValue>, parentFormattableElement:FormattableElementValue):Void
+	{
+		for (i in 0...formattableElements.length)
+		{
+			switch (formattableElements[i])
+			{
+				case FormattableElementValue.container(element, children):
+					switch (element)
+					{
+						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+							if (searchedParent == domElement)
+							{
+								parentFormattableElement = formattableElements[i];
+							}
+							
+						case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+							if (searchedParent == domElement)
+							{
+								parentFormattableElement = formattableElements[i];
+							}
+							
+						default:	
+					}
+					
+					doGetParentFormattableElement(searchedParent, children, parentFormattableElement);
+					
+				case FormattableElementValue.child(element):
+					switch (element)
+					{
+						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+							if (searchedParent == domElement)
+							{
+								parentFormattableElement = formattableElements[i];
+							}
+							
+						case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+							if (searchedParent == domElement)
+							{
+								parentFormattableElement = formattableElements[i];
+							}
+							
+						default:	
+					}
+			}
+		}
 		
 	}
 	
-	/**
-	 * Insert a space character, wrapped in a DOMElement
-	 * in the formatting context
-	 */
-	public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, isNextElementALineFeed:Bool):Void
-	{
-		
-	}
-	
-	public function insertOffset(offset:Int, parentDOMElement:DOMElement):Void
-	{
-		
-	}
-	
-	/**
-	 * Insert a tab character, wrapped in a DOMElement
-	 * in the formatting context
-	 */
-	public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, isNextElementALineFeed:Bool):Void
-	{
-		
-	}
-	
-	/**
-	 * Start a new line by inserting a new line
-	 * control character
-	 */
-	public function insertLineFeed(whiteSpace:WhiteSpaceStyleValue):Void
-	{
-		
-	}
-	
+
 	/**
 	 * Insert a floated DOMElement in the formatting
 	 * context's flow
 	 */
-	public function insertFloat(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	private function insertFloat(element:BoxElementValue):Void
 	{
 		//get the float data (x,y, width and height) from the 
 		//floats manager
-		var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
+		//var floatData:FloatData = _floatsManager.computeFloatData(domElement, _formattingContextData, parentDOMElement.style.computedStyle.width);
 		//actually place the floated DOMElement
-		placeFloat(domElement, parentDOMElement, floatData);
+		//placeFloat(domElement, parentDOMElement, floatData);
 	}
 	
 	/**
@@ -232,26 +553,7 @@ class FormattingContext
 	 * When floats are cleared, the flow y attribute is placed
 	 * at the bottom of the last cleared float
 	 */
-	public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Retrieve the floats from another formatting context
-	 * which applies to this formatting context
-	 */
-	public function retrieveFloats(formattingContext:FormattingContext):Void
-	{
-		_floatsManager.retrieveFloats(formattingContext);
-	}
-	
-	/**
-	 * Called by a new formatting context
-	 * to perform clean up before this
-	 * formatting context gets destroyed
-	 */
-	public function destroy():Void
+	private function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
 		//abstract
 	}
@@ -338,11 +640,6 @@ class FormattingContext
 	/////////////////////////////////
 	// GETTERS/SETTERS
 	/////////////////////////////////
-	
-	private function getFloatsManager():FloatsManager
-	{
-		return _floatsManager;
-	}
 	
 	private function getFormattingContextData():FormattingContextData
 	{

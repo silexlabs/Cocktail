@@ -628,13 +628,6 @@ class AbstractStyle
 		{
 			setNativeVisibility(true);
 		}
-		
-		//clear preceding left floats, right floats
-		//or both
-		if (isClear() == true)
-		{
-			formattingContext.clearFloat(this._computedStyle.clear, isFloat());
-		}
 
 		//reset the computed styles, useful for instance to
 		//reset an auto height to 0 if a layout has already
@@ -754,7 +747,7 @@ class AbstractStyle
 		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent);
+			formattingContext.insertElement(BoxElementValue.float(this._domElement, this._domElement.parent));
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
@@ -810,7 +803,7 @@ class AbstractStyle
 	 */
 	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
 	{
-		formattingContext.insertDOMElement(this._domElement, this._domElement.parent);
+		formattingContext.insertElement(BoxElementValue.embeddedDOMElement(this._domElement, this._domElement.parent));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

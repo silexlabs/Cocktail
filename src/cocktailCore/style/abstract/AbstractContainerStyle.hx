@@ -207,7 +207,43 @@ class AbstractContainerStyle extends Style
 			
 			switch (child.element)
 			{
-				case BoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+				
+				//TODO : clean-up, should'nt be here
+				if (isInlineContainer() == false)
+				{
+					//apply x and y
+					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				}
+				else
+				{
+						//apply x and y
+					domElement.style.setNativeX(domElement, child.x );
+					domElement.style.setNativeY(domElement, child.y );
+				}
+				
+				childrenNativeElements.push(domElement.nativeElement);
+				
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				
+				//TODO : clean-up, should'nt be here
+				if (isInlineContainer() == false)
+				{
+					//apply x and y
+					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				}
+				else
+				{
+						//apply x and y
+					domElement.style.setNativeX(domElement, child.x );
+					domElement.style.setNativeY(domElement, child.y );
+				}
+				
+				childrenNativeElements.push(domElement.nativeElement);
+				
+				case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
 				
 				//TODO : clean-up, should'nt be here
 				if (isInlineContainer() == false)
@@ -278,15 +314,13 @@ class AbstractContainerStyle extends Style
 				
 				switch (boxData.children[i].element)
 				{
-					case BoxElementValue.domElement(domElement, parentDOMElement, position):
-						doPosition = position;
-						
+					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+						doPosition = false;
+			
 					default:
 						doPosition = true;
 				}
 				
-				//TODO : do not compute child if it is an
-				//inline container as its x will be 0
 				if (doPosition == true)
 				{
 					if (boxData.children[i].x < left)
@@ -344,6 +378,7 @@ class AbstractContainerStyle extends Style
 					width : width,
 					height :  height,
 				}
+				
 		}
 		
 		return bounds;
@@ -406,15 +441,7 @@ class AbstractContainerStyle extends Style
 		//is the first to be laid out, it is not necessarily the root
 		//DOMElement of the document as any DOMElement can trigger
 		//a layout
-		if (formattingContext == null)
-		{
-			formattingContext = getformattingContext();
-			childrenFormattingContext = getformattingContext();
-		}
-		else
-		{
-			childrenFormattingContext = getformattingContext(formattingContext);
-		}
+		childrenFormattingContext = getformattingContext(formattingContext);
 		
 		//get the dimensions that will be used to lay out the children
 		//of the DOMElement. For instance, if the ContainerDOMElement establishes an
@@ -471,10 +498,6 @@ class AbstractContainerStyle extends Style
 		{
 			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
 		}
-
-		//retrieve the floats overflowing from the children of this ContainerDOMElement, 
-		//that will also affect the position of its following siblings
-		formattingContext.retrieveFloats(childrenFormattingContext);
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
@@ -505,11 +528,12 @@ class AbstractContainerStyle extends Style
 		
 		if (establishesNewFormattingContext() == true)
 		{
-			formattingContext.insertDOMElement(this._domElement, this._domElement.parent);
+			formattingContext.insertElement(BoxElementValue.containerDOMElement(this._domElement, this._domElement.parent));
 		}
 		else
 		{
-			formattingContext.insertNonLaidOutDOMElement(this._domElement, this._domElement.parent);
+			//TODO : add correspondig constructor in BoxElementValue instead of attribute position ?
+			formattingContext.insertElement(BoxElementValue.nonLaidOutContainerDOMElement(this._domElement, this._domElement.parent));
 		}
 	}
 	
@@ -524,10 +548,10 @@ class AbstractContainerStyle extends Style
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
-		//TODO : improve, put in a separate method ?
+		//TODO : must now be put in inline formatting context ?
 			if (establishesNewFormattingContext() == false && isInlineContainer() == true)
 			{
-				childrenFormattingContext.insertOffset(_computedStyle.marginLeft + _computedStyle.paddingLeft, this._domElement);
+				//childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginLeft + _computedStyle.paddingLeft, this._domElement));
 			}
 		
 		//flow all children 
@@ -555,10 +579,10 @@ class AbstractContainerStyle extends Style
 			
 		}
 		
-			//TODO : improve, put in a separate method ?
+			//TODO : must now be put in inline formatting context ?
 			if (establishesNewFormattingContext() == false  && isInlineContainer() == true)
 			{
-				childrenFormattingContext.insertOffset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement);
+				//childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement));
 			}
 		
 		//destroy the current formatting context, prompting
@@ -570,7 +594,7 @@ class AbstractContainerStyle extends Style
 		//meaning that it also is responsible to "clean" it.
 		if (establishesNewFormattingContext() == true)
 		{
-			childrenFormattingContext.destroy();
+			childrenFormattingContext.format();
 		}
 
 		return childrenFormattingContext;
@@ -618,7 +642,7 @@ class AbstractContainerStyle extends Style
 							//relative positioned DOMElement
 							switch (childrenBoxesData[i].children[j].element)
 							{
-								case BoxElementValue.domElement(domElement, parentDOMElement, position):
+								case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 									if (domElement == positionedDOMElementData.style.domElement)
 									{
 										var x:Float = childrenBoxesData[i].children[j].x;
@@ -628,6 +652,28 @@ class AbstractContainerStyle extends Style
 											y:y
 										}
 									}
+								
+								case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+									if (domElement == positionedDOMElementData.style.domElement)
+									{
+										var x:Float = childrenBoxesData[i].children[j].x;
+										var y:Float = childrenBoxesData[i].children[j].y;
+										positionedDOMElementData.staticPosition = {
+											x:x,
+											y:y
+										}
+									}	
+									
+								case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+									if (domElement == positionedDOMElementData.style.domElement)
+									{
+										var x:Float = childrenBoxesData[i].children[j].x;
+										var y:Float = childrenBoxesData[i].children[j].y;
+										positionedDOMElementData.staticPosition = {
+											x:x,
+											y:y
+										}
+									}		
 									
 								default:	
 							}
@@ -661,13 +707,26 @@ class AbstractContainerStyle extends Style
 				//of their parent and not the content box, so an offset need to be applied
 				switch (childTemporaryPositionData.element)
 				{
-					case BoxElementValue.domElement(domElement, parentDOMElement, position):
+					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
 							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}
 						
+					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+						if (domElement.style.isRelativePositioned() == false)
+						{
+							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+						}	
+						
+					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+						if (domElement.style.isRelativePositioned() == false)
+						{
+							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+						}	
 					default:	
 				}
 			
@@ -701,54 +760,24 @@ class AbstractContainerStyle extends Style
 			{
 				case word(value):
 					//insert a word in the flow
-					formattingContext.insertText(getTextFragmentDOMElement(textFragments[i], value), this._domElement);
+					formattingContext.insertElement(BoxElementValue.text(getTextFragmentDOMElement(textFragments[i], value), this._domElement));
 					
 					
 				case space:
 					//insert a space in the flow
-					formattingContext.insertSpace(_computedStyle.whiteSpace, fontMetrics.spaceWidth, isNextElementALineFeed(textFragments, i));
+					formattingContext.insertElement(BoxElementValue.space(_computedStyle.whiteSpace, fontMetrics.spaceWidth, this._domElement));
 					
 					
 				case tab:
 					//insert a tab in the flow
-					formattingContext.insertTab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8, isNextElementALineFeed(textFragments, i));
+					formattingContext.insertElement(BoxElementValue.tab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8, this._domElement));
 					
 					
 				case lineFeed:
 					//start a new line
-					formattingContext.insertLineFeed(_computedStyle.whiteSpace);
+					formattingContext.insertElement(BoxElementValue.lineFeed(_computedStyle.whiteSpace, this._domElement));
 			}
 		}		
-	}
-	
-	/**
-	 * Determine wether the next text fragment is a line feed.
-	 * With some values of the WhiteSpace style, space and tab
-	 * are removed when surrounding a line feed
-	 */
-	private function isNextElementALineFeed(textFragments:Array<TextFragmentData>, currentIndex:Int):Bool
-	{
-		var isNextElementALineFeed:Bool;
-		
-		//here the current element is the last in the array
-		if (currentIndex + 1 >= textFragments.length)
-		{
-			isNextElementALineFeed = false;
-		}
-		//else check if the next element is indeed a line feed
-		else
-		{
-			switch (textFragments[currentIndex + 1].textToken)
-			{
-				case lineFeed:
-					isNextElementALineFeed = true;
-					
-				default:
-					isNextElementALineFeed = false;
-			}
-		}
-		
-		return isNextElementALineFeed;
 	}
 	
 	/**
@@ -913,33 +942,17 @@ class AbstractContainerStyle extends Style
 		var formattingContext:FormattingContext;
 		
 		//here, a new formatting context is created
-		if (establishesNewFormattingContext() == true)
+		if (establishesNewFormattingContext() == true || previousformattingContext == null)
 		{
-			//the formatting context that will be passed to the
-			//new formatting context
-			var usedformattingContext:FormattingContext;
-			
-			//If the container DOMElement is absolutely positioned, then it belongs to a
-			//different stacking context than the curent flow and is not influenced by the previously
-			//declared float, so it doesn't use the previousFormattingContext
-			if (isPositioned() == true && isRelativePositioned() == false)
-			{
-				usedformattingContext = null;
-			}
-			else
-			{
-				usedformattingContext = previousformattingContext;
-			}
-			
 			//instantiate the right formatting context
 			//based on the children display
 			if (childrenInline() == true)
 			{
-				formattingContext = new InlineFormattingContext(containerDOMElement, usedformattingContext);	
+				formattingContext = new InlineFormattingContext(containerDOMElement);	
 			}
 			else
 			{
-				formattingContext = new BlockFormattingContext(containerDOMElement, usedformattingContext);
+				formattingContext = new BlockFormattingContext(containerDOMElement);
 			}
 		}
 		else

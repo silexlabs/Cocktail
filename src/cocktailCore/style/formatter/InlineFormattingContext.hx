@@ -65,26 +65,21 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
+	public function new(domElement:DOMElement) 
 	{
 		_elementsInLineBox = new Array<BoxElementData>();
 		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_unbreakableWidth = 0;
 		
-		super(domElement, previousFormattingContext);
+		super(domElement);
 		
 		//set the textIndent as an offset on the first line of text
-		insertOffset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement);
+		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
 	
-	/**
-	 * Called when the inline formatting context will
-	 * be replaced by anohter. Used to ensure that the last line
-	 * of DOMElements is laid out by inserting a forced
-	 * break opportunity
-	 */
-	override public function destroy():Void
+	override public function format():Void
 	{
+		super.format();
 		insertBreakOpportunity(true, true);
 	}
 	
@@ -98,21 +93,39 @@ class InlineFormattingContext extends FormattingContext
 	// OVERRIDEN PUBLIC LINE MEASUREMENT METHODS
 	//////////////////////////////////////////////////////////////////
 	
+	
 	/**
 	 * Insert a DOMElement and instroduce the corresponding break opportunities
 	 */
-	override public function insertDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{
 		insertBreakOpportunity(false);
 		
-		var insertedElement:BoxElementValue = BoxElementValue.domElement(domElement, parentDOMElement, true);
 		_unbreakableLineBoxElements.push( {
-			element:insertedElement,
+			element:element,
 			x:0,
 			y:0 } );
-		_lastInsertedElement = insertedElement;
+		_lastInsertedElement = element;
 			
-		addWidth(domElement.offsetWidth);
+		addWidth(getElementWidth(element));
+			
+		insertBreakOpportunity(false);
+	}
+	
+	/**
+	 * Insert a DOMElement and instroduce the corresponding break opportunities
+	 */
+	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	{
+		insertBreakOpportunity(false);
+		
+		_unbreakableLineBoxElements.push( {
+			element:element,
+			x:0,
+			y:0 } );
+		_lastInsertedElement = element;
+			
+		addWidth(getElementWidth(element));
 			
 		insertBreakOpportunity(false);
 	}
@@ -130,10 +143,10 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	domElement
 	 * @param	parentDOMElement
 	 */
-	override public function insertNonLaidOutDOMElement(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	override private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
 	{
 		_unbreakableLineBoxElements.push( {
-		element:BoxElementValue.domElement(domElement, parentDOMElement, false),
+		element:element,
 		x:0,
 		y:0 } );
 	}
@@ -143,16 +156,15 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * TODO : text shouldn't be a DOMElement but a lighter structure
 	 */
-	override public function insertText(domElement:DOMElement, parentDOMElement:DOMElement):Void
+	override private function insertText(element:BoxElementValue):Void
 	{
-		var insertedElement:BoxElementValue = BoxElementValue.text(domElement, parentDOMElement);
 		_unbreakableLineBoxElements.push( {
-			element:insertedElement,
+			element:element,
 			x:0,
 			y:0 } );
-		_lastInsertedElement = insertedElement;	
+		_lastInsertedElement = element;	
 		
-		addWidth(domElement.offsetWidth);
+		addWidth(getElementWidth(element) );
 	}
 	
 	/**
@@ -161,21 +173,20 @@ class InlineFormattingContext extends FormattingContext
 	 * space sequances are not allowed for the whiteSpace
 	 * value of the space
 	 */
-	override public function insertSpace(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, isNextElementALineFeed:Bool):Void
+	override private function insertSpace(element:BoxElementValue, isNextElementALineFeed:Bool):Void
 	{
 		//only insert space if allowed
-		if (shouldInsertSpace(whiteSpace, isNextElementALineFeed) == true)
+		if (shouldInsertSpace(getElementWhiteSpace(element), isNextElementALineFeed) == true)
 		{
-			var insertedElement:BoxElementValue = BoxElementValue.space(spaceWidth);
 			
 			_unbreakableLineBoxElements.push( {
-			element:insertedElement,
+			element:element,
 			x:0,
 			y:0 } );
 			
-			_lastInsertedElement = insertedElement;	
+			_lastInsertedElement = element;	
 			
-			addWidth(spaceWidth);
+			addWidth(getElementWidth(element));
 			
 			insertBreakOpportunity(false);
 		}
@@ -189,35 +200,35 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * @param	offset the width of the offset
 	 */
-	override public function insertOffset(offset:Int, parentDOMElement:DOMElement):Void
+	override private function insertOffset(element:BoxElementValue):Void
 	{
 		_unbreakableLineBoxElements.push( {
-		element:BoxElementValue.offset(offset, parentDOMElement),
+		element:element,
 		x:0,
 		y:0 } );
 		
-		addWidth(offset);
+		addWidth(getElementWidth(element));
 	}
 	
 	/**
 	 * Insert a tab character. Like the space charachter it might not
 	 * actually be added or might also be converted to a space
 	 */
-	override public function insertTab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, isNextElementALineFeed:Bool):Void
+	override private function insertTab(element:BoxElementValue, isNextElementALineFeed:Bool):Void
 	{
 		var insertedElement:BoxElementValue;
 		var addedWidth:Int;
 		
 		//here the tab is converted to a space
-		if (shouldTabBeConvertedToSpace(whiteSpace) == true)
+		if (shouldTabBeConvertedToSpace(getElementWhiteSpace(element)) == true)
 		{
-			insertedElement = BoxElementValue.space(Math.round(tabWidth / 8));
-			addedWidth = Math.round(tabWidth / 8);
+			insertedElement = BoxElementValue.space(getElementWhiteSpace(element), Math.round(getElementWidth(element) / 8), getElementParent(element));
+			addedWidth = Math.round(getElementWidth(element) / 8);
 		}
 		else
 		{
-			insertedElement = BoxElementValue.tab(tabWidth);
-			addedWidth = tabWidth;
+			insertedElement = element;
+			addedWidth = getElementWidth(element);
 		}
 		_unbreakableLineBoxElements.push( {
 			element:insertedElement,
@@ -231,12 +242,34 @@ class InlineFormattingContext extends FormattingContext
 	 * Might force a line break if line feed are allowed
 	 * for the whiteSpace value of the line feed
 	 */
-	override public function insertLineFeed(whiteSpace:WhiteSpaceStyleValue):Void
+	override private function insertLineFeed(element:BoxElementValue):Void
 	{
-		if (isLineFeedAllowed(whiteSpace) == true)
+		if (isLineFeedAllowed(getElementWhiteSpace(element)) == true)
 		{
 			insertBreakOpportunity(true);
 		}
+	}
+	
+	private function getElementWhiteSpace(element:BoxElementValue):WhiteSpaceStyleValue
+	{
+		var elementWhiteSpace:WhiteSpaceStyleValue;
+		
+		switch (element)
+		{
+			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			default:
+				elementWhiteSpace = null;
+		}
+		
+		return elementWhiteSpace;
 	}
 	
 	//////////////////////////////////////////////////////////////////
@@ -246,6 +279,8 @@ class InlineFormattingContext extends FormattingContext
 	//////////////////////////////////////////////////////////////////
 	// PRIVATE LINE MEASUREMENT METHODS
 	//////////////////////////////////////////////////////////////////
+	
+	
 	
 	/**
 	 * Inserting a break opportunity signals the the current line
@@ -361,7 +396,7 @@ class InlineFormattingContext extends FormattingContext
 			WhiteSpaceStyleValue.pre:
 				shouldInsertSpace = true;
 		}
-		
+			
 		if (shouldInsertSpace == true)
 		{
 			shouldInsertSpace != isCollapsed(_lastInsertedElement, whiteSpace);
@@ -387,7 +422,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (lastInsertedElement)
 			{
-				case BoxElementValue.space(spaceWidth):
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
 				
 				switch (whiteSpace)
 				{
@@ -409,7 +444,7 @@ class InlineFormattingContext extends FormattingContext
 		return isCollapsed;
 	}
 	
-	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
+	override private function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
 		if (isFloat == true)
 		{
@@ -438,7 +473,6 @@ class InlineFormattingContext extends FormattingContext
 
 	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
-
 		if (_elementsInLineBox.length > 0)
 		{
 			removeSpaces();
@@ -456,13 +490,12 @@ class InlineFormattingContext extends FormattingContext
 			{
 				switch (_elementsInLineBox[i].element)
 				{
-					case BoxElementValue.domElement(domElement, parentDOMElement, position):
+					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 						
 						
 					var childTemporaryPositionData:ChildTemporaryPositionData;
 				
-					if (position == true)
-					{
+					
 						childTemporaryPositionData = {
 							element:_elementsInLineBox[i].element,
 							x:_elementsInLineBox[i].x,
@@ -470,9 +503,41 @@ class InlineFormattingContext extends FormattingContext
 							width:domElement.offsetWidth,
 							height:domElement.offsetHeight
 						}
-					}
-					else
-					{
+
+					
+					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+				
+				
+					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
+					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					
+					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+						
+						
+					var childTemporaryPositionData:ChildTemporaryPositionData;
+				
+					
+						childTemporaryPositionData = {
+							element:_elementsInLineBox[i].element,
+							x:_elementsInLineBox[i].x,
+							y:_elementsInLineBox[i].y,
+							width:domElement.offsetWidth,
+							height:domElement.offsetHeight
+						}
+
+					
+					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+				
+				
+					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
+					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					
+					case BoxElementValue.nonLaidOutContainerDOMElement(domElement, parentDOMElement):
+						
+						
+					var childTemporaryPositionData:ChildTemporaryPositionData;
+				
+
 						childTemporaryPositionData = {
 							element:_elementsInLineBox[i].element,
 							x:0,
@@ -480,8 +545,8 @@ class InlineFormattingContext extends FormattingContext
 							width:0,
 							height:0
 						}
-					}
 					
+				
 					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
 				
 				
@@ -609,37 +674,7 @@ class InlineFormattingContext extends FormattingContext
 		*/
 	}
 	
-	private function getElementWidth(element:BoxElementValue):Int
-	{
-		var elementWidth:Int;
-		
-		switch (element)
-			{
-				case BoxElementValue.domElement(domElement, parentDOMElement, position):
-					if (position == true)
-					{
-						elementWidth = domElement.offsetWidth;
-					}
-					else
-					{
-						elementWidth = 0;
-					}
-					
-				case BoxElementValue.text(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;
-					
-				case BoxElementValue.offset(value, parentDOMElement):
-					elementWidth = value;
-					
-				case BoxElementValue.space(spaceWidth):
-					elementWidth = spaceWidth;
-					
-				case BoxElementValue.tab(tabWidth):
-					elementWidth = tabWidth;
-			}
-			
-		return 	elementWidth;
-	}
+
 	
 	
 	/////////////////////////////////
@@ -772,7 +807,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case BoxElementValue.space(spaceWidth):
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
 					spacesNumber++;
 					
 				default:	
@@ -785,7 +820,7 @@ class InlineFormattingContext extends FormattingContext
 			//if the DOMElement is a space
 			switch (_elementsInLineBox[i].element)
 			{
-				case BoxElementValue.space(width):
+				case BoxElementValue.space(whiteSpace, width, parentDOMElement):
 					//each space has its width stretched to the same width,
 					//all the concatenated width of the space fill the remaining
 					//space of the line box
@@ -826,7 +861,62 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case BoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				
+				var domElementAscent:Int;
+				var domElementDescent:Int;
+				
+				//the computed vertical align is the offset of the DOMElemenet relative
+				//to the baseline
+				var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+				
+
+				
+				//for embedded or inlineBlock elements, which have no baseline, the height above
+				//the baseline is the offset height and they have no descent
+				if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+				{
+					domElementAscent = domElement.offsetHeight;
+					domElementDescent = 0;
+					
+					switch (domElement.style.verticalAlign)
+					{
+						case top:
+							domElementAscent = Math.round(lineBoxAscent);
+							domElementDescent = Math.round(domElement.offsetHeight - lineBoxAscent);
+							
+						default:	
+							
+					}
+				}
+				//else retrieve the ascent and descent and apply leading to it
+				else
+				{
+					domElementAscent = domElement.style.fontMetrics.ascent;
+					domElementDescent = domElement.style.fontMetrics.descent;	
+				
+					//the leading is an extra height to apply equally to the ascent
+					//and the descent when laying out lines of text
+					var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+			
+					//apply leading to the ascent and descent
+					domElementAscent = Math.round((domElementAscent + leading / 2));
+					domElementDescent = Math.round((domElementDescent + leading / 2));
+				}
+				
+				//if the ascent or descent is superior to the current maximum
+				//ascent or descent, it becomes the line box ascent/descent
+				if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
+				{
+					lineBoxAscent = domElementAscent - domElementVerticalAlign;
+				}
+				
+				if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
+				{
+					lineBoxDescent = domElementDescent + domElementVerticalAlign;
+				}
+				
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				
 				var domElementAscent:Int;
 				var domElementDescent:Int;
@@ -950,10 +1040,9 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[i].element)
 			{
-				case BoxElementValue.domElement(domElement, parentDOMElement, position):
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				
-				if (position == true)
-				{
+				
 					var verticalAlign:Float;
 					switch (domElement.style.verticalAlign)
 					{
@@ -988,12 +1077,48 @@ class InlineFormattingContext extends FormattingContext
 						
 						
 					}
-				}
+				
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				
+				
+					var verticalAlign:Float;
+					switch (domElement.style.verticalAlign)
+					{
+						case top:
+							verticalAlign = 0;
+							
+							
+						case bottom:
+							verticalAlign = 0;
+							
+						default:
+							verticalAlign = domElement.style.computedStyle.verticalAlign;
+					}
+					
+					
+					_elementsInLineBox[i].y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y;
+					//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
+					//so that its bottom margin touches the baseline
+					if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+					{
+						
+						
+						switch (domElement.style.verticalAlign)
+						{
+							case top:
+								_elementsInLineBox[i].y = _formattingContextData.y;
+							
+							default:	
+								_elementsInLineBox[i].y -= domElement.offsetHeight;
+							
+						}
+						
+						
+					}
+				
 				
 				case BoxElementValue.text(domElement, parentDOMElement):
 				
-				if (true)
-				{
 					var verticalAlign:Float;
 					switch (domElement.style.verticalAlign)
 					{
@@ -1028,7 +1153,7 @@ class InlineFormattingContext extends FormattingContext
 						
 						
 					}
-				}
+				
 				
 				
 				default:
