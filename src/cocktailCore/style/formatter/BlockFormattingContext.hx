@@ -19,15 +19,108 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
+	private var _embeddedAndContainerY:Int;
 
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
+	public function new(domElement:DOMElement) 
+	{
+		super(domElement);
+		_embeddedAndContainerY = 0;
+		
+	}
+	
+	override private function doFormat(formattableElement:FormattableElementValue):Void
+	{
+		switch (formattableElement)
+		{
+			
+			
+			case FormattableElementValue.container(element, formattableElements):
+				
+				
+				
+				for (i in 0...formattableElements.length)
+				{
+					switch (formattableElements[i])
+					{
+						case container(element, children):
+							doFormat(formattableElements[i]);
+							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
+							
+							
+						case child(element):
+							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
+					}
+				}
+				
+				
+				
+			case FormattableElementValue.child(element):
+				
+		}
+		
+		
+	}
+	
+
+	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{
 		
-		super(domElement, previousFormattingContext);
+		var childTemporaryPositionData:ChildTemporaryPositionData = {
+				element:element,
+				x:_formattingContextData.x, 
+				y:_embeddedAndContainerY,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+			_embeddedAndContainerY += getElementHeight(element);
+			
+			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+			
 	}
+	
+
+	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	{
+		
+		
+		var childTemporaryPositionData:ChildTemporaryPositionData = {
+				element:element,
+				x:_formattingContextData.x, 
+				y:_embeddedAndContainerY,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+			//TODO : gérer le cas de height = auto ?
+			_embeddedAndContainerY += getElementHeight(element);
+			_formattingContextData.y += getElementHeight(element);
+			
+			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+	}
+	
+
+	override private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
+	{
+		var childTemporaryPositionData:ChildTemporaryPositionData = {
+				element:element,
+				x:_formattingContextData.x, 
+				y:_formattingContextData.y,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+			Log.trace(getElementHeight(element));
+			
+			_formattingContextData.y += getElementHeight(element) ;
+			_embeddedAndContainerY = _formattingContextData.y;
+			
+			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+	}
+	
 	
 	/**
 	 * Place the DOMElement below the preceding DOMElement
@@ -53,7 +146,7 @@ class BlockFormattingContext extends FormattingContext
 		if (position == true)
 		{
 			childTemporaryPositionData = {
-				element:BoxElementValue.domElement(domElement, parentDOMElement, position),
+				element:BoxElementValue.embeddedDOMElement(domElement, parentDOMElement),
 				x:_formattingContextData.x, 
 				y:_formattingContextData.y,
 				width:domElement.offsetWidth,
@@ -63,7 +156,7 @@ class BlockFormattingContext extends FormattingContext
 		else
 		{
 			childTemporaryPositionData = {
-				element:BoxElementValue.domElement(domElement, parentDOMElement, position),
+				element:BoxElementValue.embeddedDOMElement(domElement, parentDOMElement),
 				x:0, 
 				y:0,
 				width:0,
@@ -73,7 +166,6 @@ class BlockFormattingContext extends FormattingContext
 	
 
 		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
-		
 		
 		
 		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
@@ -104,7 +196,7 @@ class BlockFormattingContext extends FormattingContext
 	 * clear left, right or both floats and set the y of the formattingContextData below
 	 * the last cleared float
 	 */
-	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
+	override private function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
 	{
 		_formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
 	}

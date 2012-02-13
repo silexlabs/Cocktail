@@ -1388,6 +1388,11 @@ import cocktailCore.style.formatter.FormattingContext;
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	enum FormattableElementValue {
+		container(element:BoxElementValue, children:Array<FormattableElementValue>);
+		child(element:BoxElementValue);
+	}
+	
 	/**
 	 * Lists the different kind of
 	 * boxes that can be added in an
@@ -1399,9 +1404,13 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * once it is complete
 	 */
 	enum BoxElementValue {
-		domElement(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool);
+		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		nonLaidOutContainerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		float(domElement:DOMElement, parentDOMElement:DOMElement);
 		text(domElement:DOMElement, parentDOMElement:DOMElement);
 		offset(value:Int, parentDOMElement:DOMElement );
-		space(spaceWidth:Int);
-		tab(tabWidth:Int);
+		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
+		lineFeed(whiteSpace:WhiteSpaceStyleValue, parentDOMElement:DOMElement);
+		tab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, parentDOMElement:DOMElement);
 	}
