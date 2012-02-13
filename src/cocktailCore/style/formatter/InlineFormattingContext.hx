@@ -115,7 +115,7 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Insert a DOMElement and instroduce the corresponding break opportunities
 	 */
-	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	override private function insertContainingBlockDOMElement(element:BoxElementValue):Void
 	{
 		insertBreakOpportunity(false);
 		
@@ -143,7 +143,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	domElement
 	 * @param	parentDOMElement
 	 */
-	override private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
+	override private function insertContainerDOMElement(element:BoxElementValue):Void
 	{
 		_unbreakableLineBoxElements.push( {
 		element:element,
@@ -451,14 +451,7 @@ class InlineFormattingContext extends FormattingContext
 			 _formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
 		}
 	}
-	
-	override private function placeFloat(domElement:DOMElement, parentDOMElement:DOMElement, floatData:FloatData):Void
-	{
-		super.placeFloat(domElement, parentDOMElement, floatData);
-		
-		formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		
-	}
+
 	
 	
 	
@@ -471,7 +464,7 @@ class InlineFormattingContext extends FormattingContext
 	// OVERRIDEN PRIVATE METHOD
 	/////////////////////////////////
 
-	override private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
+	private function startNewLine(domElementWidth:Int, isLastLine:Bool = false):Void
 	{
 		if (_elementsInLineBox.length > 0)
 		{

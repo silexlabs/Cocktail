@@ -83,7 +83,7 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 
-	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	override private function insertContainingBlockDOMElement(element:BoxElementValue):Void
 	{
 		
 		
@@ -103,7 +103,7 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 
-	override private function insertNonLaidOutContainerDOMElement(element:BoxElementValue):Void
+	override private function insertContainerDOMElement(element:BoxElementValue):Void
 	{
 		var childTemporaryPositionData:ChildTemporaryPositionData = {
 				element:element,
@@ -120,86 +120,7 @@ class BlockFormattingContext extends FormattingContext
 			
 			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
 	}
-	
-	
-	/**
-	 * Place the DOMElement below the preceding DOMElement
-	 */
-	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
-	{
-		super.place(domElement, parentDOMElement, position);
-		
-		//add the left float offset if the element is embedded
-		//(for instance an image), for non-embedded DOMElement
-		//(like a container), the left float offset isn't used
-		var leftFloatOffset:Int = 0;
-		if (domElement.style.isEmbedded() == true)
-		{
-			_formattingContextData.y = _floatsManager.getFirstAvailableY(formattingContextData, domElement.offsetWidth, _containingDOMElementWidth);
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		}
-			
-		//apply the new x and y position to the DOMElement and formattingContextData
-		_formattingContextData.x =  leftFloatOffset;
-		
-		var childTemporaryPositionData:ChildTemporaryPositionData;
-		if (position == true)
-		{
-			childTemporaryPositionData = {
-				element:BoxElementValue.embeddedDOMElement(domElement, parentDOMElement),
-				x:_formattingContextData.x, 
-				y:_formattingContextData.y,
-				width:domElement.offsetWidth,
-				height:domElement.offsetHeight
-			}
-		}
-		else
-		{
-			childTemporaryPositionData = {
-				element:BoxElementValue.embeddedDOMElement(domElement, parentDOMElement),
-				x:0, 
-				y:0,
-				width:0,
-				height:0
-			}
-		}
-	
 
-		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
-		
-		
-		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
-		
-		if (position == true)
-		{
-			_formattingContextData.y += domElement.offsetHeight;
-			
-		}
-		else
-		{
-			_formattingContextData.y += domElement.offsetHeight - domElement.style.computedStyle.height;
-		}
-		_formattingContextData.maxHeight = _formattingContextData.y ;
-		
-		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
-		//of a container is set as 'shrink-to-fit' (takes its content width)
-		if (_formattingContextData.x + domElement.offsetWidth > _formattingContextData.maxWidth)
-		{
-			_formattingContextData.maxWidth = _formattingContextData.x + domElement.offsetWidth;
-		}
-		
-
-	}
-
-	/**
-	 * clear left, right or both floats and set the y of the formattingContextData below
-	 * the last cleared float
-	 */
-	override private function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
-	{
-		_formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
-	}
 	
 	
 	
