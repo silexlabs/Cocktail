@@ -31,39 +31,6 @@ class BlockFormattingContext extends FormattingContext
 		
 	}
 	
-	override private function doFormat(formattableElement:FormattableElementValue):Void
-	{
-		switch (formattableElement)
-		{
-			
-			
-			case FormattableElementValue.container(element, formattableElements):
-				
-				
-				
-				for (i in 0...formattableElements.length)
-				{
-					switch (formattableElements[i])
-					{
-						case container(element, children):
-							doFormat(formattableElements[i]);
-							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
-							
-							
-						case child(element):
-							doInsertElement(element, isNextElementALineFeed(formattableElements, i));
-					}
-				}
-				
-				
-				
-			case FormattableElementValue.child(element):
-				
-		}
-		
-		
-	}
-	
 
 	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{

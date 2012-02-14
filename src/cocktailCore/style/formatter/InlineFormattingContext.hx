@@ -443,14 +443,6 @@ class InlineFormattingContext extends FormattingContext
 		
 		return isCollapsed;
 	}
-	
-	override private function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
-	{
-		if (isFloat == true)
-		{
-			 _formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
-		}
-	}
 
 	
 	
@@ -602,18 +594,6 @@ class InlineFormattingContext extends FormattingContext
 			_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 			
 		}
-		/**
-		else
-		{
-			
-			_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, domElementWidth, _containingDOMElementWidth);
-			
-
-			_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-			
-			
-			
-		}*/
 	}
 	
 	
