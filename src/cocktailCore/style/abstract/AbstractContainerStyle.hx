@@ -275,99 +275,33 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Get the bound of a box in the coordinate space
-	 * of this styled ContainerDOMElement
-	 * @param	boxData
-	 * @return
+	 * Get the relevant bounds of a box data which for an inline
+	 * container is the bounds of its children and for a block
+	 * container, the bounds of the DOMElement
 	 */
 	private function getBounds(boxData:BoxData):RectangleData
 	{
 		var bounds:RectangleData;
 		
-		//if the ContainerDOMElement is an inline container, then
-		//it is itself placed at the origin of its formatting context
-		//Its bounds are determined by the area formed by its children
+		//return bounds of children, which were processed in the formatting
+		//context
 		if (isInlineContainer() == true)
 		{
-			var left:Float = 50000;
-			var top:Float = 50000;
-			var right:Float = -50000;
-			var bottom:Float = -50000;
-			
-			
-			for (i in 0...boxData.children.length)
-			{
-				var doPosition:Bool;
-				
-				switch (boxData.children[i].element)
-				{
-					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-						doPosition = false;
-			
-					default:
-						doPosition = true;
-				}
-				
-				if (doPosition == true)
-				{
-					if (boxData.children[i].x < left)
-					{
-						left = boxData.children[i].x;
-					}
-					if (boxData.children[i].y < top)
-					{
-						//TODO : probably won't be robust enough + messy but offset should only be used for left and right
-						switch (boxData.children[i].element)
-						{
-							case BoxElementValue.offset(offsetWidth, parentDOMElement):
-								
-							default:
-								top = boxData.children[i].y - fontMetrics.ascent - fontMetrics.descent;
-						}
-					
-					}
-					if (boxData.children[i].x + boxData.children[i].width > right)
-					{
-						right = boxData.children[i].x + boxData.children[i].width;
-					}
-					if (boxData.children[i].y + boxData.children[i].height > bottom)
-					{
-						switch (boxData.children[i].element)
-						{
-							case BoxElementValue.offset(offsetWidth, parentDOMElement):
-						
-							default:	
-								bottom = boxData.children[i].y + boxData.children[i].height -  fontMetrics.ascent - fontMetrics.descent;
-						}
-					}
-				}
-			}
-			
-				bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-				
-			}
-		
-		//if the container is a block container, then its box is formed from its own
-		//width and height
+			bounds = boxData.bounds;
+		}
+		//return bounds of the block box
 		else
 		{
 			var width:Float = _domElement.offsetWidth;
 			var height:Float = _domElement.offsetHeight;
-			
+			//TODO : probably shouldn't always return x: 0 and y:0
 			bounds = {
 					x:0.0,
 					y:0.0,
 					width : width,
 					height :  height,
 				}
-				
 		}
-		
 		return bounds;
 		
 	}
@@ -473,15 +407,24 @@ class AbstractContainerStyle extends Style
 		//defined as 'auto', then in most cases, it depends on its content height
 		//and it must now be adjusted to the total height
 		//of its children before the ContainerDOMElement is actually
-		//sized. Fort some border cases though, the total height
+		//sized. For some border cases though, the total height
 		//of the children is not used and auto height is computed in
 		//another way
-		
-		//TODO : move into formatting context ? only apply to in-flow element and formatting context,
-		//holds the right data
 		if (this._height == DimensionStyleValue.autoValue)
 		{
-			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
+			//format the children formatting context, so that the bounds
+			//of the children of this ContainerDOMElement can be found.
+			//The height of this bound is applied as the new height
+			//It only needs to be done for ContainerDOMElement which doesn't
+			//establish a new formatting context for its children, else
+			//the formatting context would have been already formatted
+			//at this point
+			if (establishesNewFormattingContext() == false)
+			{
+				childrenFormattingContext.format();
+			}
+			
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, Math.round(childrenFormattingContext.getBoxesData(this._domElement)[0].bounds.height));
 		}
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor

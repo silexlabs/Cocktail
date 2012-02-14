@@ -1202,12 +1202,50 @@ import cocktailCore.style.formatter.FormattingContext;
 		
 	}
 
+	/**
+	 * Store the computed background style
+	 * for one background image
+	 */
 	typedef ComputedBackgroundStyleData = {
+		
+		/**
+		 * The size of the background image, it might
+		 * be tiled based on the background repeat
+		 * style
+		 */
 		var backgroundSize:DimensionData;
+		
+		/**
+		 * a rectangle used as origin to position
+		 * the background image and might also
+		 * be used to clip it based on the
+		 * background clip style
+		 */
 		var backgroundOrigin:RectangleData;
+		
+		/**
+		 * The rectangle clipping the background
+		 * image, might be the rectangle of the content,
+		 * padding or border box of the DOMElement
+		 */
 		var backgroundClip:RectangleData;
+		
+		/**
+		 * how to repeat the background image in the
+		 * x and y directions
+		 */
 		var backgroundRepeat:BackgroundRepeatStyleData;
+		
+		/**
+		 * the point of origin of the background image
+		 * relative to the backgroundOrigin rectangle
+		 */
 		var backgroundPosition:PointData;
+		
+		/**
+		 * the data of the background image (url or
+		 * gradient data)
+		 */
 		var backgroundImage:BackgroundImageStyleValue;
 	}
 	
@@ -1258,7 +1296,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the left and right
 	 * floats registered for a 
-	 * container DOMElement
+	 * formatting context
 	 */
 	typedef FloatsData = {
 		var left:Array<FloatData>;
@@ -1268,7 +1306,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the coordinates and
 	 * dimensions of the float in its
-	 * parent coordinate space
+	 * formatting context coordinate space
 	 */
 	typedef FloatData = {
 		var x:Int;
@@ -1392,6 +1430,10 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * from other domElement as they
 	 * can influence a linebox layout
 	 * once it is complete
+	 * 
+	 * TODO : seems excessive to store parentDOMElement for each
+	 * 
+	 * TODO : add a construct for root containing block ?
 	 */
 	enum BoxElementValue {
 		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);

@@ -88,6 +88,10 @@ class InlineFormattingContext extends FormattingContext
 	
 	override public function format():Void
 	{
+		_elementsInLineBox = new Array<BoxElementData>();
+		_unbreakableLineBoxElements = new Array<BoxElementData>();
+		_unbreakableWidth = 0;
+		_currentBoxesData = new Array<BoxData>();
 		super.format();
 		insertBreakOpportunity(true, true);
 	}
@@ -535,6 +539,7 @@ class InlineFormattingContext extends FormattingContext
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
+					//TODO : shouldn't be here but only in render
 					domElement.style.setNativeX(domElement, boxElementData.x);
 					domElement.style.setNativeY(domElement, boxElementData.y);
 					

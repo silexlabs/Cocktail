@@ -32,8 +32,12 @@ class BlockFormattingContext extends FormattingContext
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+	override public function format():Void
+	{
 		_embeddedAndContainerY = 0;
-		
+		super.format();
 	}
 	
 
@@ -84,8 +88,6 @@ class BlockFormattingContext extends FormattingContext
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
-			
-			Log.trace(getElementHeight(element));
 			
 			_formattingContextData.y += getElementHeight(element) ;
 			_embeddedAndContainerY = _formattingContextData.y;
