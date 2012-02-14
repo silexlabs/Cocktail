@@ -100,25 +100,21 @@ class FormattingContext
 		//formatting context
 		_floatsManager = new FloatsManager();
 		
-		//init the flow data to place the first inserted
-		//DOMElement in the right position
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
-		
 		_formattingBoxesData = new Array<BoxData>();
 		
 		//init the tree of formattable element with the containing DOMElement
-		_rootFormattableElement = FormattableElementValue.container(BoxElementValue.containerDOMElement(_containingDOMElement, _containingDOMElement.parent), []);
+		_rootFormattableElement = FormattableElementValue.container(BoxElementValue.containingBlockDOMElement(_containingDOMElement, _containingDOMElement.parent), []);
 		
 	}
 	
 	/**
-	 * Init the flow data using the containing DOMElement's
+	 * Init/reset the flow data using the containing DOMElement's
 	 * properties
 	 */
 	private function initFormattingContextData(domElement:DOMElement):FormattingContextData
 	{
 		var flowY:Int = 0;
-		
 		var flowX:Int = 0;
 		
 		return {
@@ -251,6 +247,13 @@ class FormattingContext
 	 */
 	public function format():Void
 	{
+		//init/reset the boxes data of the formatting context
+		_formattingBoxesData = new Array<BoxData>();
+		
+		//init/reset the formating context data to insert the first element at the
+		//origin of the containing block
+		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		
 		var rootChildren:Array<FormattableElementValue> = new Array<FormattableElementValue>();
 		
 		//retrive the children of the containing block, which is itself
@@ -275,7 +278,7 @@ class FormattingContext
 	 * empty
 	 */
 	public function getBoxesData(parentDOMElement:DOMElement):Array<BoxData>
-	{
+	{	
 		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
 	}
 	
@@ -358,8 +361,6 @@ class FormattingContext
 		}
 	}
 	
-	
-	
 	/**
 	 * Actually retrieve the boxes data belonging to the 
 	 * provided parentDOMElement
@@ -376,6 +377,8 @@ class FormattingContext
 		{
 			if (targetBoxesData[i].parentDOMElement == parentDOMElement)
 			{
+				//set the bounds of the box before returning it
+				targetBoxesData[i].bounds = getBounds(targetBoxesData[i]);
 				boxesData.push(targetBoxesData[i]);
 			}
 		}
@@ -396,6 +399,88 @@ class FormattingContext
 		}
 		
 		return boxesData;
+	}
+	
+	/**
+	 * Get the bounds formaed by all the children
+	 * of a box data. The bounds are relative to 
+	 * the containing block which started this
+	 * formatting context
+	 */
+	private function getBounds(boxData:BoxData):RectangleData
+	{
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		
+		for (i in 0...boxData.children.length)
+		{
+			var doPosition:Bool;
+			
+			switch (boxData.children[i].element)
+			{
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					doPosition = false;
+		
+				default:
+					doPosition = true;
+			}
+			
+			if (doPosition == true)
+			{
+				if (boxData.children[i].x < left)
+				{
+					left = boxData.children[i].x;
+				}
+				if (boxData.children[i].y < top)
+				{
+					//TODO : probably won't be robust enough + messy but offset should only be used for left and right
+					switch (boxData.children[i].element)
+					{
+						case BoxElementValue.offset(offsetWidth, parentDOMElement):
+							
+						case BoxElementValue.text(domElement, parentDOMElement):
+							top = boxData.children[i].y - domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
+							
+						default:
+							top = boxData.children[i].y;
+					}
+				
+				}
+				if (boxData.children[i].x + boxData.children[i].width > right)
+				{
+					right = boxData.children[i].x + boxData.children[i].width;
+				}
+				if (boxData.children[i].y + boxData.children[i].height > bottom)
+				{
+					switch (boxData.children[i].element)
+					{
+						case BoxElementValue.offset(offsetWidth, parentDOMElement):
+					
+						case BoxElementValue.text(domElement, parentDOMElement):
+							bottom = boxData.children[i].y + boxData.children[i].height -  domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
+							
+						default:	
+							bottom = boxData.children[i].y + boxData.children[i].height;
+					}
+				}
+			}
+		}
+			
+			
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+				
+		return bounds;
+		
 	}
 	
 	/**
