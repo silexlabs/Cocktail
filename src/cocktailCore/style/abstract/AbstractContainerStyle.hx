@@ -162,7 +162,6 @@ class AbstractContainerStyle extends Style
 		{
 			//render the background of the box
 			var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
-		
 			for (i in 0...backgroundNativeElements.length)
 			{
 				nativeElements.push(backgroundNativeElements[i]);
@@ -213,37 +212,21 @@ class AbstractContainerStyle extends Style
 			{
 				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				
-				//TODO : clean-up, should'nt be here
-				if (isInlineContainer() == false)
-				{
+
 					//apply x and y
 					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
 					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				}
-				else
-				{
-						//apply x and y
-					domElement.style.setNativeX(domElement, child.x );
-					domElement.style.setNativeY(domElement, child.y );
-				}
+
 				
 				childrenNativeElements.push(domElement.nativeElement);
 				
 				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 				
-				//TODO : clean-up, should'nt be here
-				if (isInlineContainer() == false)
-				{
+				
 					//apply x and y
 					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
 					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				}
-				else
-				{
-						//apply x and y
-					domElement.style.setNativeX(domElement, child.x );
-					domElement.style.setNativeY(domElement, child.y );
-				}
+			
 				
 				childrenNativeElements.push(domElement.nativeElement);
 				
@@ -543,7 +526,7 @@ class AbstractContainerStyle extends Style
 		//TODO : must now be put in inline formatting context ?
 			if (establishesNewFormattingContext() == false && isInlineContainer() == true)
 			{
-				//childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginLeft + _computedStyle.paddingLeft, this._domElement));
+				childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginLeft + _computedStyle.paddingLeft, this._domElement));
 			}
 		
 		//flow all children 
@@ -569,7 +552,7 @@ class AbstractContainerStyle extends Style
 			//TODO : must now be put in inline formatting context ?
 			if (establishesNewFormattingContext() == false  && isInlineContainer() == true)
 			{
-				//childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement));
+				childrenFormattingContext.insertElement(BoxElementValue.offset(_computedStyle.marginRight + _computedStyle.paddingRight, this._domElement));
 			}
 		
 		//prompt the children formatting context, to format all the children
