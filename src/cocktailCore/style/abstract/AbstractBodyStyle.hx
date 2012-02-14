@@ -108,7 +108,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * DOM tree must always position its absolutely positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ChildTemporaryPositionData>
+	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<BoxElementData>
 	{
 		isFirstPositionedAncestor = true;
 		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
