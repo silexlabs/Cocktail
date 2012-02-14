@@ -1347,20 +1347,21 @@ import cocktailCore.style.formatter.FormattingContext;
 	}
 	
 	/**
-	 * Defines a DOMElement added to a LineBox
+	 * Defines a DOMElement added to a box
 	 * and its type
 	 */
 	typedef BoxElementData = {
 		var element:BoxElementValue;
 		var x:Int;
 		var y:Int;
+		var width:Int;
+		var height:Int;
 	}
 	
-
 	typedef BoxData = {
 		var parentDOMElement:DOMElement;
 		var bounds:RectangleData;
-		var children:Array<ChildTemporaryPositionData>;
+		var children:Array<BoxElementData>;
 		var textDecorations:Array<TextDecorationData>;
 	}
 	
@@ -1370,24 +1371,13 @@ import cocktailCore.style.formatter.FormattingContext;
 		var end:PointData;
 	}
 	
-	
-	/**
-	 * Holds the computed position of a 
-	 * laid out children relative to the formatting
-	 * context in which it participates
-	 */
-	typedef ChildTemporaryPositionData = {
-		var element:BoxElementValue;
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Enums
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * TODO : doc
+	 */
 	enum FormattableElementValue {
 		container(element:BoxElementValue, children:Array<FormattableElementValue>);
 		child(element:BoxElementValue);

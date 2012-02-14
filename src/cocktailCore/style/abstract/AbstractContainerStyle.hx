@@ -61,13 +61,13 @@ class AbstractContainerStyle extends Style
 	private var _childrenFormattingContext:FormattingContext;
 	
 	/**
-	 * Stores a reference ot each of the absolutely positioned children that
+	 * Stores a reference ot each of the absolutely positioned element that
 	 * must be attached to this styled ContainerDOMElement. The array only has
-	 * children if this styled ContainerDOMElement is itself positioned and
+	 * elements if this styled ContainerDOMElement is itself positioned and
 	 * thus responsible for positioning its positioned children for whom
 	 * it is the first positioned ancestor
 	 */
-	private var _absolutelyPositionedChildrenTemporaryPositionsData:Array<ChildTemporaryPositionData>;
+	private var _absolutelyPositionedBoxElementData:Array<BoxElementData>;
 	
 	/**
 	 * class constructor.
@@ -122,7 +122,7 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//render the absolutely positioned children of this ContainerDOMElement
-		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedChildrenTemporaryPositionsData);
+		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedBoxElementData);
 		
 		for (i in 0...absolutelyPositionedNativeElements.length)
 		{
@@ -200,13 +200,13 @@ class AbstractContainerStyle extends Style
 	 * @param	children
 	 * @return
 	 */
-	private function renderChildren(children:Array<ChildTemporaryPositionData>):Array<NativeElement>
+	private function renderChildren(children:Array<BoxElementData>):Array<NativeElement>
 	{
 		var childrenNativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...children.length)
 		{
-			var child:ChildTemporaryPositionData = children[i];
+			var child:BoxElementData = children[i];
 			
 			switch (child.element)
 			{
@@ -487,7 +487,7 @@ class AbstractContainerStyle extends Style
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
 		//laid out positions is returned and stored, to be used during rendering
-		_absolutelyPositionedChildrenTemporaryPositionsData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
+		_absolutelyPositionedBoxElementData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 
 		//the children formatting context is stored, it will be used
 		//to retrieve all the in flow children that this ContainerDOMElement must
@@ -576,9 +576,9 @@ class AbstractContainerStyle extends Style
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
 	 */
-	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ChildTemporaryPositionData>
+	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<BoxElementData>
 	{
-		var childrenTemporaryPositionData:Array<ChildTemporaryPositionData> = new Array<ChildTemporaryPositionData>();
+		var boxElementsData:Array<BoxElementData> = new Array<BoxElementData>();
 		
 		if (isFirstPositionedAncestor == true)
 		{
@@ -675,42 +675,42 @@ class AbstractContainerStyle extends Style
 				positionedDOMElementData.staticPosition.y += yOffset;
 				
 				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement
-				var childTemporaryPositionData:ChildTemporaryPositionData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+				var boxElementData:BoxElementData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 			
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
 				//TODO : to check : shouldn't it be relative to the padding box instead ?
-				switch (childTemporaryPositionData.element)
+				switch (boxElementData.element)
 				{
 					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
-							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+							boxElementData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							boxElementData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}
 						
 					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
-							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+							boxElementData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							boxElementData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}	
 						
 					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						if (domElement.style.isRelativePositioned() == false)
 						{
-							childTemporaryPositionData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-							childTemporaryPositionData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
+							boxElementData.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
+							boxElementData.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 						}	
 					default:	
 				}
 			
 				
-				childrenTemporaryPositionData.push(childTemporaryPositionData);
+				boxElementsData.push(boxElementData);
 			}
 		}
 		
-		return childrenTemporaryPositionData;
+		return boxElementsData;
 	}
 	
 	/**

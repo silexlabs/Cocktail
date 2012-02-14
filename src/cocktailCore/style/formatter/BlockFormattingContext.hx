@@ -13,7 +13,12 @@ import haxe.Log;
 
 /**
  * This formatting context layout DOMElement below each other
- * following the DOM tree order.
+ * generally following the formattable tree order.
+ * 
+ * There might be exception, for instance if a container DOMElement
+ * with a fixed has overflowing children, its siblings will use
+ * the height of the container to be positioned below, not the
+ * added height of its children.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -35,7 +40,7 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{
 		
-		var childTemporaryPositionData:ChildTemporaryPositionData = {
+		var boxElementData:BoxElementData = {
 				element:element,
 				x:_formattingContextData.x, 
 				y:_embeddedAndContainerY,
@@ -45,7 +50,7 @@ class BlockFormattingContext extends FormattingContext
 			
 			_embeddedAndContainerY += getElementHeight(element);
 			
-			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
 			
 	}
 	
@@ -54,7 +59,7 @@ class BlockFormattingContext extends FormattingContext
 	{
 		
 		
-		var childTemporaryPositionData:ChildTemporaryPositionData = {
+		var boxElementData:BoxElementData = {
 				element:element,
 				x:_formattingContextData.x, 
 				y:_embeddedAndContainerY,
@@ -66,13 +71,13 @@ class BlockFormattingContext extends FormattingContext
 			_embeddedAndContainerY += getElementHeight(element);
 			_formattingContextData.y += getElementHeight(element);
 			
-			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
 	}
 	
 
 	override private function insertContainerDOMElement(element:BoxElementValue):Void
 	{
-		var childTemporaryPositionData:ChildTemporaryPositionData = {
+		var boxElementData:BoxElementData = {
 				element:element,
 				x:_formattingContextData.x, 
 				y:_formattingContextData.y,
@@ -85,7 +90,7 @@ class BlockFormattingContext extends FormattingContext
 			_formattingContextData.y += getElementHeight(element) ;
 			_embeddedAndContainerY = _formattingContextData.y;
 			
-			getBoxesData(getElementParent(element))[0].children.push(childTemporaryPositionData);
+			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
 	}
 
 	

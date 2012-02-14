@@ -63,6 +63,14 @@ class InlineFormattingContext extends FormattingContext
 	private var _lastInsertedElement:BoxElementValue;
 	
 	/**
+	 * Similar to _formattingBoxesData but acts as a buffer for inline
+	 * formatting context to store only the boxes of the current line, it is
+	 * copied into _formattingBoxesData each time a new line is created
+	 */
+	private var _currentBoxesData:Array<BoxData>;
+	
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(domElement:DOMElement) 
@@ -70,11 +78,12 @@ class InlineFormattingContext extends FormattingContext
 		_elementsInLineBox = new Array<BoxElementData>();
 		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_unbreakableWidth = 0;
+		_currentBoxesData = new Array<BoxData>();
 		
 		super(domElement);
 		
 		//set the textIndent as an offset on the first line of text
-		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
+		insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
 	
 	override public function format():Void
@@ -82,6 +91,25 @@ class InlineFormattingContext extends FormattingContext
 		super.format();
 		insertBreakOpportunity(true, true);
 	}
+	
+	/**
+	 * same a getBoxesData but only for the boxes in the current line
+	 * in an inline formatting context
+	 */
+	private function getCurrentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+	{
+		return doGetBoxesData(parentDOMElement, _currentBoxesData);
+	}
+	
+	/**
+	 * Return the width remaining in the current line
+	 * of the formatting context
+	 */
+	private function getRemainingLineWidth():Int
+	{
+		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
+	}
+	
 	
 	// LINE MEASUREMENT METHODS
 	// Those methods are used to determine what element to render
@@ -104,7 +132,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 			element:element,
 			x:0,
-			y:0 } );
+			y:0,
+			width:getElementWidth(element),
+			height:getElementHeight(element)} );
 		_lastInsertedElement = element;
 			
 		addWidth(getElementWidth(element));
@@ -122,7 +152,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 			element:element,
 			x:0,
-			y:0 } );
+			y:0,
+			width:getElementWidth(element),
+			height:getElementHeight(element)} );
 		_lastInsertedElement = element;
 			
 		addWidth(getElementWidth(element));
@@ -148,7 +180,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 		element:element,
 		x:0,
-		y:0 } );
+		y:0,
+		width:0,
+		height:0} );
 	}
 	
 	/**
@@ -161,7 +195,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 			element:element,
 			x:0,
-			y:0 } );
+			y:0,
+			width:getElementWidth(element),
+			height:getElementHeight(element)} );
 		_lastInsertedElement = element;	
 		
 		addWidth(getElementWidth(element) );
@@ -182,7 +218,9 @@ class InlineFormattingContext extends FormattingContext
 			_unbreakableLineBoxElements.push( {
 			element:element,
 			x:0,
-			y:0 } );
+			y:0,
+			width:getElementWidth(element),
+			height:getElementHeight(element) } );
 			
 			_lastInsertedElement = element;	
 			
@@ -205,7 +243,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 		element:element,
 		x:0,
-		y:0 } );
+		y:0,
+		width:getElementWidth(element),
+		height:getElementHeight(element)} );
 		
 		addWidth(getElementWidth(element));
 	}
@@ -233,7 +273,9 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push( {
 			element:insertedElement,
 			x:0,
-			y:0 } );
+			y:0,
+			width:getElementWidth(element),
+			height:getElementHeight(element)} );
 			
 		addWidth(addedWidth);
 	}
@@ -478,10 +520,10 @@ class InlineFormattingContext extends FormattingContext
 					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 						
 						
-					var childTemporaryPositionData:ChildTemporaryPositionData;
+					var boxElementData:BoxElementData;
 				
 					
-						childTemporaryPositionData = {
+						boxElementData = {
 							element:_elementsInLineBox[i].element,
 							x:_elementsInLineBox[i].x,
 							y:_elementsInLineBox[i].y,
@@ -490,19 +532,19 @@ class InlineFormattingContext extends FormattingContext
 						}
 
 					
-					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					domElement.style.setNativeX(domElement, boxElementData.x);
+					domElement.style.setNativeY(domElement, boxElementData.y);
 					
 					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 						
 						
-					var childTemporaryPositionData:ChildTemporaryPositionData;
+					var boxElementData:BoxElementData;
 				
 					
-						childTemporaryPositionData = {
+						boxElementData = {
 							element:_elementsInLineBox[i].element,
 							x:_elementsInLineBox[i].x,
 							y:_elementsInLineBox[i].y,
@@ -511,19 +553,19 @@ class InlineFormattingContext extends FormattingContext
 						}
 
 					
-					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					domElement.style.setNativeX(domElement, boxElementData.x);
+					domElement.style.setNativeY(domElement, boxElementData.y);
 					
 					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						
 						
-					var childTemporaryPositionData:ChildTemporaryPositionData;
+					var boxElementData:BoxElementData;
 				
 
-						childTemporaryPositionData = {
+						boxElementData = {
 							element:_elementsInLineBox[i].element,
 							x:0,
 							y:0,
@@ -532,15 +574,15 @@ class InlineFormattingContext extends FormattingContext
 						}
 					
 				
-					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					domElement.style.setNativeX(domElement, boxElementData.x);
+					domElement.style.setNativeY(domElement, boxElementData.y);
 					
 					case BoxElementValue.text(domElement, parentDOMElement):
 					
-					var childTemporaryPositionData:ChildTemporaryPositionData = {
+					var boxElementData:BoxElementData = {
 							element:_elementsInLineBox[i].element,
 							x:_elementsInLineBox[i].x,
 							y:_elementsInLineBox[i].y,
@@ -548,15 +590,15 @@ class InlineFormattingContext extends FormattingContext
 							height:domElement.offsetHeight
 						}
 				
-					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-					domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
+					domElement.style.setNativeX(domElement, boxElementData.x);
+					domElement.style.setNativeY(domElement, boxElementData.y);
 					
 				case BoxElementValue.offset(offsetWidth, parentDOMElement):
 					
-						var childTemporaryPositionData:ChildTemporaryPositionData = {
+						var boxElementData:BoxElementData = {
 							element:_elementsInLineBox[i].element,
 							x:_elementsInLineBox[i].x,
 							y:_elementsInLineBox[i].y,
@@ -564,7 +606,7 @@ class InlineFormattingContext extends FormattingContext
 							height:1
 						}
 				
-					getCurrentBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 					
 					default:
 				}
@@ -1136,9 +1178,5 @@ class InlineFormattingContext extends FormattingContext
 	
 		return Math.round(lineBoxHeight);
 	}
-	
-
-
-	
 	
 }

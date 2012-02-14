@@ -75,13 +75,6 @@ class FormattingContext
 	private var _formattingBoxesData:Array<BoxData>;
 	
 	/**
-	 * Similar to _formattingBoxesData but acts as a buffer for inline
-	 * formatting context to store only the boxes of the current line, it is
-	 * copied into _formattingBoxesData each time a new line is created
-	 */
-	private var _currentBoxesData:Array<BoxData>;
-	
-	/**
 	 * Holds the box element of the containing DOMElement of this formatting
 	 * context and each of its children, forming a tree structure containing
 	 * all the elements in this formatting context
@@ -112,7 +105,6 @@ class FormattingContext
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
 		_formattingBoxesData = new Array<BoxData>();
-		_currentBoxesData = new Array<BoxData>();
 		
 		//init the tree of formattable element with the containing DOMElement
 		_rootFormattableElement = FormattableElementValue.container(BoxElementValue.containerDOMElement(_containingDOMElement, _containingDOMElement.parent), []);
@@ -366,16 +358,7 @@ class FormattingContext
 		}
 	}
 	
-	/**
-	 * same a getBoxesData but only for the boxes in the current line
-	 * in an inline formatting context
-	 * 
-	 * TODO : shouldn't be in base class only inline formatting context, same for _currentBoxesData
-	 */
-	private function getCurrentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
-	{
-		return doGetBoxesData(parentDOMElement, _currentBoxesData);
-	}
+	
 	
 	/**
 	 * Actually retrieve the boxes data belonging to the 
@@ -403,7 +386,7 @@ class FormattingContext
 		{
 			var boxData:BoxData = {
 				parentDOMElement:parentDOMElement,
-				children:new Array<ChildTemporaryPositionData>(),
+				children:new Array<BoxElementData>(),
 				bounds: { x:0.0, y:0.0, width:0.0, height:0.0 },
 				textDecorations:new Array<TextDecorationData>()
 			}
@@ -510,17 +493,7 @@ class FormattingContext
 	}
 
 	
-	/**
-	 * Return the width remaining in the current line
-	 * of the formatting context
-	 * 
-	 * TODO : only used by inline formatting context so far
-	 */
-	private function getRemainingLineWidth():Int
-	{
-		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
-	}
-
+	
 	
 	/**
 	 * Removed the floats which don't influence the 

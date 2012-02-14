@@ -674,38 +674,38 @@ class AbstractStyle
 	 * @param viewportData
 	 * @param staticPosition the x,y position that the DOMElement would have had if it were 'in-flow'
 	 */
-	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):BoxElementData
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
 		
 		//will return the position of the DOMElement when once it is computed
-		var childTemporaryPositionData:ChildTemporaryPositionData;
+		var boxElementData:BoxElementData;
 		
 		switch (this._domElement.style.computedStyle.position)
 		{
 			//positioned 'relative' DOMElement
 			case relative:
 				positioner = new RelativePositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 			
 			//positioned 'fixed' DOMElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, viewportData, staticPosition);
+				boxElementData = positioner.position(this._domElement, viewportData, staticPosition);
 				
 			//positioned 'absolute' DOMElement	
 			case absolute:
 				positioner = new AbsolutePositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
 				
 			default:	
 				positioner = new AbsolutePositioner();
-				childTemporaryPositionData = null;
+				boxElementData = null;
 		}
 		
-		return childTemporaryPositionData;
+		return boxElementData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
