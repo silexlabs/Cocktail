@@ -18,6 +18,9 @@ import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
+//import cocktail.viewport.Viewport;
+import ScreenResolution;
+
 
 /**
  * This class defines a thumb & text cell
@@ -28,6 +31,9 @@ import components.lists.ListBaseUtils;
 class ThumbTextList1 extends ListBase
 {
 
+	//var smallSize:Bool;
+	var screenResolutionSize:ScreenResolutionSize;
+	
 	/**
 	 * constructor
 	 * 
@@ -36,6 +42,12 @@ class ThumbTextList1 extends ListBase
 	 */
 	public function new(list:ListModel, listStyle:Dynamic)
 	{
+		var screenResolution:ScreenResolution = new ScreenResolution();
+		screenResolutionSize = screenResolution.size;
+		//var viewport:Viewport = new Viewport();
+		//if (viewport.width < 500) smallSize = true;
+		//else smallSize = false;
+
 		super(list, listStyle);
 	}
 	
@@ -59,13 +71,13 @@ class ThumbTextList1 extends ListBase
 		var cellNumberContainer:ContainerDOMElement = Utils.getContainer();
 		var textElement:TextElement = new TextElement(Std.string(_currentCellIndex + 1));
 		cellNumberContainer.addText(textElement);
-		listStyle.cellNumber(cellNumberContainer);
+		listStyle.cellNumber(cellNumberContainer,screenResolutionSize);
 		cellInfoBlockContainer.addChild(cellNumberContainer);
 		
 		// add dots line
 		var celldotsLine:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		listStyle.cellInfoBlockImage(celldotsLine);
+		listStyle.cellInfoBlockLine(celldotsLine);
 		// add image
 		cellInfoBlockContainer.addChild(celldotsLine);
 		// load image
@@ -74,7 +86,7 @@ class ThumbTextList1 extends ListBase
 		// add comment image
 		var celldotsLine:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		listStyle.cellInfoBlockImage(celldotsLine);
+		listStyle.cellInfoBlockImage(celldotsLine,screenResolutionSize);
 		// add image
 		cellInfoBlockContainer.addChild(celldotsLine);
 		// load image
@@ -86,7 +98,7 @@ class ThumbTextList1 extends ListBase
 			var cellCommentCountContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.commentCount);
 			cellCommentCountContainer.addText(textElement);
-			listStyle.cellCommentCount(cellCommentCountContainer);
+			listStyle.cellCommentCount(cellCommentCountContainer,screenResolutionSize);
 			cellInfoBlockContainer.addChild(cellCommentCountContainer);
 		}
 		
@@ -119,7 +131,7 @@ class ThumbTextList1 extends ListBase
 			var cellTitleContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.title);
 			cellTitleContainer.addText(textElement);
-			listStyle.cellTitle(cellTitleContainer);
+			listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellTitleContainer);
 		}
 		
@@ -129,20 +141,28 @@ class ThumbTextList1 extends ListBase
 			var cellCommentContainer:ContainerDOMElement = Utils.getContainer();
 			var textElement:TextElement = new TextElement(cellData.comment);
 			cellCommentContainer.addText(textElement);
-			listStyle.cellComment(cellCommentContainer);
+			listStyle.cellComment(cellCommentContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellCommentContainer);
 		}
 		
-		// add description
-		if (cellData.description != "" && cellData.description != null)
+		// if screen resolution is large
+		if (screenResolutionSize == ScreenResolutionSize.large)
 		{
-			var cellDescriptionContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.description);
-			cellDescriptionContainer.addText(textElement);
-			listStyle.cellDescription(cellDescriptionContainer);
-			cellTextBlockContainer.addChild(cellDescriptionContainer);
+			// add description
+			if (cellData.description != "" && cellData.description != null)
+			{
+				var textLength:Int;
+				if (screenResolutionSize == normal) textLength = 95;
+				else textLength = 200;
+				
+				var cellDescriptionContainer:ContainerDOMElement = Utils.getContainer();
+				var shortenedText = cellData.description.substr(0, textLength) + "...";
+				var textElement:TextElement = new TextElement(shortenedText);
+				cellDescriptionContainer.addText(textElement);
+				listStyle.cellDescription(cellDescriptionContainer);
+				cellTextBlockContainer.addChild(cellDescriptionContainer);
+			}
 		}
-		
 		
 		// LINE
 		
