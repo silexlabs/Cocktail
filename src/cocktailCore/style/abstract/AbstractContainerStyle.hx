@@ -92,6 +92,8 @@ class AbstractContainerStyle extends Style
 	{
 		super.render();
 		
+		
+		
 		//render all its children recursively
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		for (i in 0...containerDOMElement.children.length)
@@ -103,23 +105,57 @@ class AbstractContainerStyle extends Style
 			}
 		}
 		
-		//get the boxes data from the formatting context which was used to layout the children of this ContainerDOMElement
-		var boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData(this._domElement);
-		
 		//will contain all the NativeElements which must be attached to this ContainerDOMElement
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
-		//for each box, render the background, border and
-		//the children of each box
-		for (i in 0...boxesData.length)
+		if (establishesNewFormattingContext() == true)
 		{
-			var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i], i == 0);
+			//get the boxes data from the formatting context which was used to layout the children of this ContainerDOMElement
+			var boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData();
 			
-			for (j in 0...boxNativeElements.length)
+			if (childrenInline() == true)
 			{
-				nativeElements.push(boxNativeElements[j]);
+				//for each box, render the background, border and
+				//the children of each box
+				for (i in 0...boxesData.length)
+				{
+					var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i]);
+					
+					for (j in 0...boxNativeElements.length)
+					{
+						nativeElements.push(boxNativeElements[j]);
+					}
+				}
 			}
+			else
+			{
+				//for each box, render the background, border and
+				//the children of each box
+				for (i in 0...boxesData.length)
+				{
+					var boxNativeElements:Array<NativeElement> = renderBackgroundOfBlockBox(boxesData[i]);
+					
+					for (j in 0...boxNativeElements.length)
+					{
+						nativeElements.push(boxNativeElements[j]);
+					}
+				}
+				
+				//for each box, render the background, border and
+				//the children of each box
+				for (i in 0...boxesData.length)
+				{
+					var boxNativeElements:Array<NativeElement> = renderChildren(boxesData[i].children);
+					
+					for (j in 0...boxNativeElements.length)
+					{
+						nativeElements.push(boxNativeElements[j]);
+					}
+				}
+			}
+			
 		}
+		
 		
 		//render the absolutely positioned children of this ContainerDOMElement
 		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedBoxElementData);
@@ -128,11 +164,11 @@ class AbstractContainerStyle extends Style
 		{
 			nativeElements.push(absolutelyPositionedNativeElements[i]);
 		}
-		
 		//store the nativeElements so that they can be detached on next layout
 		_nativeElements = nativeElements;
-		
 		//do attach the nativeElements using runtime specific API
+		
+	
 		attachNativeElements(nativeElements);
 	}
 	
@@ -145,29 +181,19 @@ class AbstractContainerStyle extends Style
 	 * nativeElements which must be attached to this styled
 	 * ContainerDOMElement
 	 * @param	box
-	 * @param firstBox determine wether the first box of the DOMElement is being rendered
 	 * @return
 	 */
-	private function renderBox(box:BoxData, firstBox:Bool):Array<NativeElement>
+	private function renderBox(box:BoxData):Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
+
+		//render the background of the box
+		var backgroundNativeElements:Array<NativeElement> = renderBackgroundOfLineBox(box);
 		
-		//if the ContainerDOMElement is an inline container, then each 
-		//boxs need its own background, else it should only have one box
-		//which has the same dimensions as the ContainerDOMElement, so
-		//only the first box is rendered
-		//
-		//TODO : improve 'firstBox', it should be done before
-		if (isInlineContainer() == true || firstBox == true)
+		for (i in 0...backgroundNativeElements.length)
 		{
-			//render the background of the box
-			var backgroundNativeElements:Array<NativeElement> = renderBackground(box, this);
-			for (i in 0...backgroundNativeElements.length)
-			{
-				nativeElements.push(backgroundNativeElements[i]);
-			}
+			nativeElements.push(backgroundNativeElements[i]);
 		}
-	
 		
 		//render each children of the box which are all in-flow DOMElements
 		var inFlowChildrenNativeElements:Array<NativeElement> = renderChildren(box.children);
@@ -179,6 +205,17 @@ class AbstractContainerStyle extends Style
 		return nativeElements;
 	}
 	
+	private function renderBackgroundOfLineBox(box:BoxData):Array<NativeElement>
+	{
+		var backgrounds:Array<NativeElement> = new Array<NativeElement>();
+		//no line backround for anonymous child of inline containing block
+		if (box.parentDOMElement != this._domElement)
+		{
+			backgrounds = _backgroundManager.render(box.bounds, box.parentDOMElement.style);
+		}
+		return backgrounds;
+	}
+	
 	/**
 	 * Render the background of the box and return an array
 	 * containing the background color if any and all
@@ -187,10 +224,66 @@ class AbstractContainerStyle extends Style
 	 * @param	style
 	 * @return
 	 */
-	private function renderBackground(box:BoxData, style:AbstractStyle):Array<NativeElement>
+	private function renderBackgroundOfBlockBox(box:BoxData):Array<NativeElement>
 	{
-		box.bounds = getBounds(box);
-		return _backgroundManager.render(box.bounds, style);
+		//box.bounds = getBounds(box);
+		
+		var backgrounds:Array<NativeElement> = new Array<NativeElement>();
+		
+		
+		
+		for (i in 0...box.children.length)
+		{
+			var tempBackground = new Array<NativeElement>();
+			switch (box.children[i].element)
+			{
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					
+					var x:Float = box.children[i].x;
+					var y:Float = box.children[i].y;
+					var width:Float = box.children[i].width;
+					var height:Float = box.children[i].height;
+					
+					var bounds:RectangleData = {
+						x:x,
+						y:y,
+						width:width,
+						height:height
+					}
+				
+
+					tempBackground  = _backgroundManager.render( bounds,
+					 domElement.style);
+					
+					 
+					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
+					
+					
+					var x:Float = box.children[i].x;
+					var y:Float = box.children[i].y;
+					var width:Float = box.children[i].width;
+					var height:Float = box.children[i].height;
+					
+					var bounds:RectangleData = {
+						x:x,
+						y:y,
+						width:width,
+						height:height
+					}
+					
+					tempBackground  = _backgroundManager.render( bounds,
+					 domElement.style);
+					 
+				default:	
+			}
+			
+			for (j in 0...tempBackground.length)
+			{
+				backgrounds.push(tempBackground[j]);
+			}
+		}
+		
+		return backgrounds;
 	}
 	
 	/**
@@ -424,7 +517,7 @@ class AbstractContainerStyle extends Style
 				childrenFormattingContext.format();
 			}
 			
-			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, Math.round(childrenFormattingContext.getBoxesData(this._domElement)[0].bounds.height));
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(this._domElement));
 		}
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
@@ -546,7 +639,7 @@ class AbstractContainerStyle extends Style
 				{
 					//all the in-flow children that share the same parent in the stored
 					//formatting context are retrieved
-					var childrenBoxesData:Array<BoxData> = positionedDOMElementData.formattingContext.getBoxesData(positionedDOMElementData.style.domElement.parent);
+					var childrenBoxesData:Array<BoxData> = positionedDOMElementData.formattingContext.getParentBoxesData(positionedDOMElementData.style.domElement.parent);
 					
 					//loop in all the children to find a reference
 					//to the relative positioned DOMElement

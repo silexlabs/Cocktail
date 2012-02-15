@@ -9,6 +9,7 @@ package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -24,37 +25,112 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-	private var _embeddedAndContainerY:Int;
-
+	private var _addedSiblingHeights:Array<Int>;
+	
+	private var _currentAddedSiblingsHeight:Int;
+	
+	private var _lastInsertedElement:BoxElementValue;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(domElement:DOMElement) 
 	{
+		_addedSiblingHeights = new Array<Int>();
+		_currentAddedSiblingsHeight = 0;
 		super(domElement);
 	}
 	
+	
+	
+	/**
+	 * Called by the containing DOMElement once each of its children
+	 * has been inserted in the formatting context to start the formatting.
+	 */
 	override public function format():Void
 	{
-		_embeddedAndContainerY = 0;
-		super.format();
+		//init/reset the boxes data of the formatting context
+		_formattingBoxesData = new Array<BoxData>();
+		
+		//init/reset the formating context data to insert the first element at the
+		//origin of the containing block
+		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		
+		_lastInsertedElement = BoxElementValue.containingBlockDOMElement(_containingDOMElement, _containingDOMElement.parent);
+		
+		//format all the box element in order
+		for (i in 0..._elementsInFormattingContext.length)
+		{
+	
+				
+			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
+			{
+			}
+			
+			else if (isParentOfLastInsertedElement(_elementsInFormattingContext[i]))
+			{
+				_formattingContextData.y -= _currentAddedSiblingsHeight;
+				_currentAddedSiblingsHeight = _addedSiblingHeights.pop();
+				
+					
+			}
+			else
+			{
+				
+				_addedSiblingHeights.push(_currentAddedSiblingsHeight);
+				_currentAddedSiblingsHeight = 0;
+				
+			}
+		
+					
+			_lastInsertedElement = _elementsInFormattingContext[i];
+			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+		}
+		
 	}
 	
+	
+	
+	
+	private function isParentOfLastInsertedElement(element:BoxElementValue):Bool
+	{
+		var parentOfLastInsertedDOMElement:DOMElement = getElementParent(_lastInsertedElement);
+		
+		var ret:Bool;
+		
+		switch (element)
+		{
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				ret = domElement == parentOfLastInsertedDOMElement;
+				
+			default:
+				ret = false;
+			
+		}
+		
+		return ret;
+	}
+	
+	private function isSiblingOfLastInsertedElement(element:BoxElementValue):Bool
+	{
+		return getElementParent(element) == getElementParent(_lastInsertedElement);
+	}
 
 	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{
-		
 		var boxElementData:BoxElementData = {
 				element:element,
 				x:_formattingContextData.x, 
-				y:_embeddedAndContainerY,
+				y:_formattingContextData.y ,
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
 			
-			_embeddedAndContainerY += getElementHeight(element);
-			
-			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
+		_formattingContextData.y += getElementHeight(element);
+		_currentAddedSiblingsHeight += getElementHeight(element);
+		
+		
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
 			
 	}
 	
@@ -62,39 +138,45 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertContainingBlockDOMElement(element:BoxElementValue):Void
 	{
 		
-		
 		var boxElementData:BoxElementData = {
 				element:element,
 				x:_formattingContextData.x, 
-				y:_embeddedAndContainerY,
+				y:_formattingContextData.y ,
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
 			
-			//TODO : gérer le cas de height = auto ?
-			_embeddedAndContainerY += getElementHeight(element);
+
+		
 			_formattingContextData.y += getElementHeight(element);
 			
-			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
+			_currentAddedSiblingsHeight += getElementHeight(element);
+			
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
 	}
 	
 
 	override private function insertContainerDOMElement(element:BoxElementValue):Void
 	{
+		
 		var boxElementData:BoxElementData = {
 				element:element,
-				x:_formattingContextData.x, 
+				x:0, 
 				y:_formattingContextData.y,
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
 			
-			_formattingContextData.y += getElementHeight(element) ;
-			_embeddedAndContainerY = _formattingContextData.y;
+			_formattingContextData.y += getElementHeight(element);
+			_currentAddedSiblingsHeight += getElementHeight(element);
 			
-			getBoxesData(getElementParent(element))[0].children.push(boxElementData);
+			
+			
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
 	}
 
+	
+	
 	
 	
 	

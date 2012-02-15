@@ -22,7 +22,7 @@ import haxe.Log;
  * In a block formatting, the DOMElements are placed on top of each
  * other, in an inline, they are placed next to each other.
  * 
- * Those classes also are in charge of placing floated DOMElement
+ * Those classes also are also in charge of placing floated DOMElement
  * in the document and keeping a reference to each of the floated
  * DOMElement's position.
  * 
@@ -30,9 +30,9 @@ import haxe.Log;
  * - first all the elements (DOMElement, text, control charachter...)
  * are inserted into the formatting context
  * - when all the elements participating in the formatting context
- * have been inserted, a call to the 'format' actually format, storing
- * for each element its x/y position relative to the containing DOMElement
- * which started the current formatting context. Those data are stored
+ * have been inserted, a call to the 'format' actually format them, storing
+ * for each element its x/y position and dimensions relative to the containing DOMElement
+ * which started the formatting context. Those boxes data are stored
  * and used when the document is rendered
  * 
  * @author Yannick DOMINGUEZ
@@ -75,11 +75,11 @@ class FormattingContext
 	private var _formattingBoxesData:Array<BoxData>;
 	
 	/**
-	 * Holds the box element of the containing DOMElement of this formatting
-	 * context and each of its children, forming a tree structure containing
-	 * all the elements in this formatting context
+	 * Holds a reference to each of the box elements formatted by this
+	 * formatting context. The corresponding box data are generated
+	 * when the 'format' method is called
 	 */
-	private var _rootFormattableElement:FormattableElementValue;
+	private var _elementsInFormattingContext:Array<BoxElementValue>;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -102,10 +102,7 @@ class FormattingContext
 		
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		_formattingBoxesData = new Array<BoxData>();
-		
-		//init the tree of formattable element with the containing DOMElement
-		_rootFormattableElement = FormattableElementValue.container(BoxElementValue.containingBlockDOMElement(_containingDOMElement, _containingDOMElement.parent), []);
-		
+		_elementsInFormattingContext = new Array<BoxElementValue>();
 	}
 	
 	/**
@@ -124,126 +121,23 @@ class FormattingContext
 			maxWidth:0
 		};
 	}
-	
+
 	/////////////////////////////////
-	// PUBLIC FORMATTABLE ELEMENT TREE METHODS
-	// methods used to build and traverse the formattable elements tree
+	// PUBLIC METHODS
 	/////////////////////////////////
 	
 	/**
-	 * insert a formattable element in the formatting context. Might be
-	 * an embedded DOMElement, a Container DOMElement, a floated DOMElement...
-	 * 
-	 * TODO : seems a bit clumsy to traverse the whole formattable elements
-	 * tree to retrieve the parent each time.
+	 * Store the inserted box element in the right formatting order
+	 * @param	insertedElement
 	 */
 	public function insertElement(insertedElement:BoxElementValue):Void
 	{
-		//retrive the parent of the inserted element in the tree of 
-		//formattable element to push it in its children array
-		var searchedParent:DOMElement = getElementParent(insertedElement);
-		var parentFormattableElement:FormattableElementValue = getParentFormattableElement(searchedParent);
-
-		switch (parentFormattableElement)
-		{
-			case FormattableElementValue.container(element, children):
-				children.push(getFormattableElementFromBoxElement(insertedElement));
-			
-			case FormattableElementValue.child(element):
-		}
+		_elementsInFormattingContext.push(insertedElement);
 	}
-	
-	/////////////////////////////////
-	// PRIVATE FORMATTABLE ELEMENT TREE METHODS
-	/////////////////////////////////
-	
-	/**
-	 * Call a recursive method retrieving the parent formattable element
-	 * of a box element by traversing the formattable element tree, using
-	 * the box element's parent DOMElement
-	 */
-	private function getParentFormattableElement(searchedParent:DOMElement): FormattableElementValue
-	{
-		var parentFormattableElement:FormattableElementValue = _rootFormattableElement;
-		
-		var rootChildren:Array<FormattableElementValue> = new Array<FormattableElementValue>();
-		
-		switch (_rootFormattableElement)
-		{
-			case FormattableElementValue.container(element, children):
-				rootChildren = children;
-				
-			case FormattableElementValue.child(element):
-				
-		}
-		
-		//start recursion
-		doGetParentFormattableElement(searchedParent, rootChildren, parentFormattableElement);
-		
-		return parentFormattableElement;
-	}
-	
-	/**
-	 * recursive method actually retrieving the parent formattable element
-	 * 
-	 * TODO : duplicated code
-	 */
-	private function doGetParentFormattableElement(searchedParent:DOMElement, formattableElements:Array<FormattableElementValue>, parentFormattableElement:FormattableElementValue):Void
-	{
-		for (i in 0...formattableElements.length)
-		{
-			switch (formattableElements[i])
-			{
-				case FormattableElementValue.container(element, children):
-					switch (element)
-					{
-						case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-							if (searchedParent == domElement)
-							{
-								parentFormattableElement = formattableElements[i];
-							}
-							
-						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-							if (searchedParent == domElement)
-							{
-								parentFormattableElement = formattableElements[i];
-							}
-							
-						default:	
-					}
-					
-					doGetParentFormattableElement(searchedParent, children, parentFormattableElement);
-					
-				case FormattableElementValue.child(element):
-					switch (element)
-					{
-						case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-							if (searchedParent == domElement)
-							{
-								parentFormattableElement = formattableElements[i];
-							}
-							
-						case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-							if (searchedParent == domElement)
-							{
-								parentFormattableElement = formattableElements[i];
-							}
-							
-						default:	
-					}
-			}
-		}
-	}
-	
-	/////////////////////////////////
-	// PUBLIC FORMATTING METOHDS
-	// format the formattable elements tree and access
-	// to the created boxes data
-	/////////////////////////////////
 	
 	/**
 	 * Called by the containing DOMElement once each of its children
-	 * has been inserted ibn the formatting context to start the formatting.
+	 * has been inserted in the formatting context to start the formatting.
 	 */
 	public function format():Void
 	{
@@ -254,30 +148,50 @@ class FormattingContext
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
-		var rootChildren:Array<FormattableElementValue> = new Array<FormattableElementValue>();
-		
-		//retrive the children of the containing block, which is itself
-		//always a container
-		switch (_rootFormattableElement)
+		//format all the box element in order
+		for (i in 0..._elementsInFormattingContext.length)
 		{
-			case FormattableElementValue.container(element, children):
-				rootChildren = children;
-				
-			case FormattableElementValue.child(element):
+			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
 		}
-		
-		//call recursive method
-		doFormat(rootChildren);
 	}
 	
 	/**
-	 * For a given parent DOMElement, retrive all the 
+	 * return the added height of the children of a DOMElement.
+	 * Must be called after a call to the 'format' method, else
+	 * always return 0
+	 */
+	public function getChildrenHeight(parentDOMElement:DOMElement):Int
+	{
+		var height:Int = 0;
+		
+		//add all the DOMElement boxesData's height
+		var boxesData:Array<BoxData> = getParentBoxesData(parentDOMElement);
+		for (i in 0...boxesData.length)
+		{
+			height += Math.round(boxesData[i].bounds.height);
+		}
+		
+		return height;
+	}
+	
+	public function getBoxesData():Array<BoxData>
+	{
+		for (i in 0..._formattingBoxesData.length)
+		{
+			getBounds(_formattingBoxesData[i]);
+		}
+		
+		return _formattingBoxesData;
+	}
+	
+	/**
+	 * For a given parent DOMElement, retrieve all the 
 	 * boxes that were created by the formatting context
 	 * to format it. Must be called after a call to the 
 	 * 'format' method, else the returned array is always
 	 * empty
 	 */
-	public function getBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+	public function getParentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{	
 		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
 	}
@@ -297,30 +211,8 @@ class FormattingContext
 	}
 	
 	/////////////////////////////////
-	// PRIVATE FORMATTING METOHDS
+	// PRIVATE METHODS
 	/////////////////////////////////
-	
-	
-	/**
-	 * Recursive method traversing all the  tree of elements in the formatting method
-	 * and inserting each of those
-	 */
-	private function doFormat(formattableElements:Array<FormattableElementValue>):Void
-	{
-		for (i in 0...formattableElements.length)
-		{
-			switch (formattableElements[i])
-			{
-				case container(element, children):
-					doInsertElement(element, isNextElementALineFeed(formattableElements, i));
-					//call the method recursively if the element is a container
-					doFormat(children);
-					
-				case child(element):
-					doInsertElement(element, isNextElementALineFeed(formattableElements, i));
-			}
-		}		
-	}
 	
 	/**
 	 * do insert an element using different methods based on its type
@@ -406,6 +298,9 @@ class FormattingContext
 	 * of a box data. The bounds are relative to 
 	 * the containing block which started this
 	 * formatting context
+	 * 
+	 * TODO : block boxes with no children must takes
+	 * the bound of the block, implement in blockForamtting ?
 	 */
 	private function getBounds(boxData:BoxData):RectangleData
 	{
@@ -608,7 +503,7 @@ class FormattingContext
 					elementWidth = domElement.offsetWidth;	
 					
 				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					elementWidth = 0;
+					elementWidth = domElement.offsetWidth;
 					
 				case BoxElementValue.text(domElement, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
@@ -713,78 +608,27 @@ class FormattingContext
 	}
 	
 	/**
-	 * Wrap a box element into either a container or a child formattable element
-	 * based on the type of box element
-	 */
-	private function getFormattableElementFromBoxElement(element:BoxElementValue):FormattableElementValue
-	{
-		var formattableElement:FormattableElementValue;
-		
-		switch (element)
-		{
-			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-				formattableElement = FormattableElementValue.container(element,[]);
-				
-			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-				formattableElement = FormattableElementValue.container(element,[]);
-				
-			case BoxElementValue.text(domElement, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.offset(value, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.float(domElement, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-				
-			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-				formattableElement = FormattableElementValue.child(element);
-		}
-			
-		return formattableElement;	
-	}
-	
-	/**
 	 * Determine wheter the next element in the formattable elements array is a linefeed
-	 * 
-	 * TODO : if the current element is the last of the array, must check the next
-	 * in the tree instead of returning false
 	 */
-	private function isNextElementALineFeed(formattableElements:Array<FormattableElementValue>, currentIndex:Int):Bool
+	private function isNextElementALineFeed(elementsInFormattingContext:Array<BoxElementValue>, currentIndex:Int):Bool
 	{
 		var isNextElementALineFeed:Bool;
 		
 		//here the current element is the last in the array
-		if (currentIndex + 1 >= formattableElements.length)
+		if (currentIndex + 1 >= elementsInFormattingContext.length)
 		{
 			isNextElementALineFeed = false;
 		}
 		//else check if the next element is indeed a line feed
 		else
 		{
-			switch (formattableElements[currentIndex + 1])
+			switch (elementsInFormattingContext[currentIndex + 1])
 			{
-				case container(element, children):
-					isNextElementALineFeed = false;
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					isNextElementALineFeed = true;
 					
-				case child(element):
-					switch (element)
-					{
-						case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-							isNextElementALineFeed = true;
-							
-						default:
-							isNextElementALineFeed = false;
-					}
+				default:
+					isNextElementALineFeed = false;
 			}
 		}
 		
