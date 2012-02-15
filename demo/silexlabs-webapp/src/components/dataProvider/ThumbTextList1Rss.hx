@@ -107,7 +107,7 @@ class ThumbTextList1Rss
 						}
 						text = StringTools.ltrim(text);
 						// shorten description
-						text = text.substr(0, 95) + "...";
+						//text = text.substr(0, 95) + "...";
 						cellContent.description = text;
 					}
 					

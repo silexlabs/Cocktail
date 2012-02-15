@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.domElement.GraphicDOMElement;
+import cocktail.viewport.Viewport;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -27,6 +28,7 @@ import components.lists.ListBaseModels;
 
 // Utils
 import Utils;
+import ScreenResolution;
 
 /**
  * This class defines the styles used by a Thumb & text cell,
@@ -86,15 +88,20 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellNumberStyle(domElement:DOMElement):Void
+	public static function getCellNumberStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
+		var fontSize:Int = 12;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 12;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
+		else  fontSize = 20;
+		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
+
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.color = ColorValue.hex('#989898');
 		domElement.style.textAlign = TextAlignStyleValue.center;
-		domElement.style.paddingBottom = PaddingStyleValue.percent(10);
+		domElement.style.paddingBottom = PaddingStyleValue.percent(2);
 	}
 	
 	/**
@@ -102,11 +109,16 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellCommentCountStyle(domElement:DOMElement):Void
+	public static function getCellCommentCountStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(17));
+		var fontSize:Int = 11;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 11;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 14;
+		else  fontSize = 17;
+		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
+
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.color = ColorValue.hex('#CC3517');
 		domElement.style.textAlign = TextAlignStyleValue.center;
@@ -117,7 +129,8 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellInfoBlockImageStyle(domElement:DOMElement):Void
+	//public static function getCellInfoBlockImageStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
 		
@@ -125,8 +138,32 @@ class ThumbTextList1Style
 		domElement.style.marginRight = MarginStyleValue.autoValue;
 		domElement.style.marginTop = MarginStyleValue.autoValue;
 		domElement.style.marginBottom = MarginStyleValue.autoValue;
-		domElement.style.paddingBottom = PaddingStyleValue.percent(10);
+		domElement.style.paddingBottom = PaddingStyleValue.percent(5);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
+		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(50));
+		domElement.style.width = DimensionStyleValue.percent(90);
+	}
+	
+	/**
+	 * Defines cell info block image Style
+	 * 
+	 * @param	domElement
+	 */
+	//public static function getCellInfoBlockImageStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement):Void
+	{
+		domElement.style.display = DisplayStyleValue.block;
+		
+		domElement.style.marginLeft = MarginStyleValue.autoValue;
+		domElement.style.marginRight = MarginStyleValue.autoValue;
+		domElement.style.marginTop = MarginStyleValue.autoValue;
+		domElement.style.marginBottom = MarginStyleValue.autoValue;
+		domElement.style.paddingBottom = PaddingStyleValue.percent(2);
+		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
+		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(20));
+		domElement.style.width = DimensionStyleValue.percent(50);
 	}
 	
 	/**
@@ -172,7 +209,7 @@ class ThumbTextList1Style
 		
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.marginLeft = MarginStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
+		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.width = DimensionStyleValue.percent(55);
 	}
 
@@ -197,11 +234,16 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellTitleStyle(domElement:DOMElement):Void
+	public static function getCellTitleStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(18));
+		var fontSize:Int = 14;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
+		else  fontSize = 18;
+		
+		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 	}
 
@@ -210,11 +252,16 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellCommentStyle(domElement:DOMElement):Void
+	public static function getCellCommentStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 
-		domElement.style.fontSize = FontSizeStyleValue.length(px(13));
+		var fontSize:Int = 10;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
+		else  fontSize = 12;
+		
+		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
 		domElement.style.fontWeight = FontWeightStyleValue.normal;
 	}
 

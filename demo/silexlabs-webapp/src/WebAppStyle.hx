@@ -161,6 +161,7 @@ class WebAppStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
@@ -179,6 +180,21 @@ class WebAppStyle
 		domElement.style.left = PositionOffsetStyleValue.length(px(15));
 		domElement.style.right = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.length(px(44));
+	}
+
+	/**
+	 * Defines footer Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getFooterStyle(domElement:DOMElement):Void
+	{
+		domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.display = DisplayStyleValue.block;
+		
+		domElement.style.left = PositionOffsetStyleValue.length(px(0));
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 	}
 
 	/**
@@ -208,6 +224,7 @@ class WebAppStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 	}
@@ -236,6 +253,7 @@ class WebAppStyle
 
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;

@@ -30,7 +30,7 @@ import Constants;
 
 class AppListStyle
 {
-	static inline var cellWidth:Int = 60;
+	static inline var cellWidth:Int = 62;
 	static inline var cellHeight:Int = 43;
 	
 	/**
@@ -57,6 +57,7 @@ class AppListStyle
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		domElement.style.left = PositionOffsetStyleValue.autoValue;
 		domElement.style.right = PositionOffsetStyleValue.autoValue;
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 

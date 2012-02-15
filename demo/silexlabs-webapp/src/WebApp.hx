@@ -53,7 +53,7 @@ class WebApp
 	/**
 	 * Contructor
 	 */
-	public function new() 
+	public function new()
 	{
 		_body = new BodyDOMElement();
 		WebAppStyle.getBodyStyle(_body);
