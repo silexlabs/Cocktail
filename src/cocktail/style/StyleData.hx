@@ -1414,14 +1414,6 @@ import cocktailCore.style.formatter.FormattingContext;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO : doc
-	 */
-	enum FormattableElementValue {
-		container(element:BoxElementValue, children:Array<FormattableElementValue>);
-		child(element:BoxElementValue);
-	}
-	
-	/**
 	 * Lists the different kind of
 	 * boxes that can be added in an
 	 * inline formatting context.

@@ -10,6 +10,7 @@ package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -93,9 +94,104 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = 0;
 		_currentBoxesData = new Array<BoxData>();
 		super.format();
+		
+		//TODO : shouldn't have to call it
 		insertBreakOpportunity(true, true);
+		
 	}
 	
+	override private function getBounds(boxData:BoxData):RectangleData
+	{
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+	
+		for (i in 0...boxData.children.length)
+		{
+			var doPosition:Bool;
+			
+			switch (boxData.children[i].element)
+			{
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					doPosition = false;
+		
+				default:
+					doPosition = true;
+			}
+			
+			if (doPosition == true)
+			{
+				if (boxData.children[i].x < left)
+				{
+					left = boxData.children[i].x;
+				}
+				if (boxData.children[i].y < top)
+				{
+					//TODO : probably won't be robust enough + messy but offset should only be used for left and right
+					switch (boxData.children[i].element)
+					{
+						case BoxElementValue.offset(offsetWidth, parentDOMElement):
+							
+						case BoxElementValue.text(domElement, parentDOMElement):
+							top = boxData.children[i].y - domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
+							
+						default:
+							top = boxData.children[i].y;
+					}
+				
+				}
+				if (boxData.children[i].x + boxData.children[i].width > right)
+				{
+					right = boxData.children[i].x + boxData.children[i].width;
+					
+					
+					
+				
+					
+				}
+				if (boxData.children[i].y + boxData.children[i].height > bottom)
+				{
+					switch (boxData.children[i].element)
+					{
+						case BoxElementValue.offset(offsetWidth, parentDOMElement):
+					
+						case BoxElementValue.text(domElement, parentDOMElement):
+							bottom = boxData.children[i].y + boxData.children[i].height -  domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
+							
+						default:	
+							bottom = boxData.children[i].y + boxData.children[i].height;
+					}
+				}
+			}
+		}
+			
+			
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+				
+				
+				
+		return bounds;
+		
+	}
+	
+	override public function getBoxesData():Array<BoxData>
+	{
+		for (i in 0..._formattingBoxesData.length)
+		{
+			getBounds(_formattingBoxesData[i]);
+		}
+		
+		return _formattingBoxesData;
+	}
 	/**
 	 * same a getBoxesData but only for the boxes in the current line
 	 * in an inline formatting context
@@ -523,7 +619,6 @@ class InlineFormattingContext extends FormattingContext
 				{
 					case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 						
-						
 					var boxElementData:BoxElementData;
 				
 					
@@ -534,7 +629,6 @@ class InlineFormattingContext extends FormattingContext
 							width:domElement.offsetWidth,
 							height:domElement.offsetHeight
 						}
-
 					
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
@@ -596,7 +690,7 @@ class InlineFormattingContext extends FormattingContext
 						}
 				
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
-				
+
 				
 					domElement.style.setNativeX(domElement, boxElementData.x);
 					domElement.style.setNativeY(domElement, boxElementData.y);
@@ -622,6 +716,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			for (i in 0..._currentBoxesData.length)
 			{
+				_currentBoxesData[i].bounds = getBounds(_currentBoxesData[i]);
 				_formattingBoxesData.push(_currentBoxesData[i]);
 				
 			}
@@ -694,7 +789,46 @@ class InlineFormattingContext extends FormattingContext
 		*/
 	}
 	
-
+	/**
+	 * TODO : shouldn't be overriden
+	 */
+	override private function getElementWidth(element:BoxElementValue):Int
+	{
+		var elementWidth:Int;
+		
+		switch (element)
+			{
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;
+				
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;	
+					
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					elementWidth = 0;
+					
+				case BoxElementValue.text(domElement, parentDOMElement):
+					elementWidth = domElement.offsetWidth;
+					
+				case BoxElementValue.offset(value, parentDOMElement):
+					elementWidth = value;
+					
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+					elementWidth = spaceWidth;
+					
+				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+					elementWidth = tabWidth;
+					
+				case BoxElementValue.float(domElement, parentDOMElement):
+					elementWidth = 0;
+					
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					elementWidth = 0;
+			}
+			
+		return 	elementWidth;
+	}
+	
 	
 	
 	/////////////////////////////////
@@ -775,6 +909,7 @@ class InlineFormattingContext extends FormattingContext
 	{
 		for (i in 0..._elementsInLineBox.length)
 		{
+			
 			_elementsInLineBox[i].x = flowX;
 			flowX += getElementWidth(_elementsInLineBox[i].element);
 		}
