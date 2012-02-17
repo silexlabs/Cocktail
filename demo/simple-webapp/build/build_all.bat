@@ -8,7 +8,7 @@ cd native_apps
 CALL WebApp_PhoneGapBuild_archive.bat
 CALL WebApp_air_desktop_and_tv.bat
 CALL WebApp_air_android.bat
-CALL WebApp_air_iOS.bat
+CALL WebApp_air_iOS_Dev.bat
 cd ..
 
 ECHO.

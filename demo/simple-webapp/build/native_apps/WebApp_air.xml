@@ -55,6 +55,8 @@
 					<string>1</string>
 					<string>2</string>
 				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
 			]]>
 		</InfoAdditions>
 		<requestedDisplayResolution>standard</requestedDisplayResolution>
