@@ -141,11 +141,14 @@ class WebAppStyle
 	 */
 	public static function getHeaderStyle(domElement:DOMElement):Void
 	{
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		//domElement.nativeElement.style.zIndex = 2;
 	}
 
 	/**

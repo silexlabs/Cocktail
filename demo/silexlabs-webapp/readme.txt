@@ -31,3 +31,9 @@ http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2
 Silex Themes:
 http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2
 
+
+Flux simplifié:
+http://www.silexlabs.org/feed/?cat=642&format=rss2
+
+http://www.silexlabs.org/feed/ep_posts_small/?cat=642&format=rss2
+
