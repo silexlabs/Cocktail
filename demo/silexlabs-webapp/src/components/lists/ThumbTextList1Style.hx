@@ -48,6 +48,7 @@ class ThumbTextList1Style
 	public static function getListStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.position = PositionStyleValue.absolute;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -59,6 +60,8 @@ class ThumbTextList1Style
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(Constants.footerHeight));
+		
+		domElement.style.top = PositionOffsetStyleValue.length(px(43));
 	}
 	
 	/**
@@ -183,6 +186,7 @@ class ThumbTextList1Style
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(200));
+		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
 		domElement.style.width = DimensionStyleValue.percent(30);
 	}
 	

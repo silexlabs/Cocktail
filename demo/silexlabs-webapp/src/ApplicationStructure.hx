@@ -71,7 +71,7 @@ class ApplicationStructure
 	private var _page5:ContainerDOMElement;
 	
 	// quantity of rss items to return
-	static inline var ITEM_QUANTITY:Int = 5;
+	//static inline var ITEM_QUANTITY:Int = 5;
 	
 	// page 1 title
 	static inline var PAGE1_TITLE:String = "Silex Labs";
@@ -112,27 +112,27 @@ class ApplicationStructure
 		
 		// Silex Labs BLog Page
 		//var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=" + ITEM_QUANTITY);
-		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=5318&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=5318&format=rss2");
 		pluginsRss.onLoad = onPage1RssLoad;
 		
 		// AmfPHP Blog Page
 		//var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=1&format=rss2&posts_per_page=" + ITEM_QUANTITY);
-		var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=358&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=358&format=rss2");
 		blogRss.onLoad = onPage2RssLoad;
 		
 		// Silex Blog Page
 		//var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=" + ITEM_QUANTITY);
-		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=642&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=642&format=rss2");
 		themesRss.onLoad = onPage3RssLoad;
 		
 		// Silex Themes Page
 		//var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=" + ITEM_QUANTITY);
-		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
 		themesRss.onLoad = onPage4RssLoad;
 		
 		// Silex plugins Page
 		//var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=" + ITEM_QUANTITY);
-		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=657&format=rss2");
 		pluginsRss.onLoad = onPage5RssLoad;
 		
 	}
@@ -246,8 +246,8 @@ class ApplicationStructure
 		//list.onChange = navigation.onChangeListCallback;
 		
 		// build hierarchy
-		page.addChild(header);
 		page.addChild(list);
+		page.addChild(header);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;

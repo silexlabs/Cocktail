@@ -10,9 +10,11 @@ package components.lists;
 // DOM
 import cocktail.classInstance.ClassInstance;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.DOMElementData;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
+import cocktail.domElement.LinkDOMElement;
 import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
@@ -110,6 +112,26 @@ class ListBase extends ContainerDOMElement
 
 		// create cell
 		var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+		
+		// add link for focus
+		var cellLink:LinkDOMElement = new LinkDOMElement();
+		
+		// in case the cellcontent is leading to an url, set le linkdomelement href for it to be focusable
+		if(cellData.action == "openUrl" || cellData.action == "goToUrl" )
+		{
+			cellLink.href = cellData.actionTarget;
+			cellLink.target = LinkTargetValue.blank;
+		}
+		// if cellcontent is leading to an internal page, set mousecallback
+		else
+		{
+			// TODO: add tabIndex to cell
+			
+			// mouse up
+			var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+		}
+		
 		// apply style
 		listStyle.cell(cell);
 		
@@ -118,8 +140,10 @@ class ListBase extends ContainerDOMElement
 		// push content in cell
 		for (container in cellContent)
 		{
-			cell.addChild(container);
+			//cell.addChild(container);
+			cellLink.addChild(container);
 		}
+		cell.addChild(cellLink);
 		
 		// mouse
 		// delegates functions are used to be able to pass an extra parameters to the callback
@@ -132,9 +156,9 @@ class ListBase extends ContainerDOMElement
 		// mouse down
 		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseDown;
 		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };*/
-		// mouse up
-		var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
-		cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+		 //mouse up
+		//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
+		//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
 			
 		return cell;
 	}
