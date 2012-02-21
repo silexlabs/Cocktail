@@ -76,7 +76,7 @@ class ListBase extends ContainerDOMElement
 		listStyle.list(this);
 		
 		//selectCell(_selectedCellDOM, listStyle);
-		selectCell(_selectedCellDOM);
+		//selectCell(_selectedCellDOM);
 	}
 	
 	/**
@@ -297,8 +297,6 @@ class ListBase extends ContainerDOMElement
 		if(_currentCellIndex < this._children.length-1)
 		{
 			_currentCellIndex++;
-			selectCell(this._children[_currentCellIndex].child);
-			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
 		
 	}
@@ -313,8 +311,6 @@ class ListBase extends ContainerDOMElement
 		if(_currentCellIndex > 0)
 		{
 			_currentCellIndex--;
-			selectCell(this._children[_currentCellIndex].child);
-			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
 	}
 	

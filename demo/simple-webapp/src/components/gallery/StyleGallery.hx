@@ -29,8 +29,11 @@ class StyleGallery
 	 */
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
-		domElement.style.position = PositionStyleValue.staticStyle;
+		//domElement.style.position = PositionStyleValue.staticStyle;
+		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.display = DisplayStyleValue.block;
+		
+		domElement.style.top = PositionOffsetStyleValue.length(px(43));
 		domElement.style.width = DimensionStyleValue.autoValue;
 
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -70,7 +73,7 @@ class StyleGallery
 	 */
 	public static function getThumbStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		//getDefaultStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.relative;
 		

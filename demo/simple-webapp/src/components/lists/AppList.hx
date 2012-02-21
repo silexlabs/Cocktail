@@ -32,7 +32,7 @@ import cocktail.keyboard.KeyboardData;
 class AppList extends ListBase
 {
 
-	public var _selectedMenuItemImage:ImageDOMElement;
+	//public var _selectedMenuItemImage:ImageDOMElement;
 	
 	/**
 	 * constructor
@@ -45,11 +45,11 @@ class AppList extends ListBase
 		// create selectedImage
 		
 		// add selected menu item image over the selected menu item
-		_selectedMenuItemImage = new ImageDOMElement();
+		/*_selectedMenuItemImage = new ImageDOMElement();
 		// set image style
 		listStyle.cellSelected(_selectedMenuItemImage);
 		// load image
-		_selectedMenuItemImage.load("images/selectedMenuItem.png");
+		_selectedMenuItemImage.load("images/selectedMenuItem.png");*/
 		
 		super(list, listStyle);
 		
@@ -116,7 +116,7 @@ class AppList extends ListBase
 		super.selectCell(cell);
 		
 		// add image
-		cell.addChild(_selectedMenuItemImage);
+		//cell.addChild(_selectedMenuItemImage);
 	}
 	
 	/**
@@ -126,15 +126,21 @@ class AppList extends ListBase
 	 */
 	override function onListKeyDown(key:KeyEventData):Void
 	{
-		if (key.value == right)
+		if (key.value == KeyboardKeyValue.right)
 		{
 			//trace("right key pressed");
 			super.selectNextCell();
 		}
-		else if (key.value == left)
+		else if (key.value == KeyboardKeyValue.left)
 		{
 			//trace("left key pressed");
 			super.selectPreviousCell();
+		}
+		else if (key.value == KeyboardKeyValue.enter)
+		{
+			//trace(this._children[_currentCellIndex].child);
+			selectCell(this._children[_currentCellIndex].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
 	}
 

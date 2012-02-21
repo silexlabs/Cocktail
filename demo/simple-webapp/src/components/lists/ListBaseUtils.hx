@@ -5,27 +5,10 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList;
+package components.lists;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-
-// RichList
-import components.richList.RichListModels;
-
-// Iphone specific
-import Utils;
+// list
+import components.lists.ListBaseModels;
 
 
 /**
@@ -34,21 +17,21 @@ import Utils;
  * @author Raphael Harmel
  */
 
-class RichListUtils extends Utils 
+class ListBaseUtils extends Utils 
 {
 	/**
 	 * Initializes a rich list model
 	 * 
 	 * @return
 	 */
-	public static function createRichListModel():RichListModel
+	public static function createListModel():ListModel
 	{
-		var richListModel:RichListModel = 
+		var list:ListModel = 
 		{
 			content: new Array<CellModel>()
 		};
 		
-		return richListModel;	
+		return list;	
 	}
 	
 }

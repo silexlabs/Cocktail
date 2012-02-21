@@ -5,7 +5,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList;
+package components.lists;
 
 // DOM
 import cocktail.domElement.DOMElement;
@@ -21,9 +21,6 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-// RichList
-import components.richList.RichListModels;
-
 //Iphone
 import Utils;
 
@@ -34,7 +31,7 @@ import Utils;
  * @author Raphael Harmel
  */
 
-class StyleNormal
+class RichListStyle
 {
 	/**
 	 * Defines default Style
@@ -44,6 +41,9 @@ class StyleNormal
 	public static function getDefaultStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.position = PositionStyleValue.absolute;
+		
+		domElement.style.top = PositionOffsetStyleValue.length(px(43));
 
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -54,6 +54,8 @@ class StyleNormal
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		
+		domElement.style.width = DimensionStyleValue.percent(100);
 	}
 	
 	/**
@@ -63,8 +65,16 @@ class StyleNormal
 	 */
 	public static function getCellStyle(domElement:ContainerDOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		//getDefaultStyle(domElement);
 
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.position = PositionStyleValue.relative;
+		
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
@@ -83,9 +93,17 @@ class StyleNormal
 	 */
 	public static function getCellImageStyle(domElement:DOMElement):Void
 	{
-		getDefaultStyle(domElement);
+		//getDefaultStyle(domElement);
 		//domElement.style.position = absolute;
 
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.position = PositionStyleValue.relative;
+		
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
 		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
@@ -107,6 +125,8 @@ class StyleNormal
 
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
+		
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
@@ -185,7 +205,7 @@ class StyleNormal
 	 */
 	public static function getCellLine(domElement:ContainerDOMElement):Void
 	{
-		var line:ImageDOMElement = new ImageDOMElement();
+		/*var line:ImageDOMElement = new ImageDOMElement();
 		line.style.display = DisplayStyleValue.block;
 		line.style.paddingTop = PaddingStyleValue.length(px(8));
 		line.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
@@ -193,7 +213,21 @@ class StyleNormal
 		line.style.height = DimensionStyleValue.length(px(1));
 		line.load("images/greyPixel.png");
 		
-		domElement.addChild(line);
+		domElement.addChild(line);*/
 	}
+	
+	/**
+	 * Defines cell line Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getCellLineStyle(domElement:DOMElement):Void
+	{
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(1));
+	}
+	
+
 	
 }
