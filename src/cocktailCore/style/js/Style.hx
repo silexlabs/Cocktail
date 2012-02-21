@@ -66,10 +66,10 @@ class Style extends AbstractStyle
 	/**
 	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
 	 */
-	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		//make the children store their own position and dimension
-		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//store the JavaScript dimension and position of the native HTMLElement, now that they are available
 		setNativeHeight(untyped this._domElement.nativeElement.clientHeight);

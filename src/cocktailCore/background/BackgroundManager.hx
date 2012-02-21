@@ -213,6 +213,7 @@ class BackgroundManager
 		
 		var imageLoader:ImageLoader = new ImageLoader();
 		
+		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
 		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->AbstractStyle->RectangleData->BackgroundPositionStyleData->
 		BackgroundSizeStyleValue->BackgroundOriginStyleValue-> BackgroundClipStyleValue-> BackgroundRepeatStyleData->
 		BackgroundImageStyleValue->Void = onBackgroundImageLoaded;
