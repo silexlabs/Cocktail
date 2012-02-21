@@ -25,7 +25,6 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-	private var _addedSiblingHeights:Array<Int>;
 	
 	private var _currentAddedSiblingsHeight:Int;
 	
@@ -36,16 +35,15 @@ class BlockFormattingContext extends FormattingContext
 	 */
 	public function new(domElement:DOMElement) 
 	{
-		_addedSiblingHeights = new Array<Int>();
 		_currentAddedSiblingsHeight = 0;
 		super(domElement);
 	}
 	
-	
-	
 	/**
 	 * Called by the containing DOMElement once each of its children
 	 * has been inserted in the formatting context to start the formatting.
+	 * 
+	 * TODO : implement margin collapsing
 	 */
 	override public function format():Void
 	{
@@ -65,19 +63,16 @@ class BlockFormattingContext extends FormattingContext
 				
 			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
 			{
+				
 			}
-			
 			else if (isParentOfLastInsertedElement(_elementsInFormattingContext[i]))
 			{
 				_formattingContextData.y -= _currentAddedSiblingsHeight;
-				_currentAddedSiblingsHeight = _addedSiblingHeights.pop();
-				
+				_currentAddedSiblingsHeight = 0;
 					
 			}
 			else
 			{
-				
-				_addedSiblingHeights.push(_currentAddedSiblingsHeight);
 				_currentAddedSiblingsHeight = 0;
 				
 			}
@@ -126,6 +121,7 @@ class BlockFormattingContext extends FormattingContext
 				height:getElementHeight(element)
 			}
 			
+			
 		_formattingContextData.y += getElementHeight(element);
 		_currentAddedSiblingsHeight += getElementHeight(element);
 		
@@ -166,6 +162,7 @@ class BlockFormattingContext extends FormattingContext
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
+
 			
 			_formattingContextData.y += getElementHeight(element);
 			_currentAddedSiblingsHeight += getElementHeight(element);

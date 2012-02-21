@@ -762,6 +762,11 @@ class AbstractStyle
 			var x:Float = 0;
 			var y:Float = 0;
 			
+			//To retrieve the static position, the formatting context must be formatted now
+			formattingContext.format();
+			
+			//x and y of the formatting are now the point where the next in-flow element
+			//would be inserted
 			x = formattingContext.formattingContextData.x;
 			y = formattingContext.formattingContextData.y;
 			
@@ -772,6 +777,12 @@ class AbstractStyle
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
+			//
+			//TODO : the only reason to insert the element remaining is to 
+			//position it vertically in an inline formatting context, create a 'stub' element ?
+			//check : will it work for a relaive container DOMElement ? -> doesn't work,
+			//only container moved, no the children neither the background, need to build a rendering
+			//tree of boxData instead of a flat array
 			if (isRelativePositioned() == true)
 			{
 				insertInFlowDOMElement(formattingContext);

@@ -64,9 +64,10 @@ class BoxPositioner
 	{
 		//init the structure that will contain the position and dimensions
 		//of the element using its first positioned ancestor as origin
+		//
 		//TODO : a null parentDOMElement might introduce bugs
 		//the DOMElement might also be a ContainerDOMElement, pass a BoxElementValue or BoxElementData to the 
-		//position method instead of a domElement ?
+		//position method instead of a domElement ? or add a positioned element construct ?
 		var boxElementData:BoxElementData = 
 		{
 			element:BoxElementValue.embeddedDOMElement(domElement, null),
