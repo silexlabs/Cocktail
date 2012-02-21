@@ -129,6 +129,9 @@ class AbstractContainerStyle extends Style
 			}
 			else
 			{
+				//TODO : shouldn't have to do that
+				boxesData.reverse();
+				
 				//for each box, render the background, border and
 				//the children of each box
 				for (i in 0...boxesData.length)
@@ -140,6 +143,8 @@ class AbstractContainerStyle extends Style
 						nativeElements.push(boxNativeElements[j]);
 					}
 				}
+				//TODO : shouldn't have to do that
+				boxesData.reverse();
 				
 				//for each box, render the background, border and
 				//the children of each box
@@ -226,7 +231,6 @@ class AbstractContainerStyle extends Style
 	 */
 	private function renderBackgroundOfBlockBox(box:BoxData):Array<NativeElement>
 	{
-		//box.bounds = getBounds(box);
 		
 		var backgrounds:Array<NativeElement> = new Array<NativeElement>();
 		
@@ -255,7 +259,8 @@ class AbstractContainerStyle extends Style
 					tempBackground  = _backgroundManager.render( bounds,
 					 domElement.style);
 					
-					 
+					//TODO : should be the responsability of the containing block to render its background,
+					//else the z-order might be wrong
 					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 					
 					
@@ -365,38 +370,6 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return childrenNativeElements;
-	}
-	
-	/**
-	 * Get the relevant bounds of a box data which for an inline
-	 * container is the bounds of its children and for a block
-	 * container, the bounds of the DOMElement
-	 */
-	private function getBounds(boxData:BoxData):RectangleData
-	{
-		var bounds:RectangleData;
-		
-		//return bounds of children, which were processed in the formatting
-		//context
-		if (isInlineContainer() == true)
-		{
-			bounds = boxData.bounds;
-		}
-		//return bounds of the block box
-		else
-		{
-			var width:Float = _domElement.offsetWidth;
-			var height:Float = _domElement.offsetHeight;
-			//TODO : probably shouldn't always return x: 0 and y:0
-			bounds = {
-					x:0.0,
-					y:0.0,
-					width : width,
-					height :  height,
-				}
-		}
-		return bounds;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -622,79 +595,16 @@ class AbstractContainerStyle extends Style
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
 			
 			//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
-			//TODO : shouldn't be necessary, add intermediate method ?
-			childLastPositionedDOMElementData.data.height = this._computedStyle.height;
-			
-			//TODO : improve the way relative DOMElement are managed, it is a bit clumsy so far
+			childLastPositionedDOMElementData.data.height = getComputedHeight();
 			
 			//position each stored children
 			for (i in 0...childLastPositionedDOMElementData.children.length)
 			{
 				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 				
-				//relatively positioned DOMElement are both stored in the childLastPositionedDOMElementData array and
-				//also inserted in a formatting context. At this point, their static position must be retrieved from
-				//the formatting context which formatted the relative DOMElement
-				if (positionedDOMElementData.style.isRelativePositioned() == true)
-				{
-					//all the in-flow children that share the same parent in the stored
-					//formatting context are retrieved
-					var childrenBoxesData:Array<BoxData> = positionedDOMElementData.formattingContext.getParentBoxesData(positionedDOMElementData.style.domElement.parent);
-					
-					//loop in all the children to find a reference
-					//to the relative positioned DOMElement
-					for (i in 0...childrenBoxesData.length)
-					{
-						for (j in 0...childrenBoxesData[i].children.length)
-						{
-							//when found, use its in-flow position as the static position used for
-							//relative positioned DOMElement
-							switch (childrenBoxesData[i].children[j].element)
-							{
-								case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-									if (domElement == positionedDOMElementData.style.domElement)
-									{
-										var x:Float = childrenBoxesData[i].children[j].x;
-										var y:Float = childrenBoxesData[i].children[j].y;
-										positionedDOMElementData.staticPosition = {
-											x:x,
-											y:y
-										}
-									}
-								
-								case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-									if (domElement == positionedDOMElementData.style.domElement)
-									{
-										var x:Float = childrenBoxesData[i].children[j].x;
-										var y:Float = childrenBoxesData[i].children[j].y;
-										positionedDOMElementData.staticPosition = {
-											x:x,
-											y:y
-										}
-									}	
-									
-								case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-									if (domElement == positionedDOMElementData.style.domElement)
-									{
-										var x:Float = childrenBoxesData[i].children[j].x;
-										var y:Float = childrenBoxesData[i].children[j].y;
-										positionedDOMElementData.staticPosition = {
-											x:x,
-											y:y
-										}
-									}		
-									
-								default:	
-							}
-						
-						}
-						
-					}
-				}
-				
-				//now the static position of all the positioned DOMElement must be updated as they
-				//are in their formatting context space and they must be converted to this
-				//ContainerDOMElement space, as they will be attached to it
+				//the static position of all the positioned DOMElement must be updated as they
+				//are in their own formatting context space and they must be converted to this
+				//ContainerDOMElement's formatting context space, as they will be attached to it
 				
 				//the domElement which started the formatting context of the child is retrieved
 				//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
@@ -715,6 +625,7 @@ class AbstractContainerStyle extends Style
 			
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
+				//
 				//TODO : to check : shouldn't it be relative to the padding box instead ?
 				switch (boxElementData.element)
 				{
@@ -978,6 +889,9 @@ class AbstractContainerStyle extends Style
 	 * Determine wether the children of this DOMElement
 	 * are all block level or if they are all inline level
 	 * elements
+	 * 
+	 * TODO : throw exception when there is a float in the children
+	 * 
 	 * @return true if all children are inline level DOMElements
 	 */
 	private function childrenInline():Bool
@@ -1147,6 +1061,16 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Return the computed height of the ContainerDOMElement.
+	 * Use as a hook to be overriden by the BodyStyle
+	 * to return the viewport height
+	 */
+	private function getComputedHeight():Int
+	{
+		return this._computedStyle.height;
 	}
 	
 	/**

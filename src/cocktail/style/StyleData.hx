@@ -1384,10 +1384,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		var spaceWidth:Int;
 	}
 	
-	/**
-	 * Defines a DOMElement added to a box
-	 * and its type
-	 */
+	//TODO : doc
 	typedef BoxElementData = {
 		var element:BoxElementValue;
 		var x:Int;
@@ -1423,7 +1420,8 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * can influence a linebox layout
 	 * once it is complete
 	 * 
-	 * TODO : seems excessive to store parentDOMElement for each
+	 * TODO : seems excessive to store parentDOMElement for each, but so far only
+	 * way to construct boxData array in formatting context
 	 * 
 	 * TODO : add a construct for root containing block ?
 	 */

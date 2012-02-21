@@ -159,6 +159,8 @@ class FormattingContext
 	 * return the added height of the children of a DOMElement.
 	 * Must be called after a call to the 'format' method, else
 	 * always return 0
+	 * 
+	 * TODO : doesn't work for block formatting context
 	 */
 	public function getChildrenHeight(parentDOMElement:DOMElement):Int
 	{
@@ -191,7 +193,7 @@ class FormattingContext
 	 * 'format' method, else the returned array is always
 	 * empty
 	 */
-	public function getParentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+	private function getParentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{	
 		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
 	}
@@ -203,7 +205,8 @@ class FormattingContext
 	 * rendered twice.
 	 * 
 	 * TODO: return all but relative positioned DOMElements.
-	 * Find a better way to exclude relative DOMElements ?
+	 * Find a better way to exclude relative DOMElements ? add a 'stub' box element, only used
+	 * for formatting but not stored in  formatting boxes data ?
 	 */ 
 	public function getRenderedBoxesData(parentDOMElement:DOMElement):Array<BoxData>
 	{
@@ -237,7 +240,7 @@ class FormattingContext
 				insertText(element);
 				
 			case BoxElementValue.offset(value, parentDOMElement):
-				insertOffset(element);
+				insertHorizontalOffset(element);
 				
 			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
 				insertSpace(element, nexElementIsLineFeed);
@@ -294,13 +297,16 @@ class FormattingContext
 	}
 	
 	/**
-	 * Get the bounds formaed by all the children
+	 * Get the bounds formed by all the children
 	 * of a box data. The bounds are relative to 
 	 * the containing block which started this
 	 * formatting context
 	 * 
 	 * TODO : block boxes with no children must takes
 	 * the bound of the block, implement in blockForamtting ?
+	 * 
+	 * TODO : for bodyDOMElement, should return the viewport
+	 * dimensions, add a construct for rootContainingBlock ?
 	 */
 	private function getBounds(boxData:BoxData):RectangleData
 	{
@@ -316,14 +322,7 @@ class FormattingContext
 		{
 			var doPosition:Bool;
 			
-			switch (boxData.children[i].element)
-			{
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					doPosition = false;
-		
-				default:
-					doPosition = true;
-			}
+			doPosition = doPositionElement(boxData.children[i].element);
 			
 			if (doPosition == true)
 			{
@@ -378,6 +377,11 @@ class FormattingContext
 		
 	}
 	
+	private function doPositionElement(element:BoxElementValue):Bool
+	{
+		return true;
+	}
+	
 	/**
 	 * Insert an embedded DOMElement. overriden by sub-classes
 	 */
@@ -422,10 +426,8 @@ class FormattingContext
 	
 	/**
 	 * Insert an horizontal offset. overriden by sub-classes
-	 * 
-	 * TODO : rename insertHorizontalOffset ?
 	 */
-	private function insertOffset(element:BoxElementValue):Void
+	private function insertHorizontalOffset(element:BoxElementValue):Void
 	{
 		//abstract
 	}
@@ -471,9 +473,6 @@ class FormattingContext
 	{
 		_floatsManager.clearFloat(clear, formattingContextData);
 	}
-
-	
-	
 	
 	/**
 	 * Removed the floats which don't influence the 
@@ -605,6 +604,32 @@ class FormattingContext
 			}
 			
 		return 	elementParent;
+	}
+	
+	/**
+	 * return the white space value of an element, or null if it 
+	 * doesn't have one
+	 */
+	private function getElementWhiteSpace(element:BoxElementValue):WhiteSpaceStyleValue
+	{
+		var elementWhiteSpace:WhiteSpaceStyleValue;
+		
+		switch (element)
+		{
+			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+				elementWhiteSpace = whiteSpace;
+				
+			default:
+				elementWhiteSpace = null;
+		}
+		
+		return elementWhiteSpace;
 	}
 	
 	/**

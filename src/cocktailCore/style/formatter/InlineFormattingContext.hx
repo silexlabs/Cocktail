@@ -82,7 +82,7 @@ class InlineFormattingContext extends FormattingContext
 		_currentBoxesData = new Array<BoxData>();
 		
 		super(domElement);
-		
+		//TODO : fix TextIndent
 		//set the textIndent as an offset on the first line of text
 		insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
@@ -93,94 +93,29 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_unbreakableWidth = 0;
 		_currentBoxesData = new Array<BoxData>();
+		
+		
 		super.format();
 		
-		//TODO : shouldn't have to call it
 		insertBreakOpportunity(true, true);
-		
 	}
 	
-	override private function getBounds(boxData:BoxData):RectangleData
+	//TODO : seems a bit sloppy to not use some element
+	override private function doPositionElement(element:BoxElementValue):Bool
 	{
-		var bounds:RectangleData;
+		var doPositionElement:Bool;
 		
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-	
-		for (i in 0...boxData.children.length)
+		switch (element)
 		{
-			var doPosition:Bool;
-			
-			switch (boxData.children[i].element)
-			{
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					doPosition = false;
-		
-				default:
-					doPosition = true;
-			}
-			
-			if (doPosition == true)
-			{
-				if (boxData.children[i].x < left)
-				{
-					left = boxData.children[i].x;
-				}
-				if (boxData.children[i].y < top)
-				{
-					//TODO : probably won't be robust enough + messy but offset should only be used for left and right
-					switch (boxData.children[i].element)
-					{
-						case BoxElementValue.offset(offsetWidth, parentDOMElement):
-							
-						case BoxElementValue.text(domElement, parentDOMElement):
-							top = boxData.children[i].y - domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
-							
-						default:
-							top = boxData.children[i].y;
-					}
-				
-				}
-				if (boxData.children[i].x + boxData.children[i].width > right)
-				{
-					right = boxData.children[i].x + boxData.children[i].width;
-					
-					
-					
-				
-					
-				}
-				if (boxData.children[i].y + boxData.children[i].height > bottom)
-				{
-					switch (boxData.children[i].element)
-					{
-						case BoxElementValue.offset(offsetWidth, parentDOMElement):
-					
-						case BoxElementValue.text(domElement, parentDOMElement):
-							bottom = boxData.children[i].y + boxData.children[i].height -  domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
-							
-						default:	
-							bottom = boxData.children[i].y + boxData.children[i].height;
-					}
-				}
-			}
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+
+				doPositionElement = false;
+	
+			default:
+				doPositionElement  = true;
 		}
 			
-			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-				
-				
-				
-		return bounds;
-		
+		return doPositionElement;	
 	}
 	
 	override public function getBoxesData():Array<BoxData>
@@ -270,7 +205,8 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * It must still be inserted into the formatting context to be in the array of
 	 * elements to render
-	 * TODO : shouldn't have to insert those elements 
+	 * 
+	 * TODO : ideally shouldn't have to insert those elements 
 	 * 
 	 * @param	domElement
 	 * @param	parentDOMElement
@@ -338,7 +274,7 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * @param	offset the width of the offset
 	 */
-	override private function insertOffset(element:BoxElementValue):Void
+	override private function insertHorizontalOffset(element:BoxElementValue):Void
 	{
 		_unbreakableLineBoxElements.push( {
 		element:element,
@@ -392,28 +328,6 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function getElementWhiteSpace(element:BoxElementValue):WhiteSpaceStyleValue
-	{
-		var elementWhiteSpace:WhiteSpaceStyleValue;
-		
-		switch (element)
-		{
-			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-				elementWhiteSpace = whiteSpace;
-				
-			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-				elementWhiteSpace = whiteSpace;
-				
-			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-				elementWhiteSpace = whiteSpace;
-				
-			default:
-				elementWhiteSpace = null;
-		}
-		
-		return elementWhiteSpace;
-	}
-	
 	//////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LINE MEASUREMENT METHODS
 	//////////////////////////////////////////////////////////////////
@@ -463,6 +377,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		_unbreakableLineBoxElements = new Array<BoxElementData>();
 		_formattingContextData.x += _unbreakableWidth;
+	
 		_unbreakableWidth = 0;
 	}
 
@@ -726,14 +641,19 @@ class InlineFormattingContext extends FormattingContext
 			
 			_elementsInLineBox = new Array<BoxElementData>();
 			
-			_formattingContextData.y += lineBoxHeight;
-			
-			_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, domElementWidth, _containingDOMElementWidth);
-			
-			
-			_formattingContextData.maxHeight = _formattingContextData.y;
+			if (isLastLine == false)
+			{
+				_formattingContextData.y += lineBoxHeight;
+				
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, domElementWidth, _containingDOMElementWidth);
+				
+				
+				_formattingContextData.maxHeight = _formattingContextData.y;
 
-			_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+			}
+			
+			
 			
 		}
 	}
@@ -790,7 +710,7 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * TODO : shouldn't be overriden
+	 * TODO : shouldn't be overriden just for container width.
 	 */
 	override private function getElementWidth(element:BoxElementValue):Int
 	{
@@ -1003,6 +923,9 @@ class InlineFormattingContext extends FormattingContext
 	 * A line box height corresponds to the addition 
 	 * of the highest ascent and descent of its
 	 * DOMElement above the baseline
+	 * 
+	 * TODO : finish implementation of verticalAlign + duplicated
+	 * code
 	 */
 	private function computeLineBoxHeight():Int
 	{

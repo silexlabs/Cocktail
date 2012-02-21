@@ -39,31 +39,6 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * For the BodyDOMElement, the background always takes
-	 * the dimensions of the viewport
-	 */
-	override private function getBounds(boxData:BoxData):RectangleData
-	{
-		var viewPort:Viewport = new Viewport();
-		
-		var width:Float = viewPort.width;
-		var height:Float = viewPort.height;
-		
-		var bounds:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		};
-		
-		return bounds;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -115,6 +90,25 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The return dimensions of the Body are always those of the viewport
+	 */
+	override public function getContainerDOMElementData():ContainingDOMElementData
+	{
+		var viewPort:Viewport = new Viewport();
+		
+		return {
+			width:viewPort.width,
+			isWidthAuto:this._width == DimensionStyleValue.autoValue,
+			height:viewPort.height,
+			isHeightAuto:this._height == DimensionStyleValue.autoValue
+		};
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -126,6 +120,19 @@ class AbstractBodyStyle extends ContainerStyle
 		return new BlockFormattingContext(this._domElement);
 	}
 
+	/**
+	 * The computed height of the BodyDOMElement is always
+	 * the same as the viewport
+	 * 
+	 * TODO : might be wrong if the Body as top/bottom margin
+	 * or padding, maybe should instead override the 
+	 * offsetHeight ?
+	 */
+	override private function getComputedHeight():Int
+	{
+		return new Viewport().height;
+	}
+	
 	/**
 	 * a bodyDOMElement always establishes a block formatting context
 	 * for its children
