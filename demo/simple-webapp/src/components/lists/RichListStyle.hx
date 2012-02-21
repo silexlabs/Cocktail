@@ -21,9 +21,6 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-// RichList
-import components.lists.RichListModels;
-
 //Iphone
 import Utils;
 

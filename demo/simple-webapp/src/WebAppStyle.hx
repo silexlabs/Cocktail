@@ -68,8 +68,15 @@ class WebAppStyle
 	 */
 	public static function getMainContainerStyle(domElement:DOMElement):Void
 	{
+		var marginOffset:Int = 50;
+		
 		getDefaultStyle(domElement);
 		
+		domElement.style.marginBottom = MarginStyleValue.length(px(marginOffset));
+		domElement.style.marginLeft = MarginStyleValue.length(px(marginOffset));
+		domElement.style.marginRight = MarginStyleValue.length(px(marginOffset));
+		domElement.style.marginTop = MarginStyleValue.length(px(marginOffset));
+
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));

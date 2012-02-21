@@ -54,7 +54,7 @@ class WebApp
 		
 		// initialize container
 		_mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(_mainContainer);
+		WebAppStyle.getMainContainerStyle(_mainContainer);
 		
 		// attach main container to document root
 		_body.addChild(_mainContainer);

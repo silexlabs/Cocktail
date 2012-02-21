@@ -29,7 +29,6 @@ import components.lists.RichList;
 import components.lists.ListBaseModels;
 import components.lists.AppListStyle;
 import components.lists.RichListStyle;
-import components.lists.RichListUtils;
 
 // Gallery specific
 import components.gallery.Gallery;
