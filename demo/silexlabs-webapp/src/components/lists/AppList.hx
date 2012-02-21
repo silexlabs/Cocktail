@@ -65,7 +65,7 @@ class AppList extends ListBase
 	{
 		super.createListDOM(list, listStyle);
 		
-		this.onKeyDown = onListKeyDown;
+		//this.onKeyDown = onListKeyDown;
 	}
 	
 	/**
@@ -75,6 +75,7 @@ class AppList extends ListBase
 	 */
 	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
 	{
+		//trace("getCellData");
 		var cellContent:Array<DOMElement> = new Array<DOMElement>();
 		
 		// THUMBNAIL
@@ -124,14 +125,20 @@ class AppList extends ListBase
 	 * 
 	 * @param	key
 	 */
-	override function onListKeyDown(key:KeyEventData):Void
+	//override function onListKeyDown(key:KeyEventData):Void
+	override function onListKeyDown(key:Dynamic):Void
 	{
-		if (key.value == right)
+		//trace(key.value);
+		//if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT)
+		if (key.keyCode == "39")
+		//if (key.value == KeyboardKeyValue.VK_RIGHT)
 		{
 			//trace("right key pressed");
 			super.selectNextCell();
 		}
-		else if (key.value == left)
+		//else if (key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		else if (key.keyCode == "37")
+		//else if (key.value == KeyboardKeyValue.VK_LEFT)
 		{
 			//trace("left key pressed");
 			super.selectPreviousCell();

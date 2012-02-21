@@ -4170,7 +4170,7 @@ js.Boot.__string_rec = function(o,s) {
 		if(hasp && !o.hasOwnProperty(k)) {
 			continue;
 		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") {
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
 			continue;
 		}
 		if(str.length != 2) str += ", \n";
@@ -4261,7 +4261,7 @@ js.Boot.__init = function() {
 	if(String.prototype.cca == null) String.prototype.cca = String.prototype.charCodeAt;
 	String.prototype.charCodeAt = function(i) {
 		var x = this.cca(i);
-		if(x != x) return null;
+		if(x != x) return undefined;
 		return x;
 	};
 	var oldsub = String.prototype.substr;
@@ -4793,7 +4793,6 @@ components.lists.AppList.prototype = $extend(components.lists.ListBase.prototype
 	_selectedMenuItemImage: null
 	,createListDOM: function(list,listStyle) {
 		components.lists.ListBase.prototype.createListDOM.call(this,list,listStyle);
-		this.setOnKeyDown(this.onListKeyDown.$bind(this));
 	}
 	,getCellData: function(cellData,listStyle) {
 		var cellContent = new Array();
@@ -4817,7 +4816,7 @@ components.lists.AppList.prototype = $extend(components.lists.ListBase.prototype
 		cell.addChild(this._selectedMenuItemImage);
 	}
 	,onListKeyDown: function(key) {
-		if(key.value == cocktail.keyboard.KeyboardKeyValue.right) components.lists.ListBase.prototype.selectNextCell.call(this); else if(key.value == cocktail.keyboard.KeyboardKeyValue.left) components.lists.ListBase.prototype.selectPreviousCell.call(this);
+		if(key.keyCode == "39") components.lists.ListBase.prototype.selectNextCell.call(this); else if(key.keyCode == "37") components.lists.ListBase.prototype.selectPreviousCell.call(this);
 	}
 	,__class__: components.lists.AppList
 });
@@ -4995,7 +4994,7 @@ cocktailCore.textElement.js.TextElement.prototype = $extend(cocktailCore.textEle
 });
 var cocktail = cocktail || {}
 if(!cocktail.keyboard) cocktail.keyboard = {}
-cocktail.keyboard.KeyboardKeyValue = $hxClasses["cocktail.keyboard.KeyboardKeyValue"] = { __ename__ : ["cocktail","keyboard","KeyboardKeyValue"], __constructs__ : ["unknown","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","backSpace","capsLock","control","del","down","end","escape","enter","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","home","insert","left","numpad0","numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9","numpadAdd","numpadSpecial","numpadDecimal","numpadDivide","numpadEnter","numpadMultiply","numpadSubstract","pageDown","pageUp","right","shift","space","tab","up"] }
+cocktail.keyboard.KeyboardKeyValue = $hxClasses["cocktail.keyboard.KeyboardKeyValue"] = { __ename__ : ["cocktail","keyboard","KeyboardKeyValue"], __constructs__ : ["unknown","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","backSpace","capsLock","control","del","down","end","escape","enter","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","home","insert","left","numpad0","numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9","numpadAdd","numpadSpecial","numpadDecimal","numpadDivide","numpadEnter","numpadMultiply","numpadSubstract","pageDown","pageUp","right","shift","space","tab","up","VK_UP","VK_DOWN","VK_LEFT","VK_RIGHT","VK_ENTER"] }
 cocktail.keyboard.KeyboardKeyValue.unknown = ["unknown",0];
 cocktail.keyboard.KeyboardKeyValue.unknown.toString = $estr;
 cocktail.keyboard.KeyboardKeyValue.unknown.__enum__ = cocktail.keyboard.KeyboardKeyValue;
@@ -5227,6 +5226,21 @@ cocktail.keyboard.KeyboardKeyValue.tab.__enum__ = cocktail.keyboard.KeyboardKeyV
 cocktail.keyboard.KeyboardKeyValue.up = ["up",76];
 cocktail.keyboard.KeyboardKeyValue.up.toString = $estr;
 cocktail.keyboard.KeyboardKeyValue.up.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_UP = ["VK_UP",77];
+cocktail.keyboard.KeyboardKeyValue.VK_UP.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_UP.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN = ["VK_DOWN",78];
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT = ["VK_LEFT",79];
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT = ["VK_RIGHT",80];
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER = ["VK_ENTER",81];
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER.__enum__ = cocktail.keyboard.KeyboardKeyValue;
 var Reflect = $hxClasses["Reflect"] = function() { }
 Reflect.__name__ = ["Reflect"];
 Reflect.hasField = function(o,field) {
@@ -7741,6 +7755,7 @@ ApplicationStructure.__name__ = ["ApplicationStructure"];
 ApplicationStructure.prototype = {
 	pagesContainer: null
 	,navigation: null
+	,_footer: null
 	,_page1: null
 	,_page2: null
 	,_page3: null
@@ -7779,14 +7794,16 @@ ApplicationStructure.prototype = {
 		var me = this;
 		var cells = components.dataProvider.ThumbTextList1Rss.rss2Cells(rss);
 		this._page5 = this.createHeaderListPage("Plugins",cells);
-		var footer = this.createFooterMenu();
-		this.pagesContainer.addChild(footer);
+		this._footer = this.createFooterMenu();
+		this.pagesContainer.addChild(this._footer);
 		var resetFooterStyle = function(event) {
-			me.pagesContainer.removeChild(footer);
-			me.pagesContainer.addChild(footer);
+			me.pagesContainer.removeChild(me._footer);
+			me.pagesContainer.addChild(me._footer);
 		};
 		js.Lib.window.onscroll = resetFooterStyle;
 		js.Lib.window.onresize = resetFooterStyle;
+		resetFooterStyle(null);
+		js.Lib.document.onkeydown = this.onKeyDownPages.$bind(this);
 	}
 	,createHeaderListPage: function(title,cellDataArray) {
 		var page = Utils.getContainer();
@@ -7856,6 +7873,10 @@ ApplicationStructure.prototype = {
 	}
 	,onChangeListCallback: function(cell) {
 		this.navigation.onChangeListCallback(cell);
+	}
+	,onKeyDownPages: function(key) {
+		haxe.Log.trace("onKeyDownPages: " + key.keyCode,{ fileName : "ApplicationStructure.hx", lineNumber : 459, className : "ApplicationStructure", methodName : "onKeyDownPages"});
+		this._footer.getChildren()[1].child.onListKeyDown(key);
 	}
 	,__class__: ApplicationStructure
 }
@@ -8094,6 +8115,10 @@ WebApp.prototype = {
 		this._mainContainer = applicationStructure.pagesContainer;
 		WebAppStyle.getDefaultStyle(this._mainContainer);
 		this._body.addChild(this._mainContainer);
+	}
+	,onKeyDownBody: function(key) {
+		haxe.Log.trace("onKeyDownBody: " + key.value,{ fileName : "WebApp.hx", lineNumber : 87, className : "WebApp", methodName : "onKeyDownBody"});
+		if(key.value == cocktail.keyboard.KeyboardKeyValue.right || key.value == cocktail.keyboard.KeyboardKeyValue.VK_RIGHT || key.value == cocktail.keyboard.KeyboardKeyValue.left || key.value == cocktail.keyboard.KeyboardKeyValue.VK_LEFT) this._mainContainer.getChildren()[0].child.children[1].onListKeyDown(key);
 	}
 	,__class__: WebApp
 }
