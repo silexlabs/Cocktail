@@ -75,12 +75,12 @@ class KeyboardTests
 	}
 
 	
-	private function onKeyDown(key:KeyboardEventData):Void
+	private function onKeyDown(key:KeyEventData):Void
 	{
 		Log.trace(key);
 	}
 	
-	private function onKeyUp(key:KeyboardEventData):Void
+	private function onKeyUp(key:KeyEventData):Void
 	{
 		Log.trace(key);
 	}

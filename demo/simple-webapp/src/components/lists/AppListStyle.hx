@@ -5,7 +5,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList;
+package components.lists;
 
 // DOM
 import cocktail.domElement.ContainerDOMElement;
@@ -19,8 +19,6 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
-// RichList
-import components.richList.RichListModels;
 
 
 /**
@@ -30,7 +28,7 @@ import components.richList.RichListModels;
  * @author Raphael Harmel
  */
 
-class StyleApp
+class AppListStyle
 {
 	//private static inline var appIconSize:Int = 75;
 	private static inline var appIconSize:Int = 43;
