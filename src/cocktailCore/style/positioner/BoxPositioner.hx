@@ -13,11 +13,11 @@ import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
- * This is the base classes for class in charge
+ * This is the base classes for classes 
  * in charge of laying out 'positioned' DOMElements.
  * 
  * A positioned DOMElement is one with a 'position' style value
- * of 'relative', 'absolute' or 'fixed'.
+ * of 'relative', 'absolute' or 'fixed' (any value but 'static').
  * 
  * There are 2 kinds of positioned DOMElements : absolutely positioned
  * ('absolute' or 'fixed') and relatively positioned ('relative').
@@ -60,55 +60,57 @@ class BoxPositioner
 	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
 	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
-	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
+	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):BoxElementData
 	{
-		//init the structure that will contain the x and y of the DOMElement
-		//using its first positioned ancestor as origin
-		var childrenTemporaryPositionData:ChildTemporaryPositionData = 
+		//init the structure that will contain the position and dimensions
+		//of the element using its first positioned ancestor as origin
+		//TODO : a null parentDOMElement might introduce bugs
+		//the DOMElement might also be a ContainerDOMElement, pass a BoxElementValue or BoxElementData to the 
+		//position method instead of a domElement ?
+		var boxElementData:BoxElementData = 
 		{
-			domElement:domElement,
+			element:BoxElementValue.embeddedDOMElement(domElement, null),
 			x:0,
 			y:0,
 			width:0,
 			height:0,
-			position:true
 		}
 		
-		//for horizonal offset, if both left and right are not null (different form 'auto'),
+		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.x = getLeftOffset(domElement, Math.round(staticPosition.x));
+			boxElementData.x = getLeftOffset(domElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
-		//Right offset takes the containing DOMElement element width minus the
-		//width of the DOMElement as value for a 0 offset
+		//Right offset takes the containing DOMElement width minus the
+		//width of the positioned children as value for a 0 right offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
+			boxElementData.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
-		//'static position', the position it would have had in the document if it were positioned as 'static'
+		//'static position', the position it would have had in the flow if it were positioned as 'static'
 		else
 		{
-			childrenTemporaryPositionData.x = Math.round(staticPosition.x);
+			boxElementData.x = Math.round(staticPosition.x);
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.y = getTopOffset(domElement, Math.round(staticPosition.y));
+			boxElementData.y = getTopOffset(domElement, Math.round(staticPosition.y));
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			childrenTemporaryPositionData.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
+			boxElementData.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
-			childrenTemporaryPositionData.y = Math.round(staticPosition.y);
+			boxElementData.y = Math.round(staticPosition.y);
 		}
 		
-		return childrenTemporaryPositionData;
+		return boxElementData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

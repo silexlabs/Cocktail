@@ -9,86 +9,174 @@ package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
 import haxe.Log;
 
 /**
  * This formatting context layout DOMElement below each other
- * following the DOM tree order.
+ * generally following the formattable tree order.
+ * 
+ * There might be exception, for instance if a container DOMElement
+ * with a fixed has overflowing children, its siblings will use
+ * the height of the container to be positioned below, not the
+ * added height of its children.
  * 
  * @author Yannick DOMINGUEZ
  */
 class BlockFormattingContext extends FormattingContext
 {
-
+	private var _addedSiblingHeights:Array<Int>;
+	
+	private var _currentAddedSiblingsHeight:Int;
+	
+	private var _lastInsertedElement:BoxElementValue;
+	
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement, previousFormattingContext:FormattingContext) 
+	public function new(domElement:DOMElement) 
 	{
-		
-		super(domElement, previousFormattingContext);
+		_addedSiblingHeights = new Array<Int>();
+		_currentAddedSiblingsHeight = 0;
+		super(domElement);
 	}
 	
-	/**
-	 * Place the DOMElement below the preceding DOMElement
-	 */
-	override private function place(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool):Void
-	{
-		super.place(domElement, parentDOMElement, position);
-		
-		//add the left float offset if the element is embedded
-		//(for instance an image), for non-embedded DOMElement
-		//(like a container), the left float offset isn't used
-		var leftFloatOffset:Int = 0;
-		if (domElement.style.isEmbedded() == true)
-		{
-			_formattingContextData.y = _floatsManager.getFirstAvailableY(formattingContextData, domElement.offsetWidth, _containingDOMElementWidth);
-			leftFloatOffset = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		}
-			
-		//apply the new x and y position to the DOMElement and formattingContextData
-		_formattingContextData.x =  leftFloatOffset;
-		
-		
 	
-		var childTemporaryPositionData:ChildTemporaryPositionData = getChildTemporaryPositionData(domElement, _formattingContextData.x, _formattingContextData.y, position);
-
-		getBoxesData(parentDOMElement)[0].children.push(childTemporaryPositionData);
+	
+	/**
+	 * Called by the containing DOMElement once each of its children
+	 * has been inserted in the formatting context to start the formatting.
+	 */
+	override public function format():Void
+	{
+		//init/reset the boxes data of the formatting context
+		_formattingBoxesData = new Array<BoxData>();
 		
+		//init/reset the formating context data to insert the first element at the
+		//origin of the containing block
+		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
+		_lastInsertedElement = BoxElementValue.containingBlockDOMElement(_containingDOMElement, _containingDOMElement.parent);
 		
-		domElement.style.setNativeX(domElement, childTemporaryPositionData.x);
-		domElement.style.setNativeY(domElement, childTemporaryPositionData.y);
-		
-		if (position == true)
+		//format all the box element in order
+		for (i in 0..._elementsInFormattingContext.length)
 		{
-			_formattingContextData.y += domElement.offsetHeight;
+	
+				
+			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
+			{
+			}
+			
+			else if (isParentOfLastInsertedElement(_elementsInFormattingContext[i]))
+			{
+				_formattingContextData.y -= _currentAddedSiblingsHeight;
+				_currentAddedSiblingsHeight = _addedSiblingHeights.pop();
+				
+					
+			}
+			else
+			{
+				
+				_addedSiblingHeights.push(_currentAddedSiblingsHeight);
+				_currentAddedSiblingsHeight = 0;
+				
+			}
+		
+					
+			_lastInsertedElement = _elementsInFormattingContext[i];
+			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+		}
+		
+	}
+	
+	
+	
+	
+	private function isParentOfLastInsertedElement(element:BoxElementValue):Bool
+	{
+		var parentOfLastInsertedDOMElement:DOMElement = getElementParent(_lastInsertedElement);
+		
+		var ret:Bool;
+		
+		switch (element)
+		{
+			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+				ret = domElement == parentOfLastInsertedDOMElement;
+				
+			default:
+				ret = false;
 			
 		}
-		else
-		{
-			_formattingContextData.y += domElement.offsetHeight - domElement.style.computedStyle.height;
-		}
-		_formattingContextData.maxHeight = _formattingContextData.y ;
 		
-		//check if the offsetWidth of the DOMElement is the largest thus far. This metrics is used when the width
-		//of a container is set as 'shrink-to-fit' (takes its content width)
-		if (_formattingContextData.x + domElement.offsetWidth > _formattingContextData.maxWidth)
-		{
-			_formattingContextData.maxWidth = _formattingContextData.x + domElement.offsetWidth;
-		}
-		
-
+		return ret;
 	}
-
-	/**
-	 * clear left, right or both floats and set the y of the formattingContextData below
-	 * the last cleared float
-	 */
-	override public function clearFloat(clear:ClearStyleValue, isFloat:Bool):Void
+	
+	private function isSiblingOfLastInsertedElement(element:BoxElementValue):Bool
 	{
-		_formattingContextData.y = _floatsManager.clearFloat(clear, _formattingContextData);
+		return getElementParent(element) == getElementParent(_lastInsertedElement);
 	}
+
+	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
+	{
+		var boxElementData:BoxElementData = {
+				element:element,
+				x:_formattingContextData.x, 
+				y:_formattingContextData.y ,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+		_formattingContextData.y += getElementHeight(element);
+		_currentAddedSiblingsHeight += getElementHeight(element);
+		
+		
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+			
+	}
+	
+
+	override private function insertContainingBlockDOMElement(element:BoxElementValue):Void
+	{
+		
+		var boxElementData:BoxElementData = {
+				element:element,
+				x:_formattingContextData.x, 
+				y:_formattingContextData.y ,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+
+		
+			_formattingContextData.y += getElementHeight(element);
+			
+			_currentAddedSiblingsHeight += getElementHeight(element);
+			
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+	}
+	
+
+	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	{
+		
+		var boxElementData:BoxElementData = {
+				element:element,
+				x:0, 
+				y:_formattingContextData.y,
+				width:getElementWidth(element),
+				height:getElementHeight(element)
+			}
+			
+			_formattingContextData.y += getElementHeight(element);
+			_currentAddedSiblingsHeight += getElementHeight(element);
+			
+			
+			
+			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+	}
+
+	
+	
 	
 	
 	

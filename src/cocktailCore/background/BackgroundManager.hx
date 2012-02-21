@@ -156,7 +156,7 @@ class BackgroundManager
 				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
 				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, _backgroundPosition[i],
 				_backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
-				
+
 				//at this point the array contain only background image, reverse the array
 				//so that the background image declared first is on top of all the other
 				//background image
@@ -317,6 +317,7 @@ class BackgroundManager
 	backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue, backgroundClip:BackgroundClipStyleValue, 
 	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
 	{
+		
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
