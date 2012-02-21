@@ -25,8 +25,6 @@ import cocktail.unit.UnitData;
 
 // RichList specific
 import components.lists.ListBaseModels;
-import components.lists.RichListModels;
-import components.lists.RichListUtils;
 
 import cocktail.keyboard.KeyboardData;
 

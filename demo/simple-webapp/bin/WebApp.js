@@ -2623,22 +2623,6 @@ List.prototype = {
 	}
 	,__class__: List
 }
-var Utils = $hxClasses["Utils"] = function() { }
-Utils.__name__ = ["Utils"];
-Utils.getContainer = function() {
-	var ret = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral));
-	ret.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-	return ret;
-}
-Utils.prototype = {
-	__class__: Utils
-}
-components.lists.RichListUtils = $hxClasses["components.lists.RichListUtils"] = function() { }
-components.lists.RichListUtils.__name__ = ["components","lists","RichListUtils"];
-components.lists.RichListUtils.__super__ = Utils;
-components.lists.RichListUtils.prototype = $extend(Utils.prototype,{
-	__class__: components.lists.RichListUtils
-});
 var IntIter = $hxClasses["IntIter"] = function(min,max) {
 	this.min = min;
 	this.max = max;
@@ -3476,6 +3460,16 @@ cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer.prototype = $ext
 	}
 	,__class__: cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer
 });
+var Utils = $hxClasses["Utils"] = function() { }
+Utils.__name__ = ["Utils"];
+Utils.getContainer = function() {
+	var ret = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.neutral));
+	ret.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	return ret;
+}
+Utils.prototype = {
+	__class__: Utils
+}
 components.lists.ListBaseUtils = $hxClasses["components.lists.ListBaseUtils"] = function() { }
 components.lists.ListBaseUtils.__name__ = ["components","lists","ListBaseUtils"];
 components.lists.ListBaseUtils.createListModel = function() {
@@ -6971,7 +6965,12 @@ WebAppStyle.getBodyStyle = function(domElement) {
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 }
 WebAppStyle.getMainContainerStyle = function(domElement) {
+	var marginOffset = 50;
 	WebAppStyle.getDefaultStyle(domElement);
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
@@ -7824,7 +7823,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 475, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 474, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.lists.ListBaseUtils.createListModel();
@@ -8081,7 +8080,7 @@ WebApp.prototype = {
 	,drawInterface: function() {
 		var applicationStructure = new ApplicationStructure();
 		this._mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(this._mainContainer);
+		WebAppStyle.getMainContainerStyle(this._mainContainer);
 		this._body.addChild(this._mainContainer);
 	}
 	,__class__: WebApp
