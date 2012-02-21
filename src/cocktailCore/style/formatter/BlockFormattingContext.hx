@@ -121,6 +121,11 @@ class BlockFormattingContext extends FormattingContext
 				height:getElementHeight(element)
 			}
 			
+		if (getElementWidth(element) > _formattingContextData.maxWidth)
+			{
+				_formattingContextData.maxWidth = getElementWidth(element);
+			}	
+			
 			
 		_formattingContextData.y += getElementHeight(element);
 		_currentAddedSiblingsHeight += getElementHeight(element);
@@ -142,7 +147,10 @@ class BlockFormattingContext extends FormattingContext
 				height:getElementHeight(element)
 			}
 			
-
+if (getElementWidth(element) > _formattingContextData.maxWidth)
+			{
+				_formattingContextData.maxWidth = getElementWidth(element);
+			}	
 		
 			_formattingContextData.y += getElementHeight(element);
 			
@@ -162,7 +170,10 @@ class BlockFormattingContext extends FormattingContext
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
-
+if (getElementWidth(element) > _formattingContextData.maxWidth)
+			{
+				_formattingContextData.maxWidth = getElementWidth(element);
+			}	
 			
 			_formattingContextData.y += getElementHeight(element);
 			_currentAddedSiblingsHeight += getElementHeight(element);
