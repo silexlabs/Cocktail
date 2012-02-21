@@ -1074,8 +1074,8 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * Contains the data of the first 
 	 * positioned ancestor (a DOMElement with
 	 * a position style of relative, absolute,
-	 * or fixed) and a reference to each of
-	 * the style objects using the data
+	 * or fixed) dimensions and a reference to each of
+	 * the style objects using those dimensions
 	 * as origin to layout an absolutely
 	 * positioned DOMElement.
 	 */
@@ -1202,12 +1202,50 @@ import cocktailCore.style.formatter.FormattingContext;
 		
 	}
 
+	/**
+	 * Store the computed background style
+	 * for one background image
+	 */
 	typedef ComputedBackgroundStyleData = {
+		
+		/**
+		 * The size of the background image, it might
+		 * be tiled based on the background repeat
+		 * style
+		 */
 		var backgroundSize:DimensionData;
+		
+		/**
+		 * a rectangle used as origin to position
+		 * the background image and might also
+		 * be used to clip it based on the
+		 * background clip style
+		 */
 		var backgroundOrigin:RectangleData;
+		
+		/**
+		 * The rectangle clipping the background
+		 * image, might be the rectangle of the content,
+		 * padding or border box of the DOMElement
+		 */
 		var backgroundClip:RectangleData;
+		
+		/**
+		 * how to repeat the background image in the
+		 * x and y directions
+		 */
 		var backgroundRepeat:BackgroundRepeatStyleData;
+		
+		/**
+		 * the point of origin of the background image
+		 * relative to the backgroundOrigin rectangle
+		 */
 		var backgroundPosition:PointData;
+		
+		/**
+		 * the data of the background image (url or
+		 * gradient data)
+		 */
 		var backgroundImage:BackgroundImageStyleValue;
 	}
 	
@@ -1258,7 +1296,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the left and right
 	 * floats registered for a 
-	 * container DOMElement
+	 * formatting context
 	 */
 	typedef FloatsData = {
 		var left:Array<FloatData>;
@@ -1268,7 +1306,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the coordinates and
 	 * dimensions of the float in its
-	 * parent coordinate space
+	 * formatting context coordinate space
 	 */
 	typedef FloatData = {
 		var x:Int;
@@ -1347,20 +1385,21 @@ import cocktailCore.style.formatter.FormattingContext;
 	}
 	
 	/**
-	 * Defines a DOMElement added to a LineBox
+	 * Defines a DOMElement added to a box
 	 * and its type
 	 */
-	typedef LineBoxElementData = {
-		var element:LineBoxElementValue;
+	typedef BoxElementData = {
+		var element:BoxElementValue;
 		var x:Int;
 		var y:Int;
+		var width:Int;
+		var height:Int;
 	}
 	
-
 	typedef BoxData = {
 		var parentDOMElement:DOMElement;
 		var bounds:RectangleData;
-		var children:Array<ChildTemporaryPositionData>;
+		var children:Array<BoxElementData>;
 		var textDecorations:Array<TextDecorationData>;
 	}
 	
@@ -1368,21 +1407,6 @@ import cocktailCore.style.formatter.FormattingContext;
 		var color:Int;
 		var start:PointData;
 		var end:PointData;
-	}
-	
-	
-	/**
-	 * Holds the computed position of a 
-	 * laid out children relative to the formatting
-	 * context in which it participates
-	 */
-	typedef ChildTemporaryPositionData = {
-		var domElement:DOMElement;
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
-		var position:Bool;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1398,11 +1422,19 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * from other domElement as they
 	 * can influence a linebox layout
 	 * once it is complete
+	 * 
+	 * TODO : seems excessive to store parentDOMElement for each
+	 * 
+	 * TODO : add a construct for root containing block ?
 	 */
-	enum LineBoxElementValue {
-		domElement(domElement:DOMElement, parentDOMElement:DOMElement, position:Bool);
+	enum BoxElementValue {
+		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
+		float(domElement:DOMElement, parentDOMElement:DOMElement);
 		text(domElement:DOMElement, parentDOMElement:DOMElement);
-		offset(value:Int);
-		space(spaceWidth:Int);
-		tab(tabWidth:Int);
+		offset(value:Int, parentDOMElement:DOMElement );
+		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
+		lineFeed(whiteSpace:WhiteSpaceStyleValue, parentDOMElement:DOMElement);
+		tab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, parentDOMElement:DOMElement);
 	}

@@ -151,7 +151,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	backgroundPaintingBox
 	 */
 	public function drawBackgroundColor(color:ColorData, backgroundPaintingBox:RectangleData):Void
-	{
+	{	
 		var fillStyle:FillStyleValue = FillStyleValue.monochrome( color );
 		var lineStyle:LineStyleValue = LineStyleValue.none;
 		

@@ -447,7 +447,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	private function doShrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
 		/**
-		 * TO DO: the shrink to width
+		 * TODO: the shrink to width
 		 * algorithm might need to be improved for
 		 * some border cases
 		 */
