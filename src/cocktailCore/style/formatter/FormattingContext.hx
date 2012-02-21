@@ -159,8 +159,6 @@ class FormattingContext
 	 * return the added height of the children of a DOMElement.
 	 * Must be called after a call to the 'format' method, else
 	 * always return 0
-	 * 
-	 * TODO : doesn't work for block formatting context
 	 */
 	public function getChildrenHeight(parentDOMElement:DOMElement):Int
 	{
@@ -301,9 +299,6 @@ class FormattingContext
 	 * of a box data. The bounds are relative to 
 	 * the containing block which started this
 	 * formatting context
-	 * 
-	 * TODO : block boxes with no children must takes
-	 * the bound of the block, implement in blockForamtting ?
 	 * 
 	 * TODO : for bodyDOMElement, should return the viewport
 	 * dimensions, add a construct for rootContainingBlock ?

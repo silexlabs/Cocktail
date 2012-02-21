@@ -82,7 +82,7 @@ class InlineFormattingContext extends FormattingContext
 		_currentBoxesData = new Array<BoxData>();
 		
 		super(domElement);
-		//TODO : fix TextIndent
+		
 		//set the textIndent as an offset on the first line of text
 		insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
@@ -549,8 +549,8 @@ class InlineFormattingContext extends FormattingContext
 				
 				
 					//TODO : shouldn't be here but only in render
-					domElement.style.setNativeX(domElement, boxElementData.x);
-					domElement.style.setNativeY(domElement, boxElementData.y);
+					//domElement.style.setNativeX(domElement, boxElementData.x);
+					//domElement.style.setNativeY(domElement, boxElementData.y);
 					
 					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 						
@@ -570,9 +570,9 @@ class InlineFormattingContext extends FormattingContext
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, boxElementData.x);
-					domElement.style.setNativeY(domElement, boxElementData.y);
-					
+					//domElement.style.setNativeX(domElement, boxElementData.x);
+					//domElement.style.setNativeY(domElement, boxElementData.y);
+					//
 					case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 						
 						
@@ -591,9 +591,9 @@ class InlineFormattingContext extends FormattingContext
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
-					domElement.style.setNativeX(domElement, boxElementData.x);
-					domElement.style.setNativeY(domElement, boxElementData.y);
-					
+					//domElement.style.setNativeX(domElement, boxElementData.x);
+					//domElement.style.setNativeY(domElement, boxElementData.y);
+					//
 					case BoxElementValue.text(domElement, parentDOMElement):
 					
 					var boxElementData:BoxElementData = {
@@ -607,9 +607,9 @@ class InlineFormattingContext extends FormattingContext
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 
 				
-					domElement.style.setNativeX(domElement, boxElementData.x);
-					domElement.style.setNativeY(domElement, boxElementData.y);
-					
+					//domElement.style.setNativeX(domElement, boxElementData.x);
+					//domElement.style.setNativeY(domElement, boxElementData.y);
+					//
 				case BoxElementValue.offset(offsetWidth, parentDOMElement):
 					
 						var boxElementData:BoxElementData = {
@@ -772,6 +772,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			concatenatedLength += getElementWidth(_elementsInLineBox[i].element);
 		}
+		
 		
 		//determine the remaining space in the line once all the width of the DOMElements
 		//are substracted from the total avalable line width, and the x position where to 

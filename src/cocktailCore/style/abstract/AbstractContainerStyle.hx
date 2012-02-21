@@ -457,6 +457,7 @@ class AbstractContainerStyle extends Style
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
 			
+				
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
 			if (currentWidth != this._computedStyle.width)
