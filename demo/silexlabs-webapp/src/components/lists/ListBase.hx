@@ -29,6 +29,8 @@ import cocktail.unit.UnitData;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
+import cocktail.keyboard.KeyboardData;
+
 
 /**
  * RichList class defines a list in which each cell can be composed of a text and an image
@@ -39,6 +41,9 @@ class ListBase extends ContainerDOMElement
 {
 	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
+	
+	// list data
+	private var _listData:Array<CellModel>;
 	
 	// current cell index
 	private var _currentCellIndex:Int;
@@ -58,17 +63,20 @@ class ListBase extends ContainerDOMElement
 	 */
 	public function new(list:ListModel, listStyle:Dynamic)
 	{
+		// init list data
+		_listData = list.content;
 		// init _currentCellIndex
 		_currentCellIndex = 0;
 		// init _selectedCell
-		_selectedCellData = list.content[0];
+		_selectedCellData = _listData[_currentCellIndex];
 		
 		// create a ul node
 		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
 		createListDOM(list, listStyle);
 		listStyle.list(this);
 		
-		selectCell(_selectedCellDOM, listStyle);
+		//selectCell(_selectedCellDOM, listStyle);
+		selectCell(_selectedCellDOM);
 	}
 	
 	/**
@@ -126,10 +134,18 @@ class ListBase extends ContainerDOMElement
 		else
 		{
 			// TODO: add tabIndex to cell
-			
+			//cellLink.href = "#";
 			// mouse up
-			var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+			//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
+			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+			//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->CellModel->Void = onCellMouseUp;
+			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, cellData); };
+			var onCellMouseUpDelegate:ContainerDOMElement->CellModel->Void = onCellSelected;
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(cell, cellData); };
+			
+			//cell.onKeyDown = onKeyboardDown;
+			/*var onCellKeyDownDelegate:KeyEventData->ContainerDOMElement->CellModel->Void = onCellKeyDown;
+			cell.onKeyDown = function(keyEventData:KeyEventData) { onCellKeyDownDelegate(keyEventData, cell, cellData); };*/
 		}
 		
 		// apply style
@@ -220,23 +236,86 @@ class ListBase extends ContainerDOMElement
 	 * @param	listStyle
 	 * @param	cellData
 	 */
-	private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic, cellData:CellModel):Void
+	//private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic, cellData:CellModel):Void
+	//private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, cellData:CellModel):Void
+	//private function onCellMouseUp(cell:ContainerDOMElement, cellData:CellModel):Void
+	private function onCellSelected(cell:ContainerDOMElement, cellData:CellModel):Void
 	{
-		listStyle.cellMouseUp(cell);
+		//trace("onCellMouseUp");
+		//listStyle.cellMouseUp(cell);
 		if (onChange != null)
 		{
 			onChange(cellData);
 		}
 		
-		selectCell(cell, listStyle);
+		//selectCell(cell, listStyle);
+		selectCell(cell);
 	}
 	
 	/**
 	 * Select the cell and add a selected image to it
 	 */
-	private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	//private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	private function selectCell(cell:ContainerDOMElement):Void
 	{
 		_selectedCellDOM = cell;
+		//_selectedCellData = list.content[_currentCellIndex];
+
+	}
+	
+	/**
+	 * Cell keyboard down callback
+	 * 
+	 * @param	key
+	 */
+	//private function onListKeyDown(key:KeyEventData, cell:ContainerDOMElement, cellData:CellModel):Void
+	private function onListKeyDown(key:KeyEventData):Void
+	{
+		/*if (key.value == KeyboardKeyValue.right)
+		{
+			trace("right key pressed");
+			/*if (onChange != null)
+			{
+				onChange(cellData);
+			}
+			selectCell(cell);
+		}
+		else if (key.value == KeyboardKeyValue.left)
+		{
+			trace("left key pressed");
+			
+		}*/
+	}
+	
+	/**
+	 * Selects next cell
+	 */
+	private function selectNextCell()
+	{
+		//trace(this._children.length);
+		
+		if(_currentCellIndex < this._children.length-1)
+		{
+			_currentCellIndex++;
+			selectCell(this._children[_currentCellIndex].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
+		}
+		
+	}
+	
+	/**
+	 * Selects previous cell
+	 */
+	private function selectPreviousCell()
+	{
+		//trace("selectPreviousCell");
+
+		if(_currentCellIndex > 0)
+		{
+			_currentCellIndex--;
+			selectCell(this._children[_currentCellIndex].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
+		}
 	}
 	
 }
