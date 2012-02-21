@@ -6,6 +6,7 @@
 */
 
 package components.lists;
+import cocktail.domElement.ContainerDOMElement;
 
 /**
  * The class defines the models used by the RichList
@@ -30,6 +31,7 @@ typedef ListModel =
 {
 	public var content:Array<CellModel>;
 }
+
 
 //typedef ListModel = Array<CellModel>;
 

@@ -21,6 +21,7 @@ import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
+import cocktail.keyboard.KeyboardData;
 
 /**
  * This class defines an app cell
@@ -52,6 +53,19 @@ class AppList extends ListBase
 		
 		super(list, listStyle);
 		
+	}
+	
+	/**
+	 * Create the list DOM with provided data and style
+	 * 
+	 * @param	list
+	 * @param	listStyle
+	 */
+	override function createListDOM(list:ListModel, listStyle:Dynamic):Void
+	{
+		super.createListDOM(list, listStyle);
+		
+		this.onKeyDown = onListKeyDown;
 	}
 	
 	/**
@@ -95,12 +109,33 @@ class AppList extends ListBase
 	/**
 	 * Select the cell and add a selected image to it
 	 */
-	override private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	//override private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	override private function selectCell(cell:ContainerDOMElement):Void
 	{
-		super.selectCell(cell, listStyle);
+		//super.selectCell(cell, listStyle);
+		super.selectCell(cell);
 		
 		// add image
 		cell.addChild(_selectedMenuItemImage);
 	}
 	
+	/**
+	 * Cell keyboard down callback
+	 * 
+	 * @param	key
+	 */
+	override function onListKeyDown(key:KeyEventData):Void
+	{
+		if (key.value == right)
+		{
+			//trace("right key pressed");
+			super.selectNextCell();
+		}
+		else if (key.value == left)
+		{
+			//trace("left key pressed");
+			super.selectPreviousCell();
+		}
+	}
+
 }
