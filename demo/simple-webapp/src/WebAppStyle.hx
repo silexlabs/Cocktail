@@ -9,6 +9,7 @@ package ;
 
 // DOM
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.ImageDOMElement;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -27,6 +28,8 @@ import cocktail.unit.UnitData;
 class WebAppStyle 
 {
 
+	static inline var headerHeight:Int = 43;
+	
 	/**
 	 * Defines default Style
 	 * 
@@ -146,11 +149,11 @@ class WebAppStyle
 	{
 		//getDefaultStyle(domElement);
 		
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
 		
-		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 	}
@@ -165,12 +168,12 @@ class WebAppStyle
 		//getDefaultStyle(domElement);		
 		getHeaderStyle(domElement);
 		
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
 
 		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(43));
+		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
 	}
 
 	/**
@@ -201,7 +204,7 @@ class WebAppStyle
 		
 		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(43));
+		domElement.style.height = DimensionStyleValue.length(px(headerHeight));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 
@@ -213,11 +216,12 @@ class WebAppStyle
 	public static function getBackButtonStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
-		getHeaderStyle(domElement);
+		//getHeaderStyle(domElement);
 		
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(10));
+		
 	}
 
 	/**
@@ -228,9 +232,9 @@ class WebAppStyle
 	public static function getBackButtonTextStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
-		getHeaderStyle(domElement);
+		//getHeaderStyle(domElement);
 		
-		domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.color = ColorValue.hex('#EEEEEE');
 
 		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
@@ -246,6 +250,8 @@ class WebAppStyle
 
 		domElement.style.paddingTop = PaddingStyleValue.length(px(12));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(30));
+		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
 
@@ -257,12 +263,15 @@ class WebAppStyle
 	public static function getBackButtonImageStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
-		getHeaderStyle(domElement);
+		//getHeaderStyle(domElement);
 
 		domElement.style.display = DisplayStyleValue.inlineStyle;
 		domElement.style.position = PositionStyleValue.relative;
+		
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.left = PositionOffsetStyleValue.length(px(0));
+		
+		//domElement.style.width = DimensionStyleValue.length(px(domElement.intrinsicWidth));
 	}
 
 	/**
@@ -272,10 +281,15 @@ class WebAppStyle
 	 */
 	public static function getTextContentStyle(domElement:DOMElement):Void
 	{
+		domElement.style.position = PositionStyleValue.absolute;
+		
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
+		
+		domElement.style.top = PositionOffsetStyleValue.length(px(headerHeight));
+
 	}
 	
 }

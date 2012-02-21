@@ -5,9 +5,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-package components.richList;
+package components.lists;
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
 
 /**
  * The class defines the models used by the RichList
@@ -20,8 +19,7 @@ import cocktail.domElement.DOMElement;
  */
 typedef CellModel =
 {
-	public var text:String;
-	public var imagePath:String;
+	public var content:Dynamic;
 	public var action:String;
 	public var actionTarget:Dynamic;
 }
@@ -29,15 +27,18 @@ typedef CellModel =
 /**
  * Defines a rich list model
  */
-typedef RichListModel =
+typedef ListModel =
 {
 	public var content:Array<CellModel>;
 }
 
+
+//typedef ListModel = Array<CellModel>;
+
 /**
  * Defines a rich list style model
  */
-typedef RichListStyleModel =
+/*typedef RichListStyleModel =
 {
 	public var list:DOMElement->Void;
 	public var cell:ContainerDOMElement->Void;
@@ -47,4 +48,4 @@ typedef RichListStyleModel =
 	public var cellMouseOut:ContainerDOMElement->Void;
 	public var cellMouseDown:ContainerDOMElement->Void;
 	public var cellMouseUp:ContainerDOMElement->Void;
-}
+}*/
