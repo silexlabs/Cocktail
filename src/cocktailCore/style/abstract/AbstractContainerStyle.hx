@@ -154,27 +154,31 @@ class AbstractContainerStyle extends Style
 					
 					for (j in 0...boxNativeElements.length)
 					{
+
 						nativeElements.push(boxNativeElements[j]);
 					}
 				}
 			}
 			
+			//render the absolutely positioned children of this ContainerDOMElement
+			var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedBoxElementData);
+			
+			for (i in 0...absolutelyPositionedNativeElements.length)
+			{
+				nativeElements.push(absolutelyPositionedNativeElements[i]);
+			}
+			//store the nativeElements so that they can be detached on next layout
+			_nativeElements = nativeElements;
+			//do attach the nativeElements using runtime specific API
+			attachNativeElements(nativeElements);
+			
 		}
 		
 		
-		//render the absolutely positioned children of this ContainerDOMElement
-		var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedBoxElementData);
 		
-		for (i in 0...absolutelyPositionedNativeElements.length)
-		{
-			nativeElements.push(absolutelyPositionedNativeElements[i]);
-		}
-		//store the nativeElements so that they can be detached on next layout
-		_nativeElements = nativeElements;
-		//do attach the nativeElements using runtime specific API
 		
 	
-		attachNativeElements(nativeElements);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -310,11 +314,11 @@ class AbstractContainerStyle extends Style
 			{
 				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
 				
-
-					//apply x and y
-					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-
+					
+				//apply x and y
+				domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
+				domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
+				
 				
 				childrenNativeElements.push(domElement.nativeElement);
 				
@@ -384,7 +388,7 @@ class AbstractContainerStyle extends Style
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
-		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null, null);
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData,null, null, null);
 		render();
 	}
 	
@@ -395,7 +399,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Lay out all the children of the ContainerDOMElement
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//cast the ContainerDOMElement, as base DOMElement have no children attribute
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
@@ -446,14 +450,25 @@ class AbstractContainerStyle extends Style
 		//of the ContainerDOMElement as reference
 		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
+		if (establishesNewFormattingContext() == true)
+		{
+			parentAbsolutelyPositionedBoxElementData = new Array<BoxElementData>();
+		}
+		else if (parentAbsolutelyPositionedBoxElementData == null)
+		{
+			parentAbsolutelyPositionedBoxElementData = new Array<BoxElementData>();
+		}
+		
 		//flow all children and store their laid out position in the formatting context, relative to the ContainerDOMElement
 		//which started the children formatting context
-		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
 		{
+
+		
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
 			
@@ -466,7 +481,7 @@ class AbstractContainerStyle extends Style
 				childrenFormattingContext = getformattingContext(formattingContext);
 				childrenContainingDOMElementData = getContainerDOMElementData();
 				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-				childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 		}
 		
@@ -497,8 +512,19 @@ class AbstractContainerStyle extends Style
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them. An array containing all their
 		//laid out positions is returned and stored, to be used during rendering
-		_absolutelyPositionedBoxElementData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
+		var absolutelyPositionedBoxElementData = doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 
+		for (i in 0...absolutelyPositionedBoxElementData.length)
+		{
+			parentAbsolutelyPositionedBoxElementData.push(absolutelyPositionedBoxElementData[i]);
+		}
+		//only save the positioned children for block containers, as they will be attached to it
+		//TODO : document this functionnality
+		if (establishesNewFormattingContext() == true)
+		{
+			_absolutelyPositionedBoxElementData = parentAbsolutelyPositionedBoxElementData;
+		}
+		
 		//the children formatting context is stored, it will be used
 		//to retrieve all the in flow children that this ContainerDOMElement must
 		//layout when rendering
@@ -529,7 +555,7 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Actually flow all the children of the ContainerDOMElement
 	 */
-	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
+	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
@@ -548,7 +574,7 @@ class AbstractContainerStyle extends Style
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
@@ -653,7 +679,6 @@ class AbstractContainerStyle extends Style
 					default:	
 				}
 			
-				
 				boxElementsData.push(boxElementData);
 			}
 		}
