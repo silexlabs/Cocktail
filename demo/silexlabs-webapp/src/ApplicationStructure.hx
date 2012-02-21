@@ -37,6 +37,9 @@ import components.lists.AppListStyle;
 // Navigation
 import Navigation;
 
+import cocktail.keyboard.KeyboardData;
+
+
 /**
  * Handles all applications pages
  * 
@@ -54,6 +57,9 @@ class ApplicationStructure
 	
 	// the home page
 	//private var _homePage:ContainerDOMElement;
+	
+	// footer
+	private var _footer:ContainerDOMElement;
 	
 	// page 1
 	private var _page1:ContainerDOMElement;
@@ -92,8 +98,8 @@ class ApplicationStructure
 	{
 		pagesContainer = Utils.getContainer();
 		
-		//var footer:ContainerDOMElement = createFooterMenu();
-		//pagesContainer.addChild(footer);
+		//_footer = createFooterMenu();
+		//pagesContainer.addChild(_footer);
 		
 		// create all pages
 		createAllPages();
@@ -194,31 +200,25 @@ class ApplicationStructure
 		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
 		_page5 = createHeaderListPage(PAGE5_TITLE, cells);
 		
-		var footer:ContainerDOMElement = createFooterMenu();
-		pagesContainer.addChild(footer);
+		_footer = createFooterMenu();
+		pagesContainer.addChild(_footer);
+		//pagesContainer.onKeyDown = onKeyDownPages;
 		
-		// workaround for browsers not supporting well "fixed" position
+		// workaround for browsers not supporting well css "fixed" position
 		#if js
 
 		function resetFooterStyle(event) {
-			//trace("onscroll");
-			pagesContainer.removeChild(footer);
-			// apply page style
-			//WebAppStyle.getFooterStyle(footer);
-			//footer.style.bottom = PositionOffsetStyleValue.length(px(0));
-			//footer.style.bottom = PositionOffsetStyleValue.autoValue;
-			pagesContainer.addChild(footer);
+			// footer is removed and added again as a workaround
+			pagesContainer.removeChild(_footer);
+			pagesContainer.addChild(_footer);
 		};
-		
-		/*function resetFooterStyle2(event) {
-			trace("onresize");
-			pagesContainer.removeChild(footer);
-			pagesContainer.addChild(footer);
-		};*/
 		
 		js.Lib.window.onscroll = resetFooterStyle;
 		js.Lib.window.onresize = resetFooterStyle;
 		
+		// this part is done only for keyboard event part
+		resetFooterStyle(null);
+		js.Lib.document.onkeydown = onKeyDownPages;
 		#end
 
 	}
@@ -352,6 +352,9 @@ class ApplicationStructure
 		// list onChange callback
 		menuList.onChange = onChangeListCallback;
 		//menuList.onChange = onChangeMenuListCallback;
+
+		// list keyboard down callback
+		//menuList.onKeyDown = onMenuKeyDown;
 		
 		container.addChild(menuList);
 		
@@ -445,6 +448,20 @@ class ApplicationStructure
 	public function onChangeListCallback(cell:CellModel)
 	{
 		navigation.onChangeListCallback(cell);
+	}
+	
+	/**
+	 * Called when a key is pressed
+	 */
+	//private function onKeyDownPages(key:KeyEventData):Void
+	private function onKeyDownPages(key:Dynamic):Void
+	{
+		trace("onKeyDownPages: " + key.keyCode);
+		/*if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT || key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		{*/
+			// dispatch menu list item change
+			_footer.children[1].child.onListKeyDown(key);
+		/*}*/
 	}
 	
 }

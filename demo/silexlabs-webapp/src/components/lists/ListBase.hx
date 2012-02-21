@@ -107,6 +107,8 @@ class ListBase extends ContainerDOMElement
 			_currentCellIndex++;
 		}
 		_currentCellIndex = 0;
+		
+		//this.onKeyDown = onListKeyDown;
 	}
 	
 	/**
@@ -269,8 +271,10 @@ class ListBase extends ContainerDOMElement
 	 * @param	key
 	 */
 	//private function onListKeyDown(key:KeyEventData, cell:ContainerDOMElement, cellData:CellModel):Void
-	private function onListKeyDown(key:KeyEventData):Void
+	//public function onListKeyDown(key:KeyEventData):Void
+	public function onListKeyDown(key:Dynamic):Void
 	{
+		//trace(key.value);
 		/*if (key.value == KeyboardKeyValue.right)
 		{
 			trace("right key pressed");

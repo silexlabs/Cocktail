@@ -2,9 +2,6 @@
 	<head>
 		<title>Cocktail Simple WebApp</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-	</head>
-	<body onLoad="init()" style="padding:20px;background-color:white;">
-		<script type="text/javascript" src="WebApp.js"></script>
 		<script src="js/hbbtvlib.js" type="text/javascript" charset="UTF-8"></script>
 		<script src="js/keycodes.js" type="text/javascript" charset="UTF-8"></script>
 		<script type="text/javascript">
@@ -14,7 +11,11 @@
 				hbbtvlib_show();
 			}
 		</script>
+		<link href="default.css" rel="stylesheet" type="text/css">
+	</head>
+	<body onLoad="init()" style="padding:20px;background-color:white;overflow:hidden;">
 		<div id="haxe:trace"></div>
+		<script type="text/javascript" src="WebApp.js"></script>
 		<div style="visibility: hidden; display: none;">
 			<object type="application/oipfApplicationManager" id="oipfAppMan"> </object>
 			<object type="application/oipfConfiguration" id="oipfConfig"> </object>
