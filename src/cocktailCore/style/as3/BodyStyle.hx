@@ -8,7 +8,10 @@
 package cocktailCore.style.as3;
 
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractBodyStyle;
+import flash.Lib;
+import haxe.Log;
 
 /**
  * This is the Flash AS3 implementation of the BodyStyle
@@ -24,6 +27,25 @@ class BodyStyle extends AbstractBodyStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	// The body attach/detach its children from the flash Stage
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	override private function attachNativeElement(nativeElement:NativeElement):Void
+	{
+		Lib.current.addChild(nativeElement);
+	}
+	
+	override private function detachNativeElement(nativeElement:NativeElement):Void
+	{
+		if (Lib.current.contains(nativeElement) == true)
+		{
+			Lib.current.removeChild(nativeElement);
+		}
 	}
 	
 }
