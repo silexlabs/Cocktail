@@ -85,7 +85,8 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	{
 		_nativeElement.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 		
-		var ret:Int = _nativeElement.textWidth;
+		//var ret:Int = _nativeElement.textWidth;
+		var ret = 50;
 		return ret;
 	}
 
@@ -95,7 +96,8 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	 */
 	override private function getOffsetHeight():Int
 	{
-		var ret:Int = _nativeElement.textHeight;
+		//var ret:Int = _nativeElement.textHeight;
+		var ret = 50;
 		return ret;
 	}
 	#end

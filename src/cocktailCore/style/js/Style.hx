@@ -204,7 +204,7 @@ class Style extends AbstractStyle
 			case OverflowStyleValue.scroll:
 				cssOverflowValue = "scroll";
 				
-			case OverflowStyleValue.auto:
+			case OverflowStyleValue.autoValue:
 				cssOverflowValue = "auto";
 		}
 		
@@ -1033,7 +1033,7 @@ class Style extends AbstractStyle
 			case BackgroundSizeStyleDimensionValue.percent(value):
 				cssBackgroundSizeDimension = getCSSPercentValue(value);
 				
-			case BackgroundSizeStyleDimensionValue.auto:
+			case BackgroundSizeStyleDimensionValue.autoValue:
 				cssBackgroundSizeDimension = "auto";
 		}
 		

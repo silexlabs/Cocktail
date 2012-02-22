@@ -739,7 +739,7 @@ class InlineFormattingContext extends FormattingContext
 				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
 					elementWidth = tabWidth;
 					
-				case BoxElementValue.float(domElement, parentDOMElement):
+				case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
 					elementWidth = 0;
 					
 				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
