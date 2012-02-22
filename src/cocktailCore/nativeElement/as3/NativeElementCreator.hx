@@ -47,7 +47,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				nativeElement = new Loader();
 				
 			//for other types, it is a Sprite	
-			case text, graphic, neutral, link:
+			case text, graphic, neutral, link, textInput:
 				nativeElement = new Sprite();
 			case custom(name):
 				nativeElement = new Sprite();
