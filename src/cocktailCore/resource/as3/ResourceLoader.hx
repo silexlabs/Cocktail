@@ -13,6 +13,7 @@ import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
+import haxe.Log;
 
 #if flash9
 import flash.system.LoaderContext;
@@ -120,8 +121,8 @@ class ResourceLoader extends AbstractResourceLoader
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		this._intrinsicHeight = loader.contentLoaderInfo.height;
-		this._intrinsicWidth = loader.contentLoaderInfo.width;
+		this._intrinsicHeight = Math.round(loader.height);
+		this._intrinsicWidth = Math.round(loader.width);
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
