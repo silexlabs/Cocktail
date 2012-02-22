@@ -6,7 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.nativeElement;
-import flash.display.Sprite;
 
 /**
  * Set the right runtime specific NativeElement at compile-time
