@@ -246,7 +246,7 @@ class FormattingContext
 			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
 				insertTab(element, nexElementIsLineFeed);
 				
-			case BoxElementValue.float(domElement, parentDOMElement):
+			case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
 				insertFloat(element);
 				
 			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
@@ -511,7 +511,7 @@ class FormattingContext
 				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
 					elementWidth = tabWidth;
 					
-				case BoxElementValue.float(domElement, parentDOMElement):
+				case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
 					elementWidth = 0;
 					
 				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
@@ -551,7 +551,7 @@ class FormattingContext
 				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
 					elementHeight = 0;
 					
-				case BoxElementValue.float(domElement, parentDOMElement):
+				case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
 					elementHeight = 0;
 					
 				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
@@ -591,7 +591,7 @@ class FormattingContext
 				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
 					elementParent = parentDOMElement;
 					
-				case BoxElementValue.float(domElement, parentDOMElement):
+				case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
 					elementParent = parentDOMElement;
 					
 				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):

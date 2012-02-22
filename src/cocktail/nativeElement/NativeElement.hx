@@ -10,8 +10,11 @@ package cocktail.nativeElement;
 /**
  * Set the right runtime specific NativeElement at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || cpp)
 typedef NativeElement =  flash.display.DisplayObjectContainer;
+
+#elseif nme
+typedef NativeElement =  Dynamic;
 
 #elseif js
 import js.Dom;

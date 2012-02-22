@@ -378,8 +378,8 @@ class AbstractStyle
 		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
 		this.backgroundSize = [
 			BackgroundSizeStyleValue.dimensions({
-				x:BackgroundSizeStyleDimensionValue.auto,
-				y:BackgroundSizeStyleDimensionValue.auto
+				x:BackgroundSizeStyleDimensionValue.autoValue,
+				y:BackgroundSizeStyleDimensionValue.autoValue
 			})];
 		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
 		
@@ -758,7 +758,7 @@ class AbstractStyle
 		//insert in formatting context as a float
 		if (isFloat() == true)
 		{
-			formattingContext.insertElement(BoxElementValue.float(this._domElement, this._domElement.parent));
+			formattingContext.insertElement(BoxElementValue.floatDOMElement(this._domElement, this._domElement.parent));
 		}
 		//insert in the flow
 		else if (isPositioned() == false)
@@ -770,8 +770,8 @@ class AbstractStyle
 		{
 			//retrieve the static position (the position of the DOMElement
 			//if its position style was 'static'
-			var x:Float = 0;
-			var y:Float = 0;
+			var x:Float = 0.0;
+			var y:Float = 0.0;
 			
 			//To retrieve the static position, the formatting context must be formatted now
 			formattingContext.format();

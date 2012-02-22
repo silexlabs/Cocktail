@@ -618,7 +618,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		 * The scrollbar are displayed as needed, only if a containing
 		 * block's content overflows
 		 */
-		auto;
+		autoValue;
 	}
 
 	/**
@@ -1096,7 +1096,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		 * use the intrinsic dimensions
 		 * of the image
 		 */
-		auto;
+		autoValue;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1480,7 +1480,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		float(domElement:DOMElement, parentDOMElement:DOMElement);
+		floatDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		text(domElement:DOMElement, parentDOMElement:DOMElement);
 		offset(value:Int, parentDOMElement:DOMElement );
 		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
