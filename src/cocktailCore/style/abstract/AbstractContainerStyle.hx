@@ -87,6 +87,10 @@ class AbstractContainerStyle extends Style
 	 * the data of all the boxes it is laid out into (for instance
 	 * an inline container DOMElement laid out on multiple lines has
 	 * one box for each line) and attach all its backgrounds, children...
+	 * 
+	 * TODO : in As3, as DisplayObjectContainer have now a width and height of 0
+	 * most of the time and children are not attached to them, mouse event
+	 * don't work anymore
 	 */
 	override public function render():Void
 	{
@@ -611,6 +615,8 @@ class AbstractContainerStyle extends Style
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
+	 * 
+	 * TODO : check if fixed positioning still works
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<BoxElementData>
 	{

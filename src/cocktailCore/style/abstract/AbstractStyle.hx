@@ -79,12 +79,6 @@ class AbstractStyle
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
 	
-	private var _opacity:OpacityStyleValue;
-	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
-	
-	private var _visibility:VisibilityStyleValue;
-	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
-	
 	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
 	
@@ -199,6 +193,18 @@ class AbstractStyle
 		
 	private var _verticalAlign:VerticalAlignStyleValue;
 	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
+	
+	/**
+	 * visual effect styles
+	 */
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	private var _overflow:OverflowStyleData;
+	public var overflow(getOverflow,  setOverflow):OverflowStyleData;
 	
 	////////////////////////////////
 	
@@ -391,6 +397,10 @@ class AbstractStyle
 		
 		this.visibility = VisibilityStyleValue.visible;
 		this.opacity = OpacityStyleValue.number(1.0);
+		this.overflow = {
+			x:OverflowStyleValue.visible,
+			y:OverflowStyleValue.visible
+		}
 		
 		this.transformOrigin = {
 			x:TransformOriginXStyleValue.center,
@@ -448,6 +458,7 @@ class AbstractStyle
 			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
+			overflow:{x:OverflowStyleValue.visible, y:OverflowStyleValue.visible},
 			transformOrigin: { x:0.0, y:0.0 },
 			transform:new Matrix(),
 			backgroundColor:{color:0, alpha:1.0},
@@ -1787,6 +1798,13 @@ class AbstractStyle
 		return _transform = value;
 	}
 	
+	private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	{
+		invalidate();
+		return _overflow = value;
+	}
+	
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -2059,5 +2077,10 @@ class AbstractStyle
 	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
 	{
 		return _backgroundManager.backgroundOrigin;
+	}
+	
+	private function getOverflow():OverflowStyleData
+	{
+		return _overflow;
 	}
 }
