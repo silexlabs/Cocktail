@@ -14,6 +14,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
@@ -222,32 +223,29 @@ class Style extends AbstractStyle
 		if (_fontMetrics == null)
 		{
 			var textField:TextField = new TextField();
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			
 			var textFormat:TextFormat = new TextFormat();
 			textFormat.size = _computedStyle.fontSize;
 			textFormat.font = getNativeFontFamily(this._fontFamily);
 			
-			textField.text = "X";
-			
-			
-			/**var textLineMetrics:TextLineMetrics = textField.getLineMetrics();
-			
-		
-			var ascent:Float = textLineMetrics.ascent;
-			var descent:Float = textLineMetrics.descent;
+			textField.setTextFormat(textFormat);
 			
 			textField.text = "x";
-			textLineMetrics = textField.getLineMetrics();
 			
-			var xHeight:Int = textLineMetrics.height;
+			var ascent:Float = textField.textHeight;
+			
+			textField.text = ",";
+			
+			var descent:Float = textField.textHeight;
+			
+			textField.text = "x";
+			
+			var xHeight:Int = Math.round(textField.textHeight);
 		
-			textField.text = " ";
-			textLineMetrics = textField.getLineMetrics();
-			var spaceWidth:Int = textLineMetrics.width;
-			*/
-			var ascent:Float = 12;
-			var descent:Float = 12;
-			var xHeight:Int = 5;
-			var spaceWidth:Int = 8;
+			textField.text = "M";
+			var spaceWidth:Int = Math.round(textField.textWidth);
+			
 			
 			_fontMetrics = {
 				fontSize:_computedStyle.fontSize,
@@ -259,17 +257,6 @@ class Style extends AbstractStyle
 				subscriptOffset:1,
 				underlineOffset:1
 			};
-			/**
-			_fontMetrics = {
-				fontSize:10.0,
-				ascent:5,
-				descent:5,
-				xHeight:10,
-				spaceWidth:10,
-				superscriptOffset:1,
-				subscriptOffset:1,
-				underlineOffset:1
-			};*/
 		}
 		
 		return _fontMetrics;
