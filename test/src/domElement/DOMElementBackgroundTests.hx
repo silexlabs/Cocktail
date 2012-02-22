@@ -48,7 +48,99 @@ class DOMElementBackgroundTests
 	
 	public function new() 
 	{
-		testDOMElementBackground();
+		testBlockDOMElementBackground();
+	}
+	
+	public function testBlockDOMElementBackground()
+	{
+		var bodyDOMElement:BodyDOMElement = new BodyDOMElement();
+		
+		var header:ContainerDOMElement = new ContainerDOMElement();
+		header.style.display = DisplayStyleValue.block;
+		header.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 0, 0, 0.5));
+		//header.height = 400;
+		header.width = 500;
+		
+		var body:ContainerDOMElement = new ContainerDOMElement();
+		body.style.display = DisplayStyleValue.block;
+		body.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(0, 255, 0,0.3));
+		//body.height = 300;
+		//body.style.paddingTop = PaddingStyleValue.length(px(20));
+		body.width = 500;
+		body.addText(new TextElement("test plusieurs mots"));
+		
+		var boldContainer:ContainerDOMElement = new ContainerDOMElement();
+		boldContainer.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(0, 255, 0, 0.5));
+		boldContainer.style.fontWeight = FontWeightStyleValue.bold;
+		boldContainer.addText(new TextElement("bold text multiple linnes liefzefzefzefzefzefzefzef zefzefzefzefsss"));
+		body.addChild(boldContainer);
+		
+		var picture:ImageDOMElement = new ImageDOMElement();
+		picture.style.display = DisplayStyleValue.block;
+		picture.load("firefox.png");
+		picture.height = 250;
+		picture.style.position = PositionStyleValue.absolute;
+		header.addChild(picture);
+		
+		var picture3:ImageDOMElement = new ImageDOMElement();
+		picture3.style.display = DisplayStyleValue.inlineStyle;
+		picture3.load("firefox.png");
+		picture3.height = 200;
+		body.addChild(picture3);
+				
+		var footer:ContainerDOMElement = new ContainerDOMElement();
+		footer.style.display = DisplayStyleValue.block;
+		footer.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(0, 0, 255, 0.4));
+		footer.height = 50;
+		footer.addText(new TextElement("Lorem ipsum dolor sit amet, dsfsdf sdfsd fsdfsd consectetur adipiscing elit. Proin arcu est, congue vel malesuada ut, congue nec orci. Proin nec tincidunt arcu. Ut vehicula nibh bibendum orci pharetra tempor rhoncus purus aliquam. Donec congue leo non felis consectetur eget euismod libero eleifend. "));
+		footer.addText(new TextElement("Lorem ipsum dolor sit amet, dsfsdf sdfsd fsdfsd consectetur adipiscing elit. Proin arcu est, congue vel malesuada ut, congue nec orci. Proin nec tincidunt arcu. Ut vehicula nibh bibendum orci pharetra tempor rhoncus purus aliquam. Donec congue leo non felis consectetur eget euismod libero eleifend. "));
+		footer.style.overflow = { x:OverflowStyleValue.visible, y:OverflowStyleValue.scroll };
+		//footer.width = 100;
+		footer.style.textIndent = TextIndentStyleValue.length(px(-30));
+		
+
+		var picture2:ImageDOMElement = new ImageDOMElement();
+		picture2.style.display = DisplayStyleValue.inlineStyle;
+		picture2.load("firefox.png");
+		//picture2.height = 50;
+		footer.addChild(picture2);
+		footer.style.position = PositionStyleValue.relative;
+		
+		var picture4:ImageDOMElement = new ImageDOMElement();
+		picture4.style.display = DisplayStyleValue.block;
+		picture4.load("firefox.png");
+		picture4.height = 150;
+		
+		picture2.style.position = PositionStyleValue.absolute;
+		picture2.style.bottom = PositionOffsetStyleValue.length(px(0));
+		
+	
+		var container:ContainerDOMElement = new ContainerDOMElement();
+		container.style.display = DisplayStyleValue.block;
+		container.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 0, 0, 0.7));
+		//container.height = 30;
+		container.width = 500;
+		
+		var container2:ContainerDOMElement = new ContainerDOMElement();
+		container2.style.display = DisplayStyleValue.block;
+		container2.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(125, 0, 0, 0.7));
+		container2.height = 80;
+		container.addChild(container2);
+		
+		header.addChild(container);
+		container.addChild(picture4);
+		
+		bodyDOMElement.addChild(header);
+		header.addChild(picture);
+		picture.alpha = 0.3;
+		picture4.alpha = 0.3;
+		picture2.alpha = 0.3;
+		bodyDOMElement.addChild(body);
+		header.addChild(footer);
+		
+		
+		
+		
 	}
 	
 	public function testDOMElementBackground()
@@ -86,7 +178,7 @@ class DOMElementBackgroundTests
 		];
 		
 		container1.style.backgroundClip = [
-		BackgroundClipStyleValue.contentBox,
+		BackgroundClipStyleValue.paddingBox,
 		BackgroundClipStyleValue.paddingBox
 		];
 		
@@ -98,20 +190,26 @@ class DOMElementBackgroundTests
 		container1.addText(new TextElement("text"));
 		
 		var container2:ContainerDOMElement = new ContainerDOMElement();
-		container2.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.keyword(ColorKeywordValue.purple));
+		container2.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 0, 0,0.7));
 		container2.addText(new TextElement("bold linessssssssss"));
 		container2.style.fontWeight = FontWeightStyleValue.bold;
 		
 		var container3:ContainerDOMElement = new ContainerDOMElement();
 		container3.addText(new TextElement("In Beetween"));
+		
+		//container1.style.transform = TransformStyleValue.transformFunctions([TransformFunctionValue.rotate(AngleValue.deg(1))]);
 		container3.style.fontSize = FontSizeStyleValue.length(px(50));
 		container3.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.keyword(ColorKeywordValue.black));
 		container3.style.color = ColorValue.keyword(ColorKeywordValue.white);
-		container3.style.paddingLeft = PaddingStyleValue.length(px(100));
+		//container3.style.marginLeft = MarginStyleValue.length(px(100));
 		
 		container2.addChild(container3);
 		
-			container2.addText(new TextElement("bim bam boum"));
+		container2.addText(new TextElement("bim bam boum"));
+		//container2.style.marginRight = MarginStyleValue.length(px(150));
+		//	container2.style.marginLeft = MarginStyleValue.length(px(150));
+		container2.style.paddingRight = PaddingStyleValue.length(px(150));
+		container2.style.paddingLeft = PaddingStyleValue.length(px(150));
 		
 		container1.addChild(container2);
 		
@@ -136,14 +234,14 @@ class DOMElementBackgroundTests
 		//img.style.marginBottom = MarginStyleValue.length(px(2));
 		//img.style.marginRight = MarginStyleValue.length(px(20));
 		img.load("firefox.png");
-		img.width = 100;
-		img.height = 100;
+		img.style.width = DimensionStyleValue.length(px(100));
+		img.style.height = DimensionStyleValue.length(px(100));
 		//img.style.paddingTop = PaddingStyleValue.length(px(50));
 		//img.style.paddingLeft = PaddingStyleValue.length(px(50));
 		//img.style.paddingRight = PaddingStyleValue.length(px(50));
 		//img.style.paddingBottom = PaddingStyleValue.length(px(50));
 		
-	//	container1.addChild(img);
+		container1.addChild(img);
 		
 		container1.addText(new TextElement("biiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiim"));
 		container1.style.position = PositionStyleValue.relative;
