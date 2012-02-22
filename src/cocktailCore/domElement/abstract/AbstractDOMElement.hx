@@ -374,11 +374,11 @@ class AbstractDOMElement
 		var visibility:VisibilityStyleValue;
 		if (value == true)
 		{
-			visibility = visible;
+			visibility = VisibilityStyleValue.visible;
 		}
 		else
 		{
-			visibility = hidden;
+			visibility = VisibilityStyleValue.hidden;
 		}
 		_style.visibility = visibility;
 		return value;

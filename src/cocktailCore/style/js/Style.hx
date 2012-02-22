@@ -182,6 +182,35 @@ class Style extends AbstractStyle
 		return cssPositionValue;
 	}
 	
+	/////////////////////////////////
+	// VISUAL EFFECTS STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : overflow
+	 */
+	private function getCSSOverflow(value:OverflowStyleValue):String
+	{
+		var cssOverflowValue:String;
+		
+		switch (value)
+		{
+			case OverflowStyleValue.visible:
+				cssOverflowValue = "visible";
+				
+			case OverflowStyleValue.hidden:
+				cssOverflowValue = "hidden";
+				
+			case OverflowStyleValue.scroll:
+				cssOverflowValue = "scroll";
+				
+			case OverflowStyleValue.auto:
+				cssOverflowValue = "auto";
+		}
+		
+		return cssOverflowValue;
+	}
+	
 	/**
 	 * CSS : opacity
 	 */
@@ -1870,5 +1899,13 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
 		super.setBackgroundRepeat(value);
 		return _backgroundManager.backgroundRepeat;
+	}
+	
+	override private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	{
+		this._domElement.nativeElement.style.overflowX = getCSSOverflow(value.x);
+		this._domElement.nativeElement.style.overflowY = getCSSOverflow(value.y);
+		super.setOverflow(value);
+		return _overflow = value;
 	}
 }
