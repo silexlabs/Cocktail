@@ -142,7 +142,6 @@ class Style extends AbstractStyle
 	 */
 	override public function setNativeMatrix(matrix:Matrix):Void
 	{
-		#if flash9
 		
 		//concenate the new matrix with the base matrix of the DOMElement
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
@@ -158,7 +157,6 @@ class Style extends AbstractStyle
 		
 		super.setNativeMatrix(concatenatedMatrix);
 		
-		#end
 	}
 #if (flash9)	
 	/////////////////////////////////
