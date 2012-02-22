@@ -762,6 +762,8 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	isLastLine wheter it is the last line which is laid out
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
+	 * 
+	 * TODO : wordspacing don't work anymore
 	 */
 	private function alignLineBox(isLastLine:Bool):Int
 	{	

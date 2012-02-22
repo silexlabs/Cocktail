@@ -133,6 +133,8 @@ class AbstractTextElement
 	/**
 	 * Capitalise a text (turn each first letter
 	 * of a word to uppercase)
+	 * 
+	 * TODO : doesn't work
 	 */
 	public static function capitalizeText(text:String):String
 	{
