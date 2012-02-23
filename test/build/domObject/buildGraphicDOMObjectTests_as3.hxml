@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main domObject.GraphicDOMObjectTests
--lib utest
--swf9 ../../bin/domObject/graphicDOMObjectTestAs3.swf

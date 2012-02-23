@@ -1,16 +1,12 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.geom;
 
-import haxe.Log;
 import cocktail.geom.GeomData;
 
 /**
@@ -18,7 +14,7 @@ import cocktail.geom.GeomData;
  * cross-platform and as such doesn't rely on any runtime specific API.
  * 
  * It exposes method to create and manipulate a matrix which can then be 
- * used to apply 2d transformations to a display object.
+ * used to apply 2d transformations to a DOMElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -28,16 +24,17 @@ class Matrix
 	/**
 	 * Stores each value of this 3x3 matrix
 	 */
-	private var _matrixData:MatrixData;
+	private var _data:MatrixData;
+	public var data(getData, setData):MatrixData;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
 	 */
-	public function new(matrixData:MatrixData = null) 
+	public function new(data:MatrixData = null) 
 	{
-		setMatrixData(matrixData);
+		this.data = data;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +46,7 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		_matrixData = {
+		_data = {
 			a : 1.0,
 			b : 0.0, 
 			c : 0.0,
@@ -65,24 +62,26 @@ class Matrix
 	 * 
 	 * @param contains 6 values
 	 */
-	public function setMatrixData(matrixData:MatrixData):Void
+	private function setData(data:MatrixData):MatrixData
 	{
-		_matrixData = matrixData;
+		_data = data;
 		
 		//init the null matrix as an identity matrix
-		if (_matrixData == null)
+		if (_data == null)
 		{
 			identity();
 		}
+		
+		return _data;
 	}
 	
 	/**
 	 * Return this matrix data
 	 * @return the 6 values of this 3x3 matrix
 	 */
-	public function getMatrixData():MatrixData
+	private function getData():MatrixData
 	{
-		return _matrixData;
+		return _data;
 	}
 	
 	/**
@@ -99,8 +98,8 @@ class Matrix
 	public function concatenate(matrix:Matrix):Void
 	{
 		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixData = _matrixData;
-		var targetMatrixData:MatrixData = matrix.getMatrixData();
+		var currentMatrixData:MatrixData = _data;
+		var targetMatrixData:MatrixData = matrix.data;
 		
 		//multiply the two matrix data values
 		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
@@ -121,7 +120,7 @@ class Matrix
 		};
 		
 		//then set it as this matrix data
-		setMatrixData(concatenatedMatrixData);
+		this.data = concatenatedMatrixData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -156,51 +155,48 @@ class Matrix
 	}
 	
 	/**
-	 * Apply a transformation rotating the matrix of the angle number of degree (clockwise), using 
-	 * "transformationOrigin" as rotation center.
+	 * Apply a transformation rotating the matrix using the specified angle (in rad), using 
+	 * registrationPoint as rotation center.
 	 * 
-	 * @param angle the rotation angle in degree
-	 * @param transformationOrigin the pivot point
+	 * @param angle the rotation angle in rad
+	 * @param registrationPoint the pivot point
 	 */
-	public function rotate(angle:Int, transformationOrigin:Point):Void
+	public function rotate(angle:Float, registrationPoint:PointData):Void
 	{
-		//convert degree to radian
-		var angleInRad:Float = angle / 180 * Math.PI;
-		
 		//the matrix that will be rotated along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
 		var rotatedMatrix:Matrix = new Matrix();
 		
 		//translate the matrix to set the transformation origin as it's pivot point
-		rotatedMatrix.translate(transformationOrigin.x, transformationOrigin.y);
+		rotatedMatrix.translate(registrationPoint.x, registrationPoint.y);
 		
-		var a:Float = 0;
-		var b:Float = 0;
-		var c:Float = 0;
-		var d:Float = 0;
+		var a:Float = 0.0;
+		var b:Float = 0.0;
+		var c:Float = 0.0;
+		var d:Float = 0.0;
 		
 		//check for special angles
 		
-		if (angle == 90)
+		if (angle == Math.PI / 2)
 		{
-			a = d = 0;
-			c = b = 1;
+			a = d = 0.0;
+			c = b = 1.0;
 			
 		}
-		else if (angle == 180)
+		else if (angle == Math.PI)
 		{
-			a = d = -1;
-			c = b = 0;
+			a = d = -1.0;
+			c = b = 0.0;
 		}
-		else if (angle == 270)
+		else if (angle == (Math.PI * 3) / 2)
 		{
-			a = d = 0;
-			c = b = -1;
+			a = d = 0.0;
+			c = b = -1.0;
 		}
 		else
 		{
-			a = d = Math.cos(angleInRad);
-			c = b = Math.sin(angleInRad);
+			a = d = Math.cos(angle);
+			c = b = Math.sin(angle);
 		}
 		
 		//create the matrix data corresponding to an identity matrix
@@ -208,7 +204,7 @@ class Matrix
 		var rotationMatrixData:MatrixData = {
 			a:a,
 			b:b,
-			c:c * -1,
+			c:c * -1.0,
 			d:d,
 			e:0.0,
 			f:0.0
@@ -222,7 +218,7 @@ class Matrix
 		rotatedMatrix.concatenate(rotationMatrix);
 		
 		//translate the matrix back to its original transformation origin
-		rotatedMatrix.translate(transformationOrigin.x * -1, transformationOrigin.y * -1);
+		rotatedMatrix.translate(registrationPoint.x * -1, registrationPoint.y * -1);
 		
 		//concatenate the rotated matrix to the current matrix to
 		//prevent losing any previous transformation
@@ -231,20 +227,20 @@ class Matrix
 	
 	/**
 	 * Apply a transformation scaling the matrix by the "scaleX" and "scaleY" factor, using 
-	 * "transformationOrigin" as scaling center.
+	 * "registrationPoint" as scaling center.
 	 * 
 	 * @param scaleX horizontal scale factor
 	 * @param scaleY vertical scale factor
 	 * @param transformOrigin the scale center
 	 */
-	public function scale(scaleX:Float, scaleY:Float, transformationOrigin:Point):Void
+	public function scale(scaleX:Float, scaleY:Float, registrationPoint:PointData):Void
 	{	
 		//the matrix that will be scaled along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
 		var scaledMatrix:Matrix = new Matrix();
 		
 		//translate the matrix to set the transformation origin as it's scaling center
-		scaledMatrix.translate(transformationOrigin.x, transformationOrigin.y);
+		scaledMatrix.translate(registrationPoint.x, registrationPoint.y);
 		
 		//create the matrix data corresponding to an identity matrix
 		//scaled by the scaleX and scaleY factors
@@ -265,7 +261,7 @@ class Matrix
 		scaledMatrix.concatenate(scalingMatrix);
 		
 		//translate the matrix back to its original transformation origin
-		scaledMatrix.translate(transformationOrigin.x * -1, transformationOrigin.y * -1);
+		scaledMatrix.translate(registrationPoint.x * -1, registrationPoint.y * -1);
 		
 		//concatenate the scaled matrix to the current matrix to
 		//prevent losing any previous transformation
@@ -274,20 +270,20 @@ class Matrix
 	
 	/**
 	 * Apply a transformation skewing the matrix by the "skewX" and "skewY"
-	 * factor, using "transformationOrigin" as skewing center.
+	 * factor, using "registrationPoint" as skewing center.
 	 * 
 	 * @param skewX the horizontal skew factor
 	 * @param skewY the vertical skew factor
 	 * @param transformOrigin the skew center
 	 */
-	public function skew(skewX:Float, skewY:Float, transformationOrigin:Point ):Void
+	public function skew(skewX:Float, skewY:Float, registrationPoint:PointData):Void
 	{
 		//the matrix that will be skewed along transformation origin point. It will be
 		//concatenated with the current matrix. Default to an identity matrix
 		var skewedMatrix:Matrix = new Matrix();
 		
 		//translate the matrix to set the transformation origin as it's skewing center
-		skewedMatrix.translate(transformationOrigin.x, transformationOrigin.y);
+		skewedMatrix.translate(registrationPoint.x, registrationPoint.y);
 		
 		//create the matrix data corresponding to an identity matrix
 		//skewed by the skewX and skewY factors
@@ -308,7 +304,7 @@ class Matrix
 		skewedMatrix.concatenate(skewingMatrix);
 		
 		//translate the matrix back to its original transformation origin
-		skewedMatrix.translate(transformationOrigin.x * -1, transformationOrigin.y * -1);
+		skewedMatrix.translate(registrationPoint.x * -1, registrationPoint.y * -1);
 		
 		//concatenate the skewed matrix to the current matrix to
 		//prevent losing any previous transformation
@@ -320,31 +316,31 @@ class Matrix
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the rotation of the matrix to an absolut value instead of adding a rotation
+	 * Set the rotation of the matrix to an absolute value instead of adding a rotation
 	 * to an existing rotation. Preserve the existing transformations
-	 * @param	angle the angle that must be applied
-	 * @param	transformationOrigin the rotation center
+	 * @param	angle the angle that must be applied (in rad)
+	 * @param	registrationPoint the rotation center
 	 */
-	public function setRotation(angle:Int, transformationOrigin:Point):Void 
+	public function setRotation(angle:Float, registrationPoint:PointData):Void 
 	{
 		//get the current angle
-		var currentRotation:Int = getRotation();
+		var currentRotation:Float = getRotation();
 		
 		//find the complementary angle to reset the rotation to 0
-		var resetAngle:Int = 360 - currentRotation;
-		
+		var resetAngle:Float = (Math.PI * 2) - currentRotation;
+			
 		//reset the rotation while preserving other transformations
-		this.rotate(resetAngle, transformationOrigin );
+		this.rotate(resetAngle, registrationPoint );
 		
 		//set the new rotation value
-		this.rotate(angle, transformationOrigin);
+		this.rotate(angle, registrationPoint);
 	}
 	
 	/**
-	 * return an estimation of the current matrix rotation in degree. 
+	 * return an estimation of the current matrix rotation in rad. 
 	 * This method assumes that the matrix has not been skewed
 	 */
-	public function getRotation():Int
+	public function getRotation():Float
 	{
 		//return -1 is one of the axis is flipped, else 1
 		var flip:Int = getFlip();
@@ -366,14 +362,13 @@ class Matrix
         var rotationInRad:Float =  Math.atan2((skewY / actualScaleY) - (skewX / actualScaleX),
 												(scaleY / actualScaleY) + (scaleX / actualScaleX));
 		
-		//convert to deg and report to a 360 angle if the rotation is negative										
-		var rotationInDeg:Int = Math.round((rotationInRad * 180 ) / Math.PI);
-		if (rotationInDeg < 0)
+		//report to a 360 angle if the rotation is negative										
+		if (rotationInRad < 0)
 		{
-			rotationInDeg = 360 + rotationInDeg;
+			rotationInRad = Math.PI + rotationInRad;
 		}
 			
-		return  rotationInDeg;
+		return  rotationInRad;
 		
 	}
 	
@@ -429,9 +424,9 @@ class Matrix
 	 * Set the absolut scale x value instead of adding it to the
 	 * current scale x value
 	 * @param	scaleXFactor the target scale x
-	 * @param	transformationOrigin the scale center
+	 * @param	registrationPoint the scale center
 	 */
-	public function setScaleX(scaleXFactor:Float, transformationOrigin:Point):Void
+	public function setScaleX(scaleXFactor:Float, registrationPoint:PointData):Void
 	{
 		var currentScaleX:Float = getScaleX();
 		
@@ -439,10 +434,10 @@ class Matrix
 		var resetScaleX:Float = 1 / currentScaleX;
 		
 		//reset the x scale while preserving other transformations
-		this.scale(resetScaleX, 1, transformationOrigin);
+		this.scale(resetScaleX, 1, registrationPoint);
 		
 		//set the new scale x value
-		this.scale(scaleXFactor, 1, transformationOrigin);
+		this.scale(scaleXFactor, 1, registrationPoint);
 	}
 	
 	/**
@@ -450,16 +445,16 @@ class Matrix
 	 */
 	public function getScaleX():Float
 	{
-		return _matrixData.a;
+		return _data.a;
 	}
 	
 	/**
 	 * Set the absolut scale y value instead of adding it to the
 	 * current scale y value
 	 * @param	scaleXFactor the target scale y
-	 * @param	transformationOrigin the scale center
+	 * @param	registrationPoint the scale center
 	 */
-	public function setScaleY(scaleYFactor:Float, transformationOrigin:Point):Void
+	public function setScaleY(scaleYFactor:Float, registrationPoint:PointData):Void
 	{
 		var currentScaleY:Float = getScaleY();
 		
@@ -467,10 +462,10 @@ class Matrix
 		var resetScaleY:Float = 1 / currentScaleY;
 		
 		//reset the y scale while preserving other transformations
-		this.scale(1, resetScaleY, transformationOrigin);
+		this.scale(1, resetScaleY, registrationPoint);
 		
 		//set the new scale y value
-		this.scale(1, scaleYFactor, transformationOrigin);
+		this.scale(1, scaleYFactor, registrationPoint);
 	}
 	
 	/**
@@ -478,11 +473,11 @@ class Matrix
 	 */
 	public function getScaleY():Float
 	{
-		return _matrixData.d;
+		return _data.d;
 	}
 	
 	/**
-	 * Set the absolut x translation instead of adding it to the 
+	 * Set the absolute x translation instead of adding it to the 
 	 * current x translation
 	 * @param	translationX the target x translation
 	 */
@@ -504,11 +499,11 @@ class Matrix
 	 */
 	public function getTranslationX():Float
 	{
-		return _matrixData.e;
+		return _data.e;
 	}
 	
 	/**
-	 * Set the absolut y translation instead of adding it to the 
+	 * Set the absolute y translation instead of adding it to the 
 	 * current y translation
 	 * @param	translationY the target y translation
 	 */
@@ -530,7 +525,7 @@ class Matrix
 	 */
 	public function getTranslationY():Float
 	{
-		return _matrixData.f;
+		return _data.f;
 	}
 	
 	/**
@@ -538,7 +533,7 @@ class Matrix
 	 */
 	public function getSkewX():Float
 	{
-		return _matrixData.c;
+		return _data.c;
 	}
 	
 	/**
@@ -546,7 +541,7 @@ class Matrix
 	 */
 	public function getSkewY():Float
 	{
-		return _matrixData.b;
+		return _data.b;
 	}
 	
 }

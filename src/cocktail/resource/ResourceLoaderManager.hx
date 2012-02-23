@@ -1,7 +1,7 @@
 /*
-This file is part of Silex - see http://projects.silexlabs.org/?/silex
+This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
 
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
+This project is © 2010-2011 Silex Labs and is released under the GPL License:
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
 
@@ -11,42 +11,38 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.resource;
 
-import haxe.Log;
-import cocktail.domObject.ContainerDOMObject;
-import cocktail.domObject.DOMObject;
-import cocktail.domObject.ImageDOMObject;
-import cocktail.domObject.js.AnimationDOMObject;
-import cocktail.domObject.TextDOMObject;
+import cocktailCore.resource.abstract.AbstractResourceLoader;
+import cocktail.domElement.DOMElement;
 import cocktail.resource.ResourceData;
 
-#if flash9
-import cocktail.resource.as3.StringLoader;
-import cocktail.resource.as3.ImageLoader;
-import cocktail.resource.as3.TextLoader;
-import cocktail.resource.as3.ContainerLoader;
-import cocktail.resource.as3.AnimationLoader;
-import cocktail.resource.as3.LibraryLoader;
+#if (flash9 || cpp || nme)
+import cocktailCore.resource.as3.StringLoader;
+import cocktailCore.resource.as3.ImageLoader;
+import cocktailCore.resource.as3.SkinLoader;
+import cocktailCore.resource.as3.LibraryLoader;
 
 #elseif js
-import cocktail.resource.js.StringLoader;
-import cocktail.resource.js.ImageLoader;
-import cocktail.resource.js.TextLoader;
-import cocktail.resource.js.ContainerLoader;
-import cocktail.resource.js.AnimationLoader;
-import cocktail.resource.js.LibraryLoader;
+import cocktailCore.resource.js.StringLoader;
+import cocktailCore.resource.js.ImageLoader;
+import cocktailCore.resource.js.SkinLoader;
+import cocktailCore.resource.js.LibraryLoader;
 
 #elseif php
-import cocktail.resource.php.StringLoader;
-import cocktail.resource.php.ImageLoader;
-import cocktail.resource.php.TextLoader;
-import cocktail.resource.php.ContainerLoader;
-import cocktail.resource.php.AnimationLoader;
-import cocktail.resource.php.LibraryLoader;
+import cocktailCore.resource.php.StringLoader;
+import cocktailCore.resource.php.ImageLoader;
+import cocktailCore.resource.php.SkinLoader;
+import cocktailCore.resource.php.AnimationLoader;
+import cocktailCore.resource.php.LibraryLoader;
+
+#elseif doc
+class StringLoader extends AbstractStringLoader {}
+class SkinLoader extends AbstractSkinLoader {}
+class LibraryLoader extends AbstractLibraryLoader {}
 
 #end	
 
 /**
- * Manages the queue of files to load, and exposes method to load resources of diferrent types. 
+ * Manages a queue of files to load, and exposes method to load resources of diferent types. 
  * @author Yannick DOMINGUEZ
  */
 class ResourceLoaderManager 
@@ -72,86 +68,6 @@ class ResourceLoaderManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public methods, starting the files loading
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadImage(url:String, successCallback:ImageDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			loadingType:image
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadText(url:String, successCallback:TextDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			loadingType:text
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadAnimation(url:String, successCallback:AnimationDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			loadingType:animation
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
-	
-	/**
-	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
-	 * @param	url the url of the file to load
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 * @param	allowCache wheter to allow the browser to cache the loaded file
-	 */
-	public static function loadContainer(url:String, successCallback:ContainerDOMObject->Void, errorCallback:String->Void , allowCache:Bool = true):Void
-	{
-		var resourceDataToAdd:ResourceData = {
-			url:url,
-			onLoadComplete:successCallback,
-			onLoadError:errorCallback,
-			allowCache:allowCache,
-			loadingType:container
-		};
-		
-		addResourceData(resourceDataToAdd);
-	}
 	
 	/**
 	 * Create a ResourceData object and add to the list of files to load by calling addResourceData
@@ -220,7 +136,7 @@ class ResourceLoaderManager
 	/**
 	 *  Set isLoading to true or false depending on the content of filesArray.
 	 *	Retrieve the next ResourceData object.
-	 *	Create the corresponding ResourceLoader
+	 *	Create the corresponding AbstractResourceLoader
 	 *	Actually start loading the resource.
 	 */
 	private static function loadNextResource():Void
@@ -238,29 +154,17 @@ class ResourceLoaderManager
 			
 			var resourceDataToLoad:ResourceData = _resourceDataArray[0];
 			
-			var resourceLoader:ResourceLoader;
+			var resourceLoader:AbstractResourceLoader;
 			switch (resourceDataToLoad.loadingType)
 			{
 				case data:
 				resourceLoader = new StringLoader();
 				
-				case image: 
-				resourceLoader = new ImageLoader();
-				
-				case text:
-				resourceLoader = new TextLoader();
-				
-				case animation:
-				resourceLoader = new AnimationLoader();
-				
-				case container:
-				resourceLoader = new ContainerLoader();
-				
 				case library:
 				resourceLoader = new LibraryLoader();
 			}
 			
-			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
+			resourceLoader.load([resourceDataToLoad.url], onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
 		}
 	}
 	
