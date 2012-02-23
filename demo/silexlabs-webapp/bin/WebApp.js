@@ -2932,6 +2932,7 @@ components.dataProvider.ThumbTextList1Rss.rss2Cells = function(rss) {
 					var title = itemParam.firstChild().getNodeValue();
 					var index = title.indexOf("Name");
 					if(index != -1) title = title.substr(0,index);
+					title = StringTools.rtrim(title);
 					cellContent.title = title;
 				}
 				if(itemParam.getNodeName() == "dc:creator") cellContent.comment = cellContent.comment + "by " + itemParam.firstChild().getNodeValue() + " ";
@@ -3667,11 +3668,13 @@ components.lists.ThumbTextList1Style.getListStyle = function(domElement) {
 }
 components.lists.ThumbTextList1Style.getCellStyle = function(domElement) {
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(200)));
 }
 components.lists.ThumbTextList1Style.getCellInfoBlockStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(10));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 }
 components.lists.ThumbTextList1Style.getCellNumberStyle = function(domElement,screenResolutionSize) {
 	components.lists.ThumbTextList1Style.getCellTextStyle(domElement);
@@ -3692,7 +3695,8 @@ components.lists.ThumbTextList1Style.getCellCommentCountStyle = function(domElem
 	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#CC3517"));
 	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 }
-components.lists.ThumbTextList1Style.getCellInfoBlockLineStyle = function(domElement) {
+components.lists.ThumbTextList1Style.getCellInfoBlockLineStyle = function(domElement,screenResolutionSize) {
+	var imageMaxWidth = 50;
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.autoValue);
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.autoValue);
@@ -3700,11 +3704,16 @@ components.lists.ThumbTextList1Style.getCellInfoBlockLineStyle = function(domEle
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.autoValue);
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.percent(5));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
-	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(50)));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(90));
+	if(screenResolutionSize == ScreenResolutionSize.large) {
+		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+		domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(2)));
+	} else {
+		domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(90));
+	}
 }
-components.lists.ThumbTextList1Style.getCellInfoBlockImageStyle = function(domElement) {
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+components.lists.ThumbTextList1Style.getCellInfoBlockImageStyle = function(domElement,screenResolutionSize) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.autoValue);
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.autoValue);
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.autoValue);
@@ -3713,17 +3722,24 @@ components.lists.ThumbTextList1Style.getCellInfoBlockImageStyle = function(domEl
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
 	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(20)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(50));
+	if(screenResolutionSize == ScreenResolutionSize.large) domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(20)));
 }
-components.lists.ThumbTextList1Style.getCellThumbnailStyle = function(domElement) {
+components.lists.ThumbTextList1Style.getCellThumbnailStyle = function(domElement,screenResolutionSize) {
+	var imageMaxWidth = 200;
 	components.lists.ThumbTextList1Style.getCellStyle(domElement);
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.percent(1));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
-	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(200)));
-	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(30));
+	if(screenResolutionSize == ScreenResolutionSize.large) {
+		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+		domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.autoValue);
+	} else {
+		domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+		domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
+		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(30));
+	}
 }
 components.lists.ThumbTextList1Style.getCellLineStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
@@ -4732,6 +4748,7 @@ components.lists.ListBase.prototype = $extend(cocktailCore.domElement.js.Contain
 	,createCellDOM: function(cellData,listStyle) {
 		var cell = new cocktailCore.domElement.js.ContainerDOMElement(cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("li")));
 		var cellLink = new cocktailCore.domElement.js.LinkDOMElement();
+		cellLink.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
 		if(cellData.action == "openUrl" || cellData.action == "goToUrl") {
 			cellLink.setHref(cellData.actionTarget);
 			cellLink.setTarget(cocktail.domElement.LinkTargetValue.blank);
@@ -5390,8 +5407,14 @@ components.lists.AppListStyle.getCellStyle = function(domElement) {
 components.lists.AppListStyle.getCellSelectedStyle = function(domElement) {
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.autoValue);
-	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(62)));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
 	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(2)));
@@ -6998,12 +7021,12 @@ WebAppStyle.getBodyStyle = function(domElement) {
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 }
 WebAppStyle.getMainContainerStyle = function(domElement) {
+	var offSet = 50;
 	WebAppStyle.getDefaultStyle(domElement);
-	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(offSet)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(offSet)));
+	domElement.getStyle().setLeft(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(offSet)));
+	domElement.getStyle().setRight(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(offSet)));
 }
 WebAppStyle.getPageContainerStyle = function(domElement) {
 	WebAppStyle.getDefaultStyle(domElement);
@@ -7875,7 +7898,6 @@ ApplicationStructure.prototype = {
 		this.navigation.onChangeListCallback(cell);
 	}
 	,onKeyDownPages: function(key) {
-		haxe.Log.trace("onKeyDownPages: " + key.keyCode,{ fileName : "ApplicationStructure.hx", lineNumber : 459, className : "ApplicationStructure", methodName : "onKeyDownPages"});
 		this._footer.getChildren()[1].child.onListKeyDown(key);
 	}
 	,__class__: ApplicationStructure
@@ -8113,12 +8135,8 @@ WebApp.prototype = {
 	,drawInterface: function() {
 		var applicationStructure = new ApplicationStructure();
 		this._mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(this._mainContainer);
+		WebAppStyle.getMainContainerStyle(this._mainContainer);
 		this._body.addChild(this._mainContainer);
-	}
-	,onKeyDownBody: function(key) {
-		haxe.Log.trace("onKeyDownBody: " + key.value,{ fileName : "WebApp.hx", lineNumber : 87, className : "WebApp", methodName : "onKeyDownBody"});
-		if(key.value == cocktail.keyboard.KeyboardKeyValue.right || key.value == cocktail.keyboard.KeyboardKeyValue.VK_RIGHT || key.value == cocktail.keyboard.KeyboardKeyValue.left || key.value == cocktail.keyboard.KeyboardKeyValue.VK_LEFT) this._mainContainer.getChildren()[0].child.children[1].onListKeyDown(key);
 	}
 	,__class__: WebApp
 }
@@ -8506,13 +8524,13 @@ components.lists.ThumbTextList1.prototype = $extend(components.lists.ListBase.pr
 		listStyle.cellNumber(cellNumberContainer,this.screenResolutionSize);
 		cellInfoBlockContainer.addChild(cellNumberContainer);
 		var celldotsLine = new cocktailCore.domElement.js.ImageDOMElement();
-		listStyle.cellInfoBlockLine(celldotsLine);
+		listStyle.cellInfoBlockLine(celldotsLine,this.screenResolutionSize);
 		cellInfoBlockContainer.addChild(celldotsLine);
 		celldotsLine.load("images/dotsLine.png");
-		var celldotsLine1 = new cocktailCore.domElement.js.ImageDOMElement();
-		listStyle.cellInfoBlockImage(celldotsLine1,this.screenResolutionSize);
-		cellInfoBlockContainer.addChild(celldotsLine1);
-		celldotsLine1.load("images/bubble.png");
+		var cellCommentImage = new cocktailCore.domElement.js.ImageDOMElement();
+		listStyle.cellInfoBlockImage(cellCommentImage,this.screenResolutionSize);
+		cellInfoBlockContainer.addChild(cellCommentImage);
+		cellCommentImage.load("images/bubble.png");
 		if(cellData.commentCount != "" && cellData.commentCount != null) {
 			var cellCommentCountContainer = Utils.getContainer();
 			var textElement1 = new cocktailCore.textElement.js.TextElement(cellData.commentCount);
@@ -8522,7 +8540,7 @@ components.lists.ThumbTextList1.prototype = $extend(components.lists.ListBase.pr
 		}
 		if(cellData.thumbnail != "" && cellData.thumbnail != null) {
 			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-			listStyle.cellThumbnail(cellImage);
+			listStyle.cellThumbnail(cellImage,this.screenResolutionSize);
 			cellContent.push(cellImage);
 			cellImage.load(cellData.thumbnail);
 		}

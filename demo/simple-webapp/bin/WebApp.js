@@ -2457,7 +2457,7 @@ components.lists.RichListStyle.getCellStyle = function(domElement) {
 	components.lists.RichListStyle.getCellLine(domElement);
 }
 components.lists.RichListStyle.getCellImageStyle = function(domElement) {
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
@@ -2468,8 +2468,10 @@ components.lists.RichListStyle.getCellImageStyle = function(domElement) {
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
 	domElement.getStyle().setFloatValue(cocktail.style.FloatStyleValue.right);
+	domElement.getStyle().setRight(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
 }
 components.lists.RichListStyle.getCellTextStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
@@ -2506,6 +2508,7 @@ components.lists.RichListStyle.getCellLineStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(1)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
 }
 components.lists.RichListStyle.prototype = {
 	__class__: components.lists.RichListStyle
@@ -4107,7 +4110,7 @@ js.Boot.__string_rec = function(o,s) {
 		if(hasp && !o.hasOwnProperty(k)) {
 			continue;
 		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") {
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
 			continue;
 		}
 		if(str.length != 2) str += ", \n";
@@ -4198,7 +4201,7 @@ js.Boot.__init = function() {
 	if(String.prototype.cca == null) String.prototype.cca = String.prototype.charCodeAt;
 	String.prototype.charCodeAt = function(i) {
 		var x = this.cca(i);
-		if(x != x) return null;
+		if(x != x) return undefined;
 		return x;
 	};
 	var oldsub = String.prototype.substr;
@@ -4882,6 +4885,7 @@ components.lists.ListBase = $hxClasses["components.lists.ListBase"] = function(l
 	cocktailCore.domElement.js.ContainerDOMElement.call(this,cocktail.nativeElement.NativeElementManager.createNativeElement(cocktail.nativeElement.NativeElementTypeValue.custom("ul")));
 	this.createListDOM(list,listStyle);
 	listStyle.list(this);
+	this.selectCell(this._selectedCellDOM);
 }
 components.lists.ListBase.__name__ = ["components","lists","ListBase"];
 components.lists.ListBase.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
@@ -4926,11 +4930,32 @@ components.lists.ListBase.prototype = $extend(cocktailCore.domElement.js.Contain
 			cellLink.addChild(container);
 		}
 		cell.addChild(cellLink);
+		var onCellMouseOverDelegate = this.onCellMouseOver.$bind(this);
+		cell.setOnMouseOver(function(mouseEventData) {
+			onCellMouseOverDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseOutDelegate = this.onCellMouseOut.$bind(this);
+		cell.setOnMouseOut(function(mouseEventData) {
+			onCellMouseOutDelegate(mouseEventData,cell,listStyle);
+		});
+		var onCellMouseDownDelegate = this.onCellMouseDown.$bind(this);
+		cell.setOnMouseDown(function(mouseEventData) {
+			onCellMouseDownDelegate(mouseEventData,cell,listStyle);
+		});
 		return cell;
 	}
 	,getCellData: function(cellData,listStyle) {
 		var cellContent = new Array();
 		return cellContent;
+	}
+	,onCellMouseOver: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseOver(cell);
+	}
+	,onCellMouseOut: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseOut(cell);
+	}
+	,onCellMouseDown: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseDown(cell);
 	}
 	,onCellSelected: function(cell,cellData) {
 		if(this.onChange != null) this.onChange(cellData);
@@ -4942,10 +4967,16 @@ components.lists.ListBase.prototype = $extend(cocktailCore.domElement.js.Contain
 	,onListKeyDown: function(key) {
 	}
 	,selectNextCell: function() {
-		if(this._currentCellIndex < this._children.length - 1) this._currentCellIndex++;
+		if(this._currentCellIndex < this._children.length - 1) {
+			this._currentCellIndex++;
+			this.selectCell(this._children[this._currentCellIndex].child);
+		}
 	}
 	,selectPreviousCell: function() {
-		if(this._currentCellIndex > 0) this._currentCellIndex--;
+		if(this._currentCellIndex > 0) {
+			this._currentCellIndex--;
+			this.selectCell(this._children[this._currentCellIndex].child);
+		}
 	}
 	,__class__: components.lists.ListBase
 });
@@ -4957,7 +4988,6 @@ components.lists.AppList.__super__ = components.lists.ListBase;
 components.lists.AppList.prototype = $extend(components.lists.ListBase.prototype,{
 	createListDOM: function(list,listStyle) {
 		components.lists.ListBase.prototype.createListDOM.call(this,list,listStyle);
-		this.setOnKeyDown(this.onListKeyDown.$bind(this));
 	}
 	,getCellData: function(cellData,listStyle) {
 		var cellContent = new Array();
@@ -4978,18 +5008,34 @@ components.lists.AppList.prototype = $extend(components.lists.ListBase.prototype
 	}
 	,selectCell: function(cell) {
 		components.lists.ListBase.prototype.selectCell.call(this,cell);
+		components.lists.AppListStyle.getCellMouseDownStyle(cell._children[0].child._children[1].child);
 	}
 	,onListKeyDown: function(key) {
-		if(key.value == cocktail.keyboard.KeyboardKeyValue.right) components.lists.ListBase.prototype.selectNextCell.call(this); else if(key.value == cocktail.keyboard.KeyboardKeyValue.left) components.lists.ListBase.prototype.selectPreviousCell.call(this); else if(key.value == cocktail.keyboard.KeyboardKeyValue.enter) {
-			this.selectCell(this._children[this._currentCellIndex].child);
+		if(key.keyCode == "39") {
+			components.lists.AppListStyle.getCellMouseOutStyle(this._selectedCellDOM._children[0].child._children[1].child);
+			this.selectNextCell();
+		} else if(key.keyCode == "37") {
+			components.lists.AppListStyle.getCellMouseOutStyle(this._selectedCellDOM._children[0].child._children[1].child);
+			this.selectPreviousCell();
+		} else if(key.keyCode == "13") {
+			components.lists.AppListStyle.getCellMouseOutStyle(this._selectedCellDOM._children[0].child._children[1].child);
 			this.onCellSelected(this._selectedCellDOM,this._listData[this._currentCellIndex]);
 		}
+	}
+	,onCellMouseOver: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseOver(cell._children[0].child._children[1].child);
+	}
+	,onCellMouseOut: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseOut(cell._children[0].child._children[1].child);
+	}
+	,onCellMouseDown: function(mouseEventData,cell,listStyle) {
+		listStyle.cellMouseDown(cell._children[0].child._children[1].child);
 	}
 	,__class__: components.lists.AppList
 });
 var cocktail = cocktail || {}
 if(!cocktail.keyboard) cocktail.keyboard = {}
-cocktail.keyboard.KeyboardKeyValue = $hxClasses["cocktail.keyboard.KeyboardKeyValue"] = { __ename__ : ["cocktail","keyboard","KeyboardKeyValue"], __constructs__ : ["unknown","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","backSpace","capsLock","control","del","down","end","escape","enter","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","home","insert","left","numpad0","numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9","numpadAdd","numpadSpecial","numpadDecimal","numpadDivide","numpadEnter","numpadMultiply","numpadSubstract","pageDown","pageUp","right","shift","space","tab","up"] }
+cocktail.keyboard.KeyboardKeyValue = $hxClasses["cocktail.keyboard.KeyboardKeyValue"] = { __ename__ : ["cocktail","keyboard","KeyboardKeyValue"], __constructs__ : ["unknown","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","backSpace","capsLock","control","del","down","end","escape","enter","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","home","insert","left","numpad0","numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9","numpadAdd","numpadSpecial","numpadDecimal","numpadDivide","numpadEnter","numpadMultiply","numpadSubstract","pageDown","pageUp","right","shift","space","tab","up","VK_UP","VK_DOWN","VK_LEFT","VK_RIGHT","VK_ENTER"] }
 cocktail.keyboard.KeyboardKeyValue.unknown = ["unknown",0];
 cocktail.keyboard.KeyboardKeyValue.unknown.toString = $estr;
 cocktail.keyboard.KeyboardKeyValue.unknown.__enum__ = cocktail.keyboard.KeyboardKeyValue;
@@ -5221,6 +5267,21 @@ cocktail.keyboard.KeyboardKeyValue.tab.__enum__ = cocktail.keyboard.KeyboardKeyV
 cocktail.keyboard.KeyboardKeyValue.up = ["up",76];
 cocktail.keyboard.KeyboardKeyValue.up.toString = $estr;
 cocktail.keyboard.KeyboardKeyValue.up.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_UP = ["VK_UP",77];
+cocktail.keyboard.KeyboardKeyValue.VK_UP.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_UP.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN = ["VK_DOWN",78];
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_DOWN.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT = ["VK_LEFT",79];
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_LEFT.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT = ["VK_RIGHT",80];
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_RIGHT.__enum__ = cocktail.keyboard.KeyboardKeyValue;
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER = ["VK_ENTER",81];
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER.toString = $estr;
+cocktail.keyboard.KeyboardKeyValue.VK_ENTER.__enum__ = cocktail.keyboard.KeyboardKeyValue;
 var Reflect = $hxClasses["Reflect"] = function() { }
 Reflect.__name__ = ["Reflect"];
 Reflect.hasField = function(o,field) {
@@ -6061,18 +6122,18 @@ components.lists.RichList.prototype = $extend(components.lists.ListBase.prototyp
 	}
 	,getCellData: function(cellData,listStyle) {
 		var cellContent = new Array();
-		if(cellData.imagePath != "" && cellData.imagePath != null) {
-			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-			listStyle.cellImage(cellImage);
-			cellContent.push(cellImage);
-			cellImage.load(cellData.imagePath);
-		}
 		var cellTextContainer = Utils.getContainer();
 		if(cellData.text != "" && cellData.text != null) {
 			var textElement = new cocktailCore.textElement.js.TextElement(cellData.text);
 			cellTextContainer.addText(textElement);
 			listStyle.cellText(cellTextContainer);
 			cellContent.push(cellTextContainer);
+		}
+		if(cellData.imagePath != "" && cellData.imagePath != null) {
+			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			listStyle.cellImage(cellImage);
+			cellContent.push(cellImage);
+			cellImage.load(cellData.imagePath);
 		}
 		var line = new cocktailCore.domElement.js.ImageDOMElement();
 		listStyle.cellLine(line);
@@ -6965,7 +7026,7 @@ WebAppStyle.getBodyStyle = function(domElement) {
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 }
 WebAppStyle.getMainContainerStyle = function(domElement) {
-	var marginOffset = 50;
+	var marginOffset = 0;
 	WebAppStyle.getDefaultStyle(domElement);
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(marginOffset)));
@@ -7694,6 +7755,7 @@ cocktailCore.drawing.js.DrawingManager.prototype = $extend(cocktailCore.drawing.
 var ApplicationStructure = $hxClasses["ApplicationStructure"] = function() {
 	this.pagesContainer = Utils.getContainer();
 	this.createAllPages();
+	js.Lib.document.onkeydown = this.onKeyDownPages.$bind(this);
 }
 ApplicationStructure.__name__ = ["ApplicationStructure"];
 ApplicationStructure.prototype = {
@@ -7823,7 +7885,7 @@ ApplicationStructure.prototype = {
 		return header;
 	}
 	,onImageLoadError: function(error) {
-		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 474, className : "ApplicationStructure", methodName : "onImageLoadError"});
+		haxe.Log.trace(error,{ fileName : "ApplicationStructure.hx", lineNumber : 480, className : "ApplicationStructure", methodName : "onImageLoadError"});
 	}
 	,createRichListHome: function(content) {
 		var listData = components.lists.ListBaseUtils.createListModel();
@@ -7844,6 +7906,9 @@ ApplicationStructure.prototype = {
 	}
 	,onChangeListCallback: function(cell) {
 		this.navigation.onChangeListCallback(cell);
+	}
+	,onKeyDownPages: function(key) {
+		if(key.keyCode == "8" || key.keyCode == "461") this.goToPreviousPage(null); else this._homePage.getChildren()[1].child.onListKeyDown(key);
 	}
 	,__class__: ApplicationStructure
 }

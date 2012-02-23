@@ -27,6 +27,9 @@ import Constants;
 
 class WebAppStyle 
 {
+	// offset, needed for Panasonic TV
+	static inline var _offSet:Int = 40;
+	
 	/**
 	 * Defines default Style
 	 * 
@@ -63,12 +66,23 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 
-		domElement.style.position = PositionStyleValue.staticStyle;
+		//domElement.style.position = PositionStyleValue.staticStyle;
+		
+		// Panasonic TV workaround so that aplication is fully visible
+		//domElement.style.marginBottom = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginLeft = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginRight = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginTop = MarginStyleValue.length(px(_offSet));
+		
+		//domElement.style.top = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.bottom = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.left = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.right = PositionOffsetStyleValue.length(px(_offSet));
 	}
 	
 	/**

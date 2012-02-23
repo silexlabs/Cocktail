@@ -77,20 +77,20 @@ class ThumbTextList1 extends ListBase
 		// add dots line
 		var celldotsLine:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		listStyle.cellInfoBlockLine(celldotsLine);
+		listStyle.cellInfoBlockLine(celldotsLine,screenResolutionSize);
 		// add image
 		cellInfoBlockContainer.addChild(celldotsLine);
 		// load image
 		celldotsLine.load("images/dotsLine.png");
 		
 		// add comment image
-		var celldotsLine:ImageDOMElement = new ImageDOMElement();
+		var cellCommentImage:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		listStyle.cellInfoBlockImage(celldotsLine,screenResolutionSize);
+		listStyle.cellInfoBlockImage(cellCommentImage,screenResolutionSize);
 		// add image
-		cellInfoBlockContainer.addChild(celldotsLine);
+		cellInfoBlockContainer.addChild(cellCommentImage);
 		// load image
-		celldotsLine.load("images/bubble.png");
+		cellCommentImage.load("images/bubble.png");
 		
 		// add comment count
 		if (cellData.commentCount != "" && cellData.commentCount != null)
@@ -110,7 +110,7 @@ class ThumbTextList1 extends ListBase
 		{
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
-			listStyle.cellThumbnail(cellImage);
+			listStyle.cellThumbnail(cellImage,screenResolutionSize);
 			// add image
 			cellContent.push(cellImage);
 			// load image

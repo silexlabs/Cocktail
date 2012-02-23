@@ -95,6 +95,12 @@ class ApplicationStructure
 		//IphoneStyle.getPageContainerStyle(pagesContainer);
 		
 		createAllPages();
+		
+		// keyboard event callback
+		#if js
+		js.Lib.document.onkeydown = onKeyDownPages;
+		#end
+
 	}
 	
 	private function createAllPages()
@@ -557,6 +563,28 @@ class ApplicationStructure
 	public function onChangeListCallback(cell:CellModel)
 	{
 		navigation.onChangeListCallback(cell);
+	}
+	
+	/**
+	 * Called when a key is pressed
+	 */
+	private function onKeyDownPages(key:Dynamic):Void
+	{
+		//trace("onKeyDownPages: " + key.keyCode);
+		
+		// if pressed key is either backspace or back remote key
+		if (key.keyCode == "8" || key.keyCode == "461")
+		{
+			//trace("back key pressed");
+			goToPreviousPage(null);
+		}
+		else
+		{
+			// dispatch menu list item change
+			// TODO: remove hardcoding
+			//_footer.children[1].child.onListKeyDown(key);
+			_homePage.children[1].child.onListKeyDown(key);
+		}
 	}
 	
 }

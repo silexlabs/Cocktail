@@ -125,6 +125,7 @@ class ListBase extends ContainerDOMElement
 		
 		// add link for focus
 		var cellLink:LinkDOMElement = new LinkDOMElement();
+		cellLink.style.textAlign = TextAlignStyleValue.center;
 		
 		// in case the cellcontent is leading to an url, set le linkdomelement href for it to be focusable
 		if(cellData.action == "openUrl" || cellData.action == "goToUrl" )

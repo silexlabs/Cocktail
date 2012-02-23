@@ -320,6 +320,17 @@ class RichList extends ListBase
 			// empty cell part
 			//var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
 
+		// add text
+		var cellTextContainer:ContainerDOMElement = Utils.getContainer();
+		if (cellData.text != "" && cellData.text != null)
+		{
+			var textElement:TextElement = new TextElement(cellData.text);
+			cellTextContainer.addText(textElement);
+			listStyle.cellText(cellTextContainer);
+			//cell.addChild(cellTextContainer);
+			cellContent.push(cellTextContainer);
+		}
+			
 		// image part
 		if (cellData.imagePath != "" && cellData.imagePath != null)
 		{
@@ -333,17 +344,6 @@ class RichList extends ListBase
 			cellImage.load(cellData.imagePath);
 		}
 		
-		// add text
-		var cellTextContainer:ContainerDOMElement = Utils.getContainer();
-		if (cellData.text != "" && cellData.text != null)
-		{
-			var textElement:TextElement = new TextElement(cellData.text);
-			cellTextContainer.addText(textElement);
-			listStyle.cellText(cellTextContainer);
-			//cell.addChild(cellTextContainer);
-			cellContent.push(cellTextContainer);
-		}
-			
 		// LINE
 		
 		// add separation line

@@ -76,7 +76,7 @@ class ListBase extends ContainerDOMElement
 		listStyle.list(this);
 		
 		//selectCell(_selectedCellDOM, listStyle);
-		//selectCell(_selectedCellDOM);
+		selectCell(_selectedCellDOM);
 	}
 	
 	/**
@@ -164,14 +164,14 @@ class ListBase extends ContainerDOMElement
 		// mouse
 		// delegates functions are used to be able to pass an extra parameters to the callback
 		// mouse over
-		/*var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseOver;
+		var onCellMouseOverDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseOver;
 		cell.onMouseOver = function(mouseEventData:MouseEventData) { onCellMouseOverDelegate(mouseEventData, cell, listStyle); };
 		// mouse out
 		var onCellMouseOutDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseOut;
 		cell.onMouseOut = function(mouseEventData:MouseEventData) { onCellMouseOutDelegate(mouseEventData, cell, listStyle); };
 		// mouse down
 		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseDown;
-		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };*/
+		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };
 		 //mouse up
 		//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
 		//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
@@ -199,7 +199,7 @@ class ListBase extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	/*private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	private function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOver(cell);
 	}
@@ -211,7 +211,7 @@ class ListBase extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	/*private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	private function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseOut(cell);
 	}
@@ -223,10 +223,10 @@ class ListBase extends ContainerDOMElement
 	 * @param	cell
 	 * @param	listStyle
 	 */
-	/*private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	private function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
 	{
 		listStyle.cellMouseDown(cell);
-	}*/
+	}
 	
 	/**
 	 * Cell mouse up callback
@@ -241,7 +241,7 @@ class ListBase extends ContainerDOMElement
 	//private function onCellMouseUp(cell:ContainerDOMElement, cellData:CellModel):Void
 	private function onCellSelected(cell:ContainerDOMElement, cellData:CellModel):Void
 	{
-		//trace("onCellMouseUp");
+		//trace("onCellSelected");
 		//listStyle.cellMouseUp(cell);
 		if (onChange != null)
 		{
@@ -269,7 +269,7 @@ class ListBase extends ContainerDOMElement
 	 * @param	key
 	 */
 	//private function onListKeyDown(key:KeyEventData, cell:ContainerDOMElement, cellData:CellModel):Void
-	private function onListKeyDown(key:KeyEventData):Void
+	public function onListKeyDown(key:Dynamic):Void
 	{
 		/*if (key.value == KeyboardKeyValue.right)
 		{
@@ -297,6 +297,8 @@ class ListBase extends ContainerDOMElement
 		if(_currentCellIndex < this._children.length-1)
 		{
 			_currentCellIndex++;
+			selectCell(this._children[_currentCellIndex].child);
+			//onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
 		
 	}
@@ -311,6 +313,8 @@ class ListBase extends ContainerDOMElement
 		if(_currentCellIndex > 0)
 		{
 			_currentCellIndex--;
+			selectCell(this._children[_currentCellIndex].child);
+			//onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
 	}
 	
