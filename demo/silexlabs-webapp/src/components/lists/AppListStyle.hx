@@ -82,6 +82,9 @@ class AppListStyle
 		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
 		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
 		domElement.style.color = ColorValue.hex('#BDBDCE');
+		
+		// workaround for Samsung TVs
+		//domElement.style.textAlign = TextAlignStyleValue.center;
 	}
 	
 	/**
@@ -93,8 +96,21 @@ class AppListStyle
 	{
 		domElement.style.position = PositionStyleValue.absolute;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
+		
+		//domElement.style.marginLeft = MarginStyleValue.autoValue;
+		//domElement.style.marginRight = MarginStyleValue.autoValue;
+		//domElement.style.marginTop = MarginStyleValue.autoValue;
+		//domElement.style.marginBottom = MarginStyleValue.autoValue;
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+
 		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
 		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(2));

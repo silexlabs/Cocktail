@@ -456,10 +456,11 @@ class ApplicationStructure
 	//private function onKeyDownPages(key:KeyEventData):Void
 	private function onKeyDownPages(key:Dynamic):Void
 	{
-		trace("onKeyDownPages: " + key.keyCode);
+		//trace("onKeyDownPages: " + key.keyCode);
 		/*if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT || key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
 		{*/
 			// dispatch menu list item change
+			// TODO: remove hardcoding
 			_footer.children[1].child.onListKeyDown(key);
 		/*}*/
 	}

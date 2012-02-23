@@ -77,6 +77,10 @@ class ThumbTextList1Rss
 						{
 							title = title.substr(0, index);
 						}
+						// Samsung TV display bug workaround
+						// clean white spaces at the end of the title, needed for silex plugins & themes rss feeds, otherwise square characters are displayed
+						title = StringTools.rtrim(title);
+						
 						cellContent.title = title;
 					}
 					

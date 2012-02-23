@@ -72,7 +72,8 @@ class WebApp
 		
 		// initialize container
 		_mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(_mainContainer);
+		//WebAppStyle.getDefaultStyle(_mainContainer);
+		WebAppStyle.getMainContainerStyle(_mainContainer);
 		
 		// attach main container to document root
 		_body.addChild(_mainContainer);
@@ -82,7 +83,7 @@ class WebApp
 		
 	}
 	
-	private function onKeyDownBody(key:KeyEventData):Void
+	/*private function onKeyDownBody(key:KeyEventData):Void
 	{
 		trace("onKeyDownBody: " + key.value);
 		//trace(key.value);
@@ -91,6 +92,6 @@ class WebApp
 			// dispatch menu list item change
 			_mainContainer.children[0].child.children[1].onListKeyDown(key);
 		}
-	}
+	}*/
 
 }

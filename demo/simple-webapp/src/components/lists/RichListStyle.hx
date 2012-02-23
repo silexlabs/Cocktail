@@ -82,6 +82,10 @@ class RichListStyle
 				
 		//domElement.style.color = ColorValue.hex('#666666');
 		
+		// workaround for HbbTV
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		
 		getCellLine(domElement);
 
 	}
@@ -96,7 +100,8 @@ class RichListStyle
 		//getDefaultStyle(domElement);
 		//domElement.style.position = absolute;
 
-		domElement.style.display = DisplayStyleValue.block;
+		//domElement.style.display = DisplayStyleValue.block;
+		domElement.style.display = DisplayStyleValue.inlineStyle;
 		domElement.style.position = PositionStyleValue.relative;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -109,6 +114,8 @@ class RichListStyle
 		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.floatValue = FloatStyleValue.right;
+		domElement.style.right = PositionOffsetStyleValue.length(px(0));
+		
 		//domElement.style.width = DimensionStyleValue.length(px(8));
 		//domElement.style.height = DimensionStyleValue.length(px(13));
 		//domElement.style.height = DimensionStyleValue.length(px(29));
@@ -122,6 +129,8 @@ class RichListStyle
 	public static function getCellTextStyle(domElement:DOMElement):Void
 	{
 		//getDefaultStyle(domElement);
+
+		domElement.style.display = DisplayStyleValue.inlineStyle;
 
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
@@ -148,6 +157,10 @@ class RichListStyle
 		
 		domElement.style.color = ColorValue.hex('#666666');
 		//domElement.style.width = DimensionStyleValue.percent(100);
+		
+		// workaround for HbbTV
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 	}
 
 	/**
@@ -226,6 +239,8 @@ class RichListStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
+		//domElement.style.marginTop = MarginStyleValue.length(px(8));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 	}
 	
 

@@ -72,6 +72,10 @@ class ThumbTextList1Style
 	public static function getCellStyle(domElement:DOMElement):Void
 	{
 		domElement.style.paddingTop = PaddingStyleValue.percent(1);
+		
+		// Samsung TV workaround
+		domElement.style.height = DimensionStyleValue.length(px(200));
+		
 	}
 	
 	/**
@@ -84,6 +88,8 @@ class ThumbTextList1Style
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.width = DimensionStyleValue.percent(10);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		// workaround for Samsung TVs
+		domElement.style.textAlign = TextAlignStyleValue.center;
 	}
 	
 	/**
@@ -132,9 +138,11 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	//public static function getCellInfoBlockImageStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement):Void
+	public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	//public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement):Void
 	{
+		var imageMaxWidth:Int = 50;
+		
 		domElement.style.display = DisplayStyleValue.block;
 		
 		domElement.style.marginLeft = MarginStyleValue.autoValue;
@@ -144,8 +152,25 @@ class ThumbTextList1Style
 		domElement.style.paddingBottom = PaddingStyleValue.percent(5);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
-		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(50));
-		domElement.style.width = DimensionStyleValue.percent(90);
+
+		// Samsung TV bug workaround
+		// Samsung use
+		//domElement.style.height = DimensionStyleValue.length(px(2));
+		//domElement.style.textAlign = TextAlignStyleValue.center;
+		// the resolution size is check to avoid having side effets on smaller devices
+		// TODO: if no side-effects, could be removed
+		if(screenResolutionSize == ScreenResolutionSize.large)
+		{
+			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
+			domElement.style.height = DimensionStyleValue.length(px(2));
+		}
+		else
+		{
+			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
+			domElement.style.width = DimensionStyleValue.percent(90);	
+		}
+		// common use (Samsung TV + all other tagerts), done to emulate verticalAlign = middle, not working on samsung TV
+		//domElement.style.paddingLeft = PaddingStyleValue.percent(5);
 	}
 	
 	/**
@@ -153,10 +178,11 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	//public static function getCellInfoBlockImageStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement):Void
+	public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	//public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
+		//domElement.style.display = DisplayStyleValue.block;
+		domElement.style.display = DisplayStyleValue.inlineBlock;
 		
 		domElement.style.marginLeft = MarginStyleValue.autoValue;
 		domElement.style.marginRight = MarginStyleValue.autoValue;
@@ -167,6 +193,14 @@ class ThumbTextList1Style
 		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
 		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(20));
 		domElement.style.width = DimensionStyleValue.percent(50);
+		
+		// Samsung TV bug workaround
+		// Samsung use
+		if(screenResolutionSize == ScreenResolutionSize.large)
+		{
+			domElement.style.width = DimensionStyleValue.length(px(20));
+		//domElement.style.textAlign = TextAlignStyleValue.center;
+		}
 	}
 	
 	/**
@@ -174,8 +208,10 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellThumbnailStyle(domElement:DOMElement):Void
+	public static function getCellThumbnailStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	{
+		var imageMaxWidth:Int = 200;
+		
 		getCellStyle(domElement);
 		
 		domElement.style.display = DisplayStyleValue.inlineStyle;
@@ -185,9 +221,24 @@ class ThumbTextList1Style
 		domElement.style.paddingBottom = PaddingStyleValue.percent(1);
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(200));
-		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		domElement.style.width = DimensionStyleValue.percent(30);
+		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
+		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+		//domElement.style.width = DimensionStyleValue.percent(30);
+
+		// Samsung TV bug workaround
+		if(screenResolutionSize == ScreenResolutionSize.large)
+		{
+			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
+			domElement.style.height = DimensionStyleValue.autoValue;
+			//domElement.style.height = DimensionStyleValue.length(px(50));
+		}
+		else
+		{
+			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
+			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+			domElement.style.width = DimensionStyleValue.percent(30);	
+		}
+		
 	}
 	
 	/**

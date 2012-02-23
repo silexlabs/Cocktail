@@ -65,7 +65,7 @@ class AppList extends ListBase
 	{
 		super.createListDOM(list, listStyle);
 		
-		this.onKeyDown = onListKeyDown;
+		//this.onKeyDown = onListKeyDown;
 	}
 	
 	/**
@@ -115,8 +115,9 @@ class AppList extends ListBase
 		//super.selectCell(cell, listStyle);
 		super.selectCell(cell);
 		
-		// add image
-		//cell.addChild(_selectedMenuItemImage);
+		// change selected cell font color
+		AppListStyle.getCellMouseDownStyle(cell._children[0].child._children[1].child);
+		//listStyle.cellMouseDown(cell._children[0].child._children[1].child);
 	}
 	
 	/**
@@ -124,8 +125,9 @@ class AppList extends ListBase
 	 * 
 	 * @param	key
 	 */
-	override function onListKeyDown(key:KeyEventData):Void
+	/*override function onListKeyDown(key:KeyEventData):Void
 	{
+		
 		if (key.value == KeyboardKeyValue.right)
 		{
 			//trace("right key pressed");
@@ -142,6 +144,70 @@ class AppList extends ListBase
 			selectCell(this._children[_currentCellIndex].child);
 			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
 		}
+	}*/
+	override function onListKeyDown(key:Dynamic):Void
+	{
+		//trace(key.keyCode);
+		//if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT)
+		if (key.keyCode == "39")
+		{
+			AppListStyle.getCellMouseOutStyle(_selectedCellDOM._children[0].child._children[1].child);
+			selectNextCell();
+		}
+		//else if (key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		else if (key.keyCode == "37")
+		{
+			AppListStyle.getCellMouseOutStyle(_selectedCellDOM._children[0].child._children[1].child);
+			selectPreviousCell();
+		}
+		// if pressed key is enter key
+		else if (key.keyCode == "13")
+		//else if (key.value == KeyboardKeyValue.VK_LEFT)
+		{
+			AppListStyle.getCellMouseOutStyle(_selectedCellDOM._children[0].child._children[1].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
+		}
 	}
+	
+	/**
+	 * Cell mouse roll over callback
+	 * 
+	 * @param	mouseEventData
+	 * @param	cell
+	 * @param	listStyle
+	 */
+	override function onCellMouseOver(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	{
+		//trace(cell.children[0].child);
+		listStyle.cellMouseOver(cell._children[0].child._children[1].child);
+		//listStyle.cellMouseOver(cell.children[0].child.children[1].child);
+		//listStyle.cellMouseOver(cell.children[0].child);
+		//listStyle.cellMouseOver(cell);
+	}
+	
+	/**
+	 * Cell mouse out callback
+	 * 
+	 * @param	mouseEventData
+	 * @param	cell
+	 * @param	listStyle
+	 */
+	override function onCellMouseOut(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	{
+		listStyle.cellMouseOut(cell._children[0].child._children[1].child);
+	}
+	
+	/**
+	 * Cell mouse down callback
+	 * 
+	 * @param	mouseEventData
+	 * @param	cell
+	 * @param	listStyle
+	 */
+	override function onCellMouseDown(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic):Void
+	{
+		listStyle.cellMouseDown(cell._children[0].child._children[1].child);
+	}
+	
 
 }

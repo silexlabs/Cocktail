@@ -68,7 +68,8 @@ class WebAppStyle
 	 */
 	public static function getMainContainerStyle(domElement:DOMElement):Void
 	{
-		var marginOffset:Int = 50;
+		//var marginOffset:Int = 50;
+		var marginOffset:Int = 0;
 		
 		getDefaultStyle(domElement);
 		
