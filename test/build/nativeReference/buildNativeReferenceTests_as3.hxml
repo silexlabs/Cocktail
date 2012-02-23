@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main nativeReference.NativeReferenceTests
--lib utest
--swf9 ../../bin/nativeReference/nativeReferenceAs3.swf

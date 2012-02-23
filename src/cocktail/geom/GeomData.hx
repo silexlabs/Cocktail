@@ -1,12 +1,9 @@
-/*This file is part of Silex - see http://projects.silexlabs.org/?/silex
-
-Silex is © 2010-2011 Silex Labs and is released under the GPL License:
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-To read the license please visit http://www.gnu.org/copyleft/gpl.html
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.geom;
 
@@ -25,7 +22,7 @@ package cocktail.geom;
 	/**
 	 * represent a rectangle
 	 */
-	typedef Rectangle = {
+	typedef RectangleData = {
 		var x:Float;
 		var y:Float;
 		var width:Float;
@@ -35,9 +32,18 @@ package cocktail.geom;
 	/**
 	 * Represents a point in 2d space
 	 */
-	typedef Point = {
+	typedef PointData = {
 		var x:Float;
 		var y:Float;
+	}
+	
+	/**
+	 * Represents a width and
+	 * height dimension
+	 */
+	typedef DimensionData = {
+		var width:Int;
+		var height:Int;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +55,7 @@ package cocktail.geom;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Represents the value of a 3x3 Matrix
+	 * Represents the values of a 3x3 Matrix
 	 */
 	typedef MatrixData = {
 		var a:Float;
@@ -58,39 +64,5 @@ package cocktail.geom;
 		var d:Float;
 		var e:Float;
 		var f:Float;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Enums
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The different value used to determine a transformation origin.
-	 * It can be specified by a constant, representing a point (top-left, center...) 
-	 * or directly by a point (in px).
-	 */
-	enum TransformationOriginValue {
-		constant(transformationOriginX:TransformationOriginXValue, transformationOriginY:TransformationOriginYValue);
-		point(point:Point);
-	}
-	
-	/**
-	 * The different values for the transformation origin
-	 * along the x axis
-	 */
-	enum TransformationOriginXValue {
-		left;
-		center;
-		right;
-	}
-	
-	/**
-	 * The different values for the transformation origin
-	 * along the y axis
-	 */
-	enum TransformationOriginYValue {
-		top;
-		middle;
-		bottom;
 	}
 

@@ -1,0 +1,6 @@
+-cp ../../../src/
+-cp ../../src/
+-main focus.FocusTests
+-lib utest
+-swf9 ../../bin/focus/focusTestAs3.swf
+-swf-version 10.1
