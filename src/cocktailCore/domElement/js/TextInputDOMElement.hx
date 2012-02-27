@@ -88,7 +88,7 @@ class TextInputDOMElement extends AbstractTextInputDOMElement
 	
 	override private function getValue():String
 	{
-		//update the stoed value of the text input when requested
+		//update the stored value of the text input when requested
 		//as it might have changed meanwhile because of user interaction
 		_value = untyped _nativeElement.value;
 		return _value;

@@ -10,6 +10,46 @@ package cocktail.domElement;
 import cocktail.unit.UnitData;
 
 //////////////////////////////////////////////////////////////////////////////////////////
+// DOMElement Structures
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * When a DOMElement's content is scrolled,
+ * the scroll event contains the corresponding
+ * scroll metrics
+ * 
+ * TODO : move into its own module ?
+ */
+typedef ScrollEventData = {
+	
+	/**
+	 * the distance from the top
+	 * of the DOMElement to the top
+	 * of its displayed content
+	 */
+	var scrollTop:Int;
+	
+	/**
+	 * the distance from the left
+	 * of the DOMElement and the left
+	 * of its displayed content
+	 */
+	var scrollLeft:Int;
+	
+	/**
+	 * the width of the currently displayed
+	 * area of the DOMElement
+	 */
+	var scrollWidth:Int;
+	
+	/**
+	 * the height of the currently displayed
+	 * area of the DOMElement
+	 */
+	var scrollHeight:Int;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 // Link DOMElement enums
 //////////////////////////////////////////////////////////////////////////////////////////
 
