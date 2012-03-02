@@ -121,8 +121,8 @@ class ResourceLoader extends AbstractResourceLoader
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		this._intrinsicHeight = Math.round(loader.height);
-		this._intrinsicWidth = Math.round(loader.width);
+		this._intrinsicHeight = Math.round(loader.content.height);
+		this._intrinsicWidth = Math.round(loader.content.width);
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
