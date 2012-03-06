@@ -15,17 +15,30 @@ class FlowBoxRenderer extends BoxRenderer
 	private var _children:Array<ElementRenderer>;
 	public var children(getChildren, never):Array<ElementRenderer>;
 	
-	private var lineBoxeRenderers:Array<LineBoxRenderer>;
+	private var _lineBoxes:Array<Array<ElementRenderer>>;
+	public var lineBoxes(getLineBoxes, never):Array<Array<ElementRenderer>>;
 	
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
 		_children = new Array<ElementRenderer>();
+		_lineBoxes = new Array<Array<ElementRenderer>>();
 	}
 	
 	public function addChild(elementRenderer:ElementRenderer):Void
 	{
 		_children.push(elementRenderer);
+		elementRenderer.parent = this;
+	}
+	
+	public function addLineBox(lineBoxElements:Array<ElementRenderer>):Void
+	{
+		_lineBoxes.push(lineBoxElements);
+	}
+	
+	public function removeLineBoxes():Void
+	{
+		_lineBoxes = new Array<Array<ElementRenderer>>();
 	}
 	
 	public function removeChild(elementRenderer:ElementRenderer):Void
@@ -41,6 +54,11 @@ class FlowBoxRenderer extends BoxRenderer
 	private function getChildren():Array<ElementRenderer>
 	{
 		return _children;
+	}
+	
+	private function getLineBoxes():Array<Array<ElementRenderer>>
+	{
+		return _lineBoxes;
 	}
 	
 	

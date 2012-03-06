@@ -15,4 +15,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	{
 		super(domElement);
 	}
+	
+	override public function render():Array<NativeElement>
+	{
+		return renderBackground();
+	}
 }

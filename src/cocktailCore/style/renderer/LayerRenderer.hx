@@ -149,19 +149,29 @@ class LayerRenderer
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		for (i in 0...rootRenderer.children.length)
 		{
-		
 			if (rootRenderer.children[i].layerRenderer == this)
 			{
-				if (rootRenderer.children[i].canHaveChildren() == true)
+				if (rootRenderer.domElement.style.establishesNewFormattingContext() == true && rootRenderer.domElement.style.childrenInline() == true)
 				{
-					var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
-					for (j in 0...childElementRenderer.length)
+					for (j in 0...rootRenderer.lineBoxes.length)
 					{
-						ret.push(childElementRenderer[j]);
+						for (k in 0...rootRenderer.lineBoxes[j].length)
+						{
+							ret.push(rootRenderer.lineBoxes[j][k]);
+						}
 					}
 				}
-				if (rootRenderer.children[i].domElement.style.isInFlow() == true)
+				else if (rootRenderer.children[i].domElement.style.isInFlow() == true)
 				{
+					if (rootRenderer.children[i].canHaveChildren() == true)
+					{
+						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
+						for (j in 0...childElementRenderer.length)
+						{
+							ret.push(childElementRenderer[j]);
+						}
+					}
+					
 					ret.push(rootRenderer.children[i]);
 				}
 			}

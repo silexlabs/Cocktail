@@ -13,6 +13,7 @@ import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
 
@@ -57,7 +58,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Make all the DOMElement retrieve their native HTMLElement positions
 	 * and dimensions
 	 */
-	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<ElementRenderer>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		

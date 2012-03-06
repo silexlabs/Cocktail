@@ -649,7 +649,7 @@ class AbstractStyle
 	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<ElementRenderer>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
@@ -719,51 +719,33 @@ class AbstractStyle
 	 * @param viewportData
 	 * @param staticPosition the x,y position that the DOMElement would have had if it were 'in-flow'
 	 */
-	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):BoxElementData
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
-		
-		//will return the position of the DOMElement when once it is computed
-		var boxElementData:BoxElementData;
 		
 		switch (this._domElement.style.computedStyle.position)
 		{
 			//positioned 'relative' DOMElement
 			case relative:
 				positioner = new RelativePositioner();
-				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 			
 			//positioned 'fixed' DOMElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
-				boxElementData = positioner.position(this._domElement, viewportData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
 				
 			//positioned 'absolute' DOMElement	
 			case absolute:
 				positioner = new AbsolutePositioner();
-				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 				
-			default:	
-				positioner = new AbsolutePositioner();
-				boxElementData = null;
+			default:
 		}
 		
-		
-		var x:Float = boxElementData.x;
-		var y:Float = boxElementData.y;
-		var width:Float = _computedStyle.width;
-		var height:Float = _computedStyle.height;
-		
-		_elementRenderer.bounds = {
-			x:x,
-			y:y,
-			width:width,
-			height:height
-		}
-		
-		return boxElementData;
+		return _elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -787,7 +769,7 @@ class AbstractStyle
 	/**
 	 * Flow all the children of a DOMElement if it has any
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<ElementRenderer>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		
 	}
@@ -802,15 +784,11 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		//insert in formatting context as a float
-		if (isFloat() == true)
-		{
-			formattingContext.insertElement(BoxElementValue.floatDOMElement(this._domElement, this._domElement.parent));
-		}
+		
 		//insert in the flow
-		else if (isPositioned() == false)
+		if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext);
+			formattingContext.insertElement(_elementRenderer);
 		}
 		//else the DOMElement is positioned
 		else
@@ -843,7 +821,7 @@ class AbstractStyle
 			//tree of boxData instead of a flat array
 			if (isRelativePositioned() == true)
 			{
-				insertInFlowDOMElement(formattingContext);
+				formattingContext.insertElement(_elementRenderer);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -865,15 +843,6 @@ class AbstractStyle
 			//store the DOMElement to be positioned later
 			lastPositionedDOMElementData.children.push(positionedDOMElementData);
 		}
-	}
-	
-	/**
-	 * Do insert an inflow DOMElement into the document. Method added to allow
-	 * overriding for some inherithing class
-	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
-	{
-		formattingContext.insertElement(BoxElementValue.embeddedDOMElement(this._domElement, this._domElement.parent));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1384,7 +1353,7 @@ class AbstractStyle
 	}
 	
 
-	private function establishesNewFormattingContext():Bool
+	public function establishesNewFormattingContext():Bool
 	{
 		return false;
 	}
