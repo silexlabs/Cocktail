@@ -62,6 +62,14 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 		super.setNativeY(domElement, nativeY);
 	}
 	
+	override public function setNativeOpacity(opacity:Float):Void
+	{
+		super.setNativeOpacity(opacity);
+		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
+		
+		embeddedDOMElement.embeddedAsset.alpha = opacity;
+	}
+	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	////////////////////////////////

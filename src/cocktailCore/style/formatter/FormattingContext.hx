@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
 /**
@@ -234,7 +235,7 @@ class FormattingContext
 			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 				insertContainingBlockDOMElement(element);
 				
-			case BoxElementValue.text(domElement, parentDOMElement):
+			case BoxElementValue.text(domElement, textRenderer,  parentDOMElement):
 				insertText(element);
 				
 			case BoxElementValue.offset(value, parentDOMElement):
@@ -283,8 +284,7 @@ class FormattingContext
 			var boxData:BoxData = {
 				parentDOMElement:parentDOMElement,
 				children:new Array<BoxElementData>(),
-				bounds: { x:0.0, y:0.0, width:0.0, height:0.0 },
-				textDecorations:new Array<TextDecorationData>()
+				bounds: { x:0.0, y:0.0, width:0.0, height:0.0 }
 			}
 			
 			targetBoxesData.push(boxData);
@@ -332,7 +332,7 @@ class FormattingContext
 					{
 						case BoxElementValue.offset(offsetWidth, parentDOMElement):
 							
-						case BoxElementValue.text(domElement, parentDOMElement):
+						case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 							top = boxData.children[i].y - domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
 							
 						default:
@@ -350,7 +350,7 @@ class FormattingContext
 					{
 						case BoxElementValue.offset(offsetWidth, parentDOMElement):
 					
-						case BoxElementValue.text(domElement, parentDOMElement):
+						case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 							bottom = boxData.children[i].y + boxData.children[i].height -  domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
 							
 						default:	
@@ -499,7 +499,7 @@ class FormattingContext
 				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
 					
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
 					
 				case BoxElementValue.offset(value, parentDOMElement):
@@ -539,7 +539,7 @@ class FormattingContext
 				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementHeight = domElement.offsetHeight;
 					
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 					elementHeight = domElement.offsetHeight;
 					
 				case BoxElementValue.offset(value, parentDOMElement):
@@ -579,7 +579,7 @@ class FormattingContext
 				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
 					elementParent = parentDOMElement;	
 					
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 					elementParent = parentDOMElement;
 					
 				case BoxElementValue.offset(value, parentDOMElement):
@@ -599,6 +599,43 @@ class FormattingContext
 			}
 			
 		return 	elementParent;
+	}
+	
+	private function getElementRenderer(element:BoxElementValue):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer;
+		
+		switch (element)
+			{
+				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
+					elementRenderer = domElement.style.elementRenderer;
+					
+				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
+					elementRenderer = domElement.style.elementRenderer;
+					
+				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
+					elementRenderer = domElement.style.elementRenderer;	
+					
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
+					elementRenderer = domElement.style.elementRenderer;
+					
+				case BoxElementValue.offset(value, parentDOMElement):
+					elementRenderer = null;
+					
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+					elementRenderer = null;
+					
+				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
+					elementRenderer = null;
+					
+				case BoxElementValue.floatDOMElement(domElement, parentDOMElement):
+					elementRenderer = domElement.style.elementRenderer;
+					
+				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
+					elementRenderer = null;
+			}
+			
+		return 	elementRenderer;
 	}
 	
 	/**

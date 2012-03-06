@@ -19,6 +19,9 @@ import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.EmbeddedBoxRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)
@@ -55,10 +58,10 @@ class AbstractEmbeddedStyle extends Style
 	 * border..., then it renders its embedded asset such as its picture
 	 * for an ImageDOMElement
 	 */
-	override public function render():Void
+	override public function render(nativeElement:NativeElement):Void
 	{
-		super.render();
-		
+		super.render(nativeElement);
+		return;
 		//the bounds for the background of an embedded DOMElement are its
 		//own dimensions
 		var height:Float = this._domElement.offsetHeight;
@@ -68,8 +71,7 @@ class AbstractEmbeddedStyle extends Style
 		var x:Float = -_computedStyle.marginLeft - _computedStyle.paddingLeft;
 		var y:Float = -_computedStyle.marginTop  - _computedStyle.paddingTop;
 		
-		var nativeElements:Array<NativeElement> = _backgroundManager.render( { x:x, y:y, width:width,
-		height:height }, cast(this));
+		var nativeElements:Array<NativeElement> = [];
 		
 		//add the embedded asset to the rendering tree
 		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
@@ -78,6 +80,18 @@ class AbstractEmbeddedStyle extends Style
 		_nativeElements = nativeElements;
 		
 		attachNativeElements(nativeElements);
+	}
+	
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
+		
+		if (isInlineLevel() == false)
+		{
+				parentElementRenderer.addChild(elementRenderer);
+		}
+		return elementRenderer;
 	}
 
 	
