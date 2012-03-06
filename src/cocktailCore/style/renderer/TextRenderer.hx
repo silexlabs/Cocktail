@@ -1,6 +1,7 @@
 package cocktailCore.style.renderer;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.textElement.TextElementData;
 import haxe.Log;
 
 /**
@@ -11,9 +12,19 @@ import haxe.Log;
 class TextRenderer extends ElementRenderer
 {
 
-	public function new(domElement:DOMElement) 
+	private var _textToken:TextTokenValue;
+	
+	public function new(domElement:DOMElement, textToken:TextTokenValue) 
 	{
+		_textToken = textToken;
+		
+	
+		
 		super(domElement);
+		
+		_bounds.width = domElement.offsetWidth;
+		_bounds.height = domElement.offsetHeight;
+
 	}
 	
 	override public function render():Array<NativeElement>
@@ -27,6 +38,28 @@ class TextRenderer extends ElementRenderer
 		ret.push(_domElement.nativeElement);
 		
 		return ret;
+	}
+	
+	override public function isText():Bool
+	{
+		return true;
+	}
+	
+	override public function isSpace():Bool
+	{
+		var isSpace:Bool;
+		
+		switch (_textToken)
+		{
+			case TextTokenValue.space:
+				isSpace = true;
+				
+			default:
+				isSpace = false;
+				
+		}
+		
+		return isSpace;
 	}
 	
 }

@@ -28,12 +28,34 @@ class ElementRenderer
 	public function new(domElement:DOMElement) 
 	{
 		_domElement = domElement;
+				_bounds = {
+			x:0.0,
+			y:0.0,
+			width:0.0,
+			height:0.0
+		}
 	}
 	
 	public function canHaveChildren():Bool
 	{
 		return false;
 	}
+	
+	public function isText():Bool
+	{
+		return false;
+	}
+	
+	public function isSpace():Bool
+	{
+		return false;
+	}
+	
+	public function isLineFeed():Bool
+	{
+		return false;
+	}
+	
 	
 	public function render():Array<NativeElement>
 	{

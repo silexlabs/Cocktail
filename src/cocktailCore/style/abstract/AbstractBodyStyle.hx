@@ -74,12 +74,7 @@ class AbstractBodyStyle extends ContainerStyle
 		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
 		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
 		//TODO : not the right bounds
-		elementRenderer.bounds = {
-			x:0.0,
-			y:0.0,
-			width:0.0,
-			height:0.0
-		}
+
 		return elementRenderer;
 	}
 	
@@ -98,7 +93,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * always located at the origin of the viewport, it is automatically
 	 * inserted
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	override private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
 		
 	}
@@ -108,7 +103,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * DOM tree must always position its absolutely positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<BoxElementData>
+	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
 	{
 		isFirstPositionedAncestor = true;
 		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
@@ -177,7 +172,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * a bodyDOMElement always establishes a block formatting context
 	 * for its children
 	 */
-	override private function establishesNewFormattingContext():Bool
+	override public function establishesNewFormattingContext():Bool
 	{
 		return true;
 	}

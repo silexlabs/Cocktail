@@ -87,10 +87,8 @@ class AbstractEmbeddedStyle extends Style
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		if (isInlineLevel() == false)
-		{
-				parentElementRenderer.addChild(elementRenderer);
-		}
+		parentElementRenderer.addChild(elementRenderer);
+		
 		return elementRenderer;
 	}
 

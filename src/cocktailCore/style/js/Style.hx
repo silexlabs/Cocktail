@@ -81,7 +81,7 @@ class Style extends AbstractStyle
 	/**
 	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
 	 */
-	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<ElementRenderer>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{	
 		//make the children store their own position and dimension
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, containingDOMElementFontMetricsData, formattingContext);
