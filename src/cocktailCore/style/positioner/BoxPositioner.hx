@@ -110,7 +110,7 @@ class BoxPositioner
 		{
 			boxElementData.y = Math.round(staticPosition.y);
 		}
-
+		
 		return boxElementData;
 	}
 	

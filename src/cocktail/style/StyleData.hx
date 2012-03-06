@@ -12,6 +12,7 @@ import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.renderer.TextRenderer;
 	
 	
 		// FONT STYLES
@@ -1448,13 +1449,6 @@ import cocktailCore.style.formatter.FormattingContext;
 		var parentDOMElement:DOMElement;
 		var bounds:RectangleData;
 		var children:Array<BoxElementData>;
-		var textDecorations:Array<TextDecorationData>;
-	}
-	
-	typedef TextDecorationData = {
-		var color:Int;
-		var start:PointData;
-		var end:PointData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1481,7 +1475,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
 		floatDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		text(domElement:DOMElement, parentDOMElement:DOMElement);
+		text(domElement:DOMElement, textRenderer:TextRenderer, parentDOMElement:DOMElement);
 		offset(value:Int, parentDOMElement:DOMElement );
 		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
 		lineFeed(whiteSpace:WhiteSpaceStyleValue, parentDOMElement:DOMElement);

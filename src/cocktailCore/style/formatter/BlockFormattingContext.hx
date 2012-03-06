@@ -73,10 +73,8 @@ class BlockFormattingContext extends FormattingContext
 			}
 			else
 			{
-				_currentAddedSiblingsHeight = 0;
-				
+				_currentAddedSiblingsHeight = 0;	
 			}
-		
 					
 			_lastInsertedElement = _elementsInFormattingContext[i];
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
@@ -121,6 +119,19 @@ class BlockFormattingContext extends FormattingContext
 				height:getElementHeight(element)
 			}
 			
+			var x:Float = _formattingContextData.x;
+			var y:Float = _formattingContextData.y;
+			var width:Float = getElementWidth(element);
+
+			var height:Float = getElementHeight(element);
+			getElementRenderer(element).bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
+			}
+			
+			
 		if (getElementWidth(element) > _formattingContextData.maxWidth)
 			{
 				_formattingContextData.maxWidth = getElementWidth(element);
@@ -147,6 +158,17 @@ class BlockFormattingContext extends FormattingContext
 				height:getElementHeight(element)
 			}
 			
+			var x:Float = _formattingContextData.x;
+			var y:Float = _formattingContextData.y;
+			var width:Float = getElementWidth(element);
+			var height:Float = getElementHeight(element);
+			getElementRenderer(element).bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
+			}
+			
 if (getElementWidth(element) > _formattingContextData.maxWidth)
 			{
 				_formattingContextData.maxWidth = getElementWidth(element);
@@ -170,6 +192,18 @@ if (getElementWidth(element) > _formattingContextData.maxWidth)
 				width:getElementWidth(element),
 				height:getElementHeight(element)
 			}
+			
+			var x:Float = 0.0;
+			var y:Float = _formattingContextData.y;
+			var width:Float = getElementWidth(element);
+			var height:Float = getElementHeight(element);
+			getElementRenderer(element).bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
+			}
+			
 if (getElementWidth(element) > _formattingContextData.maxWidth)
 			{
 				_formattingContextData.maxWidth = getElementWidth(element);

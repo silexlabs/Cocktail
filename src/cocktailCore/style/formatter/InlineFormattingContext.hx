@@ -11,6 +11,9 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.InlineBoxRenderer;
+import cocktailCore.style.renderer.LineBoxRenderer;
 import haxe.Log;
 
 /**
@@ -159,6 +162,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	/**
 	 * Insert a DOMElement and instroduce the corresponding break opportunities
+	 * 
+	 * TODO : move addWidth to insertElement ?
 	 */
 	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
 	{
@@ -527,6 +532,17 @@ class InlineFormattingContext extends FormattingContext
 				_formattingContextData.maxWidth = lineWidth;
 			}
 			
+			var lineBoxRenderer:LineBoxRenderer = new LineBoxRenderer(_containingDOMElement);
+			
+			var containingDOMElementRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
+			lineBoxRenderer.layerRenderer = containingDOMElementRenderer.layerRenderer;
+			lineBoxRenderer.bounds = {
+				x:0.0,
+				y:0.0,
+				width:0.0,
+				height:0.0
+			}
+			containingDOMElementRenderer.addChild(lineBoxRenderer);
 			
 			for (i in 0..._elementsInLineBox.length)
 			{
@@ -545,6 +561,21 @@ class InlineFormattingContext extends FormattingContext
 							height:domElement.offsetHeight
 						}
 					
+						var x:Float = _elementsInLineBox[i].x;
+						var y:Float = _elementsInLineBox[i].y;
+						var width:Float = domElement.offsetWidth;
+						var height:Float = domElement.offsetHeight;
+						
+						domElement.style.elementRenderer.bounds = {
+							x:x, 
+							y:y,
+							width:width,
+							height:height
+						}
+						
+						lineBoxRenderer.addChild(domElement.style.elementRenderer);
+						
+						
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
@@ -566,6 +597,18 @@ class InlineFormattingContext extends FormattingContext
 							height:domElement.offsetHeight
 						}
 
+							var x:Float = _elementsInLineBox[i].x;
+						var y:Float = _elementsInLineBox[i].y;
+						var width:Float = domElement.offsetWidth;
+						var height:Float = domElement.offsetHeight;
+						domElement.style.elementRenderer.bounds = {
+							x:x, 
+							y:y,
+							width:width,
+							height:height
+						}
+						
+						lineBoxRenderer.addChild(domElement.style.elementRenderer);
 					
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
@@ -586,15 +629,33 @@ class InlineFormattingContext extends FormattingContext
 							width:0,
 							height:0
 						}
+						
+						var x:Float = 0;
+						var y:Float = 0;
+						var width:Float = 0;
+						var height:Float = 0;
+						domElement.style.elementRenderer.bounds = {
+							x:x, 
+							y:y,
+							width:width,
+							height:height
+						}
 					
+						
 				
+					
+					var inlineBoxRenderer:InlineBoxRenderer = new InlineBoxRenderer(domElement);
+					inlineBoxRenderer.layerRenderer = parentDOMElement.style.elementRenderer.layerRenderer;
+					inlineBoxRenderer.bounds = getBounds(getCurrentBoxesData(domElement)[0]);
+					lineBoxRenderer.addChild(inlineBoxRenderer);
+					
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 				
 				
 					//domElement.style.setNativeX(domElement, boxElementData.x);
 					//domElement.style.setNativeY(domElement, boxElementData.y);
 					//
-					case BoxElementValue.text(domElement, parentDOMElement):
+					case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 					
 					var boxElementData:BoxElementData = {
 							element:_elementsInLineBox[i].element,
@@ -603,6 +664,18 @@ class InlineFormattingContext extends FormattingContext
 							width:domElement.offsetWidth,
 							height:domElement.offsetHeight
 						}
+						
+						var x:Float = _elementsInLineBox[i].x;
+						var y:Float = _elementsInLineBox[i].y;
+						var width:Float = domElement.offsetWidth;
+						var height:Float = domElement.offsetHeight;
+						textRenderer.bounds = {
+							x:x, 
+							y:y,
+							width:width,
+							height:height
+						}
+						lineBoxRenderer.addChild(textRenderer);
 				
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 
@@ -619,6 +692,8 @@ class InlineFormattingContext extends FormattingContext
 							width:offsetWidth,
 							height:1
 						}
+						
+						
 				
 					getCurrentBoxesData(parentDOMElement)[0].children.push(boxElementData);
 					
@@ -632,6 +707,8 @@ class InlineFormattingContext extends FormattingContext
 			for (i in 0..._currentBoxesData.length)
 			{
 				_currentBoxesData[i].bounds = getBounds(_currentBoxesData[i]);
+
+				
 				_formattingBoxesData.push(_currentBoxesData[i]);
 				
 			}
@@ -727,7 +804,7 @@ class InlineFormattingContext extends FormattingContext
 				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
 					elementWidth = 0;
 					
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 					elementWidth = domElement.offsetWidth;
 					
 				case BoxElementValue.offset(value, parentDOMElement):
@@ -1107,7 +1184,7 @@ class InlineFormattingContext extends FormattingContext
 					lineBoxDescent = domElementDescent + domElementVerticalAlign;
 				}
 				
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 				
 				var domElementAscent:Int;
 				var domElementDescent:Int;
@@ -1253,7 +1330,7 @@ class InlineFormattingContext extends FormattingContext
 					}
 				
 				
-				case BoxElementValue.text(domElement, parentDOMElement):
+				case BoxElementValue.text(domElement, textRenderer, parentDOMElement):
 				
 					var verticalAlign:Float;
 					switch (domElement.style.verticalAlign)

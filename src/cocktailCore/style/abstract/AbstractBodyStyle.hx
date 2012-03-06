@@ -14,6 +14,11 @@ import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.InitialBlockRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
+import haxe.Log;
 
 /**
  * This is the style implementation for BodyDOMElement.
@@ -64,9 +69,29 @@ class AbstractBodyStyle extends ContainerStyle
 		}
 	}
 	
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
+		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
+		//TODO : not the right bounds
+		elementRenderer.bounds = {
+			x:0.0,
+			y:0.0,
+			width:0.0,
+			height:0.0
+		}
+		return elementRenderer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{	
+		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
+		render(_domElement.nativeElement);
+	}
 	
 	/**
 	 * A BodyDOMElement is never inserted into its parent flow as it is
@@ -111,6 +136,21 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+		/**
+	 * An inline-level DOMElement is one that is
+	 * laid out on a line. It will be placed
+	 * either next to the preceding DOMElement
+	 * or on a new line if the current line
+	 * is too short to host it.
+	 * 
+	 * Wheter an element is inline-level is determined
+	 * by its display style
+	 */
+	override public function isInlineLevel():Bool
+	{
+		return false;
+	}
 	
 	/**
 	 * The root of the runtime always starts a block formatting context

@@ -33,6 +33,9 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
 import haxe.Timer;
 
@@ -132,18 +135,25 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
-	 
+	
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
@@ -289,12 +299,6 @@ class AbstractStyle
 	 * Store the current transform matrix of the NativeElement
 	 */
 	private var _nativeMatrix:Matrix;
-
-	/**
-	 * creates the background color and background image
-	 * for each box of the styled DOMElement
-	 */
-	private var _backgroundManager:BackgroundManager;
 	
 	/**
 	 * keep references to each of the nativeElements which
@@ -303,6 +307,9 @@ class AbstractStyle
 	 * of other DOMElements...
 	 */
 	private var _nativeElements:Array<NativeElement>;
+	
+	private var _elementRenderer:ElementRenderer;
+	public var elementRenderer(getElementRenderer, never):ElementRenderer;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -319,7 +326,6 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._backgroundManager = new BackgroundManager();
 		this._nativeElements = new Array<NativeElement>();
 		
 		initDefaultStyleValues();
@@ -516,7 +522,7 @@ class AbstractStyle
 	 * The rendering is implemented differently for a 
 	 * ContainerStyle and an EmbeddedStyle
 	 */
-	public function render():Void
+	public function render(nativeElement:NativeElement):Void
 	{
 		//apply width and height
 		setNativeHeight(_computedStyle.height);
@@ -537,7 +543,7 @@ class AbstractStyle
 	/**
 	 * Attach a NativeElement to the
 	 * styled DOMElement using runtime specific API
-	 */
+	 */ 
 	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
@@ -574,6 +580,27 @@ class AbstractStyle
 		{
 			detachNativeElement(nativeElements[i]);
 		}
+	}
+	
+	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		return null;
+	}
+	
+	private function getLayerRenderer(elementRenderer:ElementRenderer, parentElementRenderer:ElementRenderer):LayerRenderer
+	{
+		var ret:LayerRenderer;
+		
+		if (isPositioned() == true || isFloat() == true)
+		{
+			ret = new LayerRenderer(elementRenderer);
+		}
+		else
+		{
+			ret = parentElementRenderer.layerRenderer;
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -622,7 +649,7 @@ class AbstractStyle
 	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
@@ -633,7 +660,7 @@ class AbstractStyle
 		{
 			//hide the DOMElement
 			setNativeVisibility(false);
-			return;
+			//return;
 		}
 		else
 		{
@@ -648,6 +675,8 @@ class AbstractStyle
 		
 		//compute all the styles of a DOMElement
 		computeDOMElementStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
+		
+		_elementRenderer = createElementRenderer(parentElementRenderer);
 		
 		//flow all the children of the DOMElement if it has any
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, containingDOMElementFontMetricsData, formattingContext);
@@ -674,6 +703,11 @@ class AbstractStyle
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
+		
+		var width:Float = _computedStyle.width;
+		var height:Float = _computedStyle.height;
+		
+		return _elementRenderer;
 	}
 	
 	/**
@@ -714,6 +748,19 @@ class AbstractStyle
 			default:	
 				positioner = new AbsolutePositioner();
 				boxElementData = null;
+		}
+		
+		
+		var x:Float = boxElementData.x;
+		var y:Float = boxElementData.y;
+		var width:Float = _computedStyle.width;
+		var height:Float = _computedStyle.height;
+		
+		_elementRenderer.bounds = {
+			x:x,
+			y:y,
+			width:width,
+			height:height
 		}
 		
 		return boxElementData;
@@ -1245,6 +1292,21 @@ class AbstractStyle
 		return ret;
 	}
 	
+	
+	/**
+	 * Determine wether the children of this DOMElement
+	 * are all block level or if they are all inline level
+	 * elements
+	 * 
+	 * TODO : throw exception when there is a float in the children
+	 * 
+	 * @return true if all children are inline level DOMElements
+	 */
+	public function childrenInline():Bool
+	{
+		return false;
+	}
+	
 	/**
 	 * Determine wether the DOMElement is added
 	 * to the document
@@ -1264,7 +1326,7 @@ class AbstractStyle
 	 * Wheter an element is inline-level is determined
 	 * by its display style
 	 */
-	private function isInlineLevel():Bool
+	public function isInlineLevel():Bool
 	{
 		var ret:Bool = false;
 		
@@ -1319,6 +1381,17 @@ class AbstractStyle
 		}
 		
 		return firstPositionedAncestorData;
+	}
+	
+
+	private function establishesNewFormattingContext():Bool
+	{
+		return false;
+	}
+	
+	public function isInFlow():Bool
+	{
+		return isPositioned() == false;
 	}
 	
 	/**
@@ -1529,6 +1602,11 @@ class AbstractStyle
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getElementRenderer():ElementRenderer
+	{
+		return _elementRenderer;
+	}
 	
 	private function getFontMetricsData():FontMetricsData
 	{
@@ -2011,72 +2089,72 @@ class AbstractStyle
 	
 	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
 	{
-		return _backgroundManager.backgroundColor = value;
+		return _backgroundColor = value;
 	}
 	
 	private function getBackgroundColor():BackgroundColorStyleValue
 	{
-		return _backgroundManager.backgroundColor;
+		return _backgroundColor;
 	}
 	
 	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
 	{
-		return _backgroundManager.backgroundImage = value;
+		return _backgroundImage = value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImageStyleValue>
 	{
-		return _backgroundManager.backgroundImage;
+		return _backgroundImage;
 	}
 	
 	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundManager.backgroundRepeat = value;
+		return _backgroundRepeat = value;
 	}
 	
 	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundManager.backgroundRepeat;
+		return _backgroundRepeat;
 	}
 	
 	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundManager.backgroundSize = value;
+		return _backgroundSize = value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundManager.backgroundSize;
+		return _backgroundSize;
 	}
 	
 	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
 	{
-		return _backgroundManager.backgroundClip = value;
+		return _backgroundClip = value;
 	}
 	
 	private function getBackgroundClip():Array<BackgroundClipStyleValue>
 	{
-		return _backgroundManager.backgroundClip;
+		return _backgroundClip;
 	}
 	
 	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
 	{
-		return _backgroundManager.backgroundPosition = value;
+		return _backgroundPosition = value;
 	}
 	
 	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
 	{
-		return _backgroundManager.backgroundPosition;
+		return _backgroundPosition;
 	}
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundManager.backgroundOrigin = value;
+		return _backgroundOrigin = value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundManager.backgroundOrigin;
+		return _backgroundOrigin;
 	}
 	
 	private function getOverflow():OverflowStyleData

@@ -27,6 +27,13 @@ import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
+import cocktailCore.style.renderer.BlockBoxRenderer;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.InlineBoxRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
+import cocktailCore.style.renderer.LineBoxRenderer;
+import cocktailCore.style.renderer.TextRenderer;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.geom.GeomData;
@@ -92,293 +99,34 @@ class AbstractContainerStyle extends Style
 	 * most of the time and children are not attached to them, mouse event
 	 * don't work anymore
 	 */
-	override public function render():Void
+	override public function render(nativeElement:NativeElement):Void
 	{
-		super.render();
-		
-		
-		
-		//render all its children recursively
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		for (i in 0...containerDOMElement.children.length)
-		{
-			if (isDOMElement(containerDOMElement.children[i]) == true)
-			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.render();
-			}
-		}
-		
-		//will contain all the NativeElements which must be attached to this ContainerDOMElement
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		if (establishesNewFormattingContext() == true)
-		{
-			//get the boxes data from the formatting context which was used to layout the children of this ContainerDOMElement
-			var boxesData:Array<BoxData> = _childrenFormattingContext.getBoxesData();
-			
-			if (childrenInline() == true)
-			{
-				//for each box, render the background, border and
-				//the children of each box
-				for (i in 0...boxesData.length)
-				{
-					var boxNativeElements:Array<NativeElement> = renderBox(boxesData[i]);
-					
-					for (j in 0...boxNativeElements.length)
-					{
-						nativeElements.push(boxNativeElements[j]);
-					}
-				}
-			}
-			else
-			{
-				//TODO : shouldn't have to do that
-				boxesData.reverse();
-				
-				//for each box, render the background, border and
-				//the children of each box
-				for (i in 0...boxesData.length)
-				{
-					var boxNativeElements:Array<NativeElement> = renderBackgroundOfBlockBox(boxesData[i]);
-					
-					for (j in 0...boxNativeElements.length)
-					{
-						nativeElements.push(boxNativeElements[j]);
-					}
-				}
-				//TODO : shouldn't have to do that
-				boxesData.reverse();
-				
-				//for each box, render the background, border and
-				//the children of each box
-				for (i in 0...boxesData.length)
-				{
-					var boxNativeElements:Array<NativeElement> = renderChildren(boxesData[i].children);
-					
-					for (j in 0...boxNativeElements.length)
-					{
-
-						nativeElements.push(boxNativeElements[j]);
-					}
-				}
-			}
-			
-			//render the absolutely positioned children of this ContainerDOMElement
-			var absolutelyPositionedNativeElements:Array<NativeElement> = renderChildren(_absolutelyPositionedBoxElementData);
-			
-			for (i in 0...absolutelyPositionedNativeElements.length)
-			{
-				nativeElements.push(absolutelyPositionedNativeElements[i]);
-			}
-			//store the nativeElements so that they can be detached on next layout
-			_nativeElements = nativeElements;
-			//do attach the nativeElements using runtime specific API
-			attachNativeElements(nativeElements);
-			
-		}
-		
-		
-		
-		
-	
-		
+		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement);
+		_nativeElements.reverse();
+		attachNativeElements(_nativeElements);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Render one box of the DOMElement and return the resulting
-	 * nativeElements which must be attached to this styled
-	 * ContainerDOMElement
-	 * @param	box
-	 * @return
-	 */
-	private function renderBox(box:BoxData):Array<NativeElement>
+	
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-
-		//render the background of the box
-		var backgroundNativeElements:Array<NativeElement> = renderBackgroundOfLineBox(box);
+		var elementRenderer:ElementRenderer;
 		
-		for (i in 0...backgroundNativeElements.length)
+		elementRenderer = new BlockBoxRenderer(_domElement);
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
+		if (isInlineLevel() == false)
 		{
-			nativeElements.push(backgroundNativeElements[i]);
+			parentElementRenderer.addChild(elementRenderer);
 		}
+	
 		
-		//render each children of the box which are all in-flow DOMElements
-		var inFlowChildrenNativeElements:Array<NativeElement> = renderChildren(box.children);
-		for (i in 0...inFlowChildrenNativeElements.length)
-		{
-			nativeElements.push(inFlowChildrenNativeElements[i]);
-		}
-		
-		return nativeElements;
+		return elementRenderer;
 	}
 	
-	private function renderBackgroundOfLineBox(box:BoxData):Array<NativeElement>
-	{
-		var backgrounds:Array<NativeElement> = new Array<NativeElement>();
-		//no line backround for anonymous child of inline containing block
-		if (box.parentDOMElement != this._domElement)
-		{
-			backgrounds = _backgroundManager.render(box.bounds, box.parentDOMElement.style);
-		}
-		return backgrounds;
-	}
 	
-	/**
-	 * Render the background of the box and return an array
-	 * containing the background color if any and all
-	 * the background images if any
-	 * @param	box
-	 * @param	style
-	 * @return
-	 */
-	private function renderBackgroundOfBlockBox(box:BoxData):Array<NativeElement>
-	{
-		
-		var backgrounds:Array<NativeElement> = new Array<NativeElement>();
-		
-		
-		
-		for (i in 0...box.children.length)
-		{
-			var tempBackground = new Array<NativeElement>();
-			switch (box.children[i].element)
-			{
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					
-					var x:Float = box.children[i].x;
-					var y:Float = box.children[i].y;
-					var width:Float = box.children[i].width;
-					var height:Float = box.children[i].height;
-					
-					var bounds:RectangleData = {
-						x:x,
-						y:y,
-						width:width,
-						height:height
-					}
-				
-
-					tempBackground  = _backgroundManager.render( bounds,
-					 domElement.style);
-					
-					//TODO : should be the responsability of the containing block to render its background,
-					//else the z-order might be wrong
-					case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-					
-					
-					var x:Float = box.children[i].x;
-					var y:Float = box.children[i].y;
-					var width:Float = box.children[i].width;
-					var height:Float = box.children[i].height;
-					
-					var bounds:RectangleData = {
-						x:x,
-						y:y,
-						width:width,
-						height:height
-					}
-					
-					tempBackground  = _backgroundManager.render( bounds,
-					 domElement.style);
-					 
-				default:	
-			}
-			
-			for (j in 0...tempBackground.length)
-			{
-				backgrounds.push(tempBackground[j]);
-			}
-		}
-		
-		return backgrounds;
-	}
-	
-	/**
-	 * Render an array of child by applying their computed layout position and 
-	 * returnin gall of their nativeElements
-	 * 
-	 * @param	children
-	 * @return
-	 */
-	private function renderChildren(children:Array<BoxElementData>):Array<NativeElement>
-	{
-		var childrenNativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
-		for (i in 0...children.length)
-		{
-			var child:BoxElementData = children[i];
-			
-			switch (child.element)
-			{
-				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-				
-					
-				//apply x and y
-				domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-				domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				
-				
-				childrenNativeElements.push(domElement.nativeElement);
-				
-				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-				
-				
-					//apply x and y
-					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-			
-				
-				childrenNativeElements.push(domElement.nativeElement);
-				
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-				
-				//TODO : clean-up, should'nt be here
-				if (isInlineContainer() == false)
-				{
-					//apply x and y
-					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				}
-				else
-				{
-						//apply x and y
-					domElement.style.setNativeX(domElement, child.x );
-					domElement.style.setNativeY(domElement, child.y );
-				}
-				
-				childrenNativeElements.push(domElement.nativeElement);
-				
-				case BoxElementValue.text(domElement, parentDOMElement):
-				
-				//TODO : clean-up, should'nt be here
-				if (isInlineContainer() == false)
-				{
-					//apply x and y
-					domElement.style.setNativeX(domElement, child.x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-					domElement.style.setNativeY(domElement, child.y + _computedStyle.marginTop + _computedStyle.paddingTop);
-				}
-				else
-				{
-						//apply x and y
-					domElement.style.setNativeX(domElement, child.x );
-					domElement.style.setNativeY(domElement, child.y );
-				}
-				
-				childrenNativeElements.push(domElement.nativeElement);
-				
-				default:
-			}
-		
-		}
-		
-		return childrenNativeElements;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHODS
@@ -389,11 +137,13 @@ class AbstractContainerStyle extends Style
 	 * will be measured and placed as well as all of its children.
 	 * 
 	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered and displayed
+	 * 
+	 * TODO : containingDOMElementData replaced by elementRenderer ?
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
-		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData,null, null, null);
-		render();
+		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData,null, null, null, null);
+		//render();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -562,6 +312,7 @@ class AbstractContainerStyle extends Style
 	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
 		
 		//TODO : must now be put in inline formatting context ?
 			if (establishesNewFormattingContext() == false && isInlineContainer() == true)
@@ -578,14 +329,19 @@ class AbstractContainerStyle extends Style
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
-				insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+				
+				for (j in 0...insertedText.length)
+				{
+					//flowBoxRenderer.addChild(insertedText[j]);
+				}
 			}
 		}
 		
@@ -697,10 +453,12 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
-	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Void
+	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Array<TextRenderer>
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 
+		var rendereredText:Array<TextRenderer> = new Array<TextRenderer>();
+		
 		//get the text to display from the TextElement
 		var text:String = textElement.text;
 		
@@ -714,7 +472,12 @@ class AbstractContainerStyle extends Style
 			{
 				case word(value):
 					//insert a word in the flow
-					formattingContext.insertElement(BoxElementValue.text(getTextFragmentDOMElement(textFragments[i], value), this._domElement));
+					var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragments[i], value);
+					var textRenderer:TextRenderer = new TextRenderer(textFragmentDOMElement);
+					textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+					rendereredText.push(textRenderer);
+					
+					formattingContext.insertElement(BoxElementValue.text(textFragmentDOMElement, textRenderer, this._domElement));
 					
 					
 				case space:
@@ -731,7 +494,8 @@ class AbstractContainerStyle extends Style
 					//start a new line
 					formattingContext.insertElement(BoxElementValue.lineFeed(_computedStyle.whiteSpace, this._domElement));
 			}
-		}		
+		}	
+		return rendereredText;
 	}
 	
 	/**
@@ -926,7 +690,7 @@ class AbstractContainerStyle extends Style
 	 * 
 	 * @return true if all children are inline level DOMElements
 	 */
-	private function childrenInline():Bool
+	override public function childrenInline():Bool
 	{
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
@@ -1023,7 +787,7 @@ class AbstractContainerStyle extends Style
 	 * establishes a new formatting context for
 	 * its children
 	 */
-	private function establishesNewFormattingContext():Bool
+	override private function establishesNewFormattingContext():Bool
 	{
 		var ret:Bool = false;
 		
