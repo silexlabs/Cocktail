@@ -87,6 +87,10 @@ class AbstractEmbeddedStyle extends Style
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
+		//TODO : set dimensions here ?
+		elementRenderer.bounds.width = _computedStyle.width;
+		elementRenderer.bounds.height = _computedStyle.height;
+		
 		parentElementRenderer.addChild(elementRenderer);
 		
 		return elementRenderer;

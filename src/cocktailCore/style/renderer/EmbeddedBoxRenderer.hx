@@ -20,6 +20,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	
 	override public function render():Array<NativeElement>
 	{
+		
 		var ret:Array<NativeElement> = [];
 		
 		var embeddedDOMElement:EmbeddedDOMElement = cast(_domElement);
