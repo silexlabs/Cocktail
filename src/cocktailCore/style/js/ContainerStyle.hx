@@ -9,9 +9,11 @@ package cocktailCore.style.js;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
 
@@ -36,6 +38,22 @@ class ContainerStyle extends AbstractContainerStyle
 		super(domElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as the browser deals with the rendering in JS
+	 */
+	override public function render(nativeElement:NativeElement):Void
+	{
+		
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Make all the DOMElement retrieve their native HTMLElement positions
 	 * and dimensions
@@ -49,7 +67,7 @@ class ContainerStyle extends AbstractContainerStyle
 			if (isDOMElement(containerDOMElement.children[i]) == true)
 			{
 				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
+				childrenDOMElement.style.flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext, cast(_elementRenderer) );
 			}
 		}
 	}

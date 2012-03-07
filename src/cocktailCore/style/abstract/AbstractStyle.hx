@@ -33,6 +33,9 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
 import haxe.Timer;
 
@@ -78,12 +81,6 @@ class AbstractStyle
 	
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
-	
-	private var _opacity:OpacityStyleValue;
-	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
-	
-	private var _visibility:VisibilityStyleValue;
-	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
 	
 	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
@@ -138,18 +135,25 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
 	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
 	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
 	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
-	 
+	
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
 	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
 	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
 	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
 	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
 	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
 	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
 	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
 	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
 	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
 	
 	/**
@@ -199,6 +203,18 @@ class AbstractStyle
 		
 	private var _verticalAlign:VerticalAlignStyleValue;
 	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
+	
+	/**
+	 * visual effect styles
+	 */
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	private var _overflow:OverflowStyleData;
+	public var overflow(getOverflow,  setOverflow):OverflowStyleData;
 	
 	////////////////////////////////
 	
@@ -283,12 +299,6 @@ class AbstractStyle
 	 * Store the current transform matrix of the NativeElement
 	 */
 	private var _nativeMatrix:Matrix;
-
-	/**
-	 * creates the background color and background image
-	 * for each box of the styled DOMElement
-	 */
-	private var _backgroundManager:BackgroundManager;
 	
 	/**
 	 * keep references to each of the nativeElements which
@@ -297,6 +307,9 @@ class AbstractStyle
 	 * of other DOMElements...
 	 */
 	private var _nativeElements:Array<NativeElement>;
+	
+	private var _elementRenderer:ElementRenderer;
+	public var elementRenderer(getElementRenderer, never):ElementRenderer;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -313,7 +326,6 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._backgroundManager = new BackgroundManager();
 		this._nativeElements = new Array<NativeElement>();
 		
 		initDefaultStyleValues();
@@ -372,8 +384,8 @@ class AbstractStyle
 		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
 		this.backgroundSize = [
 			BackgroundSizeStyleValue.dimensions({
-				x:BackgroundSizeStyleDimensionValue.auto,
-				y:BackgroundSizeStyleDimensionValue.auto
+				x:BackgroundSizeStyleDimensionValue.autoValue,
+				y:BackgroundSizeStyleDimensionValue.autoValue
 			})];
 		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
 		
@@ -391,6 +403,10 @@ class AbstractStyle
 		
 		this.visibility = VisibilityStyleValue.visible;
 		this.opacity = OpacityStyleValue.number(1.0);
+		this.overflow = {
+			x:OverflowStyleValue.visible,
+			y:OverflowStyleValue.visible
+		}
 		
 		this.transformOrigin = {
 			x:TransformOriginXStyleValue.center,
@@ -448,6 +464,7 @@ class AbstractStyle
 			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
+			overflow:{x:OverflowStyleValue.visible, y:OverflowStyleValue.visible},
 			transformOrigin: { x:0.0, y:0.0 },
 			transform:new Matrix(),
 			backgroundColor:{color:0, alpha:1.0},
@@ -505,7 +522,7 @@ class AbstractStyle
 	 * The rendering is implemented differently for a 
 	 * ContainerStyle and an EmbeddedStyle
 	 */
-	public function render():Void
+	public function render(nativeElement:NativeElement):Void
 	{
 		//apply width and height
 		setNativeHeight(_computedStyle.height);
@@ -526,7 +543,7 @@ class AbstractStyle
 	/**
 	 * Attach a NativeElement to the
 	 * styled DOMElement using runtime specific API
-	 */
+	 */ 
 	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
@@ -563,6 +580,27 @@ class AbstractStyle
 		{
 			detachNativeElement(nativeElements[i]);
 		}
+	}
+	
+	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		return null;
+	}
+	
+	private function getLayerRenderer(elementRenderer:ElementRenderer, parentElementRenderer:ElementRenderer):LayerRenderer
+	{
+		var ret:LayerRenderer;
+		
+		if (isPositioned() == true || isFloat() == true)
+		{
+			ret = new LayerRenderer(elementRenderer);
+		}
+		else
+		{
+			ret = parentElementRenderer.layerRenderer;
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -611,7 +649,7 @@ class AbstractStyle
 	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
@@ -620,13 +658,7 @@ class AbstractStyle
 		//to the display list
 		if (isNotDisplayed() == true)
 		{
-			//hide the DOMElement
-			setNativeVisibility(false);
 			return;
-		}
-		else
-		{
-			setNativeVisibility(true);
 		}
 
 		//reset the computed styles, useful for instance to
@@ -637,6 +669,8 @@ class AbstractStyle
 		
 		//compute all the styles of a DOMElement
 		computeDOMElementStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
+		
+		_elementRenderer = createElementRenderer(parentElementRenderer);
 		
 		//flow all the children of the DOMElement if it has any
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
@@ -674,38 +708,33 @@ class AbstractStyle
 	 * @param viewportData
 	 * @param staticPosition the x,y position that the DOMElement would have had if it were 'in-flow'
 	 */
-	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):BoxElementData
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
-		
-		//will return the position of the DOMElement when once it is computed
-		var boxElementData:BoxElementData;
 		
 		switch (this._domElement.style.computedStyle.position)
 		{
 			//positioned 'relative' DOMElement
 			case relative:
 				positioner = new RelativePositioner();
-				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 			
 			//positioned 'fixed' DOMElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
-				boxElementData = positioner.position(this._domElement, viewportData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
 				
 			//positioned 'absolute' DOMElement	
 			case absolute:
 				positioner = new AbsolutePositioner();
-				boxElementData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 				
-			default:	
-				positioner = new AbsolutePositioner();
-				boxElementData = null;
+			default:
 		}
 		
-		return boxElementData;
+		return _elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -744,24 +773,25 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		//insert in formatting context as a float
-		if (isFloat() == true)
-		{
-			formattingContext.insertElement(BoxElementValue.float(this._domElement, this._domElement.parent));
-		}
+		
 		//insert in the flow
-		else if (isPositioned() == false)
+		if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext);
+			formattingContext.insertElement(_elementRenderer);
 		}
 		//else the DOMElement is positioned
 		else
 		{
 			//retrieve the static position (the position of the DOMElement
 			//if its position style was 'static'
-			var x:Float = 0;
-			var y:Float = 0;
+			var x:Float = 0.0;
+			var y:Float = 0.0;
 			
+			//To retrieve the static position, the formatting context must be formatted now
+			formattingContext.format();
+			
+			//x and y of the formatting are now the point where the next in-flow element
+			//would be inserted
 			x = formattingContext.formattingContextData.x;
 			y = formattingContext.formattingContextData.y;
 			
@@ -772,9 +802,18 @@ class AbstractStyle
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
+			//
+			//TODO : the only reason to insert the element remaining is to 
+			//position it vertically in an inline formatting context, create a 'stub' element ?
+			//check : will it work for a relaive container DOMElement ? -> doesn't work,
+			//only container moved, not the children neither the background, need to build a rendering
+			//tree of boxData instead of a flat array
+			//
+			//TODO : relative element are not placed correctly when a margin is applied to the formatting
+			//context root
 			if (isRelativePositioned() == true)
 			{
-				insertInFlowDOMElement(formattingContext);
+				formattingContext.insertElement(_elementRenderer);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -796,15 +835,6 @@ class AbstractStyle
 			//store the DOMElement to be positioned later
 			lastPositionedDOMElementData.children.push(positionedDOMElementData);
 		}
-	}
-	
-	/**
-	 * Do insert an inflow DOMElement into the document. Method added to allow
-	 * overriding for some inherithing class
-	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
-	{
-		formattingContext.insertElement(BoxElementValue.embeddedDOMElement(this._domElement, this._domElement.parent));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1223,6 +1253,21 @@ class AbstractStyle
 		return ret;
 	}
 	
+	
+	/**
+	 * Determine wether the children of this DOMElement
+	 * are all block level or if they are all inline level
+	 * elements
+	 * 
+	 * TODO : throw exception when there is a float in the children
+	 * 
+	 * @return true if all children are inline level DOMElements
+	 */
+	public function childrenInline():Bool
+	{
+		return false;
+	}
+	
 	/**
 	 * Determine wether the DOMElement is added
 	 * to the document
@@ -1242,7 +1287,7 @@ class AbstractStyle
 	 * Wheter an element is inline-level is determined
 	 * by its display style
 	 */
-	private function isInlineLevel():Bool
+	public function isInlineLevel():Bool
 	{
 		var ret:Bool = false;
 		
@@ -1297,6 +1342,17 @@ class AbstractStyle
 		}
 		
 		return firstPositionedAncestorData;
+	}
+	
+
+	public function establishesNewFormattingContext():Bool
+	{
+		return false;
+	}
+	
+	public function isInFlow():Bool
+	{
+		return isPositioned() == false;
 	}
 	
 	/**
@@ -1507,6 +1563,11 @@ class AbstractStyle
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getElementRenderer():ElementRenderer
+	{
+		return _elementRenderer;
+	}
 	
 	private function getFontMetricsData():FontMetricsData
 	{
@@ -1776,6 +1837,13 @@ class AbstractStyle
 		return _transform = value;
 	}
 	
+	private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	{
+		invalidate();
+		return _overflow = value;
+	}
+	
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -1982,71 +2050,76 @@ class AbstractStyle
 	
 	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
 	{
-		return _backgroundManager.backgroundColor = value;
+		return _backgroundColor = value;
 	}
 	
 	private function getBackgroundColor():BackgroundColorStyleValue
 	{
-		return _backgroundManager.backgroundColor;
+		return _backgroundColor;
 	}
 	
 	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
 	{
-		return _backgroundManager.backgroundImage = value;
+		return _backgroundImage = value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImageStyleValue>
 	{
-		return _backgroundManager.backgroundImage;
+		return _backgroundImage;
 	}
 	
 	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundManager.backgroundRepeat = value;
+		return _backgroundRepeat = value;
 	}
 	
 	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
 	{
-		return _backgroundManager.backgroundRepeat;
+		return _backgroundRepeat;
 	}
 	
 	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundManager.backgroundSize = value;
+		return _backgroundSize = value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
 	{
-		return _backgroundManager.backgroundSize;
+		return _backgroundSize;
 	}
 	
 	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
 	{
-		return _backgroundManager.backgroundClip = value;
+		return _backgroundClip = value;
 	}
 	
 	private function getBackgroundClip():Array<BackgroundClipStyleValue>
 	{
-		return _backgroundManager.backgroundClip;
+		return _backgroundClip;
 	}
 	
 	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
 	{
-		return _backgroundManager.backgroundPosition = value;
+		return _backgroundPosition = value;
 	}
 	
 	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
 	{
-		return _backgroundManager.backgroundPosition;
+		return _backgroundPosition;
 	}
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundManager.backgroundOrigin = value;
+		return _backgroundOrigin = value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
 	{
-		return _backgroundManager.backgroundOrigin;
+		return _backgroundOrigin;
+	}
+	
+	private function getOverflow():OverflowStyleData
+	{
+		return _overflow;
 	}
 }

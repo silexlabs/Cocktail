@@ -12,6 +12,8 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 /**
@@ -65,21 +67,13 @@ class FormattingContext
 	 */
 	private var _formattingContextData:FormattingContextData;
 	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
-
-	/**
-	 * An array of the box created by the formatted elements of this formatting context.
-	 * There are as many boxes as they are container DOMElements in this formatting context.
-	 * For each box, its position and dimensions are stored (relative to the containing DOMElement)
-	 * and all of the children of the box.
-	 */
-	private var _formattingBoxesData:Array<BoxData>;
 	
 	/**
 	 * Holds a reference to each of the box elements formatted by this
 	 * formatting context. The corresponding box data are generated
 	 * when the 'format' method is called
 	 */
-	private var _elementsInFormattingContext:Array<BoxElementValue>;
+	private var _elementsInFormattingContext:Array<ElementRenderer>;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -101,8 +95,7 @@ class FormattingContext
 		_floatsManager = new FloatsManager();
 		
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
-		_formattingBoxesData = new Array<BoxData>();
-		_elementsInFormattingContext = new Array<BoxElementValue>();
+		_elementsInFormattingContext = new Array<ElementRenderer>();
 	}
 	
 	/**
@@ -126,24 +119,14 @@ class FormattingContext
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
-	/**
-	 * Store the inserted box element in the right formatting order
-	 * @param	insertedElement
-	 */
-	public function insertElement(insertedElement:BoxElementValue):Void
+
+	public function insertElement(element:ElementRenderer):Void
 	{
-		_elementsInFormattingContext.push(insertedElement);
+		_elementsInFormattingContext.push(element);
 	}
 	
-	/**
-	 * Called by the containing DOMElement once each of its children
-	 * has been inserted in the formatting context to start the formatting.
-	 */
 	public function format():Void
-	{
-		//init/reset the boxes data of the formatting context
-		_formattingBoxesData = new Array<BoxData>();
-		
+	{	
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
@@ -155,155 +138,90 @@ class FormattingContext
 		}
 	}
 	
-	/**
-	 * return the added height of the children of a DOMElement.
-	 * Must be called after a call to the 'format' method, else
-	 * always return 0
-	 */
-	public function getChildrenHeight(parentDOMElement:DOMElement):Int
+
+	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
+	{
+		if (element.canHaveChildren() == true)
+		{
+			if (element.domElement.style.establishesNewFormattingContext() == true)
+			{
+				insertFormattingContextRootElement(element);
+			}
+			else
+			{
+				insertContainerElement(element);
+			}
+		}
+		else
+		{
+			if (element.isText() == true)
+			{
+				if (element.isSpace() == true)
+				{
+					insertSpace(element, isNextElementALineFeed);
+				}
+				else
+				{
+					insertText(element);
+				}
+				
+			}
+			else
+			{
+				insertEmbeddedElement(element);
+			}
+		}
+		
+	}
+	
+	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
 		var height:Int = 0;
 		
 		//add all the DOMElement boxesData's height
-		var boxesData:Array<BoxData> = getParentBoxesData(parentDOMElement);
-		for (i in 0...boxesData.length)
+		var elementRenderers:Array<ElementRenderer> = getParentElementRenderers(elementRenderer);
+		for (i in 0...elementRenderers.length)
 		{
-			height += Math.round(boxesData[i].bounds.height);
+			height += Math.round(elementRenderers[i].bounds.height);
 		}
 		
 		return height;
 	}
 	
-	public function getBoxesData():Array<BoxData>
-	{
-		for (i in 0..._formattingBoxesData.length)
-		{
-			getBounds(_formattingBoxesData[i]);
-		}
-		
-		return _formattingBoxesData;
-	}
-	
-	/**
-	 * For a given parent DOMElement, retrieve all the 
-	 * boxes that were created by the formatting context
-	 * to format it. Must be called after a call to the 
-	 * 'format' method, else the returned array is always
-	 * empty
-	 */
-	public function getParentBoxesData(parentDOMElement:DOMElement):Array<BoxData>
+
+	private function getParentElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{	
-		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
-	}
-	
-	/**
-	 * same as getBoxesData but for each box, suppress their relative positioned
-	 * children as they are only use for formatting but they will be rendered as 
-	 * positionied DOMElement. Not returning them here prevent them from being
-	 * rendered twice.
-	 * 
-	 * TODO: return all but relative positioned DOMElements.
-	 * Find a better way to exclude relative DOMElements ?
-	 */ 
-	public function getRenderedBoxesData(parentDOMElement:DOMElement):Array<BoxData>
-	{
-		return doGetBoxesData(parentDOMElement, _formattingBoxesData);
+		return doGetParentElementRenderers(elementRenderer, _elementsInFormattingContext);
 	}
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-	/**
-	 * do insert an element using different methods based on its type
-	 * @param element
-	 * @param nexElementIsLineFeed wheter the next element in the tree of formattable elements
-	 * is a line feed, which may influence the white space processing of an inline formatting context
-	 */
-	private function doInsertElement(element:BoxElementValue, nexElementIsLineFeed:Bool):Void
+	private function doGetParentElementRenderers(elementRenderer:FlowBoxRenderer, targetElementRenderers:Array<ElementRenderer>):Array<ElementRenderer>
 	{
-		switch (element)
-		{
-			case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-				insertEmbeddedDOMElement(element);
-				
-			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-				insertContainerDOMElement(element);
-				
-			case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-				insertContainingBlockDOMElement(element);
-				
-			case BoxElementValue.text(domElement, parentDOMElement):
-				insertText(element);
-				
-			case BoxElementValue.offset(value, parentDOMElement):
-				insertOffset(element);
-				
-			case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-				insertSpace(element, nexElementIsLineFeed);
-				
-			case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-				insertTab(element, nexElementIsLineFeed);
-				
-			case BoxElementValue.float(domElement, parentDOMElement):
-				insertFloat(element);
-				
-			case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-				insertLineFeed(element);
-		}
-	}
-	
-	/**
-	 * Actually retrieve the boxes data belonging to the 
-	 * provided parentDOMElement
-	 * @param	parentDOMElement all the return box data are boxes generated for this DOMElement
-	 * @param	targetBoxesData the array of box data among which the parentDOMElement's box data are 
-	 * sought
-	 */
-	private function doGetBoxesData(parentDOMElement:DOMElement, targetBoxesData:Array<BoxData>):Array<BoxData>
-	{
-		var boxesData:Array<BoxData> = new Array<BoxData>();
+		var elementRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		//store each box data with the right parentDOMeElement
-		for (i in 0...targetBoxesData.length)
+		for (i in 0...targetElementRenderers.length)
 		{
-			if (targetBoxesData[i].parentDOMElement == parentDOMElement)
+			if (targetElementRenderers[i].parent == elementRenderer)
 			{
-				//set the bounds of the box before returning it
-				targetBoxesData[i].bounds = getBounds(targetBoxesData[i]);
-				boxesData.push(targetBoxesData[i]);
+				elementRenderers.push(targetElementRenderers[i]);
 			}
 		}
 		
-		//if their are none, create the first box data for the given
-		//parent, all the subsequent children will be added to it
-		if (boxesData.length == 0)
+		if (elementRenderers.length == 0)
 		{
-			var boxData:BoxData = {
-				parentDOMElement:parentDOMElement,
-				children:new Array<BoxElementData>(),
-				bounds: { x:0.0, y:0.0, width:0.0, height:0.0 },
-				textDecorations:new Array<TextDecorationData>()
-			}
-			
-			targetBoxesData.push(boxData);
-			boxesData.push(boxData);
+			targetElementRenderers.push(elementRenderer);
 		}
 		
-		return boxesData;
+		return elementRenderers;
 	}
 	
-	/**
-	 * Get the bounds formaed by all the children
-	 * of a box data. The bounds are relative to 
-	 * the containing block which started this
-	 * formatting context
-	 * 
-	 * TODO : block boxes with no children must takes
-	 * the bound of the block, implement in blockForamtting ?
-	 */
-	private function getBounds(boxData:BoxData):RectangleData
+	//TODO : only used in inline formatting context
+	private function getBounds(elements:Array<ElementRenderer>):RectangleData
 	{
+
 		var bounds:RectangleData;
 		
 		var left:Float = 50000;
@@ -312,60 +230,41 @@ class FormattingContext
 		var bottom:Float = -50000;
 		
 		
-		for (i in 0...boxData.children.length)
+		for (i in 0...elements.length)
 		{
-			var doPosition:Bool;
-			
-			switch (boxData.children[i].element)
+			if (elements[i].bounds.x < left)
 			{
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					doPosition = false;
-		
-				default:
-					doPosition = true;
+				left = elements[i].bounds.x;
 			}
-			
-			if (doPosition == true)
+			if (elements[i].bounds.y < top)
 			{
-				if (boxData.children[i].x < left)
+				if (elements[i].isText() == false)
 				{
-					left = boxData.children[i].x;
+					top = elements[i].bounds.y;
 				}
-				if (boxData.children[i].y < top)
+				else
 				{
-					//TODO : probably won't be robust enough + messy but offset should only be used for left and right
-					switch (boxData.children[i].element)
-					{
-						case BoxElementValue.offset(offsetWidth, parentDOMElement):
-							
-						case BoxElementValue.text(domElement, parentDOMElement):
-							top = boxData.children[i].y - domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
-							
-						default:
-							top = boxData.children[i].y;
-					}
+					top = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent;
+				}
 				
-				}
-				if (boxData.children[i].x + boxData.children[i].width > right)
+			}
+			if (elements[i].bounds.x + elements[i].bounds.width > right)
+			{
+				right = elements[i].bounds.x + elements[i].bounds.width;
+			}
+			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
+			{
+				if (elements[i].isText() == false)
 				{
-					right = boxData.children[i].x + boxData.children[i].width;
+					bottom = elements[i].bounds.y + elements[i].bounds.height;
 				}
-				if (boxData.children[i].y + boxData.children[i].height > bottom)
+				//TODO : ascent is not leaded
+				else
 				{
-					switch (boxData.children[i].element)
-					{
-						case BoxElementValue.offset(offsetWidth, parentDOMElement):
-					
-						case BoxElementValue.text(domElement, parentDOMElement):
-							bottom = boxData.children[i].y + boxData.children[i].height -  domElement.style.fontMetrics.ascent - domElement.style.fontMetrics.descent;
-							
-						default:	
-							bottom = boxData.children[i].y + boxData.children[i].height;
-					}
+					bottom = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent + elements[i].bounds.height;
 				}
 			}
 		}
-			
 			
 		bounds = {
 					x:left,
@@ -374,32 +273,23 @@ class FormattingContext
 					height :  bottom - top,
 				}
 				
+				
 		return bounds;
 		
 	}
-	
-	/**
-	 * Insert an embedded DOMElement. overriden by sub-classes
-	 */
-	private function insertEmbeddedDOMElement(element:BoxElementValue):Void
+
+	private function insertEmbeddedElement(element:ElementRenderer):Void
 	{ 
 		//abstract
 	}
 	
-	/**
-	 * Insert a containing block DOMElement (a ContainerDOMElement which establishes a 
-	 * formatting context). overriden by sub-classes
-	 */
-	private function insertContainingBlockDOMElement(element:BoxElementValue):Void
+
+	private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
 		//abstract
 	}
 	
-	/**
-	 * Insert a container DOMElement (a ContainerDOMElement which doesn't
-	 * establishes a formatting context). overriden by sub-classes
-	 */
-	private function insertContainerDOMElement(element:BoxElementValue):Void
+	private function insertContainerElement(element:ElementRenderer):Void
 	{
 		//abstract
 	}
@@ -407,7 +297,7 @@ class FormattingContext
 	/**
 	 * Insert a text. overriden by sub-classes
 	 */
-	private function insertText(element:BoxElementValue):Void
+	private function insertText(element:ElementRenderer):Void
 	{
 		//abstract
 	}
@@ -415,17 +305,15 @@ class FormattingContext
 	/**
 	 * Insert a space. overriden by sub-classes
 	 */
-	private function insertSpace(element:BoxElementValue, isNextElementALineFeed:Bool):Void
+	private function insertSpace(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
 		//abstract	
 	}
 	
 	/**
 	 * Insert an horizontal offset. overriden by sub-classes
-	 * 
-	 * TODO : rename insertHorizontalOffset ?
 	 */
-	private function insertOffset(element:BoxElementValue):Void
+	private function insertHorizontalOffset(element:ElementRenderer):Void
 	{
 		//abstract
 	}
@@ -433,7 +321,7 @@ class FormattingContext
 	/**
 	 * Insert a tab. overriden by sub-classes
 	 */
-	private function insertTab(element:BoxElementValue, isNextElementALineFeed:Bool):Void
+	private function insertTab(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
 		//abstract
 	}
@@ -441,7 +329,7 @@ class FormattingContext
 	/**
 	 * Insert a linefeed. overriden by sub-classes
 	 */
-	private function insertLineFeed(element:BoxElementValue):Void
+	private function insertLineFeed(element:ElementRenderer):Void
 	{
 		//abstract
 	}
@@ -451,7 +339,7 @@ class FormattingContext
 	 * 
 	 * TODO : re-implement floats
 	 */
-	private function insertFloat(element:BoxElementValue):Void
+	private function insertFloat(element:ElementRenderer):Void
 	{
 		//abstract
 	}
@@ -471,9 +359,6 @@ class FormattingContext
 	{
 		_floatsManager.clearFloat(clear, formattingContextData);
 	}
-
-	
-	
 	
 	/**
 	 * Removed the floats which don't influence the 
@@ -487,130 +372,11 @@ class FormattingContext
 		_floatsManager.removeFloats(_formattingContextData.y);
 	}
 	
-	/**
-	 * return the width of an element
-	 */
-	private function getElementWidth(element:BoxElementValue):Int
-	{
-		var elementWidth:Int;
-		
-		switch (element)
-			{
-				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;
-				
-				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;	
-					
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;
-					
-				case BoxElementValue.text(domElement, parentDOMElement):
-					elementWidth = domElement.offsetWidth;
-					
-				case BoxElementValue.offset(value, parentDOMElement):
-					elementWidth = value;
-					
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-					elementWidth = spaceWidth;
-					
-				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-					elementWidth = tabWidth;
-					
-				case BoxElementValue.float(domElement, parentDOMElement):
-					elementWidth = 0;
-					
-				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-					elementWidth = 0;
-			}
-			
-		return 	elementWidth;
-	}
-	
-	/**
-	 * return the height of an element
-	 */
-	private function getElementHeight(element:BoxElementValue):Int
-	{
-		var elementHeight:Int;
-		
-		switch (element)
-			{
-				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-					elementHeight = domElement.offsetHeight;
-				
-				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-					elementHeight = domElement.offsetHeight;	
-					
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					elementHeight = domElement.offsetHeight;
-					
-				case BoxElementValue.text(domElement, parentDOMElement):
-					elementHeight = domElement.offsetHeight;
-					
-				case BoxElementValue.offset(value, parentDOMElement):
-					elementHeight = 0;
-					
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-					elementHeight = 0;
-					
-				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-					elementHeight = 0;
-					
-				case BoxElementValue.float(domElement, parentDOMElement):
-					elementHeight = 0;
-					
-				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-					elementHeight = 0;
-			}
-			
-		return 	elementHeight;
-	}
-	
-	/**
-	 * return the parent DOMElement of a box element
-	 */
-	private function getElementParent(element:BoxElementValue):DOMElement
-	{
-		var elementParent:DOMElement;
-		
-		switch (element)
-			{
-				case BoxElementValue.embeddedDOMElement(domElement, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.containingBlockDOMElement(domElement, parentDOMElement):
-					elementParent = parentDOMElement;	
-					
-				case BoxElementValue.text(domElement, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.offset(value, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.tab(whiteSpace, tabWidth, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.float(domElement, parentDOMElement):
-					elementParent = parentDOMElement;
-					
-				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-					elementParent = parentDOMElement;
-			}
-			
-		return 	elementParent;
-	}
 	
 	/**
 	 * Determine wheter the next element in the formattable elements array is a linefeed
 	 */
-	private function isNextElementALineFeed(elementsInFormattingContext:Array<BoxElementValue>, currentIndex:Int):Bool
+	private function isNextElementALineFeed(elementsInFormattingContext:Array<ElementRenderer>, currentIndex:Int):Bool
 	{
 		var isNextElementALineFeed:Bool;
 		
@@ -622,14 +388,7 @@ class FormattingContext
 		//else check if the next element is indeed a line feed
 		else
 		{
-			switch (elementsInFormattingContext[currentIndex + 1])
-			{
-				case BoxElementValue.lineFeed(whiteSpace, parentDOMElement):
-					isNextElementALineFeed = true;
-					
-				default:
-					isNextElementALineFeed = false;
-			}
+			isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
 		}
 		
 		return isNextElementALineFeed;

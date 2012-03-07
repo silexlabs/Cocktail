@@ -15,6 +15,7 @@ import cocktail.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import cocktail.unit.UnitData;
+import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
@@ -208,8 +209,9 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
+		textField.selectable = false;
+		textField.autoSize = TextFieldAutoSize.LEFT;
 		textField.setTextFormat(getTextFormat());
-		
 		
 		var textFragment:TextFragmentDOMElement = new TextFragmentDOMElement(cast(textField), this);
 
@@ -224,7 +226,13 @@ class ContainerStyle extends AbstractContainerStyle
 		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		textFormat.size = _computedStyle.fontSize;
-		textFormat.color = _computedStyle.color;
+		
+		textFormat.bold = _computedStyle.fontWeight == FontWeightStyleValue.bold;
+		textFormat.italic = _computedStyle.fontStyle == FontStyleStyleValue.italic;
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		
+		textFormat.color = _computedStyle.color.color;
 		return textFormat;
 	}
 	

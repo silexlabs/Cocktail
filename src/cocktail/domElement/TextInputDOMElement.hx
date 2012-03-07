@@ -5,25 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement;
+package cocktail.domElement;
 
 /**
- * Set the right runtime specific NativeElement at compile-time
+ * Set the right runtime specific TextInputDOMElement at compile-time
  */
-#if (flash9)
-typedef NativeElement =  flash.display.DisplayObjectContainer;
-
-#elseif (nme || cpp)
-typedef NativeElement =  Dynamic;
+#if (flash9 || cpp || nme)
+typedef TextInputDOMElement =  cocktailCore.domElement.as3.TextInputDOMElement;
 
 #elseif js
-import js.Dom;
-typedef NativeElement =  js.HtmlDom;
+typedef TextInputDOMElement =  cocktailCore.domElement.js.TextInputDOMElement;
 
 #elseif php
-typedef NativeElement =  Xml;
+typedef TextInputDOMElement =  cocktailCore.domElement.php.TextInputDOMElement;
 
 #elseif doc
-typedef NativeElement = Dynamic;
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class TextInputDOMElement extends cocktailCore.domElement.abstract.AbstractTextInputDOMElement { }
 
 #end

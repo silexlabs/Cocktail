@@ -153,4 +153,46 @@ class DOMElement extends AbstractDOMElement
 			onFocusOut();
 		}
 	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SCROLLING SETTER/GETTER
+	/////////////////////////////////
+	
+	/**
+	 * When the user onscroll callback is set, set
+	 * a native JavaScript listener on the element
+	 */
+	override private function setOnScroll(value:ScrollEventData->Void):ScrollEventData->Void
+	{
+		//first always remove previous listener
+		untyped _nativeElement.removeEventListener("scroll", onNativeScroll);
+		
+		_onScroll = value;
+		
+		//only add listener if user callback is not null
+		if (_onScroll != null)
+		{
+			untyped _nativeElement.addEventListener("scroll", onNativeScroll);
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * called when a native javascript scroll event is emitted
+	 * by the HTML element
+	 */
+	private function onNativeScroll(event:Dynamic):Void
+	{
+		//build the abstract sroll event data
+		var scrollEventData:ScrollEventData = {
+			scrollLeft : _nativeElement.scrollLeft,
+			scrollTop : _nativeElement.scrollTop,
+			scrollWidth : _nativeElement.scrollWidth,
+			scrollHeight : _nativeElement.scrollHeight
+		}
+		
+		onScrollCallback(scrollEventData);
+	}
+	
 }
