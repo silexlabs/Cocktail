@@ -63,6 +63,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	private var _currentInlineBoxesData:Array<InlineBoxData>;
 	
+	private var _layOutLastLine:Bool;
+	
 	
 	/**
 	 * class constructor. Init class attributes
@@ -73,13 +75,14 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		_currentInlineBoxesData = new Array<InlineBoxData>();
+		_layOutLastLine = false;
 		super(domElement);
 		
 		//set the textIndent as an offset on the first line of text
 		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
 	
-	override public function format():Void
+	override public function format(layOutLastLine:Bool = false):Void
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
@@ -87,7 +90,7 @@ class InlineFormattingContext extends FormattingContext
 		var flowBoxRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
 		flowBoxRenderer.removeLineBoxes();
 		_currentInlineBoxesData = new Array<InlineBoxData>();
-		
+		_layOutLastLine = layOutLastLine;
 		
 		super.format();
 		
@@ -545,10 +548,20 @@ class InlineFormattingContext extends FormattingContext
 			_currentInlineBoxesData = new Array<InlineBoxData>();
 			_elementsInLineBox = new Array<ElementRenderer>();
 			
-			//TODO : when formatting to find a static position it works, however, when formatting
-			//to find the max height of the formatting context, it doesn't work, as the last line
-			//isn't laid out. Add a method measure() ?
+		
 			if (isLastLine == false)
+			{
+				_formattingContextData.y += lineBoxHeight;
+				
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _containingDOMElementWidth);
+				
+				
+				_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
+
+				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+			}
+			//TODO : _layOutLastLine is sloppy
+			else if (_layOutLastLine == true)
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
@@ -559,7 +572,6 @@ class InlineFormattingContext extends FormattingContext
 
 				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 			}
-			
 			
 			
 		}
