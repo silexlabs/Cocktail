@@ -649,7 +649,7 @@ class AbstractStyle
 	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
 	 * formattingContext to be placed in the document flow
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
@@ -658,13 +658,7 @@ class AbstractStyle
 		//to the display list
 		if (isNotDisplayed() == true)
 		{
-			//hide the DOMElement
-			setNativeVisibility(false);
-			//return;
-		}
-		else
-		{
-			setNativeVisibility(true);
+			return;
 		}
 
 		//reset the computed styles, useful for instance to
@@ -703,11 +697,6 @@ class AbstractStyle
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
-		
-		var width:Float = _computedStyle.width;
-		var height:Float = _computedStyle.height;
-		
-		return _elementRenderer;
 	}
 	
 	/**
@@ -817,8 +806,11 @@ class AbstractStyle
 			//TODO : the only reason to insert the element remaining is to 
 			//position it vertically in an inline formatting context, create a 'stub' element ?
 			//check : will it work for a relaive container DOMElement ? -> doesn't work,
-			//only container moved, no the children neither the background, need to build a rendering
+			//only container moved, not the children neither the background, need to build a rendering
 			//tree of boxData instead of a flat array
+			//
+			//TODO : relative element are not placed correctly when a margin is applied to the formatting
+			//context root
 			if (isRelativePositioned() == true)
 			{
 				formattingContext.insertElement(_elementRenderer);

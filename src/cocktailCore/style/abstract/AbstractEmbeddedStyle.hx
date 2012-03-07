@@ -53,41 +53,12 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * When rendered, an embedded DOMElement first render its background,
-	 * border..., then it renders its embedded asset such as its picture
-	 * for an ImageDOMElement
-	 */
-	override public function render(nativeElement:NativeElement):Void
-	{
-		super.render(nativeElement);
-		return;
-		//the bounds for the background of an embedded DOMElement are its
-		//own dimensions
-		var height:Float = this._domElement.offsetHeight;
-		var width:Float = this._domElement.offsetWidth;
-		
-		//TODO : shouldn't have to do that ?
-		var x:Float = -_computedStyle.marginLeft - _computedStyle.paddingLeft;
-		var y:Float = -_computedStyle.marginTop  - _computedStyle.paddingTop;
-		
-		var nativeElements:Array<NativeElement> = [];
-		
-		//add the embedded asset to the rendering tree
-		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
-		nativeElements.push(embeddedDOMElement.embeddedAsset);
-		
-		_nativeElements = nativeElements;
-		
-		attachNativeElements(nativeElements);
-	}
-	
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		//TODO : set dimensions here ?
+		//TODO : set dimensions here, or in the embeddedBoxRenderer ?
 		elementRenderer.bounds.width = _computedStyle.width;
 		elementRenderer.bounds.height = _computedStyle.height;
 		
