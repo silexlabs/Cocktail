@@ -63,6 +63,12 @@ import cocktail.nativeElement.NativeElement;
 	 link;
 	 
 	 /**
+	  * an input where the user can type
+	  * text
+	  */
+	 textInput;
+	 
+	 /**
 	  * Can be any other type of native element.
 	  * The name can be used for instance in HTML
 	  * as a tag name

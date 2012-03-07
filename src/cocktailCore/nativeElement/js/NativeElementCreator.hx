@@ -63,6 +63,10 @@ class NativeElementCreator extends AbstractNativeElementCreator
 				
 			case link:
 				nativeElement = Lib.document.createElement("a");
+				
+			case textInput:
+				nativeElement = Lib.document.createElement("input");
+				untyped nativeElement.type = "text";
 		}
 		
 		return nativeElement;

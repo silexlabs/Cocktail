@@ -1,0 +1,6 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.TextInputDOMElementTests
+-lib utest
+-swf9 ../../bin/domElement/TextInputDOMElementTestAs3.swf
+-swf-version 10.1

@@ -37,7 +37,6 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	{
 		super.setSemantic(semantic);
 		
-		//TODO
 		//trace(this._nativeElement);
 	}
 }

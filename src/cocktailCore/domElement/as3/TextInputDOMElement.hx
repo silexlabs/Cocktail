@@ -5,25 +5,26 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement;
+package cocktailCore.domElement.as3;
+
+import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
+import cocktailCore.domElement.abstract.AbstractTextInputDOMElement;
 
 /**
- * Set the right runtime specific NativeElement at compile-time
+ * This is the flash AS3 implementation of the text input.
+ * 
+ * TODO : not implemented yet
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if (flash9)
-typedef NativeElement =  flash.display.DisplayObjectContainer;
-
-#elseif (nme || cpp)
-typedef NativeElement =  Dynamic;
-
-#elseif js
-import js.Dom;
-typedef NativeElement =  js.HtmlDom;
-
-#elseif php
-typedef NativeElement =  Xml;
-
-#elseif doc
-typedef NativeElement = Dynamic;
-
-#end
+class TextInputDOMElement extends AbstractTextInputDOMElement
+{
+	/**
+	 * class constructor
+	 */ 
+	public function new(nativeElement:NativeElement = null) 
+	{
+		super(nativeElement);
+	}
+}

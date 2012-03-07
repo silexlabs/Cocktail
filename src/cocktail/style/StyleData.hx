@@ -12,6 +12,9 @@ import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.InlineBoxRenderer;
+import cocktailCore.style.renderer.TextRenderer;
 	
 	
 		// FONT STYLES
@@ -572,6 +575,55 @@ import cocktailCore.style.formatter.FormattingContext;
 		autoValue;
 	}
 	
+		// VISUAL EFFECTS STYLES
+//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Specifies wether the content of a block container
+	 * is clipped when its content overflows
+	 * the block container boxes.
+	 * 
+	 * A different value can be provided for x and y.
+	 */
+	typedef OverflowStyleData = {
+		var x:OverflowStyleValue;
+		var y:OverflowStyleValue;
+	}
+	
+	/**
+	 * Lists the values that x and
+	 * y overflow can use
+	 */
+	enum OverflowStyleValue {
+		
+		/**
+		 * This value indicates that content is not clipped,
+		 * i.e., it may be rendered outside the block box. 
+		 */
+		visible;
+		
+		/**
+		 * This value indicates that the content is clipped and that
+		 * no scrolling user interface should be provided to
+		 * view the content outside the clipping region. 
+		 */
+		hidden;
+		
+		/**
+		 * This value indicates that the content is clipped and that if the
+		 * containing block displays a vertical or horizontal scrollbar.
+		 * The scrollbar is displayed even if the content of
+		 * the box is not clipped
+		 */
+		scroll;
+		
+		/**
+		 * The scrollbar are displayed as needed, only if a containing
+		 * block's content overflows
+		 */
+		autoValue;
+	}
+
 	/**
 	 * Specifies wether the DOMElement is
 	 * displayed. A hidden DOMElement
@@ -600,6 +652,204 @@ import cocktailCore.style.formatter.FormattingContext;
 	 */
 	enum OpacityStyleValue {
 		number(value:Float);
+	}
+	
+	/**
+	 * Specifiy a list of transormation to apply
+	 * to the DOMElement. The transformation
+	 * are applied in order. The final 
+	 * transformation is obtained by performing
+	 * a matrix concatenation of each entry in the list
+	 */
+	enum TransformStyleValue {
+		
+		/**
+		 * no transformations
+		 */
+		none;
+		
+		/**
+		 * A list of transformations
+		 * to apply in order
+		 */
+		transformFunctions(transformFunctions:Array<TransformFunctionValue>);
+		
+	}
+	
+	/**
+	 * The list of allowed transform functions to
+	 * apply to a DOMElement
+	 */
+	enum TransformFunctionValue {
+		
+		/**
+		 * specify a 2D transformation in the form of
+		 * a transformation matrix
+		 */
+		matrix(data:MatrixData);
+		
+		/**
+		 * specify a 2D translation by the vector [tx, ty]
+		 */
+		translate(tx:TranslationValue, ty:TranslationValue);
+		
+		/**
+		 * specifies a translation by the given amount in the
+		 * X direction
+		 */
+		translateX(tx:TranslationValue);
+		
+		/**
+		 * specifies a translation by the given amount in the
+		 * Y direction
+		 */
+		translateY(ty:TranslationValue);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [sx, sy] scaling vector
+		 */
+		scale(sx:Float, sy:Float);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [sx, 1] scaling vector
+		 */
+		scaleX(sx:Float);
+		
+		/**
+		 * Specifies a 2D scale operation by the
+		 * [1, sy] scaling vector
+		 */
+		scaleY(sy:Float);
+		
+		/**
+		 * specifies a 2D rotation by the angle specified in the
+		 * parameter about the origin of the element,
+		 * as defined by the TransformOriginStyleValue property
+		 */
+		rotate(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation
+		 * along the X axis by the given angle.
+		 */
+		skewX(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation
+		 * along the Y axis by the given angle.
+		 */
+		skewY(angle:AngleValue);
+		
+		/**
+		 * specifies a skew transformation 
+		 * along the X and Y axes.
+		 */
+		skew(angleX:AngleValue, angleY:AngleValue);
+	}
+	
+	/**
+	 * The list of value allowed to 
+	 * specify the amount of a translation
+	 */
+	enum TranslationValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative to the DOMElement
+		 * dimensions
+		 */
+		percent(value:Int);
+	}
+	
+	/**
+	 * Specifies the origin of transformation
+	 * for a DOMElement along the x and y
+	 * axis
+	 */
+	typedef TransformOriginStyleData = {
+		
+		/**
+		 * x axis origin
+		 */
+		var x:TransformOriginXStyleValue;
+		
+		/**
+		 * y axis origin
+		 */
+		var y:TransformOriginYStyleValue;
+		
+	}
+	
+	/**
+	 * The list of available transformation
+	 * origin values for x axis
+	 */
+	enum TransformOriginXStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's width
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		left;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		right;
+	}
+	
+	/**
+	 * The list of available transformation
+	 * origin values for y axis
+	 */
+	enum TransformOriginYStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		top;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		bottom;
 	}
 	
 		// BACKGROUND STYLES
@@ -849,208 +1099,7 @@ import cocktailCore.style.formatter.FormattingContext;
 		 * use the intrinsic dimensions
 		 * of the image
 		 */
-		auto;
-	}
-
-	// TRANSFORMATION STYLES
-//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Specifiy a list of transormation to apply
-	 * to the DOMElement. The transformation
-	 * are applied in order. The final 
-	 * transformation is obtained by performing
-	 * a matrix concatenation of each entry in the list
-	 */
-	enum TransformStyleValue {
-		
-		/**
-		 * no transformations
-		 */
-		none;
-		
-		/**
-		 * A list of transformations
-		 * to apply in order
-		 */
-		transformFunctions(transformFunctions:Array<TransformFunctionValue>);
-		
-	}
-	
-	/**
-	 * The list of allowed transform functions to
-	 * apply to a DOMElement
-	 */
-	enum TransformFunctionValue {
-		
-		/**
-		 * specify a 2D transformation in the form of
-		 * a transformation matrix
-		 */
-		matrix(data:MatrixData);
-		
-		/**
-		 * specify a 2D translation by the vector [tx, ty]
-		 */
-		translate(tx:TranslationValue, ty:TranslationValue);
-		
-		/**
-		 * specifies a translation by the given amount in the
-		 * X direction
-		 */
-		translateX(tx:TranslationValue);
-		
-		/**
-		 * specifies a translation by the given amount in the
-		 * Y direction
-		 */
-		translateY(ty:TranslationValue);
-		
-		/**
-		 * Specifies a 2D scale operation by the
-		 * [sx, sy] scaling vector
-		 */
-		scale(sx:Float, sy:Float);
-		
-		/**
-		 * Specifies a 2D scale operation by the
-		 * [sx, 1] scaling vector
-		 */
-		scaleX(sx:Float);
-		
-		/**
-		 * Specifies a 2D scale operation by the
-		 * [1, sy] scaling vector
-		 */
-		scaleY(sy:Float);
-		
-		/**
-		 * specifies a 2D rotation by the angle specified in the
-		 * parameter about the origin of the element,
-		 * as defined by the TransformOriginStyleValue property
-		 */
-		rotate(angle:AngleValue);
-		
-		/**
-		 * specifies a skew transformation
-		 * along the X axis by the given angle.
-		 */
-		skewX(angle:AngleValue);
-		
-		/**
-		 * specifies a skew transformation
-		 * along the Y axis by the given angle.
-		 */
-		skewY(angle:AngleValue);
-		
-		/**
-		 * specifies a skew transformation 
-		 * along the X and Y axes.
-		 */
-		skew(angleX:AngleValue, angleY:AngleValue);
-	}
-	
-	/**
-	 * The list of value allowed to 
-	 * specify the amount of a translation
-	 */
-	enum TranslationValue {
-		
-		/**
-		 * a length value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * a percentage relative to the DOMElement
-		 * dimensions
-		 */
-		percent(value:Int);
-	}
-	
-	/**
-	 * Specifies the origin of transformation
-	 * for a DOMElement along the x and y
-	 * axis
-	 */
-	typedef TransformOriginStyleData = {
-		
-		/**
-		 * x axis origin
-		 */
-		var x:TransformOriginXStyleValue;
-		
-		/**
-		 * y axis origin
-		 */
-		var y:TransformOriginYStyleValue;
-		
-	}
-	
-	/**
-	 * The list of available transformation
-	 * origin values for x axis
-	 */
-	enum TransformOriginXStyleValue {
-		
-		/**
-		 * a length value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * a percentage relative
-		 * to the DOMElement's width
-		 */
-		percent(value:Int);
-		
-		/**
-		 * same as 0%
-		 */
-		left;
-		
-		/**
-		 * same as 50%
-		 */
-		center;
-		
-		/**
-		 * same as 100%
-		 */
-		right;
-	}
-	
-	/**
-	 * The list of available transformation
-	 * origin values for y axis
-	 */
-	enum TransformOriginYStyleValue {
-		
-		/**
-		 * a length value
-		 */
-		length(value:LengthValue);
-		
-		/**
-		 * a percentage relative
-		 * to the DOMElement's height
-		 */
-		percent(value:Int);
-		
-		/**
-		 * same as 0%
-		 */
-		top;
-		
-		/**
-		 * same as 50%
-		 */
-		center;
-		
-		/**
-		 * same as 100%
-		 */
-		bottom;
+		autoValue;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1163,8 +1212,13 @@ import cocktailCore.style.formatter.FormattingContext;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
 		var lineHeight:Float;
+		
+		/**
+		 * visual effects
+		 */
 		var opacity:Float;
 		var visibility:Bool;
+		var overflow:OverflowStyleData;
 		var transformOrigin:PointData;
 		var transform:Matrix;
 		
@@ -1384,57 +1438,8 @@ import cocktailCore.style.formatter.FormattingContext;
 		var spaceWidth:Int;
 	}
 	
-	/**
-	 * Defines a DOMElement added to a box
-	 * and its type
-	 */
-	typedef BoxElementData = {
-		var element:BoxElementValue;
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
-	}
 	
-	typedef BoxData = {
-		var parentDOMElement:DOMElement;
-		var bounds:RectangleData;
-		var children:Array<BoxElementData>;
-		var textDecorations:Array<TextDecorationData>;
-	}
-	
-	typedef TextDecorationData = {
-		var color:Int;
-		var start:PointData;
-		var end:PointData;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Enums
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Lists the different kind of
-	 * boxes that can be added in an
-	 * inline formatting context.
-	 * 
-	 * Spaces and tabs are separated
-	 * from other domElement as they
-	 * can influence a linebox layout
-	 * once it is complete
-	 * 
-	 * TODO : seems excessive to store parentDOMElement for each
-	 * 
-	 * TODO : add a construct for root containing block ?
-	 */
-	enum BoxElementValue {
-		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		float(domElement:DOMElement, parentDOMElement:DOMElement);
-		text(domElement:DOMElement, parentDOMElement:DOMElement);
-		offset(value:Int, parentDOMElement:DOMElement );
-		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
-		lineFeed(whiteSpace:WhiteSpaceStyleValue, parentDOMElement:DOMElement);
-		tab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, parentDOMElement:DOMElement);
+	typedef InlineBoxData = {
+		var element:InlineBoxRenderer;
+		var children:Array<ElementRenderer>;
 	}

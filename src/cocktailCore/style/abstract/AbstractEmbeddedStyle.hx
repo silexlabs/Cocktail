@@ -19,6 +19,9 @@ import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.EmbeddedBoxRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)
@@ -50,34 +53,18 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * When rendered, an embedded DOMElement first render its background,
-	 * border..., then it renders its embedded asset such as its picture
-	 * for an ImageDOMElement
-	 */
-	override public function render():Void
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		super.render();
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		//the bounds for the background of an embedded DOMElement are its
-		//own dimensions
-		var height:Float = this._domElement.offsetHeight;
-		var width:Float = this._domElement.offsetWidth;
+		//TODO : set dimensions here, or in the embeddedBoxRenderer ?
+		elementRenderer.bounds.width = _computedStyle.width;
+		elementRenderer.bounds.height = _computedStyle.height;
 		
-		//TODO : shouldn't have to do that ?
-		var x:Float = -_computedStyle.marginLeft - _computedStyle.paddingLeft;
-		var y:Float = -_computedStyle.marginTop  - _computedStyle.paddingTop;
+		parentElementRenderer.addChild(elementRenderer);
 		
-		var nativeElements:Array<NativeElement> = _backgroundManager.render( { x:x, y:y, width:width,
-		height:height }, cast(this));
-		
-		//add the embedded asset to the rendering tree
-		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
-		nativeElements.push(embeddedDOMElement.embeddedAsset);
-		
-		_nativeElements = nativeElements;
-		
-		attachNativeElements(nativeElements);
+		return elementRenderer;
 	}
 
 	
