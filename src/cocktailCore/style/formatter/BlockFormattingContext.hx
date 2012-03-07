@@ -30,7 +30,6 @@ class BlockFormattingContext extends FormattingContext
 	
 	private var _currentAddedSiblingsHeight:Int;
 	
-	private var _lastInsertedElement:ElementRenderer;
 	
 	/**
 	 * class constructor
@@ -95,6 +94,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
+		//TODO : should not use offset dimensions
 		var width:Float = element.domElement.offsetWidth;
 		var height:Float = element.domElement.offsetHeight;
 		
@@ -112,11 +112,6 @@ class BlockFormattingContext extends FormattingContext
 			
 			_formattingContextData.y += Math.round(element.bounds.height);
 			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-		
-		
-	//	getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
-		
-			
 	}
 	
 
@@ -143,7 +138,6 @@ class BlockFormattingContext extends FormattingContext
 			_formattingContextData.y += Math.round(element.bounds.height);
 			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
 			
-		//getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
 			
 	}
 	
@@ -169,7 +163,6 @@ class BlockFormattingContext extends FormattingContext
 			
 			_formattingContextData.y += Math.round(element.bounds.height);
 			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-			//getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
 	}
 
 	

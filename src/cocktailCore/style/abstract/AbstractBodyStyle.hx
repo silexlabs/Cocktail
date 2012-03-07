@@ -131,7 +131,7 @@ class AbstractBodyStyle extends ContainerStyle
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
+	/**
 	 * An inline-level DOMElement is one that is
 	 * laid out on a line. It will be placed
 	 * either next to the preceding DOMElement

@@ -59,12 +59,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private var _unbreakableWidth:Int;
 
-	/**
-	 * a reference to the last inserted element in the line, used for 
-	 * instance when a space is inserted to checkk if the previous
-	 * element was also a space and if it should be collapsed
-	 */
-	private var _lastInsertedElement:ElementRenderer;
+
 	
 	private var _currentInlineBoxesData:Array<InlineBoxData>;
 	
@@ -133,7 +128,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;
 			
-		addWidth(element.domElement.offsetWidth);
+		addWidth(Math.round(element.bounds.width));
 			
 		insertBreakOpportunity(false);
 		
@@ -150,26 +145,13 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;
 			
-		addWidth(element.domElement.offsetWidth);
+		addWidth(Math.round(element.bounds.width));
 			
 		insertBreakOpportunity(false);
 		
 	}
 	
-	/**
-	 * Insert a DOMElement which isn't laid out. For instance an inline level inline
-	 * container is not laid out, its rendered x and y position will always be to the
-	 * top left of its formatting context. This is necessary as its content might span
-	 * multiple line boxes.
-	 * 
-	 * It must still be inserted into the formatting context to be in the array of
-	 * elements to render
-	 * 
-	 * TODO : ideally shouldn't have to insert those elements 
-	 * 
-	 * @param	domElement
-	 * @param	parentDOMElement
-	 */
+
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
 		_unbreakableLineBoxElements.push(element);
@@ -186,7 +168,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;	
 		
-		addWidth(element.domElement.offsetWidth);
+		addWidth(Math.round(element.bounds.width));
 
 	}
 	
@@ -206,7 +188,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			_lastInsertedElement = element;	
 			
-			addWidth(element.domElement.offsetWidth);
+			addWidth(Math.round(element.bounds.width));
 			
 			insertBreakOpportunity(false);
 		//}
@@ -565,7 +547,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			//TODO : when formatting to find a static position it works, however, when formatting
 			//to find the max height of the formatting context, it doesn't work, as the last line
-			//isn't laid out
+			//isn't laid out. Add a method measure() ?
 			if (isLastLine == false)
 			{
 				_formattingContextData.y += lineBoxHeight;
@@ -588,6 +570,65 @@ class InlineFormattingContext extends FormattingContext
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
+	
+	private function getBounds(elements:Array<ElementRenderer>):RectangleData
+	{
+
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		
+		for (i in 0...elements.length)
+		{
+			if (elements[i].bounds.x < left)
+			{
+				left = elements[i].bounds.x;
+			}
+			if (elements[i].bounds.y < top)
+			{
+				if (elements[i].isText() == false)
+				{
+					top = elements[i].bounds.y;
+				}
+				else
+				{
+					top = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent;
+				}
+				
+			}
+			if (elements[i].bounds.x + elements[i].bounds.width > right)
+			{
+				right = elements[i].bounds.x + elements[i].bounds.width;
+			}
+			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
+			{
+				if (elements[i].isText() == false)
+				{
+					bottom = elements[i].bounds.y + elements[i].bounds.height;
+				}
+				//TODO : ascent is not leaded
+				else
+				{
+					bottom = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent + elements[i].bounds.height;
+				}
+			}
+		}
+			
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+				
+				
+		return bounds;
+		
+	}
 	
 	//TODO : re-implement
 	private function removeSpaces():Void
@@ -783,7 +824,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 			_elementsInLineBox[i].bounds.x = flowX ;
-			flowX += _elementsInLineBox[i].domElement.offsetWidth;
+			flowX += Math.round(_elementsInLineBox[i].bounds.width);
 			
 		}
 	}
