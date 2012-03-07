@@ -142,6 +142,8 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
+		element.bounds.width = element.domElement.offsetWidth;
+		element.bounds.height = element.domElement.offsetHeight;
 		
 		insertBreakOpportunity(false);
 		
@@ -167,7 +169,6 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertText(element:ElementRenderer):Void
 	{
-		
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;	
 		
@@ -503,6 +504,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				if (_elementsInLineBox[i].parent != _containingDOMElement.style.elementRenderer)
 				{
+				
 					getParentInlineBoxesData(cast(_elementsInLineBox[i].parent)).children.push(_elementsInLineBox[i]);
 				}
 				else
@@ -511,7 +513,7 @@ class InlineFormattingContext extends FormattingContext
 				}
 			}
 			
-			 for (i in 0..._currentInlineBoxesData.length)
+			for (i in 0..._currentInlineBoxesData.length)
 			{		
 				for (j in 0..._currentInlineBoxesData[i].children.length)
 				{
@@ -608,7 +610,20 @@ class InlineFormattingContext extends FormattingContext
 				}
 				else
 				{
-					top = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent;
+					var domElement:DOMElement = elements[i].domElement;
+					
+					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
+				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
+					
+					top = elements[i].bounds.y - domElementAscent;
 				}
 				
 			}
@@ -625,7 +640,21 @@ class InlineFormattingContext extends FormattingContext
 				//TODO : ascent is not leaded
 				else
 				{
-					bottom = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent + elements[i].bounds.height;
+					
+						var domElement:DOMElement = elements[i].domElement;
+					
+					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
+				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
+					
+					bottom = elements[i].bounds.y - domElementAscent + elements[i].bounds.height;
 				}
 			}
 		}
@@ -878,9 +907,11 @@ class InlineFormattingContext extends FormattingContext
 			
 			//for embedded or inlineBlock elements, which have no baseline, the height above
 			//the baseline is the offset height and they have no descent
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
+			if (_elementsInLineBox[i].canHaveChildren() == false && _elementsInLineBox[i].isText() == false ||
+			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
 				domElementAscent = domElement.offsetHeight;
+				
 				domElementDescent = 0;
 				
 				switch (domElement.style.verticalAlign)
@@ -946,11 +977,16 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y;
+			
+
+			
 			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
 			//so that its bottom margin touches the baseline
-			if (domElement.style.isEmbedded() == true || domElement.style.display == inlineBlock)
-			{
-				
+			
+			//TODO : simplify, need a isEmbedded() method on ElementRenderer
+			if (_elementsInLineBox[i].canHaveChildren() == false && _elementsInLineBox[i].isText() == false ||
+			_elementsInLineBox[i].establishesNewFormattingContext() == true)
+			{	
 				
 				switch (domElement.style.verticalAlign)
 				{

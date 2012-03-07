@@ -528,7 +528,7 @@ class AbstractStyle
 	 */ 
 	public function render(nativeElement:NativeElement):Void
 	{
-		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement);
+		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement, 0.0, 0.0);
 		_nativeElements.reverse();
 		attachNativeElements(_nativeElements);
 	}
@@ -1140,6 +1140,8 @@ class AbstractStyle
 	 * DOMElement. For example an ImageDOMElement is an
 	 * embedded DOMElement as it embeds a picture in the
 	 * document. An embedded DOMElement can't have children
+	 * 
+	 * TODO : shouldn't be useful anymore
 	 */
 	public function isEmbedded():Bool
 	{

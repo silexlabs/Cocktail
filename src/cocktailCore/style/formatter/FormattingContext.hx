@@ -138,6 +138,7 @@ class FormattingContext
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
+		
 		//format all the box element in order
 		for (i in 0..._elementsInFormattingContext.length)
 		{

@@ -37,6 +37,10 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * if the width is set to 'auto', then this method is called once all the children
 	 * of the inlineBlock are laid out
+	 * 
+	 * TODO : doesn't return the right value when inline-block establishing inline formatting context in inline formatting context
+	 * with 'auto'
+	 * , maybe should use the available width
 	 */
 	override public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
 	{
