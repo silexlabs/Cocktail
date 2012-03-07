@@ -78,13 +78,20 @@ Précisions à apporter:
 -swippableListView :contient trois vues différentes des memes données => OK
 -background bien utilisé => OK
  => domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/header.jpg"))];
--remplacement du titre du header fait de manière correcte ? => bug noté
+-remplacement du titre du header fait de manière correcte => OK mais pas pratique => bug noté
 -ApplicationController::goBackToListView à retirer et à laisser uniquement dans le ViewManager => OK
 -How to remove text cursor on non-editable texts => firefox bug, not happening in chrome
 -scrollbar visible when using swippable view => corrected by using overflow=hidden on body
 -touchevents to be used on touch devices
+-mouse move is not listened to on bottom of right and left lists => OK
+-best way to update an image url without keeping visually the previous one (cf. detail view) ?
+-is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell ?
 
-Missing useful fucntionnalitites in cocktail
+Missing useful functionalities in cocktail
 -zIndex
+
+Cocktail remarks:
+-when using a text or images, I always end up using it within a container to apply the styles
+-not possible to replace text within a container
 
 
