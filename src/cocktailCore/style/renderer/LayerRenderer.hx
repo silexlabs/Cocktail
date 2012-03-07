@@ -1,6 +1,7 @@
 package cocktailCore.style.renderer;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
+import cocktail.style.StyleData;
 
 /**
  * ...
@@ -16,17 +17,16 @@ class LayerRenderer
 		_rootRenderer = rootRenderer;
 	}
 	
-	public function render(nativeElement:NativeElement):Array<NativeElement>
+	public function render(nativeElement:NativeElement, xOffset:Float, yOffset:Float):Array<NativeElement>
 	{
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
+		xOffset += _rootRenderer.bounds.x;
+		yOffset += _rootRenderer.bounds.y;
+		
 		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false)
 		{
-			
-
-				ret = _rootRenderer.renderBackground();
-				
-				var d = renderChildLayer(nativeElement);
+				var d = renderChildLayer(nativeElement, xOffset, yOffset);
 				
 				for (i in 0...d.length)
 				{
@@ -46,7 +46,21 @@ class LayerRenderer
 				{
 					ret.push(bg[i]);
 				}
-			
+				
+				#if flash9
+				for (i in 0...ret.length)
+				{
+					ret[i].x += xOffset;
+					ret[i].y += yOffset;
+				}
+				#end
+				
+				var boum = _rootRenderer.renderBackground();
+				
+				for (i in 0...boum.length)
+				{
+					ret.push(boum[i]);
+				}
 			
 		//	renderChildrenNonPositionedFloats();
 		}
@@ -59,6 +73,8 @@ class LayerRenderer
 				ret.push(e[i]);
 			}
 		}
+		
+		
 		
 		return ret;
 	}
@@ -82,14 +98,15 @@ class LayerRenderer
 	}
 	
 	
-	private function renderChildLayer(nativeElement:NativeElement):Array<NativeElement>
+	private function renderChildLayer(nativeElement:NativeElement, xOffset:Float, yOffset:Float):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)
 		{
-			var nativeElements:Array<NativeElement> = childLayers[i].render(nativeElement);
+			var nativeElements:Array<NativeElement> = childLayers[i].render(nativeElement, xOffset, yOffset);
 			for (j in 0...nativeElements.length)
 			{
 				ret.push(nativeElements[j]);
@@ -132,13 +149,36 @@ class LayerRenderer
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
+		var xOffset:Int = 0;
+		var yOffset:Int = 0;
+		
 		for (i in 0...inFlowChildren.length)
 		{
 			var nativeElements:Array<NativeElement> = inFlowChildren[i].render();
+			
+			
+			if (inFlowChildren[i].establishesNewFormattingContext() == true)
+			{
+				xOffset += Math.round(inFlowChildren[i].bounds.x);
+				yOffset += Math.round(inFlowChildren[i].bounds.y);
+			}
+			
+			
 			for (j in 0...nativeElements.length)
 			{
+				
+				
+				
+				#if flash9
+					nativeElements[j].x += xOffset;
+					nativeElements[j].y += yOffset;
+				#end
 				ret.push(nativeElements[j]);
 			}
+			
+			
+
+			
 		}
 		
 		return ret;
@@ -146,36 +186,55 @@ class LayerRenderer
 	
 	private function getInFlowChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
+		
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		for (i in 0...rootRenderer.children.length)
+		
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.domElement.style.childrenInline() == true)
 		{
-			if (rootRenderer.children[i].layerRenderer == this)
+			for (j in 0...rootRenderer.lineBoxes.length)
 			{
-				if (rootRenderer.domElement.style.establishesNewFormattingContext() == true && rootRenderer.domElement.style.childrenInline() == true)
+				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					for (j in 0...rootRenderer.lineBoxes.length)
+					
+					ret.push(rootRenderer.lineBoxes[j][k]);
+					if (rootRenderer.lineBoxes[j][k].establishesNewFormattingContext() == true)
 					{
-						for (k in 0...rootRenderer.lineBoxes[j].length)
+						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.lineBoxes[j][k]));
+						for (l in 0...childElementRenderer.length)
 						{
-							ret.push(rootRenderer.lineBoxes[j][k]);
+							ret.push(childElementRenderer[l]);
 						}
+						
+						
 					}
 				}
-				else if (rootRenderer.children[i].domElement.style.isPositioned() == false)
+			}
+			
+		
+		}
+		else
+		{
+			for (i in 0...rootRenderer.children.length)
+			{
+				if (rootRenderer.children[i].layerRenderer == this)
 				{
-					if (rootRenderer.children[i].canHaveChildren() == true)
+					if (rootRenderer.children[i].domElement.style.isPositioned() == false)
 					{
-						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
-						for (j in 0...childElementRenderer.length)
+						if (rootRenderer.children[i].canHaveChildren() == true)
 						{
-							ret.push(childElementRenderer[j]);
+							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
+							for (j in 0...childElementRenderer.length)
+							{
+								ret.push(childElementRenderer[j]);
+							}
 						}
+						
+						ret.push(rootRenderer.children[i]);
 					}
-					
-					ret.push(rootRenderer.children[i]);
 				}
 			}
 		}
+		
 		return ret;
 	}
 	

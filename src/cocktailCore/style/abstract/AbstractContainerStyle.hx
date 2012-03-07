@@ -78,7 +78,7 @@ class AbstractContainerStyle extends Style
 	{
 		var elementRenderer:ElementRenderer;
 		
-		if (isInlineLevel() == true)
+		if (isInlineLevel() == true && establishesNewFormattingContext() == false)
 		{
 			elementRenderer = new InlineBoxRenderer(_domElement);
 		}
@@ -333,7 +333,7 @@ class AbstractContainerStyle extends Style
 				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
 				//formatting context
 				var boxElementData:ElementRenderer = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-			
+				
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
 				//

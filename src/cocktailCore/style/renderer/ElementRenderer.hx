@@ -39,6 +39,11 @@ class ElementRenderer
 		}
 	}
 	
+	public function establishesNewFormattingContext():Bool
+	{
+		return false;
+	}
+	
 	public function canHaveChildren():Bool
 	{
 		return false;

@@ -31,6 +31,11 @@ class FlowBoxRenderer extends BoxRenderer
 		elementRenderer.parent = this;
 	}
 	
+	override public function establishesNewFormattingContext():Bool
+	{
+		return _domElement.style.establishesNewFormattingContext();
+	}
+	
 	public function addLineBox(lineBoxElements:Array<ElementRenderer>):Void
 	{
 		_lineBoxes.push(lineBoxElements);
