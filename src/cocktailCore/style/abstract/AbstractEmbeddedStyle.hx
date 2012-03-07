@@ -53,6 +53,9 @@ class AbstractEmbeddedStyle extends Style
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Create an ElementRenderer for embedded elements and attach it to its parent ElementRenderer
+	 */
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);

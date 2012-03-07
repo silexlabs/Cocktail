@@ -161,7 +161,7 @@ class LayerRenderer
 						}
 					}
 				}
-				else if (rootRenderer.children[i].domElement.style.isInFlow() == true)
+				else if (rootRenderer.children[i].domElement.style.isPositioned() == false)
 				{
 					if (rootRenderer.children[i].canHaveChildren() == true)
 					{

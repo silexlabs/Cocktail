@@ -66,32 +66,14 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When rendering, a ContainerStyle first calls the render
-	 * method recursively on all its children, then retrieve
-	 * the data of all the boxes it is laid out into (for instance
-	 * an inline container DOMElement laid out on multiple lines has
-	 * one box for each line) and attach all its backgrounds, children...
-	 * 
-	 * TODO : in As3, as DisplayObjectContainer have now a width and height of 0
-	 * most of the time and children are not attached to them, mouse event
-	 * don't work anymore
+	 * ContainerDOMElement create either a BlockBoxRenderer or an InlineBoxRenderer
+	 * depending on wheter they participate in a block or inline formatting context
+	 * then attach it to their parent ElementRenderer
 	 */
-	override public function render(nativeElement:NativeElement):Void
-	{
-		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement);
-		_nativeElements.reverse();
-		attachNativeElements(_nativeElements);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		var elementRenderer:ElementRenderer;
@@ -106,15 +88,10 @@ class AbstractContainerStyle extends Style
 		}
 		
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
-
 		parentElementRenderer.addChild(elementRenderer);
-		
-	
 		
 		return elementRenderer;
 	}
-	
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHODS
@@ -127,6 +104,7 @@ class AbstractContainerStyle extends Style
 	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered and displayed
 	 * 
 	 * TODO : containingDOMElementData replaced by elementRenderer ?
+	 * TODO : allow start rendering for element other than BodyDOMElement ?
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
@@ -140,6 +118,9 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Lay out all the children of the ContainerDOMElement
+	 * 
+	 * TODO : use other structure for ViewPortData, isAuto is useless
+	 * for it
 	 */
 	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -192,7 +173,7 @@ class AbstractContainerStyle extends Style
 		//of the ContainerDOMElement as reference
 		childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
 		
-		//flow all children and store their laid out position in the formatting context, relative to the ContainerDOMElement
+		//flow all children and store their laid out position in the created child ElementRenderers, relative to the ContainerDOMElement
 		//which started the children formatting context
 		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 	
@@ -200,6 +181,7 @@ class AbstractContainerStyle extends Style
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
 		{
+			//TODO : sloppy
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
 			
@@ -207,6 +189,8 @@ class AbstractContainerStyle extends Style
 			//a new layout must happen
 			if (currentWidth != this._computedStyle.width)
 			{
+				//TODO : shouldn't to ready all the configuration again, put in a separate method
+				
 				//update the structures used for the layout and starts a new layout
 				childrenFormattingContext = getformattingContext(formattingContext);
 				childrenContainingDOMElementData = getContainerDOMElementData();
@@ -234,17 +218,13 @@ class AbstractContainerStyle extends Style
 			if (establishesNewFormattingContext() == false)
 			{
 				childrenFormattingContext.format();
-				this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
 			}
-			else
-			{
-				this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
-			}
+			
+			this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
 		}
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
-		//for its children and it is its responsability to position them. An array containing all their
-		//laid out positions is returned and stored, to be used during rendering
+		//for its children and it is its responsability to position them.
 		doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
 	}
 	
@@ -254,10 +234,11 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Actually flow all the children of the ContainerDOMElement
+	 * 
+	 * TODO : re-add the code to insert offset before and after children ?
 	 */
 	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
-		
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
 		
@@ -278,7 +259,8 @@ class AbstractContainerStyle extends Style
 			{
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
-				
+				//add the created TextRenderer to the ContainerDOMElement
+				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
 					flowBoxRenderer.addChild(insertedText[j]);
@@ -287,12 +269,12 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//prompt the children formatting context, to format all the children
-		//that were added to it. After this call, an array of all the boxes
-		//created by this formatting context becomes available
+		//ElementRenderer that were added to it. After this call, all the
+		//ElementRenderer have the right bounds
 		//
 		//This method is only called if a new formatting
 		//context was established by this ContainerDOMElement,
-		//meaning that it also is responsible to start its formatting.
+		//meaning that it also is responsible toformat it
 		if (establishesNewFormattingContext() == true)
 		{
 			childrenFormattingContext.format();
@@ -309,15 +291,17 @@ class AbstractContainerStyle extends Style
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
 	{
-		
 		var boxElementsData:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
+		//TODO : sloppy, shouldn't even be called if ContainerDOMElement is not positioned
+		//it is needed to be overriden by BodyStyle for now
 		if (isFirstPositionedAncestor == true)
 		{
 			//update the data of the ContainerDOMElement now that its width and height are known
 			childLastPositionedDOMElementData.data = getContainerDOMElementData();
 			
 			//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+			//TODO : sloppy
 			childLastPositionedDOMElementData.data.height = getComputedHeight();
 			
 			//position each stored children
@@ -331,6 +315,7 @@ class AbstractContainerStyle extends Style
 				
 				//the domElement which started the formatting context of the child is retrieved
 				//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
+				//maybe should instead find first parent which starts a formatting context
 				var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
 				
 				//the offsets between this ContainerDOMElement and the domElement which started the formatting
@@ -338,16 +323,17 @@ class AbstractContainerStyle extends Style
 				//positioned DOMElement
 				
 				//TODO : should not use globalX/Y, should instead find first common ancestor ?
+				//positioned children should first find its formattingContextRoot, then go up
+				//the tree until the formatting context of its positioned ancestor is found
 				var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
 				var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
 				positionedDOMElementData.staticPosition.x += xOffset;
 				positionedDOMElementData.staticPosition.y += yOffset;
 				
-				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement
+				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
+				//formatting context
 				var boxElementData:ElementRenderer = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 			
-				
-				
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
 				//
@@ -360,7 +346,6 @@ class AbstractContainerStyle extends Style
 		}
 		
 		return boxElementsData;
-		
 	}
 	
 	/**
@@ -386,7 +371,7 @@ class AbstractContainerStyle extends Style
 			switch(textFragments[i].textToken)
 			{
 				//TODO : duplicated code, not need for a switch anymore, add method createFromTextToken ?
-				//
+				//TextRenderer should be in charge of creating the right native text element
 				case word(value):
 					//insert a word in the flow
 					var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragments[i], value);
@@ -419,8 +404,6 @@ class AbstractContainerStyle extends Style
 			}
 		}	
 		return rendereredText;
-		
-		return [];
 	}
 	
 	/**
@@ -522,6 +505,95 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the ContainerDOMElement
+	 * establishes a new formatting context for
+	 * its children
+	 */
+	override public function establishesNewFormattingContext():Bool
+	{
+		var ret:Bool = false;
+		
+		//floats always establishes new context
+		if (isFloat() == true)
+		{
+			ret = true;
+		}
+		//positioned element which are not relative always establishes new context
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			ret = true;
+		}
+		//element with an inline-block display style
+		//alwyas establishes a new context
+		else
+		{
+			switch (this._computedStyle.display)
+			{
+				case inlineBlock:
+				ret = true; 
+				//a block DOMElement may start a new inline
+				//formatting context if all its children are inline,
+				//else its children participate in the current block formatting
+				//context
+				case block:
+					if (childrenInline() == true)
+					{
+						ret = true;
+					}
+					
+				default:
+			}
+		}
+		
+		//in the other cases such as an inline level inline container
+		//the current formatting context is used
+		
+		return ret;
+	}
+	
+	/**
+	 * Determine wether the children of this DOMElement
+	 * are all block level or if they are all inline level
+	 * elements
+	 * 
+	 * TODO : throw exception when there is a float in the children
+	 * 
+	 * TODO : shouldn't be public, but now used by ElementRenderer
+	 * 
+	 * @return true if all children are inline level DOMElements
+	 */
+	override public function childrenInline():Bool
+	{
+		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
+		
+		//return false for a container with no children
+		if (containerDOMElement.children.length == 0)
+		{
+			return false;
+		}
+		
+		//establish if the first child is inline or block
+		//all other child must be of the same type
+		var ret:Bool = isChildInline(containerDOMElement.children[0]);
+		
+		//loop in all children and throw an exception
+		//if one the children is not of the same type as the first
+		for (i in 0...containerDOMElement.children.length)
+		{
+			if (isChildInline(containerDOMElement.children[i]) != ret)
+			{
+				//throw "children of a block container can only be either all block or all inline";
+			}
+		}
+		
+		return ret;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -609,44 +681,6 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Determine wether the children of this DOMElement
-	 * are all block level or if they are all inline level
-	 * elements
-	 * 
-	 * TODO : throw exception when there is a float in the children
-	 * 
-	 * TODO : shouldn't be public, but now used by ElementRenderer
-	 * 
-	 * @return true if all children are inline level DOMElements
-	 */
-	override public function childrenInline():Bool
-	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
-		//return false for a container with no children
-		if (containerDOMElement.children.length == 0)
-		{
-			return false;
-		}
-		
-		//establish if the first child is inline or block
-		//all other child must be of the same type
-		var ret:Bool = isChildInline(containerDOMElement.children[0]);
-		
-		//loop in all children and throw an exception
-		//if one the children is not of the same type as the first
-		for (i in 0...containerDOMElement.children.length)
-		{
-			if (isChildInline(containerDOMElement.children[i]) != ret)
-			{
-				//throw "children of a block container can only be either all block or all inline";
-			}
-		}
-		
-		return ret;
-	}
-	
-	/**
 	 * Determine wether a children is inline or not
 	 */
 	private function isChildInline(child:ContainerDOMElementChildData):Bool
@@ -710,54 +744,7 @@ class AbstractContainerStyle extends Style
 		
 		return childLastPositionedDOMElementData;
 	}
-	
-	/**
-	 * Determine wether the ContainerDOMElement
-	 * establishes a new formatting context for
-	 * its children
-	 */
-	override public function establishesNewFormattingContext():Bool
-	{
-		var ret:Bool = false;
-		
-		//floats always establishes new context
-		if (isFloat() == true)
-		{
-			ret = true;
-		}
-		//positioned element which are not relative always establishes new context
-		else if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			ret = true;
-		}
-		//element with an inline-block display style
-		//alwyas establishes a new context
-		else
-		{
-			switch (this._computedStyle.display)
-			{
-				case inlineBlock:
-				ret = true; 
-				//a block DOMElement may start a new inline
-				//formatting context if all its children are inline,
-				//else its children participate in the current block formatting
-				//context
-				case block:
-					if (childrenInline() == true)
-					{
-						ret = true;
-					}
-					
-				default:
-			}
-		}
-		
-		//in the other cases such as an inline level inline container
-		//the current formatting context is used
-		
-		return ret;
-	}
-	
+
 	/**
 	 * Determine wheter the container DOMElement
 	 * is an inline or block container. For instance,
