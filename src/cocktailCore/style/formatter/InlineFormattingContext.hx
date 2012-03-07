@@ -14,7 +14,6 @@ import cocktail.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.InlineBoxRenderer;
-import cocktailCore.style.renderer.LineBoxRenderer;
 import haxe.Log;
 
 /**
@@ -79,7 +78,6 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		_currentInlineBoxesData = new Array<InlineBoxData>();
-		
 		super(domElement);
 		
 		//set the textIndent as an offset on the first line of text
@@ -93,6 +91,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = 0;
 		var flowBoxRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
 		flowBoxRenderer.removeLineBoxes();
+		_currentInlineBoxesData = new Array<InlineBoxData>();
 		
 		
 		super.format();
@@ -129,7 +128,6 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertEmbeddedElement(element:ElementRenderer):Void
 	{
-		
 		insertBreakOpportunity(false);
 		
 		_unbreakableLineBoxElements.push(element);
@@ -527,11 +525,12 @@ class InlineFormattingContext extends FormattingContext
 					lineBoxElements.push(_elementsInLineBox[i]);
 				}
 			}
-	
-			 	for (i in 0..._currentInlineBoxesData.length)
+			
+			 for (i in 0..._currentInlineBoxesData.length)
 			{		
 				for (j in 0..._currentInlineBoxesData[i].children.length)
 				{
+				
 					lineBoxElements.push(_currentInlineBoxesData[i].children[j]);
 				}
 				
