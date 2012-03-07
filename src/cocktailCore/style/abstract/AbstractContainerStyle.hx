@@ -203,7 +203,6 @@ class AbstractContainerStyle extends Style
 			var currentWidth:Int = this._computedStyle.width;
 			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
 			
-				
 			//if the computed width of the ContainerDOMElement was shrinked, then
 			//a new layout must happen
 			if (currentWidth != this._computedStyle.width)
@@ -241,7 +240,6 @@ class AbstractContainerStyle extends Style
 			{
 				this._computedStyle.height = applyContentHeightIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxHeight);
 			}
-			
 		}
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
@@ -308,8 +306,6 @@ class AbstractContainerStyle extends Style
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
-	 * 
-	 * TODO : check if fixed positioning still works
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
 	{
@@ -389,6 +385,8 @@ class AbstractContainerStyle extends Style
 		{
 			switch(textFragments[i].textToken)
 			{
+				//TODO : duplicated code, not need for a switch anymore, add method createFromTextToken ?
+				//
 				case word(value):
 					//insert a word in the flow
 					var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragments[i], value);
@@ -480,6 +478,8 @@ class AbstractContainerStyle extends Style
 	 * Take a TextFragmentData and a text, and create
 	 * a TextFragmentDOMElement from it if it doesn't already
 	 * exists. If it does, return it
+	 * 
+	 * TODO : move to TextElement ?
 	 */
 	private function getTextFragmentDOMElement(textFragmentData:TextFragmentData, text:String):TextFragmentDOMElement
 	{
@@ -614,6 +614,8 @@ class AbstractContainerStyle extends Style
 	 * elements
 	 * 
 	 * TODO : throw exception when there is a float in the children
+	 * 
+	 * TODO : shouldn't be public, but now used by ElementRenderer
 	 * 
 	 * @return true if all children are inline level DOMElements
 	 */

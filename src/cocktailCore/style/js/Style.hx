@@ -81,7 +81,7 @@ class Style extends AbstractStyle
 	/**
 	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
 	 */
-	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{	
 		//make the children store their own position and dimension
 		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
@@ -94,8 +94,6 @@ class Style extends AbstractStyle
 		
 		//The DOMElement is set to valid to allow future re layout
 		this._isDirty = false;
-		
-		return null;
 	}
 	
 	/////////////////////////////////

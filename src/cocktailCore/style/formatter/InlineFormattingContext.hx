@@ -563,6 +563,9 @@ class InlineFormattingContext extends FormattingContext
 			_currentInlineBoxesData = new Array<InlineBoxData>();
 			_elementsInLineBox = new Array<ElementRenderer>();
 			
+			//TODO : when formatting to find a static position it works, however, when formatting
+			//to find the max height of the formatting context, it doesn't work, as the last line
+			//isn't laid out
 			if (isLastLine == false)
 			{
 				_formattingContextData.y += lineBoxHeight;

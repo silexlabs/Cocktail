@@ -73,7 +73,6 @@ class AbstractBodyStyle extends ContainerStyle
 	{
 		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
 		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
-		//TODO : not the right bounds
 
 		return elementRenderer;
 	}

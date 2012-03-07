@@ -25,9 +25,12 @@ class ElementRenderer
 	private var _layerRenderer:LayerRenderer;
 	public var layerRenderer(getLayerRenderer, setLayerRenderer):LayerRenderer;
 	
+	//TODO : should take a Style object ref instead of DOMElement ?
 	public function new(domElement:DOMElement) 
 	{
 		_domElement = domElement;
+		
+		//create/set bounds in Style instead ?
 				_bounds = {
 			x:0.0,
 			y:0.0,

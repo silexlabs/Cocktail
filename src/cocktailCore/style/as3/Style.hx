@@ -90,6 +90,7 @@ class Style extends AbstractStyle
 	 */
 	override private function attachNativeElement(nativeElement:NativeElement):Void
 	{
+	
 		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
@@ -109,18 +110,6 @@ class Style extends AbstractStyle
 	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		super.setNativeX(domElement, x);
-		domElement.nativeElement.x = x;
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		super.setNativeY(domElement, y);
-		domElement.nativeElement.y = y;
-	}
 	
 	override public function setNativeOpacity(opacity:Float):Void
 	{
