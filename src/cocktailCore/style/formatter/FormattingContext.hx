@@ -132,7 +132,7 @@ class FormattingContext
 		_elementsInFormattingContext.push(element);
 	}
 	
-	public function format():Void
+	public function format(layOutLastLine:Bool = false):Void
 	{	
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block

@@ -46,7 +46,7 @@ class BlockFormattingContext extends FormattingContext
 	 * 
 	 * TODO : implement margin collapsing
 	 */
-	override public function format():Void
+	override public function format(layOutLastLine:Bool = false):Void
 	{
 		
 		//init/reset the formating context data to insert the first element at the

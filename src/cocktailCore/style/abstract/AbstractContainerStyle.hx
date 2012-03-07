@@ -277,7 +277,7 @@ class AbstractContainerStyle extends Style
 		//meaning that it also is responsible toformat it
 		if (establishesNewFormattingContext() == true)
 		{
-			childrenFormattingContext.format();
+			childrenFormattingContext.format(true);
 		}
 		
 		return childrenFormattingContext;
