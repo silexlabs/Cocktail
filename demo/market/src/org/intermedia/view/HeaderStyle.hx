@@ -49,7 +49,11 @@ class HeaderStyle
 		domElement.style.height = DimensionStyleValue.length(px(Constants.HEADER_HEIGHT));
 		
 		//domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url( new URLData("assets/header.jpg")))];
-		domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/header.jpg"))];
+		domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
+		
+		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
+		/*domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
+		colorStops:[{color:ColorValue.rgba(0, 255, 0,0.7), stop:GradientStopValue.percent(0)}, {color:ColorValue.rgba(255, 0, 0,0.3), stop:GradientStopValue.percent(100)} ]} )))];*/
 	}
 
 	/**

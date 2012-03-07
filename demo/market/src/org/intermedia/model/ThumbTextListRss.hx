@@ -40,7 +40,7 @@ class ThumbTextListRss
 		{
 			if (channelChild.nodeName == "item")
 			{
-				var cell:CellData = { id:0, title:"", author:"Posted ", thumbUrl:"", category:""};
+				var cell:CellData = { id:0, title:"", author:"", thumbUrl:"", category:""};
 				//var cell:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
 				
 				// for each node
@@ -91,7 +91,7 @@ class ThumbTextListRss
 								cell.comment = cell.comment  + "by " + authorInfo.firstChild().nodeValue + " ";
 							}
 						}*/
-						cell.author = cell.author  + "by " + itemParam.firstChild().nodeValue + " ";
+						cell.author = itemParam.firstChild().nodeValue;
 					}
 					
 					// if node is a date

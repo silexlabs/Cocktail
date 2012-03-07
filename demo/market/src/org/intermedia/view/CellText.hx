@@ -21,9 +21,8 @@ class CellText extends CellBase
 	}
 	
 	/**
-	 * build view
+	 * update view
 	 */
-	//override private function buildView():Void
 	override private function updateView():Void
 	{
 		var cellData:CellData = _data;
@@ -39,21 +38,6 @@ class CellText extends CellBase
 			this.addChild(cellTextContainer);
 		}
 			
-		// image part
-		/*if (cellData.imagePath != "" && cellData.imagePath != null)
-		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
-			// set image style
-			listStyle.cellImage(cellImage);
-			// add image
-			//cell.addChild(cellImage);
-			cellContent.push(cellImage);
-			// load image
-			cellImage.load(cellData.imagePath);
-		}*/
-		
-		// LINE
-		
 		// add separation line
 		var line:ImageDOMElement = new ImageDOMElement();
 		// set image style
