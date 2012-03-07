@@ -1,0 +1,12 @@
+# build binary file
+-cp ../src
+-cp ../../../src/
+-main org.intermedia.Application
+-js ../bin/WebApp.js
+-lib feffects
+#--dead-code-elimination
+
+# minimize
+-cmd haxelib install jsmin
+-cmd haxelib run jsmin ../bin/WebApp.js ../bin/WebApp_min.js
+-cmd move /Y ../bin/WebApp_min.js ../bin/WebApp.js
