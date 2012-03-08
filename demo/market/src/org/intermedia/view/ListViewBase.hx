@@ -1,5 +1,6 @@
 package org.intermedia.view;
 
+import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -34,6 +35,51 @@ class ListViewBase extends ViewBase
 	}
 	
 	/**
+	 * update view
+	 */
+	override private function updateView():Void
+	{
+		for (index in Reflect.fields(_data))
+		{
+			// build cell
+			//var cell:CellThumbText1 = new CellThumbText1();
+			var cell:CellBase = createCell();
+			
+			// set cell data
+			cell.data = Reflect.field(_data, index);
+			
+			// set mouseUp callback
+			cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
+			
+			// push created cell to _cells
+			_cells.push(cell);
+
+			// add cell to list
+			this.addChild(cell);
+		}
+	}
+	
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	private function createCell():CellBase
+	{
+		var cell:CellBase = new CellBase();
+		return cell;
+	}
+	
+	/*private function onCellSelected(cellData:CellData):Void
+	{
+		if (onListItemSelected != null)
+		{
+			onListItemSelected(cellData);
+		}
+	}*/
+	
+	/**
 	 * onListItemSelected callback
 	 * @param	cellData
 	 */
@@ -44,4 +90,5 @@ class ListViewBase extends ViewBase
 			onListItemSelected(cellData);
 		}
 	}
+	
 }

@@ -1,3 +1,10 @@
+/*
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+
 package org.intermedia.view;
 
 import cocktail.mouse.MouseData;
@@ -19,35 +26,15 @@ class ListViewText extends ListViewBase
 	}
 	
 	/**
-	 * update view
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
 	 */
-	override private function updateView():Void
+	override private function createCell():CellBase
 	{
-		for (index in Reflect.fields(_data))
-		{
-			// build cell
-			var cell:CellText = new CellText();
-			
-			// set cell data
-			cell.data = Reflect.field(_data, index);
-			
-			// set mouseUp callback
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellSelected(cell.data); };
-			
-			// push created cell to _cells
-			_cells.push(cell);
-
-			// add cell to list
-			this.addChild(cell);
-		}
-	}
-	
-	private function onCellSelected(cellData:CellData):Void
-	{
-		if (onListItemSelected != null)
-		{
-			onListItemSelected(cellData);
-		}
+		var cell:CellText = new CellText();
+		return cell;
 	}
 	
 }

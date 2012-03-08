@@ -18,43 +18,27 @@ import org.intermedia.model.ApplicationModel;
 
 class ThumbTextList1Bis extends ListViewBase
 {
-
-	public function new()
+	// defines cells per line
+	private var _cellsPerLine:Int;
+	
+	public function new(?cellPerLine:Int = 1)
 	{
+		_cellsPerLine = cellPerLine;
 		super();
 		ListViewStyle.setListStyle(this);
 	}
 	
 	/**
-	 * update view
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
 	 */
-	override private function updateView():Void
+	override private function createCell():CellBase
 	{
-		for (index in Reflect.fields(_data))
-		{
-			// build cell
-			var cell:CellThumbText1Bis = new CellThumbText1Bis();
-			
-			// set cell data
-			cell.data = Reflect.field(_data, index);
-			
-			// set mouseUp callback
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellSelected(cell.data); };
-			
-			// push created cell to _cells
-			_cells.push(cell);
-
-			// add cell to list
-			this.addChild(cell);
-		}
+		var cell:CellThumbText1Bis = new CellThumbText1Bis(_cellsPerLine);
+		return cell;
 	}
 	
-	private function onCellSelected(cellData:CellData):Void
-	{
-		if (onListItemSelected != null)
-		{
-			onListItemSelected(cellData);
-		}
-	}
 	
 }
