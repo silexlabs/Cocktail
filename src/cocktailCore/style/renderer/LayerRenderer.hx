@@ -66,8 +66,8 @@ class LayerRenderer
 		
 		else
 		{
-			ret = _rootRenderer.renderBackground();
-			var e = _rootRenderer.render();
+			ret = _rootRenderer.render();
+			var e = _rootRenderer.renderBackground();
 			for (i in 0...e.length)
 			{
 				ret.push(e[i]);
@@ -163,6 +163,15 @@ class LayerRenderer
 				ret.push(nativeElements[j]);
 			}
 			
+			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
+			{
+				var bg = inFlowChildren[i].renderBackground();
+				
+				for (j in 0...bg.length)
+				{
+					ret.push(bg[j]);
+				}
+			}
 			
 
 			
