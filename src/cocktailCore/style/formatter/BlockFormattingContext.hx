@@ -160,14 +160,6 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-			
 			
 	}
 	
@@ -186,13 +178,7 @@ class BlockFormattingContext extends FormattingContext
 			}
 			
 			
-			if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+		
 	}
 
 	
