@@ -122,8 +122,6 @@ class LayerRenderer
 	{
 		var ret:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
-		
-		
 		for (i in 0...rootRenderer.children.length)
 		{
 			if (rootRenderer.children[i].layerRenderer == referenceLayer)
@@ -160,13 +158,8 @@ class LayerRenderer
 			var nativeElements:Array<NativeElement> = inFlowChildren[i].render();
 			
 			
-			
-			
 			for (j in 0...nativeElements.length)
 			{
-				
-				
-			
 				ret.push(nativeElements[j]);
 			}
 			
@@ -214,16 +207,24 @@ class LayerRenderer
 				{
 					if (rootRenderer.children[i].domElement.style.isPositioned() == false)
 					{
+						ret.push(rootRenderer.children[i]);
 						if (rootRenderer.children[i].canHaveChildren() == true)
 						{
 							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
 							for (j in 0...childElementRenderer.length)
 							{
+								if (rootRenderer.children[i].establishesNewFormattingContext() == true)
+								{
+									childElementRenderer[j].bounds.x += rootRenderer.children[i].bounds.x;
+									childElementRenderer[j].bounds.y += rootRenderer.children[i].bounds.y;
+								}
+							
+								
 								ret.push(childElementRenderer[j]);
 							}
 						}
 						
-						ret.push(rootRenderer.children[i]);
+						
 					}
 				}
 			}

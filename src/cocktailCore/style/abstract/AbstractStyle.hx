@@ -595,7 +595,7 @@ class AbstractStyle
 	{
 		var layerRenderer:LayerRenderer;
 		
-		if (isPositioned() == true || isFloat() == true)
+		if (isPositioned() == true || isFloat() == true || _display == inlineBlock)
 		{
 			layerRenderer = new LayerRenderer(elementRenderer);
 		}
@@ -779,6 +779,8 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
+	
+		
 		//insert in the flow
 		if (isPositioned() == false)
 		{
@@ -794,6 +796,7 @@ class AbstractStyle
 			formattingContext.format();
 			
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
+			Log.trace(staticPosition);
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
