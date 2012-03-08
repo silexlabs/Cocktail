@@ -29,6 +29,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		#if flash9
 		embeddedDOMElement.embeddedAsset.x = _bounds.x;
 		embeddedDOMElement.embeddedAsset.y = _bounds.y;
+		//TODO : should only take asset height
 		embeddedDOMElement.embeddedAsset.width = _bounds.width;
 		embeddedDOMElement.embeddedAsset.height = _bounds.height;
 		
