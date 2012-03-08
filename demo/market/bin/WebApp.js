@@ -6126,6 +6126,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		}
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this.animate();
+		js.Lib.window.scrollTo(0,0);
 		this.setOnMouseMove(null);
 		this.setOnMouseUp(null);
 		$s.pop();
