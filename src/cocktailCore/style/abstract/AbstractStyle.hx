@@ -795,8 +795,8 @@ class AbstractStyle
 			//To retrieve the static position, the formatting context must be formatted now
 			formattingContext.format();
 			
+			//TODO : doc
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			Log.trace(staticPosition);
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
