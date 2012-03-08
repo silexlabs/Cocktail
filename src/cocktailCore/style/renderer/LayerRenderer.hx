@@ -17,16 +17,15 @@ class LayerRenderer
 		_rootRenderer = rootRenderer;
 	}
 	
-	public function render(nativeElement:NativeElement, xOffset:Float, yOffset:Float):Array<NativeElement>
+	public function render(nativeElement:NativeElement):Array<NativeElement>
 	{
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		xOffset += _rootRenderer.bounds.x;
-		yOffset += _rootRenderer.bounds.y;
 		
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false)
+		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false
+		|| _rootRenderer.domElement.style.display == inlineBlock)
 		{
-				var d = renderChildLayer(nativeElement, xOffset, yOffset);
+				var d = renderChildLayer(nativeElement);
 				
 				for (i in 0...d.length)
 				{
@@ -50,8 +49,8 @@ class LayerRenderer
 				#if flash9
 				for (i in 0...ret.length)
 				{
-					ret[i].x += xOffset;
-					ret[i].y += yOffset;
+					ret[i].x += _rootRenderer.bounds.x;
+					ret[i].y += _rootRenderer.bounds.y;
 				}
 				#end
 				
@@ -64,6 +63,7 @@ class LayerRenderer
 			
 		//	renderChildrenNonPositionedFloats();
 		}
+		
 		else
 		{
 			ret = _rootRenderer.renderBackground();
@@ -98,15 +98,17 @@ class LayerRenderer
 	}
 	
 	
-	private function renderChildLayer(nativeElement:NativeElement, xOffset:Float, yOffset:Float):Array<NativeElement>
+	private function renderChildLayer(nativeElement:NativeElement):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+		
+		childLayers.reverse();
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)
 		{
-			var nativeElements:Array<NativeElement> = childLayers[i].render(nativeElement, xOffset, yOffset);
+			var nativeElements:Array<NativeElement> = childLayers[i].render(nativeElement);
 			for (j in 0...nativeElements.length)
 			{
 				ret.push(nativeElements[j]);
@@ -119,6 +121,8 @@ class LayerRenderer
 	private function getChildLayers(rootRenderer:FlowBoxRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
 	{
 		var ret:Array<LayerRenderer> = new Array<LayerRenderer>();
+		
+		
 		
 		for (i in 0...rootRenderer.children.length)
 		{
@@ -149,30 +153,20 @@ class LayerRenderer
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		var xOffset:Int = 0;
-		var yOffset:Int = 0;
+	
 		
 		for (i in 0...inFlowChildren.length)
 		{
 			var nativeElements:Array<NativeElement> = inFlowChildren[i].render();
 			
 			
-			if (inFlowChildren[i].establishesNewFormattingContext() == true)
-			{
-				xOffset += Math.round(inFlowChildren[i].bounds.x);
-				yOffset += Math.round(inFlowChildren[i].bounds.y);
-			}
 			
 			
 			for (j in 0...nativeElements.length)
 			{
 				
 				
-				
-				#if flash9
-					nativeElements[j].x += xOffset;
-					nativeElements[j].y += yOffset;
-				#end
+			
 				ret.push(nativeElements[j]);
 			}
 			
@@ -195,13 +189,15 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					
 					ret.push(rootRenderer.lineBoxes[j][k]);
 					if (rootRenderer.lineBoxes[j][k].establishesNewFormattingContext() == true)
 					{
 						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.lineBoxes[j][k]));
 						for (l in 0...childElementRenderer.length)
 						{
+							childElementRenderer[l].bounds.x += rootRenderer.lineBoxes[j][k].bounds.x;
+							childElementRenderer[l].bounds.y += rootRenderer.lineBoxes[j][k].bounds.y;
+							
 							ret.push(childElementRenderer[l]);
 						}
 						
@@ -209,8 +205,6 @@ class LayerRenderer
 					}
 				}
 			}
-			
-		
 		}
 		else
 		{

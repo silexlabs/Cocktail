@@ -528,7 +528,7 @@ class AbstractStyle
 	 */ 
 	public function render(nativeElement:NativeElement):Void
 	{
-		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement, 0.0, 0.0);
+		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement);
 		_nativeElements.reverse();
 		attachNativeElements(_nativeElements);
 	}
@@ -789,21 +789,11 @@ class AbstractStyle
 		{
 			//retrieve the static position (the position of the DOMElement
 			//if its position style were 'static')
-			var x:Float = 0.0;
-			var y:Float = 0.0;
 			
 			//To retrieve the static position, the formatting context must be formatted now
 			formattingContext.format();
 			
-			//x and y of the formatting context are now the point where the next in-flow element
-			//would be inserted
-			x = formattingContext.formattingContextData.x;
-			y = formattingContext.formattingContextData.y;
-			
-			var staticPosition:PointData = {
-				x:x,
-				y:y
-			}
+			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
