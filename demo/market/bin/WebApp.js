@@ -6050,7 +6050,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	var list0 = new org.intermedia.view.ListViewText();
 	list0.setX(-this._viewportWidth);
 	this._listViews.push(list0);
-	var list1 = new org.intermedia.view.ListViewText();
+	var list1 = new org.intermedia.view.ThumbTextList1Bis();
 	list1.setX(0);
 	this._listViews.push(list1);
 	var list2 = new org.intermedia.view.ThumbTextList1();
@@ -7860,6 +7860,51 @@ cocktailCore.style.computer.DisplayStylesComputer.getComputedClear = function(st
 cocktailCore.style.computer.DisplayStylesComputer.prototype = {
 	__class__: cocktailCore.style.computer.DisplayStylesComputer
 }
+org.intermedia.view.CellThumbText1Bis = $hxClasses["org.intermedia.view.CellThumbText1Bis"] = function() {
+	$s.push("org.intermedia.view.CellThumbText1Bis::new");
+	var $spos = $s.length;
+	org.intermedia.view.CellBase.call(this);
+	org.intermedia.view.CellThumbText1BisStyle.setCellStyle(this);
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1Bis.__name__ = ["org","intermedia","view","CellThumbText1Bis"];
+org.intermedia.view.CellThumbText1Bis.__super__ = org.intermedia.view.CellBase;
+org.intermedia.view.CellThumbText1Bis.prototype = $extend(org.intermedia.view.CellBase.prototype,{
+	updateView: function() {
+		$s.push("org.intermedia.view.CellThumbText1Bis::updateView");
+		var $spos = $s.length;
+		var cellData = this._data;
+		if(cellData.thumbUrl != "" && cellData.thumbUrl != null) {
+			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			org.intermedia.view.CellThumbText1BisStyle.setThumbnailStyle(cellImage);
+			this.addChild(cellImage);
+			cellImage.load(cellData.thumbUrl);
+		}
+		var cellTextBlockContainer = new cocktailCore.domElement.js.ContainerDOMElement();
+		org.intermedia.view.CellThumbText1Style.setTextBlockStyle(cellTextBlockContainer);
+		this.addChild(cellTextBlockContainer);
+		if(cellData.title != "" && cellData.title != null) {
+			var cellTitleContainer = new cocktailCore.domElement.js.ContainerDOMElement();
+			var textElement = new cocktailCore.textElement.js.TextElement(cellData.title);
+			cellTitleContainer.addText(textElement);
+			org.intermedia.view.CellThumbText1BisStyle.setTitleStyle(cellTitleContainer);
+			cellTextBlockContainer.addChild(cellTitleContainer);
+		}
+		if(cellData.author != "" && cellData.author != null) {
+			var cellAuthorContainer = new cocktailCore.domElement.js.ContainerDOMElement();
+			var textElement = new cocktailCore.textElement.js.TextElement(cellData.author);
+			cellAuthorContainer.addText(textElement);
+			org.intermedia.view.CellThumbText1BisStyle.setAuthorStyle(cellAuthorContainer);
+			cellTextBlockContainer.addChild(cellAuthorContainer);
+		}
+		var line = new cocktailCore.domElement.js.ImageDOMElement();
+		org.intermedia.view.CellThumbText1BisStyle.setLineStyle(line);
+		this.addChild(line);
+		line.load("assets/greyPixel.png");
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.CellThumbText1Bis
+});
 cocktailCore.resource.js.SkinLoader = $hxClasses["cocktailCore.resource.js.SkinLoader"] = function() {
 	$s.push("cocktailCore.resource.js.SkinLoader::new");
 	var $spos = $s.length;
@@ -9399,6 +9444,52 @@ Reflect.makeVarArgs = function(f) {
 Reflect.prototype = {
 	__class__: Reflect
 }
+org.intermedia.view.ThumbTextList1Bis = $hxClasses["org.intermedia.view.ThumbTextList1Bis"] = function() {
+	$s.push("org.intermedia.view.ThumbTextList1Bis::new");
+	var $spos = $s.length;
+	org.intermedia.view.ListViewBase.call(this);
+	org.intermedia.view.ListViewStyle.setListStyle(this);
+	$s.pop();
+}
+org.intermedia.view.ThumbTextList1Bis.__name__ = ["org","intermedia","view","ThumbTextList1Bis"];
+org.intermedia.view.ThumbTextList1Bis.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	updateView: function() {
+		$s.push("org.intermedia.view.ThumbTextList1Bis::updateView");
+		var $spos = $s.length;
+		var me = this;
+		var _g = 0, _g1 = Reflect.fields(this._data);
+		while(_g < _g1.length) {
+			var index = _g1[_g];
+			++_g;
+			var cell = [new org.intermedia.view.CellThumbText1Bis()];
+			cell[0].setData(Reflect.field(this._data,index));
+			cell[0].setOnMouseUp((function(cell) {
+				$s.push("org.intermedia.view.ThumbTextList1Bis::updateView@42");
+				var $spos = $s.length;
+				var $tmp = function(mouseEventData) {
+					$s.push("org.intermedia.view.ThumbTextList1Bis::updateView@42@42");
+					var $spos = $s.length;
+					me.onCellSelected(cell[0].getData());
+					$s.pop();
+				};
+				$s.pop();
+				return $tmp;
+				$s.pop();
+			})(cell));
+			this._cells.push(cell[0]);
+			this.addChild(cell[0]);
+		}
+		$s.pop();
+	}
+	,onCellSelected: function(cellData) {
+		$s.push("org.intermedia.view.ThumbTextList1Bis::onCellSelected");
+		var $spos = $s.length;
+		if(this.onListItemSelected != null) this.onListItemSelected(cellData);
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.ThumbTextList1Bis
+});
 if(!cocktail.mouse) cocktail.mouse = {}
 cocktail.mouse.MouseCursorValue = $hxClasses["cocktail.mouse.MouseCursorValue"] = { __ename__ : ["cocktail","mouse","MouseCursorValue"], __constructs__ : ["custom","autoValue","none","native"] }
 cocktail.mouse.MouseCursorValue.custom = function(imageDOMElement,hotSpot) { var $x = ["custom",0,imageDOMElement,hotSpot]; $x.__enum__ = cocktail.mouse.MouseCursorValue; $x.toString = $estr; return $x; }
@@ -9678,6 +9769,7 @@ org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbTe
 	$s.push("org.intermedia.view.CellThumbText1::new");
 	var $spos = $s.length;
 	org.intermedia.view.CellBase.call(this);
+	org.intermedia.view.CellTextStyle.setCellStyle(this);
 	$s.pop();
 }
 org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
@@ -14248,6 +14340,87 @@ haxe.Public.__name__ = ["haxe","Public"];
 haxe.Public.prototype = {
 	__class__: haxe.Public
 }
+org.intermedia.view.CellThumbText1BisStyle = $hxClasses["org.intermedia.view.CellThumbText1BisStyle"] = function() { }
+org.intermedia.view.CellThumbText1BisStyle.__name__ = ["org","intermedia","view","CellThumbText1BisStyle"];
+org.intermedia.view.CellThumbText1BisStyle.setCellStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setCellStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(50));
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setThumbnailStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setThumbnailStyle");
+	var $spos = $s.length;
+	var imageMaxWidth = 200;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(30));
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setTextBlockStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setTextBlockStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.percent(2));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(55));
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setTextStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setTextStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#202020"));
+	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("HelveticaNeue"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setTitleStyle = function(domElement,screenResolutionSize) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setTitleStyle");
+	var $spos = $s.length;
+	org.intermedia.view.CellThumbText1BisStyle.setTextStyle(domElement);
+	var fontSize = 14;
+	if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.small) fontSize = 14; else if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.normal) fontSize = 16; else fontSize = 18;
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(fontSize)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setAuthorStyle = function(domElement,screenResolutionSize) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setAuthorStyle");
+	var $spos = $s.length;
+	org.intermedia.view.CellThumbText1BisStyle.setTextStyle(domElement);
+	var fontSize = 10;
+	if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.small) fontSize = 10; else if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.normal) fontSize = 11; else fontSize = 12;
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(fontSize)));
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.normal);
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.setLineStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbText1BisStyle::setLineStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(1)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1BisStyle.prototype = {
+	__class__: org.intermedia.view.CellThumbText1BisStyle
+}
 var feffects = feffects || {}
 feffects.Tween = $hxClasses["feffects.Tween"] = function(init,end,dur,_obj,_prop,easing) {
 	$s.push("feffects.Tween::new");
@@ -16209,6 +16382,7 @@ cocktailCore.drawing.js.DrawingManager.JOINT_STYLE_VALUE_MITER = "miter";
 cocktailCore.drawing.js.DrawingManager.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktailCore.drawing.js.DrawingManager.CANVAS_PATTERN_REPEAT = "repeat";
 cocktailCore.drawing.js.DrawingManager.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
+org.intermedia.view.CellThumbText1BisStyle.CELL_VERTICAL_SPACE = 5;
 feffects.Tween._aTweens = new haxe.FastList();
 feffects.Tween._aPaused = new haxe.FastList();
 feffects.Tween.INTERVAL = 10;

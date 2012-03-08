@@ -69,7 +69,7 @@ class SwippableListView extends ListViewBase
 		var list0:ListViewBase = new ListViewText();
 		list0.x = -_viewportWidth;
 		_listViews.push(list0);
-		var list1:ListViewBase = new ListViewText();
+		var list1:ListViewBase = new ThumbTextList1Bis();
 		list1.x = 0;
 		_listViews.push(list1);
 		var list2:ThumbTextList1 = new ThumbTextList1();

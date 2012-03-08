@@ -13,13 +13,13 @@ import org.intermedia.view.CellThumbText1Style;
  * @author Raphael Harmel
  */
 
-class CellThumbText1 extends CellBase
+class CellThumbText1Bis extends CellBase
 {
 
 	public function new() 
 	{
 		super();
-		CellTextStyle.setCellStyle(this);
+		CellThumbText1BisStyle.setCellStyle(this);
 		
 	}
 	
@@ -39,7 +39,7 @@ class CellThumbText1 extends CellBase
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-			CellThumbText1Style.setThumbnailStyle(cellImage);
+			CellThumbText1BisStyle.setThumbnailStyle(cellImage);
 			// add image
 			this.addChild(cellImage);
 			// load image
@@ -61,7 +61,7 @@ class CellThumbText1 extends CellBase
 			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
 			var textElement:TextElement = new TextElement(cellData.title);
 			cellTitleContainer.addText(textElement);
-			CellThumbText1Style.setTitleStyle(cellTitleContainer);
+			CellThumbText1BisStyle.setTitleStyle(cellTitleContainer);
 			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellTitleContainer);
 		}
@@ -72,7 +72,7 @@ class CellThumbText1 extends CellBase
 			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
 			var textElement:TextElement = new TextElement(cellData.author);
 			cellAuthorContainer.addText(textElement);
-			CellThumbText1Style.setAuthorStyle(cellAuthorContainer);
+			CellThumbText1BisStyle.setAuthorStyle(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellAuthorContainer);
 		}
@@ -83,7 +83,7 @@ class CellThumbText1 extends CellBase
 		// add separation line
 		var line:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		CellTextStyle.setCellLineStyle(line);
+		CellThumbText1BisStyle.setLineStyle(line);
 		this.addChild(line);
 		line.load("assets/greyPixel.png");
 
