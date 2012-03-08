@@ -222,6 +222,12 @@ class SwippableListView extends ListViewBase
 		// tween the swippable view in the correct position
 		animate();
 		
+		// js wokaround to scroll up
+		#if js
+		js.Lib.window.scrollTo(0, 0);
+		//js.Lib.window.scrollTo(0,null);
+		#end
+		
 		// unset onMouseMove & onMouseUp callbacks
 		onMouseMove = null;
 		onMouseUp = null;

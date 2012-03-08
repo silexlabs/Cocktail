@@ -73,7 +73,7 @@ header et sous-header
 
 ----------------------------------
 
-Précisions à apporter:
+Q/A:
 -loadingView: vue avec animation de chargement => oui, utiliser actuate
 -swippableListView :contient trois vues différentes des memes données => OK
 -background bien utilisé => OK
@@ -83,15 +83,20 @@ Précisions à apporter:
 -How to remove text cursor on non-editable texts => firefox bug, not happening in chrome
 -scrollbar visible when using swippable view => corrected by using overflow=hidden on body
 -touchevents to be used on touch devices
--mouse move is not listened to on bottom of right and left lists => OK
--best way to update an image url without keeping visually the previous one (cf. detail view) ?
--is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell ?
+-mouse move is not listened to on bottom of right and left lists
+-best way to update an image url without keeping visually the previous one (cf. detail view) => using visible none or loader image
+
+To Do
+-is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell
+ => yes, by sending the cell type to the constructor
+
+Cocktail remarks:
+-when using a text, I always end up using it within a container to apply the styles
+ => could create a helper to emulate a flash textfield
 
 Missing useful functionalities in cocktail
 -zIndex
-
-Cocktail remarks:
--when using a text or images, I always end up using it within a container to apply the styles
 -not possible to replace text within a container
+-is ScrollTo available ?
 
 
