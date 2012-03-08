@@ -132,6 +132,13 @@ class FormattingContext
 		_elementsInFormattingContext.push(element);
 	}
 	
+	public function getStaticPosition(element:ElementRenderer):PointData
+	{
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		return {x:x, y:y};
+	}
+	
 	public function format(layOutLastLine:Bool = false):Void
 	{	
 		//init/reset the formating context data to insert the first element at the

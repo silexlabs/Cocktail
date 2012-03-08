@@ -75,8 +75,44 @@ class BlockFormattingContext extends FormattingContext
 					
 			_lastInsertedElement = _elementsInFormattingContext[i];
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			
+			if (_elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
+			{
+				_formattingContextData.maxWidth = Math.round(_elementsInFormattingContext[i].bounds.width);
+			}	
+			
+			_formattingContextData.y += Math.round(_elementsInFormattingContext[i].bounds.height);
+			_currentAddedSiblingsHeight += Math.round(_elementsInFormattingContext[i].bounds.height);
+			
+			if (_elementsInFormattingContext[i].bounds.height > _formattingContextData.maxHeight)
+			{
+				_formattingContextData.maxHeight = Math.round(_elementsInFormattingContext[i].bounds.height);
+			}	
+			
 		}
 		
+	}
+	
+	override public function getStaticPosition(element:ElementRenderer):PointData
+	{
+		if (isSiblingOfLastInsertedElement(element))
+			{
+				
+			}
+			else if (isParentOfLastInsertedElement(element))
+			{
+				_formattingContextData.y -= _currentAddedSiblingsHeight;
+				_currentAddedSiblingsHeight = 0;
+					
+			}
+			else
+			{
+				_currentAddedSiblingsHeight = 0;	
+			}
+		
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		return {x:x, y:y};
 	}
 	
 	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
@@ -105,13 +141,7 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+	
 	}
 	
 
