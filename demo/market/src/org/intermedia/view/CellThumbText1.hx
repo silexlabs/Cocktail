@@ -6,6 +6,7 @@ import cocktail.textElement.TextElement;
 import cocktail.domElement.ImageDOMElement;
 
 import org.intermedia.view.CellThumbText1Style;
+import org.intermedia.view.StyleModel;
 
 /**
  * Base class for list cell. Each ListView has its own cell class inherited from this one.
@@ -15,11 +16,32 @@ import org.intermedia.view.CellThumbText1Style;
 
 class CellThumbText1 extends CellBase
 {
+	// cell style
+	private var _cellStyle:CellThumbText1StyleModel;
 
-	public function new() 
+	/**
+	 * 
+	 * 
+	 * @param	?cellPerLine	number of cells per line
+	 */
+	public function new(?cellPerLine:Int = 1) 
 	{
 		super();
-		CellTextStyle.setCellStyle(this);
+		initCellStyle();
+		_cellStyle.cell(this,cellPerLine);
+	}
+	
+	private function initCellStyle():Void
+	{
+		// init style model
+		_cellStyle = {
+			cell:CellThumbText1Style.setCellStyle,
+			thumbnail:CellThumbText1Style.setThumbnailStyle,
+			textBlock:CellThumbText1Style.setTextBlockStyle,
+			title:CellThumbText1Style.setTitleStyle,
+			author:CellThumbText1Style.setAuthorStyle,
+			line:CellThumbText1Style.setLineStyle
+		}
 		
 	}
 	
@@ -30,7 +52,6 @@ class CellThumbText1 extends CellBase
 	{
 		var cellData:CellData = _data;
 		
-		
 		// THUMBNAIL
 		
 		// image part
@@ -39,7 +60,7 @@ class CellThumbText1 extends CellBase
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-			CellThumbText1Style.setThumbnailStyle(cellImage);
+			_cellStyle.thumbnail(cellImage);
 			// add image
 			this.addChild(cellImage);
 			// load image
@@ -51,7 +72,7 @@ class CellThumbText1 extends CellBase
 		
 		// add text block
 		var cellTextBlockContainer:ContainerDOMElement = new ContainerDOMElement();
-		CellThumbText1Style.setTextBlockStyle(cellTextBlockContainer);
+		_cellStyle.textBlock(cellTextBlockContainer);
 		//listStyle.cellTextBlock(cellTextBlockContainer);
 		this.addChild(cellTextBlockContainer);
 		
@@ -61,7 +82,7 @@ class CellThumbText1 extends CellBase
 			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
 			var textElement:TextElement = new TextElement(cellData.title);
 			cellTitleContainer.addText(textElement);
-			CellThumbText1Style.setTitleStyle(cellTitleContainer);
+			_cellStyle.title(cellTitleContainer);
 			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellTitleContainer);
 		}
@@ -72,7 +93,7 @@ class CellThumbText1 extends CellBase
 			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
 			var textElement:TextElement = new TextElement(cellData.author);
 			cellAuthorContainer.addText(textElement);
-			CellThumbText1Style.setAuthorStyle(cellAuthorContainer);
+			_cellStyle.author(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellAuthorContainer);
 		}
@@ -83,7 +104,7 @@ class CellThumbText1 extends CellBase
 		// add separation line
 		var line:ImageDOMElement = new ImageDOMElement();
 		// set image style
-		CellTextStyle.setCellLineStyle(line);
+		_cellStyle.line(line);
 		this.addChild(line);
 		line.load("assets/greyPixel.png");
 

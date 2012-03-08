@@ -37,9 +37,9 @@ class CellThumbText1BisStyle
 	 * Defines cell Style
 	 * 
 	 * @param	domElement
+	 * @param	?cellPerLine
 	 */
-	//public static function setCellStyle(domElement:ContainerDOMElement):Void
-	public static function setCellStyle(domElement:DOMElement):Void
+	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.position = PositionStyleValue.staticStyle;
@@ -54,7 +54,8 @@ class CellThumbText1BisStyle
 		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		domElement.style.width = DimensionStyleValue.percent(50);
+		// compute cell width depending on cellPerLine value
+		domElement.style.width = DimensionStyleValue.percent(Std.int(100 / cellPerLine) -1);
 		//domElement.style.height = DimensionStyleValue.length(px(100));
 		
 		// Samsung TV workaround
@@ -126,7 +127,7 @@ class CellThumbText1BisStyle
 		domElement.style.color = ColorValue.hex('#202020');
 		domElement.style.fontFamily =
 			[
-				FontFamilyStyleValue.familyName('HelveticaNeue'),
+				FontFamilyStyleValue.familyName('Arial'),
 				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
 			];
 	}
@@ -176,14 +177,11 @@ class CellThumbText1BisStyle
 	{
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.position = PositionStyleValue.relative;
-		//domElement.style.position = PositionStyleValue.absolute;
 
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
 		//domElement.style.marginTop = MarginStyleValue.length(px(Std.int(CELL_VERTICAL_SPACE*60%)));
 		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));
-		//domElement.style.bottom = PositionOffsetStyleValue.length(px(CELL_VERTICAL_SPACE));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 	}
 	
 }

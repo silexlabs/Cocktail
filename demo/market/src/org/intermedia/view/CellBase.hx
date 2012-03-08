@@ -8,7 +8,10 @@ package org.intermedia.view;
 
 class CellBase extends ViewBase
 {
-
+	
+	// cell style
+	//private var _cellStyle:Dynamic;
+	
 	public function new() 
 	{
 		super();

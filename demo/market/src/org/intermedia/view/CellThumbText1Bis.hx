@@ -13,80 +13,22 @@ import org.intermedia.view.CellThumbText1Style;
  * @author Raphael Harmel
  */
 
-class CellThumbText1Bis extends CellBase
+//class CellThumbText1Bis extends CellBase
+class CellThumbText1Bis extends CellThumbText1
 {
 
-	public function new() 
+	override private function initCellStyle():Void
 	{
-		super();
-		CellThumbText1BisStyle.setCellStyle(this);
-		
-	}
-	
-	/**
-	 * update view
-	 */
-	override private function updateView():Void
-	{
-		var cellData:CellData = _data;
-		
-		
-		// THUMBNAIL
-		
-		// image part
-		if (cellData.thumbUrl != "" && cellData.thumbUrl != null)
-		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
-			// set image style
-			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-			CellThumbText1BisStyle.setThumbnailStyle(cellImage);
-			// add image
-			this.addChild(cellImage);
-			// load image
-			cellImage.load(cellData.thumbUrl);
+		// init style model
+		_cellStyle = {
+			cell:CellThumbText1BisStyle.setCellStyle,
+			thumbnail:CellThumbText1BisStyle.setThumbnailStyle,
+			textBlock:CellThumbText1BisStyle.setTextBlockStyle,
+			title:CellThumbText1BisStyle.setTitleStyle,
+			author:CellThumbText1BisStyle.setAuthorStyle,
+			line:CellThumbText1BisStyle.setLineStyle
 		}
 		
-
-		// TEXT
-		
-		// add text block
-		var cellTextBlockContainer:ContainerDOMElement = new ContainerDOMElement();
-		CellThumbText1Style.setTextBlockStyle(cellTextBlockContainer);
-		//listStyle.cellTextBlock(cellTextBlockContainer);
-		this.addChild(cellTextBlockContainer);
-		
-		// add title
-		if (cellData.title != "" && cellData.title != null)
-		{
-			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(cellData.title);
-			cellTitleContainer.addText(textElement);
-			CellThumbText1BisStyle.setTitleStyle(cellTitleContainer);
-			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellTitleContainer);
-		}
-		
-		// add author
-		if (cellData.author != "" && cellData.author != null)
-		{
-			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(cellData.author);
-			cellAuthorContainer.addText(textElement);
-			CellThumbText1BisStyle.setAuthorStyle(cellAuthorContainer);
-			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellAuthorContainer);
-		}
-		
-		
-		// LINE
-		
-		// add separation line
-		var line:ImageDOMElement = new ImageDOMElement();
-		// set image style
-		CellThumbText1BisStyle.setLineStyle(line);
-		this.addChild(line);
-		line.load("assets/greyPixel.png");
-
 	}
 
 }
