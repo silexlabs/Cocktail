@@ -26,7 +26,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var embeddedDOMElement:EmbeddedDOMElement = cast(_domElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
 		
-		#if flash9
+		#if (flash9 ||nme)
 		embeddedDOMElement.embeddedAsset.x = _bounds.x;
 		embeddedDOMElement.embeddedAsset.y = _bounds.y;
 		//TODO : should only take asset height
