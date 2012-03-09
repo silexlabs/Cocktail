@@ -153,14 +153,13 @@ class LayerRenderer
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		
-		
 		for (i in 0...inFlowChildren.length)
 		{
-var nativeElements:Array<NativeElement> = [];
+			var nativeElements:Array<NativeElement> = [];
 			if (inFlowChildren[i].domElement.style.display == inlineBlock)
 			{
-				//TODO : very messy, do that in renderInFlowChildren ? + add missing rendering bits
+				//TODO : add missing rendering bits
+				//TODO : manage the case where inline-block is a replaced element
 						
 					var d = getChildLayers(cast(inFlowChildren[i]), this);
 					
@@ -214,9 +213,6 @@ var nativeElements:Array<NativeElement> = [];
 					ret.push(bg[j]);
 				}
 			}
-			
-
-			
 		}
 		
 		return ret;
@@ -257,12 +253,9 @@ var nativeElements:Array<NativeElement> = [];
 									childElementRenderer[j].bounds.y += rootRenderer.children[i].bounds.y;
 								}
 							
-								
 								ret.push(childElementRenderer[j]);
 							}
 						}
-						
-						
 					}
 				}
 			}
