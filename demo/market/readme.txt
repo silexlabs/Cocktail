@@ -10,29 +10,26 @@ This is an application market done using Cocktail.
 RSS FEEDS
 ---------
 
+Exchange platform plugin url:
+http://wordpress.org/extend/plugins/exchange-platform/
+
 Silex Plugins:
 http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2
 
 Silex Themes:
 http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2
 
+Flux d'un post specifique:
+http://www.silexlabs.org/feed/ep_get_item_info?p=130523&format=rss2
+
+Flux réduit en précisant un nombre d'items
+http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=10&paged=2
 
 Flux simplifié:
 http://www.silexlabs.org/feed/?cat=642&format=rss2
 
 http://www.silexlabs.org/feed/ep_posts_small/?cat=642&format=rss2
 
-
-Flux d'un post specifique:
-
-http://www.silexlabs.org/?feed=rss&post=81290&format=rss2
-
-www.silexlabs.org/feed/?p=64997
-www.silexlabs.org/feed/?p=1&withoutcomments=1
-http://www.silexlabs.org/?p=64997&feed=rss2
-http://www.silexlabs.org/?s=Flickr%20frame%20plugin&feed=rss2
-
-http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&p=64997&format=rss2
 
 
 Intermedia Market spec feedback
@@ -67,6 +64,8 @@ back button action
 
 
 	
+Flickr frame plugin
+Filters component
 ----------------------------------
 
 header et sous-header
@@ -89,7 +88,17 @@ Q/A:
 To Do
 -is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell
  => yes, by sending the cell type to the constructor
-
+-create a scrollbar in each list
+-handle resize
+-handle scroll vertically in lists => yannick
+-custom list
+-handle loading n next elements when reachin bottom of the list
+ => check with alex the rss parameters
+ => check also the detail page
+-fade-in when displaying thumbs
+-loading screen (main page & list bottoms)
+-read specs to see if nothing is missing
+ 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield

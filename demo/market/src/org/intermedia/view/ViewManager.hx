@@ -68,6 +68,10 @@ class ViewManager
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		_body.addChild(_header);
 		
+		/*var staticHeader:ContainerDOMElement = new ContainerDOMElement();
+		HeaderStyle.setHeaderStaticStyle(staticHeader);
+		_body.addChild(staticHeader);*/
+		
 		_swippableListView = new SwippableListView();
 		_body.addChild(_swippableListView);
 		_detailView = new DetailView();

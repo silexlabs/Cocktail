@@ -54,4 +54,30 @@ class SwippableListViewStyle
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
 	
+	
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function setContainerStyle(domElement:DOMElement):Void
+	{
+		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.position = PositionStyleValue.relative;
+		
+		/*domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+		
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.percent(100);*/
+	}
+	
+	
+	
 }

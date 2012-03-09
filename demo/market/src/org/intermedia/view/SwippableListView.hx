@@ -21,7 +21,14 @@ class SwippableListView extends ListViewBase
 {
 
 	// a ref to each of the list views which can be swiped
-	private var _listViews:Array<ListViewBase>;
+	//private var _listViews:Array<ListViewBase>;
+	private var _listViews:Array<ViewBase>;
+	
+	private var list0:ViewBase;
+	private var list1:ViewBase;
+	private var list11:ViewBase;
+	private var list12:ViewBase;
+	private var list2:ViewBase;
 	
 	// The ListView currently displayed
 	private var _currentListView:ListViewBase;
@@ -63,17 +70,33 @@ class SwippableListView extends ListViewBase
 		onMouseDown = onMouseDownCallback2;
 		
 		// set _listView array
-		_listViews = new Array<ListViewBase>();
+		//_listViews = new Array<ListViewBase>();
+		_listViews = new Array<ViewBase>();
 		
 		// create all needed lists and add them to the _listView array
-		var list0:ListViewBase = new ListViewText();
+		//public var list0:ListViewBase = new ListViewText();
+		list0 = new ListViewText();
 		list0.x = -_viewportWidth;
 		_listViews.push(list0);
-		//var list1:ListViewBase = new ThumbTextList1Bis();
-		var list1:ListViewBase = new ThumbTextList1(3);
+		//var list1:ListViewBase = new ThumbTextList1(3);
+		
+		//public var list1:ViewBase = new ViewBase();
+		list1 = new ViewBase();
 		list1.x = 0;
-		_listViews.push(list1);
-		var list2:ThumbTextList1 = new ThumbTextList1(2);
+		SwippableListViewStyle.setContainerStyle(list1);
+		//_listViews.push(list1);
+		
+		//var list11:ListViewBase = new ThumbList(3);
+		list11 = new ThumbList(3);
+		list1.addChild(list11);
+		_listViews.push(list11);
+		//var list12:ListViewBase = new ThumbTextList1Bis(3);Filters component
+
+		list12 = new ThumbTextList1Bis(3);
+		//list1.addChild(list12);
+		
+		//var list2:ListViewBase = new ThumbTextList1(2);
+		list2 = new ThumbTextList1(2);
 		_listViews.push(list2);
 		list2.x = _viewportWidth;
 
@@ -86,7 +109,8 @@ class SwippableListView extends ListViewBase
 		// set index
 		_index = 1;
 		// set current list to list2
-		_currentListView = _listViews[_index];
+		//_currentListView = _listViews[_index];
+		_currentListView = cast _listViews[_index];
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
 		
@@ -120,10 +144,16 @@ class SwippableListView extends ListViewBase
 		// update _currentListView data with updated data
 		//_currentListView.data = _data;
 		
-		for (listView in _listViews)
+		/*for (listView in _listViews)
 		{
 			listView.data = _data;
-		}
+		}*/
+		list0.data = _data;
+		list1.data = _data;
+		list11.data = _data;
+		list12.data = _data;
+		list2.data = _data;
+		
 		//buildView();
 		return _data;	
 	}
@@ -200,7 +230,8 @@ class SwippableListView extends ListViewBase
 			if(_index < _listViews.length-1)
 			{
 				_index++;
-				_currentListView = _listViews[_index];
+				//_currentListView = _listViews[_index];
+				_currentListView = cast _listViews[_index];
 			}
 		}
 		// if the mouse movement is from right to left
@@ -213,7 +244,8 @@ class SwippableListView extends ListViewBase
 			if(_index > 0)
 			{
 				_index--;
-				_currentListView = _listViews[_index];
+				//_currentListView = _listViews[_index];
+				_currentListView = cast _listViews[_index];
 			}
 		}
 		
