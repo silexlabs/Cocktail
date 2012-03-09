@@ -12,6 +12,9 @@ import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.InlineBoxRenderer;
+import cocktailCore.style.renderer.TextRenderer;
 	
 	
 		// FONT STYLES
@@ -1435,55 +1438,8 @@ import cocktailCore.style.formatter.FormattingContext;
 		var spaceWidth:Int;
 	}
 	
-	//TODO : doc
-	typedef BoxElementData = {
-		var element:BoxElementValue;
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
-	}
 	
-	typedef BoxData = {
-		var parentDOMElement:DOMElement;
-		var bounds:RectangleData;
-		var children:Array<BoxElementData>;
-		var textDecorations:Array<TextDecorationData>;
-	}
-	
-	typedef TextDecorationData = {
-		var color:Int;
-		var start:PointData;
-		var end:PointData;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Enums
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Lists the different kind of
-	 * boxes that can be added in an
-	 * inline formatting context.
-	 * 
-	 * Spaces and tabs are separated
-	 * from other domElement as they
-	 * can influence a linebox layout
-	 * once it is complete
-	 * 
-	 * TODO : seems excessive to store parentDOMElement for each, but so far only
-	 * way to construct boxData array in formatting context
-	 * 
-	 * TODO : add a construct for root containing block ?
-	 */
-	enum BoxElementValue {
-		embeddedDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		containingBlockDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		containerDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		floatDOMElement(domElement:DOMElement, parentDOMElement:DOMElement);
-		text(domElement:DOMElement, parentDOMElement:DOMElement);
-		offset(value:Int, parentDOMElement:DOMElement );
-		space(whiteSpace:WhiteSpaceStyleValue, spaceWidth:Int, parentDOMElement:DOMElement);
-		lineFeed(whiteSpace:WhiteSpaceStyleValue, parentDOMElement:DOMElement);
-		tab(whiteSpace:WhiteSpaceStyleValue, tabWidth:Int, parentDOMElement:DOMElement);
+	typedef InlineBoxData = {
+		var element:InlineBoxRenderer;
+		var children:Array<ElementRenderer>;
 	}

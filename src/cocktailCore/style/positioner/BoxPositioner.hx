@@ -10,6 +10,7 @@ package cocktailCore.style.positioner;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
 /**
@@ -54,64 +55,54 @@ class BoxPositioner
 	 * Main entry point, determine the position of the DOMElement relative to its first positioned
 	 * ancestor
 	 * 
-	 * @param	domElement the DOMElement to position
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
 	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
 	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
-	public function position(domElement:DOMElement, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):BoxElementData
+	public function position(elementRenderer:ElementRenderer, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
-		//init the structure that will contain the position and dimensions
-		//of the element using its first positioned ancestor as origin
-		//
-		//TODO : a null parentDOMElement might introduce bugs
-		//the DOMElement might also be a ContainerDOMElement, pass a BoxElementValue or BoxElementData to the 
-		//position method instead of a domElement ? or add a positioned element construct ?
-		var boxElementData:BoxElementData = 
-		{
-			element:BoxElementValue.embeddedDOMElement(domElement, null),
-			x:0,
-			y:0,
-			width:0,
-			height:0,
-		}
+		var domElement:DOMElement = elementRenderer.domElement;
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
 		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			boxElementData.x = getLeftOffset(domElement, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getLeftOffset(domElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing DOMElement width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			boxElementData.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
 		else
 		{
-			boxElementData.x = Math.round(staticPosition.x);
+			elementRenderer.bounds.x = Math.round(staticPosition.x);
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			boxElementData.y = getTopOffset(domElement, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getTopOffset(domElement, Math.round(staticPosition.y));
 		}
 		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			boxElementData.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
-			boxElementData.y = Math.round(staticPosition.y);
+			elementRenderer.bounds.y = Math.round(staticPosition.y);
 		}
-
-		return boxElementData;
+		
+		//TODO : where to put it ?
+		elementRenderer.bounds.width = elementRenderer.domElement.offsetWidth;
+		elementRenderer.bounds.height = elementRenderer.domElement.offsetHeight;
+		
+		return elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

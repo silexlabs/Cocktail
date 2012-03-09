@@ -7,7 +7,6 @@
 */
 package cocktailCore.domElement.abstract;
 
-import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
@@ -17,6 +16,12 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktailCore.drawing.DrawingManager;
 import haxe.Log;
+
+#if (flash9 || cpp || nme)
+import cocktailCore.domElement.as3.EmbeddedDOMElement;
+#elseif js
+import cocktailCore.domElement.js.EmbeddedDOMElement;
+#end
 
 /**
  * The graphic DOMElement is used as a canvas to draw bitmap graphics programmatically. 

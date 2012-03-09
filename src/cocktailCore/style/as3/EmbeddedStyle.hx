@@ -33,33 +33,12 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	// Embedded DOMElement also apply their paddings and margins
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
+	override public function setNativeOpacity(opacity:Float):Void
 	{
-		var nativeX:Int = x + _computedStyle.paddingLeft + _computedStyle.marginLeft;
+		super.setNativeOpacity(opacity);
+		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
 		
-		/**
-		 * TODO : must be implemented in a better way, will be better
-		 * with the background, another clas should be reponsible to 
-		 * place internals of a DOMElement (background, embedded media, border...)
-		 */
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			nativeX = x;
-		}
-		
-		super.setNativeX(domElement, nativeX);
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		var nativeY:Int = y + _computedStyle.paddingTop + _computedStyle.marginTop;
-		
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			nativeY = y;
-		}
-		
-		super.setNativeY(domElement, nativeY);
+		embeddedDOMElement.embeddedAsset.alpha = opacity;
 	}
 	
 	/////////////////////////////////

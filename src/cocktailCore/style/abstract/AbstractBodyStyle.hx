@@ -14,6 +14,11 @@ import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.InitialBlockRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
+import haxe.Log;
 
 /**
  * This is the style implementation for BodyDOMElement.
@@ -64,16 +69,30 @@ class AbstractBodyStyle extends ContainerStyle
 		}
 	}
 	
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
+		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
+
+		return elementRenderer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{	
+		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
+		render(_domElement.nativeElement);
+	}
 	
 	/**
 	 * A BodyDOMElement is never inserted into its parent flow as it is
 	 * always located at the origin of the viewport, it is automatically
 	 * inserted
 	 */
-	override private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
+	override private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
 		
 	}
@@ -83,7 +102,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * DOM tree must always position its absolutely positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<BoxElementData>
+	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
 	{
 		isFirstPositionedAncestor = true;
 		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
@@ -113,6 +132,21 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * An inline-level DOMElement is one that is
+	 * laid out on a line. It will be placed
+	 * either next to the preceding DOMElement
+	 * or on a new line if the current line
+	 * is too short to host it.
+	 * 
+	 * Wheter an element is inline-level is determined
+	 * by its display style
+	 */
+	override public function isInlineLevel():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
@@ -137,7 +171,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * a bodyDOMElement always establishes a block formatting context
 	 * for its children
 	 */
-	override private function establishesNewFormattingContext():Bool
+	override public function establishesNewFormattingContext():Bool
 	{
 		return true;
 	}

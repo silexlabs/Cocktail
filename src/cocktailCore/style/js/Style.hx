@@ -8,9 +8,12 @@
 package cocktailCore.style.js;
 
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.unit.UnitData;
 import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 import cocktail.style.StyleData;
@@ -66,7 +69,7 @@ class Style extends AbstractStyle
 	/**
 	 * overriden as the browser deals with the rendering in JS
 	 */
-	override public function render():Void
+	override public function render(nativeElement:NativeElement):Void
 	{
 		
 	}
@@ -78,10 +81,10 @@ class Style extends AbstractStyle
 	/**
 	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
 	 */
-	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData:Array<BoxElementData>, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{	
 		//make the children store their own position and dimension
-		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, parentAbsolutelyPositionedBoxElementData, containingDOMElementFontMetricsData, formattingContext);
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//store the JavaScript dimension and position of the native HTMLElement, now that they are available
 		setNativeHeight(untyped this._domElement.nativeElement.clientHeight);
@@ -1837,7 +1840,7 @@ class Style extends AbstractStyle
 	{
 		this._domElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
 		super.setBackgroundColor(value);
-		return _backgroundManager.backgroundColor;
+		return _backgroundColor;
 	}
 	
 	override private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
@@ -1852,7 +1855,7 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundOrigin(value);
-		return _backgroundManager.backgroundOrigin;
+		return _backgroundOrigin;
 	}
 	
 	override private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
@@ -1867,7 +1870,7 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundClip(value);
-		return _backgroundManager.backgroundClip;
+		return _backgroundClip;
 	}
 	
 	override private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
@@ -1881,14 +1884,14 @@ class Style extends AbstractStyle
 		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-moz-linear-gradient');
 		
 		super.setBackgroundImage(value);
-		return _backgroundManager.backgroundImage;
+		return _backgroundImage;
 	}
 	
 	override private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
 	{
 		this._domElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
 		super.setBackgroundPosition(value);
-		return _backgroundManager.backgroundPosition;
+		return _backgroundPosition;
 	}
 	
 	override private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
@@ -1903,14 +1906,14 @@ class Style extends AbstractStyle
 		}
 		
 		super.setBackgroundSize(value);
-		return _backgroundManager.backgroundSize;
+		return _backgroundSize;
 	}
 	
 	override private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
 	{
 		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
 		super.setBackgroundRepeat(value);
-		return _backgroundManager.backgroundRepeat;
+		return _backgroundRepeat;
 	}
 	
 	override private function setOverflow(value:OverflowStyleData):OverflowStyleData

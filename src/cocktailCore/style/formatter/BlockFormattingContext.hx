@@ -8,8 +8,10 @@
 package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
 /**
@@ -28,7 +30,6 @@ class BlockFormattingContext extends FormattingContext
 	
 	private var _currentAddedSiblingsHeight:Int;
 	
-	private var _lastInsertedElement:BoxElementValue;
 	
 	/**
 	 * class constructor
@@ -45,22 +46,18 @@ class BlockFormattingContext extends FormattingContext
 	 * 
 	 * TODO : implement margin collapsing
 	 */
-	override public function format():Void
+	override public function format(layOutLastLine:Bool = false):Void
 	{
-		//init/reset the boxes data of the formatting context
-		_formattingBoxesData = new Array<BoxData>();
 		
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
-		_lastInsertedElement = BoxElementValue.containingBlockDOMElement(_containingDOMElement, _containingDOMElement.parent);
+		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
 		
 		//format all the box element in order
 		for (i in 0..._elementsInFormattingContext.length)
 		{
-	
-				
 			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
 			{
 				
@@ -73,10 +70,8 @@ class BlockFormattingContext extends FormattingContext
 			}
 			else
 			{
-				_currentAddedSiblingsHeight = 0;
-				
+				_currentAddedSiblingsHeight = 0;	
 			}
-		
 					
 			_lastInsertedElement = _elementsInFormattingContext[i];
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
@@ -84,103 +79,116 @@ class BlockFormattingContext extends FormattingContext
 		
 	}
 	
-	
-	
-	
-	private function isParentOfLastInsertedElement(element:BoxElementValue):Bool
+	override public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		var parentOfLastInsertedDOMElement:DOMElement = getElementParent(_lastInsertedElement);
-		
-		var ret:Bool;
-		
-		switch (element)
-		{
-			case BoxElementValue.containerDOMElement(domElement, parentDOMElement):
-				ret = domElement == parentOfLastInsertedDOMElement;
+		if (isSiblingOfLastInsertedElement(element))
+			{
 				
-			default:
-				ret = false;
-			
+			}
+			else if (isParentOfLastInsertedElement(element))
+			{
+				_formattingContextData.y -= _currentAddedSiblingsHeight;
+				_currentAddedSiblingsHeight = 0;
+					
+			}
+			else
+			{
+				_currentAddedSiblingsHeight = 0;	
+			}
+		
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		return {x:x, y:y};
+	}
+	
+	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
+	{
+		return element.domElement == _lastInsertedElement.domElement.parent;
+	}
+	
+	private function isSiblingOfLastInsertedElement(element:ElementRenderer):Bool
+	{
+		return _lastInsertedElement.domElement.parent == element.domElement.parent;
+	}
+
+	override private function insertEmbeddedElement(element:ElementRenderer):Void
+	{
+		
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		//TODO : should not use offset dimensions
+		var width:Float = element.domElement.offsetWidth;
+		var height:Float = element.domElement.offsetHeight;
+		
+		element.bounds = {
+			x:x, 
+			y:y,
+			width:width,
+			height:height
 		}
 		
-		return ret;
-	}
-	
-	private function isSiblingOfLastInsertedElement(element:BoxElementValue):Bool
-	{
-		return getElementParent(element) == getElementParent(_lastInsertedElement);
-	}
-
-	override private function insertEmbeddedDOMElement(element:BoxElementValue):Void
-	{
-		var boxElementData:BoxElementData = {
-				element:element,
-				x:_formattingContextData.x, 
-				y:_formattingContextData.y ,
-				width:getElementWidth(element),
-				height:getElementHeight(element)
-			}
-			
-		if (getElementWidth(element) > _formattingContextData.maxWidth)
+		if (element.bounds.width > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = getElementWidth(element);
+				_formattingContextData.maxWidth = Math.round(element.bounds.width);
 			}	
+			_formattingContextData.y += Math.round(element.bounds.height);
+			_formattingContextData.maxHeight = _formattingContextData.y;
 			
-			
-		_formattingContextData.y += getElementHeight(element);
-		_currentAddedSiblingsHeight += getElementHeight(element);
-		
-		
-			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
-			
+			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
 	}
 	
 
-	override private function insertContainingBlockDOMElement(element:BoxElementValue):Void
+	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
+
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		var width:Float = element.domElement.offsetWidth;
+		var height:Float = element.domElement.offsetHeight;
 		
-		var boxElementData:BoxElementData = {
-				element:element,
-				x:_formattingContextData.x, 
-				y:_formattingContextData.y ,
-				width:getElementWidth(element),
-				height:getElementHeight(element)
-			}
-			
-if (getElementWidth(element) > _formattingContextData.maxWidth)
+		element.bounds = {
+			x:x, 
+			y:y,
+			width:width,
+			height:height
+		}
+		
+		if (element.bounds.width > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = getElementWidth(element);
+				_formattingContextData.maxWidth = Math.round(element.bounds.width);
 			}	
-		
-			_formattingContextData.y += getElementHeight(element);
 			
-			_currentAddedSiblingsHeight += getElementHeight(element);
+			_formattingContextData.y += Math.round(element.bounds.height);
+			_formattingContextData.maxHeight = _formattingContextData.y;
 			
-			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+			
+			
 	}
 	
 
-	override private function insertContainerDOMElement(element:BoxElementValue):Void
+	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-		
-		var boxElementData:BoxElementData = {
-				element:element,
-				x:0, 
-				y:_formattingContextData.y,
-				width:getElementWidth(element),
-				height:getElementHeight(element)
+			var x:Float = 0.0;
+			var y:Float = _formattingContextData.y;
+			var width:Float = element.domElement.offsetWidth;
+			var height:Float = element.domElement.offsetHeight;
+			element.bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
 			}
-if (getElementWidth(element) > _formattingContextData.maxWidth)
+			
+			if (element.bounds.width > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = getElementWidth(element);
+				_formattingContextData.maxWidth = Math.round(element.bounds.width);
 			}	
 			
-			_formattingContextData.y += getElementHeight(element);
-			_currentAddedSiblingsHeight += getElementHeight(element);
+			_formattingContextData.y += Math.round(element.bounds.height);
+			_formattingContextData.maxHeight = _formattingContextData.y;
 			
-			
-			
-			getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
 	}
 
 	
