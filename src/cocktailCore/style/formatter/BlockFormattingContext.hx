@@ -75,6 +75,15 @@ class BlockFormattingContext extends FormattingContext
 					
 			_lastInsertedElement = _elementsInFormattingContext[i];
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			
+			if (_elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
+			{
+				_formattingContextData.maxWidth = Math.round(_elementsInFormattingContext[i].bounds.width);
+			}	
+			_formattingContextData.y += Math.round(_elementsInFormattingContext[i].bounds.height);
+			_formattingContextData.maxHeight = _formattingContextData.y;
+			
+			_currentAddedSiblingsHeight += Math.round(_elementsInFormattingContext[i].bounds.height);
 		}
 		
 	}
@@ -127,14 +136,7 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_formattingContextData.maxHeight = _formattingContextData.y;
-			
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+	
 	}
 	
 
@@ -153,16 +155,7 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_formattingContextData.maxHeight = _formattingContextData.y;
-			
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-			
+		
 			
 	}
 	
@@ -180,15 +173,7 @@ class BlockFormattingContext extends FormattingContext
 				height:height
 			}
 			
-			if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_formattingContextData.maxHeight = _formattingContextData.y;
-			
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+		
 	}
 
 	
