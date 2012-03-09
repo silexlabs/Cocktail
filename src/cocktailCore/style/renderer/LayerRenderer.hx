@@ -153,13 +153,52 @@ class LayerRenderer
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-	
+		
 		
 		for (i in 0...inFlowChildren.length)
 		{
-
-			var nativeElements:Array<NativeElement> = inFlowChildren[i].render();
-			
+var nativeElements:Array<NativeElement> = [];
+			if (inFlowChildren[i].domElement.style.display == inlineBlock)
+			{
+				//TODO : very messy, do that in renderInFlowChildren ? + add missing rendering bits
+						
+					var d = getChildLayers(cast(inFlowChildren[i]), this);
+					
+					for (l in 0...d.length)
+					{
+						var ne = d[l].render();
+						for (m in 0...ne.length)
+						{
+							#if flash9
+							ne[m].x += inFlowChildren[i].bounds.x;
+							ne[m].y += inFlowChildren[i].bounds.y;
+							#end
+						
+							nativeElements.push(ne[m]);
+						}
+	
+					}
+					
+					var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(inFlowChildren[i]), nativeElements);
+					for (l in 0...childElementRenderer.length)
+					{
+						childElementRenderer[l].bounds.x += inFlowChildren[i].bounds.x;
+						childElementRenderer[l].bounds.y += inFlowChildren[i].bounds.y;
+						
+						var el = childElementRenderer[l].render();
+						
+						for (k in 0...el.length)
+						{
+							nativeElements.push(el[k]);
+						}
+						
+					}
+			}
+				
+			else
+			{
+				nativeElements = inFlowChildren[i].render();
+			}
 			
 			for (j in 0...nativeElements.length)
 			{
@@ -195,38 +234,6 @@ class LayerRenderer
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
 					ret.push(rootRenderer.lineBoxes[j][k]);
-					if (rootRenderer.lineBoxes[j][k].establishesNewFormattingContext() == true)
-					{
-						//TODO : very messy, do that in renderInFlowChildren ? + add missing rendering bits
-						
-						var d = getChildLayers(cast(rootRenderer.lineBoxes[j][k]), this);
-						
-						for (l in 0...d.length)
-						{
-							var ne = d[l].render();
-							for (m in 0...ne.length)
-							{
-								#if flash9
-								ne[m].x += rootRenderer.lineBoxes[j][k].bounds.x;
-								ne[m].y += rootRenderer.lineBoxes[j][k].bounds.y;
-								Log.trace(ne[m].y);
-								#end
-							
-								nativeElements.push(ne[m]);
-							}
-		
-						}
-						
-						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.lineBoxes[j][k]), nativeElements);
-						for (l in 0...childElementRenderer.length)
-						{
-							childElementRenderer[l].bounds.x += rootRenderer.lineBoxes[j][k].bounds.x;
-							childElementRenderer[l].bounds.y += rootRenderer.lineBoxes[j][k].bounds.y;
-							
-							ret.push(childElementRenderer[l]);
-						}
-						
-					}
 				}
 			}
 		}

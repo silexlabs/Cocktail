@@ -288,6 +288,9 @@ class AbstractContainerStyle extends Style
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
+	 * 
+	 * TODO : when BodyDOMElement used as ancestor, it always uses the viewport dimensions instead
+	 * of its own which causes an incorrect layout when using the bottom style
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
 	{
