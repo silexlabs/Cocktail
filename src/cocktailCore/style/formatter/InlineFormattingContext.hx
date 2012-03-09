@@ -159,6 +159,7 @@ class InlineFormattingContext extends FormattingContext
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
+
 		_unbreakableLineBoxElements.push(element);
 	}
 	

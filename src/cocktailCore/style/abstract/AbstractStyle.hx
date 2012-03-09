@@ -528,7 +528,7 @@ class AbstractStyle
 	 */ 
 	public function render(nativeElement:NativeElement):Void
 	{
-		_nativeElements = _elementRenderer.layerRenderer.render(nativeElement);
+		_nativeElements = _elementRenderer.layerRenderer.render();
 		_nativeElements.reverse();
 		attachNativeElements(_nativeElements);
 	}
@@ -595,7 +595,7 @@ class AbstractStyle
 	{
 		var layerRenderer:LayerRenderer;
 		
-		if (isPositioned() == true || isFloat() == true || _display == inlineBlock)
+		if (isPositioned() == true || isFloat() == true)
 		{
 			layerRenderer = new LayerRenderer(elementRenderer);
 		}

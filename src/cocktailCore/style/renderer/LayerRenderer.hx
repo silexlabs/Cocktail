@@ -17,29 +17,34 @@ class LayerRenderer
 		_rootRenderer = rootRenderer;
 	}
 	
-	public function render(nativeElement:NativeElement):Array<NativeElement>
+	public function render():Array<NativeElement>
+	{
+		return doRender(_rootRenderer);
+	}
+	
+	private function doRender(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false
-		|| _rootRenderer.domElement.style.display == inlineBlock)
+		if (rootRenderer.canHaveChildren() == true && rootRenderer.domElement.style.isInlineLevel() == false
+		|| rootRenderer.domElement.style.display == inlineBlock)
 		{
-				var d = renderChildLayer(nativeElement);
-				
+				var d = renderChildLayer();
+
 				for (i in 0...d.length)
 				{
 					ret.push(d[i]);
 				}
 				
-				var c = renderInFlowChildren(nativeElement);
+				var c = renderInFlowChildren(ret);
 				
 				for (i in 0...c.length)
 				{
 					ret.push(c[i]);
 				}
 				
-				var bg = renderChildrenBlockContainerBackground(nativeElement);	
+				var bg = renderChildrenBlockContainerBackground();	
 				
 				for (i in 0...bg.length)
 				{
@@ -49,12 +54,12 @@ class LayerRenderer
 				#if flash9
 				for (i in 0...ret.length)
 				{
-					ret[i].x += _rootRenderer.bounds.x;
-					ret[i].y += _rootRenderer.bounds.y;
+					ret[i].x += rootRenderer.bounds.x;
+					ret[i].y += rootRenderer.bounds.y; 
 				}
 				#end
 				
-				var boum = _rootRenderer.renderBackground();
+				var boum = rootRenderer.renderBackground();
 				
 				for (i in 0...boum.length)
 				{
@@ -66,20 +71,17 @@ class LayerRenderer
 		
 		else
 		{
-			ret = _rootRenderer.render();
-			var e = _rootRenderer.renderBackground();
+			ret = rootRenderer.render();
+			var e = rootRenderer.renderBackground();
 			for (i in 0...e.length)
 			{
 				ret.push(e[i]);
 			}
 		}
-		
-		
-		
 		return ret;
 	}
 	
-	private function renderChildrenBlockContainerBackground(nativeElement:NativeElement):Array<NativeElement>
+	private function renderChildrenBlockContainerBackground():Array<NativeElement>
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(_rootRenderer));
 		
@@ -98,7 +100,7 @@ class LayerRenderer
 	}
 	
 	
-	private function renderChildLayer(nativeElement:NativeElement):Array<NativeElement>
+	private function renderChildLayer():Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
 		
@@ -108,7 +110,7 @@ class LayerRenderer
 		
 		for (i in 0...childLayers.length)
 		{
-			var nativeElements:Array<NativeElement> = childLayers[i].render(nativeElement);
+			var nativeElements:Array<NativeElement> = childLayers[i].render();
 			for (j in 0...nativeElements.length)
 			{
 				ret.push(nativeElements[j]);
@@ -126,7 +128,7 @@ class LayerRenderer
 		{
 			if (rootRenderer.children[i].layerRenderer == referenceLayer)
 			{
-				if (rootRenderer.children[i].canHaveChildren() == true)
+				if (rootRenderer.children[i].canHaveChildren() == true && rootRenderer.children[i].domElement.style.display != inlineBlock)
 				{
 					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(rootRenderer.children[i]), referenceLayer);
 					for (j in 0...childElementRenderer.length)
@@ -145,9 +147,9 @@ class LayerRenderer
 	}
 	
 	
-	private function renderInFlowChildren(nativeElement:NativeElement):Array<NativeElement>
+	private function renderInFlowChildren(nativeElements:Array<NativeElement>):Array<NativeElement>
 	{
-		var inFlowChildren:Array<ElementRenderer> = getInFlowChildren(cast(_rootRenderer));
+		var inFlowChildren:Array<ElementRenderer> = getInFlowChildren(cast(_rootRenderer), nativeElements);
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
@@ -155,6 +157,7 @@ class LayerRenderer
 		
 		for (i in 0...inFlowChildren.length)
 		{
+
 			var nativeElements:Array<NativeElement> = inFlowChildren[i].render();
 			
 			
@@ -180,7 +183,7 @@ class LayerRenderer
 		return ret;
 	}
 	
-	private function getInFlowChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getInFlowChildren(rootRenderer:FlowBoxRenderer, nativeElements:Array<NativeElement>):Array<ElementRenderer>
 	{
 		
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
@@ -194,7 +197,27 @@ class LayerRenderer
 					ret.push(rootRenderer.lineBoxes[j][k]);
 					if (rootRenderer.lineBoxes[j][k].establishesNewFormattingContext() == true)
 					{
-						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.lineBoxes[j][k]));
+						//TODO : very messy, do that in renderInFlowChildren ? + add missing rendering bits
+						
+						var d = getChildLayers(cast(rootRenderer.lineBoxes[j][k]), this);
+						
+						for (l in 0...d.length)
+						{
+							var ne = d[l].render();
+							for (m in 0...ne.length)
+							{
+								#if flash9
+								ne[m].x += rootRenderer.lineBoxes[j][k].bounds.x;
+								ne[m].y += rootRenderer.lineBoxes[j][k].bounds.y;
+								Log.trace(ne[m].y);
+								#end
+							
+								nativeElements.push(ne[m]);
+							}
+		
+						}
+						
+						var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.lineBoxes[j][k]), nativeElements);
 						for (l in 0...childElementRenderer.length)
 						{
 							childElementRenderer[l].bounds.x += rootRenderer.lineBoxes[j][k].bounds.x;
@@ -202,7 +225,6 @@ class LayerRenderer
 							
 							ret.push(childElementRenderer[l]);
 						}
-						
 						
 					}
 				}
@@ -219,7 +241,7 @@ class LayerRenderer
 						ret.push(rootRenderer.children[i]);
 						if (rootRenderer.children[i].canHaveChildren() == true)
 						{
-							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
+							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]), nativeElements);
 							for (j in 0...childElementRenderer.length)
 							{
 								if (rootRenderer.children[i].establishesNewFormattingContext() == true)
