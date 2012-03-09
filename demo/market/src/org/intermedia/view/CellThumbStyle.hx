@@ -24,12 +24,12 @@ import org.intermedia.view.ScreenResolution;
 
 
 /**
- * This class defines the styles used by the CellText
+ * This class defines the styles used by the CellThumb
  * 
  * @author Raphael Harmel
  */
 
-class CellThumbText1BisStyle
+class CellThumbStyle
 {
 	static inline var CELL_VERTICAL_SPACE:Int = 5;
 	
@@ -37,8 +37,8 @@ class CellThumbText1BisStyle
 	 * Defines cell Style
 	 * 
 	 * @param	domElement
-	 * @param	?cellPerLine
 	 */
+	//public static function setCellStyle(domElement:ContainerDOMElement):Void
 	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
@@ -55,8 +55,11 @@ class CellThumbText1BisStyle
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
 		// compute cell width depending on cellPerLine value
-		domElement.style.width = DimensionStyleValue.percent(Std.int(100 / cellPerLine) -1);
-		//domElement.style.height = DimensionStyleValue.length(px(100));
+		var cellPercentWidth:Int = 0;
+		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
+		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
+		else cellPercentWidth = 100;
+		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
 		
 		// Samsung TV workaround
 		//domElement.style.height = DimensionStyleValue.length(px(200));
@@ -96,92 +99,9 @@ class CellThumbText1BisStyle
 		{*/
 			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
 			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-			domElement.style.width = DimensionStyleValue.percent(30);	
+			domElement.style.width = DimensionStyleValue.percent(100);	
 		//}
 		
-	}
-	
-	/**
-	 * Defines cell text block Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setTextBlockStyle(domElement:DOMElement):Void
-	{
-		//setCellStyle(domElement);
-		
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.marginLeft = MarginStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.width = DimensionStyleValue.percent(55);
-	}
-
-	/**
-	 * Defines cell text Style
-	 * 
-	 * @param	domElement
-	 */
-	private static function setTextStyle(domElement:DOMElement):Void
-	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.color = ColorValue.hex('#202020');
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Arial'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-	}
-
-	/**
-	 * Defines cell title Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setTitleStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	{
-		setTextStyle(domElement);
-		
-		var fontSize:Int = 14;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
-		else  fontSize = 18;
-		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-	}
-
-	/**
-	 * Defines cell comment Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setAuthorStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	{
-		setTextStyle(domElement);
-
-		var fontSize:Int = 10;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
-		else  fontSize = 12;
-		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.normal;
-	}
-	
-	/**
-	 * Defines cell line Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setLineStyle(domElement:DOMElement):Void
-	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.relative;
-
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(1));
-		//domElement.style.marginTop = MarginStyleValue.length(px(Std.int(CELL_VERTICAL_SPACE*60%)));
-		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));
 	}
 	
 }

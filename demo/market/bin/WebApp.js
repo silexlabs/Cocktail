@@ -1155,7 +1155,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,onLoadingError: function(error) {
 		$s.push("org.intermedia.view.ViewManager::onLoadingError");
 		var $spos = $s.length;
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 148, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 152, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 		$s.pop();
 	}
 	,onHeaderBackButtonPressed: function() {
@@ -6083,15 +6083,19 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	org.intermedia.view.SwippableListViewStyle.setListStyle(this);
 	this.setOnMouseDown(this.onMouseDownCallback2.$bind(this));
 	this._listViews = new Array();
-	var list0 = new org.intermedia.view.ListViewText();
-	list0.setX(-this._viewportWidth);
-	this._listViews.push(list0);
-	var list1 = new org.intermedia.view.ThumbTextList1(3);
-	list1.setX(0);
-	this._listViews.push(list1);
-	var list2 = new org.intermedia.view.ThumbTextList1(2);
-	this._listViews.push(list2);
-	list2.setX(this._viewportWidth);
+	this.list0 = new org.intermedia.view.ListViewText();
+	this.list0.setX(-this._viewportWidth);
+	this._listViews.push(this.list0);
+	this.list1 = new org.intermedia.view.ViewBase();
+	this.list1.setX(0);
+	org.intermedia.view.SwippableListViewStyle.setContainerStyle(this.list1);
+	this.list11 = new org.intermedia.view.ThumbList(3);
+	this.list1.addChild(this.list11);
+	this._listViews.push(this.list11);
+	this.list12 = new org.intermedia.view.ThumbTextList1Bis(3);
+	this.list2 = new org.intermedia.view.ThumbTextList1(2);
+	this._listViews.push(this.list2);
+	this.list2.setX(this._viewportWidth);
 	var _g = 0, _g1 = this._listViews;
 	while(_g < _g1.length) {
 		var listView = _g1[_g];
@@ -6107,6 +6111,11 @@ org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","Swi
 org.intermedia.view.SwippableListView.__super__ = org.intermedia.view.ListViewBase;
 org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
 	_listViews: null
+	,list0: null
+	,list1: null
+	,list11: null
+	,list12: null
+	,list2: null
 	,_currentListView: null
 	,_index: null
 	,_xOffset: null
@@ -6117,12 +6126,11 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		$s.push("org.intermedia.view.SwippableListView::setData");
 		var $spos = $s.length;
 		this._data = v;
-		var _g = 0, _g1 = this._listViews;
-		while(_g < _g1.length) {
-			var listView = _g1[_g];
-			++_g;
-			listView.setData(this._data);
-		}
+		this.list0.setData(this._data);
+		this.list1.setData(this._data);
+		this.list11.setData(this._data);
+		this.list12.setData(this._data);
+		this.list2.setData(this._data);
 		var $tmp = this._data;
 		$s.pop();
 		return $tmp;
@@ -6188,6 +6196,43 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	}
 	,__class__: org.intermedia.view.SwippableListView
 });
+org.intermedia.view.CellThumbStyle = $hxClasses["org.intermedia.view.CellThumbStyle"] = function() { }
+org.intermedia.view.CellThumbStyle.__name__ = ["org","intermedia","view","CellThumbStyle"];
+org.intermedia.view.CellThumbStyle.setCellStyle = function(domElement,cellPerLine) {
+	$s.push("org.intermedia.view.CellThumbStyle::setCellStyle");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	var cellPercentWidth = 0;
+	if(cellPerLine != 0) cellPercentWidth = Std["int"](100 / cellPerLine); else cellPercentWidth = 100;
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(cellPercentWidth));
+	$s.pop();
+}
+org.intermedia.view.CellThumbStyle.setThumbnailStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbStyle::setThumbnailStyle");
+	var $spos = $s.length;
+	var imageMaxWidth = 200;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	$s.pop();
+}
+org.intermedia.view.CellThumbStyle.prototype = {
+	__class__: org.intermedia.view.CellThumbStyle
+}
 var Hash = $hxClasses["Hash"] = function() {
 	$s.push("Hash::new");
 	var $spos = $s.length;
@@ -9436,6 +9481,41 @@ Reflect.makeVarArgs = function(f) {
 Reflect.prototype = {
 	__class__: Reflect
 }
+org.intermedia.view.ThumbTextList1 = $hxClasses["org.intermedia.view.ThumbTextList1"] = function(cellPerLine) {
+	$s.push("org.intermedia.view.ThumbTextList1::new");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	this._cellsPerLine = cellPerLine;
+	org.intermedia.view.ListViewBase.call(this);
+	org.intermedia.view.ListViewStyle.setListStyle(this);
+	$s.pop();
+}
+org.intermedia.view.ThumbTextList1.__name__ = ["org","intermedia","view","ThumbTextList1"];
+org.intermedia.view.ThumbTextList1.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.ThumbTextList1.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	_cellsPerLine: null
+	,createCell: function() {
+		$s.push("org.intermedia.view.ThumbTextList1::createCell");
+		var $spos = $s.length;
+		var cell = new org.intermedia.view.CellThumbText1(this._cellsPerLine);
+		$s.pop();
+		return cell;
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.ThumbTextList1
+});
+org.intermedia.view.ThumbTextList1Bis = $hxClasses["org.intermedia.view.ThumbTextList1Bis"] = function(cellPerLine) {
+	$s.push("org.intermedia.view.ThumbTextList1Bis::new");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	org.intermedia.view.ThumbTextList1.call(this,cellPerLine);
+	$s.pop();
+}
+org.intermedia.view.ThumbTextList1Bis.__name__ = ["org","intermedia","view","ThumbTextList1Bis"];
+org.intermedia.view.ThumbTextList1Bis.__super__ = org.intermedia.view.ThumbTextList1;
+org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.ThumbTextList1.prototype,{
+	__class__: org.intermedia.view.ThumbTextList1Bis
+});
 if(!cocktail.mouse) cocktail.mouse = {}
 cocktail.mouse.MouseCursorValue = $hxClasses["cocktail.mouse.MouseCursorValue"] = { __ename__ : ["cocktail","mouse","MouseCursorValue"], __constructs__ : ["custom","autoValue","none","native"] }
 cocktail.mouse.MouseCursorValue.custom = function(imageDOMElement,hotSpot) { var $x = ["custom",0,imageDOMElement,hotSpot]; $x.__enum__ = cocktail.mouse.MouseCursorValue; $x.toString = $estr; return $x; }
@@ -10058,6 +10138,16 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(domElement) {
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
 	domElement.getStyle().setBackgroundImage([cocktail.style.BackgroundImageStyleValue.image(cocktail.unit.ImageValue.url("assets/headerGrey.jpg"))]);
+	$s.pop();
+}
+org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(domElement) {
+	$s.push("org.intermedia.view.HeaderStyle::setHeaderStaticStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setMinWidth(cocktail.style.ConstrainedDimensionStyleValue.percent(100));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(43)));
 	$s.pop();
 }
 org.intermedia.view.HeaderStyle.setHeaderTextStyle = function(domElement) {
@@ -12850,29 +12940,6 @@ org.intermedia.model.XmlLoader.prototype = {
 	}
 	,__class__: org.intermedia.model.XmlLoader
 }
-org.intermedia.view.ThumbTextList1 = $hxClasses["org.intermedia.view.ThumbTextList1"] = function(cellPerLine) {
-	$s.push("org.intermedia.view.ThumbTextList1::new");
-	var $spos = $s.length;
-	if(cellPerLine == null) cellPerLine = 1;
-	this._cellsPerLine = cellPerLine;
-	org.intermedia.view.ListViewBase.call(this);
-	org.intermedia.view.ListViewStyle.setListStyle(this);
-	$s.pop();
-}
-org.intermedia.view.ThumbTextList1.__name__ = ["org","intermedia","view","ThumbTextList1"];
-org.intermedia.view.ThumbTextList1.__super__ = org.intermedia.view.ListViewBase;
-org.intermedia.view.ThumbTextList1.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
-	_cellsPerLine: null
-	,createCell: function() {
-		$s.push("org.intermedia.view.ThumbTextList1::createCell");
-		var $spos = $s.length;
-		var cell = new org.intermedia.view.CellThumbText1(this._cellsPerLine);
-		$s.pop();
-		return cell;
-		$s.pop();
-	}
-	,__class__: org.intermedia.view.ThumbTextList1
-});
 haxe.Timer = $hxClasses["haxe.Timer"] = function(time_ms) {
 	$s.push("haxe.Timer::new");
 	var $spos = $s.length;
@@ -13108,6 +13175,13 @@ org.intermedia.view.SwippableListViewStyle.setListStyle = function(domElement) {
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
+	$s.pop();
+}
+org.intermedia.view.SwippableListViewStyle.setContainerStyle = function(domElement) {
+	$s.push("org.intermedia.view.SwippableListViewStyle::setContainerStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
 	$s.pop();
 }
 org.intermedia.view.SwippableListViewStyle.prototype = {
@@ -13692,6 +13766,39 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 	}
 	,__class__: cocktailCore.background.BackgroundDrawingManager
 });
+org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = function(cellPerLine) {
+	$s.push("org.intermedia.view.CellThumb::new");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	org.intermedia.view.CellBase.call(this);
+	this.initCellStyle();
+	this._cellStyle.cell(this,cellPerLine);
+	$s.pop();
+}
+org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
+org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
+org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
+	_cellStyle: null
+	,initCellStyle: function() {
+		$s.push("org.intermedia.view.CellThumb::initCellStyle");
+		var $spos = $s.length;
+		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
+		$s.pop();
+	}
+	,updateView: function() {
+		$s.push("org.intermedia.view.CellThumb::updateView");
+		var $spos = $s.length;
+		var cellData = this._data;
+		if(cellData.thumbUrl != "" && cellData.thumbUrl != null) {
+			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			this._cellStyle.thumbnail(cellImage);
+			this.addChild(cellImage);
+			cellImage.load(cellData.thumbUrl);
+		}
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.CellThumb
+});
 cocktailCore.resource.js.LibraryLoader = $hxClasses["cocktailCore.resource.js.LibraryLoader"] = function() {
 	$s.push("cocktailCore.resource.js.LibraryLoader::new");
 	var $spos = $s.length;
@@ -14191,6 +14298,29 @@ cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer.__name__ = ["cock
 cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer.__super__ = cocktailCore.style.computer.BoxStylesComputer;
 cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer.prototype = $extend(cocktailCore.style.computer.BoxStylesComputer.prototype,{
 	__class__: cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer
+});
+org.intermedia.view.ThumbList = $hxClasses["org.intermedia.view.ThumbList"] = function(cellPerLine) {
+	$s.push("org.intermedia.view.ThumbList::new");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	this._cellsPerLine = cellPerLine;
+	org.intermedia.view.ListViewBase.call(this);
+	org.intermedia.view.ListViewStyle.setListStyle(this);
+	$s.pop();
+}
+org.intermedia.view.ThumbList.__name__ = ["org","intermedia","view","ThumbList"];
+org.intermedia.view.ThumbList.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.ThumbList.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	_cellsPerLine: null
+	,createCell: function() {
+		$s.push("org.intermedia.view.ThumbList::createCell");
+		var $spos = $s.length;
+		var cell = new org.intermedia.view.CellThumb(this._cellsPerLine);
+		$s.pop();
+		return cell;
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.ThumbList
 });
 cocktail.nativeElement.NativeElementManager = $hxClasses["cocktail.nativeElement.NativeElementManager"] = function() {
 	$s.push("cocktail.nativeElement.NativeElementManager::new");
@@ -16197,6 +16327,7 @@ org.intermedia.view.ViewManager.HEADER_DETAIL_TITLE = "Infos";
 org.intermedia.view.ViewManager.CELL_QTY = 5;
 cocktailCore.keyboard.js.Keyboard.KEY_DOWN_EVENT = "keydown";
 cocktailCore.keyboard.js.Keyboard.KEY_UP_EVENT = "keyup";
+org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 5;
 js.Lib.onerror = null;
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 5;
 cocktail.resource.ResourceLoaderManager._isLoading = false;

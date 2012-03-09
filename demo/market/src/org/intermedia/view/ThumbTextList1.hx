@@ -11,7 +11,7 @@ import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * This class defines a thumb & text cell
+ * This class defines a thumb & text cell which can have a variable numbers of cells per line
  * 
  * @author Raphael Harmel
  */

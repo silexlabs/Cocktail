@@ -57,36 +57,21 @@ class HeaderStyle
 	}
 
 	/**
-	 * Defines header tile Style
+	 * Defines header static Style
+	 * done as a workaround to have a layout using a minimum of absolute values
 	 * 
 	 * @param	domElement
 	 */
-	/*public static function setHeaderTileStyle(domElement:DOMElement):Void
+	public static function setHeaderStaticStyle(domElement:DOMElement):Void
 	{
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.staticStyle;
 		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
+
 		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.HEADER_HEIGHT));
-	}*/
-
-	/**
-	 * Defines header logo Style
-	 * 
-	 * @param	domElement
-	 */
-	/*public static function setHeaderLogoStyle(domElement:DOMElement):Void
-	{
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.top = PositionOffsetStyleValue.length(px(4));
-		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
-		domElement.style.left = PositionOffsetStyleValue.length(px(15));
-		domElement.style.right = PositionOffsetStyleValue.autoValue;
-		domElement.style.width = DimensionStyleValue.length(px(44));
-	}*/
+		
+	}
 
 	/**
 	 * Defines header title text Style

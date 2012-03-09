@@ -11,18 +11,34 @@ import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * This class defines a thumb & text cell
+ * This class defines a thumb list
  * 
  * @author Raphael Harmel
  */
 
-class ThumbTextList1Bis extends ThumbTextList1
+class ThumbList extends ListViewBase
 {
+	// defines cells per line
+	private var _cellsPerLine:Int;
+	
 	public function new(?cellPerLine:Int = 1)
 	{
-		//var thumbList:ThumbList = new ThumbList(2);
-		//this.addChild(thumbList);
-		super(cellPerLine);
+		_cellsPerLine = cellPerLine;
+		super();
+		ListViewStyle.setListStyle(this);
 	}
-		
+	
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	override private function createCell():CellBase
+	{
+		var cell:CellThumb = new CellThumb(_cellsPerLine);
+		return cell;
+	}
+	
+	
 }
