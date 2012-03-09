@@ -42,6 +42,7 @@ class BodyStyle extends AbstractBodyStyle
 	
 	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
+		//TODO : shouldn't have to check
 		if (Lib.current.contains(nativeElement) == true)
 		{
 			Lib.current.removeChild(nativeElement);

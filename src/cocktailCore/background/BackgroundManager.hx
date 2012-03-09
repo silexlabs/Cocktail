@@ -32,31 +32,6 @@ import haxe.Log;
  */
 class BackgroundManager 
 {
-
-	/**
-	 * Background Properties
-	 */
-	private var _backgroundColor:BackgroundColorStyleValue;
-	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
-	
-	private var _backgroundImage:Array<BackgroundImageStyleValue>;
-	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
-	 
-	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
-	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
-	
-	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
-	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
-	
-	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
-	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
-	
-	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
-	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
-	
-	private var _backgroundClip:Array<BackgroundClipStyleValue>;
-	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
-	
 	/**
 	 * an array of each of the background managers instantiated by this class.
 	 * One background drawing manager must be instantiated for each layer of background.
@@ -101,9 +76,9 @@ class BackgroundManager
 		//loop in all the background images style of the DOMElement. It is expected
 		//that each array of background styles (such as background origin, background size...)
 		//has the same length
-		for (i in 0..._backgroundImage.length)
+		for (i in 0...style.backgroundImage.length)
 		{
-			switch (_backgroundImage[i])
+			switch (style.backgroundImage[i])
 			{
 				//don't render anything in that case
 				case BackgroundImageStyleValue.none:
@@ -124,8 +99,8 @@ class BackgroundManager
 							
 							//draw the background image and store the resulting nativeElement
 							var imageNativeElement:NativeElement = drawBackgroundImage(imageDeclaration, style, backgroundBox,
-							_backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i],
-							_backgroundRepeat[i], _backgroundImage[i]);
+							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
+							style.backgroundRepeat[i], style.backgroundImage[i]);
 							
 							nativeElements.push(imageNativeElement);
 						
@@ -134,16 +109,16 @@ class BackgroundManager
 						case ImageValue.imageList(value):
 							
 							var imageNativeElement:NativeElement = drawBackgroundImage(value, style, backgroundBox,
-							_backgroundPosition[i], _backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i],
-							_backgroundRepeat[i], _backgroundImage[i]);
+							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
+							style.backgroundRepeat[i], style.backgroundImage[i]);
 							
 							nativeElements.push(imageNativeElement);
 						
 						//draw a gradient and store it	
 						case ImageValue.gradient(value):
 							
-							var gradientNativeElement:NativeElement = drawBackgroundGradient(style, value, backgroundBox, _backgroundPosition[i],
-							_backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
+							var gradientNativeElement:NativeElement = drawBackgroundGradient(style, value, backgroundBox, style.backgroundPosition[i],
+							style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
 
 							nativeElements.push(gradientNativeElement);
 					}
@@ -151,11 +126,11 @@ class BackgroundManager
 			
 			//when the last of the background image property is rendered, render
 			//the background color which use the same property as the last background image
-			if (i == _backgroundImage.length - 1)
+			if (i == style.backgroundImage.length - 1)
 			{
 				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
-				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, _backgroundPosition[i],
-				_backgroundSize[i], _backgroundOrigin[i], _backgroundClip[i], _backgroundRepeat[i], _backgroundImage[i]);
+				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, style.backgroundPosition[i],
+				style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
 
 				//at this point the array contain only background image, reverse the array
 				//so that the background image declared first is on top of all the other
@@ -318,7 +293,6 @@ class BackgroundManager
 	backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue, backgroundClip:BackgroundClipStyleValue, 
 	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
 	{
-		
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
@@ -367,81 +341,5 @@ class BackgroundManager
 			
 		return gradientNativeElement;
 	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS/SETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
-	{
-		return _backgroundColor = value;
-	}
-	
-	private function getBackgroundColor():BackgroundColorStyleValue
-	{
-		return _backgroundColor;
-	}
-	
-	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
-	{
-		return _backgroundImage = value;
-	}
-	
-	private function getBackgroundImage():Array<BackgroundImageStyleValue>
-	{
-		return _backgroundImage;
-	}
-	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
-	{
-		return _backgroundRepeat = value;
-	}
-	
-	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
-	{
-		return _backgroundRepeat;
-	}
-	
-	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
-	{
-		return _backgroundSize = value;
-	}
-	
-	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
-	{
-		return _backgroundSize;
-	}
-	
-	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
-	{
-		return _backgroundClip = value;
-	}
-	
-	private function getBackgroundClip():Array<BackgroundClipStyleValue>
-	{
-		return _backgroundClip;
-	}
-	
-	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
-	{
-		return _backgroundPosition = value;
-	}
-	
-	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
-	{
-		return _backgroundPosition;
-	}
-	
-	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
-	{
-		return _backgroundOrigin = value;
-	}
-	
-	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
-	{
-		return _backgroundOrigin;
-	}
-	
-	
 	
 }
