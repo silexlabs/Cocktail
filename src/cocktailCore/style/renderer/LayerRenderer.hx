@@ -272,7 +272,6 @@ class LayerRenderer
 		{
 			if (rootRenderer.children[i].layerRenderer == this)
 			{
-				//TODO : shouldn't render inline box background here ? z-index might be wrong for overflowing background of line boxes
 				if (rootRenderer.children[i].canHaveChildren() == true)
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer.children[i]));
