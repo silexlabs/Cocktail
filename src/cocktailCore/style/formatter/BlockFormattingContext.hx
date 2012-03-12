@@ -75,9 +75,13 @@ class BlockFormattingContext extends FormattingContext
 				
 				for (j in 0..._elementsInColumn.length)
 				{
-					_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
-					_elementsInColumn[j].bounds.x += _elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
+					if (isAncestorOfElement(_elementsInColumn[j], _elementsInFormattingContext[i] ) == true )
+					{
+						_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
+						_elementsInColumn[j].bounds.x += _elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
 				
+					}
+					
 				}
 				
 				//_elementsInColumn = new Array<ElementRenderer>();
@@ -117,6 +121,25 @@ class BlockFormattingContext extends FormattingContext
 			_currentAddedSiblingsHeight += Math.round(_elementsInFormattingContext[i].bounds.height);
 		}
 		
+	}
+	
+	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
+	{
+		var isAncestorOfElement:Bool = false;
+		
+		
+		var parent:ElementRenderer = element.parent;
+		while (parent != _containingDOMElement.style.elementRenderer)
+		{
+			if (parent == ancestor)
+			{
+				isAncestorOfElement = true;
+				break;
+			}
+			
+			parent = parent.parent;
+		}
+		return isAncestorOfElement;
 	}
 	
 	override public function getStaticPosition(element:ElementRenderer):PointData
