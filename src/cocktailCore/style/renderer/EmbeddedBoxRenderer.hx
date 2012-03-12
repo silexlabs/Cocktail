@@ -2,6 +2,7 @@ package cocktailCore.style.renderer;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
@@ -28,6 +29,13 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		var embeddedDOMElement:EmbeddedDOMElement = cast(_domElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
+		
+		if (_domElement.style.position == absolute)
+		{
+			//Log.trace(_domElement.style.computedStyle.marginLeft);
+			//Log.trace(_bounds.x);
+			
+		}
 		
 		#if (flash9 ||nme)
 		embeddedDOMElement.embeddedAsset.x = _bounds.x + _domElement.style.computedStyle.paddingLeft + _domElement.style.computedStyle.marginLeft;

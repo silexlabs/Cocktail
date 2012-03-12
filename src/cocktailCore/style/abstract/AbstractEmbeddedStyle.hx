@@ -90,20 +90,24 @@ class AbstractEmbeddedStyle extends Style
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
-		switch(this._computedStyle.display)
+		else
 		{
-			case block:
-				boxComputer = new EmbeddedBlockBoxStylesComputer();
+			switch(this._computedStyle.display)
+			{
+				case block:
+					boxComputer = new EmbeddedBlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
-			case inlineBlock:
-				boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
-			
-			case none:
-				boxComputer = new NoneBoxStylesComputer();
-			
-			case inlineStyle:
-				boxComputer = new EmbeddedInlineBoxStylesComputer();
+				case none:
+					boxComputer = new NoneBoxStylesComputer();
+				
+				case inlineStyle:
+					boxComputer = new EmbeddedInlineBoxStylesComputer();
+			}
 		}
+		
 		
 		return boxComputer;
 	}
