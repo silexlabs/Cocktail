@@ -341,6 +341,7 @@ class AbstractContainerStyle extends Style
 				//of their parent and not the content box, so an offset need to be applied
 				//
 				//TODO : to check : shouldn't it be relative to the padding box instead ?
+				//TODO : shouldn't be done if BodyDOMElement is first positioned ancestor
 				boxElementData.bounds.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 				boxElementData.bounds.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
 				

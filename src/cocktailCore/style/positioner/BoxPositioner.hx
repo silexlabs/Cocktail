@@ -99,6 +99,7 @@ class BoxPositioner
 			elementRenderer.bounds.y = Math.round(staticPosition.y);
 		}
 		
+		
 		return elementRenderer;
 	}
 	

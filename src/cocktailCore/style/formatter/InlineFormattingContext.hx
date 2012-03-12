@@ -749,7 +749,7 @@ class InlineFormattingContext extends FormattingContext
 		var flowX:Int;
 		
 		remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
-		flowX = _containingDOMElement.style.computedStyle.marginLeft;
+		flowX = _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
 		
 		
 		//take the float into accounts and the padding of the containing DOMElement
@@ -976,7 +976,7 @@ class InlineFormattingContext extends FormattingContext
 					verticalAlign = domElement.style.computedStyle.verticalAlign;
 			}
 			
-			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + _containingDOMElement.style.computedStyle.marginTop;
+			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
 			
 
 			

@@ -16,8 +16,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		super(domElement);
 		
-		_bounds.width = domElement.style.computedStyle.width;
-		_bounds.height = domElement.style.computedStyle.height;
+		_bounds.width = domElement.offsetWidth;
+		_bounds.height = domElement.offsetHeight;
 
 	}
 	
@@ -30,8 +30,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		ret.push(embeddedDOMElement.embeddedAsset);
 		
 		#if (flash9 ||nme)
-		embeddedDOMElement.embeddedAsset.x = _bounds.x;
-		embeddedDOMElement.embeddedAsset.y = _bounds.y;
+		embeddedDOMElement.embeddedAsset.x = _bounds.x + _domElement.style.computedStyle.paddingLeft + _domElement.style.computedStyle.marginLeft;
+		embeddedDOMElement.embeddedAsset.y = _bounds.y + _domElement.style.computedStyle.paddingTop + _domElement.style.computedStyle.marginTop;
 		//TODO : should only take asset height
 		embeddedDOMElement.embeddedAsset.width = _domElement.style.computedStyle.width;
 		embeddedDOMElement.embeddedAsset.height = _domElement.style.computedStyle.height;
