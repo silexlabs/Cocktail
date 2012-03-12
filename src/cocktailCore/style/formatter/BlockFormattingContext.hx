@@ -30,6 +30,8 @@ class BlockFormattingContext extends FormattingContext
 	
 	private var _currentAddedSiblingsHeight:Int;
 	
+	private var _elementsInColumn:Array<ElementRenderer>;
+	
 	
 	/**
 	 * class constructor
@@ -37,6 +39,7 @@ class BlockFormattingContext extends FormattingContext
 	public function new(domElement:DOMElement) 
 	{
 		_currentAddedSiblingsHeight = 0;
+		_elementsInColumn = new Array<ElementRenderer>();
 		super(domElement);
 	}
 	
@@ -54,6 +57,9 @@ class BlockFormattingContext extends FormattingContext
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
 		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
+
+		_elementsInColumn = new Array<ElementRenderer>();
+		
 		
 		//format all the box element in order
 		for (i in 0..._elementsInFormattingContext.length)
@@ -66,21 +72,39 @@ class BlockFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y -= _currentAddedSiblingsHeight;
 				_currentAddedSiblingsHeight = 0;
+				
+				for (j in 0..._elementsInColumn.length)
+				{
+					_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop;
+				}
+				
+				//_elementsInColumn = new Array<ElementRenderer>();
 					
 			}
 			else
 			{
 				_currentAddedSiblingsHeight = 0;	
 			}
-					
+			
+			
+			
 			_lastInsertedElement = _elementsInFormattingContext[i];
+			
+			_elementsInColumn.push(_elementsInFormattingContext[i]);
+			
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			
+			_elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop;
+			_elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft;
 			
 			if (_elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
 			{
 				_formattingContextData.maxWidth = Math.round(_elementsInFormattingContext[i].bounds.width);
 			}	
+			
 			_formattingContextData.y += Math.round(_elementsInFormattingContext[i].bounds.height);
+			
+			//TODO : max height might be wrong
 			_formattingContextData.maxHeight = _formattingContextData.y;
 			
 			_currentAddedSiblingsHeight += Math.round(_elementsInFormattingContext[i].bounds.height);
@@ -98,7 +122,7 @@ class BlockFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y -= _currentAddedSiblingsHeight;
 				_currentAddedSiblingsHeight = 0;
-					
+				
 			}
 			else
 			{
@@ -162,7 +186,7 @@ class BlockFormattingContext extends FormattingContext
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-			var x:Float = 0.0;
+			var x:Float = _formattingContextData.x;
 			var y:Float = _formattingContextData.y;
 			var width:Float = element.domElement.offsetWidth;
 			var height:Float = element.domElement.offsetHeight;
