@@ -136,6 +136,7 @@ class FormattingContext
 	{
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
+		Log.trace(_formattingContextData.x);
 		return {x:x, y:y};
 	}
 	

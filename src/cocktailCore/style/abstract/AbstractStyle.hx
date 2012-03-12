@@ -801,7 +801,6 @@ class AbstractStyle
 			//retrieve the static position (the position of the DOMElement
 			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
 			//
@@ -1041,6 +1040,9 @@ class AbstractStyle
 	 * instantiate the right box computer class
 	 *	based on the DOMElement's positioning
 	 *	scheme
+	 * 
+	 * TODO : does abstractStyle implement embedded or container ?
+	 * Currently it does both depending on methods
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{

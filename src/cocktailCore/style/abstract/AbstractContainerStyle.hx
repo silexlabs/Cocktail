@@ -336,7 +336,7 @@ class AbstractContainerStyle extends Style
 				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
 				//formatting context
 				var boxElementData:ElementRenderer = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-				
+	
 				//absolutely positioned DOMElement are positioned relative to the margin box
 				//of their parent and not the content box, so an offset need to be applied
 				//
@@ -344,7 +344,7 @@ class AbstractContainerStyle extends Style
 				//TODO : shouldn't be done if BodyDOMElement is first positioned ancestor
 				boxElementData.bounds.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
 				boxElementData.bounds.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
-				
+
 				boxElementsData.push(boxElementData);
 			}
 		}
