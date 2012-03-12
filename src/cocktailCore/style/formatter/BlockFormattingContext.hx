@@ -75,7 +75,9 @@ class BlockFormattingContext extends FormattingContext
 				
 				for (j in 0..._elementsInColumn.length)
 				{
-					_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop;
+					_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
+					_elementsInColumn[j].bounds.x += _elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
+				
 				}
 				
 				//_elementsInColumn = new Array<ElementRenderer>();
@@ -93,9 +95,14 @@ class BlockFormattingContext extends FormattingContext
 			_elementsInColumn.push(_elementsInFormattingContext[i]);
 			
 			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+				
+		
+			_elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
+			_elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
 			
-			_elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop;
-			_elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft;
+		
+		
+			
 			
 			if (_elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
 			{
