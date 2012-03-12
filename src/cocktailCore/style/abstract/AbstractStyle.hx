@@ -595,6 +595,7 @@ class AbstractStyle
 	{
 		var layerRenderer:LayerRenderer;
 		
+		//positioned and floated element always create a new layer
 		if (isPositioned() == true || isFloat() == true)
 		{
 			layerRenderer = new LayerRenderer(elementRenderer);
@@ -789,23 +790,16 @@ class AbstractStyle
 		//else the DOMElement is positioned
 		else
 		{
-			//retrieve the static position (the position of the DOMElement
-			//if its position style were 'static')
-			
+
 			//To retrieve the static position, the formatting context must be formatted now
 			formattingContext.format();
 			
-			//TODO : doc
+			//retrieve the static position (the position of the DOMElement
+			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
 			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
-			//
-			//TODO : the only reason to insert the element remaining is to 
-			//position it vertically in an inline formatting context, create a 'stub' element ?
-			//check : will it work for a relaive container DOMElement ? -> doesn't work,
-			//only container moved, not the children neither the background, need to build a rendering
-			//tree of boxData instead of a flat array
 			//
 			//TODO : relative element are not placed correctly when a margin is applied to the formatting
 			//context root
@@ -823,6 +817,8 @@ class AbstractStyle
 			//calls the positionElement method on all the stored positioned children
 			//
 			//relative positioned DOMElement are also stored in that array
+			//
+			//TODO : shouldn't have to store a ref to this
 			var positionedDOMElementData:PositionedDOMElementData = {
 				staticPosition:staticPosition,
 				style:this,
@@ -1127,19 +1123,6 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine if the DOMElement is an embeded (replaced)
-	 * DOMElement. For example an ImageDOMElement is an
-	 * embedded DOMElement as it embeds a picture in the
-	 * document. An embedded DOMElement can't have children
-	 * 
-	 * TODO : shouldn't be useful anymore
-	 */
-	public function isEmbedded():Bool
-	{
-		return false;
-	}
 	
 	/**
 	 * Determine if the DOMElement is a floated
