@@ -313,6 +313,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			//are substracted from the containing DOMElement height
 			setComputedHeight(style, containingDOMElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
 		}
+		//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
+		else if (style.bottom == PositionOffsetStyleValue.autoValue)
+		{
+			style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			style.computedStyle.bottom = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
+		}
+		//same for top
+		else if(style.top == PositionOffsetStyleValue.autoValue)
+		{
+			
+			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			style.computedStyle.top = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
+		}
 		
 		//if top or bottom are auto, then the height will be computed once the layout
 		//of the DOMElement children is done
@@ -397,7 +410,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				style.computedStyle.marginBottom = getComputedMarginBottom(style, containingDOMElementData);
 			}
-			
+		
 			//if top and bottom are both auto, the static position of top is used, then bottom is computed
 			if (style.top == PositionOffsetStyleValue.autoValue && style.bottom == PositionOffsetStyleValue.autoValue)
 			{
@@ -407,12 +420,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
 			else if (style.bottom == PositionOffsetStyleValue.autoValue)
 			{
+				
 				style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
 			}
 			//same for top
 			else if(style.top == PositionOffsetStyleValue.autoValue)
 			{
+				
 				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.top = containingDOMElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
 			}
