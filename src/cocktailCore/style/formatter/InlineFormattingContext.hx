@@ -638,7 +638,6 @@ class InlineFormattingContext extends FormattingContext
 				{
 					bottom = elements[i].bounds.y + elements[i].bounds.height;
 				}
-				//TODO : ascent is not leaded
 				else
 				{
 					
