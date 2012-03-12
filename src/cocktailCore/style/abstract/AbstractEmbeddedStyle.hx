@@ -61,10 +61,6 @@ class AbstractEmbeddedStyle extends Style
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		//TODO : set dimensions here, or in the embeddedBoxRenderer ?
-		elementRenderer.bounds.width = _computedStyle.width;
-		elementRenderer.bounds.height = _computedStyle.height;
-		
 		parentElementRenderer.addChild(elementRenderer);
 		
 		return elementRenderer;
@@ -110,18 +106,5 @@ class AbstractEmbeddedStyle extends Style
 		}
 		
 		return boxComputer;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as all inherithing classes of the
-	 * Embedded DOMElement are embedded
-	 */
-	override public function isEmbedded():Bool
-	{
-		return true;
 	}
 }

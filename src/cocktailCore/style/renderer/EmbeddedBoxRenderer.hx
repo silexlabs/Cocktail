@@ -15,6 +15,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+		
+		_bounds.width = domElement.style.computedStyle.width;
+		_bounds.height = domElement.style.computedStyle.height;
 
 	}
 	
