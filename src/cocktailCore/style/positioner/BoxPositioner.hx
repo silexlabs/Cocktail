@@ -55,6 +55,7 @@ class BoxPositioner
 	 * Main entry point, determine the position of the DOMElement relative to its first positioned
 	 * ancestor
 	 * 
+	 * @param elementRenderer the ElementRenderer created by the DOMElement
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
 	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
@@ -97,10 +98,6 @@ class BoxPositioner
 		{
 			elementRenderer.bounds.y = Math.round(staticPosition.y);
 		}
-		
-		//TODO : where to put it ?
-		elementRenderer.bounds.width = elementRenderer.domElement.offsetWidth;
-		elementRenderer.bounds.height = elementRenderer.domElement.offsetHeight;
 		
 		return elementRenderer;
 	}
