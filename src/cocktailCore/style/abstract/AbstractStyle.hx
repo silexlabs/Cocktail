@@ -825,11 +825,11 @@ class AbstractStyle
 			//
 			//relative positioned DOMElement are also stored in that array
 			//
-			//TODO : shouldn't have to store a ref to this
+			//TODO : shouldn't have to store a ref to this.
+			//TODO : store static position on ElementRenderer ?
 			var positionedDOMElementData:PositionedDOMElementData = {
 				staticPosition:staticPosition,
-				style:this,
-				formattingContext:formattingContext
+				style:this
 			}
 			
 			//store the DOMElement to be positioned later
