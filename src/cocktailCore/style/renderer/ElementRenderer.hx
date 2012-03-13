@@ -53,6 +53,11 @@ class ElementRenderer
 		return _domElement.style.isFloat();
 	}
 	
+	public function isPositioned():Bool
+	{
+		return _domElement.style.isPositioned();
+	}
+	
 	public function isText():Bool
 	{
 		return false;

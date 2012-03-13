@@ -46,6 +46,12 @@ class TextRenderer extends ElementRenderer
 		return false;
 	}
 	
+	override public function isPositioned():Bool
+	{
+		return false;
+	}
+	
+	
 	override public function isText():Bool
 	{
 		return true;
