@@ -167,7 +167,8 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		//used by the shrink-to-fit method
 		else
 		{
-			setComputedWidth(style, 10000000);
+			//TODO : setting a number too big makes BitmapData crashes in Flash
+			setComputedWidth(style, 1000000);
 		}
 	}
 	

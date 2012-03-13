@@ -89,7 +89,6 @@ class LayerRenderer
 				
 				#end
 			
-			Log.trace(rootRenderer.bounds);
 		}
 		return ret;
 	}
@@ -242,7 +241,12 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					if (rootRenderer.lineBoxes[j][k].domElement.style.isPositioned() == false)
+					if (rootRenderer.lineBoxes[j][k].isText() == true)
+					{
+						Log.trace("nim");
+					}
+					
+					if (rootRenderer.lineBoxes[j][k].domElement.style.isPositioned() == false || rootRenderer.lineBoxes[j][k].isText() == true)
 					{
 						ret.push(rootRenderer.lineBoxes[j][k]);
 					}
@@ -256,6 +260,11 @@ class LayerRenderer
 			{
 				if (rootRenderer.children[i].layerRenderer == this)
 				{
+					if (rootRenderer.children[i].isText() == true)
+					{
+						Log.trace("found text");
+					}
+					
 					if (rootRenderer.children[i].domElement.style.isPositioned() == false)
 					{
 						ret.push(rootRenderer.children[i]);
