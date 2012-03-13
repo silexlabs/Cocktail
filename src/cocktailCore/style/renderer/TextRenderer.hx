@@ -24,6 +24,7 @@ class TextRenderer extends ElementRenderer
 		
 		_bounds.width = domElement.offsetWidth;
 		_bounds.height = domElement.offsetHeight;
+		Log.trace(_bounds);
 
 	}
 	

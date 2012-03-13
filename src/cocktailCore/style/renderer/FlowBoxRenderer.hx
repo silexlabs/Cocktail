@@ -48,7 +48,17 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	public function removeChild(elementRenderer:ElementRenderer):Void
 	{
-		_children.remove(elementRenderer);
+		var newChildren:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0..._children.length)
+		{
+			if (_children[i] != elementRenderer)
+			{
+				newChildren.push(_children[i]);
+			}
+		}
+		
+		_children = newChildren;
 	}
 	
 	override public function canHaveChildren():Bool

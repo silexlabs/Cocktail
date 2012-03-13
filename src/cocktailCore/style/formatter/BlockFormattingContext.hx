@@ -27,19 +27,13 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-	
-	private var _currentAddedSiblingsHeight:Int;
-	
-	private var _elementsInColumn:Array<ElementRenderer>;
-	
+
 	
 	/**
 	 * class constructor
 	 */
 	public function new(domElement:DOMElement) 
 	{
-		_currentAddedSiblingsHeight = 0;
-		_elementsInColumn = new Array<ElementRenderer>();
 		super(domElement);
 	}
 	
@@ -52,75 +46,84 @@ class BlockFormattingContext extends FormattingContext
 	override public function format(layOutLastLine:Bool = false):Void
 	{
 		
+		doFormat(_elementsInFormattingContext);
+		
+	}
+	
+	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
-		
+		var currentAddedSiblingsHeight:Int = 0;
 		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
 
-		_elementsInColumn = new Array<ElementRenderer>();
+		var elementsInColumn = new Array<ElementRenderer>();
 		
 		
 		//format all the box element in order
-		for (i in 0..._elementsInFormattingContext.length)
+		for (i in 0...elementsInFormattingContext.length)
 		{
-			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
+			if (isSiblingOfLastInsertedElement(elementsInFormattingContext[i]))
 			{
 				
 			}
-			else if (isParentOfLastInsertedElement(_elementsInFormattingContext[i]))
+			else if (isParentOfLastInsertedElement(elementsInFormattingContext[i]))
 			{
-				_formattingContextData.y -= _currentAddedSiblingsHeight;
-				_currentAddedSiblingsHeight = 0;
+				_formattingContextData.y -= currentAddedSiblingsHeight;
+				currentAddedSiblingsHeight = 0;
 				
-				for (j in 0..._elementsInColumn.length)
+				for (j in 0...elementsInColumn.length)
 				{
-					if (isAncestorOfElement(_elementsInColumn[j], _elementsInFormattingContext[i] ) == true )
+					if (isAncestorOfElement(elementsInColumn[j], elementsInFormattingContext[i] ) == true )
 					{
-						_elementsInColumn[j].bounds.y += _elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
-						_elementsInColumn[j].bounds.x += _elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + _elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
+						if (elementsInColumn[j].domElement.style.position == fixed)
+						{
+							Log.trace(elementsInColumn[j].bounds.y);
+						}
+						
+						elementsInColumn[j].bounds.y += elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
+						elementsInColumn[j].bounds.x += elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
 				
 					}
 					
 				}
 				
-				//_elementsInColumn = new Array<ElementRenderer>();
 					
 			}
 			else
 			{
-				_currentAddedSiblingsHeight = 0;	
+				currentAddedSiblingsHeight = 0;	
 			}
 			
 			
 			
-			_lastInsertedElement = _elementsInFormattingContext[i];
+			_lastInsertedElement = elementsInFormattingContext[i];
 			
-			_elementsInColumn.push(_elementsInFormattingContext[i]);
+			elementsInColumn.push(elementsInFormattingContext[i]);
 			
-			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
 				
 		
-			_elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
-			_elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
+			elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
+			elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
 			
 		
 		
 			
 			
-			if (_elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
+			if (elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = Math.round(_elementsInFormattingContext[i].bounds.width);
+				_formattingContextData.maxWidth = Math.round(elementsInFormattingContext[i].bounds.width);
 			}	
 			
-			_formattingContextData.y += Math.round(_elementsInFormattingContext[i].bounds.height);
+			_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height);
 			
 			//TODO : max height might be wrong
 			_formattingContextData.maxHeight = _formattingContextData.y;
 			
-			_currentAddedSiblingsHeight += Math.round(_elementsInFormattingContext[i].bounds.height);
+			currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height);
 		}
-		
 	}
 	
 	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
@@ -144,6 +147,17 @@ class BlockFormattingContext extends FormattingContext
 	
 	override public function getStaticPosition(element:ElementRenderer):PointData
 	{
+		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0..._elementsInFormattingContext.length)
+		{
+			elementsToFormat.push(_elementsInFormattingContext[i]);
+		}
+		
+		elementsToFormat.push(element);
+		
+		doFormat(elementsToFormat);
+		/**
 		if (isSiblingOfLastInsertedElement(element))
 			{
 				
@@ -158,9 +172,10 @@ class BlockFormattingContext extends FormattingContext
 			{
 				_currentAddedSiblingsHeight = 0;	
 			}
+		*/
+		var x:Float = element.bounds.x;
+		var y:Float = element.bounds.y;
 		
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
 		return {x:x, y:y};
 	}
 	

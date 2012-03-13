@@ -56,6 +56,7 @@ class LayerRenderer
 				{
 					ret[i].x += rootRenderer.bounds.x;
 					ret[i].y += rootRenderer.bounds.y; 
+					
 				}
 				#end
 				
@@ -77,6 +78,18 @@ class LayerRenderer
 			{
 				ret.push(e[i]);
 			}
+			
+			#if (flash9 ||nme)
+				for (i in 0...ret.length)
+				{
+					//ret[i].x += rootRenderer.bounds.x;
+					//ret[i].y += rootRenderer.bounds.y; 
+					
+				}
+				
+				#end
+			
+			Log.trace(rootRenderer.bounds);
 		}
 		return ret;
 	}
@@ -229,7 +242,11 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					ret.push(rootRenderer.lineBoxes[j][k]);
+					if (rootRenderer.lineBoxes[j][k].domElement.style.isPositioned() == false)
+					{
+						ret.push(rootRenderer.lineBoxes[j][k]);
+					}
+					
 				}
 			}
 		}

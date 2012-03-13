@@ -225,7 +225,7 @@ class AbstractContainerStyle extends Style
 		
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them.
-		doPositionAbsolutelyPositionedDOMElements(isPositioned(), childLastPositionedDOMElementData, viewportData);
+		positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData, viewportData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -284,72 +284,70 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
+	 * Do position absolutely positioned descendant if this ContainerDOMElement is positioned
+	 */
+	private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		if (isPositioned() == true)
+		{
+			doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData, viewportData);
+		}
+	}
+	
+	/**
 	 * When this ContainerDOMElement is positioned, position each of its children using it
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
-	 * 
-	 * TODO : when BodyDOMElement used as ancestor, it always uses the viewport dimensions instead
-	 * of its own which causes an incorrect layout when using the bottom style
 	 */
-	private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
+	private function doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		var boxElementsData:Array<ElementRenderer> = new Array<ElementRenderer>();
+		//update the data of the ContainerDOMElement now that its width and height are known
+		childLastPositionedDOMElementData.data = getContainerDOMElementData();
 		
-		//TODO : sloppy, shouldn't even be called if ContainerDOMElement is not positioned
-		//it is needed to be overriden by BodyStyle for now
-		if (isFirstPositionedAncestor == true)
+		//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+		//TODO : sloppy
+		childLastPositionedDOMElementData.data.height = getComputedHeight();
+		
+		//position each stored children
+		for (i in 0...childLastPositionedDOMElementData.children.length)
 		{
-			//update the data of the ContainerDOMElement now that its width and height are known
-			childLastPositionedDOMElementData.data = getContainerDOMElementData();
+			var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 			
-			//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
-			//TODO : sloppy
-			childLastPositionedDOMElementData.data.height = getComputedHeight();
+			//the static position of all the positioned DOMElement must be updated as they
+			//are in their own formatting context space and they must be converted to this
+			//ContainerDOMElement's formatting context space, as they will be attached to it
 			
-			//position each stored children
-			for (i in 0...childLastPositionedDOMElementData.children.length)
-			{
-				var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
-				
-				//the static position of all the positioned DOMElement must be updated as they
-				//are in their own formatting context space and they must be converted to this
-				//ContainerDOMElement's formatting context space, as they will be attached to it
-				
-				//the domElement which started the formatting context of the child is retrieved
-				//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
-				//maybe should instead find first parent which starts a formatting context
-				var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
-				
-				//the offsets between this ContainerDOMElement and the domElement which started the formatting
-				//context of the positioned DOMElement is computed and applied to the static position of the
-				//positioned DOMElement
-				
-				//TODO : should not use globalX/Y, should instead find first common ancestor ?
-				//positioned children should first find its formattingContextRoot, then go up
-				//the tree until the formatting context of its positioned ancestor is found
-				var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
-				var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
-				positionedDOMElementData.staticPosition.x += xOffset;
-				positionedDOMElementData.staticPosition.y += yOffset;
-				
-				//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
-				//formatting context
-				var boxElementData:ElementRenderer = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-	
-				//absolutely positioned DOMElement are positioned relative to the margin box
-				//of their parent and not the content box, so an offset need to be applied
-				//
-				//TODO : to check : shouldn't it be relative to the padding box instead ?
-				//TODO : shouldn't be done if BodyDOMElement is first positioned ancestor
-				boxElementData.bounds.x -= _computedStyle.paddingLeft + _computedStyle.marginLeft;
-				boxElementData.bounds.y -= _computedStyle.marginTop + _computedStyle.paddingTop;
-
-				boxElementsData.push(boxElementData);
-			}
+			//the domElement which started the formatting context of the child is retrieved
+			//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
+			//maybe should instead find first parent which starts a formatting context
+			var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
+			
+			//the offsets between this ContainerDOMElement and the domElement which started the formatting
+			//context of the positioned DOMElement is computed and applied to the static position of the
+			//positioned DOMElement
+			
+			//TODO : should not use globalX/Y, should instead find first common ancestor ?
+			//positioned children should first find its formattingContextRoot, then go up
+			//the tree until the formatting context of its positioned ancestor is found
+			//globalX/Y is always 0 now as it depended on the nativeElement
+			var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
+			var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
+			positionedDOMElementData.staticPosition.x += xOffset;
+			positionedDOMElementData.staticPosition.y += yOffset;
+			
+			//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
+			//formatting context
+			positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+			Log.trace(positionedDOMElementData.style.elementRenderer.bounds);
+			//absolutely positioned DOMElement are positioned relative to the margin box
+			//of their parent and not the content box, so an offset need to be applied
+			//
+			//TODO : to check : shouldn't it be relative to the padding box instead ?
+			//TODO : shouldn't be done if BodyDOMElement is first positioned ancestor
+			//boxElementData.bounds.x += _computedStyle.paddingLeft + _computedStyle.marginLeft;
+			//boxElementData.bounds.y += _computedStyle.marginTop + _computedStyle.paddingTop;
 		}
-		
-		return boxElementsData;
 	}
 	
 	/**

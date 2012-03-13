@@ -30,17 +30,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var embeddedDOMElement:EmbeddedDOMElement = cast(_domElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
 		
-		if (_domElement.style.position == absolute)
-		{
-			//Log.trace(_domElement.style.computedStyle.marginLeft);
-			//Log.trace(_bounds.x);
-			
-		}
 		
-		#if (flash9 ||nme)
+		#if (flash9 || nme)
 		embeddedDOMElement.embeddedAsset.x = _bounds.x + _domElement.style.computedStyle.paddingLeft + _domElement.style.computedStyle.marginLeft;
 		embeddedDOMElement.embeddedAsset.y = _bounds.y + _domElement.style.computedStyle.paddingTop + _domElement.style.computedStyle.marginTop;
-		//TODO : should only take asset height
+
 		embeddedDOMElement.embeddedAsset.width = _domElement.style.computedStyle.width;
 		embeddedDOMElement.embeddedAsset.height = _domElement.style.computedStyle.height;
 		
