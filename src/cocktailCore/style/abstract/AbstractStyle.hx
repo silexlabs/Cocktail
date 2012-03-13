@@ -660,6 +660,11 @@ class AbstractStyle
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
 		
+		if (_elementRenderer != null && parentElementRenderer != null)
+		{
+			parentElementRenderer.removeChild(_elementRenderer);
+		}
+		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
 		if (isNotDisplayed() == true)
@@ -784,8 +789,6 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-	
-		
 		//insert in the flow
 		if (isPositioned() == false)
 		{
@@ -796,6 +799,7 @@ class AbstractStyle
 		{
 
 			//To retrieve the static position, the formatting context must be formatted now
+			//TODO : no need anymore once implemented in getStaticPosition
 			formattingContext.format();
 			
 			//retrieve the static position (the position of the DOMElement
