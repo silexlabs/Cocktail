@@ -319,28 +319,6 @@ class AbstractContainerStyle extends Style
 		{
 			var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 			
-			//the static position of all the positioned DOMElement must be updated as they
-			//are in their own formatting context space and they must be converted to this
-			//ContainerDOMElement's formatting context space, as they will be attached to it
-			
-			//the domElement which started the formatting context of the child is retrieved
-			//TODO : should not have to retrieve it, add globalX and Y to formattingContextData ?
-			//maybe should instead find first parent which starts a formatting context
-			var formattingContextRootParent:DOMElement = positionedDOMElementData.formattingContext.containingDOMElement;
-			
-			//the offsets between this ContainerDOMElement and the domElement which started the formatting
-			//context of the positioned DOMElement is computed and applied to the static position of the
-			//positioned DOMElement
-			
-			//TODO : should not use globalX/Y, should instead find first common ancestor ?
-			//positioned children should first find its formattingContextRoot, then go up
-			//the tree until the formatting context of its positioned ancestor is found
-			//globalX/Y is always 0 now as it depended on the nativeElement
-			var xOffset:Int = formattingContextRootParent.globalX - _domElement.globalX;
-			var yOffset:Int = formattingContextRootParent.globalY - _domElement.globalY;
-			positionedDOMElementData.staticPosition.x += xOffset;
-			positionedDOMElementData.staticPosition.y += yOffset;
-			
 			//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
 			//formatting context
 			var boxElementData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );

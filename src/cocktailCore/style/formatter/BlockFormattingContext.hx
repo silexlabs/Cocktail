@@ -207,7 +207,6 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * Insert a floated DOMElement. overriden by sub-classes
 	 * 
-	 * TODO : re-implement floats
 	 */
 	override private function insertFloat(element:ElementRenderer):Void
 	{
