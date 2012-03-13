@@ -48,6 +48,11 @@ class ElementRenderer
 		return false;
 	}
 	
+	public function isFloat():Bool
+	{
+		return _domElement.style.isFloat();
+	}
+	
 	public function isText():Bool
 	{
 		return false;
