@@ -595,8 +595,8 @@ class AbstractStyle
 	{
 		var layerRenderer:LayerRenderer;
 		
-		//positioned and floated element always create a new layer
-		if (isPositioned() == true || isFloat() == true)
+		//positioned elements always create a new layer
+		if (isPositioned() == true)
 		{
 			layerRenderer = new LayerRenderer(elementRenderer);
 		}

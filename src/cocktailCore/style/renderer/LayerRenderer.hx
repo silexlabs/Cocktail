@@ -67,6 +67,7 @@ class LayerRenderer
 					ret.push(boum[i]);
 				}
 			
+			//TODO : retrieve and render floated elements	
 		//	renderChildrenNonPositionedFloats();
 		}
 		
@@ -116,6 +117,7 @@ class LayerRenderer
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
 		
+		//TODO : shouldn't have to do that
 		childLayers.reverse();
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
@@ -241,11 +243,7 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					if (rootRenderer.lineBoxes[j][k].isText() == true)
-					{
-						Log.trace("nim");
-					}
-					
+					//TODO : text should always be considered as non-positioned
 					if (rootRenderer.lineBoxes[j][k].domElement.style.isPositioned() == false || rootRenderer.lineBoxes[j][k].isText() == true)
 					{
 						ret.push(rootRenderer.lineBoxes[j][k]);

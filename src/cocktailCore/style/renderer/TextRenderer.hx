@@ -29,7 +29,6 @@ class TextRenderer extends ElementRenderer
 	
 	override public function render():Array<NativeElement>
 	{
-		Log.trace(_bounds);
 		
 		var ret:Array<NativeElement> = [];
 		#if (flash9 ||nme)
@@ -40,6 +39,11 @@ class TextRenderer extends ElementRenderer
 		ret.push(_domElement.nativeElement);
 		
 		return ret;
+	}
+	
+	override public function isFloat():Bool
+	{
+		return false;
 	}
 	
 	override public function isText():Bool

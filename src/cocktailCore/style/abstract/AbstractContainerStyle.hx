@@ -236,6 +236,9 @@ class AbstractContainerStyle extends Style
 	 * Actually flow all the children of the ContainerDOMElement
 	 * 
 	 * TODO : re-add the code to insert offset before and after children ?
+	 * 
+	 * TODO : need to make sure calling these method multiple times in a row don't create
+	 * side effects with class attributes
 	 */
 	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
@@ -265,7 +268,6 @@ class AbstractContainerStyle extends Style
 				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
-						Log.trace(insertedText[j]);
 					flowBoxRenderer.addChild(insertedText[j]);
 				}
 			}
@@ -341,8 +343,8 @@ class AbstractContainerStyle extends Style
 			
 			//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
 			//formatting context
-			positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
-			Log.trace(positionedDOMElementData.style.elementRenderer.bounds);
+			var boxElementData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+
 			//absolutely positioned DOMElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
 			//

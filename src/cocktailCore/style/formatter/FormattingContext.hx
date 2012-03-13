@@ -157,7 +157,11 @@ class FormattingContext
 
 	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
-		if (element.canHaveChildren() == true)
+		if (element.isFloat() == true)
+		{
+			insertFloat(element);
+		}
+		else if (element.canHaveChildren() == true)
 		{
 			if (element.domElement.style.establishesNewFormattingContext() == true)
 			{
@@ -190,6 +194,7 @@ class FormattingContext
 		
 	}
 	
+	//TODO : add a method getChildrenWidth for shrink-to-fit ?
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
 		var height:Int = 0;
@@ -204,7 +209,12 @@ class FormattingContext
 			var elementRenderers:Array<ElementRenderer> = getParentElementRenderers(elementRenderer);
 			for (i in 0...elementRenderers.length)
 			{
-				height += Math.round(elementRenderers[i].bounds.height);
+				//TODO : float can still account in max height if it overflows
+				if (elementRenderers[i].isFloat() == false)
+				{
+					height += Math.round(elementRenderers[i].bounds.height);
+				}
+				
 			}
 		}
 	
