@@ -243,8 +243,7 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					//TODO : text should always be considered as non-positioned
-					if (rootRenderer.lineBoxes[j][k].domElement.style.isPositioned() == false || rootRenderer.lineBoxes[j][k].isText() == true)
+					if (rootRenderer.lineBoxes[j][k].isPositioned() == false)
 					{
 						ret.push(rootRenderer.lineBoxes[j][k]);
 					}
@@ -263,7 +262,7 @@ class LayerRenderer
 						Log.trace("found text");
 					}
 					
-					if (rootRenderer.children[i].domElement.style.isPositioned() == false)
+					if (rootRenderer.children[i].isPositioned() == false)
 					{
 						ret.push(rootRenderer.children[i]);
 						if (rootRenderer.children[i].canHaveChildren() == true)
