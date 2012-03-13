@@ -259,10 +259,13 @@ class AbstractContainerStyle extends Style
 			{
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+				
+			
 				//add the created TextRenderer to the ContainerDOMElement
 				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
+						Log.trace(insertedText[j]);
 					flowBoxRenderer.addChild(insertedText[j]);
 				}
 			}
@@ -405,6 +408,7 @@ class AbstractContainerStyle extends Style
 					//formattingContext.insertElement(BoxElementValue.lineFeed(_computedStyle.whiteSpace, this._domElement));
 			}
 		}	
+		
 		return rendereredText;
 	}
 	

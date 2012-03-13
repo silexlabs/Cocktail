@@ -24,12 +24,13 @@ class TextRenderer extends ElementRenderer
 		
 		_bounds.width = domElement.offsetWidth;
 		_bounds.height = domElement.offsetHeight;
-		Log.trace(_bounds);
 
 	}
 	
 	override public function render():Array<NativeElement>
 	{
+		Log.trace(_bounds);
+		
 		var ret:Array<NativeElement> = [];
 		#if (flash9 ||nme)
 		_domElement.nativeElement.x = _bounds.x;

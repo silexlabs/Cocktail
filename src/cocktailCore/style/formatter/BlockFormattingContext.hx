@@ -121,9 +121,10 @@ class BlockFormattingContext extends FormattingContext
 			
 			//TODO : max height might be wrong
 			_formattingContextData.maxHeight = _formattingContextData.y;
-			
+	
 			currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height);
 		}
+				Log.trace(_formattingContextData.maxWidth);
 	}
 	
 	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
