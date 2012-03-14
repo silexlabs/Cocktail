@@ -208,6 +208,7 @@ class AbstractContainerStyle extends Style
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them.
 		positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData, viewportData);
+
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

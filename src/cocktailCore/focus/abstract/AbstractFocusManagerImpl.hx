@@ -316,8 +316,8 @@ class AbstractFocusManagerImpl
 			var mousePositionData:MousePositionData = {
 			localX:0.0,
 			localY:0.0,
-			globalX:cast(activeDOMElement.globalX),
-			globalY:cast(activeDOMElement.globalY)
+			globalX:cast(activeDOMElement.style.elementRenderer.bounds.x),
+			globalY:cast(activeDOMElement.style.elementRenderer.bounds.y)
 			}
 		
 			var mouseEventData:MouseEventData = {

@@ -28,19 +28,6 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 		super(domElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN NATIVE SETTERS
-	// Embedded DOMElement also apply their paddings and margins
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeOpacity(opacity:Float):Void
-	{
-		super.setNativeOpacity(opacity);
-		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
-		
-		embeddedDOMElement.embeddedAsset.alpha = opacity;
-	}
-	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	////////////////////////////////
@@ -48,6 +35,8 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 	/**
 	 * When concatenating the base Matrix of an embedded element, it must also
 	 * be scaled using the intrinsic width and height of the DOMElement as reference
+	 * 
+	 * TODO : move to ElementRenderer
 	 */
 	override private function getConcatenatedMatrix(matrix:Matrix):Matrix
 	{
@@ -56,9 +45,9 @@ class EmbeddedStyle extends AbstractEmbeddedStyle
 		var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
 		
 		currentMatrix.concatenate(matrix);
-		currentMatrix.translate(this._nativeX, this._nativeY);
+		//currentMatrix.translate(this._nativeX, this._nativeY);
 		
-		currentMatrix.scale(this._nativeWidth / embeddedDOMElement.intrinsicWidth, this._nativeHeight / embeddedDOMElement.intrinsicHeight, { x:0.0, y:0.0} );
+		//currentMatrix.scale(this._nativeWidth / embeddedDOMElement.intrinsicWidth, this._nativeHeight / embeddedDOMElement.intrinsicHeight, { x:0.0, y:0.0} );
 		
 		return currentMatrix;
 	}

@@ -60,8 +60,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//apply opacity and visibility
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
-		_domElement.style.setNativeOpacity(_domElement.style.computedStyle.opacity);
-		_domElement.style.setNativeVisibility(_domElement.style.computedStyle.visibility);
+		//_domElement.style.setNativeOpacity(_domElement.style.computedStyle.opacity);
+		//_domElement.style.setNativeVisibility(_domElement.style.computedStyle.visibility);
 		
 		return ret;
 	}
