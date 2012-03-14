@@ -73,6 +73,9 @@ class AbstractBodyStyle extends ContainerStyle
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The BodyDOMElement create an initial block renderer and always create a new layer
+	 */
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
@@ -85,6 +88,11 @@ class AbstractBodyStyle extends ContainerStyle
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The BodyDOMElement starts the rendering of the rendering tree
+	 * 
+	 * TODO : should instead be on a Document class
+	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{	
 		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
@@ -127,14 +135,7 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An inline-level DOMElement is one that is
-	 * laid out on a line. It will be placed
-	 * either next to the preceding DOMElement
-	 * or on a new line if the current line
-	 * is too short to host it.
-	 * 
-	 * Wheter an element is inline-level is determined
-	 * by its display style
+	 * The BodyDOMElement is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{

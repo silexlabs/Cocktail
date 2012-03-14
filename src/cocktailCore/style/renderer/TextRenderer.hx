@@ -42,6 +42,8 @@ class TextRenderer extends ElementRenderer
 		_bounds.height = domElement.offsetHeight;
 	}
 	
+	
+	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	////////////////////////////////
@@ -65,6 +67,77 @@ class TextRenderer extends ElementRenderer
 		ret.push(_domElement.nativeElement);
 		
 		return ret;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE METHODS
+	////////////////////////////////
+	
+	#if flash9
+	
+	/**
+	 * The offset width for a text fragment is the width of its
+	 * text
+	 */
+	private function getOffsetWidth():Int
+	{
+		return 0;
+		//
+		//in this case the text fragment is a space, as the flash
+		//text engine doesn't account for the width of space
+		//if (untyped _nativeElement.textWidth == 0)
+		//{
+			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
+			//which also apply to space and the word spacing which aplies only to text
+			//return style.fontMetrics.spaceWidth + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
+		//}
+		//in this case the text fragment is a word, the text width is returned, it already
+		//contains the letter spacing which was applied when the text was rendered
+		//else
+		//{
+			//return untyped _nativeElement.textWidth ;
+		//}				
+	}
+	
+	#elseif nme
+	/**
+	 * The offset width for a text fragment is the width of its
+	 * text
+	 */
+	private function getOffsetWidth():Int
+	{
+		return 0;
+		//
+		//TODO : shouldn't be here but in a Document class
+		//flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		//
+		//var ret:Int = _nativeElement.textWidth;
+		//
+		//return ret;
+	}
+	
+	#end
+
+	/**
+	 * the height of a text fragment is the addition
+	 * of its leaded ascent and leaded descent
+	 */
+	private function getOffsetHeight():Int
+	{
+		return 0;
+		//
+		//var ascent:Float =  style.fontMetrics.ascent;
+		//var descent:Float = style.fontMetrics.descent;
+		//
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		//var leading:Float = this._style.computedStyle.lineHeight - (ascent + descent);
+		//
+		//apply leading to the ascent and descent
+		//var leadedAscent:Float = (ascent + leading/2);
+		//var leadedDescent:Float = (descent + leading / 2);
+		//
+		//return Math.round(leadedAscent + leadedDescent);
 	}
 	
 	/////////////////////////////////

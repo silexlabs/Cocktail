@@ -356,13 +356,13 @@ class LayerRenderer
 		return ret;
 	}
 	
+	//TODO : implement layer renderer transformation
 	
 	/**
 	 * when the matrix is set, update also
 	 * the values of the native flash matrix of the
 	 * native DisplayObject
 	 * 
-	 * TODO : move to ElementRenderer
 	 * 
 	 * @param	matrix
 	 */
@@ -389,7 +389,6 @@ class LayerRenderer
 	 * When concatenating the base Matrix of an embedded element, it must also
 	 * be scaled using the intrinsic width and height of the DOMElement as reference
 	 * 
-	 * TODO : move to ElementRenderer
 	 */
 	private function getConcatenatedMatrix(matrix:Matrix):Matrix
 	{
@@ -406,14 +405,13 @@ class LayerRenderer
 		return currentMatrix;
 	}
 	
-		/**
+	/**
 	 * Concatenate the new matrix with the "base" matrix of the DOMElement
 	 * where only translations (the x and y of the DOMElement) and scales
 	 * (the width and height of the DOMElement) are applied.
 	 * It is neccessary in flash to do so to prevent losing the x, y, width
 	 * and height applied during layout
 	 * 
-	 * TODO : move to ElementRenderer
 	 */
 	private function getConcatenatedMatrix2(matrix:Matrix):Matrix
 	{
