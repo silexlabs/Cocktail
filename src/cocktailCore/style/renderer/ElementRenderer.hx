@@ -58,6 +58,11 @@ class ElementRenderer
 		return _domElement.style.isPositioned();
 	}
 	
+	public function isEmbedded():Bool
+	{
+		return true;
+	}
+	
 	public function isText():Bool
 	{
 		return false;

@@ -910,7 +910,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			//for embedded or inlineBlock elements, which have no baseline, the height above
 			//the baseline is the offset height and they have no descent
-			if (_elementsInLineBox[i].canHaveChildren() == false && _elementsInLineBox[i].isText() == false ||
+			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
 				domElementAscent = domElement.offsetHeight;
@@ -986,8 +986,7 @@ class InlineFormattingContext extends FormattingContext
 			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
 			//so that its bottom margin touches the baseline
 			
-			//TODO : simplify, need a isEmbedded() method on ElementRenderer
-			if (_elementsInLineBox[i].canHaveChildren() == false && _elementsInLineBox[i].isText() == false ||
+			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{	
 				
