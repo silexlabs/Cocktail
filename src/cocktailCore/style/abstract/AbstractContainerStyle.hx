@@ -15,6 +15,12 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
+import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
@@ -100,15 +106,10 @@ class AbstractContainerStyle extends Style
 	/**
 	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
 	 * will be measured and placed as well as all of its children.
-	 * 
-	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered and displayed
-	 * 
-	 * TODO : allow start rendering for element other than BodyDOMElement ?
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{		
 		flow(containingDOMElementData, viewportData, lastPositionedDOMElementData, null, null, null);
-		//render();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +375,8 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line formed by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * TODO : update doc
+	 * If the width of this ContainerDOMElement is indeed shrinked, all
+	 * its children are re-flowed
 	 * 
 	 * @param	containingDOMElementData
 	 * @param	minimumWidth the width of the widest line of children laid out
@@ -390,6 +392,7 @@ class AbstractContainerStyle extends Style
 		//a new layout must happen
 		if (this._computedStyle.width != shrinkedWidth)
 		{
+			//store the new computed width
 			this._computedStyle.width = shrinkedWidth;
 			
 			//update the structures used for the layout and starts a new layout
@@ -428,6 +431,53 @@ class AbstractContainerStyle extends Style
 		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		containerDOMElement.resetTextFragments();	
 		super.invalidateText();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE COMPUTING METHODS
+	// compute styles definition into usable values
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden to use box computer specific to 
+	 * container DOMElement instead of the embedded one
+	 */
+	override private function getBoxStylesComputer():BoxStylesComputer
+	{
+		var boxComputer:BoxStylesComputer;
+				
+		//get the box computer for float
+		if (isFloat() == true)
+		{
+			boxComputer = new FloatBoxStylesComputer();
+		}
+		
+		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			boxComputer = new PositionedBoxStylesComputer();
+		}
+		
+		//else get the box computer based on the display style
+		else
+		{
+			switch(this._computedStyle.display)
+			{
+				case block:
+					boxComputer = new BlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new InlineBlockBoxStylesComputer();
+				
+				case none:
+					boxComputer = new NoneBoxStylesComputer();
+				
+				case inlineStyle:
+					boxComputer = new InLineBoxStylesComputer();
+			}
+		}
+		
+		return boxComputer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
