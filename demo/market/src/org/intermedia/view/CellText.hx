@@ -34,7 +34,6 @@ class CellText extends CellBase
 			var textElement:TextElement = new TextElement(cellData.title);
 			cellTextContainer.addText(textElement);
 			CellTextStyle.setCellTextStyle(cellTextContainer);
-			//cell.addChild(cellTextContainer);
 			this.addChild(cellTextContainer);
 		}
 			

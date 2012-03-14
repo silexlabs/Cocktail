@@ -4,7 +4,7 @@ import org.intermedia.model.XmlLoader;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Load RSS and parse them into CellData or DetailData returned to the ApplicationModel
+ * Loads a rss feed and parses it either to a CellData or a DetailData returned to the ApplicationModel
  * 
  * @author Raphael Harmel
  */
@@ -19,15 +19,25 @@ class DataLoader
 	
 	// online/offline switch
 	private var _online:Bool;
+	
+	// quantity of rss items to load
+	private var _itemsToLoad:Int;
+	
+	// page index containing _itemsToLoad items
+	private var _pageIndex:Int;
 
 	/*private function onLoadingError(unknown:Dynamic):Void
 	{
 		trace("error in DataLoader");
 	}*/
 	
-	public function new(?online:Bool=true)
+	public function new(?itemsToLoad:Int = 10, ?pageIndex:Int = 1, ?online:Bool=true)
 	{
+		// init private attributes
+		_itemsToLoad = itemsToLoad;
+		_pageIndex = pageIndex;
 		_online = online;
+		
 	}
 	
 	/**
@@ -36,7 +46,7 @@ class DataLoader
 	 * @param	endIndex
 	 * @param	?callBack
 	 */
-	public function loadCellData(startIndex:Int, endIndex:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
+	public function loadCellData(itemsPerPage:Int, ?pageIndex:Int=1, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;
@@ -45,7 +55,11 @@ class DataLoader
 		var fullUrl:String = "";
 		
 		// prepare online feed url
-		if (_online) fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=657&format=rss2";
+		if (_online)
+		{
+			fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
+			_pageIndex++;
+		}
 		// prepare local feed url
 		else fullUrl = "data/silex_plugins.rss";
 		
@@ -65,25 +79,12 @@ class DataLoader
 		onLoadingError = errorCallback;
 		
 		// Delegate callback
-		//var onLoadDelegate:Xml->CellData->Void = onCellDetailXmlLoaded;
-		//xmlLoader.onLoad = function(xml:Xml) { onLoadDelegate(xml, cellData); };
-		//xmlLoader.onLoadSuccess = function(xml:Xml) { onCellDetailXmlLoaded(xml, cellData); };
 		var onLoadSuccessDelegate:Xml->Void = function(xml:Xml) { onCellDetailXmlLoaded(xml, cellData); };
-		
-		//var rssPath:String = "http://www.silexlabs.org/feed/ep_posts_in_category/?p=" + 81290 + "&format=rss2";
-		//var rssPath:String = "http://www.silexlabs.org/feed/ep_posts_in_category/?p=" + cellData.id + "&format=rss2";
-		//var rssPath:String = "http://www.silexlabs.org/feed/?p=" + cellData.id + "&format=rss2";
-		//var rssPath:String = "http://www.silexlabs.org/feed/?s=" + cellData.id + "&format=rss2";
-		//var rssPath:String = "http://www.silexlabs.org/feed/ep_posts_in_category/?s=" + cellData.id + "&format=rss2";
-		//var xmlLoader:XmlLoader = new XmlLoader(rssPath);
-
-		//var rssPath:String = "http://www.silexlabs.org/feed/?s=" + cellData.title.substr(0,cellData.title.indexOf(" ")) + "&format=rss2";
-		//var xmlLoader:XmlLoader = new XmlLoader(rssPath, onLoadSuccessDelegate, onLoadingError);
 		
 		var fullUrl:String = "";
 		
 		// prepare online feed url
-		if (_online) fullUrl = "http://www.silexlabs.org/feed/?s=" + cellData.title.substr(0,cellData.title.indexOf(" ")) + "&format=rss2";
+		if (_online) fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
 		// prepare local feed url
 		else fullUrl = "data/detail.rss";
 		
@@ -100,7 +101,6 @@ class DataLoader
 	 */
 	private function onCellsXmlLoaded(xml:Xml):Void
 	{
-		//trace("onCellsXmlLoaded");
 		onCellDataLoaded(ThumbTextListRss.rss2Cells(xml));
 	}	
 	
@@ -112,7 +112,6 @@ class DataLoader
 	 */
 	private function onCellDetailXmlLoaded(xml:Xml,cellData:CellData):Void
 	{
-		//trace("onCellDetailXmlLoaded");
 		onCellDetailLoaded(CellDetailsRss.rss2CellDetail(xml,cellData));
 	}
 	

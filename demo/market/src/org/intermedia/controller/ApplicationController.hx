@@ -21,11 +21,11 @@ class ApplicationController
 	public function new(applicationModel:ApplicationModel)
 	{
 		_applicationModel = applicationModel;
-		//loadCellData(5);
 	}
 
 	/**
 	 * Prompt the model to open the swippableViewContainer when the application is in Detail view
+	 * not needed as can be handled directly in the viewmanager
 	 */
 	/*public function goBackToListView():Void
 	{

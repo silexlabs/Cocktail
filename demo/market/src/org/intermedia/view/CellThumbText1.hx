@@ -14,29 +14,29 @@ import org.intermedia.view.StyleModel;
  * @author Raphael Harmel
  */
 
-class CellThumbText1 extends CellBase
+class CellThumbText1 extends CellThumb
 {
 	// cell style
-	private var _cellStyle:CellThumbText1StyleModel;
+	//private var _cellStyle:CellThumbText1StyleModel;
 
 	/**
 	 * 
 	 * 
 	 * @param	?cellPerLine	number of cells per line
 	 */
-	public function new(?cellPerLine:Int = 1) 
+	/*public function new(?cellPerLine:Int = 1) 
 	{
 		super();
 		initCellStyle();
 		_cellStyle.cell(this,cellPerLine);
-	}
+	}*/
 	
-	private function initCellStyle():Void
+	override private function initCellStyle():Void
 	{
 		// init style model
 		_cellStyle = {
 			cell:CellThumbText1Style.setCellStyle,
-			thumbnail:CellThumbText1Style.setThumbnailStyle,
+			thumbnail:CellThumbStyle.setThumbnailStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
 			author:CellThumbText1Style.setAuthorStyle,
@@ -50,12 +50,14 @@ class CellThumbText1 extends CellBase
 	 */
 	override private function updateView():Void
 	{
-		var cellData:CellData = _data;
+		super.updateView();
+		//var cellData:CellData = _data;
+		//var cellData:CellData = super._data;
 		
 		// THUMBNAIL
 		
 		// image part
-		if (cellData.thumbUrl != "" && cellData.thumbUrl != null)
+		/*if (cellData.thumbUrl != "" && cellData.thumbUrl != null)
 		{
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
@@ -65,7 +67,7 @@ class CellThumbText1 extends CellBase
 			this.addChild(cellImage);
 			// load image
 			cellImage.load(cellData.thumbUrl);
-		}
+		}*/
 		
 
 		// TEXT
@@ -77,10 +79,10 @@ class CellThumbText1 extends CellBase
 		this.addChild(cellTextBlockContainer);
 		
 		// add title
-		if (cellData.title != "" && cellData.title != null)
+		if (_data.title != "" && _data.title != null)
 		{
 			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(cellData.title);
+			var textElement:TextElement = new TextElement(_data.title);
 			cellTitleContainer.addText(textElement);
 			_cellStyle.title(cellTitleContainer);
 			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
@@ -88,10 +90,10 @@ class CellThumbText1 extends CellBase
 		}
 		
 		// add author
-		if (cellData.author != "" && cellData.author != null)
+		if (_data.author != "" && _data.author != null)
 		{
 			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(cellData.author);
+			var textElement:TextElement = new TextElement(_data.author);
 			cellAuthorContainer.addText(textElement);
 			_cellStyle.author(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);

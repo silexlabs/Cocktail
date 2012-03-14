@@ -51,7 +51,7 @@ class ViewManagerStyle
 		domElement.style.width = DimensionStyleValue.percent(130);
 		domElement.style.height = DimensionStyleValue.percent(100);
 		
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
 	}
 	
 }

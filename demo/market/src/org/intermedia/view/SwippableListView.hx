@@ -6,6 +6,7 @@ import org.intermedia.view.ListViewBase;
 import cocktail.mouse.MouseData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
+import cocktail.domElement.DOMElementData;
 
 import feffects.Tween;
 import feffects.easing.Quart;
@@ -21,14 +22,11 @@ class SwippableListView extends ListViewBase
 {
 
 	// a ref to each of the list views which can be swiped
-	//private var _listViews:Array<ListViewBase>;
 	private var _listViews:Array<ViewBase>;
 	
-	private var list0:ViewBase;
-	private var list1:ViewBase;
-	private var list11:ViewBase;
-	private var list12:ViewBase;
-	private var list2:ViewBase;
+	private var list0:ListViewText;
+	private var list1:ThumbTextList1Bis;
+	private var list2:ThumbTextList1;
 	
 	// The ListView currently displayed
 	private var _currentListView:ListViewBase;
@@ -42,17 +40,9 @@ class SwippableListView extends ListViewBase
 	
 	private var _initialPosition:Int;
 	
+	// view port
+	private var _viewport:Viewport;
 	private var _viewportWidth:Int;
-	
-	// set/get the data on each of the list views
-	//override public var data(getData, setData):Dynamic;
-	
-	// Called when one of the cell of the listViews has been selected, it is not called when a swipe is in progress
-	//override public var onListItemSelected:CellData->Void;
-	/*override public function onListItemSelected(cellData:CellData):Void
-	{
-		
-	}*/
 	
 	public function new()
 	{
@@ -62,7 +52,9 @@ class SwippableListView extends ListViewBase
 		_xOffset = 0;
 		_xOffsetStart = 0;
 		_initialPosition = 0;
-		_viewportWidth = (new Viewport()).width;
+		_viewport = new Viewport();
+		_viewportWidth = _viewport.width;
+		_viewport.onResize = onResizeCallback;
 		
 		// set style
 		SwippableListViewStyle.setListStyle(this);
@@ -70,32 +62,17 @@ class SwippableListView extends ListViewBase
 		onMouseDown = onMouseDownCallback2;
 		
 		// set _listView array
-		//_listViews = new Array<ListViewBase>();
 		_listViews = new Array<ViewBase>();
 		
 		// create all needed lists and add them to the _listView array
-		//public var list0:ListViewBase = new ListViewText();
 		list0 = new ListViewText();
 		list0.x = -_viewportWidth;
 		_listViews.push(list0);
-		//var list1:ListViewBase = new ThumbTextList1(3);
 		
-		//public var list1:ViewBase = new ViewBase();
-		list1 = new ViewBase();
-		list1.x = 0;
-		SwippableListViewStyle.setContainerStyle(list1);
-		//_listViews.push(list1);
+		//var list1:ListViewBase = new ThumbTextList1Bis(3);Filters component
+		list1 = new ThumbTextList1Bis(2);
+		_listViews.push(list1);
 		
-		//var list11:ListViewBase = new ThumbList(3);
-		list11 = new ThumbList(3);
-		list1.addChild(list11);
-		_listViews.push(list11);
-		//var list12:ListViewBase = new ThumbTextList1Bis(3);Filters component
-
-		list12 = new ThumbTextList1Bis(3);
-		//list1.addChild(list12);
-		
-		//var list2:ListViewBase = new ThumbTextList1(2);
 		list2 = new ThumbTextList1(2);
 		_listViews.push(list2);
 		list2.x = _viewportWidth;
@@ -109,29 +86,12 @@ class SwippableListView extends ListViewBase
 		// set index
 		_index = 1;
 		// set current list to list2
-		//_currentListView = _listViews[_index];
 		_currentListView = cast _listViews[_index];
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
+		_currentListView.onListScrolled = onScrolledCallback;
 		
 	}
-	
-	/**
-	 * Starts listening to onMouseMove event et onMouseUpEvent
-	 */
-	//override public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEventData->Void;
-
-	/**
-	 * attach the ListView to the right and left of the current ListView
-	 * move the container according to user interaction.
-	 */
-	//override public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
-
-	/**
-	 * Select the view closest to the center of the screen and tween
-	 * on tween end, set it as the current ListView.
-	 */
-	//override public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
 	
 	/**
 	 * data setter
@@ -141,27 +101,37 @@ class SwippableListView extends ListViewBase
 	override private function setData(v:Dynamic):Dynamic
 	{
 		_data = v;
-		// update _currentListView data with updated data
-		//_currentListView.data = _data;
 		
-		/*for (listView in _listViews)
-		{
-			listView.data = _data;
-		}*/
+		// set displayEndListLoader to the lists and
+		// update _currentListView data with updated data
+		
+		list0.displayListBottomLoader = displayListBottomLoader;
 		list0.data = _data;
+		
+		list1.displayListBottomLoader = displayListBottomLoader;
 		list1.data = _data;
-		list11.data = _data;
-		list12.data = _data;
+
+		list2.displayListBottomLoader = displayListBottomLoader;
 		list2.data = _data;
 		
-		//buildView();
 		return _data;	
 	}
 	
-	/*private function buildView():Void
+	/**
+	 * on rezize callback
+	 */
+	private function onResizeCallback():Void
 	{
+		// compute new width
+		_viewportWidth = _viewport.width;
 		
-	}*/
+		// update lists width
+		list0.x = -_viewportWidth;
+		list2.x = _viewportWidth;
+		
+		// update swippable view position
+		this.x = -_currentListView.x;
+	}
 	
 	/**
 	 * A way to override onMouseDownCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
@@ -171,7 +141,6 @@ class SwippableListView extends ListViewBase
 	 */
 	private function onMouseDownCallback2(mouseEvent:MouseEventData):Void
 	{
-		//trace("onMouseDownCallback2");
 		// set _xOffset to current mouse position
 		_xOffsetStart = Std.int(mouseEvent.mousePosition.localX);
 		
@@ -192,7 +161,6 @@ class SwippableListView extends ListViewBase
 	 */
 	private function onMouseMoveCallback2(mouseEvent:MouseEventData):Void
 	{
-		//trace("onMouseMoveCallback2");
 
 		// compute offset
 		_xOffset = Std.int(mouseEvent.mousePosition.localX) - _xOffsetStart;
@@ -200,8 +168,9 @@ class SwippableListView extends ListViewBase
 		// move the swippable view according to the offset
 		this.x = _initialPosition + _xOffset;
 		
-		// unset listItemSelected callback on current list to avoid opening detail view
+		// unset listItemSelected callback on current list to avoid opening detail view while swipping
 		_currentListView.onListItemSelected = null;
+		_currentListView.onListScrolled = null;
 
 	}
 	
@@ -213,8 +182,6 @@ class SwippableListView extends ListViewBase
 	 */
 	private function onMouseUpCallback2(mouseEvent:MouseEventData):Void
 	{
-		//trace("onMouseUpCallback2");
-		
 		// compute offset
 		_xOffset = Std.int(mouseEvent.mousePosition.localX) - _xOffsetStart;
 		
@@ -225,7 +192,6 @@ class SwippableListView extends ListViewBase
 		// display next list and set _currentlist to the next list
 		if (_xOffset < -_viewportWidth/2)
 		{
-			//trace("next list");
 			// if the current list is not the last list
 			if(_index < _listViews.length-1)
 			{
@@ -239,21 +205,20 @@ class SwippableListView extends ListViewBase
 		// display previous list and set _currentlist to the previous list
 		else if (_xOffset > _viewportWidth/2)
 		{
-			//trace("previous list");
 			// if the current list is not the first list
 			if(_index > 0)
 			{
 				_index--;
-				//_currentListView = _listViews[_index];
 				_currentListView = cast _listViews[_index];
 			}
 		}
 		
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
+		_currentListView.onListScrolled = onScrolledCallback;
 
 		// tween the swippable view in the correct position
-		animate();
+		releaseTween();
 		
 		// js wokaround to scroll up
 		#if js
@@ -266,7 +231,10 @@ class SwippableListView extends ListViewBase
 		onMouseUp = null;
 	}
 	
-	private function animate():Void
+	/**
+	 * swipe animation when touch is released
+	 */
+	private function releaseTween():Void
 	{
 		// create the tween
         var tween = new Tween( this.x, -_currentListView.x, 600, Quint.easeOut );
@@ -275,6 +243,11 @@ class SwippableListView extends ListViewBase
         tween.start();
 	}
 	
+	/**
+	 * move view on the x axis
+	 * 
+	 * @param	e
+	 */
     function tweenMove( e : Float )
     {
         this.x = Std.int(e);

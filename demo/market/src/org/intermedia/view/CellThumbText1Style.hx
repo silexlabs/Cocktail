@@ -24,7 +24,7 @@ import org.intermedia.view.ScreenResolution;
 
 
 /**
- * This class defines the styles used by the CellText
+ * This class defines the styles used by the CellThumbText
  * 
  * @author Raphael Harmel
  */
@@ -38,7 +38,6 @@ class CellThumbText1Style
 	 * 
 	 * @param	domElement
 	 */
-	//public static function setCellStyle(domElement:ContainerDOMElement):Void
 	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
@@ -60,48 +59,6 @@ class CellThumbText1Style
 		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
 		else cellPercentWidth = 100;
 		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
-		
-		// Samsung TV workaround
-		//domElement.style.height = DimensionStyleValue.length(px(200));
-	}
-	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	domElement
-	 */
-	//public static function setThumbnailStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	public static function setThumbnailStyle(domElement:DOMElement):Void
-	{
-		var imageMaxWidth:Int = 200;
-		
-		//setCellStyle(domElement);
-		
-		domElement.style.display = DisplayStyleValue.inlineStyle;
-		
-		domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		domElement.style.paddingRight = PaddingStyleValue.percent(1);
-		//domElement.style.paddingBottom = PaddingStyleValue.percent(1);
-
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		//domElement.style.width = DimensionStyleValue.percent(30);
-
-		// Samsung TV bug workaround
-		/*if(screenResolutionSize == ScreenResolutionSize.large)
-		{
-			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.height = DimensionStyleValue.autoValue;
-			//domElement.style.height = DimensionStyleValue.length(px(50));
-		}
-		else
-		{*/
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-			domElement.style.width = DimensionStyleValue.percent(30);	
-		//}
-		
 	}
 	
 	/**
@@ -183,7 +140,6 @@ class CellThumbText1Style
 
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
-		//domElement.style.marginTop = MarginStyleValue.length(px(Std.int(CELL_VERTICAL_SPACE*60%)));
 		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));	
 	}
 	

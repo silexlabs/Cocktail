@@ -38,13 +38,12 @@ class ListViewStyle
 	 */
 	public static function setListStyle(domElement:DOMElement):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.position = PositionStyleValue.absolute;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		//domElement.style.marginTop = MarginStyleValue.length(px(Constants.HEADER_HEIGHT));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
@@ -53,9 +52,35 @@ class ListViewStyle
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.autoValue;
 		
 		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		
+		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		
+	}
+	
+	/**
+	 * loader animation style
+	 * 
+	 * @param	domElement
+	 */
+	public static function loader(domElement:DOMElement)
+	{
+		var verticalMargin:Int = 20;
+		
+		var viewport:Viewport = new Viewport();
+		var viewportHeight:Int = viewport.height;
+		
+		domElement.style.display = DisplayStyleValue.block;
+		
+		domElement.style.marginLeft = MarginStyleValue.autoValue;
+		domElement.style.marginRight = MarginStyleValue.autoValue;
+		domElement.style.marginTop = MarginStyleValue.length(px(verticalMargin));
+		domElement.style.marginBottom = MarginStyleValue.length(px(verticalMargin));
+		
+		domElement.style.top = PositionOffsetStyleValue.length(px(viewportHeight));
 	}
 	
 }

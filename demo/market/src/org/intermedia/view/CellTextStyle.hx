@@ -39,8 +39,6 @@ class CellTextStyle
 	 */
 	public static function setCellStyle(domElement:ContainerDOMElement):Void
 	{
-		//setDefaultStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.position = PositionStyleValue.relative;
 		
@@ -54,45 +52,6 @@ class CellTextStyle
 		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 				
-		//domElement.style.color = ColorValue.hex('#666666');
-		
-		// workaround for HbbTV
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		
-		//setCellLine(domElement);
-
-	}
-	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	domElement
-	 */
-	/*public static function setCellImageStyle(domElement:DOMElement):Void
-	{
-		//setDefaultStyle(domElement);
-		//domElement.style.position = absolute;
-
-		//domElement.style.display = DisplayStyleValue.block;
-		domElement.style.display = DisplayStyleValue.inlineStyle;
-		domElement.style.position = PositionStyleValue.relative;
-		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
-		
-		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(8));
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.floatValue = FloatStyleValue.right;
-		domElement.style.right = PositionOffsetStyleValue.length(px(0));
-		
-		//domElement.style.width = DimensionStyleValue.length(px(8));
-		//domElement.style.height = DimensionStyleValue.length(px(13));
-		//domElement.style.height = DimensionStyleValue.length(px(29));
 	}
 	
 	/**
@@ -102,15 +61,11 @@ class CellTextStyle
 	 */
 	public static function setCellTextStyle(domElement:DOMElement):Void
 	{
-		//setDefaultStyle(domElement);
-
 		domElement.style.display = DisplayStyleValue.inlineStyle;
 		domElement.style.position = PositionStyleValue.relative;
 
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		//domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		
 		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
@@ -132,30 +87,7 @@ class CellTextStyle
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		
 		domElement.style.color = ColorValue.hex('#666666');
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		
-		// workaround for HbbTV
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 	}
-	
-	/**
-	 * Create a cell line
-	 * 
-	 * @param	domElement
-	 */
-	/*public static function setCellLine(domElement:ContainerDOMElement):Void
-	{
-		var line:ImageDOMElement = new ImageDOMElement();
-		line.style.display = DisplayStyleValue.block;
-		line.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
-		line.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		line.style.width = DimensionStyleValue.percent(100);
-		line.style.height = DimensionStyleValue.length(px(1));
-		line.load("assets/greyPixel.png");
-		
-		domElement.addChild(line);
-	}*/
 	
 	/**
 	 * Defines cell line Style
@@ -169,11 +101,7 @@ class CellTextStyle
 
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(1));
-		//domElement.style.marginTop = MarginStyleValue.length(px(Std.int(CELL_VERTICAL_SPACE*60%)));
 		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(8));
 	}
-	
-
 	
 }
