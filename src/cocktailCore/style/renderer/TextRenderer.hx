@@ -26,20 +26,26 @@ class TextRenderer extends ElementRenderer
 	 */
 	private var _textToken:TextTokenValue;
 	
+	private var _nativeElement:NativeElement;
+	
 	/**
 	 * Class constructor. Set the width and height bounds
 	 * to those of the generated text
 	 * 
 	 * @param domElement the generated text
 	 */
-	public function new(domElement:DOMElement, textToken:TextTokenValue) 
+	public function new(domElement:DOMElement, nativeElement:NativeElement, textToken:TextTokenValue) 
 	{
 		_textToken = textToken;
 		
+		_nativeElement = nativeElement;
+		
 		super(domElement);
 		
-		_bounds.width = domElement.offsetWidth;
-		_bounds.height = domElement.offsetHeight;
+		#if (flash9 || nme)
+		_bounds.width = getOffsetWidth();
+		_bounds.height = getOffsetHeight();
+		#end
 	}
 	
 	
@@ -57,14 +63,14 @@ class TextRenderer extends ElementRenderer
 		
 		var ret:Array<NativeElement> = [];
 		#if flash9
-		_domElement.nativeElement.x = _bounds.x;
-		_domElement.nativeElement.y = _bounds.y;
+		_nativeElement.x = _bounds.x;
+		_nativeElement.y = _bounds.y;
 		#elseif nme
 		_domElement.nativeElement.x = _bounds.x;
 		_domElement.nativeElement.y = _bounds.y - (_domElement.style.fontMetrics.ascent + _domElement.style.fontMetrics.descent);
 		#end
 		
-		ret.push(_domElement.nativeElement);
+		ret.push(_nativeElement);
 		
 		return ret;
 	}
@@ -81,22 +87,21 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function getOffsetWidth():Int
 	{
-		return 0;
-		//
+		
 		//in this case the text fragment is a space, as the flash
 		//text engine doesn't account for the width of space
-		//if (untyped _nativeElement.textWidth == 0)
-		//{
+		if (untyped _nativeElement.textWidth == 0)
+		{
 			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
 			//which also apply to space and the word spacing which aplies only to text
-			//return style.fontMetrics.spaceWidth + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
-		//}
+			return _domElement.style.fontMetrics.spaceWidth + _domElement.style.computedStyle.letterSpacing + _domElement.style.computedStyle.wordSpacing;
+		}
 		//in this case the text fragment is a word, the text width is returned, it already
 		//contains the letter spacing which was applied when the text was rendered
-		//else
-		//{
-			//return untyped _nativeElement.textWidth ;
-		//}				
+		else
+		{
+			return untyped _nativeElement.textWidth ;
+		}				
 	}
 	
 	#elseif nme
@@ -124,20 +129,19 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function getOffsetHeight():Int
 	{
-		return 0;
-		//
-		//var ascent:Float =  style.fontMetrics.ascent;
-		//var descent:Float = style.fontMetrics.descent;
-		//
+		
+		var ascent:Float =  _domElement.style.fontMetrics.ascent;
+		var descent:Float = _domElement.style.fontMetrics.descent;
+		
 		//the leading is an extra height to apply equally to the ascent
 		//and the descent when laying out lines of text
-		//var leading:Float = this._style.computedStyle.lineHeight - (ascent + descent);
-		//
+		var leading:Float = _domElement.style.computedStyle.lineHeight - (ascent + descent);
+		
 		//apply leading to the ascent and descent
-		//var leadedAscent:Float = (ascent + leading/2);
-		//var leadedDescent:Float = (descent + leading / 2);
-		//
-		//return Math.round(leadedAscent + leadedDescent);
+		var leadedAscent:Float = (ascent + leading/2);
+		var leadedDescent:Float = (descent + leading / 2);
+		
+		return Math.round(leadedAscent + leadedDescent);
 	}
 	
 	/////////////////////////////////

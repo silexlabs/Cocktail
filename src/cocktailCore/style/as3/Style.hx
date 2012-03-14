@@ -11,7 +11,6 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import flash.text.TextFieldAutoSize;
