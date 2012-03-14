@@ -117,9 +117,6 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Lay out all the children of the ContainerDOMElement
-	 * 
-	 * TODO : use other structure for ViewPortData, isAuto is useless
-	 * for it
 	 */
 	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -180,22 +177,7 @@ class AbstractContainerStyle extends Style
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
 		{
-			//TODO : sloppy
-			var currentWidth:Int = this._computedStyle.width;
-			this._computedStyle.width = shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth);
-			
-			//if the computed width of the ContainerDOMElement was shrinked, then
-			//a new layout must happen
-			if (currentWidth != this._computedStyle.width)
-			{
-				//TODO : shouldn't to ready all the configuration again, put in a separate method
-				
-				//update the structures used for the layout and starts a new layout
-				childrenFormattingContext = getformattingContext(formattingContext);
-				childrenContainingDOMElementData = getContainerDOMElementData();
-				childLastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
-				childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
-			}
+			shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth, formattingContext, lastPositionedDOMElementData, viewportData );
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 
@@ -236,8 +218,6 @@ class AbstractContainerStyle extends Style
 	 * 
 	 * TODO : re-add the code to insert offset before and after children ?
 	 * 
-	 * TODO : need to make sure calling these method multiple times in a row don't create
-	 * side effects with class attributes
 	 */
 	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
@@ -262,7 +242,6 @@ class AbstractContainerStyle extends Style
 				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 				
-			
 				//add the created TextRenderer to the ContainerDOMElement
 				//ElementRenderer
 				for (j in 0...insertedText.length)
@@ -303,6 +282,8 @@ class AbstractContainerStyle extends Style
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
+	 * 
+	 * TODO : update doc
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
@@ -310,7 +291,6 @@ class AbstractContainerStyle extends Style
 		childLastPositionedDOMElementData.data = getContainerDOMElementData();
 		
 		//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
-		//TODO : sloppy
 		childLastPositionedDOMElementData.data.height = getComputedHeight();
 		
 		//position each stored children
@@ -325,8 +305,7 @@ class AbstractContainerStyle extends Style
 			//absolutely positioned DOMElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
 			//
-			//TODO : to check : shouldn't it be relative to the padding box instead ?
-			//TODO : shouldn't be done if BodyDOMElement is first positioned ancestor
+			//TODO : re-implement but works for embedded elements but not container
 			//boxElementData.bounds.x += _computedStyle.paddingLeft + _computedStyle.marginLeft;
 			//boxElementData.bounds.y += _computedStyle.marginTop + _computedStyle.paddingTop;
 		}
@@ -352,43 +331,41 @@ class AbstractContainerStyle extends Style
 		//loop through the text tokens
 		for (i in 0...textFragments.length)
 		{
-			switch(textFragments[i].textToken)
-			{
-				//TODO : duplicated code, not need for a switch anymore, add method createFromTextToken ?
-				//TextRenderer should be in charge of creating the right native text element
-				case word(value):
-					//insert a word in the flow
-					var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragments[i], value);
-					var textRenderer:TextRenderer = new TextRenderer(textFragmentDOMElement, textFragments[i].textToken);
-					textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-					rendereredText.push(textRenderer);
-					
-					formattingContext.insertElement(textRenderer);
-					
-					
-				case space:
-					var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragments[i], " ");
-					var textRenderer:TextRenderer = new TextRenderer(textFragmentDOMElement, textFragments[i].textToken);
-					textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-					rendereredText.push(textRenderer);
-					
-					formattingContext.insertElement(textRenderer);
-					//insert a space in the flow
-					//formattingContext.insertElement(BoxElementValue.space(_computedStyle.whiteSpace, fontMetrics.spaceWidth, this._domElement));
-					
-					
-				case tab:
-					//insert a tab in the flow
-					//formattingContext.insertElement(BoxElementValue.tab(_computedStyle.whiteSpace, fontMetrics.spaceWidth * 8, this._domElement));
-					
-					
-				case lineFeed:
-					//start a new line
-					//formattingContext.insertElement(BoxElementValue.lineFeed(_computedStyle.whiteSpace, this._domElement));
-			}
+			var textRenderer:TextRenderer = createTextRendererFromTextFragment(textFragments[i]);
+			formattingContext.insertElement(textRenderer);
+			rendereredText.push(textRenderer);
 		}	
 		
 		return rendereredText;
+	}
+	
+	
+	//TODO : doc
+	private function createTextRendererFromTextFragment(textFragment:TextFragmentData):TextRenderer
+	{
+		var text:String;
+		
+		switch(textFragment.textToken)
+		{
+			case word(value):
+				text = value;
+		
+			case space:
+				text = " ";
+				
+			//TODO : implement tab and line feed	
+			case tab:
+				text = "";
+				
+			case lineFeed:
+				text = "";
+		}
+		
+		var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragment, text);
+		var textRenderer:TextRenderer = new TextRenderer(textFragmentDOMElement, textFragment.textToken);
+		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+		
+		return textRenderer;
 	}
 	
 	/**
@@ -397,15 +374,30 @@ class AbstractContainerStyle extends Style
 	 * the width of the widest line formed by its children or the width of its
 	 * container if the children overflows
 	 * 
+	 * TODO : update doc
+	 * 
 	 * @param	containingDOMElementData
 	 * @param	minimumWidth the width of the widest line of children laid out
 	 * by this ContainerDOMElement which will be the minimum width that should
 	 * have this DOMElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
-	{
+	private function shrinkToFitIfNeeded(containingDOMElementData:ContainingDOMElementData, minimumWidth:Int, formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{		
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
+		var shrinkedWidth:Int = boxComputer.shrinkToFit(this, containingDOMElementData, minimumWidth);
+		
+		//if the computed width of the ContainerDOMElement was shrinked, then
+		//a new layout must happen
+		if (this._computedStyle.width != shrinkedWidth)
+		{
+			this._computedStyle.width = shrinkedWidth;
+			
+			//update the structures used for the layout and starts a new layout
+			var childrenFormattingContext:FormattingContext = getformattingContext(formattingContext);
+			var childrenContainingDOMElementData:ContainingDOMElementData = getContainerDOMElementData();
+			var childLastPositionedDOMElementData:LastPositionedDOMElementData = getChildLastPositionedDOMElementData(lastPositionedDOMElementData);
+			childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, this.fontMetrics, childrenFormattingContext);
+		}
 	}
 	
 	/**
@@ -446,8 +438,6 @@ class AbstractContainerStyle extends Style
 	 * Take a TextFragmentData and a text, and create
 	 * a TextFragmentDOMElement from it if it doesn't already
 	 * exists. If it does, return it
-	 * 
-	 * TODO : move to TextElement ?
 	 */
 	private function getTextFragmentDOMElement(textFragmentData:TextFragmentData, text:String):TextFragmentDOMElement
 	{

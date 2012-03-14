@@ -61,6 +61,11 @@ class FlowBoxRenderer extends BoxRenderer
 		_children = newChildren;
 	}
 	
+	override public function isEmbedded():Bool
+	{
+		return false;
+	}
+	
 	override public function canHaveChildren():Bool
 	{
 		return true;
