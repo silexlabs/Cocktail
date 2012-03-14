@@ -53,8 +53,10 @@ class DetailStyle
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
 		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.autoValue;
 		
 		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 	}
 
 	/**
@@ -62,35 +64,15 @@ class DetailStyle
 	 * 
 	 * @param	domElement
 	 */
-	//public static function setThumbnail(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
 	public static function setThumbnail(domElement:DOMElement):Void
 	{
 		var imageMaxWidth:Int = 250;
 		
 		domElement.style.display = DisplayStyleValue.block;
 		
-		//domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		//domElement.style.paddingRight = PaddingStyleValue.percent(1);
-		//domElement.style.paddingBottom = PaddingStyleValue.percent(1);
-
-		//domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		//domElement.style.width = DimensionStyleValue.percent(30);
-
-		// Samsung TV bug workaround
-		/*if(screenResolutionSize == ScreenResolutionSize.large)
-		{
-			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.height = DimensionStyleValue.autoValue;
-			//domElement.style.height = DimensionStyleValue.length(px(50));
-		}
-		else
-		{*/
 			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
 			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
 			domElement.style.width = DimensionStyleValue.percent(80);	
-		//}
 		
 	}
 	

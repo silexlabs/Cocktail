@@ -9,6 +9,7 @@ package org.intermedia.view;
 
 import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
+import cocktail.domElement.ImageDOMElement;
 
 /**
  * This class defines a thumb & text cell
@@ -20,9 +21,17 @@ class ThumbTextList1Bis extends ThumbTextList1
 {
 	public function new(?cellPerLine:Int = 1)
 	{
-		//var thumbList:ThumbList = new ThumbList(2);
-		//this.addChild(thumbList);
 		super(cellPerLine);
 	}
-		
+
+	
+	override private function buildView():Void
+	{
+		// add home page data at the top of the list
+		var homePage:HomePage = new HomePage();
+		homePage.onListItemSelected = onListItemSelectedCallback;
+		this.addChild(homePage);
+	}
+	
+
 }

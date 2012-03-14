@@ -18,16 +18,11 @@ class HeaderView extends ViewBase
 {
 
 	// Called when the back button is clicked
-	//public var onBackButtonClick:MouseEventData->Void;
 	public var onBackButtonClick:Void->Void;
 	
 	// set / get displaying the back button
 	private var _displayBackButton:Bool;
 	public var displayBackButton(getDisplayBackButton, setDisplayBackButton):Bool;
-	
-	// set/get the header title
-	/*private var _title:String;
-	public var title(getTitle, setTitle):String;*/
 	
 	// text container, to be built in the constructor
 	private var _titleContainer:ContainerDOMElement;
@@ -42,8 +37,6 @@ class HeaderView extends ViewBase
 		super();
 
 		// init attributes
-		//_titleContainer = buildTitleView();
-		//buildView();
 		_data = "";
 		_backButtonContainer = buildBackButtonView();
 	}
@@ -83,27 +76,6 @@ class HeaderView extends ViewBase
 	}
 	
 	/**
-	 * title getter
-	 * @return
-	 */
-	/*private function getTitle():String
-	{
-		return _title;
-	}
-	
-	/**
-	 * title setter
-	 * @param	v
-	 * @return
-	 */
-	/*private function setTitle(v:String):String
-	{
-		_title = v;
-		//buildView();
-		return _title;
-	}*/
-	
-	/**
 	 * build header view, with tile and title
 	 */
 	override private function buildView():Void
@@ -111,19 +83,9 @@ class HeaderView extends ViewBase
 		// set header style
 		HeaderStyle.setHeaderStyle(this);
 		
-		// build tile
-		/*var tile:ImageDOMElement = new ImageDOMElement();
-		tile.load("assets/header.jpg");
-		HeaderStyle.setHeaderTileStyle(tile);
-		this.addChild(tile);*/
-		
 		// build title
-		//var textElement:TextElement = new TextElement(_title);
-		//var textElement:TextElement = new TextElement(_data);
 		_titleTextElement = new TextElement(_data);
-		//var textContainer:ContainerDOMElement = new ContainerDOMElement();
 		_titleContainer = new ContainerDOMElement();
-		//textContainer.addText(textElement);
 		_titleContainer.addText(_titleTextElement);
 		HeaderStyle.setHeaderTextStyle(_titleContainer);
 		this.addChild(_titleContainer);
@@ -141,6 +103,10 @@ class HeaderView extends ViewBase
 		_titleContainer.addText(_titleTextElement);
 	}
 
+	/**
+	 * build back button view
+	 * @return
+	 */
 	private function buildBackButtonView():ContainerDOMElement
 	{
 		// Back button
@@ -166,17 +132,17 @@ class HeaderView extends ViewBase
 		
 		// set callback
 		backButtonContainer.onMouseUp = function (mouseEvent:MouseEventData) { onBackButtonClickCallback(); };
-		//backButtonContainer.onMouseUp = onBackButtonClickCallback;
 		
 		return backButtonContainer;
 	}
 	
-	//private function onBackButtonClickCallback(mouseEvent:MouseEventData):Void
+	/**
+	 * on back button click callback
+	 */
 	private function onBackButtonClickCallback():Void
 	{
 		if (onBackButtonClick != null)
 		{
-			//onBackButtonClick(mouseEvent);
 			onBackButtonClick();
 		}
 	}

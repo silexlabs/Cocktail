@@ -41,13 +41,12 @@ class ApplicationModel
 	public function new() 
 	{
 		// init online switch
-		_online = false;
+		_online = true;
 		
 		// initialise private attributes
 		_loadedCellsData = new Array<CellData>();
 		_loadedDetailData = new Array<DetailData>();
 		_dataLoader = new DataLoader(_online);
-		//loadCellData(5);
 	}
 	
 	/**
@@ -56,15 +55,18 @@ class ApplicationModel
 	 */
 	public function loadCellData(numberOfCellsToLoad:Int):Void
 	{
-		// calls onModelStartsLoading if initialised
-		if(onModelStartsLoading != null)
+		// if first data loading is occuring
+		if (_loadedCellsData.length == 0)
 		{
-			onModelStartsLoading();
+			// calls onModelStartsLoading if initialised
+			if(onModelStartsLoading != null)
+			{
+				onModelStartsLoading();
+			}
 		}
 		
 		// Calls load() on the DataLoader with the right number of cell to load
-		var loadedCellsQty:Int = _loadedCellsData.length;
-		_dataLoader.loadCellData(loadedCellsQty, loadedCellsQty + numberOfCellsToLoad-1, onCellsDataLoadComplete, onModelDataLoadError);
+		_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	
 	/**
@@ -89,6 +91,9 @@ class ApplicationModel
 	 */
 	private function onCellsDataLoadComplete(cellsData:Array<CellData>):Void
 	{
+		// reset _loadedCellsData
+		_loadedCellsData = new Array<CellData>();
+		
 		// add cellsData to _loadedCellsData
 		for ( cellData in cellsData)
 		{
@@ -101,9 +106,6 @@ class ApplicationModel
 			onModelCellDataLoaded(_loadedCellsData);
 		}
 
-		// for testing only
-		//trace(cellsData[0]);
-		//loadDetailData(cellsData[0]);
 	}
 	
 	/**
@@ -112,9 +114,6 @@ class ApplicationModel
 	 */
 	private function onDetailDataLoadComplete(detailData:DetailData):Void
 	{
-		//trace("onDetailDataLoadComplete");
-		//trace(detailData);
-		
 		// set _loadedDetailData to detailData
 		_loadedDetailData.push(detailData);
 		

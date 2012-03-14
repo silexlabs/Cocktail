@@ -35,6 +35,10 @@ class ThumbTextListRss
 		// set channel node
 		var channelNode:Xml = rss.firstElement().firstElement();
 		
+		// exit if no data
+		if (channelNode == null)
+			return cells;
+		
 		// get the rss data
 		for ( channelChild in channelNode.elements() )
 		{
@@ -84,53 +88,13 @@ class ThumbTextListRss
 					// if node is a author info
 					if (itemParam.nodeName == "dc:creator")
 					{
-						/*for (authorInfo in itemParam.elements())
-						{
-							if (authorInfo.nodeName == "nickname")
-							{
-								cell.comment = cell.comment  + "by " + authorInfo.firstChild().nodeValue + " ";
-							}
-						}*/
 						cell.author = itemParam.firstChild().nodeValue;
 					}
 					
-					// if node is a date
-					/*if (itemParam.nodeName == "pubDate")
+					// if node is the id
+					if (itemParam.nodeName == "ID")
 					{
-						// create text
-						cell.comment = cell.comment + "on " + itemParam.firstChild().nodeValue.substr(0,16) + " ";
-					}
-					
-					// if node is a post content - removed as can contain html
-					if (itemParam.nodeName == "description")
-					{
-						// create text
-						var text:String = itemParam.firstChild().nodeValue;
-						// remove "Online demo" texts
-						var toRemove:Array<String> = ["Online Demo", "Online demo", "Description :"];
-						for (string in toRemove)
-						{
-							text = StringTools.replace(text, string, "");
-						}
-						text = StringTools.ltrim(text);
-						// shorten description
-						//text = text.substr(0, 95) + "...";
-						cell.description = text;
-					}
-					
-					// if node is the number of comments
-					if (itemParam.nodeName == "comment_count")
-					{
-						cell.commentCount = itemParam.firstChild().nodeValue;
-					}*/
-					
-					// if node is the link to be opened, get the post id from it
-					if (itemParam.nodeName == "guid")
-					{
-						//cell.action = "goToUrl";
-						//cell.actionTarget = itemParam.firstChild().nodeValue;
-						var index:Int = itemParam.firstChild().nodeValue.indexOf("p=") + 2;
-						cell.id = Std.parseInt(itemParam.firstChild().nodeValue.substr(index));
+						cell.id = Std.parseInt(itemParam.firstChild().nodeValue);
 					}
 
 					// if node is the category
@@ -139,11 +103,11 @@ class ThumbTextListRss
 						cell.category = itemParam.firstChild().nodeValue;
 					}
 				}
-				//cell.content = cell;
+				// add cell to cell array
 				cells.push(cell);
 			}
 		}
-		//trace(cells);
+		// return cell array
 		return cells;
 	}
 	

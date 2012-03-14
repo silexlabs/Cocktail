@@ -1,12 +1,16 @@
 package org.intermedia.view;
 
 import cocktail.domElement.ContainerDOMElement;
+import cocktail.style.StyleData;
 import org.intermedia.model.ApplicationModel;
 import cocktail.textElement.TextElement;
 import cocktail.domElement.ImageDOMElement;
 
 import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
+
+import feffects.Tween;
+
 
 /**
  * This class defines a CellThumb
@@ -18,16 +22,19 @@ class CellThumb extends CellBase
 {
 	// cell style
 	private var _cellStyle:CellThumbText1StyleModel;
+	
+	private var _cellImage:ImageDOMElement;
 
 	/**
 	 * 
 	 * 
 	 * @param	?cellPerLine	number of cells per line
 	 */
-	public function new(?cellPerLine:Int = 1) 
+	public function new(?cellPerLine:Int = 1, ?cellStyle:CellThumbText1StyleModel) 
 	{
 		super();
-		initCellStyle();
+		if (cellStyle != null) _cellStyle = cellStyle;
+		else initCellStyle();
 		_cellStyle.cell(this,cellPerLine);
 	}
 	
@@ -37,12 +44,11 @@ class CellThumb extends CellBase
 		_cellStyle = {
 			cell:CellThumbStyle.setCellStyle,
 			thumbnail:CellThumbStyle.setThumbnailStyle,
-			textBlock:CellThumbText1Style.setTextBlockStyle,
-			title:CellThumbText1Style.setTitleStyle,
-			author:CellThumbText1Style.setAuthorStyle,
-			line:CellThumbText1Style.setLineStyle
+			textBlock:null,
+			title:null,
+			author:null,
+			line:null
 		}
-		
 	}
 	
 	/**
@@ -50,24 +56,63 @@ class CellThumb extends CellBase
 	 */
 	override private function updateView():Void
 	{
-		var cellData:CellData = _data;
-		
-		// THUMBNAIL
-		
+		// load thumb image
+		loadThumb();
+	}
+
+	/**
+	 *  load thumb image
+	 */
+	private function loadThumb():Void
+	{
 		// image part
-		if (cellData.thumbUrl != "" && cellData.thumbUrl != null)
+		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			_cellImage = new ImageDOMElement();
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-			_cellStyle.thumbnail(cellImage);
+			_cellStyle.thumbnail(_cellImage);
 			// add image
-			this.addChild(cellImage);
+			this.addChild(_cellImage);
 			// load image
-			cellImage.load(cellData.thumbUrl);
+			_cellImage.onLoad = onImageLoadSuccess;
+			_cellImage.load(_data.thumbUrl);
 		}
 		
+	}
+	
+	/**
+	 * image load success callback
+	 */
+	private function onImageLoadSuccess(image:ImageDOMElement):Void
+	{
+		fadeIn();
+	}
+	
+	/**
+	 * thum display fade in
+	 */
+	private function fadeIn():Void
+	{
+		// create the tween
+        var tween = new Tween( 0, 1, 400 );
+		tween.setTweenHandlers( tweenOpacity, tweenEnd );
+        // launch the tween
+        tween.start();
+	}
+	
+	/**
+	 * opacity tweening
+	 * @param	e
+	 */
+    function tweenOpacity( e : Float )
+    {
+        _cellImage.style.opacity = OpacityStyleValue.number(e);
+    }
 
+    function tweenEnd(e : Float )
+	{
+		
 	}
 
 }

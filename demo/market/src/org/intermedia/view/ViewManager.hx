@@ -7,6 +7,7 @@ import cocktail.nativeElement.NativeElement;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.SwippableListView;
+//import cocktail.domElement.DOMElementData;
 
 /**
  * In charge of instantiating the views, listening to the application model changes and communicating with the controller.
@@ -33,6 +34,9 @@ class ViewManager
 	//Ref to the view displaying full article
 	private var _detailView:DetailView;
 	
+	// loading view
+	//private var _loadingView:LoadingView;
+	
 	//Ref to the view displayed when there is a loading error
 	//private var _errorView:ErrorView;
 	//private var _errorView:ContainerDOMElement;
@@ -46,7 +50,7 @@ class ViewManager
 	//A ref to the currently displayed main view (not the header)
 	private var _currentView:ViewBase;
 	
-	static inline var CELL_QTY:Int = 5;
+	static inline var CELL_QTY:Int = 10;
 
 	/**
 	 * Store ref to application model and controller. Instantiate headerView, loadingView, swippableView then call init().
@@ -56,11 +60,13 @@ class ViewManager
 	 */
 	public function new(applicationModel:ApplicationModel, applicationController:ApplicationController)
 	{
-		// Store ref to application model and controller.
+		// Store ref to application model and controller
 		_applicationModel = applicationModel;
 		_applicationController = applicationController;
 		
 		// Instantiate body headerView, loadingView, swippableView
+		_detailView = new DetailView();
+		_currentView = new ViewBase();
 		_body = new BodyDOMElement();
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
@@ -68,14 +74,11 @@ class ViewManager
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		_body.addChild(_header);
 		
-		/*var staticHeader:ContainerDOMElement = new ContainerDOMElement();
-		HeaderStyle.setHeaderStaticStyle(staticHeader);
-		_body.addChild(staticHeader);*/
-		
 		_swippableListView = new SwippableListView();
+		// set current view on swippable view
+		_currentView = _swippableListView;
+		// attach swippable view to body
 		_body.addChild(_swippableListView);
-		_detailView = new DetailView();
-		_currentView = new ViewBase();
 		
 		// call init()
 		init();
@@ -93,11 +96,31 @@ class ViewManager
 		_applicationModel.onModelCellDataLoaded = onCellDataLoaded;
 		_applicationModel.onModelDetailDataLoaded = onDetailDataLoaded;
 		
-		// set detail callback
-		_swippableListView.onListItemSelected = _applicationController.openDetailView;
 		
-		// Call loadCellData() on the application controller with thedefault cell number (between 5 to 10)
+		// Sets callback on the view to be notified of user actions.
+		// set list item selelected callback
+		_swippableListView.onListItemSelected = onListItemSelectedCallback;
+		// set callback when the bottom of the scrollbar is reached
+		_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
+		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		_applicationController.loadCellData(CELL_QTY);
+	}
+	
+	/**
+	 * on list item selected callback
+	 */
+	private function onListItemSelectedCallback(cellData:CellData):Void
+	{
+		// remove swippableListView and add empty detail view
+		_body.removeChild(_swippableListView);
+		_detailView = new DetailView();
+		_body.addChild(_detailView);
+
+		// set current view to detail view
+		_currentView = _detailView;
+
+		// request detail view loading to controller
+		_applicationController.openDetailView(cellData);
 	}
 	
 	/**
@@ -107,10 +130,17 @@ class ViewManager
 	 */
 	public function onCellDataLoaded(cellsData:Array<CellData>):Void
 	{
+		// if no more data fetched, remove bottom loader
+		if (cellsData.length == 0) _swippableListView.displayListBottomLoader = false;
+		
+		// update data
 		_swippableListView.data = cellsData;
 		
-		// update zIndex using a workaround
+		// update header zIndex using a workaround so it always visible
 		updateHeaderZIndex();
+		
+		// remove loading view from swippable view
+		_swippableListView.displayLoading = false;
 	}
 	
 	/**
@@ -123,17 +153,15 @@ class ViewManager
 		// update detail view data
 		_detailView.data = detailData;
 		// update header title
-		//_header.data = detailData.title;
 		_header.data = HEADER_DETAIL_TITLE;
 		// display header back button
 		_header.displayBackButton = true;
 		
-		// remove swippableListView and add detail view
-		_body.removeChild(_swippableListView);
-		_body.addChild(_detailView);
-		
-		// update zIndex using a workaround
+		// update header zIndex using a workaround
 		updateHeaderZIndex();
+		
+		// hide loader
+		_detailView.displayLoading = false;
 	}
 	
 	/**
@@ -170,6 +198,9 @@ class ViewManager
 		
 		// update zIndex using a workaround
 		updateHeaderZIndex();
+
+		// set current view on swippable view
+		_currentView = _swippableListView;
 	}
 	
 	/**

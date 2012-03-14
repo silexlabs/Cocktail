@@ -23,19 +23,14 @@ import org.intermedia.model.ApplicationModel;
 class CellDetailsRss 
 {
 	/**
-	 * Converts a rss to an Array of CellDatas
+	 * Converts a cell detail rss feed to a DetailData
 	 * 
 	 * @param	rss
 	 * @return
 	 */
 	public static function rss2CellDetail(rss:Xml,cellData:CellData):DetailData
 	{
-		//var cells:Array<CellData> = new Array<CellData>();
-
-		// set channel node
-		var channelNode:Xml = rss.firstElement().firstElement();
-		
-		//var cell:DetailData = { id:null, description:"" };
+		// init cell
 		var cell:DetailData =
 		{
 			id:cellData.id,
@@ -45,6 +40,13 @@ class CellDetailsRss
 			category:cellData.category,
 			description:""
 		};
+		
+		// set channel node
+		var channelNode:Xml = rss.firstElement().firstElement();
+		
+		// exit if no data
+		if (channelNode == null)
+			return cell;
 		
 		// get the rss data
 		for ( channelChild in channelNode.elements() )
@@ -58,70 +60,19 @@ class CellDetailsRss
 				for (itemParam in channelChild.elements())
 				//for (itemParam in channelChild.firstElement())
 				{
-					// Silex Labs feed
-					
-					// if node is a thumbnail image
-					/*if (itemParam.nodeName == "post_thumbnail")
-					{
-						cell.thumbUrl = itemParam.firstChild().nodeValue;
-					}
-					// in case there is no thumbnail, fill with first image in the post
-					if (itemParam.nodeName == "post_images")
-					{
-						if (!Reflect.hasField(cell, 'thumbnail') || (Reflect.field(cell, 'thumbnail') == ""))
-						{
-							for (elements in itemParam.elements())
-							{
-								cell.thumbUrl = itemParam.firstElement().firstChild().nodeValue;
-								break;
-							}
-						}
-					}
-					
-					// if node is a title
-					if (itemParam.nodeName == "title")
-					{
-						var title:String = itemParam.firstChild().nodeValue;
-						// remove all characters after "Name" string, used to clean themes and plugins title
-						var index:Int = title.indexOf("Name");
-						if (index != -1)
-						{
-							title = title.substr(0, index);
-						}
-						cell.title = title;
-					}
-					
-					// if node is a author info
-					if (itemParam.nodeName == "dc:creator")
-					{
-						/*for (authorInfo in itemParam.elements())
-						{
-							if (authorInfo.nodeName == "nickname")
-							{
-								cell.comment = cell.comment  + "by " + authorInfo.firstChild().nodeValue + " ";
-							}
-						}*/
-						/*cell.author = cell.author  + "by " + itemParam.firstChild().nodeValue + " ";
-					}
-					
-					// if node is a date
-					/*if (itemParam.nodeName == "pubDate")
-					{
-						// create text
-						cell.comment = cell.comment + "on " + itemParam.firstChild().nodeValue.substr(0,16) + " ";
-					}*/
-					
-					// if node is a post content - removed as can contain html
-					if (itemParam.nodeName == "description")
+					// if node is a post content (without html)
+					//if (itemParam.nodeName == "description")
+					if (itemParam.nodeName == "post_excerpt")
 					{
 						// create text
 						var text:String = itemParam.firstChild().nodeValue;
-						// remove "Online demo" texts
+						// remove "Online demo" and description texts
 						var toRemove:Array<String> = ["Online Demo", "Online demo", "Description :"];
 						for (string in toRemove)
 						{
 							text = StringTools.replace(text, string, "");
 						}
+						// remove ending white characters (done to avoid display issues in samsung TVs)
 						text = StringTools.ltrim(text);
 						// shorten description
 						//text = text.substr(0, 95) + "...";
@@ -130,33 +81,13 @@ class CellDetailsRss
 						// take only the first item into account, as there can be multiple results for the search query
 						break;
 					}
-					
-					// if node is the number of comments
-					/*if (itemParam.nodeName == "comment_count")
-					{
-						cell.commentCount = itemParam.firstChild().nodeValue;
-					}*/
-					
-					// if node is the link to be opened, get the post id from it
-					/*if (itemParam.nodeName == "guid")
-					{
-						//cell.action = "goToUrl";
-						//cell.actionTarget = itemParam.firstChild().nodeValue;
-						var index:Int = itemParam.firstChild().nodeValue.indexOf("p=") + 2;
-						cell.id = Std.parseInt(itemParam.firstChild().nodeValue.substr(index));
-					}*/
 				}
-				//trace(cell);
 				// returns only first item in case there are multiple item returned form the search results
 				return cell;
-				//cell.content = cell;
-				//cells.push(cell);
 			}
 		}
-		//trace(cell);
+		// if no data has been found, return empty cell
 		return cell;
-		//trace(cells);
-		//return cells;
 	}
 	
 }

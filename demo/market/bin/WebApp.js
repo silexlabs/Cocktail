@@ -958,6 +958,7 @@ org.intermedia.view.ViewBase = $hxClasses["org.intermedia.view.ViewBase"] = func
 	$s.push("org.intermedia.view.ViewBase::new");
 	var $spos = $s.length;
 	cocktailCore.domElement.js.ContainerDOMElement.call(this);
+	this.setDisplayLoading(false);
 	this.buildView();
 	$s.pop();
 }
@@ -967,6 +968,7 @@ org.intermedia.view.ViewBase.prototype = $extend(cocktailCore.domElement.js.Cont
 	_data: null
 	,data: null
 	,displayLoading: null
+	,_loadingView: null
 	,getData: function() {
 		$s.push("org.intermedia.view.ViewBase::getData");
 		var $spos = $s.length;
@@ -985,6 +987,19 @@ org.intermedia.view.ViewBase.prototype = $extend(cocktailCore.domElement.js.Cont
 		return $tmp;
 		$s.pop();
 	}
+	,setDisplayLoading: function(v) {
+		$s.push("org.intermedia.view.ViewBase::setDisplayLoading");
+		var $spos = $s.length;
+		if(v) {
+			if(this._loadingView == null) this._loadingView = new org.intermedia.view.LoadingView();
+			if(this._loadingView.getParent() == null) this.addChild(this._loadingView);
+		} else if(this._loadingView != null) {
+			if(this._loadingView.getParent() != null) this.removeChild(this._loadingView);
+		}
+		$s.pop();
+		return v;
+		$s.pop();
+	}
 	,buildView: function() {
 		$s.push("org.intermedia.view.ViewBase::buildView");
 		var $spos = $s.length;
@@ -996,7 +1011,7 @@ org.intermedia.view.ViewBase.prototype = $extend(cocktailCore.domElement.js.Cont
 		$s.pop();
 	}
 	,__class__: org.intermedia.view.ViewBase
-	,__properties__: $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype.__properties__,{set_data:"setData",get_data:"getData"})
+	,__properties__: $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype.__properties__,{set_displayLoading:"setDisplayLoading",set_data:"setData",get_data:"getData"})
 });
 org.intermedia.view.HeaderView = $hxClasses["org.intermedia.view.HeaderView"] = function() {
 	$s.push("org.intermedia.view.HeaderView::new");
@@ -1072,7 +1087,7 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 		backButtonTextContainer.addText(backButtonText);
 		backButtonContainer.addChild(backButtonTextContainer);
 		backButtonContainer.setOnMouseUp(function(mouseEvent) {
-			$s.push("org.intermedia.view.HeaderView::buildBackButtonView@168");
+			$s.push("org.intermedia.view.HeaderView::buildBackButtonView@134");
 			var $spos = $s.length;
 			me.onBackButtonClickCallback();
 			$s.pop();
@@ -1095,6 +1110,8 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	var $spos = $s.length;
 	this._applicationModel = applicationModel;
 	this._applicationController = applicationController;
+	this._detailView = new org.intermedia.view.DetailView();
+	this._currentView = new org.intermedia.view.ViewBase();
 	this._body = new cocktailCore.domElement.js.BodyDOMElement();
 	org.intermedia.view.ViewManagerStyle.setBodyStyle(this._body);
 	this._header = new org.intermedia.view.HeaderView();
@@ -1102,9 +1119,8 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._header.onBackButtonClick = this.onHeaderBackButtonPressed.$bind(this);
 	this._body.addChild(this._header);
 	this._swippableListView = new org.intermedia.view.SwippableListView();
+	this._currentView = this._swippableListView;
 	this._body.addChild(this._swippableListView);
-	this._detailView = new org.intermedia.view.DetailView();
-	this._currentView = new org.intermedia.view.ViewBase();
 	this.init();
 	$s.pop();
 }
@@ -1120,19 +1136,38 @@ org.intermedia.view.ViewManager.prototype = {
 	,init: function() {
 		$s.push("org.intermedia.view.ViewManager::init");
 		var $spos = $s.length;
+		var me = this;
 		this._applicationModel.onModelStartsLoading = this.onStartLoading.$bind(this);
 		this._applicationModel.onModelDataLoadError = this.onLoadingError.$bind(this);
 		this._applicationModel.onModelCellDataLoaded = this.onCellDataLoaded.$bind(this);
 		this._applicationModel.onModelDetailDataLoaded = this.onDetailDataLoaded.$bind(this);
-		this._swippableListView.onListItemSelected = ($_=this._applicationController,$_.openDetailView.$bind($_));
-		this._applicationController.loadCellData(5);
+		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+		this._swippableListView.onListScrolled = function() {
+			$s.push("org.intermedia.view.ViewManager::init@104");
+			var $spos = $s.length;
+			me._applicationController.loadCellData(10);
+			$s.pop();
+		};
+		this._applicationController.loadCellData(10);
+		$s.pop();
+	}
+	,onListItemSelectedCallback: function(cellData) {
+		$s.push("org.intermedia.view.ViewManager::onListItemSelectedCallback");
+		var $spos = $s.length;
+		this._body.removeChild(this._swippableListView);
+		this._detailView = new org.intermedia.view.DetailView();
+		this._body.addChild(this._detailView);
+		this._currentView = this._detailView;
+		this._applicationController.openDetailView(cellData);
 		$s.pop();
 	}
 	,onCellDataLoaded: function(cellsData) {
 		$s.push("org.intermedia.view.ViewManager::onCellDataLoaded");
 		var $spos = $s.length;
+		if(cellsData.length == 0) this._swippableListView.displayListBottomLoader = false;
 		this._swippableListView.setData(cellsData);
 		this.updateHeaderZIndex();
+		this._swippableListView.setDisplayLoading(false);
 		$s.pop();
 	}
 	,onDetailDataLoaded: function(detailData) {
@@ -1141,21 +1176,20 @@ org.intermedia.view.ViewManager.prototype = {
 		this._detailView.setData(detailData);
 		this._header.setData("Infos");
 		this._header.setDisplayBackButton(true);
-		this._body.removeChild(this._swippableListView);
-		this._body.addChild(this._detailView);
 		this.updateHeaderZIndex();
+		this._detailView.setDisplayLoading(false);
 		$s.pop();
 	}
 	,onStartLoading: function() {
 		$s.push("org.intermedia.view.ViewManager::onStartLoading");
 		var $spos = $s.length;
-		this._currentView.displayLoading = true;
+		this._currentView.setDisplayLoading(true);
 		$s.pop();
 	}
 	,onLoadingError: function(error) {
 		$s.push("org.intermedia.view.ViewManager::onLoadingError");
 		var $spos = $s.length;
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 152, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 180, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 		$s.pop();
 	}
 	,onHeaderBackButtonPressed: function() {
@@ -1166,6 +1200,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._body.removeChild(this._detailView);
 		this._body.addChild(this._swippableListView);
 		this.updateHeaderZIndex();
+		this._currentView = this._swippableListView;
 		$s.pop();
 	}
 	,updateHeaderZIndex: function() {
@@ -1691,11 +1726,9 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	,render: function(nativeElement) {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::render");
 		var $spos = $s.length;
-		this.setNativeHeight(this._computedStyle.height);
-		this.setNativeWidth(this._computedStyle.width);
-		this.setNativeMatrix(this._computedStyle.transform);
-		this.setNativeOpacity(this._computedStyle.opacity);
-		this.setNativeVisibility(this._computedStyle.visibility);
+		this._nativeElements = this._elementRenderer.getLayerRenderer().render();
+		this._nativeElements.reverse();
+		this.attachNativeElements(this._nativeElements);
 		$s.pop();
 	}
 	,attachNativeElement: function(nativeElement) {
@@ -1738,10 +1771,10 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	,getLayerRenderer: function(elementRenderer,parentElementRenderer) {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::getLayerRenderer");
 		var $spos = $s.length;
-		var ret;
-		if(this.isPositioned() == true || this.isFloat() == true) ret = new cocktailCore.style.renderer.LayerRenderer(elementRenderer); else ret = parentElementRenderer.getLayerRenderer();
+		var layerRenderer;
+		if(this.isPositioned() == true || this.isFloat() == true) layerRenderer = new cocktailCore.style.renderer.LayerRenderer(elementRenderer); else layerRenderer = parentElementRenderer.getLayerRenderer();
 		$s.pop();
-		return ret;
+		return layerRenderer;
 		$s.pop();
 	}
 	,layout: function(containingDOMElementData,lastPositionedDOMElementData,viewportData,containingDOMElementFontMetricsData) {
@@ -1797,7 +1830,7 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		var $spos = $s.length;
 		var layoutDelegate = this.layout.$bind(this);
 		haxe.Timer.delay(function() {
-			$s.push("cocktailCore.style.abstract.AbstractStyle::scheduleLayout@753");
+			$s.push("cocktailCore.style.abstract.AbstractStyle::scheduleLayout@759");
 			var $spos = $s.length;
 			layoutDelegate(containingDOMElementData,lastPositionedDOMElementData,viewportData,null);
 			$s.pop();
@@ -1813,12 +1846,8 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::insertDOMElement");
 		var $spos = $s.length;
 		if(this.isPositioned() == false) formattingContext.insertElement(this._elementRenderer); else {
-			var x = 0.0;
-			var y = 0.0;
 			formattingContext.format();
-			x = formattingContext.getFormattingContextData().x;
-			y = formattingContext.getFormattingContextData().y;
-			var staticPosition = { x : x, y : y};
+			var staticPosition = formattingContext.getStaticPosition(this._elementRenderer);
 			if(this.isRelativePositioned() == true) formattingContext.insertElement(this._elementRenderer);
 			var positionedDOMElementData = { staticPosition : staticPosition, style : this, formattingContext : formattingContext};
 			lastPositionedDOMElementData.children.push(positionedDOMElementData);
@@ -1994,37 +2023,11 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		return $tmp;
 		$s.pop();
 	}
-	,isClear: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::isClear");
-		var $spos = $s.length;
-		var ret = false;
-		switch( (this._computedStyle.clear)[1] ) {
-		case 1:
-		case 2:
-		case 3:
-			ret = true;
-			break;
-		case 0:
-			ret = false;
-			break;
-		}
-		$s.pop();
-		return ret;
-		$s.pop();
-	}
 	,childrenInline: function() {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::childrenInline");
 		var $spos = $s.length;
 		$s.pop();
 		return false;
-		$s.pop();
-	}
-	,isNotDisplayed: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::isNotDisplayed");
-		var $spos = $s.length;
-		var $tmp = this._computedStyle.display == cocktail.style.DisplayStyleValue.none;
-		$s.pop();
-		return $tmp;
 		$s.pop();
 	}
 	,isInlineLevel: function() {
@@ -2043,6 +2046,39 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		return ret;
 		$s.pop();
 	}
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::establishesNewFormattingContext");
+		var $spos = $s.length;
+		$s.pop();
+		return false;
+		$s.pop();
+	}
+	,isClear: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::isClear");
+		var $spos = $s.length;
+		var ret = false;
+		switch( (this._computedStyle.clear)[1] ) {
+		case 1:
+		case 2:
+		case 3:
+			ret = true;
+			break;
+		case 0:
+			ret = false;
+			break;
+		}
+		$s.pop();
+		return ret;
+		$s.pop();
+	}
+	,isNotDisplayed: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::isNotDisplayed");
+		var $spos = $s.length;
+		var $tmp = this._computedStyle.display == cocktail.style.DisplayStyleValue.none;
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
 	,getFirstPositionedAncestorData: function() {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::getFirstPositionedAncestorData");
 		var $spos = $s.length;
@@ -2059,21 +2095,6 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		} else firstPositionedAncestorData = this.getViewportData();
 		$s.pop();
 		return firstPositionedAncestorData;
-		$s.pop();
-	}
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::establishesNewFormattingContext");
-		var $spos = $s.length;
-		$s.pop();
-		return false;
-		$s.pop();
-	}
-	,isInFlow: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::isInFlow");
-		var $spos = $s.length;
-		var $tmp = this.isPositioned() == false;
-		$s.pop();
-		return $tmp;
 		$s.pop();
 	}
 	,getViewportData: function() {
@@ -4927,19 +4948,11 @@ cocktailCore.style.abstract.AbstractContainerStyle = $hxClasses["cocktailCore.st
 cocktailCore.style.abstract.AbstractContainerStyle.__name__ = ["cocktailCore","style","abstract","AbstractContainerStyle"];
 cocktailCore.style.abstract.AbstractContainerStyle.__super__ = cocktailCore.style.js.Style;
 cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailCore.style.js.Style.prototype,{
-	render: function(nativeElement) {
-		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::render");
-		var $spos = $s.length;
-		this._nativeElements = this._elementRenderer.getLayerRenderer().render(nativeElement);
-		this._nativeElements.reverse();
-		this.attachNativeElements(this._nativeElements);
-		$s.pop();
-	}
-	,createElementRenderer: function(parentElementRenderer) {
+	createElementRenderer: function(parentElementRenderer) {
 		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::createElementRenderer");
 		var $spos = $s.length;
 		var elementRenderer;
-		if(this.isInlineLevel() == true) elementRenderer = new cocktailCore.style.renderer.InlineBoxRenderer(this._domElement); else elementRenderer = new cocktailCore.style.renderer.BlockBoxRenderer(this._domElement);
+		if(this.isInlineLevel() == true && this.establishesNewFormattingContext() == false) elementRenderer = new cocktailCore.style.renderer.InlineBoxRenderer(this._domElement); else elementRenderer = new cocktailCore.style.renderer.BlockBoxRenderer(this._domElement);
 		elementRenderer.setLayerRenderer(this.getLayerRenderer(elementRenderer,parentElementRenderer));
 		parentElementRenderer.addChild(elementRenderer);
 		$s.pop();
@@ -4981,10 +4994,8 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 			}
 		}
 		if(this._height == cocktail.style.DimensionStyleValue.autoValue) {
-			if(this.establishesNewFormattingContext() == false) {
-				childrenFormattingContext.format();
-				this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(this._elementRenderer));
-			} else this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getFormattingContextData().maxHeight);
+			if(this.establishesNewFormattingContext() == false) childrenFormattingContext.format();
+			this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(this._elementRenderer));
 		}
 		this.doPositionAbsolutelyPositionedDOMElements(this.isPositioned(),childLastPositionedDOMElementData,viewportData);
 		$s.pop();
@@ -5010,7 +5021,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				}
 			}
 		}
-		if(this.establishesNewFormattingContext() == true) childrenFormattingContext.format();
+		if(this.establishesNewFormattingContext() == true) childrenFormattingContext.format(true);
 		$s.pop();
 		return childrenFormattingContext;
 		$s.pop();
@@ -5076,9 +5087,6 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		}
 		$s.pop();
 		return rendereredText;
-		var $tmp = [];
-		$s.pop();
-		return $tmp;
 		$s.pop();
 	}
 	,shrinkToFitIfNeeded: function(containingDOMElementData,minimumWidth) {
@@ -5136,6 +5144,44 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		return null;
 		$s.pop();
 	}
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::establishesNewFormattingContext");
+		var $spos = $s.length;
+		var ret = false;
+		if(this.isFloat() == true) ret = true; else if(this.isPositioned() == true && this.isRelativePositioned() == false) ret = true; else {
+			switch( (this._computedStyle.display)[1] ) {
+			case 1:
+				ret = true;
+				break;
+			case 0:
+				if(this.childrenInline() == true) ret = true;
+				break;
+			default:
+			}
+		}
+		$s.pop();
+		return ret;
+		$s.pop();
+	}
+	,childrenInline: function() {
+		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::childrenInline");
+		var $spos = $s.length;
+		var containerDOMElement = this._domElement;
+		if(containerDOMElement.getChildren().length == 0) {
+			$s.pop();
+			return false;
+		}
+		var ret = this.isChildInline(containerDOMElement.getChildren()[0]);
+		var _g1 = 0, _g = containerDOMElement.getChildren().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.isChildInline(containerDOMElement.getChildren()[i]) != ret) {
+			}
+		}
+		$s.pop();
+		return ret;
+		$s.pop();
+	}
 	,getContainerDOMElementData: function() {
 		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::getContainerDOMElementData");
 		var $spos = $s.length;
@@ -5156,25 +5202,6 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		} else formattingContext = previousformattingContext;
 		$s.pop();
 		return formattingContext;
-		$s.pop();
-	}
-	,childrenInline: function() {
-		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::childrenInline");
-		var $spos = $s.length;
-		var containerDOMElement = this._domElement;
-		if(containerDOMElement.getChildren().length == 0) {
-			$s.pop();
-			return false;
-		}
-		var ret = this.isChildInline(containerDOMElement.getChildren()[0]);
-		var _g1 = 0, _g = containerDOMElement.getChildren().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this.isChildInline(containerDOMElement.getChildren()[i]) != ret) {
-			}
-		}
-		$s.pop();
-		return ret;
 		$s.pop();
 	}
 	,isChildInline: function(child) {
@@ -5198,25 +5225,6 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		if(this.isPositioned() == true) childLastPositionedDOMElementData = { data : this.getContainerDOMElementData(), children : new Array()}; else childLastPositionedDOMElementData = lastPositionedDOMElementData;
 		$s.pop();
 		return childLastPositionedDOMElementData;
-		$s.pop();
-	}
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::establishesNewFormattingContext");
-		var $spos = $s.length;
-		var ret = false;
-		if(this.isFloat() == true) ret = true; else if(this.isPositioned() == true && this.isRelativePositioned() == false) ret = true; else {
-			switch( (this._computedStyle.display)[1] ) {
-			case 1:
-				ret = true;
-				break;
-			case 0:
-				if(this.childrenInline() == true) ret = true;
-				break;
-			default:
-			}
-		}
-		$s.pop();
-		return ret;
 		$s.pop();
 	}
 	,isInlineContainer: function() {
@@ -5623,7 +5631,12 @@ org.intermedia.view.ListViewBase = $hxClasses["org.intermedia.view.ListViewBase"
 	$s.push("org.intermedia.view.ListViewBase::new");
 	var $spos = $s.length;
 	org.intermedia.view.ViewBase.call(this);
+	this.displayListBottomLoader = true;
 	this._cells = new Array();
+	this._listBottomLoader = new cocktailCore.domElement.js.ImageDOMElement();
+	org.intermedia.view.ListViewStyle.loader(this._listBottomLoader);
+	this._listBottomLoader.load("assets/loading.gif");
+	this.setOnScroll(this.onScrollCallback.$bind(this));
 	$s.pop();
 }
 org.intermedia.view.ListViewBase.__name__ = ["org","intermedia","view","ListViewBase"];
@@ -5631,7 +5644,9 @@ org.intermedia.view.ListViewBase.__super__ = org.intermedia.view.ViewBase;
 org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
 	onListItemSelected: null
 	,onListScrolled: null
+	,displayListBottomLoader: null
 	,_cells: null
+	,_listBottomLoader: null
 	,updateView: function() {
 		$s.push("org.intermedia.view.ListViewBase::updateView");
 		var $spos = $s.length;
@@ -5643,10 +5658,10 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 			var cell = [this.createCell()];
 			cell[0].setData(Reflect.field(this._data,index));
 			cell[0].setOnMouseUp((function(cell) {
-				$s.push("org.intermedia.view.ListViewBase::updateView@52");
+				$s.push("org.intermedia.view.ListViewBase::updateView@65");
 				var $spos = $s.length;
 				var $tmp = function(mouseEventData) {
-					$s.push("org.intermedia.view.ListViewBase::updateView@52@52");
+					$s.push("org.intermedia.view.ListViewBase::updateView@65@65");
 					var $spos = $s.length;
 					me.onListItemSelectedCallback(cell[0].getData());
 					$s.pop();
@@ -5658,6 +5673,8 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 			this._cells.push(cell[0]);
 			this.addChild(cell[0]);
 		}
+		if(this._listBottomLoader.getParent() != null) this.removeChild(this._listBottomLoader);
+		if(this.displayListBottomLoader == true) this.addChild(this._listBottomLoader);
 		$s.pop();
 	}
 	,createCell: function() {
@@ -5672,6 +5689,18 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		$s.push("org.intermedia.view.ListViewBase::onListItemSelectedCallback");
 		var $spos = $s.length;
 		if(this.onListItemSelected != null) this.onListItemSelected(cellData);
+		$s.pop();
+	}
+	,onScrollCallback: function(event) {
+		$s.push("org.intermedia.view.ListViewBase::onScrollCallback");
+		var $spos = $s.length;
+		if(event.scrollTop >= event.scrollHeight - new cocktailCore.viewport.js.Viewport()._getHeight()) this.onScrolledCallback();
+		$s.pop();
+	}
+	,onScrolledCallback: function() {
+		$s.push("org.intermedia.view.ListViewBase::onScrolledCallback");
+		var $spos = $s.length;
+		if(this.onListScrolled != null) this.onListScrolled();
 		$s.pop();
 	}
 	,__class__: org.intermedia.view.ListViewBase
@@ -6054,7 +6083,7 @@ org.intermedia.view.ListViewStyle.__name__ = ["org","intermedia","view","ListVie
 org.intermedia.view.ListViewStyle.setListStyle = function(domElement) {
 	$s.push("org.intermedia.view.ListViewStyle::setListStyle");
 	var $spos = $s.length;
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
@@ -6065,8 +6094,24 @@ org.intermedia.view.ListViewStyle.setListStyle = function(domElement) {
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
-	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.autoValue);
 	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(43)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.autoValue});
+	$s.pop();
+}
+org.intermedia.view.ListViewStyle.loader = function(domElement) {
+	$s.push("org.intermedia.view.ListViewStyle::loader");
+	var $spos = $s.length;
+	var verticalMargin = 20;
+	var viewport = new cocktailCore.viewport.js.Viewport();
+	var viewportHeight = viewport._getHeight();
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(verticalMargin)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(verticalMargin)));
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(viewportHeight)));
 	$s.pop();
 }
 org.intermedia.view.ListViewStyle.prototype = {
@@ -6079,20 +6124,17 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._xOffset = 0;
 	this._xOffsetStart = 0;
 	this._initialPosition = 0;
-	this._viewportWidth = new cocktailCore.viewport.js.Viewport()._getWidth();
+	this._viewport = new cocktailCore.viewport.js.Viewport();
+	this._viewportWidth = this._viewport._getWidth();
+	this._viewport._setOnResize(this.onResizeCallback.$bind(this));
 	org.intermedia.view.SwippableListViewStyle.setListStyle(this);
 	this.setOnMouseDown(this.onMouseDownCallback2.$bind(this));
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
 	this.list0.setX(-this._viewportWidth);
 	this._listViews.push(this.list0);
-	this.list1 = new org.intermedia.view.ViewBase();
-	this.list1.setX(0);
-	org.intermedia.view.SwippableListViewStyle.setContainerStyle(this.list1);
-	this.list11 = new org.intermedia.view.ThumbList(3);
-	this.list1.addChild(this.list11);
-	this._listViews.push(this.list11);
-	this.list12 = new org.intermedia.view.ThumbTextList1Bis(3);
+	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
+	this._listViews.push(this.list1);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
 	this._listViews.push(this.list2);
 	this.list2.setX(this._viewportWidth);
@@ -6105,6 +6147,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._index = 1;
 	this._currentListView = this._listViews[this._index];
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+	this._currentListView.onListScrolled = this.onScrolledCallback.$bind(this);
 	$s.pop();
 }
 org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","SwippableListView"];
@@ -6113,27 +6156,36 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	_listViews: null
 	,list0: null
 	,list1: null
-	,list11: null
-	,list12: null
 	,list2: null
 	,_currentListView: null
 	,_index: null
 	,_xOffset: null
 	,_xOffsetStart: null
 	,_initialPosition: null
+	,_viewport: null
 	,_viewportWidth: null
 	,setData: function(v) {
 		$s.push("org.intermedia.view.SwippableListView::setData");
 		var $spos = $s.length;
 		this._data = v;
+		this.list0.displayListBottomLoader = this.displayListBottomLoader;
 		this.list0.setData(this._data);
+		this.list1.displayListBottomLoader = this.displayListBottomLoader;
 		this.list1.setData(this._data);
-		this.list11.setData(this._data);
-		this.list12.setData(this._data);
+		this.list2.displayListBottomLoader = this.displayListBottomLoader;
 		this.list2.setData(this._data);
 		var $tmp = this._data;
 		$s.pop();
 		return $tmp;
+		$s.pop();
+	}
+	,onResizeCallback: function() {
+		$s.push("org.intermedia.view.SwippableListView::onResizeCallback");
+		var $spos = $s.length;
+		this._viewportWidth = this._viewport._getWidth();
+		this.list0.setX(-this._viewportWidth);
+		this.list2.setX(this._viewportWidth);
+		this.setX(-this._currentListView.getX());
 		$s.pop();
 	}
 	,onMouseDownCallback2: function(mouseEvent) {
@@ -6151,6 +6203,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._xOffset = Std["int"](mouseEvent.mousePosition.localX) - this._xOffsetStart;
 		this.setX(this._initialPosition + this._xOffset);
 		this._currentListView.onListItemSelected = null;
+		this._currentListView.onListScrolled = null;
 		$s.pop();
 	}
 	,onMouseUpCallback2: function(mouseEvent) {
@@ -6169,14 +6222,15 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			}
 		}
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this.animate();
+		this._currentListView.onListScrolled = this.onScrolledCallback.$bind(this);
+		this.releaseTween();
 		js.Lib.window.scrollTo(0,0);
 		this.setOnMouseMove(null);
 		this.setOnMouseUp(null);
 		$s.pop();
 	}
-	,animate: function() {
-		$s.push("org.intermedia.view.SwippableListView::animate");
+	,releaseTween: function() {
+		$s.push("org.intermedia.view.SwippableListView::releaseTween");
 		var $spos = $s.length;
 		var tween = new feffects.Tween(this.getX(),-this._currentListView.getX(),600,feffects.easing.Quint.easeOut);
 		tween.setTweenHandlers(this.tweenMove.$bind(this),this.tweenEnd.$bind(this));
@@ -6228,6 +6282,7 @@ org.intermedia.view.CellThumbStyle.setThumbnailStyle = function(domElement) {
 	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
 	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(0));
 	$s.pop();
 }
 org.intermedia.view.CellThumbStyle.prototype = {
@@ -7219,6 +7274,13 @@ cocktailCore.style.renderer.ElementRenderer.prototype = {
 	,parent: null
 	,_layerRenderer: null
 	,layerRenderer: null
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.renderer.ElementRenderer::establishesNewFormattingContext");
+		var $spos = $s.length;
+		$s.pop();
+		return false;
+		$s.pop();
+	}
 	,canHaveChildren: function() {
 		$s.push("cocktailCore.style.renderer.ElementRenderer::canHaveChildren");
 		var $spos = $s.length;
@@ -7433,6 +7495,42 @@ cocktailCore.style.positioner.BoxPositioner.prototype = {
 		$s.pop();
 	}
 	,__class__: cocktailCore.style.positioner.BoxPositioner
+}
+org.intermedia.view.CellThumbStyle2 = $hxClasses["org.intermedia.view.CellThumbStyle2"] = function() { }
+org.intermedia.view.CellThumbStyle2.__name__ = ["org","intermedia","view","CellThumbStyle2"];
+org.intermedia.view.CellThumbStyle2.setCellStyle = function(domElement,cellPerLine) {
+	$s.push("org.intermedia.view.CellThumbStyle2::setCellStyle");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	var cellPercentWidth = 0;
+	if(cellPerLine != 0) cellPercentWidth = Std["int"](100 / cellPerLine); else cellPercentWidth = 100;
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(cellPercentWidth));
+	$s.pop();
+}
+org.intermedia.view.CellThumbStyle2.setThumbnailStyle = function(domElement) {
+	$s.push("org.intermedia.view.CellThumbStyle2::setThumbnailStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(156)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(0));
+	$s.pop();
+}
+org.intermedia.view.CellThumbStyle2.prototype = {
+	__class__: org.intermedia.view.CellThumbStyle2
 }
 cocktailCore.style.js.ContainerStyle = $hxClasses["cocktailCore.style.js.ContainerStyle"] = function(domElement) {
 	$s.push("cocktailCore.style.js.ContainerStyle::new");
@@ -7879,6 +7977,98 @@ cocktailCore.textElement.TextTokenValue.tab.__enum__ = cocktailCore.textElement.
 cocktailCore.textElement.TextTokenValue.lineFeed = ["lineFeed",3];
 cocktailCore.textElement.TextTokenValue.lineFeed.toString = $estr;
 cocktailCore.textElement.TextTokenValue.lineFeed.__enum__ = cocktailCore.textElement.TextTokenValue;
+org.intermedia.view.HomePage = $hxClasses["org.intermedia.view.HomePage"] = function() {
+	$s.push("org.intermedia.view.HomePage::new");
+	var $spos = $s.length;
+	org.intermedia.view.ListViewBase.call(this);
+	$s.pop();
+}
+org.intermedia.view.HomePage.__name__ = ["org","intermedia","view","HomePage"];
+org.intermedia.view.HomePage.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	buildView: function() {
+		$s.push("org.intermedia.view.HomePage::buildView");
+		var $spos = $s.length;
+		var me = this;
+		var cell0Style = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle2.setThumbnailStyle, textBlock : null, title : null, author : null, line : null};
+		var cell0 = new org.intermedia.view.CellThumb(1,cell0Style);
+		cell0.setData({ id : 130523, thumbUrl : "assets/400-156.png", title : "incredible plugin", author : "vador"});
+		cell0.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@48");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell0.getData());
+			$s.pop();
+		});
+		this.addChild(cell0);
+		var cell1 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell1.setData({ id : 130523, thumbUrl : "assets/200-156_red.png", title : "incredible plugin", author : "vador"});
+		cell1.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@59");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell1.getData());
+			$s.pop();
+		});
+		this.addChild(cell1);
+		var cell2 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell2.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
+		cell2.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@70");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell2.getData());
+			$s.pop();
+		});
+		this.addChild(cell2);
+		var cell3 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell3.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
+		cell3.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@81");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell3.getData());
+			$s.pop();
+		});
+		this.addChild(cell3);
+		var cell10 = new org.intermedia.view.CellThumbText1(2);
+		cell10.setData({ id : 130523, title : "incredible plugin", author : "itzel", thumbUrl : "assets/200-156_red.png"});
+		cell10.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@92");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell10.getData());
+			$s.pop();
+		});
+		this.addChild(cell10);
+		var cell20 = new org.intermedia.view.CellThumbText1(2);
+		cell20.setData({ id : 130523, title : "incredible theme", author : "raph", thumbUrl : "assets/200-156_red.png"});
+		this.addChild(cell20);
+		cell20.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@104");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell20.getData());
+			$s.pop();
+		});
+		var cell4 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell4.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
+		cell4.setOnMouseUp(function(mouseEventData) {
+			$s.push("org.intermedia.view.HomePage::buildView@114");
+			var $spos = $s.length;
+			me.onListItemSelectedCallback(cell4.getData());
+			$s.pop();
+		});
+		this.addChild(cell4);
+		$s.pop();
+	}
+	,loadThumb: function(url) {
+		$s.push("org.intermedia.view.HomePage::loadThumb");
+		var $spos = $s.length;
+		var image = new cocktailCore.domElement.js.ImageDOMElement();
+		image.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+		this.addChild(image);
+		image.load(url);
+		$s.pop();
+		return image;
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.HomePage
+});
 cocktailCore.style.computer.DisplayStylesComputer = $hxClasses["cocktailCore.style.computer.DisplayStylesComputer"] = function() {
 	$s.push("cocktailCore.style.computer.DisplayStylesComputer::new");
 	var $spos = $s.length;
@@ -8030,6 +8220,10 @@ org.intermedia.model.ThumbTextListRss.rss2Cells = function(rss) {
 	var $spos = $s.length;
 	var cells = new Array();
 	var channelNode = rss.firstElement().firstElement();
+	if(channelNode == null) {
+		$s.pop();
+		return cells;
+	}
 	var $it0 = channelNode.elements();
 	while( $it0.hasNext() ) {
 		var channelChild = $it0.next();
@@ -8057,10 +8251,7 @@ org.intermedia.model.ThumbTextListRss.rss2Cells = function(rss) {
 					cell.title = title;
 				}
 				if(itemParam.getNodeName() == "dc:creator") cell.author = itemParam.firstChild().getNodeValue();
-				if(itemParam.getNodeName() == "guid") {
-					var index = itemParam.firstChild().getNodeValue().indexOf("p=") + 2;
-					cell.id = Std.parseInt(itemParam.firstChild().getNodeValue().substr(index));
-				}
+				if(itemParam.getNodeName() == "ID") cell.id = Std.parseInt(itemParam.firstChild().getNodeValue());
 				if(itemParam.getNodeName() == "category") cell.category = itemParam.firstChild().getNodeValue();
 			}
 			cells.push(cell);
@@ -8649,7 +8840,9 @@ org.intermedia.view.DetailStyle.setDefault = function(domElement) {
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.autoValue);
 	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(43)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	$s.pop();
 }
 org.intermedia.view.DetailStyle.setThumbnail = function(domElement) {
@@ -8733,6 +8926,333 @@ cocktailCore.focus.js.FocusManagerImpl.prototype = $extend(cocktailCore.focus.ab
 	}
 	,__class__: cocktailCore.focus.js.FocusManagerImpl
 });
+var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
+ValueType.TNull = ["TNull",0];
+ValueType.TNull.toString = $estr;
+ValueType.TNull.__enum__ = ValueType;
+ValueType.TInt = ["TInt",1];
+ValueType.TInt.toString = $estr;
+ValueType.TInt.__enum__ = ValueType;
+ValueType.TFloat = ["TFloat",2];
+ValueType.TFloat.toString = $estr;
+ValueType.TFloat.__enum__ = ValueType;
+ValueType.TBool = ["TBool",3];
+ValueType.TBool.toString = $estr;
+ValueType.TBool.__enum__ = ValueType;
+ValueType.TObject = ["TObject",4];
+ValueType.TObject.toString = $estr;
+ValueType.TObject.__enum__ = ValueType;
+ValueType.TFunction = ["TFunction",5];
+ValueType.TFunction.toString = $estr;
+ValueType.TFunction.__enum__ = ValueType;
+ValueType.TClass = function(c) { var $x = ["TClass",6,c]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; }
+ValueType.TEnum = function(e) { var $x = ["TEnum",7,e]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; }
+ValueType.TUnknown = ["TUnknown",8];
+ValueType.TUnknown.toString = $estr;
+ValueType.TUnknown.__enum__ = ValueType;
+var Type = $hxClasses["Type"] = function() { }
+Type.__name__ = ["Type"];
+Type.getClass = function(o) {
+	$s.push("Type::getClass");
+	var $spos = $s.length;
+	if(o == null) {
+		$s.pop();
+		return null;
+	}
+	if(o.__enum__ != null) {
+		$s.pop();
+		return null;
+	}
+	var $tmp = o.__class__;
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.getEnum = function(o) {
+	$s.push("Type::getEnum");
+	var $spos = $s.length;
+	if(o == null) {
+		$s.pop();
+		return null;
+	}
+	var $tmp = o.__enum__;
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.getSuperClass = function(c) {
+	$s.push("Type::getSuperClass");
+	var $spos = $s.length;
+	var $tmp = c.__super__;
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.getClassName = function(c) {
+	$s.push("Type::getClassName");
+	var $spos = $s.length;
+	var a = c.__name__;
+	var $tmp = a.join(".");
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.getEnumName = function(e) {
+	$s.push("Type::getEnumName");
+	var $spos = $s.length;
+	var a = e.__ename__;
+	var $tmp = a.join(".");
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.resolveClass = function(name) {
+	$s.push("Type::resolveClass");
+	var $spos = $s.length;
+	var cl = $hxClasses[name];
+	if(cl == null || cl.__name__ == null) {
+		$s.pop();
+		return null;
+	}
+	$s.pop();
+	return cl;
+	$s.pop();
+}
+Type.resolveEnum = function(name) {
+	$s.push("Type::resolveEnum");
+	var $spos = $s.length;
+	var e = $hxClasses[name];
+	if(e == null || e.__ename__ == null) {
+		$s.pop();
+		return null;
+	}
+	$s.pop();
+	return e;
+	$s.pop();
+}
+Type.createInstance = function(cl,args) {
+	$s.push("Type::createInstance");
+	var $spos = $s.length;
+	if(args.length <= 3) {
+		var $tmp = new cl(args[0],args[1],args[2]);
+		$s.pop();
+		return $tmp;
+	}
+	if(args.length > 8) throw "Too many arguments";
+	var $tmp = new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.createEmptyInstance = function(cl) {
+	$s.push("Type::createEmptyInstance");
+	var $spos = $s.length;
+	function empty() {}; empty.prototype = cl.prototype;
+	var $tmp = new empty();
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.createEnum = function(e,constr,params) {
+	$s.push("Type::createEnum");
+	var $spos = $s.length;
+	var f = Reflect.field(e,constr);
+	if(f == null) throw "No such constructor " + constr;
+	if(Reflect.isFunction(f)) {
+		if(params == null) throw "Constructor " + constr + " need parameters";
+		var $tmp = f.apply(e,params);
+		$s.pop();
+		return $tmp;
+	}
+	if(params != null && params.length != 0) throw "Constructor " + constr + " does not need parameters";
+	$s.pop();
+	return f;
+	$s.pop();
+}
+Type.createEnumIndex = function(e,index,params) {
+	$s.push("Type::createEnumIndex");
+	var $spos = $s.length;
+	var c = e.__constructs__[index];
+	if(c == null) throw index + " is not a valid enum constructor index";
+	var $tmp = Type.createEnum(e,c,params);
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.getInstanceFields = function(c) {
+	$s.push("Type::getInstanceFields");
+	var $spos = $s.length;
+	var a = [];
+	for(var i in c.prototype) a.push(i);
+	a.remove("__class__");
+	a.remove("__properties__");
+	$s.pop();
+	return a;
+	$s.pop();
+}
+Type.getClassFields = function(c) {
+	$s.push("Type::getClassFields");
+	var $spos = $s.length;
+	var a = Reflect.fields(c);
+	a.remove("__name__");
+	a.remove("__interfaces__");
+	a.remove("__properties__");
+	a.remove("__super__");
+	a.remove("prototype");
+	$s.pop();
+	return a;
+	$s.pop();
+}
+Type.getEnumConstructs = function(e) {
+	$s.push("Type::getEnumConstructs");
+	var $spos = $s.length;
+	var a = e.__constructs__;
+	var $tmp = a.copy();
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type["typeof"] = function(v) {
+	$s.push("Type::typeof");
+	var $spos = $s.length;
+	switch(typeof(v)) {
+	case "boolean":
+		var $tmp = ValueType.TBool;
+		$s.pop();
+		return $tmp;
+	case "string":
+		var $tmp = ValueType.TClass(String);
+		$s.pop();
+		return $tmp;
+	case "number":
+		if(Math.ceil(v) == v % 2147483648.0) {
+			var $tmp = ValueType.TInt;
+			$s.pop();
+			return $tmp;
+		}
+		var $tmp = ValueType.TFloat;
+		$s.pop();
+		return $tmp;
+	case "object":
+		if(v == null) {
+			var $tmp = ValueType.TNull;
+			$s.pop();
+			return $tmp;
+		}
+		var e = v.__enum__;
+		if(e != null) {
+			var $tmp = ValueType.TEnum(e);
+			$s.pop();
+			return $tmp;
+		}
+		var c = v.__class__;
+		if(c != null) {
+			var $tmp = ValueType.TClass(c);
+			$s.pop();
+			return $tmp;
+		}
+		var $tmp = ValueType.TObject;
+		$s.pop();
+		return $tmp;
+	case "function":
+		if(v.__name__ != null) {
+			var $tmp = ValueType.TObject;
+			$s.pop();
+			return $tmp;
+		}
+		var $tmp = ValueType.TFunction;
+		$s.pop();
+		return $tmp;
+	case "undefined":
+		var $tmp = ValueType.TNull;
+		$s.pop();
+		return $tmp;
+	default:
+		var $tmp = ValueType.TUnknown;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+Type.enumEq = function(a,b) {
+	$s.push("Type::enumEq");
+	var $spos = $s.length;
+	if(a == b) {
+		$s.pop();
+		return true;
+	}
+	try {
+		if(a[0] != b[0]) {
+			$s.pop();
+			return false;
+		}
+		var _g1 = 2, _g = a.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(!Type.enumEq(a[i],b[i])) {
+				$s.pop();
+				return false;
+			}
+		}
+		var e = a.__enum__;
+		if(e != b.__enum__ || e == null) {
+			$s.pop();
+			return false;
+		}
+	} catch( e ) {
+		$e = [];
+		while($s.length >= $spos) $e.unshift($s.pop());
+		$s.push($e[0]);
+		$s.pop();
+		return false;
+	}
+	$s.pop();
+	return true;
+	$s.pop();
+}
+Type.enumConstructor = function(e) {
+	$s.push("Type::enumConstructor");
+	var $spos = $s.length;
+	var $tmp = e[0];
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.enumParameters = function(e) {
+	$s.push("Type::enumParameters");
+	var $spos = $s.length;
+	var $tmp = e.slice(2);
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.enumIndex = function(e) {
+	$s.push("Type::enumIndex");
+	var $spos = $s.length;
+	var $tmp = e[1];
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+Type.allEnums = function(e) {
+	$s.push("Type::allEnums");
+	var $spos = $s.length;
+	var all = [];
+	var cst = e.__constructs__;
+	var _g = 0;
+	while(_g < cst.length) {
+		var c = cst[_g];
+		++_g;
+		var v = Reflect.field(e,c);
+		if(!Reflect.isFunction(v)) all.push(v);
+	}
+	$s.pop();
+	return all;
+	$s.pop();
+}
+Type.prototype = {
+	__class__: Type
+}
 js.Lib = $hxClasses["js.Lib"] = function() { }
 js.Lib.__name__ = ["js","Lib"];
 js.Lib.isIE = null;
@@ -9514,7 +10034,15 @@ org.intermedia.view.ThumbTextList1Bis = $hxClasses["org.intermedia.view.ThumbTex
 org.intermedia.view.ThumbTextList1Bis.__name__ = ["org","intermedia","view","ThumbTextList1Bis"];
 org.intermedia.view.ThumbTextList1Bis.__super__ = org.intermedia.view.ThumbTextList1;
 org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.ThumbTextList1.prototype,{
-	__class__: org.intermedia.view.ThumbTextList1Bis
+	buildView: function() {
+		$s.push("org.intermedia.view.ThumbTextList1Bis::buildView");
+		var $spos = $s.length;
+		var homePage = new org.intermedia.view.HomePage();
+		homePage.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+		this.addChild(homePage);
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.ThumbTextList1Bis
 });
 if(!cocktail.mouse) cocktail.mouse = {}
 cocktail.mouse.MouseCursorValue = $hxClasses["cocktail.mouse.MouseCursorValue"] = { __ename__ : ["cocktail","mouse","MouseCursorValue"], __constructs__ : ["custom","autoValue","none","native"] }
@@ -9791,48 +10319,104 @@ cocktailCore.style.positioner.AbsolutePositioner.__super__ = cocktailCore.style.
 cocktailCore.style.positioner.AbsolutePositioner.prototype = $extend(cocktailCore.style.positioner.BoxPositioner.prototype,{
 	__class__: cocktailCore.style.positioner.AbsolutePositioner
 });
-org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbText1"] = function(cellPerLine) {
-	$s.push("org.intermedia.view.CellThumbText1::new");
+org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = function(cellPerLine,cellStyle) {
+	$s.push("org.intermedia.view.CellThumb::new");
 	var $spos = $s.length;
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellBase.call(this);
-	this.initCellStyle();
+	if(cellStyle != null) this._cellStyle = cellStyle; else this.initCellStyle();
 	this._cellStyle.cell(this,cellPerLine);
 	$s.pop();
 }
-org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
-org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellBase;
-org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellBase.prototype,{
+org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
+org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
+org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
 	_cellStyle: null
+	,_cellImage: null
 	,initCellStyle: function() {
+		$s.push("org.intermedia.view.CellThumb::initCellStyle");
+		var $spos = $s.length;
+		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : null, title : null, author : null, line : null};
+		$s.pop();
+	}
+	,updateView: function() {
+		$s.push("org.intermedia.view.CellThumb::updateView");
+		var $spos = $s.length;
+		this.loadThumb();
+		$s.pop();
+	}
+	,loadThumb: function() {
+		$s.push("org.intermedia.view.CellThumb::loadThumb");
+		var $spos = $s.length;
+		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
+			this._cellImage = new cocktailCore.domElement.js.ImageDOMElement();
+			this._cellStyle.thumbnail(this._cellImage);
+			this.addChild(this._cellImage);
+			this._cellImage.onLoad = this.onImageLoadSuccess.$bind(this);
+			this._cellImage.load(this._data.thumbUrl);
+		}
+		$s.pop();
+	}
+	,onImageLoadSuccess: function(image) {
+		$s.push("org.intermedia.view.CellThumb::onImageLoadSuccess");
+		var $spos = $s.length;
+		this.fadeIn();
+		$s.pop();
+	}
+	,fadeIn: function() {
+		$s.push("org.intermedia.view.CellThumb::fadeIn");
+		var $spos = $s.length;
+		var tween = new feffects.Tween(0,1,400);
+		tween.setTweenHandlers(this.tweenOpacity.$bind(this),this.tweenEnd.$bind(this));
+		tween.start();
+		$s.pop();
+	}
+	,tweenOpacity: function(e) {
+		$s.push("org.intermedia.view.CellThumb::tweenOpacity");
+		var $spos = $s.length;
+		this._cellImage.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(e));
+		$s.pop();
+	}
+	,tweenEnd: function(e) {
+		$s.push("org.intermedia.view.CellThumb::tweenEnd");
+		var $spos = $s.length;
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.CellThumb
+});
+org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbText1"] = function(cellPerLine,cellStyle) {
+	$s.push("org.intermedia.view.CellThumbText1::new");
+	var $spos = $s.length;
+	if(cellPerLine == null) cellPerLine = 1;
+	org.intermedia.view.CellThumb.call(this,cellPerLine,cellStyle);
+	$s.pop();
+}
+org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
+org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellThumb;
+org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellThumb.prototype,{
+	initCellStyle: function() {
 		$s.push("org.intermedia.view.CellThumbText1::initCellStyle");
 		var $spos = $s.length;
-		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbText1Style.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
+		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 		$s.pop();
 	}
 	,updateView: function() {
 		$s.push("org.intermedia.view.CellThumbText1::updateView");
 		var $spos = $s.length;
-		var cellData = this._data;
-		if(cellData.thumbUrl != "" && cellData.thumbUrl != null) {
-			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-			this._cellStyle.thumbnail(cellImage);
-			this.addChild(cellImage);
-			cellImage.load(cellData.thumbUrl);
-		}
+		org.intermedia.view.CellThumb.prototype.updateView.call(this);
 		var cellTextBlockContainer = new cocktailCore.domElement.js.ContainerDOMElement();
 		this._cellStyle.textBlock(cellTextBlockContainer);
 		this.addChild(cellTextBlockContainer);
-		if(cellData.title != "" && cellData.title != null) {
+		if(this._data.title != "" && this._data.title != null) {
 			var cellTitleContainer = new cocktailCore.domElement.js.ContainerDOMElement();
-			var textElement = new cocktailCore.textElement.js.TextElement(cellData.title);
+			var textElement = new cocktailCore.textElement.js.TextElement(this._data.title);
 			cellTitleContainer.addText(textElement);
 			this._cellStyle.title(cellTitleContainer);
 			cellTextBlockContainer.addChild(cellTitleContainer);
 		}
-		if(cellData.author != "" && cellData.author != null) {
+		if(this._data.author != "" && this._data.author != null) {
 			var cellAuthorContainer = new cocktailCore.domElement.js.ContainerDOMElement();
-			var textElement = new cocktailCore.textElement.js.TextElement(cellData.author);
+			var textElement = new cocktailCore.textElement.js.TextElement(this._data.author);
 			cellAuthorContainer.addText(textElement);
 			this._cellStyle.author(cellAuthorContainer);
 			cellTextBlockContainer.addChild(cellAuthorContainer);
@@ -9903,6 +10487,14 @@ cocktailCore.style.renderer.FlowBoxRenderer.prototype = $extend(cocktailCore.sty
 		var $spos = $s.length;
 		this._children.push(elementRenderer);
 		elementRenderer.setParent(this);
+		$s.pop();
+	}
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.renderer.FlowBoxRenderer::establishesNewFormattingContext");
+		var $spos = $s.length;
+		var $tmp = this._domElement.getStyle().establishesNewFormattingContext();
+		$s.pop();
+		return $tmp;
 		$s.pop();
 	}
 	,addLineBox: function(lineBoxElements) {
@@ -10228,6 +10820,71 @@ cocktailCore.resource.js.ImageLoader.__super__ = cocktailCore.resource.abstract.
 cocktailCore.resource.js.ImageLoader.prototype = $extend(cocktailCore.resource.abstract.AbstractImageLoader.prototype,{
 	__class__: cocktailCore.resource.js.ImageLoader
 });
+if(!cocktailCore.classInstance) cocktailCore.classInstance = {}
+if(!cocktailCore.classInstance["abstract"]) cocktailCore.classInstance["abstract"] = {}
+cocktailCore.classInstance.abstract.AbstractClassInstance = $hxClasses["cocktailCore.classInstance.abstract.AbstractClassInstance"] = function(nativeInstanceClassName) {
+	$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::new");
+	var $spos = $s.length;
+	$s.pop();
+}
+cocktailCore.classInstance.abstract.AbstractClassInstance.__name__ = ["cocktailCore","classInstance","abstract","AbstractClassInstance"];
+cocktailCore.classInstance.abstract.AbstractClassInstance.prototype = {
+	_nativeInstance: null
+	,nativeInstance: null
+	,callMethod: function(methodName,args) {
+		$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::callMethod");
+		var $spos = $s.length;
+		if(this.isFunction(methodName)) {
+			var method = Reflect.field(this._nativeInstance,methodName);
+			var $tmp = method.apply(this._nativeInstance,args);
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+		return null;
+		$s.pop();
+	}
+	,getField: function(fieldName) {
+		$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::getField");
+		var $spos = $s.length;
+		var fieldGetterName = "get" + fieldName.substr(0,1).toUpperCase() + fieldName.substr(1);
+		if(this.isFunction(fieldGetterName)) {
+			var $tmp = Reflect.field(this._nativeInstance,fieldGetterName).apply(this._nativeInstance,[]);
+			$s.pop();
+			return $tmp;
+		} else {
+			var $tmp = Reflect.field(this._nativeInstance,fieldName);
+			$s.pop();
+			return $tmp;
+		}
+		$s.pop();
+	}
+	,setField: function(fieldName,fieldValue) {
+		$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::setField");
+		var $spos = $s.length;
+		var fieldSetterName = "set" + fieldName.substr(0,1).toUpperCase() + fieldName.substr(1);
+		if(this.isFunction(fieldSetterName)) Reflect.field(this._nativeInstance,fieldSetterName).apply(this._nativeInstance,[fieldValue]); else this._nativeInstance[fieldName] = fieldValue;
+		$s.pop();
+	}
+	,isFunction: function(functionName) {
+		$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::isFunction");
+		var $spos = $s.length;
+		var $tmp = Reflect.isFunction(Reflect.field(this._nativeInstance,functionName));
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
+	,getNativeInstance: function() {
+		$s.push("cocktailCore.classInstance.abstract.AbstractClassInstance::getNativeInstance");
+		var $spos = $s.length;
+		var $tmp = this._nativeInstance;
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
+	,__class__: cocktailCore.classInstance.abstract.AbstractClassInstance
+	,__properties__: {get_nativeInstance:"getNativeInstance"}
+}
 if(!cocktailCore.drawing) cocktailCore.drawing = {}
 if(!cocktailCore.drawing["abstract"]) cocktailCore.drawing["abstract"] = {}
 cocktailCore.drawing.abstract.AbstractDrawingManager = $hxClasses["cocktailCore.drawing.abstract.AbstractDrawingManager"] = function(nativeElement,width,height) {
@@ -10426,33 +11083,46 @@ cocktailCore.style.renderer.LayerRenderer = $hxClasses["cocktailCore.style.rende
 cocktailCore.style.renderer.LayerRenderer.__name__ = ["cocktailCore","style","renderer","LayerRenderer"];
 cocktailCore.style.renderer.LayerRenderer.prototype = {
 	_rootRenderer: null
-	,render: function(nativeElement) {
+	,render: function() {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::render");
 		var $spos = $s.length;
+		var $tmp = this.doRender(this._rootRenderer);
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
+	,doRender: function(rootRenderer) {
+		$s.push("cocktailCore.style.renderer.LayerRenderer::doRender");
+		var $spos = $s.length;
 		var ret = new Array();
-		if(this._rootRenderer.canHaveChildren() == true && this._rootRenderer.getDOMElement().getStyle().isInlineLevel() == false) {
-			ret = this._rootRenderer.renderBackground();
-			var d = this.renderChildLayer(nativeElement);
+		if(rootRenderer.canHaveChildren() == true && rootRenderer.getDOMElement().getStyle().isInlineLevel() == false || rootRenderer.getDOMElement().getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
+			var d = this.renderChildLayer();
 			var _g1 = 0, _g = d.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(d[i]);
 			}
-			var c = this.renderInFlowChildren(nativeElement);
+			var c = this.renderInFlowChildren(ret);
 			var _g1 = 0, _g = c.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(c[i]);
 			}
-			var bg = this.renderChildrenBlockContainerBackground(nativeElement);
+			var bg = this.renderChildrenBlockContainerBackground();
 			var _g1 = 0, _g = bg.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(bg[i]);
 			}
+			var boum = rootRenderer.renderBackground();
+			var _g1 = 0, _g = boum.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				ret.push(boum[i]);
+			}
 		} else {
-			ret = this._rootRenderer.renderBackground();
-			var e = this._rootRenderer.render();
+			ret = rootRenderer.render();
+			var e = rootRenderer.renderBackground();
 			var _g1 = 0, _g = e.length;
 			while(_g1 < _g) {
 				var i = _g1++;
@@ -10463,7 +11133,7 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderChildrenBlockContainerBackground: function(nativeElement) {
+	,renderChildrenBlockContainerBackground: function() {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderChildrenBlockContainerBackground");
 		var $spos = $s.length;
 		var childrenBlockContainer = this.getBlockContainerChildren(this._rootRenderer);
@@ -10482,15 +11152,16 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderChildLayer: function(nativeElement) {
+	,renderChildLayer: function() {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderChildLayer");
 		var $spos = $s.length;
 		var childLayers = this.getChildLayers(this._rootRenderer,this);
+		childLayers.reverse();
 		var ret = new Array();
 		var _g1 = 0, _g = childLayers.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var nativeElements = childLayers[i].render(nativeElement);
+			var nativeElements = childLayers[i].render();
 			var _g3 = 0, _g2 = nativeElements.length;
 			while(_g3 < _g2) {
 				var j = _g3++;
@@ -10509,7 +11180,7 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(rootRenderer.getChildren()[i].getLayerRenderer() == referenceLayer) {
-				if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
+				if(rootRenderer.getChildren()[i].canHaveChildren() == true && rootRenderer.getChildren()[i].getDOMElement().getStyle().getDisplay() != cocktail.style.DisplayStyleValue.inlineBlock) {
 					var childElementRenderer = this.getChildLayers(rootRenderer.getChildren()[i],referenceLayer);
 					var _g3 = 0, _g2 = childElementRenderer.length;
 					while(_g3 < _g2) {
@@ -10523,53 +11194,93 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderInFlowChildren: function(nativeElement) {
+	,renderInFlowChildren: function(nativeElements) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderInFlowChildren");
 		var $spos = $s.length;
-		var inFlowChildren = this.getInFlowChildren(this._rootRenderer);
+		var inFlowChildren = this.getInFlowChildren(this._rootRenderer,nativeElements);
 		var ret = new Array();
 		var _g1 = 0, _g = inFlowChildren.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var nativeElements = inFlowChildren[i].render();
-			var _g3 = 0, _g2 = nativeElements.length;
+			var nativeElements1 = [];
+			if(inFlowChildren[i].getDOMElement().getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
+				var d = this.getChildLayers(inFlowChildren[i],this);
+				var _g3 = 0, _g2 = d.length;
+				while(_g3 < _g2) {
+					var l = _g3++;
+					var ne = d[l].render();
+					var _g5 = 0, _g4 = ne.length;
+					while(_g5 < _g4) {
+						var m = _g5++;
+						nativeElements1.push(ne[m]);
+					}
+				}
+				var childElementRenderer = this.getInFlowChildren(inFlowChildren[i],nativeElements1);
+				var _g3 = 0, _g2 = childElementRenderer.length;
+				while(_g3 < _g2) {
+					var l = _g3++;
+					childElementRenderer[l].getBounds().x += inFlowChildren[i].getBounds().x;
+					childElementRenderer[l].getBounds().y += inFlowChildren[i].getBounds().y;
+					var el = childElementRenderer[l].render();
+					var _g5 = 0, _g4 = el.length;
+					while(_g5 < _g4) {
+						var k = _g5++;
+						nativeElements1.push(el[k]);
+					}
+				}
+			} else nativeElements1 = inFlowChildren[i].render();
+			var _g3 = 0, _g2 = nativeElements1.length;
 			while(_g3 < _g2) {
 				var j = _g3++;
-				ret.push(nativeElements[j]);
+				ret.push(nativeElements1[j]);
+			}
+			if(inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false) {
+				var bg = inFlowChildren[i].renderBackground();
+				var _g3 = 0, _g2 = bg.length;
+				while(_g3 < _g2) {
+					var j = _g3++;
+					ret.push(bg[j]);
+				}
 			}
 		}
 		$s.pop();
 		return ret;
 		$s.pop();
 	}
-	,getInFlowChildren: function(rootRenderer) {
+	,getInFlowChildren: function(rootRenderer,nativeElements) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::getInFlowChildren");
 		var $spos = $s.length;
 		var ret = new Array();
-		var _g1 = 0, _g = rootRenderer.getChildren().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(rootRenderer.getChildren()[i].getLayerRenderer() == this) {
-				if(rootRenderer.getDOMElement().getStyle().establishesNewFormattingContext() == true && rootRenderer.getDOMElement().getStyle().childrenInline() == true) {
-					var _g3 = 0, _g2 = rootRenderer.getLineBoxes().length;
-					while(_g3 < _g2) {
-						var j = _g3++;
-						var _g5 = 0, _g4 = rootRenderer.getLineBoxes()[j].length;
-						while(_g5 < _g4) {
-							var k = _g5++;
-							ret.push(rootRenderer.getLineBoxes()[j][k]);
+		if(rootRenderer.establishesNewFormattingContext() == true && rootRenderer.getDOMElement().getStyle().childrenInline() == true) {
+			var _g1 = 0, _g = rootRenderer.getLineBoxes().length;
+			while(_g1 < _g) {
+				var j = _g1++;
+				var _g3 = 0, _g2 = rootRenderer.getLineBoxes()[j].length;
+				while(_g3 < _g2) {
+					var k = _g3++;
+					ret.push(rootRenderer.getLineBoxes()[j][k]);
+				}
+			}
+		} else {
+			var _g1 = 0, _g = rootRenderer.getChildren().length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				if(rootRenderer.getChildren()[i].getLayerRenderer() == this) {
+					if(rootRenderer.getChildren()[i].getDOMElement().getStyle().isPositioned() == false) {
+						ret.push(rootRenderer.getChildren()[i]);
+						if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
+							var childElementRenderer = this.getInFlowChildren(rootRenderer.getChildren()[i],nativeElements);
+							var _g3 = 0, _g2 = childElementRenderer.length;
+							while(_g3 < _g2) {
+								var j = _g3++;
+								if(rootRenderer.getChildren()[i].establishesNewFormattingContext() == true) {
+									childElementRenderer[j].getBounds().x += rootRenderer.getChildren()[i].getBounds().x;
+									childElementRenderer[j].getBounds().y += rootRenderer.getChildren()[i].getBounds().y;
+								}
+								ret.push(childElementRenderer[j]);
+							}
 						}
 					}
-				} else if(rootRenderer.getChildren()[i].getDOMElement().getStyle().isInFlow() == true) {
-					if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
-						var childElementRenderer = this.getInFlowChildren(rootRenderer.getChildren()[i]);
-						var _g3 = 0, _g2 = childElementRenderer.length;
-						while(_g3 < _g2) {
-							var j = _g3++;
-							ret.push(childElementRenderer[j]);
-						}
-					}
-					ret.push(rootRenderer.getChildren()[i]);
 				}
 			}
 		}
@@ -10879,6 +11590,34 @@ cocktailCore.domElement.ContainerDOMElementChildValue.domElement.__enum__ = cock
 cocktailCore.domElement.ContainerDOMElementChildValue.textElement = ["textElement",1];
 cocktailCore.domElement.ContainerDOMElementChildValue.textElement.toString = $estr;
 cocktailCore.domElement.ContainerDOMElementChildValue.textElement.__enum__ = cocktailCore.domElement.ContainerDOMElementChildValue;
+org.intermedia.view.LoadingViewStyle = $hxClasses["org.intermedia.view.LoadingViewStyle"] = function() { }
+org.intermedia.view.LoadingViewStyle.__name__ = ["org","intermedia","view","LoadingViewStyle"];
+org.intermedia.view.LoadingViewStyle.setLoadingStyle = function(domElement) {
+	$s.push("org.intermedia.view.LoadingViewStyle::setLoadingStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	$s.pop();
+}
+org.intermedia.view.LoadingViewStyle.setThumbnailStyle = function(domElement) {
+	$s.push("org.intermedia.view.LoadingViewStyle::setThumbnailStyle");
+	var $spos = $s.length;
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.autoValue);
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.percent(45));
+	$s.pop();
+}
+org.intermedia.view.LoadingViewStyle.prototype = {
+	__class__: org.intermedia.view.LoadingViewStyle
+}
 if(!cocktailCore.style.formatter) cocktailCore.style.formatter = {}
 cocktailCore.style.formatter.FormattingContext = $hxClasses["cocktailCore.style.formatter.FormattingContext"] = function(domElement) {
 	$s.push("cocktailCore.style.formatter.FormattingContext::new");
@@ -10899,6 +11638,7 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 	,_formattingContextData: null
 	,formattingContextData: null
 	,_elementsInFormattingContext: null
+	,_lastInsertedElement: null
 	,initFormattingContextData: function(domElement) {
 		$s.push("cocktailCore.style.formatter.FormattingContext::initFormattingContextData");
 		var $spos = $s.length;
@@ -10915,9 +11655,20 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		this._elementsInFormattingContext.push(element);
 		$s.pop();
 	}
-	,format: function() {
+	,getStaticPosition: function(element) {
+		$s.push("cocktailCore.style.formatter.FormattingContext::getStaticPosition");
+		var $spos = $s.length;
+		var x = this._formattingContextData.x;
+		var y = this._formattingContextData.y;
+		var $tmp = { x : x, y : y};
+		$s.pop();
+		return $tmp;
+		$s.pop();
+	}
+	,format: function(layOutLastLine) {
 		$s.push("cocktailCore.style.formatter.FormattingContext::format");
 		var $spos = $s.length;
+		if(layOutLastLine == null) layOutLastLine = false;
 		this._formattingContextData = this.initFormattingContextData(this._containingDOMElement);
 		var _g1 = 0, _g = this._elementsInFormattingContext.length;
 		while(_g1 < _g) {
@@ -10940,11 +11691,13 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		$s.push("cocktailCore.style.formatter.FormattingContext::getChildrenHeight");
 		var $spos = $s.length;
 		var height = 0;
-		var elementRenderers = this.getParentElementRenderers(elementRenderer);
-		var _g1 = 0, _g = elementRenderers.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			height += Math.round(elementRenderers[i].getBounds().height);
+		if(elementRenderer == this._containingDOMElement.getStyle().getElementRenderer()) height = this._formattingContextData.maxHeight; else {
+			var elementRenderers = this.getParentElementRenderers(elementRenderer);
+			var _g1 = 0, _g = elementRenderers.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				height += Math.round(elementRenderers[i].getBounds().height);
+			}
 		}
 		$s.pop();
 		return height;
@@ -10970,31 +11723,6 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		if(elementRenderers.length == 0) targetElementRenderers.push(elementRenderer);
 		$s.pop();
 		return elementRenderers;
-		$s.pop();
-	}
-	,getBounds: function(elements) {
-		$s.push("cocktailCore.style.formatter.FormattingContext::getBounds");
-		var $spos = $s.length;
-		var bounds;
-		var left = 50000;
-		var top = 50000;
-		var right = -50000;
-		var bottom = -50000;
-		var _g1 = 0, _g = elements.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(elements[i].getBounds().x < left) left = elements[i].getBounds().x;
-			if(elements[i].getBounds().y < top) {
-				if(elements[i].isText() == false) top = elements[i].getBounds().y; else top = elements[i].getBounds().y - elements[i].getDOMElement().getStyle().getFontMetricsData().ascent;
-			}
-			if(elements[i].getBounds().x + elements[i].getBounds().width > right) right = elements[i].getBounds().x + elements[i].getBounds().width;
-			if(elements[i].getBounds().y + elements[i].getBounds().height > bottom) {
-				if(elements[i].isText() == false) bottom = elements[i].getBounds().y + elements[i].getBounds().height; else bottom = elements[i].getBounds().y - elements[i].getDOMElement().getStyle().getFontMetricsData().ascent + elements[i].getBounds().height;
-			}
-		}
-		bounds = { x : left, y : top, width : right - left, height : bottom - top};
-		$s.pop();
-		return bounds;
 		$s.pop();
 	}
 	,insertEmbeddedElement: function(element) {
@@ -11093,10 +11821,10 @@ cocktailCore.style.formatter.BlockFormattingContext.__name__ = ["cocktailCore","
 cocktailCore.style.formatter.BlockFormattingContext.__super__ = cocktailCore.style.formatter.FormattingContext;
 cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktailCore.style.formatter.FormattingContext.prototype,{
 	_currentAddedSiblingsHeight: null
-	,_lastInsertedElement: null
-	,format: function() {
+	,format: function(layOutLastLine) {
 		$s.push("cocktailCore.style.formatter.BlockFormattingContext::format");
 		var $spos = $s.length;
+		if(layOutLastLine == null) layOutLastLine = false;
 		this._formattingContextData = this.initFormattingContextData(this._containingDOMElement);
 		this._lastInsertedElement = this._containingDOMElement.getStyle().getElementRenderer();
 		var _g1 = 0, _g = this._elementsInFormattingContext.length;
@@ -11110,6 +11838,21 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 			this._lastInsertedElement = this._elementsInFormattingContext[i];
 			this.doInsertElement(this._elementsInFormattingContext[i],this.isNextElementALineFeed(this._elementsInFormattingContext,i));
 		}
+		$s.pop();
+	}
+	,getStaticPosition: function(element) {
+		$s.push("cocktailCore.style.formatter.BlockFormattingContext::getStaticPosition");
+		var $spos = $s.length;
+		if(this.isSiblingOfLastInsertedElement(element)) {
+		} else if(this.isParentOfLastInsertedElement(element)) {
+			this._formattingContextData.y -= this._currentAddedSiblingsHeight;
+			this._currentAddedSiblingsHeight = 0;
+		} else this._currentAddedSiblingsHeight = 0;
+		var x = this._formattingContextData.x;
+		var y = this._formattingContextData.y;
+		var $tmp = { x : x, y : y};
+		$s.pop();
+		return $tmp;
 		$s.pop();
 	}
 	,isParentOfLastInsertedElement: function(element) {
@@ -11138,6 +11881,7 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
+		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -11151,6 +11895,7 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
+		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -11164,6 +11909,7 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
+		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -11229,8 +11975,12 @@ org.intermedia.model.CellDetailsRss.__name__ = ["org","intermedia","model","Cell
 org.intermedia.model.CellDetailsRss.rss2CellDetail = function(rss,cellData) {
 	$s.push("org.intermedia.model.CellDetailsRss::rss2CellDetail");
 	var $spos = $s.length;
-	var channelNode = rss.firstElement().firstElement();
 	var cell = { id : cellData.id, title : cellData.title, author : cellData.author, thumbUrl : cellData.thumbUrl, category : cellData.category, description : ""};
+	var channelNode = rss.firstElement().firstElement();
+	if(channelNode == null) {
+		$s.pop();
+		return cell;
+	}
 	var $it0 = channelNode.elements();
 	while( $it0.hasNext() ) {
 		var channelChild = $it0.next();
@@ -11238,7 +11988,7 @@ org.intermedia.model.CellDetailsRss.rss2CellDetail = function(rss,cellData) {
 			var $it1 = channelChild.elements();
 			while( $it1.hasNext() ) {
 				var itemParam = $it1.next();
-				if(itemParam.getNodeName() == "description") {
+				if(itemParam.getNodeName() == "post_excerpt") {
 					var text = itemParam.firstChild().getNodeValue();
 					var toRemove = ["Online Demo","Online demo","Description :"];
 					var _g = 0;
@@ -11502,10 +12252,14 @@ cocktail.resource.LoadingTypeValue.data.__enum__ = cocktail.resource.LoadingType
 cocktail.resource.LoadingTypeValue.library = ["library",1];
 cocktail.resource.LoadingTypeValue.library.toString = $estr;
 cocktail.resource.LoadingTypeValue.library.__enum__ = cocktail.resource.LoadingTypeValue;
-org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] = function(online) {
+org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] = function(itemsToLoad,pageIndex,online) {
 	$s.push("org.intermedia.model.DataLoader::new");
 	var $spos = $s.length;
 	if(online == null) online = true;
+	if(pageIndex == null) pageIndex = 1;
+	if(itemsToLoad == null) itemsToLoad = 10;
+	this._itemsToLoad = itemsToLoad;
+	this._pageIndex = pageIndex;
 	this._online = online;
 	$s.pop();
 }
@@ -11515,13 +12269,19 @@ org.intermedia.model.DataLoader.prototype = {
 	,onCellDetailLoaded: null
 	,onLoadingError: null
 	,_online: null
-	,loadCellData: function(startIndex,endIndex,successCallback,errorCallback) {
+	,_itemsToLoad: null
+	,_pageIndex: null
+	,loadCellData: function(itemsPerPage,pageIndex,successCallback,errorCallback) {
 		$s.push("org.intermedia.model.DataLoader::loadCellData");
 		var $spos = $s.length;
+		if(pageIndex == null) pageIndex = 1;
 		this.onCellDataLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var fullUrl = "";
-		if(this._online) fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=657&format=rss2"; else fullUrl = "data/silex_plugins.rss";
+		if(this._online) {
+			fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=" + itemsPerPage + "&paged=" + this._pageIndex;
+			this._pageIndex++;
+		} else fullUrl = "data/silex_plugins.rss";
 		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,this.onCellsXmlLoaded.$bind(this),this.onLoadingError);
 		$s.pop();
 	}
@@ -11532,13 +12292,13 @@ org.intermedia.model.DataLoader.prototype = {
 		this.onCellDetailLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var onLoadSuccessDelegate = function(xml) {
-			$s.push("org.intermedia.model.DataLoader::loadDetailData@71");
+			$s.push("org.intermedia.model.DataLoader::loadDetailData@82");
 			var $spos = $s.length;
 			me.onCellDetailXmlLoaded(xml,cellData);
 			$s.pop();
 		};
 		var fullUrl = "";
-		if(this._online) fullUrl = "http://www.silexlabs.org/feed/?s=" + cellData.title.substr(0,cellData.title.indexOf(" ")) + "&format=rss2"; else fullUrl = "data/detail.rss";
+		if(this._online) fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id; else fullUrl = "data/detail.rss";
 		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,onLoadSuccessDelegate,this.onLoadingError);
 		$s.pop();
 	}
@@ -11746,7 +12506,7 @@ org.intermedia.view.ViewManagerStyle.setBodyStyle = function(domElement) {
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(130));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
-	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.autoValue});
+	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.hidden});
 	$s.pop();
 }
 org.intermedia.view.ViewManagerStyle.prototype = {
@@ -11946,6 +12706,7 @@ cocktailCore.style.formatter.InlineFormattingContext = $hxClasses["cocktailCore.
 	this._unbreakableLineBoxElements = new Array();
 	this._unbreakableWidth = 0;
 	this._currentInlineBoxesData = new Array();
+	this._layOutLastLine = false;
 	cocktailCore.style.formatter.FormattingContext.call(this,domElement);
 	$s.pop();
 }
@@ -11955,17 +12716,19 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 	_elementsInLineBox: null
 	,_unbreakableLineBoxElements: null
 	,_unbreakableWidth: null
-	,_lastInsertedElement: null
 	,_currentInlineBoxesData: null
-	,format: function() {
+	,_layOutLastLine: null
+	,format: function(layOutLastLine) {
 		$s.push("cocktailCore.style.formatter.InlineFormattingContext::format");
 		var $spos = $s.length;
+		if(layOutLastLine == null) layOutLastLine = false;
 		this._elementsInLineBox = new Array();
 		this._unbreakableLineBoxElements = new Array();
 		this._unbreakableWidth = 0;
 		var flowBoxRenderer = this._containingDOMElement.getStyle().getElementRenderer();
 		flowBoxRenderer.removeLineBoxes();
 		this._currentInlineBoxesData = new Array();
+		this._layOutLastLine = layOutLastLine;
 		cocktailCore.style.formatter.FormattingContext.prototype.format.call(this);
 		this.insertBreakOpportunity(true,true);
 		$s.pop();
@@ -11984,17 +12747,19 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		this.insertBreakOpportunity(false);
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(element.getDOMElement().getOffsetWidth());
+		this.addWidth(Math.round(element.getBounds().width));
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
 	,insertFormattingContextRootElement: function(element) {
 		$s.push("cocktailCore.style.formatter.InlineFormattingContext::insertFormattingContextRootElement");
 		var $spos = $s.length;
+		element.getBounds().width = element.getDOMElement().getOffsetWidth();
+		element.getBounds().height = element.getDOMElement().getOffsetHeight();
 		this.insertBreakOpportunity(false);
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(element.getDOMElement().getOffsetWidth());
+		this.addWidth(Math.round(element.getBounds().width));
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
@@ -12009,7 +12774,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		var $spos = $s.length;
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(element.getDOMElement().getOffsetWidth());
+		this.addWidth(Math.round(element.getBounds().width));
 		$s.pop();
 	}
 	,insertSpace: function(element,isNextElementALineFeed) {
@@ -12017,7 +12782,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		var $spos = $s.length;
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(element.getDOMElement().getOffsetWidth());
+		this.addWidth(Math.round(element.getBounds().width));
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
@@ -12188,10 +12953,56 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 			if(isLastLine == false) {
 				this._formattingContextData.y += lineBoxHeight;
 				this._formattingContextData.y = this._floatsManager.getFirstAvailableY(this._formattingContextData,elementWidth,this._containingDOMElementWidth);
+				this._formattingContextData.maxHeight = this._formattingContextData.y + lineBoxHeight;
+				this._formattingContextData.x = this._floatsManager.getLeftFloatOffset(this._formattingContextData.y);
+			} else if(this._layOutLastLine == true) {
+				this._formattingContextData.y += lineBoxHeight;
+				this._formattingContextData.y = this._floatsManager.getFirstAvailableY(this._formattingContextData,elementWidth,this._containingDOMElementWidth);
 				this._formattingContextData.maxHeight = this._formattingContextData.y;
 				this._formattingContextData.x = this._floatsManager.getLeftFloatOffset(this._formattingContextData.y);
 			}
 		}
+		$s.pop();
+	}
+	,getBounds: function(elements) {
+		$s.push("cocktailCore.style.formatter.InlineFormattingContext::getBounds");
+		var $spos = $s.length;
+		var bounds;
+		var left = 50000;
+		var top = 50000;
+		var right = -50000;
+		var bottom = -50000;
+		var _g1 = 0, _g = elements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(elements[i].getBounds().x < left) left = elements[i].getBounds().x;
+			if(elements[i].getBounds().y < top) {
+				if(elements[i].isText() == false) top = elements[i].getBounds().y; else {
+					var domElement = elements[i].getDOMElement();
+					var domElementAscent = domElement.getStyle().getFontMetricsData().ascent;
+					var domElementDescent = domElement.getStyle().getFontMetricsData().descent;
+					var leading = domElement.getStyle().getComputedStyle().lineHeight - (domElementAscent + domElementDescent);
+					domElementAscent = Math.round(domElementAscent + leading / 2);
+					domElementDescent = Math.round(domElementDescent + leading / 2);
+					top = elements[i].getBounds().y - domElementAscent;
+				}
+			}
+			if(elements[i].getBounds().x + elements[i].getBounds().width > right) right = elements[i].getBounds().x + elements[i].getBounds().width;
+			if(elements[i].getBounds().y + elements[i].getBounds().height > bottom) {
+				if(elements[i].isText() == false) bottom = elements[i].getBounds().y + elements[i].getBounds().height; else {
+					var domElement = elements[i].getDOMElement();
+					var domElementAscent = domElement.getStyle().getFontMetricsData().ascent;
+					var domElementDescent = domElement.getStyle().getFontMetricsData().descent;
+					var leading = domElement.getStyle().getComputedStyle().lineHeight - (domElementAscent + domElementDescent);
+					domElementAscent = Math.round(domElementAscent + leading / 2);
+					domElementDescent = Math.round(domElementDescent + leading / 2);
+					bottom = elements[i].getBounds().y - domElementAscent + elements[i].getBounds().height;
+				}
+			}
+		}
+		bounds = { x : left, y : top, width : right - left, height : bottom - top};
+		$s.pop();
+		return bounds;
 		$s.pop();
 	}
 	,removeSpaces: function() {
@@ -12286,7 +13097,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 				flowX += spaceWidth;
 			}
 			this._elementsInLineBox[i].getBounds().x = flowX;
-			flowX += this._elementsInLineBox[i].getDOMElement().getOffsetWidth();
+			flowX += Math.round(this._elementsInLineBox[i].getBounds().width);
 		}
 		$s.pop();
 	}
@@ -12302,7 +13113,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 			var domElementAscent;
 			var domElementDescent;
 			var domElementVerticalAlign = domElement.getStyle().getComputedStyle().verticalAlign;
-			if(domElement.getStyle().isEmbedded() == true || domElement.getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
+			if(this._elementsInLineBox[i].canHaveChildren() == false && this._elementsInLineBox[i].isText() == false || this._elementsInLineBox[i].establishesNewFormattingContext() == true) {
 				domElementAscent = domElement.getOffsetHeight();
 				domElementDescent = 0;
 				switch( (domElement.getStyle().getVerticalAlign())[1] ) {
@@ -12339,7 +13150,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 				verticalAlign = domElement.getStyle().getComputedStyle().verticalAlign;
 			}
 			this._elementsInLineBox[i].getBounds().y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + this._formattingContextData.y;
-			if(domElement.getStyle().isEmbedded() == true || domElement.getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
+			if(this._elementsInLineBox[i].canHaveChildren() == false && this._elementsInLineBox[i].isText() == false || this._elementsInLineBox[i].establishesNewFormattingContext() == true) {
 				switch( (domElement.getStyle().getVerticalAlign())[1] ) {
 				case 3:
 					this._elementsInLineBox[i].getBounds().y = this._formattingContextData.y;
@@ -13181,7 +13992,9 @@ org.intermedia.view.SwippableListViewStyle.setContainerStyle = function(domEleme
 	$s.push("org.intermedia.view.SwippableListViewStyle::setContainerStyle");
 	var $spos = $s.length;
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
 	$s.pop();
 }
 org.intermedia.view.SwippableListViewStyle.prototype = {
@@ -13766,39 +14579,6 @@ cocktailCore.background.BackgroundDrawingManager.prototype = $extend(cocktailCor
 	}
 	,__class__: cocktailCore.background.BackgroundDrawingManager
 });
-org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = function(cellPerLine) {
-	$s.push("org.intermedia.view.CellThumb::new");
-	var $spos = $s.length;
-	if(cellPerLine == null) cellPerLine = 1;
-	org.intermedia.view.CellBase.call(this);
-	this.initCellStyle();
-	this._cellStyle.cell(this,cellPerLine);
-	$s.pop();
-}
-org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
-org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
-org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_cellStyle: null
-	,initCellStyle: function() {
-		$s.push("org.intermedia.view.CellThumb::initCellStyle");
-		var $spos = $s.length;
-		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
-		$s.pop();
-	}
-	,updateView: function() {
-		$s.push("org.intermedia.view.CellThumb::updateView");
-		var $spos = $s.length;
-		var cellData = this._data;
-		if(cellData.thumbUrl != "" && cellData.thumbUrl != null) {
-			var cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-			this._cellStyle.thumbnail(cellImage);
-			this.addChild(cellImage);
-			cellImage.load(cellData.thumbUrl);
-		}
-		$s.pop();
-	}
-	,__class__: org.intermedia.view.CellThumb
-});
 cocktailCore.resource.js.LibraryLoader = $hxClasses["cocktailCore.resource.js.LibraryLoader"] = function() {
 	$s.push("cocktailCore.resource.js.LibraryLoader::new");
 	var $spos = $s.length;
@@ -14299,29 +15079,6 @@ cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer.__super__ = cockt
 cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer.prototype = $extend(cocktailCore.style.computer.BoxStylesComputer.prototype,{
 	__class__: cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer
 });
-org.intermedia.view.ThumbList = $hxClasses["org.intermedia.view.ThumbList"] = function(cellPerLine) {
-	$s.push("org.intermedia.view.ThumbList::new");
-	var $spos = $s.length;
-	if(cellPerLine == null) cellPerLine = 1;
-	this._cellsPerLine = cellPerLine;
-	org.intermedia.view.ListViewBase.call(this);
-	org.intermedia.view.ListViewStyle.setListStyle(this);
-	$s.pop();
-}
-org.intermedia.view.ThumbList.__name__ = ["org","intermedia","view","ThumbList"];
-org.intermedia.view.ThumbList.__super__ = org.intermedia.view.ListViewBase;
-org.intermedia.view.ThumbList.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
-	_cellsPerLine: null
-	,createCell: function() {
-		$s.push("org.intermedia.view.ThumbList::createCell");
-		var $spos = $s.length;
-		var cell = new org.intermedia.view.CellThumb(this._cellsPerLine);
-		$s.pop();
-		return cell;
-		$s.pop();
-	}
-	,__class__: org.intermedia.view.ThumbList
-});
 cocktail.nativeElement.NativeElementManager = $hxClasses["cocktail.nativeElement.NativeElementManager"] = function() {
 	$s.push("cocktail.nativeElement.NativeElementManager::new");
 	var $spos = $s.length;
@@ -14603,10 +15360,10 @@ feffects.Tween.prototype = {
 org.intermedia.model.ApplicationModel = $hxClasses["org.intermedia.model.ApplicationModel"] = function() {
 	$s.push("org.intermedia.model.ApplicationModel::new");
 	var $spos = $s.length;
-	this._online = false;
+	this._online = true;
 	this._loadedCellsData = new Array();
 	this._loadedDetailData = new Array();
-	this._dataLoader = new org.intermedia.model.DataLoader(this._online);
+	this._dataLoader = new org.intermedia.model.DataLoader(null,null,this._online);
 	$s.pop();
 }
 org.intermedia.model.ApplicationModel.__name__ = ["org","intermedia","model","ApplicationModel"];
@@ -14622,9 +15379,10 @@ org.intermedia.model.ApplicationModel.prototype = {
 	,loadCellData: function(numberOfCellsToLoad) {
 		$s.push("org.intermedia.model.ApplicationModel::loadCellData");
 		var $spos = $s.length;
-		if(this.onModelStartsLoading != null) this.onModelStartsLoading();
-		var loadedCellsQty = this._loadedCellsData.length;
-		this._dataLoader.loadCellData(loadedCellsQty,loadedCellsQty + numberOfCellsToLoad - 1,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
+		if(this._loadedCellsData.length == 0) {
+			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
+		}
+		this._dataLoader.loadCellData(numberOfCellsToLoad,null,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
 		$s.pop();
 	}
 	,loadDetailData: function(cellData) {
@@ -14637,6 +15395,7 @@ org.intermedia.model.ApplicationModel.prototype = {
 	,onCellsDataLoadComplete: function(cellsData) {
 		$s.push("org.intermedia.model.ApplicationModel::onCellsDataLoadComplete");
 		var $spos = $s.length;
+		this._loadedCellsData = new Array();
 		var _g = 0;
 		while(_g < cellsData.length) {
 			var cellData = cellsData[_g];
@@ -15314,6 +16073,79 @@ haxe.Http.prototype = {
 	}
 	,__class__: haxe.Http
 }
+if(!cocktailCore.classInstance.js) cocktailCore.classInstance.js = {}
+cocktailCore.classInstance.js.ClassInstance = $hxClasses["cocktailCore.classInstance.js.ClassInstance"] = function(nativeInstanceClassName) {
+	$s.push("cocktailCore.classInstance.js.ClassInstance::new");
+	var $spos = $s.length;
+	cocktailCore.classInstance.abstract.AbstractClassInstance.call(this,nativeInstanceClassName);
+	if(Type.resolveClass(nativeInstanceClassName) != null) this._nativeInstance = Type.createInstance(Type.resolveClass(nativeInstanceClassName),[]); else this._nativeInstance = js.Lib.eval("new " + nativeInstanceClassName + "()");
+	$s.pop();
+}
+cocktailCore.classInstance.js.ClassInstance.__name__ = ["cocktailCore","classInstance","js","ClassInstance"];
+cocktailCore.classInstance.js.ClassInstance.__super__ = cocktailCore.classInstance.abstract.AbstractClassInstance;
+cocktailCore.classInstance.js.ClassInstance.prototype = $extend(cocktailCore.classInstance.abstract.AbstractClassInstance.prototype,{
+	__class__: cocktailCore.classInstance.js.ClassInstance
+});
+org.intermedia.view.LoadingView = $hxClasses["org.intermedia.view.LoadingView"] = function() {
+	$s.push("org.intermedia.view.LoadingView::new");
+	var $spos = $s.length;
+	cocktailCore.domElement.js.ContainerDOMElement.call(this);
+	org.intermedia.view.LoadingViewStyle.setLoadingStyle(this);
+	this.loadThumb();
+	$s.pop();
+}
+org.intermedia.view.LoadingView.__name__ = ["org","intermedia","view","LoadingView"];
+org.intermedia.view.LoadingView.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
+org.intermedia.view.LoadingView.prototype = $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype,{
+	_viewStyle: null
+	,loadThumb: function() {
+		$s.push("org.intermedia.view.LoadingView::loadThumb");
+		var $spos = $s.length;
+		var image = new cocktailCore.domElement.js.ImageDOMElement();
+		org.intermedia.view.LoadingViewStyle.setThumbnailStyle(image);
+		this.addChild(image);
+		image.load("assets/loading.gif");
+		$s.pop();
+	}
+	,__class__: org.intermedia.view.LoadingView
+});
+if(!feffects.easing) feffects.easing = {}
+feffects.easing.Quart = $hxClasses["feffects.easing.Quart"] = function() { }
+feffects.easing.Quart.__name__ = ["feffects","easing","Quart"];
+feffects.easing.Quart.__interfaces__ = [haxe.Public];
+feffects.easing.Quart.easeIn = function(t,b,c,d) {
+	$s.push("feffects.easing.Quart::easeIn");
+	var $spos = $s.length;
+	var $tmp = c * (t /= d) * t * t * t + b;
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+feffects.easing.Quart.easeOut = function(t,b,c,d) {
+	$s.push("feffects.easing.Quart::easeOut");
+	var $spos = $s.length;
+	var $tmp = -c * ((t = t / d - 1) * t * t * t - 1) + b;
+	$s.pop();
+	return $tmp;
+	$s.pop();
+}
+feffects.easing.Quart.easeInOut = function(t,b,c,d) {
+	$s.push("feffects.easing.Quart::easeInOut");
+	var $spos = $s.length;
+	if((t /= d * 0.5) < 1) {
+		var $tmp = c * 0.5 * t * t * t * t + b;
+		$s.pop();
+		return $tmp;
+	} else {
+		var $tmp = -c * 0.5 * ((t -= 2) * t * t * t - 2) + b;
+		$s.pop();
+		return $tmp;
+	}
+	$s.pop();
+}
+feffects.easing.Quart.prototype = {
+	__class__: feffects.easing.Quart
+}
 org.intermedia.view.CellThumbText1Style = $hxClasses["org.intermedia.view.CellThumbText1Style"] = function() { }
 org.intermedia.view.CellThumbText1Style.__name__ = ["org","intermedia","view","CellThumbText1Style"];
 org.intermedia.view.CellThumbText1Style.setCellStyle = function(domElement,cellPerLine) {
@@ -15333,19 +16165,6 @@ org.intermedia.view.CellThumbText1Style.setCellStyle = function(domElement,cellP
 	var cellPercentWidth = 0;
 	if(cellPerLine != 0) cellPercentWidth = Std["int"](100 / cellPerLine); else cellPercentWidth = 100;
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(cellPercentWidth));
-	$s.pop();
-}
-org.intermedia.view.CellThumbText1Style.setThumbnailStyle = function(domElement) {
-	$s.push("org.intermedia.view.CellThumbText1Style::setThumbnailStyle");
-	var $spos = $s.length;
-	var imageMaxWidth = 200;
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
-	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
-	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
-	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(30));
 	$s.pop();
 }
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(domElement) {
@@ -15397,43 +16216,6 @@ org.intermedia.view.CellThumbText1Style.setLineStyle = function(domElement) {
 }
 org.intermedia.view.CellThumbText1Style.prototype = {
 	__class__: org.intermedia.view.CellThumbText1Style
-}
-if(!feffects.easing) feffects.easing = {}
-feffects.easing.Quart = $hxClasses["feffects.easing.Quart"] = function() { }
-feffects.easing.Quart.__name__ = ["feffects","easing","Quart"];
-feffects.easing.Quart.__interfaces__ = [haxe.Public];
-feffects.easing.Quart.easeIn = function(t,b,c,d) {
-	$s.push("feffects.easing.Quart::easeIn");
-	var $spos = $s.length;
-	var $tmp = c * (t /= d) * t * t * t + b;
-	$s.pop();
-	return $tmp;
-	$s.pop();
-}
-feffects.easing.Quart.easeOut = function(t,b,c,d) {
-	$s.push("feffects.easing.Quart::easeOut");
-	var $spos = $s.length;
-	var $tmp = -c * ((t = t / d - 1) * t * t * t - 1) + b;
-	$s.pop();
-	return $tmp;
-	$s.pop();
-}
-feffects.easing.Quart.easeInOut = function(t,b,c,d) {
-	$s.push("feffects.easing.Quart::easeInOut");
-	var $spos = $s.length;
-	if((t /= d * 0.5) < 1) {
-		var $tmp = c * 0.5 * t * t * t * t + b;
-		$s.pop();
-		return $tmp;
-	} else {
-		var $tmp = -c * 0.5 * ((t -= 2) * t * t * t - 2) + b;
-		$s.pop();
-		return $tmp;
-	}
-	$s.pop();
-}
-feffects.easing.Quart.prototype = {
-	__class__: feffects.easing.Quart
 }
 feffects.easing.Quint = $hxClasses["feffects.easing.Quint"] = function() { }
 feffects.easing.Quint.__name__ = ["feffects","easing","Quint"];
@@ -16324,12 +17106,16 @@ if(typeof(haxe_timers) == "undefined") haxe_timers = [];
 }
 org.intermedia.view.ViewManager.HEADER_HOME_TITLE = "Market";
 org.intermedia.view.ViewManager.HEADER_DETAIL_TITLE = "Infos";
-org.intermedia.view.ViewManager.CELL_QTY = 5;
+org.intermedia.view.ViewManager.CELL_QTY = 10;
 cocktailCore.keyboard.js.Keyboard.KEY_DOWN_EVENT = "keydown";
 cocktailCore.keyboard.js.Keyboard.KEY_UP_EVENT = "keyup";
 org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 5;
+org.intermedia.view.CellThumbStyle2.CELL_VERTICAL_SPACE = 5;
 js.Lib.onerror = null;
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 5;
+cocktailCore.classInstance.abstract.AbstractClassInstance.SETTER_PREFIX = "set";
+cocktailCore.classInstance.abstract.AbstractClassInstance.GETTER_PREFIX = "get";
+org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 cocktail.resource.ResourceLoaderManager._isLoading = false;
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
 cocktailCore.drawing.js.DrawingManager.CAPS_STYLE_VALUE_NONE = "butt";

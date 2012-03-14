@@ -29,7 +29,7 @@ import org.intermedia.view.ScreenResolution;
  * @author Raphael Harmel
  */
 
-class CellThumbStyle
+class CellThumbStyle2
 {
 	static inline var CELL_VERTICAL_SPACE:Int = 5;
 	
@@ -68,10 +68,6 @@ class CellThumbStyle
 	 */
 	public static function setThumbnailStyle(domElement:DOMElement):Void
 	{
-		var imageMaxWidth:Int = 200;
-		
-		//setCellStyle(domElement);
-		
 		domElement.style.display = DisplayStyleValue.inlineStyle;
 		
 		domElement.style.paddingLeft = PaddingStyleValue.percent(1);
@@ -79,8 +75,7 @@ class CellThumbStyle
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+			domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(156));
 			domElement.style.width = DimensionStyleValue.percent(100);	
 
 		domElement.style.opacity = OpacityStyleValue.number(0);

@@ -1,6 +1,11 @@
 package org.intermedia.view;
 
+import cocktail.classInstance.ClassInstance;
+import cocktail.domElement.DOMElementData;
+import cocktail.domElement.ImageDOMElement;
 import cocktail.mouse.MouseData;
+import cocktail.viewport.Viewport;
+import haxe.Log;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -19,20 +24,29 @@ class ListViewBase extends ViewBase
 	//more cell data might need to be fetched
 	public var onListScrolled:Void->Void;
 	
+	// display list end loader
+	public var displayListBottomLoader:Bool;
+	
 	//Hold a ref to each created cells
 	private var _cells:Array<CellBase>;
+	
+	// list bottom loader
+	private var _listBottomLoader:ImageDOMElement;
 
-	//public function new(?listItemSelectedCallback:CellData->Void = null) 
 	public function new() 
 	{
 		super();
+		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
-		/*if (listItemSelectedCallback != null)
-		{
-			onListItemSelected = listItemSelectedCallback;
-		}*/
+		_listBottomLoader = new ImageDOMElement();
+		ListViewStyle.loader(_listBottomLoader);
+		_listBottomLoader.load("assets/loading.gif");
+		
+		this.onScroll = onScrollCallback;
+		
 	}
+	
 	
 	/**
 	 * update view
@@ -42,7 +56,6 @@ class ListViewBase extends ViewBase
 		for (index in Reflect.fields(_data))
 		{
 			// build cell
-			//var cell:CellThumbText1 = new CellThumbText1();
 			var cell:CellBase = createCell();
 			
 			// set cell data
@@ -57,6 +70,18 @@ class ListViewBase extends ViewBase
 			// add cell to list
 			this.addChild(cell);
 		}
+		
+		// if loader is attached to to list container, detach it
+		if (_listBottomLoader.parent != null)
+		{
+			this.removeChild(_listBottomLoader);
+		}
+		// add loader at the bottom of the screen if there is still data to load
+		if(displayListBottomLoader == true)
+		{
+			this.addChild(_listBottomLoader);
+		}
+		
 	}
 	
 	/**
@@ -71,14 +96,6 @@ class ListViewBase extends ViewBase
 		return cell;
 	}
 	
-	/*private function onCellSelected(cellData:CellData):Void
-	{
-		if (onListItemSelected != null)
-		{
-			onListItemSelected(cellData);
-		}
-	}*/
-	
 	/**
 	 * onListItemSelected callback
 	 * @param	cellData
@@ -88,6 +105,33 @@ class ListViewBase extends ViewBase
 		if (onListItemSelected != null)
 		{
 			onListItemSelected(cellData);
+		}
+	}
+	
+	/**
+	 * list scroll callback
+	 * @param	event
+	 */
+	override private function onScrollCallback(event:ScrollEventData):Void
+	{
+		// if the bottom of the list is reached via scrolling
+		if (event.scrollTop >= event.scrollHeight - new Viewport().height)
+		{
+			// call callback
+			onScrolledCallback();
+		}
+	}
+	
+	/**
+	 * list fully scrolled callback
+	 * @param	event
+	 */
+	private function onScrolledCallback():Void
+	{
+		// call callback
+		if (onListScrolled != null)
+		{
+			onListScrolled();
 		}
 	}
 	

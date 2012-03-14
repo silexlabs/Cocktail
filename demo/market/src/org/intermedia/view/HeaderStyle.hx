@@ -9,7 +9,6 @@ package org.intermedia.view;
 
 // DOM
 import cocktail.domElement.DOMElement;
-//import cocktail.domElement.ImageDOMElement;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -36,7 +35,6 @@ class HeaderStyle
 	public static function setHeaderStyle(domElement:DOMElement):Void
 	{
 		domElement.style.position = PositionStyleValue.fixed;
-		//domElement.style.position = PositionStyleValue.relative;
 		domElement.style.display = DisplayStyleValue.block;
 		
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
@@ -98,7 +96,6 @@ class HeaderStyle
 		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.height = DimensionStyleValue.length(px(Constants.HEADER_HEIGHT));
 		domElement.style.height = DimensionStyleValue.percent(100);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 	}
