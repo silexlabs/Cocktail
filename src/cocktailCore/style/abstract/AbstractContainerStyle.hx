@@ -282,8 +282,6 @@ class AbstractContainerStyle extends Style
 	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
-	 * 
-	 * TODO : update doc
 	 */
 	private function doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
@@ -298,9 +296,9 @@ class AbstractContainerStyle extends Style
 		{
 			var positionedDOMElementData:PositionedDOMElementData = childLastPositionedDOMElementData.children[i];
 			
-			//position the DOMElement which return its x and y coordinates in the space of this ContainerDOMElement's
+			//position the DOMElement's ElementRenderer which set its x and y bounds in the space of this ContainerDOMElement's
 			//formatting context
-			var boxElementData = positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
+			positionedDOMElementData.style.positionElement(childLastPositionedDOMElementData.data, viewportData, positionedDOMElementData.staticPosition );
 
 			//absolutely positioned DOMElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
@@ -339,10 +337,12 @@ class AbstractContainerStyle extends Style
 		return rendereredText;
 	}
 	
-	
-	//TODO : doc
+	/**
+	 * Create and return a TextRenderer from a TextFragmentData
+	 */
 	private function createTextRendererFromTextFragment(textFragment:TextFragmentData):TextRenderer
 	{
+		//the text of the created TextRenderer
 		var text:String;
 		
 		switch(textFragment.textToken)
