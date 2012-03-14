@@ -54,7 +54,7 @@ class LayerRenderer
 	public function render():Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
+	
 		
 		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false
 		|| _rootRenderer.domElement.style.display == inlineBlock)
@@ -72,14 +72,14 @@ class LayerRenderer
 				{
 					nativeElements.push(inFlowChildren[i]);
 				}
-				
+			
 				var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
-				
+					
 				for (i in 0...childrenBlockContainerBackground.length)
 				{
 					nativeElements.push(childrenBlockContainerBackground[i]);
 				}
-				
+			
 				#if (flash9 ||nme)
 				for (i in 0...nativeElements.length)
 				{
@@ -88,7 +88,7 @@ class LayerRenderer
 					
 				}
 				#end
-				
+	
 				var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
 				
 				for (i in 0...rootRendererBackground.length)
@@ -102,13 +102,17 @@ class LayerRenderer
 		
 		else
 		{
+			
 			nativeElements = _rootRenderer.render();
+			
 			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
 			for (i in 0...rootRendererBackground.length)
 			{
 				nativeElements.push(rootRendererBackground[i]);
 			}
+			
 		}
+		
 		
 		return nativeElements;
 	}
@@ -291,6 +295,7 @@ class LayerRenderer
 			
 			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
 			{
+				
 				var bg = inFlowChildren[i].renderBackground();
 				
 				for (j in 0...bg.length)

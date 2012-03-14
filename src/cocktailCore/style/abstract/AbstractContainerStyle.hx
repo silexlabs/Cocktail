@@ -14,7 +14,6 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.GraphicDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -363,9 +362,7 @@ class AbstractContainerStyle extends Style
 				text = "";
 		}
 		
-		var textFragmentDOMElement:TextFragmentDOMElement = getTextFragmentDOMElement(textFragment, text);
-		var textRenderer:TextRenderer = new TextRenderer(textFragmentDOMElement, textFragment.textToken);
-		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+		var textRenderer:TextRenderer = getTextRenderer(textFragment, text);
 		
 		return textRenderer;
 	}
@@ -426,11 +423,12 @@ class AbstractContainerStyle extends Style
 	/**
 	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
 	 * must be deleted so that they can be redrawn on next layout
+	 * 
+	 * TODO : update doc
+	 * TODO : no more text cache system, need to re-implement
 	 */
 	override public function invalidateText():Void
 	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		containerDOMElement.resetTextFragments();	
 		super.invalidateText();
 	}
 	
@@ -489,43 +487,45 @@ class AbstractContainerStyle extends Style
 	 * Take a TextFragmentData and a text, and create
 	 * a TextFragmentDOMElement from it if it doesn't already
 	 * exists. If it does, return it
+	 * 
+	 * TODO : update doc
 	 */
-	private function getTextFragmentDOMElement(textFragmentData:TextFragmentData, text:String):TextFragmentDOMElement
+	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
 	{
-		var textFragmentDOMElement:TextFragmentDOMElement;
-		
-		if (textFragmentData.textFragmentDOMElement == null)
+		var textRenderer:TextRenderer;
+		textRenderer = createTextRenderer(text, textFragmentData.textToken);
+			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+			textFragmentData.textRenderer = textRenderer;
+		/**if (textFragmentData.textRenderer == null)
 		{
-			textFragmentDOMElement = createTextFragment(text);
-			textFragmentData.textFragmentDOMElement = textFragmentDOMElement;
+			textRenderer = createTextRenderer(text, textFragmentData.textToken);
+			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+			textFragmentData.textRenderer = textRenderer;
 		}
 		else
 		{
-			textFragmentDOMElement = textFragmentData.textFragmentDOMElement;
-		}
+			textRenderer = textFragmentData.textRenderer;
+		}*/
 		
-		return textFragmentDOMElement;
+		return textRenderer;
 	}
 	
 	/**
 	 * Create a TextFragmentDOMElement from a string of text and
 	 * add it to the ContainerDOMElement
+	 * 
+	 * TODO : update doc
 	 */
-	private function createTextFragment(text:String):TextFragmentDOMElement
+	private function createTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
-		var textFragmentDOMElement:TextFragmentDOMElement = doCreateTextFragment(text);
-	
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		containerDOMElement.addTextFragment(textFragmentDOMElement);
-		
-		return  textFragmentDOMElement;
+		return  doCreateTextRenderer(text, textToken);
 	}
 	
 	/**
 	 * Actually create the TextFragmentDOMElement using runtime
 	 * specific API. Overriden by each runtime
 	 */
-	private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
 		return null;
 	}

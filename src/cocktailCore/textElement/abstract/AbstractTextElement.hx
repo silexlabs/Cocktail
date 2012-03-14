@@ -76,12 +76,14 @@ class AbstractTextElement
 	 * textFragmentDOMElement. Used when the content
 	 * of the TextElement changes or when the style
 	 * of its ContainerDOMElement changes
+	 * 
+	 * TODO : update doc
 	 */
 	public function reset():Void
 	{
 		for (i in 0..._textFragments.length)
 		{
-			_textFragments[i].textFragmentDOMElement = null;
+			_textFragments[i].textRenderer = null;
 		}
 	}
 	
@@ -262,7 +264,7 @@ class AbstractTextElement
 	 */
 	private static function insertTextToken(textToken:TextTokenValue):TextFragmentData
 	{
-		return { textToken:textToken, textFragmentDOMElement:null };
+		return { textToken:textToken, textRenderer:null };
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
