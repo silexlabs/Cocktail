@@ -103,7 +103,6 @@ class AbstractContainerStyle extends Style
 	 * 
 	 * Once all the layout is done, then the ContainerDOMElement and its children are rendered and displayed
 	 * 
-	 * TODO : containingDOMElementData replaced by elementRenderer ?
 	 * TODO : allow start rendering for element other than BodyDOMElement ?
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void

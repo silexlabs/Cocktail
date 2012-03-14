@@ -37,20 +37,9 @@ class BlockFormattingContext extends FormattingContext
 		super(domElement);
 	}
 	
-	/**
-	 * Called by the containing DOMElement once each of its children
-	 * has been inserted in the formatting context to start the formatting.
-	 * 
-	 * TODO : implement margin collapsing
-	 */
-	override public function format(layOutLastLine:Bool = false):Void
-	{
-		
-		doFormat(_elementsInFormattingContext);
-		
-	}
+
 	
-	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block

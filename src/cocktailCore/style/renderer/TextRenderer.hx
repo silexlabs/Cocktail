@@ -31,9 +31,12 @@ class TextRenderer extends ElementRenderer
 	{
 		
 		var ret:Array<NativeElement> = [];
-		#if (flash9 ||nme)
+		#if flash9
 		_domElement.nativeElement.x = _bounds.x;
 		_domElement.nativeElement.y = _bounds.y;
+		#elseif nme
+		_domElement.nativeElement.x = _bounds.x;
+		_domElement.nativeElement.y = _bounds.y - (_domElement.style.fontMetrics.ascent + _domElement.style.fontMetrics.descent);
 		#end
 		
 		ret.push(_domElement.nativeElement);

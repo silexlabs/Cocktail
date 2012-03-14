@@ -797,10 +797,6 @@ class AbstractStyle
 		//else the DOMElement is positioned
 		else
 		{
-
-			//To retrieve the static position, the formatting context must be formatted now
-			//TODO : no need anymore once implemented in getStaticPosition
-			formattingContext.format();
 			
 			//retrieve the static position (the position of the DOMElement
 			//if its position style were 'static')

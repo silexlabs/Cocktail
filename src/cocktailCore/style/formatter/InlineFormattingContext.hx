@@ -63,7 +63,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	private var _currentInlineBoxesData:Array<InlineBoxData>;
 	
-	private var _layOutLastLine:Bool;
+
 	
 	
 	/**
@@ -75,24 +75,27 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		_currentInlineBoxesData = new Array<InlineBoxData>();
-		_layOutLastLine = false;
+		
 		super(domElement);
 		
 		//set the textIndent as an offset on the first line of text
 		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
 	}
 	
-	override public function format(layOutLastLine:Bool = false):Void
+	
+	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
+		
 		var flowBoxRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
 		flowBoxRenderer.removeLineBoxes();
-		_currentInlineBoxesData = new Array<InlineBoxData>();
-		_layOutLastLine = layOutLastLine;
 		
-		super.format();
+		_currentInlineBoxesData = new Array<InlineBoxData>();
+	
+		
+		super.doFormat(elementsInFormattingContext);
 		
 		insertBreakOpportunity(true, true);
 	}

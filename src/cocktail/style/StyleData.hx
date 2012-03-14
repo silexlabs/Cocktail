@@ -1151,11 +1151,12 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * stored. It is used to retrive the offset between
 	 * the static position of the DOMElement and the
 	 * position of its parent
+	 * 
+	 * TODO : update doc
 	 */
 	typedef PositionedDOMElementData =  {
 		var style:AbstractStyle;
 		var staticPosition:PointData;
-		var formattingContext:FormattingContext;
 	}
 	
 	/**

@@ -82,6 +82,8 @@ class FormattingContext
 	 */
 	private var _lastInsertedElement:ElementRenderer;
 	
+	private var _layOutLastLine:Bool;
+	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
@@ -100,6 +102,8 @@ class FormattingContext
 		//will store the data of the floated DOMElement of this
 		//formatting context
 		_floatsManager = new FloatsManager();
+		
+		_layOutLastLine = false;
 		
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		_elementsInFormattingContext = new Array<ElementRenderer>();
@@ -132,28 +136,45 @@ class FormattingContext
 		_elementsInFormattingContext.push(element);
 	}
 	
+	//TODO : static position is wrong in inline formatting context, buf with layOutLastLine ?
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
+		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0..._elementsInFormattingContext.length)
+		{
+			elementsToFormat.push(_elementsInFormattingContext[i]);
+		}
+		
+		elementsToFormat.push(element);
+		
+		doFormat(elementsToFormat);
+		
+		var x:Float = element.bounds.x;
+		var y:Float = element.bounds.y;
 		
 		return {x:x, y:y};
 	}
 	
 	public function format(layOutLastLine:Bool = false):Void
 	{	
+		_layOutLastLine = layOutLastLine;
+		doFormat(_elementsInFormattingContext);
+	}
+	
+	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
 		
 		
 		//format all the box element in order
-		for (i in 0..._elementsInFormattingContext.length)
+		for (i in 0...elementsInFormattingContext.length)
 		{
-			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
 		}
 	}
-	
 
 	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
