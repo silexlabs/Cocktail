@@ -2,6 +2,7 @@ package cocktailCore.style.renderer;
 
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
@@ -22,9 +23,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _lineBoxes:Array<Array<ElementRenderer>>;
 	public var lineBoxes(getLineBoxes, never):Array<Array<ElementRenderer>>;
 	
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		super(domElement);
+		super(style);
 	}
 	
 	/////////////////////////////////

@@ -102,7 +102,7 @@ class ContainerStyle extends AbstractContainerStyle
 		}
 	
 		//wrap the flash text line in a TextRenderer
-		return new TextRenderer(_domElement, text, textToken);
+		return new TextRenderer(this, text, textToken);
 	
 	}
 	

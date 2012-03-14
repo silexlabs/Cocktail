@@ -154,7 +154,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
+		var elementRenderer:ElementRenderer = new InitialBlockRenderer(this);
 		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
 
 		return elementRenderer;
