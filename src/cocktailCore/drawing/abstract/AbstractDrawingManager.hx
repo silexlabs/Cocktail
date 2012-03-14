@@ -8,6 +8,7 @@
 package cocktailCore.drawing.abstract;
 
 import cocktail.domElement.ImageDOMElement;
+import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
@@ -26,6 +27,7 @@ class AbstractDrawingManager
 	 * as drawing surface
 	 */
 	private var _nativeElement:NativeElement;
+	public var nativeElement(getNativeElement, never):NativeElement;
 	
 	/**
 	 * The width of the drawing surface
@@ -211,16 +213,15 @@ class AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an image dom element into the native graphic dom element. Alpha is preserved 
+	 * Draw a bitmap extracted from a NativeElement onto the bitmap surface. Alpha is preserved 
 	 * for transparent bitmap
-	 * @param	source the source image dom element containing the bitmap data
-	 * @param	destinationPoint represent the top left point of the drawn image on the native graphic
-	 * dom element. for instance a 0,0 point will draw the image in the top left corner of the graphic
-	 * dom element. Takes 0,0 by default
-	 * @param	sourceRect defines the zone from the source dom element that must be copied onto the 
-	 * native graphic dom element. Takes the whole image by default
+	 * @param	source the source native element containing the bitmap data
+	 * @param	matrix a transformation matrix to apply yo the native element when drawing to 
+	 * to the bitmap. Defaults to an identity matrix
+	 * @param	sourceRect defines the zone from the source nativeElement that must be copied onto the 
+	 * native graphic dom element. Takes the whole nativeElement by default
 	 */
-	public function drawImage(source:ImageDOMElement, destinationPoint:PointData = null, sourceRect:RectangleData = null):Void
+	public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
 		//abstract
 	}
@@ -275,7 +276,7 @@ class AbstractDrawingManager
 	 * specific one
 	 * @return returns a dynamic as it may be a float
 	 */
-	private function toNativeAlpha(genericAlpa:Int):Dynamic
+	private function toNativeAlpha(genericAlpa:Float):Dynamic
 	{
 		return null;
 	}
@@ -323,6 +324,11 @@ class AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getNativeElement():NativeElement
+	{
+		return _nativeElement;
+	}
 	
 	private function setWidth(value:Int):Int
 	{

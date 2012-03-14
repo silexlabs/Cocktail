@@ -54,6 +54,9 @@ class VisualEffectStylesComputer
 		//visibility
 		computedStyle.visibility = getComputedVisibility(style);
 		
+		//overflow
+		computedStyle.overflow = style.overflow;
+		
 		//transformOrigin
 		computedStyle.transformOrigin = getComputedTransformOrigin(style);
 		

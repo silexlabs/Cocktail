@@ -15,6 +15,7 @@ import cocktail.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.unit.UnitManager;
 import cocktail.unit.UnitData;
+import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
@@ -50,33 +51,6 @@ class ContainerStyle extends AbstractContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN NATIVE SETTERS
-	// In Flash the width and height are not applied to the native DisplayObject
-	// of the ContainerDOMElement, as it would scale its content. It is however
-	// stored in the native width and height attributes to be returned when 
-	// width or height are requested instead of returning 0 (the actual width/height)
-	// of the native DisplayObject
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	override public function setNativeWidth(width:Int):Void
-	{
-		this._nativeWidth = width;
-	}
-	
-	/**
-	 * Set the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	override public function setNativeHeight(height:Int):Void
-	{
-		this._nativeHeight = height;
 	}
 	
 	/////////////////////////////////
@@ -168,7 +142,7 @@ class ContainerStyle extends AbstractContainerStyle
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
-		elementFormat.color = _computedStyle.color;
+		elementFormat.color = _computedStyle.color.color;
 	
 		//normal or small caps
 		elementFormat.typographicCase = getNativeFontVariant(_computedStyle.fontVariant);
@@ -235,8 +209,9 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
+		textField.selectable = false;
+		textField.autoSize = TextFieldAutoSize.LEFT;
 		textField.setTextFormat(getTextFormat());
-		
 		
 		var textFragment:TextFragmentDOMElement = new TextFragmentDOMElement(cast(textField), this);
 
@@ -249,9 +224,16 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
+		
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		textFormat.size = _computedStyle.fontSize;
-		textFormat.color = _computedStyle.color;
+		
+		textFormat.bold = _computedStyle.fontWeight == FontWeightStyleValue.bold;
+		textFormat.italic = _computedStyle.fontStyle == FontStyleStyleValue.italic;
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		
+		textFormat.color = _computedStyle.color.color;
 		return textFormat;
 	}
 	

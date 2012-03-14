@@ -12,10 +12,12 @@ import cocktail.domElement.DOMElementData;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.nativeElement.NativeElementManager;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.resource.ResourceLoader;
+import cocktail.nativeElement.NativeElementData;
 import haxe.Log;
 
 /**
@@ -70,8 +72,9 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	public function new(nativeElement:NativeElement = null) 
 	{
 		//use the provided NativeElement if any
-		_imageLoader = new ImageLoader(nativeElement);
-		super(_imageLoader.nativeElement);
+		_imageLoader = new ImageLoader();
+		_embeddedAsset = _imageLoader.nativeElement;
+		super(NativeElementManager.createNativeElement(NativeElementTypeValue.neutral));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +88,8 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	 */
 	public function load(url:String, allowCache:Bool = true):Void
 	{
-		_imageLoader.load(url, onLoadComplete, onLoadError, allowCache);
+		this._src = url;
+		_imageLoader.load([url], onLoadComplete, onLoadError, allowCache);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -95,11 +99,17 @@ class AbstractImageDOMElement extends EmbeddedDOMElement
 	/**
 	 * Called when the picture was successfuly loaded.
 	 * Invalidate the DOMElement and call the
-	 * onLoad callback if provided
+	 * onLoad callback if provided.
+	 * Store the instrinsic dimensions of the loaded asset
+	 * 
 	 * @param	image the loaded picture stored as a nativeElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
+		this._intrinsicHeight = _imageLoader.intrinsicHeight;
+		this._intrinsicWidth = _imageLoader.intrinsicWidth;
+		this._intrinsicRatio = _imageLoader.intrinsicRatio;
+		
 		this._style.invalidate();
 		
 		//if provided, call the callback
