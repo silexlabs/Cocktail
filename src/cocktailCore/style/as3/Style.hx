@@ -82,31 +82,6 @@ class Style extends AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attach a native flash element (DisplayObject) using flash API
-	 */
-	override private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-	
-		this._domElement.nativeElement.addChild(nativeElement);
-	}
-	
-	/**
-	 * Detach a native flash element (DisplayObject) using flash API
-	 */
-	override private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		if (this._domElement.nativeElement.contains(nativeElement) == true)
-		{
-			this._domElement.nativeElement.removeChild(nativeElement);
-		}
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
