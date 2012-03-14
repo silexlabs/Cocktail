@@ -220,11 +220,11 @@ class Style extends AbstractStyle
 			
 			textField.text = "x";
 			
-			var ascent:Float = textField.textHeight;
-			
+			var ascent:Float =  textField.textHeight / 2;
+			Log.trace(ascent);
 			textField.text = ",";
 			
-			var descent:Float = textField.textHeight;
+			var descent:Float = textField.textHeight / 2;
 			
 			textField.text = "x";
 			
