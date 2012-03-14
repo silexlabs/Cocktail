@@ -73,11 +73,9 @@ class AbstractTextElement
 	
 	/**
 	 * Remove a reference to every generated
-	 * textFragmentDOMElement. Used when the content
+	 * TextRenderer. Used when the content
 	 * of the TextElement changes or when the style
 	 * of its ContainerDOMElement changes
-	 * 
-	 * TODO : update doc
 	 */
 	public function reset():Void
 	{

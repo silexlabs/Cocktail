@@ -92,7 +92,7 @@ class AbstractContainerDOMElement extends DOMElement
 		//in a row without being cleanly removed each time
 		if (domElement.parent != null)
 		{
-			var parent:ContainerDOMElement = cast(domElement.parent);
+			var parent:ContainerDOMElement = domElement.parent;
 			parent.removeChild(domElement);
 		}
 		domElement.parent = cast(this);

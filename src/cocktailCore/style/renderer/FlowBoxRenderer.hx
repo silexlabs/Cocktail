@@ -56,13 +56,16 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	/**
 	 * add a children to the FlowBoxRenderer
-	 * 
-	 * TODO : first detach the child if it already has
-	 * a parent
 	 */
 	public function addChild(elementRenderer:ElementRenderer):Void
 	{
 		_children.push(elementRenderer);
+		
+		if (elementRenderer.parent != null)
+		{
+			elementRenderer.parent.removeChild(elementRenderer);
+		}
+		
 		elementRenderer.parent = this;
 	}
 	

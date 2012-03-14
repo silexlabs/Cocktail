@@ -47,9 +47,7 @@ enum TextTokenValue {
 
 /**
  * Holds a text token and its visual
- * representation (a TextFragmentDOMElement)
- * 
- * TODO : update doc
+ * representation (a TextRenderer)
  */
 typedef TextFragmentData = {
 	var textToken:TextTokenValue;

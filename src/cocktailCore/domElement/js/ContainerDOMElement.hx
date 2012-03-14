@@ -18,12 +18,6 @@ import cocktailCore.domElement.abstract.AbstractContainerDOMElement;
 /**
  * This is the JavaScript implementation of the container DOMElement.
  * 
- * When it's semantic is set, it adds the JavaScript specific behaviour
- * of changing the root node type of the reference to the nativeElement
- * by setting it's node name
- * 
- * TODO : update doc
- * 
  * @author Yannick DOMINGUEZ
  */
 class ContainerDOMElement extends AbstractContainerDOMElement
