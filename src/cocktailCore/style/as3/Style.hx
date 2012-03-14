@@ -184,7 +184,7 @@ class Style extends AbstractStyle
 	}
 	
 	/**
-	 * TODO : in nme only one font is supported
+	 * redefined as in nme only one font is supported
 	 */
 	private function getNativeFontFamily(value:Array<FontFamilyStyleValue>):String
 	{
