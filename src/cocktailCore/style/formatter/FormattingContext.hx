@@ -131,6 +131,17 @@ class FormattingContext
 	/////////////////////////////////
 	
 
+	public function dispose():Void
+	{
+		_elementsInFormattingContext = null;
+		_formattingContextData = null;
+		_lastInsertedElement = null;
+		
+		_floatsManager.dispose();
+		_floatsManager = null;
+		_containingDOMElement = null;
+	}
+	
 	public function insertElement(element:ElementRenderer):Void
 	{
 		_elementsInFormattingContext.push(element);

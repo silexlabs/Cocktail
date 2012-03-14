@@ -30,17 +30,12 @@ import cocktailCore.domElement.js.DOMElement;
  * A TextElement is a reference to a simple string of text which takes the visual style of its ContainerDOMElement. A TextElement can't have children.
  * Each ContainerDOMElement represents a semantic element in the DOMElement tree.
  * 
+ * TODO : update doc
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractContainerDOMElement extends DOMElement
 {
-	/**
-	 * Store the node name (div, nav, header...) of the
-	 * first node of the reference to the native DOM.
-	 */
-	private var _semantic:String;
-	public var semantic(getSemantic, setSemantic):String;
-	
 	/**
 	 * a reference to each of the ContainerDOMElement children which
 	 * can be either of type DOMElement or TextElement.
@@ -171,28 +166,4 @@ class AbstractContainerDOMElement extends DOMElement
 	{
 		return _children;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SEMANTIC methods
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the semantic name of the first native node
-	 * @param	semantic an HTML tag name (div, nav, header...)
-	 */
-	private function setSemantic(semantic:String):String
-	{
-		this._semantic = semantic;
-		return this._semantic;
-	}
-	
-	/**
-	 * Return the semantic name of the first native node
-	 * @return	semantic an HTML tag name (div, nav, header...)
-	 */
-	private function getSemantic():String
-	{
-		return this._semantic;
-	}
-	
 }

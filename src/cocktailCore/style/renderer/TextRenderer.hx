@@ -54,6 +54,14 @@ class TextRenderer extends ElementRenderer
 	// OVERRIDEN PUBLIC METHODS
 	////////////////////////////////
 	
+	override public function dispose():Void
+	{
+		super.dispose();
+		
+		_textToken = null;
+		_nativeElement = null;
+	}
+	
 	/**
 	 * Renders the text using runtime specific API and return
 	 * the text NativeElement

@@ -57,6 +57,25 @@ class FlowBoxRenderer extends BoxRenderer
 	// PUBLIC METHODS
 	////////////////////////////////
 	
+	override public function dispose():Void
+	{
+		super.dispose();
+		
+		for (i in 0...children.length)
+		{
+			_children[i].dispose();
+		}
+		_children = null;
+		for (i in 0..._lineBoxes.length)
+		{
+			for (j in 0..._lineBoxes[i].length)
+			{
+				_lineBoxes[i][j].dispose();
+			}
+		}
+		_lineBoxes = null;
+	}
+	
 	/**
 	 * add a children to the FlowBoxRenderer
 	 * 
@@ -81,6 +100,10 @@ class FlowBoxRenderer extends BoxRenderer
 			if (_children[i] != elementRenderer)
 			{
 				newChildren.push(_children[i]);
+			}
+			else
+			{
+				_children[i].dispose();
 			}
 		}
 		_children = newChildren;

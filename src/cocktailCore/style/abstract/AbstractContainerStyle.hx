@@ -207,6 +207,12 @@ class AbstractContainerStyle extends Style
 		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them.
 		positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData, viewportData);
+		
+		//TODO : doc
+		if (establishesNewFormattingContext() == true)
+		{
+			childrenFormattingContext.dispose();
+		}
 
 	}
 	
@@ -258,7 +264,7 @@ class AbstractContainerStyle extends Style
 		//
 		//This method is only called if a new formatting
 		//context was established by this ContainerDOMElement,
-		//meaning that it also is responsible toformat it
+		//meaning that it also is responsible to format it
 		if (establishesNewFormattingContext() == true)
 		{
 			childrenFormattingContext.format(true);
