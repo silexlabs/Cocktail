@@ -79,48 +79,4 @@ class AbstractBodyDOMElement extends ContainerDOMElement
 		_style.invalidate();
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN  SETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * X can't be set
-	 */
-	override private function setX(value:Int):Int 
-	{
-		return value;
-	}
-	
-	/**
-	 * Y can't be set
-	 */
-	override private function setY(value:Int):Int
-	{
-		return value;
-	}
-	
-	/**
-	 * Width can't be set
-	 */
-	override private function setWidth(value:Int):Int
-	{
-		return value;
-	}
-	
-	/**
-	 * height can't be set
-	 */
-	override private function setHeight(value:Int):Int
-	{
-		return value;
-	}
-	
-	/**
-	 * visibility can't be set
-	 */
-	override private function setIsVisible(value:Bool):Bool
-	{
-		return value;
-	}
-	
 }

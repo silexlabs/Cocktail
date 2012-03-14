@@ -74,28 +74,6 @@ class Style extends AbstractStyle
 		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to allow the dimensions and position of the native HTMLElement to be stored
-	 */
-	override public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
-	{	
-		//make the children store their own position and dimension
-		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
-		
-		//store the JavaScript dimension and position of the native HTMLElement, now that they are available
-		setNativeHeight(untyped this._domElement.nativeElement.clientHeight);
-		setNativeWidth(untyped this._domElement.nativeElement.clientWidth);
-		setNativeX(this._domElement, untyped this._domElement.nativeElement.offsetLeft);
-		setNativeY(this._domElement, untyped this._domElement.nativeElement.offsetTop);
-		
-		//The DOMElement is set to valid to allow future re layout
-		this._isDirty = false;
-	}
-	
 	/////////////////////////////////
 	// DISPLAY STYLES
 	////////////////////////////////

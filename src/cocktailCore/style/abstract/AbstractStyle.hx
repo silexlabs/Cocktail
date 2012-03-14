@@ -263,58 +263,6 @@ class AbstractStyle
 	private var _isDirty:Bool;
 	
 	/**
-	 * Store the x position of the NativeElement
-	 * relative to its parent
-	 */
-	private var _nativeX:Int;
-	
-	/**
-	 * Store the y position of the NativeElement
-	 * relative to its parent
-	 */
-	private var _nativeY:Int;
-	
-	/**
-	 * Store the width of the NativeElement
-	 */
-	private var _nativeWidth:Int;
-	
-	/**
-	 * Store the height of the NativeElement
-	 */
-	private var _nativeHeight:Int;
-	
-	/**
-	 * Store the x scale of the NativeElement
-	 */
-	private var _nativeScaleX:Float;
-	
-	/**
-	 * Store the y scale of the NativeElement
-	 */
-	private var _nativeScaleY:Float;
-	
-	/**
-	 * Store the rotation of the NativeElement
-	 */
-	private var _nativeRotation:Float;
-	
-	/**
-	 * Store the opacity of the NativeElement
-	 */
-	private var _nativeOpacity:Float;
-	
-	/**
-	 * Store the visibility of the NativeElement
-	 */
-	private var _nativeVisibility:Bool;
-	
-	/**
-	 * Store the current transform matrix of the NativeElement
-	 */
-	private var _nativeMatrix:Matrix;
-	
-	/**
 	 * keep references to each of the nativeElements which
 	 * are attached to this styled DOMElement. Those
 	 * can be background images, colors, nativeElements
@@ -355,7 +303,6 @@ class AbstractStyle
 	private function initDefaultStyleValues():Void
 	{
 		initComputedStyles();
-		initNativeProperties();
 		
 		this.width = DimensionStyleValue.autoValue;
 		this.height = DimensionStyleValue.autoValue;
@@ -493,22 +440,6 @@ class AbstractStyle
 			backgroundPosition:[],
 			backgroundRepeat:[]
 		};
-	}
-	
-	/**
-	 * init the values representing NativeElements attributes
-	 */
-	private function initNativeProperties():Void
-	{
-		_nativeHeight = 0;
-		_nativeOpacity = 1.0;
-		_nativeRotation = 0.0;
-		_nativeScaleX = 1.0;
-		_nativeScaleY = 1.0;
-		_nativeVisibility = true;
-		_nativeWidth = 0;
-		_nativeX = 0;
-		_nativeY = 0;
 	}
 	
 	/**
@@ -902,7 +833,6 @@ class AbstractStyle
 					//schedule an asynchronous layout
 					scheduleLayout(containingDOMElementData, lastPositionedDOMElementData, viewPortData);
 				}
-				
 			}
 		}
 	}
@@ -1361,192 +1291,6 @@ class AbstractStyle
 		}
 		
 		return viewPortData;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// NATIVE SETTER/GETTER
-	// Those method actually apply a processed value to 
-	// the NativeElement of a target DOMElement.
-	// They also store the applied value when it is set on the DOMElement
-	// wrapped by this Style object. For instance, a ContainerStyle object not
-	// only wraps a ContainerDOMElement but also every generated TextFragmentDOMElement.
-	// The applied dimension or position is only stored when applied to the
-	// ContainerDOMElement
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the x of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeX = x;
-		}
-	}
-	
-	/**
-	 * Return the x of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeX():Int
-	{
-		return this._nativeX;
-	}
-	
-	/**
-	 * Set the y of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeY = y;
-		}
-	}
-	
-	/**
-	 * Return the y of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeY():Int
-	{
-		return this._nativeY;
-	}
-	
-	/**
-	 * Set the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeWidth(width:Int):Void
-	{
-		this._nativeWidth = width;
-	}
-	
-	/**
-	 * Return the width of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeWidth():Int
-	{
-		return this._nativeWidth;
-	}	
-	
-	/**
-	 * Set the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeHeight(height:Int):Void
-	{
-		this._nativeHeight = height;
-	}
-	
-	/**
-	 * Return the height of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeHeight():Int
-	{
-		return this._nativeHeight;
-	}
-	
-	/**
-	 * Set the x scale of the NativeElement
-	 */
-	public function setNativeScaleX(scaleX:Float):Void
-	{
-		this._nativeScaleX = scaleX;
-	}
-	
-	/**
-	 * return the x scale of the NativeElement
-	 */
-	public function getNativeScaleX():Float
-	{
-		return this._nativeScaleX;
-	}
-	
-	/**
-	 * Set the y scale of the NativeElement
-	 */
-	public function setNativeScaleY(scaleY:Float):Void
-	{
-		this._nativeScaleY = scaleY;
-	}
-	
-	/**
-	 * return the y scale of the NativeElement
-	 */
-	public function getNativeScaleY():Float
-	{
-		return this._nativeScaleY;
-	}
-	
-	/**
-	 * Set the rotation of the NativeElement in rad
-	 */
-	public function setNativeRotation(rotation:Float):Void
-	{
-		this._nativeRotation = rotation;
-	}
-	
-	/**
-	 * return the rotation of the NativeElement in rad
-	 */
-	public function getNativeRotation():Float
-	{
-		return this._nativeRotation;
-	}
-	
-	/**
-	 * Set the transformation matrix on the DOMElement. Overriden
-	 * to apply it to the NativeElement
-	 */
-	public function setNativeMatrix(matrix:Matrix):Void
-	{
-		this._nativeMatrix = matrix;
-	}
-	
-	/**
-	 * Get the matrix of the DOMElement
-	 */
-	public function getNativeMatrix():Matrix
-	{
-		return _nativeMatrix;
-	}
-	
-	/**
-	 * Set the alpha of the NativeElement
-	 */
-	public function setNativeOpacity(opacity:Float):Void
-	{
-		this._nativeOpacity = opacity;
-	}
-	
-	/**
-	 * Get the alpha of the NativeElement
-	 */
-	public function getNativeOpacity():Float
-	{
-		return this._nativeOpacity;
-	}
-	
-	/**
-	 * Set the visibility of the NativeElement
-	 */
-	public function setNativeVisibility(visible:Bool):Void
-	{
-		this._nativeVisibility = visible;
-	}
-	
-	/**
-	 * Get the visibility of the NativeElement
-	 */
-	public function getNativeVisibility():Bool
-	{
-		return this._nativeVisibility;
 	}
 	
 	/////////////////////////////////

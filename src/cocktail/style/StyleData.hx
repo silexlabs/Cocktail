@@ -1144,15 +1144,6 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * It is used if left and right or
 	 * top and bottom styles are both
 	 * set to 'autoValue'
-	 * 
-	 * A reference to the formatting context that
-	 * would have been used to place the positioned
-	 * DOMElement if it weren't positioned is also
-	 * stored. It is used to retrive the offset between
-	 * the static position of the DOMElement and the
-	 * position of its parent
-	 * 
-	 * TODO : update doc
 	 */
 	typedef PositionedDOMElementData =  {
 		var style:AbstractStyle;

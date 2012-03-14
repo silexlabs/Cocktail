@@ -174,39 +174,4 @@ class AbstractBodyStyle extends ContainerStyle
 		return true;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN DIMENSION AND POSITION SETTERS
-	// Those properties can't be set on the root of the runtime
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeWidth(width:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeHeight(height:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeOpacity(opacity:Float):Void
-	{
-		
-	}
-	
-	override public function setNativeVisibility(visibility:Bool):Void
-	{
-		
-	}
-	
 }
