@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
@@ -46,14 +47,15 @@ class FormattingContext
 	 * formatting context (the containing block which 
 	 * started the formatting context)
 	 */ 
-	private var _containingDOMElement:DOMElement;
-	public var containingDOMElement(getContainingDOMElement, never):DOMElement;
+	private var _formattingContextRoot:BlockBoxRenderer;
 	
 	/**
 	 * The width of the DOMElement starting the formatting context,
 	 * representing the maximum width of a line.
+	 * 
+	 * TODO : check if still necessary
 	 */
-	private var _containingDOMElementWidth:Int;
+	private var _formattingContextRootWidth:Int;
 	
 	/**
 	 * An instance of the class managing the floated DOMElements.
@@ -93,11 +95,11 @@ class FormattingContext
 	 * @param	domElement the containing DOMElement which starts the formatting context
 	 * (the containing block)
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		//store a reference to the DOMElement starting the formatting context
-		_containingDOMElement = domElement;
-		_containingDOMElementWidth = _containingDOMElement.style.computedStyle.width;
+		_formattingContextRoot = formattingContextRoot;
+		_formattingContextRootWidth = _formattingContextRoot.domElement.style.computedStyle.width;
 		
 		//will store the data of the floated DOMElement of this
 		//formatting context
@@ -105,7 +107,7 @@ class FormattingContext
 		
 		_layOutLastLine = false;
 		
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		_formattingContextData = initFormattingContextData();
 		_elementsInFormattingContext = new Array<ElementRenderer>();
 	}
 	
@@ -113,7 +115,7 @@ class FormattingContext
 	 * Init/reset the flow data using the containing DOMElement's
 	 * properties
 	 */
-	private function initFormattingContextData(domElement:DOMElement):FormattingContextData
+	private function initFormattingContextData():FormattingContextData
 	{
 		var flowY:Int = 0;
 		var flowX:Int = 0;
@@ -139,7 +141,7 @@ class FormattingContext
 		
 		_floatsManager.dispose();
 		_floatsManager = null;
-		_containingDOMElement = null;
+		_formattingContextRoot = null;
 	}
 	
 	public function insertElement(element:ElementRenderer):Void
@@ -177,7 +179,7 @@ class FormattingContext
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		_formattingContextData = initFormattingContextData();
 		
 		
 		//format all the box element in order
@@ -231,7 +233,7 @@ class FormattingContext
 	{
 		var height:Int = 0;
 		
-		if (elementRenderer == _containingDOMElement.style.elementRenderer)
+		if (elementRenderer == _formattingContextRoot)
 		{
 			height = _formattingContextData.maxHeight;
 		}
@@ -410,10 +412,4 @@ class FormattingContext
 	{
 		return _formattingContextData;
 	}
-	
-	private function getContainingDOMElement():DOMElement
-	{
-		return _containingDOMElement;
-	}
-	
 }

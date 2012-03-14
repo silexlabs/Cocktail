@@ -619,7 +619,7 @@ class AbstractStyle
 			default:
 		}
 		
-		//TODO : where to put it ?
+		//update the bounds of the ElementRenderer
 		_elementRenderer.bounds.width = _domElement.offsetWidth;
 		_elementRenderer.bounds.height = _domElement.offsetHeight;
 		

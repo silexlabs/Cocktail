@@ -70,14 +70,14 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		_currentInlineBoxesData = new Array<InlineBoxData>();
 		
-		super(domElement);
+		super(formattingContextRoot);
 		
 		//set the textIndent as an offset on the first line of text
 		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
@@ -98,8 +98,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		
-		var blockBoxRenderer:BlockBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
-		blockBoxRenderer.removeLineBoxes();
+		_formattingContextRoot.removeLineBoxes();
 		
 		_currentInlineBoxesData = new Array<InlineBoxData>();
 	
@@ -116,7 +115,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function getRemainingLineWidth():Int
 	{
-		return _containingDOMElementWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
+		return _formattingContextRootWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRootWidth);
 	}
 	
 	
@@ -507,13 +506,11 @@ class InlineFormattingContext extends FormattingContext
 			
 			var lineBoxElements:Array<ElementRenderer> = new Array<ElementRenderer>();
 			
-			var containingDOMElementRenderer:BlockBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
-			
-			containingDOMElementRenderer.addLineBox(lineBoxElements);
+			_formattingContextRoot.addLineBox(lineBoxElements);
 			
 			for (i in 0..._elementsInLineBox.length)
 			{
-				if (_elementsInLineBox[i].parent != _containingDOMElement.style.elementRenderer)
+				if (_elementsInLineBox[i].parent != _formattingContextRoot.domElement.style.elementRenderer)
 				{
 				
 					getParentInlineBoxesData(cast(_elementsInLineBox[i].parent)).children.push(_elementsInLineBox[i]);
@@ -566,7 +563,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _containingDOMElementWidth);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRootWidth);
 				
 				
 				_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
@@ -578,7 +575,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _containingDOMElementWidth);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRootWidth);
 				
 				
 				_formattingContextData.maxHeight = _formattingContextData.y;
@@ -758,8 +755,8 @@ class InlineFormattingContext extends FormattingContext
 		var remainingSpace:Int;
 		var flowX:Int;
 		
-		remainingSpace = _containingDOMElementWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _containingDOMElementWidth);
-		flowX = _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
+		remainingSpace = _formattingContextRootWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRootWidth);
+		flowX = _formattingContextRoot.domElement.style.computedStyle.marginLeft + _formattingContextRoot.domElement.style.computedStyle.paddingLeft;
 		
 		
 		//take the float into accounts and the padding of the containing DOMElement
@@ -767,7 +764,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		//do align the DOMElements, the text align style of the containing DOMElement
 		//determining the alignement to apply
-		switch (_containingDOMElement.style.computedStyle.textAlign)
+		switch (_formattingContextRoot.domElement.style.computedStyle.textAlign)
 		{
 			case left:
 				alignLeft(flowX);
@@ -790,7 +787,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					//when justified, the concatenated width of the DOMElements
 					//must take all the containing DOMElement width
-					concatenatedLength = _containingDOMElementWidth;
+					concatenatedLength = _formattingContextRootWidth;
 					
 					alignJustify(flowX, remainingSpace);
 				}
@@ -986,7 +983,8 @@ class InlineFormattingContext extends FormattingContext
 					verticalAlign = domElement.style.computedStyle.verticalAlign;
 			}
 			
-			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
+			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + 
+			_formattingContextRoot.domElement.style.computedStyle.marginTop + _formattingContextRoot.domElement.style.computedStyle.paddingTop;
 			
 
 			

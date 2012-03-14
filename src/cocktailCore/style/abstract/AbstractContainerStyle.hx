@@ -667,21 +667,22 @@ class AbstractContainerStyle extends Style
 	 */
 	private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var formattingContext:FormattingContext;
 		
 		//here, a new formatting context is created
 		if (establishesNewFormattingContext() == true || previousformattingContext == null)
 		{
+			var formattingContextRoot:BlockBoxRenderer = cast(this._elementRenderer);
+			
 			//instantiate the right formatting context
 			//based on the children computed display styles
 			if (childrenInline() == true)
 			{
-				formattingContext = new InlineFormattingContext(containerDOMElement);	
+				formattingContext = new InlineFormattingContext(formattingContextRoot);	
 			}
 			else
 			{
-				formattingContext = new BlockFormattingContext(containerDOMElement);
+				formattingContext = new BlockFormattingContext(formattingContextRoot);
 			}
 		}
 		else
