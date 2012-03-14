@@ -208,7 +208,7 @@ class AbstractContainerStyle extends Style
 		//for its children and it is its responsability to position them.
 		positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData, viewportData);
 		
-		//TODO : doc
+		//clean up the children formatting context for garbage collection
 		if (establishesNewFormattingContext() == true)
 		{
 			childrenFormattingContext.dispose();
@@ -423,22 +423,6 @@ class AbstractContainerStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When invalidating text on a ContainerDOMElement, the created TextFragmentDOMElement
-	 * must be deleted so that they can be redrawn on next layout
-	 * 
-	 * TODO : update doc
-	 * TODO : no more text cache system, need to re-implement
-	 */
-	override public function invalidateText():Void
-	{
-		super.invalidateText();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -491,10 +475,8 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Take a TextFragmentData and a text, and create
-	 * a TextFragmentDOMElement from it if it doesn't already
+	 * a TextRenderer from it if it doesn't already
 	 * exists. If it does, return it
-	 * 
-	 * TODO : update doc
 	 */
 	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
 	{
@@ -502,6 +484,8 @@ class AbstractContainerStyle extends Style
 		textRenderer = createTextRenderer(text, textFragmentData.textToken);
 			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
 			textFragmentData.textRenderer = textRenderer;
+			
+		//TODO : reusing a textRenderer creates an infinite loop
 		/**if (textFragmentData.textRenderer == null)
 		{
 			textRenderer = createTextRenderer(text, textFragmentData.textToken);
@@ -517,10 +501,8 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Create a TextFragmentDOMElement from a string of text and
+	 * Create a TextRenderer from a string of text and
 	 * add it to the ContainerDOMElement
-	 * 
-	 * TODO : update doc
 	 */
 	private function createTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
@@ -593,8 +575,6 @@ class AbstractContainerStyle extends Style
 	 * elements
 	 * 
 	 * TODO : throw exception when there is a float in the children
-	 * 
-	 * TODO : shouldn't be public, but now used by ElementRenderer
 	 * 
 	 * @return true if all children are inline level DOMElements
 	 */

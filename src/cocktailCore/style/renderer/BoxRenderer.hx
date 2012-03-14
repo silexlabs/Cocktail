@@ -53,17 +53,16 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function renderBackground():Array<NativeElement>
 	{
-		var bg = _backgroundManager.render(_bounds, _domElement.style);
+		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _domElement.style);
 		
-		for (i in 0...bg.length)
+		for (i in 0...backgrounds.length)
 		{
-			//TODO : don't do that here
 			#if (flash9 || nme)
-			bg[i].x = _bounds.x;
-			bg[i].y = _bounds.y;
+			backgrounds[i].x = _bounds.x;
+			backgrounds[i].y = _bounds.y;
 			#end
 		}
 	
-		return bg;
+		return backgrounds;
 	}
 }

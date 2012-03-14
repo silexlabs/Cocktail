@@ -771,6 +771,8 @@ class AbstractStyle
 	 * (font size, font weight...), the font metrics
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
+	 * 
+	 * TODO : no more text cache system, need to re-implement
 	 */
 	public function invalidateText():Void
 	{
