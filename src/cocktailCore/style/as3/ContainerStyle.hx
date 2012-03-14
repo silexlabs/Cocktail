@@ -40,7 +40,7 @@ import flash.text.TextFormat;
  * This class implement the Flash specific text fragment creation
  * using the flash text engine introduced in flash player 10.
  * 
- * It's purpose is to create as many TextFragmentDOMElement as necessary
+ * It's purpose is to create as many TextRenderer as necessary
  * to render every TextElement of the styled ContainerDOMElement.
  * 
  * @author Yannick DOMINGUEZ
@@ -63,8 +63,6 @@ class ContainerStyle extends AbstractContainerStyle
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
-	 * 
-	 * TODO : update doc
 	 */
 	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
@@ -103,7 +101,7 @@ class ContainerStyle extends AbstractContainerStyle
 			_textBlock.releaseLines(_textBlock.firstLine, _textBlock.lastLine );
 		}
 	
-		//wrap the flash text line in a TextFragmentDOMElement
+		//wrap the flash text line in a TextRenderer
 		return new TextRenderer(_domElement, text, textToken);
 	
 	}
@@ -207,7 +205,7 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	#elseif (nme)
-	override private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
 		text = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
@@ -217,9 +215,9 @@ class ContainerStyle extends AbstractContainerStyle
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		textField.setTextFormat(getTextFormat());
 		
-		var textFragment:TextFragmentDOMElement = new TextFragmentDOMElement(cast(textField), this);
+		var textRenderer:TextRenderer = new TextRenderer(_domElement, textField, textToken);
 
-		//wrap the flash text line in a TextFragmentDOMElement
+		//wrap the flash text line in a TextRenderer
 		return textFragment;
 
 	}	
