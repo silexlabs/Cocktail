@@ -177,7 +177,7 @@ class AbstractContainerStyle extends Style
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
 		{
-			shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.formattingContextData.maxWidth, formattingContext, lastPositionedDOMElementData, viewportData );
+			shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.maxWidth, formattingContext, lastPositionedDOMElementData, viewportData );
 		}
 		
 		//if the 'height' style of this ContainerDOMElement is 

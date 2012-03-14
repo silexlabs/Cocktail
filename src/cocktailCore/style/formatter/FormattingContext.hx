@@ -68,7 +68,6 @@ class FormattingContext
 	 * such as the coordinates where to insert the next DOMElement
 	 */
 	private var _formattingContextData:FormattingContextData;
-	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
 	
 	/**
 	 * Holds a reference to each of the box elements formatted by this
@@ -76,6 +75,8 @@ class FormattingContext
 	 * when the 'format' method is called
 	 */
 	private var _elementsInFormattingContext:Array<ElementRenderer>;
+	
+	public var maxWidth(getMaxWidth, never):Int;
 	
 	/**
 	 * a reference to the last inserted element in the line, used for 
@@ -367,7 +368,7 @@ class FormattingContext
 	 */
 	private function clearFloat(clear:ClearStyleValue):Void
 	{
-		_floatsManager.clearFloat(clear, formattingContextData);
+		_floatsManager.clearFloat(clear, _formattingContextData);
 	}
 	
 	/**
@@ -408,8 +409,9 @@ class FormattingContext
 	// GETTERS/SETTERS
 	/////////////////////////////////
 	
-	private function getFormattingContextData():FormattingContextData
+	private function getMaxWidth():Int
 	{
-		return _formattingContextData;
+		return _formattingContextData.maxWidth;
 	}
+	
 }
