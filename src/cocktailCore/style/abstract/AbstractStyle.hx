@@ -15,6 +15,11 @@ import cocktail.viewport.Viewport;
 import cocktailCore.background.BackgroundManager;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer;
@@ -34,6 +39,7 @@ import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.EmbeddedBoxRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
@@ -62,6 +68,8 @@ import haxe.Timer;
  * ordered by z-index
  * - once all the styles are computed and the rendering tree is ready, it
  * renders itself
+ * 
+ * This class implements the default behaviour of an embedded DOMElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -584,7 +592,12 @@ class AbstractStyle
 	 */
 	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		return null;
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
+		
+		parentElementRenderer.addChild(elementRenderer);
+		
+		return elementRenderer;
 	}
 	
 	/**
@@ -1038,42 +1051,36 @@ class AbstractStyle
 	 * instantiate the right box computer class
 	 *	based on the DOMElement's positioning
 	 *	scheme
-	 * 
-	 * TODO : does abstractStyle implement embedded or container ?
-	 * Currently it does both depending on methods
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{
 		var boxComputer:BoxStylesComputer;
-				
-		//get the box computer for float
+		
+		//get the embedded box computers based on
+		//the positioning scheme
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatBoxStylesComputer();
+			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		
-		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedBoxStylesComputer();
+			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
-		
-		//else get the box computer based on the display style
 		else
 		{
 			switch(this._computedStyle.display)
 			{
 				case block:
-					boxComputer = new BlockBoxStylesComputer();
+					boxComputer = new EmbeddedBlockBoxStylesComputer();
 					
 				case inlineBlock:
-					boxComputer = new InlineBlockBoxStylesComputer();
+					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
 				case none:
 					boxComputer = new NoneBoxStylesComputer();
 				
 				case inlineStyle:
-					boxComputer = new InLineBoxStylesComputer();
+					boxComputer = new EmbeddedInlineBoxStylesComputer();
 			}
 		}
 		
