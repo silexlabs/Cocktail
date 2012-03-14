@@ -47,6 +47,11 @@ class LayerRenderer
 	// PUBLIC METHODS
 	////////////////////////////////
 	
+	public function dispose():Void
+	{
+		_rootRenderer = null;
+	}
+	
 	/**
 	 * Render all the ElementRenderers using this LayerRenderer
 	 * in a defined order

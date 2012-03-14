@@ -8,7 +8,9 @@
 package cocktailCore.style.js;
 
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractBodyStyle;
+import cocktail.style.StyleData;
 
 /**
  * This is the JavaScript implementation of the BodyStyle
@@ -24,6 +26,30 @@ class BodyStyle extends AbstractBodyStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as the browser deals with the rendering in JS
+	 */
+	override public function render(nativeElement:NativeElement):Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as in JS, the browser takes care of the layout
+	 */
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{	
+		
 	}
 	
 }

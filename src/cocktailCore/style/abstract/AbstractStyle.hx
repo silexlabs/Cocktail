@@ -263,14 +263,6 @@ class AbstractStyle
 	private var _isDirty:Bool;
 	
 	/**
-	 * keep references to each of the nativeElements which
-	 * are attached to this styled DOMElement. Those
-	 * can be background images, colors, nativeElements
-	 * of other DOMElements...
-	 */
-	private var _nativeElements:Array<NativeElement>;
-	
-	/**
 	 * A reference to the rendering tree node created by this
 	 * DOM tree node
 	 */
@@ -292,7 +284,6 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._nativeElements = new Array<NativeElement>();
 		
 		initDefaultStyleValues();
 	}
@@ -456,67 +447,8 @@ class AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * and attach the resulting nativeElement (background,
-	 * border, embedded asset...) to the provided
-	 * nativeElement
-	 */ 
-	public function render(nativeElement:NativeElement):Void
-	{
-		_nativeElements = _elementRenderer.layerRenderer.render();
-		_nativeElements.reverse();
-		attachNativeElements(_nativeElements);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attach a NativeElement to the
-	 * styled DOMElement using runtime specific API
-	 */ 
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Remove a NativeElement from the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
-	}
 	
 	/**
 	 * Create and return the right ElementRenderer for this DOMElement
@@ -600,10 +532,7 @@ class AbstractStyle
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
 	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
-	{
-		//first detach all previously added children
-		detachNativeElements(_nativeElements);
-		
+	{		
 		if (_elementRenderer != null && parentElementRenderer != null)
 		{
 			parentElementRenderer.removeChild(_elementRenderer);

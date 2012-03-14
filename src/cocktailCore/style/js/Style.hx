@@ -61,18 +61,19 @@ class Style extends AbstractStyle
 	{
 		super(domElement);
 	}
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as the browser deals with the rendering in JS
+	 * overriden as in JS, the browser takes care of the layout
 	 */
-	override public function render(nativeElement:NativeElement):Void
-	{
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{	
 		
 	}
+	
 	
 	/////////////////////////////////
 	// DISPLAY STYLES

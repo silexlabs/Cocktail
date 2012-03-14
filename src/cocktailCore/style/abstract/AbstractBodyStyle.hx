@@ -8,6 +8,7 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
@@ -29,6 +30,15 @@ import haxe.Log;
  */
 class AbstractBodyStyle extends ContainerStyle
 {
+		
+	/**
+	 * keep references to each of the nativeElements which
+	 * are attached to this styled DOMElement. Those
+	 * can be background images, colors, nativeElements
+	 * of other DOMElements...
+	 */
+	private var _nativeElements:Array<NativeElement>;
+	
 	/**
 	 * class constructor
 	 * @param	domElement
@@ -36,6 +46,8 @@ class AbstractBodyStyle extends ContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+		
+		this._nativeElements = new Array<NativeElement>();
 		
 		//the BodyDOMElelement is set to valid by default
 		//to allow triggering the first layout when a children
@@ -70,6 +82,70 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Start the rendering of the rendering tree
+	 * and attach the resulting nativeElement (background,
+	 * border, embedded asset...) to the provided
+	 * nativeElement
+	 */ 
+	public function render(nativeElement:NativeElement):Void
+	{
+		_nativeElements = _elementRenderer.layerRenderer.render();
+		_nativeElements.reverse();
+		attachNativeElements(_nativeElements);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	// TODO : should be on a Document object
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */ 
+	private function attachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Remove a NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			attachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -85,7 +161,7 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -95,9 +171,16 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{	
+		//first detach all previously added children
+		detachNativeElements(_nativeElements);
+		
 		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
 		render(_domElement.nativeElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * A BodyDOMElement is never inserted into its parent flow as it is

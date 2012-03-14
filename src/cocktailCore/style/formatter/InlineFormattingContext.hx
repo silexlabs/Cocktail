@@ -83,6 +83,14 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	
+	override public function dispose():Void
+	{
+		super.dispose();
+		_unbreakableLineBoxElements = null;
+		_elementsInLineBox = null;
+		_currentInlineBoxesData = null;
+	}
+	
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
@@ -168,8 +176,6 @@ class InlineFormattingContext extends FormattingContext
 	
 	/**
 	 * Insert a text
-	 * 
-	 * TODO : text shouldn't be a DOMElement but a lighter structure
 	 */
 	override private function insertText(element:ElementRenderer):Void
 	{

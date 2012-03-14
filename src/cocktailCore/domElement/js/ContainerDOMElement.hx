@@ -22,6 +22,8 @@ import cocktailCore.domElement.abstract.AbstractContainerDOMElement;
  * of changing the root node type of the reference to the nativeElement
  * by setting it's node name
  * 
+ * TODO : update doc
+ * 
  * @author Yannick DOMINGUEZ
  */
 class ContainerDOMElement extends AbstractContainerDOMElement
@@ -84,48 +86,4 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 		super.removeText(textElement);
 		this._nativeElement.removeChild(textElement.nativeText);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden Semantic method
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the semantic of this DOMElement and set it as the node name
-	 * of the root tag of the nativeElement (which is an HTML tag)
-	 * @param	semantic the new node name
-	 */
-	override private function setSemantic(semantic:String):String
-	{
-		super.setSemantic(semantic);
-		
-		//to set the new nodeName, we need to create a new element with the right nodeName
-		//and replace the current node, as the nodeName attribute is read only
-		
-		//store the inner html of the current node, to set it later on the new node
-		var currentNativeElementContent:Dynamic = this._nativeElement.innerHTML;
-		
-		//store all the attributes of the current node to set them on the new node
-		 var currentNativeElementAttributes:Array<Dynamic> = untyped this._nativeElement.attributes;
-		
-		//create a new node with the right node name
-		var newNativeElement:NativeElement = NativeElementManager.createNativeElement(custom(semantic));
-		
-		//set it's inner html to the current node inner html
-		newNativeElement.innerHTML = currentNativeElementContent;
-		
-		//paste all the attributes of the current node on the new node
-		for (i in 0...currentNativeElementAttributes.length)
-		{
-			newNativeElement.setAttribute(currentNativeElementAttributes[i].nodeName, currentNativeElementAttributes[i].nodeValue);
-		}
-		
-		//replace the current node with the new node
-		this._nativeElement.parentNode.replaceChild(newNativeElement, _nativeElement);
-		
-		//store a reference to the new node
-		this._nativeElement = newNativeElement;
-		
-		return semantic;
-	}
-	
 }

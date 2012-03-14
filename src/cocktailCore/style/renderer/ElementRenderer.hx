@@ -103,6 +103,15 @@ class ElementRenderer
 		return [];
 	}
 	
+	public function dispose():Void
+	{
+		_bounds = null;
+		_domElement = null;
+		_parent = null;
+		_layerRenderer.dispose();
+		_layerRenderer = null;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
 	////////////////////////////////

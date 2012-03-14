@@ -45,6 +45,13 @@ class FloatsManager
 		}
 	}
 	
+	public function dispose():Void
+	{
+		_floats.left = null;
+		_floats.right = null;
+		_floats = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CLEARANCE METHODS
 	// used to clear current floats
