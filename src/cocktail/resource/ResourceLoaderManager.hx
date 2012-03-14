@@ -164,7 +164,7 @@ class ResourceLoaderManager
 				resourceLoader = new LibraryLoader();
 			}
 			
-			resourceLoader.load(resourceDataToLoad.url, onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
+			resourceLoader.load([resourceDataToLoad.url], onLoadComplete, onLoadError, resourceDataToLoad.allowCache);
 		}
 	}
 	

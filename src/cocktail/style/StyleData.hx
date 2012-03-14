@@ -12,6 +12,9 @@ import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.formatter.FormattingContext;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.InlineBoxRenderer;
+import cocktailCore.style.renderer.TextRenderer;
 	
 	
 		// FONT STYLES
@@ -572,6 +575,55 @@ import cocktailCore.style.formatter.FormattingContext;
 		autoValue;
 	}
 	
+		// VISUAL EFFECTS STYLES
+//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Specifies wether the content of a block container
+	 * is clipped when its content overflows
+	 * the block container boxes.
+	 * 
+	 * A different value can be provided for x and y.
+	 */
+	typedef OverflowStyleData = {
+		var x:OverflowStyleValue;
+		var y:OverflowStyleValue;
+	}
+	
+	/**
+	 * Lists the values that x and
+	 * y overflow can use
+	 */
+	enum OverflowStyleValue {
+		
+		/**
+		 * This value indicates that content is not clipped,
+		 * i.e., it may be rendered outside the block box. 
+		 */
+		visible;
+		
+		/**
+		 * This value indicates that the content is clipped and that
+		 * no scrolling user interface should be provided to
+		 * view the content outside the clipping region. 
+		 */
+		hidden;
+		
+		/**
+		 * This value indicates that the content is clipped and that if the
+		 * containing block displays a vertical or horizontal scrollbar.
+		 * The scrollbar is displayed even if the content of
+		 * the box is not clipped
+		 */
+		scroll;
+		
+		/**
+		 * The scrollbar are displayed as needed, only if a containing
+		 * block's content overflows
+		 */
+		autoValue;
+	}
+
 	/**
 	 * Specifies wether the DOMElement is
 	 * displayed. A hidden DOMElement
@@ -597,17 +649,11 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Specifies the transparency of a DOMElement
 	 * where 1.0 is opaque and 0 is transparent
-	 * 
-	 * TODO n.b : implemented as an enum instead of just
-	 * a float to make room for the 'inherit' value
 	 */
 	enum OpacityStyleValue {
 		number(value:Float);
 	}
 	
-	// TRANSFORMATION STYLES
-//////////////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * Specifiy a list of transormation to apply
 	 * to the DOMElement. The transformation
@@ -805,6 +851,256 @@ import cocktailCore.style.formatter.FormattingContext;
 		 */
 		bottom;
 	}
+	
+		// BACKGROUND STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Sets the background color of a DOMElement. 
+	 * The color is drawn behind any background images. 
+	 */
+	enum BackgroundColorStyleValue {
+		colorValue(value:ColorValue);
+	}
+	
+	/**
+	 * Set a background image of a DOMElement. A DOMElement can
+	 * have any number of background image.
+	 * Images are drawn with the first specified one on top 
+	 * (closest to the user) and each subsequent image behind
+	 * the previous one.
+	 */
+	enum BackgroundImageStyleValue {
+		none;
+		image(value:ImageValue);
+	}
+	
+	/**
+	 * Specifies how background images are tiled after
+	 * they have been sized and positioned
+	 */
+	typedef BackgroundRepeatStyleData = {
+		
+		/**
+		 * horizontal repeat
+		 */
+		var x:BackgroundRepeatStyleValue;
+		
+		/**
+		 * vertical repeat
+		 */
+		var y:BackgroundRepeatStyleValue;
+	}
+	
+	/**
+	 * The different repeat value for each direction
+	 */
+	enum BackgroundRepeatStyleValue {
+		
+		/**
+		 * The background image is repeated as often
+		 * as needed to cover the background
+		 */
+		repeat;
+		
+		/**
+		 * The background image is repeated as often
+		 * as needed to cover the background without
+		 * being clipped and the images are spaced
+		 * out to cover all the background
+		 */
+		space;
+		
+		/**
+		 * The background image is repeated as often
+		 * as needed to cover the background without
+		 * being clipped and then the images are scaled
+		 * to fill the background
+		 */
+		round;
+		
+		/**
+		 * The background image is placed once and
+		 * not repeated
+		 */
+		noRepeat;
+	}
+	
+	/**
+	 * If background images have been specified,
+	 * this property specifies their initial position
+	 * , after resizing within the background
+	 * positioning area
+	 */
+	typedef BackgroundPositionStyleData = {
+		var x:BackgroundPositionXStyleValue;
+		var y:BackgroundPositionYStyleValue;
+	}
+	
+	/**
+	 * The values for the horizontal background
+	 * position
+	 */
+	enum BackgroundPositionXStyleValue {
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's width
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		left;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		right;
+	}
+	
+	/**
+	 * The values for the vertical background
+	 * position
+	 */
+	enum BackgroundPositionYStyleValue {
+		
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height
+		 */
+		percent(value:Int);
+		
+		/**
+		 * same as 0%
+		 */
+		top;
+		
+		/**
+		 * same as 50%
+		 */
+		center;
+		
+		/**
+		 * same as 100%
+		 */
+		bottom;
+	}
+	
+	/**
+	 * Determines the background painting
+	 * area
+	 */
+	enum BackgroundClipStyleValue {
+		
+		/**
+		 * The background is painted within (clipped to) the border box.
+		 */
+		borderBox;
+		
+		/**
+		 * The background is painted within (clipped to) the padding box.
+		 */
+		paddingBox;
+		
+		/**
+		 * The background is painted within (clipped to) the content box.
+		 */
+		contentBox;
+	}
+	
+	/**
+	 * Specifies the origin of the background positioning
+	 * area
+	 */
+	enum BackgroundOriginStyleValue {
+		
+		/**
+		 * The position is relative to the border box.
+		 */
+		borderBox;
+		
+		/**
+		 * The position is relative to the padding box.
+		 */
+		paddingBox;
+		
+		/**
+		 * The position is relative to the content box.
+		 */
+		contentBox;
+	}
+	
+	/**
+	 * Specifies the size of a background image
+	 */
+	enum BackgroundSizeStyleValue {
+		
+		/**
+		 * Scale the image, while preserving its intrinsic aspect ratio 
+		 * (if any), to the largest size such that both 
+		 * its width and its height can fit inside the background positioning area.
+		 */
+		contain;
+		
+		/**
+		 * Scale the image, while preserving its intrinsic aspect ratio (if any), 
+		 * to the smallest size such that both its width and its height
+		 * can completely cover the background positioning area.
+		 */
+		cover;
+		
+		/**
+		 * determine the width 	and height of the background image
+		 */
+		dimensions(value:BackgroundSizeStyleData);
+	}
+	
+	/**
+	 * Contain the size data for one image background
+	 */
+	typedef BackgroundSizeStyleData = {
+		var x:BackgroundSizeStyleDimensionValue;
+		var y:BackgroundSizeStyleDimensionValue;
+	}
+	
+	/**
+	 * A vertical or horizontal size for 
+	 * a background image
+	 */
+	enum BackgroundSizeStyleDimensionValue {
+		/**
+		 * a length value
+		 */
+		length(value:LengthValue);
+		
+		/**
+		 * a percentage relative
+		 * to the DOMElement's height or width
+		 */
+		percent(value:Int);
+		
+		/**
+		 * use the intrinsic dimensions
+		 * of the image
+		 */
+		autoValue;
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
@@ -827,8 +1123,8 @@ import cocktailCore.style.formatter.FormattingContext;
 	 * Contains the data of the first 
 	 * positioned ancestor (a DOMElement with
 	 * a position style of relative, absolute,
-	 * or fixed) and a reference to each of
-	 * the style objects using the data
+	 * or fixed) dimensions and a reference to each of
+	 * the style objects using those dimensions
 	 * as origin to layout an absolutely
 	 * positioned DOMElement.
 	 */
@@ -916,10 +1212,26 @@ import cocktailCore.style.formatter.FormattingContext;
 		var clear:ClearStyleValue;
 		var position:PositionStyleValue;
 		var lineHeight:Float;
+		
+		/**
+		 * visual effects
+		 */
 		var opacity:Float;
 		var visibility:Bool;
+		var overflow:OverflowStyleData;
 		var transformOrigin:PointData;
 		var transform:Matrix;
+		
+		/**
+		 * background
+		 */
+		var backgroundColor:ColorData;
+		var backgroundImage:Array<BackgroundImageStyleValue>;
+		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
+		var backgroundPosition:Array<BackgroundPositionStyleData>;
+		var backgroundClip:Array<BackgroundClipStyleValue>;
+		var backgroundOrigin:Array<BackgroundOriginStyleValue>;
+		var backgroundSize:Array<BackgroundSizeStyleValue>;
 		
 		/**
 		 * font
@@ -940,8 +1252,55 @@ import cocktailCore.style.formatter.FormattingContext;
 		var textIndent:Int;
 		var whiteSpace:WhiteSpaceStyleValue;
 		var textAlign:TextAlignStyleValue;
-		var color:Int;
+		var color:ColorData;
 		
+	}
+
+	/**
+	 * Store the computed background style
+	 * for one background image
+	 */
+	typedef ComputedBackgroundStyleData = {
+		
+		/**
+		 * The size of the background image, it might
+		 * be tiled based on the background repeat
+		 * style
+		 */
+		var backgroundSize:DimensionData;
+		
+		/**
+		 * a rectangle used as origin to position
+		 * the background image and might also
+		 * be used to clip it based on the
+		 * background clip style
+		 */
+		var backgroundOrigin:RectangleData;
+		
+		/**
+		 * The rectangle clipping the background
+		 * image, might be the rectangle of the content,
+		 * padding or border box of the DOMElement
+		 */
+		var backgroundClip:RectangleData;
+		
+		/**
+		 * how to repeat the background image in the
+		 * x and y directions
+		 */
+		var backgroundRepeat:BackgroundRepeatStyleData;
+		
+		/**
+		 * the point of origin of the background image
+		 * relative to the backgroundOrigin rectangle
+		 */
+		var backgroundPosition:PointData;
+		
+		/**
+		 * the data of the background image (url or
+		 * gradient data)
+		 */
+		var backgroundImage:BackgroundImageStyleValue;
 	}
 	
 	/**
@@ -991,7 +1350,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the left and right
 	 * floats registered for a 
-	 * container DOMElement
+	 * formatting context
 	 */
 	typedef FloatsData = {
 		var left:Array<FloatData>;
@@ -1001,7 +1360,7 @@ import cocktailCore.style.formatter.FormattingContext;
 	/**
 	 * Represents the coordinates and
 	 * dimensions of the float in its
-	 * parent coordinate space
+	 * formatting context coordinate space
 	 */
 	typedef FloatData = {
 		var x:Int;
@@ -1079,58 +1438,8 @@ import cocktailCore.style.formatter.FormattingContext;
 		var spaceWidth:Int;
 	}
 	
-	/**
-	 * Defines a DOMElement added to a LineBox
-	 * and its type
-	 */
-	typedef LineBoxElementData = {
-		var domElement:DOMElement;
-		var position:Bool;
-		var domElementType:InlineBoxValue;
-		var parentDOMElement:DOMElement;
-		var x:Int;
-		var y:Int;
-	}
 	
-	/**
-	 * Holds the data of an array of children
-	 * position, which can be retrieved by their
-	 * parent DOMElement
-	 */
-	typedef ChildrenTemporaryPositionsData = {
-		var parentDOMElement:DOMElement;
-		var children:Array<ChildTemporaryPositionData>;
-	}
-	
-	/**
-	 * Holds the computed position of a 
-	 * laid out children relative to the formatting
-	 * context in which it participates
-	 */
-	typedef ChildTemporaryPositionData = {
-		var domElement:DOMElement;
-		var lineIndex:Int;
-		//var lineRect:RectangleData;
-		var x:Int;
-		var y:Int;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Enums
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Lists the different kind of
-	 * boxes that can be added in an
-	 * inline formatting context.
-	 * 
-	 * Spaces and tabs are separated
-	 * from other domElement as they
-	 * can influence a linebox layout
-	 * once it is complete
-	 */
-	enum InlineBoxValue {
-		domElement;
-		space;
-		tab;
+	typedef InlineBoxData = {
+		var element:InlineBoxRenderer;
+		var children:Array<ElementRenderer>;
 	}

@@ -13,6 +13,7 @@ import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
+import haxe.Log;
 
 #if flash9
 import flash.system.LoaderContext;
@@ -85,6 +86,7 @@ class ResourceLoader extends AbstractResourceLoader
 	{	
 		var loader:Loader = cast(_nativeElement);
 		removeLoaderListeners(loader);
+		setIntrinsicDimensions(loader);
 		onLoadComplete(loader);
 	}
 	
@@ -111,6 +113,17 @@ class ResourceLoader extends AbstractResourceLoader
 	{
 		loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onNativeLoadComplete);
 		loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
+	}
+	
+	/**
+	 * Store the intrinsic dimensions of the loaded asset, retrieved
+	 * on the flash Loader
+	 */
+	private function setIntrinsicDimensions(loader:Loader):Void
+	{
+		this._intrinsicHeight = Math.round(loader.content.height);
+		this._intrinsicWidth = Math.round(loader.content.width);
+		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
 }

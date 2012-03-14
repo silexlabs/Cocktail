@@ -31,8 +31,19 @@ class TextElement extends AbstractTextElement
 	 */
 	public function new(text:String)
 	{
-		super(text);
 		//create and store the native HTML text node
-		_text = Lib.document.createTextNode(text);
+		_nativeText = Lib.document.createTextNode(text);
+		
+		super(text);
+	}
+	
+	/**
+	 * Update the native HTML TextNode value
+	 */
+	override private function setText(value:String):String
+	{
+		_text = value;
+		_nativeText.nodeValue = value;
+		return value;
 	}
 }

@@ -71,7 +71,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	override public function addText(textElement:TextElement):Void
 	{
 		super.addText(textElement);
-		this.nativeElement.appendChild(textElement.text);
+		this.nativeElement.appendChild(textElement.nativeText);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ class ContainerDOMElement extends AbstractContainerDOMElement
 	override public function removeText(textElement:TextElement):Void
 	{
 		super.removeText(textElement);
-		this._nativeElement.removeChild(textElement.text);
+		this._nativeElement.removeChild(textElement.nativeText);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

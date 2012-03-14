@@ -1,0 +1,6 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.DOMElementBackgroundTests
+-lib utest
+-swf ../../bin/domElement/domElementBackgroundTestAs3.swf
+-swf-version 10.1

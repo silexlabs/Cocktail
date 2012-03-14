@@ -8,6 +8,8 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.domElement.EmbeddedDOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
@@ -17,6 +19,9 @@ import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.EmbeddedBoxRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)
@@ -45,6 +50,24 @@ class AbstractEmbeddedStyle extends Style
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Create an ElementRenderer for embedded elements and attach it to its parent ElementRenderer
+	 */
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
+		
+		parentElementRenderer.addChild(elementRenderer);
+		
+		return elementRenderer;
+	}
+
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -67,34 +90,25 @@ class AbstractEmbeddedStyle extends Style
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
-		switch(this._computedStyle.display)
+		else
 		{
-			case block:
-				boxComputer = new EmbeddedBlockBoxStylesComputer();
+			switch(this._computedStyle.display)
+			{
+				case block:
+					boxComputer = new EmbeddedBlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
-			case inlineBlock:
-				boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
-			
-			case none:
-				boxComputer = new NoneBoxStylesComputer();
-			
-			case inlineStyle:
-				boxComputer = new EmbeddedInlineBoxStylesComputer();
+				case none:
+					boxComputer = new NoneBoxStylesComputer();
+				
+				case inlineStyle:
+					boxComputer = new EmbeddedInlineBoxStylesComputer();
+			}
 		}
 		
+		
 		return boxComputer;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as all inherithing classes of the
-	 * Embedded DOMElement are embedded
-	 */
-	override public function isEmbedded():Bool
-	{
-		return true;
 	}
 }

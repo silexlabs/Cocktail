@@ -10,6 +10,7 @@ package cocktailCore.textElement.as3;
 import cocktail.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
+import haxe.Log;
 
 /**
  * This is the Flash As3 implementation of the TextElement.
@@ -24,15 +25,26 @@ class TextElement extends AbstractTextElement
 	public function new(text:String) 
 	{
 		super(text);
-		_text = text;
 	}
 	
 	/**
-	 * In Flash, the NativeTextElement is already
-	 * a String, so just returns it
+	 * Clean up the generated text fragments
+	 * and invalidate the parent to cause the
+	 * creation of the new text
 	 */
-	override public function getNativeText():String
+	override private function setText(value:String):String
 	{
-		return _text;
+		_text = value;
+		_nativeText = value;
+		
+		reset();
+		_textFragments = new Array<TextFragmentData>();
+		
+		if (_parent != null)
+		{
+			_parent.style.invalidateText();
+		}
+	
+		return value;
 	}
 }
