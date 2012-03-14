@@ -81,33 +81,6 @@ class Style extends AbstractStyle
 		super(domElement);
 	}
 
-	/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * 
-	 * TODO : move to ElementRenderer
-	 * 
-	 * @param	matrix
-	 */
-	public function setNativeMatrix(matrix:Matrix):Void
-	{
-		
-		//concenate the new matrix with the base matrix of the DOMElement
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = concatenatedMatrix.data;
-		
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-	
-		//apply the native flash matrix to the native flash DisplayObject
-		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
-		
-	//	super.setNativeMatrix(concatenatedMatrix);
-		
-	}
 #if (flash9)	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
@@ -250,23 +223,6 @@ class Style extends AbstractStyle
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
-	
-	/**
-	 * Concatenate the new matrix with the "base" matrix of the DOMElement
-	 * where only translations (the x and y of the DOMElement) and scales
-	 * (the width and height of the DOMElement) are applied.
-	 * It is neccessary in flash to do so to prevent losing the x, y, width
-	 * and height applied during layout
-	 * 
-	 * TODO : move to ElementRenderer
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		currentMatrix.concatenate(matrix);
-		//currentMatrix.translate(this._nativeX, this._nativeY);
-		return currentMatrix;
-	}
 	
 #if (flash9)
 	/**

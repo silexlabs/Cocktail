@@ -1,4 +1,5 @@
 package cocktailCore.style.renderer;
+import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 /*
@@ -353,6 +354,73 @@ class LayerRenderer
 		}
 		
 		return ret;
+	}
+	
+	
+	/**
+	 * when the matrix is set, update also
+	 * the values of the native flash matrix of the
+	 * native DisplayObject
+	 * 
+	 * TODO : move to ElementRenderer
+	 * 
+	 * @param	matrix
+	 */
+	public function setNativeMatrix(matrix:Matrix):Void
+	{
+		/**
+		//concenate the new matrix with the base matrix of the DOMElement
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = concatenatedMatrix.data;
+		
+		//create a native flash matrix with the abstract matrix data
+		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	
+		//apply the native flash matrix to the native flash DisplayObject
+		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
+		
+	//	super.setNativeMatrix(concatenatedMatrix);
+		*/
+	}
+	
+	/**
+	 * When concatenating the base Matrix of an embedded element, it must also
+	 * be scaled using the intrinsic width and height of the DOMElement as reference
+	 * 
+	 * TODO : move to ElementRenderer
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix):Matrix
+	{
+		
+		var currentMatrix:Matrix = new Matrix();
+		//
+		//var embeddedDOMElement:EmbeddedDOMElement = cast(this._domElement);
+		//
+		//currentMatrix.concatenate(matrix);
+		//currentMatrix.translate(this._nativeX, this._nativeY);
+		//
+		//currentMatrix.scale(this._nativeWidth / embeddedDOMElement.intrinsicWidth, this._nativeHeight / embeddedDOMElement.intrinsicHeight, { x:0.0, y:0.0} );
+		//
+		return currentMatrix;
+	}
+	
+		/**
+	 * Concatenate the new matrix with the "base" matrix of the DOMElement
+	 * where only translations (the x and y of the DOMElement) and scales
+	 * (the width and height of the DOMElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 * 
+	 * TODO : move to ElementRenderer
+	 */
+	private function getConcatenatedMatrix2(matrix:Matrix):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		//currentMatrix.concatenate(matrix);
+		//currentMatrix.translate(this._nativeX, this._nativeY);
+		return currentMatrix;
 	}
 	
 }

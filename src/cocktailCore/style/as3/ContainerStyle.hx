@@ -82,7 +82,7 @@ class ContainerStyle extends AbstractContainerStyle
 		//The 'fitSomething' parameters is alos set to true
 		//otherwise, when creating only a space charcter, no
 		//flash text line would be created
-		var textLine:TextLine = _textBlock.createTextLine(null, 10000, 0.0, true);
+		var text:TextLine = _textBlock.createTextLine(null, 10000, 0.0, true);
 		
 		//help free memory
 		_textBlock.releaseLineCreationData();
@@ -100,7 +100,7 @@ class ContainerStyle extends AbstractContainerStyle
 		}
 	
 		//wrap the flash text line in a TextFragmentDOMElement
-		return new TextFragmentDOMElement(textLine, this);
+		return new TextFragmentDOMElement(text, this);
 	
 	}
 	

@@ -69,6 +69,10 @@ class AbstractBodyStyle extends ContainerStyle
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
 		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
@@ -111,18 +115,11 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The return dimensions of the Body are always those of the viewport
+	 * The returned dimensions of the Body are always those of the viewport
 	 */
 	override public function getContainerDOMElementData():ContainingDOMElementData
 	{
-		var viewPort:Viewport = new Viewport();
-		
-		return {
-			width:viewPort.width,
-			isWidthAuto:this._width == DimensionStyleValue.autoValue,
-			height:viewPort.height,
-			isHeightAuto:this._height == DimensionStyleValue.autoValue
-		};
+		return getViewportData();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +159,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getComputedHeight():Int
 	{
-		return new Viewport().height;
+		return getViewportData().height;
 	}
 	
 	/**
