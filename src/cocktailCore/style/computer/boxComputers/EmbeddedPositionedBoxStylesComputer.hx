@@ -9,6 +9,7 @@ package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
+import haxe.Log;
 
 /**
  * This is the box computer for replaced
@@ -46,7 +47,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	private function measureHorizontalPositionOffsets(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
-		
+			
 		//if left or right are 'auto'
 		if (style.left == PositionOffsetStyleValue.autoValue || style.right == PositionOffsetStyleValue.autoValue)
 		{
@@ -106,6 +107,8 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 					style.computedStyle.marginLeft = 0;
 					style.computedStyle.marginRight = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right;
 				}
+			
+				style.computedStyle.marginLeft = 0;
 			}
 			else if (style.marginLeft == MarginStyleValue.autoValue)
 			{

@@ -51,11 +51,12 @@ class LayerRenderer
 					ret.push(bg[i]);
 				}
 				
-				#if flash9
+				#if (flash9 ||nme)
 				for (i in 0...ret.length)
 				{
 					ret[i].x += rootRenderer.bounds.x;
 					ret[i].y += rootRenderer.bounds.y; 
+					
 				}
 				#end
 				
@@ -66,6 +67,7 @@ class LayerRenderer
 					ret.push(boum[i]);
 				}
 			
+			//TODO : retrieve and render floated elements	
 		//	renderChildrenNonPositionedFloats();
 		}
 		
@@ -77,6 +79,17 @@ class LayerRenderer
 			{
 				ret.push(e[i]);
 			}
+			
+			#if (flash9 ||nme)
+				for (i in 0...ret.length)
+				{
+					//ret[i].x += rootRenderer.bounds.x;
+					//ret[i].y += rootRenderer.bounds.y; 
+					
+				}
+				
+				#end
+			
 		}
 		return ret;
 	}
@@ -104,6 +117,7 @@ class LayerRenderer
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
 		
+		//TODO : shouldn't have to do that
 		childLayers.reverse();
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
@@ -168,7 +182,7 @@ class LayerRenderer
 						var ne = d[l].render();
 						for (m in 0...ne.length)
 						{
-							#if flash9
+							#if (flash9 ||nme)
 							ne[m].x += inFlowChildren[i].bounds.x;
 							ne[m].y += inFlowChildren[i].bounds.y;
 							#end
@@ -229,7 +243,11 @@ class LayerRenderer
 			{
 				for (k in 0...rootRenderer.lineBoxes[j].length)
 				{
-					ret.push(rootRenderer.lineBoxes[j][k]);
+					if (rootRenderer.lineBoxes[j][k].isPositioned() == false)
+					{
+						ret.push(rootRenderer.lineBoxes[j][k]);
+					}
+					
 				}
 			}
 		}
@@ -239,7 +257,12 @@ class LayerRenderer
 			{
 				if (rootRenderer.children[i].layerRenderer == this)
 				{
-					if (rootRenderer.children[i].domElement.style.isPositioned() == false)
+					if (rootRenderer.children[i].isText() == true)
+					{
+						Log.trace("found text");
+					}
+					
+					if (rootRenderer.children[i].isPositioned() == false)
 					{
 						ret.push(rootRenderer.children[i]);
 						if (rootRenderer.children[i].canHaveChildren() == true)
@@ -272,7 +295,6 @@ class LayerRenderer
 		{
 			if (rootRenderer.children[i].layerRenderer == this)
 			{
-				//TODO : shouldn't render inline box background here ? z-index might be wrong for overflowing background of line boxes
 				if (rootRenderer.children[i].canHaveChildren() == true)
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer.children[i]));

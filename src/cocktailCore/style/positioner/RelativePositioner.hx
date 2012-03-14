@@ -55,6 +55,6 @@ class RelativePositioner extends BoxPositioner
 	
 	override private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{
-		return staticPosition + containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
+		return staticPosition - domElement.style.computedStyle.bottom;
 	}
 }
