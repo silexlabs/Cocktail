@@ -323,13 +323,15 @@ class LayerRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.domElement.style.childrenInline() == true)
 		{
-			for (j in 0...rootRenderer.lineBoxes.length)
+			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			
+			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
-				for (k in 0...rootRenderer.lineBoxes[j].length)
+				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
 				{
-					if (rootRenderer.lineBoxes[j][k].isPositioned() == false)
+					if (blockBoxRenderer.lineBoxes[i][i].isPositioned() == false)
 					{
-						ret.push(rootRenderer.lineBoxes[j][k]);
+						ret.push(blockBoxRenderer.lineBoxes[i][j]);
 					}
 					
 				}

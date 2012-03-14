@@ -11,6 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.InlineBoxRenderer;
@@ -97,8 +98,8 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();
 		_unbreakableWidth = 0;
 		
-		var flowBoxRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
-		flowBoxRenderer.removeLineBoxes();
+		var blockBoxRenderer:BlockBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
+		blockBoxRenderer.removeLineBoxes();
 		
 		_currentInlineBoxesData = new Array<InlineBoxData>();
 	
@@ -506,7 +507,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			var lineBoxElements:Array<ElementRenderer> = new Array<ElementRenderer>();
 			
-			var containingDOMElementRenderer:FlowBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
+			var containingDOMElementRenderer:BlockBoxRenderer = cast(_containingDOMElement.style.elementRenderer);
 			
 			containingDOMElementRenderer.addLineBox(lineBoxElements);
 			
