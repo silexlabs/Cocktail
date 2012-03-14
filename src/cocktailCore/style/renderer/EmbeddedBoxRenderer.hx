@@ -6,22 +6,30 @@ import cocktail.style.StyleData;
 import haxe.Log;
 
 /**
- * ...
+ * Base class for embedded element
+ * such as a picture
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class EmbeddedBoxRenderer extends BoxRenderer
 {
 
+	/**
+	 * class constructor. Set the width and height
+	 * of the element, as for embedded element
+	 * they are intrinsic to the embeddded asset
+	 */
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
-		
 		_bounds.width = domElement.offsetWidth;
 		_bounds.height = domElement.offsetHeight;
-
 	}
 	
+	/**
+	 * Render the embedded asset and return a
+	 * NativeElement from it
+	 */
 	override public function render():Array<NativeElement>
 	{
 		
@@ -37,7 +45,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 
 		embeddedDOMElement.embeddedAsset.width = _domElement.style.computedStyle.width;
 		embeddedDOMElement.embeddedAsset.height = _domElement.style.computedStyle.height;
-		
 		#end
 		
 		//apply transformations

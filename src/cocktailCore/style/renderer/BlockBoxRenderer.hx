@@ -15,6 +15,4 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		super(domElement);
 	}
-	
-
 }

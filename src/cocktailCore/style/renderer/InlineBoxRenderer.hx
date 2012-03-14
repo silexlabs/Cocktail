@@ -4,10 +4,11 @@ import cocktail.nativeElement.NativeElement;
 import haxe.Log;
 
 /**
- * ...
+ * TODO : disambiguate InlineBoxRenderer and InlineBox generated
+ * by the InlineFormatting context
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class InlineBoxRenderer extends FlowBoxRenderer
 {
 
