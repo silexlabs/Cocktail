@@ -14,6 +14,8 @@ import haxe.Log;
 /**
  * This class is in charge of loading one file and calling the right callback after the load succedeed/failed. This is a base
  * class implemented for each media/data types.
+ * An array of URL can be provided, in which case, the first valid URL will be used. The onError callback is only
+ * called when all the provided URLs are invalid
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -39,6 +41,43 @@ class AbstractResourceLoader
 	public var nativeElement(getNativeElement, never):NativeElement;
 	
 	/**
+	 * The intrinsic width of the loaded asset. 
+	 * Null if no asset is loaded yet or if it is
+	 * non applicabel such as when loading a string
+	 */
+	private var _intrinsicWidth:Int;
+	public var intrinsicWidth(getIntrinsicWidth, never):Int;
+	
+	/**
+	 * The intrinsic height of the loaded asset. 
+	 * Null if no asset is loaded yet or if it is
+	 * non applicabel such as when loading a string
+	 */
+	private var _intrinsicHeight:Int;
+	public var intrinsicHeight(getIntrinsicHeight, never):Int;
+	
+	/**
+	 * The intrinsic ratio of the loaded asset. 
+	 * Null if no asset is loaded yet or if it is
+	 * non applicabel such as when loading a string
+	 */
+	private var _intrinsicRatio:Float;
+	public var intrinsicRatio(getIntrinsicRatio, never):Float;
+	
+	/**
+	 * Store the index of the URL
+	 * which is to be loaded next if the 
+	 * currently loading URL is invalid
+	 */
+	private var _urlToLoadIdx:Int;
+	
+	/**
+	 * Stores the URLs to load, the first
+	 * valid one will be used
+	 */
+	private var _urls:Array<String>;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(nativeElement:NativeElement = null)
@@ -59,25 +98,32 @@ class AbstractResourceLoader
 	/**
 	 * Start the loading of a file. Stores the success and error callbacks. Prevent file caching if requested
 	 * then actually start the file loading
-	 * @param	url the url of the file to load
+	 * @param	urls the array of files to load, the first valid url is used
 	 * @param	onLoadComplete called when the file is done loading
-	 * @param	onLoadError called when there is an error during loading
+	 * @param	onLoadError called when there is an error during loading or when all the provided urls are invalid
 	 * @param	allowCache wether to allow the browser to cache the loaded file
 	 */
-	public function load(url:String, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool = true):Void
+	public function load(urls:Array<String>, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool = true):Void
 	{
 		this._onLoadCompleteCallback = onLoadComplete;
 		this._onLoadErrorCallback = onLoadError;
+		
+		this._urls = urls;
+		this._urlToLoadIdx = 0;
 		
 		//if the loaded resource must not be cached,
 		//add a random number at the end of the url to fool
 		//the browser into thinking it loads a new resource
 		if (allowCache == false)
 		{
-			url = disableUrlCaching(url);
+			for (i in 0...urls.length)
+			{
+				urls[i] = disableUrlCaching(urls[i]);
+			}
 		}
 		
-		doLoad(url);
+		doLoad(_urls[_urlToLoadIdx]);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -108,13 +154,24 @@ class AbstractResourceLoader
 	}
 	
 	/**
-	 * When there is an error while loading a file, calls the error
-	 * callback
+	 * When there is an error while loading a file, try to load
+	 * the next file
+	 * If all the provided files URL throwed an error, call the
+	 * error callback
+	 * 
 	 * @param	msg the error message, passed to the error callback
 	 */
 	private function onLoadError(msg:String):Void
 	{
-		_onLoadErrorCallback(msg);
+		_urlToLoadIdx++;
+		if (_urlToLoadIdx < _urls.length - 1)
+		{
+			doLoad(_urls[_urlToLoadIdx]);
+		}
+		else
+		{
+			_onLoadErrorCallback(msg);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -155,5 +212,20 @@ class AbstractResourceLoader
 	private function getNativeElement():NativeElement
 	{
 		return _nativeElement;
+	}
+	
+	private function getIntrinsicWidth():Int
+	{
+		return _intrinsicWidth;
+	}
+	
+	private function getIntrinsicHeight():Int
+	{
+		return _intrinsicHeight;
+	}
+	
+	private function getIntrinsicRatio():Float
+	{
+		return _intrinsicRatio;
 	}
 }

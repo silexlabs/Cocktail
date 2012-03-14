@@ -17,6 +17,7 @@ package keyboard;
  * @author Yannick DOMINGUEZ
  */
 
+import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import haxe.Log;
 import cocktail.domElement.DOMElement;
@@ -34,12 +35,12 @@ import cocktail.domElement.GraphicDOMElement;
 
 class KeyboardTests 
 {
-	private static var rootDOMElement:ContainerDOMElement;
+	private static var rootDOMElement:BodyDOMElement;
 	
 	public static function main()
 	{
 		
-		rootDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
+		rootDOMElement = new BodyDOMElement();
 		
 		new KeyboardTests();
 		
@@ -67,19 +68,19 @@ class KeyboardTests
 		
 		rootDOMElement.addChild(graphicDOMElement);
 		
-		graphicDOMElement.onKeyDown = onKeyDown;
-		graphicDOMElement.onKeyUp = onKeyUp;
+		rootDOMElement.onKeyDown = onKeyDown;
+		rootDOMElement.onKeyUp = onKeyUp;
 		
 		
 	}
 
 	
-	private function onKeyDown(key:KeyEventData):Void
+	private function onKeyDown(key:KeyboardEventData):Void
 	{
 		Log.trace(key);
 	}
 	
-	private function onKeyUp(key:KeyEventData):Void
+	private function onKeyUp(key:KeyboardEventData):Void
 	{
 		Log.trace(key);
 	}

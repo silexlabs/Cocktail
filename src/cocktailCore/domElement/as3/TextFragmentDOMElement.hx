@@ -77,15 +77,17 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	}
 	
 	#elseif nme
-		/**
+	/**
 	 * The offset width for a text fragment is the width of its
 	 * text
 	 */
 	override private function getOffsetWidth():Int
 	{
-		_nativeElement.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		//TODO : shouldn't be here
+		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 		
 		var ret:Int = _nativeElement.textWidth;
+		
 		return ret;
 	}
 
@@ -96,6 +98,7 @@ class TextFragmentDOMElement extends AbstractTextFragmentDOMElement
 	override private function getOffsetHeight():Int
 	{
 		var ret:Int = _nativeElement.textHeight;
+		
 		return ret;
 	}
 	#end

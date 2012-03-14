@@ -13,6 +13,12 @@ import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
+import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.InitialBlockRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
+import haxe.Log;
 
 /**
  * This is the style implementation for BodyDOMElement.
@@ -63,19 +69,60 @@ class AbstractBodyStyle extends ContainerStyle
 		}
 	}
 	
+	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
+		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
+
+		return elementRenderer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	{	
+		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
+		render(_domElement.nativeElement);
+	}
+	
 	/**
-	 * Overriden because a BodyDOMElement being at the top of the
-	 * DOM tree must always position its absolutely positioned
+	 * A BodyDOMElement is never inserted into its parent flow as it is
+	 * always located at the origin of the viewport, it is automatically
+	 * inserted
+	 */
+	override private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	{
+		
+	}
+	
+	/**
+	 * overriden as the BodyDOMElement, being at the top of the hierarchy, always position its positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ChildTemporaryPositionData>
+	override private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		isFirstPositionedAncestor = true;
-		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
+		doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData, viewportData);	
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The return dimensions of the Body are always those of the viewport
+	 */
+	override public function getContainerDOMElementData():ContainingDOMElementData
+	{
+		var viewPort:Viewport = new Viewport();
+		
+		return {
+			width:viewPort.width,
+			isWidthAuto:this._width == DimensionStyleValue.autoValue,
+			height:viewPort.height,
+			isHeightAuto:this._height == DimensionStyleValue.autoValue
+		};
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -83,11 +130,48 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * An inline-level DOMElement is one that is
+	 * laid out on a line. It will be placed
+	 * either next to the preceding DOMElement
+	 * or on a new line if the current line
+	 * is too short to host it.
+	 * 
+	 * Wheter an element is inline-level is determined
+	 * by its display style
+	 */
+	override public function isInlineLevel():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
-	override private function getFormatingContext(previousFormatingContext:FormattingContext = null):FormattingContext
+	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
-		return new BlockFormattingContext(this._domElement, null);
+		return new BlockFormattingContext(this._domElement);
+	}
+
+	/**
+	 * The computed height of the BodyDOMElement is always
+	 * the same as the viewport
+	 * 
+	 * TODO : might be wrong if the Body as top/bottom margin
+	 * or padding, maybe should instead override the 
+	 * offsetHeight ?
+	 */
+	override private function getComputedHeight():Int
+	{
+		return new Viewport().height;
+	}
+	
+	/**
+	 * a bodyDOMElement always establishes a block formatting context
+	 * for its children
+	 */
+	override public function establishesNewFormattingContext():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

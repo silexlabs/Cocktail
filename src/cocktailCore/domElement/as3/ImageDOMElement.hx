@@ -35,20 +35,12 @@ class ImageDOMElement extends AbstractImageDOMElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Retrieve the source url, width and
-	 * height from the loaded picture
+	 * Smooth the picture once loaded
 	 * @param	image
 	 */
 	override private function onLoadComplete(image:NativeElement):Void
 	{
-		var typedimage:Loader = cast(image);
-		this._src = typedimage.contentLoaderInfo.url;
-		this._intrinsicHeight = typedimage.contentLoaderInfo.height;
-		this._intrinsicWidth = typedimage.contentLoaderInfo.width;
-		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
-		
 		super.onLoadComplete(image);
-		
 		smoothPicture();
 	}
 	
@@ -63,7 +55,7 @@ class ImageDOMElement extends AbstractImageDOMElement
 	{
 		//cast the native element as a loader
 		// and retrieve its bitmap content
-		var typedNativeElement:Loader = cast(this._nativeElement);
+		var typedNativeElement:Loader = cast(this._embeddedAsset);
 		var bitmap:Bitmap = cast(typedNativeElement.content);
 		
 		if (bitmap != null)

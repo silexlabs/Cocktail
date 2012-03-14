@@ -36,6 +36,15 @@ package cocktail.geom;
 		var x:Float;
 		var y:Float;
 	}
+	
+	/**
+	 * Represents a width and
+	 * height dimension
+	 */
+	typedef DimensionData = {
+		var width:Int;
+		var height:Int;
+	}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Matrix structures and enums

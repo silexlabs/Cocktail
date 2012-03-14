@@ -7,6 +7,7 @@
 */
 package cocktailCore.textElement.abstract;
 
+import cocktail.domElement.ContainerDOMElement;
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.style.StyleData;
@@ -24,12 +25,21 @@ class AbstractTextElement
 {
 
 	/**
+	 * The raw text extracted from
+	 * the native text element which can
+	 * be get/set to change the text of
+	 * this TextElement after its creation
+	 */
+	private var _text:String;
+	public var text(getText, setText):String;
+	
+	/**
 	 * The native text element, for instance
 	 * in Flash it is just a String whereas in
 	 * Js it is an HTML text node object
 	 */
-	private var _text:NativeTextElement;
-	public var text(getText, never):NativeTextElement;
+	private var _nativeText:NativeTextElement;
+	public var nativeText(getNativeText, never):NativeTextElement;
 	
 	/**
 	 * An array where each item contains a text token,
@@ -40,12 +50,21 @@ class AbstractTextElement
 	private var _textFragments:Array<TextFragmentData>;
 	
 	/**
+	 * A reference to the parent ContainerDOMElement
+	 * to which this TextElement is attached
+	 */
+	private var _parent:ContainerDOMElement;
+	public var parent(getParent, setParent):ContainerDOMElement;
+	
+	
+	/**
 	 * class constructor
 	 * @param	text the wrapped by this TextElement
 	 */
 	public function new(text:String) 
 	{
 		_textFragments = new Array<TextFragmentData>();
+		this.text = text;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -82,49 +101,9 @@ class AbstractTextElement
 		return _textFragments;
 	}
 	
-	/**
-	 * Return the String of text wrapped
-	 * in the NativeTextElement. Overriden
-	 * by each runtime
-	 */
-	public function getNativeText():String
-	{
-		//implemented by each runtime
-		return null;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC STATIC TEXT HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Apply the whiteSpace style rule to a text
-	 */
-	public static function applyWhiteSpace(text:String, whiteSpace:WhiteSpaceStyleValue):String
-	{
-		var ret:String = text;
-		
-		switch (whiteSpace)
-		{
-				case WhiteSpaceStyleValue.normal:
-					ret = collapseSpaceSequences(text);
-					
-				case WhiteSpaceStyleValue.pre:
-					ret = removeLineFeeds(text);
-					
-				case WhiteSpaceStyleValue.nowrap:
-					ret = collapseSpaceSequences(text);
-					ret = removeLineFeeds(text);
-					ret = convertTabToSpace(text);
-					
-				case WhiteSpaceStyleValue.preWrap:
-					
-				case WhiteSpaceStyleValue.preLine:
-					ret = collapseSpaceSequences(text);
-		}
-		
-		return ret;
-	}
 	
 	/**
 	 * Transform a text letters into uppercase, lowercase
@@ -154,6 +133,8 @@ class AbstractTextElement
 	/**
 	 * Capitalise a text (turn each first letter
 	 * of a word to uppercase)
+	 * 
+	 * TODO : doesn't work
 	 */
 	public static function capitalizeText(text:String):String
 	{
@@ -175,54 +156,6 @@ class AbstractTextElement
 			}
 		}
 		return capitalizedText;
-	}
-	
-	/**
-	 * Convert sequences of spaces in a text
-	 * into a single space
-	 */
-	public static function collapseSpaceSequences(text:String):String
-	{
-		var collapsedText:String = "";
-		var isSpaceSequence:Bool = false;
-		
-		for (i in 0...text.length)
-		{
-			if (StringTools.isSpace(text, i))
-			{
-				if (isSpaceSequence == false)
-				{
-					collapsedText += text.charAt(i);
-					isSpaceSequence = true;
-				}
-			}
-			else
-			{
-				isSpaceSequence = false;
-				collapsedText += text.charAt(i);
-			}
-		}
-		
-		return collapsedText;
-	}
-	
-	/**
-	 * Removes the new line control character
-	 * from a text
-	 */
-	public static function removeLineFeeds(text:String):String
-	{
-		return StringTools.replace(text, "\n", "");
-	}
-	
-	/**
-	 * Removes the tabulation control character
-	 * from a text by converting them to space
-	 * character
-	 */
-	public static function convertTabToSpace(text:String):String
-	{
-		return StringTools.replace(text, "\t", " ");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -336,9 +269,29 @@ class AbstractTextElement
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getText():NativeTextElement
+	private function setText(value:String):String
+	{
+		return _text = value;
+	}
+	
+	private function getText():String
 	{
 		return _text;
+	}
+	
+	private function getNativeText():NativeTextElement
+	{
+		return _nativeText;
+	}
+	
+	private function setParent(value:ContainerDOMElement):ContainerDOMElement
+	{
+		return _parent = value;
+	}
+	
+	private function getParent():ContainerDOMElement
+	{
+		return _parent;
 	}
 	
 }

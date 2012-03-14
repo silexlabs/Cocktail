@@ -137,6 +137,18 @@ class AbstractDOMElement
 	public var onFocusOut(getOnFocusOut, setOnFocusOut):Void->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// Scroll attributes and callback
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Callback called when
+	 * the content of the DOMElement
+	 * is scrolled
+	 */
+	private var _onScroll:ScrollEventData->Void;
+	public var onScroll(getOnScroll, setOnScroll):ScrollEventData->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -374,11 +386,11 @@ class AbstractDOMElement
 		var visibility:VisibilityStyleValue;
 		if (value == true)
 		{
-			visibility = visible;
+			visibility = VisibilityStyleValue.visible;
 		}
 		else
 		{
-			visibility = hidden;
+			visibility = VisibilityStyleValue.hidden;
 		}
 		_style.visibility = visibility;
 		return value;
@@ -676,7 +688,7 @@ class AbstractDOMElement
 	
 	private function onMouseOutCallback(mouseEventData:MouseEventData):Void
 	{
-		_onMouseOver(mouseEventData);
+		_onMouseOut(mouseEventData);
 	}
 	
 	private function onMouseDoubleClickCallback(mouseEventData:MouseEventData):Void
@@ -811,6 +823,33 @@ class AbstractDOMElement
 	private function getTabIndex():Int
 	{
 		return _tabIndex;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLLING SETTER/GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function setOnScroll(value:ScrollEventData->Void):ScrollEventData->Void
+	{
+		return _onScroll = value;
+	}
+	
+	private function getOnScroll():ScrollEventData->Void
+	{
+		return _onScroll;
+	}
+	
+	/**
+	 * called when a native scroll event is
+	 * emitted, called the user on scroll
+	 * callback if any
+	 */
+	private function onScrollCallback(event:ScrollEventData):Void
+	{
+		if (_onScroll != null)
+		{
+			_onScroll(event);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

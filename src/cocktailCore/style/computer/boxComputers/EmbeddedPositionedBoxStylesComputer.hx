@@ -9,14 +9,20 @@ package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
+import haxe.Log;
+
 /**
- * ...
+ * This is the box computer for replaced
+ * absolutely positioned DOMElement, such as
+ * an absolutely positioned ImageDOMElement
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
@@ -24,28 +30,28 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	
 	/**
 	 * Compute the 'position offsets' styles :
-	 * top, left, bottom, right, used if the DOMElement
-	 * is 'positioned' (position style other than 'static')
+	 * top, left, bottom, right. Also compute
+	 * the margin as needed
 	 */
 	override private function measurePositionOffsets(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
+		//horizontal position offsets and margins
 		measureHorizontalPositionOffsets(style, containingDOMElementData);
-		measureVerticalPositionOffsets(style, containingDOMElementData);
-		
-			
-		//top
-		style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-		
-		//bottom
-		style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		//vertical position offsets and margins
+		measureVerticalPositionOffsets(style, containingDOMElementData);	
 	}
 	
+	/**
+	 * Compute, left, right and marginLeft marginRight styles
+	 */
 	private function measureHorizontalPositionOffsets(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
-		
+			
+		//if left or right are 'auto'
 		if (style.left == PositionOffsetStyleValue.autoValue || style.right == PositionOffsetStyleValue.autoValue)
 		{
+			//any 'auto' margin is set to 0
 			if (style.marginLeft == MarginStyleValue.autoValue)
 			{
 				style.computedStyle.marginLeft = 0;
@@ -55,29 +61,33 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 				style.computedStyle.marginRight = 0;
 			}
 			
+			//if both left and right are 'auto', left is its static posittion, then right is deduced from the other values
 			if (style.left == PositionOffsetStyleValue.autoValue && style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedStaticLeft(style, containingDOMElementData);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
 			}
-			
+			//if only left is auto, right is computed then left is deduced
 			else if (style.left == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.left = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight;
 			}
+			//same for right
 			else if (style.right == PositionOffsetStyleValue.autoValue)
 			{
 				style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.left - computedStyle.paddingLeft - computedStyle.paddingRight;
 			}
 		}
-	
+		//if neither left or right are auto
 		else 
 		{
+			//compute left and right
 			style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
+			//then deduce the margins
 			if (style.marginLeft == MarginStyleValue.autoValue && style.marginRight == MarginStyleValue.autoValue)
 			{
 				var margin:Int = Math.round((containingDOMElementData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight) / 2);
@@ -97,6 +107,8 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 					style.computedStyle.marginLeft = 0;
 					style.computedStyle.marginRight = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right;
 				}
+			
+				style.computedStyle.marginLeft = 0;
 			}
 			else if (style.marginLeft == MarginStyleValue.autoValue)
 			{
@@ -109,6 +121,10 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 		}
 	}
 	
+	/**
+	 * Compute, top, bottom and marginTop marginBottom styles. Works the same as
+	 * measureHorizontalPositionOffsets
+	 */
 	private function measureVerticalPositionOffsets(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
@@ -140,6 +156,11 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 				style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.top - computedStyle.paddingTop - computedStyle.paddingBottom;
 			}
+			else
+			{
+				style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			}
 		}
 	
 		else 
@@ -151,8 +172,6 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			{
 				var margin:Int = Math.round((containingDOMElementData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom) / 2);
 				
-				//compute the size of one of the margin, which is half the remaining horizontal space
-				//once all other values (padding, width, offset) are remove
 				var computedMargin:Int = Math.round((containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2);
 				
 				if (computedMargin >= 0)
@@ -160,7 +179,6 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 					style.computedStyle.marginTop = computedMargin;
 					style.computedStyle.marginBottom = computedMargin;
 				}
-				//if the margin width is negative, it is recomputed
 				else
 				{
 					style.computedStyle.marginTop = 0;

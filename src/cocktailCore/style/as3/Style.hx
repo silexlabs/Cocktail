@@ -10,9 +10,11 @@ package cocktailCore.style.as3;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
+import cocktail.nativeElement.NativeElement;
 import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
@@ -84,51 +86,30 @@ class Style extends AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Attach a child using flash API
+	 * Attach a native flash element (DisplayObject) using flash API
 	 */
-	override private function attachChild(domElement:DOMElement):Void
+	override private function attachNativeElement(nativeElement:NativeElement):Void
 	{
-		this._domElement.nativeElement.addChild(domElement.nativeElement);
+	
+		this._domElement.nativeElement.addChild(nativeElement);
 	}
 	
 	/**
-	 * Detach all the children using
-	 * flash API
+	 * Detach a native flash element (DisplayObject) using flash API
 	 */
-	override private function detachChildren():Void
+	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
+		if (this._domElement.nativeElement.contains(nativeElement) == true)
 		{
-			/**
-			 * TO DO : clean-up the try/catch, it shouldn't be
-			 * necessary
-			 */
-			try {
-				_domElement.nativeElement.removeChild(_childrenTemporaryPositionData[i].domElement.nativeElement);
-			}
-			catch (e:Dynamic)
-			{
-				
-			}
+			this._domElement.nativeElement.removeChild(nativeElement);
 		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN NATIVE SETTERS
 	// apply the properties to the native flash DisplayObject
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		super.setNativeX(domElement, x);
-		domElement.nativeElement.x = x;
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		super.setNativeY(domElement, y);
-		domElement.nativeElement.y = y;
-	}
 	
 	override public function setNativeOpacity(opacity:Float):Void
 	{
@@ -150,6 +131,7 @@ class Style extends AbstractStyle
 	 */
 	override public function setNativeMatrix(matrix:Matrix):Void
 	{
+		
 		//concenate the new matrix with the base matrix of the DOMElement
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
 		
@@ -163,6 +145,7 @@ class Style extends AbstractStyle
 		_domElement.nativeElement.transform.matrix = nativeTransformMatrix;
 		
 		super.setNativeMatrix(concatenatedMatrix);
+		
 	}
 #if (flash9)	
 	/////////////////////////////////
@@ -227,32 +210,29 @@ class Style extends AbstractStyle
 		if (_fontMetrics == null)
 		{
 			var textField:TextField = new TextField();
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			
 			var textFormat:TextFormat = new TextFormat();
 			textFormat.size = _computedStyle.fontSize;
 			textFormat.font = getNativeFontFamily(this._fontFamily);
 			
-			textField.text = "X";
-			
-			
-			/**var textLineMetrics:TextLineMetrics = textField.getLineMetrics();
-			
-		
-			var ascent:Float = textLineMetrics.ascent;
-			var descent:Float = textLineMetrics.descent;
+			textField.setTextFormat(textFormat);
 			
 			textField.text = "x";
-			textLineMetrics = textField.getLineMetrics();
 			
-			var xHeight:Int = textLineMetrics.height;
+			var ascent:Float = textField.textHeight;
+			
+			textField.text = ",";
+			
+			var descent:Float = textField.textHeight;
+			
+			textField.text = "x";
+			
+			var xHeight:Int = Math.round(textField.textHeight);
 		
-			textField.text = " ";
-			textLineMetrics = textField.getLineMetrics();
-			var spaceWidth:Int = textLineMetrics.width;
-			*/
-			var ascent:Float = 12;
-			var descent:Float = 12;
-			var xHeight:Int = 5;
-			var spaceWidth:Int = 8;
+			textField.text = "M";
+			var spaceWidth:Int = Math.round(textField.textWidth);
+			
 			
 			_fontMetrics = {
 				fontSize:_computedStyle.fontSize,
@@ -264,21 +244,44 @@ class Style extends AbstractStyle
 				subscriptOffset:1,
 				underlineOffset:1
 			};
-			/**
-			_fontMetrics = {
-				fontSize:10.0,
-				ascent:5,
-				descent:5,
-				xHeight:10,
-				spaceWidth:10,
-				superscriptOffset:1,
-				subscriptOffset:1,
-				underlineOffset:1
-			};*/
 		}
 		
 		return _fontMetrics;
 		
+	}
+	
+	/**
+	 * TODO : in nme only one font is supported
+	 */
+	private function getNativeFontFamily(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamily:String = "";
+		
+
+		var fontName:String;
+		
+		switch (value[0])
+		{
+			case FontFamilyStyleValue.familyName(name):
+				fontName = name;
+			
+			case FontFamilyStyleValue.genericFamily(genericName):
+				switch (genericName)
+				{
+					case GenericFontFamilyValue.serif:
+						fontName = SERIF_GENERIC_FONT_NAME;
+					
+					case GenericFontFamilyValue.sansSerif:
+						fontName = SANS_SERIF_GENERIC_FONT_NAME;
+						
+					case GenericFontFamilyValue.monospace:
+						fontName = MONOSPACE_GENERIC_FONT_NAME;
+				}
+		}
+		
+		
+		
+		return fontName;
 	}
 	
 #end	
@@ -322,7 +325,6 @@ class Style extends AbstractStyle
 		
 		return nativeFontWeight;
 	}
-#end	
 	/**
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
@@ -370,7 +372,6 @@ class Style extends AbstractStyle
 		
 		return fontFamily;
 	}
-#if flash9	
 	/**
 	 * return the x height of the font which is equal to 
 	 * the height of a lower-case 'x'.

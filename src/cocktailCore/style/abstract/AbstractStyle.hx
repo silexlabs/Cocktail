@@ -10,7 +10,10 @@ package cocktailCore.style.abstract;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
+import cocktailCore.background.BackgroundManager;
+import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -30,15 +33,25 @@ import cocktailCore.style.positioner.RelativePositioner;
 import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.FlowBoxRenderer;
+import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
 import haxe.Timer;
 
 /**
  * This is the base class for all Style classes. Style classes
  * are in charge of storing the style value for a DOMElement
- * and applying them when neccessary.
+ * and applying them.
  * 
  * This class holds a reference to the styled DOMElement.
+ * 
+ * During the layout, a rendering tree, paralleling the DOM tree
+ * is built. The rendering tree contains objects of type
+ * ElementRenderer. For instance, a ContainerStyle with TextElement
+ * children will build a tree containing TextRenderer and BlockBoxRenderer
+ * or InlineBoxRenderer.
+ * Those objects know how to render themselves.
  * 
  * Styling is done in 2 phases : 
  * - first the styles of the DOMElement are computed into
@@ -47,9 +60,8 @@ import haxe.Timer;
  * abstract rendering tree of the element is built, containing
  * an array of all its children (background, border, other DOMElements...)
  * ordered by z-index
- * - once all the styles are computed and the rendering tree is ready, 
- * it is applied using runtime specific API. For instance in flash, all
- * the children are added using native addchild() method
+ * - once all the styles are computed and the rendering tree is ready, it
+ * renders itself
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -75,12 +87,6 @@ class AbstractStyle
 	
 	private var _clear:ClearStyleValue;
 	public var clear(getClear, setClear):ClearStyleValue;
-	
-	private var _opacity:OpacityStyleValue;
-	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
-	
-	private var _visibility:VisibilityStyleValue;
-	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
 	
 	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
@@ -133,6 +139,30 @@ class AbstractStyle
 	public var right(getRight, setRight):PositionOffsetStyleValue;
 	
 	/**
+	 * background styles
+	 */
+	private var _backgroundColor:BackgroundColorStyleValue;
+	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
+	
+	private var _backgroundImage:Array<BackgroundImageStyleValue>;
+	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
+	
+	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
+	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
+	
+	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
+	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
+	
+	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
+	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
+	
+	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
+	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
+	
+	private var _backgroundClip:Array<BackgroundClipStyleValue>;
+	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
+	
+	/**
 	 * font styles
 	 */
 	private var _fontSize:FontSizeStyleValue;
@@ -180,6 +210,18 @@ class AbstractStyle
 	private var _verticalAlign:VerticalAlignStyleValue;
 	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
 	
+	/**
+	 * visual effect styles
+	 */
+	private var _opacity:OpacityStyleValue;
+	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	
+	private var _visibility:VisibilityStyleValue;
+	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	
+	private var _overflow:OverflowStyleData;
+	public var overflow(getOverflow,  setOverflow):OverflowStyleData;
+	
 	////////////////////////////////
 	
 	/**
@@ -200,8 +242,8 @@ class AbstractStyle
 	/**
 	 * Returns metrics info for the currently defined
 	 * font and font size. Used in inline formatting context
-	 * to determine lineBoxes sizes and text vertical
-	 * alignement
+	 * to determine lineBoxes sizes and text vertical and horizontal
+	 * position
 	 */
 	private var _fontMetrics:FontMetricsData;
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
@@ -265,12 +307,19 @@ class AbstractStyle
 	private var _nativeMatrix:Matrix;
 	
 	/**
-	 * Stores an array of DOMElements which must be added as child of the
-	 * domElement wrapped by this Style along with the x and y coordinates
-	 * they must have in this domElement coordinate space. The array order
-	 * is the same as the z-index of the children
+	 * keep references to each of the nativeElements which
+	 * are attached to this styled DOMElement. Those
+	 * can be background images, colors, nativeElements
+	 * of other DOMElements...
 	 */
-	private var _childrenTemporaryPositionData:Array<ChildTemporaryPositionData>;
+	private var _nativeElements:Array<NativeElement>;
+	
+	/**
+	 * A reference to the rendering tree node created by this
+	 * DOM tree node
+	 */
+	private var _elementRenderer:ElementRenderer;
+	public var elementRenderer(getElementRenderer, never):ElementRenderer;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -278,7 +327,7 @@ class AbstractStyle
 	
 	/**
 	 * Class constructor. Stores the target DOMElement.
-	 * Init eh class attributes
+	 * Init the class attributes
 	 * 
 	 * The style is invalid by default and will be updated
 	 * when the DOMElement is added to the DOM.
@@ -287,7 +336,8 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._childrenTemporaryPositionData = new Array<ChildTemporaryPositionData>();
+		this._nativeElements = new Array<NativeElement>();
+		
 		initDefaultStyleValues();
 	}
 	
@@ -331,6 +381,24 @@ class AbstractStyle
 		this.floatValue = FloatStyleValue.none;
 		this.clear = ClearStyleValue.none;
 		
+		this.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.transparent);
+		this.backgroundImage = [BackgroundImageStyleValue.none];
+		this.backgroundRepeat = [{
+			x:BackgroundRepeatStyleValue.repeat,
+			y:BackgroundRepeatStyleValue.repeat
+		}];
+		this.backgroundPosition = [{
+			x:BackgroundPositionXStyleValue.percent(0),
+			y:BackgroundPositionYStyleValue.percent(0)
+		}];
+		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
+		this.backgroundSize = [
+			BackgroundSizeStyleValue.dimensions({
+				x:BackgroundSizeStyleDimensionValue.autoValue,
+				y:BackgroundSizeStyleDimensionValue.autoValue
+			})];
+		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
+		
 		this.fontStyle = FontStyleStyleValue.normal;
 		this.fontVariant = FontVariantStyleValue.normal;
 		this.fontWeight = FontWeightStyleValue.normal;
@@ -345,6 +413,10 @@ class AbstractStyle
 		
 		this.visibility = VisibilityStyleValue.visible;
 		this.opacity = OpacityStyleValue.number(1.0);
+		this.overflow = {
+			x:OverflowStyleValue.visible,
+			y:OverflowStyleValue.visible
+		}
 		
 		this.transformOrigin = {
 			x:TransformOriginXStyleValue.center,
@@ -399,11 +471,19 @@ class AbstractStyle
 			textIndent:0,
 			whiteSpace:WhiteSpaceStyleValue.normal,
 			textAlign:TextAlignStyleValue.left,
-			color:0,
+			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
+			overflow:{x:OverflowStyleValue.visible, y:OverflowStyleValue.visible},
 			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix()
+			transform:new Matrix(),
+			backgroundColor:{color:0, alpha:1.0},
+			backgroundSize:[],
+			backgroundOrigin:[],
+			backgroundImage:[],
+			backgroundClip:[],
+			backgroundPosition:[],
+			backgroundRepeat:[]
 		};
 	}
 	
@@ -441,34 +521,16 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render all the children in the
-	 * childrenTemporaryPositionData array
-	 * by attaching them to the DOM using
-	 * runtime specific API and setting
-	 * their native properties
-	 */
-	public function render():Void
+	 * Start the rendering of the rendering tree
+	 * and attach the resulting nativeElement (background,
+	 * border, embedded asset...) to the provided
+	 * nativeElement
+	 */ 
+	public function render(nativeElement:NativeElement):Void
 	{
-		for (i in 0..._childrenTemporaryPositionData.length)
-		{
-			//apply x and y
-			_childrenTemporaryPositionData[i].domElement.style.setNativeX(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].x + _computedStyle.marginLeft + _computedStyle.paddingLeft);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeY(_childrenTemporaryPositionData[i].domElement, _childrenTemporaryPositionData[i].y + _computedStyle.marginTop + _computedStyle.paddingTop);
-			
-			//apply width and height
-			_childrenTemporaryPositionData[i].domElement.style.setNativeHeight(_childrenTemporaryPositionData[i].domElement.style.computedStyle.height);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeWidth(_childrenTemporaryPositionData[i].domElement.style.computedStyle.width);
-		
-			//apply transformations
-			_childrenTemporaryPositionData[i].domElement.style.setNativeMatrix(_childrenTemporaryPositionData[i].domElement.style.computedStyle.transform);
-			
-			//apply opacity and visibility
-			_childrenTemporaryPositionData[i].domElement.style.setNativeOpacity(_childrenTemporaryPositionData[i].domElement.style.computedStyle.opacity);
-			_childrenTemporaryPositionData[i].domElement.style.setNativeVisibility(_childrenTemporaryPositionData[i].domElement.style.computedStyle.visibility);
-		
-			//attach the child
-			attachChild(_childrenTemporaryPositionData[i].domElement);
-		}
+		_nativeElements = _elementRenderer.layerRenderer.render();
+		_nativeElements.reverse();
+		attachNativeElements(_nativeElements);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -476,23 +538,74 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Attach a child to the NativeElement of the 
+	 * Attach a NativeElement to the
 	 * styled DOMElement using runtime specific API
-	 */
-	private function attachChild(domElement:DOMElement):Void
+	 */ 
+	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * Detach all the children previously
-	 * attached with the render() method
-	 * when a new layout occurs using
-	 * runtime specific API
+	 * Remove a NativeElement from the
+	 * styled DOMElement using runtime specific API
 	 */
-	private function detachChildren():Void
+	private function detachNativeElement(nativeElement:NativeElement):Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			attachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Create and return the right ElementRenderer for this DOMElement
+	 */
+	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
+	{
+		return null;
+	}
+	
+	/**
+	 * An ElementRenderer can either create a new layer to render its children or
+	 * use the one of its parent. 
+	 */
+	private function getLayerRenderer(elementRenderer:ElementRenderer, parentElementRenderer:ElementRenderer):LayerRenderer
+	{
+		var layerRenderer:LayerRenderer;
+		
+		//positioned elements always create a new layer
+		if (isPositioned() == true)
+		{
+			layerRenderer = new LayerRenderer(elementRenderer);
+		}
+		else
+		{
+			layerRenderer = parentElementRenderer.layerRenderer;
+		}
+		
+		return layerRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -524,7 +637,7 @@ class AbstractStyle
 	 * its parent flow and "positioned" DOMElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
 	 * ancestor.
 	 * 
-	 * The DOMElement first compute its own styles (box model, font, text...), then insert itself into the document based 
+	 * The DOMElement first compute its own styles (box model, font, text...), then insert its ElementRenderer into the document based 
 	 * on its positioning scheme.
 	 * 
 	 * This method is called recursively on every children of the DOMElement if it has any
@@ -538,32 +651,25 @@ class AbstractStyle
 	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
 	 * to position their DOMElement
 	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
-	 * @param	formatingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
-	 * formatingContext to be placed in the document flow
+	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
+	 * formattingContext to be placed in the document flow
+	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
-	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Void
+	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{
 		//first detach all previously added children
-		detachChildren();
+		detachNativeElements(_nativeElements);
+		
+		if (_elementRenderer != null && parentElementRenderer != null)
+		{
+			parentElementRenderer.removeChild(_elementRenderer);
+		}
 		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
 		if (isNotDisplayed() == true)
 		{
-			//hide the DOMElement
-			setNativeVisibility(false);
 			return;
-		}
-		else
-		{
-			setNativeVisibility(true);
-		}
-		
-		//clear preceding left floats, right floats
-		//or both
-		if (isClear() == true)
-		{
-			formatingContext.clearFloat(this._computedStyle.clear, isFloat());
 		}
 
 		//reset the computed styles, useful for instance to
@@ -575,9 +681,11 @@ class AbstractStyle
 		//compute all the styles of a DOMElement
 		computeDOMElementStyles(containingDOMElementData, viewportData, lastPositionedDOMElementData.data, containingDOMElementFontMetricsData);
 		
-		//flow all the children of the DOMElement if it has any and store the returned array containing
-		//each of their laid out positions in this domElement coordinate space
-		_childrenTemporaryPositionData = flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formatingContext);
+		//the DOMElement creates its own ElementRenderer
+		_elementRenderer = createElementRenderer(parentElementRenderer);
+		
+		//flow all the children of the DOMElement if it has any
+		flowChildren(containingDOMElementData, viewportData, lastPositionedDOMElementData, containingDOMElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the domElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -586,11 +694,18 @@ class AbstractStyle
 		//to determine the transformation center
 		computeVisualEffectStyles();
 		
+		//some text and font styles needs to be re-computed now that all the dimension
+		//of the DOMElement are known, for instance some values of the VerticalAlign style
+		//might need those dimensions to compute the right values
 		computeTextAndFontStyles(containingDOMElementData, containingDOMElementFontMetricsData);
 		
+		//compute the background styles which can be computed at this time,
+		//such as the background color, most of the background styles will be computed
+		//during the rendering
+		computeBackgroundStyles();
 		
 		//insert the DOMElement in its parent's formatting context based on its positioning scheme
-		insertDOMElement(formatingContext, lastPositionedDOMElementData, viewportData);
+		insertDOMElement(formattingContext, lastPositionedDOMElementData, viewportData);
 		
 		//The DOMElement has been laid out and is now valid
 		this._isDirty = false;
@@ -605,43 +720,37 @@ class AbstractStyle
 	 * @param viewportData
 	 * @param staticPosition the x,y position that the DOMElement would have had if it were 'in-flow'
 	 */
-	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):ChildTemporaryPositionData
+	public function positionElement(lastPositionedDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
 		//instantiate the right positioner
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
-		
-		//will return the position of the DOMElement when once it is computed
-		var childTemporaryPositionData:ChildTemporaryPositionData;
 		
 		switch (this._domElement.style.computedStyle.position)
 		{
 			//positioned 'relative' DOMElement
 			case relative:
 				positioner = new RelativePositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 			
 			//positioned 'fixed' DOMElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, viewportData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
 				
 			//positioned 'absolute' DOMElement	
 			case absolute:
 				positioner = new AbsolutePositioner();
-				childTemporaryPositionData = positioner.position(this._domElement, lastPositionedDOMElementData, staticPosition);
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedDOMElementData, staticPosition);
 				
-			default:	
-				positioner = new AbsolutePositioner();
-				childTemporaryPositionData = {
-					domElement:domElement,
-					x:0,
-					y:0,
-					lineIndex:0
-				};
+			default:
 		}
 		
-		return childTemporaryPositionData;
+		//TODO : where to put it ?
+		_elementRenderer.bounds.width = _domElement.offsetWidth;
+		_elementRenderer.bounds.height = _domElement.offsetHeight;
+		
+		return _elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -663,64 +772,47 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Flow all the children of a DOMElement if it has any, and return 
-	 * the positions of the flowed children
+	 * Flow all the children of a DOMElement if it has any
 	 */
-	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formatingContext:FormattingContext):Array<ChildTemporaryPositionData>
+	private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		return new Array<ChildTemporaryPositionData>();
+		
 	}
 	
 	/**
 	 * Insert the DOMElement in the document, in or out of the flow.
 	 * 
-	 * @param	formatingContext the formating context into which the DOMElement insert itself if it
+	 * @param	formattingContext the formatting context into which the DOMElement insert itself if it
 	 * is 'in flow'
 	 * @param	lastPositionedDOMElementData
 	 * @param	viewportData
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		//insert in formating context as a float
-		if (isFloat() == true)
-		{
-			formattingContext.insertFloat(this._domElement, this._domElement.parent);
-		}
 		//insert in the flow
-		else if (isPositioned() == false)
+		if (isPositioned() == false)
 		{
-			insertInFlowDOMElement(formattingContext);
+			formattingContext.insertElement(_elementRenderer);
 		}
 		//else the DOMElement is positioned
 		else
 		{
+
+			//To retrieve the static position, the formatting context must be formatted now
+			//TODO : no need anymore once implemented in getStaticPosition
+			formattingContext.format();
+			
 			//retrieve the static position (the position of the DOMElement
-			//if its position style was 'static'
-			var x:Float = 0;
-			var y:Float = 0;
-			
-			/**
-			 * TO DO: clean up, formatting context not
-			 * supposed to be null here
-			 */
-			if (formattingContext != null)
-			{
-				x = formattingContext.formattingContextData.x;
-				y = formattingContext.formattingContextData.y;
-			}
-			
-			var staticPosition:PointData = {
-				x:x,
-				y:y
-			}
-			
-			//insert in the flow
+			//if its position style were 'static')
+			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
+			//a relative DOMElement is both inserted in the flow
+			//and positioned
+			//
+			//TODO : relative element are not placed correctly when a margin is applied to the formatting
+			//context root
 			if (isRelativePositioned() == true)
 			{
-				//TO DO : 
-				//with this method the relative DOMElement will be added to display list twice,
-				//which will work in flash but is not clean
-				insertInFlowDOMElement(formattingContext);
+				formattingContext.insertElement(_elementRenderer);
 			}
 			
 			//insert as a positioned DOMElement.
@@ -728,31 +820,20 @@ class AbstractStyle
 			//wait for its first positioned ancestor to be laid out. The reason is that
 			//if the positioned ancestor height is 'auto', the height of the positioned
 			//ancestor is not yet determined and so this DOMElement can't be positioned
-			//using the bottom style yet. Once the first ancestor is laid out, it
-			//calls the positionElement method on all the stored children
+			//using the bottom or right style yet. Once the first ancestor is laid out, it
+			//calls the positionElement method on all the stored positioned children
 			//
 			//relative positioned DOMElement are also stored in that array
-			
+			//
+			//TODO : shouldn't have to store a ref to this.
+			//TODO : store static position on ElementRenderer ?
 			var positionedDOMElementData:PositionedDOMElementData = {
 				staticPosition:staticPosition,
-				style:this,
-				formattingContext:formattingContext
+				style:this
 			}
 			
 			//store the DOMElement to be positioned later
 			lastPositionedDOMElementData.children.push(positionedDOMElementData);
-		}
-	}
-	
-	/**
-	 * Do insert an inflow DOMElement into the document. Method added to allow
-	 * overriding for some inherithing class
-	 */
-	private function insertInFlowDOMElement(formattingContext:FormattingContext):Void
-	{
-		if (this._domElement.parent != null)
-		{
-			formattingContext.insert(this._domElement, this._domElement.parent, true);
 		}
 	}
 	
@@ -819,23 +900,23 @@ class AbstractStyle
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	// Those method allow for
-	// the re-layout of only a part of the DOM tree
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * When a style invalidating the text is called
 	 * (font size, font weight...), the font metrics
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
 	 */
-	private function invalidateText():Void
+	public function invalidateText():Void
 	{
 		_fontMetrics = null;
 		invalidate();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	// Those method allow for
+	// the re-layout of only a part of the DOM tree
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When a position offset style changes (top, left, 
@@ -864,18 +945,13 @@ class AbstractStyle
 	
 	/**
 	 * Determine wheter the parent of the DOMElement needs
-	 * to be dirtied too. In some cases, for instance
-	 * if the DOMElement is absolutely positioned, dirtiyng
-	 * its parent isn't necessary
+	 * to be dirtied too. 
+	 * 
+	 * TODO : implement this method
 	 */
 	private function isParentDirty():Bool
 	{
 		var ret:Bool = true;
-		
-		if (this.isPositioned() == true && this.isRelativePositioned() == false)
-		{
-			ret = false;
-		}
 		
 		return ret;
 	}
@@ -893,7 +969,8 @@ class AbstractStyle
 	 * It is public as it may be called by the
 	 * ContainerStyle of the parent DOMElement
 	 * which may need to known the display style of its
-	 * children to determine its formatting context
+	 * children to determine which type of formatting context
+	 * to establish for its children
 	 */
 	public function computeDisplayStyles():Void
 	{
@@ -906,12 +983,22 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Computes the styles determining the background
+	 * color, images... of a DOMElement
+	 */
+	private function computeBackgroundStyles():Void
+	{
+		BackgroundStylesComputer.compute(this);
+	}
+	
+	/**
 	 * Compute first the styles determining the DOMElement's
 	 * positioning scheme (position, float, clear...),
 	 * the style detemining font and text display,
 	 * then the styles determining its box model (width, height, margins
 	 * paddings...) which are computed last because they may use
-	 * some font metrics to compute the box model
+	 * some font metrics to compute the box model, for instance
+	 * when a dimension is defined with an 'em' unit
 	 */
 	private function computeDOMElementStyles(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
@@ -957,6 +1044,9 @@ class AbstractStyle
 	 * instantiate the right box computer class
 	 *	based on the DOMElement's positioning
 	 *	scheme
+	 * 
+	 * TODO : does abstractStyle implement embedded or container ?
+	 * Currently it does both depending on methods
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{
@@ -1045,17 +1135,6 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine if the DOMElement is an embeded (replaced)
-	 * DOMElement. For example an ImageDOMElement is an
-	 * embedded DOMElement as it embeds a picture in the
-	 * document. An embedded DOMElement can't have children
-	 */
-	public function isEmbedded():Bool
-	{
-		return false;
-	}
-	
-	/**
 	 * Determine if the DOMElement is a floated
 	 * DOMElement. A floated DOMElement is first
 	 * placed in the flow then moved to the
@@ -1138,6 +1217,54 @@ class AbstractStyle
 		return this._computedStyle.position == relative;
 	}
 	
+	/**
+	 * Determine if all the children of the 
+	 * DOMElement are inline-level. 
+	 * Default is false when the DOMElement
+	 * can't have children
+	 */
+	public function childrenInline():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * An inline-level DOMElement is one that is
+	 * laid out on a line. It will be placed
+	 * either next to the preceding DOMElement
+	 * or on a new line if the current line
+	 * is too short to host it.
+	 * 
+	 * Wheter an element is inline-level is determined
+	 * by its display style
+	 */
+	public function isInlineLevel():Bool
+	{
+		var ret:Bool = false;
+		
+		switch (this._computedStyle.display) 
+		{
+			case inlineStyle, inlineBlock:
+				ret = true;
+			
+			default:
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Wheter this DOMElement starts a new
+	 * formatting context for its children.
+	 * Default is false as only ContainerDOMElements
+	 * can start new formatting context
+	 */
+	public function establishesNewFormattingContext():Bool
+	{
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1176,33 +1303,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * An inline-level DOMElement is one that is
-	 * laid out on a line. It will be placed
-	 * either next to the preceding DOMElement
-	 * or on a new line if the current line
-	 * is too short to host it.
-	 * 
-	 * Wheter an element is inline-level is determined
-	 * by its display style
-	 */
-	private function isInlineLevel():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.display) 
-		{
-			case inlineStyle, inlineBlock:
-				ret = true;
-			
-			default:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Get the data (dimensions and positions) of the first ancestor
+	 * Get the dimensions of the first ancestor
 	 * of the styled DOMElement which is positioned
 	 */
 	private function getFirstPositionedAncestorData():ContainingDOMElementData
@@ -1245,6 +1346,7 @@ class AbstractStyle
 	/**
 	 * Retrieve the data of the viewport. The viewport
 	 * origin is always to the top left of the window
+	 * displaying the document
 	 */
 	private function getViewportData():ContainingDOMElementData
 	{
@@ -1449,6 +1551,11 @@ class AbstractStyle
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getElementRenderer():ElementRenderer
+	{
+		return _elementRenderer;
+	}
 	
 	private function getFontMetricsData():FontMetricsData
 	{
@@ -1718,6 +1825,13 @@ class AbstractStyle
 		return _transform = value;
 	}
 	
+	private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	{
+		invalidate();
+		return _overflow = value;
+	}
+	
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -1920,5 +2034,80 @@ class AbstractStyle
 	private function getTransformOrigin():TransformOriginStyleData
 	{
 		return _transformOrigin;
+	}
+	
+	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	{
+		return _backgroundColor = value;
+	}
+	
+	private function getBackgroundColor():BackgroundColorStyleValue
+	{
+		return _backgroundColor;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	{
+		return _backgroundImage = value;
+	}
+	
+	private function getBackgroundImage():Array<BackgroundImageStyleValue>
+	{
+		return _backgroundImage;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundRepeat = value;
+	}
+	
+	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
+	{
+		return _backgroundRepeat;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundSize = value;
+	}
+	
+	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
+	{
+		return _backgroundSize;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	{
+		return _backgroundClip = value;
+	}
+	
+	private function getBackgroundClip():Array<BackgroundClipStyleValue>
+	{
+		return _backgroundClip;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	{
+		return _backgroundPosition = value;
+	}
+	
+	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
+	{
+		return _backgroundPosition;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundOrigin = value;
+	}
+	
+	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
+	{
+		return _backgroundOrigin;
+	}
+	
+	private function getOverflow():OverflowStyleData
+	{
+		return _overflow;
 	}
 }
