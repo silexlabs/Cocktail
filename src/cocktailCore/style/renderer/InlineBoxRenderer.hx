@@ -1,6 +1,7 @@
 package cocktailCore.style.renderer;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
@@ -12,9 +13,9 @@ import haxe.Log;
 class InlineBoxRenderer extends FlowBoxRenderer
 {
 
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		super(domElement);
+		super(style);
 	}
 	
 	override public function render():Array<NativeElement>

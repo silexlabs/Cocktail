@@ -61,8 +61,8 @@ class LayerRenderer
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 	
 		
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.domElement.style.isInlineLevel() == false
-		|| _rootRenderer.domElement.style.display == inlineBlock)
+		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.style.isInlineLevel() == false
+		|| _rootRenderer.style.display == inlineBlock)
 		{
 				var childLayers:Array<NativeElement> = renderChildLayer();
 
@@ -217,7 +217,7 @@ class LayerRenderer
 			if (rootRenderer.children[i].layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (rootRenderer.children[i].canHaveChildren() == true && rootRenderer.children[i].domElement.style.display != inlineBlock)
+				if (rootRenderer.children[i].canHaveChildren() == true && rootRenderer.children[i].style.display != inlineBlock)
 				{
 					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(rootRenderer.children[i]), referenceLayer);
 					for (j in 0...childElementRenderer.length)
@@ -250,7 +250,7 @@ class LayerRenderer
 		for (i in 0...inFlowChildren.length)
 		{
 			var nativeElements:Array<NativeElement> = [];
-			if (inFlowChildren[i].domElement.style.display == inlineBlock)
+			if (inFlowChildren[i].style.display == inlineBlock)
 			{
 				//TODO : add missing rendering bits
 				//TODO : manage the case where inline-block is a replaced element
@@ -321,7 +321,7 @@ class LayerRenderer
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.domElement.style.childrenInline() == true)
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.style.childrenInline() == true)
 		{
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			

@@ -11,6 +11,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.drawing.DrawingManager;
 import cocktail.geom.GeomData;
+import cocktailCore.style.Style;
 
 /**
  * This is the base class for element renderers.
@@ -45,11 +46,11 @@ class ElementRenderer
 	public var bounds(getBounds, setBounds):RectangleData;
 	
 	/**
-	 * A reference to the DOMElement which instantiated
+	 * A reference to the Style which instantiated
 	 * the ElementRenderer
 	 */
-	private var _domElement:DOMElement;
-	public var domElement(getDOMElement, never):DOMElement;
+	private var _style:Style;
+	public var style(getStyle, never):Style;
 	
 	/**
 	 * A reference to the parent ElementRenderer
@@ -67,12 +68,12 @@ class ElementRenderer
 	
 	/**
 	 * class constructor. init class attribute
-	 * @param	domElement the DOMElement which created
+	 * @param	domElement the Style which created
 	 * the ElementRenderer
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		_domElement = domElement;
+		_style = style;
 		_bounds = {
 			x:0.0,
 			y:0.0,
@@ -106,7 +107,7 @@ class ElementRenderer
 	public function dispose():Void
 	{
 		_bounds = null;
-		_domElement = null;
+		_style = null;
 		_parent = null;
 		_layerRenderer.dispose();
 		_layerRenderer = null;
@@ -128,12 +129,12 @@ class ElementRenderer
 	
 	public function isFloat():Bool
 	{
-		return _domElement.style.isFloat();
+		return _style.isFloat();
 	}
 	
 	public function isPositioned():Bool
 	{
-		return _domElement.style.isPositioned();
+		return _style.isPositioned();
 	}
 	
 	public function isEmbedded():Bool
@@ -175,9 +176,9 @@ class ElementRenderer
 		return _layerRenderer;
 	}
 	
-	private function getDOMElement():DOMElement
+	private function getStyle():Style
 	{
-		return _domElement;
+		return _style;
 	}
 	
 	private function getParent():FlowBoxRenderer

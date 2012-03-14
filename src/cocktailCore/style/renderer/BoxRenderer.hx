@@ -10,6 +10,7 @@ package cocktailCore.style.renderer;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.background.BackgroundManager;
+import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
@@ -30,9 +31,9 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		super(domElement);
+		super(style);
 		_backgroundManager = new BackgroundManager();
 	}
 	
@@ -53,7 +54,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function renderBackground():Array<NativeElement>
 	{
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _domElement.style);
+		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _style);
 		
 		for (i in 0...backgrounds.length)
 		{

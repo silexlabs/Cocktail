@@ -10,6 +10,7 @@ package cocktailCore.style.renderer;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
@@ -33,9 +34,9 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		super(domElement);
+		super(style);
 		_children = new Array<ElementRenderer>();
 	}
 	
@@ -97,7 +98,7 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	override public function establishesNewFormattingContext():Bool
 	{
-		return _domElement.style.establishesNewFormattingContext();
+		return _style.establishesNewFormattingContext();
 	}
 	
 	override public function isEmbedded():Bool

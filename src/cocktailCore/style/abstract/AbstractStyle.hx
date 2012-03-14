@@ -455,7 +455,7 @@ class AbstractStyle
 	 */
 	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(cast(this));
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
 		parentElementRenderer.addChild(elementRenderer);

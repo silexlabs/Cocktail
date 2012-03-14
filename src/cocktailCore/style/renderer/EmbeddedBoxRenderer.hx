@@ -11,6 +11,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.StyleData;
+import cocktailCore.style.Style;
 import haxe.Log;
 
 /**
@@ -27,11 +28,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * of the element, as for embedded element
 	 * they are intrinsic to the embeddded asset
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(style:Style) 
 	{
-		super(domElement);
-		_bounds.width = domElement.offsetWidth;
-		_bounds.height = domElement.offsetHeight;
+		super(style);
+		_bounds.width = style.domElement.offsetWidth;
+		_bounds.height = style.domElement.offsetHeight;
 	}
 	
 	/**
@@ -43,16 +44,16 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		var ret:Array<NativeElement> = [];
 		
-		var embeddedDOMElement:EmbeddedDOMElement = cast(_domElement);
+		var embeddedDOMElement:EmbeddedDOMElement = cast(_style.domElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
 		
 		
 		#if (flash9 || nme)
-		embeddedDOMElement.embeddedAsset.x = _bounds.x + _domElement.style.computedStyle.paddingLeft + _domElement.style.computedStyle.marginLeft;
-		embeddedDOMElement.embeddedAsset.y = _bounds.y + _domElement.style.computedStyle.paddingTop + _domElement.style.computedStyle.marginTop;
+		embeddedDOMElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
+		embeddedDOMElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop + _style.computedStyle.marginTop;
 
-		embeddedDOMElement.embeddedAsset.width = _domElement.style.computedStyle.width;
-		embeddedDOMElement.embeddedAsset.height = _domElement.style.computedStyle.height;
+		embeddedDOMElement.embeddedAsset.width = _style.computedStyle.width;
+		embeddedDOMElement.embeddedAsset.height = _style.computedStyle.height;
 		#end
 		
 		//TODO : apply transformations, opacity and visibility

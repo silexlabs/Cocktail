@@ -30,8 +30,6 @@ import cocktailCore.domElement.js.DOMElement;
  * A TextElement is a reference to a simple string of text which takes the visual style of its ContainerDOMElement. A TextElement can't have children.
  * Each ContainerDOMElement represents a semantic element in the DOMElement tree.
  * 
- * TODO : update doc
- * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractContainerDOMElement extends DOMElement

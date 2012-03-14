@@ -63,7 +63,8 @@ class BoxPositioner
 	 */
 	public function position(elementRenderer:ElementRenderer, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
-		var domElement:DOMElement = elementRenderer.domElement;
+		//TODO : refactor
+		var domElement:DOMElement = elementRenderer.style.domElement;
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first

@@ -85,11 +85,11 @@ class AbstractContainerStyle extends Style
 		
 		if (isInlineLevel() == true && establishesNewFormattingContext() == false)
 		{
-			elementRenderer = new InlineBoxRenderer(_domElement);
+			elementRenderer = new InlineBoxRenderer(this);
 		}
 		else
 		{
-			elementRenderer = new BlockBoxRenderer(_domElement);
+			elementRenderer = new BlockBoxRenderer(this);
 		}
 		
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);

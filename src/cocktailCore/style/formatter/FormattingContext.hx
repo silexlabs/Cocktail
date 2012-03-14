@@ -99,7 +99,7 @@ class FormattingContext
 	{
 		//store a reference to the DOMElement starting the formatting context
 		_formattingContextRoot = formattingContextRoot;
-		_formattingContextRootWidth = _formattingContextRoot.domElement.style.computedStyle.width;
+		_formattingContextRootWidth = _formattingContextRoot.style.computedStyle.width;
 		
 		//will store the data of the floated DOMElement of this
 		//formatting context
@@ -197,7 +197,7 @@ class FormattingContext
 		}
 		else if (element.canHaveChildren() == true)
 		{
-			if (element.domElement.style.establishesNewFormattingContext() == true)
+			if (element.style.establishesNewFormattingContext() == true)
 			{
 				insertFormattingContextRootElement(element);
 			}
