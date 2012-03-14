@@ -55,13 +55,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		embeddedDOMElement.embeddedAsset.height = _domElement.style.computedStyle.height;
 		#end
 		
-		//apply transformations
-		//setNativeMatrix(_computedStyle.transform);
+		//TODO : apply transformations, opacity and visibility
 		
-		//apply opacity and visibility
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
-		//_domElement.style.setNativeOpacity(_domElement.style.computedStyle.opacity);
-		//_domElement.style.setNativeVisibility(_domElement.style.computedStyle.visibility);
 		
 		return ret;
 	}
