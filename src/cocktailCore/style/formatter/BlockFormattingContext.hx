@@ -11,6 +11,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
@@ -32,9 +33,9 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
-		super(domElement);
+		super(formattingContextRoot);
 	}
 	
 
@@ -43,9 +44,9 @@ class BlockFormattingContext extends FormattingContext
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		_formattingContextData = initFormattingContextData();
 		var currentAddedSiblingsHeight:Int = 0;
-		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
+		_lastInsertedElement = _formattingContextRoot.domElement.style.elementRenderer;
 
 		var elementsInColumn = new Array<ElementRenderer>();
 		
@@ -101,8 +102,8 @@ class BlockFormattingContext extends FormattingContext
 				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(_elementsInFormattingContext[i].bounds.width), Math.round(_elementsInFormattingContext[i].parent.bounds.width));
 			
 			
-				elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
-				elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
+				elementsInFormattingContext[i].bounds.y += _formattingContextRoot.domElement.style.computedStyle.marginTop +  _formattingContextRoot.domElement.style.computedStyle.paddingTop;
+				elementsInFormattingContext[i].bounds.x +=  _formattingContextRoot.domElement.style.computedStyle.marginLeft +  _formattingContextRoot.domElement.style.computedStyle.paddingLeft;
 				
 			
 			
@@ -132,7 +133,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 		var parent:ElementRenderer = element.parent;
-		while (parent != _containingDOMElement.style.elementRenderer)
+		while (parent != _formattingContextRoot.domElement.style.elementRenderer)
 		{
 			if (parent == ancestor)
 			{

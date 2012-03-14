@@ -230,7 +230,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
-		return new BlockFormattingContext(this._domElement);
+		return new BlockFormattingContext(cast(this._elementRenderer));
 	}
 
 	/**
