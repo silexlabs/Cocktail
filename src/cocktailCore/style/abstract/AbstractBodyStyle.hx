@@ -98,14 +98,12 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	/**
-	 * Overriden because a BodyDOMElement being at the top of the
-	 * DOM tree must always position its absolutely positioned
+	 * overriden as the BodyDOMElement, being at the top of the hierarchy, always position its positioned
 	 * children
 	 */
-	override private function doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor:Bool, childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Array<ElementRenderer>
+	override private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-		isFirstPositionedAncestor = true;
-		return super.doPositionAbsolutelyPositionedDOMElements(isFirstPositionedAncestor, childLastPositionedDOMElementData, viewportData);
+		doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData, viewportData);	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

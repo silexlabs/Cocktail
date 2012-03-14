@@ -595,7 +595,8 @@ class AbstractStyle
 	{
 		var layerRenderer:LayerRenderer;
 		
-		if (isPositioned() == true || isFloat() == true)
+		//positioned elements always create a new layer
+		if (isPositioned() == true)
 		{
 			layerRenderer = new LayerRenderer(elementRenderer);
 		}
@@ -658,6 +659,11 @@ class AbstractStyle
 	{
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
+		
+		if (_elementRenderer != null && parentElementRenderer != null)
+		{
+			parentElementRenderer.removeChild(_elementRenderer);
+		}
 		
 		//do nothing if the DOMElement must not be displayed, i.e, added
 		//to the display list
@@ -740,6 +746,10 @@ class AbstractStyle
 			default:
 		}
 		
+		//TODO : where to put it ?
+		_elementRenderer.bounds.width = _domElement.offsetWidth;
+		_elementRenderer.bounds.height = _domElement.offsetHeight;
+		
 		return _elementRenderer;
 	}
 	
@@ -779,8 +789,6 @@ class AbstractStyle
 	 */
 	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
 	{
-	
-		
 		//insert in the flow
 		if (isPositioned() == false)
 		{
@@ -789,23 +797,16 @@ class AbstractStyle
 		//else the DOMElement is positioned
 		else
 		{
-			//retrieve the static position (the position of the DOMElement
-			//if its position style were 'static')
-			
+
 			//To retrieve the static position, the formatting context must be formatted now
+			//TODO : no need anymore once implemented in getStaticPosition
 			formattingContext.format();
 			
-			//TODO : doc
+			//retrieve the static position (the position of the DOMElement
+			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			
 			//a relative DOMElement is both inserted in the flow
 			//and positioned
-			//
-			//TODO : the only reason to insert the element remaining is to 
-			//position it vertically in an inline formatting context, create a 'stub' element ?
-			//check : will it work for a relaive container DOMElement ? -> doesn't work,
-			//only container moved, not the children neither the background, need to build a rendering
-			//tree of boxData instead of a flat array
 			//
 			//TODO : relative element are not placed correctly when a margin is applied to the formatting
 			//context root
@@ -823,10 +824,12 @@ class AbstractStyle
 			//calls the positionElement method on all the stored positioned children
 			//
 			//relative positioned DOMElement are also stored in that array
+			//
+			//TODO : shouldn't have to store a ref to this.
+			//TODO : store static position on ElementRenderer ?
 			var positionedDOMElementData:PositionedDOMElementData = {
 				staticPosition:staticPosition,
-				style:this,
-				formattingContext:formattingContext
+				style:this
 			}
 			
 			//store the DOMElement to be positioned later
@@ -1041,6 +1044,9 @@ class AbstractStyle
 	 * instantiate the right box computer class
 	 *	based on the DOMElement's positioning
 	 *	scheme
+	 * 
+	 * TODO : does abstractStyle implement embedded or container ?
+	 * Currently it does both depending on methods
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{
@@ -1127,19 +1133,6 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine if the DOMElement is an embeded (replaced)
-	 * DOMElement. For example an ImageDOMElement is an
-	 * embedded DOMElement as it embeds a picture in the
-	 * document. An embedded DOMElement can't have children
-	 * 
-	 * TODO : shouldn't be useful anymore
-	 */
-	public function isEmbedded():Bool
-	{
-		return false;
-	}
 	
 	/**
 	 * Determine if the DOMElement is a floated

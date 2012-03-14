@@ -13,6 +13,9 @@ import cocktail.domElement.DOMElement;
  * 'fixed' DOMElements. They are positioned
  * by using the viewport as origin
  * 
+ * TODO : bug, fixed element use bodyDOMElement dimensions
+ * instead of viewport
+ * 
  * @author Yannick DOMINGUEZ
  */
 class FixedPositioner extends BoxPositioner

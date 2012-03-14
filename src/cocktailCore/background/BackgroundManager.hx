@@ -143,14 +143,7 @@ class BackgroundManager
 			}
 		}
 		
-		for (i in 0...nativeElements.length)
-		{
-			//TODO : don't do that here
-		#if flash9
-		nativeElements[i].x = backgroundBox.x;
-		nativeElements[i].y = backgroundBox.y;
-		#end
-		}
+		
 		
 		
 		

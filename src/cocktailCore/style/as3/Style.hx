@@ -250,6 +250,40 @@ class Style extends AbstractStyle
 		
 	}
 	
+	/**
+	 * TODO : in nme only one font is supported
+	 */
+	private function getNativeFontFamily(value:Array<FontFamilyStyleValue>):String
+	{
+		var fontFamily:String = "";
+		
+
+		var fontName:String;
+		
+		switch (value[0])
+		{
+			case FontFamilyStyleValue.familyName(name):
+				fontName = name;
+			
+			case FontFamilyStyleValue.genericFamily(genericName):
+				switch (genericName)
+				{
+					case GenericFontFamilyValue.serif:
+						fontName = SERIF_GENERIC_FONT_NAME;
+					
+					case GenericFontFamilyValue.sansSerif:
+						fontName = SANS_SERIF_GENERIC_FONT_NAME;
+						
+					case GenericFontFamilyValue.monospace:
+						fontName = MONOSPACE_GENERIC_FONT_NAME;
+				}
+		}
+		
+		
+		
+		return fontName;
+	}
+	
 #end	
 	
 	/////////////////////////////////
@@ -291,7 +325,6 @@ class Style extends AbstractStyle
 		
 		return nativeFontWeight;
 	}
-#end	
 	/**
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
@@ -339,7 +372,6 @@ class Style extends AbstractStyle
 		
 		return fontFamily;
 	}
-#if flash9	
 	/**
 	 * return the x height of the font which is equal to 
 	 * the height of a lower-case 'x'.
