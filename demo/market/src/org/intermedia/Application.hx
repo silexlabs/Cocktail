@@ -14,7 +14,7 @@ class Application
 {
 
 	// application entry point
-	static function main()
+	public static function main()
 	{
 		new Application();
 	}

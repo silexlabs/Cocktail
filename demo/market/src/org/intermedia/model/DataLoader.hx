@@ -31,11 +31,13 @@ class DataLoader
 		trace("error in DataLoader");
 	}*/
 	
-	public function new(?itemsToLoad:Int = 10, ?pageIndex:Int = 1, ?online:Bool=true)
+	//public function new(?itemsToLoad:Int = 10, ?pageIndex:Int = 1, ?online:Bool=true)
+	public function new(?online:Bool=true)
 	{
 		// init private attributes
-		_itemsToLoad = itemsToLoad;
-		_pageIndex = pageIndex;
+		//_itemsToLoad = itemsToLoad;
+		//_pageIndex = pageIndex;
+		_pageIndex = 1;
 		_online = online;
 		
 	}
@@ -46,7 +48,8 @@ class DataLoader
 	 * @param	endIndex
 	 * @param	?callBack
 	 */
-	public function loadCellData(itemsPerPage:Int, ?pageIndex:Int=1, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
+	//public function loadCellData(itemsPerPage:Int, ?pageIndex:Int=1, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
+	public function loadCellData(itemsPerPage:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;

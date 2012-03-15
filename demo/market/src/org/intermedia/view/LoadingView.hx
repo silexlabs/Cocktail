@@ -9,8 +9,6 @@ import cocktail.domElement.ImageDOMElement;
 import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
 
-import feffects.Tween;
-
 
 /**
  * This class defines the loading view, containing a centered loading wheel

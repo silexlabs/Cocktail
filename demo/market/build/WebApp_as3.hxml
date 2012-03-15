@@ -1,0 +1,6 @@
+-cp ../src
+-cp ../../../src/
+-main org.intermedia.Application
+-swf ../bin/WebApp.swf
+-swf-version 10.1
+-lib feffects

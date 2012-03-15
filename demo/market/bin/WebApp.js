@@ -1726,9 +1726,11 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	,render: function(nativeElement) {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::render");
 		var $spos = $s.length;
-		this._nativeElements = this._elementRenderer.getLayerRenderer().render();
-		this._nativeElements.reverse();
-		this.attachNativeElements(this._nativeElements);
+		this.setNativeHeight(this._computedStyle.height);
+		this.setNativeWidth(this._computedStyle.width);
+		this.setNativeMatrix(this._computedStyle.transform);
+		this.setNativeOpacity(this._computedStyle.opacity);
+		this.setNativeVisibility(this._computedStyle.visibility);
 		$s.pop();
 	}
 	,attachNativeElement: function(nativeElement) {
@@ -1771,10 +1773,10 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 	,getLayerRenderer: function(elementRenderer,parentElementRenderer) {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::getLayerRenderer");
 		var $spos = $s.length;
-		var layerRenderer;
-		if(this.isPositioned() == true || this.isFloat() == true) layerRenderer = new cocktailCore.style.renderer.LayerRenderer(elementRenderer); else layerRenderer = parentElementRenderer.getLayerRenderer();
+		var ret;
+		if(this.isPositioned() == true || this.isFloat() == true) ret = new cocktailCore.style.renderer.LayerRenderer(elementRenderer); else ret = parentElementRenderer.getLayerRenderer();
 		$s.pop();
-		return layerRenderer;
+		return ret;
 		$s.pop();
 	}
 	,layout: function(containingDOMElementData,lastPositionedDOMElementData,viewportData,containingDOMElementFontMetricsData) {
@@ -1830,7 +1832,7 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		var $spos = $s.length;
 		var layoutDelegate = this.layout.$bind(this);
 		haxe.Timer.delay(function() {
-			$s.push("cocktailCore.style.abstract.AbstractStyle::scheduleLayout@759");
+			$s.push("cocktailCore.style.abstract.AbstractStyle::scheduleLayout@753");
 			var $spos = $s.length;
 			layoutDelegate(containingDOMElementData,lastPositionedDOMElementData,viewportData,null);
 			$s.pop();
@@ -1846,8 +1848,12 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::insertDOMElement");
 		var $spos = $s.length;
 		if(this.isPositioned() == false) formattingContext.insertElement(this._elementRenderer); else {
+			var x = 0.0;
+			var y = 0.0;
 			formattingContext.format();
-			var staticPosition = formattingContext.getStaticPosition(this._elementRenderer);
+			x = formattingContext.getFormattingContextData().x;
+			y = formattingContext.getFormattingContextData().y;
+			var staticPosition = { x : x, y : y};
 			if(this.isRelativePositioned() == true) formattingContext.insertElement(this._elementRenderer);
 			var positionedDOMElementData = { staticPosition : staticPosition, style : this, formattingContext : formattingContext};
 			lastPositionedDOMElementData.children.push(positionedDOMElementData);
@@ -2023,36 +2029,6 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		return $tmp;
 		$s.pop();
 	}
-	,childrenInline: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::childrenInline");
-		var $spos = $s.length;
-		$s.pop();
-		return false;
-		$s.pop();
-	}
-	,isInlineLevel: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::isInlineLevel");
-		var $spos = $s.length;
-		var ret = false;
-		switch( (this._computedStyle.display)[1] ) {
-		case 2:
-		case 1:
-			ret = true;
-			break;
-		default:
-			ret = false;
-		}
-		$s.pop();
-		return ret;
-		$s.pop();
-	}
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.abstract.AbstractStyle::establishesNewFormattingContext");
-		var $spos = $s.length;
-		$s.pop();
-		return false;
-		$s.pop();
-	}
 	,isClear: function() {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::isClear");
 		var $spos = $s.length;
@@ -2071,12 +2047,35 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		return ret;
 		$s.pop();
 	}
+	,childrenInline: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::childrenInline");
+		var $spos = $s.length;
+		$s.pop();
+		return false;
+		$s.pop();
+	}
 	,isNotDisplayed: function() {
 		$s.push("cocktailCore.style.abstract.AbstractStyle::isNotDisplayed");
 		var $spos = $s.length;
 		var $tmp = this._computedStyle.display == cocktail.style.DisplayStyleValue.none;
 		$s.pop();
 		return $tmp;
+		$s.pop();
+	}
+	,isInlineLevel: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::isInlineLevel");
+		var $spos = $s.length;
+		var ret = false;
+		switch( (this._computedStyle.display)[1] ) {
+		case 2:
+		case 1:
+			ret = true;
+			break;
+		default:
+			ret = false;
+		}
+		$s.pop();
+		return ret;
 		$s.pop();
 	}
 	,getFirstPositionedAncestorData: function() {
@@ -2095,6 +2094,21 @@ cocktailCore.style.abstract.AbstractStyle.prototype = {
 		} else firstPositionedAncestorData = this.getViewportData();
 		$s.pop();
 		return firstPositionedAncestorData;
+		$s.pop();
+	}
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::establishesNewFormattingContext");
+		var $spos = $s.length;
+		$s.pop();
+		return false;
+		$s.pop();
+	}
+	,isInFlow: function() {
+		$s.push("cocktailCore.style.abstract.AbstractStyle::isInFlow");
+		var $spos = $s.length;
+		var $tmp = this.isPositioned() == false;
+		$s.pop();
+		return $tmp;
 		$s.pop();
 	}
 	,getViewportData: function() {
@@ -4948,11 +4962,19 @@ cocktailCore.style.abstract.AbstractContainerStyle = $hxClasses["cocktailCore.st
 cocktailCore.style.abstract.AbstractContainerStyle.__name__ = ["cocktailCore","style","abstract","AbstractContainerStyle"];
 cocktailCore.style.abstract.AbstractContainerStyle.__super__ = cocktailCore.style.js.Style;
 cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailCore.style.js.Style.prototype,{
-	createElementRenderer: function(parentElementRenderer) {
+	render: function(nativeElement) {
+		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::render");
+		var $spos = $s.length;
+		this._nativeElements = this._elementRenderer.getLayerRenderer().render(nativeElement);
+		this._nativeElements.reverse();
+		this.attachNativeElements(this._nativeElements);
+		$s.pop();
+	}
+	,createElementRenderer: function(parentElementRenderer) {
 		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::createElementRenderer");
 		var $spos = $s.length;
 		var elementRenderer;
-		if(this.isInlineLevel() == true && this.establishesNewFormattingContext() == false) elementRenderer = new cocktailCore.style.renderer.InlineBoxRenderer(this._domElement); else elementRenderer = new cocktailCore.style.renderer.BlockBoxRenderer(this._domElement);
+		if(this.isInlineLevel() == true) elementRenderer = new cocktailCore.style.renderer.InlineBoxRenderer(this._domElement); else elementRenderer = new cocktailCore.style.renderer.BlockBoxRenderer(this._domElement);
 		elementRenderer.setLayerRenderer(this.getLayerRenderer(elementRenderer,parentElementRenderer));
 		parentElementRenderer.addChild(elementRenderer);
 		$s.pop();
@@ -4994,8 +5016,10 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 			}
 		}
 		if(this._height == cocktail.style.DimensionStyleValue.autoValue) {
-			if(this.establishesNewFormattingContext() == false) childrenFormattingContext.format();
-			this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(this._elementRenderer));
+			if(this.establishesNewFormattingContext() == false) {
+				childrenFormattingContext.format();
+				this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getChildrenHeight(this._elementRenderer));
+			} else this._computedStyle.height = this.applyContentHeightIfNeeded(containingDOMElementData,childrenFormattingContext.getFormattingContextData().maxHeight);
 		}
 		this.doPositionAbsolutelyPositionedDOMElements(this.isPositioned(),childLastPositionedDOMElementData,viewportData);
 		$s.pop();
@@ -5021,7 +5045,7 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 				}
 			}
 		}
-		if(this.establishesNewFormattingContext() == true) childrenFormattingContext.format(true);
+		if(this.establishesNewFormattingContext() == true) childrenFormattingContext.format();
 		$s.pop();
 		return childrenFormattingContext;
 		$s.pop();
@@ -5087,6 +5111,9 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		}
 		$s.pop();
 		return rendereredText;
+		var $tmp = [];
+		$s.pop();
+		return $tmp;
 		$s.pop();
 	}
 	,shrinkToFitIfNeeded: function(containingDOMElementData,minimumWidth) {
@@ -5144,44 +5171,6 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		return null;
 		$s.pop();
 	}
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::establishesNewFormattingContext");
-		var $spos = $s.length;
-		var ret = false;
-		if(this.isFloat() == true) ret = true; else if(this.isPositioned() == true && this.isRelativePositioned() == false) ret = true; else {
-			switch( (this._computedStyle.display)[1] ) {
-			case 1:
-				ret = true;
-				break;
-			case 0:
-				if(this.childrenInline() == true) ret = true;
-				break;
-			default:
-			}
-		}
-		$s.pop();
-		return ret;
-		$s.pop();
-	}
-	,childrenInline: function() {
-		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::childrenInline");
-		var $spos = $s.length;
-		var containerDOMElement = this._domElement;
-		if(containerDOMElement.getChildren().length == 0) {
-			$s.pop();
-			return false;
-		}
-		var ret = this.isChildInline(containerDOMElement.getChildren()[0]);
-		var _g1 = 0, _g = containerDOMElement.getChildren().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this.isChildInline(containerDOMElement.getChildren()[i]) != ret) {
-			}
-		}
-		$s.pop();
-		return ret;
-		$s.pop();
-	}
 	,getContainerDOMElementData: function() {
 		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::getContainerDOMElementData");
 		var $spos = $s.length;
@@ -5202,6 +5191,25 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		} else formattingContext = previousformattingContext;
 		$s.pop();
 		return formattingContext;
+		$s.pop();
+	}
+	,childrenInline: function() {
+		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::childrenInline");
+		var $spos = $s.length;
+		var containerDOMElement = this._domElement;
+		if(containerDOMElement.getChildren().length == 0) {
+			$s.pop();
+			return false;
+		}
+		var ret = this.isChildInline(containerDOMElement.getChildren()[0]);
+		var _g1 = 0, _g = containerDOMElement.getChildren().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.isChildInline(containerDOMElement.getChildren()[i]) != ret) {
+			}
+		}
+		$s.pop();
+		return ret;
 		$s.pop();
 	}
 	,isChildInline: function(child) {
@@ -5225,6 +5233,25 @@ cocktailCore.style.abstract.AbstractContainerStyle.prototype = $extend(cocktailC
 		if(this.isPositioned() == true) childLastPositionedDOMElementData = { data : this.getContainerDOMElementData(), children : new Array()}; else childLastPositionedDOMElementData = lastPositionedDOMElementData;
 		$s.pop();
 		return childLastPositionedDOMElementData;
+		$s.pop();
+	}
+	,establishesNewFormattingContext: function() {
+		$s.push("cocktailCore.style.abstract.AbstractContainerStyle::establishesNewFormattingContext");
+		var $spos = $s.length;
+		var ret = false;
+		if(this.isFloat() == true) ret = true; else if(this.isPositioned() == true && this.isRelativePositioned() == false) ret = true; else {
+			switch( (this._computedStyle.display)[1] ) {
+			case 1:
+				ret = true;
+				break;
+			case 0:
+				if(this.childrenInline() == true) ret = true;
+				break;
+			default:
+			}
+		}
+		$s.pop();
+		return ret;
 		$s.pop();
 	}
 	,isInlineContainer: function() {
@@ -5658,10 +5685,10 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 			var cell = [this.createCell()];
 			cell[0].setData(Reflect.field(this._data,index));
 			cell[0].setOnMouseUp((function(cell) {
-				$s.push("org.intermedia.view.ListViewBase::updateView@65");
+				$s.push("org.intermedia.view.ListViewBase::updateView@64");
 				var $spos = $s.length;
 				var $tmp = function(mouseEventData) {
-					$s.push("org.intermedia.view.ListViewBase::updateView@65@65");
+					$s.push("org.intermedia.view.ListViewBase::updateView@64@64");
 					var $spos = $s.length;
 					me.onListItemSelectedCallback(cell[0].getData());
 					$s.pop();
@@ -7274,13 +7301,6 @@ cocktailCore.style.renderer.ElementRenderer.prototype = {
 	,parent: null
 	,_layerRenderer: null
 	,layerRenderer: null
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.renderer.ElementRenderer::establishesNewFormattingContext");
-		var $spos = $s.length;
-		$s.pop();
-		return false;
-		$s.pop();
-	}
 	,canHaveChildren: function() {
 		$s.push("cocktailCore.style.renderer.ElementRenderer::canHaveChildren");
 		var $spos = $s.length;
@@ -10489,14 +10509,6 @@ cocktailCore.style.renderer.FlowBoxRenderer.prototype = $extend(cocktailCore.sty
 		elementRenderer.setParent(this);
 		$s.pop();
 	}
-	,establishesNewFormattingContext: function() {
-		$s.push("cocktailCore.style.renderer.FlowBoxRenderer::establishesNewFormattingContext");
-		var $spos = $s.length;
-		var $tmp = this._domElement.getStyle().establishesNewFormattingContext();
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
 	,addLineBox: function(lineBoxElements) {
 		$s.push("cocktailCore.style.renderer.FlowBoxRenderer::addLineBox");
 		var $spos = $s.length;
@@ -11083,46 +11095,33 @@ cocktailCore.style.renderer.LayerRenderer = $hxClasses["cocktailCore.style.rende
 cocktailCore.style.renderer.LayerRenderer.__name__ = ["cocktailCore","style","renderer","LayerRenderer"];
 cocktailCore.style.renderer.LayerRenderer.prototype = {
 	_rootRenderer: null
-	,render: function() {
+	,render: function(nativeElement) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::render");
 		var $spos = $s.length;
-		var $tmp = this.doRender(this._rootRenderer);
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,doRender: function(rootRenderer) {
-		$s.push("cocktailCore.style.renderer.LayerRenderer::doRender");
-		var $spos = $s.length;
 		var ret = new Array();
-		if(rootRenderer.canHaveChildren() == true && rootRenderer.getDOMElement().getStyle().isInlineLevel() == false || rootRenderer.getDOMElement().getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
-			var d = this.renderChildLayer();
+		if(this._rootRenderer.canHaveChildren() == true && this._rootRenderer.getDOMElement().getStyle().isInlineLevel() == false) {
+			ret = this._rootRenderer.renderBackground();
+			var d = this.renderChildLayer(nativeElement);
 			var _g1 = 0, _g = d.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(d[i]);
 			}
-			var c = this.renderInFlowChildren(ret);
+			var c = this.renderInFlowChildren(nativeElement);
 			var _g1 = 0, _g = c.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(c[i]);
 			}
-			var bg = this.renderChildrenBlockContainerBackground();
+			var bg = this.renderChildrenBlockContainerBackground(nativeElement);
 			var _g1 = 0, _g = bg.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ret.push(bg[i]);
 			}
-			var boum = rootRenderer.renderBackground();
-			var _g1 = 0, _g = boum.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				ret.push(boum[i]);
-			}
 		} else {
-			ret = rootRenderer.render();
-			var e = rootRenderer.renderBackground();
+			ret = this._rootRenderer.renderBackground();
+			var e = this._rootRenderer.render();
 			var _g1 = 0, _g = e.length;
 			while(_g1 < _g) {
 				var i = _g1++;
@@ -11133,7 +11132,7 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderChildrenBlockContainerBackground: function() {
+	,renderChildrenBlockContainerBackground: function(nativeElement) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderChildrenBlockContainerBackground");
 		var $spos = $s.length;
 		var childrenBlockContainer = this.getBlockContainerChildren(this._rootRenderer);
@@ -11152,16 +11151,15 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderChildLayer: function() {
+	,renderChildLayer: function(nativeElement) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderChildLayer");
 		var $spos = $s.length;
 		var childLayers = this.getChildLayers(this._rootRenderer,this);
-		childLayers.reverse();
 		var ret = new Array();
 		var _g1 = 0, _g = childLayers.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var nativeElements = childLayers[i].render();
+			var nativeElements = childLayers[i].render(nativeElement);
 			var _g3 = 0, _g2 = nativeElements.length;
 			while(_g3 < _g2) {
 				var j = _g3++;
@@ -11180,7 +11178,7 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(rootRenderer.getChildren()[i].getLayerRenderer() == referenceLayer) {
-				if(rootRenderer.getChildren()[i].canHaveChildren() == true && rootRenderer.getChildren()[i].getDOMElement().getStyle().getDisplay() != cocktail.style.DisplayStyleValue.inlineBlock) {
+				if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
 					var childElementRenderer = this.getChildLayers(rootRenderer.getChildren()[i],referenceLayer);
 					var _g3 = 0, _g2 = childElementRenderer.length;
 					while(_g3 < _g2) {
@@ -11194,93 +11192,53 @@ cocktailCore.style.renderer.LayerRenderer.prototype = {
 		return ret;
 		$s.pop();
 	}
-	,renderInFlowChildren: function(nativeElements) {
+	,renderInFlowChildren: function(nativeElement) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::renderInFlowChildren");
 		var $spos = $s.length;
-		var inFlowChildren = this.getInFlowChildren(this._rootRenderer,nativeElements);
+		var inFlowChildren = this.getInFlowChildren(this._rootRenderer);
 		var ret = new Array();
 		var _g1 = 0, _g = inFlowChildren.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var nativeElements1 = [];
-			if(inFlowChildren[i].getDOMElement().getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
-				var d = this.getChildLayers(inFlowChildren[i],this);
-				var _g3 = 0, _g2 = d.length;
-				while(_g3 < _g2) {
-					var l = _g3++;
-					var ne = d[l].render();
-					var _g5 = 0, _g4 = ne.length;
-					while(_g5 < _g4) {
-						var m = _g5++;
-						nativeElements1.push(ne[m]);
-					}
-				}
-				var childElementRenderer = this.getInFlowChildren(inFlowChildren[i],nativeElements1);
-				var _g3 = 0, _g2 = childElementRenderer.length;
-				while(_g3 < _g2) {
-					var l = _g3++;
-					childElementRenderer[l].getBounds().x += inFlowChildren[i].getBounds().x;
-					childElementRenderer[l].getBounds().y += inFlowChildren[i].getBounds().y;
-					var el = childElementRenderer[l].render();
-					var _g5 = 0, _g4 = el.length;
-					while(_g5 < _g4) {
-						var k = _g5++;
-						nativeElements1.push(el[k]);
-					}
-				}
-			} else nativeElements1 = inFlowChildren[i].render();
-			var _g3 = 0, _g2 = nativeElements1.length;
+			var nativeElements = inFlowChildren[i].render();
+			var _g3 = 0, _g2 = nativeElements.length;
 			while(_g3 < _g2) {
 				var j = _g3++;
-				ret.push(nativeElements1[j]);
-			}
-			if(inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false) {
-				var bg = inFlowChildren[i].renderBackground();
-				var _g3 = 0, _g2 = bg.length;
-				while(_g3 < _g2) {
-					var j = _g3++;
-					ret.push(bg[j]);
-				}
+				ret.push(nativeElements[j]);
 			}
 		}
 		$s.pop();
 		return ret;
 		$s.pop();
 	}
-	,getInFlowChildren: function(rootRenderer,nativeElements) {
+	,getInFlowChildren: function(rootRenderer) {
 		$s.push("cocktailCore.style.renderer.LayerRenderer::getInFlowChildren");
 		var $spos = $s.length;
 		var ret = new Array();
-		if(rootRenderer.establishesNewFormattingContext() == true && rootRenderer.getDOMElement().getStyle().childrenInline() == true) {
-			var _g1 = 0, _g = rootRenderer.getLineBoxes().length;
-			while(_g1 < _g) {
-				var j = _g1++;
-				var _g3 = 0, _g2 = rootRenderer.getLineBoxes()[j].length;
-				while(_g3 < _g2) {
-					var k = _g3++;
-					ret.push(rootRenderer.getLineBoxes()[j][k]);
-				}
-			}
-		} else {
-			var _g1 = 0, _g = rootRenderer.getChildren().length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				if(rootRenderer.getChildren()[i].getLayerRenderer() == this) {
-					if(rootRenderer.getChildren()[i].getDOMElement().getStyle().isPositioned() == false) {
-						ret.push(rootRenderer.getChildren()[i]);
-						if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
-							var childElementRenderer = this.getInFlowChildren(rootRenderer.getChildren()[i],nativeElements);
-							var _g3 = 0, _g2 = childElementRenderer.length;
-							while(_g3 < _g2) {
-								var j = _g3++;
-								if(rootRenderer.getChildren()[i].establishesNewFormattingContext() == true) {
-									childElementRenderer[j].getBounds().x += rootRenderer.getChildren()[i].getBounds().x;
-									childElementRenderer[j].getBounds().y += rootRenderer.getChildren()[i].getBounds().y;
-								}
-								ret.push(childElementRenderer[j]);
-							}
+		var _g1 = 0, _g = rootRenderer.getChildren().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(rootRenderer.getChildren()[i].getLayerRenderer() == this) {
+				if(rootRenderer.getDOMElement().getStyle().establishesNewFormattingContext() == true && rootRenderer.getDOMElement().getStyle().childrenInline() == true) {
+					var _g3 = 0, _g2 = rootRenderer.getLineBoxes().length;
+					while(_g3 < _g2) {
+						var j = _g3++;
+						var _g5 = 0, _g4 = rootRenderer.getLineBoxes()[j].length;
+						while(_g5 < _g4) {
+							var k = _g5++;
+							ret.push(rootRenderer.getLineBoxes()[j][k]);
 						}
 					}
+				} else if(rootRenderer.getChildren()[i].getDOMElement().getStyle().isInFlow() == true) {
+					if(rootRenderer.getChildren()[i].canHaveChildren() == true) {
+						var childElementRenderer = this.getInFlowChildren(rootRenderer.getChildren()[i]);
+						var _g3 = 0, _g2 = childElementRenderer.length;
+						while(_g3 < _g2) {
+							var j = _g3++;
+							ret.push(childElementRenderer[j]);
+						}
+					}
+					ret.push(rootRenderer.getChildren()[i]);
 				}
 			}
 		}
@@ -11638,7 +11596,6 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 	,_formattingContextData: null
 	,formattingContextData: null
 	,_elementsInFormattingContext: null
-	,_lastInsertedElement: null
 	,initFormattingContextData: function(domElement) {
 		$s.push("cocktailCore.style.formatter.FormattingContext::initFormattingContextData");
 		var $spos = $s.length;
@@ -11655,20 +11612,9 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		this._elementsInFormattingContext.push(element);
 		$s.pop();
 	}
-	,getStaticPosition: function(element) {
-		$s.push("cocktailCore.style.formatter.FormattingContext::getStaticPosition");
-		var $spos = $s.length;
-		var x = this._formattingContextData.x;
-		var y = this._formattingContextData.y;
-		var $tmp = { x : x, y : y};
-		$s.pop();
-		return $tmp;
-		$s.pop();
-	}
-	,format: function(layOutLastLine) {
+	,format: function() {
 		$s.push("cocktailCore.style.formatter.FormattingContext::format");
 		var $spos = $s.length;
-		if(layOutLastLine == null) layOutLastLine = false;
 		this._formattingContextData = this.initFormattingContextData(this._containingDOMElement);
 		var _g1 = 0, _g = this._elementsInFormattingContext.length;
 		while(_g1 < _g) {
@@ -11691,13 +11637,11 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		$s.push("cocktailCore.style.formatter.FormattingContext::getChildrenHeight");
 		var $spos = $s.length;
 		var height = 0;
-		if(elementRenderer == this._containingDOMElement.getStyle().getElementRenderer()) height = this._formattingContextData.maxHeight; else {
-			var elementRenderers = this.getParentElementRenderers(elementRenderer);
-			var _g1 = 0, _g = elementRenderers.length;
-			while(_g1 < _g) {
-				var i = _g1++;
-				height += Math.round(elementRenderers[i].getBounds().height);
-			}
+		var elementRenderers = this.getParentElementRenderers(elementRenderer);
+		var _g1 = 0, _g = elementRenderers.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			height += Math.round(elementRenderers[i].getBounds().height);
 		}
 		$s.pop();
 		return height;
@@ -11723,6 +11667,31 @@ cocktailCore.style.formatter.FormattingContext.prototype = {
 		if(elementRenderers.length == 0) targetElementRenderers.push(elementRenderer);
 		$s.pop();
 		return elementRenderers;
+		$s.pop();
+	}
+	,getBounds: function(elements) {
+		$s.push("cocktailCore.style.formatter.FormattingContext::getBounds");
+		var $spos = $s.length;
+		var bounds;
+		var left = 50000;
+		var top = 50000;
+		var right = -50000;
+		var bottom = -50000;
+		var _g1 = 0, _g = elements.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(elements[i].getBounds().x < left) left = elements[i].getBounds().x;
+			if(elements[i].getBounds().y < top) {
+				if(elements[i].isText() == false) top = elements[i].getBounds().y; else top = elements[i].getBounds().y - elements[i].getDOMElement().getStyle().getFontMetricsData().ascent;
+			}
+			if(elements[i].getBounds().x + elements[i].getBounds().width > right) right = elements[i].getBounds().x + elements[i].getBounds().width;
+			if(elements[i].getBounds().y + elements[i].getBounds().height > bottom) {
+				if(elements[i].isText() == false) bottom = elements[i].getBounds().y + elements[i].getBounds().height; else bottom = elements[i].getBounds().y - elements[i].getDOMElement().getStyle().getFontMetricsData().ascent + elements[i].getBounds().height;
+			}
+		}
+		bounds = { x : left, y : top, width : right - left, height : bottom - top};
+		$s.pop();
+		return bounds;
 		$s.pop();
 	}
 	,insertEmbeddedElement: function(element) {
@@ -11821,10 +11790,10 @@ cocktailCore.style.formatter.BlockFormattingContext.__name__ = ["cocktailCore","
 cocktailCore.style.formatter.BlockFormattingContext.__super__ = cocktailCore.style.formatter.FormattingContext;
 cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktailCore.style.formatter.FormattingContext.prototype,{
 	_currentAddedSiblingsHeight: null
-	,format: function(layOutLastLine) {
+	,_lastInsertedElement: null
+	,format: function() {
 		$s.push("cocktailCore.style.formatter.BlockFormattingContext::format");
 		var $spos = $s.length;
-		if(layOutLastLine == null) layOutLastLine = false;
 		this._formattingContextData = this.initFormattingContextData(this._containingDOMElement);
 		this._lastInsertedElement = this._containingDOMElement.getStyle().getElementRenderer();
 		var _g1 = 0, _g = this._elementsInFormattingContext.length;
@@ -11838,21 +11807,6 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 			this._lastInsertedElement = this._elementsInFormattingContext[i];
 			this.doInsertElement(this._elementsInFormattingContext[i],this.isNextElementALineFeed(this._elementsInFormattingContext,i));
 		}
-		$s.pop();
-	}
-	,getStaticPosition: function(element) {
-		$s.push("cocktailCore.style.formatter.BlockFormattingContext::getStaticPosition");
-		var $spos = $s.length;
-		if(this.isSiblingOfLastInsertedElement(element)) {
-		} else if(this.isParentOfLastInsertedElement(element)) {
-			this._formattingContextData.y -= this._currentAddedSiblingsHeight;
-			this._currentAddedSiblingsHeight = 0;
-		} else this._currentAddedSiblingsHeight = 0;
-		var x = this._formattingContextData.x;
-		var y = this._formattingContextData.y;
-		var $tmp = { x : x, y : y};
-		$s.pop();
-		return $tmp;
 		$s.pop();
 	}
 	,isParentOfLastInsertedElement: function(element) {
@@ -11881,7 +11835,6 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
-		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -11895,7 +11848,6 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
-		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -11909,7 +11861,6 @@ cocktailCore.style.formatter.BlockFormattingContext.prototype = $extend(cocktail
 		element.setBounds({ x : x, y : y, width : width, height : height});
 		if(element.getBounds().width > this._formattingContextData.maxWidth) this._formattingContextData.maxWidth = Math.round(element.getBounds().width);
 		this._formattingContextData.y += Math.round(element.getBounds().height);
-		this._formattingContextData.maxHeight = this._formattingContextData.y;
 		this._currentAddedSiblingsHeight += Math.round(element.getBounds().height);
 		$s.pop();
 	}
@@ -12252,14 +12203,11 @@ cocktail.resource.LoadingTypeValue.data.__enum__ = cocktail.resource.LoadingType
 cocktail.resource.LoadingTypeValue.library = ["library",1];
 cocktail.resource.LoadingTypeValue.library.toString = $estr;
 cocktail.resource.LoadingTypeValue.library.__enum__ = cocktail.resource.LoadingTypeValue;
-org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] = function(itemsToLoad,pageIndex,online) {
+org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] = function(online) {
 	$s.push("org.intermedia.model.DataLoader::new");
 	var $spos = $s.length;
 	if(online == null) online = true;
-	if(pageIndex == null) pageIndex = 1;
-	if(itemsToLoad == null) itemsToLoad = 10;
-	this._itemsToLoad = itemsToLoad;
-	this._pageIndex = pageIndex;
+	this._pageIndex = 1;
 	this._online = online;
 	$s.pop();
 }
@@ -12271,10 +12219,9 @@ org.intermedia.model.DataLoader.prototype = {
 	,_online: null
 	,_itemsToLoad: null
 	,_pageIndex: null
-	,loadCellData: function(itemsPerPage,pageIndex,successCallback,errorCallback) {
+	,loadCellData: function(itemsPerPage,successCallback,errorCallback) {
 		$s.push("org.intermedia.model.DataLoader::loadCellData");
 		var $spos = $s.length;
-		if(pageIndex == null) pageIndex = 1;
 		this.onCellDataLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var fullUrl = "";
@@ -12292,7 +12239,7 @@ org.intermedia.model.DataLoader.prototype = {
 		this.onCellDetailLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var onLoadSuccessDelegate = function(xml) {
-			$s.push("org.intermedia.model.DataLoader::loadDetailData@82");
+			$s.push("org.intermedia.model.DataLoader::loadDetailData@85");
 			var $spos = $s.length;
 			me.onCellDetailXmlLoaded(xml,cellData);
 			$s.pop();
@@ -12706,7 +12653,6 @@ cocktailCore.style.formatter.InlineFormattingContext = $hxClasses["cocktailCore.
 	this._unbreakableLineBoxElements = new Array();
 	this._unbreakableWidth = 0;
 	this._currentInlineBoxesData = new Array();
-	this._layOutLastLine = false;
 	cocktailCore.style.formatter.FormattingContext.call(this,domElement);
 	$s.pop();
 }
@@ -12716,19 +12662,17 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 	_elementsInLineBox: null
 	,_unbreakableLineBoxElements: null
 	,_unbreakableWidth: null
+	,_lastInsertedElement: null
 	,_currentInlineBoxesData: null
-	,_layOutLastLine: null
-	,format: function(layOutLastLine) {
+	,format: function() {
 		$s.push("cocktailCore.style.formatter.InlineFormattingContext::format");
 		var $spos = $s.length;
-		if(layOutLastLine == null) layOutLastLine = false;
 		this._elementsInLineBox = new Array();
 		this._unbreakableLineBoxElements = new Array();
 		this._unbreakableWidth = 0;
 		var flowBoxRenderer = this._containingDOMElement.getStyle().getElementRenderer();
 		flowBoxRenderer.removeLineBoxes();
 		this._currentInlineBoxesData = new Array();
-		this._layOutLastLine = layOutLastLine;
 		cocktailCore.style.formatter.FormattingContext.prototype.format.call(this);
 		this.insertBreakOpportunity(true,true);
 		$s.pop();
@@ -12747,19 +12691,17 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		this.insertBreakOpportunity(false);
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(Math.round(element.getBounds().width));
+		this.addWidth(element.getDOMElement().getOffsetWidth());
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
 	,insertFormattingContextRootElement: function(element) {
 		$s.push("cocktailCore.style.formatter.InlineFormattingContext::insertFormattingContextRootElement");
 		var $spos = $s.length;
-		element.getBounds().width = element.getDOMElement().getOffsetWidth();
-		element.getBounds().height = element.getDOMElement().getOffsetHeight();
 		this.insertBreakOpportunity(false);
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(Math.round(element.getBounds().width));
+		this.addWidth(element.getDOMElement().getOffsetWidth());
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
@@ -12774,7 +12716,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		var $spos = $s.length;
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(Math.round(element.getBounds().width));
+		this.addWidth(element.getDOMElement().getOffsetWidth());
 		$s.pop();
 	}
 	,insertSpace: function(element,isNextElementALineFeed) {
@@ -12782,7 +12724,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 		var $spos = $s.length;
 		this._unbreakableLineBoxElements.push(element);
 		this._lastInsertedElement = element;
-		this.addWidth(Math.round(element.getBounds().width));
+		this.addWidth(element.getDOMElement().getOffsetWidth());
 		this.insertBreakOpportunity(false);
 		$s.pop();
 	}
@@ -12953,56 +12895,10 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 			if(isLastLine == false) {
 				this._formattingContextData.y += lineBoxHeight;
 				this._formattingContextData.y = this._floatsManager.getFirstAvailableY(this._formattingContextData,elementWidth,this._containingDOMElementWidth);
-				this._formattingContextData.maxHeight = this._formattingContextData.y + lineBoxHeight;
-				this._formattingContextData.x = this._floatsManager.getLeftFloatOffset(this._formattingContextData.y);
-			} else if(this._layOutLastLine == true) {
-				this._formattingContextData.y += lineBoxHeight;
-				this._formattingContextData.y = this._floatsManager.getFirstAvailableY(this._formattingContextData,elementWidth,this._containingDOMElementWidth);
 				this._formattingContextData.maxHeight = this._formattingContextData.y;
 				this._formattingContextData.x = this._floatsManager.getLeftFloatOffset(this._formattingContextData.y);
 			}
 		}
-		$s.pop();
-	}
-	,getBounds: function(elements) {
-		$s.push("cocktailCore.style.formatter.InlineFormattingContext::getBounds");
-		var $spos = $s.length;
-		var bounds;
-		var left = 50000;
-		var top = 50000;
-		var right = -50000;
-		var bottom = -50000;
-		var _g1 = 0, _g = elements.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(elements[i].getBounds().x < left) left = elements[i].getBounds().x;
-			if(elements[i].getBounds().y < top) {
-				if(elements[i].isText() == false) top = elements[i].getBounds().y; else {
-					var domElement = elements[i].getDOMElement();
-					var domElementAscent = domElement.getStyle().getFontMetricsData().ascent;
-					var domElementDescent = domElement.getStyle().getFontMetricsData().descent;
-					var leading = domElement.getStyle().getComputedStyle().lineHeight - (domElementAscent + domElementDescent);
-					domElementAscent = Math.round(domElementAscent + leading / 2);
-					domElementDescent = Math.round(domElementDescent + leading / 2);
-					top = elements[i].getBounds().y - domElementAscent;
-				}
-			}
-			if(elements[i].getBounds().x + elements[i].getBounds().width > right) right = elements[i].getBounds().x + elements[i].getBounds().width;
-			if(elements[i].getBounds().y + elements[i].getBounds().height > bottom) {
-				if(elements[i].isText() == false) bottom = elements[i].getBounds().y + elements[i].getBounds().height; else {
-					var domElement = elements[i].getDOMElement();
-					var domElementAscent = domElement.getStyle().getFontMetricsData().ascent;
-					var domElementDescent = domElement.getStyle().getFontMetricsData().descent;
-					var leading = domElement.getStyle().getComputedStyle().lineHeight - (domElementAscent + domElementDescent);
-					domElementAscent = Math.round(domElementAscent + leading / 2);
-					domElementDescent = Math.round(domElementDescent + leading / 2);
-					bottom = elements[i].getBounds().y - domElementAscent + elements[i].getBounds().height;
-				}
-			}
-		}
-		bounds = { x : left, y : top, width : right - left, height : bottom - top};
-		$s.pop();
-		return bounds;
 		$s.pop();
 	}
 	,removeSpaces: function() {
@@ -13097,7 +12993,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 				flowX += spaceWidth;
 			}
 			this._elementsInLineBox[i].getBounds().x = flowX;
-			flowX += Math.round(this._elementsInLineBox[i].getBounds().width);
+			flowX += this._elementsInLineBox[i].getDOMElement().getOffsetWidth();
 		}
 		$s.pop();
 	}
@@ -13113,7 +13009,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 			var domElementAscent;
 			var domElementDescent;
 			var domElementVerticalAlign = domElement.getStyle().getComputedStyle().verticalAlign;
-			if(this._elementsInLineBox[i].canHaveChildren() == false && this._elementsInLineBox[i].isText() == false || this._elementsInLineBox[i].establishesNewFormattingContext() == true) {
+			if(domElement.getStyle().isEmbedded() == true || domElement.getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
 				domElementAscent = domElement.getOffsetHeight();
 				domElementDescent = 0;
 				switch( (domElement.getStyle().getVerticalAlign())[1] ) {
@@ -13150,7 +13046,7 @@ cocktailCore.style.formatter.InlineFormattingContext.prototype = $extend(cocktai
 				verticalAlign = domElement.getStyle().getComputedStyle().verticalAlign;
 			}
 			this._elementsInLineBox[i].getBounds().y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + this._formattingContextData.y;
-			if(this._elementsInLineBox[i].canHaveChildren() == false && this._elementsInLineBox[i].isText() == false || this._elementsInLineBox[i].establishesNewFormattingContext() == true) {
+			if(domElement.getStyle().isEmbedded() == true || domElement.getStyle().getDisplay() == cocktail.style.DisplayStyleValue.inlineBlock) {
 				switch( (domElement.getStyle().getVerticalAlign())[1] ) {
 				case 3:
 					this._elementsInLineBox[i].getBounds().y = this._formattingContextData.y;
@@ -15363,7 +15259,7 @@ org.intermedia.model.ApplicationModel = $hxClasses["org.intermedia.model.Applica
 	this._online = true;
 	this._loadedCellsData = new Array();
 	this._loadedDetailData = new Array();
-	this._dataLoader = new org.intermedia.model.DataLoader(null,null,this._online);
+	this._dataLoader = new org.intermedia.model.DataLoader(this._online);
 	$s.pop();
 }
 org.intermedia.model.ApplicationModel.__name__ = ["org","intermedia","model","ApplicationModel"];
@@ -15382,7 +15278,7 @@ org.intermedia.model.ApplicationModel.prototype = {
 		if(this._loadedCellsData.length == 0) {
 			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		}
-		this._dataLoader.loadCellData(numberOfCellsToLoad,null,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
+		this._dataLoader.loadCellData(numberOfCellsToLoad,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
 		$s.pop();
 	}
 	,loadDetailData: function(cellData) {
