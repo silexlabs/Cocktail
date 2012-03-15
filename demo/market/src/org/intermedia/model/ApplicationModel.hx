@@ -66,6 +66,7 @@ class ApplicationModel
 		}
 		
 		// Calls load() on the DataLoader with the right number of cell to load
+		//_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
 		_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	

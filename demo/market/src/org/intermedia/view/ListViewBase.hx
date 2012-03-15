@@ -5,7 +5,6 @@ import cocktail.domElement.DOMElementData;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.mouse.MouseData;
 import cocktail.viewport.Viewport;
-import haxe.Log;
 import org.intermedia.model.ApplicationModel;
 
 /**
