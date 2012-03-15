@@ -224,6 +224,7 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
+		
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		textFormat.size = _computedStyle.fontSize;
 		
