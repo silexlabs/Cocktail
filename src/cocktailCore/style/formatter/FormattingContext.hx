@@ -75,6 +75,13 @@ class FormattingContext
 	 */
 	private var _elementsInFormattingContext:Array<ElementRenderer>;
 	
+	/**
+	 * a reference to the last inserted element in the line, used for 
+	 * instance when a space is inserted to checkk if the previous
+	 * element was also a space and if it should be collapsed
+	 */
+	private var _lastInsertedElement:ElementRenderer;
+	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
@@ -125,11 +132,20 @@ class FormattingContext
 		_elementsInFormattingContext.push(element);
 	}
 	
-	public function format():Void
+	public function getStaticPosition(element:ElementRenderer):PointData
+	{
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		
+		return {x:x, y:y};
+	}
+	
+	public function format(layOutLastLine:Bool = false):Void
 	{	
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		
 		
 		//format all the box element in order
 		for (i in 0..._elementsInFormattingContext.length)
@@ -141,7 +157,11 @@ class FormattingContext
 
 	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
-		if (element.canHaveChildren() == true)
+		if (element.isFloat() == true)
+		{
+			insertFloat(element);
+		}
+		else if (element.canHaveChildren() == true)
 		{
 			if (element.domElement.style.establishesNewFormattingContext() == true)
 			{
@@ -174,16 +194,30 @@ class FormattingContext
 		
 	}
 	
+	//TODO : add a method getChildrenWidth for shrink-to-fit ?
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
 		var height:Int = 0;
 		
-		//add all the DOMElement boxesData's height
-		var elementRenderers:Array<ElementRenderer> = getParentElementRenderers(elementRenderer);
-		for (i in 0...elementRenderers.length)
+		if (elementRenderer == _containingDOMElement.style.elementRenderer)
 		{
-			height += Math.round(elementRenderers[i].bounds.height);
+			height = _formattingContextData.maxHeight;
 		}
+		else
+		{
+			//add all the DOMElement boxesData's height
+			var elementRenderers:Array<ElementRenderer> = getParentElementRenderers(elementRenderer);
+			for (i in 0...elementRenderers.length)
+			{
+				//TODO : float can still account in max height if it overflows
+				if (elementRenderers[i].isFloat() == false)
+				{
+					height += Math.round(elementRenderers[i].bounds.height);
+				}
+				
+			}
+		}
+	
 		
 		return height;
 	}
@@ -218,65 +252,7 @@ class FormattingContext
 		return elementRenderers;
 	}
 	
-	//TODO : only used in inline formatting context
-	private function getBounds(elements:Array<ElementRenderer>):RectangleData
-	{
 
-		var bounds:RectangleData;
-		
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		
-		for (i in 0...elements.length)
-		{
-			if (elements[i].bounds.x < left)
-			{
-				left = elements[i].bounds.x;
-			}
-			if (elements[i].bounds.y < top)
-			{
-				if (elements[i].isText() == false)
-				{
-					top = elements[i].bounds.y;
-				}
-				else
-				{
-					top = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent;
-				}
-				
-			}
-			if (elements[i].bounds.x + elements[i].bounds.width > right)
-			{
-				right = elements[i].bounds.x + elements[i].bounds.width;
-			}
-			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
-			{
-				if (elements[i].isText() == false)
-				{
-					bottom = elements[i].bounds.y + elements[i].bounds.height;
-				}
-				//TODO : ascent is not leaded
-				else
-				{
-					bottom = elements[i].bounds.y - elements[i].domElement.style.fontMetrics.ascent + elements[i].bounds.height;
-				}
-			}
-		}
-			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-				
-				
-		return bounds;
-		
-	}
 
 	private function insertEmbeddedElement(element:ElementRenderer):Void
 	{ 

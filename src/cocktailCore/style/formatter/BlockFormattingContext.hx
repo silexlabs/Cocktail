@@ -27,17 +27,13 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-	
-	private var _currentAddedSiblingsHeight:Int;
-	
-	private var _lastInsertedElement:ElementRenderer;
+
 	
 	/**
 	 * class constructor
 	 */
 	public function new(domElement:DOMElement) 
 	{
-		_currentAddedSiblingsHeight = 0;
 		super(domElement);
 	}
 	
@@ -47,37 +43,136 @@ class BlockFormattingContext extends FormattingContext
 	 * 
 	 * TODO : implement margin collapsing
 	 */
-	override public function format():Void
+	override public function format(layOutLastLine:Bool = false):Void
 	{
 		
+		doFormat(_elementsInFormattingContext);
+		
+	}
+	
+	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		_formattingContextData = initFormattingContextData(_containingDOMElement);
-		
+		var currentAddedSiblingsHeight:Int = 0;
 		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
+
+		var elementsInColumn = new Array<ElementRenderer>();
+		
 		
 		//format all the box element in order
-		for (i in 0..._elementsInFormattingContext.length)
+		for (i in 0...elementsInFormattingContext.length)
 		{
-			if (isSiblingOfLastInsertedElement(_elementsInFormattingContext[i]))
+			if (elementsInFormattingContext[i].isFloat() == true)
 			{
-				
-			}
-			else if (isParentOfLastInsertedElement(_elementsInFormattingContext[i]))
-			{
-				_formattingContextData.y -= _currentAddedSiblingsHeight;
-				_currentAddedSiblingsHeight = 0;
-					
+				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
 			}
 			else
 			{
-				_currentAddedSiblingsHeight = 0;	
-			}
+				
+				if (isSiblingOfLastInsertedElement(elementsInFormattingContext[i]))
+				{
 					
-			_lastInsertedElement = _elementsInFormattingContext[i];
-			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+				}
+				else if (isParentOfLastInsertedElement(elementsInFormattingContext[i]))
+				{
+					_formattingContextData.y -= currentAddedSiblingsHeight;
+					currentAddedSiblingsHeight = 0;
+					
+					for (j in 0...elementsInColumn.length)
+					{
+						if (isAncestorOfElement(elementsInColumn[j], elementsInFormattingContext[i] ) == true )
+						{
+
+							
+							elementsInColumn[j].bounds.y += elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
+							elementsInColumn[j].bounds.x += elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
+					
+						}
+						
+					}
+					
+						
+				}
+				else
+				{
+					currentAddedSiblingsHeight = 0;	
+				}
+				
+				
+				
+				_lastInsertedElement = elementsInFormattingContext[i];
+				
+				elementsInColumn.push(elementsInFormattingContext[i]);
+				
+				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+				
+				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
+				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(_elementsInFormattingContext[i].bounds.width), Math.round(_elementsInFormattingContext[i].parent.bounds.width));
+			
+			
+				elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
+				elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
+				
+			
+			
+				
+				
+				if (elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
+				{
+					_formattingContextData.maxWidth = Math.round(elementsInFormattingContext[i].bounds.width);
+				}	
+				
+				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height);
+				
+				removeFloats();
+				
+				//TODO : max height might be wrong
+				_formattingContextData.maxHeight = _formattingContextData.y;
+		
+				currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height);
+			}
+			
+		}
+	}
+	
+	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
+	{
+		var isAncestorOfElement:Bool = false;
+		
+		
+		var parent:ElementRenderer = element.parent;
+		while (parent != _containingDOMElement.style.elementRenderer)
+		{
+			if (parent == ancestor)
+			{
+				isAncestorOfElement = true;
+				break;
+			}
+			
+			parent = parent.parent;
+		}
+		return isAncestorOfElement;
+	}
+	
+	override public function getStaticPosition(element:ElementRenderer):PointData
+	{
+		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0..._elementsInFormattingContext.length)
+		{
+			elementsToFormat.push(_elementsInFormattingContext[i]);
 		}
 		
+		elementsToFormat.push(element);
+		
+		doFormat(elementsToFormat);
+		
+		var x:Float = element.bounds.x;
+		var y:Float = element.bounds.y;
+		
+		return {x:x, y:y};
 	}
 	
 	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
@@ -95,6 +190,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
+		//TODO : should not use offset dimensions
 		var width:Float = element.domElement.offsetWidth;
 		var height:Float = element.domElement.offsetHeight;
 		
@@ -105,18 +201,29 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
+	
+	}
+	
+	/**
+	 * Insert a floated DOMElement. overriden by sub-classes
+	 * 
+	 */
+	override private function insertFloat(element:ElementRenderer):Void
+	{
 		
+		var floatData:FloatData = _floatsManager.computeFloatData(element.domElement, _formattingContextData, Math.round(element.parent.domElement.style.computedStyle.width));
+		var x:Float = floatData.x + element.parent.domElement.style.computedStyle.paddingLeft;
+		var y:Float = floatData.y + element.parent.domElement.style.computedStyle.paddingTop;
+		var width:Float = floatData.width;
+		var height:Float = floatData.height;
 		
-	//	getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+		element.bounds = {
+			x:x,
+			y:y,
+			width:width,
+			height:height
+		}
 		
-			
 	}
 	
 
@@ -135,22 +242,14 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 		
-		if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-			
-		//getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+		
 			
 	}
 	
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-			var x:Float = 0.0;
+			var x:Float = _formattingContextData.x;
 			var y:Float = _formattingContextData.y;
 			var width:Float = element.domElement.offsetWidth;
 			var height:Float = element.domElement.offsetHeight;
@@ -161,15 +260,7 @@ class BlockFormattingContext extends FormattingContext
 				height:height
 			}
 			
-			
-			if (element.bounds.width > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = Math.round(element.bounds.width);
-			}	
-			
-			_formattingContextData.y += Math.round(element.bounds.height);
-			_currentAddedSiblingsHeight += Math.round(element.bounds.height);
-			//getParentBoxesData(getElementParent(element))[0].children.push(boxElementData);
+		
 	}
 
 	
