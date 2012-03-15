@@ -50,14 +50,6 @@ class FormattingContext
 	private var _formattingContextRoot:BlockBoxRenderer;
 	
 	/**
-	 * The width of the DOMElement starting the formatting context,
-	 * representing the maximum width of a line.
-	 * 
-	 * TODO : check if still necessary
-	 */
-	private var _formattingContextRootWidth:Int;
-	
-	/**
 	 * An instance of the class managing the floated DOMElements.
 	 * During formatting, determine the position of the floats.
 	 */
@@ -100,7 +92,6 @@ class FormattingContext
 	{
 		//store a reference to the DOMElement starting the formatting context
 		_formattingContextRoot = formattingContextRoot;
-		_formattingContextRootWidth = _formattingContextRoot.style.computedStyle.width;
 		
 		//will store the data of the floated DOMElement of this
 		//formatting context

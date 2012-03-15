@@ -323,17 +323,17 @@ class LayerRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.style.childrenInline() == true)
 		{
+			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
 				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
 				{
-					if (blockBoxRenderer.lineBoxes[i][i].isPositioned() == false)
+					if (blockBoxRenderer.lineBoxes[i][j].isPositioned() == false)
 					{
 						ret.push(blockBoxRenderer.lineBoxes[i][j]);
 					}
-					
 				}
 			}
 		}
@@ -341,6 +341,7 @@ class LayerRenderer
 		{
 			for (i in 0...rootRenderer.children.length)
 			{
+				
 				if (rootRenderer.children[i].layerRenderer == this)
 				{
 					if (rootRenderer.children[i].isPositioned() == false)
