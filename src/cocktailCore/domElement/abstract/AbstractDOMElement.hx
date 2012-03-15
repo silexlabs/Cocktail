@@ -634,6 +634,8 @@ class AbstractDOMElement
 	/**
 	 * constructs the offset width from the computed
 	 * box of this domElement
+	 * 
+	 * TODO : shouldn't include margin
 	 */
 	private function getOffsetWidth():Int
 	{
@@ -644,6 +646,8 @@ class AbstractDOMElement
 	/**
 	 * constructs the offset height from the computed
 	 * box of this domElement
+	 * 
+	 * TODO : shouldn't include margin
 	 */
 	private function getOffsetHeight():Int
 	{

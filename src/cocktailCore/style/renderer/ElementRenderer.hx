@@ -106,10 +106,12 @@ class ElementRenderer
 	
 	public function dispose():Void
 	{
+		
 		_bounds = null;
 		_style = null;
 		_parent = null;
-		_layerRenderer.dispose();
+		//TODO : cause null runtime error
+		//_layerRenderer.dispose();
 		_layerRenderer = null;
 	}
 	

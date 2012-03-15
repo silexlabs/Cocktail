@@ -38,13 +38,11 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
-
-	
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
-		_formattingContextData = initFormattingContextData();
+		initFormattingContextData();
 		var currentAddedSiblingsHeight:Int = 0;
 		_lastInsertedElement = _formattingContextRoot;
 
@@ -112,6 +110,7 @@ class BlockFormattingContext extends FormattingContext
 				if (elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
 				{
 					_formattingContextData.maxWidth = Math.round(elementsInFormattingContext[i].bounds.width);
+					
 				}	
 				
 				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height);
@@ -190,8 +189,6 @@ class BlockFormattingContext extends FormattingContext
 			width:width,
 			height:height
 		}
-		
-	
 	}
 	
 	/**
@@ -225,12 +222,18 @@ class BlockFormattingContext extends FormattingContext
 		var width:Float = element.style.domElement.offsetWidth;
 		var height:Float = element.style.domElement.offsetHeight;
 		
+		if (element.style.computedStyle.marginTop == 60)
+		{
+			Log.trace(element.bounds);
+		}
 		element.bounds = {
 			x:x, 
 			y:y,
 			width:width,
 			height:height
 		}
+		
+				
 		
 		
 			

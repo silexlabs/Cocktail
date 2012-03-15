@@ -167,11 +167,9 @@ class InlineFormattingContext extends FormattingContext
 		insertBreakOpportunity(false);
 		
 	}
-	
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-
 		_unbreakableLineBoxElements.push(element);
 	}
 	
@@ -184,7 +182,6 @@ class InlineFormattingContext extends FormattingContext
 		_lastInsertedElement = element;	
 		
 		addWidth(Math.round(element.bounds.width));
-
 	}
 	
 	/**
@@ -491,7 +488,7 @@ class InlineFormattingContext extends FormattingContext
 		return inlineBoxData;
 	}
 	
-	private function startNewLine(elementWidth:Int, isLastLine:Bool = false):Void
+	private function startNewLine(elementWidth:Int, isLastLine:Bool):Void
 	{
 		if (_elementsInLineBox.length > 0)
 		{
@@ -566,12 +563,15 @@ class InlineFormattingContext extends FormattingContext
 				
 				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
 				
+				if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
+				{
+					_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
+				}
 				
-				_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
 
 				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 			}
-			//TODO : _layOutLastLine is sloppy
+			//TODO : layoutlastline should be false when called from getStaticPosition
 			else if (_layOutLastLine == true)
 			{
 				_formattingContextData.y += lineBoxHeight;
@@ -579,11 +579,14 @@ class InlineFormattingContext extends FormattingContext
 				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
 				
 				
-				_formattingContextData.maxHeight = _formattingContextData.y;
+				if (_formattingContextData.y  > _formattingContextData.maxHeight)
+				{
+					_formattingContextData.maxHeight = _formattingContextData.y ;
+				}
 
 				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 			}
-			
+			//
 			
 		}
 	}
@@ -594,90 +597,7 @@ class InlineFormattingContext extends FormattingContext
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-	private function getBounds(elements:Array<ElementRenderer>):RectangleData
-	{
 
-		var bounds:RectangleData;
-		
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		
-		for (i in 0...elements.length)
-		{
-			if (elements[i].bounds.x < left)
-			{
-				left = elements[i].bounds.x;
-			}
-			if (elements[i].bounds.y < top)
-			{
-				if (elements[i].isText() == false)
-				{
-					top = elements[i].bounds.y;
-				}
-				else
-				{
-					var domElement:DOMElement = elements[i].style.domElement;
-					
-					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
-				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
-		
-				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
-					
-					top = elements[i].bounds.y - domElementAscent;
-				}
-				
-			}
-			if (elements[i].bounds.x + elements[i].bounds.width > right)
-			{
-				right = elements[i].bounds.x + elements[i].bounds.width;
-			}
-			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
-			{
-				if (elements[i].isText() == false)
-				{
-					bottom = elements[i].bounds.y + elements[i].bounds.height;
-				}
-				else
-				{
-					
-						var domElement:DOMElement = elements[i].style.domElement;
-					
-					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
-				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
-		
-				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
-					
-					bottom = elements[i].bounds.y - domElementAscent + elements[i].bounds.height;
-				}
-			}
-		}
-			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-				
-				
-		return bounds;
-		
-	}
 	
 	//TODO : re-implement
 	private function removeSpaces():Void

@@ -173,6 +173,8 @@ class AbstractContainerStyle extends Style
 		//which started the children formatting context
 		childrenFormattingContext = doFlowChildren(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
 	
+
+		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		if (this._width == DimensionStyleValue.autoValue)
@@ -267,7 +269,7 @@ class AbstractContainerStyle extends Style
 		//meaning that it also is responsible to format it
 		if (establishesNewFormattingContext() == true)
 		{
-			childrenFormattingContext.format(true);
+			childrenFormattingContext.format();
 		}
 		
 		return childrenFormattingContext;
