@@ -115,7 +115,8 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function getRemainingLineWidth():Int
 	{
-		return _formattingContextRootWidth - _formattingContextData.x - _floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRootWidth);
+		return _formattingContextRoot.style.computedStyle.width - _formattingContextData.x - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
 	}
 	
 	
@@ -563,7 +564,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRootWidth);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
 				
 				
 				_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
@@ -575,7 +576,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRootWidth);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
 				
 				
 				_formattingContextData.maxHeight = _formattingContextData.y;
@@ -755,7 +756,8 @@ class InlineFormattingContext extends FormattingContext
 		var remainingSpace:Int;
 		var flowX:Int;
 		
-		remainingSpace = _formattingContextRootWidth - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - _floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRootWidth);
+		remainingSpace = _formattingContextRoot.style.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
 		flowX = _formattingContextRoot.style.computedStyle.marginLeft + _formattingContextRoot.style.computedStyle.paddingLeft;
 		
 		
@@ -787,7 +789,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					//when justified, the concatenated width of the DOMElements
 					//must take all the containing DOMElement width
-					concatenatedLength = _formattingContextRootWidth;
+					concatenatedLength = _formattingContextRoot.style.computedStyle.width;
 					
 					alignJustify(flowX, remainingSpace);
 				}
