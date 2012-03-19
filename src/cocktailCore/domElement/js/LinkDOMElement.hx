@@ -8,7 +8,7 @@
 package cocktailCore.domElement.js;
 
 import cocktailCore.domElement.abstract.AbstractLinkDOMElement;
-import cocktail.mouse.MouseData;
+import core.mouseMouseData;
 import cocktail.domElement.DOMElementData;
 
 /**

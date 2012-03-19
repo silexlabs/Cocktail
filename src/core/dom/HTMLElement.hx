@@ -1,11 +1,11 @@
 package core.dom;
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.event.Event;
-import cocktailCore.event.KeyboardEvent;
-import cocktailCore.event.MouseEvent;
+import core.event.Event;
+import core.event.KeyboardEvent;
+import core.event.MouseEvent;
 import cocktailCore.focus.FocusManager;
 import cocktailCore.keyboard.Keyboard;
-import cocktailCore.mouse.Mouse;
+import core.mouse.Mouse;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;

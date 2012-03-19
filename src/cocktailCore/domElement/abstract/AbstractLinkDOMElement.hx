@@ -11,7 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.domElement.DOMElementData;
-import cocktail.mouse.MouseData;
+import core.mouseMouseData;
 
 /**
  * The link DOMElement is a special kind of

@@ -8,7 +8,7 @@
 package cocktailCore.keyboard.as3;
 
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.event.KeyboardEvent;
+import core.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
 import cocktailCore.keyboard.abstract.AbstractKeyboard;

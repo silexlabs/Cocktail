@@ -7,7 +7,7 @@
 */
 package cocktailCore.keyboard.abstract;
 
-import cocktailCore.event.KeyboardEvent;
+import core.event.KeyboardEvent;
 import haxe.Log;
 import cocktail.nativeElement.NativeElement;
 import cocktail.keyboard.KeyboardData;

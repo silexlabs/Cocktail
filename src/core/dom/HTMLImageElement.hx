@@ -2,7 +2,7 @@ package core.dom;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
-import cocktailCore.event.Event;
+import core.event.Event;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.style.EmbeddedStyle;
 

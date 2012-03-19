@@ -9,7 +9,7 @@ package cocktailCore.domElement.as3;
 
 import cocktailCore.domElement.abstract.AbstractLinkDOMElement;
 import flash.net.URLRequest;
-import cocktail.mouse.MouseData;
+import core.mouseMouseData;
 
 /**
  * This is the flash AS3 implementation of the LinkDOMElement.
