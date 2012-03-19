@@ -12,7 +12,7 @@ import core.event.KeyboardEvent;
 import haxe.Log;
 import js.Lib;
 import core.keyboard.AbstractKeyboard;
-import cocktail.keyboard.KeyboardData;
+import core.keyboard.KeyboardData;
 
 /**
  * This is the JavaScript implementation of the keyboard abstraction.

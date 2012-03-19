@@ -17,7 +17,7 @@ import core.event.KeyboardEvent;
 import core.event.MouseEvent;
 import cocktailCore.focus.FocusManager;
 import core.keyboard.Keyboard;
-import cocktail.keyboard.KeyboardData;
+import core.keyboard.KeyboardData;
 import core.mouse.Mouse;
 import core.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
