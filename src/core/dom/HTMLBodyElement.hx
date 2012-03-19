@@ -1,4 +1,4 @@
-package cocktailCore.dom;
+package core.dom;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
