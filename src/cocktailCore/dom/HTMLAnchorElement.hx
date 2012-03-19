@@ -1,4 +1,8 @@
 package cocktailCore.dom;
+import cocktail.nativeElement.NativeElementManager;
+import cocktail.nativeElement.NativeElementData;
+import cocktailCore.event.MouseEvent;
+import cocktailCore.dom.DOMData;
 
 /**
  * ...
@@ -7,38 +11,31 @@ package cocktailCore.dom;
 
 class HTMLAnchorElement extends HTMLElement
 {
-
-		/**
+	
+	/**
 	 * set/get the URL to open when clicking on 
 	 * the LinkDOMElement
 	 */
 	private var _href:String;
-	public var href(getHref, setHref):String;
+	public var href(get_href, set_href):String;
 	
 	/**
 	 * set/get the target where to open
 	 * the linked documenet (for instance, it can be in a new tab
 	 * in a browser environnement or replace the current document)
 	 */
-	private var _target:LinkTargetValue;
-	public var target(getTarget, setTarget):LinkTargetValue;
+	private var _target:AnchorTarget;
+	public var target(get_target, set_target):AnchorTarget;
 	
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super(NativeElementManager.createNativeElement(NativeElementTypeValue.link));
-		_target = LinkTargetValue.self;
-	}
-	
-	/**
-	 * LinkDOMElement are tab enabled by default
-	 */
-	override private function initFocus():Void
-	{
-		super.initFocus();
-		_tabEnabled = true;
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.link);
+		
+		super();
+		_target = AnchorTarget.self;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +49,7 @@ class HTMLAnchorElement extends HTMLElement
 	 * event, the callback must be called to follow the
 	 * http link if it is provided
 	 */
-	override private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
+	override private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDown = value;
 		_mouse.onMouseDown = onMouseDownCallback;
@@ -67,7 +64,7 @@ class HTMLAnchorElement extends HTMLElement
 	/**
 	 * Open the link in addition to calling the user callback
 	 */
-	override private function onMouseDownCallback(mouseEventData:MouseEventData):Void
+	override private function onMouseDownCallback(mouseEventData:MouseEvent):Void
 	{
 		if (_onMouseDown != null)
 		{
@@ -96,22 +93,22 @@ class HTMLAnchorElement extends HTMLElement
 	 * Utils method to convert the target enum to an HTML
 	 * target attribute value
 	 */
-	private function getTargetAsString(value:LinkTargetValue):String
+	private function getTargetAsString(value:AnchorTarget):String
 	{
 		var target:String;
 		
 		switch (value)
 		{
-			case LinkTargetValue.blank:
+			case AnchorTarget.blank:
 				target = "_blank";
 				
-			case LinkTargetValue.parent:
+			case AnchorTarget.parent:
 				target = "_parent";
 				
-			case LinkTargetValue.self:
+			case AnchorTarget.self:
 				target = "_self";
 				
-			case LinkTargetValue.top:
+			case AnchorTarget.top:
 				target = "_top";
 		}
 		
@@ -127,7 +124,7 @@ class HTMLAnchorElement extends HTMLElement
 	 * the mouse down callback with the new href
 	 * value
 	 */
-	private function setHref(value:String):String
+	private function set_href(value:String):String
 	{
 		_href = value;
 		setOnMouseDown(_onMouseDown);
@@ -135,7 +132,7 @@ class HTMLAnchorElement extends HTMLElement
 		return value;
 	}
 	
-	private function getHref():String
+	private function get_href():String
 	{
 		return _href;
 	}
@@ -145,7 +142,7 @@ class HTMLAnchorElement extends HTMLElement
 	 * the mouse down callback with the new target
 	 * value
 	 */
-	private function setTarget(value:LinkTargetValue):LinkTargetValue
+	private function set_target(value:AnchorTarget):AnchorTarget
 	{
 		_target = value;
 		setOnMouseDown(_onMouseDown);
@@ -153,7 +150,7 @@ class HTMLAnchorElement extends HTMLElement
 		return value;
 	}
 	
-	private function getTarget():LinkTargetValue
+	private function get_target():AnchorTarget
 	{
 		return _target;
 	}

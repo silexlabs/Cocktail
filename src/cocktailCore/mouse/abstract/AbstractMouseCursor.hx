@@ -16,6 +16,8 @@ import cocktail.mouse.MouseData;
  * 
  * It exposes method to set and get the mouse cursor
  * 
+ * TODO : should not use ImageDOMElement but HTMLImageElement instead
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractMouseCursor 
