@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktailCore.dom.HTMLElement;
+import core.dom.HTMLElement;
 
 #if (flash9 || cpp || nme)
 import cocktailCore.style.as3.Style;

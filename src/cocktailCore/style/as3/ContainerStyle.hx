@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.as3;
 
-import cocktailCore.dom.HTMLElement;
+import core.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;

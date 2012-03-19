@@ -8,7 +8,7 @@
 package cocktailCore.style.as3;
 
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.dom.HTMLElement;
+import core.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractBodyStyle;
 import flash.Lib;
 import haxe.Log;

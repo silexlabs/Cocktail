@@ -7,7 +7,8 @@
 */
 package cocktailCore.style.floats;
 
-import cocktailCore.dom.HTMLElement;
+import cocktailCore.style.renderer.ElementRenderer;
+import core.dom.HTMLElement;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
 import haxe.Log;
@@ -177,18 +178,18 @@ class FloatsManager
 	 * 
 	 * TODO : shouldn't need a ref to HTMLElement
 	 */
-	public function computeFloatData(htmlElement:HTMLElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	public function computeFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		var ret:FloatData;
 		
-		switch (htmlElement.style.computedStyle.floatValue)
+		switch (elementRenderer.style.computedStyle.floatValue)
 		{
 			case left:
-				ret = getLeftFloatData(htmlElement, formattingContextData, containingBlockWidth);
+				ret = getLeftFloatData(elementRenderer, formattingContextData, containingBlockWidth);
 				_floats.left.push(ret);
 				
 			case right:
-				ret = getRightFloatData(htmlElement, formattingContextData, containingBlockWidth);
+				ret = getRightFloatData(elementRenderer, formattingContextData, containingBlockWidth);
 				_floats.right.push(ret);
 				
 			default:
@@ -203,10 +204,10 @@ class FloatsManager
 	 * 
 	 * TODO : shouldn't need ref to html element
 	 */
-	private function getLeftFloatData(htmlElement:HTMLElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getLeftFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(htmlElement, formattingContextData, containingBlockWidth);
+		var floatData:FloatData = getFloatData(elementRenderer, formattingContextData, containingBlockWidth);
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
@@ -218,10 +219,10 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(htmlElement:HTMLElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getRightFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(htmlElement, formattingContextData, containingBlockWidth);
+		var floatData:FloatData = getFloatData(elementRenderer, formattingContextData, containingBlockWidth);
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
@@ -234,12 +235,12 @@ class FloatsManager
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(htmlElement:HTMLElement, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//a float width and height use the margin box of a
 		//DOMElement
-		var floatWidth:Int = htmlElement.offsetWidth;
-		var floatHeight:Int = htmlElement.offsetHeight;
+		var floatWidth:Int = elementRenderer.style.htmlElement.offsetWidth;
+		var floatHeight:Int = elementRenderer.style.htmlElement.offsetHeight;
 	
 		//get the first y position where the float can be placed
 		var floatY:Int = getFirstAvailableY(formattingContextData, floatWidth, containingBlockWidth);
