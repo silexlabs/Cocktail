@@ -21,7 +21,7 @@ import core.keyboard.KeyboardData;
 import core.mouse.Mouse;
 import core.mouse.MouseData;
 import core.nativeElement.NativeElement;
-import core.style.Style;
+import port.Style;
 import core.style.StyleData;
 import core.unit.UnitData;
 import core.unit.UnitManager;

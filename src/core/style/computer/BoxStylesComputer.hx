@@ -9,7 +9,7 @@ package core.style.computer;
 
 import cocktail.domElement.DOMElement;
 import core.style.AbstractStyle;
-import core.style.Style;
+import port.Style;
 import core.style.StyleData;
 import core.unit.UnitData;
 import core.unit.UnitManager;

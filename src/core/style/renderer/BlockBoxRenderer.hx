@@ -1,7 +1,7 @@
 package core.style.renderer;
 
 import core.nativeElement.NativeElement;
-import core.style.Style;
+import port.Style;
 import haxe.Log;
 
 /**
