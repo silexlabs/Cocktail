@@ -5,16 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.drawing;
+package core.drawing;
 
-
+/**
+ * Set the right runtime specific drawing manager at compile-time
+ */
 #if (flash9 || cpp || nme)
-typedef DrawingManager = cocktailCore.drawing.as3.DrawingManager;
+typedef DrawingManager =  port.flash_player.DrawingManager;
+
 #elseif js
-typedef DrawingManager = cocktailCore.drawing.js.DrawingManager;
-#elseif php
-typedef DrawingManager = cocktailCore.drawing.php.DrawingManager;
+typedef DrawingManager =  port.browser.DrawingManager;
+
 #elseif doc
-import cocktailCore.drawing.abstract.AbstractDrawingManager;
-class DrawingManager extends AbstractDrawingManager {}
-#end	
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class DrawingManager extends core.drawing.AbstractDrawingManager{}
+
+#end
