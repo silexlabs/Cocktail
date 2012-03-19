@@ -77,7 +77,7 @@ class VisualEffectStylesComputer
 		
 		switch (style.opacity)
 		{
-			case OpacityStyleValue.number(value):
+			case Opacity.number(value):
 				opacity = value;
 		}
 		
@@ -165,7 +165,7 @@ class VisualEffectStylesComputer
 	 */
 	private static function getComputedTransform(style:AbstractStyle):Matrix
 	{
-		var transformFunctions:Array<TransformFunctionValue>;
+		var transformFunctions:Array<TransformFunction>;
 		var transformOrigin:PointData = style.computedStyle.transformOrigin;
 		
 		//the matrix that will concatenate the transform functions
@@ -174,70 +174,70 @@ class VisualEffectStylesComputer
 		//retrieve the transform functions or init an empty array
 		switch (style.transform)
 		{
-			case TransformStyleValue.transformFunctions(value):
+			case Transform.transformFunctions(value):
 				transformFunctions = value;
 				
-			case TransformStyleValue.none:
-				transformFunctions = new Array<TransformFunctionValue>();
+			case Transform.none:
+				transformFunctions = new Array<TransformFunction>();
 		}
 		
 		//apply each transform functions to the matrix in order
 		for (i in 0...transformFunctions.length)
 		{
-			var transformFunction:TransformFunctionValue = transformFunctions[i];
+			var transformFunction:TransformFunction = transformFunctions[i];
 			
 			switch (transformFunction)
 			{
 				//concatenate another matrix
-				case TransformFunctionValue.matrix(data):
+				case TransformFunction.matrix(data):
 					matrix.concatenate(new Matrix(data));
 				
 				//rotate	
-				case TransformFunctionValue.rotate(value):
+				case TransformFunction.rotate(value):
 					var angle:Float = Math.round(UnitManager.getRadFromAngleValue(value));
 					matrix.rotate(angle, transformOrigin);
 				
 				//scale x and y	
-				case TransformFunctionValue.scale(sx, sys):
+				case TransformFunction.scale(sx, sys):
 					matrix.scale(sx, sys, transformOrigin);
 				
 				//scale x	
-				case TransformFunctionValue.scaleX(sx):
+				case TransformFunction.scaleX(sx):
 					matrix.scale(sx, 1, transformOrigin);
 				
 				//scale y	
-				case TransformFunctionValue.scaleY(sy):
+				case TransformFunction.scaleY(sy):
 					matrix.scale(1, sy, transformOrigin);
 				
 				//skew x and y	
-				case TransformFunctionValue.skew(angleX, angleY):
+				case TransformFunction.skew(angleX, angleY):
 					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
 					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
 					matrix.skew(skewX, skewY, transformOrigin);
 				
 				//skew x	
-				case TransformFunctionValue.skewX(angleX):
+				case TransformFunction.skewX(angleX):
 					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
 					matrix.skew(skewX, 1, transformOrigin);
 				
 				//skew y	
-				case TransformFunctionValue.skewY(angleY):
+				case TransformFunction.skewY(angleY):
 					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
 					matrix.skew(1, skewY, transformOrigin);
 				
 				//translate x and y	
-				case TransformFunctionValue.translate(tx, ty):
+				case TransformFunction.translate(tx, ty):
 					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
 					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
 					matrix.translate(translationX, translationY);
 				
 				//translate x	
-				case TransformFunctionValue.translateX(tx):
+				case TransformFunction.translateX(tx):
 					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
 					matrix.translate(translationX, 0.0);
 				
 				//translate y	
-				case TransformFunctionValue.translateY(ty):
+				case TransformFunction.translateY(ty):
 					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
 					matrix.translate(0.0, translationY);	
 			}
@@ -249,16 +249,16 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:AbstractStyle, translation:TranslationValue, percentReference:Int):Float
+	private static function getComputedTranslation(style:AbstractStyle, translation:Translation, percentReference:Int):Float
 	{
 		var computedTranslation:Float;
 		
 		switch (translation)
 		{
-			case TranslationValue.length(value):
+			case Translation.length(value):
 				computedTranslation = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
-			case TranslationValue.percent(value):
+			case Translation.percent(value):
 				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);
 		}
 		

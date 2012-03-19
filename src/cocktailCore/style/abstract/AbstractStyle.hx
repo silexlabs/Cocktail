@@ -83,67 +83,67 @@ class AbstractStyle
 	/**
 	 * display styles
 	 */
-	private var _display:DisplayStyleValue;
-	public var display(getDisplay, setDisplay):DisplayStyleValue;
+	private var _display:Display;
+	public var display(getDisplay, setDisplay):Display;
 	
-	private var _position:PositionStyleValue;
-	public var position(getPosition, setPosition):PositionStyleValue;
+	private var _position:Position;
+	public var position(getPosition, setPosition):Position;
 	
-	private var _floatValue:FloatStyleValue;
-	public var floatValue(getFloatValue, setFloatValue):FloatStyleValue;
+	private var _floatValue:FloatStyle;
+	public var floatValue(getFloatValue, setFloatValue):FloatStyle;
 	
-	private var _clear:ClearStyleValue;
-	public var clear(getClear, setClear):ClearStyleValue;
+	private var _clear:Clear;
+	public var clear(getClear, setClear):Clear;
 	
 	private var _transformOrigin:TransformOriginStyleData;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
 	
-	private var _transform:TransformStyleValue;
-	public var transform(getTransform, setTransform):TransformStyleValue;
+	private var _transform:Transform;
+	public var transform(getTransform, setTransform):Transform;
 	
 	/**
 	 * box model styles
 	 */
-	private var _marginLeft:MarginStyleValue;
-	public var marginLeft(getMarginLeft, setMarginLeft):MarginStyleValue;
-	private var _marginRight:MarginStyleValue;
-	public var marginRight(getMarginRight, setMarginRight):MarginStyleValue;
-	private var _marginTop:MarginStyleValue;
-	public var marginTop(getMarginTop, setMarginTop):MarginStyleValue;
-	private var _marginBottom:MarginStyleValue;
-	public var marginBottom(getMarginBottom, setMarginBottom):MarginStyleValue;
+	private var _marginLeft:Margin;
+	public var marginLeft(getMarginLeft, setMarginLeft):Margin;
+	private var _marginRight:Margin;
+	public var marginRight(getMarginRight, setMarginRight):Margin;
+	private var _marginTop:Margin;
+	public var marginTop(getMarginTop, setMarginTop):Margin;
+	private var _marginBottom:Margin;
+	public var marginBottom(getMarginBottom, setMarginBottom):Margin;
 	
-	private var _paddingLeft:PaddingStyleValue;
-	public var paddingLeft(getPaddingLeft, setPaddingLeft):PaddingStyleValue;
-	private var _paddingRight:PaddingStyleValue;
-	public var paddingRight(getPaddingRight, setPaddingRight):PaddingStyleValue;
-	private var _paddingTop:PaddingStyleValue;
-	public var paddingTop(getPaddingTop, setPaddingTop):PaddingStyleValue;
-	private var _paddingBottom:PaddingStyleValue;
-	public var paddingBottom(getPaddingBottom, setPaddingBottom):PaddingStyleValue;
+	private var _paddingLeft:Padding;
+	public var paddingLeft(getPaddingLeft, setPaddingLeft):Padding;
+	private var _paddingRight:Padding;
+	public var paddingRight(getPaddingRight, setPaddingRight):Padding;
+	private var _paddingTop:Padding;
+	public var paddingTop(getPaddingTop, setPaddingTop):Padding;
+	private var _paddingBottom:Padding;
+	public var paddingBottom(getPaddingBottom, setPaddingBottom):Padding;
 
-	private var _width:DimensionStyleValue;
-	public var width(getWidth, setWidth):DimensionStyleValue;
-	private var _height:DimensionStyleValue;
-	public var height(getHeight, setHeight):DimensionStyleValue;
+	private var _width:Dimension;
+	public var width(getWidth, setWidth):Dimension;
+	private var _height:Dimension;
+	public var height(getHeight, setHeight):Dimension;
 	
-	private var _minHeight:ConstrainedDimensionStyleValue;
-	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimensionStyleValue;
-	private var _maxHeight:ConstrainedDimensionStyleValue;
-	public var maxHeight(getMaxHeight, setMaxHeight):ConstrainedDimensionStyleValue;
-	private var _minWidth:ConstrainedDimensionStyleValue;
-	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimensionStyleValue;
-	private var _maxWidth:ConstrainedDimensionStyleValue;
-	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimensionStyleValue;
+	private var _minHeight:ConstrainedDimension;
+	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimension;
+	private var _maxHeight:ConstrainedDimension;
+	public var maxHeight(getMaxHeight, setMaxHeight):ConstrainedDimension;
+	private var _minWidth:ConstrainedDimension;
+	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimension;
+	private var _maxWidth:ConstrainedDimension;
+	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimension;
 
-	private var _top:PositionOffsetStyleValue;
-	public var top(getTop, setTop):PositionOffsetStyleValue;
-	private var _left:PositionOffsetStyleValue;
-	public var left(getLeft, setLeft):PositionOffsetStyleValue;
-	private var _bottom:PositionOffsetStyleValue;
-	public var bottom(getBottom, setBottom):PositionOffsetStyleValue;
-	private var _right:PositionOffsetStyleValue;
-	public var right(getRight, setRight):PositionOffsetStyleValue;
+	private var _top:PositionOffset;
+	public var top(getTop, setTop):PositionOffset;
+	private var _left:PositionOffset;
+	public var left(getLeft, setLeft):PositionOffset;
+	private var _bottom:PositionOffset;
+	public var bottom(getBottom, setBottom):PositionOffset;
+	private var _right:PositionOffset;
+	public var right(getRight, setRight):PositionOffset;
 	
 	/**
 	 * background styles
@@ -172,20 +172,20 @@ class AbstractStyle
 	/**
 	 * font styles
 	 */
-	private var _fontSize:FontSizeStyleValue;
-	public var fontSize(getFontSize, setFontSize):FontSizeStyleValue;
+	private var _fontSize:FontSize;
+	public var fontSize(getFontSize, setFontSize):FontSize;
 	
-	private var _fontWeight:FontWeightStyleValue;
-	public var fontWeight(getFontWeight, setFontWeight):FontWeightStyleValue;
+	private var _fontWeight:FontWeight;
+	public var fontWeight(getFontWeight, setFontWeight):FontWeight;
 	
-	private var _fontStyle:FontStyleStyleValue;
-	public var fontStyle(getFontStyle, setFontStyle):FontStyleStyleValue;
+	private var _fontStyle:FontStyle;
+	public var fontStyle(getFontStyle, setFontStyle):FontStyle;
 	
-	private var _fontFamily:Array<FontFamilyStyleValue>;
-	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamilyStyleValue>;
+	private var _fontFamily:Array<FontFamily>;
+	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamily>;
 	
-	private var _fontVariant:FontVariantStyleValue;
-	public var fontVariant(getFontVariant, setFontVariant):FontVariantStyleValue;
+	private var _fontVariant:FontVariant;
+	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
 	
 	private var _color:ColorValue;
 	public var color(getColor, setColor):ColorValue;
@@ -193,38 +193,38 @@ class AbstractStyle
 	/**
 	 * text styles
 	 */
-	private var _lineHeight:LineHeightStyleValue;
-	public var lineHeight(getLineHeight, setLineHeight):LineHeightStyleValue;
+	private var _lineHeight:LineHeight;
+	public var lineHeight(getLineHeight, setLineHeight):LineHeight;
 	
-	private var _textTransform:TextTransformStyleValue;
-	public var textTransform(getTextTransform, setTextTransform):TextTransformStyleValue;
+	private var _textTransform:TextTransform;
+	public var textTransform(getTextTransform, setTextTransform):TextTransform;
 	
-	private var _letterSpacing:LetterSpacingStyleValue;
-	public var letterSpacing(getLetterSpacing, setLetterSpacing):LetterSpacingStyleValue;
+	private var _letterSpacing:LetterSpacing;
+	public var letterSpacing(getLetterSpacing, setLetterSpacing):LetterSpacing;
 	
-	private var _wordSpacing:WordSpacingStyleValue;
-	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacingStyleValue;
+	private var _wordSpacing:WordSpacing;
+	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacing;
 	
-	private var _whiteSpace:WhiteSpaceStyleValue;
-	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpaceStyleValue;
+	private var _whiteSpace:WhiteSpace;
+	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpace;
 	
-	private var _textAlign:TextAlignStyleValue;
-	public var textAlign(getTextAlign, setTextAlign):TextAlignStyleValue;
+	private var _textAlign:TextAlign;
+	public var textAlign(getTextAlign, setTextAlign):TextAlign;
 	
-	private var _textIndent:TextIndentStyleValue;
-	public var textIndent(getTextIndent, setTextIndent):TextIndentStyleValue;
+	private var _textIndent:TextIndent;
+	public var textIndent(getTextIndent, setTextIndent):TextIndent;
 		
-	private var _verticalAlign:VerticalAlignStyleValue;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlignStyleValue;
+	private var _verticalAlign:VerticalAlign;
+	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlign;
 	
 	/**
 	 * visual effect styles
 	 */
-	private var _opacity:OpacityStyleValue;
-	public var opacity(getOpacity, setOpacity):OpacityStyleValue;
+	private var _opacity:Opacity;
+	public var opacity(getOpacity, setOpacity):Opacity;
 	
-	private var _visibility:VisibilityStyleValue;
-	public var visibility(getVisibility, setVisibility):VisibilityStyleValue;
+	private var _visibility:Visibility;
+	public var visibility(getVisibility, setVisibility):Visibility;
 	
 	private var _overflow:OverflowStyleData;
 	public var overflow(getOverflow,  setOverflow):OverflowStyleData;
@@ -294,37 +294,37 @@ class AbstractStyle
 	{
 		initComputedStyles();
 		
-		this.width = DimensionStyleValue.autoValue;
-		this.height = DimensionStyleValue.autoValue;
+		this.width = Dimension.autoValue;
+		this.height = Dimension.autoValue;
 		
-		this.minWidth = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxWidth = ConstrainedDimensionStyleValue.none;
-		this.minHeight = ConstrainedDimensionStyleValue.length(px(0));
-		this.maxHeight = ConstrainedDimensionStyleValue.none;
+		this.minWidth = ConstrainedDimension.length(px(0));
+		this.maxWidth = ConstrainedDimension.none;
+		this.minHeight = ConstrainedDimension.length(px(0));
+		this.maxHeight = ConstrainedDimension.none;
 		
-		this.marginTop = MarginStyleValue.length(px(0));
-		this.marginBottom = MarginStyleValue.length(px(0));
-		this.marginLeft = MarginStyleValue.length(px(0));
-		this.marginRight = MarginStyleValue.length(px(0));
+		this.marginTop = Margin.length(px(0));
+		this.marginBottom = Margin.length(px(0));
+		this.marginLeft = Margin.length(px(0));
+		this.marginRight = Margin.length(px(0));
 		
-		this.paddingTop = PaddingStyleValue.length(px(0));
-		this.paddingBottom = PaddingStyleValue.length(px(0));
-		this.paddingLeft = PaddingStyleValue.length(px(0));
-		this.paddingRight = PaddingStyleValue.length(px(0));
+		this.paddingTop = Padding.length(px(0));
+		this.paddingBottom = Padding.length(px(0));
+		this.paddingLeft = Padding.length(px(0));
+		this.paddingRight = Padding.length(px(0));
 		
-		this.lineHeight = LineHeightStyleValue.normal;
-		this.verticalAlign = VerticalAlignStyleValue.baseline;
+		this.lineHeight = LineHeight.normal;
+		this.verticalAlign = VerticalAlign.baseline;
 		
-		this.display = DisplayStyleValue.inlineStyle;
-		this.position = PositionStyleValue.staticStyle;
+		this.display = Display.inlineStyle;
+		this.position = Position.staticStyle;
 		
-		this.top = PositionOffsetStyleValue.autoValue;
-		this.bottom = PositionOffsetStyleValue.autoValue;
-		this.left = PositionOffsetStyleValue.autoValue;
-		this.right = PositionOffsetStyleValue.autoValue;
+		this.top = PositionOffset.autoValue;
+		this.bottom = PositionOffset.autoValue;
+		this.left = PositionOffset.autoValue;
+		this.right = PositionOffset.autoValue;
 		
-		this.floatValue = FloatStyleValue.none;
-		this.clear = ClearStyleValue.none;
+		this.floatValue = FloatStyle.none;
+		this.clear = Clear.none;
 		
 		this.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.transparent);
 		this.backgroundImage = [BackgroundImageStyleValue.none];
@@ -344,20 +344,20 @@ class AbstractStyle
 			})];
 		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
 		
-		this.fontStyle = FontStyleStyleValue.normal;
-		this.fontVariant = FontVariantStyleValue.normal;
-		this.fontWeight = FontWeightStyleValue.normal;
-		this.fontSize = FontSizeStyleValue.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		this.fontStyle = FontStyle.normal;
+		this.fontVariant = FontVariant.normal;
+		this.fontWeight = FontWeight.normal;
+		this.fontSize = FontSize.absoluteSize(FontSizeAbsoluteSizeValue.medium);
 		
-		this.textIndent = TextIndentStyleValue.length(px(0));
-		this.textAlign = TextAlignStyleValue.left;
-		this.letterSpacing = LetterSpacingStyleValue.normal;
-		this.wordSpacing = WordSpacingStyleValue.normal;
-		this.textTransform = TextTransformStyleValue.none;
-		this.whiteSpace = WhiteSpaceStyleValue.normal;
+		this.textIndent = TextIndent.length(px(0));
+		this.textAlign = TextAlign.left;
+		this.letterSpacing = LetterSpacing.normal;
+		this.wordSpacing = WordSpacing.normal;
+		this.textTransform = TextTransform.none;
+		this.whiteSpace = WhiteSpace.normal;
 		
-		this.visibility = VisibilityStyleValue.visible;
-		this.opacity = OpacityStyleValue.number(1.0);
+		this.visibility = Visibility.visible;
+		this.opacity = Opacity.number(1.0);
 		this.overflow = {
 			x:OverflowStyleValue.visible,
 			y:OverflowStyleValue.visible
@@ -368,7 +368,7 @@ class AbstractStyle
 			y:TransformOriginYStyleValue.center
 		}
 		
-		this.transform = TransformStyleValue.none;
+		this.transform = Transform.none;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		this.fontFamily = defaultStyles.fontFamily;
@@ -399,23 +399,23 @@ class AbstractStyle
 			right: 0,
 			top: 0,
 			bottom : 0,
-			clear : ClearStyleValue.none,
-			floatValue : FloatStyleValue.none,
-			display : DisplayStyleValue.block,
-			position: PositionStyleValue.staticStyle,
+			clear : Clear.none,
+			floatValue : FloatStyle.none,
+			display : Display.block,
+			position: Position.staticStyle,
 			verticalAlign : 0.0,
 			fontSize:12.0,
 			lineHeight:14.0,
-			fontWeight:FontWeightStyleValue.normal,
-			fontStyle:FontStyleStyleValue.normal,
-			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
-			fontVariant:FontVariantStyleValue.normal,
-			textTransform:TextTransformStyleValue.none,
+			fontWeight:FontWeight.normal,
+			fontStyle:FontStyle.normal,
+			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
+			fontVariant:FontVariant.normal,
+			textTransform:TextTransform.none,
 			letterSpacing:0,
 			wordSpacing:0,
 			textIndent:0,
-			whiteSpace:WhiteSpaceStyleValue.normal,
-			textAlign:TextAlignStyleValue.left,
+			whiteSpace:WhiteSpace.normal,
+			textAlign:TextAlign.left,
 			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
@@ -440,7 +440,7 @@ class AbstractStyle
 	private static function getDefaultStyle():DefaultStylesData
 	{
 		return {
-			fontFamily:[FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.serif)],
+			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
 			color:ColorValue.keyword(ColorKeywordValue.black)
 		}
 	}
@@ -961,7 +961,7 @@ class AbstractStyle
 		if (isPositioned() == true)
 		{
 			//for 'fixed' DOMElement, takes the viewport (the 'window' through which the document is viewed)
-			if (this._computedStyle.position == PositionStyleValue.fixed)
+			if (this._computedStyle.position == Position.fixed)
 			{
 				containingBlockDimensions = {
 					width:viewportData.width,
@@ -970,7 +970,7 @@ class AbstractStyle
 					isWidthAuto:viewportData.isWidthAuto};
 			}
 			//for 'absolute' takes the first positioned ancestor
-			else if (this._computedStyle.position == PositionStyleValue.absolute)
+			else if (this._computedStyle.position == Position.absolute)
 			{
 				containingBlockDimensions = {
 					width:lastPositionedDOMElementData.width,
@@ -1016,10 +1016,10 @@ class AbstractStyle
 		
 		switch (this._computedStyle.floatValue) 
 		{
-			case FloatStyleValue.left, FloatStyleValue.right:
+			case FloatStyle.left, FloatStyle.right:
 				ret = true;
 			
-			case FloatStyleValue.none:
+			case FloatStyle.none:
 				ret = false;
 		}
 		
@@ -1146,10 +1146,10 @@ class AbstractStyle
 		
 		switch (this._computedStyle.clear) 
 		{
-			case ClearStyleValue.left, ClearStyleValue.right, ClearStyleValue.both:
+			case Clear.left, Clear.right, Clear.both:
 				ret = true;
 			
-			case ClearStyleValue.none:
+			case Clear.none:
 				ret = false;
 		}
 		
@@ -1162,7 +1162,7 @@ class AbstractStyle
 	 */
 	private function isNotDisplayed():Bool
 	{
-		return this._computedStyle.display == DisplayStyleValue.none;
+		return this._computedStyle.display == Display.none;
 	}
 	
 	/**
@@ -1260,187 +1260,187 @@ class AbstractStyle
 	// cause a re-layout
 	////////////////////////////////
 	
-	private function setWidth(value:DimensionStyleValue):DimensionStyleValue 
+	private function setWidth(value:Dimension):Dimension 
 	{
 		invalidate();
 		return _width = value;
 	}
 	
-	private function setMarginLeft(value:MarginStyleValue):MarginStyleValue 
+	private function setMarginLeft(value:Margin):Margin 
 	{
 		invalidateMargin();
 		return _marginLeft = value;
 	}
 	
-	private function setMarginRight(value:MarginStyleValue):MarginStyleValue 
+	private function setMarginRight(value:Margin):Margin 
 	{
 		invalidateMargin();
 		return _marginRight = value;
 	}
 	
-	private function setMarginTop(value:MarginStyleValue):MarginStyleValue 
+	private function setMarginTop(value:Margin):Margin 
 	{
 		invalidateMargin();
 		return _marginTop = value;
 	}
 	
-	private function setMarginBottom(value:MarginStyleValue):MarginStyleValue 
+	private function setMarginBottom(value:Margin):Margin 
 	{
 		invalidateMargin();
 		return _marginBottom = value;
 	}
 	
-	private function setPaddingLeft(value:PaddingStyleValue):PaddingStyleValue 
+	private function setPaddingLeft(value:Padding):Padding 
 	{
 		invalidate();
 		return _paddingLeft = value;
 	}
 	
-	private function setPaddingRight(value:PaddingStyleValue):PaddingStyleValue 
+	private function setPaddingRight(value:Padding):Padding 
 	{
 		invalidate();
 		return _paddingRight = value;
 	}
 	
-	private function setPaddingTop(value:PaddingStyleValue):PaddingStyleValue 
+	private function setPaddingTop(value:Padding):Padding 
 	{
 		invalidate();
 		return _paddingTop = value;
 	}
 	
-	private function setPaddingBottom(value:PaddingStyleValue):PaddingStyleValue 
+	private function setPaddingBottom(value:Padding):Padding 
 	{
 		invalidate();
 		return _paddingBottom = value;
 	}
 	
-	private function setDisplay(value:DisplayStyleValue):DisplayStyleValue 
+	private function setDisplay(value:Display):Display 
 	{
 		invalidate();
 		return _display = value;
 	}
 	
-	private function setPosition(value:PositionStyleValue):PositionStyleValue 
+	private function setPosition(value:Position):Position 
 	{
 		invalidate();
 		return _position = value;
 	}
 	
-	private function setHeight(value:DimensionStyleValue):DimensionStyleValue 
+	private function setHeight(value:Dimension):Dimension 
 	{
 		invalidate();
 		return _height = value;
 	}
 	
-	private function setMinHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		invalidate();
 		return _minHeight = value;
 	}
 	
-	private function setMaxHeight(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		invalidate();
 		return _maxHeight = value;
 	}
 	
-	private function setMinWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		invalidate();
 		return _minWidth = value;
 	}
 	
-	private function setMaxWidth(value:ConstrainedDimensionStyleValue):ConstrainedDimensionStyleValue 
+	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		invalidate();
 		return _maxWidth = value;
 	}
 	
-	private function setTop(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	private function setTop(value:PositionOffset):PositionOffset 
 	{
 		invalidatePositionOffset();
 		return _top = value;
 	}
 	
-	private function setLeft(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	private function setLeft(value:PositionOffset):PositionOffset 
 	{
 		invalidatePositionOffset();
 		return _left = value;
 	}
 	
-	private function setBottom(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	private function setBottom(value:PositionOffset):PositionOffset 
 	{
 		invalidatePositionOffset();
 		return _bottom = value;
 	}
 	
-	private function setRight(value:PositionOffsetStyleValue):PositionOffsetStyleValue 
+	private function setRight(value:PositionOffset):PositionOffset 
 	{
 		invalidatePositionOffset();
 		return _right = value;
 	}
 	
-	private function setFloatValue(value:FloatStyleValue):FloatStyleValue 
+	private function setFloatValue(value:FloatStyle):FloatStyle 
 	{
 		invalidate();
 		return _floatValue = value;
 	}
 	
-	private function setClear(value:ClearStyleValue):ClearStyleValue 
+	private function setClear(value:Clear):Clear 
 	{
 		invalidate();
 		return _clear = value;
 	}
 	
-	private function setFontSize(value:FontSizeStyleValue):FontSizeStyleValue
+	private function setFontSize(value:FontSize):FontSize
 	{
 		invalidateText();
 		return _fontSize = value;
 	}
 	
-	private function setFontWeight(value:FontWeightStyleValue):FontWeightStyleValue
+	private function setFontWeight(value:FontWeight):FontWeight
 	{
 		invalidateText();
 		return _fontWeight = value;
 	}
 	
-	private function setFontStyle(value:FontStyleStyleValue):FontStyleStyleValue
+	private function setFontStyle(value:FontStyle):FontStyle
 	{
 		invalidateText();
 		return _fontStyle = value;
 	}
 	
-	private function setFontFamily(value:Array<FontFamilyStyleValue>):Array<FontFamilyStyleValue>
+	private function setFontFamily(value:Array<FontFamily>):Array<FontFamily>
 	{
 		invalidateText();
 		return _fontFamily = value;
 	}
 	
-	private function setFontVariant(value:FontVariantStyleValue):FontVariantStyleValue
+	private function setFontVariant(value:FontVariant):FontVariant
 	{
 		invalidateText();
 		return _fontVariant = value;
 	}
 	
-	private function setTextTransform(value:TextTransformStyleValue):TextTransformStyleValue
+	private function setTextTransform(value:TextTransform):TextTransform
 	{
 		invalidateText();
 		return _textTransform = value;
 	}
 	
-	private function setLetterSpacing(value:LetterSpacingStyleValue):LetterSpacingStyleValue
+	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
 		invalidateText();
 		return _letterSpacing = value;
 	}
 	
-	private function setWordSpacing(value:WordSpacingStyleValue):WordSpacingStyleValue
+	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
 		invalidate();
 		return _wordSpacing = value;
 	}
 	
-	private function setLineHeight(value:LineHeightStyleValue):LineHeightStyleValue
+	private function setLineHeight(value:LineHeight):LineHeight
 	{
 		invalidate();
 		return _lineHeight = value;
@@ -1452,38 +1452,38 @@ class AbstractStyle
 		return _color = value;
 	}
 	
-	private function setVerticalAlign(value:VerticalAlignStyleValue):VerticalAlignStyleValue
+	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
 		invalidate();
 		return _verticalAlign = value;
 	}
 	
-	private function setTextIndent(value:TextIndentStyleValue):TextIndentStyleValue
+	private function setTextIndent(value:TextIndent):TextIndent
 	{
 		invalidate();
 		return _textIndent = value;
 	}
 	
-	private function setWhiteSpace(value:WhiteSpaceStyleValue):WhiteSpaceStyleValue
+	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
 		invalidate();
 		return _whiteSpace = value;
 	}
 	
-	private function setTextAlign(value:TextAlignStyleValue):TextAlignStyleValue
+	private function setTextAlign(value:TextAlign):TextAlign
 	{
 		invalidate();
 		return _textAlign = value;
 	}
 	
-	private function setOpacity(value:OpacityStyleValue):OpacityStyleValue
+	private function setOpacity(value:Opacity):Opacity
 	{
 		_opacity = value;
 		invalidate();
 		return _opacity;
 	}
 	
-	private function setVisibility(value:VisibilityStyleValue):VisibilityStyleValue
+	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
 		invalidate();
@@ -1496,7 +1496,7 @@ class AbstractStyle
 		return _transformOrigin = value;
 	}
 	
-	private function setTransform(value:TransformStyleValue):TransformStyleValue
+	private function setTransform(value:Transform):Transform
 	{
 		invalidate();
 		return _transform = value;
@@ -1513,157 +1513,157 @@ class AbstractStyle
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
 	
-	private function getOpacity():OpacityStyleValue
+	private function getOpacity():Opacity
 	{
 		return _opacity;
 	}
 	
-	private function getVisibility():VisibilityStyleValue
+	private function getVisibility():Visibility
 	{
 		return _visibility;
 	}
 	
-	private function getMarginLeft():MarginStyleValue 
+	private function getMarginLeft():Margin 
 	{
 		return _marginLeft;
 	}
 	
-	private function getMarginRight():MarginStyleValue 
+	private function getMarginRight():Margin 
 	{
 		return _marginRight;
 	}
 	
-	private function getMarginTop():MarginStyleValue 
+	private function getMarginTop():Margin 
 	{
 		return _marginTop;
 	}
 	
-	private function getMarginBottom():MarginStyleValue 
+	private function getMarginBottom():Margin 
 	{
 		return _marginBottom;
 	}
 	
-	private function getPaddingLeft():PaddingStyleValue 
+	private function getPaddingLeft():Padding 
 	{
 		return _paddingLeft;
 	}
 	
-	private function getPaddingRight():PaddingStyleValue 
+	private function getPaddingRight():Padding 
 	{
 		return _paddingRight;
 	}
 	
-	private function getPaddingTop():PaddingStyleValue 
+	private function getPaddingTop():Padding 
 	{
 		return _paddingTop;
 	}
 	
-	private function getPaddingBottom():PaddingStyleValue 
+	private function getPaddingBottom():Padding 
 	{
 		return _paddingBottom;
 	}
 	
-	private function getDisplay():DisplayStyleValue 
+	private function getDisplay():Display 
 	{
 		return _display;
 	}
 	
-	private function getPosition():PositionStyleValue 
+	private function getPosition():Position 
 	{
 		return _position;
 	}
 	
-	private function getWidth():DimensionStyleValue 
+	private function getWidth():Dimension 
 	{
 		return _width;
 	}
 	
-	private function getHeight():DimensionStyleValue 
+	private function getHeight():Dimension 
 	{
 		return _height;
 	}
 	
-	private function getMinHeight():ConstrainedDimensionStyleValue 
+	private function getMinHeight():ConstrainedDimension 
 	{
 		return _minHeight;
 	}
 	
-	private function getMaxHeight():ConstrainedDimensionStyleValue 
+	private function getMaxHeight():ConstrainedDimension 
 	{
 		return _maxHeight;
 	}
 	
-	private function getMinWidth():ConstrainedDimensionStyleValue 
+	private function getMinWidth():ConstrainedDimension 
 	{
 		return _minWidth;
 	}
 	
-	private function getMaxWidth():ConstrainedDimensionStyleValue 
+	private function getMaxWidth():ConstrainedDimension 
 	{
 		return _maxWidth;
 	}
 	
-	private function getTop():PositionOffsetStyleValue 
+	private function getTop():PositionOffset 
 	{
 		return _top;
 	}
 	
-	private function getLeft():PositionOffsetStyleValue 
+	private function getLeft():PositionOffset 
 	{
 		return _left;
 	}
 	
-	private function getBottom():PositionOffsetStyleValue 
+	private function getBottom():PositionOffset 
 	{
 		return _bottom;
 	}
 	
-	private function getRight():PositionOffsetStyleValue 
+	private function getRight():PositionOffset 
 	{
 		return _right;
 	}
 	
-	private function getFloatValue():FloatStyleValue 
+	private function getFloatValue():FloatStyle 
 	{
 		return _floatValue;
 	}
 	
-	private function getClear():ClearStyleValue 
+	private function getClear():Clear 
 	{
 		return _clear;
 	}
 	
-	private function getFontSize():FontSizeStyleValue
+	private function getFontSize():FontSize
 	{
 		return _fontSize;
 	}
 	
-	private function getFontWeight():FontWeightStyleValue
+	private function getFontWeight():FontWeight
 	{
 		return _fontWeight;
 	}
 	
-	private function getFontStyle():FontStyleStyleValue
+	private function getFontStyle():FontStyle
 	{
 		return _fontStyle;
 	}
 	
-	private function getFontFamily():Array<FontFamilyStyleValue>
+	private function getFontFamily():Array<FontFamily>
 	{
 		return _fontFamily;
 	}
 	
-	private function getFontVariant():FontVariantStyleValue
+	private function getFontVariant():FontVariant
 	{
 		return _fontVariant;
 	}
 	
-	private function getTextTransform():TextTransformStyleValue
+	private function getTextTransform():TextTransform
 	{
 		return _textTransform;
 	}
 	
-	private function getLetterSpacing():LetterSpacingStyleValue
+	private function getLetterSpacing():LetterSpacing
 	{
 		return _letterSpacing;
 	}
@@ -1673,37 +1673,37 @@ class AbstractStyle
 		return _color;
 	}
 	
-	private function getWordSpacing():WordSpacingStyleValue
+	private function getWordSpacing():WordSpacing
 	{
 		return _wordSpacing;
 	}
 	
-	private function getLineHeight():LineHeightStyleValue
+	private function getLineHeight():LineHeight
 	{
 		return _lineHeight;
 	}
 	
-	private function getVerticalAlign():VerticalAlignStyleValue
+	private function getVerticalAlign():VerticalAlign
 	{
 		return _verticalAlign;
 	}
 	
-	private function getTextIndent():TextIndentStyleValue
+	private function getTextIndent():TextIndent
 	{
 		return _textIndent;
 	}
 	
-	private function getWhiteSpace():WhiteSpaceStyleValue
+	private function getWhiteSpace():WhiteSpace
 	{
 		return _whiteSpace;
 	}
 	
-	private function getTextAlign():TextAlignStyleValue
+	private function getTextAlign():TextAlign
 	{
 		return _textAlign;
 	}
 	
-	private function getTransform():TransformStyleValue
+	private function getTransform():Transform
 	{
 		return _transform;
 	}

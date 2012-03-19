@@ -172,17 +172,17 @@ class FontAndTextStylesComputer
 	 * white space style. when there are no line-break,
 	 * the text can't be justified
 	 */
-	private static function getComputedTextAlign(style:AbstractStyle, computedWhiteSpace:WhiteSpaceStyleValue):TextAlignStyleValue
+	private static function getComputedTextAlign(style:AbstractStyle, computedWhiteSpace:WhiteSpace):TextAlign
 	{
-		var textAlign:TextAlignStyleValue = style.textAlign;
+		var textAlign:TextAlign = style.textAlign;
 		
 		switch (computedWhiteSpace)
 		{
 			case pre:
-				if (style.textAlign == TextAlignStyleValue.justify)
+				if (style.textAlign == TextAlign.justify)
 				{
 					
-					textAlign = TextAlignStyleValue.left;
+					textAlign = TextAlign.left;
 				}
 				
 			default:

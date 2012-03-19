@@ -63,7 +63,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
 		//if the 'height' style also is defined as 'auto'
-		if (style.height == DimensionStyleValue.autoValue)
+		if (style.height == Dimension.autoValue)
 		{
 			//first try to use the intrinsic width of the embedded
 			//DOMElement if it exist (it might for instance be a
@@ -144,7 +144,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var embeddedDOMElement:HTMLReplacedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
-		if (style.width == DimensionStyleValue.autoValue)
+		if (style.width == Dimension.autoValue)
 		{
 			//try to use the intrinsic height if not null
 			if (embeddedDOMElement.naturalHeight != null)
@@ -180,7 +180,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * for block embedded DOMElement, an 'auto' for vertical margin compute to 0, 
 	 * horizontal margin are computed like for non-embedded block DOMElements
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		var computedMargin:Int;
 	
@@ -192,7 +192,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//the "isDimensionAuto" flag is set to false, as for embedded element, there is always a computed width 
 			//at this point
-			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMarginStyleValue, containingDOMElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
+			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingDOMElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
 		}
 		
 		return computedMargin;

@@ -67,14 +67,14 @@ class BoxPositioner
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (htmlElement.style.left != PositionOffsetStyleValue.autoValue)
+		if (htmlElement.style.left != PositionOffset.autoValue)
 		{
 			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing DOMElement width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (htmlElement.style.right != PositionOffsetStyleValue.autoValue)
+		else if (htmlElement.style.right != PositionOffset.autoValue)
 		{
 			elementRenderer.bounds.x = getRightOffset(htmlElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
@@ -86,11 +86,11 @@ class BoxPositioner
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (htmlElement.style.top != PositionOffsetStyleValue.autoValue)
+		if (htmlElement.style.top != PositionOffset.autoValue)
 		{
 			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
 		}
-		else if (htmlElement.style.bottom != PositionOffsetStyleValue.autoValue)
+		else if (htmlElement.style.bottom != PositionOffset.autoValue)
 		{
 			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}

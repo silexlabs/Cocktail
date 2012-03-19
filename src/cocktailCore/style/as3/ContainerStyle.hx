@@ -168,7 +168,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Return a flash FontPosture object from
 	 * the fontStyle style of the ContainerDOMElement
 	 */
-	private static function getNativeFontPosture(fontStyle:FontStyleStyleValue):FontPosture
+	private static function getNativeFontPosture(fontStyle:FontStyle):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
@@ -188,7 +188,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Return a flash TypographicCase object from
 	 * the font variant style of the ContainerDOMElement
 	 */
-	private static function getNativeFontVariant(fontVariant:FontVariantStyleValue):TypographicCase
+	private static function getNativeFontVariant(fontVariant:FontVariant):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		
@@ -230,8 +230,8 @@ class ContainerStyle extends AbstractContainerStyle
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		textFormat.size = _computedStyle.fontSize;
 		
-		textFormat.bold = _computedStyle.fontWeight == FontWeightStyleValue.bold;
-		textFormat.italic = _computedStyle.fontStyle == FontStyleStyleValue.italic;
+		textFormat.bold = _computedStyle.fontWeight == FontWeight.bold;
+		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
 		
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		

@@ -49,32 +49,32 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 			
 		//if left or right are 'auto'
-		if (style.left == PositionOffsetStyleValue.autoValue || style.right == PositionOffsetStyleValue.autoValue)
+		if (style.left == PositionOffset.autoValue || style.right == PositionOffset.autoValue)
 		{
 			//any 'auto' margin is set to 0
-			if (style.marginLeft == MarginStyleValue.autoValue)
+			if (style.marginLeft == Margin.autoValue)
 			{
 				style.computedStyle.marginLeft = 0;
 			}
-			if (style.marginRight == MarginStyleValue.autoValue)
+			if (style.marginRight == Margin.autoValue)
 			{
 				style.computedStyle.marginRight = 0;
 			}
 			
 			//if both left and right are 'auto', left is its static posittion, then right is deduced from the other values
-			if (style.left == PositionOffsetStyleValue.autoValue && style.right == PositionOffsetStyleValue.autoValue)
+			if (style.left == PositionOffset.autoValue && style.right == PositionOffset.autoValue)
 			{
 				style.computedStyle.left = getComputedStaticLeft(style, containingDOMElementData);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
 			}
 			//if only left is auto, right is computed then left is deduced
-			else if (style.left == PositionOffsetStyleValue.autoValue)
+			else if (style.left == PositionOffset.autoValue)
 			{
 				style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.left = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight;
 			}
 			//same for right
-			else if (style.right == PositionOffsetStyleValue.autoValue)
+			else if (style.right == PositionOffset.autoValue)
 			{
 				style.computedStyle.left = getComputedPositionOffset(style.left, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.right = containingDOMElementData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.left - computedStyle.paddingLeft - computedStyle.paddingRight;
@@ -88,7 +88,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			style.computedStyle.right = getComputedPositionOffset(style.right, containingDOMElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//then deduce the margins
-			if (style.marginLeft == MarginStyleValue.autoValue && style.marginRight == MarginStyleValue.autoValue)
+			if (style.marginLeft == Margin.autoValue && style.marginRight == Margin.autoValue)
 			{
 				var margin:Int = Math.round((containingDOMElementData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight) / 2);
 				
@@ -110,11 +110,11 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			
 				style.computedStyle.marginLeft = 0;
 			}
-			else if (style.marginLeft == MarginStyleValue.autoValue)
+			else if (style.marginLeft == Margin.autoValue)
 			{
 				style.computedStyle.marginLeft = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginRight;
 			}
-			else if (style.marginRight == MarginStyleValue.autoValue)
+			else if (style.marginRight == Margin.autoValue)
 			{
 				style.computedStyle.marginRight = containingDOMElementData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginLeft;
 			}
@@ -129,29 +129,29 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
-		if (style.top == PositionOffsetStyleValue.autoValue || style.bottom == PositionOffsetStyleValue.autoValue)
+		if (style.top == PositionOffset.autoValue || style.bottom == PositionOffset.autoValue)
 		{
-			if (style.marginTop == MarginStyleValue.autoValue)
+			if (style.marginTop == Margin.autoValue)
 			{
 				style.computedStyle.marginTop = 0;
 			}
-			if (style.marginBottom == MarginStyleValue.autoValue)
+			if (style.marginBottom == Margin.autoValue)
 			{
 				style.computedStyle.marginBottom = 0;
 			}
 			
-			if (style.top == PositionOffsetStyleValue.autoValue && style.bottom == PositionOffsetStyleValue.autoValue)
+			if (style.top == PositionOffset.autoValue && style.bottom == PositionOffset.autoValue)
 			{
 				style.computedStyle.top = getComputedStaticTop(style, containingDOMElementData);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
 			}
 			
-			else if (style.top == PositionOffsetStyleValue.autoValue)
+			else if (style.top == PositionOffset.autoValue)
 			{
 				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.top = containingDOMElementData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom;
 			}
-			else if (style.bottom == PositionOffsetStyleValue.autoValue)
+			else if (style.bottom == PositionOffset.autoValue)
 			{
 				style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				style.computedStyle.bottom = containingDOMElementData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.top - computedStyle.paddingTop - computedStyle.paddingBottom;
@@ -168,7 +168,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			style.computedStyle.top = getComputedPositionOffset(style.top, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingDOMElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
-			if (style.marginTop == MarginStyleValue.autoValue && style.marginBottom == MarginStyleValue.autoValue)
+			if (style.marginTop == Margin.autoValue && style.marginBottom == Margin.autoValue)
 			{
 				var margin:Int = Math.round((containingDOMElementData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom) / 2);
 				
@@ -185,11 +185,11 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 					style.computedStyle.marginBottom = containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom;
 				}
 			}
-			else if (style.marginTop == MarginStyleValue.autoValue)
+			else if (style.marginTop == Margin.autoValue)
 			{
 				style.computedStyle.marginTop = containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom;
 			}
-			else if (style.marginBottom == MarginStyleValue.autoValue)
+			else if (style.marginBottom == Margin.autoValue)
 			{
 				style.computedStyle.marginBottom = containingDOMElementData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginTop;
 			}
