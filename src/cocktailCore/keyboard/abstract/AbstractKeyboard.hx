@@ -29,6 +29,7 @@ import cocktail.keyboard.KeyboardData;
  */
 class AbstractKeyboard 
 {
+	//TODO : should be string instead
 	public static inline var TAB:Int = 9;
 	
 	public static inline var ENTER:Int = 13;
