@@ -8,7 +8,7 @@
 package cocktailCore.style.as3;
 
 import cocktail.geom.Matrix;
-import cocktailCore.dom.HTMLElement;
+import core.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractEmbeddedStyle;
 import haxe.Log;
 

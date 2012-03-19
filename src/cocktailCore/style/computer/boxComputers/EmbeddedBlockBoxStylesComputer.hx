@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.computer.boxComputers;
 
-import cocktailCore.dom.HTMLImageElement;
+import core.dom.HTMLImageElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;

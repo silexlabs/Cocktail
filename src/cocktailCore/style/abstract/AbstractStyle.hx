@@ -11,7 +11,7 @@ import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.background.BackgroundManager;
-import cocktailCore.dom.HTMLElement;
+import core.dom.HTMLElement;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;

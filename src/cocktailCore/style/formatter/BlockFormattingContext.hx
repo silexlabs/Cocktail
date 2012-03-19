@@ -198,7 +198,7 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertFloat(element:ElementRenderer):Void
 	{
 		
-		var floatData:FloatData = _floatsManager.computeFloatData(element.style.htmlElement, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
+		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
 		var x:Float = floatData.x + element.parent.style.computedStyle.paddingLeft;
 		var y:Float = floatData.y + element.parent.style.computedStyle.paddingTop;
 		var width:Float = floatData.width;

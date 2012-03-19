@@ -9,8 +9,8 @@ package cocktailCore.style.abstract;
 
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
-import cocktailCore.dom.HTMLElement;
-import cocktailCore.dom.Node;
+import core.dom.HTMLElement;
+import core.dom.Node;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -38,7 +38,7 @@ import cocktailCore.style.renderer.TextRenderer;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.geom.GeomData;
-import cocktailCore.dom.DOMData;
+import core.dom.DOMData;
 import haxe.Timer;
 
 #if (flash9 || cpp || nme)
