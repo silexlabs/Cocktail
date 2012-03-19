@@ -5,24 +5,31 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.keyboard.as3;
+package port.browser;
 
 import cocktail.nativeElement.NativeElement;
 import core.event.KeyboardEvent;
-import flash.Lib;
 import haxe.Log;
-import cocktailCore.keyboard.abstract.AbstractKeyboard;
+import js.Lib;
+import core.keyboard.AbstractKeyboard;
 import cocktail.keyboard.KeyboardData;
 
 /**
- * This is the flash AVM2 implementation of the keyboard abstraction.
- * Set listeners on native flash keyboard event and call the corresponding
- * callback
+ * This is the JavaScript implementation of the keyboard abstraction.
+ * Set listeners on native javascript keyboard event and call the
+ * corresponding callbacks
  * 
  * @author Yannick DOMINGUEZ
  */
 class Keyboard extends AbstractKeyboard
 {
+	/**
+	 * native keyboard JavaScript events
+	 */
+	private static inline var KEY_DOWN_EVENT:String = "keydown";
+	
+	private static inline var KEY_UP_EVENT:String = "keyup";
+	
 	/**
 	 * class constructor
 	 */
@@ -30,9 +37,9 @@ class Keyboard extends AbstractKeyboard
 	{
 		super(nativeElement);
 		
-		//set native Flash events
-		_keyDownEvent = flash.events.KeyboardEvent.KEY_DOWN;
-		_keyUpEvent = flash.events.KeyboardEvent.KEY_UP;
+		//set native JS events
+		_keyDownEvent = KEY_DOWN_EVENT;
+		_keyUpEvent = KEY_UP_EVENT;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -46,42 +53,36 @@ class Keyboard extends AbstractKeyboard
 	 */
 	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
-		_nativeElement.removeEventListener(keyboardEvent, nativeCallback);
+		untyped _nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
 		if (domElementCallback != null)
 		{
-			_nativeElement.addEventListener(keyboardEvent, nativeCallback);
+			untyped _nativeElement.addEventListener(keyboardEvent, nativeCallback);
 		}
 	}
 	
 	/**
 	 * Returns the key that triggered the keyboard event
 	 * @param	event the native key up or down event
-	 * @return a sruct containing the key code and other key values
+	 * @return a sruct containing the key code and ascii value
 	 */
 	override private function getKeyData(event:Dynamic):KeyboardEvent
 	{
-		//cast the flash KeyboardEvent
-		var typedEvent:flash.events.KeyboardEvent = cast(event);
-		
 		var eventType:String;
 		
-		switch (typedEvent.type)
+		switch (event.type)
 		{
-			case flash.events.KeyboardEvent.KEY_DOWN:
+			case KEY_DOWN_EVENT:
 				eventType = KeyboardEvent.KEY_DOWN;
 				
-			case flash.events.KeyboardEvent.KEY_UP:
+			case KEY_UP_EVENT:
 				eventType = KeyboardEvent.KEY_UP;
-				
-			default:
-				//TODO : become custom event ?
-				eventType = typedEvent.type;
 		}
 		
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, typedEvent.charCode, 
-		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, event.charCode, 
+		event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
 		
+	
 		
 		return keyboardEvent;
 	}

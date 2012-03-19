@@ -8,7 +8,7 @@
 package cocktailCore.domElement.js;
 
 import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
-import cocktailCore.keyboard.Keyboard;
+import core.keyboard.Keyboard;
 import js.Lib;
 
 /**

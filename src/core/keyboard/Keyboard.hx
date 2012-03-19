@@ -5,22 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.keyboard;
+package core.keyboard;
 
 /**
  * Set the right runtime specific keyboard manager at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef Keyboard =  cocktailCore.keyboard.as3.Keyboard;
+typedef Keyboard =  port.flash_player.Keyboard;
 
 #elseif js
-typedef Keyboard =  cocktailCore.keyboard.js.Keyboard;
+typedef Keyboard =  port.browser.Keyboard;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class Keyboard extends cocktailCore.keyboard.abstract.AbstractKeyboard{}
+class Keyboard extends core.keyboard.AbstractKeyboard{}
 
 #end
