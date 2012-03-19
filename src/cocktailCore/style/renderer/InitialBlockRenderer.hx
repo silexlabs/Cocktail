@@ -8,7 +8,7 @@
 package cocktailCore.style.renderer;
 import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktail.viewport.Viewport;
 import cocktailCore.style.Style;
 

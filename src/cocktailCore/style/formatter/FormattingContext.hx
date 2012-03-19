@@ -10,7 +10,7 @@ package cocktailCore.style.formatter;
 import core.dom.HTMLElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;

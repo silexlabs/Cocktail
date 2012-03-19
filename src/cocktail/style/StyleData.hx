@@ -8,8 +8,8 @@
 package cocktail.style;
 import cocktail.domElement.DOMElement;
 import core.unit.UnitData;
-import cocktail.geom.GeomData;
-import cocktail.geom.Matrix;
+import core.geom.GeomData;
+import core.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.renderer.ElementRenderer;

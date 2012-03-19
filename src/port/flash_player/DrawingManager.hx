@@ -18,9 +18,9 @@ import flash.display.GradientType;
 import flash.display.JointStyle;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import flash.geom.ColorTransform;
 import haxe.Log;
 

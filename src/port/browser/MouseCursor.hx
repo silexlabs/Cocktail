@@ -11,7 +11,7 @@ import haxe.Log;
 import js.Lib;
 import cocktail.domElement.ImageDOMElement;
 import core.mouse.AbstractMouseCursor;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.mouseMouseData;
 
 /**

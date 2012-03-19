@@ -13,7 +13,7 @@ import core.dom.HTMLElement;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.InitialBlockRenderer;

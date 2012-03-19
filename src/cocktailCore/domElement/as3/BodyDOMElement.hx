@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.as3;
 
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import cocktailCore.domElement.abstract.AbstractBodyDOMElement;
 
 /**

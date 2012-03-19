@@ -21,7 +21,7 @@ import flash.geom.Matrix;
 import flash.Lib;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktail.style.StyleData;
 import cocktail.domElement.DOMElementData;
 

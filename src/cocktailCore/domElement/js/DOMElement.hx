@@ -12,8 +12,8 @@ import haxe.Log;
 import js.Dom;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.Matrix;
-import cocktail.geom.GeomData;
+import core.geom.Matrix;
+import core.geom.GeomData;
 
 /**
  * This is the DOMElement implementation for JavaScript. 

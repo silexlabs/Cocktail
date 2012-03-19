@@ -9,7 +9,7 @@ package cocktailCore.style.renderer;
 
 import core.nativeElement.NativeElement;
 import core.drawing.DrawingManager;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktailCore.style.Style;
 
 /**
