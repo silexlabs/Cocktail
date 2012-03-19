@@ -1,4 +1,4 @@
-package cocktailCore.dom;
+package core.dom;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.event.Event;
 import cocktailCore.event.KeyboardEvent;

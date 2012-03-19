@@ -1,6 +1,6 @@
-package cocktailCore.dom;
+package core.dom;
 
-import cocktailCore.dom.DOMData;
+import core.dom.DOMData;
 
 /**
  * ...

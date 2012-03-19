@@ -1,4 +1,4 @@
-package cocktailCore.dom;
+package core.dom;
 
 /**
  * ...
