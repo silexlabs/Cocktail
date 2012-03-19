@@ -10,14 +10,14 @@ package cocktailCore.focus.abstract;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktailCore.event.MouseEvent;
+import core.event.MouseEvent;
 import cocktailCore.keyboard.abstract.AbstractKeyboard;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
-import cocktail.mouse.MouseData;
+import core.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.nativeElement.NativeElementManager;
-import cocktailCore.event.KeyboardEvent;
+import core.event.KeyboardEvent;
 
 /**
  * The abstract implementation of the focus

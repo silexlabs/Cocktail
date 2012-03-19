@@ -5,22 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.mouse;
+package core.mouse;
 
 
 //import the right runtime implementations
 #if (flash9 || cpp || nme)
-import cocktailCore.mouse.as3.MouseCursor;
+import port.flash_player.mouse.MouseCursor;
 
 #elseif js
-import cocktailCore.mouse.js.MouseCursor;
+import port.browser.mouse.MouseCursor;
 
 #elseif doc
-class MouseCursor extends cocktailCore.mouse.abstract.AbstractMouseCursor { }
+class MouseCursor extends core.mouse.AbstractMouseCursor { }
 
 #end
 
-import cocktail.mouse.MouseData;
+import core.mouseMouseData;
 
 /**
  * This class manages the mouse cursor display.

@@ -5,22 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.mouse;
+package core.mouse;
 
 /**
  * Set the right runtime specific mouse manager at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef Mouse =  cocktailCore.mouse.as3.Mouse;
+typedef Mouse =  port.flash_player.Mouse;
 
 #elseif js
-typedef Mouse =  cocktailCore.mouse.js.Mouse;
+typedef Mouse =  port.browser.Mouse;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class Mouse extends cocktailCore.mouse.abstract.AbstractMouse{}
+class Mouse extends core.mouse.AbstractMouse{}
 
 #end

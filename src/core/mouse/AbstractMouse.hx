@@ -5,12 +5,12 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.mouse.abstract;
+package core.mouse;
 
 import cocktail.nativeElement.NativeElement;
-import cocktailCore.event.MouseEvent;
+import core.event.MouseEvent;
 
-import cocktail.mouse.MouseData;
+import core.mouse.MouseData;
 
 /**
  * This package is made to offer a simple API for mouse interactions.

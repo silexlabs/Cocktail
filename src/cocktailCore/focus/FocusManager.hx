@@ -12,7 +12,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
-import cocktail.mouse.MouseData;
+import core.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
 import haxe.Log;
 

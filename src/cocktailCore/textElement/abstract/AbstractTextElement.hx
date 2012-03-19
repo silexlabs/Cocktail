@@ -168,6 +168,8 @@ class AbstractTextElement
 	 * also has a null TextFragmentDOMElement,
 	 * as it is only created once the text is laid
 	 * out
+	 * 
+	 * TODO : fix
 	 */
 	private static function doGetTextFragments(text:String):Array<TextFragmentData>
 	{
