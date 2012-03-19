@@ -9,11 +9,8 @@ package cocktailCore.style.abstract;
 
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
-import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.ImageDOMElement;
+import cocktailCore.dom.HTMLElement;
+import cocktailCore.dom.Node;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
@@ -41,6 +38,7 @@ import cocktailCore.style.renderer.TextRenderer;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import cocktail.geom.GeomData;
+import cocktailCore.dom.DOMData;
 import haxe.Timer;
 
 #if (flash9 || cpp || nme)
@@ -65,9 +63,9 @@ class AbstractContainerStyle extends Style
 	/**
 	 * class constructor.
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -120,24 +118,22 @@ class AbstractContainerStyle extends Style
 	 */
 	override private function flowChildren(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		//cast the ContainerDOMElement, as base DOMElement have no children attribute
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-		
+
 		//compute all the styles of the children that will affect
 		//their layout (display, position, float, clear)
 		//Those styles need to be computed before a new FormattingContext
 		//gets instantiated as the type of FormattingContext mainly
 		//depends on the children computed 'display' style value
-		for (i in 0...containerDOMElement.children.length)
+		for (i in 0..._htmlElement.childNodes.length)
 		{
 			//only DOMElement styles are computed, not TextElement as they have no style.
 			//When determining the formatting context to use, TextElement are always assumed
 			//to be inline as text is always laid out on a line when rendered.
 			//Text use its ContainerDOMElement's styles for rendering
-			if (isDOMElement(containerDOMElement.children[i]) == true)
+			if (isElementNode(_htmlElement.childNodes[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
-				childrenDOMElement.style.computeDisplayStyles();
+				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
+				childHTMLElement.style.computeDisplayStyles();
 			}
 		}
 		
@@ -230,25 +226,25 @@ class AbstractContainerStyle extends Style
 	 */
 	private function doFlowChildren(childrenContainingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, childLastPositionedDOMElementData:LastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
 		
 		//flow all children 
-		for (i in 0...containerDOMElement.children.length)
+		for (i in 0..._htmlElement.childNodes.length)
 		{
 			//if the children is a DOMElement, call its flow method
-			if (isDOMElement(containerDOMElement.children[i]) == true)
+			if (isElementNode(_htmlElement.childNodes[i]) == true)
 			{
-				var childrenDOMElement:DOMElement = cast(containerDOMElement.children[i].child);
+				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
 				//the flow method also lays out recursively all the children of the childrenDOMElement
 				//if it is a ContainerDOMElement
-				childrenDOMElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
+				childHTMLElement.style.flow(childrenContainingDOMElementData, viewportData, childLastPositionedDOMElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
-				var childrenTextElement:TextElement = cast(containerDOMElement.children[i].child);
+				//TODO : TextElement should inherit Node
+				var childrenTextElement:TextElement = cast(_htmlElement.childNodes[i]);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
 				
 				//add the created TextRenderer to the ContainerDOMElement
@@ -325,8 +321,6 @@ class AbstractContainerStyle extends Style
 	 */
 	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Array<TextRenderer>
 	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
-
 		var rendereredText:Array<TextRenderer> = new Array<TextRenderer>();
 		
 		//get the text to display from the TextElement
@@ -582,23 +576,22 @@ class AbstractContainerStyle extends Style
 	 */
 	override public function childrenInline():Bool
 	{
-		var containerDOMElement:ContainerDOMElement = cast(this._domElement);
 		
 		//return false for a container with no children
-		if (containerDOMElement.children.length == 0)
+		if (_htmlElement.childNodes.length == 0)
 		{
 			return false;
 		}
 		
 		//establish if the first child is inline or block
 		//all other child must be of the same type
-		var ret:Bool = isChildInline(containerDOMElement.children[0]);
+		var ret:Bool = isChildInline(_htmlElement.childNodes[0]);
 		
 		//loop in all children and throw an exception
 		//if one the children is not of the same type as the first
-		for (i in 0...containerDOMElement.children.length)
+		for (i in 0..._htmlElement.childNodes.length)
 		{
-			if (isChildInline(containerDOMElement.children[i]) != ret)
+			if (isChildInline(_htmlElement.childNodes[i]) != ret)
 			{
 				//throw "children of a block container can only be either all block or all inline";
 			}
@@ -698,24 +691,24 @@ class AbstractContainerStyle extends Style
 	/**
 	 * Determine wether a children is inline or not
 	 */
-	private function isChildInline(child:ContainerDOMElementChildData):Bool
+	private function isChildInline(child:Node):Bool
 	{
 		var ret:Bool = true;
 		
 		//here the children is a DOMElement
-		if (isDOMElement(child))
+		if (isElementNode(child))
 		{
-			var childrenDOMElement:DOMElement = cast(child.child);
+			var childHTMLElement:HTMLElement = cast(child);
 			//here the child is of type block
-			if (childrenDOMElement.style.computedStyle.display == block)
+			if (childHTMLElement.style.computedStyle.display == block)
 			{
 				//floated children are not taken into account 
-				if (childrenDOMElement.style.isFloat() == false)
+				if (childHTMLElement.style.isFloat() == false)
 				{
 					ret = false;
 				}
 				//absolutely positioned children are not taken into account but relative positioned are
-				else if (childrenDOMElement.style.isPositioned() == false || childrenDOMElement.style.isRelativePositioned() == true)
+				else if (childHTMLElement.style.isPositioned() == false || childHTMLElement.style.isRelativePositioned() == true)
 				{
 					ret = false;
 				}
@@ -804,16 +797,16 @@ class AbstractContainerStyle extends Style
 	 * Determine wether the given children is a 
 	 * DOMElement or a TextElement
 	 */
-	private function isDOMElement(containerDOMElementChildData:ContainerDOMElementChildData):Bool
+	private function isElementNode(node:Node):Bool
 	{
 		var ret:Bool = false;
 		
-		switch (containerDOMElementChildData.type)
+		switch (node.nodeType)
 		{
-			case ContainerDOMElementChildValue.domElement:
+			case NodeType.ELEMENT_NODE:
 				ret = true;
 			
-			case ContainerDOMElementChildValue.textElement:
+			case NodeType.TEXT_NODE:
 				ret = false;
 		}
 		

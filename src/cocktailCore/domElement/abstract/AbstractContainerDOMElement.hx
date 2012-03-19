@@ -67,7 +67,7 @@ class AbstractContainerDOMElement extends DOMElement
 	 */
 	override private function initStyle():Void
 	{
-		this._style = new ContainerStyle(this);
+		//this._style = new ContainerStyle(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

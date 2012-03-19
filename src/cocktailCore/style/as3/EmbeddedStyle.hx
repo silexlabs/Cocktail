@@ -7,11 +7,9 @@
 */
 package cocktailCore.style.as3;
 
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.geom.Matrix;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractEmbeddedStyle;
-import cocktailCore.style.abstract.AbstractStyle;
 import haxe.Log;
 
 /**
@@ -23,8 +21,8 @@ import haxe.Log;
  */
 class EmbeddedStyle extends AbstractEmbeddedStyle
 {
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 }

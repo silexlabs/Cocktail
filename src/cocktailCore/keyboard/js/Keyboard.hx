@@ -8,6 +8,7 @@
 package cocktailCore.keyboard.js;
 
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.event.KeyboardEvent;
 import haxe.Log;
 import js.Lib;
 import cocktailCore.keyboard.abstract.AbstractKeyboard;
@@ -50,7 +51,7 @@ class Keyboard extends AbstractKeyboard
 	 * The listener is always removed and if the domElement
 	 * callback is not null a new listener is set
 	 */
-	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEventData->Void):Void
+	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
 		untyped _nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
@@ -65,18 +66,25 @@ class Keyboard extends AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and ascii value
 	 */
-	override private function getKeyData(event:Dynamic):KeyboardEventData
+	override private function getKeyData(event:Dynamic):KeyboardEvent
 	{
-		var key:KeyboardEventData = {
-			value : getKeyValue(event.keyCode),
-			code : event.keyCode,
-			ascii : event.charCode,
-			altKey : event.altKey ,
-			ctrlKey : event.ctrlKey,
-			shiftKey : event.shiftKey
+		var eventType:String;
+		
+		switch (event.type)
+		{
+			case KEY_DOWN_EVENT:
+				eventType = KeyboardEvent.KEY_DOWN;
+				
+			case KEY_UP_EVENT:
+				eventType = KeyboardEvent.KEY_UP;
 		}
 		
-		return key;
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, event.charCode, 
+		event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
+		
+	
+		
+		return keyboardEvent;
 	}
 	
 }

@@ -7,8 +7,8 @@
 */
 package cocktailCore.style.as3;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractBodyStyle;
 import flash.Lib;
 import haxe.Log;
@@ -24,9 +24,9 @@ class BodyStyle extends AbstractBodyStyle
 	 * class constructor
 	 * @param	domElement
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@
 package cocktailCore.keyboard.as3;
 
 import cocktail.nativeElement.NativeElement;
-import flash.events.KeyboardEvent;
+import cocktailCore.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
 import cocktailCore.keyboard.abstract.AbstractKeyboard;
@@ -31,8 +31,8 @@ class Keyboard extends AbstractKeyboard
 		super(nativeElement);
 		
 		//set native Flash events
-		_keyDownEvent = KeyboardEvent.KEY_DOWN;
-		_keyUpEvent = KeyboardEvent.KEY_UP;
+		_keyDownEvent = flash.events.KeyboardEvent.KEY_DOWN;
+		_keyUpEvent = flash.events.KeyboardEvent.KEY_UP;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ class Keyboard extends AbstractKeyboard
 	 * The listener is always removed and if the domElement
 	 * callback is not null a new listener is set
 	 */
-	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEventData->Void):Void
+	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
 		_nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
@@ -59,21 +59,31 @@ class Keyboard extends AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and other key values
 	 */
-	override private function getKeyData(event:Dynamic):KeyboardEventData
+	override private function getKeyData(event:Dynamic):KeyboardEvent
 	{
 		//cast the flash KeyboardEvent
-		var typedEvent:KeyboardEvent = cast(event);
+		var typedEvent:flash.events.KeyboardEvent = cast(event);
 		
-		var key:KeyboardEventData = {
-			value : getKeyValue(typedEvent.keyCode),
-			code : typedEvent.keyCode,
-			ascii : typedEvent.charCode,
-			altKey : typedEvent.altKey ,
-			ctrlKey : typedEvent.ctrlKey,
-			shiftKey : typedEvent.shiftKey
+		var eventType:String;
+		
+		switch (typedEvent.type)
+		{
+			case flash.events.KeyboardEvent.KEY_DOWN:
+				eventType = KeyboardEvent.KEY_DOWN;
+				
+			case flash.events.KeyboardEvent.KEY_UP:
+				eventType = KeyboardEvent.KEY_UP;
+				
+			default:
+				//TODO : become custom event ?
+				eventType = typedEvent.type;
 		}
 		
-		return key;
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, typedEvent.charCode, 
+		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		
+		
+		return keyboardEvent;
 	}
 	
 }

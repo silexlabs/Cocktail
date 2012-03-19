@@ -7,10 +7,9 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
-import cocktailCore.style.ContainerStyle;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.formatter.BlockFormattingContext;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;
@@ -20,6 +19,12 @@ import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.InitialBlockRenderer;
 import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
+
+#if (flash9 || cpp || nme)
+import cocktailCore.style.as3.ContainerStyle;
+#elseif js
+import cocktailCore.style.js.ContainerStyle;
+#end
 
 /**
  * This is the style implementation for BodyDOMElement.
@@ -43,9 +48,9 @@ class AbstractBodyStyle extends ContainerStyle
 	 * class constructor
 	 * @param	domElement
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 		
 		this._nativeElements = new Array<NativeElement>();
 		
@@ -175,7 +180,7 @@ class AbstractBodyStyle extends ContainerStyle
 		detachNativeElements(_nativeElements);
 		
 		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
-		render(_domElement.nativeElement);
+		render(_htmlElement.nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -77,7 +77,7 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	 */
 	override private function initStyle():Void
 	{
-		this._style = new EmbeddedStyle(this);
+		//this._style = new EmbeddedStyle(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

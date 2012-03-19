@@ -1,6 +1,5 @@
 package cocktailCore.style.renderer;
 
-import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import haxe.Log;

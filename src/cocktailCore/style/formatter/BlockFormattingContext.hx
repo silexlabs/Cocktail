@@ -180,8 +180,8 @@ class BlockFormattingContext extends FormattingContext
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
 		//TODO : should not use offset dimensions
-		var width:Float = element.style.domElement.offsetWidth;
-		var height:Float = element.style.domElement.offsetHeight;
+		var width:Float = element.style.htmlElement.offsetWidth;
+		var height:Float = element.style.htmlElement.offsetHeight;
 		
 		element.bounds = {
 			x:x, 
@@ -198,7 +198,7 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertFloat(element:ElementRenderer):Void
 	{
 		
-		var floatData:FloatData = _floatsManager.computeFloatData(element.style.domElement, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
+		var floatData:FloatData = _floatsManager.computeFloatData(element.style.htmlElement, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
 		var x:Float = floatData.x + element.parent.style.computedStyle.paddingLeft;
 		var y:Float = floatData.y + element.parent.style.computedStyle.paddingTop;
 		var width:Float = floatData.width;
@@ -219,8 +219,8 @@ class BlockFormattingContext extends FormattingContext
 
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
-		var width:Float = element.style.domElement.offsetWidth;
-		var height:Float = element.style.domElement.offsetHeight;
+		var width:Float = element.style.htmlElement.offsetWidth;
+		var height:Float = element.style.htmlElement.offsetHeight;
 		
 		if (element.style.computedStyle.marginTop == 60)
 		{
@@ -244,8 +244,8 @@ class BlockFormattingContext extends FormattingContext
 	{
 			var x:Float = _formattingContextData.x;
 			var y:Float = _formattingContextData.y;
-			var width:Float = element.style.domElement.offsetWidth;
-			var height:Float = element.style.domElement.offsetHeight;
+			var width:Float = element.style.htmlElement.offsetWidth;
+			var height:Float = element.style.htmlElement.offsetHeight;
 			element.bounds = {
 				x:x, 
 				y:y,

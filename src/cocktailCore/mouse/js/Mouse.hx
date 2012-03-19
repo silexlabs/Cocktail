@@ -7,6 +7,7 @@
 */
 package cocktailCore.mouse.js;
 
+import cocktailCore.event.MouseEvent;
 import cocktailCore.mouse.abstract.AbstractMouse;
 import cocktail.nativeElement.NativeElement;
 
@@ -62,7 +63,7 @@ class Mouse extends AbstractMouse
 	 * listener or set a new one. Listeners are only added if the domElement callback
 	 * is not null
 	 */
-	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
+	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
 	{
 		untyped _nativeElement.removeEventListener(mouseEvent, nativeCallback);
 		
@@ -77,25 +78,35 @@ class Mouse extends AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	override private function getMouseData(event:Dynamic):MouseEventData
+	override private function getMouseData(event:Dynamic):MouseEvent
 	{
 		
-		//retrieve the position and keyboard state
-		//from JavaScript event
-		var mousePosition:MousePositionData = {
-			localX:event.clientX,
-			localY:event.clientY,
-			globalX:event.screenX,
-			globalY:event.screenY
+		var eventType:String;
+		
+		switch (event.type)
+		{
+			case MOUSE_UP_EVENT:
+				eventType = MouseEvent.MOUSE_DOWN;
+				
+			case MOUSE_DOWN_EVENT:
+				eventType = MouseEvent.MOUSE_UP;	
+				
+			case MOUSE_OVER_EVENT:
+				eventType = MouseEvent.MOUSE_OVER;
+				
+			case MOUSE_OUT_EVENT:
+				eventType = MouseEvent.MOUSE_OUT;	
+				
+			case MOUSE_DOUBLE_CLICK_EVENT:
+				eventType = MouseEvent.DOUBLE_CLICK;		
+				
+			case MOUSE_MOVE_EVENT:
+				eventType = MouseEvent.MOUSE_MOVE;		
 		}
 		
-		var mouseEventData:MouseEventData = {
-			mousePosition:mousePosition,
-			altKey:event.altKey,
-			ctrlKey:event.ctrlKey,
-			shiftKey:event.shiftKey
-		}
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, event.stageX, event.stageY,
+		event.localX, event.localY, event.ctrlKey, event.shiftKey, event.altKey);
 		
-		return mouseEventData;
+		return mouseEvent;
 	}
 }

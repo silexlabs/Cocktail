@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.as3;
 
-import cocktail.domElement.DOMElement;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
@@ -50,9 +50,9 @@ class ContainerStyle extends AbstractContainerStyle
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 	
 	/////////////////////////////////

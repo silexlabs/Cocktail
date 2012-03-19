@@ -8,6 +8,7 @@
 package cocktailCore.mouse.abstract;
 
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.event.MouseEvent;
 
 import cocktail.mouse.MouseData;
 
@@ -28,47 +29,47 @@ import cocktail.mouse.MouseData;
  */
 class AbstractMouse 
 {
-	/**
+	/** 
 	 * The callback to call when
 	 * the native element is clicked
 	 */
-	private var _onMouseDown:MouseEventData->Void;
-	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEventData->Void;
+	private var _onMouseDown:MouseEvent->Void;
+	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback to call when 
 	 * the native element is released
 	 */
-	private var _onMouseUp:MouseEventData->Void;
-	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
+	private var _onMouseUp:MouseEvent->Void;
+	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
 	
 	/**
 	 * the callback to call when the native element
 	 * is hovered
 	 */
-	private var _onMouseOver:MouseEventData->Void;
-	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
+	private var _onMouseOver:MouseEvent->Void;
+	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback to call when the native element
 	 * is moused out
 	 */
-	private var _onMouseOut:MouseEventData->Void;
-	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
+	private var _onMouseOut:MouseEvent->Void;
+	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback to call when the mouse move while
 	 * over the native element
 	 */
-	private var _onMouseMove:MouseEventData->Void;
-	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
+	private var _onMouseMove:MouseEvent->Void;
+	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
 	
 	/**
 	 * The callback to call when the native element
 	 * is double-clicked
 	 */
-	private var _onMouseDoubleClick:MouseEventData->Void;
-	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
+	private var _onMouseDoubleClick:MouseEvent->Void;
+	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEvent->Void;
 	
 	/**
 	 * mouse event types
@@ -183,7 +184,7 @@ class AbstractMouse
 	 * @param nativeCallback the native, runtime-specific callback
 	 * @param domElementCallback the cross-platform mouse callback defined on the DOMElement
 	 */
-	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
+	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
 	{
 		//abstract
 	}
@@ -193,7 +194,7 @@ class AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	private function getMouseData(event:Dynamic):MouseEventData
+	private function getMouseData(event:Dynamic):MouseEvent
 	{
 		return null;
 	}
@@ -202,68 +203,68 @@ class AbstractMouse
 	// CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseDownEvent, onNativeMouseDown, value);
 		return this._onMouseDown = value;
 	}
 	
-	private function getOnMouseDown():MouseEventData->Void
+	private function getOnMouseDown():MouseEvent->Void
 	{
 		return this._onMouseDown;
 	}
 	
-	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseUpEvent, onNativeMouseUp, value);
 		return this._onMouseUp = value;
 	}
 	
-	private function getOnMouseUp():MouseEventData->Void
+	private function getOnMouseUp():MouseEvent->Void
 	{
 		return this._onMouseUp;
 	}
 	
-	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseOverEvent, onNativeMouseOver, value);
 		return this._onMouseOver = value;
 	}
 	
-	private function getOnMouseOver():MouseEventData->Void
+	private function getOnMouseOver():MouseEvent->Void
 	{
 		return this._onMouseOver;
 	}
 	
-	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseOutEvent, onNativeMouseOut, value);
 		return this._onMouseOut = value;
 	}
 	
-	private function getOnMouseOut():MouseEventData->Void
+	private function getOnMouseOut():MouseEvent->Void
 	{
 		return this._onMouseOut;
 	}
 	
-	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseMoveEvent, onNativeMouseMove, value);
 		return this._onMouseMove = value;
 	}
 	
-	private function getOnMouseMove():MouseEventData->Void
+	private function getOnMouseMove():MouseEvent->Void
 	{
 		return this._onMouseMove;
 	}
 	
-	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
 	{
 		updateListeners(_mouseDoubleClickEvent, onNativeMouseDoubleClick, value);
 		return this._onMouseDoubleClick = value;
 	}
 	
-	private function getOnMouseDoubleClick():MouseEventData->Void
+	private function getOnMouseDoubleClick():MouseEvent->Void
 	{
 		return this._onMouseDoubleClick;
 	}
