@@ -12,7 +12,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import core.event.MouseEvent;
 import core.keyboard.Keyboard;
-import cocktail.keyboard.KeyboardData;
+import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.nativeElement.NativeElementManager;

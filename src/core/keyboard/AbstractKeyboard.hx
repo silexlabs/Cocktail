@@ -10,7 +10,7 @@ package core.keyboard;
 import core.event.KeyboardEvent;
 import haxe.Log;
 import cocktail.nativeElement.NativeElement;
-import cocktail.keyboard.KeyboardData;
+import core.keyboard.KeyboardData;
 
 /**
  * This package is made to offer a simple API for keyboard interactions.
