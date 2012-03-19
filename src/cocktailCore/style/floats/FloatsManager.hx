@@ -68,7 +68,7 @@ class FloatsManager
 	 * @param	formattingContextData used to compute the new formattingContextData y position
 	 * @return  the new formattingContextData y position
 	 */
-	public function clearFloat(clear:ClearStyleValue, formattingContextData:FormattingContextData):Int
+	public function clearFloat(clear:Clear, formattingContextData:FormattingContextData):Int
 	{
 		var ret:Int;
 		

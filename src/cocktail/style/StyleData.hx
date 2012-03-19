@@ -24,7 +24,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls the em box size
 	 * of a font.
 	 */
-	enum FontSizeStyleValue {
+	enum FontSize {
 		
 		/**
 		 * absolute font size
@@ -60,7 +60,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls the weight of the
 	 * font
 	 */
-	enum FontWeightStyleValue {
+	enum FontWeight {
 		normal;
 		bold;
 	}
@@ -69,7 +69,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls wether the font
 	 * is displayed in italic
 	 */
-	enum FontStyleStyleValue {
+	enum FontStyle {
 		normal;
 		italic;
 	}
@@ -78,7 +78,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Lists the type of font which can
 	 * be affected to a text 
 	 */
-	enum FontFamilyStyleValue {
+	enum FontFamily {
 		
 		/**
 		 * A custom font family name
@@ -91,14 +91,14 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * if a more specific font 
 		 * wasn't available
 		 */
-		genericFamily(genericName:GenericFontFamilyValue);
+		genericFamily(genericName:GenericFontFamily);
 	}
 	
 	/**
 	 * Lists the available generic 
 	 * font families
 	 */
-	enum GenericFontFamilyValue {
+	enum GenericFontFamily {
 		serif;
 		sansSerif;
 		monospace;
@@ -110,7 +110,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * lowercase charachters look like
 	 * smaller uppercase characters
 	 */
-	enum FontVariantStyleValue {
+	enum FontVariant {
 		normal;
 		smallCaps;
 	}
@@ -122,7 +122,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls how white space inside
 	 * a DOMElement is handled
 	 */
-	enum WhiteSpaceStyleValue {
+	enum WhiteSpace {
 		
 		/**
 		 * This value directs user agents to collapse sequences
@@ -162,7 +162,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls the amount of space
 	 * between 2 letter in a text.
 	 */
-	enum LetterSpacingStyleValue {
+	enum LetterSpacing {
 		/**
 		 * Use the default spacing of
 		 * the chosen font
@@ -181,7 +181,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls the amount of space between
 	 * two words in a text
 	 */
-	enum WordSpacingStyleValue {
+	enum WordSpacing {
 		
 		/**
 		 * Use the default inter-word
@@ -201,7 +201,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * first line of text in a block of text
 	 * with respect to the containing block
 	 */
-	enum TextIndentStyleValue {
+	enum TextIndent {
 		
 		/**
 		 * An absolute value for the text indentation
@@ -219,7 +219,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Controls how inline DOMElement inside
 	 * a block container is aligned
 	 */
-	enum TextAlignStyleValue {
+	enum TextAlign {
 		left;
 		right;
 		center;
@@ -233,7 +233,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * (only first letter of each word is
 	 * set to uppercase)
 	 */
-	enum TextTransformStyleValue {
+	enum TextTransform {
 		capitalize;
 		uppercase;
 		lowercase;
@@ -249,7 +249,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * the height of the DOMElement, used to calculate
 	 * its line height
 	 */
-	enum LineHeightStyleValue {
+	enum LineHeight {
 		
 		/**
 		 * Use a "reasonnable" line height value which
@@ -282,7 +282,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * inline DOMElement in its containing
 	 * DOMElement
 	 */
-	enum VerticalAlignStyleValue {
+	enum VerticalAlign {
 		
 		/**
 		 * Align the baseline of the box with the baseline
@@ -361,7 +361,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	/**
 	 * Dimensions values for margin thickness
 	 */
-	enum MarginStyleValue {
+	enum Margin {
 		
 		/**
 		 * absolute thickness
@@ -384,7 +384,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	/**
 	 * Dimensions value for padding thickness
 	 */
-	enum PaddingStyleValue {
+	enum Padding {
 		
 		/**
 		 * absolute thickness
@@ -403,7 +403,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * a DOMElement (without margins 
 	 * and paddings)
 	 */
-	enum DimensionStyleValue {
+	enum Dimension {
 		
 		/**
 		 * absolute value
@@ -429,7 +429,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * of a DOMElement contrained its max/min
 	 * width or height
 	 */
-	enum ConstrainedDimensionStyleValue {
+	enum ConstrainedDimension {
 		
 		/**
 		 * absolute value
@@ -455,7 +455,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Display of a DOMElement in a 
 	 * DOMElements flow
 	 */
-	enum DisplayStyleValue {
+	enum Display {
 		
 		/**
 		 * add a line break before 
@@ -493,7 +493,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * A floated DOMElement is pushed to the
 	 * left-most or the right-most of its container
 	 */
-	enum FloatStyleValue {
+	enum FloatStyle {
 		left;
 		right;
 		none;
@@ -504,7 +504,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * float. It is placed below any preceding left
 	 * or right float that it clears
 	 */
-	enum ClearStyleValue {
+	enum Clear {
 		none;
 		left;
 		right;
@@ -515,7 +515,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Determine how a DOMElement is positioned relative
 	 * to its ancestors
 	 */
-	enum PositionStyleValue {
+	enum Position {
 		
 		/**
 		 * Appear after its parent in the flow, on a
@@ -556,7 +556,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The offset applied to a DOMElement
 	 * once positioned
 	 */
-	enum PositionOffsetStyleValue {
+	enum PositionOffset {
 		
 		/**
 		 * absolute offset
@@ -629,7 +629,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * displayed. A hidden DOMElement
 	 * still affects layout
 	 */
-	enum VisibilityStyleValue {
+	enum Visibility {
 		
 		/**
 		 * The DOMElement is visible
@@ -650,7 +650,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Specifies the transparency of a DOMElement
 	 * where 1.0 is opaque and 0 is transparent
 	 */
-	enum OpacityStyleValue {
+	enum Opacity {
 		number(value:Float);
 	}
 	
@@ -661,7 +661,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * transformation is obtained by performing
 	 * a matrix concatenation of each entry in the list
 	 */
-	enum TransformStyleValue {
+	enum Transform {
 		
 		/**
 		 * no transformations
@@ -672,7 +672,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * A list of transformations
 		 * to apply in order
 		 */
-		transformFunctions(transformFunctions:Array<TransformFunctionValue>);
+		transformFunctions(transformFunctions:Array<TransformFunction>);
 		
 	}
 	
@@ -680,7 +680,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The list of allowed transform functions to
 	 * apply to a DOMElement
 	 */
-	enum TransformFunctionValue {
+	enum TransformFunction {
 		
 		/**
 		 * specify a 2D transformation in the form of
@@ -691,19 +691,19 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * specify a 2D translation by the vector [tx, ty]
 		 */
-		translate(tx:TranslationValue, ty:TranslationValue);
+		translate(tx:Translation, ty:Translation);
 		
 		/**
 		 * specifies a translation by the given amount in the
 		 * X direction
 		 */
-		translateX(tx:TranslationValue);
+		translateX(tx:Translation);
 		
 		/**
 		 * specifies a translation by the given amount in the
 		 * Y direction
 		 */
-		translateY(ty:TranslationValue);
+		translateY(ty:Translation);
 		
 		/**
 		 * Specifies a 2D scale operation by the
@@ -753,7 +753,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The list of value allowed to 
 	 * specify the amount of a translation
 	 */
-	enum TranslationValue {
+	enum Translation {
 		
 		/**
 		 * a length value
@@ -1199,10 +1199,10 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * display
 		 */
-		var display:DisplayStyleValue;
-		var floatValue:FloatStyleValue;
-		var clear:ClearStyleValue;
-		var position:PositionStyleValue;
+		var display:Display;
+		var floatValue:FloatStyle;
+		var clear:Clear;
+		var position:Position;
 		var lineHeight:Float;
 		
 		/**
@@ -1229,21 +1229,21 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * font
 		 */
 		var fontSize:Float;
-		var fontWeight:FontWeightStyleValue;
-		var fontStyle:FontStyleStyleValue;
-		var fontFamily:Array<FontFamilyStyleValue>;
-		var fontVariant:FontVariantStyleValue;
+		var fontWeight:FontWeight;
+		var fontStyle:FontStyle;
+		var fontFamily:Array<FontFamily>;
+		var fontVariant:FontVariant;
 		
 		/**
 		 * text
 		 */
-		var textTransform:TextTransformStyleValue;
+		var textTransform:TextTransform;
 		var letterSpacing:Int;
 		var verticalAlign:Float;
 		var wordSpacing:Int;
 		var textIndent:Int;
-		var whiteSpace:WhiteSpaceStyleValue;
-		var textAlign:TextAlignStyleValue;
+		var whiteSpace:WhiteSpace;
+		var textAlign:TextAlign;
 		var color:ColorData;
 		
 	}
@@ -1303,7 +1303,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * structure.
 	 */
 	typedef DefaultStylesData = {
-		var fontFamily:Array<FontFamilyStyleValue>;
+		var fontFamily:Array<FontFamily>;
 		var color:ColorValue;
 	}
 	

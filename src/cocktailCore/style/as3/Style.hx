@@ -187,7 +187,7 @@ class Style extends AbstractStyle
 	/**
 	 * redefined as in nme only one font is supported
 	 */
-	private function getNativeFontFamily(value:Array<FontFamilyStyleValue>):String
+	private function getNativeFontFamily(value:Array<FontFamily>):String
 	{
 		var fontFamily:String = "";
 		
@@ -196,19 +196,19 @@ class Style extends AbstractStyle
 		
 		switch (value[0])
 		{
-			case FontFamilyStyleValue.familyName(name):
+			case FontFamily.familyName(name):
 				fontName = name;
 			
-			case FontFamilyStyleValue.genericFamily(genericName):
+			case FontFamily.genericFamily(genericName):
 				switch (genericName)
 				{
-					case GenericFontFamilyValue.serif:
+					case GenericFontFamily.serif:
 						fontName = SERIF_GENERIC_FONT_NAME;
 					
-					case GenericFontFamilyValue.sansSerif:
+					case GenericFontFamily.sansSerif:
 						fontName = SANS_SERIF_GENERIC_FONT_NAME;
 						
-					case GenericFontFamilyValue.monospace:
+					case GenericFontFamily.monospace:
 						fontName = MONOSPACE_GENERIC_FONT_NAME;
 				}
 		}
@@ -229,17 +229,17 @@ class Style extends AbstractStyle
 	 * Return a flash FontWeight object from
 	 * the font weight style of the DOMElement
 	 */
-	private function getNativeFontWeight(fontWeight:FontWeightStyleValue):FontWeight
+	private function getNativeFontWeight(fontWeight:FontWeight):flash.text.engine.FontWeight
 	{
-		var nativeFontWeight:FontWeight;
+		var nativeFontWeight:flash.text.engine.FontWeight;
 		
 		switch (fontWeight)
 		{
 			case bold:
-				nativeFontWeight = FontWeight.BOLD;
+				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
 				
 			case normal:
-				nativeFontWeight = FontWeight.NORMAL;
+				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
 		}
 		
 		return nativeFontWeight;
@@ -254,7 +254,7 @@ class Style extends AbstractStyle
 	 * @return a comma separated list of font, generally ordered from most
 	 * specific to most generic, e.g "Universe,Arial,_sans"
 	 */
-	private function getNativeFontFamily(value:Array<FontFamilyStyleValue>):String
+	private function getNativeFontFamily(value:Array<FontFamily>):String
 	{
 		var fontFamily:String = "";
 		
@@ -264,19 +264,19 @@ class Style extends AbstractStyle
 			
 			switch (value[i])
 			{
-				case FontFamilyStyleValue.familyName(name):
+				case FontFamily.familyName(name):
 					fontName = name;
 				
-				case FontFamilyStyleValue.genericFamily(genericName):
+				case FontFamily.genericFamily(genericName):
 					switch (genericName)
 					{
-						case GenericFontFamilyValue.serif:
+						case GenericFontFamily.serif:
 							fontName = SERIF_GENERIC_FONT_NAME;
 						
-						case GenericFontFamilyValue.sansSerif:
+						case GenericFontFamily.sansSerif:
 							fontName = SANS_SERIF_GENERIC_FONT_NAME;
 							
-						case GenericFontFamilyValue.monospace:
+						case GenericFontFamily.monospace:
 							fontName = MONOSPACE_GENERIC_FONT_NAME;
 					}
 			}

@@ -73,7 +73,7 @@ class DisplayStylesComputer
 	 * Compute the 'position' style. It is the same as the defined style
 	 * as no other style can affect the computed 'position' style value
 	 */
-	private static function getComputedPosition(style:AbstractStyle):PositionStyleValue
+	private static function getComputedPosition(style:AbstractStyle):Position
 	{
 		return style.position;
 	}
@@ -84,17 +84,17 @@ class DisplayStylesComputer
 	 * @param	style
 	 * @param	computedPosition the computed value of position, computed before float
 	 */
-	private static function getComputedFloat(style:AbstractStyle, computedPosition:PositionStyleValue):FloatStyleValue
+	private static function getComputedFloat(style:AbstractStyle, computedPosition:Position):FloatStyle
 	{
-		var ret:FloatStyleValue;
+		var ret:FloatStyle;
 		
 		//if the DOMElement is absolute or fixed position,
 		//it will act as an absolutely positioned DOMElement
 		//and won't take the float style into account,
 		//so it computes to none
-		if (computedPosition == PositionStyleValue.absolute || computedPosition == PositionStyleValue.fixed)
+		if (computedPosition == Position.absolute || computedPosition == Position.fixed)
 		{
-			ret = FloatStyleValue.none;
+			ret = FloatStyle.none;
 		}
 		else
 		{
@@ -111,19 +111,19 @@ class DisplayStylesComputer
 	 * @param	computedFloat the computed value of the float which must be computed before this
 	 * one
 	 */
-	private static function getComputedDisplay(style:AbstractStyle, computedFloat:FloatStyleValue):DisplayStyleValue
+	private static function getComputedDisplay(style:AbstractStyle, computedFloat:FloatStyle):Display
 	{
-		var ret:DisplayStyleValue;
+		var ret:Display;
 		
 		//if the DOMElement is a float, it can't
 		//be an inline level element
-		if (computedFloat != FloatStyleValue.none)
+		if (computedFloat != FloatStyle.none)
 		{
 			switch (style.display)
 			{
 				//for inline level value, default to block
 				case inlineStyle, inlineBlock:
-					ret = DisplayStyleValue.block;
+					ret = Display.block;
 				
 				//the value remains unchanged for other	
 				default:
@@ -149,17 +149,17 @@ class DisplayStylesComputer
 	 * @param	computedPosition
 	 * @param	computedDisplay
 	 */
-	private static function getComputedClear(style:AbstractStyle, computedPosition:PositionStyleValue, computedDisplay:DisplayStyleValue):ClearStyleValue
+	private static function getComputedClear(style:AbstractStyle, computedPosition:Position, computedDisplay:Display):Clear
 	{
-		var ret:ClearStyleValue;
+		var ret:Clear;
 		
-		if (computedDisplay == DisplayStyleValue.inlineStyle || computedDisplay == DisplayStyleValue.inlineBlock)
+		if (computedDisplay == Display.inlineStyle || computedDisplay == Display.inlineBlock)
 		{
-			ret = ClearStyleValue.none;
+			ret = Clear.none;
 		}
-		else if (computedPosition == PositionStyleValue.absolute || computedPosition == PositionStyleValue.fixed)
+		else if (computedPosition == Position.absolute || computedPosition == Position.fixed)
 		{
-			ret = ClearStyleValue.none;
+			ret = Clear.none;
 		}
 		else
 		{

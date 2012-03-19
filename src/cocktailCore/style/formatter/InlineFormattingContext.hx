@@ -341,19 +341,19 @@ class InlineFormattingContext extends FormattingContext
 	 * Determine wether a tab should be converted to
 	 * a space based on the whiteSpace property
 	 */
-	private function shouldTabBeConvertedToSpace(whiteSpace:WhiteSpaceStyleValue):Bool
+	private function shouldTabBeConvertedToSpace(whiteSpace:WhiteSpace):Bool
 	{
 		var shouldTabBeConvertedToSpace:Bool;
 		
 		switch (whiteSpace)
 		{
-			case WhiteSpaceStyleValue.normal,
-			WhiteSpaceStyleValue.nowrap,
-			WhiteSpaceStyleValue.preLine:
+			case WhiteSpace.normal,
+			WhiteSpace.nowrap,
+			WhiteSpace.preLine:
 				shouldTabBeConvertedToSpace = true;
 				
-			case WhiteSpaceStyleValue.pre,
-			WhiteSpaceStyleValue.preWrap:
+			case WhiteSpace.pre,
+			WhiteSpace.preWrap:
 				shouldTabBeConvertedToSpace = false;
 		}
 		
@@ -364,19 +364,19 @@ class InlineFormattingContext extends FormattingContext
 	 * Determine wether line feed is allowed
 	 * based on the whiteSpace property
 	 */
-	private function isLineFeedAllowed(whiteSpace:WhiteSpaceStyleValue):Bool
+	private function isLineFeedAllowed(whiteSpace:WhiteSpace):Bool
 	{
 		var lineFeedAllowed:Bool;
 		
 		switch (whiteSpace)
 		{
-			case WhiteSpaceStyleValue.normal,
-			WhiteSpaceStyleValue.nowrap:
+			case WhiteSpace.normal,
+			WhiteSpace.nowrap:
 				lineFeedAllowed = false;
 				
-			case WhiteSpaceStyleValue.pre,
-			WhiteSpaceStyleValue.preWrap,
-			WhiteSpaceStyleValue.preLine:
+			case WhiteSpace.pre,
+			WhiteSpace.preWrap,
+			WhiteSpace.preLine:
 				lineFeedAllowed = true;
 		}
 		
@@ -386,19 +386,19 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Determine wheter a space should actually be inserted
 	 */
-	private function shouldInsertSpace(whiteSpace:WhiteSpaceStyleValue, isNexElementALineFeed:Bool):Bool
+	private function shouldInsertSpace(whiteSpace:WhiteSpace, isNexElementALineFeed:Bool):Bool
 	{
 		var shouldInsertSpace:Bool;
 		
 		switch (whiteSpace)
 		{
-			case WhiteSpaceStyleValue.normal,
-			WhiteSpaceStyleValue.nowrap,
-			WhiteSpaceStyleValue.preLine:
+			case WhiteSpace.normal,
+			WhiteSpace.nowrap,
+			WhiteSpace.preLine:
 				shouldInsertSpace = isNexElementALineFeed == false;
 				
-			case WhiteSpaceStyleValue.preWrap,
-			WhiteSpaceStyleValue.pre:
+			case WhiteSpace.preWrap,
+			WhiteSpace.pre:
 				shouldInsertSpace = true;
 		}
 			
@@ -415,7 +415,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Determine wheter a space should be collapsed
 	 * when it belong to a sequence of spaces
 	 */
-	private function isCollapsed(lastInsertedElement:ElementRenderer, whiteSpace:WhiteSpaceStyleValue):Bool
+	private function isCollapsed(lastInsertedElement:ElementRenderer, whiteSpace:WhiteSpace):Bool
 	{
 		/**
 		var isCollapsed:Bool;
@@ -432,13 +432,13 @@ class InlineFormattingContext extends FormattingContext
 				
 				switch (whiteSpace)
 				{
-					case WhiteSpaceStyleValue.normal,
-					WhiteSpaceStyleValue.nowrap:
+					case WhiteSpace.normal,
+					WhiteSpace.nowrap:
 						isCollapsed = true;
 						
-					case WhiteSpaceStyleValue.preWrap,
-					WhiteSpaceStyleValue.pre,
-					WhiteSpaceStyleValue.preLine:
+					case WhiteSpace.preWrap,
+					WhiteSpace.pre,
+					WhiteSpace.preLine:
 						isCollapsed = false;
 				}
 				
@@ -606,9 +606,9 @@ class InlineFormattingContext extends FormattingContext
 		/**
 		switch (_elementsInLineBox[0].domElement.style.computedStyle.whiteSpace)
 		{
-			case WhiteSpaceStyleValue.normal,
-			WhiteSpaceStyleValue.nowrap,
-			WhiteSpaceStyleValue.preLine:
+			case WhiteSpace.normal,
+			WhiteSpace.nowrap,
+			WhiteSpace.preLine:
 				
 				
 				switch(_elementsInLineBox[0].domElementType)
@@ -627,9 +627,9 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (_elementsInLineBox[_elementsInLineBox.length - 1].domElement.style.computedStyle.whiteSpace)
 			{
-				case WhiteSpaceStyleValue.normal,
-				WhiteSpaceStyleValue.nowrap,
-				WhiteSpaceStyleValue.preLine:
+				case WhiteSpace.normal,
+				WhiteSpace.nowrap,
+				WhiteSpace.preLine:
 					
 				switch(	_elementsInLineBox[_elementsInLineBox.length - 1].domElementType)
 				{

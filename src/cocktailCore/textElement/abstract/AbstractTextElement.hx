@@ -111,7 +111,7 @@ class AbstractTextElement
 	 * is transformed to uppercase), based on the textTransform
 	 * style of this container DOMElement
 	 */
-	public static function applyTextTransform(text:String, textTransform:TextTransformStyleValue):String
+	public static function applyTextTransform(text:String, textTransform:TextTransform):String
 	{
 		switch (textTransform)
 		{

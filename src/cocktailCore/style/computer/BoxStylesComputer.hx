@@ -200,7 +200,7 @@ class BoxStylesComputer
 	 */
 	private function measureWidthAndHorizontalMargins(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
 	{
-		if (style.width == DimensionStyleValue.autoValue)
+		if (style.width == Dimension.autoValue)
 		{
 			measureAutoWidth(style, containingDOMElementData);
 		}
@@ -265,7 +265,7 @@ class BoxStylesComputer
 		//the height might be null at this point if it must take the content size
 		//it will be set once all its children DOMElements have been laid out
 		
-		if (style.height == DimensionStyleValue.autoValue)
+		if (style.height == Dimension.autoValue)
 		{
 			measureAutoHeight(style, containingDOMElementData);
 		}
@@ -330,7 +330,7 @@ class BoxStylesComputer
 		//superior to max width. The max width
 		//can be defined as "none" if there are 
 		//no width limit on this DOMElement
-		if (style.maxWidth != ConstrainedDimensionStyleValue.none)
+		if (style.maxWidth != ConstrainedDimension.none)
 		{
 			if (computedWidth > computedStyle.maxWidth)
 			{
@@ -355,7 +355,7 @@ class BoxStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 	
 		//check that height is within authorised range
-		if (style.maxHeight != ConstrainedDimensionStyleValue.none)
+		if (style.maxHeight != ConstrainedDimension.none)
 		{
 			if (computedHeight > computedStyle.maxHeight)
 			{
@@ -447,7 +447,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedMarginLeft(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		return getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementData.width, style.computedStyle.width, style.width == DimensionStyleValue.autoValue, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
+		return getComputedMargin(style.marginLeft, style.marginRight, containingDOMElementData.width, style.computedStyle.width, style.width == Dimension.autoValue, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
 	
 	/**
@@ -455,7 +455,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedMarginRight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		return getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementData.width, style.computedStyle.width, style.width == DimensionStyleValue.autoValue, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
+		return getComputedMargin(style.marginRight, style.marginLeft, containingDOMElementData.width, style.computedStyle.width, style.width == Dimension.autoValue, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
 	
 	/**
@@ -463,7 +463,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedMarginTop(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		return getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementData.height, style.computedStyle.height, style.height == DimensionStyleValue.autoValue, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
+		return getComputedMargin(style.marginTop, style.marginBottom, containingDOMElementData.height, style.computedStyle.height, style.height == Dimension.autoValue, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}
 	
 	/**
@@ -471,14 +471,14 @@ class BoxStylesComputer
 	 */
 	private function getComputedMarginBottom(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		return getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementData.height, style.computedStyle.height, style.height == DimensionStyleValue.autoValue, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
+		return getComputedMargin(style.marginBottom, style.marginTop, containingDOMElementData.height, style.computedStyle.height, style.height == Dimension.autoValue, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}
 	
 	/**
 	 * Compute the value of a margin thickness from a 
 	 * margin style value
 	 * @param	marginStyleValue contains the value of the computed margin as a unit, percentage or defined as auto
-	 * @param	opositeMarginStyleValue the complementary margin from the computed margin. For example for the left margin, it
+	 * @param	opositeMargin the complementary margin from the computed margin. For example for the left margin, it
 	 * is the right margin
 	 * @param	containingDOMElementDimension the width and height of the DOMElement containing the current DOMElement, used for
 	 * computing percentage values
@@ -493,7 +493,7 @@ class BoxStylesComputer
 	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
 	 * @return the computed thickness of the margin
 	 */
-	private function getComputedMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	private function getComputedMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		//the return value
 		var computedMargin:Int;
@@ -522,7 +522,7 @@ class BoxStylesComputer
 			//auto margins take the remaining place left after
 			//paddings, other margin and dimension are set
 			case autoValue:	
-				computedMargin = getComputedAutoMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
+				computedMargin = getComputedAutoMargin(opositeMargin, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
 		}
 		
 		return computedMargin;
@@ -531,7 +531,7 @@ class BoxStylesComputer
 	/**
 	 * Return the width of an auto margin
 	 */
-	private function getComputedAutoMargin(marginStyleValue:MarginStyleValue, opositeMarginStyleValue:MarginStyleValue, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		var computedMargin:Int;
 		
@@ -546,7 +546,7 @@ class BoxStylesComputer
 		else
 		{
 			//check if the oposite margin is set to auto too
-			switch (opositeMarginStyleValue)
+			switch (opositeMargin)
 			{
 				//if it is, then both margin have the same thickness and share the place left by the content and paddings
 				case autoValue:
@@ -554,7 +554,7 @@ class BoxStylesComputer
 				
 				//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 				default:
-					var opositeComputedMargin = getComputedMargin(opositeMarginStyleValue, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
+					var opositeComputedMargin = getComputedMargin(opositeMargin, marginStyleValue, containingDOMElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
 					computedMargin = containingDOMElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
 			}
 		}
@@ -565,24 +565,24 @@ class BoxStylesComputer
 	/**
 	 * Compute a contrain dimensions (max-height, min-width...)
 	 * from a contrain style value
-	 * @param	constrainedDimensionStyleValue can be defined as a unit, a percentage
+	 * @param	constrainedDimension can be defined as a unit, a percentage
 	 * or to "none" if no constraint must be applied
 	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
 	 * the current DOMElement must fit
 	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
-	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the constrainedDimensionStyleValue if it is a length value
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the constrainedDimension if it is a length value
 	 * defined in 'em'
-	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the constrainedDimensionStyleValue if it is a length value
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the constrainedDimension if it is a length value
 	 * defined in 'ex'
 	 * @param	isMinConstraint true if min-width or min-height is computed
 	 * @return a computed contraint dimensions in pixels
 	 */
-	private function getComputedConstrainedDimension(constrainedDimensionStyleValue:ConstrainedDimensionStyleValue, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float, isMinConstraint:Bool = false):Int
+	private function getComputedConstrainedDimension(constrainedDimension:ConstrainedDimension, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float, isMinConstraint:Bool = false):Int
 	{
 		var computedConstraintDimension:Int;
 		
 		//check which type of value is defined
-		switch (constrainedDimensionStyleValue)
+		switch (constrainedDimension)
 		{
 			//it's a length (an absolute value
 			//with a unit)
@@ -634,12 +634,12 @@ class BoxStylesComputer
 	 * or a percent value
 	 * @param containingDOMElementDimension, dimension to use as reference to compute 
 	 * from a percent value
-	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PositionOffsetStyleValue if it is a length value
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PositionOffset if it is a length value
 	 * defined in 'em'
-	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PositionOffsetStyleValue if it is a length value
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PositionOffset if it is a length value
 	 * defined in 'ex'
 	 */
-	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffsetStyleValue, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
+	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffset, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
 	{
 		var computedPositionOffset:Int;
 		
@@ -664,13 +664,13 @@ class BoxStylesComputer
 	 * @param	containingDOMElementDimension the dimension of the DOMElement into which 
 	 * the current DOMElement must fit
 	 * @param  isContainingDimensionAuto wether the containinDOMElementDimension is defined as 'auto'
-	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the DimensionStyleValue if it is a length value
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the Dimension if it is a length value
 	 * defined in 'em'
-	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the DimensionStyleValue if it is a length value
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the Dimension if it is a length value
 	 * defined in 'ex'
 	 * @return a computed dimension in pixel
 	 */
-	private function getComputedDimension(dimensionStyleValue:DimensionStyleValue, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int
+	private function getComputedDimension(dimensionStyleValue:Dimension, containingDOMElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int
 	{
 		var computedDimensions:Int;
 		
@@ -701,13 +701,13 @@ class BoxStylesComputer
 	 * @param	paddingStyleValue can be defined as a unit (px, em...) or a percentage
 	 * @param	containingDOMElementDimension the dimensions of the DOMElement into which 
 	 * the current DOMElement must fit
-	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
+	 * @param  fontSize the computed font size of the containing DOMElement, used to compute the Padding if it is a length value
 	 * defined in 'em'
-	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the PaddingStyleValue if it is a length value
+	 * @param  xHeight the computed x height of the containing DOMElement, used to compute the Padding if it is a length value
 	 * defined in 'ex'
 	 * @return a computed padding in pixel
 	 */
-	private function getComputedPadding(paddingStyleValue:PaddingStyleValue, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
+	private function getComputedPadding(paddingStyleValue:Padding, containingDOMElementDimension:Int, fontSize:Float, xHeight:Float):Int
 	{
 		var computedPaddingValue:Int;
 		

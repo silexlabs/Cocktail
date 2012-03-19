@@ -442,7 +442,7 @@ class FormattingContext
 	 * 
 	 * TODO : re-implement float
 	 */
-	private function clearFloat(clear:ClearStyleValue):Void
+	private function clearFloat(clear:Clear):Void
 	{
 		_floatsManager.clearFloat(clear, _formattingContextData);
 	}
