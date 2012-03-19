@@ -86,9 +86,9 @@ class BackgroundManager
 			switch (style.backgroundImage[i])
 			{
 				//don't render anything in that case
-				case BackgroundImageStyleValue.none:
+				case BackgroundImage.none:
 				
-				case BackgroundImageStyleValue.image(value):
+				case BackgroundImage.image(value):
 					
 					switch (value)
 					{
@@ -179,21 +179,21 @@ class BackgroundManager
 	 * @return
 	 */
 	private function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:AbstractStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPositionStyleData, backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue,
-	backgroundClip:BackgroundClipStyleValue, backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):NativeElement
+	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
+	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
 		var backgroundImageNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
 		
 		var imageLoader:ImageLoader = new ImageLoader();
 		
 		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
-		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->AbstractStyle->RectangleData->BackgroundPositionStyleData->
-		BackgroundSizeStyleValue->BackgroundOriginStyleValue-> BackgroundClipStyleValue-> BackgroundRepeatStyleData->
-		BackgroundImageStyleValue->Void = onBackgroundImageLoaded;
+		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->AbstractStyle->RectangleData->BackgroundPosition->
+		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
+		BackgroundImage->Void = onBackgroundImageLoaded;
 		
-		var onBackgroundImageLoadErrorDelegate:String->ColorValue->NativeElement->AbstractStyle->RectangleData->BackgroundPositionStyleData->
-		BackgroundSizeStyleValue->BackgroundOriginStyleValue-> BackgroundClipStyleValue-> BackgroundRepeatStyleData->
-		BackgroundImageStyleValue->Void = onBackgroundImageLoadError;
+		var onBackgroundImageLoadErrorDelegate:String->ColorValue->NativeElement->AbstractStyle->RectangleData->BackgroundPosition->
+		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
+		BackgroundImage->Void = onBackgroundImageLoadError;
 		
 		//try to load the picture, and set the callbacks
 		imageLoader.load(imageDeclaration.urls,
@@ -225,8 +225,8 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 */
 	private function onBackgroundImageLoaded(backgroundImageNativeElement:NativeElement, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:AbstractStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPositionStyleData, backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue,
-	backgroundClip:BackgroundClipStyleValue, backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
+	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
+	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
 			var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, imageLoader.intrinsicWidth, imageLoader.intrinsicHeight, imageLoader.intrinsicRatio, backgroundPosition,
@@ -266,8 +266,8 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 */
 	private function onBackgroundImageLoadError(error:String, backgroundColor:ColorValue, backgroundImageNativeElement:NativeElement, style:AbstractStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPositionStyleData, backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue,
-	backgroundClip:BackgroundClipStyleValue, backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
+	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
+	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
 		drawBackgroundColor(style, UnitManager.getColorDataFromColorValue(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
@@ -287,9 +287,9 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function drawBackgroundColor(style:AbstractStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPositionStyleData,
-	backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue, backgroundClip:BackgroundClipStyleValue, 
-	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):Void
+	private function drawBackgroundColor(style:AbstractStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
+	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
@@ -316,9 +316,9 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private function drawBackgroundGradient(style:AbstractStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPositionStyleData,
-	backgroundSize:BackgroundSizeStyleValue, backgroundOrigin:BackgroundOriginStyleValue, backgroundClip:BackgroundClipStyleValue,
-	backgroundRepeat:BackgroundRepeatStyleData, backgroundImage:BackgroundImageStyleValue):NativeElement
+	private function drawBackgroundGradient(style:AbstractStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
+	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
 		var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,

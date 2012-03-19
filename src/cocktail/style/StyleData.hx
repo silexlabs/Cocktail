@@ -584,6 +584,8 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * the block container boxes.
 	 * 
 	 * A different value can be provided for x and y.
+	 * 
+	 * TODO : simplify name
 	 */
 	typedef OverflowStyleData = {
 		var x:OverflowStyleValue;
@@ -772,17 +774,17 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * for a DOMElement along the x and y
 	 * axis
 	 */
-	typedef TransformOriginStyleData = {
+	typedef TransformOrigin = {
 		
 		/**
 		 * x axis origin
 		 */
-		var x:TransformOriginXStyleValue;
+		var x:TransformOriginX;
 		
 		/**
 		 * y axis origin
 		 */
-		var y:TransformOriginYStyleValue;
+		var y:TransformOriginY;
 		
 	}
 	
@@ -790,7 +792,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The list of available transformation
 	 * origin values for x axis
 	 */
-	enum TransformOriginXStyleValue {
+	enum TransformOriginX {
 		
 		/**
 		 * a length value
@@ -823,7 +825,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The list of available transformation
 	 * origin values for y axis
 	 */
-	enum TransformOriginYStyleValue {
+	enum TransformOriginY {
 		
 		/**
 		 * a length value
@@ -857,9 +859,11 @@ import cocktailCore.style.renderer.TextRenderer;
 	
 	/**
 	 * Sets the background color of a DOMElement. 
-	 * The color is drawn behind any background images. 
+	 * The color is drawn behind any background images.
+	 * 
+	 * TODO : simplify
 	 */
-	enum BackgroundColorStyleValue {
+	enum BackgroundColor {
 		colorValue(value:ColorValue);
 	}
 	
@@ -870,7 +874,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * (closest to the user) and each subsequent image behind
 	 * the previous one.
 	 */
-	enum BackgroundImageStyleValue {
+	enum BackgroundImage {
 		none;
 		image(value:ImageValue);
 	}
@@ -879,7 +883,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Specifies how background images are tiled after
 	 * they have been sized and positioned
 	 */
-	typedef BackgroundRepeatStyleData = {
+	typedef BackgroundRepeat = {
 		
 		/**
 		 * horizontal repeat
@@ -894,6 +898,8 @@ import cocktailCore.style.renderer.TextRenderer;
 	
 	/**
 	 * The different repeat value for each direction
+	 * 
+	 * TODO : rename
 	 */
 	enum BackgroundRepeatStyleValue {
 		
@@ -932,16 +938,16 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * , after resizing within the background
 	 * positioning area
 	 */
-	typedef BackgroundPositionStyleData = {
-		var x:BackgroundPositionXStyleValue;
-		var y:BackgroundPositionYStyleValue;
+	typedef BackgroundPosition = {
+		var x:BackgroundPositionX;
+		var y:BackgroundPositionY;
 	}
 	
 	/**
 	 * The values for the horizontal background
 	 * position
 	 */
-	enum BackgroundPositionXStyleValue {
+	enum BackgroundPositionX {
 		/**
 		 * a length value
 		 */
@@ -973,7 +979,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * The values for the vertical background
 	 * position
 	 */
-	enum BackgroundPositionYStyleValue {
+	enum BackgroundPositionY {
 		
 		/**
 		 * a length value
@@ -1006,7 +1012,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Determines the background painting
 	 * area
 	 */
-	enum BackgroundClipStyleValue {
+	enum BackgroundClip {
 		
 		/**
 		 * The background is painted within (clipped to) the border box.
@@ -1028,7 +1034,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	 * Specifies the origin of the background positioning
 	 * area
 	 */
-	enum BackgroundOriginStyleValue {
+	enum BackgroundOrigin {
 		
 		/**
 		 * The position is relative to the border box.
@@ -1049,7 +1055,7 @@ import cocktailCore.style.renderer.TextRenderer;
 	/**
 	 * Specifies the size of a background image
 	 */
-	enum BackgroundSizeStyleValue {
+	enum BackgroundSize {
 		
 		/**
 		 * Scale the image, while preserving its intrinsic aspect ratio 
@@ -1073,6 +1079,8 @@ import cocktailCore.style.renderer.TextRenderer;
 	
 	/**
 	 * Contain the size data for one image background
+	 * 
+	 * TODO : rename
 	 */
 	typedef BackgroundSizeStyleData = {
 		var x:BackgroundSizeStyleDimensionValue;
@@ -1082,6 +1090,8 @@ import cocktailCore.style.renderer.TextRenderer;
 	/**
 	 * A vertical or horizontal size for 
 	 * a background image
+	 * 
+	 * TODO : rename
 	 */
 	enum BackgroundSizeStyleDimensionValue {
 		/**
@@ -1131,7 +1141,6 @@ import cocktailCore.style.renderer.TextRenderer;
 	typedef LastPositionedDOMElementData = {
 		var children:Array<PositionedDOMElementData>;
 		var data:ContainingDOMElementData;
-		
 	}
 	
 	/**
@@ -1218,12 +1227,12 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * background
 		 */
 		var backgroundColor:ColorData;
-		var backgroundImage:Array<BackgroundImageStyleValue>;
-		var backgroundRepeat:Array<BackgroundRepeatStyleData>;
-		var backgroundPosition:Array<BackgroundPositionStyleData>;
-		var backgroundClip:Array<BackgroundClipStyleValue>;
-		var backgroundOrigin:Array<BackgroundOriginStyleValue>;
-		var backgroundSize:Array<BackgroundSizeStyleValue>;
+		var backgroundImage:Array<BackgroundImage>;
+		var backgroundRepeat:Array<BackgroundRepeat>;
+		var backgroundPosition:Array<BackgroundPosition>;
+		var backgroundClip:Array<BackgroundClip>;
+		var backgroundOrigin:Array<BackgroundOrigin>;
+		var backgroundSize:Array<BackgroundSize>;
 		
 		/**
 		 * font
@@ -1280,7 +1289,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * how to repeat the background image in the
 		 * x and y directions
 		 */
-		var backgroundRepeat:BackgroundRepeatStyleData;
+		var backgroundRepeat:BackgroundRepeat;
 		
 		/**
 		 * the point of origin of the background image
@@ -1292,7 +1301,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * the data of the background image (url or
 		 * gradient data)
 		 */
-		var backgroundImage:BackgroundImageStyleValue;
+		var backgroundImage:BackgroundImage;
 	}
 	
 	/**

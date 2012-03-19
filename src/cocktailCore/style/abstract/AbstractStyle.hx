@@ -95,8 +95,8 @@ class AbstractStyle
 	private var _clear:Clear;
 	public var clear(getClear, setClear):Clear;
 	
-	private var _transformOrigin:TransformOriginStyleData;
-	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOriginStyleData;
+	private var _transformOrigin:TransformOrigin;
+	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOrigin;
 	
 	private var _transform:Transform;
 	public var transform(getTransform, setTransform):Transform;
@@ -148,26 +148,26 @@ class AbstractStyle
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:BackgroundColorStyleValue;
-	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColorStyleValue;
+	private var _backgroundColor:BackgroundColor;
+	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColor;
 	
-	private var _backgroundImage:Array<BackgroundImageStyleValue>;
-	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImageStyleValue>;
+	private var _backgroundImage:Array<BackgroundImage>;
+	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImage>;
 	
-	private var _backgroundRepeat:Array<BackgroundRepeatStyleData>;
-	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeatStyleData>;
+	private var _backgroundRepeat:Array<BackgroundRepeat>;
+	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeat>;
 	
-	private var _backgroundOrigin:Array<BackgroundOriginStyleValue>;
-	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOriginStyleValue>;
+	private var _backgroundOrigin:Array<BackgroundOrigin>;
+	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOrigin>;
 	
-	private var _backgroundSize:Array<BackgroundSizeStyleValue>;
-	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSizeStyleValue>;
+	private var _backgroundSize:Array<BackgroundSize>;
+	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSize>;
 	
-	private var _backgroundPosition:Array<BackgroundPositionStyleData>;
-	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPositionStyleData>;
+	private var _backgroundPosition:Array<BackgroundPosition>;
+	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPosition>;
 	
-	private var _backgroundClip:Array<BackgroundClipStyleValue>;
-	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClipStyleValue>;
+	private var _backgroundClip:Array<BackgroundClip>;
+	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClip>;
 	
 	/**
 	 * font styles
@@ -326,23 +326,23 @@ class AbstractStyle
 		this.floatValue = FloatStyle.none;
 		this.clear = Clear.none;
 		
-		this.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.transparent);
-		this.backgroundImage = [BackgroundImageStyleValue.none];
+		this.backgroundColor = BackgroundColor.colorValue(ColorValue.transparent);
+		this.backgroundImage = [BackgroundImage.none];
 		this.backgroundRepeat = [{
 			x:BackgroundRepeatStyleValue.repeat,
 			y:BackgroundRepeatStyleValue.repeat
 		}];
 		this.backgroundPosition = [{
-			x:BackgroundPositionXStyleValue.percent(0),
-			y:BackgroundPositionYStyleValue.percent(0)
+			x:BackgroundPositionX.percent(0),
+			y:BackgroundPositionY.percent(0)
 		}];
-		this.backgroundOrigin = [BackgroundOriginStyleValue.paddingBox];
+		this.backgroundOrigin = [BackgroundOrigin.paddingBox];
 		this.backgroundSize = [
-			BackgroundSizeStyleValue.dimensions({
+			BackgroundSize.dimensions({
 				x:BackgroundSizeStyleDimensionValue.autoValue,
 				y:BackgroundSizeStyleDimensionValue.autoValue
 			})];
-		this.backgroundClip = [BackgroundClipStyleValue.borderBox];	
+		this.backgroundClip = [BackgroundClip.borderBox];	
 		
 		this.fontStyle = FontStyle.normal;
 		this.fontVariant = FontVariant.normal;
@@ -364,8 +364,8 @@ class AbstractStyle
 		}
 		
 		this.transformOrigin = {
-			x:TransformOriginXStyleValue.center,
-			y:TransformOriginYStyleValue.center
+			x:TransformOriginX.center,
+			y:TransformOriginY.center
 		}
 		
 		this.transform = Transform.none;
@@ -1490,7 +1490,7 @@ class AbstractStyle
 		return _visibility;
 	}
 	
-	private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
 		invalidate();
 		return _transformOrigin = value;
@@ -1708,77 +1708,77 @@ class AbstractStyle
 		return _transform;
 	}
 	
-	private function getTransformOrigin():TransformOriginStyleData
+	private function getTransformOrigin():TransformOrigin
 	{
 		return _transformOrigin;
 	}
 	
-	private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
 		return _backgroundColor = value;
 	}
 	
-	private function getBackgroundColor():BackgroundColorStyleValue
+	private function getBackgroundColor():BackgroundColor
 	{
 		return _backgroundColor;
 	}
 	
-	private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
 		return _backgroundImage = value;
 	}
 	
-	private function getBackgroundImage():Array<BackgroundImageStyleValue>
+	private function getBackgroundImage():Array<BackgroundImage>
 	{
 		return _backgroundImage;
 	}
 	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
 		return _backgroundRepeat = value;
 	}
 	
-	private function getBackgroundRepeat():Array<BackgroundRepeatStyleData>
+	private function getBackgroundRepeat():Array<BackgroundRepeat>
 	{
 		return _backgroundRepeat;
 	}
 	
-	private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
 		return _backgroundSize = value;
 	}
 	
-	private function getBackgroundSize():Array<BackgroundSizeStyleValue>
+	private function getBackgroundSize():Array<BackgroundSize>
 	{
 		return _backgroundSize;
 	}
 	
-	private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
 		return _backgroundClip = value;
 	}
 	
-	private function getBackgroundClip():Array<BackgroundClipStyleValue>
+	private function getBackgroundClip():Array<BackgroundClip>
 	{
 		return _backgroundClip;
 	}
 	
-	private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
 		return _backgroundPosition = value;
 	}
 	
-	private function getBackgroundPosition():Array<BackgroundPositionStyleData>
+	private function getBackgroundPosition():Array<BackgroundPosition>
 	{
 		return _backgroundPosition;
 	}
 	
-	private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
 		return _backgroundOrigin = value;
 	}
 	
-	private function getBackgroundOrigin():Array<BackgroundOriginStyleValue>
+	private function getBackgroundOrigin():Array<BackgroundOrigin>
 	{
 		return _backgroundOrigin;
 	}
