@@ -193,7 +193,7 @@ class BackgroundStylesComputer
 		switch (backgroundPosition)
 		{
 			case BackgroundPositionX.length(value):
-				computedBackgroundXPosition = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
+				computedBackgroundXPosition = UnitManager.getPixelFromLength(value, emReference, exReference);
 			
 			//for percent value, it is relative to the background positioning area minus the width of the 
 			//background image, such as a 100% will have the right side of the picture touch the right side
@@ -227,7 +227,7 @@ class BackgroundStylesComputer
 		switch (backgroundPosition)
 		{
 			case BackgroundPositionY.length(value):
-				computedBackgroundYPosition = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
+				computedBackgroundYPosition = UnitManager.getPixelFromLength(value, emReference, exReference);
 				
 			case BackgroundPositionY.percent(value):
 				computedBackgroundYPosition = Math.round(UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension)) ;
@@ -347,7 +347,7 @@ class BackgroundStylesComputer
 		{
 			//absolute or relative length value
 			case BackgroundSizeStyleDimensionValue.length(value):
-				backgroundSizeStyleDimension = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
+				backgroundSizeStyleDimension = UnitManager.getPixelFromLength(value, emReference, exReference);
 			
 			//percent relative to the background positioning area	
 			case BackgroundSizeStyleDimensionValue.percent(value):

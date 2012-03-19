@@ -116,7 +116,7 @@ class VisualEffectStylesComputer
 		switch (style.transformOrigin.x)
 		{
 			case TransformOriginX.length(value):
-				x = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				x = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			case TransformOriginX.percent(value):
 				x = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
@@ -135,7 +135,7 @@ class VisualEffectStylesComputer
 		switch (style.transformOrigin.y)
 		{
 			case TransformOriginY.length(value):
-				y = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				y = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			case TransformOriginY.percent(value):
 				y = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
@@ -194,7 +194,7 @@ class VisualEffectStylesComputer
 				
 				//rotate	
 				case TransformFunction.rotate(value):
-					var angle:Float = Math.round(UnitManager.getRadFromAngleValue(value));
+					var angle:Float = Math.round(UnitManager.getRadFromAngle(value));
 					matrix.rotate(angle, transformOrigin);
 				
 				//scale x and y	
@@ -211,18 +211,18 @@ class VisualEffectStylesComputer
 				
 				//skew x and y	
 				case TransformFunction.skew(angleX, angleY):
-					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
-					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
+					var skewX:Float = UnitManager.getRadFromAngle(angleX);
+					var skewY:Float = UnitManager.getRadFromAngle(angleY);
 					matrix.skew(skewX, skewY, transformOrigin);
 				
 				//skew x	
 				case TransformFunction.skewX(angleX):
-					var skewX:Float = UnitManager.getRadFromAngleValue(angleX);
+					var skewX:Float = UnitManager.getRadFromAngle(angleX);
 					matrix.skew(skewX, 1, transformOrigin);
 				
 				//skew y	
 				case TransformFunction.skewY(angleY):
-					var skewY:Float = UnitManager.getRadFromAngleValue(angleY);
+					var skewY:Float = UnitManager.getRadFromAngle(angleY);
 					matrix.skew(1, skewY, transformOrigin);
 				
 				//translate x and y	
@@ -256,7 +256,7 @@ class VisualEffectStylesComputer
 		switch (translation)
 		{
 			case Translation.length(value):
-				computedTranslation = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				computedTranslation = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case Translation.percent(value):
 				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);

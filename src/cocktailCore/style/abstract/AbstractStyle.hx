@@ -347,7 +347,7 @@ class AbstractStyle
 		this.fontStyle = FontStyle.normal;
 		this.fontVariant = FontVariant.normal;
 		this.fontWeight = FontWeight.normal;
-		this.fontSize = FontSize.absoluteSize(FontSizeAbsoluteSizeValue.medium);
+		this.fontSize = FontSize.absoluteSize(FontSizeAbsoluteSize.medium);
 		
 		this.textIndent = TextIndent.length(px(0));
 		this.textAlign = TextAlign.left;
@@ -441,7 +441,7 @@ class AbstractStyle
 	{
 		return {
 			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
-			color:ColorValue.keyword(ColorKeywordValue.black)
+			color:ColorValue.keyword(ColorKeyword.black)
 		}
 	}
 	

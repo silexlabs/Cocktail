@@ -268,7 +268,7 @@ class Style extends AbstractStyle
 				cssTransformFunction = "matrix(" + value.a + "," + value.b + "," + value.c + "," + value.d + "," + value.e + "," + value.f + ")";
 				
 			case TransformFunction.rotate(angle):
-				cssTransformFunction = "rotate(" + getCSSAngleValue(angle) + ")";
+				cssTransformFunction = "rotate(" + getCSSAngle(angle) + ")";
 				
 			case TransformFunction.scale(sx, sy):
 				cssTransformFunction = "scale(" + sx + "," + sy + ")";
@@ -280,13 +280,13 @@ class Style extends AbstractStyle
 				cssTransformFunction = "scaleY(" + sy + ")";	
 				
 			case TransformFunction.skew(skewX, skewY):
-				cssTransformFunction = "skew(" + getCSSAngleValue(skewX) + "," + getCSSAngleValue(skewY) + ")";
+				cssTransformFunction = "skew(" + getCSSAngle(skewX) + "," + getCSSAngle(skewY) + ")";
 			
 			case TransformFunction.skewX(skewX):
-				cssTransformFunction = "skewX(" + getCSSAngleValue(skewX) + ")";
+				cssTransformFunction = "skewX(" + getCSSAngle(skewX) + ")";
 				
 			case TransformFunction.skewY(skewY):
-				cssTransformFunction = "skewY(" + getCSSAngleValue(skewY) + ")";	
+				cssTransformFunction = "skewY(" + getCSSAngle(skewY) + ")";	
 				
 			case TransformFunction.translate(tx, ty):
 				cssTransformFunction = "translate(" + getCSSTranslation(tx) + "," + getCSSTranslation(ty) + ")";
@@ -312,7 +312,7 @@ class Style extends AbstractStyle
 		switch (translation)
 		{
 			case Translation.length(value):
-				cssTranslation = getCSSLengthValue(value);
+				cssTranslation = getCSSLength(value);
 				
 			case Translation.percent(value):
 				cssTranslation = getCSSPercentValue(value);
@@ -332,7 +332,7 @@ class Style extends AbstractStyle
 		switch (value.x)
 		{
 			case TransformOriginX.length(value):
-				cssTransformOriginValue = getCSSLengthValue(value);
+				cssTransformOriginValue = getCSSLength(value);
 				
 			case TransformOriginX.percent(value):
 				cssTransformOriginValue = getCSSPercentValue(value);
@@ -354,7 +354,7 @@ class Style extends AbstractStyle
 		switch (value.y)
 		{
 			case TransformOriginY.length(value):
-				cssTransformOriginValue += getCSSLengthValue(value);
+				cssTransformOriginValue += getCSSLength(value);
 				
 			case TransformOriginY.percent(value):
 				cssTransformOriginValue += getCSSPercentValue(value);
@@ -386,7 +386,7 @@ class Style extends AbstractStyle
 		switch(value)
 		{
 			case length(unit):
-				cssMarginValue = getCSSLengthValue(unit);
+				cssMarginValue = getCSSLength(unit);
 			
 			case percent(percentValue):
 				cssMarginValue = getCSSPercentValue(percentValue);
@@ -408,7 +408,7 @@ class Style extends AbstractStyle
 		switch(value)
 		{
 			case length(unit):
-				cssPaddingValue = getCSSLengthValue(unit);
+				cssPaddingValue = getCSSLength(unit);
 			
 			case percent(percentValue):
 				cssPaddingValue = getCSSPercentValue(percentValue);
@@ -427,7 +427,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case Dimension.length(unit):
-				cssDimensionValue = getCSSLengthValue(unit);
+				cssDimensionValue = getCSSLength(unit);
 				
 			case Dimension.percent(percentValue):
 				cssDimensionValue = getCSSPercentValue(percentValue);
@@ -449,7 +449,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-				cssPositionOffsetValue = getCSSLengthValue(unit);	
+				cssPositionOffsetValue = getCSSLength(unit);	
 			
 			
 			case percent(percentValue):
@@ -472,7 +472,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-				cssConstrainedValue = getCSSLengthValue(unit);
+				cssConstrainedValue = getCSSLength(unit);
 			
 			case percent(percentValue):
 				cssConstrainedValue = getCSSPercentValue(percentValue);
@@ -522,7 +522,7 @@ class Style extends AbstractStyle
 				cssVerticalAlignValue = getCSSPercentValue(value);
 				
 			case length(value):
-				cssVerticalAlignValue = getCSSLengthValue(value);
+				cssVerticalAlignValue = getCSSLength(value);
 		}
 		
 		return cssVerticalAlignValue;
@@ -539,7 +539,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-				cssLineHeightValue = getCSSLengthValue(unit);
+				cssLineHeightValue = getCSSLength(unit);
 				
 			case normal:
 				cssLineHeightValue = "normal";
@@ -569,7 +569,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(unit):
-				cssFontSizeValue = getCSSLengthValue(unit);
+				cssFontSizeValue = getCSSLength(unit);
 				
 			case percentage(percent):
 				cssFontSizeValue = getCSSPercentValue(percent);
@@ -809,7 +809,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case length(value):
-				cssTextIndentValue = getCSSLengthValue(value);
+				cssTextIndentValue = getCSSLength(value);
 				
 			case percentage(value):
 				cssTextIndentValue = getCSSPercentValue(value);
@@ -831,7 +831,7 @@ class Style extends AbstractStyle
 				cssLetterSpacingValue = "normal";
 				
 			case length(unit):
-				cssLetterSpacingValue = getCSSLengthValue(unit);
+				cssLetterSpacingValue = getCSSLength(unit);
 		}
 		
 		return cssLetterSpacingValue;
@@ -850,7 +850,7 @@ class Style extends AbstractStyle
 				cssWordSpacingValue = "normal";
 				
 			case length(unit):
-				cssWordSpacingValue = getCSSLengthValue(unit);
+				cssWordSpacingValue = getCSSLength(unit);
 		}
 		
 		return cssWordSpacingValue;
@@ -1009,7 +1009,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case BackgroundSizeStyleDimensionValue.length(value):
-				cssBackgroundSizeDimension = getCSSLengthValue(value);
+				cssBackgroundSizeDimension = getCSSLength(value);
 				
 			case BackgroundSizeStyleDimensionValue.percent(value):
 				cssBackgroundSizeDimension = getCSSPercentValue(value);
@@ -1048,7 +1048,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case BackgroundPositionX.length(value):
-				cssBackgroundPositionX = getCSSLengthValue(value);
+				cssBackgroundPositionX = getCSSLength(value);
 				
 			case BackgroundPositionX.percent(value):
 				cssBackgroundPositionX = getCSSPercentValue(value);
@@ -1073,7 +1073,7 @@ class Style extends AbstractStyle
 		switch (value)
 		{
 			case BackgroundPositionY.length(value):
-				cssBackgroundPositionY = getCSSLengthValue(value);
+				cssBackgroundPositionY = getCSSLength(value);
 				
 			case BackgroundPositionY.percent(value):
 				cssBackgroundPositionY = getCSSPercentValue(value);
@@ -1194,7 +1194,7 @@ class Style extends AbstractStyle
 	
 	private function getCSSLinearGradientValue(value:LinearGradientData):String 
 	{
-		var cssLinearGradientValue:String = getCSSGradientAngleValue(value.angle) + "," + getCSSColorStopsValue(value.colorStops);
+		var cssLinearGradientValue:String = getCSSGradientAngle(value.angle) + "," + getCSSColorStopsValue(value.colorStops);
 		return cssLinearGradientValue;
 	}
 	
@@ -1225,29 +1225,29 @@ class Style extends AbstractStyle
 				cssColorStopValue = getCSSPercentValue(value);
 				
 			case GradientStopValue.length(value):
-				cssColorStopValue = getCSSLengthValue(value);
+				cssColorStopValue = getCSSLength(value);
 		}
 		
 		return cssColorStopValue;
 	}
 	
-	private function getCSSGradientAngleValue(value:GradientAngleValue):String
+	private function getCSSGradientAngle(value:GradientAngle):String
 	{
-		var cssGradientAngleValue:String;
+		var cssGradientAngle:String;
 		
 		switch (value)
 		{
-			case GradientAngleValue.angle(value):
-				cssGradientAngleValue = getCSSAngleValue(value);
+			case GradientAngle.angle(value):
+				cssGradientAngle = getCSSAngle(value);
 				
-			case GradientAngleValue.corner(value):
-				cssGradientAngleValue = getCSSCornerValue(value);
+			case GradientAngle.corner(value):
+				cssGradientAngle = getCSSCornerValue(value);
 				
-			case GradientAngleValue.side(value):
-				cssGradientAngleValue = getCSSSideValue(value);
+			case GradientAngle.side(value):
+				cssGradientAngle = getCSSSideValue(value);
 		}
 		
-		return cssGradientAngleValue;
+		return cssGradientAngle;
 	}
 	
 	private function getCSSSideValue(value:GradientSideValue):String
@@ -1319,7 +1319,7 @@ class Style extends AbstractStyle
 		return cssColorValue;
 	}
 	
-	private function getCSSLengthValue(lengthValue:LengthValue):String
+	private function getCSSLength(lengthValue:Length):String
 	{
 		var cssLength:String;
 		
@@ -1358,29 +1358,29 @@ class Style extends AbstractStyle
 		return Std.string(value) + "%";
 	}
 	
-	private function getCSSAngleValue(value:AngleValue):String
+	private function getCSSAngle(value:Angle):String
 	{
 		var cssAngle:String;
 		
 		switch (value)
 		{
-			case AngleValue.deg(value):
+			case Angle.deg(value):
 				cssAngle = Std.string(value) + "deg";
 				
-			case AngleValue.rad(value):
+			case Angle.rad(value):
 				cssAngle = Std.string(value) + "rad";
 				
-			case AngleValue.grad(value):
+			case Angle.grad(value):
 				cssAngle = Std.string(value) + "grad";
 				
-			case AngleValue.turn(value):
+			case Angle.turn(value):
 				cssAngle = Std.string(value) + "turn";
 		}
 		
 		return cssAngle;
 	}
 	
-	private function getColorFromKeyword(value:ColorKeywordValue):String
+	private function getColorFromKeyword(value:ColorKeyword):String
 	{
 		var cssColor:String;
 		
