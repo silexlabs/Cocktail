@@ -20,7 +20,6 @@ import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
-#if (flash9)
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -30,9 +29,6 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 
-#elseif nme
-import flash.text.TextFormat;
-#end
 
 /**
  * This is the Flash AS3 implementation of the ContainerStyle.
@@ -59,7 +55,6 @@ class ContainerStyle extends AbstractContainerStyle
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
 	
-#if (flash9)
 	/**
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
@@ -203,42 +198,5 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
-	
-	#elseif (nme)
-	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
-	{
-		text = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
-		
-		var textField:flash.text.TextField = new flash.text.TextField();
-		textField.text = text;
-		textField.selectable = false;
-		textField.autoSize = TextFieldAutoSize.LEFT;
-		textField.setTextFormat(getTextFormat());
-		
-		var textRenderer:TextRenderer = new TextRenderer(_domElement, textField, textToken);
-
-		//wrap the flash text line in a TextRenderer
-		return textFragment;
-
-	}	
-	
-	private function getTextFormat():TextFormat
-	{
-		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
-		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
-		textFormat.size = _computedStyle.fontSize;
-		
-		textFormat.bold = _computedStyle.fontWeight == FontWeight.bold;
-		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
-		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
-		
-		textFormat.color = _computedStyle.color.color;
-		return textFormat;
-	}
-	
-#end
 
 }

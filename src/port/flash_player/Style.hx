@@ -18,7 +18,6 @@ import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
-#if (flash9)
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -27,10 +26,6 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
-#elseif nme
-import flash.text.TextField;
-import flash.text.TextFormat;
-#end
 
 /**
  * This is the Flash AS3 implementation of the Style object.
@@ -67,21 +62,16 @@ class Style extends AbstractStyle
 	 * flash text line that will be wrapped in
 	 * TextFragmentDOMElement
 	 */
-#if (flash9)
 	private var _textBlock:TextBlock;
-#end
 	
 	
 	public function new(htmlElement:HTMLElement) 
 	{
-#if (flash9)
 	   _textBlock = new TextBlock();
-#end
 		
 		super(htmlElement);
 	}
 
-#if (flash9)	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
@@ -134,97 +124,10 @@ class Style extends AbstractStyle
 		return _fontMetrics;
 	}
 	
-#elseif nme
-
-	override private function getFontMetricsData():FontMetricsData
-	{
-
-		//create the font metrics object only if null,
-		//else it is already cached
-		if (_fontMetrics == null)
-		{
-			var textField:TextField = new TextField();
-			textField.autoSize = TextFieldAutoSize.LEFT;
-			
-			var textFormat:TextFormat = new TextFormat();
-			textFormat.size = _computedStyle.fontSize;
-			textFormat.font = getNativeFontFamily(this._fontFamily);
-			
-			textField.setTextFormat(textFormat);
-			
-			textField.text = "x";
-			
-			var ascent:Float =  textField.textHeight / 2;
-			Log.trace(ascent);
-			textField.text = ",";
-			
-			var descent:Float = textField.textHeight / 2;
-			
-			textField.text = "x";
-			
-			var xHeight:Int = Math.round(textField.textHeight);
-		
-			textField.text = "M";
-			var spaceWidth:Int = Math.round(textField.textWidth);
-			
-			
-			_fontMetrics = {
-				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(ascent),
-				descent:Math.round(descent),
-				xHeight:xHeight,
-				spaceWidth:spaceWidth,
-				superscriptOffset:1,
-				subscriptOffset:1,
-				underlineOffset:1
-			};
-		}
-		
-		return _fontMetrics;
-		
-	}
-	
-	/**
-	 * redefined as in nme only one font is supported
-	 */
-	private function getNativeFontFamily(value:Array<FontFamily>):String
-	{
-		var fontFamily:String = "";
-		
-
-		var fontName:String;
-		
-		switch (value[0])
-		{
-			case FontFamily.familyName(name):
-				fontName = name;
-			
-			case FontFamily.genericFamily(genericName):
-				switch (genericName)
-				{
-					case GenericFontFamily.serif:
-						fontName = SERIF_GENERIC_FONT_NAME;
-					
-					case GenericFontFamily.sansSerif:
-						fontName = SANS_SERIF_GENERIC_FONT_NAME;
-						
-					case GenericFontFamily.monospace:
-						fontName = MONOSPACE_GENERIC_FONT_NAME;
-				}
-		}
-		
-		
-		
-		return fontName;
-	}
-	
-#end	
-	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
 	
-#if (flash9)
 	/**
 	 * Return a flash FontWeight object from
 	 * the font weight style of the DOMElement
@@ -314,5 +217,4 @@ class Style extends AbstractStyle
 		
 		return Math.round(_textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width);
 	}
-#end
 }

@@ -10,8 +10,11 @@ package port;
 /**
  * Set the right runtime specific Style at compile-time
  */
-#if (flash9 || cpp || nme)
-typedef Style =  core.style.AbstractStyle;
+#if (flash9 || cpp )
+typedef Style =  port.flash_player.Style;
+
+#elseif nme
+typedef Style =  port.nme.Style;
 
 #elseif js
 typedef Style =  port.browser.Style;
