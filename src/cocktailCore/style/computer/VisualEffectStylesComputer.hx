@@ -115,38 +115,38 @@ class VisualEffectStylesComputer
 		//x axis
 		switch (style.transformOrigin.x)
 		{
-			case TransformOriginXStyleValue.length(value):
+			case TransformOriginX.length(value):
 				x = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
-			case TransformOriginXStyleValue.percent(value):
+			case TransformOriginX.percent(value):
 				x = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
 				
-			case TransformOriginXStyleValue.left:
+			case TransformOriginX.left:
 				x = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
 				
-			case TransformOriginXStyleValue.center:
+			case TransformOriginX.center:
 				x = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
 				
-			case TransformOriginXStyleValue.right:
+			case TransformOriginX.right:
 				x = UnitManager.getPixelFromPercent(100, style.computedStyle.width);		
 		}
 		
 		//y axis
 		switch (style.transformOrigin.y)
 		{
-			case TransformOriginYStyleValue.length(value):
+			case TransformOriginY.length(value):
 				y = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
-			case TransformOriginYStyleValue.percent(value):
+			case TransformOriginY.percent(value):
 				y = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
 				
-			case TransformOriginYStyleValue.top:
+			case TransformOriginY.top:
 				y = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
 				
-			case TransformOriginYStyleValue.center:
+			case TransformOriginY.center:
 				y = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
 				
-			case TransformOriginYStyleValue.bottom:
+			case TransformOriginY.bottom:
 				y = UnitManager.getPixelFromPercent(100, style.computedStyle.width);			
 		}
 		

@@ -101,12 +101,12 @@ class BackgroundStylesComputer
 	 */
 	public static function computeIndividualBackground(style:AbstractStyle, backgroundBox:RectangleData,
 	intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, 
-	backgroundPosition:BackgroundPositionStyleData,
-	backgroundSize:BackgroundSizeStyleValue,
-	backgroundOrigin:BackgroundOriginStyleValue,
-	backgroundClip:BackgroundClipStyleValue,
-	backgroundRepeat:BackgroundRepeatStyleData,
-	backgroundImage:BackgroundImageStyleValue):ComputedBackgroundStyleData
+	backgroundPosition:BackgroundPosition,
+	backgroundSize:BackgroundSize,
+	backgroundOrigin:BackgroundOrigin,
+	backgroundClip:BackgroundClip,
+	backgroundRepeat:BackgroundRepeat,
+	backgroundImage:BackgroundImage):ComputedBackgroundStyleData
 	{
 		//get the area onto which the background image is positioned
 		var backgroundPositioningArea:RectangleData = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
@@ -150,7 +150,7 @@ class BackgroundStylesComputer
 		
 		switch (style.backgroundColor)
 		{
-			case BackgroundColorStyleValue.colorValue(value):
+			case BackgroundColor.colorValue(value):
 				computedColor = UnitManager.getColorDataFromColorValue(value);
 		}
 		
@@ -171,7 +171,7 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundPosition(backgroundPosition:BackgroundPositionStyleData, backgroundPositioningArea:RectangleData, computedBackgroundSize:DimensionData, emReference:Float, exReference:Float):PointData
+	private static function getComputedBackgroundPosition(backgroundPosition:BackgroundPosition, backgroundPositioningArea:RectangleData, computedBackgroundSize:DimensionData, emReference:Float, exReference:Float):PointData
 	{
 		var computedBackgroundXPosition:Float = getComputedBackgroundXPosition(backgroundPosition.x, Math.round(backgroundPositioningArea.width), computedBackgroundSize.width,  emReference, exReference);
 		var computedBackgroundYPosition:Float = getComputedBackgroundYPosition(backgroundPosition.y, Math.round(backgroundPositioningArea.height), computedBackgroundSize.height, emReference, exReference);
@@ -186,31 +186,31 @@ class BackgroundStylesComputer
 	/**
 	 * Return the x offset of the background image
 	 */
-	private static function getComputedBackgroundXPosition(backgroundPosition:BackgroundPositionXStyleValue, backgroundPositioningAreaDimension:Int, imageDimension:Int, emReference:Float, exReference:Float):Int
+	private static function getComputedBackgroundXPosition(backgroundPosition:BackgroundPositionX, backgroundPositioningAreaDimension:Int, imageDimension:Int, emReference:Float, exReference:Float):Int
 	{
 		var computedBackgroundXPosition:Int;
 		
 		switch (backgroundPosition)
 		{
-			case BackgroundPositionXStyleValue.length(value):
+			case BackgroundPositionX.length(value):
 				computedBackgroundXPosition = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
 			
 			//for percent value, it is relative to the background positioning area minus the width of the 
 			//background image, such as a 100% will have the right side of the picture touch the right side
 			//of the background positioning area
-			case BackgroundPositionXStyleValue.percent(value):
+			case BackgroundPositionX.percent(value):
 				computedBackgroundXPosition = Math.round(UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension)) ;
 			
 			//same as 50%	
-			case BackgroundPositionXStyleValue.center:
+			case BackgroundPositionX.center:
 				computedBackgroundXPosition = Math.round(UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension)) ;
 			
 			//same as 0%	
-			case BackgroundPositionXStyleValue.left:
+			case BackgroundPositionX.left:
 				computedBackgroundXPosition = Math.round(UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension)) ;
 			
 			//same as 100%	
-			case BackgroundPositionXStyleValue.right:
+			case BackgroundPositionX.right:
 				computedBackgroundXPosition = Math.round(UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension)) ;
 		}
 		
@@ -220,25 +220,25 @@ class BackgroundStylesComputer
 	/**
 	 * Return the y offset of the background image. Same as getComputedBackgroundXPosition
 	 */
-	private static function getComputedBackgroundYPosition(backgroundPosition:BackgroundPositionYStyleValue, backgroundPositioningAreaDimension:Int, imageDimension:Int, emReference:Float, exReference:Float):Int
+	private static function getComputedBackgroundYPosition(backgroundPosition:BackgroundPositionY, backgroundPositioningAreaDimension:Int, imageDimension:Int, emReference:Float, exReference:Float):Int
 	{
 		var computedBackgroundYPosition:Int;
 		
 		switch (backgroundPosition)
 		{
-			case BackgroundPositionYStyleValue.length(value):
+			case BackgroundPositionY.length(value):
 				computedBackgroundYPosition = UnitManager.getPixelFromLengthValue(value, emReference, exReference);
 				
-			case BackgroundPositionYStyleValue.percent(value):
+			case BackgroundPositionY.percent(value):
 				computedBackgroundYPosition = Math.round(UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension)) ;
 				
-			case BackgroundPositionYStyleValue.center:
+			case BackgroundPositionY.center:
 				computedBackgroundYPosition = Math.round(UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension)) ;
 				
-			case BackgroundPositionYStyleValue.top:
+			case BackgroundPositionY.top:
 				computedBackgroundYPosition = Math.round(UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension)) ;
 				
-			case BackgroundPositionYStyleValue.bottom:
+			case BackgroundPositionY.bottom:
 				computedBackgroundYPosition = Math.round(UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension)) ;
 		}
 		
@@ -262,7 +262,7 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundSize(backgroundSize:BackgroundSizeStyleValue, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, emReference:Float, exReference:Float):DimensionData
+	private static function getComputedBackgroundSize(backgroundSize:BackgroundSize, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, emReference:Float, exReference:Float):DimensionData
 	{
 		var computedBackgroundSize:DimensionData;
 		
@@ -271,7 +271,7 @@ class BackgroundStylesComputer
 			//Scale the image, while preserving its
 			//intrinsic aspect ratio (if any), to the largest size such that 
 			//both its width and its height can fit inside the background positioning area.
-			case BackgroundSizeStyleValue.contain:
+			case BackgroundSize.contain:
 				if (intrinsicRatio != null)
 				{
 					var ratio:Float = intrinsicRatio / (backgroundPositioningArea.width / backgroundPositioningArea.height);
@@ -292,7 +292,7 @@ class BackgroundStylesComputer
 			//Scale the image, while preserving its intrinsic aspect
 			//ratio (if any), to the smallest size such that both its width
 			//and its height can completely cover the background positioning area. 	
-			case BackgroundSizeStyleValue.cover:
+			case BackgroundSize.cover:
 				if (intrinsicRatio != null)
 				{
 					var ratio:Float =  (backgroundPositioningArea.width / backgroundPositioningArea.height) / intrinsicRatio;
@@ -311,7 +311,7 @@ class BackgroundStylesComputer
 				}	
 			
 				
-			case BackgroundSizeStyleValue.dimensions(value):
+			case BackgroundSize.dimensions(value):
 				computedBackgroundSize = {
 					width:getBackgroundSizeStyleDimensionData(value.x, value.y, Math.round(backgroundPositioningArea.width), Math.round(backgroundPositioningArea.height),
 					intrinsicWidth, intrinsicHeight, intrinsicRatio, emReference, exReference),
@@ -397,7 +397,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundOrigin
 	 * @return
 	 */
-	private static function getBackgroundPositioningArea(style:AbstractStyle, backgroundOrigin:BackgroundOriginStyleValue, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPositioningArea(style:AbstractStyle, backgroundOrigin:BackgroundOrigin, backgroundBox:RectangleData):RectangleData
 	{
 		var backgroundPositioningArea:RectangleData;
 		
@@ -408,21 +408,21 @@ class BackgroundStylesComputer
 		
 		switch (backgroundOrigin)
 		{
-			case BackgroundOriginStyleValue.borderBox:
+			case BackgroundOrigin.borderBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginTop;
 				
 				
-			case BackgroundOriginStyleValue.paddingBox:
+			case BackgroundOrigin.paddingBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginTop;
 				
 				
-			case BackgroundOriginStyleValue.contentBox:
+			case BackgroundOrigin.contentBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
 				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
@@ -454,7 +454,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundBox
 	 * @return
 	 */
-	private static function getBackgroundPaintingArea(style:AbstractStyle, backgroundClip:BackgroundClipStyleValue, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPaintingArea(style:AbstractStyle, backgroundClip:BackgroundClip, backgroundBox:RectangleData):RectangleData
 	{
 		var backgroundPaintingArea:RectangleData;
 		
@@ -465,20 +465,20 @@ class BackgroundStylesComputer
 		
 		switch (backgroundClip)
 		{
-			case BackgroundClipStyleValue.borderBox:
+			case BackgroundClip.borderBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginTop;
 				
-			case BackgroundClipStyleValue.paddingBox:
+			case BackgroundClip.paddingBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 				x = style.computedStyle.marginLeft;
 				y = style.computedStyle.marginTop;
 				
 				
-			case BackgroundClipStyleValue.contentBox:
+			case BackgroundClip.contentBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
 				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;

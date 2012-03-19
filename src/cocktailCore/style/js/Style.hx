@@ -324,26 +324,26 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : transform-origin
 	 */
-	private function getCSSTransformOrigin(value:TransformOriginStyleData):String
+	private function getCSSTransformOrigin(value:TransformOrigin):String
 	{
 		var cssTransformOriginValue:String;
 		
 		//x axis
 		switch (value.x)
 		{
-			case TransformOriginXStyleValue.length(value):
+			case TransformOriginX.length(value):
 				cssTransformOriginValue = getCSSLengthValue(value);
 				
-			case TransformOriginXStyleValue.percent(value):
+			case TransformOriginX.percent(value):
 				cssTransformOriginValue = getCSSPercentValue(value);
 				
-			case TransformOriginXStyleValue.left:
+			case TransformOriginX.left:
 				cssTransformOriginValue = "left";
 				
-			case TransformOriginXStyleValue.center:
+			case TransformOriginX.center:
 				cssTransformOriginValue = "center";
 				
-			case TransformOriginXStyleValue.right:
+			case TransformOriginX.right:
 				cssTransformOriginValue = "right";
 		}
 		
@@ -353,19 +353,19 @@ class Style extends AbstractStyle
 		//y axis
 		switch (value.y)
 		{
-			case TransformOriginYStyleValue.length(value):
+			case TransformOriginY.length(value):
 				cssTransformOriginValue += getCSSLengthValue(value);
 				
-			case TransformOriginYStyleValue.percent(value):
+			case TransformOriginY.percent(value):
 				cssTransformOriginValue += getCSSPercentValue(value);
 				
-			case TransformOriginYStyleValue.top:
+			case TransformOriginY.top:
 				cssTransformOriginValue += "top";
 				
-			case TransformOriginYStyleValue.center:
+			case TransformOriginY.center:
 				cssTransformOriginValue += "center";
 				
-			case TransformOriginYStyleValue.bottom:
+			case TransformOriginY.bottom:
 				cssTransformOriginValue += "bottom";
 		}
 		
@@ -865,7 +865,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-color
 	 */
-	private function getCSSBackgroundColor(value:BackgroundColorStyleValue):String
+	private function getCSSBackgroundColor(value:BackgroundColor):String
 	{
 		var cssBackgroundColor:String;
 		
@@ -881,7 +881,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-origin
 	 */
-	private function getCSSBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):String
+	private function getCSSBackgroundOrigin(value:Array<BackgroundOrigin>):String
 	{
 		var cssBackgroundOrigin:String = "";
 		
@@ -889,13 +889,13 @@ class Style extends AbstractStyle
 		{
 			switch(value[i])
 			{
-				case BackgroundOriginStyleValue.borderBox:
+				case BackgroundOrigin.borderBox:
 					cssBackgroundOrigin += "border-box";
 					
-				case BackgroundOriginStyleValue.contentBox:
+				case BackgroundOrigin.contentBox:
 					cssBackgroundOrigin += "content-box";
 					
-				case BackgroundOriginStyleValue.paddingBox:
+				case BackgroundOrigin.paddingBox:
 					cssBackgroundOrigin += "padding-box";
 			}
 			
@@ -911,7 +911,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-clip
 	 */
-	private function getCSSBackgroundClip(value:Array<BackgroundClipStyleValue>):String
+	private function getCSSBackgroundClip(value:Array<BackgroundClip>):String
 	{
 		var cssBackgroundClip:String = "";
 		
@@ -919,13 +919,13 @@ class Style extends AbstractStyle
 		{
 			switch(value[i])
 			{
-				case BackgroundClipStyleValue.borderBox:
+				case BackgroundClip.borderBox:
 					cssBackgroundClip += "border-box";
 					
-				case BackgroundClipStyleValue.contentBox:
+				case BackgroundClip.contentBox:
 					cssBackgroundClip += "content-box";
 					
-				case BackgroundClipStyleValue.paddingBox:
+				case BackgroundClip.paddingBox:
 					cssBackgroundClip += "padding-box";
 			}
 			
@@ -941,7 +941,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-image
 	 */
-	private function getCSSBackgroundImage(value:Array<BackgroundImageStyleValue>):String
+	private function getCSSBackgroundImage(value:Array<BackgroundImage>):String
 	{
 		var cssBackgroundImage:String = "";
 		
@@ -949,10 +949,10 @@ class Style extends AbstractStyle
 		{
 			switch (value[i])
 			{
-				case BackgroundImageStyleValue.none:
+				case BackgroundImage.none:
 					cssBackgroundImage += "none";
 					
-				case BackgroundImageStyleValue.image(value):
+				case BackgroundImage.image(value):
 					cssBackgroundImage += getCSSImageValue(value);
 			}	
 			
@@ -969,7 +969,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-size
 	 */
-	private function getCSSBackgroundSize(value:Array<BackgroundSizeStyleValue>):String
+	private function getCSSBackgroundSize(value:Array<BackgroundSize>):String
 	{
 		var cssBackgroundSize:String = "";
 		
@@ -977,13 +977,13 @@ class Style extends AbstractStyle
 		{
 			switch (value[i])
 			{
-				case BackgroundSizeStyleValue.contain:
+				case BackgroundSize.contain:
 					cssBackgroundSize += "contain";
 					
-				case BackgroundSizeStyleValue.cover:
+				case BackgroundSize.cover:
 					cssBackgroundSize += "cover";
 					
-				case BackgroundSizeStyleValue.dimensions(value):
+				case BackgroundSize.dimensions(value):
 					cssBackgroundSize += getCSSBackgroundSizeDimensions(value);
 			}
 			
@@ -1024,13 +1024,13 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-position
 	 */
-	private function getCSSBackgroundPosition(value:Array<BackgroundPositionStyleData>):String
+	private function getCSSBackgroundPosition(value:Array<BackgroundPosition>):String
 	{
 		var cssBackgroundPositionData:String = "";
 		
 		for (i in 0...value.length)
 		{
-			cssBackgroundPositionData += getCSSBackgroundPositionXStyleValue(value[i].x) + " " + getCSSBackgroundPositionYStyleValue(value[i].y);
+			cssBackgroundPositionData += getCSSBackgroundPositionX(value[i].x) + " " + getCSSBackgroundPositionY(value[i].y);
 			
 			if (i < value.length -1)
 			{
@@ -1041,50 +1041,50 @@ class Style extends AbstractStyle
 		return cssBackgroundPositionData;
 	}
 	
-	private function getCSSBackgroundPositionXStyleValue(value:BackgroundPositionXStyleValue):String
+	private function getCSSBackgroundPositionX(value:BackgroundPositionX):String
 	{
 		var cssBackgroundPositionX:String;
 		
 		switch (value)
 		{
-			case BackgroundPositionXStyleValue.length(value):
+			case BackgroundPositionX.length(value):
 				cssBackgroundPositionX = getCSSLengthValue(value);
 				
-			case BackgroundPositionXStyleValue.percent(value):
+			case BackgroundPositionX.percent(value):
 				cssBackgroundPositionX = getCSSPercentValue(value);
 				
-			case BackgroundPositionXStyleValue.center:
+			case BackgroundPositionX.center:
 				cssBackgroundPositionX = "center";
 				
-			case BackgroundPositionXStyleValue.left:
+			case BackgroundPositionX.left:
 				cssBackgroundPositionX = "left";
 				
-			case BackgroundPositionXStyleValue.right:
+			case BackgroundPositionX.right:
 				cssBackgroundPositionX = "right";
 		}
 		
 		return cssBackgroundPositionX;
 	}
 	
-	private function getCSSBackgroundPositionYStyleValue(value:BackgroundPositionYStyleValue):String
+	private function getCSSBackgroundPositionY(value:BackgroundPositionY):String
 	{
 		var cssBackgroundPositionY:String;
 		
 		switch (value)
 		{
-			case BackgroundPositionYStyleValue.length(value):
+			case BackgroundPositionY.length(value):
 				cssBackgroundPositionY = getCSSLengthValue(value);
 				
-			case BackgroundPositionYStyleValue.percent(value):
+			case BackgroundPositionY.percent(value):
 				cssBackgroundPositionY = getCSSPercentValue(value);
 				
-			case BackgroundPositionYStyleValue.bottom:
+			case BackgroundPositionY.bottom:
 				cssBackgroundPositionY = "bottom";
 				
-			case BackgroundPositionYStyleValue.top:
+			case BackgroundPositionY.top:
 				cssBackgroundPositionY = "top";
 				
-			case BackgroundPositionYStyleValue.center:
+			case BackgroundPositionY.center:
 				cssBackgroundPositionY = "center";
 		}
 		
@@ -1094,7 +1094,7 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : background-repeat
 	 */
-	private function getCSSBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):String
+	private function getCSSBackgroundRepeat(value:Array<BackgroundRepeat>):String
 	{
 		var cssBackgroundRepeat:String = "";
 		
@@ -1772,7 +1772,7 @@ class Style extends AbstractStyle
 		return _visibility = value;
 	}
 	
-	override private function setTransformOrigin(value:TransformOriginStyleData):TransformOriginStyleData
+	override private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
@@ -1802,14 +1802,14 @@ class Style extends AbstractStyle
 		return _transform = value;
 	}
 	
-	override private function setBackgroundColor(value:BackgroundColorStyleValue):BackgroundColorStyleValue
+	override private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
 		this._domElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
 		super.setBackgroundColor(value);
 		return _backgroundColor;
 	}
 	
-	override private function setBackgroundOrigin(value:Array<BackgroundOriginStyleValue>):Array<BackgroundOriginStyleValue>
+	override private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
@@ -1824,7 +1824,7 @@ class Style extends AbstractStyle
 		return _backgroundOrigin;
 	}
 	
-	override private function setBackgroundClip(value:Array<BackgroundClipStyleValue>):Array<BackgroundClipStyleValue>
+	override private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
@@ -1839,7 +1839,7 @@ class Style extends AbstractStyle
 		return _backgroundClip;
 	}
 	
-	override private function setBackgroundImage(value:Array<BackgroundImageStyleValue>):Array<BackgroundImageStyleValue>
+	override private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
 		var cssBackgroundImage:String = getCSSBackgroundImage(value);
 		
@@ -1853,14 +1853,14 @@ class Style extends AbstractStyle
 		return _backgroundImage;
 	}
 	
-	override private function setBackgroundPosition(value:Array<BackgroundPositionStyleData>):Array<BackgroundPositionStyleData>
+	override private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
 		this._domElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
 		super.setBackgroundPosition(value);
 		return _backgroundPosition;
 	}
 	
-	override private function setBackgroundSize(value:Array<BackgroundSizeStyleValue>):Array<BackgroundSizeStyleValue>
+	override private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
 		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
 		//get vendor specific style name
@@ -1875,7 +1875,7 @@ class Style extends AbstractStyle
 		return _backgroundSize;
 	}
 	
-	override private function setBackgroundRepeat(value:Array<BackgroundRepeatStyleData>):Array<BackgroundRepeatStyleData>
+	override private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
 		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
 		super.setBackgroundRepeat(value);
