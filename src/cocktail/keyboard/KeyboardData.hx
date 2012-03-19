@@ -13,44 +13,6 @@ package cocktail.keyboard;
  */
 
 /**
- * Represents a keyboard key on a up/down event
- * and the state of the modifier keys then
- */ 
-typedef KeyboardEventData = {
-	
-	/**
-	 * an enum value of the key or unknown if 
-	 * unlisted key
-	 */
-	var value:KeyboardKeyValue;
-	
-	/**
-	 * the key code
-	 */
-	var code:Int;
-	
-	/**
-	 * the key ascii code
-	 */
-	var ascii:Int;
-	
-	/**
-	 * wether alt is pressed
-	 */
-	var altKey:Bool;
-	
-	/**
-	 * wether ctrl is pressed
-	 */
-	var ctrlKey:Bool;
-	
-	/**
-	 * wether shift is pressed
-	 */
-	var shiftKey:Bool;
-}
-
-/**
  * Lists all the keyboard's keys. Default to "unknow" for
  * non listed keys
  */
