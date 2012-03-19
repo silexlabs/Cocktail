@@ -12,7 +12,7 @@ import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 
 /**
  * This is a static class in charge of

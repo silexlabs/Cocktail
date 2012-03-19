@@ -12,11 +12,11 @@ import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktailCore.drawing.DrawingManager;
 import cocktail.geom.GeomData;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.resource.ImageLoader;
 import cocktail.domElement.DOMElementData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 import haxe.Log;
 
 /**

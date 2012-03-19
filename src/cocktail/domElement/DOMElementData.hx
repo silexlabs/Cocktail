@@ -7,7 +7,7 @@
 */
 package cocktail.domElement;
 
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Link DOMElement enums

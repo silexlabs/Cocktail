@@ -10,7 +10,7 @@ package cocktailCore.style.computer.boxComputers;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 
 /**
  * The is the box style computer for inline non-embedded

@@ -10,7 +10,7 @@ package cocktailCore.style.computer.boxComputers;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 import haxe.Log;
 
 /**

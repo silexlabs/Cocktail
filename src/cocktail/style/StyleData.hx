@@ -7,7 +7,7 @@
 */
 package cocktail.style;
 import cocktail.domElement.DOMElement;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import cocktail.geom.GeomData;
 import cocktail.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
