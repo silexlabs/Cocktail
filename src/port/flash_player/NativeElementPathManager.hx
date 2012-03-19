@@ -5,25 +5,34 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement;
+package port.flash_player;
+
+import flash.Lib;
+import core.nativeElement.AbstractNativeElementPathManager;
+import core.nativeElement.NativeElement;
 
 /**
- * Set the right runtime specific NativeElement at compile-time
+ * This is the flash AVM2 implementation for the path manager. 
+ * It returns the flash Stage
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if (flash9)
-typedef NativeElement =  flash.display.DisplayObjectContainer;
-
-#elseif (nme || cpp)
-typedef NativeElement =  Dynamic;
-
-#elseif js
-import js.Dom;
-typedef NativeElement =  js.HtmlDom;
-
-#elseif php
-typedef NativeElement =  Xml;
-
-#elseif doc
-typedef NativeElement = Dynamic;
-
-#end
+class NativeElementPathManager extends AbstractNativeElementPathManager
+{
+	/**
+	 * class contructor
+	 */
+	public function new() 
+	{
+		super();
+	}
+	
+	/**
+	 * Returns a reference to the Flash Stage
+	 */
+	override public function getRoot():NativeElement
+	{
+		return Lib.current.stage;
+	}
+	
+}

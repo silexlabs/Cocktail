@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.as3;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.events.MouseEvent;
 import haxe.Log;

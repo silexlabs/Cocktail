@@ -1,6 +1,6 @@
 package cocktailCore.style.renderer;
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import haxe.Log;
 /*
 	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/

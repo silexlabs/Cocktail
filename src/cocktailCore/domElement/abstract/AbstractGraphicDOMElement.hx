@@ -11,9 +11,9 @@ import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktailCore.drawing.DrawingManager;
 import haxe.Log;
 

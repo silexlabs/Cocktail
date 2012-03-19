@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.as3;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;

@@ -8,7 +8,7 @@
 package port.browser;
 
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 
 import core.drawing.AbstractDrawingManager;
 import js.Dom;

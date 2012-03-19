@@ -9,7 +9,7 @@ package port.flash_player;
 
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.drawing.AbstractDrawingManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;

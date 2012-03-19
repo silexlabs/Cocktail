@@ -11,13 +11,13 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.resource.ResourceLoader;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElementData;
 import haxe.Log;
 
 /**

@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;

@@ -1,5 +1,5 @@
 package core.dom;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
 import core.event.MouseEvent;
@@ -181,6 +181,8 @@ class HTMLElement extends Element
 	/**
 	 * Init the DOMElement properties. Called each time
 	 * the NativeElement is set
+	 * 
+	 * TODO : add method for init mouse
 	 */
 	private function init():Void
 	{	

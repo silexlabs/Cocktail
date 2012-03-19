@@ -8,8 +8,8 @@
 package cocktailCore.domElement.abstract;
 
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktail.domElement.DOMElementData;
 import core.mouseMouseData;
 

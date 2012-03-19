@@ -10,7 +10,7 @@ package cocktailCore.style.as3;
 import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;

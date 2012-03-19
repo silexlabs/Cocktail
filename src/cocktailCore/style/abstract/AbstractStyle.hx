@@ -8,7 +8,7 @@
 package cocktailCore.style.abstract;
 
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import core.background.BackgroundManager;
 import core.dom.HTMLElement;

@@ -7,9 +7,9 @@
 */
 package cocktailCore.domElement.js;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
 import js.Lib;
 import js.Dom;

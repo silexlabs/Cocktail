@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import core.dom.HTMLElement;
 import cocktailCore.style.formatter.BlockFormattingContext;

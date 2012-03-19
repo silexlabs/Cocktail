@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.renderer;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.background.BackgroundManager;
 import cocktailCore.style.Style;
 import haxe.Log;

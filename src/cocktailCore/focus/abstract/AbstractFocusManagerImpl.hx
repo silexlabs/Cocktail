@@ -15,7 +15,7 @@ import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementManager;
 import core.event.KeyboardEvent;
 
 /**

@@ -7,9 +7,9 @@
 */
 package core.background;
 
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import core.unit.UnitData;
 import cocktail.geom.GeomData;

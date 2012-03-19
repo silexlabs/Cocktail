@@ -7,7 +7,7 @@
 */
 package core.mouse;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.event.MouseEvent;
 
 import core.mouse.MouseData;

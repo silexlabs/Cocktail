@@ -7,8 +7,8 @@
 */
 package cocktailCore.domElement.as3;
 
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.CapsStyle;
