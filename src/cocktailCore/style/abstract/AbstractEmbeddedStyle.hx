@@ -8,21 +8,6 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.EmbeddedDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktailCore.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktailCore.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
-import cocktailCore.style.computer.boxComputers.NoneBoxStylesComputer;
-import cocktailCore.style.computer.BoxStylesComputer;
-import cocktailCore.style.formatter.FormattingContext;
-import cocktail.style.StyleData;
-import cocktailCore.style.renderer.ElementRenderer;
-import cocktailCore.style.renderer.EmbeddedBoxRenderer;
-import cocktailCore.style.renderer.FlowBoxRenderer;
-import haxe.Log;
 
 #if (flash9 || cpp || nme)
 import cocktailCore.style.as3.Style;
@@ -35,7 +20,10 @@ import cocktailCore.style.js.Style;
  * DOMElement. Embedded DOMElement include external
  * content in the document, such as picture or video.
  * 
- * They can't have any children
+ * They can't have any children.
+ * 
+ * Doesn't add any behaviour as this is the default beahviour
+ * implemented by the Style class
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -47,68 +35,5 @@ class AbstractEmbeddedStyle extends Style
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Create an ElementRenderer for embedded elements and attach it to its parent ElementRenderer
-	 */
-	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
-	{
-		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(_domElement);
-		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
-		
-		parentElementRenderer.addChild(elementRenderer);
-		
-		return elementRenderer;
-	}
-
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE COMPUTING METHODS
-	// compute styles definition into usable values
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden to use box computer specific to 
-	 * embedded DOMElement instead of the default one
-	 */
-	override private function getBoxStylesComputer():BoxStylesComputer
-	{
-		var boxComputer:BoxStylesComputer;
-		
-		//get the embedded box computers based on
-		//the positioning scheme
-		if (isFloat() == true)
-		{
-			boxComputer = new EmbeddedFloatBoxStylesComputer();
-		}
-		else if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			boxComputer = new EmbeddedPositionedBoxStylesComputer();
-		}
-		else
-		{
-			switch(this._computedStyle.display)
-			{
-				case block:
-					boxComputer = new EmbeddedBlockBoxStylesComputer();
-					
-				case inlineBlock:
-					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
-				
-				case none:
-					boxComputer = new NoneBoxStylesComputer();
-				
-				case inlineStyle:
-					boxComputer = new EmbeddedInlineBoxStylesComputer();
-			}
-		}
-		
-		
-		return boxComputer;
 	}
 }

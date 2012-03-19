@@ -73,7 +73,7 @@ class AbstractTextElement
 	
 	/**
 	 * Remove a reference to every generated
-	 * textFragmentDOMElement. Used when the content
+	 * TextRenderer. Used when the content
 	 * of the TextElement changes or when the style
 	 * of its ContainerDOMElement changes
 	 */
@@ -81,7 +81,7 @@ class AbstractTextElement
 	{
 		for (i in 0..._textFragments.length)
 		{
-			_textFragments[i].textFragmentDOMElement = null;
+			_textFragments[i].textRenderer = null;
 		}
 	}
 	
@@ -262,7 +262,7 @@ class AbstractTextElement
 	 */
 	private static function insertTextToken(textToken:TextTokenValue):TextFragmentData
 	{
-		return { textToken:textToken, textFragmentDOMElement:null };
+		return { textToken:textToken, textRenderer:null };
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

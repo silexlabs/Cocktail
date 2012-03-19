@@ -6,8 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.textElement;
-
-import cocktailCore.domElement.TextFragmentDOMElement;
+import cocktailCore.style.renderer.TextRenderer;
 
 /**
  * TextElement enum and struct
@@ -48,9 +47,9 @@ enum TextTokenValue {
 
 /**
  * Holds a text token and its visual
- * representation (a TextFragmentDOMElement)
+ * representation (a TextRenderer)
  */
 typedef TextFragmentData = {
 	var textToken:TextTokenValue;
-	var textFragmentDOMElement:TextFragmentDOMElement;
+	var textRenderer:TextRenderer;
 }

@@ -15,6 +15,11 @@ import cocktail.viewport.Viewport;
 import cocktailCore.background.BackgroundManager;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktailCore.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.InLineBoxStylesComputer;
@@ -34,6 +39,7 @@ import cocktail.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;
+import cocktailCore.style.renderer.EmbeddedBoxRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import cocktailCore.style.renderer.LayerRenderer;
 import haxe.Log;
@@ -62,6 +68,8 @@ import haxe.Timer;
  * ordered by z-index
  * - once all the styles are computed and the rendering tree is ready, it
  * renders itself
+ * 
+ * This class implements the default behaviour of an embedded DOMElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -255,66 +263,6 @@ class AbstractStyle
 	private var _isDirty:Bool;
 	
 	/**
-	 * Store the x position of the NativeElement
-	 * relative to its parent
-	 */
-	private var _nativeX:Int;
-	
-	/**
-	 * Store the y position of the NativeElement
-	 * relative to its parent
-	 */
-	private var _nativeY:Int;
-	
-	/**
-	 * Store the width of the NativeElement
-	 */
-	private var _nativeWidth:Int;
-	
-	/**
-	 * Store the height of the NativeElement
-	 */
-	private var _nativeHeight:Int;
-	
-	/**
-	 * Store the x scale of the NativeElement
-	 */
-	private var _nativeScaleX:Float;
-	
-	/**
-	 * Store the y scale of the NativeElement
-	 */
-	private var _nativeScaleY:Float;
-	
-	/**
-	 * Store the rotation of the NativeElement
-	 */
-	private var _nativeRotation:Float;
-	
-	/**
-	 * Store the opacity of the NativeElement
-	 */
-	private var _nativeOpacity:Float;
-	
-	/**
-	 * Store the visibility of the NativeElement
-	 */
-	private var _nativeVisibility:Bool;
-	
-	/**
-	 * Store the current transform matrix of the NativeElement
-	 */
-	private var _nativeMatrix:Matrix;
-	
-	/**
-	 * keep references to each of the nativeElements which
-	 * are attached to this styled DOMElement. Those
-	 * can be background images, colors, nativeElements
-	 * of other DOMElements...
-	 */
-	private var _nativeElements:Array<NativeElement>;
-	
-	/**
 	 * A reference to the rendering tree node created by this
 	 * DOM tree node
 	 */
@@ -336,7 +284,6 @@ class AbstractStyle
 	{
 		this._domElement = domElement;
 		this._isDirty = true;
-		this._nativeElements = new Array<NativeElement>();
 		
 		initDefaultStyleValues();
 	}
@@ -347,7 +294,6 @@ class AbstractStyle
 	private function initDefaultStyleValues():Void
 	{
 		initComputedStyles();
-		initNativeProperties();
 		
 		this.width = DimensionStyleValue.autoValue;
 		this.height = DimensionStyleValue.autoValue;
@@ -488,22 +434,6 @@ class AbstractStyle
 	}
 	
 	/**
-	 * init the values representing NativeElements attributes
-	 */
-	private function initNativeProperties():Void
-	{
-		_nativeHeight = 0;
-		_nativeOpacity = 1.0;
-		_nativeRotation = 0.0;
-		_nativeScaleX = 1.0;
-		_nativeScaleY = 1.0;
-		_nativeVisibility = true;
-		_nativeWidth = 0;
-		_nativeX = 0;
-		_nativeY = 0;
-	}
-	
-	/**
 	 * Return default value for style defined by the User Agent
 	 * in a browser, those styles are hard coded for other
 	 * runtimes
@@ -517,74 +447,20 @@ class AbstractStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * and attach the resulting nativeElement (background,
-	 * border, embedded asset...) to the provided
-	 * nativeElement
-	 */ 
-	public function render(nativeElement:NativeElement):Void
-	{
-		_nativeElements = _elementRenderer.layerRenderer.render();
-		_nativeElements.reverse();
-		attachNativeElements(_nativeElements);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attach a NativeElement to the
-	 * styled DOMElement using runtime specific API
-	 */ 
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Remove a NativeElement from the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * styled DOMElement using runtime specific API
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
-	}
 	
 	/**
 	 * Create and return the right ElementRenderer for this DOMElement
 	 */
 	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		return null;
+		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(cast(this));
+		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
+		
+		parentElementRenderer.addChild(elementRenderer);
+		
+		return elementRenderer;
 	}
 	
 	/**
@@ -656,10 +532,7 @@ class AbstractStyle
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
 	public function flow(containingDOMElementData:ContainingDOMElementData, viewportData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
-	{
-		//first detach all previously added children
-		detachNativeElements(_nativeElements);
-		
+	{		
 		if (_elementRenderer != null && parentElementRenderer != null)
 		{
 			parentElementRenderer.removeChild(_elementRenderer);
@@ -746,7 +619,7 @@ class AbstractStyle
 			default:
 		}
 		
-		//TODO : where to put it ?
+		//update the bounds of the ElementRenderer
 		_elementRenderer.bounds.width = _domElement.offsetWidth;
 		_elementRenderer.bounds.height = _domElement.offsetHeight;
 		
@@ -797,10 +670,6 @@ class AbstractStyle
 		//else the DOMElement is positioned
 		else
 		{
-
-			//To retrieve the static position, the formatting context must be formatted now
-			//TODO : no need anymore once implemented in getStaticPosition
-			formattingContext.format();
 			
 			//retrieve the static position (the position of the DOMElement
 			//if its position style were 'static')
@@ -825,8 +694,6 @@ class AbstractStyle
 			//
 			//relative positioned DOMElement are also stored in that array
 			//
-			//TODO : shouldn't have to store a ref to this.
-			//TODO : store static position on ElementRenderer ?
 			var positionedDOMElementData:PositionedDOMElementData = {
 				staticPosition:staticPosition,
 				style:this
@@ -895,7 +762,6 @@ class AbstractStyle
 					//schedule an asynchronous layout
 					scheduleLayout(containingDOMElementData, lastPositionedDOMElementData, viewPortData);
 				}
-				
 			}
 		}
 	}
@@ -905,6 +771,8 @@ class AbstractStyle
 	 * (font size, font weight...), the font metrics
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
+	 * 
+	 * TODO : no more text cache system, need to re-implement
 	 */
 	public function invalidateText():Void
 	{
@@ -1044,42 +912,36 @@ class AbstractStyle
 	 * instantiate the right box computer class
 	 *	based on the DOMElement's positioning
 	 *	scheme
-	 * 
-	 * TODO : does abstractStyle implement embedded or container ?
-	 * Currently it does both depending on methods
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{
 		var boxComputer:BoxStylesComputer;
-				
-		//get the box computer for float
+		
+		//get the embedded box computers based on
+		//the positioning scheme
 		if (isFloat() == true)
 		{
-			boxComputer = new FloatBoxStylesComputer();
+			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		
-		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			boxComputer = new PositionedBoxStylesComputer();
+			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
-		
-		//else get the box computer based on the display style
 		else
 		{
 			switch(this._computedStyle.display)
 			{
 				case block:
-					boxComputer = new BlockBoxStylesComputer();
+					boxComputer = new EmbeddedBlockBoxStylesComputer();
 					
 				case inlineBlock:
-					boxComputer = new InlineBlockBoxStylesComputer();
+					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
 				case none:
 					boxComputer = new NoneBoxStylesComputer();
 				
 				case inlineStyle:
-					boxComputer = new InLineBoxStylesComputer();
+					boxComputer = new EmbeddedInlineBoxStylesComputer();
 			}
 		}
 		
@@ -1360,192 +1222,6 @@ class AbstractStyle
 		}
 		
 		return viewPortData;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// NATIVE SETTER/GETTER
-	// Those method actually apply a processed value to 
-	// the NativeElement of a target DOMElement.
-	// They also store the applied value when it is set on the DOMElement
-	// wrapped by this Style object. For instance, a ContainerStyle object not
-	// only wraps a ContainerDOMElement but also every generated TextFragmentDOMElement.
-	// The applied dimension or position is only stored when applied to the
-	// ContainerDOMElement
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the x of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeX = x;
-		}
-	}
-	
-	/**
-	 * Return the x of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeX():Int
-	{
-		return this._nativeX;
-	}
-	
-	/**
-	 * Set the y of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		if (domElement == this._domElement)
-		{
-			this._nativeY = y;
-		}
-	}
-	
-	/**
-	 * Return the y of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeY():Int
-	{
-		return this._nativeY;
-	}
-	
-	/**
-	 * Set the width of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeWidth(width:Int):Void
-	{
-		this._nativeWidth = width;
-	}
-	
-	/**
-	 * Return the width of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeWidth():Int
-	{
-		return this._nativeWidth;
-	}	
-	
-	/**
-	 * Set the height of the NativeElement of the
-	 * target DOMElement
-	 */
-	public function setNativeHeight(height:Int):Void
-	{
-		this._nativeHeight = height;
-	}
-	
-	/**
-	 * Return the height of the NativeElement of the
-	 * DOMElement
-	 */
-	public function getNativeHeight():Int
-	{
-		return this._nativeHeight;
-	}
-	
-	/**
-	 * Set the x scale of the NativeElement
-	 */
-	public function setNativeScaleX(scaleX:Float):Void
-	{
-		this._nativeScaleX = scaleX;
-	}
-	
-	/**
-	 * return the x scale of the NativeElement
-	 */
-	public function getNativeScaleX():Float
-	{
-		return this._nativeScaleX;
-	}
-	
-	/**
-	 * Set the y scale of the NativeElement
-	 */
-	public function setNativeScaleY(scaleY:Float):Void
-	{
-		this._nativeScaleY = scaleY;
-	}
-	
-	/**
-	 * return the y scale of the NativeElement
-	 */
-	public function getNativeScaleY():Float
-	{
-		return this._nativeScaleY;
-	}
-	
-	/**
-	 * Set the rotation of the NativeElement in rad
-	 */
-	public function setNativeRotation(rotation:Float):Void
-	{
-		this._nativeRotation = rotation;
-	}
-	
-	/**
-	 * return the rotation of the NativeElement in rad
-	 */
-	public function getNativeRotation():Float
-	{
-		return this._nativeRotation;
-	}
-	
-	/**
-	 * Set the transformation matrix on the DOMElement. Overriden
-	 * to apply it to the NativeElement
-	 */
-	public function setNativeMatrix(matrix:Matrix):Void
-	{
-		this._nativeMatrix = matrix;
-	}
-	
-	/**
-	 * Get the matrix of the DOMElement
-	 */
-	public function getNativeMatrix():Matrix
-	{
-		return _nativeMatrix;
-	}
-	
-	/**
-	 * Set the alpha of the NativeElement
-	 */
-	public function setNativeOpacity(opacity:Float):Void
-	{
-		this._nativeOpacity = opacity;
-	}
-	
-	/**
-	 * Get the alpha of the NativeElement
-	 */
-	public function getNativeOpacity():Float
-	{
-		return this._nativeOpacity;
-	}
-	
-	/**
-	 * Set the visibility of the NativeElement
-	 */
-	public function setNativeVisibility(visible:Bool):Void
-	{
-		this._nativeVisibility = visible;
-	}
-	
-	/**
-	 * Get the visibility of the NativeElement
-	 */
-	public function getNativeVisibility():Bool
-	{
-		return this._nativeVisibility;
 	}
 	
 	/////////////////////////////////
