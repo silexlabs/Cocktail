@@ -24,7 +24,7 @@ package cocktail.unit;
  * - relative (em and ex). Relative length units 
  * specify a length relative to another length property.
  */
-enum LengthValue {
+enum Length {
 	
 	/**
 	 * pixel, 1px is equal to 0.75pt.
@@ -91,7 +91,7 @@ enum LengthValue {
  * on the user agent and the user 
  * preferences
  */
-enum FontSizeAbsoluteSizeValue {
+enum FontSizeAbsoluteSize {
 	xxSmall;
 	xSmall;
 	small;
@@ -107,7 +107,7 @@ enum FontSizeAbsoluteSizeValue {
  * DOMElement in relation
  * with the parent font size.
  */
-enum FontSizeRelativeSizeValue {
+enum FontSizeRelativeSize {
 	larger;
 	smaller;
 }
@@ -115,6 +115,8 @@ enum FontSizeRelativeSizeValue {
 /**
  * Lists the different color format supported.
  * Each value describes one color
+ * 
+ * TODO : rename ColorValue and ColorData
  */
 enum ColorValue {
 	
@@ -142,7 +144,7 @@ enum ColorValue {
 	 * the color is chosen among a
 	 * set of predefined colors
 	 */ 
-	keyword(value:ColorKeywordValue);
+	keyword(value:ColorKeyword);
 	
 	/**
 	 * a fully transparent color, equivalent
@@ -210,7 +212,7 @@ enum GradientValue {
  * and a variable number of colors
  */
 typedef LinearGradientData = {
-	var angle:GradientAngleValue;
+	var angle:GradientAngle;
 	var colorStops:Array<GradientColorStopData>;
 }
 
@@ -230,7 +232,7 @@ typedef GradientColorStopData = {
  * the gradient box
  */
 enum GradientStopValue {
-	length(value:LengthValue);
+	length(value:Length);
 	percent(value:Int);
 }
 
@@ -239,8 +241,8 @@ enum GradientStopValue {
  * be an angle (defined in deg, rad...) or a keyword
  * representing a side or corner of the gradient box
  */
-enum GradientAngleValue {
-	angle(value:AngleValue);
+enum GradientAngle {
+	angle(value:Angle);
 	side(value:GradientSideValue);
 	corner(value:GradientCornerValue);
 }
@@ -274,7 +276,7 @@ typedef URLData = String;
 /**
  * Lists the default available colors
  */
-enum ColorKeywordValue {
+enum ColorKeyword {
 	aqua;
 	black;
 	blue;
@@ -298,7 +300,7 @@ enum ColorKeywordValue {
  * Lists the different available
  * units to specify an angle
  */
-enum AngleValue {
+enum Angle {
 	
 	/**
 	 * Degress. There are

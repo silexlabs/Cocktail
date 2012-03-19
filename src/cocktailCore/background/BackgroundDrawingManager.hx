@@ -238,16 +238,16 @@ class BackgroundDrawingManager extends DrawingManager
 	}
 		
 	
-	private function getRotation(value:GradientAngleValue):Int
+	private function getRotation(value:GradientAngle):Int
 	{
 		var rotation:Int;
 		
 		switch (value)
 		{
-			case GradientAngleValue.angle(value):
-				rotation = Math.round(UnitManager.getDegreeFromAngleValue(value));
+			case GradientAngle.angle(value):
+				rotation = Math.round(UnitManager.getDegreeFromAngle(value));
 				
-			case GradientAngleValue.side(value):
+			case GradientAngle.side(value):
 			
 				switch (value)
 				{
@@ -265,7 +265,7 @@ class BackgroundDrawingManager extends DrawingManager
 				}
 			
 			
-			case GradientAngleValue.corner(value):
+			case GradientAngle.corner(value):
 			
 				switch (value)
 				{

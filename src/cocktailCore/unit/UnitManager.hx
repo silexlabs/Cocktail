@@ -47,7 +47,7 @@ class UnitManager
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLengthValue(length:LengthValue, emReference:Float, exReference:Float):Int
+	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Int
 	{
 		var lengthValue:Float;
 		
@@ -85,7 +85,7 @@ class UnitManager
 	 * Takes an absolute size value for a font size and return
 	 * a pixel value
 	 */
-	public static function getFontSizeFromAbsoluteSizeValue(absoluteSize:FontSizeAbsoluteSizeValue):Float
+	public static function getFontSizeFromAbsoluteSizeValue(absoluteSize:FontSizeAbsoluteSize):Float
 	{
 		var fontSize:Float;
 		
@@ -122,7 +122,7 @@ class UnitManager
 	 * Take a relative value for a font size and return
 	 * a pixel value using the parent's computed font
 	 */
-	public static function getFontSizeFromRelativeSizeValue(relativeSize:FontSizeRelativeSizeValue, parentFontSize:Float):Float
+	public static function getFontSizeFromRelativeSizeValue(relativeSize:FontSizeRelativeSize, parentFontSize:Float):Float
 	{
 		var fontSize:Float;
 		
@@ -206,7 +206,7 @@ class UnitManager
 	/**
 	 * Get a radian angle from any other angle value
 	 */
-	public static function getRadFromAngleValue(value:AngleValue):Float
+	public static function getRadFromAngle(value:Angle):Float
 	{
 		var angle:Float;
 		
@@ -231,7 +231,7 @@ class UnitManager
 	/**
 	 * Get a degree angle from any other angle value
 	 */
-	public static function getDegreeFromAngleValue(value:AngleValue):Float
+	public static function getDegreeFromAngle(value:Angle):Float
 	{
 		var angle:Float;
 		
@@ -260,7 +260,7 @@ class UnitManager
 	/**
 	 * Get an integer color value from a keyword color value
 	 */
-	private static function getColorDataFromColorValueKeyword(value:ColorKeywordValue):ColorData
+	private static function getColorDataFromColorValueKeyword(value:ColorKeyword):ColorData
 	{
 		var hexColor:String;
 		

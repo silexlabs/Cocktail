@@ -504,7 +504,7 @@ class BoxStylesComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedMargin = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
+				computedMargin = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension
 			case percent(value): 
@@ -587,7 +587,7 @@ class BoxStylesComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedConstraintDimension = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
+				computedConstraintDimension = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
@@ -646,7 +646,7 @@ class BoxStylesComputer
 		switch(positionOffsetStyleValue)
 		{
 			case length(value):
-				computedPositionOffset = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
+				computedPositionOffset = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 				
 			case percent(value):
 				computedPositionOffset = Math.round(UnitManager.getPixelFromPercent(value, containingDOMElementDimension));
@@ -680,7 +680,7 @@ class BoxStylesComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedDimensions = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
+				computedDimensions = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
@@ -717,7 +717,7 @@ class BoxStylesComputer
 			//it's a length (an absolute value
 			//with a unit)
 			case length(value):
-				computedPaddingValue = UnitManager.getPixelFromLengthValue(value, fontSize, xHeight);
+				computedPaddingValue = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 			
 			//It's a percentage, compute it from the containing dimension		
 			case percent(value):

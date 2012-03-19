@@ -29,7 +29,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute font size
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage of the containing block
@@ -42,7 +42,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * For instance in a desktop browser, an absolute
 		 * size of medium maps to 16 pixels.
 		 */
-		absoluteSize(value:FontSizeAbsoluteSizeValue);
+		absoluteSize(value:FontSizeAbsoluteSize);
 		
 		/**
 		 * Define if the font should be larger or smaller
@@ -51,7 +51,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * font size and this absolute size is used as
 		 * the font size
 		 */
-		relativeSize(value:FontSizeRelativeSizeValue);
+		relativeSize(value:FontSizeRelativeSize);
 		
 		
 	}
@@ -174,7 +174,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * default spacing of the font,
 		 * might be negative.
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 	}
 	
 	/**
@@ -193,7 +193,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * A length to add to each space
 		 * character, might be negative
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 	}
 	
 	/**
@@ -206,7 +206,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * An absolute value for the text indentation
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage of the containing block
@@ -266,7 +266,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute line height value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * With this value, the computed value of the line height 
@@ -351,7 +351,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * parent baseline as reference for
 		 * 0
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 	}
 	
@@ -366,7 +366,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute thickness
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * thickness relatvie to the
@@ -389,7 +389,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute thickness
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * thickness relative to the
@@ -408,7 +408,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * relative the parent DOMElement
@@ -434,7 +434,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * relative to the parent DOMElement
@@ -561,7 +561,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * absolute offset
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * relative to the parent
@@ -730,25 +730,25 @@ import cocktailCore.style.renderer.TextRenderer;
 		 * parameter about the origin of the element,
 		 * as defined by the TransformOriginStyleValue property
 		 */
-		rotate(angle:AngleValue);
+		rotate(angle:Angle);
 		
 		/**
 		 * specifies a skew transformation
 		 * along the X axis by the given angle.
 		 */
-		skewX(angle:AngleValue);
+		skewX(angle:Angle);
 		
 		/**
 		 * specifies a skew transformation
 		 * along the Y axis by the given angle.
 		 */
-		skewY(angle:AngleValue);
+		skewY(angle:Angle);
 		
 		/**
 		 * specifies a skew transformation 
 		 * along the X and Y axes.
 		 */
-		skew(angleX:AngleValue, angleY:AngleValue);
+		skew(angleX:Angle, angleY:Angle);
 	}
 	
 	/**
@@ -760,7 +760,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative to the DOMElement
@@ -797,7 +797,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative
@@ -830,7 +830,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative
@@ -951,7 +951,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative
@@ -984,7 +984,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative
@@ -1097,7 +1097,7 @@ import cocktailCore.style.renderer.TextRenderer;
 		/**
 		 * a length value
 		 */
-		length(value:LengthValue);
+		length(value:Length);
 		
 		/**
 		 * a percentage relative

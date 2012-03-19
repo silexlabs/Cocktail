@@ -112,7 +112,7 @@ class FontAndTextStylesComputer
 		switch(style.textIndent)
 		{
 			case length(value):
-				textIndent = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				textIndent = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
 				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementData.width);
@@ -156,7 +156,7 @@ class FontAndTextStylesComputer
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));
 				
 			case length(value):
-				verticalAlign = UnitManager.getPixelFromLengthValue(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				verticalAlign = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case top:
 				verticalAlign = 0;
@@ -213,7 +213,7 @@ class FontAndTextStylesComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight));
+				wordSpacing = Math.round(UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return wordSpacing;
@@ -230,7 +230,7 @@ class FontAndTextStylesComputer
 		switch (style.lineHeight)
 		{
 			case length(unit):
-				lineHeight = UnitManager.getPixelFromLengthValue(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
+				lineHeight = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
 				
 			case normal:
 				lineHeight = style.computedStyle.fontSize * 1.2;
@@ -260,7 +260,7 @@ class FontAndTextStylesComputer
 				letterSpacing = 0;
 				
 			case length(unit):
-				letterSpacing = Math.round(UnitManager.getPixelFromLengthValue(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
+				letterSpacing = Math.round(UnitManager.getPixelFromLength(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
 		}
 		
 		return letterSpacing;
@@ -276,7 +276,7 @@ class FontAndTextStylesComputer
 		switch (style.fontSize)
 		{
 			case length(unit):
-				fontSize = UnitManager.getPixelFromLengthValue(unit, parentFontSize, parentXHeight);
+				fontSize = UnitManager.getPixelFromLength(unit, parentFontSize, parentXHeight);
 				
 			case percentage(percent):
 				fontSize = UnitManager.getPixelFromPercent(percent, Math.round(parentFontSize));
