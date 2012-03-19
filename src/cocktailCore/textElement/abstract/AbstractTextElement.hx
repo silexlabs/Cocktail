@@ -10,7 +10,7 @@ package cocktailCore.textElement.abstract;
 import cocktail.domElement.ContainerDOMElement;
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import haxe.Log;
 
 /**

@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.textElement;
-import cocktailCore.style.renderer.TextRenderer;
+import core.style.renderer.TextRenderer;
 
 /**
  * TextElement enum and struct

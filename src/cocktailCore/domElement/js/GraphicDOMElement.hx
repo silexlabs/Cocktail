@@ -13,7 +13,7 @@ import js.Lib;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import core.geom.GeomData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 
 /**
  * This is the JavaScript implementation of the graphic DOMElement.

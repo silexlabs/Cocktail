@@ -7,7 +7,7 @@
 */
 package cocktailCore.textElement.js;
 
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
 import js.Lib;

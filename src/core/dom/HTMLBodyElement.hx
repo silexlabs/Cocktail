@@ -2,7 +2,7 @@ package core.dom;
 import core.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
-import cocktailCore.style.BodyStyle;
+import core.style.BodyStyle;
 
 /**
  * ...

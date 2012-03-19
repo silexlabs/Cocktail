@@ -10,12 +10,12 @@ package core.background;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import core.unit.UnitData;
 import core.geom.GeomData;
 import cocktailCore.resource.ImageLoader;
-import cocktailCore.style.abstract.AbstractStyle;
-import cocktailCore.style.computer.BackgroundStylesComputer;
+import core.style.AbstractStyle;
+import core.style.computer.BackgroundStylesComputer;
 import core.unit.UnitManager;
 import haxe.Log;
 

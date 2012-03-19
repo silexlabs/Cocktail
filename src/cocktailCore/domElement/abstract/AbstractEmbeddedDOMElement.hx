@@ -8,7 +8,7 @@
 package cocktailCore.domElement.abstract;
 
 import core.nativeElement.NativeElement;
-import cocktailCore.style.EmbeddedStyle;
+import core.style.EmbeddedStyle;
 import cocktail.domElement.DOMElementData;
 
 #if (flash9 || cpp || nme)

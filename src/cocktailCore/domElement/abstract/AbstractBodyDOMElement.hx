@@ -12,8 +12,8 @@ import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
-import cocktailCore.style.abstract.AbstractBodyStyle;
-import cocktailCore.style.BodyStyle;
+import core.style.AbstractBodyStyle;
+import core.style.BodyStyle;
 
 /**
  * This DOMElement is a secial ContainerDOMElement whose

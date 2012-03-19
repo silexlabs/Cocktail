@@ -14,7 +14,7 @@ import core.nativeElement.NativeElementData;
 import core.drawing.DrawingManager;
 import core.geom.GeomData;
 import core.unit.UnitData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import cocktailCore.resource.ImageLoader;
 import cocktail.domElement.DOMElementData;
 import core.unit.UnitManager;
