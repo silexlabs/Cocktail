@@ -10,7 +10,7 @@ package core.style.renderer;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
-import core.style.Style;
+import port.Style;
 import haxe.Log;
 
 /**

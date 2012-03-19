@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement;
 
-import core.style.Style;
+import port.Style;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Container DOMElement structures and enums

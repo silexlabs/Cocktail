@@ -9,7 +9,7 @@ package core.style.computer;
 
 import core.geom.Matrix;
 import core.style.AbstractStyle;
-import core.style.Style;
+import port.Style;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.unit.UnitManager;
