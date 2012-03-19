@@ -10,11 +10,14 @@ package cocktailCore.focus.abstract;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
+import cocktailCore.event.MouseEvent;
+import cocktailCore.keyboard.abstract.AbstractKeyboard;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
 import cocktail.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.nativeElement.NativeElementManager;
+import cocktailCore.event.KeyboardEvent;
 
 /**
  * The abstract implementation of the focus
@@ -103,14 +106,16 @@ class AbstractFocusManagerImpl
 	 * key down event to the currently active
 	 * DOMElement
 	 */
-	private function onKeyDown(keyEventData:KeyboardEventData):Void
+	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
-		switch (keyEventData.value)
+		//TODO : re-implement
+		/**
+		switch (keyboardEvent.key)
 		{
-			case KeyboardKeyValue.tab:
+			case AbstractKeyboard.TAB:
 				doTabFocus(keyEventData.shiftKey);
 				
-			case KeyboardKeyValue.enter, KeyboardKeyValue.space:
+			case AbstractKeyboard.ENTER, AbstractKeyboard.SPACE:
 				simulateMouseClick(keyEventData);
 				
 			default:
@@ -118,14 +123,14 @@ class AbstractFocusManagerImpl
 				{
 					activeDOMElement.onKeyDown(keyEventData);
 				}
-		}
+		}*/
 	}
 	
 	/**
 	 * When a key up event happens, redirect to the
 	 * currently active DOMElement
 	 */
-	private function onKeyUp(keyEventData:KeyboardEventData):Void
+	private function onKeyUp(keyEventData:KeyboardEvent):Void
 	{
 		if (_activeDOMElement.onKeyUp != null)
 		{
@@ -309,25 +314,15 @@ class AbstractFocusManagerImpl
 	 * cal the active DOMElement's mouse down callback
 	 * if it exists
 	 */
-	private function simulateMouseClick(keyEventData:KeyboardEventData):Void
+	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
 	{
 		if (activeDOMElement.onMouseDown != null)
 		{
-			var mousePositionData:MousePositionData = {
-			localX:0.0,
-			localY:0.0,
-			globalX:cast(activeDOMElement.style.elementRenderer.bounds.x),
-			globalY:cast(activeDOMElement.style.elementRenderer.bounds.y)
-			}
-		
-			var mouseEventData:MouseEventData = {
-				mousePosition:mousePositionData,
-				ctrlKey:keyEventData.ctrlKey,
-				altKey:keyEventData.altKey,
-				shiftKey:keyEventData.shiftKey
-			}
+			//TODO : replace mouse click event + add right coordinate
+			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN,
+			0.0, 0.0, 0.0, 0.0, false, false, false);
 			
-			activeDOMElement.onMouseDown(mouseEventData);
+			activeDOMElement.onMouseDown(mouseEvent);
 		}
 	
 	}

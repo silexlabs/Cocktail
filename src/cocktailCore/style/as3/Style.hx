@@ -11,6 +11,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.geom.GeomData;
 import cocktail.nativeElement.NativeElement;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import flash.text.TextFieldAutoSize;
@@ -71,13 +72,13 @@ class Style extends AbstractStyle
 #end
 	
 	
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
 #if (flash9)
 	   _textBlock = new TextBlock();
 #end
 		
-		super(domElement);
+		super(htmlElement);
 	}
 
 #if (flash9)	

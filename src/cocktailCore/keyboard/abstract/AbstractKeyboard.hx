@@ -7,6 +7,7 @@
 */
 package cocktailCore.keyboard.abstract;
 
+import cocktailCore.event.KeyboardEvent;
 import haxe.Log;
 import cocktail.nativeElement.NativeElement;
 import cocktail.keyboard.KeyboardData;
@@ -28,20 +29,27 @@ import cocktail.keyboard.KeyboardData;
  */
 class AbstractKeyboard 
 {
+	public static inline var TAB:Int = 9;
+	
+	public static inline var ENTER:Int = 13;
+	
+	public static inline var SPACE:Int = 32;
+	
 	/**
 	 * The callback to call when
 	 * a key is pressed
 	 */
-	private var _onKeyDown:KeyboardEventData->Void;
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEventData->Void;
+	private var _onKeyDown:KeyboardEvent->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback to call when 
 	 * a key is released
 	 */
-	private var _onKeyUp:KeyboardEventData->Void;
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEventData->Void;
-	
+	private var _onKeyUp:KeyboardEvent->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
+
+
 	/**
 	 * The NativeElement on which keyboard event are listened to
 	 */
@@ -95,24 +103,24 @@ class AbstractKeyboard
 	// CALLBACKS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:KeyboardEventData->Void):KeyboardEventData->Void
+	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		updateListeners(_keyDownEvent, onNativeKeyDown, value);
 		return _onKeyDown = value;
 	}
 	
-	private function getOnKeyDown():KeyboardEventData->Void
+	private function getOnKeyDown():KeyboardEvent->Void
 	{
 		return _onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:KeyboardEventData->Void):KeyboardEventData->Void
+	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		updateListeners(_keyUpEvent, onNativeKeyUp, value);
 		return _onKeyUp = value;
 	}
 	
-	private function getOnKeyUp():KeyboardEventData->Void
+	private function getOnKeyUp():KeyboardEvent->Void
 	{
 		return _onKeyUp;
 	}
@@ -129,7 +137,7 @@ class AbstractKeyboard
 	 * @param nativeCallback the native, runtime-specific callback
 	 * @param domElementCallback the cross-platform keyboard callback defined on the DOMElement
 	 */
-	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEventData->Void):Void
+	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
 		//abstract
 	}
@@ -139,7 +147,7 @@ class AbstractKeyboard
 	 * @param	event the native key up or down event
 	 * @return a sruct containing the key code and ascii value
 	 */
-	private function getKeyData(event:Dynamic):KeyboardEventData
+	private function getKeyData(event:Dynamic):KeyboardEvent
 	{
 		return null;
 	}

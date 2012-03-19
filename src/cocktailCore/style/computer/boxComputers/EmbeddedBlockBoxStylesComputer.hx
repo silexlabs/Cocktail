@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.computer.boxComputers;
 
-import cocktail.domElement.EmbeddedDOMElement;
+import cocktailCore.dom.HTMLImageElement;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BoxStylesComputer;
 import cocktail.style.StyleData;
@@ -58,6 +58,8 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	{
 		var ret:Int = 0;
 		
+		//TODO : re implement
+		/**
 		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
 		
 		//if the 'height' style also is defined as 'auto'
@@ -121,7 +123,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//value of 'width' becomes 300px.
 				ret = 300;
 			}
-		}
+		}*/
 		
 		return ret;
 	}
@@ -133,16 +135,21 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
+		
+		
 		var ret:Int = 0;
+		
+		/**
+		//TODO : add ReplacedElement class ? add intrinsic width/height/ratio on AbstractStyle ?
+		var embeddedDOMElement:HTMLReplacedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
 		if (style.width == DimensionStyleValue.autoValue)
 		{
 			//try to use the intrinsic height if not null
-			if (embeddedDOMElement.intrinsicHeight != null)
+			if (embeddedDOMElement.naturalHeight != null)
 			{
-				ret = embeddedDOMElement.intrinsicHeight;
+				ret = embeddedDOMElement.naturalHeight;
 			}
 		}
 		//else if 'width' is not 'auto'
@@ -164,7 +171,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//is 150px
 				ret = 150;
 			}
-		}
+		}*/
 		
 		return ret;
 	}

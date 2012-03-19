@@ -7,6 +7,12 @@ package cocktailCore.event;
 
 class Event 
 {
+	public static inline var SCROLL:String = "scroll";
+	
+	public static inline var LOAD:String = "load";
+	
+	//TODO : add target and current target
+	
 	private var _type:String;
 	public var type(get_type, null):String;
 	

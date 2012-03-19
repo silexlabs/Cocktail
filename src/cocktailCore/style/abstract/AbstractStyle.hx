@@ -7,12 +7,11 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.background.BackgroundManager;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktailCore.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -244,8 +243,8 @@ class AbstractStyle
 	 * A reference to the DOMElement to which these styles
 	 * apply
 	 */
-	private var _domElement:DOMElement;
-	public var domElement(getDOMElement, never):DOMElement;
+	private var _htmlElement:HTMLElement;
+	public var htmlElement(get_htmlElement, never):HTMLElement;
 	
 	/**
 	 * Returns metrics info for the currently defined
@@ -280,9 +279,9 @@ class AbstractStyle
 	 * The style is invalid by default and will be updated
 	 * when the DOMElement is added to the DOM.
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		this._domElement = domElement;
+		this._htmlElement = htmlElement;
 		this._isDirty = true;
 		
 		initDefaultStyleValues();
@@ -451,7 +450,7 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Create and return the right ElementRenderer for this DOMElement
+	 * Create and return the right ElementRenderer for this HTMLElement
 	 */
 	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
@@ -489,8 +488,8 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The main layout method. When called, the DOMElement's styles (width, height, margins, paddings...)
-	 * are computed into actual values, the DOMElement layout its children if it has any then add itself
+	 * The main layout method. When called, the HTMLElement's styles (width, height, margins, paddings...)
+	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
 	 * to the layout.
 	 * 
 	 * @param	containingDOMElementData the dimensions of the parent DOMElement into which 
@@ -599,7 +598,7 @@ class AbstractStyle
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
 		
-		switch (this._domElement.style.computedStyle.position)
+		switch (this._htmlElement.style.computedStyle.position)
 		{
 			//positioned 'relative' DOMElement
 			case relative:
@@ -620,8 +619,8 @@ class AbstractStyle
 		}
 		
 		//update the bounds of the ElementRenderer
-		_elementRenderer.bounds.width = _domElement.offsetWidth;
-		_elementRenderer.bounds.height = _domElement.offsetHeight;
+		_elementRenderer.bounds.width = _htmlElement.offsetWidth;
+		_elementRenderer.bounds.height = _htmlElement.offsetHeight;
 		
 		return _elementRenderer;
 	}
@@ -737,18 +736,20 @@ class AbstractStyle
 			//if the DOMElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
-			if (this._domElement.parent != null)
+			if (this._htmlElement.parentNode != null)
 			{
 				//dirties its parent if it must
 				if (isParentDirty() == true)
 				{
-					this._domElement.parent.style.invalidate();	
+					var parent:HTMLElement = cast(_htmlElement.parentNode);
+					parent.style.invalidate();	
 				}
 				//else schedule a layout for this DOMElement
 				else
 				{
+					var parent:HTMLElement = cast(_htmlElement.parentNode);
 					//retrieve its parent and the viewport dimension
-					var parentStyle:ContainerStyle = cast(this._domElement.parent.style);
+					var parentStyle:ContainerStyle = cast(parent.style);
 					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
 					
 					var viewPortData:ContainingDOMElementData = getViewportData();
@@ -1171,7 +1172,7 @@ class AbstractStyle
 	private function getFirstPositionedAncestorData():ContainingDOMElementData
 	{
 		var firstPositionedAncestorData:ContainingDOMElementData;
-		var parent:ContainerDOMElement = _domElement.parent;
+		var parent:HTMLElement = cast(_htmlElement.parentNode);
 		
 		//if the domElement has a parent
 		if (parent != null)
@@ -1180,9 +1181,9 @@ class AbstractStyle
 			var isPositioned:Bool = parent.style.isPositioned();
 			while (isPositioned == false)
 			{
-				if (parent.parent != null)
+				if (parent.parentNode != null)
 				{
-					parent = parent.parent;
+					parent = cast(parent.parentNode);
 					isPositioned = parent.style.isPositioned();
 				}
 				//break the loop if the current parent has no parent
@@ -1248,9 +1249,9 @@ class AbstractStyle
 		return _computedStyle = value;
 	}
 	
-	private function getDOMElement():DOMElement
+	private function get_htmlElement():HTMLElement
 	{
-		return this._domElement;
+		return _htmlElement;
 	}
 	
 	/////////////////////////////////

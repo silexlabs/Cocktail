@@ -50,7 +50,7 @@ class AbstractBodyDOMElement extends ContainerDOMElement
 	 */
 	override private function initStyle():Void
 	{
-		_style = new BodyStyle(this);
+	//	_style = new BodyStyle(this);
 		
 		//instantiate the view port and listen
 		//for resize on it

@@ -12,6 +12,9 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.Matrix;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
+import cocktailCore.event.Event;
+import cocktailCore.event.KeyboardEvent;
+import cocktailCore.event.MouseEvent;
 import cocktailCore.focus.FocusManager;
 import cocktailCore.keyboard.Keyboard;
 import cocktail.keyboard.KeyboardData;
@@ -47,38 +50,38 @@ class AbstractDOMElement
 	/**
 	 * The callback called on mouse down through the mouse instance
 	 */
-	private var _onMouseDown:MouseEventData->Void;
-	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEventData->Void;
+	private var _onMouseDown:MouseEvent->Void;
+	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
-	private var _onMouseUp:MouseEventData->Void;
-	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEventData->Void;
+	private var _onMouseUp:MouseEvent->Void;
+	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this dom element
 	 */
-	private var _onMouseOver:MouseEventData->Void;
-	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEventData->Void;
+	private var _onMouseOver:MouseEvent->Void;
+	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse out of this dom element
 	 */
-	private var _onMouseOut:MouseEventData->Void;
-	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEventData->Void;
+	private var _onMouseOut:MouseEvent->Void;
+	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this dom element
 	 */
-	private var _onMouseMove:MouseEventData->Void;
-	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEventData->Void;
+	private var _onMouseMove:MouseEvent->Void;
+	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
 	
 	/**
 	 * The callback called when this dom element is double-clicked
 	 */
-	private var _onMouseDoubleClick:MouseEventData->Void;
-	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEventData->Void;
+	private var _onMouseDoubleClick:MouseEvent->Void;
+	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
@@ -93,14 +96,14 @@ class AbstractDOMElement
 	/**
 	 * The callback called on key down through the keyboard instance
 	 */
-	private var _onKeyDown:KeyboardEventData->Void;
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEventData->Void;
+	private var _onKeyDown:KeyboardEvent->Void;
+	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
-	private var _onKeyUp:KeyboardEventData->Void;
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEventData->Void;
+	private var _onKeyUp:KeyboardEvent->Void;
+	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes and callback
@@ -145,8 +148,8 @@ class AbstractDOMElement
 	 * the content of the DOMElement
 	 * is scrolled
 	 */
-	private var _onScroll:ScrollEventData->Void;
-	public var onScroll(getOnScroll, setOnScroll):ScrollEventData->Void;
+	private var _onScroll:Event->Void;
+	public var onScroll(getOnScroll, setOnScroll):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
@@ -308,7 +311,7 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnMouseDown(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDown = value;
 		
@@ -324,12 +327,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseDown():MouseEventData->Void
+	private function getOnMouseDown():MouseEvent->Void
 	{
 		return _onMouseDown;
 	}
 	
-	private function setOnMouseUp(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseUp = value;
 		
@@ -345,12 +348,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseUp():MouseEventData->Void
+	private function getOnMouseUp():MouseEvent->Void
 	{
 		return _onMouseUp;
 	}
 	
-	private function setOnMouseOver(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseOver = value;
 		
@@ -366,12 +369,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseOver():MouseEventData->Void
+	private function getOnMouseOver():MouseEvent->Void
 	{
 		return _onMouseOver;
 	}
 	
-	private function setOnMouseOut(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseOut = value;
 		
@@ -387,12 +390,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseOut():MouseEventData->Void
+	private function getOnMouseOut():MouseEvent->Void
 	{
 		return _onMouseOut;
 	}
 	
-	private function setOnMouseMove(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseMove = value;
 		
@@ -408,12 +411,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseMove():MouseEventData->Void
+	private function getOnMouseMove():MouseEvent->Void
 	{
 		return _onMouseMove;
 	}
 	
-	private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDoubleClick = value;
 		
@@ -429,7 +432,7 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnMouseDoubleClick():MouseEventData->Void
+	private function getOnMouseDoubleClick():MouseEvent->Void
 	{
 		return _onMouseDoubleClick;
 	}
@@ -440,32 +443,32 @@ class AbstractDOMElement
 	// with the DOMElement with its mouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function onMouseDownCallback(mouseEventData:MouseEventData):Void
+	private function onMouseDownCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseDown(mouseEventData);
 	}
 	
-	private function onMouseUpCallback(mouseEventData:MouseEventData):Void
+	private function onMouseUpCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseUp(mouseEventData);
 	}
 	
-	private function onMouseMoveCallback(mouseEventData:MouseEventData):Void
+	private function onMouseMoveCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseMove(mouseEventData);
 	}
 	
-	private function onMouseOverCallback(mouseEventData:MouseEventData):Void
+	private function onMouseOverCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseOver(mouseEventData);
 	}
 	
-	private function onMouseOutCallback(mouseEventData:MouseEventData):Void
+	private function onMouseOutCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseOut(mouseEventData);
 	}
 	
-	private function onMouseDoubleClickCallback(mouseEventData:MouseEventData):Void
+	private function onMouseDoubleClickCallback(mouseEventData:MouseEvent):Void
 	{
 		_onMouseDoubleClick(mouseEventData);
 	}
@@ -475,7 +478,7 @@ class AbstractDOMElement
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:KeyboardEventData->Void):KeyboardEventData->Void
+	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		_onKeyDown = value;
 		
@@ -491,12 +494,12 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnKeyDown():KeyboardEventData->Void
+	private function getOnKeyDown():KeyboardEvent->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:KeyboardEventData->Void):KeyboardEventData->Void
+	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		_onKeyUp = value;
 		
@@ -512,7 +515,7 @@ class AbstractDOMElement
 		return value;
 	}
 	
-	private function getOnKeyUp():KeyboardEventData->Void
+	private function getOnKeyUp():KeyboardEvent->Void
 	{
 		return _keyboard.onKeyUp;
 	}
@@ -523,12 +526,12 @@ class AbstractDOMElement
 	// with the keyboard while this DOMElement has the focus
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function onKeyDownCallback(keyEventData:KeyboardEventData):Void
+	private function onKeyDownCallback(keyEventData:KeyboardEvent):Void
 	{
 		_onKeyDown(keyEventData);
 	}
 	
-	private function onKeyUpCallback(keyEventData:KeyboardEventData):Void
+	private function onKeyUpCallback(keyEventData:KeyboardEvent):Void
 	{
 		_onKeyUp(keyEventData);
 	}
@@ -603,12 +606,12 @@ class AbstractDOMElement
 	// SCROLLING SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnScroll(value:ScrollEventData->Void):ScrollEventData->Void
+	private function setOnScroll(value:Event->Void):Event->Void
 	{
 		return _onScroll = value;
 	}
 	
-	private function getOnScroll():ScrollEventData->Void
+	private function getOnScroll():Event->Void
 	{
 		return _onScroll;
 	}
@@ -618,7 +621,7 @@ class AbstractDOMElement
 	 * emitted, called the user on scroll
 	 * callback if any
 	 */
-	private function onScrollCallback(event:ScrollEventData):Void
+	private function onScrollCallback(event:Event):Void
 	{
 		if (_onScroll != null)
 		{

@@ -7,9 +7,9 @@
 */
 package cocktailCore.style.positioner;
 
-import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.dom.HTMLElement;
 import haxe.Log;
 
 /**
@@ -38,23 +38,23 @@ class RelativePositioner extends BoxPositioner
 	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
+	override private function getLeftOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return staticPosition + domElement.style.computedStyle.left;
+		return staticPosition + htmlElement.style.computedStyle.left;
 	}
 	
-	override private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
+	override private function getRightOffset(htmlElement:HTMLElement, containingDOMElementWidth:Int, staticPosition:Int):Int
 	{
-		return staticPosition + containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
+		return staticPosition + containingDOMElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
 	}
 	
-	override private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
+	override private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return staticPosition + domElement.style.computedStyle.top;
+		return staticPosition + htmlElement.style.computedStyle.top;
 	}
 	
-	override private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
+	override private function getBottomOffset(htmlElement:HTMLElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{
-		return staticPosition - domElement.style.computedStyle.bottom;
+		return staticPosition - htmlElement.style.computedStyle.bottom;
 	}
 }

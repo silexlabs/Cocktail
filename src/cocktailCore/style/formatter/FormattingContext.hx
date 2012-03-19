@@ -7,8 +7,7 @@
 */
 package cocktailCore.style.formatter;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
@@ -241,20 +240,19 @@ class FormattingContext
 				}
 				else
 				{
-					var domElement:DOMElement = elements[i].style.domElement;
 					
-					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
-				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+					var htmlElementAscent:Float = elements[i].style.fontMetrics.ascent;
+					var htmlElementDescent:Float = elements[i].style.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+				var leading:Float = elements[i].style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
+				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
+				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
 					
-					top = elements[i].bounds.y - domElementAscent;
+					top = elements[i].bounds.y - htmlElementAscent;
 				}
 				
 			}
@@ -271,20 +269,20 @@ class FormattingContext
 				else
 				{
 					
-						var domElement:DOMElement = elements[i].style.domElement;
 					
-					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
-				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+					
+					var htmlElementAscent:Float = elements[i].style.fontMetrics.ascent;
+				var htmlElementDescent:Float = elements[i].style.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+				var leading:Float = elements[i].style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
+				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
+				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
 					
-					bottom = elements[i].bounds.y - domElementAscent + elements[i].bounds.height;
+					bottom = elements[i].bounds.y - htmlElementAscent + elements[i].bounds.height;
 				}
 			}
 		}

@@ -11,6 +11,7 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
@@ -154,8 +155,8 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
-		element.bounds.width = element.style.domElement.offsetWidth;
-		element.bounds.height = element.style.domElement.offsetHeight;
+		element.bounds.width = element.style.htmlElement.offsetWidth;
+		element.bounds.height = element.style.htmlElement.offsetHeight;
 		
 		insertBreakOpportunity(false);
 		
@@ -825,29 +826,30 @@ class InlineFormattingContext extends FormattingContext
 		//the highest ascent and descent among them
 		for (i in 0..._elementsInLineBox.length)
 		{
-			var domElement:DOMElement = _elementsInLineBox[i].style.domElement;
+			//TODO : shouldn't need an html element here, only style
+			var htmlElement:HTMLElement = _elementsInLineBox[i].style.htmlElement;
 			
 			var domElementAscent:Int;
 			var domElementDescent:Int;
 			
 			//the computed vertical align is the offset of the DOMElemenet relative
 			//to the baseline
-			var domElementVerticalAlign:Float = domElement.style.computedStyle.verticalAlign;
+			var domElementVerticalAlign:Float = htmlElement.style.computedStyle.verticalAlign;
 			
 			//for embedded or inlineBlock elements, which have no baseline, the height above
 			//the baseline is the offset height and they have no descent
 			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
-				domElementAscent = domElement.offsetHeight;
+				domElementAscent = htmlElement.offsetHeight;
 				
 				domElementDescent = 0;
 				
-				switch (domElement.style.verticalAlign)
+				switch (htmlElement.style.verticalAlign)
 				{
 					case top:
 						domElementAscent = Math.round(lineBoxAscent);
-						domElementDescent = Math.round(domElement.offsetHeight - lineBoxAscent);
+						domElementDescent = Math.round(htmlElement.offsetHeight - lineBoxAscent);
 						
 					default:	
 						
@@ -856,12 +858,12 @@ class InlineFormattingContext extends FormattingContext
 			//else retrieve the ascent and descent and apply leading to it
 			else
 			{
-				domElementAscent = domElement.style.fontMetrics.ascent;
-				domElementDescent = domElement.style.fontMetrics.descent;	
+				domElementAscent = htmlElement.style.fontMetrics.ascent;
+				domElementDescent = htmlElement.style.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+				var leading:Float = htmlElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
 		
 				//apply leading to the ascent and descent
 				domElementAscent = Math.round((domElementAscent + leading / 2));
@@ -889,10 +891,10 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0..._elementsInLineBox.length)
 		{
 			
-			var domElement:DOMElement = _elementsInLineBox[i].style.domElement;
+			var htmlElement:HTMLElement = _elementsInLineBox[i].style.htmlElement;
 			
 			var verticalAlign:Float;
-			switch (domElement.style.verticalAlign)
+			switch (htmlElement.style.verticalAlign)
 			{
 				case top:
 					verticalAlign = 0;
@@ -902,7 +904,7 @@ class InlineFormattingContext extends FormattingContext
 					verticalAlign = 0;
 					
 				default:
-					verticalAlign = domElement.style.computedStyle.verticalAlign;
+					verticalAlign = htmlElement.style.computedStyle.verticalAlign;
 			}
 			
 			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + 
@@ -917,13 +919,13 @@ class InlineFormattingContext extends FormattingContext
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{	
 				
-				switch (domElement.style.verticalAlign)
+				switch (htmlElement.style.verticalAlign)
 				{
 					case top:
 						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
 					
 					default:	
-						_elementsInLineBox[i].bounds.y -= domElement.offsetHeight;
+						_elementsInLineBox[i].bounds.y -= htmlElement.offsetHeight;
 					
 				}
 				

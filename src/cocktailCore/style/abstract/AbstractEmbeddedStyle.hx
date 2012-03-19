@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.domElement.DOMElement;
+import cocktailCore.dom.HTMLElement;
 
 #if (flash9 || cpp || nme)
 import cocktailCore.style.as3.Style;
@@ -32,8 +32,8 @@ class AbstractEmbeddedStyle extends Style
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 }

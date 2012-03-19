@@ -7,7 +7,7 @@
 */
 package cocktailCore.mouse.as3;
 
-import flash.events.MouseEvent;
+import cocktailCore.event.MouseEvent;
 import cocktailCore.mouse.abstract.AbstractMouse;
 import cocktail.nativeElement.NativeElement;
 
@@ -31,19 +31,19 @@ class Mouse extends AbstractMouse
 		super(nativeElement);
 		
 		//set the Flash event types
-		_mouseDownEvent = MouseEvent.MOUSE_DOWN;
-		_mouseUpEvent = MouseEvent.MOUSE_UP;
-		_mouseOverEvent = MouseEvent.MOUSE_OVER;
-		_mouseOutEvent = MouseEvent.MOUSE_OUT;
-		_mouseDoubleClickEvent = MouseEvent.DOUBLE_CLICK;
-		_mouseMoveEvent = MouseEvent.MOUSE_MOVE;
+		_mouseDownEvent = flash.events.MouseEvent.MOUSE_DOWN;
+		_mouseUpEvent = flash.events.MouseEvent.MOUSE_UP;
+		_mouseOverEvent = flash.events.MouseEvent.MOUSE_OVER;
+		_mouseOutEvent = flash.events.MouseEvent.MOUSE_OUT;
+		_mouseDoubleClickEvent = flash.events.MouseEvent.DOUBLE_CLICK;
+		_mouseMoveEvent = flash.events.MouseEvent.MOUSE_MOVE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function setOnMouseDoubleClick(value:MouseEventData->Void):MouseEventData->Void
+	override private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
 	{
 		if (value == null)
 		{
@@ -70,7 +70,7 @@ class Mouse extends AbstractMouse
 	 * listener or set a new one. Listeners are only added if the domElement callback
 	 * is not null
 	 */
-	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEventData->Void):Void
+	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
 	{
 		_nativeElement.removeEventListener(mouseEvent, nativeCallback);
 		
@@ -85,27 +85,41 @@ class Mouse extends AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	override private function getMouseData(event:Dynamic):MouseEventData
+	override private function getMouseData(event:Dynamic):MouseEvent
 	{
 		//cast as flash mouse event
-		var typedEvent:MouseEvent = cast(event);
+		var typedEvent:flash.events.MouseEvent = cast(event);
 		
-		//retrieve the position and keyboard state
-		//from flash event
-		var mousePosition:MousePositionData = {
-			localX:typedEvent.localX,
-			localY:typedEvent.localY,
-			globalX:typedEvent.stageX,
-			globalY:typedEvent.stageY
+		var eventType:String;
+		
+		switch (typedEvent.type)
+		{
+			case flash.events.MouseEvent.MOUSE_DOWN:
+				eventType = MouseEvent.MOUSE_DOWN;
+				
+			case flash.events.MouseEvent.MOUSE_UP:
+				eventType = MouseEvent.MOUSE_UP;	
+				
+			case flash.events.MouseEvent.MOUSE_OVER:
+				eventType = MouseEvent.MOUSE_OVER;
+				
+			case flash.events.MouseEvent.MOUSE_OUT:
+				eventType = MouseEvent.MOUSE_OUT;	
+				
+			case flash.events.MouseEvent.DOUBLE_CLICK:
+				eventType = MouseEvent.DOUBLE_CLICK;		
+				
+			case flash.events.MouseEvent.MOUSE_MOVE:
+				eventType = MouseEvent.MOUSE_MOVE;	
+				
+			default:
+				//TODO : become custom event ?
+				eventType = typedEvent.type;	
 		}
 		
-		var mouseEventData:MouseEventData = {
-			mousePosition:mousePosition,
-			altKey:typedEvent.altKey,
-			ctrlKey:typedEvent.ctrlKey,
-			shiftKey:typedEvent.shiftKey
-		}
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
-		return mouseEventData;
+		return mouseEvent;
 	}
 }

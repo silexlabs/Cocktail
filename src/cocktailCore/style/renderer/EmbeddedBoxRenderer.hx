@@ -7,8 +7,6 @@
 */
 package cocktailCore.style.renderer;
 
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.style.StyleData;
 import cocktailCore.style.Style;
@@ -31,8 +29,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	public function new(style:Style) 
 	{
 		super(style);
-		_bounds.width = style.domElement.offsetWidth;
-		_bounds.height = style.domElement.offsetHeight;
+		_bounds.width = style.htmlElement.offsetWidth;
+		_bounds.height = style.htmlElement.offsetHeight;
 	}
 	
 	/**
@@ -44,6 +42,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		var ret:Array<NativeElement> = [];
 		
+		//TODO : check here if it is an Image, Video... or should be instantiated in
+		//EmbeddedStyle ?
+		/*
 		var embeddedDOMElement:EmbeddedDOMElement = cast(_style.domElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
 		
@@ -55,7 +56,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		embeddedDOMElement.embeddedAsset.width = _style.computedStyle.width;
 		embeddedDOMElement.embeddedAsset.height = _style.computedStyle.height;
 		#end
-		
+		*/
 		//TODO : apply transformations, opacity and visibility
 		
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background

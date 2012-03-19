@@ -7,9 +7,9 @@
 */
 package cocktailCore.style.positioner;
 
-import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.dom.HTMLElement;
 import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
@@ -63,20 +63,20 @@ class BoxPositioner
 	 */
 	public function position(elementRenderer:ElementRenderer, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
-		var domElement:DOMElement = elementRenderer.style.domElement;
+		var htmlElement:HTMLElement = elementRenderer.style.htmlElement;
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (domElement.style.left != PositionOffsetStyleValue.autoValue)
+		if (htmlElement.style.left != PositionOffsetStyleValue.autoValue)
 		{
-			elementRenderer.bounds.x = getLeftOffset(domElement, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing DOMElement width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (domElement.style.right != PositionOffsetStyleValue.autoValue)
+		else if (htmlElement.style.right != PositionOffsetStyleValue.autoValue)
 		{
-			elementRenderer.bounds.x = getRightOffset(domElement, containingDOMElementData.width, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getRightOffset(htmlElement, containingDOMElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
@@ -86,13 +86,13 @@ class BoxPositioner
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (domElement.style.top != PositionOffsetStyleValue.autoValue)
+		if (htmlElement.style.top != PositionOffsetStyleValue.autoValue)
 		{
-			elementRenderer.bounds.y = getTopOffset(domElement, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
 		}
-		else if (domElement.style.bottom != PositionOffsetStyleValue.autoValue)
+		else if (htmlElement.style.bottom != PositionOffsetStyleValue.autoValue)
 		{
-			elementRenderer.bounds.y = getBottomOffset(domElement, containingDOMElementData.height, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingDOMElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
@@ -110,33 +110,33 @@ class BoxPositioner
 	/**
 	 * get the left offset to apply the ElementRenderer
 	 */
-	private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
+	private function getLeftOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return domElement.style.computedStyle.left;
+		return htmlElement.style.computedStyle.left;
 	}
 	
 	/**
 	 * get the right offset to apply the ElementRenderer
 	 */
-	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
+	private function getRightOffset(htmlElement:HTMLElement, containingDOMElementWidth:Int, staticPosition:Int):Int
 	{
-		return containingDOMElementWidth - domElement.offsetWidth - domElement.style.computedStyle.right;
+		return containingDOMElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
 	}
 	
 	/**
 	 * get the top offset to apply the ElementRenderer
 	 */
-	private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
+	private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return domElement.style.computedStyle.top;
+		return htmlElement.style.computedStyle.top;
 	}
 	
 	/**
 	 * get the bottom offset to apply the ElementRenderer
 	 */
-	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
+	private function getBottomOffset(htmlElement:HTMLElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{
-		return containingDOMElementHeight - domElement.offsetHeight - domElement.style.computedStyle.bottom;
+		return containingDOMElementHeight - htmlElement.offsetHeight - htmlElement.style.computedStyle.bottom;
 	}
 	
 }
