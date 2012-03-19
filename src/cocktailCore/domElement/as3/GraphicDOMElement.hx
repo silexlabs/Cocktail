@@ -22,7 +22,7 @@ import flash.Lib;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import core.geom.GeomData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import cocktail.domElement.DOMElementData;
 
 /**

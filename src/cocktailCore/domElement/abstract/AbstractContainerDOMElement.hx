@@ -11,11 +11,11 @@ import cocktail.domElement.ContainerDOMElement;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import cocktailCore.style.ContainerStyle;
+import core.style.ContainerStyle;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
-import cocktailCore.style.renderer.TextRenderer;
+import core.style.renderer.TextRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)

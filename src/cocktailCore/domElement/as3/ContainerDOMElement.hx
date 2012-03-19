@@ -9,7 +9,7 @@ package cocktailCore.domElement.as3;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import core.nativeElement.NativeElement;
 import cocktailCore.domElement.abstract.AbstractContainerDOMElement;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 
 import flash.Vector;
 import haxe.Log;

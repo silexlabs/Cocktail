@@ -17,7 +17,7 @@ import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.domElement.DOMElement;
 import core.geom.GeomData;
-import cocktail.style.StyleData;
+import core.style.StyleData;
 import cocktail.domElement.ImageDOMElement;
 import core.unit.UnitData;
 

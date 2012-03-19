@@ -6,9 +6,9 @@ import core.event.MouseEvent;
 import cocktailCore.focus.FocusManager;
 import core.keyboard.Keyboard;
 import core.mouse.Mouse;
-import cocktailCore.style.ContainerStyle;
-import cocktailCore.style.Style;
-import cocktail.style.StyleData;
+import core.style.ContainerStyle;
+import core.style.Style;
+import core.style.StyleData;
 
 /**
  * ...

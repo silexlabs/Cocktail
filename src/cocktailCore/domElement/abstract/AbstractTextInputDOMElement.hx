@@ -9,7 +9,7 @@ package cocktailCore.domElement.abstract;
 
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
-import cocktailCore.style.EmbeddedStyle;
+import core.style.EmbeddedStyle;
 
 #if (flash9 || cpp || nme)
 import cocktailCore.domElement.as3.DOMElement;
