@@ -52,6 +52,18 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	public var embeddedAsset(getEmbeddedAsset, never):NativeElement;
 	
 	/**
+	 * Set/get the height of the EmbeddedDOMElement.
+	 */
+	private var _height:Int;
+	public var height(getHeight, setHeight):Int;
+		
+	/**
+	 * Set/get the width of the EmbeddedDOMElement.
+	 */
+	private var _width:Int;
+	public var width(getWidth, setWidth):Int;
+	
+	/**
 	 * Constructor. Init the default intrinsic dimensions of the DOMElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
@@ -69,8 +81,28 @@ class AbstractEmbeddedDOMElement extends DOMElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// INTRINSIC DIMENSIONS GETTERS
+	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function setHeight(value:Int):Int
+	{
+		return _height = value;
+	}
+	
+	private function getHeight():Int
+	{
+		return _height;
+	}
+	
+	private function setWidth(value:Int):Int
+	{
+		return _width = value;
+	}
+	
+	private function getWidth():Int
+	{
+		return _width;
+	}
 	
 	private function getEmbeddedAsset():NativeElement
 	{

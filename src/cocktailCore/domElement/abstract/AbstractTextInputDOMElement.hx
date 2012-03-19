@@ -20,9 +20,6 @@ import cocktailCore.domElement.js.DOMElement;
 /**
  * This DOMElement is a one line form text input
  * 
- * TODO : should inherit from embedded DOMElement
- * instead ?
- * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractTextInputDOMElement extends DOMElement

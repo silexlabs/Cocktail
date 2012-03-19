@@ -8,11 +8,12 @@
 package cocktailCore.style.as3;
 
 import cocktail.domElement.DOMElement;
-import cocktailCore.domElement.TextFragmentDOMElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
+import cocktailCore.style.renderer.TextRenderer;
 import cocktailCore.textElement.abstract.AbstractTextElement;
+import cocktailCore.textElement.TextElementData;
 import cocktailCore.unit.UnitManager;
 import cocktail.unit.UnitData;
 import flash.text.TextFieldAutoSize;
@@ -28,6 +29,7 @@ import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
+
 #elseif nme
 import flash.text.TextFormat;
 #end
@@ -38,7 +40,7 @@ import flash.text.TextFormat;
  * This class implement the Flash specific text fragment creation
  * using the flash text engine introduced in flash player 10.
  * 
- * It's purpose is to create as many TextFragmentDOMElement as necessary
+ * It's purpose is to create as many TextRenderer as necessary
  * to render every TextElement of the styled ContainerDOMElement.
  * 
  * @author Yannick DOMINGUEZ
@@ -62,7 +64,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
 		//get a flash TextElement used as the model for a flash textBlock
 		_textBlock.content = getNativeTextElement(text);
@@ -82,7 +84,7 @@ class ContainerStyle extends AbstractContainerStyle
 		//The 'fitSomething' parameters is alos set to true
 		//otherwise, when creating only a space charcter, no
 		//flash text line would be created
-		var textLine:TextLine = _textBlock.createTextLine(null, 10000, 0.0, true);
+		var text:TextLine = _textBlock.createTextLine(null, 10000, 0.0, true);
 		
 		//help free memory
 		_textBlock.releaseLineCreationData();
@@ -99,8 +101,8 @@ class ContainerStyle extends AbstractContainerStyle
 			_textBlock.releaseLines(_textBlock.firstLine, _textBlock.lastLine );
 		}
 	
-		//wrap the flash text line in a TextFragmentDOMElement
-		return new TextFragmentDOMElement(textLine, this);
+		//wrap the flash text line in a TextRenderer
+		return new TextRenderer(this, text, textToken);
 	
 	}
 	
@@ -203,7 +205,7 @@ class ContainerStyle extends AbstractContainerStyle
 	}
 	
 	#elseif (nme)
-	override private function doCreateTextFragment(text:String):TextFragmentDOMElement
+	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
 		text = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
@@ -213,9 +215,9 @@ class ContainerStyle extends AbstractContainerStyle
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		textField.setTextFormat(getTextFormat());
 		
-		var textFragment:TextFragmentDOMElement = new TextFragmentDOMElement(cast(textField), this);
+		var textRenderer:TextRenderer = new TextRenderer(_domElement, textField, textToken);
 
-		//wrap the flash text line in a TextFragmentDOMElement
+		//wrap the flash text line in a TextRenderer
 		return textFragment;
 
 	}	

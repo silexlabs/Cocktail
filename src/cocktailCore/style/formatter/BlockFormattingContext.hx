@@ -11,6 +11,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.EmbeddedDOMElement;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import haxe.Log;
 
@@ -32,31 +33,18 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
-		super(domElement);
+		super(formattingContextRoot);
 	}
 	
-	/**
-	 * Called by the containing DOMElement once each of its children
-	 * has been inserted in the formatting context to start the formatting.
-	 * 
-	 * TODO : implement margin collapsing
-	 */
-	override public function format(layOutLastLine:Bool = false):Void
-	{
-		
-		doFormat(_elementsInFormattingContext);
-		
-	}
-	
-	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		initFormattingContextData();
 		var currentAddedSiblingsHeight:Int = 0;
-		_lastInsertedElement = _containingDOMElement.style.elementRenderer;
+		_lastInsertedElement = _formattingContextRoot;
 
 		var elementsInColumn = new Array<ElementRenderer>();
 		
@@ -86,8 +74,8 @@ class BlockFormattingContext extends FormattingContext
 						{
 
 							
-							elementsInColumn[j].bounds.y += elementsInFormattingContext[i].domElement.style.computedStyle.marginTop + elementsInFormattingContext[i].domElement.style.computedStyle.paddingTop;
-							elementsInColumn[j].bounds.x += elementsInFormattingContext[i].domElement.style.computedStyle.marginLeft + elementsInFormattingContext[i].domElement.style.computedStyle.paddingLeft;
+							elementsInColumn[j].bounds.y += elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.paddingTop;
+							elementsInColumn[j].bounds.x += elementsInFormattingContext[i].style.computedStyle.marginLeft + elementsInFormattingContext[i].style.computedStyle.paddingLeft;
 					
 						}
 						
@@ -112,8 +100,8 @@ class BlockFormattingContext extends FormattingContext
 				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(_elementsInFormattingContext[i].bounds.width), Math.round(_elementsInFormattingContext[i].parent.bounds.width));
 			
 			
-				elementsInFormattingContext[i].bounds.y += _containingDOMElement.style.computedStyle.marginTop + _containingDOMElement.style.computedStyle.paddingTop;
-				elementsInFormattingContext[i].bounds.x += _containingDOMElement.style.computedStyle.marginLeft + _containingDOMElement.style.computedStyle.paddingLeft;
+				elementsInFormattingContext[i].bounds.y += _formattingContextRoot.style.computedStyle.marginTop +  _formattingContextRoot.style.computedStyle.paddingTop;
+				elementsInFormattingContext[i].bounds.x +=  _formattingContextRoot.style.computedStyle.marginLeft +  _formattingContextRoot.style.computedStyle.paddingLeft;
 				
 			
 			
@@ -122,6 +110,7 @@ class BlockFormattingContext extends FormattingContext
 				if (elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
 				{
 					_formattingContextData.maxWidth = Math.round(elementsInFormattingContext[i].bounds.width);
+					
 				}	
 				
 				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height);
@@ -143,7 +132,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 		var parent:ElementRenderer = element.parent;
-		while (parent != _containingDOMElement.style.elementRenderer)
+		while (parent != _formattingContextRoot)
 		{
 			if (parent == ancestor)
 			{
@@ -177,12 +166,12 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
 	{
-		return element.domElement == _lastInsertedElement.domElement.parent;
+		return element == _lastInsertedElement.parent;
 	}
 	
 	private function isSiblingOfLastInsertedElement(element:ElementRenderer):Bool
 	{
-		return _lastInsertedElement.domElement.parent == element.domElement.parent;
+		return _lastInsertedElement.parent == element.parent;
 	}
 
 	override private function insertEmbeddedElement(element:ElementRenderer):Void
@@ -191,8 +180,8 @@ class BlockFormattingContext extends FormattingContext
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
 		//TODO : should not use offset dimensions
-		var width:Float = element.domElement.offsetWidth;
-		var height:Float = element.domElement.offsetHeight;
+		var width:Float = element.style.domElement.offsetWidth;
+		var height:Float = element.style.domElement.offsetHeight;
 		
 		element.bounds = {
 			x:x, 
@@ -200,8 +189,6 @@ class BlockFormattingContext extends FormattingContext
 			width:width,
 			height:height
 		}
-		
-	
 	}
 	
 	/**
@@ -211,9 +198,9 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertFloat(element:ElementRenderer):Void
 	{
 		
-		var floatData:FloatData = _floatsManager.computeFloatData(element.domElement, _formattingContextData, Math.round(element.parent.domElement.style.computedStyle.width));
-		var x:Float = floatData.x + element.parent.domElement.style.computedStyle.paddingLeft;
-		var y:Float = floatData.y + element.parent.domElement.style.computedStyle.paddingTop;
+		var floatData:FloatData = _floatsManager.computeFloatData(element.style.domElement, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
+		var x:Float = floatData.x + element.parent.style.computedStyle.paddingLeft;
+		var y:Float = floatData.y + element.parent.style.computedStyle.paddingTop;
 		var width:Float = floatData.width;
 		var height:Float = floatData.height;
 		
@@ -232,15 +219,21 @@ class BlockFormattingContext extends FormattingContext
 
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
-		var width:Float = element.domElement.offsetWidth;
-		var height:Float = element.domElement.offsetHeight;
+		var width:Float = element.style.domElement.offsetWidth;
+		var height:Float = element.style.domElement.offsetHeight;
 		
+		if (element.style.computedStyle.marginTop == 60)
+		{
+			Log.trace(element.bounds);
+		}
 		element.bounds = {
 			x:x, 
 			y:y,
 			width:width,
 			height:height
 		}
+		
+				
 		
 		
 			
@@ -251,8 +244,8 @@ class BlockFormattingContext extends FormattingContext
 	{
 			var x:Float = _formattingContextData.x;
 			var y:Float = _formattingContextData.y;
-			var width:Float = element.domElement.offsetWidth;
-			var height:Float = element.domElement.offsetHeight;
+			var width:Float = element.style.domElement.offsetWidth;
+			var height:Float = element.style.domElement.offsetHeight;
 			element.bounds = {
 				x:x, 
 				y:y,

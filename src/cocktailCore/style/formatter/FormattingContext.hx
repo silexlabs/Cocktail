@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktailCore.style.floats.FloatsManager;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
+import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;
 import haxe.Log;
@@ -21,39 +22,30 @@ import haxe.Log;
  * classes are in charge of placing in-flow elements in the document.
  * 
  * They can be placed following a block or inline formatting context.
- * In a block formatting, the DOMElements are placed on top of each
+ * In a block formatting, the ElementRenderer are placed on top of each
  * other, in an inline, they are placed next to each other.
  * 
- * Those classes also are also in charge of placing floated DOMElement
+ * Those classes also are also in charge of placing floated ElementRenderer
  * in the document and keeping a reference to each of the floated
- * DOMElement's position.
+ * ElementRenderer's position.
  * 
  * A formatting happens in 2 phases : 
- * - first all the elements (DOMElement, text, control charachter...)
+ * - first all the elements renderer (block box, inline box, text...)
  * are inserted into the formatting context
  * - when all the elements participating in the formatting context
- * have been inserted, a call to the 'format' actually format them, storing
- * for each element its x/y position and dimensions relative to the containing DOMElement
- * which started the formatting context. Those boxes data are stored
- * and used when the document is rendered
+ * have been inserted, a call to the 'format' method actually format them, updating
+ * for each ElemenRenderer the x/y position of its bounds relative to the formatting 
+ * context root.
  * 
  * @author Yannick DOMINGUEZ
  */
 class FormattingContext 
 {
 	/**
-	 * A reference to the DOMElement which started the
-	 * formatting context (the containing block which 
-	 * started the formatting context)
+	 * A reference to the block box which started the
+	 * formatting context
 	 */ 
-	private var _containingDOMElement:DOMElement;
-	public var containingDOMElement(getContainingDOMElement, never):DOMElement;
-	
-	/**
-	 * The width of the DOMElement starting the formatting context,
-	 * representing the maximum width of a line.
-	 */
-	private var _containingDOMElementWidth:Int;
+	private var _formattingContextRoot:BlockBoxRenderer;
 	
 	/**
 	 * An instance of the class managing the floated DOMElements.
@@ -62,98 +54,265 @@ class FormattingContext
 	private var _floatsManager:FloatsManager;
 	
 	/**
-	 * Contains the data necessary to place the DOMElements in flow, 
-	 * such as the coordinates where to insert the next DOMElement
+	 * Contains the data necessary to place the ElementRenderer in flow, 
+	 * such as the coordinates where to insert the next ElementRenderer
 	 */
 	private var _formattingContextData:FormattingContextData;
-	public var formattingContextData(getFormattingContextData, never):FormattingContextData;
 	
 	/**
-	 * Holds a reference to each of the box elements formatted by this
-	 * formatting context. The corresponding box data are generated
-	 * when the 'format' method is called
+	 * Holds a reference to each of the ElementRenderer formatted by this
+	 * formatting context.
 	 */
 	private var _elementsInFormattingContext:Array<ElementRenderer>;
 	
 	/**
-	 * a reference to the last inserted element in the line, used for 
-	 * instance when a space is inserted to checkk if the previous
-	 * element was also a space and if it should be collapsed
+	 * a reference to the last inserted element renderer during 
+	 * a formatting
 	 */
 	private var _lastInsertedElement:ElementRenderer;
 	
+	/**
+	 * get the width of the largest line in the formatting context
+	 */
+	public var maxWidth(getMaxWidth, never):Int;
+	
+	private var _layOutLastLine:Bool;
+	
 	/////////////////////////////////
-	// CONSTRUTOR & INIT
+	// CONSTRUTOR & INIT/DISPOSE
 	/////////////////////////////////
 	
 	/**
 	 * Class constructor
-	 * @param	domElement the containing DOMElement which starts the formatting context
-	 * (the containing block)
+	 * @param	formattingContextRoot the block box which establishes
+	 * the formating context
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
-		//store a reference to the DOMElement starting the formatting context
-		_containingDOMElement = domElement;
-		_containingDOMElementWidth = _containingDOMElement.style.computedStyle.width;
-		
+		_formattingContextRoot = formattingContextRoot;
 		//will store the data of the floated DOMElement of this
 		//formatting context
 		_floatsManager = new FloatsManager();
-		
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+		initFormattingContextData();
 		_elementsInFormattingContext = new Array<ElementRenderer>();
 	}
 	
 	/**
-	 * Init/reset the flow data using the containing DOMElement's
+	 * Init/reset the flow data using the containing block box
 	 * properties
 	 */
-	private function initFormattingContextData(domElement:DOMElement):FormattingContextData
+	private function initFormattingContextData():Void
 	{
-		var flowY:Int = 0;
-		var flowX:Int = 0;
-		
-		return {
-			x : flowX,
-			y : flowY,
+		_formattingContextData = {
+			x : 0,
+			y : 0,
 			maxHeight : 0,
 			maxWidth:0
 		};
+	}
+	
+	/**
+	 * clean up class attributes
+	 */
+	public function dispose():Void
+	{
+		_elementsInFormattingContext = null;
+		_formattingContextData = null;
+		_lastInsertedElement = null;
+		
+		_floatsManager.dispose();
+		_floatsManager = null;
+		_formattingContextRoot = null;
 	}
 
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
-
+	/**
+	 * inert an ElementRenderer in the formatting context
+	 */
 	public function insertElement(element:ElementRenderer):Void
 	{
 		_elementsInFormattingContext.push(element);
 	}
+
+	/**
+	 * starts a formatting
+	 */
+	public function format():Void
+	{	
+		_layOutLastLine = true;
+		doFormat(_elementsInFormattingContext);
+	}
 	
+	/**
+	 * Return the static position of an element renderer, the position it 
+	 * would have had if it were in flow
+	 * 
+	 * TODO : static position is wrong in inline formatting context, buf with layOutLastLine ?
+	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
+		_layOutLastLine = true;
+		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0..._elementsInFormattingContext.length)
+		{
+			elementsToFormat.push(_elementsInFormattingContext[i]);
+		}
+		
+		elementsToFormat.push(element);
+		
+		doFormat(elementsToFormat);
+		
+		var x:Float = element.bounds.x;
+		var y:Float = element.bounds.y;
 		
 		return {x:x, y:y};
 	}
 	
-	public function format(layOutLastLine:Bool = false):Void
-	{	
-		//init/reset the formating context data to insert the first element at the
-		//origin of the containing block
-		_formattingContextData = initFormattingContextData(_containingDOMElement);
+	/**
+	 * Return the added height of the children of an ElementRenderer
+	 * in this formatting context. Used by ElementRenderer with 
+	 * an auto height to determine its height
+	 * 
+	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
+	 * 
+	 * TODO : adding height isn't enough, get height of the bounds of children instead ?
+	 * (to account for margin and paddings ?) -> should not margin into account in the getBounds
+	 * method
+	 */
+	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
+	{
+		var height:Int = 0;
 		
-		
-		//format all the box element in order
-		for (i in 0..._elementsInFormattingContext.length)
+		if (elementRenderer == _formattingContextRoot)
 		{
-			doInsertElement(_elementsInFormattingContext[i], isNextElementALineFeed(_elementsInFormattingContext, i));
+			height = _formattingContextData.maxHeight;
 		}
+		else
+		{
+			//add all the DOMElement boxesData's height
+			var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
+			height = Math.round(getBounds(elementRenderers).height);
+			/**
+			for (i in 0...elementRenderers.length)
+			{
+				TODO : float can still account in max height if it overflows
+				if (elementRenderers[i].isFloat() == false)
+				{
+					height += Math.round(elementRenderers[i].bounds.height);
+				}
+			}*/
+		}
+		
+		//Log.trace(
+		return height;
+	}
+
+	
+	/////////////////////////////////
+	// PRIVATE METHODS
+	/////////////////////////////////
+	
+		private function getBounds(elements:Array<ElementRenderer>):RectangleData
+	{
+
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		
+		for (i in 0...elements.length)
+		{
+			if (elements[i].bounds.x < left)
+			{
+				left = elements[i].bounds.x;
+			}
+			if (elements[i].bounds.y < top)
+			{
+				if (elements[i].isText() == false)
+				{
+					top = elements[i].bounds.y;
+				}
+				else
+				{
+					var domElement:DOMElement = elements[i].style.domElement;
+					
+					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
+				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
+					
+					top = elements[i].bounds.y - domElementAscent;
+				}
+				
+			}
+			if (elements[i].bounds.x + elements[i].bounds.width > right)
+			{
+				right = elements[i].bounds.x + elements[i].bounds.width;
+			}
+			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
+			{
+				if (elements[i].isText() == false)
+				{
+					bottom = elements[i].bounds.y + elements[i].bounds.height;
+				}
+				else
+				{
+					
+						var domElement:DOMElement = elements[i].style.domElement;
+					
+					var domElementAscent:Float = domElement.style.fontMetrics.ascent;
+				var domElementDescent:Float = domElement.style.fontMetrics.descent;	
+			
+				//the leading is an extra height to apply equally to the ascent
+				//and the descent when laying out lines of text
+				var leading:Float = domElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+		
+				//apply leading to the ascent and descent
+				domElementAscent = Math.round((domElementAscent + leading / 2));
+				domElementDescent = Math.round((domElementDescent + leading / 2));
+					
+					bottom = elements[i].bounds.y - domElementAscent + elements[i].bounds.height;
+				}
+			}
+		}
+			
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+				
+				
+		return bounds;
+		
 	}
 	
+	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	{
+		//init/reset the formating context data to insert the first element at the
+		//origin of the containing block
+		initFormattingContextData();
+		
+		//format all the box element in order
+		for (i in 0...elementsInFormattingContext.length)
+		{
+			doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
+		}
+	}
 
 	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
@@ -163,7 +322,7 @@ class FormattingContext
 		}
 		else if (element.canHaveChildren() == true)
 		{
-			if (element.domElement.style.establishesNewFormattingContext() == true)
+			if (element.style.establishesNewFormattingContext() == true)
 			{
 				insertFormattingContextRootElement(element);
 			}
@@ -191,69 +350,23 @@ class FormattingContext
 				insertEmbeddedElement(element);
 			}
 		}
-		
 	}
 	
-	//TODO : add a method getChildrenWidth for shrink-to-fit ?
-	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
-	{
-		var height:Int = 0;
-		
-		if (elementRenderer == _containingDOMElement.style.elementRenderer)
-		{
-			height = _formattingContextData.maxHeight;
-		}
-		else
-		{
-			//add all the DOMElement boxesData's height
-			var elementRenderers:Array<ElementRenderer> = getParentElementRenderers(elementRenderer);
-			for (i in 0...elementRenderers.length)
-			{
-				//TODO : float can still account in max height if it overflows
-				if (elementRenderers[i].isFloat() == false)
-				{
-					height += Math.round(elementRenderers[i].bounds.height);
-				}
-				
-			}
-		}
-	
-		
-		return height;
-	}
-	
-
-	private function getParentElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
-	{	
-		return doGetParentElementRenderers(elementRenderer, _elementsInFormattingContext);
-	}
-	
-	/////////////////////////////////
-	// PRIVATE METHODS
-	/////////////////////////////////
-	
-	private function doGetParentElementRenderers(elementRenderer:FlowBoxRenderer, targetElementRenderers:Array<ElementRenderer>):Array<ElementRenderer>
+	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
 		var elementRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...targetElementRenderers.length)
+		for (i in 0..._elementsInFormattingContext.length)
 		{
-			if (targetElementRenderers[i].parent == elementRenderer)
+			if (_elementsInFormattingContext[i].parent == elementRenderer)
 			{
-				elementRenderers.push(targetElementRenderers[i]);
+				elementRenderers.push(_elementsInFormattingContext[i]);
 			}
 		}
-		
-		if (elementRenderers.length == 0)
-		{
-			targetElementRenderers.push(elementRenderer);
-		}
-		
+
 		return elementRenderers;
 	}
 	
-
-
 	private function insertEmbeddedElement(element:ElementRenderer):Void
 	{ 
 		//abstract
@@ -333,7 +446,7 @@ class FormattingContext
 	 */
 	private function clearFloat(clear:ClearStyleValue):Void
 	{
-		_floatsManager.clearFloat(clear, formattingContextData);
+		_floatsManager.clearFloat(clear, _formattingContextData);
 	}
 	
 	/**
@@ -347,7 +460,6 @@ class FormattingContext
 	{
 		_floatsManager.removeFloats(_formattingContextData.y);
 	}
-	
 	
 	/**
 	 * Determine wheter the next element in the formattable elements array is a linefeed
@@ -374,14 +486,9 @@ class FormattingContext
 	// GETTERS/SETTERS
 	/////////////////////////////////
 	
-	private function getFormattingContextData():FormattingContextData
+	private function getMaxWidth():Int
 	{
-		return _formattingContextData;
-	}
-	
-	private function getContainingDOMElement():DOMElement
-	{
-		return _containingDOMElement;
+		return _formattingContextData.maxWidth;
 	}
 	
 }

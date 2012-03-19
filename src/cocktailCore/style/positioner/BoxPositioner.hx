@@ -52,18 +52,18 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Main entry point, determine the position of the DOMElement relative to its first positioned
+	 * Main entry point, determine the position of the DOMElement's ElementRenderer relative to its first positioned
 	 * ancestor
 	 * 
 	 * @param elementRenderer the ElementRenderer created by the DOMElement
 	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
 	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
-	 * @param staticPosition the position the DOMElement would have had in the flow if it weren't positioned. Used if
+	 * @param staticPosition the position the ElementRenderer would have had in the flow if it weren't positioned. Used if
 	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
 	public function position(elementRenderer:ElementRenderer, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
 	{
-		var domElement:DOMElement = elementRenderer.domElement;
+		var domElement:DOMElement = elementRenderer.style.domElement;
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
@@ -108,7 +108,7 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * get the left offset to apply the DOMElement
+	 * get the left offset to apply the ElementRenderer
 	 */
 	private function getLeftOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
@@ -116,7 +116,7 @@ class BoxPositioner
 	}
 	
 	/**
-	 * get the right offset to apply the DOMElement
+	 * get the right offset to apply the ElementRenderer
 	 */
 	private function getRightOffset(domElement:DOMElement, containingDOMElementWidth:Int, staticPosition:Int):Int
 	{
@@ -124,7 +124,7 @@ class BoxPositioner
 	}
 	
 	/**
-	 * get the top offset to apply the DOMElement
+	 * get the top offset to apply the ElementRenderer
 	 */
 	private function getTopOffset(domElement:DOMElement, staticPosition:Int):Int
 	{
@@ -132,7 +132,7 @@ class BoxPositioner
 	}
 	
 	/**
-	 * get the bottom offset to apply the DOMElement
+	 * get the bottom offset to apply the ElementRenderer
 	 */
 	private function getBottomOffset(domElement:DOMElement, containingDOMElementHeight:Int, staticPosition:Int):Int
 	{

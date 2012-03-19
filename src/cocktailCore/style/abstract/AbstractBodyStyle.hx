@@ -8,6 +8,7 @@
 package cocktailCore.style.abstract;
 
 import cocktail.domElement.DOMElement;
+import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import cocktailCore.style.ContainerStyle;
 import cocktailCore.style.formatter.BlockFormattingContext;
@@ -29,6 +30,15 @@ import haxe.Log;
  */
 class AbstractBodyStyle extends ContainerStyle
 {
+		
+	/**
+	 * keep references to each of the nativeElements which
+	 * are attached to this styled DOMElement. Those
+	 * can be background images, colors, nativeElements
+	 * of other DOMElements...
+	 */
+	private var _nativeElements:Array<NativeElement>;
+	
 	/**
 	 * class constructor
 	 * @param	domElement
@@ -36,6 +46,8 @@ class AbstractBodyStyle extends ContainerStyle
 	public function new(domElement:DOMElement) 
 	{
 		super(domElement);
+		
+		this._nativeElements = new Array<NativeElement>();
 		
 		//the BodyDOMElelement is set to valid by default
 		//to allow triggering the first layout when a children
@@ -69,23 +81,106 @@ class AbstractBodyStyle extends ContainerStyle
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Start the rendering of the rendering tree
+	 * and attach the resulting nativeElement (background,
+	 * border, embedded asset...) to the provided
+	 * nativeElement
+	 */ 
+	public function render(nativeElement:NativeElement):Void
+	{
+		_nativeElements = _elementRenderer.layerRenderer.render();
+		_nativeElements.reverse();
+		attachNativeElements(_nativeElements);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	// TODO : should be on a Document object
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */ 
+	private function attachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Remove a NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			attachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled DOMElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The BodyDOMElement create an initial block renderer and always create a new layer
+	 */
 	override private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
 	{
-		var elementRenderer:ElementRenderer = new InitialBlockRenderer(_domElement);
+		var elementRenderer:ElementRenderer = new InitialBlockRenderer(this);
 		elementRenderer.layerRenderer = new LayerRenderer(elementRenderer);
 
 		return elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The BodyDOMElement starts the rendering of the rendering tree
+	 * 
+	 * TODO : should instead be on a Document class
+	 */
 	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{	
+		//first detach all previously added children
+		detachNativeElements(_nativeElements);
+		
 		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
 		render(_domElement.nativeElement);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * A BodyDOMElement is never inserted into its parent flow as it is
@@ -111,18 +206,11 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The return dimensions of the Body are always those of the viewport
+	 * The returned dimensions of the Body are always those of the viewport
 	 */
 	override public function getContainerDOMElementData():ContainingDOMElementData
 	{
-		var viewPort:Viewport = new Viewport();
-		
-		return {
-			width:viewPort.width,
-			isWidthAuto:this._width == DimensionStyleValue.autoValue,
-			height:viewPort.height,
-			isHeightAuto:this._height == DimensionStyleValue.autoValue
-		};
+		return getViewportData();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -130,14 +218,7 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An inline-level DOMElement is one that is
-	 * laid out on a line. It will be placed
-	 * either next to the preceding DOMElement
-	 * or on a new line if the current line
-	 * is too short to host it.
-	 * 
-	 * Wheter an element is inline-level is determined
-	 * by its display style
+	 * The BodyDOMElement is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{
@@ -149,7 +230,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
-		return new BlockFormattingContext(this._domElement);
+		return new BlockFormattingContext(cast(this._elementRenderer));
 	}
 
 	/**
@@ -162,7 +243,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getComputedHeight():Int
 	{
-		return new Viewport().height;
+		return getViewportData().height;
 	}
 	
 	/**
@@ -172,41 +253,6 @@ class AbstractBodyStyle extends ContainerStyle
 	override public function establishesNewFormattingContext():Bool
 	{
 		return true;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN DIMENSION AND POSITION SETTERS
-	// Those properties can't be set on the root of the runtime
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setNativeX(domElement:DOMElement, x:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeY(domElement:DOMElement, y:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeWidth(width:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeHeight(height:Int):Void
-	{
-		
-	}
-	
-	override public function setNativeOpacity(opacity:Float):Void
-	{
-		
-	}
-	
-	override public function setNativeVisibility(visibility:Bool):Void
-	{
-		
 	}
 	
 }
