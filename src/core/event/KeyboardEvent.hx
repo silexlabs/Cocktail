@@ -1,4 +1,4 @@
-package cocktailCore.event;
+package core.event;
 
 /**
  * ...
