@@ -7,11 +7,11 @@
 */
 package cocktailCore.style.computer;
 
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.unit.UnitManager;
 
 /**

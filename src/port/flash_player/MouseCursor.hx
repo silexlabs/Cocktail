@@ -13,7 +13,7 @@ import flash.ui.Mouse;
 import flash.Vector;
 import cocktail.domElement.ImageDOMElement;
 import core.mouse.AbstractMouseCursor;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.mouseMouseData;
 
 /**

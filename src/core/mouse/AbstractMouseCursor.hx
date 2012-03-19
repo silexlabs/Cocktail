@@ -8,7 +8,7 @@
 package core.mouse;
 
 import cocktail.domElement.ImageDOMElement;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.mouseMouseData;
 
 /**

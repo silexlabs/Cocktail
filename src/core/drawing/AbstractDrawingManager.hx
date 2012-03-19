@@ -8,10 +8,10 @@
 package core.drawing;
 
 import cocktail.domElement.ImageDOMElement;
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 
 /**
  * The drawing manager exposes a cross-platform

@@ -7,7 +7,7 @@
 */
 package cocktailCore.style.abstract;
 
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import core.background.BackgroundManager;
@@ -36,7 +36,7 @@ import cocktailCore.style.positioner.FixedPositioner;
 import cocktailCore.style.positioner.RelativePositioner;
 import core.unit.UnitData;
 import cocktail.style.StyleData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.EmbeddedBoxRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;

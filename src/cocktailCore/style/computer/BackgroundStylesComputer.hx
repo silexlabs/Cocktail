@@ -10,7 +10,7 @@ package cocktailCore.style.computer;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
 import core.unit.UnitManager;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.unit.UnitData;
 import haxe.Log;
 

@@ -8,7 +8,7 @@
 package core.mouse;
 
 import cocktail.domElement.DOMElement;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 
 /**
  * This file contains mouse related structures

@@ -9,9 +9,9 @@ package cocktailCore.domElement.abstract;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.event.Event;
 import core.event.KeyboardEvent;
 import core.event.MouseEvent;

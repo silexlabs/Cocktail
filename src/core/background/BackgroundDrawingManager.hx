@@ -7,12 +7,12 @@
 */
 package core.background;
 
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.drawing.DrawingManager;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktailCore.resource.ImageLoader;

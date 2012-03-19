@@ -10,7 +10,7 @@ package cocktailCore.style.formatter;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.style.StyleData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import core.dom.HTMLElement;
 import cocktailCore.style.renderer.BlockBoxRenderer;
 import cocktailCore.style.renderer.ElementRenderer;

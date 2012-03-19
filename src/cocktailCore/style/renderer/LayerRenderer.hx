@@ -1,5 +1,5 @@
 package cocktailCore.style.renderer;
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import haxe.Log;
 /*

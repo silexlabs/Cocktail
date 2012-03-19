@@ -8,9 +8,9 @@
 package cocktailCore.domElement.abstract;
 
 import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
+import core.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.geom.Matrix;
+import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
