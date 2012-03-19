@@ -16,34 +16,6 @@ import cocktail.geom.GeomData;
  */
 
 /**
- * Stored the data raised by a mouse event
- */ 
-typedef MouseEventData = {
-	var mousePosition:MousePositionData;
-	
-	/**
-	 * represents the keyboard state
-	 * when the mouse event occurs
-	 */
-	var ctrlKey:Bool;
-	var altKey:Bool;
-	var shiftKey:Bool;
-}
-
-/**
- * Represents the position of the mouse, both
- * global (relative to the browser window top left
- * corner) and local (relative to the dom element
- * which triggered the mouse event top left corner)
- */
-typedef MousePositionData = {
-	var localX:Float;
-	var localY:Float;
-	var globalX:Float;
-	var globalY:Float;
-}
-
-/**
  * Lists the different cursors which can
  * be set for the mouse pointer
  */
