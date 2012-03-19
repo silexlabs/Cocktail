@@ -10,7 +10,7 @@ package cocktailCore.style.abstract;
 import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
-import cocktailCore.background.BackgroundManager;
+import core.background.BackgroundManager;
 import core.dom.HTMLElement;
 import cocktailCore.style.computer.BackgroundStylesComputer;
 import cocktailCore.style.computer.boxComputers.BlockBoxStylesComputer;
