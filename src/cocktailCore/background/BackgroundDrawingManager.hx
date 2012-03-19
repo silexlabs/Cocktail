@@ -10,7 +10,7 @@ import cocktail.geom.Matrix;
 import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
-import cocktailCore.drawing.DrawingManager;
+import core.drawing.DrawingManager;
 import cocktail.geom.GeomData;
 import core.unit.UnitData;
 import cocktail.style.StyleData;
