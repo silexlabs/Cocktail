@@ -9,9 +9,9 @@ package cocktailCore.style.computer;
 
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktail.style.StyleData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 import cocktail.geom.GeomData;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import haxe.Log;
 
 /**

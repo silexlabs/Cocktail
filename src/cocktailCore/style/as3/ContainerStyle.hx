@@ -14,8 +14,8 @@ import cocktail.style.StyleData;
 import cocktailCore.style.renderer.TextRenderer;
 import cocktailCore.textElement.abstract.AbstractTextElement;
 import cocktailCore.textElement.TextElementData;
-import cocktailCore.unit.UnitManager;
-import cocktail.unit.UnitData;
+import core.unit.UnitManager;
+import core.unit.UnitData;
 import flash.text.TextFieldAutoSize;
 
 import haxe.Log;

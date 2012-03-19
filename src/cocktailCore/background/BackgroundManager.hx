@@ -11,12 +11,12 @@ import cocktail.nativeElement.NativeElement;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import cocktail.geom.GeomData;
 import cocktailCore.resource.ImageLoader;
 import cocktailCore.style.abstract.AbstractStyle;
 import cocktailCore.style.computer.BackgroundStylesComputer;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitManager;
 import haxe.Log;
 
 /**

@@ -23,8 +23,8 @@ import core.mouse.MouseData;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-import cocktailCore.unit.UnitManager;
+import core.unit.UnitData;
+import core.unit.UnitManager;
 import haxe.Log;
 
 /**

@@ -34,7 +34,7 @@ import cocktailCore.style.positioner.AbsolutePositioner;
 import cocktailCore.style.positioner.BoxPositioner;
 import cocktailCore.style.positioner.FixedPositioner;
 import cocktailCore.style.positioner.RelativePositioner;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import cocktail.style.StyleData;
 import cocktail.geom.GeomData;
 import cocktailCore.style.renderer.ElementRenderer;

@@ -10,7 +10,7 @@ package cocktailCore.style.js;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractStyle;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktailCore.style.renderer.ElementRenderer;
 import cocktailCore.style.renderer.FlowBoxRenderer;

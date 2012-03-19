@@ -19,7 +19,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.geom.GeomData;
 import cocktail.style.StyleData;
 import cocktail.domElement.ImageDOMElement;
-import cocktail.unit.UnitData;
+import core.unit.UnitData;
 
 /**
  * This is the JavaScript implementation of theDrawingManager.
