@@ -9,7 +9,7 @@ package cocktailCore.style.js;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.style.abstract.AbstractContainerStyle;
 import cocktailCore.style.formatter.FormattingContext;
 import cocktail.style.StyleData;

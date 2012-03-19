@@ -7,7 +7,7 @@
 */
 package cocktailCore.resource.js;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractResourceLoader;
 
 /**

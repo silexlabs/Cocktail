@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.style.EmbeddedStyle;
 import cocktail.domElement.DOMElementData;
 

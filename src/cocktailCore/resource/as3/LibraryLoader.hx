@@ -7,7 +7,7 @@
 */
 package cocktailCore.resource.as3;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractLibraryLoader;
 
 /**

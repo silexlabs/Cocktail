@@ -5,23 +5,21 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.nativeElement.abstract;
+package core.nativeElement;
 
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 
 /**
- * This is a base class for the native element
- * creator implementation. It creates a native element
- * and returns a reference to it
+ * This is a base class for the path manager. 
+ * It retrieves and return the root of the DOM, 
+ * sush as the body tag in HTML
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractNativeElementCreator
+class AbstractNativeElementPathManager
 {
-
 	/**
-	 * class constructor
+	 * class contructor
 	 */
 	public function new() 
 	{
@@ -29,10 +27,9 @@ class AbstractNativeElementCreator
 	}
 	
 	/**
-	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
-	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 * Returns the root of the DOM. Implemented by subclasses
 	 */
-	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
+	public function getRoot():NativeElement
 	{
 		return null;
 	}

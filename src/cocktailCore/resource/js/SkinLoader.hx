@@ -7,8 +7,8 @@
 */
 package cocktailCore.resource.js;
 
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktailCore.resource.abstract.AbstractSkinLoader;
 import haxe.Http;
 import haxe.Log;

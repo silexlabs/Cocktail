@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.js;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
 import cocktailCore.domElement.abstract.AbstractDOMElement;

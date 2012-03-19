@@ -7,8 +7,8 @@
 */
 package cocktailCore.resource.js;
 
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import haxe.Http;
 import haxe.Log;
@@ -17,7 +17,7 @@ import js.Dom.HtmlDom;
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceData;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElementData;
 
 /**
  * This is the Image loader implementation for the JavaScript runtime. It is used to 

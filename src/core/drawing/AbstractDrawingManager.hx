@@ -9,7 +9,7 @@ package core.drawing;
 
 import cocktail.domElement.ImageDOMElement;
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktail.domElement.DOMElementData;
 import cocktail.geom.GeomData;
 

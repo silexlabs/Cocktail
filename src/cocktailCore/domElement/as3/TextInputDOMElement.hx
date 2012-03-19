@@ -7,8 +7,8 @@
 */
 package cocktailCore.domElement.as3;
 
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
 import cocktailCore.domElement.abstract.AbstractTextInputDOMElement;
 
 /**

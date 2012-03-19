@@ -9,7 +9,7 @@ package core.keyboard;
 
 import core.event.KeyboardEvent;
 import haxe.Log;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.keyboard.KeyboardData;
 
 /**

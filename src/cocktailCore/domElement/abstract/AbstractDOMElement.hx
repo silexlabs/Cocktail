@@ -20,7 +20,7 @@ import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.Mouse;
 import core.mouse.MouseData;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import cocktail.style.StyleData;
 import core.unit.UnitData;

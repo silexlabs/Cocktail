@@ -7,9 +7,9 @@
 */
 package cocktailCore.resource.abstract;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktailCore.resource.ResourceLoader;
 import haxe.Log;
 

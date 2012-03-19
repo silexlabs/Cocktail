@@ -5,34 +5,36 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.nativeElement.as3;
+package core.nativeElement;
 
-import flash.Lib;
-import cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
 
 /**
- * This is the flash AVM2 implementation for the path manager. 
- * It returns the flash Stage
+ * This is a base class for the native element
+ * creator implementation. It creates a native element
+ * and returns a reference to it
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementPathManager extends AbstractNativeElementPathManager
+class AbstractNativeElementCreator
 {
+
 	/**
-	 * class contructor
+	 * class constructor
 	 */
 	public function new() 
 	{
-		super();
+		
 	}
 	
 	/**
-	 * Returns a reference to the Flash Stage
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	override public function getRoot():NativeElement
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		return Lib.current.stage;
+		return null;
 	}
 	
 }

@@ -8,9 +8,9 @@
 package core.background;
 
 import cocktail.geom.Matrix;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import core.drawing.DrawingManager;
 import cocktail.geom.GeomData;
 import core.unit.UnitData;

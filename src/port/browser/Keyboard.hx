@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import core.event.KeyboardEvent;
 import haxe.Log;
 import js.Lib;

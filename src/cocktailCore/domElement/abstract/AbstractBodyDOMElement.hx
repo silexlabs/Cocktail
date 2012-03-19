@@ -8,8 +8,8 @@
 package cocktailCore.domElement.abstract;
 
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
 import cocktailCore.style.abstract.AbstractBodyStyle;

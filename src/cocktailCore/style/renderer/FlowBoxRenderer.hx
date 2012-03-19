@@ -9,7 +9,7 @@ package cocktailCore.style.renderer;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElement;
 import cocktailCore.style.Style;
 import haxe.Log;
 

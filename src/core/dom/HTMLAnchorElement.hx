@@ -1,6 +1,6 @@
 package core.dom;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import core.event.MouseEvent;
 import core.dom.DOMData;
 

@@ -1,5 +1,5 @@
 package core.dom;
-import cocktail.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementManager;
 import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
 import cocktailCore.style.BodyStyle;

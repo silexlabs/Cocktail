@@ -8,9 +8,9 @@
 package cocktailCore.domElement.abstract;
 
 import cocktail.domElement.ContainerDOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import cocktailCore.style.ContainerStyle;
 import cocktail.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;

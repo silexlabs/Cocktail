@@ -5,18 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.nativeElement.as3;
+package port.browser;
 
-import flash.display.DisplayObjectContainer;
-import flash.display.Loader;
-import flash.display.Sprite;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElement;
-import cocktailCore.nativeElement.abstract.AbstractNativeElementCreator;
+import js.Lib;
+import core.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
+import core.nativeElement.AbstractNativeElementCreator;
 
 /**
- * This is the flash AVM2 implementation of the native element
- * creator. It instantiate a native flash display object 
+ * This is the Javascript implementation of the native element
+ * creator. It instantiate a native HTML element 
  * and returns it as a NativeElement
  * 
  * @author Yannick DOMINGUEZ
@@ -33,7 +31,7 @@ class NativeElementCreator extends AbstractNativeElementCreator
 	}
 	
 	/**
-	 * Instantiate a native flash display object based on the requested type and returns a reference to it.
+	 * Instantiate a native HTML Element based on the requested type and returns a reference to it.
 	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
 	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
@@ -42,16 +40,33 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		
 		switch (nativeElementType)
 		{
-			//for image, library and skin, the expected type is a Flash loader
-			case image, library, skin:
-				nativeElement = new Loader();
+			case image:
+				nativeElement = Lib.document.createElement("img");
+			
+			case text:
+				nativeElement = Lib.document.createElement("div");
 				
-			//for other types, it is a Sprite	
-			case text, graphic, neutral, link, textInput:
-				nativeElement = new Sprite();
+			case neutral:
+				nativeElement = Lib.document.createElement("div");
+				
+			case graphic:
+				nativeElement = Lib.document.createElement("canvas");
+				
 			case custom(name):
-				nativeElement = new Sprite();
+				nativeElement = Lib.document.createElement(name);
 				
+			case library:
+				nativeElement = Lib.document.createElement("script");
+				
+			case skin:
+				nativeElement = Lib.document.createElement("div");
+				
+			case link:
+				nativeElement = Lib.document.createElement("a");
+				
+			case textInput:
+				nativeElement = Lib.document.createElement("input");
+				untyped nativeElement.type = "text";
 		}
 		
 		return nativeElement;

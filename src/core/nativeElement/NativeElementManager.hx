@@ -5,25 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeElement;
+package core.nativeElement;
 
 //import the right runtime implementations
 #if (flash9 || cpp || nme)
-import cocktailCore.nativeElement.as3.NativeElementCreator;
-import cocktailCore.nativeElement.as3.NativeElementPathManager;
+import port.flash_player.NativeElementCreator;
+import port.flash_player.NativeElementPathManager;
 
 #elseif js
-import cocktailCore.nativeElement.js.NativeElementCreator;
-import cocktailCore.nativeElement.js.NativeElementPathManager;
+import port.browser.js.NativeElementCreator;
+import port.browser.js.NativeElementPathManager;
 
 #elseif doc
-class NativeElementCreator extends cocktailCore.nativeElement.abstract.AbstractNativeElementCreator { }
-class NativeElementPathManager extends cocktailCore.nativeElement.abstract.AbstractNativeElementPathManager { }
+class NativeElementCreator extends core.nativeElement.AbstractNativeElementCreator { }
+class NativeElementPathManager extends core.nativeElement.AbstractNativeElementPathManager { }
 
 #end
 
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElement;
+import core.nativeElement.NativeElementData;
+import core.nativeElement.NativeElement;
 
 /**
  * this class abstract and manages the interaction with a
