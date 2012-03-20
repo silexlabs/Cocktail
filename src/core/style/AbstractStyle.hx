@@ -28,7 +28,7 @@ import core.style.computer.BoxStylesComputer;
 import core.style.computer.DisplayStylesComputer;
 import core.style.computer.FontAndTextStylesComputer;
 import core.style.computer.VisualEffectStylesComputer;
-import core.style.ContainerStyle;
+import core.ContainerStyle;
 import core.style.formatter.FormattingContext;
 import core.style.positioner.AbsolutePositioner;
 import core.style.positioner.BoxPositioner;
