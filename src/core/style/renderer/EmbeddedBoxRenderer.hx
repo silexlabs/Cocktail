@@ -64,6 +64,27 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		return ret;
 	}
 	
+	//TODO : re-implement + add an ImageRenderer
+	//
+	///**
+	 //* apply a bilinear filtering to the loaded picture
+	 //* 
+	 //* TODO : should be applied during rendering
+	 //*/
+	//private function smoothPicture():Void
+	//{
+		//cast the native element as a loader
+		// and retrieve its bitmap content
+		//var typedNativeElement:Loader = cast(this._embeddedAsset);
+		//var bitmap:Bitmap = cast(typedNativeElement.content);
+		//
+		//if (bitmap != null)
+		//{
+			//activate picture smoothing
+			//bitmap.smoothing = true;
+		//}
+	//}
+	
 	
 	
 }
