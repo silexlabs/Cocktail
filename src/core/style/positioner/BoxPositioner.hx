@@ -10,7 +10,7 @@ package core.style.positioner;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.dom.HTMLElement;
-import core.style.renderer.ElementRenderer;
+import core.renderer.ElementRenderer;
 import haxe.Log;
 
 /**

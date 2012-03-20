@@ -10,10 +10,10 @@ package core.style.formatter;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.dom.HTMLElement;
-import core.style.renderer.BlockBoxRenderer;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.FlowBoxRenderer;
-import core.style.renderer.InlineBoxRenderer;
+import core.renderer.BlockBoxRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.FlowBoxRenderer;
+import core.renderer.InlineBoxRenderer;
 import haxe.Log;
 
 /**

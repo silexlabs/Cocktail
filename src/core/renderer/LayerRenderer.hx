@@ -1,4 +1,4 @@
-package core.style.renderer;
+package core.renderer;
 import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import haxe.Log;

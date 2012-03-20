@@ -8,8 +8,8 @@
 package core.style.formatter;
 import core.style.StyleData;
 import core.geom.GeomData;
-import core.style.renderer.BlockBoxRenderer;
-import core.style.renderer.ElementRenderer;
+import core.renderer.BlockBoxRenderer;
+import core.renderer.ElementRenderer;
 import haxe.Log;
 
 /**
