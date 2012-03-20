@@ -5,18 +5,20 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.abstract;
+package core.resource;
 import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import cocktailCore.resource.ResourceLoader;
+import core.resource.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
 
 /**
  * This class is in charge of loading a data String 
  * which can be serialised as XML, JSON....
+ * 
+ * TODO : refactor as XMLHTTPRequest, shouldn't extend ResourceLoader
  * 
  * @author Yannick DOMINGUEZ
  */

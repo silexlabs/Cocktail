@@ -13,7 +13,7 @@ import core.nativeElement.NativeElementData;
 import core.style.StyleData;
 import core.unit.UnitData;
 import core.geom.GeomData;
-import cocktailCore.resource.ImageLoader;
+import core.ImageLoader;
 import core.style.AbstractStyle;
 import core.style.computer.BackgroundStylesComputer;
 import core.unit.UnitManager;

@@ -15,7 +15,7 @@ import core.style.ContainerStyle;
 import cocktailCore.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
-import core.style.renderer.TextRenderer;
+import core.renderer.TextRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)

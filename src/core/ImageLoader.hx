@@ -5,18 +5,18 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource;
+package core;
 
 /**
  * Set the right runtime specific ImageLoader at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef ImageLoader = cocktailCore.resource.as3.ImageLoader;
+typedef ImageLoader = core.resource.AbstractResourceLoader;
 
 #elseif js
-typedef ImageLoader = cocktailCore.resource.js.ImageLoader;
+typedef ImageLoader = core.resource.AbstractResourceLoader;
 
 #elseif php
-typedef ImageLoader = cocktailCore.resource.php.ImageLoader;
+typedef ImageLoader = core.resource.php.ImageLoader;
 
 #end
