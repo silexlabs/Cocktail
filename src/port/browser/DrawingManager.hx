@@ -508,6 +508,10 @@ class DrawingManager extends AbstractDrawingManager
 	{
 		clear();
 		super.setWidth(value);
+		
+		//TODO : doc
+		untyped _nativeElement.width = value;
+		
 		return _width = value;
 	}
 	
@@ -516,6 +520,10 @@ class DrawingManager extends AbstractDrawingManager
 	{
 		clear();
 		super.setHeight(value);
+		
+		//TODO : doc
+		untyped _nativeElement.height = value;
+		
 		return _height = value;
 	}
 	

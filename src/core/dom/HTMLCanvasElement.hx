@@ -30,11 +30,13 @@ class HTMLCanvasElement extends HTMLElement
 	
 	public function new() 
 	{
+		//TODO : should be an "embeddedAsset" ? share base class with HTMLImageElement ?
+		//Should drawing manager create its own nativeElement ?
 		_nativeElement = NativeElementManager.createNativeElement(graphic);
 		
 		super();
 		
-		_drawingManager = new DrawingManager(nativeElement, 150, 300 );
+		_drawingManager = new DrawingManager(_nativeElement, 150, 300 );
 	}
 	
 	//TODO : add context id
@@ -45,6 +47,7 @@ class HTMLCanvasElement extends HTMLElement
 	
 	private function set_width(value:Int):Int
 	{
+		_drawingManager.width = value;
 		return _width = value;
 	}
 	
@@ -55,6 +58,7 @@ class HTMLCanvasElement extends HTMLElement
 	
 	private function set_height(value:Int):Int
 	{
+		_drawingManager.height = value;
 		return _height = value;
 	}
 	

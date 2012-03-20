@@ -8,8 +8,8 @@
 package port.browser;
 
 import core.style.StyleData;
-import cocktailCore.textElement.abstract.AbstractTextElement;
-import cocktailCore.textElement.TextElementData;
+import core.textElement.abstract.AbstractTextElement;
+import core.textElement.TextElementData;
 import js.Lib;
 
 /**
