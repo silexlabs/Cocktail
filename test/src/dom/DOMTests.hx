@@ -18,10 +18,13 @@ import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
 
-import cocktailCore.dom.HTMLElement;
-import cocktailCore.dom.HTMLBodyElement;
-import cocktailCore.dom.HTMLImageElement;
-import cocktailCore.dom.HTMLAnchorElement;
+import core.dom.HTMLElement;
+import core.dom.HTMLBodyElement;
+import core.dom.HTMLImageElement;
+import core.dom.HTMLAnchorElement;
+import core.dom.HTMLCanvasElement;
+import core.dom.HTMLDocument;
+import core.Text;
 
 class DOMTests 
 {
