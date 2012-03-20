@@ -8,15 +8,15 @@
 package core;
 
 /**
- * Set the right runtime specific TextElement at compile-time
+ * Set the right runtime specific Text at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef TextElement = port.flash_player.TextElement;
+typedef Text = port.flash_player.Text;
 
 #elseif js
-typedef TextElement =  port.browser.TextElement;
+typedef Text =  port.browser.Text;
 
 #elseif php
-typedef TextElement =  core.textElement.php.TextElement;
+typedef TextElement =  core.Text.php.TextElement;
 
 #end

@@ -28,15 +28,13 @@ import core.style.positioner.RelativePositioner;
 import core.style.StyleData;
 import cocktailCore.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
-import core.TextElement;
+import core.Text;
 import core.style.renderer.BlockBoxRenderer;
 import core.style.renderer.ElementRenderer;
 import core.style.renderer.FlowBoxRenderer;
 import core.style.renderer.InlineBoxRenderer;
 import core.style.renderer.LayerRenderer;
 import core.style.renderer.TextRenderer;
-import core.textElement.AbstractTextElement;
-import core.textElement.TextElementData;
 import core.geom.GeomData;
 import core.dom.DOMData;
 import haxe.Timer;
@@ -244,8 +242,8 @@ class AbstractContainerStyle extends Style
 			else 
 			{
 				//TODO : TextElement should inherit Node
-				var childrenTextElement:TextElement = cast(_htmlElement.childNodes[i]);
-				var insertedText:Array<TextRenderer> = insertTextElement(childrenTextElement, childrenFormattingContext, childrenContainingDOMElementData);
+				var childrenText:Text = cast(_htmlElement.childNodes[i]);
+				var insertedText:Array<TextRenderer> = insertTextElement(childrenText, childrenFormattingContext, childrenContainingDOMElementData);
 				
 				//add the created TextRenderer to the ContainerDOMElement
 				//ElementRenderer
@@ -319,12 +317,12 @@ class AbstractContainerStyle extends Style
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
-	private function insertTextElement(textElement:TextElement, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Array<TextRenderer>
+	private function insertTextElement(textElement:Text, formattingContext:FormattingContext, containingDOMElementData:ContainingDOMElementData):Array<TextRenderer>
 	{
 		var rendereredText:Array<TextRenderer> = new Array<TextRenderer>();
 		
 		//get the text to display from the TextElement
-		var text:String = textElement.text;
+		var text:String = textElement.nodeValue;
 		
 		//split the text into an array of text token
 		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
