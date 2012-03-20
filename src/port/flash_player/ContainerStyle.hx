@@ -12,7 +12,7 @@ import core.style.AbstractContainerStyle;
 import core.style.AbstractStyle;
 import core.style.StyleData;
 import core.style.renderer.TextRenderer;
-import core.textElement.AbstractTextElement;
+import core.Text;
 import core.dom.DOMData;
 import core.unit.UnitManager;
 import core.unit.UnitData;
@@ -120,7 +120,7 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
-		var transformedText:String = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
+		var transformedText:String = core.dom.Text.applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textElement:TextElement = new TextElement(transformedText);
 		

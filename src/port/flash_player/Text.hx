@@ -5,45 +5,46 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package port.browser;
+package port.flash_player;
 
+import core.dom.HTMLElement;
 import core.style.StyleData;
-import core.textElement.AbstractTextElement;
 import core.dom.DOMData;
-import js.Lib;
+import haxe.Log;
 
 /**
- * This is the JavaScript implementation of the TextElement.
- * 
- * In JavaScript, a text element is represented by an 
- * HTML text node object. 
- * 
- * This HTML text node object is created from
- * the text provided in the constructor.
- * It is wrapped in a NativeTextElement
+ * This is the Flash As3 implementation of the TextElement.
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextElement extends AbstractTextElement
+class Text extends core.dom.Text
 {
 	/**
-	 * class contructor
+	 * class constructor
 	 */
-	public function new(text:String)
+	public function new() 
 	{
-		//create and store the native HTML text node
-		_nativeText = Lib.document.createTextNode(text);
-		
-		super(text);
+		super();
 	}
 	
 	/**
-	 * Update the native HTML TextNode value
+	 * Clean up the generated text fragments
+	 * and invalidate the parent to cause the
+	 * creation of the new text
 	 */
-	override private function setText(value:String):String
+	override private function set_data(value:String):String
 	{
-		_text = value;
-		_nativeText.nodeValue = value;
+		super.set_data(value);
+		
+		reset();
+		_textFragments = new Array<TextFragmentData>();
+		
+		if (_parentNode != null)
+		{
+			var parent:HTMLElement = cast(_parentNode);
+			parent.style.invalidateText();
+		}
+		
 		return value;
 	}
 }

@@ -22,25 +22,34 @@ import js.Lib;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextElement extends core.dom.Text
+class Text extends core.dom.Text
 {
 	/**
 	 * class contructor
 	 */
-	public function new(text:String)
+	public function new()
 	{
-		//create and store the native HTML text node
-		_nativeElement = Lib.document.createTextNode(text);
 		
-		super(text);
+		
+		super();
 	}
 	
 	/**
 	 * Update the native HTML TextNode value
 	 */
-	override private function setText(value:String):String
+	override private function set_data(value:String):String
 	{
-		_nativeElement.nodeValue = value;
+		if (_nativeElement == null)
+		{
+			//create and store the native HTML text node
+			_nativeElement = Lib.document.createTextNode(value);
+		}
+		else
+		{
+			_nativeElement.nodeValue = value;
+		}
+		
+		super.set_data(value);
 		return value;
 	}
 }
