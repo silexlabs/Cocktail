@@ -8,7 +8,7 @@
 package core.style.computer;
 
 import core.style.AbstractStyle;
-import port.Style;
+import core.Style;
 import core.style.StyleData;
 
 /**

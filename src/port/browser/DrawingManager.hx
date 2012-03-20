@@ -14,7 +14,7 @@ import core.drawing.AbstractDrawingManager;
 import js.Dom;
 import js.Lib;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import cocktail.domElement.DOMElement;
 import core.geom.GeomData;
 import core.style.StyleData;

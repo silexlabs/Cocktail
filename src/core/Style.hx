@@ -5,22 +5,28 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.style.positioner;
+package core;
 
 /**
- * This is the box positioner class for
- * 'fixed' DOMElements. They are positioned
- * by using the viewport as origin
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific Style at compile-time
  */
-class FixedPositioner extends BoxPositioner
-{
-	/**
-	 * class constructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-}
+#if (flash9 || cpp )
+typedef Style =  port.flash_player.Style;
+
+#elseif nme
+typedef Style =  port.nme.Style;
+
+#elseif js
+typedef Style =  port.browser.Style;
+
+#elseif php
+typedef Style =  core.style.php.Style;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class Style extends core.style.AbstractStyle { }
+
+#end

@@ -7,9 +7,8 @@
 */
 package core.style.renderer;
 
-import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
-import port.Style;
+import core.Style;
 import cocktailCore.textElement.TextElementData;
 import haxe.Log;
 

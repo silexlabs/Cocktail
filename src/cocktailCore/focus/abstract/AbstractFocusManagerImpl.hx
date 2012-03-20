@@ -7,9 +7,8 @@
 */
 package cocktailCore.focus.abstract;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
+import core.dom.HTMLBodyElement;
+import core.dom.HTMLElement;
 import core.event.MouseEvent;
 import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
@@ -17,6 +16,7 @@ import core.mouse.MouseData;
 import cocktailCore.domElement.DOMElementData;
 import core.nativeElement.NativeElementManager;
 import core.event.KeyboardEvent;
+import core.dom.DOMData;
 
 /**
  * The abstract implementation of the focus
@@ -34,21 +34,21 @@ class AbstractFocusManagerImpl
 	 * starting point when traversing the DOM looking 
 	 * for focusable DOMElements
 	 */
-	private var _bodyDOMElement:BodyDOMElement;
-	public var bodyDOMElement(getBodyDOMElement, setBodyDOMElement):BodyDOMElement;
+	private var _bodyElement:HTMLBodyElement;
+	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
 	
 	/**
 	 * set/get the currently focused DOMElement
 	 */
-	private var _activeDOMElement:DOMElement;
-	public var activeDOMElement(getActiveDOMElement, setActiveDOMElement):DOMElement;
+	private var _activeElement:HTMLElement;
+	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
 	
 	/**
 	 * Holds a list of all the focusable
 	 * DOMElements in the DOM, ordered in the
 	 * right focus order
 	 */
-	private var _tabList:Array<DOMElement>;
+	private var _tabList:Array<HTMLElement>;
 	
 	/**
 	 * The index of the currently active DOMElement
@@ -131,9 +131,9 @@ class AbstractFocusManagerImpl
 	 */
 	private function onKeyUp(keyEventData:KeyboardEvent):Void
 	{
-		if (_activeDOMElement.onKeyUp != null)
+		if (_activeElement.onKeyUp != null)
 		{
-			_activeDOMElement.onKeyUp(keyEventData);
+			_activeElement.onKeyUp(keyEventData);
 		}
 	}
 	
@@ -152,14 +152,14 @@ class AbstractFocusManagerImpl
 		//tab focus or if it was invalidated
 		if (_tabList == null)
 		{
-			_tabList = buildTabList(_bodyDOMElement);
+			_tabList = buildTabList(_bodyElement);
 		}
 		
 		//search the next valid index for the tab list
 		//by incrementing or decrementing the tab list index.
 		//As the tab focus loop, the tab list index might be reseted
 		//or set to the last element
-		if (activeDOMElement != _bodyDOMElement)
+		if (activeElement != _bodyElement)
 		{
 			if (reverse == false)
 			{
@@ -200,7 +200,7 @@ class AbstractFocusManagerImpl
 		}
 		
 		//set the activeDOMElement with the found tab list index
-		activeDOMElement = _tabList[_tabListIndex];
+		activeElement = _tabList[_tabListIndex];
 	}
 	
 	/**
@@ -212,7 +212,7 @@ class AbstractFocusManagerImpl
 	 * focusable DOMElement with a tabIndex of 0, ordered in DOM order starting from
 	 * the BodyDOMElement
 	 */
-	private function buildTabList(containerDOMElement:ContainerDOMElement):Array<DOMElement>
+	private function buildTabList(htmlElement:HTMLElement):Array<HTMLElement>
 	{
 		//each time the list is rebuild, the tab list index is
 		//reseted so that the first item of the list is selected when
@@ -220,13 +220,13 @@ class AbstractFocusManagerImpl
 		_tabListIndex = 0;
 		
 		//contains the DOMElement with a 0 tabIndex
-		var orderedTabList:Array<DOMElement> = new Array<DOMElement>();
+		var orderedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
 		//contains the DOMElement with a tabIndex > 0
-		var indexedTabList:Array<DOMElement> = new Array<DOMElement>();
+		var indexedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
 		//build the list
-		doBuildTabList(containerDOMElement, orderedTabList, indexedTabList);
+		doBuildTabList(htmlElement, orderedTabList, indexedTabList);
 		
 		//concatenate the 2 arrays
 		for (i in 0...orderedTabList.length)
@@ -242,14 +242,17 @@ class AbstractFocusManagerImpl
 	 * the reference to the arrays which must contain
 	 * the ordered focusable DOMElements
 	 */
-	private function doBuildTabList(containerDOMElement:ContainerDOMElement, orderedTabList:Array<DOMElement>, indexedTabList:Array<DOMElement>):Void
+	private function doBuildTabList(htmlElement:HTMLElement, orderedTabList:Array<HTMLElement>, indexedTabList:Array<HTMLElement>):Void
 	{
+		//TODO : re implement
+		
+		/**
 		//loop in all children
-		for (i in 0...containerDOMElement.children.length)
+		for (i in 0...htmlElement.childNodes.length)
 		{
-			if (containerDOMElement.children[i].type == ContainerDOMElementChildValue.domElement)
+			if (htmlElement.childNodes[i].nodeType == NodeType.ELEMENT_NODE)
 			{
-				var child:DOMElement = containerDOMElement.children[i].child;
+				var child:HTMLElement = htmlElement.childNodes[i];
 				
 				//if the child is also a ContainerDOMElement, call the doBuildTabList
 				//recursively
@@ -304,6 +307,7 @@ class AbstractFocusManagerImpl
 				}
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -315,13 +319,13 @@ class AbstractFocusManagerImpl
 	 */
 	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
 	{
-		if (activeDOMElement.onMouseDown != null)
+		if (activeElement.onMouseDown != null)
 		{
 			//TODO : replace mouse click event + add right coordinate
 			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN,
 			0.0, 0.0, 0.0, 0.0, false, false, false);
 			
-			activeDOMElement.onMouseDown(mouseEvent);
+			activeElement.onMouseDown(mouseEvent);
 		}
 	
 	}
@@ -336,14 +340,14 @@ class AbstractFocusManagerImpl
 	 * one and then call the focus in on the 
 	 * new one
 	 */
-	private function setActiveDOMElement(value:DOMElement):DOMElement
+	private function setActiveElement(value:HTMLElement):HTMLElement
 	{
 		//only call if there is a previous activeDOMElement
-		if (_activeDOMElement != null)
+		if (_activeElement != null)
 		{
-			if (_activeDOMElement.onFocusOut != null)
+			if (_activeElement.onFocusOut != null)
 			{
-				_activeDOMElement.onFocusOut();
+				_activeElement.onFocusOut();
 			}
 		}
 		
@@ -351,46 +355,46 @@ class AbstractFocusManagerImpl
 		//to the BodyDOMElement
 		if (value == null)
 		{
-			value = _bodyDOMElement;
+			value = _bodyElement;
 		}
 		
 		//do nothing if the new avctiveDOMElement is the same
 		//as the current one
-		if (value != _activeDOMElement)
+		if (value != _activeElement)
 		{
-			_activeDOMElement = value;
-			if (_activeDOMElement.onFocusIn != null)
+			_activeElement = value;
+			if (_activeElement.onFocusIn != null)
 			{
-				_activeDOMElement.onFocusIn();
+				_activeElement.onFocusIn();
 			}
 		}
 		
-		return _activeDOMElement;
+		return _activeElement;
 	}
 	
-	private function getActiveDOMElement():DOMElement
+	private function getActiveElement():HTMLElement
 	{
-		return _activeDOMElement;
+		return _activeElement;
 	}
 	
 	/**
 	 * when the bodyDOMelement is defined for the FocusManager,
 	 * reset the activeDOMElement and the tab list
 	 */
-	private function setBodyDOMElement(value:BodyDOMElement):BodyDOMElement
+	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
 	{
-		_bodyDOMElement = value;
-		activeDOMElement = null;
+		_bodyElement = value;
+		activeElement = null;
 		
 		invalidate();
 
 		
-		return _bodyDOMElement;
+		return _bodyElement;
 	}
 	
-	private function getBodyDOMElement():BodyDOMElement
+	private function getBodyElement():HTMLBodyElement
 	{
-		return _bodyDOMElement;
+		return _bodyElement;
 	}
 	
 }

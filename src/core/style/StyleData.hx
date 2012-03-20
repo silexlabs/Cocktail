@@ -7,7 +7,6 @@
 */
 package core.style;
 
-import cocktail.domElement.DOMElement;
 import core.unit.UnitData;
 import core.geom.GeomData;
 import core.geom.Matrix;

@@ -7,9 +7,10 @@
 */
 package cocktailCore.textElement.abstract;
 
-import cocktail.domElement.ContainerDOMElement;
 import cocktailCore.textElement.NativeTextElement;
 import cocktailCore.textElement.TextElementData;
+import core.dom.HTMLElement;
+import core.dom.Node;
 import core.style.StyleData;
 import haxe.Log;
 
@@ -53,8 +54,8 @@ class AbstractTextElement
 	 * A reference to the parent ContainerDOMElement
 	 * to which this TextElement is attached
 	 */
-	private var _parent:ContainerDOMElement;
-	public var parent(getParent, setParent):ContainerDOMElement;
+	private var _parent:HTMLElement;
+	public var parent(getParent, setParent):HTMLElement;
 	
 	
 	/**
@@ -286,12 +287,12 @@ class AbstractTextElement
 		return _nativeText;
 	}
 	
-	private function setParent(value:ContainerDOMElement):ContainerDOMElement
+	private function setParent(value:HTMLElement):HTMLElement
 	{
 		return _parent = value;
 	}
 	
-	private function getParent():ContainerDOMElement
+	private function getParent():HTMLElement
 	{
 		return _parent;
 	}

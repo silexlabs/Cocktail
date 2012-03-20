@@ -7,7 +7,7 @@
 */
 package cocktailCore.domElement.abstract;
 
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.geom.GeomData;
 import cocktail.domElement.ImageDOMElement;
 import core.geom.Matrix;

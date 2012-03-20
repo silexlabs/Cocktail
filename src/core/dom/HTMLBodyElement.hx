@@ -49,7 +49,7 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	override private function initFocus():Void
 	{
-		FocusManager.getInstance().bodyDOMElement = cast(this);
+		FocusManager.getInstance().bodyElement = cast(this);
 		super.initFocus();
 	}
 	

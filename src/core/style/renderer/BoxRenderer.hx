@@ -9,7 +9,7 @@ package core.style.renderer;
 
 import core.nativeElement.NativeElement;
 import core.background.BackgroundManager;
-import port.Style;
+import core.Style;
 import haxe.Log;
 
 /**

@@ -6,9 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.style.formatter;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.EmbeddedDOMElement;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.style.renderer.BlockBoxRenderer;

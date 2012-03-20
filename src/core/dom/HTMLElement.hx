@@ -7,7 +7,7 @@ import cocktailCore.focus.FocusManager;
 import core.keyboard.Keyboard;
 import core.mouse.Mouse;
 import core.style.ContainerStyle;
-import port.Style;
+import core.Style;
 import core.style.StyleData;
 
 /**
@@ -472,7 +472,7 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		FocusManager.getInstance().activeDOMElement = cast(this);
+		FocusManager.getInstance().activeElement = cast(this);
 	}
 	
 	private function setOnFocusIn(value:Void->Void):Void->Void

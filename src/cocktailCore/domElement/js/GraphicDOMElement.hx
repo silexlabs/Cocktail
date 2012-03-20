@@ -11,7 +11,7 @@ import core.nativeElement.NativeElement;
 import js.Dom;
 import js.Lib;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.geom.GeomData;
 import core.style.StyleData;
 

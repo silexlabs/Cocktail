@@ -7,7 +7,6 @@
 */
 package core.style.computer.boxComputers;
 
-import cocktail.domElement.EmbeddedDOMElement;
 import core.style.AbstractStyle;
 import core.style.StyleData;
 import core.unit.UnitManager;

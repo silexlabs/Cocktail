@@ -7,7 +7,7 @@
 */
 package core.mouse;
 
-import cocktail.domElement.DOMElement;
+import core.dom.HTMLImageElement;
 import core.geom.GeomData;
 
 /**
@@ -25,7 +25,7 @@ enum MouseCursorValue {
 	 * an image dom element. The hotSpot is the registration
 	 * point of the cursor.
 	 */
-	custom(imageDOMElement:DOMElement, hotSpot:PointData);
+	custom(htmlImageElement:HTMLImageElement, hotSpot:PointData);
 	
 	/**
 	 * Let the browser manage the mouse cursor
