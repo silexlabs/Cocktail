@@ -12,7 +12,7 @@ import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.style.ContainerStyle;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import cocktailCore.domElement.DOMElementData;
 import cocktail.textElement.TextElement;
 import core.style.renderer.TextRenderer;

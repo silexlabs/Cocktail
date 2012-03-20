@@ -7,9 +7,8 @@
 */
 package core.style.computer;
 
-import cocktail.domElement.DOMElement;
 import core.style.AbstractStyle;
-import port.Style;
+import core.Style;
 import core.style.StyleData;
 import core.unit.UnitData;
 import core.unit.UnitManager;

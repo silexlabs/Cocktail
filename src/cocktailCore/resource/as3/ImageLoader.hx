@@ -11,8 +11,6 @@ import core.nativeElement.NativeElement;
 import cocktailCore.resource.abstract.AbstractImageLoader;
 import haxe.Log;
 
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
 import cocktail.resource.ResourceData;
 
 /**

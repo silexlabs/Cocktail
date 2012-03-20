@@ -10,7 +10,7 @@ package core.style.renderer;
 import core.nativeElement.NativeElement;
 import core.drawing.DrawingManager;
 import core.geom.GeomData;
-import port.Style;
+import core.Style;
 
 /**
  * This is the base class for element renderers.

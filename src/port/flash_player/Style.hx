@@ -7,7 +7,6 @@
 */
 package port.flash_player;
 
-import cocktail.domElement.DOMElement;
 import core.geom.Matrix;
 import core.geom.GeomData;
 import core.nativeElement.NativeElement;

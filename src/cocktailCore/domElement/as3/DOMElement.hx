@@ -13,7 +13,7 @@ import flash.events.MouseEvent;
 import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
 import core.geom.Matrix;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.geom.GeomData;
 
 /**

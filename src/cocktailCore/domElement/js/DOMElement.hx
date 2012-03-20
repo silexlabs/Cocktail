@@ -11,7 +11,7 @@ import core.nativeElement.NativeElement;
 import haxe.Log;
 import js.Dom;
 import cocktailCore.domElement.abstract.AbstractDOMElement;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.geom.Matrix;
 import core.geom.GeomData;
 

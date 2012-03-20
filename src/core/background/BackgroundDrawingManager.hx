@@ -16,7 +16,7 @@ import core.geom.GeomData;
 import core.unit.UnitData;
 import core.style.StyleData;
 import cocktailCore.resource.ImageLoader;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.unit.UnitManager;
 import haxe.Log;
 

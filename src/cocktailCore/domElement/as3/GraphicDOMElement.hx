@@ -23,7 +23,7 @@ import haxe.Log;
 import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import core.geom.GeomData;
 import core.style.StyleData;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 
 /**
  * This is the Flash AVM2 implementation of the graphic DOMElement.

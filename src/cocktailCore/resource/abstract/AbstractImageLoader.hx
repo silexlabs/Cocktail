@@ -6,7 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktailCore.resource.abstract;
-import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;

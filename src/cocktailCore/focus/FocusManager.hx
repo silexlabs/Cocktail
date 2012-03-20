@@ -7,9 +7,8 @@
 */
 package cocktailCore.focus;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
+import core.dom.HTMLBodyElement;
+import core.dom.HTMLElement;
 import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
@@ -50,12 +49,12 @@ class FocusManager
 	/**
 	 * get/set the bodyDOMElement at the top of the DOM
 	 */
-	public var bodyDOMElement(getBodyDOMElement, setBodyDOMElement):BodyDOMElement;
+	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
 	
 	/**
 	 * get/set the currently active (focused) DOMElement
 	 */
-	public var activeDOMElement(getActiveDOMElement, setActiveDOMElement):DOMElement;
+	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
 	
 	/**
 	 * an instance of the actual implementation of the
@@ -104,23 +103,23 @@ class FocusManager
 	// forward to the focus manager implementation
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setActiveDOMElement(value:DOMElement):DOMElement
+	private function setActiveElement(value:HTMLElement):HTMLElement
 	{
-		return _focusManagerImpl.activeDOMElement = value;
+		return _focusManagerImpl.activeElement = value;
 	}
 	
-	private function getActiveDOMElement():DOMElement
+	private function getActiveElement():HTMLElement
 	{
-		return _focusManagerImpl.activeDOMElement;
+		return _focusManagerImpl.activeElement;
 	}
 	
-	private function setBodyDOMElement(value:BodyDOMElement):BodyDOMElement
+	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
 	{
-		return _focusManagerImpl.bodyDOMElement = value;
+		return _focusManagerImpl.bodyElement = value;
 	}
 	
-	private function getBodyDOMElement():BodyDOMElement
+	private function getBodyElement():HTMLBodyElement
 	{
-		return _focusManagerImpl.bodyDOMElement;
+		return _focusManagerImpl.bodyElement;
 	}
 }

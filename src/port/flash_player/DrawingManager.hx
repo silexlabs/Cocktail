@@ -7,8 +7,6 @@
 */
 package port.flash_player;
 
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
 import core.nativeElement.NativeElement;
 import core.drawing.AbstractDrawingManager;
 import flash.display.Bitmap;
@@ -19,7 +17,7 @@ import flash.display.JointStyle;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
 import core.geom.Matrix;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.geom.GeomData;
 import flash.geom.ColorTransform;
 import haxe.Log;

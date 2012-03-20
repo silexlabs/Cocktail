@@ -7,8 +7,6 @@
 */
 package core.style.formatter;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.dom.HTMLElement;

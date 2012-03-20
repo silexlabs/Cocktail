@@ -5,28 +5,18 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package port;
+package core;
 
 /**
- * Set the right runtime specific Style at compile-time
+ * Set the right runtime specific TextElement at compile-time
  */
-#if (flash9 || cpp )
-typedef Style =  port.flash_player.Style;
-
-#elseif nme
-typedef Style =  port.nme.Style;
+#if (flash9 || cpp || nme)
+typedef TextElement = cocktailCore.textElement.as3.TextElement;
 
 #elseif js
-typedef Style =  port.browser.Style;
+typedef TextElement =  cocktailCore.textElement.js.TextElement;
 
 #elseif php
-typedef Style =  core.style.php.Style;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class Style extends core.style.AbstractStyle { }
+typedef TextElement =  cocktailCore.textElement.php.TextElement;
 
 #end

@@ -5,22 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.style.positioner;
+package core;
 
 /**
- * This is the box positioner class for
- * 'fixed' DOMElements. They are positioned
- * by using the viewport as origin
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific drawing manager at compile-time
  */
-class FixedPositioner extends BoxPositioner
-{
-	/**
-	 * class constructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-}
+#if (flash9 || cpp || nme)
+typedef DrawingManager =  port.flash_player.DrawingManager;
+
+#elseif js
+typedef DrawingManager =  port.browser.DrawingManager;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class DrawingManager extends core.drawing.AbstractDrawingManager{}
+
+#end

@@ -10,7 +10,7 @@ package cocktailCore.domElement.abstract;
 import cocktail.domElement.ContainerDOMElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import cocktail.domElement.DOMElementData;
+import cocktailCore.domElement.DOMElementData;
 import core.mouseMouseData;
 
 /**
