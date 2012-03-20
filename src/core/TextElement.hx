@@ -11,12 +11,12 @@ package core;
  * Set the right runtime specific TextElement at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef TextElement = cocktailCore.textElement.as3.TextElement;
+typedef TextElement = port.flash_player.TextElement;
 
 #elseif js
-typedef TextElement =  cocktailCore.textElement.js.TextElement;
+typedef TextElement =  port.browser.TextElement;
 
 #elseif php
-typedef TextElement =  cocktailCore.textElement.php.TextElement;
+typedef TextElement =  core.textElement.php.TextElement;
 
 #end

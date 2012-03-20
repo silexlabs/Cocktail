@@ -9,7 +9,7 @@ package core.style.renderer;
 
 import core.nativeElement.NativeElement;
 import core.Style;
-import cocktailCore.textElement.TextElementData;
+import core.textElement.TextElementData;
 import haxe.Log;
 
 /**
