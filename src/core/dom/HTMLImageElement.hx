@@ -3,7 +3,7 @@ import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.Event;
-import cocktailCore.resource.ImageLoader;
+import core.ImageLoader;
 import core.EmbeddedStyle;
 
 /**

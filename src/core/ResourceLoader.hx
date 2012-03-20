@@ -5,22 +5,18 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core;
+package cocktailCore.resource;
 
 /**
- * Set the right runtime specific NativeTextElement at compile-time
- * 
- * A NativeTextElement is an abstraction of a text element, variying
- * based on runtime
+ * Set the right runtime specific ResourceLoader at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef NativeTextElement = String;
+typedef ResourceLoader = core.resource.as3.ResourceLoader;
 
 #elseif js
-import js.Dom;
-typedef NativeTextElement =  js.HtmlDom;
+typedef ResourceLoader = core.resource.js.ResourceLoader;
 
 #elseif php
-typedef NativeTextElement =  String;
+typedef ResourceLoader = core.resource.php.ResourceLoader;
 
 #end

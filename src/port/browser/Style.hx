@@ -12,8 +12,8 @@ import core.nativeElement.NativeElement;
 import core.style.AbstractStyle;
 import core.unit.UnitData;
 import core.style.formatter.FormattingContext;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.FlowBoxRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 import core.style.StyleData;

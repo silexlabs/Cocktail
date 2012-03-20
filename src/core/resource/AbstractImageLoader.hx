@@ -5,26 +5,33 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.php;
-
-import cocktailCore.resource.abstract.AbstractResourceLoader;
+package core.resource;
+import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
+import core.resource.ResourceLoader;
+import haxe.Http;
+import haxe.Log;
 
 /**
- * This is the Animation loader implementation for the PHP runtime. It can be used to 
- * load .svg animation file.
+ * This class is in charge of loading a picture. When multiple
+ * pictures are loaded with the same instance, the picture is 
+ * replaced
  * 
- * TO DO
- * 
- * @author	Raphael HARMEL
- * @date	2011-08-03
+ * @author Yannick DOMINGUEZ
  */
-class AnimationLoader extends AbstractResourceLoader
+class AbstractImageLoader extends ResourceLoader
 {
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(nativeElement:NativeElement = null)
 	{
-		super();
+		//create an image nativeElement if none is provided
+		if (nativeElement == null)
+		{
+			nativeElement = NativeElementManager.createNativeElement(image);
+		}
+		super(nativeElement);
 	}
 }

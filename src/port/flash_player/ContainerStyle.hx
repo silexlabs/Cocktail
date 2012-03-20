@@ -11,7 +11,7 @@ import core.dom.HTMLElement;
 import core.style.AbstractContainerStyle;
 import core.style.AbstractStyle;
 import core.style.StyleData;
-import core.style.renderer.TextRenderer;
+import core.renderer.TextRenderer;
 import core.Text;
 import core.dom.DOMData;
 import core.unit.UnitManager;
