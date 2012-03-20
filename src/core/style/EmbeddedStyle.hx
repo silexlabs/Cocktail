@@ -14,7 +14,7 @@ package core.style;
 typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 
 #elseif js
-typedef EmbeddedStyle =  core.style.js.EmbeddedStyle;
+typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 
 #elseif php
 typedef EmbeddedStyle =  core.style.php.EmbeddedStyle;

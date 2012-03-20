@@ -77,6 +77,10 @@ class Keyboard extends AbstractKeyboard
 				
 			case KEY_UP_EVENT:
 				eventType = KeyboardEvent.KEY_UP;
+				
+			default:
+				//TODO : become custom event ?
+				eventType = event.type;	
 		}
 		
 		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, event.charCode, 

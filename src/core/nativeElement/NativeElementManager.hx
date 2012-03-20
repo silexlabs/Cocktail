@@ -13,8 +13,8 @@ import port.flash_player.NativeElementCreator;
 import port.flash_player.NativeElementPathManager;
 
 #elseif js
-import port.browser.js.NativeElementCreator;
-import port.browser.js.NativeElementPathManager;
+import port.browser.NativeElementCreator;
+import port.browser.NativeElementPathManager;
 
 #elseif doc
 class NativeElementCreator extends core.nativeElement.AbstractNativeElementCreator { }
@@ -39,6 +39,8 @@ import core.nativeElement.NativeElement;
  */
 class NativeElementManager 
 {
+	//TODO : don't need 2 separate classes, create a NativeElementManagerImpl ?
+	
 	/**
 	 * A reference to the runtime specific implementation of the class
 	 * instantiating the new native elements

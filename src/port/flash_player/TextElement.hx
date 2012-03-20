@@ -9,7 +9,7 @@ package port.flash_player;
 
 import core.style.StyleData;
 import core.textElement.AbstractTextElement;
-import core.textElement.TextElementData;
+import core.dom.DOMData;
 import haxe.Log;
 
 /**

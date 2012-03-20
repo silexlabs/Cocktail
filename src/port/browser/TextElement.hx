@@ -8,8 +8,8 @@
 package port.browser;
 
 import core.style.StyleData;
-import core.textElement.abstract.AbstractTextElement;
-import core.textElement.TextElementData;
+import core.textElement.AbstractTextElement;
+import core.dom.DOMData;
 import js.Lib;
 
 /**

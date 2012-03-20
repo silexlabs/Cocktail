@@ -20,4 +20,15 @@ class Element extends Node
 	{
 		return _tagName;
 	}
+	
+	override private function get_nodeName():String
+	{
+		return _tagName;
+	}
+	
+	//TODO : throw DOMException ?
+	override private function set_nodeName(value:String):String
+	{
+		return value;
+	}
 }

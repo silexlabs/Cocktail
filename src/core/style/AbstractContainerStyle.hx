@@ -44,7 +44,7 @@ import haxe.Timer;
 #if (flash9 || cpp || nme)
 import port.flash_player.Style;
 #elseif js
-import core.style.js.Style;
+import port.browser.Style;
 #end
 
 import haxe.Log;

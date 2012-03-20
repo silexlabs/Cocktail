@@ -23,7 +23,7 @@ import haxe.Log;
 #if (flash9 || cpp || nme)
 import port.flash_player.ContainerStyle;
 #elseif js
-import core.style.js.ContainerStyle;
+import core.style.AbstractContainerStyle;
 #end
 
 /**

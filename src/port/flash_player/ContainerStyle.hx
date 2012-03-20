@@ -13,7 +13,7 @@ import core.style.AbstractStyle;
 import core.style.StyleData;
 import core.style.renderer.TextRenderer;
 import core.textElement.AbstractTextElement;
-import core.textElement.TextElementData;
+import core.dom.DOMData;
 import core.unit.UnitManager;
 import core.unit.UnitData;
 import flash.text.TextFieldAutoSize;
