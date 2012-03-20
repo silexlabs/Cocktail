@@ -7,7 +7,7 @@
 */
 package core.style.floats;
 
-import core.style.renderer.ElementRenderer;
+import core.renderer.ElementRenderer;
 import core.dom.HTMLElement;
 import core.style.formatter.FormattingContext;
 import core.style.StyleData;

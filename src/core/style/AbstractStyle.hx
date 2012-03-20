@@ -37,10 +37,10 @@ import core.style.positioner.RelativePositioner;
 import core.unit.UnitData;
 import core.style.StyleData;
 import core.geom.GeomData;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.EmbeddedBoxRenderer;
-import core.style.renderer.FlowBoxRenderer;
-import core.style.renderer.LayerRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.EmbeddedBoxRenderer;
+import core.renderer.FlowBoxRenderer;
+import core.renderer.LayerRenderer;
 import haxe.Log;
 import haxe.Timer;
 

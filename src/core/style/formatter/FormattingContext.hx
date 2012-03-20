@@ -11,9 +11,9 @@ import core.dom.HTMLElement;
 import core.style.floats.FloatsManager;
 import core.style.StyleData;
 import core.geom.GeomData;
-import core.style.renderer.BlockBoxRenderer;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.FlowBoxRenderer;
+import core.renderer.BlockBoxRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 /**

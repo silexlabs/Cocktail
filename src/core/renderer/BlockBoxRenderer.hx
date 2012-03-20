@@ -1,4 +1,4 @@
-package core.style.renderer;
+package core.renderer;
 
 import core.nativeElement.NativeElement;
 import core.Style;

@@ -12,9 +12,9 @@ import core.geom.GeomData;
 import core.geom.Matrix;
 import core.style.AbstractStyle;
 import core.style.formatter.FormattingContext;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.InlineBoxRenderer;
-import core.style.renderer.TextRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.InlineBoxRenderer;
+import core.renderer.TextRenderer;
 	
 	
 		// FONT STYLES

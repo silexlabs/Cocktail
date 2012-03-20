@@ -14,10 +14,10 @@ import core.style.formatter.BlockFormattingContext;
 import core.style.formatter.FormattingContext;
 import core.style.StyleData;
 import core.geom.GeomData;
-import core.style.renderer.ElementRenderer;
-import core.style.renderer.FlowBoxRenderer;
-import core.style.renderer.InitialBlockRenderer;
-import core.style.renderer.LayerRenderer;
+import core.renderer.ElementRenderer;
+import core.renderer.FlowBoxRenderer;
+import core.renderer.InitialBlockRenderer;
+import core.renderer.LayerRenderer;
 import haxe.Log;
 
 #if (flash9 || cpp || nme)

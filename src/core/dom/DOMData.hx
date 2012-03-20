@@ -1,5 +1,5 @@
 package core.dom;
-import core.style.renderer.TextRenderer;
+import core.renderer.TextRenderer;
 
 /**
  * ...
