@@ -7,9 +7,9 @@
 */
 package cocktailCore.focus.js;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.DOMElement;
 import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
+import core.dom.HTMLBodyElement;
+import core.dom.HTMLElement;
 
 /**
  * This is the JavaScript implementation of the 
@@ -39,17 +39,17 @@ class FocusManagerImpl extends AbstractFocusManagerImpl
 	/**
 	 * only store the value
 	 */
-	override private function setActiveDOMElement(value:DOMElement):DOMElement
+	override private function setActiveElement(value:HTMLElement):HTMLElement
 	{
-		return _activeDOMElement = value;
+		return _activeElement = value;
 	}
 	
 	/**
 	 * only store the value
 	 */
-	override private function setBodyDOMElement(value:BodyDOMElement):BodyDOMElement
+	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
 	{
-		return _bodyDOMElement = value;
+		return _bodyElement = value;
 	}
 	
 }

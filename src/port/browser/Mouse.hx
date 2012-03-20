@@ -101,7 +101,11 @@ class Mouse extends AbstractMouse
 				eventType = MouseEvent.DOUBLE_CLICK;		
 				
 			case MOUSE_MOVE_EVENT:
-				eventType = MouseEvent.MOUSE_MOVE;		
+				eventType = MouseEvent.MOUSE_MOVE;	
+			
+			default:
+				//TODO : become custom event ?
+				eventType = event.type;		
 		}
 		
 		var mouseEvent:MouseEvent = new MouseEvent(eventType, event.stageX, event.stageY,

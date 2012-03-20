@@ -14,7 +14,7 @@ package core.style;
 typedef ContainerStyle =  port.flash_player.ContainerStyle;
 
 #elseif js
-typedef ContainerStyle =  core.style.js.ContainerStyle;
+typedef ContainerStyle =  core.style.AbstractContainerStyle;
 
 #elseif php
 typedef ContainerStyle =  core.style.php.ContainerStyle;

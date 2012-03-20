@@ -5,33 +5,42 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource.js;
+package port.browser;
 
-import core.nativeElement.NativeElement;
-import core.nativeElement.NativeElementManager;
-import cocktailCore.resource.abstract.AbstractImageLoader;
-import haxe.Http;
-import haxe.Log;
+import core.style.StyleData;
 import js.Lib;
-import js.Dom.HtmlDom;
-import cocktail.resource.ResourceData;
-import core.nativeElement.NativeElementData;
 
 /**
- * This is the Image loader implementation for the JavaScript runtime. It is used to 
- * load pictures that will be attached to the DOM. It loads the picture using
- * an <img> tag and setting it's source to the url of the file to load.
+ * This is the JavaScript implementation of the TextElement.
  * 
+ * In JavaScript, a text element is represented by an 
+ * HTML text node object. 
+ * 
+ * This HTML text node object is created from
+ * the text provided in the constructor.
+ * It is wrapped in a NativeTextElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class ImageLoader extends AbstractImageLoader
+class TextElement extends core.dom.Text
 {
 	/**
-	 * class constructor
+	 * class contructor
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new(text:String)
 	{
-		super(nativeElement);
+		//create and store the native HTML text node
+		_nativeElement = Lib.document.createTextNode(text);
+		
+		super(text);
+	}
+	
+	/**
+	 * Update the native HTML TextNode value
+	 */
+	override private function setText(value:String):String
+	{
+		_nativeElement.nodeValue = value;
+		return value;
 	}
 }

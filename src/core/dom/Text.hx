@@ -1,71 +1,42 @@
-/*
-	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
-	This project is © 2010-2011 Silex Labs and is released under the GPL License:
-	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	To read the license please visit http://www.gnu.org/copyleft/gpl.html
-*/
-package core.textElement;
+package core.dom;
+import core.NativeElement;
 
-import core.NativeTextElement;
 import core.dom.DOMData;
-import core.dom.HTMLElement;
-import core.dom.Node;
 import core.style.StyleData;
-import haxe.Log;
 
 /**
- * A TextElement is an abstraction of an unformatted string of
- * plain text. A TextElement is attached to the DOM when it is
- * added to a ContainerDOMElement. The string of text is then
- * rendered using the styles of the ContainerDOMElement
- * 
+ * ...
  * @author Yannick DOMINGUEZ
  */
-class AbstractTextElement 
-{
 
-	/**
-	 * The raw text extracted from
-	 * the native text element which can
-	 * be get/set to change the text of
-	 * this TextElement after its creation
-	 */
-	private var _text:String;
-	public var text(getText, setText):String;
-	
+class Text extends CharacterData
+{
 	/**
 	 * The native text element, for instance
 	 * in Flash it is just a String whereas in
 	 * Js it is an HTML text node object
 	 */
-	private var _nativeText:NativeTextElement;
-	public var nativeText(getNativeText, never):NativeTextElement;
+	private var _nativeElement:NativeElement;
+	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
 	 * a space, a tab...) and the corresponding TextFragmentDOMElement,
 	 * created when the text is rendered
+	 * 
+	 * TODO : should be on text renderer instead
 	 */
 	private var _textFragments:Array<TextFragmentData>;
-	
-	/**
-	 * A reference to the parent ContainerDOMElement
-	 * to which this TextElement is attached
-	 */
-	private var _parent:HTMLElement;
-	public var parent(getParent, setParent):HTMLElement;
-	
 	
 	/**
 	 * class constructor
 	 * @param	text the wrapped by this TextElement
 	 */
-	public function new(text:String) 
+	public function new() 
 	{
+		super();
 		_textFragments = new Array<TextFragmentData>();
-		this.text = text;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -272,29 +243,18 @@ class AbstractTextElement
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setText(value:String):String
+	private function get_nativeElement():NativeElement
 	{
-		return _text = value;
+		return _nativeElement;
 	}
 	
-	private function getText():String
+	override private function get_nodeValue():String 
 	{
-		return _text;
+		return _data;
 	}
 	
-	private function getNativeText():NativeTextElement
+	override private function set_nodeValue(value:String):String 
 	{
-		return _nativeText;
+		return data = value;
 	}
-	
-	private function setParent(value:HTMLElement):HTMLElement
-	{
-		return _parent = value;
-	}
-	
-	private function getParent():HTMLElement
-	{
-		return _parent;
-	}
-	
 }

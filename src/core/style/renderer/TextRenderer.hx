@@ -9,7 +9,7 @@ package core.style.renderer;
 
 import core.nativeElement.NativeElement;
 import core.Style;
-import core.textElement.TextElementData;
+import core.dom.DOMData;
 import haxe.Log;
 
 /**

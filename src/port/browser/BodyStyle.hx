@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import cocktail.domElement.DOMElement;
+import core.dom.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.style.AbstractBodyStyle;
 import core.style.StyleData;
@@ -23,9 +23,9 @@ class BodyStyle extends AbstractBodyStyle
 	 * class constructor
 	 * @param	domElement
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

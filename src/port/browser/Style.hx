@@ -5,9 +5,9 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package port.browser.js;
+package port.browser;
 
-import cocktail.domElement.DOMElement;
+import core.dom.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.style.AbstractStyle;
 import core.unit.UnitData;
@@ -57,9 +57,9 @@ class Style extends AbstractStyle
 	/**
 	 * class constructor
 	 */
-	public function new(domElement:DOMElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(domElement);
+		super(htmlElement);
 	}
 	
 	/////////////////////////////////
@@ -1508,273 +1508,273 @@ class Style extends AbstractStyle
 	
 	override private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
-		this._domElement.nativeElement.style.verticalAlign = getCSSVerticalAlign(value);
+		this._htmlElement.nativeElement.style.verticalAlign = getCSSVerticalAlign(value);
 		super.setVerticalAlign(value);
 		return _verticalAlign = value;
 	}
 	
 	override private function setColor(value:ColorValue):ColorValue
 	{
-		this._domElement.nativeElement.style.color = getCSSColor(value);
+		this._htmlElement.nativeElement.style.color = getCSSColor(value);
 		super.setColor(value);
 		return _color = value;
 	}
 	
 	override private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
-		this._domElement.nativeElement.style.wordSpacing = getCSSWordSpacing(value);
+		this._htmlElement.nativeElement.style.wordSpacing = getCSSWordSpacing(value);
 		super.setWordSpacing(value);
 		return _wordSpacing = value;
 	}
 	
 	override private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
-		this._domElement.nativeElement.style.letterSpacing = getCSSLetterSpacing(value);
+		this._htmlElement.nativeElement.style.letterSpacing = getCSSLetterSpacing(value);
 		super.setLetterSpacing(value);
 		return _letterSpacing = value;
 	}
 	
 	override private function setTextTransform(value:TextTransform):TextTransform
 	{
-		this._domElement.nativeElement.style.textTransform = getCSSTextTransform(value);
+		this._htmlElement.nativeElement.style.textTransform = getCSSTextTransform(value);
 		super.setTextTransform(value);
 		return _textTransform = value;
 	}
 	
 	override private function setFontVariant(value:FontVariant):FontVariant
 	{
-		this._domElement.nativeElement.style.fontVariant = getCSSFontVariant(value);
+		this._htmlElement.nativeElement.style.fontVariant = getCSSFontVariant(value);
 		super.setFontVariant(value);
 		return _fontVariant = value;
 	}
 	
 	override private function setFontFamily(value:Array<FontFamily>):Array<FontFamily>
 	{
-		this._domElement.nativeElement.style.fontFamily = getCSSFontFamily(value);
+		this._htmlElement.nativeElement.style.fontFamily = getCSSFontFamily(value);
 		super.setFontFamily(value);
 		return _fontFamily = value;
 	}
 	
 	override private function setFontWeight(value:FontWeight):FontWeight
 	{
-		this._domElement.nativeElement.style.fontWeight = getCSSFontWeight(value);
+		this._htmlElement.nativeElement.style.fontWeight = getCSSFontWeight(value);
 		super.setFontWeight(value);
 		return _fontWeight = value;
 	}
 	
 	override private function setFontStyle(value:FontStyle):FontStyle
 	{
-		this._domElement.nativeElement.style.fontStyle = getCSSFontStyle(value);
+		this._htmlElement.nativeElement.style.fontStyle = getCSSFontStyle(value);
 		super.setFontStyle(value);
 		return _fontStyle = value;
 	}
 	
 	override private function setFontSize(value:FontSize):FontSize
 	{
-		this._domElement.nativeElement.style.fontSize = getCSSFontSize(value);
+		this._htmlElement.nativeElement.style.fontSize = getCSSFontSize(value);
 		super.setFontSize(value);
 		return _fontSize = value;
 	}
 	
 	override private function setLineHeight(value:LineHeight):LineHeight
 	{
-		this._domElement.nativeElement.style.lineHeight = getCSSLineHeight(value);
+		this._htmlElement.nativeElement.style.lineHeight = getCSSLineHeight(value);
 		super.setLineHeight(value);
 		return _lineHeight = value;
 	}
 	
 	override private function setMarginLeft(value:Margin):Margin 
 	{
-		this._domElement.nativeElement.style.marginLeft = getCSSMargin(value);
+		this._htmlElement.nativeElement.style.marginLeft = getCSSMargin(value);
 		super.setMarginLeft(value);
 		return _marginLeft = value;
 	}
 	
 	override private function setMarginRight(value:Margin):Margin 
 	{
-		this._domElement.nativeElement.style.marginRight = getCSSMargin(value);
+		this._htmlElement.nativeElement.style.marginRight = getCSSMargin(value);
 		super.setMarginRight(value);
 		return _marginRight = value;
 	}
 	
 	override private function setMarginTop(value:Margin):Margin 
 	{
-		this._domElement.nativeElement.style.marginTop = getCSSMargin(value);
+		this._htmlElement.nativeElement.style.marginTop = getCSSMargin(value);
 		super.setMarginTop(value);
 		return _marginTop = value;
 	}
 	
 	override private function setMarginBottom(value:Margin):Margin 
 	{
-		this._domElement.nativeElement.style.marginBottom = getCSSMargin(value);
+		this._htmlElement.nativeElement.style.marginBottom = getCSSMargin(value);
 		super.setMarginBottom(value);
 		return _marginBottom = value;
 	}
 	
 	override private function setPaddingLeft(value:Padding):Padding 
 	{
-		this._domElement.nativeElement.style.paddingLeft = getCSSPadding(value);
+		this._htmlElement.nativeElement.style.paddingLeft = getCSSPadding(value);
 		super.setPaddingLeft(value);
 		return _paddingLeft = value;
 	}
 	
 	override private function setPaddingRight(value:Padding):Padding 
 	{
-		this._domElement.nativeElement.style.paddingRight = getCSSPadding(value);
+		this._htmlElement.nativeElement.style.paddingRight = getCSSPadding(value);
 		super.setPaddingRight(value);
 		return _paddingRight = value;
 	}
 	
 	override private function setPaddingTop(value:Padding):Padding 
 	{
-		this._domElement.nativeElement.style.paddingTop = getCSSPadding(value);
+		this._htmlElement.nativeElement.style.paddingTop = getCSSPadding(value);
 		super.setPaddingTop(value);
 		return _paddingTop = value;
 	}
 	
 	override private function setPaddingBottom(value:Padding):Padding 
 	{
-		this._domElement.nativeElement.style.paddingBottom = getCSSPadding(value);
+		this._htmlElement.nativeElement.style.paddingBottom = getCSSPadding(value);
 		super.setPaddingBottom(value);
 		return _paddingBottom = value;
 	}
 	
 	override private function setDisplay(value:Display):Display 
 	{
-		this._domElement.nativeElement.style.display = getCSSDisplay(value);
+		this._htmlElement.nativeElement.style.display = getCSSDisplay(value);
 		super.setDisplay(value);
 		return _display = value;
 	}
 	
 	override private function setPosition(value:Position):Position 
 	{
-		this._domElement.nativeElement.style.position = getCSSPosition(value);
+		this._htmlElement.nativeElement.style.position = getCSSPosition(value);
 		super.setPosition(value);
 		return _position = value;
 	}
 	
 	override private function setWidth(value:Dimension):Dimension 
 	{
-		this._domElement.nativeElement.style.width = getCSSDimension(value);
+		this._htmlElement.nativeElement.style.width = getCSSDimension(value);
 		super.setWidth(value);
 		return _width = value;
 	}
 	
 	override private function setHeight(value:Dimension):Dimension 
 	{
-		this._domElement.nativeElement.style.height = getCSSDimension(value);
+		this._htmlElement.nativeElement.style.height = getCSSDimension(value);
 		super.setHeight(value);
 		return _height = value;
 	}
 	
 	override private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		this._domElement.nativeElement.style.minHeight = getCSSConstrainedDimension(value);
+		this._htmlElement.nativeElement.style.minHeight = getCSSConstrainedDimension(value);
 		super.setMinHeight(value);
 		return _minHeight = value;
 	}
 	
 	override private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		this._domElement.nativeElement.style.maxHeight = getCSSConstrainedDimension(value);
+		this._htmlElement.nativeElement.style.maxHeight = getCSSConstrainedDimension(value);
 		super.setMaxHeight(value);
 		return _maxHeight = value;
 	}
 	
 	override private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		this._domElement.nativeElement.style.minWidth = getCSSConstrainedDimension(value);
+		this._htmlElement.nativeElement.style.minWidth = getCSSConstrainedDimension(value);
 		super.setMinWidth(value);
 		return _minWidth = value;
 	}
 	
 	override private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		this._domElement.nativeElement.style.maxWidth = getCSSConstrainedDimension(value);
+		this._htmlElement.nativeElement.style.maxWidth = getCSSConstrainedDimension(value);
 		super.setMaxWidth(value);
 		return _maxWidth = value;
 	}
 	
 	override private function setTop(value:PositionOffset):PositionOffset 
 	{
-		this._domElement.nativeElement.style.top = getCSSPositionOffset(value);
+		this._htmlElement.nativeElement.style.top = getCSSPositionOffset(value);
 		super.setTop(value);
 		return _top = value;
 	}
 	
 	override private function setLeft(value:PositionOffset):PositionOffset 
 	{
-		this._domElement.nativeElement.style.left = getCSSPositionOffset(value);
+		this._htmlElement.nativeElement.style.left = getCSSPositionOffset(value);
 		super.setLeft(value);
 		return _left = value;
 	}
 	
 	override private function setBottom(value:PositionOffset):PositionOffset 
 	{
-		this._domElement.nativeElement.style.bottom = getCSSPositionOffset(value);
+		this._htmlElement.nativeElement.style.bottom = getCSSPositionOffset(value);
 		super.setBottom(value);
 		return _bottom = value;
 	}
 	
 	override private function setRight(value:PositionOffset):PositionOffset 
 	{
-		this._domElement.nativeElement.style.right = getCSSPositionOffset(value);
+		this._htmlElement.nativeElement.style.right = getCSSPositionOffset(value);
 		super.setRight(value);
 		return _right = value;
 	}
 	
 	override private function setTextIndent(value:TextIndent):TextIndent
 	{
-		this._domElement.nativeElement.style.textIndent = getCSSTextIndent(value);
+		this._htmlElement.nativeElement.style.textIndent = getCSSTextIndent(value);
 		super.setTextIndent(value);
 		return _textIndent = value;
 	}
 	
 	override private function setFloatValue(value:FloatStyle):FloatStyle 
 	{
-		untyped this._domElement.nativeElement.style.cssFloat = getCSSFloat(value);
+		untyped this._htmlElement.nativeElement.style.cssFloat = getCSSFloat(value);
 		super.setFloatValue(value);
 		return floatValue = value;
 	}
 	
 	override private function setClear(value:Clear):Clear 
 	{
-		this._domElement.nativeElement.style.clear = getCSSClear(value);
+		this._htmlElement.nativeElement.style.clear = getCSSClear(value);
 		super.setClear(value);
 		return _clear = value;
 	}
 	
 	override private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
-		this._domElement.nativeElement.style.whiteSpace = getCSSWhiteSpace(value);
+		this._htmlElement.nativeElement.style.whiteSpace = getCSSWhiteSpace(value);
 		super.setWhiteSpace(value);
 		return _whiteSpace = value;
 	}
 	
 	override private function setTextAlign(value:TextAlign):TextAlign
 	{
-		this._domElement.nativeElement.style.textAlign = getCSSTextAlign(value);
+		this._htmlElement.nativeElement.style.textAlign = getCSSTextAlign(value);
 		super.setTextAlign(value);
 		return _textAlign = value;
 	}
 	
 	override private function setOpacity(value:Opacity):Opacity
 	{
-		untyped this._domElement.nativeElement.style.opacity = getCSSOpacity(value);
+		untyped this._htmlElement.nativeElement.style.opacity = getCSSOpacity(value);
 		super.setOpacity(value);
 		return _opacity = value;
 	}
 	
 	override private function setVisibility(value:Visibility):Visibility
 	{
-		this._domElement.nativeElement.style.visibility = getCSSVisibility(value);
+		this._htmlElement.nativeElement.style.visibility = getCSSVisibility(value);
 		super.setVisibility(value);
 		return _visibility = value;
 	}
 	
 	override private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
-		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		var nativeStyle:Dynamic = this._htmlElement.nativeElement.style;
 		//get vendor specific style name
 		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transformOrigin");
 		//only apply the style if it exists
@@ -1789,7 +1789,7 @@ class Style extends AbstractStyle
 	
 	override private function setTransform(value:Transform):Transform
 	{
-		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		var nativeStyle:Dynamic = this._htmlElement.nativeElement.style;
 		//get vendor specific style name
 		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "transform");
 		//only apply the style if it exists
@@ -1804,14 +1804,14 @@ class Style extends AbstractStyle
 	
 	override private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
-		this._domElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
+		this._htmlElement.nativeElement.style.backgroundColor = getCSSBackgroundColor(value);
 		super.setBackgroundColor(value);
 		return _backgroundColor;
 	}
 	
 	override private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
-		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		var nativeStyle:Dynamic = this._htmlElement.nativeElement.style;
 		//get vendor specific style name
 		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundOrigin");
 		//only apply the style if it exists
@@ -1826,7 +1826,7 @@ class Style extends AbstractStyle
 	
 	override private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
-		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		var nativeStyle:Dynamic = this._htmlElement.nativeElement.style;
 		//get vendor specific style name
 		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundClip");
 		//only apply the style if it exists
@@ -1845,9 +1845,9 @@ class Style extends AbstractStyle
 		
 		//as gradient are not standard yet in CSS, the property has to be applied with each vendor speicific prefix, only the 
 		//right one will be used
-		this._domElement.nativeElement.style.backgroundImage = cssBackgroundImage;
-		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-webkit-linear-gradient');
-		this._domElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-moz-linear-gradient');
+		this._htmlElement.nativeElement.style.backgroundImage = cssBackgroundImage;
+		this._htmlElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-webkit-linear-gradient');
+		this._htmlElement.nativeElement.style.backgroundImage = StringTools.replace(cssBackgroundImage, 'linear-gradient', '-moz-linear-gradient');
 		
 		super.setBackgroundImage(value);
 		return _backgroundImage;
@@ -1855,14 +1855,14 @@ class Style extends AbstractStyle
 	
 	override private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
-		this._domElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
+		this._htmlElement.nativeElement.style.backgroundPosition = getCSSBackgroundPosition(value);
 		super.setBackgroundPosition(value);
 		return _backgroundPosition;
 	}
 	
 	override private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
-		var nativeStyle:Dynamic = this._domElement.nativeElement.style;
+		var nativeStyle:Dynamic = this._htmlElement.nativeElement.style;
 		//get vendor specific style name
 		var vendorSpecificName:String = getVendorSpecificStyleName(nativeStyle, "backgroundSize");
 		//only apply the style if it exists
@@ -1877,15 +1877,15 @@ class Style extends AbstractStyle
 	
 	override private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
-		this._domElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
+		this._htmlElement.nativeElement.style.backgroundRepeat = getCSSBackgroundRepeat(value);
 		super.setBackgroundRepeat(value);
 		return _backgroundRepeat;
 	}
 	
 	override private function setOverflow(value:OverflowStyleData):OverflowStyleData
 	{
-		this._domElement.nativeElement.style.overflowX = getCSSOverflow(value.x);
-		this._domElement.nativeElement.style.overflowY = getCSSOverflow(value.y);
+		this._htmlElement.nativeElement.style.overflowX = getCSSOverflow(value.x);
+		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value.y);
 		super.setOverflow(value);
 		return _overflow = value;
 	}

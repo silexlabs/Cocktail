@@ -7,18 +7,16 @@
 */
 package port.browser;
 
+import core.dom.HTMLImageElement;
 import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 
 import core.drawing.AbstractDrawingManager;
 import js.Dom;
 import js.Lib;
-import cocktailCore.domElement.abstract.AbstractGraphicDOMElement;
 import cocktailCore.domElement.DOMElementData;
-import cocktail.domElement.DOMElement;
 import core.geom.GeomData;
 import core.style.StyleData;
-import cocktail.domElement.ImageDOMElement;
 import core.unit.UnitData;
 
 /**
@@ -401,7 +399,7 @@ class DrawingManager extends AbstractDrawingManager
 	 * CanvasPattern
 	 * @param	repeat whether to tile the CanvasPattern
 	 */
-	private function getCanvasPattern(imageDOMElement:DOMElement, repeat:Bool):Dynamic
+	private function getCanvasPattern(htmlImageElement:HTMLImageElement, repeat:Bool):Dynamic
 	{
 		var canvasContext:Dynamic = getContext();
 		
@@ -419,7 +417,7 @@ class DrawingManager extends AbstractDrawingManager
 		}
 		
 		//create the canvas pattern with the native image DOM element
-		return canvasContext.createPattern(imageDOMElement.nativeElement, repeatValue);
+		return canvasContext.createPattern(htmlImageElement.nativeElement, repeatValue);
 	}
 	
 	/**

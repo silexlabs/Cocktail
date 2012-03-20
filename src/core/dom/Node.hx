@@ -13,6 +13,10 @@ class Node
 	private var _nodeType:NodeType;
 	public var nodeType(get_nodeType, null):NodeType;
 	
+	public var nodeValue(get_nodeValue, set_nodeValue):String;
+	
+	public var nodeName(get_nodeName, set_nodeName):String;
+	
 	private var _parentNode:Node;
 	public var parentNode(get_parentNode, null):Node;
 	
@@ -75,5 +79,26 @@ class Node
 	{
 		return _childNodes = value;
 	}
+	
+	private function get_nodeValue():String 
+	{
+		return null;
+	}
+	
+	private function set_nodeValue(value:String):String 
+	{
+		return value;
+	}
+	
+	private function get_nodeName():String
+	{
+		return null;
+	}
+	
+	private function set_nodeName(value:String):String
+	{
+		return value;
+	}
+	
 	
 }

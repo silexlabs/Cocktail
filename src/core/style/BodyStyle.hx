@@ -14,7 +14,7 @@ package core.style;
 typedef BodyStyle =  port.flash_player.BodyStyle;
 
 #elseif js
-typedef BodyStyle =  core.style.js.BodyStyle;
+typedef BodyStyle =  port.browser.BodyStyle;
 
 #elseif php
 typedef BodyStyle =  core.style.php.BodyStyle;
