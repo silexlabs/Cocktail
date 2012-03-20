@@ -21,6 +21,8 @@ class HTMLBodyElement extends HTMLElement
 	 * class constructor. Retrieve the root of the
 	 * runtime and set it as this DOMElement's
 	 * NativeElement
+	 * 
+	 * TODO : init keyboard with document in JS ?
 	 */
 	public function new() 
 	{
