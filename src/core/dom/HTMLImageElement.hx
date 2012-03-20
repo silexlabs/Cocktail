@@ -4,7 +4,7 @@ import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.Event;
 import cocktailCore.resource.ImageLoader;
-import core.style.EmbeddedStyle;
+import core.EmbeddedStyle;
 
 /**
  * ...

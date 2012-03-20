@@ -5,10 +5,12 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.style;
+package core;
 
 /**
  * Set the right runtime specific ContainerStyle at compile-time
+ * 
+ * TODO : move in core
  */
 #if (flash9 || cpp || nme)
 typedef ContainerStyle =  port.flash_player.ContainerStyle;
