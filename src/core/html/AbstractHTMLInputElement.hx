@@ -2,10 +2,10 @@ package core.html;
 import core.HTMLElement;
 
 /**
- * ...
+ * Form control.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractHTMLInputElement extends HTMLElement
 {
 
@@ -18,20 +18,28 @@ class AbstractHTMLInputElement extends HTMLElement
 	public var onChange(getOnChange, setOnChange):Void->Void;
 	
 	/**
-	 * enable/disable the text input
+	 * The control is unavailable in this context.
 	 */
 	private var _disabled:Bool;
 	public var disabled(getDisabled, setDisabled):Bool;
 	
 	/**
-	 *set/get the max number of charachters the text
-	 * input can hold
+	 * Maximum number of characters for text fields, when type 
+	 * has the value "text" or "password".
 	 */
 	private var _maxLength:Int;
 	public var maxLength(getMaxLength, setMaxLength):Int;
 	
 	/**
-	 * set/get the current text value of the text input
+	 * When the type attribute of the element has the value "text",
+	 * "file" or "password", this represents the current contents
+	 * of the corresponding form control, in an interactive user
+	 * agent. Changing this attribute changes the contents of the
+	 * form control, but does not change the value of the HTML
+	 * value attribute of the element. When the type attribute
+	 * of the element has the value "button", "hidden", "submit",
+	 * "reset", "image", "checkbox" or "radio", this represents 
+	 * the HTML value attribute of the element.
 	 */
 	private var _value:String;
 	public var value(getValue, setValue):String;
