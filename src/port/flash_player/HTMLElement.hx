@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.dom.AbstractHTMLElement;
+import core.html.AbstractHTMLElement;
 
 /**
  * This is the DOMElement implementation for JavaScript. 

@@ -1,4 +1,5 @@
-package core.dom;
+package core.html;
+import core.dom.Document;
 
 /**
  * ...

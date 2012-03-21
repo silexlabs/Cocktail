@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import core.dom.AbstractHTMLElement;
+import core.html.AbstractHTMLElement;
 import core.event.Event;
 import core.nativeElement.NativeElement;
 import haxe.Log;

@@ -7,7 +7,7 @@
 */
 package cocktailCore.focus;
 
-import core.dom.HTMLBodyElement;
+import core.html.HTMLBodyElement;
 import core.HTMLElement;
 import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;

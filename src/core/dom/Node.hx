@@ -33,7 +33,11 @@ class Node
 	 */
 	public var nodeType(get_nodeType, never):NodeType;
 	
-
+	/**
+	 * The value of this node, depending on its type.
+	 * When it is defined to be null, setting it has no effect,
+	 * including if the node is read-only
+	 */
 	public var nodeValue(get_nodeValue, set_nodeValue):String;
 	
 	/**
