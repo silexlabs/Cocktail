@@ -31,7 +31,7 @@ class HTMLDocument extends Document
 	public function new() 
 	{
 		super();
-		_body = new HTMLElement();
+		_body = new HTMLBodyElement();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

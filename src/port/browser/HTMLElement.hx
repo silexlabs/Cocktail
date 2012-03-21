@@ -57,7 +57,7 @@ class HTMLElement extends AbstractHTMLElement
 		var childHTMLElement:HTMLElement = cast(newChild);
 		
 		_nativeElement.appendChild(childHTMLElement.nativeElement);
-
+		
 		return newChild;
 	}
 	
