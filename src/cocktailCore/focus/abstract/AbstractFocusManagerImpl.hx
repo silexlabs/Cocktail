@@ -322,7 +322,7 @@ class AbstractFocusManagerImpl
 		if (activeElement.onMouseDown != null)
 		{
 			//TODO : replace mouse click event + add right coordinate
-			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN,
+			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, 0.0,
 			0.0, 0.0, 0.0, 0.0, false, false, false);
 			
 			activeElement.onMouseDown(mouseEvent);

@@ -33,8 +33,6 @@ class Mouse extends AbstractMouse
 	
 	private static inline var MOUSE_OUT_EVENT:String = "mouseout";
 	
-	private static inline var MOUSE_DOUBLE_CLICK_EVENT:String = "dblclick";
-	
 	private static inline var MOUSE_MOVE_EVENT:String = "mousemove";
 	
 	/**
@@ -49,7 +47,6 @@ class Mouse extends AbstractMouse
 		_mouseUpEvent = MOUSE_UP_EVENT;
 		_mouseOverEvent = MOUSE_OVER_EVENT;
 		_mouseOutEvent = MOUSE_OUT_EVENT;
-		_mouseDoubleClickEvent = MOUSE_DOUBLE_CLICK_EVENT;
 		_mouseMoveEvent = MOUSE_MOVE_EVENT;
 	}
 	
@@ -95,10 +92,7 @@ class Mouse extends AbstractMouse
 				eventType = MouseEvent.MOUSE_OVER;
 				
 			case MOUSE_OUT_EVENT:
-				eventType = MouseEvent.MOUSE_OUT;	
-				
-			case MOUSE_DOUBLE_CLICK_EVENT:
-				eventType = MouseEvent.DOUBLE_CLICK;		
+				eventType = MouseEvent.MOUSE_OUT;		
 				
 			case MOUSE_MOVE_EVENT:
 				eventType = MouseEvent.MOUSE_MOVE;	
@@ -108,7 +102,7 @@ class Mouse extends AbstractMouse
 				eventType = event.type;		
 		}
 		
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, event.stageX, event.stageY,
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, 0.0, event.stageX, event.stageY,
 		event.localX, event.localY, event.ctrlKey, event.shiftKey, event.altKey);
 		
 		return mouseEvent;

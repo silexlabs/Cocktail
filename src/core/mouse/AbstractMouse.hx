@@ -65,13 +65,6 @@ class AbstractMouse
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
 	
 	/**
-	 * The callback to call when the native element
-	 * is double-clicked
-	 */
-	private var _onMouseDoubleClick:MouseEvent->Void;
-	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEvent->Void;
-	
-	/**
 	 * mouse event types
 	 */
 	private var _mouseDownEvent:String;
@@ -79,7 +72,6 @@ class AbstractMouse
 	private var _mouseOverEvent:String;
 	private var _mouseOutEvent:String;
 	private var _mouseMoveEvent:String;
-	private var _mouseDoubleClickEvent:String;
 	
 	/**
 	 * The NativeElement on which mouse event are listened to
@@ -157,18 +149,6 @@ class AbstractMouse
 		if (onMouseMove != null)
 		{
 			onMouseMove(getMouseData(event));
-		}
-	}
-	
-	/**
-	 * Calls the onMousedoubleClick callback with the current mouse data
-	 * @param	event the native mouse double-click event
-	 */
-	private function onNativeMouseDoubleClick(event:Dynamic):Void
-	{
-		if (onMouseDoubleClick != null)
-		{
-			onMouseDoubleClick(getMouseData(event));
 		}
 	}
 	
@@ -256,17 +236,6 @@ class AbstractMouse
 	private function getOnMouseMove():MouseEvent->Void
 	{
 		return this._onMouseMove;
-	}
-	
-	private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
-	{
-		updateListeners(_mouseDoubleClickEvent, onNativeMouseDoubleClick, value);
-		return this._onMouseDoubleClick = value;
-	}
-	
-	private function getOnMouseDoubleClick():MouseEvent->Void
-	{
-		return this._onMouseDoubleClick;
 	}
 	
 }
