@@ -13,15 +13,18 @@ import port.browser.HTMLElement;
 #end
 
 /**
- * ...
+ * The HTML document body. This element is always present
+ * in the DOM API, even if the tags are not present in the source document.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class HTMLBodyElement extends HTMLElement
 {
 	/**
 	 * A reference to the view port used to listen for
 	 * resize events
+	 * 
+	 * TODO : move to the Document ?
 	 */
 	private var _viewPort:Viewport;
 	

@@ -1,28 +1,31 @@
 package core.html;
+
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.MouseEvent;
 import core.dom.DOMData;
 
 /**
- * ...
+ * The anchor element
+ * TODO : complete doc
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractHTMLAnchorElement extends HTMLElement
 {
 	
 	/**
-	 * set/get the URL to open when clicking on 
-	 * the LinkDOMElement
+	 * The absolute URI of the linked resource.
+	 * This attribute specifies the location of a Web resource, thus defining
+	 * a link between the current element (the source anchor)
+	 * and the destination anchor defined by this attribute.
 	 */
 	private var _href:String;
 	public var href(get_href, set_href):String;
 	
 	/**
-	 * set/get the target where to open
-	 * the linked documenet (for instance, it can be in a new tab
-	 * in a browser environnement or replace the current document)
+	 * Frame to render the resource in.
+	 * This attribute specifies the name of a frame where a document is to be opened.
 	 */
 	private var _target:AnchorTarget;
 	public var target(get_target, set_target):AnchorTarget;

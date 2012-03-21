@@ -16,10 +16,14 @@ import port.browser.HTMLElement;
 #end
 
 /**
- * ...
+ * The IMG element embeds an image in the current document at
+ * the location of the element's definition. The IMG element 
+ * has no content; it is usually replaced inline by the image
+ * designated by the src attribute, the exception being for 
+ * left or right-aligned images that are "floated" out of line.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class HTMLImageElement extends HTMLElement
 {
 
