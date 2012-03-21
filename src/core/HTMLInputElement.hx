@@ -5,35 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.style;
-
-import core.HTMLElement;
-
-#if (flash9 || cpp || nme)
-import port.flash_player.Style;
-#elseif js
-import port.browser.Style;
-#end
+package core;
 
 /**
- * This is the style implementation for embedded
- * DOMElement. Embedded DOMElement include external
- * content in the document, such as picture or video.
- * 
- * They can't have any children.
- * 
- * Doesn't add any behaviour as this is the default beahviour
- * implemented by the Style class
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific HTMLInputElement at compile-time
  */
-class AbstractEmbeddedStyle extends Style
-{
-	/**
-	 * class constructor
-	 */
-	public function new(htmlElement:HTMLElement) 
-	{
-		super(htmlElement);
-	}
-}
+#if (flash9 || cpp || nme)
+typedef HTMLInputElement =  port.flash_player.HTMLInputElement;
+
+#elseif js
+typedef HTMLInputElement =  port.browser.HTMLInputElement;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class EmbeddedStyle extends core.style.abstract.AbstractEmbeddedStyle { }
+
+#end

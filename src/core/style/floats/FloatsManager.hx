@@ -8,7 +8,7 @@
 package core.style.floats;
 
 import core.renderer.ElementRenderer;
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.style.formatter.FormattingContext;
 import core.style.StyleData;
 import haxe.Log;

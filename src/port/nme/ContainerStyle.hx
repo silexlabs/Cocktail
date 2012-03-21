@@ -7,7 +7,7 @@
 */
 package port.nme;
 
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.style.AbstractContainerStyle;
 import core.style.AbstractStyle;
 import core.style.StyleData;

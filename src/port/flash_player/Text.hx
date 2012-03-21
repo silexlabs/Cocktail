@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.style.StyleData;
 import core.dom.DOMData;
 import haxe.Log;

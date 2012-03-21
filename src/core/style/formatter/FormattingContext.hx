@@ -7,7 +7,7 @@
 */
 package core.style.formatter;
 
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.style.floats.FloatsManager;
 import core.style.StyleData;
 import core.geom.GeomData;
