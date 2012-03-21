@@ -319,11 +319,12 @@ class LayerRenderer
 	 */
 	private function getInFlowChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
+		
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.style.childrenInline() == true)
 		{
-			
+			/**
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
@@ -336,6 +337,7 @@ class LayerRenderer
 					}
 				}
 			}
+			*/
 		}
 		else
 		{

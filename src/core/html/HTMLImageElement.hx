@@ -7,14 +7,8 @@ import core.event.Event;
 import core.ImageLoader;
 import core.EmbeddedStyle;
 import haxe.Log;
+import core.html.EmbeddedElement;
 
-#if (flash9 || cpp || nme)
-import port.flash_player.HTMLElement;
-
-#elseif js
-import port.browser.HTMLElement;
-
-#end
 
 /**
  * The IMG element embeds an image in the current document at
@@ -25,7 +19,7 @@ import port.browser.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLImageElement extends HTMLElement
+class HTMLImageElement extends EmbeddedElement
 {
 
 	//////////////////////
@@ -51,30 +45,13 @@ class HTMLImageElement extends HTMLElement
 	 * The instrinsic width of an embedded content. For example, for a video, the width
 	 * in pixel of the video
 	 */
-	private var _naturalWidth:Null<Int>;
 	public var naturalWidth(get_naturalWidth, never):Null<Int>;
 	
 	/**
 	 * The instrinsic height of an embedded content. For example, for a video, the height
 	 * in pixel of the video
 	 */
-	private var _naturalHeight:Null<Int>;
 	public var naturalHeight(get_naturalHeight, never):Null<Int>;
-	
-	private var _embeddedAsset:NativeElement;
-	public var embeddedAsset(get_embeddedAsset, never):NativeElement;
-	
-	/**
-	 * Set/get the height of the EmbeddedDOMElement.
-	 */
-	private var _height:Int;
-	public var height(get_height, set_height):Int;
-		
-	/**
-	 * Set/get the width of the EmbeddedDOMElement.
-	 */
-	private var _width:Int;
-	public var width(get_width, set_width):Int;
 	
 	/**
 	 * The URL of the loaded picture.
@@ -102,9 +79,12 @@ class HTMLImageElement extends HTMLElement
 	{
 		//use the provided NativeElement if any
 		_imageLoader = new ImageLoader();
-		_embeddedAsset = _imageLoader.nativeElement;
-		
 		super();
+	}
+	
+	override private function initEmbeddedAsset():Void
+	{
+		_embeddedAsset = _imageLoader.nativeElement;
 	}
 	
 	override private function initNativeElement():Void
@@ -148,8 +128,9 @@ class HTMLImageElement extends HTMLElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
-		this._naturalHeight = _imageLoader.intrinsicHeight;
-		this._naturalWidth = _imageLoader.intrinsicWidth;
+		this._intrinsicHeight = _imageLoader.intrinsicHeight;
+		this._intrinsicWidth = _imageLoader.intrinsicWidth;
+		this._intrinsicRatio = _intrinsicHeight / _intrinsicRatio;
 		
 		this._style.invalidate();
 		
@@ -179,11 +160,6 @@ class HTMLImageElement extends HTMLElement
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_embeddedAsset():NativeElement
-	{
-		return _embeddedAsset;
-	}
-	
 	private function get_src():String
 	{
 		return _src;
@@ -191,32 +167,12 @@ class HTMLImageElement extends HTMLElement
 	
 	private function get_naturalHeight():Null<Int>
 	{
-		return _naturalHeight;
+		return _intrinsicHeight;
 	}
 	
 	private function get_naturalWidth():Null<Int>
 	{
-		return _naturalWidth;
-	}
-	
-	private function set_width(value:Int):Int
-	{
-		return _width = value;
-	}
-	
-	private function get_width():Int
-	{
-		return _width;
-	}
-	
-	private function set_height(value:Int):Int
-	{
-		return _height = value;
-	}
-	
-	private function get_height():Int
-	{
-		return _height;
+		return _intrinsicWidth;
 	}
 	
 }

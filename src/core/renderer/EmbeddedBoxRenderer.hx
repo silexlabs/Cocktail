@@ -7,6 +7,8 @@
 */
 package core.renderer;
 
+import core.html.EmbeddedElement;
+import core.html.HTMLImageElement;
 import core.nativeElement.NativeElement;
 import core.style.StyleData;
 import core.Style;
@@ -44,10 +46,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ?
-		/*
-		var embeddedDOMElement:EmbeddedDOMElement = cast(_style.domElement);
-		ret.push(embeddedDOMElement.embeddedAsset);
 		
+		var embeddedDOMElement:EmbeddedElement = cast(_style.htmlElement);
+		ret.push(embeddedDOMElement.embeddedAsset);
 		
 		#if (flash9 || nme)
 		embeddedDOMElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
@@ -56,7 +57,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		embeddedDOMElement.embeddedAsset.width = _style.computedStyle.width;
 		embeddedDOMElement.embeddedAsset.height = _style.computedStyle.height;
 		#end
-		*/
+		
 		//TODO : apply transformations, opacity and visibility
 		
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
