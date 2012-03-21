@@ -6,7 +6,7 @@ import core.HTMLElement;
  * @author Yannick DOMINGUEZ
  */
 
-class HTMLInputElement extends HTMLElement
+class AbstractHTMLInputElement extends HTMLElement
 {
 
 
@@ -74,14 +74,6 @@ class HTMLInputElement extends HTMLElement
 		_style = new EmbeddedStyle(this);
 	}
 	
-	/**
-	 * TextInputDOMElement are tab enabled by default
-	 */
-	override private function initFocus():Void
-	{
-		super.initFocus();
-		_tabEnabled = true;
-	}
 	
 	/////////////////////////////////
 	// CHANGE SETTER/GETTER

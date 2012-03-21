@@ -192,7 +192,7 @@ typedef TextFragmentData = {
 			
 			//a bitmap fill, created with the data of an image DOMElement.
 			//The fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLElement, repeat:Bool);
+			bitmap(htmlImageElement:HTMLImageElement, repeat:Bool);
 		}
 
 		/**
@@ -212,7 +212,7 @@ typedef TextFragmentData = {
 			
 			//a bitmap line, created with the data of an image DOMElement.
 			//The line fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLElement, lineStyle:LineStyleData, repeat:Bool);
+			bitmap(htmlImageElement:HTMLImageElement, lineStyle:LineStyleData, repeat:Bool);
 		}
 
 		/**
