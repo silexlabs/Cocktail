@@ -12,6 +12,7 @@ import core.unit.UnitData;
 enum NodeType {
 	ELEMENT_NODE;
 	TEXT_NODE;
+	DOCUMENT_NODE;
 }
 
 /**
