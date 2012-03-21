@@ -9,6 +9,7 @@ package core.html;
 
 import core.dom.Element;
 import core.dom.Node;
+import core.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
@@ -149,17 +150,39 @@ class AbstractHTMLElement extends Element
 	// COORDS attributes
 	////////////////////////////////
 	
+	public var offsetParent(get_offsetParent, never):HTMLElement;
+	
 	/**
 	 * Read-only, returns the width of the domElement
 	 * + horizontal paddings + horizontal margins
 	 */
-	public var offsetWidth(getOffsetWidth, never):Int;
+	public var offsetWidth(get_offsetWidth, never):Int;
 	
 	/**
 	 * Read-only, returns the height of the domElement
 	 * + vertical paddings + vertical margins
 	 */
-	public var offsetHeight(getOffsetHeight, never):Int;
+	public var offsetHeight(get_offsetHeight, never):Int;
+	
+	public var offsetLeft(get_offsetLeft, never):Int;
+	
+	public var offsetTop(get_offsetTop, never):Int;
+	
+	public var clientWidth(get_clientWidth, never):Int;
+	
+	public var clientHeight(get_clientHeight, never):Int;
+	
+	public var clientLeft(get_clientLeft, never):Int;
+	
+	public var clientTop(get_clientTop, never):Int;
+	
+	public var scrollTop(get_scrollTop, never):Int;
+	
+	public var scrollLeft(get_scrollLeft, never):Int;
+	
+	public var scrollHeight(get_scrollHeight, never):Int;
+	
+	public var scrollWidth(get_scrollWidth, never):Int;
 	
 	/////////////////////////////////
 	// STYLE attribute
@@ -477,6 +500,14 @@ class AbstractHTMLElement extends Element
 		FocusManager.getInstance().activeElement = cast(this);
 	}
 	
+	//TODO : check if it actually work
+	//TODO : FocusManager should no longer be singleton
+	//but instance on the Document
+	public function blur():Void
+	{
+		FocusManager.getInstance().activeElement = null;
+	}
+	
 	private function setOnFocusIn(value:Void->Void):Void->Void
 	{
 		return _onFocusIn = value;
@@ -558,28 +589,89 @@ class AbstractHTMLElement extends Element
 	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : should return Style.getFirstPositionedAncestor
+	private function get_offsetParent():HTMLElement
+	{
+		return null;
+	}
+	
 	/**
 	 * constructs the offset width from the computed
 	 * box of this domElement
 	 * 
-	 * TODO : shouldn't include margin
+	 * TODO : removed margin, will cause issues
 	 */
-	private function getOffsetWidth():Int
+	private function get_offsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
-		return computedStyle.width + computedStyle.marginLeft + computedStyle.marginRight + computedStyle.paddingLeft + computedStyle.paddingRight;
+		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	/**
 	 * constructs the offset height from the computed
 	 * box of this domElement
 	 * 
-	 * TODO : shouldn't include margin
+	 * TODO :removed margin, will cause issues
 	 */
-	private function getOffsetHeight():Int
+	private function get_offsetHeight():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
-		return computedStyle.height + computedStyle.marginTop + computedStyle.marginBottom + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+	}
+	
+	//TODO : should return offset from offsetParent border
+	private function get_offsetLeft():Int
+	{
+		return -1;
+	}
+	
+	//TODO : should return offset from offsetParent border
+	private function get_offsetTop():Int
+	{
+		return -1;
+	}
+	
+	private function get_clientWidth():Int
+	{
+		return _style.computedStyle.width;
+	}
+	
+	private function get_clientHeight():Int
+	{
+		return _style.computedStyle.height;
+	}
+	
+	//TODO : will need to add border
+	private function get_clientTop():Int
+	{
+		return _style.computedStyle.paddingTop;
+	}
+	
+	//TODO : will need to add border
+	private function get_clientLeft():Int
+	{
+		return _style.computedStyle.paddingLeft;
+	}
+	
+	//TODO : implement
+	private function get_scrollHeight():Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollWidth():Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollLeft():Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollTop():Int
+	{
+		return -1;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

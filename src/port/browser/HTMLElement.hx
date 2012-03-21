@@ -65,19 +65,68 @@ class HTMLElement extends AbstractHTMLElement
 	// OVERRIDEN POSITIONING SETTERS/GETTERS
 	// Return the native offset width and height of the HTML element
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
 
-
-	
-	override private function getOffsetWidth():Int
+	override private function get_offsetWidth():Int
 	{
-		return untyped _nativeElement.offsetWidth;
+		return _nativeElement.offsetWidth;
 	}
 
-	override private function getOffsetHeight():Int
+	override private function get_offsetHeight():Int
 	{
-		return untyped _nativeElement.offsetHeight;
+		return _nativeElement.offsetHeight;
 	}
+	
+	override private function get_offsetLeft():Int
+	{
+		return _nativeElement.offsetLeft;
+	}
+	
+	override private function get_offsetTop():Int
+	{
+		return _nativeElement.offsetTop;
+	}
+	
+	override private function get_clientWidth():Int
+	{
+		return _nativeElement.clientWidth;
+	}
+	
+	override private function get_clientHeight():Int
+	{
+		return _nativeElement.clientHeight;
+	}
+	
+	override private function get_clientLeft():Int
+	{
+		return untyped _nativeElement.clientLeft;
+	}
+	
+	override private function get_clientTop():Int
+	{
+		return untyped _nativeElement.clientTop;
+	}
+	
+	override private function get_scrollTop():Int
+	{
+		return  _nativeElement.scrollTop;
+	}
+	
+	override private function get_scrollLeft():Int
+	{
+		return  _nativeElement.scrollLeft;
+	}
+	
+	override private function get_scrollWidth():Int
+	{
+		return  _nativeElement.scrollWidth;
+	}
+	
+	override private function get_scrollHeight():Int
+	{
+		return  _nativeElement.scrollHeight;
+	}
+	
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN FOCUS SETTER/GETTER AND METHODS
@@ -138,6 +187,11 @@ class HTMLElement extends AbstractHTMLElement
 	override public function focus():Void
 	{
 		_nativeElement.focus();
+	}
+	
+	override public function blur():Void
+	{
+		_nativeElement.blur();
 	}
 	
 	/**
