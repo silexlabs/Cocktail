@@ -7,6 +7,7 @@
 */
 package cocktailCore.focus.abstract;
 
+import core.event.Event;
 import core.html.HTMLBodyElement;
 import core.HTMLElement;
 import core.event.MouseEvent;
@@ -345,9 +346,9 @@ class AbstractFocusManagerImpl
 		//only call if there is a previous activeDOMElement
 		if (_activeElement != null)
 		{
-			if (_activeElement.onFocusOut != null)
+			if (_activeElement.onBlur != null)
 			{
-				_activeElement.onFocusOut();
+				_activeElement.onBlur(new Event(Event.BLUR));
 			}
 		}
 		
@@ -363,9 +364,9 @@ class AbstractFocusManagerImpl
 		if (value != _activeElement)
 		{
 			_activeElement = value;
-			if (_activeElement.onFocusIn != null)
+			if (_activeElement.onFocus != null)
 			{
-				_activeElement.onFocusIn();
+				_activeElement.onFocus(new Event(Event.FOCUS));
 			}
 		}
 		

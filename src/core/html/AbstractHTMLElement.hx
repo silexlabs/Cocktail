@@ -113,14 +113,14 @@ class AbstractHTMLElement extends Element
 	 * callback called when the DOMElement recives 
 	 * the focus
 	 */
-	private var _onFocusIn:Void->Void;
-	public var onFocusIn(getOnFocusIn, setOnFocusIn):Void->Void;
+	private var _onFocus:Event->Void;
+	public var onFocus(get_onFocus, set_onFocus):Event->Void;
 	
 	/**
 	 * callback called when the DOMElement loses the focus
 	 */
-	private var _onFocusOut:Void->Void;
-	public var onFocusOut(getOnFocusOut, setOnFocusOut):Void->Void;
+	private var _onBlur:Event->Void;
+	public var onBlur(get_onBlur, set_onBlur):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes and callback
@@ -508,24 +508,24 @@ class AbstractHTMLElement extends Element
 		FocusManager.getInstance().activeElement = null;
 	}
 	
-	private function setOnFocusIn(value:Void->Void):Void->Void
+	private function set_onFocus(value:Event->Void):Event->Void
 	{
-		return _onFocusIn = value;
+		return _onFocus = value;
 	}
 	
-	private function getOnFocusIn():Void->Void
+	private function get_onFocus():Event->Void
 	{
-		return _onFocusIn;
+		return _onFocus;
 	}
 	
-	private function setOnFocusOut(value:Void->Void):Void->Void
+	private function set_onBlur(value:Event->Void):Event->Void
 	{
-		return _onFocusOut = value;
+		return _onBlur = value;
 	}
 	
-	private function getOnFocusOut():Void->Void
+	private function get_onBlur():Event->Void
 	{
-		return _onFocusOut;
+		return _onBlur;
 	}
 	
 	/**

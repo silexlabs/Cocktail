@@ -137,7 +137,7 @@ class HTMLElement extends AbstractHTMLElement
 	/**
 	 * Set a listener on the nativeElement for focus events
 	 */
-	override private function setOnFocusIn(value:Void->Void):Void->Void
+	override private function set_onFocus(value:Event->Void):Event->Void
 	{
 		if (value == null)
 		{
@@ -145,16 +145,16 @@ class HTMLElement extends AbstractHTMLElement
 		}
 		else
 		{
-			_nativeElement.onfocus = onNativeFocusIn;
+			_nativeElement.onfocus = onNativeFocus;
 		}
 		
-		return _onFocusIn = value;
+		return _onFocus = value;
 	}
 	
 	/**
 	 * Set a listener on the nativeElement for blur events
 	 */
-	override private function setOnFocusOut(value:Void->Void):Void->Void
+	override private function set_onBlur(value:Event->Void):Event->Void
 	{
 		if (value == null)
 		{
@@ -162,10 +162,10 @@ class HTMLElement extends AbstractHTMLElement
 		}
 		else
 		{
-			_nativeElement.onblur = onNativeFocusOut;
+			_nativeElement.onblur = onNativeBlur;
 		}
 		
-		return _onFocusOut = value;
+		return _onBlur = value;
 	}
 	
 	/**
@@ -198,11 +198,11 @@ class HTMLElement extends AbstractHTMLElement
 	 * When a native focus event is dispatched,
 	 * call the focus callback
 	 */
-	private function onNativeFocusIn(event:Dynamic):Void
+	private function onNativeFocus(event:Dynamic):Void
 	{
-		if (onFocusIn != null)
+		if (onFocus != null)
 		{
-			onFocusIn();
+			onFocus(new Event(Event.FOCUS));
 		}
 	}
 	
@@ -210,11 +210,11 @@ class HTMLElement extends AbstractHTMLElement
 	 * When a native blur event is dispatched,
 	 * call the blur callback
 	 */
-	private function onNativeFocusOut(event:Dynamic):Void
+	private function onNativeBlur(event:Dynamic):Void
 	{
-		if (onFocusOut != null)
+		if (onBlur != null)
 		{
-			onFocusOut();
+			onBlur(new Event(Event.BLUR));
 		}
 	}
 	

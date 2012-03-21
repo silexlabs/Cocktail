@@ -26,6 +26,10 @@ class Event
 	
 	public static inline var LOAD:String = "load";
 	
+	public static inline var FOCUS:String = "focus";
+	
+	public static inline var BLUR:String = "blur";
+	
 	//TODO : add target and current target
 	
 	/**
