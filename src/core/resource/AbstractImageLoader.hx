@@ -9,7 +9,7 @@ package core.resource;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import core.resource.ResourceLoader;
+import core.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
 

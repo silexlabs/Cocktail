@@ -5,16 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.resource;
+package core;
 
 /**
  * Set the right runtime specific ResourceLoader at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef ResourceLoader = core.resource.as3.ResourceLoader;
+typedef ResourceLoader = port.flash_player.ResourceLoader;
 
 #elseif js
-typedef ResourceLoader = core.resource.js.ResourceLoader;
+typedef ResourceLoader = port.browser.ResourceLoader;
 
 #elseif php
 typedef ResourceLoader = core.resource.php.ResourceLoader;

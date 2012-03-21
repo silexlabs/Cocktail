@@ -11,10 +11,10 @@ package core;
  * Set the right runtime specific ImageLoader at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef ImageLoader = core.resource.AbstractResourceLoader;
+typedef ImageLoader = core.resource.AbstractImageLoader;
 
 #elseif js
-typedef ImageLoader = core.resource.AbstractResourceLoader;
+typedef ImageLoader = core.resource.AbstractImageLoader;
 
 #elseif php
 typedef ImageLoader = core.resource.php.ImageLoader;

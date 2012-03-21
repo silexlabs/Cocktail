@@ -8,6 +8,7 @@
 package core.dom;
 
 import core.dom.DOMData;
+import haxe.Log;
 
 /**
  * The Node interface is the primary datatype for the entire Document Object Model.
@@ -71,7 +72,7 @@ class Node
 	 */
 	public function new() 
 	{
-		
+		_childNodes = new Array<Node>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ class Node
 		}
 		newChild.parentNode = this;
 		_childNodes.push(newChild);
-		
+
 		return newChild;
 	}
 	

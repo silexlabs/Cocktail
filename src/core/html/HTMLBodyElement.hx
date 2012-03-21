@@ -36,9 +36,13 @@ class HTMLBodyElement extends HTMLElement
 	 * TODO : init keyboard with document in JS ?
 	 */
 	public function new() 
+	{	
+		super();
+	}
+	
+	override private function initNativeElement():Void
 	{
 		_nativeElement = NativeElementManager.getRoot();
-		super();
 	}
 	
 	/**
