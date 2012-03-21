@@ -6,6 +6,7 @@ import core.nativeElement.NativeElementData;
 import core.event.Event;
 import core.ImageLoader;
 import core.EmbeddedStyle;
+import haxe.Log;
 
 #if (flash9 || cpp || nme)
 import port.flash_player.HTMLElement;
@@ -99,13 +100,16 @@ class HTMLImageElement extends HTMLElement
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//TODO : should be embedded asset ?
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.neutral);
-		
 		//use the provided NativeElement if any
 		_imageLoader = new ImageLoader();
 		_embeddedAsset = _imageLoader.nativeElement;
+		
 		super();
+	}
+	
+	override private function initNativeElement():Void
+	{
+		_nativeElement = _embeddedAsset;
 	}
 	
 	/**

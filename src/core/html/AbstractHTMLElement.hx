@@ -8,6 +8,7 @@
 package core.html;
 
 import core.dom.Element;
+import core.dom.Node;
 import core.nativeElement.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
@@ -16,7 +17,9 @@ import cocktailCore.focus.FocusManager;
 import core.keyboard.Keyboard;
 import core.mouse.Mouse;
 import core.ContainerStyle;
+import core.nativeElement.NativeElementManager;
 import core.Style;
+import core.nativeElement.NativeElementData;
 import core.style.StyleData;
 
 /**
@@ -181,6 +184,7 @@ class AbstractHTMLElement extends Element
 	public function new() 
 	{
 		super();
+		init();
 	}
 	
 	/**
@@ -191,9 +195,11 @@ class AbstractHTMLElement extends Element
 	 */
 	private function init():Void
 	{	
+		initNativeElement();
+		
 		//initialise the mouse listeners on this dom element by 
 		//listening to the current native element
-		_mouse = new Mouse(this._nativeElement);
+		initMouse();
 		
 		//init key listeners
 		initKeyboard();
@@ -203,6 +209,23 @@ class AbstractHTMLElement extends Element
 		
 		//init the focus attributes
 		initFocus();
+	}
+	
+	/**
+	 * instantiate the right nativeElement
+	 */
+	private function initNativeElement():Void
+	{
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.neutral);
+	}
+	
+	/**
+	 * initialise the mouse listeners on this dom element by 
+	 * listening to the current native element
+	 */
+	private function initMouse():Void
+	{
+		_mouse = new Mouse(this._nativeElement);
 	}
 	
 	/**

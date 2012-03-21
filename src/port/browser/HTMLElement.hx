@@ -7,6 +7,7 @@
 */
 package port.browser;
 
+import core.dom.Node;
 import core.html.AbstractHTMLElement;
 import core.event.Event;
 import core.nativeElement.NativeElement;
@@ -35,36 +36,38 @@ class HTMLElement extends AbstractHTMLElement
 		super();
 	}
 	
+	//TODO : doc
+	
+	//TODO : won't work for Text Node, add switch
+	override public function removeChild(oldChild:Node):Node
+	{
+		super.removeChild(oldChild);
+		
+		var childHTMLElement:HTMLElement = cast(oldChild);
+		_nativeElement.removeChild(childHTMLElement.nativeElement);
+		
+		return oldChild;
+	}
+	
+
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		
+		var childHTMLElement:HTMLElement = cast(newChild);
+		
+		_nativeElement.appendChild(childHTMLElement.nativeElement);
+
+		return newChild;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN POSITIONING SETTERS/GETTERS
 	// Return the native offset width and height of the HTML element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : override appendChild
-	//
-	///**
-	 //* Overriden to attach the native HTML element to the HTML DOM and
-	 //* to set the CSS z-index of the newly attached children
-	 //* @param	domElement the html element to add to this container
-	 //*/
-	//override public function app(domElement:DOMElement):Void
-	//{
-		//super.addChild(domElement);
-		//this._nativeElement.appendChild(domElement.nativeElement);
-		//intialise z-index on the DOMElement, as it is null by default in JavaScript
-		//domElement.nativeElement.style.zIndex = _children.length - 1;
-	//}
-	//
-	///**
-	 //* Overriden to remove the native HTML element from
-	 //* the HTML DOM
-	 //* @param domElement the html element to remove from this container
-	 //*/
-	//override public function removeChild(domElement:DOMElement):Void
-	//{
-		//super.removeChild(domElement);
-		//this._nativeElement.removeChild(domElement.nativeElement);
-	//}
+
+
 	
 	override private function getOffsetWidth():Int
 	{
