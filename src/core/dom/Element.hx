@@ -1,5 +1,7 @@
 package core.dom;
 
+import core.dom.DOMData;
+
 /**
  * ...
  * @author Yannick DOMINGUEZ
@@ -9,7 +11,7 @@ class Element extends Node
 {
 
 	private var _tagName:String;
-	public var tagName(get_tagName, null):String;
+	public var tagName(get_tagName, set_tagName):String;
 	
 	public function new() 
 	{
@@ -21,14 +23,18 @@ class Element extends Node
 		return _tagName;
 	}
 	
+	private function set_tagName(value:String):String
+	{
+		return _tagName = value;
+	}
+	
 	override private function get_nodeName():String
 	{
 		return _tagName;
 	}
 	
-	//TODO : throw DOMException ?
-	override private function set_nodeName(value:String):String
+	override private function get_nodeType():NodeType
 	{
-		return value;
+		return NodeType.ELEMENT_NODE;
 	}
 }
