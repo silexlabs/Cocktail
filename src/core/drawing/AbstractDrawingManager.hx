@@ -9,7 +9,7 @@ package core.drawing;
 
 import core.geom.Matrix;
 import core.nativeElement.NativeElement;
-import cocktailCore.domElement.DOMElementData;
+import core.dom.DOMData;
 import core.geom.GeomData;
 
 /**

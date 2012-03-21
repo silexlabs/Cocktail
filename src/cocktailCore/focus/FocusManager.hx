@@ -12,7 +12,7 @@ import core.HTMLElement;
 import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
-import cocktailCore.domElement.DOMElementData;
+import core.dom.DOMData;
 import haxe.Log;
 
 //import the right runtime implementations

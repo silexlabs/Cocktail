@@ -13,7 +13,7 @@ import core.event.MouseEvent;
 import core.keyboard.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
-import cocktailCore.domElement.DOMElementData;
+import core.dom.DOMData;
 import core.nativeElement.NativeElementManager;
 import core.event.KeyboardEvent;
 import core.dom.DOMData;

@@ -17,7 +17,7 @@ import flash.display.JointStyle;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
 import core.geom.Matrix;
-import cocktailCore.domElement.DOMElementData;
+import core.dom.DOMData;
 import core.geom.GeomData;
 import flash.geom.ColorTransform;
 import haxe.Log;
