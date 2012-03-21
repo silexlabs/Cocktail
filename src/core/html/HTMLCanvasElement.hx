@@ -1,4 +1,4 @@
-package core.dom;
+package core.html;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.drawing.DrawingManager;

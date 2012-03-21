@@ -1,4 +1,5 @@
-package core.dom;
+package core.html;
+import core.dom.Element;
 import core.nativeElement.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;

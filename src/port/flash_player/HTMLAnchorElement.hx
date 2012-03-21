@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.dom.AbstractHTMLAnchorElement;
+import core.html.AbstractHTMLAnchorElement;
 import flash.net.URLRequest;
 
 /**

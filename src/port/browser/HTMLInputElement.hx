@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package port.browser;
-import core.dom.AbstractHTMLInputElement;
+import core.html.AbstractHTMLInputElement;
 
 
 /**

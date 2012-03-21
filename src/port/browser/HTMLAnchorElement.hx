@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import core.dom.AbstractHTMLAnchorElement;
+import core.html.AbstractHTMLAnchorElement;
 import core.dom.DOMData;
 
 /**

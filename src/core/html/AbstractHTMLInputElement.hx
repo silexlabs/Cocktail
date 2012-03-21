@@ -1,4 +1,4 @@
-package core.dom;
+package core.html;
 import core.HTMLElement;
 
 /**

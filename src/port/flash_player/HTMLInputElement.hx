@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.dom.AbstractHTMLInputElement;
+import core.html.AbstractHTMLInputElement;
 
 /**
  * This is the flash AS3 implementation of the text input.

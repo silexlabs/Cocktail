@@ -8,7 +8,7 @@
 package cocktailCore.focus.js;
 
 import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.dom.HTMLBodyElement;
+import core.html.HTMLBodyElement;
 import core.HTMLElement;
 
 /**
