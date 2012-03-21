@@ -9,7 +9,7 @@ import core.dom.DOMData;
  * @author Yannick DOMINGUEZ
  */
 
-class HTMLAnchorElement extends HTMLElement
+class AbstractHTMLAnchorElement extends HTMLElement
 {
 	
 	/**
