@@ -7,6 +7,7 @@
 */
 package core.style.computer.boxComputers;
 
+import core.html.EmbeddedElement;
 import core.html.HTMLImageElement;
 import core.style.AbstractStyle;
 import core.style.computer.BoxStylesComputer;
@@ -59,8 +60,8 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var ret:Int = 0;
 		
 		//TODO : re implement
-		/**
-		var embeddedDOMElement:EmbeddedDOMElement = cast(style.domElement);
+		
+		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'height' style also is defined as 'auto'
 		if (style.height == Dimension.autoValue)
@@ -123,7 +124,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//value of 'width' becomes 300px.
 				ret = 300;
 			}
-		}*/
+		}
 		
 		return ret;
 	}
@@ -139,17 +140,17 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		
 		var ret:Int = 0;
 		
-		/**
+		
 		//TODO : add ReplacedElement class ? add intrinsic width/height/ratio on AbstractStyle ?
-		var embeddedDOMElement:HTMLReplacedElement = cast(style.htmlElement);
+		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
 		if (style.width == Dimension.autoValue)
 		{
 			//try to use the intrinsic height if not null
-			if (embeddedDOMElement.naturalHeight != null)
+			if (embeddedDOMElement.intrinsicHeight != null)
 			{
-				ret = embeddedDOMElement.naturalHeight;
+				ret = embeddedDOMElement.intrinsicHeight;
 			}
 		}
 		//else if 'width' is not 'auto'
@@ -171,7 +172,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//is 150px
 				ret = 150;
 			}
-		}*/
+		}
 		
 		return ret;
 	}
