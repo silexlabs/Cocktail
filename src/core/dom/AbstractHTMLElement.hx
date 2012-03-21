@@ -15,7 +15,7 @@ import core.style.StyleData;
  * @author Yannick DOMINGUEZ
  */
 
-class HTMLElement extends Element
+class AbstractHTMLElement extends Element
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
@@ -217,7 +217,7 @@ class HTMLElement extends Element
 	 */
 	private function initStyle():Void
 	{
-		this._style = new ContainerStyle(this);
+		this._style = new ContainerStyle(cast(this));
 	}
 	
 	/**

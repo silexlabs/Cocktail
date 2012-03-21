@@ -9,7 +9,7 @@ package core.style;
 
 import core.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.dom.Node;
 import core.style.computer.boxComputers.BlockBoxStylesComputer;
 import core.style.computer.boxComputers.FloatBoxStylesComputer;

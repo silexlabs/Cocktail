@@ -5,35 +5,24 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.style;
+package port.flash_player;
 
-import core.HTMLElement;
-
-#if (flash9 || cpp || nme)
-import port.flash_player.Style;
-#elseif js
-import port.browser.Style;
-#end
+import core.dom.AbstractHTMLElement;
 
 /**
- * This is the style implementation for embedded
- * DOMElement. Embedded DOMElement include external
- * content in the document, such as picture or video.
- * 
- * They can't have any children.
- * 
- * Doesn't add any behaviour as this is the default beahviour
- * implemented by the Style class
- * 
+ * This is the DOMElement implementation for JavaScript. 
+ * It manipulates the native HTML DOM
  * @author Yannick DOMINGUEZ
  */
-class AbstractEmbeddedStyle extends Style
+class HTMLElement extends AbstractHTMLElement
 {
 	/**
-	 * class constructor
+	 * Class constructor
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new() 
 	{
-		super(htmlElement);
+		super();
 	}
+	
+	
 }

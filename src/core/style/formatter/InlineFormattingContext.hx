@@ -9,7 +9,7 @@ package core.style.formatter;
 
 import core.style.StyleData;
 import core.geom.GeomData;
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.renderer.BlockBoxRenderer;
 import core.renderer.ElementRenderer;
 import core.renderer.FlowBoxRenderer;

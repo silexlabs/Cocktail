@@ -4,6 +4,14 @@ import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
 import core.BodyStyle;
 
+#if (flash9 || cpp || nme)
+import port.flash_player.HTMLElement;
+
+#elseif js
+import port.browser.HTMLElement;
+
+#end
+
 /**
  * ...
  * @author Yannick DOMINGUEZ

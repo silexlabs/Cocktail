@@ -1,10 +1,19 @@
 package core.dom;
+
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.Event;
 import core.ImageLoader;
 import core.EmbeddedStyle;
+
+#if (flash9 || cpp || nme)
+import port.flash_player.HTMLElement;
+
+#elseif js
+import port.browser.HTMLElement;
+
+#end
 
 /**
  * ...

@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import core.dom.HTMLElement;
+import core.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.style.AbstractStyle;
 import core.unit.UnitData;
