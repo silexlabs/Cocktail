@@ -70,12 +70,6 @@ class AbstractHTMLElement extends Element
 	private var _onMouseMove:MouseEvent->Void;
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
 	
-	/**
-	 * The callback called when this dom element is double-clicked
-	 */
-	private var _onMouseDoubleClick:MouseEvent->Void;
-	public var onMouseDoubleClick(getOnMouseDoubleClick, setOnMouseDoubleClick):MouseEvent->Void;
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -352,27 +346,6 @@ class AbstractHTMLElement extends Element
 		return _onMouseMove;
 	}
 	
-	private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
-	{
-		_onMouseDoubleClick = value;
-		
-		if (_onMouseDoubleClick == null)
-		{
-			_mouse.onMouseDoubleClick = null;
-		}
-		else
-		{
-			_mouse.onMouseDoubleClick = onMouseDoubleClickCallback;
-		}
-		
-		return value;
-	}
-	
-	private function getOnMouseDoubleClick():MouseEvent->Void
-	{
-		return _onMouseDoubleClick;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE EVENT CALLBACK
 	// called by the Mouse instance when the user interacts
@@ -402,11 +375,6 @@ class AbstractHTMLElement extends Element
 	private function onMouseOutCallback(mouseEvent:MouseEvent):Void
 	{
 		_onMouseOut(mouseEvent);
-	}
-	
-	private function onMouseDoubleClickCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseDoubleClick(mouseEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

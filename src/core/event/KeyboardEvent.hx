@@ -1,10 +1,17 @@
 package core.event;
 
 /**
- * ...
+ * The KeyboardEvent interface provides specific contextual information associated with
+ * keyboard devices. Each keyboard event references a key using a value.
+ * Keyboard events are commonly directed at the element that has the focus.
+ * 
+ * The KeyboardEvent interface provides convenient attributes for some common
+ * modifiers keys: KeyboardEvent.ctrlKey, KeyboardEvent.shiftKey, KeyboardEvent.altKey,
+ * KeyboardEvent.metaKey. These attributes are equivalent to using the method
+ * KeyboardEvent.getModifierState(keyArg) with 'Control', 'Shift', 'Alt', or 'Meta' respectively.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class KeyboardEvent extends UIEvent
 {
 	
@@ -15,26 +22,43 @@ class KeyboardEvent extends UIEvent
 
 	
 	//TODO : should be String
+	
+	/**
+	 * char holds the character value of the key pressed.
+	 */
 	private var _char:Int;
 	public var char(get_char, null):Int;
 	
 	//TODO : should be String
+	
+	/**
+	 * key holds the key value of the key pressed.
+	 */
 	private var _key:Int;
 	public var key(get_key, null):Int;
 	
+	/**
+	 * true if the 'Ctrl' (control) key modifier was active.
+	 */
 	private var _ctrlKey:Bool;
 	public var ctrlKey(get_ctrlKey, null):Bool;
 	
+	/**
+	 * true if the shift (Shift) key modifier was active.
+	 */
 	private var _shiftKey:Bool;
 	public var shiftKey(get_shiftKey, null):Bool;
 	
+	/**
+	 * true if the 'Alt' (alternative) or 'Option' key modifier was active.
+	 */
 	private var _altKey:Bool;
 	public var altKey(get_altKey, null):Bool;
 	
 	
-	public function new(type:String, char:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	public function new(type:String, detail:Float, char:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
-		super(type);
+		super(type, detail);
 		
 		_char = char;
 		_key = key;
@@ -42,6 +66,10 @@ class KeyboardEvent extends UIEvent
 		_shiftKey = shiftKey;
 		_altKey = altKey;   
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_altKey():Bool 
 	{

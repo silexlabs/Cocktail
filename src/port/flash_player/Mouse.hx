@@ -35,29 +35,7 @@ class Mouse extends AbstractMouse
 		_mouseUpEvent = flash.events.MouseEvent.MOUSE_UP;
 		_mouseOverEvent = flash.events.MouseEvent.MOUSE_OVER;
 		_mouseOutEvent = flash.events.MouseEvent.MOUSE_OUT;
-		_mouseDoubleClickEvent = flash.events.MouseEvent.DOUBLE_CLICK;
 		_mouseMoveEvent = flash.events.MouseEvent.MOUSE_MOVE;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN CALLBACK SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setOnMouseDoubleClick(value:MouseEvent->Void):MouseEvent->Void
-	{
-		if (value == null)
-		{
-			_nativeElement.doubleClickEnabled = false;
-		}
-		else
-		{
-			//In As3, a DisplayObject must be double click enabled to dispatch double click event
-			_nativeElement.doubleClickEnabled = true;
-		}
-		
-		super.setOnMouseDoubleClick(value);
-		
-		return this._onMouseDoubleClick = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -106,9 +84,6 @@ class Mouse extends AbstractMouse
 			case flash.events.MouseEvent.MOUSE_OUT:
 				eventType = MouseEvent.MOUSE_OUT;	
 				
-			case flash.events.MouseEvent.DOUBLE_CLICK:
-				eventType = MouseEvent.DOUBLE_CLICK;		
-				
 			case flash.events.MouseEvent.MOUSE_MOVE:
 				eventType = MouseEvent.MOUSE_MOVE;	
 				
@@ -117,7 +92,7 @@ class Mouse extends AbstractMouse
 				eventType = typedEvent.type;	
 		}
 		
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, typedEvent.stageX, typedEvent.stageY,
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, 0.0, typedEvent.stageX, typedEvent.stageY,
 		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		return mouseEvent;

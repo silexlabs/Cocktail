@@ -79,7 +79,7 @@ class Keyboard extends AbstractKeyboard
 				eventType = typedEvent.type;
 		}
 		
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, typedEvent.charCode, 
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, 0.0, typedEvent.charCode, 
 		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		
