@@ -7,8 +7,8 @@
 */
 package core.mouse;
 
-import cocktail.domElement.ImageDOMElement;
 import core.geom.GeomData;
+import core.html.HTMLImageElement;
 import core.mouseMouseData;
 
 /**
@@ -54,8 +54,7 @@ class AbstractMouseCursor
 			//a dedicated method with the imageDOMElement
 			//to be used as cursor
 			case custom(imageDOMElement, hotSpot):
-				var typedImageDOMElement:ImageDOMElement = cast(imageDOMElement);
-				setBitmapCursor(typedImageDOMElement, hotSpot);
+				setBitmapCursor(imageDOMElement, hotSpot);
 			
 			//let the browser manage the cursor	
 			case autoValue:
@@ -89,7 +88,7 @@ class AbstractMouseCursor
 	 * Set a bitmap as mouse cursor using native API. The hotSpot is the registration
 	 * point of the mouse cursor
 	 */
-	private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
+	private function setBitmapCursor(imageDOMElement:HTMLImageElement, hotSpot:PointData):Void
 	{
 		//abstract
 	}

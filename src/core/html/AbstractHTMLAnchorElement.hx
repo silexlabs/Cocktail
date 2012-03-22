@@ -52,7 +52,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 * event, the callback must be called to follow the
 	 * http link if it is provided
 	 */
-	override private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
+	override private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDown = value;
 		_mouse.onMouseDown = onMouseDownCallback;
@@ -130,7 +130,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	private function set_href(value:String):String
 	{
 		_href = value;
-		setOnMouseDown(_onMouseDown);
+		set_onMouseDown(_onMouseDown);
 		
 		return value;
 	}
@@ -148,7 +148,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	private function set_target(value:AnchorTarget):AnchorTarget
 	{
 		_target = value;
-		setOnMouseDown(_onMouseDown);
+		set_onMouseDown(_onMouseDown);
 		
 		return value;
 	}
