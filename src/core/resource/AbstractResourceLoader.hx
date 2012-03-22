@@ -97,29 +97,18 @@ class AbstractResourceLoader
 	/**
 	 * Start the loading of a file. Stores the success and error callbacks. Prevent file caching if requested
 	 * then actually start the file loading
+	 * 
 	 * @param	urls the array of files to load, the first valid url is used
 	 * @param	onLoadComplete called when the file is done loading
 	 * @param	onLoadError called when there is an error during loading or when all the provided urls are invalid
-	 * @param	allowCache wether to allow the browser to cache the loaded file
 	 */
-	public function load(urls:Array<String>, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void, allowCache:Bool = true):Void
+	public function load(urls:Array<String>, onLoadComplete:Dynamic->Void, onLoadError:Dynamic->Void):Void
 	{
 		this._onLoadCompleteCallback = onLoadComplete;
 		this._onLoadErrorCallback = onLoadError;
 		
 		this._urls = urls;
 		this._urlToLoadIdx = 0;
-		
-		//if the loaded resource must not be cached,
-		//add a random number at the end of the url to fool
-		//the browser into thinking it loads a new resource
-		if (allowCache == false)
-		{
-			for (i in 0...urls.length)
-			{
-				urls[i] = disableUrlCaching(urls[i]);
-			}
-		}
 		
 		doLoad(_urls[_urlToLoadIdx]);
 		
@@ -171,37 +160,6 @@ class AbstractResourceLoader
 		{
 			_onLoadErrorCallback(msg);
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private utils method 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Append a random number to the url to make it unique
-	 * @param	url the url to transform
-	 * @return the randomised url
-	 */
-	private function disableUrlCaching(url:String):String
-	{
-		var getId:String = "";
-		
-		//if this is the first GET variable of the url, start with 
-		//a quotation mark
-		if (url.indexOf("?") == -1)
-		{
-			getId =  "?";
-		}
-		//else start with an 'and'
-		else
-		{
-			getId = "&";
-		}
-		
-		//appand a GET var with a unique random value to make the URL unique
-		url += getId + "rand=" + Math.round(Math.random() * 10000);
-		
-		return url;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

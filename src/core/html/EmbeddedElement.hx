@@ -7,6 +7,8 @@
 */
 package core.html;
 
+import core.dom.Node;
+
  #if (flash9 || cpp || nme)
 import core.NativeElement;
 import port.flash_player.HTMLElement;
@@ -77,9 +79,44 @@ class EmbeddedElement extends HTMLElement
 		super.init();
 	}
 	
+	/**
+	 * get a reference to the embedded asset
+	 */
 	private function initEmbeddedAsset():Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * Override to instantiate an Style specific 
+	 * to embedded elements
+	 */
+	override private function initStyle():Void
+	{
+		this._style = new EmbeddedStyle(this);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Embedded elements can't have children
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+		//TODO : should throw DOMException
+		return newChild;
+	}
+	
+		
+	/**
+	 * Embedded elements can't have children
+	 */
+	override public function removeChild(oldChild:Node):Node
+	{
+		//TODO : should throw DOMException
+		return oldChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
