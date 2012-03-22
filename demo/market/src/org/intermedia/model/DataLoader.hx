@@ -13,7 +13,7 @@ class DataLoader
 {
 
 	// Defines onLoad callback, called when the xml feed is loaded
-	private var onCellDataLoaded : Array<CellData>->Void;
+	private var onCellDataLoaded : ListData->Void;
 	private var onCellDetailLoaded : DetailData->Void;
 	private var onLoadingError : Dynamic->Void;
 	
@@ -35,8 +35,6 @@ class DataLoader
 	public function new(?online:Bool=true)
 	{
 		// init private attributes
-		//_itemsToLoad = itemsToLoad;
-		//_pageIndex = pageIndex;
 		_pageIndex = 1;
 		_online = online;
 		
@@ -48,9 +46,7 @@ class DataLoader
 	 * @param	endIndex
 	 * @param	?callBack
 	 */
-	//public function loadCellData(itemsPerPage:Int, ?pageIndex:Int=1, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
-	public function loadCellData(itemsPerPage:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
-	//public function loadCellData(feed:String, itemsPerPage:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
+	public function loadCellData(feed:String, itemsPerPage:Int, successCallback:ListData->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;
@@ -60,16 +56,15 @@ class DataLoader
 		
 		// prepare online feed url
 		if (_online)
-		{
-			fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
-			//fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
+		{			
+			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
 			_pageIndex++;
 		}
 		// prepare local feed url
 		else fullUrl = "data/silex_plugins.rss";
 		
 		// load xml feed
-		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError);
+		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 	}
 	
 	/**
@@ -84,7 +79,7 @@ class DataLoader
 		onLoadingError = errorCallback;
 		
 		// Delegate callback
-		var onLoadSuccessDelegate:Xml->Void = function(xml:Xml) { onCellDetailXmlLoaded(xml, cellData); };
+		var onLoadSuccessDelegate:String->Xml->Void = function(listId:String, xml:Xml) { onCellDetailXmlLoaded(xml, cellData); };
 		
 		var fullUrl:String = "";
 		
@@ -104,10 +99,9 @@ class DataLoader
 	 * 
 	 * @param	xml
 	 */
-	private function onCellsXmlLoaded(xml:Xml):Void
+	private function onCellsXmlLoaded(listId:String, xml:Xml):Void
 	{
-		//onCellDataLoaded(ThumbTextListRss.rss2Cells(xml));
-		onCellDataLoaded(ThumbTextListRssStandard.rss2Cells(xml));
+		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml)});
 	}	
 	
 	/**

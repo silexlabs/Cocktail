@@ -8,6 +8,7 @@ import cocktail.viewport.Viewport;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.SwippableListView;
+import org.intermedia.model.Feeds;
 //import cocktail.domElement.DOMElementData;
 
 /**
@@ -103,10 +104,14 @@ class ViewManager
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		// set callback when the bottom of the scrollbar is reached
 		//_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
-		_swippableListView.onListScrolled = function () { _applicationController.loadCellData(); };
+		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.loadCellData(feed); };
+		_swippableListView.onListScrolled = _applicationController.loadCellData;
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		//_applicationController.loadCellData(CELL_QTY);
-		_applicationController.loadCellData();
+		//_applicationController.loadCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
+		_applicationController.loadCellData(Feeds.FEED_1);
+		_applicationController.loadCellData(Feeds.FEED_2);
+		_applicationController.loadCellData(Feeds.FEED_3);
 	}
 	
 	/**
@@ -131,13 +136,15 @@ class ViewManager
 	 * 
 	 * @param	cellsData
 	 */
-	public function onCellDataLoaded(cellsData:Array<CellData>):Void
+	//public function onCellDataLoaded(cellsData:Array<CellData>):Void
+	public function onCellDataLoaded(listData:ListData):Void
 	{
 		// if no more data fetched, remove bottom loader
-		if (cellsData.length == 0) _swippableListView.displayListBottomLoader = false;
+		if (listData.cells.length == 0) _swippableListView.displayListBottomLoader = false;
 		
 		// update data
-		_swippableListView.data = cellsData;
+		//_swippableListView.data = listData.cells;
+		_swippableListView.data = listData;
 		
 		// update header zIndex using a workaround so it always visible
 		updateHeaderZIndex();

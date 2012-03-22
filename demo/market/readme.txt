@@ -31,6 +31,51 @@ http://www.silexlabs.org/feed/?cat=642&format=rss2
 http://www.silexlabs.org/feed/ep_posts_small/?cat=642&format=rss2
 
 
+Selected Feeds:
+ 
+> http://feeds.feedburner.com/frenchweb => http://frenchweb.fr/feed/
+  => item
+     => title
+	 => pubDate
+     => dc:creator
+     => description => résumé
+     => content:encoded => thumb + html
+> http://feedproxy.google.com/francaistechcrunch => http://fr.techcrunch.com/feed/
+ => item
+     => title
+ 	 => pubDate
+     => dc:creator
+     => description => thumb + résumé avec html
+     => content:encoded => html
+> http://siliconsentier.org/feed/
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => résumé avec html
+     => content:encoded => thumb + html
+> http://www.lafonderie-idf.fr/feed
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => thumb + résumé avec html
+     => content:encoded => thumb + html
+> http://www.capdigital.com/feed/
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => résumé sans html
+     => content:encoded => thumb + html
+
+
+
+wordpress parameters:
+http://codex.wordpress.org/Class_Reference/WP_Query
+-posts_per_page: not always working, suported from wordpress > 2.1
+-paged
+
 
 Intermedia Market spec feedback
 -------------------------------
@@ -108,7 +153,9 @@ To Do
  => title shifts
 -menu bar for navigation
 -set initial list to list1
- 
+-lists should be placed with position:inline in swippable view
+-after loading n element, if page is not filled completly, load next n elements
+
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield
@@ -126,45 +173,4 @@ Issues:
  => text fields are not displayed
  => loaded images make windows app crash
 
- 
-Feeds:
- 
-> http://feeds.feedburner.com/frenchweb
-  => item
-     => title
-	 => pubDate
-     => dc:creator
-     => description => résumé
-     => content:encoded => thumb + html
-> http://feedproxy.google.com/francaistechcrunch
- => item
-     => title
- 	 => pubDate
-     => dc:creator
-     => description => thumb + résumé avec html
-     => content:encoded => html
-> http://siliconsentier.org/feed/
- => item
-     => title
- 	 => pubDate
-	 => dc:creator
-     => description => résumé avec html
-     => content:encoded => thumb + html
-> http://www.lafonderie-idf.fr/feed
- => item
-     => title
- 	 => pubDate
-	 => dc:creator
-     => description => thumb + résumé avec html
-     => content:encoded => thumb + html
-> http://www.capdigital.com/feed/
- => item
-     => title
- 	 => pubDate
-	 => dc:creator
-     => description => résumé sans html
-     => content:encoded => thumb + html
 
-Questions:
- => de base, 30 articles dispos => changer les articles pour les afficher par groupe de n éléments ?
- => possibilité de charger davantage d'articles => en utilisant posts_per_page==x

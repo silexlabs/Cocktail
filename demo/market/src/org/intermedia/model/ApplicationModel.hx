@@ -10,7 +10,7 @@ class ApplicationModel
 {
 
 	// Called when cells data has been successfully loaded
-	public var onModelCellDataLoaded:Array<CellData>->Void;
+	public var onModelCellDataLoaded:ListData->Void;
 	
 	// Called when the detail of a cell has been successfully loaded
 	public var onModelDetailDataLoaded:DetailData->Void;
@@ -55,8 +55,8 @@ class ApplicationModel
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right number of cell to load
 	 * @param	numberOfCellsToLoad
 	 */
-	public function loadCellData():Void
-	//public function loadCellData(feed:String):Void
+	//public function loadCellData():Void
+	public function loadCellData(feed:String):Void
 	{
 		// if first data loading is occuring
 		if (_loadedCellsData.length == 0)
@@ -70,8 +70,8 @@ class ApplicationModel
 		
 		// Calls load() on the DataLoader with the right number of cell to load
 		//_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
-		_dataLoader.loadCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
-		//_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
+		//_dataLoader.loadCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
+		_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	
 	/**
@@ -94,13 +94,14 @@ class ApplicationModel
 	 * Call onModelCellDataLoaded with the cellData array
 	 * @param	cellsData
 	 */
-	private function onCellsDataLoadComplete(cellsData:Array<CellData>):Void
+	//private function onCellsDataLoadComplete(cellsData:Array<CellData>):Void
+	private function onCellsDataLoadComplete(listData:ListData):Void
 	{
 		// reset _loadedCellsData
 		_loadedCellsData = new Array<CellData>();
 		
 		// add cellsData to _loadedCellsData
-		for ( cellData in cellsData)
+		for ( cellData in listData.cells)
 		{
 			_loadedCellsData.push(cellData);
 		}
@@ -108,7 +109,8 @@ class ApplicationModel
 		// call onModelCellDataLoaded (if initialised) with _loadedCellsData as parameters
 		if (onModelCellDataLoaded != null)
 		{
-			onModelCellDataLoaded(_loadedCellsData);
+			//onModelCellDataLoaded(_loadedCellsData);
+			onModelCellDataLoaded(listData);
 		}
 
 	}
@@ -169,16 +171,12 @@ typedef DetailData =
 }
 
 /**
- * Holds Title, content...
- * Could also use a Hash with the id a key for faster search
+ * ListData model defines a a hash of CellData Array, each hash containing the list id
  */
-/*typedef FeedData =
+typedef ListData =
 {
-	var feedUrl:String;
+	var id:String;
 	var cells:Array<CellData>;
-}*/
+}
 
-/**
- * FeedData contains
- */
-typedef FeedData = Hash<Array<CellData>>;
+//typedef ListData = Hash<Array<CellData>>;
