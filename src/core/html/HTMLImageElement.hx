@@ -134,7 +134,7 @@ class HTMLImageElement extends EmbeddedElement
 		//with the ImageDOMElement
 		if (onLoad != null)
 		{
-			var loadEvent:Event = new Event(Event.LOAD);
+			var loadEvent:Event = new Event(Event.LOAD, this);
 			onLoad(loadEvent);
 		}
 	}
@@ -151,7 +151,7 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		if (onError != null)
 		{
-			onError(new Event(Event.ERROR));
+			onError(new Event(Event.ERROR, this));
 		}
 	}
 	

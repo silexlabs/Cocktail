@@ -33,9 +33,9 @@ class Keyboard extends AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(nativeElement);
+		super(htmlElement);
 		
 		//set native JS events
 		_keyDownEvent = KEY_DOWN_EVENT;
@@ -53,11 +53,11 @@ class Keyboard extends AbstractKeyboard
 	 */
 	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
-		untyped _nativeElement.removeEventListener(keyboardEvent, nativeCallback);
+		untyped _htmlElement.nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
 		if (domElementCallback != null)
 		{
-			untyped _nativeElement.addEventListener(keyboardEvent, nativeCallback);
+			untyped _htmlElement.nativeElement.addEventListener(keyboardEvent, nativeCallback);
 		}
 	}
 	
@@ -83,7 +83,7 @@ class Keyboard extends AbstractKeyboard
 				eventType = event.type;	
 		}
 		
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, 0.0, event.charCode, 
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, _htmlElement, 0.0, event.charCode, 
 		event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
 		
 	

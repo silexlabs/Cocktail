@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.event;
+import core.HTMLElement;
 
 /**
  * The Event interface is used to provide contextual information
@@ -38,14 +39,23 @@ class Event
 	 * The name of the event
 	 */
 	private var _type:String;
-	public var type(get_type, null):String;
+	public var type(get_type, never):String;
+	
+	/**
+	 * Used to indicate the event target
+	 * 
+	 * TODO : should be of type EventTarget
+	 */ 
+	private var _target:HTMLElement;
+	public var target(get_target, never):HTMLElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(type:String) 
+	public function new(type:String, target:HTMLElement) 
 	{
 		_type = type;
+		_target = target;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -55,5 +65,10 @@ class Event
 	private function get_type():String 
 	{
 		return _type;
+	}
+	
+	private function get_target():HTMLElement
+	{
+		return _target;
 	}
 }

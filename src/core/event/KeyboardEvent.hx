@@ -1,4 +1,5 @@
 package core.event;
+import core.HTMLElement;
 
 /**
  * The KeyboardEvent interface provides specific contextual information associated with
@@ -56,9 +57,9 @@ class KeyboardEvent extends UIEvent
 	public var altKey(get_altKey, null):Bool;
 	
 	
-	public function new(type:String, detail:Float, char:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	public function new(type:String, target:HTMLElement, detail:Float, char:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
-		super(type, detail);
+		super(type, target, detail);
 		
 		_char = char;
 		_key = key;

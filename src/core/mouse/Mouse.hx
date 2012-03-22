@@ -9,6 +9,8 @@ package core.mouse;
 
 /**
  * Set the right runtime specific mouse manager at compile-time
+ * 
+ * TODO : move to core
  */
 #if (flash9 || cpp || nme)
 typedef Mouse =  port.flash_player.Mouse;

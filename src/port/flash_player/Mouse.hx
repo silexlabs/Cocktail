@@ -26,9 +26,9 @@ class Mouse extends AbstractMouse
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(nativeElement);
+		super(htmlElement);
 		
 		//set the Flash event types
 		_mouseDownEvent = flash.events.MouseEvent.MOUSE_DOWN;
@@ -50,11 +50,11 @@ class Mouse extends AbstractMouse
 	 */
 	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
 	{
-		_nativeElement.removeEventListener(mouseEvent, nativeCallback);
+		_htmlElement.nativeElement.removeEventListener(mouseEvent, nativeCallback);
 		
 		if (domElementCallback != null)
 		{
-			_nativeElement.addEventListener(mouseEvent, nativeCallback);
+			_htmlElement.nativeElement.addEventListener(mouseEvent, nativeCallback);
 		}
 	}
 	
@@ -92,7 +92,7 @@ class Mouse extends AbstractMouse
 				eventType = typedEvent.type;	
 		}
 		
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, 0.0, typedEvent.stageX, typedEvent.stageY,
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, _htmlElement, 0.0, typedEvent.stageX, typedEvent.stageY,
 		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		return mouseEvent;

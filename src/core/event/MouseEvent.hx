@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.event;
+import core.HTMLElement;
 
 /**
  * The MouseEvent interface provides specific contextual information associated with Mouse events.
@@ -108,10 +109,10 @@ class MouseEvent extends UIEvent
 	private var _altKey:Bool;
 	public var altKey(get_altKey, null):Bool;
 	
-	public function new(type:String, detail:Float, screenX:Float, screenY:Float, clientX:Float, clientY:Float, 
+	public function new(type:String, target:HTMLElement, detail:Float, screenX:Float, screenY:Float, clientX:Float, clientY:Float, 
 	ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
-		super(type, detail);
+		super(type, target, detail);
 		
 		_screenX = screenX;
 		_screenY = screenY;

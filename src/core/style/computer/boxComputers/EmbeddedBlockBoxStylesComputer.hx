@@ -134,12 +134,8 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
 	{
-		
-		
 		var ret:Int = 0;
 		
-		
-		//TODO : add ReplacedElement class ? add intrinsic width/height/ratio on AbstractStyle ?
 		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
