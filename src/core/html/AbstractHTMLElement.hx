@@ -311,6 +311,30 @@ class AbstractHTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * invalidate Style after DOM change
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		_style.invalidate();
+		return newChild;
+	}
+	
+	/**
+	 * invalidate Style after DOM change
+	 */
+	override public function removeChild(oldChild:Node):Node
+	{
+		super.removeChild(oldChild);
+		_style.invalidate();
+		return oldChild;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE SETTER/GETTER
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////

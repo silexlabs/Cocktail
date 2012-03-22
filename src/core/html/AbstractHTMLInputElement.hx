@@ -1,4 +1,12 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package core.html;
+
 import core.HTMLElement;
 
 /**
@@ -15,20 +23,20 @@ class AbstractHTMLInputElement extends HTMLElement
 	 * focus if the value of the text input changed
 	 */
 	private var _onChange:Void->Void;
-	public var onChange(getOnChange, setOnChange):Void->Void;
+	public var onChange(get_onChange, set_onChange):Void->Void;
 	
 	/**
 	 * The control is unavailable in this context.
 	 */
 	private var _disabled:Bool;
-	public var disabled(getDisabled, setDisabled):Bool;
+	public var disabled(get_disabled, set_disabled):Bool;
 	
 	/**
 	 * Maximum number of characters for text fields, when type 
 	 * has the value "text" or "password".
 	 */
 	private var _maxLength:Int;
-	public var maxLength(getMaxLength, setMaxLength):Int;
+	public var maxLength(get_maxLength, set_maxLength):Int;
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -42,11 +50,10 @@ class AbstractHTMLInputElement extends HTMLElement
 	 * the HTML value attribute of the element.
 	 */
 	private var _value:String;
-	public var value(getValue, setValue):String;
+	public var value(get_value, set_value):String;
 	
 	/**
-	 * class constructor. Create a native text input
-	 * if none is provided
+	 * class constructor
 	 */
 	public function new() 
 	{
@@ -87,12 +94,12 @@ class AbstractHTMLInputElement extends HTMLElement
 	// CHANGE SETTER/GETTER
 	/////////////////////////////////
 	
-	private function setOnChange(value:Void->Void):Void->Void
+	private function set_onChange(value:Void->Void):Void->Void
 	{
 		return _onChange = value;
 	}
 	
-	private function getOnChange():Void->Void
+	private function get_onChange():Void->Void
 	{
 		return _onChange;
 	}
@@ -114,32 +121,32 @@ class AbstractHTMLInputElement extends HTMLElement
 	// SETTER/GETTER
 	/////////////////////////////////
 	
-	private function setDisabled(value:Bool):Bool
+	private function set_disabled(value:Bool):Bool
 	{
 		return _disabled = value;
 	}
 	
-	private function getDisabled():Bool
+	private function get_disabled():Bool
 	{
 		return _disabled;
 	}
 	
-	private function setMaxLength(value:Int):Int
+	private function set_maxLength(value:Int):Int
 	{
 		return _maxLength = value;
 	}
 	
-	private function getMaxLength():Int
+	private function get_maxLength():Int
 	{
 		return _maxLength;
 	}
 	
-	private function setValue(value:String):String
+	private function set_value(value:String):String
 	{
 		return _value = value;
 	}
 	
-	private function getValue():String
+	private function get_value():String
 	{
 		return _value;
 	}

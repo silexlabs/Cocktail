@@ -89,8 +89,8 @@ class AbstractStyle
 	private var _position:Position;
 	public var position(getPosition, setPosition):Position;
 	
-	private var _floatValue:FloatStyle;
-	public var floatValue(getFloatValue, setFloatValue):FloatStyle;
+	private var _floatStyle:FloatStyle;
+	public var floatStyle(getFloatStyle, setFloatStyle):FloatStyle;
 	
 	private var _clear:Clear;
 	public var clear(getClear, setClear):Clear;
@@ -323,7 +323,7 @@ class AbstractStyle
 		this.left = PositionOffset.autoValue;
 		this.right = PositionOffset.autoValue;
 		
-		this.floatValue = FloatStyle.none;
+		this.floatStyle = FloatStyle.none;
 		this.clear = Clear.none;
 		
 		this.backgroundColor = BackgroundColor.colorValue(ColorValue.transparent);
@@ -400,7 +400,7 @@ class AbstractStyle
 			top: 0,
 			bottom : 0,
 			clear : Clear.none,
-			floatValue : FloatStyle.none,
+			floatStyle : FloatStyle.none,
 			display : Display.block,
 			position: Position.staticStyle,
 			verticalAlign : 0.0,
@@ -1014,7 +1014,7 @@ class AbstractStyle
 	{
 		var ret:Bool = false;
 		
-		switch (this._computedStyle.floatValue) 
+		switch (this._computedStyle.floatStyle) 
 		{
 			case FloatStyle.left, FloatStyle.right:
 				ret = true;
@@ -1380,10 +1380,10 @@ class AbstractStyle
 		return _right = value;
 	}
 	
-	private function setFloatValue(value:FloatStyle):FloatStyle 
+	private function setFloatStyle(value:FloatStyle):FloatStyle 
 	{
 		invalidate();
-		return _floatValue = value;
+		return _floatStyle = value;
 	}
 	
 	private function setClear(value:Clear):Clear 
@@ -1623,9 +1623,9 @@ class AbstractStyle
 		return _right;
 	}
 	
-	private function getFloatValue():FloatStyle 
+	private function getFloatStyle():FloatStyle 
 	{
-		return _floatValue;
+		return _floatStyle;
 	}
 	
 	private function getClear():Clear 

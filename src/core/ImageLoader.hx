@@ -16,7 +16,4 @@ typedef ImageLoader = core.resource.AbstractImageLoader;
 #elseif js
 typedef ImageLoader = core.resource.AbstractImageLoader;
 
-#elseif php
-typedef ImageLoader = core.resource.php.ImageLoader;
-
 #end

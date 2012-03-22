@@ -16,9 +16,6 @@ typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 #elseif js
 typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 
-#elseif php
-typedef EmbeddedStyle =  core.style.php.EmbeddedStyle;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

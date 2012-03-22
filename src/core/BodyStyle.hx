@@ -7,8 +7,6 @@
 */
 package core;
 
-//TODO : remove php target
-
 /**
  * Set the right runtime specific BodyStyle at compile-time
  */
@@ -17,9 +15,6 @@ typedef BodyStyle =  port.flash_player.BodyStyle;
 
 #elseif js
 typedef BodyStyle =  port.browser.BodyStyle;
-
-#elseif php
-typedef BodyStyle =  core.style.php.BodyStyle;
 
 #elseif doc
 /**

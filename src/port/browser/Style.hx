@@ -96,21 +96,21 @@ class Style extends AbstractStyle
 	 */
 	private function getCSSFloat(value:FloatStyle):String
 	{
-		var cssFloatValue:String;
+		var cssfloatStyle:String;
 		
 		switch (value)
 		{
 			case FloatStyle.left:
-				cssFloatValue = "left";
+				cssfloatStyle = "left";
 				
 			case FloatStyle.right:
-				cssFloatValue = "right";
+				cssfloatStyle = "right";
 				
 			case FloatStyle.none:
-				cssFloatValue = "none";
+				cssfloatStyle = "none";
 		}
 		
-		return cssFloatValue;
+		return cssfloatStyle;
 	}
 	
 	/**
@@ -1730,11 +1730,11 @@ class Style extends AbstractStyle
 		return _textIndent = value;
 	}
 	
-	override private function setFloatValue(value:FloatStyle):FloatStyle 
+	override private function setFloatStyle(value:FloatStyle):FloatStyle 
 	{
 		untyped this._htmlElement.nativeElement.style.cssFloat = getCSSFloat(value);
-		super.setFloatValue(value);
-		return floatValue = value;
+		super.setFloatStyle(value);
+		return floatStyle = value;
 	}
 	
 	override private function setClear(value:Clear):Clear 

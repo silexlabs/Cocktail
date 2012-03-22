@@ -40,6 +40,8 @@ class AbstractFocusManagerImpl
 	
 	/**
 	 * set/get the currently focused DOMElement
+	 * 
+	 * TODO : move to Document
 	 */
 	private var _activeElement:HTMLElement;
 	public var activeElement(getActiveElement, setActiveElement):HTMLElement;

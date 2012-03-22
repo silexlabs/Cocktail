@@ -7,6 +7,8 @@
 */
 package core.dom;
 
+import core.dom.DOMData;
+
 /**
  * The CharacterData interface extends Node with a set of attributes and methods for accessing character data in the DOM.
  * For clarity this set is defined here rather than on each object that uses these attributes and methods.
@@ -34,6 +36,15 @@ class CharacterData extends Node
 	public function new() 
 	{
 		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function get_nodeType():NodeType
+	{
+		return NodeType.TEXT_NODE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

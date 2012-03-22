@@ -35,7 +35,7 @@ class HTMLInputElement extends AbstractHTMLInputElement
 	 * a native JavaScript listener on the text text
 	 * input
 	 */
-	override private function setOnChange(value:Void->Void):Void->Void
+	override private function set_onChange(value:Void->Void):Void->Void
 	{
 		//first always remove previous listener
 		untyped _nativeElement.removeEventListener("change", onNativeChange);
@@ -66,25 +66,25 @@ class HTMLInputElement extends AbstractHTMLInputElement
 	// native HTML text input
 	/////////////////////////////////
 	
-	override private function setDisabled(value:Bool):Bool
+	override private function set_disabled(value:Bool):Bool
 	{
 		untyped _nativeElement.disabled = value;
 		return _disabled = value;
 	}
 	
-	override private function setMaxLength(value:Int):Int
+	override private function set_maxLength(value:Int):Int
 	{
 		untyped _nativeElement.maxLength = value;
 		return _maxLength = value;
 	}
 	
-	override private function setValue(value:String):String
+	override private function set_value(value:String):String
 	{
 		untyped _nativeElement.value = value;
 		return _value = value;
 	}
 	
-	override private function getValue():String
+	override private function get_value():String
 	{
 		//update the stored value of the text input when requested
 		//as it might have changed meanwhile because of user interaction

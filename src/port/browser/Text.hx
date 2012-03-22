@@ -8,6 +8,7 @@
 package port.browser;
 
 import core.style.StyleData;
+import haxe.Log;
 import js.Lib;
 
 /**
@@ -29,8 +30,6 @@ class Text extends core.dom.Text
 	 */
 	public function new()
 	{
-		
-		
 		super();
 	}
 	

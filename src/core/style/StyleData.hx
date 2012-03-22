@@ -1209,7 +1209,7 @@ import core.renderer.TextRenderer;
 		 * display
 		 */
 		var display:Display;
-		var floatValue:FloatStyle;
+		var floatStyle:FloatStyle;
 		var clear:Clear;
 		var position:Position;
 		var lineHeight:Float;

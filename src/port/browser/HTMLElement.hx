@@ -45,8 +45,21 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		super.removeChild(oldChild);
 		
-		var childHTMLElement:HTMLElement = cast(oldChild);
-		_nativeElement.removeChild(childHTMLElement.nativeElement);
+		switch (oldChild.nodeType)
+		{
+			case NodeType.ELEMENT_NODE:
+				var childHTMLElement:HTMLElement = cast(oldChild);
+				_nativeElement.removeChild(childHTMLElement.nativeElement);
+				
+			case NodeType.TEXT_NODE:
+				var childTextElement:core.dom.Text = cast(oldChild);
+				_nativeElement.removeChild(childTextElement.nativeElement);
+				
+			case NodeType.DOCUMENT_NODE:
+				//TODO : DOM exception ?
+				
+		}
+		
 		return oldChild;
 	}
 	
@@ -58,8 +71,20 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		super.appendChild(newChild);
 		
-		var childHTMLElement:HTMLElement = cast(newChild);
-		_nativeElement.appendChild(childHTMLElement.nativeElement);
+		switch (newChild.nodeType)
+		{
+			case NodeType.ELEMENT_NODE:
+				var childHTMLElement:HTMLElement = cast(newChild);
+				_nativeElement.appendChild(childHTMLElement.nativeElement);
+				
+			case NodeType.TEXT_NODE:
+				var childTextElement:core.dom.Text = cast(newChild);
+				_nativeElement.appendChild(childTextElement.nativeElement);
+				
+			case NodeType.DOCUMENT_NODE:
+				//TODO : DOM exception ?
+				
+		}
 		return newChild;
 	}
 	

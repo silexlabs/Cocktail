@@ -59,8 +59,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	{
 		var ret:Int = 0;
 		
-		//TODO : re implement
-		
 		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'height' style also is defined as 'auto'
