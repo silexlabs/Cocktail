@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package core.html;
 
 import core.nativeElement.NativeElement;
@@ -35,34 +42,32 @@ class HTMLImageElement extends EmbeddedElement
 	/**
 	 * The callback called when there was an error during loading
 	 */
-	public var onError:String->Void;
+	public var onError:Event->Void;
 
 	//////////////////////
 	// PRIVATE ATTRIBUTES
 	/////////////////////
 	
 	/**
-	 * The instrinsic width of an embedded content. For example, for a video, the width
-	 * in pixel of the video
+	 * The instrinsic width of the loaded picture
 	 */
 	public var naturalWidth(get_naturalWidth, never):Null<Int>;
 	
 	/**
-	 * The instrinsic height of an embedded content. For example, for a video, the height
-	 * in pixel of the video
+	 * The instrinsic height of the loaded picture
 	 */
 	public var naturalHeight(get_naturalHeight, never):Null<Int>;
 	
 	/**
-	 * The URL of the loaded picture.
-	 * Read-only
+	 * set/get the URL of the loaded picture.
 	 */
 	private var _src:String;
 	public var src(get_src, set_src):String;
 	
 	/**
 	 * Reponsible for loading pictures into a NativeElement. 
-	 * Its NativeElement is used by this ImageDOMElement
+	 * Its NativeElement is used by this HTMLImageElement as an
+	 * embedded asset
 	 */
 	private var _imageLoader:ImageLoader;
 	
@@ -71,17 +76,17 @@ class HTMLImageElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * class constructor. Instantiate the image loader
-	 * and set its NativeElement as this ImageDOMElement's
-	 * NativeElement
+	 * class constructor.
 	 */
 	public function new(nativeElement:NativeElement = null) 
 	{
-		//use the provided NativeElement if any
 		_imageLoader = new ImageLoader();
 		super();
 	}
 	
+	/**
+	 * the embedded assed is held by the image loader
+	 */
 	override private function initEmbeddedAsset():Void
 	{
 		_embeddedAsset = _imageLoader.nativeElement;
@@ -94,36 +99,25 @@ class HTMLImageElement extends EmbeddedElement
 		_nativeElement = _embeddedAsset;
 	}
 	
-	/**
-	 * Override to instantiate an embedded DOMElement specific 
-	 * style manager
-	 */
-	override private function initStyle():Void
-	{
-		this._style = new EmbeddedStyle(this);
-	}
-
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LOADING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Starts a loading with the image loader
-	 * @param	url the url of the picture to load
-	 * @param	allowCache wheter the picture is allowed to be cached by the browser
 	 */
 	private function set_src(value:String):String
 	{
 		_src = value;
-		_imageLoader.load([value], onLoadComplete, onLoadError, false);
+		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return _src;
 	}
 	
 	/**
 	 * Called when the picture was successfuly loaded.
-	 * Invalidate the DOMElement and call the
+	 * Invalidate the Style and call the
 	 * onLoad callback if provided.
+	 * 
 	 * Store the instrinsic dimensions of the loaded asset
 	 * 
 	 * @param	image the loaded picture stored as a nativeElement
@@ -148,13 +142,16 @@ class HTMLImageElement extends EmbeddedElement
 	/**
 	 * Called when there was an error during loading.
 	 * Call the error callback if provided
+	 * 
+	 * TODO : check how to pass an error string to the event
+	 * 
 	 * @param	message the error message
 	 */
 	private function onLoadError(message:String):Void
 	{
 		if (onError != null)
 		{
-			onError(message);
+			onError(new Event(Event.ERROR));
 		}
 	}
 	
