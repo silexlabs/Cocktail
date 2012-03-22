@@ -21,7 +21,7 @@
 	<haxelib name="feffects" />
 	<compilerflag name="--remap neko:cpp" if="target_cpp" />
 
-	<assets path="../bin/assets" rename="assets" include="*"/>
+	<assets path="../bin/assets" rename="assets" include="*" exclude="loading.gif" />
 
 	<ndll name="std" />
 	<ndll name="regexp" />

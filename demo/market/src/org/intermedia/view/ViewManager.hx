@@ -4,6 +4,7 @@ package org.intermedia.view;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.nativeElement.NativeElement;
+import cocktail.viewport.Viewport;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.SwippableListView;
@@ -50,8 +51,6 @@ class ViewManager
 	//A ref to the currently displayed main view (not the header)
 	private var _currentView:ViewBase;
 	
-	static inline var CELL_QTY:Int = 10;
-
 	/**
 	 * Store ref to application model and controller. Instantiate headerView, loadingView, swippableView then call init().
 	 * 
@@ -79,6 +78,8 @@ class ViewManager
 		_currentView = _swippableListView;
 		// attach swippable view to body
 		_body.addChild(_swippableListView);
+		//scroll to the second item in swippable view
+		//_body.nativeElement.scrollLeft = new Viewport().width;
 		
 		// call init()
 		init();
@@ -101,9 +102,11 @@ class ViewManager
 		// set list item selelected callback
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		// set callback when the bottom of the scrollbar is reached
-		_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
+		//_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
+		_swippableListView.onListScrolled = function () { _applicationController.loadCellData(); };
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
-		_applicationController.loadCellData(CELL_QTY);
+		//_applicationController.loadCellData(CELL_QTY);
+		_applicationController.loadCellData();
 	}
 	
 	/**
