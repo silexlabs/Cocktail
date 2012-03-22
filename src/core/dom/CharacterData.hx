@@ -24,8 +24,6 @@ class CharacterData extends Node
 	 * However, implementation limits may mean that the entirety of a node's data may not fit into
 	 * a single DOMString. In such cases, the user may call substringData
 	 * to retrieve the data in appropriately sized pieces
-	 * 
-	 * TODO : use DOMString ? implement substringData
 	 */
 	private var _data:String;
 	public var data(get_data, set_data):String;
