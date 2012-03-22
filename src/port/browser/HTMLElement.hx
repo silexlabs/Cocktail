@@ -106,9 +106,19 @@ class HTMLElement extends AbstractHTMLElement
 		return untyped _nativeElement.clientTop;
 	}
 	
+	override private function set_scrollTop(value:Int):Int
+	{
+		return _nativeElement.scrollTop = value;
+	}
+	
 	override private function get_scrollTop():Int
 	{
 		return  _nativeElement.scrollTop;
+	}
+	
+	override private function set_scrollLeft(value:Int):Int
+	{
+		return _nativeElement.scrollLeft = value;
 	}
 	
 	override private function get_scrollLeft():Int
@@ -173,7 +183,7 @@ class HTMLElement extends AbstractHTMLElement
 	 * setter. This way the HTML attribute will only be set if
 	 * tab is enabled
 	 */
-	override private function set_tabIndex(value:Int):Int
+	override private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
 		//TODO : tabIndex is not set on the nativeElement
 		_tabIndex = value;

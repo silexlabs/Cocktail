@@ -40,6 +40,8 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	public function new() 
 	{	
+		//TODO : should be moved to Document
+		FocusManager.getInstance().bodyElement = cast(this);
 		super();
 	}
 	
@@ -60,17 +62,6 @@ class HTMLBodyElement extends HTMLElement
 		//for resize on it
 		_viewPort = new Viewport();
 		_viewPort.onResize = onViewPortResize;
-	}
-	
-	/**
-	 * Overriden to set this as the reference
-	 * to the BodyDOMElement of the focus manager,
-	 * used to build the tab list tree
-	 */
-	override private function initFocus():Void
-	{
-		FocusManager.getInstance().bodyElement = cast(this);
-		super.initFocus();
 	}
 	
 	/**

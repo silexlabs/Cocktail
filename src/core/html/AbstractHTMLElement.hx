@@ -57,19 +57,19 @@ class AbstractHTMLElement extends Element
 	public var onMouseUp(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
 	
 	/**
-	 * The callback called when the mouse pointer hovers this dom element
+	 * The callback called when the mouse pointer hovers this htmlElement
 	 */
 	private var _onMouseOver:MouseEvent->Void;
 	public var onMouseOver(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
 	
 	/**
-	 * The callback called on mouse out of this dom element
+	 * The callback called on mouse out of this htmlElement
 	 */
 	private var _onMouseOut:MouseEvent->Void;
 	public var onMouseOut(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
 	
 	/**
-	 * The callback called when the mouse pointer moves over this dom element
+	 * The callback called when the mouse pointer moves over this htmlElement
 	 */
 	private var _onMouseMove:MouseEvent->Void;
 	public var onMouseMove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
@@ -101,23 +101,32 @@ class AbstractHTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The tab index order of the DOMElement. If the DOMElement
-	 * is tab enabled, this index will be used when the
-	 * user presses the TAB key to determine the order
-	 * of the focusable DOMElements in the DOM
+	 * The tab index order of the HTMLElement. If the index
+	 * is set, it is used to determine focus order when the
+	 * user press the TAB key. If it is not set, the document
+	 * order is used to establish focus order and the HTMLElement
+	 * is only focused if it is intrinsivally focusable, like for
+	 * instance an HTMLInputElement
 	 */
-	private var _tabIndex:Int;
-	public var tabIndex(get_tabIndex, set_tabIndex):Int;
+	private var _tabIndex:Null<Int>;
+	public var tabIndex(get_tabIndex, set_tabIndex):Null<Int>;
 	
 	/**
-	 * callback called when the DOMElement recives 
+	 * Return wheter this HTMLElement is intrinsically
+	 * focusable. For instance, html input or anchor elements
+	 * are intrinsically focusable
+	 */
+	public var isDefaultFocusable(get_isDefaultFocusable, never):Bool;
+	
+	/**
+	 * callback called when the HTMLElement receives 
 	 * the focus
 	 */
 	private var _onFocus:Event->Void;
 	public var onFocus(get_onFocus, set_onFocus):Event->Void;
 	
 	/**
-	 * callback called when the DOMElement loses the focus
+	 * callback called when the HTMLElement loses the focus
 	 */
 	private var _onBlur:Event->Void;
 	public var onBlur(get_onBlur, set_onBlur):Event->Void;
@@ -128,18 +137,30 @@ class AbstractHTMLElement extends Element
 	
 	/**
 	 * Callback called when
-	 * the content of the DOMElement
+	 * the content of the HTMLElement
 	 * is scrolled
 	 */
 	private var _onScroll:Event->Void;
 	public var onScroll(get_onScroll, set_onScroll):Event->Void;
 	
-	public var scrollTop(get_scrollTop, never):Int;
+	/**
+	 * Gets/sets the top scroll offset of an element
+	 */
+	public var scrollTop(get_scrollTop, set_scrollTop):Int;
 	
-	public var scrollLeft(get_scrollLeft, never):Int;
+	/**
+	 * Gets/sets the left scroll offset of an element
+	 */
+	public var scrollLeft(get_scrollLeft, set_scrollLeft):Int;
 	
+	/**
+	 * The scroll view height of the HTMLElement
+	 */
 	public var scrollHeight(get_scrollHeight, never):Int;
 	
+	/**
+	 * The scroll view width of the HTMLElement
+	 */
 	public var scrollWidth(get_scrollWidth, never):Int;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -147,9 +168,11 @@ class AbstractHTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An abstract reference to the native element wrapped by this DOMElement.
+	 * An abstract reference to the native element wrapped by this HTMLElement.
 	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite,
-	 * in PHP a resource...
+	 * 
+	 * TODO : for mouse event in flash, hack for now, draw the bounds of the HTMLElement
+	 * on the _nativeElement during rendering ?
 	 */
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
@@ -158,30 +181,54 @@ class AbstractHTMLElement extends Element
 	// COORDS attributes
 	////////////////////////////////
 	
+	/**
+	 * The element from which all offset calculations are currently computed,
+	 * this is the first positioned ancestor of the HTMLElement
+	 */
 	public var offsetParent(get_offsetParent, never):HTMLElement;
 	
 	/**
-	 * Read-only, returns the width of the domElement
-	 * + horizontal paddings + horizontal margins
+	 * The width of an element, relative to the layout
 	 */
 	public var offsetWidth(get_offsetWidth, never):Int;
 	
 	/**
-	 * Read-only, returns the height of the domElement
-	 * + vertical paddings + vertical margins
+	 * The height of an element, relative to the layout
 	 */
 	public var offsetHeight(get_offsetHeight, never):Int;
 	
+	/**
+	 * The distance from this element's left border to its 
+	 * offsetParent's left border.
+	 * 
+	 * TODO : implement border
+	 */
 	public var offsetLeft(get_offsetLeft, never):Int;
 	
+	/**
+	 * The distance from this element's top border to its
+	 * offsetParent's top border.
+	 */
 	public var offsetTop(get_offsetTop, never):Int;
 	
+	/**
+	 * The inner width of an element
+	 */
 	public var clientWidth(get_clientWidth, never):Int;
 	
+	/**
+	 * The inner height of an element
+	 */
 	public var clientHeight(get_clientHeight, never):Int;
 	
+	/**
+	 * The width of the left border of an element
+	 */
 	public var clientLeft(get_clientLeft, never):Int;
 	
+	/**
+	 * The width of the top border of an element
+	 */
 	public var clientTop(get_clientTop, never):Int;
 	
 	/////////////////////////////////
@@ -190,7 +237,7 @@ class AbstractHTMLElement extends Element
 	
 	/**
 	 * This Style object stores the styles of
-	 * a DOMElement and manages how they are applied
+	 * an HTMLElement and manages how they are applied
 	 */
 	private var _style:Style;
 	public var style(get_style, never):Style;
@@ -200,9 +247,7 @@ class AbstractHTMLElement extends Element
 	/////////////////////////////////
 	
 	/**
-	 * class constructor. Stores the reference to the
-	 * native element triggering the initialisation
-	 * of the DOMElement
+	 * class constructor.
 	 */
 	public function new() 
 	{
@@ -211,27 +256,21 @@ class AbstractHTMLElement extends Element
 	}
 	
 	/**
-	 * Init the DOMElement properties. Called each time
-	 * the NativeElement is set
-	 * 
-	 * TODO : add method for init mouse
+	 * Init the HTMLElement attributes
 	 */
 	private function init():Void
 	{	
+		//instantiate the right NativeElement for this HTMLElement
 		initNativeElement();
 		
-		//initialise the mouse listeners on this dom element by 
-		//listening to the current native element
+		//init mouse listeners
 		initMouse();
 		
 		//init key listeners
 		initKeyboard();
 		
-		//init the style for this DOMElement
+		//init the style for this HTMLElement
 		initStyle();
-		
-		//init the focus attributes
-		initFocus();
 	}
 	
 	/**
@@ -243,7 +282,7 @@ class AbstractHTMLElement extends Element
 	}
 	
 	/**
-	 * initialise the mouse listeners on this dom element by 
+	 * initialise the mouse listeners on this HTMLElement by 
 	 * listening to the current native element
 	 */
 	private function initMouse():Void
@@ -252,7 +291,9 @@ class AbstractHTMLElement extends Element
 	}
 	
 	/**
-	 * initialise the keyboard listener of this dom element 
+	 * initialise the keyboard listener on this HTMLElement. The 
+	 * key events are triggered on the HTMLElement which has the
+	 * focus
 	 */
 	private function initKeyboard():Void
 	{
@@ -261,25 +302,12 @@ class AbstractHTMLElement extends Element
 	
 	/**
 	 * Instantiate the right style object for this
-	 * DOMElement. Overriden by DOMElements with
-	 * specific style objects, such as ContainerDOMElement
-	 * 
-	 * TODO : update doc
+	 * HTMLElement. Overriden by HTMLElements with
+	 * specific style objects, such as HTMLImageElement
 	 */
 	private function initStyle():Void
 	{
 		this._style = new ContainerStyle(cast(this));
-	}
-	
-	/**
-	 * init the focus attributes
-	 * 
-	 * TODO : reimplement tabenabled in another
-	 * way
-	 */
-	private function initFocus():Void
-	{
-		_tabIndex = 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -395,7 +423,7 @@ class AbstractHTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE EVENT CALLBACK
 	// called by the Mouse instance when the user interacts
-	// with the DOMElement with its mouse
+	// with the HTMLElement with its mouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function onMouseDownCallback(mouseEvent:MouseEvent):Void
@@ -473,7 +501,7 @@ class AbstractHTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// KEYBOARD EVENT CALLBACK
 	// called by the Keyboard instance when the user interacts
-	// with the keyboard while this DOMElement has the focus
+	// with the keyboard while this HTMLElement has the focus
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function onKeyDownCallback(keyEventData:KeyboardEvent):Void
@@ -491,8 +519,8 @@ class AbstractHTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set the focus on this DOMElement, the focus
-	 * manager must determine if the DOMElement can
+	 * Gives keyboard focus to the HTMLElement
+	 * The focus manager determines if the HTMLElement can
 	 * actually receive focus
 	 */
 	public function focus():Void
@@ -500,12 +528,32 @@ class AbstractHTMLElement extends Element
 		FocusManager.getInstance().activeElement = cast(this);
 	}
 	
-	//TODO : check if it actually work
-	//TODO : FocusManager should no longer be singleton
-	//but instance on the Document
+	/**
+	 * Removes keyboard focus from this HTMLElement and 
+	 * the focus on the Document
+	 * 
+	 * TODO : check if it actually work
+	 * TODO : FocusManager should no longer be singleton
+	 * but instance on the Document
+	 * TODO : check if focus must be set on Document if
+	 * this element currently doesn't have focus
+	 * TODO : should call focus on Document or Document.body
+	 * instead of setting activeElement to null. Should
+	 * Document have a focus() method ? Should it inherit
+	 * form HTMLElement or share common interface ?
+	 */
 	public function blur():Void
 	{
 		FocusManager.getInstance().activeElement = null;
+	}
+	
+	/**
+	 * default HTMLElement are not focusable unless their
+	 * tabIndex attribute is not null
+	 */
+	private function get_isDefaultFocusable():Bool
+	{
+		return false;
 	}
 	
 	private function set_onFocus(value:Event->Void):Event->Void
@@ -530,16 +578,16 @@ class AbstractHTMLElement extends Element
 	
 	/**
 	 * when set, invalidate the focus manager
-	 * tab list, as this DOMElement may appear
-	 * at another index of the list
+	 * tab list, as this HTMLElement may appear
+	 * at another index of the tab list
 	 */
-	private function set_tabIndex(value:Int):Int
+	private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
 		FocusManager.getInstance().invalidate();
 		return _tabIndex = value;
 	}
 	
-	private function get_tabIndex():Int
+	private function get_tabIndex():Null<Int>
 	{
 		return _tabIndex;
 	}
@@ -560,7 +608,7 @@ class AbstractHTMLElement extends Element
 	
 	/**
 	 * called when a native scroll event is
-	 * emitted, called the user on scroll
+	 * emitted, calles the user on scroll
 	 * callback if any
 	 */
 	private function onScrollCallback(event:Event):Void
@@ -571,13 +619,44 @@ class AbstractHTMLElement extends Element
 		}
 	}
 	
+	//TODO : implement
+	private function get_scrollHeight():Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollWidth():Int
+	{
+		return -1;
+	}
+	
+	private function set_scrollLeft(value:Int):Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollLeft():Int
+	{
+		return -1;
+	}
+	
+	private function set_scrollTop(value:Int):Int
+	{
+		return -1;
+	}
+	
+	private function get_scrollTop():Int
+	{
+		return -1;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Returns the reference to this DOMElement native DOM element
-	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
+	 * Returns the reference to this HTMLElement native element
+	 * @return a DisplayObject in AS, an HTML element in JS...
 	 */
 	private function get_nativeElement():NativeElement
 	{
@@ -585,34 +664,29 @@ class AbstractHTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// POSITIONING SETTERS/GETTERS
-	// Setters/Getters to manipulate a DOMElement position and dimensions in the publication
+	// COORDS SETTERS/GETTERS
+	// Setters/Getters for an HTMLElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO : should return Style.getFirstPositionedAncestor
+	/**
+	 * return the first positioned ancestor of the HTMLElement
+	 * 
+	 * @return an HTMLElement or null if this HTMLElement is not yet
+	 * added to the DOM
+	 */
 	private function get_offsetParent():HTMLElement
 	{
 		return null;
 	}
 	
-	/**
-	 * constructs the offset width from the computed
-	 * box of this domElement
-	 * 
-	 * TODO : removed margin, will cause issues
-	 */
+	//TODO : removed margins, will cause issue in formatting context
 	private function get_offsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
-	/**
-	 * constructs the offset height from the computed
-	 * box of this domElement
-	 * 
-	 * TODO :removed margin, will cause issues
-	 */
 	private function get_offsetHeight():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
@@ -651,27 +725,6 @@ class AbstractHTMLElement extends Element
 	private function get_clientLeft():Int
 	{
 		return _style.computedStyle.paddingLeft;
-	}
-	
-	//TODO : implement
-	private function get_scrollHeight():Int
-	{
-		return -1;
-	}
-	
-	private function get_scrollWidth():Int
-	{
-		return -1;
-	}
-	
-	private function get_scrollLeft():Int
-	{
-		return -1;
-	}
-	
-	private function get_scrollTop():Int
-	{
-		return -1;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
