@@ -22,6 +22,8 @@ import port.browser.HTMLElement;
  * This is a ase class for element which are repaced by an external
  * resource in the document, for instance an image element.
  * 
+ * TODO : override set_tagName as embedded element always match one element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class EmbeddedElement extends HTMLElement

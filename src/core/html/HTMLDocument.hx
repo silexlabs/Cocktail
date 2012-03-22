@@ -8,7 +8,9 @@
 package core.html;
 
 import core.dom.Document;
+import core.dom.Element;
 import core.HTMLElement;
+import core.HTMLInputElement;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -19,6 +21,16 @@ import core.HTMLElement;
  */
 class HTMLDocument extends Document
 {
+	/**
+	 * special HTML tags
+	 */
+	
+	private static inline var HTML_IMAGE_ELEMENT_TAG_NAME:String = "img";
+	
+	private static inline var HTML_CANVAS_ELEMENT_TAG_NAME:String = "canvas";
+	
+	private static inline var HTML_INPUT_ELEMENT_TAG_NAME:String = "input";
+	
 	/**
 	 * The element that contains the content for the document.
 	 */
@@ -32,6 +44,37 @@ class HTMLDocument extends Document
 	{
 		super();
 		_body = new HTMLBodyElement();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to instantiate specific HTML element if needed based
+	 * on the tag name
+	 */
+	override public function createElement(tagName:String):Element
+	{
+		var element:Element;
+		
+		switch (tagName.toLowerCase())
+		{
+			case HTML_IMAGE_ELEMENT_TAG_NAME:
+				element = new HTMLImageElement();
+				
+			case HTML_CANVAS_ELEMENT_TAG_NAME:
+				element = new HTMLCanvasElement();
+				
+			case HTML_INPUT_ELEMENT_TAG_NAME:
+				element = new HTMLInputElement();
+				
+			default:
+				element = new HTMLElement();
+				element.tagName = tagName;
+		}
+		
+		return element;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

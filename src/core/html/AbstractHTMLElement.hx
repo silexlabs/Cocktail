@@ -28,6 +28,8 @@ import core.style.StyleData;
  * Elements that only expose the HTML core attributes are represented 
  * by the base HTMLElement interface.
  * 
+ * TODO : override set_tagName, in JS, should create the _nativeElement
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractHTMLElement extends Element
