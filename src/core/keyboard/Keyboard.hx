@@ -9,6 +9,8 @@ package core.keyboard;
 
 /**
  * Set the right runtime specific keyboard manager at compile-time
+ * 
+ * TODO : move to core
  */
 #if (flash9 || cpp || nme)
 typedef Keyboard =  port.flash_player.Keyboard;

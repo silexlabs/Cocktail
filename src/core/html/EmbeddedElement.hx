@@ -143,6 +143,7 @@ class EmbeddedElement extends HTMLElement
 		return _intrinsicRatio;
 	}
 	
+	//TODO : override in JS to set attribute on native element
 	private function set_width(value:Int):Int
 	{
 		return _width = value;

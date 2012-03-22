@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.event;
+import core.HTMLElement;
 
 /**
  * The UIEvent interface provides specific contextual information
@@ -22,10 +23,10 @@ class UIEvent extends Event
 	private var _detail:Float;
 	public var detail(get_detail, set_detail):Float;
 	
-	public function new(type:String, detail:Float) 
+	public function new(type:String, target:HTMLElement, detail:Float) 
 	{
 		_detail = detail;
-		super(type);
+		super(type, target);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

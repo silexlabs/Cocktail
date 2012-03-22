@@ -36,7 +36,6 @@ class HTMLElement extends AbstractHTMLElement
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : won't work for Text Node, add switch
 	/**
 	 * Overriden to also remove the child from the native 
 	 * HTML DOM
@@ -237,7 +236,7 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		if (onFocus != null)
 		{
-			onFocus(new Event(Event.FOCUS));
+			onFocus(new Event(Event.FOCUS, this));
 		}
 	}
 	
@@ -249,7 +248,7 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		if (onBlur != null)
 		{
-			onBlur(new Event(Event.BLUR));
+			onBlur(new Event(Event.BLUR, this));
 		}
 	}
 	
@@ -283,7 +282,7 @@ class HTMLElement extends AbstractHTMLElement
 	 */
 	private function onNativeScroll(event:Dynamic):Void
 	{
-		onScrollCallback(new Event(Event.SCROLL));
+		onScrollCallback(new Event(Event.SCROLL, this));
 	}
 	
 }

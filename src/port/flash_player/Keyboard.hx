@@ -26,9 +26,9 @@ class Keyboard extends AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super(nativeElement);
+		super(htmlElement);
 		
 		//set native Flash events
 		_keyDownEvent = flash.events.KeyboardEvent.KEY_DOWN;
@@ -46,11 +46,11 @@ class Keyboard extends AbstractKeyboard
 	 */
 	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
 	{
-		_nativeElement.removeEventListener(keyboardEvent, nativeCallback);
+		_htmlElement.nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
 		if (domElementCallback != null)
 		{
-			_nativeElement.addEventListener(keyboardEvent, nativeCallback);
+			_htmlElement.nativeElement.addEventListener(keyboardEvent, nativeCallback);
 		}
 	}
 	
@@ -79,7 +79,7 @@ class Keyboard extends AbstractKeyboard
 				eventType = typedEvent.type;
 		}
 		
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, 0.0, typedEvent.charCode, 
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, _htmlElement, 0.0, typedEvent.charCode, 
 		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		

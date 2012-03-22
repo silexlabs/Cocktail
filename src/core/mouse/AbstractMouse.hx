@@ -7,6 +7,7 @@
 */
 package core.mouse;
 
+import core.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.event.MouseEvent;
 
@@ -19,11 +20,8 @@ import core.mouse.MouseData;
  * mouse events thanks to runtime specific implementations and calls
  * the appropriate registered callbacks.
  * 
- * It takes a target native element objects onto which the mouse
+ * It takes a target HTMLElement objects onto which the mouse
  * event will be listened.
- * 
- * The mouse event callbacks are called with a struct containing the mouse
- * current data
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -74,16 +72,16 @@ class AbstractMouse
 	private var _mouseMoveEvent:String;
 	
 	/**
-	 * The NativeElement on which mouse event are listened to
+	 * The HTMLElement on which mouse event are listened to
 	 */
-	private var _nativeElement:NativeElement;
+	private var _htmlElement:HTMLElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		_nativeElement = nativeElement;
+		_htmlElement = htmlElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -8,6 +8,7 @@
 package core.keyboard;
 
 import core.event.KeyboardEvent;
+import core.HTMLElement;
 import haxe.Log;
 import core.nativeElement.NativeElement;
 import core.keyboard.KeyboardData;
@@ -19,8 +20,7 @@ import core.keyboard.KeyboardData;
  * a simple way for exposing the keyboard state and for calling a custom callback function.
  * 
  * The class is to be instantiated, and then you can set the instance attributes 
- * onKeyDown and onKeyUp to your callbacks. These callbacks will receive a Key
- * object with the key code and modifier key state as a parameter.
+ * onKeyDown and onKeyUp to your callbacks.
  * 
  * This is a base abstract class, implemented for each runtime
  * 
@@ -52,9 +52,9 @@ class AbstractKeyboard
 
 
 	/**
-	 * The NativeElement on which keyboard event are listened to
+	 * The HTMLElement on which keyboard event are listened to
 	 */
-	private var _nativeElement:NativeElement;
+	private var _htmlElement:HTMLElement;
 	
 	/**
 	 * keyboard event types
@@ -65,9 +65,9 @@ class AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		_nativeElement = nativeElement;
+		_htmlElement = htmlElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

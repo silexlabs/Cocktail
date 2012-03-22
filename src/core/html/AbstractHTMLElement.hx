@@ -287,7 +287,7 @@ class AbstractHTMLElement extends Element
 	 */
 	private function initMouse():Void
 	{
-		_mouse = new Mouse(this._nativeElement);
+		_mouse = new Mouse(cast(this));
 	}
 	
 	/**
@@ -297,7 +297,7 @@ class AbstractHTMLElement extends Element
 	 */
 	private function initKeyboard():Void
 	{
-		_keyboard = new Keyboard(this._nativeElement);
+		_keyboard = new Keyboard(cast(this));
 	}
 	
 	/**

@@ -77,10 +77,12 @@ class AbstractFocusManagerImpl
 	 */
 	private function initKeyboardListeners():Void
 	{
+		//TODO : should be initialised with Document or Body
+		
 		//listens for event on the root of the runtime
-		var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
-		keyboard.onKeyDown = onKeyDown;
-		keyboard.onKeyUp = onKeyUp;
+	//	var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
+	//	keyboard.onKeyDown = onKeyDown;
+	//	keyboard.onKeyUp = onKeyUp;
 	}
 	
 	/////////////////////////////////
@@ -325,7 +327,7 @@ class AbstractFocusManagerImpl
 		if (activeElement.onMouseDown != null)
 		{
 			//TODO : replace mouse click event + add right coordinate
-			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, 0.0,
+			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, _activeElement, 0.0,
 			0.0, 0.0, 0.0, 0.0, false, false, false);
 			
 			activeElement.onMouseDown(mouseEvent);
@@ -350,7 +352,7 @@ class AbstractFocusManagerImpl
 		{
 			if (_activeElement.onBlur != null)
 			{
-				_activeElement.onBlur(new Event(Event.BLUR));
+				_activeElement.onBlur(new Event(Event.BLUR, _activeElement));
 			}
 		}
 		
@@ -368,7 +370,7 @@ class AbstractFocusManagerImpl
 			_activeElement = value;
 			if (_activeElement.onFocus != null)
 			{
-				_activeElement.onFocus(new Event(Event.FOCUS));
+				_activeElement.onFocus(new Event(Event.FOCUS, _activeElement));
 			}
 		}
 		
