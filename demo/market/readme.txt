@@ -81,23 +81,33 @@ Q/A:
 -ApplicationController::goBackToListView à retirer et à laisser uniquement dans le ViewManager => OK
 -How to remove text cursor on non-editable texts => firefox bug, not happening in chrome
 -scrollbar visible when using swippable view => corrected by using overflow=hidden on body
--touchevents to be used on touch devices
--mouse move is not listened to on bottom of right and left lists
 -best way to update an image url without keeping visually the previous one (cf. detail view) => using visible none or loader image
 
 To Do
 -is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell
  => yes, by sending the cell type to the constructor
--create a scrollbar in each list
--handle resize
--handle scroll vertically in lists => yannick
--custom list
--handle loading n next elements when reachin bottom of the list
+-create a scrollbar in each list => OK
+-custom list => OK
+-handle loading n next elements when reachin bottom of the list => OK
  => check with alex the rss parameters
  => check also the detail page
--fade-in when displaying thumbs
--loading screen (main page & list bottoms)
+-fade-in when displaying thumbs => OK
+-loading screen (main page & list bottoms) => OK
+-mouse move is not listened to on bottom of right and left lists => OK
+-handle scroll vertically in lists => yannick
+-touchevents to be used on touch devices => a faire en pure js
 -read specs to see if nothing is missing
+ => missing error page with OK button
+-handle resize
+ => called on ipad when swipped
+ => test with cocktail this.nativeElement.onResize
+ => try with pure js js.Lib.body.onResize
+-when swipping:
+ => when swipping fast horizontal then vertical, preventDefault is not applied
+ => tweening
+ => title shifts
+-menu bar for navigation
+-set initial list to list1
  
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
@@ -108,4 +118,53 @@ Missing useful functionalities in cocktail
 -not possible to replace text within a container
 -is ScrollTo available ?
 
+NME compilation:
 
+Issues:
+-using flash compilation
+ => "nme test "WebApp.nmml" flash" command does not copy the ..\bin\assets to \Export\flash\bin\assets directory as expected
+ => text fields are not displayed
+ => loaded images make windows app crash
+
+ 
+Feeds:
+ 
+> http://feeds.feedburner.com/frenchweb
+  => item
+     => title
+	 => pubDate
+     => dc:creator
+     => description => résumé
+     => content:encoded => thumb + html
+> http://feedproxy.google.com/francaistechcrunch
+ => item
+     => title
+ 	 => pubDate
+     => dc:creator
+     => description => thumb + résumé avec html
+     => content:encoded => html
+> http://siliconsentier.org/feed/
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => résumé avec html
+     => content:encoded => thumb + html
+> http://www.lafonderie-idf.fr/feed
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => thumb + résumé avec html
+     => content:encoded => thumb + html
+> http://www.capdigital.com/feed/
+ => item
+     => title
+ 	 => pubDate
+	 => dc:creator
+     => description => résumé sans html
+     => content:encoded => thumb + html
+
+Questions:
+ => de base, 30 articles dispos => changer les articles pour les afficher par groupe de n éléments ?
+ => possibilité de charger davantage d'articles => en utilisant posts_per_page==x

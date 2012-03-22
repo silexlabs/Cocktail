@@ -34,18 +34,20 @@ class ApplicationController
 
 	/**
 	 * Prompt the model to load more cell data
-	 * @param	numberOfCellsToLoad
+	 * @param	feed
 	 */
-	public function loadCellData(numberOfCellsToLoad):Void
+	public function loadCellData():Void
+	//public function loadCellData(feed:String):Void
 	{
-		_applicationModel.loadCellData(numberOfCellsToLoad);
+		_applicationModel.loadCellData();
+		//_applicationModel.loadCellData(feed);
 	}
 
 	/**
 	 * Prompt the model to load the detail data matching the provided cell data and to notify the view to open the detail view
 	 * @param	cellData
 	 */
-	public function openDetailView(cellData):Void
+	public function openDetailView(cellData:CellData):Void
 	{
 		//trace(cellData);
 		_applicationModel.loadDetailData(cellData);

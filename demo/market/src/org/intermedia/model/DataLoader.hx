@@ -50,6 +50,7 @@ class DataLoader
 	 */
 	//public function loadCellData(itemsPerPage:Int, ?pageIndex:Int=1, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
 	public function loadCellData(itemsPerPage:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
+	//public function loadCellData(feed:String, itemsPerPage:Int, successCallback:Array<CellData>->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;
@@ -61,6 +62,7 @@ class DataLoader
 		if (_online)
 		{
 			fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
+			//fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
 			_pageIndex++;
 		}
 		// prepare local feed url
@@ -104,7 +106,8 @@ class DataLoader
 	 */
 	private function onCellsXmlLoaded(xml:Xml):Void
 	{
-		onCellDataLoaded(ThumbTextListRss.rss2Cells(xml));
+		//onCellDataLoaded(ThumbTextListRss.rss2Cells(xml));
+		onCellDataLoaded(ThumbTextListRssStandard.rss2Cells(xml));
 	}	
 	
 	/**

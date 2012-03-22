@@ -38,6 +38,8 @@ class ApplicationModel
 	// online/offline switch
 	private var _online:Bool;
 
+	static inline var CELL_QTY:Int = 10;
+
 	public function new() 
 	{
 		// init online switch
@@ -53,7 +55,8 @@ class ApplicationModel
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right number of cell to load
 	 * @param	numberOfCellsToLoad
 	 */
-	public function loadCellData(numberOfCellsToLoad:Int):Void
+	public function loadCellData():Void
+	//public function loadCellData(feed:String):Void
 	{
 		// if first data loading is occuring
 		if (_loadedCellsData.length == 0)
@@ -67,7 +70,8 @@ class ApplicationModel
 		
 		// Calls load() on the DataLoader with the right number of cell to load
 		//_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
-		_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
+		_dataLoader.loadCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
+		//_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	
 	/**
@@ -131,6 +135,14 @@ class ApplicationModel
  * Holds Title, author, thumbUrl...
  * Could also use a Hash with the id a key for faster search
  */
+//typedef	CellData =
+//{
+	//var id:Int;
+	//var title:String;
+	//var author:String;
+	//var thumbUrl:String;
+	//var category:String;
+//}
 typedef	CellData =
 {
 	var id:Int;
@@ -138,6 +150,8 @@ typedef	CellData =
 	var author:String;
 	var thumbUrl:String;
 	var category:String;
+	var description:String;
+	var content:String;
 }
 
 /**
@@ -154,4 +168,17 @@ typedef DetailData =
 	var description:String;
 }
 
+/**
+ * Holds Title, content...
+ * Could also use a Hash with the id a key for faster search
+ */
+/*typedef FeedData =
+{
+	var feedUrl:String;
+	var cells:Array<CellData>;
+}*/
 
+/**
+ * FeedData contains
+ */
+typedef FeedData = Hash<Array<CellData>>;
