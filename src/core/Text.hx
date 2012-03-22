@@ -16,7 +16,4 @@ typedef Text = port.flash_player.Text;
 #elseif js
 typedef Text =  port.browser.Text;
 
-#elseif php
-typedef TextElement =  core.Text.php.TextElement;
-
 #end

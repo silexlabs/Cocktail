@@ -16,7 +16,4 @@ typedef ResourceLoader = port.flash_player.ResourceLoader;
 #elseif js
 typedef ResourceLoader = port.browser.ResourceLoader;
 
-#elseif php
-typedef ResourceLoader = core.resource.php.ResourceLoader;
-
 #end

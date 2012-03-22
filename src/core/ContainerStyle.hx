@@ -9,17 +9,12 @@ package core;
 
 /**
  * Set the right runtime specific ContainerStyle at compile-time
- * 
- * TODO : move in core
  */
 #if (flash9 || cpp || nme)
 typedef ContainerStyle =  port.flash_player.ContainerStyle;
 
 #elseif js
 typedef ContainerStyle =  core.style.AbstractContainerStyle;
-
-#elseif php
-typedef ContainerStyle =  core.style.php.ContainerStyle;
 
 #elseif doc
 /**

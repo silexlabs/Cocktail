@@ -19,9 +19,6 @@ typedef Style =  port.nme.Style;
 #elseif js
 typedef Style =  port.browser.Style;
 
-#elseif php
-typedef Style =  core.style.php.Style;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

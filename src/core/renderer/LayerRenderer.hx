@@ -324,7 +324,7 @@ class LayerRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.style.childrenInline() == true)
 		{
-			/**
+			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
@@ -337,7 +337,7 @@ class LayerRenderer
 					}
 				}
 			}
-			*/
+			
 		}
 		else
 		{

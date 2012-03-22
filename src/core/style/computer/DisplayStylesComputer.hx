@@ -56,10 +56,10 @@ class DisplayStylesComputer
 		computedStyle.position = getComputedPosition(style);
 		
 		//float
-		computedStyle.floatValue = getComputedFloat(style, computedStyle.position);
+		computedStyle.floatStyle = getComputedFloat(style, computedStyle.position);
 		
 		//display
-		computedStyle.display = getComputedDisplay(style, computedStyle.floatValue);
+		computedStyle.display = getComputedDisplay(style, computedStyle.floatStyle);
 		
 		//clear
 		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
@@ -98,7 +98,7 @@ class DisplayStylesComputer
 		}
 		else
 		{
-			ret = style.floatValue;
+			ret = style.floatStyle;
 		}
 		
 		return ret;

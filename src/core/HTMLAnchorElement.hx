@@ -16,9 +16,6 @@ typedef HTMLAnchorElement =  port.flash_player.HTMLAnchorElement;
 #elseif js
 typedef HTMLAnchorElement =  port.browser.HTMLAnchorElement;
 
-#elseif php
-typedef EmbeddedStyle =  core.style.php.EmbeddedStyle;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

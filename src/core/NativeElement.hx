@@ -20,9 +20,6 @@ typedef NativeElement =  Dynamic;
 import js.Dom;
 typedef NativeElement =  js.HtmlDom;
 
-#elseif php
-typedef NativeElement =  Xml;
-
 #elseif doc
 typedef NativeElement = Dynamic;
 

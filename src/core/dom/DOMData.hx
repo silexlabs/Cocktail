@@ -18,7 +18,6 @@ import core.html.HTMLImageElement;
  * @author Yannick DOMINGUEZ
  */
 
- //TODO : add document node
 enum NodeType {
 	ELEMENT_NODE;
 	TEXT_NODE;

@@ -182,7 +182,7 @@ class FloatsManager
 	{
 		var ret:FloatData;
 		
-		switch (elementRenderer.style.computedStyle.floatValue)
+		switch (elementRenderer.style.computedStyle.floatStyle)
 		{
 			case left:
 				ret = getLeftFloatData(elementRenderer, formattingContextData, containingBlockWidth);

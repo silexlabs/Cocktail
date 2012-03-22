@@ -87,6 +87,8 @@ class HTMLImageElement extends EmbeddedElement
 		_embeddedAsset = _imageLoader.nativeElement;
 	}
 	
+	//TODO : should only be for JS runtime, in flash, 
+	//nativeElement should be used to draw hitRect for now
 	override private function initNativeElement():Void
 	{
 		_nativeElement = _embeddedAsset;

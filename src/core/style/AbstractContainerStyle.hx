@@ -241,7 +241,6 @@ class AbstractContainerStyle extends Style
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
-				//TODO : TextElement should inherit Node
 				var childrenText:Text = cast(_htmlElement.childNodes[i]);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenText, childrenFormattingContext, childrenContainingDOMElementData);
 				
