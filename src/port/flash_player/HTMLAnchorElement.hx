@@ -11,7 +11,7 @@ import core.html.AbstractHTMLAnchorElement;
 import flash.net.URLRequest;
 
 /**
- * This is the flash AS3 implementation of the LinkDOMElement.
+ * This is the flash player implementation of the HTMLAnchorElement.
  * Open links using flash API
  * 
  * @author Yannick DOMINGUEZ
@@ -27,9 +27,9 @@ class HTMLAnchorElement extends AbstractHTMLAnchorElement
 	}
 	
 	/**
-	 * Open link using flash API if needed
+	 * Open linked document using flash API if needed
 	 */
-	override private function openLink():Void
+	override private function openDocument():Void
 	{
 		if (_href != null)
 		{

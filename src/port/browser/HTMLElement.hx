@@ -18,16 +18,12 @@ import core.geom.Matrix;
 import core.geom.GeomData;
 
 /**
- * This is the DOMElement implementation for JavaScript. 
- * It manipulates the native HTML DOM
+ * This is the HTMLElement implementation for the browser runtime.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLElement extends AbstractHTMLElement
 {
-	/////////////////////////////////
-	// CONSTRUTOR & INIT
-	/////////////////////////////////
-	
 	/**
 	 * Class constructor
 	 */
@@ -36,28 +32,34 @@ class HTMLElement extends AbstractHTMLElement
 		super();
 	}
 	
-	//TODO : doc
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO : won't work for Text Node, add switch
+	/**
+	 * Overriden to also remove the child from the native 
+	 * HTML DOM
+	 */
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
 		
 		var childHTMLElement:HTMLElement = cast(oldChild);
 		_nativeElement.removeChild(childHTMLElement.nativeElement);
-		
 		return oldChild;
 	}
 	
-
+	/**
+	 * Overriden to also append the child to the native 
+	 * HTML DOM
+	 */
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
 		
 		var childHTMLElement:HTMLElement = cast(newChild);
-		
 		_nativeElement.appendChild(childHTMLElement.nativeElement);
-		
 		return newChild;
 	}
 	
@@ -136,11 +138,9 @@ class HTMLElement extends AbstractHTMLElement
 		return  _nativeElement.scrollHeight;
 	}
 	
-
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN FOCUS SETTER/GETTER AND METHODS
-	// The JavaScript focus implementation relies on the browser
+	// The browser focus implementation relies on the native browser focus
 	// instead of Cocktail's FocusManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -179,15 +179,12 @@ class HTMLElement extends AbstractHTMLElement
 	}
 	
 	/**
-	 * Stores the tabIndex attribute and reset the tabEnabled
-	 * setter. This way the HTML attribute will only be set if
-	 * tab is enabled
+	 * Set also the tabIndex on the native HTML element
 	 */
 	override private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
-		//TODO : tabIndex is not set on the nativeElement
-		_tabIndex = value;
-		
+		super.set_tabIndex(value);
+		untyped _nativeElement.tabIndex = value;
 		return _tabIndex;
 	}
 	
@@ -199,6 +196,9 @@ class HTMLElement extends AbstractHTMLElement
 		_nativeElement.focus();
 	}
 	
+	/**
+	 * blur the nativeElement
+	 */
 	override public function blur():Void
 	{
 		_nativeElement.blur();
@@ -206,7 +206,7 @@ class HTMLElement extends AbstractHTMLElement
 	
 	/**
 	 * When a native focus event is dispatched,
-	 * call the focus callback
+	 * call the focus callback if not null
 	 */
 	private function onNativeFocus(event:Dynamic):Void
 	{
@@ -218,7 +218,7 @@ class HTMLElement extends AbstractHTMLElement
 	
 	/**
 	 * When a native blur event is dispatched,
-	 * call the blur callback
+	 * call the blur callback if not null
 	 */
 	private function onNativeBlur(event:Dynamic):Void
 	{
@@ -234,12 +234,10 @@ class HTMLElement extends AbstractHTMLElement
 	
 	/**
 	 * When the user onscroll callback is set, set
-	 * a native JavaScript listener on the element
+	 * a native listener on the nativeElement
 	 */
 	override private function set_onScroll(value:Event->Void):Event->Void
 	{
-		//TODO : re-implement
-		/**
 		//first always remove previous listener
 		untyped _nativeElement.removeEventListener("scroll", onNativeScroll);
 		
@@ -250,28 +248,17 @@ class HTMLElement extends AbstractHTMLElement
 		{
 			untyped _nativeElement.addEventListener("scroll", onNativeScroll);
 		}
-		*/
+		
 		return value;
 	}
 	
 	/**
 	 * called when a native javascript scroll event is emitted
-	 * by the HTML element
+	 * by the native HTML element
 	 */
 	private function onNativeScroll(event:Dynamic):Void
 	{
-		//TODO : re-implement
-		/**
-		//build the abstract sroll event data
-		var scrollEventData:ScrollEventData = {
-			scrollLeft : _nativeElement.scrollLeft,
-			scrollTop : _nativeElement.scrollTop,
-			scrollWidth : _nativeElement.scrollWidth,
-			scrollHeight : _nativeElement.scrollHeight
-		}
-		
-		onScrollCallback(scrollEventData);
-		*/
+		onScrollCallback(new Event(Event.SCROLL));
 	}
 	
 }
