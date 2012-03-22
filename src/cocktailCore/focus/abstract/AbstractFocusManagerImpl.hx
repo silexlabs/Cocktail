@@ -11,7 +11,7 @@ import core.event.Event;
 import core.html.HTMLBodyElement;
 import core.HTMLElement;
 import core.event.MouseEvent;
-import core.keyboard.Keyboard;
+import core.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
 import core.dom.DOMData;

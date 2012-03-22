@@ -165,6 +165,11 @@ class ElementRenderer
 		return false;
 	}
 	
+	public function isInitialContainer():Bool
+	{
+		return false;
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
