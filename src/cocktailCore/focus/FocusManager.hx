@@ -9,7 +9,7 @@ package cocktailCore.focus;
 
 import core.html.HTMLBodyElement;
 import core.HTMLElement;
-import core.keyboard.Keyboard;
+import core.Keyboard;
 import core.keyboard.KeyboardData;
 import core.mouse.MouseData;
 import core.dom.DOMData;

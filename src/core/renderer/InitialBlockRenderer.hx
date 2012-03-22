@@ -35,4 +35,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		_bounds.height = height;
 	}
 	
+	override public function isInitialContainer():Bool
+	{
+		return true;
+	}
+	
 }

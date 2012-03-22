@@ -62,6 +62,7 @@ class BoxRenderer extends ElementRenderer
 			backgrounds[i].y = _bounds.y;
 			#end
 		}
+		
 	
 		return backgrounds;
 	}

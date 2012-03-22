@@ -45,7 +45,7 @@ class DOMTests
 	public function testDOM()
 	{
 		var document = new HTMLDocument();
-		var img = new HTMLImageElement();
+		var img:HTMLImageElement = cast(document.createElement("img"));
 		img.src = "testPicture.jpg";
 		//img.style.floatStyle = FloatStyle.left;
 		
@@ -53,12 +53,15 @@ class DOMTests
 		container.appendChild(img);
 		container.style.display = Display.block;
 		
-		var text = new core.Text();
-		text.nodeValue = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit nisl ac erat blandit eget dictum erat feugiat. Praesent vitae dolor vitae tellus luctus vulputate non eu neque. Sed vitae tortor dolor. Etiam tempus iaculis pretium. Sed ac est lorem, vel commodo diam. Vestibulum ultricies nisl in risus ultricies facilisis. Ut accumsan ullamcorper elementum. Maecenas tincidunt odio ut risus egestas convallis. Etiam ornare, orci ut viverra vehicula, purus nunc fermentum tellus, at gravida urna purus et tellus. Sed urna nulla, rhoncus a ultricies eget, facilisis vitae lorem. Duis eget nisl nunc. Nullam sit amet enim ac libero suscipit tempor id sed mauris. Pellentesque fermentum elementum nisl quis convallis. Donec vulputate aliquam congue. Vivamus sed arcu eu massa pharetra commodo in vitae purus. Sed nunc leo, consectetur ac fringilla in, mattis semper arcu.";
+		container.onMouseDown = function(e) {
+			Log.trace("bim");
+		}
 		
+		var text = document.createTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit nisl ac erat blandit eget dictum erat feugiat. Praesent vitae dolor vitae tellus luctus vulputate non eu neque. Sed vitae tortor dolor. Etiam tempus iaculis pretium. Sed ac est lorem, vel commodo diam. Vestibulum ultricies nisl in risus ultricies facilisis. Ut accumsan ullamcorper elementum. Maecenas tincidunt odio ut risus egestas convallis. Etiam ornare, orci ut viverra vehicula, purus nunc fermentum tellus, at gravida urna purus et tellus. Sed urna nulla, rhoncus a ultricies eget, facilisis vitae lorem. Duis eget nisl nunc. Nullam sit amet enim ac libero suscipit tempor id sed mauris. Pellentesque fermentum elementum nisl quis convallis. Donec vulputate aliquam congue. Vivamus sed arcu eu massa pharetra commodo in vitae purus. Sed nunc leo, consectetur ac fringilla in, mattis semper arcu.");
+
 		container.appendChild(text);
 		
-		container.style.width = Dimension.percent(50);
+		container.style.width = Dimension.length(px(150));
 		container.style.marginLeft = Margin.autoValue;
 		container.style.marginRight = Margin.autoValue;
 		
@@ -66,7 +69,7 @@ class DOMTests
 		
 		
 		
-		container.style.backgroundColor = BackgroundColor.colorValue(ColorValue.keyword(ColorKeyword.fuchsia));
+		//container.style.backgroundColor = BackgroundColor.colorValue(ColorValue.keyword(ColorKeyword.fuchsia));
 		
 		document.body.appendChild(container);
 		
