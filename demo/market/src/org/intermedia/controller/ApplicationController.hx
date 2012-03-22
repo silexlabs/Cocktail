@@ -36,11 +36,11 @@ class ApplicationController
 	 * Prompt the model to load more cell data
 	 * @param	feed
 	 */
-	public function loadCellData():Void
-	//public function loadCellData(feed:String):Void
+	//public function loadCellData():Void
+	public function loadCellData(feed:String):Void
 	{
-		_applicationModel.loadCellData();
-		//_applicationModel.loadCellData(feed);
+		//_applicationModel.loadCellData();
+		_applicationModel.loadCellData(feed);
 	}
 
 	/**

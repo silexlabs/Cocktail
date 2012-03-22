@@ -14,11 +14,12 @@
 package org.intermedia.model;
 
 import cocktail.resource.ResourceLoaderManager;
+import org.intermedia.model.ApplicationModel;
 
 class XmlLoader
 {
 	// Defines onLoadSuccess callback, called when the xml feed is loaded
-	private var onLoadSuccess : Xml->Void;
+	private var onLoadSuccess : String->Xml->Void;
 
 	// Defines onLoadError callback, called when the xml feed has not been loaded succesfully
 	private var onLoadError : Dynamic->Void;
@@ -34,7 +35,7 @@ class XmlLoader
 	 * @param	successCallback
 	 * @param	errorCallback
 	 */
-	public function new(xmlUrl:String, online:Bool, successCallback:Xml->Void, errorCallback:Dynamic->Void) 
+	public function new(xmlUrl:String, online:Bool, successCallback:String->Xml->Void, errorCallback:Dynamic->Void, ?listId:String="") 
 	{
 		_online = online;
 		
@@ -43,7 +44,7 @@ class XmlLoader
 		onLoadError = errorCallback;
 		
 		// load the xml feed
-		loadXmlFeed(xmlUrl);
+		loadXmlFeed(listId, xmlUrl);
 	}
 	
 	/**
@@ -51,7 +52,7 @@ class XmlLoader
 	 * 
 	 * @param	xmlUrl
 	 */
-	private function loadXmlFeed(xmlUrl:String):Void
+	private function loadXmlFeed(listId:String, xmlUrl:String):Void
 	{
 		var fullUrl:String = "";
 		
@@ -62,7 +63,7 @@ class XmlLoader
 		
 		// try to load the xml feed using a Silex labs proxy
 		try {
-			ResourceLoaderManager.loadString( fullUrl, onXmlLoaded, onXmlError);
+			ResourceLoaderManager.loadString( fullUrl, function (xml:String) { onXmlLoaded(listId, xml); }, onXmlError);
 		}
 		// catch the error if any
 		catch (error:Dynamic)
@@ -78,8 +79,6 @@ class XmlLoader
 	 */
 	private function onXmlError(error:Dynamic):Void
 	{
-		//trace("Error while loading XML feed : " + Std.string(error));
-		
 		// calls onLoad callback with xml
 		if (onLoadError != null)
 		{
@@ -92,7 +91,7 @@ class XmlLoader
 	 * 
 	 * @param	response
 	 */
-	private function onXmlLoaded(xmlString:String):Void
+	private function onXmlLoaded(listId:String, xmlString:String):Void
 	{
 		// parse the xml feed
 		var xml:Xml =  Xml.parse(xmlString);
@@ -100,7 +99,7 @@ class XmlLoader
 		// calls onLoadSuccess callback with xml
 		if (onLoadSuccess != null)
 		{
-			onLoadSuccess(xml);
+			onLoadSuccess(listId,xml);
 		}
 	}
 	

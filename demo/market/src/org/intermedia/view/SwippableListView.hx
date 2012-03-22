@@ -3,6 +3,7 @@ package org.intermedia.view;
 import cocktail.viewport.Viewport;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.ListViewBase;
+import org.intermedia.model.Feeds;
 import cocktail.mouse.MouseData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
@@ -25,7 +26,8 @@ class SwippableListView extends ListViewBase
 	static inline var VERTICAL_TWEEN_DELTA:Int = 150;
 	
 	// a ref to each of the list views which can be swiped
-	private var _listViews:Array<ViewBase>;
+	//private var _listViews:Array<ViewBase>;
+	private var _listViews:Array<ListViewBase>;
 	
 	private var list0:ListViewText;
 	private var list1:ThumbTextList1Bis;
@@ -87,24 +89,24 @@ class SwippableListView extends ListViewBase
 		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
 		
 		// set _listView array
-		_listViews = new Array<ViewBase>();
+		_listViews = new Array<ListViewBase>();
 		
 		// create all needed lists and add them to the _listView array
 		list0 = new ListViewText();
-		//list0.x = -_viewportWidth;
+		list0.id = Feeds.FEED_1;
 		_listViews.push(list0);
 		
 		//var list1:ListViewBase = new ThumbTextList1Bis(3);Filters component
 		list1 = new ThumbTextList1Bis(2);
+		list1.id = Feeds.FEED_2;
 		_listViews.push(list1);
 		list1.x = _viewportWidth;
 		
 		list2 = new ThumbTextList1(2);
+		list2.id = Feeds.FEED_3;
 		_listViews.push(list2);
-		//list2.x = _viewportWidth;
 		list2.x = 2 * _viewportWidth;
 		
-		//this.alpha = 0;
 		// add all lists to the view
 		for (listView in _listViews)
 		{
@@ -113,7 +115,7 @@ class SwippableListView extends ListViewBase
 		
 		// set index
 		_index = 1;
-		// set current list to list2
+		// set current list to list1
 		_currentListView = cast _listViews[_index];
 		// scroll body to _currentListView position
 		//this.parent.nativeElement.scrollLeft = _currentListView.x;
@@ -138,17 +140,15 @@ class SwippableListView extends ListViewBase
 	{
 		_data = v;
 		
-		// set displayEndListLoader to the lists and
-		// update _currentListView data with updated data
-		
-		list0.displayListBottomLoader = displayListBottomLoader;
-		list0.data = _data;
-		
-		list1.displayListBottomLoader = displayListBottomLoader;
-		list1.data = _data;
-
-		list2.displayListBottomLoader = displayListBottomLoader;
-		list2.data = _data;
+		// set the data on the correct list, depending on the list id
+		for (list in _listViews)
+		{
+			if (v.id == list.id)
+			{
+				list.data = v.cells;
+				break;
+			}
+		}
 		
 		return _data;	
 	}

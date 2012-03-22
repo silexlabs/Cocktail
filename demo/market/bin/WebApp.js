@@ -10355,8 +10355,8 @@ org.intermedia.controller.ApplicationController = $hxClasses["org.intermedia.con
 org.intermedia.controller.ApplicationController.__name__ = ["org","intermedia","controller","ApplicationController"];
 org.intermedia.controller.ApplicationController.prototype = {
 	_applicationModel: null
-	,loadCellData: function() {
-		this._applicationModel.loadCellData();
+	,loadCellData: function(feed) {
+		this._applicationModel.loadCellData(feed);
 	}
 	,openDetailView: function(cellData) {
 		this._applicationModel.loadDetailData(cellData);
@@ -10380,25 +10380,25 @@ org.intermedia.model.ApplicationModel.prototype = {
 	,_loadedCellsData: null
 	,_loadedDetailData: null
 	,_online: null
-	,loadCellData: function() {
+	,loadCellData: function(feed) {
 		if(this._loadedCellsData.length == 0) {
 			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		}
-		this._dataLoader.loadCellData(10,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
+		this._dataLoader.loadCellData(feed,10,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
 	}
 	,loadDetailData: function(cellData) {
 		if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		this._dataLoader.loadDetailData(cellData,this.onDetailDataLoadComplete.$bind(this),this.onModelDataLoadError);
 	}
-	,onCellsDataLoadComplete: function(cellsData) {
+	,onCellsDataLoadComplete: function(listData) {
 		this._loadedCellsData = new Array();
-		var _g = 0;
-		while(_g < cellsData.length) {
-			var cellData = cellsData[_g];
+		var _g = 0, _g1 = listData.cells;
+		while(_g < _g1.length) {
+			var cellData = _g1[_g];
 			++_g;
 			this._loadedCellsData.push(cellData);
 		}
-		if(this.onModelCellDataLoaded != null) this.onModelCellDataLoaded(this._loadedCellsData);
+		if(this.onModelCellDataLoaded != null) this.onModelCellDataLoaded(listData);
 	}
 	,onDetailDataLoadComplete: function(detailData) {
 		this._loadedDetailData.push(detailData);
@@ -10454,34 +10454,39 @@ org.intermedia.model.DataLoader.prototype = {
 	,_online: null
 	,_itemsToLoad: null
 	,_pageIndex: null
-	,loadCellData: function(itemsPerPage,successCallback,errorCallback) {
+	,loadCellData: function(feed,itemsPerPage,successCallback,errorCallback) {
 		this.onCellDataLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var fullUrl = "";
 		if(this._online) {
-			fullUrl = "http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2&posts_per_page=" + itemsPerPage + "&paged=" + this._pageIndex;
+			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + this._pageIndex;
 			this._pageIndex++;
 		} else fullUrl = "data/silex_plugins.rss";
-		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,this.onCellsXmlLoaded.$bind(this),this.onLoadingError);
+		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,this.onCellsXmlLoaded.$bind(this),this.onLoadingError,feed);
 	}
 	,loadDetailData: function(cellData,successCallback,errorCallback) {
 		var me = this;
 		this.onCellDetailLoaded = successCallback;
 		this.onLoadingError = errorCallback;
-		var onLoadSuccessDelegate = function(xml) {
+		var onLoadSuccessDelegate = function(listId,xml) {
 			me.onCellDetailXmlLoaded(xml,cellData);
 		};
 		var fullUrl = "";
 		if(this._online) fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id; else fullUrl = "data/detail.rss";
 		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,onLoadSuccessDelegate,this.onLoadingError);
 	}
-	,onCellsXmlLoaded: function(xml) {
-		this.onCellDataLoaded(org.intermedia.model.ThumbTextListRssStandard.rss2Cells(xml));
+	,onCellsXmlLoaded: function(listId,xml) {
+		this.onCellDataLoaded({ id : listId, cells : org.intermedia.model.ThumbTextListRssStandard.rss2Cells(xml)});
 	}
 	,onCellDetailXmlLoaded: function(xml,cellData) {
 		this.onCellDetailLoaded(org.intermedia.model.CellDetailsRss.rss2CellDetail(xml,cellData));
 	}
 	,__class__: org.intermedia.model.DataLoader
+}
+org.intermedia.model.Feeds = $hxClasses["org.intermedia.model.Feeds"] = function() { }
+org.intermedia.model.Feeds.__name__ = ["org","intermedia","model","Feeds"];
+org.intermedia.model.Feeds.prototype = {
+	__class__: org.intermedia.model.Feeds
 }
 org.intermedia.model.ThumbTextListRssStandard = $hxClasses["org.intermedia.model.ThumbTextListRssStandard"] = function() { }
 org.intermedia.model.ThumbTextListRssStandard.__name__ = ["org","intermedia","model","ThumbTextListRssStandard"];
@@ -10516,22 +10521,26 @@ org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss) {
 org.intermedia.model.ThumbTextListRssStandard.prototype = {
 	__class__: org.intermedia.model.ThumbTextListRssStandard
 }
-org.intermedia.model.XmlLoader = $hxClasses["org.intermedia.model.XmlLoader"] = function(xmlUrl,online,successCallback,errorCallback) {
+org.intermedia.model.XmlLoader = $hxClasses["org.intermedia.model.XmlLoader"] = function(xmlUrl,online,successCallback,errorCallback,listId) {
+	if(listId == null) listId = "";
 	this._online = online;
 	this.onLoadSuccess = successCallback;
 	this.onLoadError = errorCallback;
-	this.loadXmlFeed(xmlUrl);
+	this.loadXmlFeed(listId,xmlUrl);
 };
 org.intermedia.model.XmlLoader.__name__ = ["org","intermedia","model","XmlLoader"];
 org.intermedia.model.XmlLoader.prototype = {
 	onLoadSuccess: null
 	,onLoadError: null
 	,_online: null
-	,loadXmlFeed: function(xmlUrl) {
+	,loadXmlFeed: function(listId,xmlUrl) {
+		var me = this;
 		var fullUrl = "";
 		if(!this._online) fullUrl = xmlUrl; else fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
 		try {
-			cocktail.resource.ResourceLoaderManager.loadString(fullUrl,this.onXmlLoaded.$bind(this),this.onXmlError.$bind(this));
+			cocktail.resource.ResourceLoaderManager.loadString(fullUrl,function(xml) {
+				me.onXmlLoaded(listId,xml);
+			},this.onXmlError.$bind(this));
 		} catch( error ) {
 			this.onXmlError(error);
 		}
@@ -10539,9 +10548,9 @@ org.intermedia.model.XmlLoader.prototype = {
 	,onXmlError: function(error) {
 		if(this.onLoadError != null) this.onLoadError(error);
 	}
-	,onXmlLoaded: function(xmlString) {
+	,onXmlLoaded: function(listId,xmlString) {
 		var xml = Xml.parse(xmlString);
-		if(this.onLoadSuccess != null) this.onLoadSuccess(xml);
+		if(this.onLoadSuccess != null) this.onLoadSuccess(listId,xml);
 	}
 	,__class__: org.intermedia.model.XmlLoader
 }
@@ -11096,6 +11105,7 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 	,onListScrolled: null
 	,displayListBottomLoader: null
 	,_cells: null
+	,id: null
 	,_listBottomLoader: null
 	,updateView: function() {
 		var me = this;
@@ -11124,10 +11134,10 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		if(this.onListItemSelected != null) this.onListItemSelected(cellData);
 	}
 	,onScrollCallback: function(event) {
-		if(event.scrollTop >= event.scrollHeight - new cocktailCore.viewport.js.Viewport()._getHeight()) this.onScrolledCallback();
+		if(event.scrollTop >= event.scrollHeight - new cocktailCore.viewport.js.Viewport()._getHeight()) this.onScrolledCallback(this.id);
 	}
-	,onScrolledCallback: function() {
-		if(this.onListScrolled != null) this.onListScrolled();
+	,onScrolledCallback: function(id) {
+		if(this.onListScrolled != null) this.onListScrolled(id);
 	}
 	,__class__: org.intermedia.view.ListViewBase
 });
@@ -11308,11 +11318,14 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	org.intermedia.view.SwippableListViewStyle.setListStyle(this);
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
+	this.list0.id = "http://frenchweb.fr/feed/";
 	this._listViews.push(this.list0);
 	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
+	this.list1.id = "http://fr.techcrunch.com/feed/";
 	this._listViews.push(this.list1);
 	this.list1.setX(this._viewportWidth);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
+	this.list2.id = "http://siliconsentier.org/feed/";
 	this._listViews.push(this.list2);
 	this.list2.setX(2 * this._viewportWidth);
 	var _g = 0, _g1 = this._listViews;
@@ -11345,12 +11358,15 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,_viewportHeight: null
 	,setData: function(v) {
 		this._data = v;
-		this.list0.displayListBottomLoader = this.displayListBottomLoader;
-		this.list0.setData(this._data);
-		this.list1.displayListBottomLoader = this.displayListBottomLoader;
-		this.list1.setData(this._data);
-		this.list2.displayListBottomLoader = this.displayListBottomLoader;
-		this.list2.setData(this._data);
+		var _g = 0, _g1 = this._listViews;
+		while(_g < _g1.length) {
+			var list = _g1[_g];
+			++_g;
+			if(v.id == list.id) {
+				list.setData(v.cells);
+				break;
+			}
+		}
 		return this._data;
 	}
 	,onUpCallback2: function(x) {
@@ -11512,16 +11528,15 @@ org.intermedia.view.ViewManager.prototype = {
 	,_applicationController: null
 	,_currentView: null
 	,init: function() {
-		var me = this;
 		this._applicationModel.onModelStartsLoading = this.onStartLoading.$bind(this);
 		this._applicationModel.onModelDataLoadError = this.onLoadingError.$bind(this);
 		this._applicationModel.onModelCellDataLoaded = this.onCellDataLoaded.$bind(this);
 		this._applicationModel.onModelDetailDataLoaded = this.onDetailDataLoaded.$bind(this);
 		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this._swippableListView.onListScrolled = function() {
-			me._applicationController.loadCellData();
-		};
-		this._applicationController.loadCellData();
+		this._swippableListView.onListScrolled = ($_=this._applicationController,$_.loadCellData.$bind($_));
+		this._applicationController.loadCellData("http://frenchweb.fr/feed/");
+		this._applicationController.loadCellData("http://fr.techcrunch.com/feed/");
+		this._applicationController.loadCellData("http://siliconsentier.org/feed/");
 	}
 	,onListItemSelectedCallback: function(cellData) {
 		this._body.removeChild(this._swippableListView);
@@ -11530,9 +11545,9 @@ org.intermedia.view.ViewManager.prototype = {
 		this._currentView = this._detailView;
 		this._applicationController.openDetailView(cellData);
 	}
-	,onCellDataLoaded: function(cellsData) {
-		if(cellsData.length == 0) this._swippableListView.displayListBottomLoader = false;
-		this._swippableListView.setData(cellsData);
+	,onCellDataLoaded: function(listData) {
+		if(listData.cells.length == 0) this._swippableListView.displayListBottomLoader = false;
+		this._swippableListView.setData(listData);
 		this.updateHeaderZIndex();
 		this._swippableListView.setDisplayLoading(false);
 	}
@@ -11547,7 +11562,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._currentView.setDisplayLoading(true);
 	}
 	,onLoadingError: function(error) {
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 183, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 190, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("Market");
@@ -11729,6 +11744,9 @@ feffects.Tween._aPaused = new haxe.FastList();
 feffects.Tween.INTERVAL = 10;
 js.Lib.onerror = null;
 org.intermedia.model.ApplicationModel.CELL_QTY = 10;
+org.intermedia.model.Feeds.FEED_1 = "http://frenchweb.fr/feed/";
+org.intermedia.model.Feeds.FEED_2 = "http://fr.techcrunch.com/feed/";
+org.intermedia.model.Feeds.FEED_3 = "http://siliconsentier.org/feed/";
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.CellThumbStyle2.CELL_VERTICAL_SPACE = 5;

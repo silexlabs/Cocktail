@@ -21,7 +21,7 @@ class ListViewBase extends ViewBase
 	
 	//Called when the user has scrolled to the bottom of the list, and
 	//more cell data might need to be fetched
-	public var onListScrolled:Void->Void;
+	public var onListScrolled:String->Void;
 	
 	// display list end loader
 	public var displayListBottomLoader:Bool;
@@ -29,12 +29,16 @@ class ListViewBase extends ViewBase
 	//Hold a ref to each created cells
 	private var _cells:Array<CellBase>;
 	
+	// the list id feed, used to store the feedUrl
+	public var id:String;
+	
 	// list bottom loader
 	private var _listBottomLoader:ImageDOMElement;
 
-	public function new() 
+	public function new()
 	{
 		super();
+		
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
@@ -117,7 +121,7 @@ class ListViewBase extends ViewBase
 		if (event.scrollTop >= event.scrollHeight - new Viewport().height)
 		{
 			// call callback
-			onScrolledCallback();
+			onScrolledCallback(id);
 		}
 	}
 	
@@ -125,12 +129,12 @@ class ListViewBase extends ViewBase
 	 * list fully scrolled callback
 	 * @param	event
 	 */
-	private function onScrolledCallback():Void
+	private function onScrolledCallback(id:String):Void
 	{
 		// call callback
 		if (onListScrolled != null)
 		{
-			onListScrolled();
+			onListScrolled(id);
 		}
 	}
 	
