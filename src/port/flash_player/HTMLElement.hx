@@ -10,8 +10,7 @@ package port.flash_player;
 import core.html.AbstractHTMLElement;
 
 /**
- * This is the DOMElement implementation for JavaScript. 
- * It manipulates the native HTML DOM
+ * This is the HTMLElement implementation for the flash player. 
  * @author Yannick DOMINGUEZ
  */
 class HTMLElement extends AbstractHTMLElement
@@ -23,6 +22,4 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		super();
 	}
-	
-	
 }

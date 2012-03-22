@@ -6,14 +6,13 @@ import core.event.MouseEvent;
 import core.dom.DOMData;
 
 /**
- * The anchor element
- * TODO : complete doc
+ * The anchor element, used to link to an external document, or
+ * to scroll to a position in the current document
  * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractHTMLAnchorElement extends HTMLElement
 {
-	
 	/**
 	 * The absolute URI of the linked resource.
 	 * This attribute specifies the location of a Web resource, thus defining
@@ -35,10 +34,16 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 */
 	public function new() 
 	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.link);
-		
 		super();
 		_target = AnchorTarget.self;
+	}
+	
+	/**
+	 * create a native anchor element
+	 */
+	override private function initNativeElement():Void
+	{
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.link);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +52,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	
 	/**
 	 * When setting a mouse down callback, it is always
-	 * set on the mouse for the LinkDOMElement as even
+	 * set on the mouse for the HTML anchor as even
 	 * if the user sets a null callback for the mouse down
 	 * event, the callback must be called to follow the
 	 * http link if it is provided
@@ -67,14 +72,15 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	/**
 	 * Open the link in addition to calling the user callback
 	 */
-	override private function onMouseDownCallback(mouseEventData:MouseEvent):Void
+	override private function onMouseDownCallback(mouseEvent:MouseEvent):Void
 	{
 		if (_onMouseDown != null)
 		{
-			_onMouseDown(mouseEventData);
+			_onMouseDown(mouseEvent);
 		}
 		
-		openLink();
+		//TODO : implement Event.PreventDefault
+		openDocument();
 	}
 	
 	
@@ -83,11 +89,11 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Open the href link if provided using
+	 * Open the linked document using
 	 * runtime specific API. Overriden
 	 * by runtime as needed
 	 */
-	private function openLink():Void
+	private function openDocument():Void
 	{
 		//abstract
 	}
@@ -119,7 +125,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// LINK SETTER/GETTER
+	// DOCUMENT LINK SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -131,7 +137,6 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	{
 		_href = value;
 		set_onMouseDown(_onMouseDown);
-		
 		return value;
 	}
 	

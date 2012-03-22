@@ -11,8 +11,8 @@ import core.html.AbstractHTMLAnchorElement;
 import core.dom.DOMData;
 
 /**
- * This is the JavaScript implementation of the 
- * LinkDOMElement.
+ * This is the browser implementation of the 
+ * HTMLAnchorElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -27,7 +27,7 @@ class HTMLAnchorElement extends AbstractHTMLAnchorElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN LINK SETTER/GETTER
+	// OVERRIDEN DOCUMENT LINK SETTER/GETTER
 	// Override setters to set the corresponding
 	// attributes of the native HTML <a> element
 	//////////////////////////////////////////////////////////////////////////////////////////
