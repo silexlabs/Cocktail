@@ -173,7 +173,7 @@ class HTMLElement extends AbstractHTMLElement
 	 * setter. This way the HTML attribute will only be set if
 	 * tab is enabled
 	 */
-	override private function setTabIndex(value:Int):Int
+	override private function set_tabIndex(value:Int):Int
 	{
 		//TODO : tabIndex is not set on the nativeElement
 		_tabIndex = value;
@@ -226,7 +226,7 @@ class HTMLElement extends AbstractHTMLElement
 	 * When the user onscroll callback is set, set
 	 * a native JavaScript listener on the element
 	 */
-	override private function setOnScroll(value:Event->Void):Event->Void
+	override private function set_onScroll(value:Event->Void):Event->Void
 	{
 		//TODO : re-implement
 		/**

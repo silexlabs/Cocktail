@@ -48,31 +48,31 @@ class AbstractHTMLElement extends Element
 	 * The callback called on mouse down through the mouse instance
 	 */
 	private var _onMouseDown:MouseEvent->Void;
-	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
+	public var onMouseDown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
 	private var _onMouseUp:MouseEvent->Void;
-	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
+	public var onMouseUp(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this dom element
 	 */
 	private var _onMouseOver:MouseEvent->Void;
-	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEvent->Void;
+	public var onMouseOver(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse out of this dom element
 	 */
 	private var _onMouseOut:MouseEvent->Void;
-	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEvent->Void;
+	public var onMouseOut(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this dom element
 	 */
 	private var _onMouseMove:MouseEvent->Void;
-	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
+	public var onMouseMove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
@@ -88,13 +88,13 @@ class AbstractHTMLElement extends Element
 	 * The callback called on key down through the keyboard instance
 	 */
 	private var _onKeyDown:KeyboardEvent->Void;
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEvent->Void;
+	public var onKeyDown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
+	public var onKeyUp(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes and callback
@@ -107,7 +107,7 @@ class AbstractHTMLElement extends Element
 	 * of the focusable DOMElements in the DOM
 	 */
 	private var _tabIndex:Int;
-	public var tabIndex(getTabIndex, setTabIndex):Int;
+	public var tabIndex(get_tabIndex, set_tabIndex):Int;
 	
 	/**
 	 * callback called when the DOMElement recives 
@@ -132,7 +132,15 @@ class AbstractHTMLElement extends Element
 	 * is scrolled
 	 */
 	private var _onScroll:Event->Void;
-	public var onScroll(getOnScroll, setOnScroll):Event->Void;
+	public var onScroll(get_onScroll, set_onScroll):Event->Void;
+	
+	public var scrollTop(get_scrollTop, never):Int;
+	
+	public var scrollLeft(get_scrollLeft, never):Int;
+	
+	public var scrollHeight(get_scrollHeight, never):Int;
+	
+	public var scrollWidth(get_scrollWidth, never):Int;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
@@ -144,7 +152,7 @@ class AbstractHTMLElement extends Element
 	 * in PHP a resource...
 	 */
 	private var _nativeElement:NativeElement;
-	public var nativeElement(getNativeElement, never):NativeElement;
+	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -176,14 +184,6 @@ class AbstractHTMLElement extends Element
 	
 	public var clientTop(get_clientTop, never):Int;
 	
-	public var scrollTop(get_scrollTop, never):Int;
-	
-	public var scrollLeft(get_scrollLeft, never):Int;
-	
-	public var scrollHeight(get_scrollHeight, never):Int;
-	
-	public var scrollWidth(get_scrollWidth, never):Int;
-	
 	/////////////////////////////////
 	// STYLE attribute
 	////////////////////////////////
@@ -193,7 +193,7 @@ class AbstractHTMLElement extends Element
 	 * a DOMElement and manages how they are applied
 	 */
 	private var _style:Style;
-	public var style(getStyle, never):Style;
+	public var style(get_style, never):Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -287,7 +287,7 @@ class AbstractHTMLElement extends Element
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
+	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDown = value;
 		
@@ -303,12 +303,12 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnMouseDown():MouseEvent->Void
+	private function get_onMouseDown():MouseEvent->Void
 	{
 		return _onMouseDown;
 	}
 	
-	private function setOnMouseUp(value:MouseEvent->Void):MouseEvent->Void
+	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseUp = value;
 		
@@ -324,12 +324,12 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnMouseUp():MouseEvent->Void
+	private function get_onMouseUp():MouseEvent->Void
 	{
 		return _onMouseUp;
 	}
 	
-	private function setOnMouseOver(value:MouseEvent->Void):MouseEvent->Void
+	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseOver = value;
 		
@@ -345,12 +345,12 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnMouseOver():MouseEvent->Void
+	private function get_onMouseOver():MouseEvent->Void
 	{
 		return _onMouseOver;
 	}
 	
-	private function setOnMouseOut(value:MouseEvent->Void):MouseEvent->Void
+	private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseOut = value;
 		
@@ -366,12 +366,12 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnMouseOut():MouseEvent->Void
+	private function get_onMouseOut():MouseEvent->Void
 	{
 		return _onMouseOut;
 	}
 	
-	private function setOnMouseMove(value:MouseEvent->Void):MouseEvent->Void
+	private function set_onMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseMove = value;
 		
@@ -387,7 +387,7 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnMouseMove():MouseEvent->Void
+	private function get_onMouseMove():MouseEvent->Void
 	{
 		return _onMouseMove;
 	}
@@ -428,7 +428,7 @@ class AbstractHTMLElement extends Element
 	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
+	private function set_onKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		_onKeyDown = value;
 		
@@ -444,12 +444,12 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnKeyDown():KeyboardEvent->Void
+	private function get_onKeyDown():KeyboardEvent->Void
 	{
 		return _keyboard.onKeyDown;
 	}
 	
-	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
+	private function set_onKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
 		_onKeyUp = value;
 		
@@ -465,7 +465,7 @@ class AbstractHTMLElement extends Element
 		return value;
 	}
 	
-	private function getOnKeyUp():KeyboardEvent->Void
+	private function get_onKeyUp():KeyboardEvent->Void
 	{
 		return _keyboard.onKeyUp;
 	}
@@ -533,13 +533,13 @@ class AbstractHTMLElement extends Element
 	 * tab list, as this DOMElement may appear
 	 * at another index of the list
 	 */
-	private function setTabIndex(value:Int):Int
+	private function set_tabIndex(value:Int):Int
 	{
 		FocusManager.getInstance().invalidate();
 		return _tabIndex = value;
 	}
 	
-	private function getTabIndex():Int
+	private function get_tabIndex():Int
 	{
 		return _tabIndex;
 	}
@@ -548,12 +548,12 @@ class AbstractHTMLElement extends Element
 	// SCROLLING SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setOnScroll(value:Event->Void):Event->Void
+	private function set_onScroll(value:Event->Void):Event->Void
 	{
 		return _onScroll = value;
 	}
 	
-	private function getOnScroll():Event->Void
+	private function get_onScroll():Event->Void
 	{
 		return _onScroll;
 	}
@@ -579,7 +579,7 @@ class AbstractHTMLElement extends Element
 	 * Returns the reference to this DOMElement native DOM element
 	 * @return a DisplayObject in AS, an HTML element in JS, a resource in PHP
 	 */
-	private function getNativeElement():NativeElement
+	private function get_nativeElement():NativeElement
 	{
 		return this._nativeElement;
 	}
@@ -678,7 +678,7 @@ class AbstractHTMLElement extends Element
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getStyle():Style
+	private function get_style():Style
 	{
 		return this._style;
 	}
