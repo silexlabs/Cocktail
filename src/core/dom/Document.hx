@@ -7,6 +7,8 @@
 */
 package core.dom;
 
+import core.Text;
+
 /**
  * The Document interface represents the entire HTML or XML document.
  * Conceptually, it is the root of the document tree, and provides the
@@ -29,6 +31,45 @@ class Document extends Node
 	public function new() 
 	{
 		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * Creates an element of the type specified. 
+	 * Note that the instance returned implements the Element interface,
+	 * so attributes can be specified directly on the returned object.
+	 * 
+	 * @param	tagName The name of the element type to instantiate. For XML,
+	 * this is case-sensitive, otherwise it depends on the case-sensitivity 
+	 * of the markup language in use. In that case, the name is mapped
+	 * to the canonical form of that markup by the DOM implementation.
+	 * 
+	 * @return A new Element object with the nodeName attribute set to tagName,
+	 * and localName, prefix, and namespaceURI set to null
+	 * 
+	 * TODO : implement localName, prefix and namespaceURI
+	 */
+	public function createElement(tagName:String):Element
+	{
+		var element:Element = new Element();
+		element.tagName = tagName;
+		return element;
+	}
+	
+	/**
+	 * Creates a Text node given the specified string.
+	 * @param	data The data for the node.
+	 * @return The new Text object.
+	 */
+	public function createTextNode(data:String):Text
+	{
+		var text:Text = new Text();
+		text.nodeValue = data;
+		return text;
 	}
 	
 }

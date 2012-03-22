@@ -24,6 +24,8 @@ import core.html.EmbeddedElement;
  * designated by the src attribute, the exception being for 
  * left or right-aligned images that are "floated" out of line.
  * 
+ * TODO : override get_tagName as embedded element always match one element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLImageElement extends EmbeddedElement
