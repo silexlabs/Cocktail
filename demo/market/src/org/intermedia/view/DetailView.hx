@@ -3,6 +3,10 @@ import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.textElement.TextElement;
 
+// hxtml
+import hxtml2.HTMLPageData;
+import hxtml2.HTMLParser;
+
 /**
  * Display the detail of an RSS feed entry (title, picture, content...)
  * 
@@ -32,11 +36,18 @@ class DetailView extends ViewBase
 	// description text Element
 	private var _descriptionElement:TextElement;
 	
+	// content container
+	private var _contentContainer:ContainerDOMElement;
+	
+	// content text Element
+	private var _contentElement:TextElement;
+	
 	public function new() 
 	{
 		_titleElement = new TextElement("");
 		_authorElement = new TextElement("");
 		_descriptionElement = new TextElement("");
+		_contentElement = new TextElement("");
 		
 		super();
 	}
@@ -72,6 +83,12 @@ class DetailView extends ViewBase
 		_descriptionContainer.addText(_descriptionElement);
 		this.addChild(_descriptionContainer);
 		
+		// add content
+		_contentContainer = new ContainerDOMElement();
+		DetailStyle.setDescription(_contentContainer);
+		_contentContainer.addText(_contentElement);
+		this.addChild(_contentContainer);
+		
 	}
 	
 	/**
@@ -94,10 +111,35 @@ class DetailView extends ViewBase
 		_thumbnail.load(_data.thumbUrl);
 		
 		// update description
-		_descriptionContainer.removeText(_descriptionElement);
-		_descriptionElement.text = _data.description;
+		/*_descriptionContainer.removeText(_descriptionElement);
+		_descriptionElement.text = _data.description + "\n";
 		_descriptionContainer.addText(_descriptionElement);
 		
+		// update content
+		_contentContainer.removeText(_contentElement);
+		_contentElement.text = _data.content;
+		_contentContainer.addText(_contentElement);*/
+		
+		html2DOM(_data.description);
+		html2DOM(_data.content);
+		
+		
+	}
+	
+	private function html2DOM(htmlString:String):Void
+	{
+		var xml:Xml = Xml.parse(htmlString);
+		var htmlPageData:HTMLPageData = null;
+		try
+		{
+			htmlPageData = (new HTMLParser()).parse(xml.firstElement());
+			// add the parsed data to the detail view
+			this.nativeElement.appendChild(htmlPageData.htmlDom);
+		}catch(msg : String){
+			trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
+		} catch( unknown : Dynamic ) {
+			trace("Error, parsing XML tag "+xml.firstElement()+"\n"+Std.string(unknown));
+		}
 	}
 	
 }

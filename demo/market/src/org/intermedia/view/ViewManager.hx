@@ -5,6 +5,7 @@ import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
+import haxe.Timer;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.SwippableListView;
@@ -70,6 +71,7 @@ class ViewManager
 		_body = new BodyDOMElement();
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
+		//_header.isVisible = false;
 		_header.data = HEADER_HOME_TITLE;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		_body.addChild(_header);
@@ -79,11 +81,22 @@ class ViewManager
 		_currentView = _swippableListView;
 		// attach swippable view to body
 		_body.addChild(_swippableListView);
-		//scroll to the second item in swippable view
-		//_body.nativeElement.scrollLeft = new Viewport().width;
-		
+		// timer to scroll to the second item in the swippable view
+		Timer.delay(function () {
+			// scroll to the second item in the swippable view
+			_body.nativeElement.scrollLeft = new Viewport().width;
+		},5000);
+		Timer.delay(resetHeaderPosition,200);
 		// call init()
 		init();
+	}
+	
+	/**
+	 * reset header position
+	 */
+	function resetHeaderPosition() {
+			_header.x = 0;
+			Timer.delay(resetHeaderPosition,200);
 	}
 	
 	/**
@@ -105,7 +118,8 @@ class ViewManager
 		// set callback when the bottom of the scrollbar is reached
 		//_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
 		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.loadCellData(feed); };
-		_swippableListView.onListScrolled = _applicationController.loadCellData;
+		//_swippableListView.onListScrolled = _applicationController.loadCellData;
+		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		//_applicationController.loadCellData(CELL_QTY);
 		//_applicationController.loadCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
@@ -128,7 +142,8 @@ class ViewManager
 		_currentView = _detailView;
 
 		// request detail view loading to controller
-		_applicationController.openDetailView(cellData);
+		//_applicationController.openDetailView(cellData);
+		onDetailDataLoaded(cellData);
 	}
 	
 	/**

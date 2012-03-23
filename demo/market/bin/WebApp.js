@@ -10135,6 +10135,1211 @@ haxe.Timer.prototype = {
 	}
 	,__class__: haxe.Timer
 }
+var hxtml2 = hxtml2 || {}
+hxtml2.Token = $hxClasses["hxtml2.Token"] = { __ename__ : ["hxtml2","Token"], __constructs__ : ["TIdent","TString","TInt","TFloat","TDblDot","TSharp","TPOpen","TPClose","TExclam","TComma","TEof","TPercent","TSemicolon","TBrOpen","TBrClose","TDot","TSpaces","TSlash"] }
+hxtml2.Token.TIdent = function(i) { var $x = ["TIdent",0,i]; $x.__enum__ = hxtml2.Token; $x.toString = $estr; return $x; }
+hxtml2.Token.TString = function(s) { var $x = ["TString",1,s]; $x.__enum__ = hxtml2.Token; $x.toString = $estr; return $x; }
+hxtml2.Token.TInt = function(i) { var $x = ["TInt",2,i]; $x.__enum__ = hxtml2.Token; $x.toString = $estr; return $x; }
+hxtml2.Token.TFloat = function(f) { var $x = ["TFloat",3,f]; $x.__enum__ = hxtml2.Token; $x.toString = $estr; return $x; }
+hxtml2.Token.TDblDot = ["TDblDot",4];
+hxtml2.Token.TDblDot.toString = $estr;
+hxtml2.Token.TDblDot.__enum__ = hxtml2.Token;
+hxtml2.Token.TSharp = ["TSharp",5];
+hxtml2.Token.TSharp.toString = $estr;
+hxtml2.Token.TSharp.__enum__ = hxtml2.Token;
+hxtml2.Token.TPOpen = ["TPOpen",6];
+hxtml2.Token.TPOpen.toString = $estr;
+hxtml2.Token.TPOpen.__enum__ = hxtml2.Token;
+hxtml2.Token.TPClose = ["TPClose",7];
+hxtml2.Token.TPClose.toString = $estr;
+hxtml2.Token.TPClose.__enum__ = hxtml2.Token;
+hxtml2.Token.TExclam = ["TExclam",8];
+hxtml2.Token.TExclam.toString = $estr;
+hxtml2.Token.TExclam.__enum__ = hxtml2.Token;
+hxtml2.Token.TComma = ["TComma",9];
+hxtml2.Token.TComma.toString = $estr;
+hxtml2.Token.TComma.__enum__ = hxtml2.Token;
+hxtml2.Token.TEof = ["TEof",10];
+hxtml2.Token.TEof.toString = $estr;
+hxtml2.Token.TEof.__enum__ = hxtml2.Token;
+hxtml2.Token.TPercent = ["TPercent",11];
+hxtml2.Token.TPercent.toString = $estr;
+hxtml2.Token.TPercent.__enum__ = hxtml2.Token;
+hxtml2.Token.TSemicolon = ["TSemicolon",12];
+hxtml2.Token.TSemicolon.toString = $estr;
+hxtml2.Token.TSemicolon.__enum__ = hxtml2.Token;
+hxtml2.Token.TBrOpen = ["TBrOpen",13];
+hxtml2.Token.TBrOpen.toString = $estr;
+hxtml2.Token.TBrOpen.__enum__ = hxtml2.Token;
+hxtml2.Token.TBrClose = ["TBrClose",14];
+hxtml2.Token.TBrClose.toString = $estr;
+hxtml2.Token.TBrClose.__enum__ = hxtml2.Token;
+hxtml2.Token.TDot = ["TDot",15];
+hxtml2.Token.TDot.toString = $estr;
+hxtml2.Token.TDot.__enum__ = hxtml2.Token;
+hxtml2.Token.TSpaces = ["TSpaces",16];
+hxtml2.Token.TSpaces.toString = $estr;
+hxtml2.Token.TSpaces.__enum__ = hxtml2.Token;
+hxtml2.Token.TSlash = ["TSlash",17];
+hxtml2.Token.TSlash.toString = $estr;
+hxtml2.Token.TSlash.__enum__ = hxtml2.Token;
+hxtml2.Value = $hxClasses["hxtml2.Value"] = { __ename__ : ["hxtml2","Value"], __constructs__ : ["VIdent","VString","VUnit","VFloat","VInt","VHex","VList","VGroup","VUrl","VLabel","VSlash"] }
+hxtml2.Value.VIdent = function(i) { var $x = ["VIdent",0,i]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VString = function(s) { var $x = ["VString",1,s]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VUnit = function(v,unit) { var $x = ["VUnit",2,v,unit]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VFloat = function(v) { var $x = ["VFloat",3,v]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VInt = function(v) { var $x = ["VInt",4,v]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VHex = function(v) { var $x = ["VHex",5,v]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VList = function(l) { var $x = ["VList",6,l]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VGroup = function(l) { var $x = ["VGroup",7,l]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VUrl = function(v) { var $x = ["VUrl",8,v]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VLabel = function(v,val) { var $x = ["VLabel",9,v,val]; $x.__enum__ = hxtml2.Value; $x.toString = $estr; return $x; }
+hxtml2.Value.VSlash = ["VSlash",10];
+hxtml2.Value.VSlash.toString = $estr;
+hxtml2.Value.VSlash.__enum__ = hxtml2.Value;
+hxtml2.Unit = $hxClasses["hxtml2.Unit"] = { __ename__ : ["hxtml2","Unit"], __constructs__ : ["Pix","Percent","EM"] }
+hxtml2.Unit.Pix = function(v) { var $x = ["Pix",0,v]; $x.__enum__ = hxtml2.Unit; $x.toString = $estr; return $x; }
+hxtml2.Unit.Percent = function(v) { var $x = ["Percent",1,v]; $x.__enum__ = hxtml2.Unit; $x.toString = $estr; return $x; }
+hxtml2.Unit.EM = function(v) { var $x = ["EM",2,v]; $x.__enum__ = hxtml2.Unit; $x.toString = $estr; return $x; }
+hxtml2.CSSParser = $hxClasses["hxtml2.CSSParser"] = function() {
+};
+hxtml2.CSSParser.__name__ = ["hxtml2","CSSParser"];
+hxtml2.CSSParser.applyStyle = function(styleName,v,s) {
+	return hxtml2.StyleConverter.applyStyle(styleName,v,s);
+}
+hxtml2.CSSParser.prototype = {
+	css: null
+	,s: null
+	,simp: null
+	,pos: null
+	,spacesTokens: null
+	,tokens: null
+	,setStyleFromString: function(style,css) {
+		haxe.Log.trace("setStyleFromString " + style + " -  " + Type["typeof"](style),{ fileName : "CSSParser.hx", lineNumber : 93, className : "hxtml2.CSSParser", methodName : "setStyleFromString"});
+		this.parse(css,style);
+	}
+	,unexpected: function(t) {
+		throw "Unexpected " + Std.string(t);
+		return null;
+	}
+	,expect: function(t) {
+		var tk = this.readToken();
+		if(tk != t) this.unexpected(tk);
+	}
+	,push: function(t) {
+		this.tokens.push(t);
+	}
+	,isToken: function(t) {
+		var tk = this.readToken();
+		if(tk == t) return true;
+		this.tokens.push(tk);
+		return false;
+	}
+	,parse: function(css,s) {
+		this.css = css;
+		this.s = s;
+		this.pos = 0;
+		this.tokens = [];
+		this.parseStyle(hxtml2.Token.TEof);
+	}
+	,parseStyle: function(eof) {
+		while(true) {
+			if(this.isToken(eof)) break;
+			var r = this.readIdent();
+			this.expect(hxtml2.Token.TDblDot);
+			var v = this.readValue();
+			var s = this.s;
+			var $e = (v);
+			switch( $e[1] ) {
+			case 9:
+				var val = $e[3], label = $e[2];
+				if(label == "important") {
+					v = val;
+					s = this.simp;
+				}
+				break;
+			default:
+			}
+			if(!hxtml2.CSSParser.applyStyle(r,v,s)) throw "Invalid value " + Std.string(v) + " for css " + r;
+			if(this.isToken(eof)) break;
+			this.expect(hxtml2.Token.TSemicolon);
+		}
+	}
+	,parseRules: function(css) {
+		this.css = css;
+		this.pos = 0;
+		this.tokens = [];
+		var rules = [];
+		while(true) {
+			if(this.isToken(hxtml2.Token.TEof)) break;
+			var classes = [];
+			while(true) {
+				this.spacesTokens = true;
+				this.isToken(hxtml2.Token.TSpaces);
+				var c = this.readClass(null);
+				this.spacesTokens = false;
+				if(c == null) break;
+				classes.push(c);
+				if(!this.isToken(hxtml2.Token.TComma)) break;
+			}
+			if(classes.length == 0) this.unexpected(this.readToken());
+			this.expect(hxtml2.Token.TBrOpen);
+			this.simp = null;
+			this.parseStyle(hxtml2.Token.TBrClose);
+			var _g = 0;
+			while(_g < classes.length) {
+				var c = classes[_g];
+				++_g;
+				rules.push({ c : c, s : this.s, imp : false});
+			}
+			if(this.simp != null) {
+				var _g = 0;
+				while(_g < classes.length) {
+					var c = classes[_g];
+					++_g;
+					rules.push({ c : c, s : this.simp, imp : true});
+				}
+			}
+		}
+		return rules;
+	}
+	,readClass: function(parent) {
+		var c = { parent : parent, node : null, id : null, className : null, pseudoClass : null};
+		var def = false;
+		var last = null;
+		try {
+			while(true) {
+				var t = this.readToken();
+				if(last == null) {
+					var $e = (t);
+					switch( $e[1] ) {
+					case 15:
+					case 5:
+					case 4:
+						last = t;
+						break;
+					case 0:
+						var i = $e[2];
+						c.node = i;
+						def = true;
+						break;
+					case 16:
+						return def?this.readClass(c):null;
+					case 13:
+					case 9:
+						this.tokens.push(t);
+						throw "__break__";
+						break;
+					default:
+						this.unexpected(t);
+					}
+				} else {
+					var $e = (t);
+					switch( $e[1] ) {
+					case 0:
+						var i = $e[2];
+						switch( (last)[1] ) {
+						case 15:
+							c.className = i;
+							def = true;
+							break;
+						case 5:
+							c.id = i;
+							def = true;
+							break;
+						case 4:
+							c.pseudoClass = i;
+							def = true;
+							break;
+						default:
+							throw "assert";
+						}
+						last = null;
+						break;
+					default:
+						this.unexpected(t);
+					}
+				}
+			}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+		return def?c:parent;
+	}
+	,readIdent: function() {
+		var t = this.readToken();
+		return (function($this) {
+			var $r;
+			var $e = (t);
+			switch( $e[1] ) {
+			case 0:
+				var i = $e[2];
+				$r = i;
+				break;
+			default:
+				$r = $this.unexpected(t);
+			}
+			return $r;
+		}(this));
+	}
+	,readValue: function(opt) {
+		var t = this.readToken();
+		var v = (function($this) {
+			var $r;
+			var $e = (t);
+			switch( $e[1] ) {
+			case 5:
+				$r = hxtml2.Value.VHex($this.readHex());
+				break;
+			case 0:
+				var i = $e[2];
+				$r = hxtml2.Value.VIdent(i);
+				break;
+			case 1:
+				var s = $e[2];
+				$r = hxtml2.Value.VString(s);
+				break;
+			case 2:
+				var i = $e[2];
+				$r = $this.readValueUnit(i,i);
+				break;
+			case 3:
+				var f = $e[2];
+				$r = $this.readValueUnit(f,null);
+				break;
+			case 17:
+				$r = hxtml2.Value.VSlash;
+				break;
+			default:
+				$r = (function($this) {
+					var $r;
+					if(!opt) $this.unexpected(t);
+					$this.tokens.push(t);
+					$r = null;
+					return $r;
+				}($this));
+			}
+			return $r;
+		}(this));
+		if(v != null) v = this.readValueNext(v);
+		return v;
+	}
+	,readHex: function() {
+		var start = this.pos;
+		while(true) {
+			var c = this.css.cca(this.pos++);
+			if(c >= 65 && c <= 70 || c >= 97 && c <= 102 || c >= 48 && c <= 57) continue;
+			this.pos--;
+			break;
+		}
+		return this.css.substr(start,this.pos - start);
+	}
+	,readValueUnit: function(f,i) {
+		var t = this.readToken();
+		return (function($this) {
+			var $r;
+			var $e = (t);
+			switch( $e[1] ) {
+			case 0:
+				var i1 = $e[2];
+				$r = hxtml2.Value.VUnit(f,i1);
+				break;
+			case 11:
+				$r = hxtml2.Value.VUnit(f,"%");
+				break;
+			default:
+				$r = (function($this) {
+					var $r;
+					$this.tokens.push(t);
+					$r = i != null?hxtml2.Value.VInt(i):hxtml2.Value.VFloat(f);
+					return $r;
+				}($this));
+			}
+			return $r;
+		}(this));
+	}
+	,readValueNext: function(v) {
+		var t = this.readToken();
+		return (function($this) {
+			var $r;
+			switch( (t)[1] ) {
+			case 6:
+				$r = (function($this) {
+					var $r;
+					var $e = (v);
+					switch( $e[1] ) {
+					case 0:
+						var i = $e[2];
+						$r = (function($this) {
+							var $r;
+							switch(i) {
+							case "url":
+								$r = $this.readValueNext(hxtml2.Value.VUrl($this.readUrl()));
+								break;
+							default:
+								$r = (function($this) {
+									var $r;
+									$this.tokens.push(t);
+									$r = v;
+									return $r;
+								}($this));
+							}
+							return $r;
+						}($this));
+						break;
+					default:
+						$r = (function($this) {
+							var $r;
+							$this.tokens.push(t);
+							$r = v;
+							return $r;
+						}($this));
+					}
+					return $r;
+				}($this));
+				break;
+			case 8:
+				$r = (function($this) {
+					var $r;
+					var t1 = $this.readToken();
+					$r = (function($this) {
+						var $r;
+						var $e = (t1);
+						switch( $e[1] ) {
+						case 0:
+							var i = $e[2];
+							$r = hxtml2.Value.VLabel(i,v);
+							break;
+						default:
+							$r = $this.unexpected(t1);
+						}
+						return $r;
+					}($this));
+					return $r;
+				}($this));
+				break;
+			case 9:
+				$r = $this.loopComma(v,$this.readValue());
+				break;
+			default:
+				$r = (function($this) {
+					var $r;
+					$this.tokens.push(t);
+					var v2 = $this.readValue(true);
+					$r = v2 == null?v:$this.loopNext(v,v2);
+					return $r;
+				}($this));
+			}
+			return $r;
+		}(this));
+	}
+	,loopNext: function(v,v2) {
+		return (function($this) {
+			var $r;
+			var $e = (v2);
+			switch( $e[1] ) {
+			case 7:
+				var l = $e[2];
+				$r = (function($this) {
+					var $r;
+					l.unshift(v);
+					$r = v2;
+					return $r;
+				}($this));
+				break;
+			case 6:
+				var l = $e[2];
+				$r = (function($this) {
+					var $r;
+					l[0] = $this.loopNext(v,l[0]);
+					$r = v2;
+					return $r;
+				}($this));
+				break;
+			case 9:
+				var v21 = $e[3], lab = $e[2];
+				$r = hxtml2.Value.VLabel(lab,$this.loopNext(v,v21));
+				break;
+			default:
+				$r = hxtml2.Value.VGroup([v,v2]);
+			}
+			return $r;
+		}(this));
+	}
+	,loopComma: function(v,v2) {
+		return (function($this) {
+			var $r;
+			var $e = (v2);
+			switch( $e[1] ) {
+			case 6:
+				var l = $e[2];
+				$r = (function($this) {
+					var $r;
+					l.unshift(v);
+					$r = v2;
+					return $r;
+				}($this));
+				break;
+			case 9:
+				var v21 = $e[3], lab = $e[2];
+				$r = hxtml2.Value.VLabel(lab,$this.loopComma(v,v21));
+				break;
+			default:
+				$r = hxtml2.Value.VList([v,v2]);
+			}
+			return $r;
+		}(this));
+	}
+	,isSpace: function(c) {
+		return c == 32 || c == 10 || c == 13 || c == 9;
+	}
+	,isIdentChar: function(c) {
+		return c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45;
+	}
+	,isNum: function(c) {
+		return c >= 48 && c <= 57;
+	}
+	,next: function() {
+		return this.css.cca(this.pos++);
+	}
+	,readUrl: function() {
+		var c0 = this.css.cca(this.pos++);
+		while(c0 == 32 || c0 == 10 || c0 == 13 || c0 == 9) c0 = this.css.cca(this.pos++);
+		var quote = c0;
+		if(quote == 39 || quote == 34) {
+			this.pos--;
+			var $e = (this.readToken());
+			switch( $e[1] ) {
+			case 1:
+				var s = $e[2];
+				var c01 = this.css.cca(this.pos++);
+				while(c01 == 32 || c01 == 10 || c01 == 13 || c01 == 9) c01 = this.css.cca(this.pos++);
+				if(c01 != 41) throw "Invalid char " + String.fromCharCode(c01);
+				return s;
+			default:
+				throw "assert";
+			}
+		}
+		var start = this.pos - 1;
+		while(true) {
+			if(c0 != c0) break;
+			c0 = this.css.cca(this.pos++);
+			if(c0 == 41) break;
+		}
+		return StringTools.trim(this.css.substr(start,this.pos - start - 1));
+	}
+	,readToken: function() {
+		var t = this.tokens.pop();
+		if(t != null) return t;
+		while(true) {
+			var c = this.css.cca(this.pos++);
+			if(c != c) return hxtml2.Token.TEof;
+			if(c == 32 || c == 10 || c == 13 || c == 9) {
+				if(this.spacesTokens) {
+					while(this.isSpace(this.css.cca(this.pos++))) {
+					}
+					this.pos--;
+					return hxtml2.Token.TSpaces;
+				}
+				continue;
+			}
+			if(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45) {
+				var pos = this.pos - 1;
+				do c = this.css.cca(this.pos++); while(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45);
+				this.pos--;
+				return hxtml2.Token.TIdent(this.css.substr(pos,this.pos - pos).toLowerCase());
+			}
+			if(c >= 48 && c <= 57) {
+				var i = 0;
+				do {
+					i = i * 10 + (c - 48);
+					c = this.css.cca(this.pos++);
+				} while(c >= 48 && c <= 57);
+				if(c == 46) {
+					var f = i;
+					var k = 0.1;
+					while(this.isNum(c = this.css.cca(this.pos++))) {
+						f += (c - 48) * k;
+						k *= 0.1;
+					}
+					this.pos--;
+					return hxtml2.Token.TFloat(f);
+				}
+				this.pos--;
+				return hxtml2.Token.TInt(i);
+			}
+			switch(c) {
+			case 58:
+				return hxtml2.Token.TDblDot;
+			case 35:
+				return hxtml2.Token.TSharp;
+			case 40:
+				return hxtml2.Token.TPOpen;
+			case 41:
+				return hxtml2.Token.TPClose;
+			case 33:
+				return hxtml2.Token.TExclam;
+			case 37:
+				return hxtml2.Token.TPercent;
+			case 59:
+				return hxtml2.Token.TSemicolon;
+			case 46:
+				return hxtml2.Token.TDot;
+			case 123:
+				return hxtml2.Token.TBrOpen;
+			case 125:
+				return hxtml2.Token.TBrClose;
+			case 44:
+				return hxtml2.Token.TComma;
+			case 47:
+				if((c = this.css.cca(this.pos++)) != 42) {
+					this.pos--;
+					return hxtml2.Token.TSlash;
+				}
+				while(true) {
+					while((c = this.css.cca(this.pos++)) != 42) if(c != c) throw "Unclosed comment";
+					c = this.css.cca(this.pos++);
+					if(c == 47) break;
+					if(c != c) throw "Unclosed comment";
+				}
+				return this.readToken();
+			case 39:case 34:
+				var pos = this.pos;
+				var k;
+				while((k = this.css.cca(this.pos++)) != c) {
+					if(k != k) throw "Unclosed string constant";
+					if(k == 92) {
+						throw "todo";
+						continue;
+					}
+				}
+				return hxtml2.Token.TString(this.css.substr(pos,this.pos - pos - 1));
+			default:
+			}
+			this.pos--;
+			throw "Invalid char " + this.css.charAt(this.pos);
+		}
+		return null;
+	}
+	,__class__: hxtml2.CSSParser
+}
+hxtml2.ElementTypeValue = $hxClasses["hxtml2.ElementTypeValue"] = { __ename__ : ["hxtml2","ElementTypeValue"], __constructs__ : ["img","body","div","style","text","link","unknown","html","head","meta","title"] }
+hxtml2.ElementTypeValue.img = ["img",0];
+hxtml2.ElementTypeValue.img.toString = $estr;
+hxtml2.ElementTypeValue.img.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.body = ["body",1];
+hxtml2.ElementTypeValue.body.toString = $estr;
+hxtml2.ElementTypeValue.body.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.div = ["div",2];
+hxtml2.ElementTypeValue.div.toString = $estr;
+hxtml2.ElementTypeValue.div.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.style = ["style",3];
+hxtml2.ElementTypeValue.style.toString = $estr;
+hxtml2.ElementTypeValue.style.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.text = ["text",4];
+hxtml2.ElementTypeValue.text.toString = $estr;
+hxtml2.ElementTypeValue.text.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.link = ["link",5];
+hxtml2.ElementTypeValue.link.toString = $estr;
+hxtml2.ElementTypeValue.link.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.unknown = ["unknown",6];
+hxtml2.ElementTypeValue.unknown.toString = $estr;
+hxtml2.ElementTypeValue.unknown.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.html = ["html",7];
+hxtml2.ElementTypeValue.html.toString = $estr;
+hxtml2.ElementTypeValue.html.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.head = ["head",8];
+hxtml2.ElementTypeValue.head.toString = $estr;
+hxtml2.ElementTypeValue.head.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.meta = ["meta",9];
+hxtml2.ElementTypeValue.meta.toString = $estr;
+hxtml2.ElementTypeValue.meta.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.ElementTypeValue.title = ["title",10];
+hxtml2.ElementTypeValue.title.toString = $estr;
+hxtml2.ElementTypeValue.title.__enum__ = hxtml2.ElementTypeValue;
+hxtml2.HTMLPageData = $hxClasses["hxtml2.HTMLPageData"] = function(cssParser) {
+	this._cssParser = cssParser;
+	this._ids = new Hash();
+};
+hxtml2.HTMLPageData.__name__ = ["hxtml2","HTMLPageData"];
+hxtml2.HTMLPageData.prototype = {
+	htmlDom: null
+	,_ids: null
+	,_cssParser: null
+	,registerId: function(id,element) {
+		this._ids.set(id,element);
+	}
+	,getById: function(id) {
+		return this._ids.get(id);
+	}
+	,createTextNode: function(text,parent) {
+		if(text == null) text = "";
+		var element = js.Lib.document.createTextNode(text);
+		if(parent != null) parent.appendChild(element);
+		return element;
+	}
+	,createElement: function(elementType,attributes,parent,semantic) {
+		if(semantic == null) semantic = "";
+		var element = null;
+		switch( (elementType)[1] ) {
+		case 0:
+			element = js.Lib.document.createElement("img");
+			if(attributes.exists("src")) element.setAttribute("src",attributes.get("src"));
+			break;
+		case 1:
+			element = js.Lib.document.body;
+			break;
+		default:
+			if(semantic != "") element = js.Lib.document.createElement(semantic); else element = js.Lib.document.createElement("div");
+		}
+		if(parent != null) parent.appendChild(element);
+		if(attributes != null) this.setAttributes(element,attributes);
+		return element;
+	}
+	,setAttributes: function(element,attributes) {
+		if(attributes.exists("id")) element.id = attributes.get("id");
+		if(element.id != "") this.registerId(element.id,element);
+		if(attributes.exists("style")) {
+			var styles = attributes.get("style");
+			this._cssParser.setStyleFromString(element.style,styles);
+		}
+	}
+	,__class__: hxtml2.HTMLPageData
+}
+hxtml2.HTMLParser = $hxClasses["hxtml2.HTMLParser"] = function() {
+	this._cssParser = new hxtml2.CSSParser();
+};
+hxtml2.HTMLParser.__name__ = ["hxtml2","HTMLParser"];
+hxtml2.HTMLParser.prototype = {
+	_cssParser: null
+	,parse: function(xmlDOM) {
+		var htmlPageData = new hxtml2.HTMLPageData(this._cssParser);
+		this._doParse(xmlDOM,htmlPageData,htmlPageData.htmlDom);
+		return htmlPageData;
+	}
+	,_doParse: function(xmlDOM,htmlPageData,parent) {
+		var element = null;
+		switch(xmlDOM.nodeType) {
+		case Xml.CData:
+			throw "assert";
+			break;
+		case Xml.PCData:case Xml.Comment:
+			element = htmlPageData.createTextNode(xmlDOM.getNodeValue(),parent);
+			if(parent == null) htmlPageData.htmlDom = element;
+			return;
+		}
+		var elementType = hxtml2.ElementTypeValue.unknown;
+		try {
+			elementType = Type.createEnum(hxtml2.ElementTypeValue,xmlDOM.getNodeName().toLowerCase());
+		} catch( msg ) {
+			if( js.Boot.__instanceof(msg,String) ) {
+				elementType = hxtml2.ElementTypeValue.unknown;
+			} else throw(msg);
+		}
+		switch( (elementType)[1] ) {
+		case 8:
+		case 5:
+		case 9:
+		case 10:
+			break;
+		case 7:
+			break;
+		case 3:
+			break;
+		default:
+			var attributesHash = new Hash();
+			var $it0 = xmlDOM.attributes();
+			while( $it0.hasNext() ) {
+				var attr = $it0.next();
+				attributesHash.set(attr,xmlDOM.get(attr));
+			}
+			element = htmlPageData.createElement(elementType,attributesHash,parent,xmlDOM.getNodeName());
+			if(parent == null) htmlPageData.htmlDom = element;
+		}
+		var hasText = false;
+		var $it1 = xmlDOM.iterator();
+		while( $it1.hasNext() ) {
+			var child = $it1.next();
+			if(child.nodeType == Xml.PCData && new EReg("^[ \n\r\t]*$","").match(child.getNodeValue())) continue;
+			this._doParse(child,htmlPageData,element);
+		}
+	}
+	,__class__: hxtml2.HTMLParser
+}
+hxtml2.StyleConverter = $hxClasses["hxtml2.StyleConverter"] = function() {
+};
+hxtml2.StyleConverter.__name__ = ["hxtml2","StyleConverter"];
+hxtml2.StyleConverter.valueToUnitArray = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 7:
+		case 6:
+			var array = $e[2];
+			$r = array;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.valueToValueWithUnit = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 2:
+			var unit = $e[3], value = $e[2];
+			$r = { value : value, unit : unit};
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.valueToString = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 0:
+		case 1:
+		case 5:
+		case 8:
+			var value = $e[2];
+			$r = value;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.valueToFloat = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 3:
+			var value = $e[2];
+			$r = value;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.valueToInt = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 4:
+			var value = $e[2];
+			$r = value;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.applyStyle = function(styleName,v,s) {
+	haxe.Log.trace("applyStyle " + styleName + ", " + v + ", " + s,{ fileName : "StyleConverter.hx", lineNumber : 260, className : "hxtml2.StyleConverter", methodName : "applyStyle"});
+	switch(styleName) {
+	case "margin":
+		var values = hxtml2.StyleConverter.valueToUnitArray(v);
+		if(values != null) switch(values.length) {
+		case 1:
+			hxtml2.StyleConverter.applyStyle("margin-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-right",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-bottom",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-left",values[0],s);
+			return true;
+		case 2:
+			hxtml2.StyleConverter.applyStyle("margin-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("margin-bottom",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-left",values[1],s);
+			return true;
+		case 3:
+			hxtml2.StyleConverter.applyStyle("margin-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("margin-bottom",values[2],s);
+			hxtml2.StyleConverter.applyStyle("margin-left",values[1],s);
+			return true;
+		case 4:
+			hxtml2.StyleConverter.applyStyle("margin-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("margin-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("margin-bottom",values[2],s);
+			hxtml2.StyleConverter.applyStyle("margin-left",values[3],s);
+			return true;
+		}
+		break;
+	case "margin-left":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.marginLeft = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "margin-top":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.marginTop = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "margin-right":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.marginRight = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "margin-bottom":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.marginBottom = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "display":
+		haxe.Log.trace("display " + hxtml2.StyleConverter.valueToString(v),{ fileName : "StyleConverter.hx", lineNumber : 329, className : "hxtml2.StyleConverter", methodName : "applyStyle"});
+		s.display = hxtml2.StyleConverter.valueToString(v);
+		return true;
+	case "padding":
+		var values = hxtml2.StyleConverter.valueToUnitArray(v);
+		if(values != null) switch(values.length) {
+		case 1:
+			hxtml2.StyleConverter.applyStyle("padding-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-right",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-bottom",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-left",values[0],s);
+			return true;
+		case 2:
+			hxtml2.StyleConverter.applyStyle("padding-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("padding-bottom",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-left",values[1],s);
+			return true;
+		case 3:
+			hxtml2.StyleConverter.applyStyle("padding-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("padding-bottom",values[2],s);
+			hxtml2.StyleConverter.applyStyle("padding-left",values[1],s);
+			return true;
+		case 4:
+			hxtml2.StyleConverter.applyStyle("padding-top",values[0],s);
+			hxtml2.StyleConverter.applyStyle("padding-right",values[1],s);
+			hxtml2.StyleConverter.applyStyle("padding-bottom",values[2],s);
+			hxtml2.StyleConverter.applyStyle("padding-left",values[3],s);
+			return true;
+		}
+		break;
+	case "padding-left":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.paddingLeft = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "padding-right":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.paddingRight = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "padding-bottom":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.paddingBottom = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "padding-top":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.paddingTop = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "width":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.width = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "height":
+		var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+		if(valueWithUnit != null) {
+			s.height = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit;
+			return true;
+		}
+		break;
+	case "background-color":
+		var c = hxtml2.StyleConverter.getCol(v);
+		if(c != null) {
+			s.backgroundColor = c;
+			return true;
+		}
+		if(hxtml2.StyleConverter.getIdent(v) == "transparent") {
+			s.backgroundColor = "transparent";
+			return true;
+		}
+		break;
+	case "background-repeat":
+		s.backgroundRepeat = hxtml2.StyleConverter.getIdent(v);
+		break;
+	case "background-image":
+		var $e = (v);
+		switch( $e[1] ) {
+		case 8:
+			var url = $e[2];
+			s.backgroundImage = url;
+			return true;
+		case 0:
+			var i = $e[2];
+			if(i == "none") {
+				s.backgroundImage = "";
+				return true;
+			}
+			break;
+		default:
+		}
+		break;
+	case "background-attachment":
+		throw "not implemented";
+		break;
+	case "background-position":
+		throw "not implemented";
+		break;
+	case "-inner-bgpos-top":
+		throw "not implemented";
+		break;
+	case "-inner-bgpos-left":
+		throw "not implemented";
+		break;
+	case "background":
+		return hxtml2.StyleConverter.applyComposite(["background-color","background-image","background-repeat","background-attachment","background-position"],v,s);
+	case "font-family":
+		var values = hxtml2.StyleConverter.valueToUnitArray(v);
+		if(values == null) values = [v];
+		var fonts = [];
+		var _g = 0;
+		while(_g < values.length) {
+			var val = values[_g];
+			++_g;
+			fonts.push(hxtml2.StyleConverter.valueToString(val));
+		}
+		s.fontFamily = fonts;
+		return true;
+	case "font-size":
+		var valueString = hxtml2.StyleConverter.valueToString(v);
+		if(valueString == null) {
+			var valueWithUnit = hxtml2.StyleConverter.valueToValueWithUnit(v);
+			if(valueWithUnit != null) valueString = Std.string(Math.round(valueWithUnit.value)) + valueWithUnit.unit; else valueString = "";
+		}
+		s.fontSize = valueString;
+		return true;
+	case "font-style":
+		s.fontStyle = hxtml2.StyleConverter.getIdent(v);
+		return true;
+	case "font-variant":
+		s.fontStyle = hxtml2.StyleConverter.getIdent(v);
+		return true;
+	case "font-weight":
+		s.fontStyle = hxtml2.StyleConverter.getIdent(v);
+		return true;
+	case "font":
+		var vl = (function($this) {
+			var $r;
+			var $e = (v);
+			switch( $e[1] ) {
+			case 7:
+				var l = $e[2];
+				$r = l;
+				break;
+			default:
+				$r = [v];
+			}
+			return $r;
+		}(this));
+		var v1 = hxtml2.Value.VGroup(vl);
+		hxtml2.StyleConverter.applyComposite(["font-style","font-variant","font-weight"],v1,s);
+		hxtml2.StyleConverter.applyComposite(["font-size"],v1,s);
+		if(vl.length > 0) {
+			switch( (vl[0])[1] ) {
+			case 10:
+				vl.shift();
+				break;
+			default:
+			}
+		}
+		hxtml2.StyleConverter.applyComposite(["line-height"],v1,s);
+		hxtml2.StyleConverter.applyComposite(["font-family"],v1,s);
+		if(vl.length == 0) return true;
+		break;
+	case "color":
+		var c = hxtml2.StyleConverter.getCol(v);
+		if(c != null) {
+			s.color = c;
+			return true;
+		}
+		break;
+	default:
+		throw "Not implemented '" + styleName + "' = " + Std.string(v);
+	}
+	return false;
+}
+hxtml2.StyleConverter.applyComposite = function(names,v,s) {
+	var vl = (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 7:
+			var l = $e[2];
+			$r = l;
+			break;
+		default:
+			$r = [v];
+		}
+		return $r;
+	}(this));
+	while(vl.length > 0) {
+		var found = false;
+		var _g = 0;
+		while(_g < names.length) {
+			var n = names[_g];
+			++_g;
+			var count = (function($this) {
+				var $r;
+				switch(n) {
+				case "background-position":
+					$r = 2;
+					break;
+				default:
+					$r = 1;
+				}
+				return $r;
+			}(this));
+			if(count > vl.length) count = vl.length;
+			while(count > 0) {
+				var v1 = count == 1?vl[0]:hxtml2.Value.VGroup(vl.slice(0,count));
+				if(hxtml2.StyleConverter.applyStyle(n,v1,s)) {
+					found = true;
+					names.remove(n);
+					var _g1 = 0;
+					while(_g1 < count) {
+						var i = _g1++;
+						vl.shift();
+					}
+					break;
+				}
+				count--;
+			}
+			if(found) break;
+		}
+		if(!found) return false;
+	}
+	return true;
+}
+hxtml2.StyleConverter.getIdent = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 0:
+			var v1 = $e[2];
+			$r = v1;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.getCol = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 5:
+			var v1 = $e[2];
+			$r = v1.length == 6?Std.parseInt("0x" + v1):v1.length == 3?Std.parseInt("0x" + v1.charAt(0) + v1.charAt(0) + v1.charAt(1) + v1.charAt(1) + v1.charAt(2) + v1.charAt(2)):null;
+			break;
+		case 0:
+			var i = $e[2];
+			$r = (function($this) {
+				var $r;
+				switch(i) {
+				case "black":
+					$r = 0;
+					break;
+				case "red":
+					$r = 16711680;
+					break;
+				case "lime":
+					$r = 65280;
+					break;
+				case "blue":
+					$r = 255;
+					break;
+				case "white":
+					$r = 16777215;
+					break;
+				case "aqua":
+					$r = 65535;
+					break;
+				case "fuchsia":
+					$r = 16711935;
+					break;
+				case "yellow":
+					$r = 16776960;
+					break;
+				case "maroon":
+					$r = 8388608;
+					break;
+				case "green":
+					$r = 32768;
+					break;
+				case "navy":
+					$r = 128;
+					break;
+				case "olive":
+					$r = 8421376;
+					break;
+				case "purple":
+					$r = 8388736;
+					break;
+				case "teal":
+					$r = 32896;
+					break;
+				case "silver":
+					$r = 12632256;
+					break;
+				case "gray":case "grey":
+					$r = 8421504;
+					break;
+				default:
+					$r = null;
+				}
+				return $r;
+			}($this));
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml2.StyleConverter.prototype = {
+	__class__: hxtml2.StyleConverter
+}
 var js = js || {}
 js.Boot = $hxClasses["js.Boot"] = function() { }
 js.Boot.__name__ = ["js","Boot"];
@@ -10444,6 +11649,7 @@ org.intermedia.model.CellDetailsRss.prototype = {
 org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] = function(online) {
 	if(online == null) online = true;
 	this._pageIndex = 1;
+	this._pageIndexHash = new Hash();
 	this._online = online;
 };
 org.intermedia.model.DataLoader.__name__ = ["org","intermedia","model","DataLoader"];
@@ -10454,13 +11660,16 @@ org.intermedia.model.DataLoader.prototype = {
 	,_online: null
 	,_itemsToLoad: null
 	,_pageIndex: null
+	,_pageIndexHash: null
 	,loadCellData: function(feed,itemsPerPage,successCallback,errorCallback) {
 		this.onCellDataLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var fullUrl = "";
 		if(this._online) {
-			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + this._pageIndex;
-			this._pageIndex++;
+			var pageIndex = 1;
+			if(this._pageIndexHash.exists(feed)) pageIndex = this._pageIndexHash.get(feed) + 1;
+			this._pageIndexHash.set(feed,pageIndex);
+			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 		} else fullUrl = "data/silex_plugins.rss";
 		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,this.onCellsXmlLoaded.$bind(this),this.onLoadingError,feed);
 	}
@@ -10510,13 +11719,38 @@ org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss) {
 					cell.title = title;
 				}
 				if(itemParam.getNodeName() == "dc:creator") cell.author = itemParam.firstChild().getNodeValue();
-				if(itemParam.getNodeName() == "description") cell.description = itemParam.firstChild().getNodeValue();
-				if(itemParam.getNodeName() == "content:encoded") cell.content = itemParam.firstChild().getNodeValue();
+				if(itemParam.getNodeName() == "description") {
+					cell.description = itemParam.firstChild().getNodeValue();
+					cell.thumbUrl = org.intermedia.model.ThumbTextListRssStandard.getThumb(cell.description);
+				}
+				if(itemParam.getNodeName() == "content:encoded") {
+					cell.content = itemParam.firstChild().getNodeValue();
+					if(cell.thumbUrl == "") cell.thumbUrl = org.intermedia.model.ThumbTextListRssStandard.getThumb(cell.content);
+				}
 			}
 			cells.push(cell);
 		}
 	}
 	return cells;
+}
+org.intermedia.model.ThumbTextListRssStandard.getThumb = function(htmlString) {
+	var imgNodeStartIndex = htmlString.indexOf("<img ");
+	var imgNode = "";
+	if(imgNodeStartIndex != -1) {
+		htmlString = htmlString.substr(imgNodeStartIndex);
+		var imgNodeEndIndex = htmlString.indexOf(">") + 1;
+		imgNode = htmlString.substr(0,imgNodeEndIndex);
+		var srcKeyWord = "src=\"";
+		var imageUrlStartIndex = imgNode.indexOf(srcKeyWord);
+		var imageUrl = "";
+		if(imageUrlStartIndex != -1) {
+			imageUrl = imgNode.substr(imageUrlStartIndex + srcKeyWord.length);
+			var imgUrlEndIndex = imageUrl.indexOf("\"");
+			imageUrl = imageUrl.substr(0,imgUrlEndIndex);
+			return imageUrl;
+		}
+	}
+	return "";
 }
 org.intermedia.model.ThumbTextListRssStandard.prototype = {
 	__class__: org.intermedia.model.ThumbTextListRssStandard
@@ -10908,6 +12142,8 @@ org.intermedia.view.DetailStyle.setAuthor = function(domElement,screenResolution
 }
 org.intermedia.view.DetailStyle.setDescription = function(domElement) {
 	org.intermedia.view.DetailStyle.setText(domElement);
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(10)));
 	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(14)));
 }
 org.intermedia.view.DetailStyle.prototype = {
@@ -10917,6 +12153,7 @@ org.intermedia.view.DetailView = $hxClasses["org.intermedia.view.DetailView"] = 
 	this._titleElement = new cocktailCore.textElement.js.TextElement("");
 	this._authorElement = new cocktailCore.textElement.js.TextElement("");
 	this._descriptionElement = new cocktailCore.textElement.js.TextElement("");
+	this._contentElement = new cocktailCore.textElement.js.TextElement("");
 	org.intermedia.view.ViewBase.call(this);
 };
 org.intermedia.view.DetailView.__name__ = ["org","intermedia","view","DetailView"];
@@ -10929,6 +12166,8 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 	,_thumbnail: null
 	,_descriptionContainer: null
 	,_descriptionElement: null
+	,_contentContainer: null
+	,_contentElement: null
 	,buildView: function() {
 		org.intermedia.view.DetailStyle.setDefault(this);
 		this._titleContainer = new cocktailCore.domElement.js.ContainerDOMElement();
@@ -10946,6 +12185,10 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		org.intermedia.view.DetailStyle.setDescription(this._descriptionContainer);
 		this._descriptionContainer.addText(this._descriptionElement);
 		this.addChild(this._descriptionContainer);
+		this._contentContainer = new cocktailCore.domElement.js.ContainerDOMElement();
+		org.intermedia.view.DetailStyle.setDescription(this._contentContainer);
+		this._contentContainer.addText(this._contentElement);
+		this.addChild(this._contentContainer);
 	}
 	,updateView: function() {
 		this._titleContainer.removeText(this._titleElement);
@@ -10955,9 +12198,24 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this._authorElement.setText(this._data.author);
 		this._authorContainer.addText(this._authorElement);
 		this._thumbnail.load(this._data.thumbUrl);
-		this._descriptionContainer.removeText(this._descriptionElement);
-		this._descriptionElement.setText(this._data.description);
-		this._descriptionContainer.addText(this._descriptionElement);
+		this.html2DOM(this._data.description);
+		this.html2DOM(this._data.content);
+	}
+	,html2DOM: function(htmlString) {
+		var xml = Xml.parse(htmlString);
+		var htmlPageData = null;
+		try {
+			htmlPageData = new hxtml2.HTMLParser().parse(xml.firstElement());
+			this.getNativeElement().appendChild(htmlPageData.htmlDom);
+		} catch( $e0 ) {
+			if( js.Boot.__instanceof($e0,String) ) {
+				var msg = $e0;
+				haxe.Log.trace("Error, parsing XML tag " + xml.firstElement() + "\n" + msg,{ fileName : "DetailView.hx", lineNumber : 139, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
+			} else {
+			var unknown = $e0;
+			haxe.Log.trace("Error, parsing XML tag " + xml.firstElement() + "\n" + Std.string(unknown),{ fileName : "DetailView.hx", lineNumber : 141, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
+			}
+		}
 	}
 	,__class__: org.intermedia.view.DetailView
 });
@@ -11102,7 +12360,7 @@ org.intermedia.view.ListViewBase.__name__ = ["org","intermedia","view","ListView
 org.intermedia.view.ListViewBase.__super__ = org.intermedia.view.ViewBase;
 org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
 	onListItemSelected: null
-	,onListScrolled: null
+	,onDataRequest: null
 	,displayListBottomLoader: null
 	,_cells: null
 	,id: null
@@ -11125,6 +12383,7 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		}
 		if(this._listBottomLoader.getParent() != null) this.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.addChild(this._listBottomLoader);
+		if(this.getNativeElement().scrollHeight < new cocktailCore.viewport.js.Viewport()._getHeight()) haxe.Log.trace("request more data",{ fileName : "ListViewBase.hx", lineNumber : 102, className : "org.intermedia.view.ListViewBase", methodName : "updateView"});
 	}
 	,createCell: function() {
 		var cell = new org.intermedia.view.CellBase();
@@ -11134,10 +12393,10 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		if(this.onListItemSelected != null) this.onListItemSelected(cellData);
 	}
 	,onScrollCallback: function(event) {
-		if(event.scrollTop >= event.scrollHeight - new cocktailCore.viewport.js.Viewport()._getHeight()) this.onScrolledCallback(this.id);
+		if(event.scrollTop >= event.scrollHeight - new cocktailCore.viewport.js.Viewport()._getHeight()) this.onDataRequestCallback(this.id);
 	}
-	,onScrolledCallback: function(id) {
-		if(this.onListScrolled != null) this.onListScrolled(id);
+	,onDataRequestCallback: function(id) {
+		if(this.onDataRequest != null) this.onDataRequest(id);
 	}
 	,__class__: org.intermedia.view.ListViewBase
 });
@@ -11318,10 +12577,10 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	org.intermedia.view.SwippableListViewStyle.setListStyle(this);
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
-	this.list0.id = "http://frenchweb.fr/feed/";
+	this.list0.id = "http://fr.techcrunch.com/feed/";
 	this._listViews.push(this.list0);
 	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
-	this.list1.id = "http://fr.techcrunch.com/feed/";
+	this.list1.id = "http://frenchweb.fr/feed/";
 	this._listViews.push(this.list1);
 	this.list1.setX(this._viewportWidth);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
@@ -11332,12 +12591,13 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	while(_g < _g1.length) {
 		var listView = _g1[_g];
 		++_g;
+		listView.onDataRequest = this.onDataRequestCallback.$bind(this);
 		this.addChild(listView);
 	}
-	this._index = 1;
+	this._index = 0;
 	this._currentListView = this._listViews[this._index];
+	this.getNativeElement().scrollLeft = this._viewportWidth;
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-	this._currentListView.onListScrolled = this.onScrolledCallback.$bind(this);
 	this.initTouchEvents();
 };
 org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","SwippableListView"];
@@ -11375,7 +12635,6 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			if(x < w) this._index = 0; else if(x < 3 * w) this._index = 1; else this._index = 2;
 			this._currentListView = this._listViews[this._index];
 			this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-			this._currentListView.onListScrolled = this.onScrolledCallback.$bind(this);
 			this.horizontalReleaseTween();
 		} else this.verticalReleaseTween();
 	}
@@ -11503,6 +12762,7 @@ org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.Th
 	,__class__: org.intermedia.view.ThumbTextList1Bis
 });
 org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] = function(applicationModel,applicationController) {
+	var me = this;
 	this._applicationModel = applicationModel;
 	this._applicationController = applicationController;
 	this._detailView = new org.intermedia.view.DetailView();
@@ -11516,6 +12776,10 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._swippableListView = new org.intermedia.view.SwippableListView();
 	this._currentView = this._swippableListView;
 	this._body.addChild(this._swippableListView);
+	haxe.Timer.delay(function() {
+		me._body.getNativeElement().scrollLeft = new cocktailCore.viewport.js.Viewport()._getWidth();
+	},5000);
+	haxe.Timer.delay(this.resetHeaderPosition.$bind(this),200);
 	this.init();
 };
 org.intermedia.view.ViewManager.__name__ = ["org","intermedia","view","ViewManager"];
@@ -11527,15 +12791,19 @@ org.intermedia.view.ViewManager.prototype = {
 	,_applicationModel: null
 	,_applicationController: null
 	,_currentView: null
+	,resetHeaderPosition: function() {
+		this._header.setX(0);
+		haxe.Timer.delay(this.resetHeaderPosition.$bind(this),200);
+	}
 	,init: function() {
 		this._applicationModel.onModelStartsLoading = this.onStartLoading.$bind(this);
 		this._applicationModel.onModelDataLoadError = this.onLoadingError.$bind(this);
 		this._applicationModel.onModelCellDataLoaded = this.onCellDataLoaded.$bind(this);
 		this._applicationModel.onModelDetailDataLoaded = this.onDetailDataLoaded.$bind(this);
 		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this._swippableListView.onListScrolled = ($_=this._applicationController,$_.loadCellData.$bind($_));
-		this._applicationController.loadCellData("http://frenchweb.fr/feed/");
+		this._swippableListView.onDataRequest = ($_=this._applicationController,$_.loadCellData.$bind($_));
 		this._applicationController.loadCellData("http://fr.techcrunch.com/feed/");
+		this._applicationController.loadCellData("http://frenchweb.fr/feed/");
 		this._applicationController.loadCellData("http://siliconsentier.org/feed/");
 	}
 	,onListItemSelectedCallback: function(cellData) {
@@ -11543,7 +12811,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._detailView = new org.intermedia.view.DetailView();
 		this._body.addChild(this._detailView);
 		this._currentView = this._detailView;
-		this._applicationController.openDetailView(cellData);
+		this.onDetailDataLoaded(cellData);
 	}
 	,onCellDataLoaded: function(listData) {
 		if(listData.cells.length == 0) this._swippableListView.displayListBottomLoader = false;
@@ -11562,7 +12830,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._currentView.setDisplayLoading(true);
 	}
 	,onLoadingError: function(error) {
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 190, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 205, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("Market");
@@ -11744,8 +13012,8 @@ feffects.Tween._aPaused = new haxe.FastList();
 feffects.Tween.INTERVAL = 10;
 js.Lib.onerror = null;
 org.intermedia.model.ApplicationModel.CELL_QTY = 10;
-org.intermedia.model.Feeds.FEED_1 = "http://frenchweb.fr/feed/";
-org.intermedia.model.Feeds.FEED_2 = "http://fr.techcrunch.com/feed/";
+org.intermedia.model.Feeds.FEED_2 = "http://frenchweb.fr/feed/";
+org.intermedia.model.Feeds.FEED_1 = "http://fr.techcrunch.com/feed/";
 org.intermedia.model.Feeds.FEED_3 = "http://siliconsentier.org/feed/";
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 5;
