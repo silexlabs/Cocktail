@@ -110,20 +110,25 @@ class SwippableListView extends ListViewBase
 		// add all lists to the view
 		for (listView in _listViews)
 		{
+			listView.onDataRequest = onDataRequestCallback;
 			this.addChild(listView);
 		}
 		
 		// set index
-		_index = 1;
+		//_index = 1;
+		_index = 0;
 		// set current list to list1
 		_currentListView = cast _listViews[_index];
-		// scroll body to _currentListView position
-		//this.parent.nativeElement.scrollLeft = _currentListView.x;
 		//this.parent.nativeElement.scrollLeft = 0;
+		//this.parent.nativeElement.scrollLeft = _viewportWidth;
+		this.nativeElement.scrollLeft = _viewportWidth;
+		//this.x = -_viewportWidth;
+		
 		
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
-		_currentListView.onListScrolled = onScrolledCallback;
+		//_currentListView.onListScrolled = onScrolledCallback;
+		//_currentListView.onDataRequest = onDataRequestCallback;
 		
 		// js touch events handling
 		#if js
@@ -334,7 +339,8 @@ class SwippableListView extends ListViewBase
 			
 			// set listItemSelected callback on current list
 			_currentListView.onListItemSelected = onListItemSelectedCallback;
-			_currentListView.onListScrolled = onScrolledCallback;
+			//_currentListView.onListScrolled = onScrolledCallback;
+			//_currentListView.onDataRequest = onDataRequestCallback;
 
 			// tween the swippable view in the correct position
 			horizontalReleaseTween();
@@ -456,6 +462,7 @@ class SwippableListView extends ListViewBase
 				_offset.y = Std.int(event.pageY - _initialPosition.y);
 				
 				//trace(_direction + " - " + _offset.x + "," + _offset.y );
+				// done to avoid top rebound effect - to be done also on bottom rebound one
 				if (_currentListView.nativeElement.scrollTop == 0 && _offset.y > 0)
 				{
 					event.preventDefault();

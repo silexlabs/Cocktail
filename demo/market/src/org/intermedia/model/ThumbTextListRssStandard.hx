@@ -96,12 +96,18 @@ class ThumbTextListRssStandard
 					if (itemParam.nodeName == "description")
 					{
 						cell.description = itemParam.firstChild().nodeValue;
+						
+						// get the thumb image
+						cell.thumbUrl = getThumb(cell.description);
 					}
 					
 					// if node is a description
 					if (itemParam.nodeName == "content:encoded")
 					{
 						cell.content = itemParam.firstChild().nodeValue;
+						
+						// get the thumb image
+						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.content);
 					}
 					
 					// if node is the id
@@ -117,11 +123,47 @@ class ThumbTextListRssStandard
 					}*/
 				}
 				// add cell to cell array
+				//trace(cell.thumbUrl);
 				cells.push(cell);
 			}
 		}
 		// return cell array
+		//trace(cells);
 		return cells;
+	}
+	
+	/**
+	 * Gets the thumb, i.e. the first image in the html string
+	 * 
+	 * @param	htmlString
+	 */
+	static private function getThumb(htmlString:String):String
+	{
+		// get thumbnail from description
+		var imgNodeStartIndex:Int = htmlString.indexOf("<img ");
+		var imgNode:String = "";
+		if ( imgNodeStartIndex != -1)
+		{
+			// get img node content
+			htmlString = htmlString.substr(imgNodeStartIndex);
+			var imgNodeEndIndex:Int = htmlString.indexOf(">") + 1;
+			imgNode = htmlString.substr(0, imgNodeEndIndex);
+			
+			// get image url
+			var srcKeyWord:String = 'src="';
+			var imageUrlStartIndex:Int = imgNode.indexOf(srcKeyWord);
+			var imageUrl:String = "";
+			if (imageUrlStartIndex != -1)
+			{
+				imageUrl = imgNode.substr(imageUrlStartIndex + srcKeyWord.length);
+				var imgUrlEndIndex:Int = imageUrl.indexOf('"');
+				imageUrl = imageUrl.substr(0, imgUrlEndIndex);
+				return imageUrl;
+				//trace(imageUrl);
+			}
+		}
+		return "";
+		
 	}
 	
 }

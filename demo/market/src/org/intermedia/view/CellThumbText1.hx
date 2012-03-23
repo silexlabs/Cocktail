@@ -57,8 +57,9 @@ class CellThumbText1 extends CellThumb
 		// THUMBNAIL
 		
 		// image part
-		/*if (cellData.thumbUrl != "" && cellData.thumbUrl != null)
+		/*if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
+			trace(_data.thumbUrl);
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
@@ -66,7 +67,7 @@ class CellThumbText1 extends CellThumb
 			// add image
 			this.addChild(cellImage);
 			// load image
-			cellImage.load(cellData.thumbUrl);
+			cellImage.load(_data.thumbUrl);
 		}*/
 		
 

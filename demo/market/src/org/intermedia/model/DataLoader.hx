@@ -26,6 +26,9 @@ class DataLoader
 	// page index containing _itemsToLoad items
 	private var _pageIndex:Int;
 
+	// feed page index Hash containing page index for each already requested list
+	private var _pageIndexHash:Hash<Int>;
+
 	/*private function onLoadingError(unknown:Dynamic):Void
 	{
 		trace("error in DataLoader");
@@ -36,6 +39,7 @@ class DataLoader
 	{
 		// init private attributes
 		_pageIndex = 1;
+		_pageIndexHash = new Hash<Int>();
 		_online = online;
 		
 	}
@@ -57,8 +61,20 @@ class DataLoader
 		// prepare online feed url
 		if (_online)
 		{			
-			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + _pageIndex;
-			_pageIndex++;
+			// current list page index
+			var pageIndex:Int = 1;
+			// handle page index
+			if (_pageIndexHash.exists(feed))
+			{
+				pageIndex = _pageIndexHash.get(feed) + 1;
+			}
+			_pageIndexHash.set(feed,pageIndex);
+			
+			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
+			//haxe.Log.trace(fullUrl);
+			// handle page index
+			//_pageIndex++;
+			
 		}
 		// prepare local feed url
 		else fullUrl = "data/silex_plugins.rss";

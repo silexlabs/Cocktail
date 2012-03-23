@@ -21,7 +21,10 @@ class ListViewBase extends ViewBase
 	
 	//Called when the user has scrolled to the bottom of the list, and
 	//more cell data might need to be fetched
-	public var onListScrolled:String->Void;
+	//public var onListScrolled:String->Void;
+	
+	// called when the list is requesting more data to be loaded
+	public var onDataRequest:String->Void;
 	
 	// display list end loader
 	public var displayListBottomLoader:Bool;
@@ -56,6 +59,7 @@ class ListViewBase extends ViewBase
 	 */
 	override private function updateView():Void
 	{
+		//trace(" ListViewBase updateView");
 		for (index in Reflect.fields(_data))
 		{
 			// build cell
@@ -85,6 +89,20 @@ class ListViewBase extends ViewBase
 			this.addChild(_listBottomLoader);
 		}
 		
+		//trace("list " + id + "viewport width: " + new Viewport().width + " - viewport height: " + new Viewport().height + " - Scroll height: " + this.nativeElement.scrollHeight);
+		
+		// if list is not attached to body
+		//if(this.parent.parent != null)
+		//{
+			// if list content height is not filling the totality of the screen's height
+			//if (this.nativeElement.scrollHeight < new Viewport().height && this.nativeElement.scrollHeight != 0)
+			if (this.nativeElement.scrollHeight < new Viewport().height)
+			{
+				// request more data
+				trace("request more data");
+				//onDataRequestCallback(id);
+			}
+		//}
 	}
 	
 	/**
@@ -121,7 +139,8 @@ class ListViewBase extends ViewBase
 		if (event.scrollTop >= event.scrollHeight - new Viewport().height)
 		{
 			// call callback
-			onScrolledCallback(id);
+			//onScrolledCallback(id);
+			onDataRequestCallback(id);
 		}
 	}
 	
@@ -129,12 +148,29 @@ class ListViewBase extends ViewBase
 	 * list fully scrolled callback
 	 * @param	event
 	 */
-	private function onScrolledCallback(id:String):Void
+	/*private function onScrolledCallback(id:String):Void
 	{
 		// call callback
 		if (onListScrolled != null)
 		{
 			onListScrolled(id);
+		}
+		
+		// request more data
+		onDataRequestCallback(id);
+	}*/
+	
+	/**
+	 * load more data request callback
+	 * @param	event
+	 */
+	private function onDataRequestCallback(id:String):Void
+	{
+		// call callback
+		if (onDataRequest != null)
+		{
+			//trace("onDataRequest called by " + id);
+			onDataRequest(id);
 		}
 	}
 	

@@ -139,6 +139,9 @@ class DetailStyle
 	{
 		setText(domElement);
 
+		domElement.style.marginTop = MarginStyleValue.length(px(10));
+		domElement.style.marginBottom = MarginStyleValue.length(px(10));
+		
 		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
 		//domElement.style.fontWeight = FontWeightStyleValue.bold;
 	}

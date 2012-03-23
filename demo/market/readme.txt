@@ -140,6 +140,7 @@ To Do
 -loading screen (main page & list bottoms) => OK
 -mouse move is not listened to on bottom of right and left lists => OK
 -handle scroll vertically in lists => yannick
+-after loading n element, if page is not filled completly, load next n elements => OK
 -touchevents to be used on touch devices => a faire en pure js
 -read specs to see if nothing is missing
  => missing error page with OK button
@@ -154,7 +155,7 @@ To Do
 -menu bar for navigation
 -set initial list to list1
 -lists should be placed with position:inline in swippable view
--after loading n element, if page is not filled completly, load next n elements
+-detail view
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
