@@ -24,13 +24,15 @@ import core.html.EmbeddedElement;
  * designated by the src attribute, the exception being for 
  * left or right-aligned images that are "floated" out of line.
  * 
- * TODO : override get_tagName as embedded element always match one element
- * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLImageElement extends EmbeddedElement
 {
-
+	/**
+	 * the html tag name of an image
+	 */
+	private static inline var HTML_IMAGE_TAG_NAME:String = "img";
+	
 	//////////////////////
 	// CALLBACKS
 	/////////////////////
@@ -155,6 +157,18 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			onError(new Event(Event.ERROR, this));
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * always return an html image tag
+	 */ 
+	override private function get_tagName():String
+	{
+		return HTML_IMAGE_TAG_NAME;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
