@@ -56,8 +56,7 @@ class AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Start the loading of a file. Stores the success and error callbacks. Prevent file caching if requested
-	 * then actually start the file loading
+	 * Start the loading of a file. Stores the success and error callbacks
 	 * 
 	 * @param	urls the array of files to load, the first valid url is used
 	 * @param	onLoadComplete called when the file is done loading
@@ -72,7 +71,6 @@ class AbstractResourceLoader
 		this._urlToLoadIdx = 0;
 		
 		doLoad(_urls[_urlToLoadIdx]);
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +92,7 @@ class AbstractResourceLoader
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the file is done loading, calls the success callback
+	 * When the file is done loading, calls the provided success callback
 	 * @param	data the loaded file data, passed to the success callback
 	 */
 	private function onLoadComplete(data:Dynamic):Void

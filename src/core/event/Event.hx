@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.event;
+import core.dom.EventTarget;
 import core.HTMLElement;
 
 /**
@@ -33,6 +34,8 @@ class Event
 	
 	public static inline var ERROR:String = "error";
 	
+	public static inline var READY_STATE_CHANGE:String = "readystatechange";
+	
 	//TODO : add current target
 	
 	/**
@@ -46,13 +49,13 @@ class Event
 	 * 
 	 * TODO : should be of type EventTarget
 	 */ 
-	private var _target:HTMLElement;
-	public var target(get_target, never):HTMLElement;
+	private var _target:EventTarget;
+	public var target(get_target, never):EventTarget;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(type:String, target:HTMLElement) 
+	public function new(type:String, target:EventTarget) 
 	{
 		_type = type;
 		_target = target;
@@ -67,7 +70,7 @@ class Event
 		return _type;
 	}
 	
-	private function get_target():HTMLElement
+	private function get_target():EventTarget
 	{
 		return _target;
 	}

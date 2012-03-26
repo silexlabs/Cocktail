@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.resource;
+
 import core.MediaLoader;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
@@ -23,15 +24,12 @@ import haxe.Log;
 class AbstractImageLoader extends MediaLoader
 {
 	/**
-	 * class constructor
+	 * class constructor. Instantiate
+	 * the right nativeElement to load a picture
 	 */
-	public function new(nativeElement:NativeElement = null)
+	public function new()
 	{
-		//create an image nativeElement if none is provided
-		if (nativeElement == null)
-		{
-			nativeElement = NativeElementManager.createNativeElement(image);
-		}
+		var nativeElement:NativeElement = NativeElementManager.createNativeElement(image);
 		super(nativeElement);
 	}
 }
