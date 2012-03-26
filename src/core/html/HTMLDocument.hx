@@ -70,8 +70,7 @@ class HTMLDocument extends Document
 				element = new HTMLInputElement();
 				
 			default:
-				element = new HTMLElement();
-				element.tagName = tagName;
+				element = new HTMLElement(tagName);
 		}
 		
 		return element;

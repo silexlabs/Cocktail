@@ -11,6 +11,8 @@ import core.dom.Node;
 import core.html.AbstractHTMLElement;
 import core.event.Event;
 import core.nativeElement.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
 import haxe.Log;
 import js.Dom;
 import core.dom.DOMData;
@@ -27,9 +29,9 @@ class HTMLElement extends AbstractHTMLElement
 	/**
 	 * Class constructor
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
-		super();
+		super(tagName);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -18,8 +18,8 @@ class HTMLElement extends AbstractHTMLElement
 	/**
 	 * Class constructor
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
-		super();
+		super(tagName);
 	}
 }

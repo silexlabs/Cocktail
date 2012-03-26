@@ -82,10 +82,10 @@ class HTMLImageElement extends EmbeddedElement
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new() 
 	{
 		_imageLoader = new ImageLoader();
-		super();
+		super(HTML_IMAGE_TAG_NAME);
 	}
 	
 	/**
@@ -157,18 +157,6 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			onError(new Event(Event.ERROR, this));
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * always return an html image tag
-	 */ 
-	override private function get_tagName():String
-	{
-		return HTML_IMAGE_TAG_NAME;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

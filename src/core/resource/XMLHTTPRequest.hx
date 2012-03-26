@@ -97,7 +97,9 @@ class XMLHTTPRequest extends EventTarget
 	 */
 	public function new() 
 	{
-		super();
+		//TODO : should not inherit any class but only implement
+		//EventTarget
+		super("");
 		
 		_http = new Http("");
 		
