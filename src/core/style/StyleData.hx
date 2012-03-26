@@ -584,6 +584,8 @@ import core.renderer.TextRenderer;
 	 * the block container boxes.
 	 * 
 	 * A different value can be provided for x and y.
+	 * 
+	 * TODO : overflow x and y should be 2 separate styles
 	 */
 	typedef Overflow = {
 		var x:OverflowValue;
@@ -1070,8 +1072,6 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Contain the size data for one image background
-	 * 
-	 * TODO : rename
 	 */
 	typedef BackgroundSizeDimensions = {
 		var x:BackgroundSizeDimension;
@@ -1081,8 +1081,6 @@ import core.renderer.TextRenderer;
 	/**
 	 * A vertical or horizontal size for 
 	 * a background image
-	 * 
-	 * TODO : rename
 	 */
 	enum BackgroundSizeDimension {
 		/**

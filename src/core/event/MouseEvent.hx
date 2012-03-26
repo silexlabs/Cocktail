@@ -28,7 +28,7 @@ import core.HTMLElement;
  */
 class MouseEvent extends UIEvent
 {	
-	//TODO : add mouse click, remove double click for now ?
+	//TODO : add mouse click
 	
 	/**
 	 * The mouseup event occurs when the pointing device button is

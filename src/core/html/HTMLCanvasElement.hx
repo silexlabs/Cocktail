@@ -26,8 +26,6 @@ class HTMLCanvasElement extends EmbeddedElement
 	
 	public function new() 
 	{
-		//TODO : should be an "embeddedAsset" ? share base class with HTMLImageElement ?
-		//Should drawing manager create its own nativeElement ?
 		_nativeElement = NativeElementManager.createNativeElement(graphic);
 		
 		super();
