@@ -6,10 +6,10 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.resource;
+import core.MediaLoader;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import core.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
 
@@ -20,7 +20,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractImageLoader extends ResourceLoader
+class AbstractImageLoader extends MediaLoader
 {
 	/**
 	 * class constructor

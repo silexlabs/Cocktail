@@ -11,9 +11,9 @@ package core;
  * Set the right runtime specific ResourceLoader at compile-time
  */
 #if (flash9 || cpp || nme)
-typedef ResourceLoader = port.flash_player.ResourceLoader;
+typedef MediaLoader = port.flash_player.MediaLoader;
 
 #elseif js
-typedef ResourceLoader = port.browser.ResourceLoader;
+typedef MediaLoader = port.browser.MediaLoader;
 
 #end

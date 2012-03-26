@@ -8,6 +8,7 @@
 package port.flash_player;
 
 import core.nativeElement.NativeElement;
+import core.resource.AbstractMediaLoader;
 import core.resource.AbstractResourceLoader;
 import flash.display.Loader;
 import flash.events.Event;
@@ -28,7 +29,7 @@ import flash.system.ApplicationDomain;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ResourceLoader extends AbstractResourceLoader
+class MediaLoader extends AbstractMediaLoader
 {
 	/**
 	 * class constructor.

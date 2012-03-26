@@ -8,7 +8,7 @@
 package port.browser;
 
 import core.nativeElement.NativeElement;
-import core.resource.AbstractResourceLoader;
+import core.resource.AbstractMediaLoader;
 
 /**
  * This is the JavaScript implementation of the ResourceLoader.
@@ -17,7 +17,7 @@ import core.resource.AbstractResourceLoader;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ResourceLoader extends AbstractResourceLoader
+class MediaLoader extends AbstractMediaLoader
 {
 
 	/**

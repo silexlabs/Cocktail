@@ -33,7 +33,7 @@ class Event
 	
 	public static inline var ERROR:String = "error";
 	
-	//TODO : add target and current target
+	//TODO : add current target
 	
 	/**
 	 * The name of the event

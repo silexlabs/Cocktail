@@ -10,7 +10,7 @@ import cocktail.domElement.DOMElement;
 import core.nativeElement.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
-import core.resource.ResourceLoader;
+import core.ResourceLoader;
 import haxe.Http;
 import haxe.Log;
 
@@ -22,14 +22,14 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractStringLoader extends ResourceLoader
+class AbstractStringLoader extends AbstractResourceLoader
 {
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement = null)
+	public function new()
 	{
-		super(nativeElement);
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
