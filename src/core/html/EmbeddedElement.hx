@@ -68,9 +68,9 @@ class EmbeddedElement extends HTMLElement
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
-		super();
+		super(tagName);
 	}
 	
 	override private function init():Void
@@ -118,21 +118,7 @@ class EmbeddedElement extends HTMLElement
 		//TODO : should throw DOMException
 		return oldChild;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * doesn't do anything for embedded
-	 * elements as they are always associated
-	 * with a specific tag name
-	 */
-	override private function set_tagName(value:String):String
-	{
-		return value;
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////

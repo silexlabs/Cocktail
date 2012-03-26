@@ -30,9 +30,7 @@ class HTMLCanvasElement extends EmbeddedElement
 	
 	public function new() 
 	{
-		_nativeElement = NativeElementManager.createNativeElement(graphic);
-		
-		super();
+		super(HTML_CANVAS_TAG_NAME);
 		
 		_intrinsicHeight = CANVAS_INTRINSIC_HEIGHT;
 		_intrinsicWidth = CANVAS_INTRINSIC_WIDTH;
@@ -55,14 +53,6 @@ class HTMLCanvasElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * always return an html canvas tag
-	 */ 
-	override private function get_tagName():String
-	{
-		return HTML_CANVAS_TAG_NAME;
-	}
 	
 	override private function set_width(value:Int):Int
 	{

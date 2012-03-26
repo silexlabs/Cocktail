@@ -30,13 +30,14 @@ class Element extends Node
 	 * The name of the element
 	 */
 	private var _tagName:String;
-	public var tagName(get_tagName, set_tagName):String;
+	public var tagName(get_tagName, never):String;
 	
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
+		_tagName = tagName;
 		super();
 	}
 	
@@ -61,10 +62,5 @@ class Element extends Node
 	private function get_tagName():String 
 	{
 		return _tagName;
-	}
-	
-	private function set_tagName(value:String):String
-	{
-		return _tagName = value;
 	}
 }

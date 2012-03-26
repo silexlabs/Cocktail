@@ -55,8 +55,7 @@ class Document extends Node
 	 */
 	public function createElement(tagName:String):Element
 	{
-		var element:Element = new Element();
-		element.tagName = tagName;
+		var element:Element = new Element(tagName);
 		return element;
 	}
 	

@@ -10,9 +10,9 @@ package core.dom;
 class EventTarget extends Element
 {
 
-	public function new() 
+	public function new(tagName:String) 
 	{
-		super();
+		super(tagName);
 	}
 	
 }

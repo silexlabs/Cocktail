@@ -24,6 +24,11 @@ import port.browser.HTMLElement;
 class HTMLBodyElement extends HTMLElement
 {
 	/**
+	 * the html tag name for the body
+	 */
+	private static inline var HTML_BODY_TAG_NAME:String = "body";
+	
+	/**
 	 * A reference to the view port used to listen for
 	 * resize events
 	 * 
@@ -40,9 +45,10 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	public function new() 
 	{	
+		
 		//TODO : should be moved to Document
 		FocusManager.getInstance().bodyElement = cast(this);
-		super();
+		super(HTML_BODY_TAG_NAME);
 	}
 	
 	override private function initNativeElement():Void

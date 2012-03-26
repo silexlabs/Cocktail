@@ -253,9 +253,9 @@ class AbstractHTMLElement extends EventTarget
 	/**
 	 * class constructor.
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
-		super();
+		super(tagName);
 		init();
 	}
 	
@@ -282,7 +282,7 @@ class AbstractHTMLElement extends EventTarget
 	 */
 	private function initNativeElement():Void
 	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.neutral);
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.custom(_tagName));
 	}
 	
 	/**

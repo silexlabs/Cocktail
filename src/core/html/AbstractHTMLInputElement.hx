@@ -17,7 +17,12 @@ import core.HTMLElement;
 class AbstractHTMLInputElement extends HTMLElement
 {
 
-
+	/**
+	 * the html tag name for a form input
+	 */
+	private static inline var HTML_INPUT_TAG_NAME:String = "input";
+	
+	
 	/**
 	 * This callback is called when the text input loses
 	 * focus if the value of the text input changed
@@ -57,7 +62,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	 */
 	public function new() 
 	{
-		super();
+		super(HTML_INPUT_TAG_NAME);
 	}
 	
 	/////////////////////////////////
