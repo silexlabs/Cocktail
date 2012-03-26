@@ -16,6 +16,7 @@ import core.renderer.ElementRenderer;
 import core.renderer.InlineBoxRenderer;
 import core.renderer.TextRenderer;
 	
+//TODO : remove ref to DOMElement
 	
 		// FONT STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -402,6 +403,8 @@ import core.renderer.TextRenderer;
 	 * The dimension of the content of 
 	 * a DOMElement (without margins 
 	 * and paddings)
+	 * 
+	 * TODO : move to unit ?
 	 */
 	enum Dimension {
 		
@@ -420,6 +423,8 @@ import core.renderer.TextRenderer;
 		 * takes the remaining space in
 		 * the parent element width or 
 		 * height
+		 * 
+		 * TODO : rename cssAuto ?
 		 */
 		autoValue;
 	}
@@ -428,6 +433,8 @@ import core.renderer.TextRenderer;
 	 * The constraint applied to the content
 	 * of a DOMElement contrained its max/min
 	 * width or height
+	 * 
+	 * TODO : move to unit ?
 	 */
 	enum ConstrainedDimension {
 		
@@ -492,6 +499,8 @@ import core.renderer.TextRenderer;
 	/**
 	 * A floated DOMElement is pushed to the
 	 * left-most or the right-most of its container
+	 * 
+	 * TODO : rename cssFloat ?
 	 */
 	enum FloatStyle {
 		left;
