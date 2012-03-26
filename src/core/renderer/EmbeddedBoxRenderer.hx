@@ -8,7 +8,6 @@
 package core.renderer;
 
 import core.html.EmbeddedElement;
-import core.html.HTMLImageElement;
 import core.nativeElement.NativeElement;
 import core.style.StyleData;
 import core.Style;

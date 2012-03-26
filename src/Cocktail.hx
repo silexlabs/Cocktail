@@ -22,8 +22,8 @@ typedef Node = core.dom.Node;
 /**
  * HTML
  */
-typedef HTMLImageElement = core.html.HTMLImageElement;
-typedef Image = core.html.HTMLImageElement;
+typedef HTMLImageElement = core.HTMLImageElement;
+typedef Image = core.HTMLImageElement;
 typedef HTMLElement = core.HTMLElement;
 typedef HTMLDocument = core.html.HTMLDocument;
 

@@ -7,7 +7,7 @@
 */
 package core.mouse;
 
-import core.html.HTMLImageElement;
+import core.HTMLImageElement;
 import core.geom.GeomData;
 
 /**

@@ -8,7 +8,6 @@
 package core.style.computer.boxComputers;
 
 import core.html.EmbeddedElement;
-import core.html.HTMLImageElement;
 import core.style.AbstractStyle;
 import core.style.computer.BoxStylesComputer;
 import core.style.StyleData;
