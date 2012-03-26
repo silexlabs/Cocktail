@@ -10,12 +10,16 @@ import core.drawing.DrawingManager;
  * 
  * @author Yannick DOMINGUEZ
  */
-
 class HTMLCanvasElement extends EmbeddedElement
 {
 	private static inline var CANVAS_INTRINSIC_HEIGHT:Int = 150;
 	
 	private static inline var CANVAS_INTRINSIC_WIDTH:Int = 300;
+	
+	/**
+	 * the html tag name of an image
+	 */
+	private static inline var HTML_CANVAS_TAG_NAME:String = "canvas";
 	
 	
 	/**
@@ -37,15 +41,28 @@ class HTMLCanvasElement extends EmbeddedElement
 		_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
 	}
 	
+	
+	
 	override private function initEmbeddedAsset():Void
 	{
 		_embeddedAsset = _nativeElement;
 	}
 	
-	//TODO : add context id
-	public function getContext():DrawingManager
-	{
+	public function getContext(contextID:String):DrawingManager
+	{	
 		return _drawingManager;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * always return an html canvas tag
+	 */ 
+	override private function get_tagName():String
+	{
+		return HTML_CANVAS_TAG_NAME;
 	}
 	
 	override private function set_width(value:Int):Int
