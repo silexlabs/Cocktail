@@ -41,13 +41,12 @@ class HTMLCanvasElement extends EmbeddedElement
 		_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
 	}
 	
-	
-	
 	override private function initEmbeddedAsset():Void
 	{
 		_embeddedAsset = _nativeElement;
 	}
 	
+	//TODO : check what to return when context ID doesn't match anything
 	public function getContext(contextID:String):DrawingManager
 	{	
 		return _drawingManager;
