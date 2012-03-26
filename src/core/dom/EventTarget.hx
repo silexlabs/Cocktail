@@ -1,7 +1,9 @@
 package core.dom;
 
 /**
- * ...
+ * TODO : doc
+ * TODO : should be interface instead ?
+ * 
  * @author Yannick DOMINGUEZ
  */
 

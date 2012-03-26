@@ -79,8 +79,12 @@ class AbstractHTMLAnchorElement extends HTMLElement
 			_onMouseDown(mouseEvent);
 		}
 		
-		//TODO : implement Event.PreventDefault
-		openDocument();
+		//check wether a user callback canceled
+		//the default behaviour
+		if (mouseEvent.defaultPrevented == false)
+		{
+			openDocument();
+		}
 	}
 	
 	

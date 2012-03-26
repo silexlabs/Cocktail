@@ -50,10 +50,7 @@ class Node
 	 * The parent of this node. All nodes, except Attr, Document, DocumentFragment,
 	 * Entity, and Notation may have a parent. However,
 	 * if a node has just been created and not yet added
-	 * to the tree, or if it has been removed from the tree, this is null. 
-	 * 
-	 * TODO : in the spec, it says read only. Should retrieve parent with
-	 * ownerDocument instead of storing ref to it ?
+	 * to the tree, or if it has been removed from the tree, this is null.
 	 */
 	private var _parentNode:Node;
 	public var parentNode(get_parentNode, set_parentNode):Node;
@@ -61,8 +58,6 @@ class Node
 	/**
 	 * A NodeList that contains all children of this node. 
 	 * If there are no children, this is a NodeList containing no nodes.
-	 * 
-	 * TODO : implement NodeList instead of using Array ?
 	 */
 	private var _childNodes:Array<Node>;
 	public var childNodes(get_childNodes, never):Array<Node>;
