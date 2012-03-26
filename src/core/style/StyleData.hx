@@ -584,19 +584,17 @@ import core.renderer.TextRenderer;
 	 * the block container boxes.
 	 * 
 	 * A different value can be provided for x and y.
-	 * 
-	 * TODO : simplify name
 	 */
-	typedef OverflowStyleData = {
-		var x:OverflowStyleValue;
-		var y:OverflowStyleValue;
+	typedef Overflow = {
+		var x:OverflowValue;
+		var y:OverflowValue;
 	}
 	
 	/**
 	 * Lists the values that x and
 	 * y overflow can use
 	 */
-	enum OverflowStyleValue {
+	enum OverflowValue {
 		
 		/**
 		 * This value indicates that content is not clipped,
@@ -652,9 +650,7 @@ import core.renderer.TextRenderer;
 	 * Specifies the transparency of a DOMElement
 	 * where 1.0 is opaque and 0 is transparent
 	 */
-	enum Opacity {
-		number(value:Float);
-	}
+	typedef Opacity = Float;
 	
 	/**
 	 * Specifiy a list of transormation to apply
@@ -860,12 +856,8 @@ import core.renderer.TextRenderer;
 	/**
 	 * Sets the background color of a DOMElement. 
 	 * The color is drawn behind any background images.
-	 * 
-	 * TODO : simplify
 	 */
-	enum BackgroundColor {
-		colorValue(value:ColorValue);
-	}
+	typedef BackgroundColor =  ColorValue;
 	
 	/**
 	 * Set a background image of a DOMElement. A DOMElement can
@@ -888,20 +880,19 @@ import core.renderer.TextRenderer;
 		/**
 		 * horizontal repeat
 		 */
-		var x:BackgroundRepeatStyleValue;
+		var x:BackgroundRepeatValue;
 		
 		/**
 		 * vertical repeat
 		 */
-		var y:BackgroundRepeatStyleValue;
+		var y:BackgroundRepeatValue;
 	}
 	
 	/**
 	 * The different repeat value for each direction
 	 * 
-	 * TODO : rename
 	 */
-	enum BackgroundRepeatStyleValue {
+	enum BackgroundRepeatValue {
 		
 		/**
 		 * The background image is repeated as often
@@ -1074,7 +1065,7 @@ import core.renderer.TextRenderer;
 		/**
 		 * determine the width 	and height of the background image
 		 */
-		dimensions(value:BackgroundSizeStyleData);
+		dimensions(value:BackgroundSizeDimensions);
 	}
 	
 	/**
@@ -1082,9 +1073,9 @@ import core.renderer.TextRenderer;
 	 * 
 	 * TODO : rename
 	 */
-	typedef BackgroundSizeStyleData = {
-		var x:BackgroundSizeStyleDimensionValue;
-		var y:BackgroundSizeStyleDimensionValue;
+	typedef BackgroundSizeDimensions = {
+		var x:BackgroundSizeDimension;
+		var y:BackgroundSizeDimension;
 	}
 	
 	/**
@@ -1093,7 +1084,7 @@ import core.renderer.TextRenderer;
 	 * 
 	 * TODO : rename
 	 */
-	enum BackgroundSizeStyleDimensionValue {
+	enum BackgroundSizeDimension {
 		/**
 		 * a length value
 		 */
@@ -1219,7 +1210,7 @@ import core.renderer.TextRenderer;
 		 */
 		var opacity:Float;
 		var visibility:Bool;
-		var overflow:OverflowStyleData;
+		var overflow:Overflow;
 		var transformOrigin:PointData;
 		var transform:Matrix;
 		

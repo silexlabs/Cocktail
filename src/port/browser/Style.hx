@@ -170,22 +170,22 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : overflow
 	 */
-	private function getCSSOverflow(value:OverflowStyleValue):String
+	private function getCSSOverflow(value:OverflowValue):String
 	{
 		var cssOverflowValue:String;
 		
 		switch (value)
 		{
-			case OverflowStyleValue.visible:
+			case OverflowValue.visible:
 				cssOverflowValue = "visible";
 				
-			case OverflowStyleValue.hidden:
+			case OverflowValue.hidden:
 				cssOverflowValue = "hidden";
 				
-			case OverflowStyleValue.scroll:
+			case OverflowValue.scroll:
 				cssOverflowValue = "scroll";
 				
-			case OverflowStyleValue.autoValue:
+			case OverflowValue.autoValue:
 				cssOverflowValue = "auto";
 		}
 		
@@ -198,12 +198,7 @@ class Style extends AbstractStyle
 	private function getCSSOpacity(value:Opacity):String
 	{
 		var cssOpacityValue:String;
-		
-		switch (value)
-		{
-			case Opacity.number(value):
-				cssOpacityValue = Std.string(value);
-		}
+		cssOpacityValue = Std.string(value);
 		
 		return cssOpacityValue;
 	}
@@ -868,12 +863,7 @@ class Style extends AbstractStyle
 	private function getCSSBackgroundColor(value:BackgroundColor):String
 	{
 		var cssBackgroundColor:String;
-		
-		switch(value)
-		{
-			case colorValue(value):
-				cssBackgroundColor = getCSSColor(value);
-		}
+		cssBackgroundColor = getCSSColor(value);
 		
 		return cssBackgroundColor;
 	}
@@ -996,25 +986,25 @@ class Style extends AbstractStyle
 		return cssBackgroundSize;
 	}
 	
-	private function getCSSBackgroundSizeDimensions(value:BackgroundSizeStyleData):String
+	private function getCSSBackgroundSizeDimensions(value:BackgroundSizeDimensions):String
 	{
 		var cssBackgroundSizeDimensions:String = getCSSBackgroundSizeDimension(value.x) + " " + getCSSBackgroundSizeDimension(value.y);
 		return cssBackgroundSizeDimensions;
 	}
 	
-	private function getCSSBackgroundSizeDimension(value:BackgroundSizeStyleDimensionValue):String
+	private function getCSSBackgroundSizeDimension(value:BackgroundSizeDimension):String
 	{
 		var cssBackgroundSizeDimension:String;
 		
 		switch (value)
 		{
-			case BackgroundSizeStyleDimensionValue.length(value):
+			case BackgroundSizeDimension.length(value):
 				cssBackgroundSizeDimension = getCSSLength(value);
 				
-			case BackgroundSizeStyleDimensionValue.percent(value):
+			case BackgroundSizeDimension.percent(value):
 				cssBackgroundSizeDimension = getCSSPercentValue(value);
 				
-			case BackgroundSizeStyleDimensionValue.autoValue:
+			case BackgroundSizeDimension.autoValue:
 				cssBackgroundSizeDimension = "auto";
 		}
 		
@@ -1111,22 +1101,22 @@ class Style extends AbstractStyle
 		return cssBackgroundRepeat;
 	}
 	
-	private function getCSSBackgroundRepeatValue(value:BackgroundRepeatStyleValue):String
+	private function getCSSBackgroundRepeatValue(value:BackgroundRepeatValue):String
 	{
 		var cssBackgroundRepeatValue:String;
 		
 		switch (value)
 		{
-			case BackgroundRepeatStyleValue.noRepeat:
+			case BackgroundRepeatValue.noRepeat:
 				cssBackgroundRepeatValue = "no-repeat";
 				
-			case BackgroundRepeatStyleValue.repeat:
+			case BackgroundRepeatValue.repeat:
 				cssBackgroundRepeatValue = "repeat";
 				
-			case BackgroundRepeatStyleValue.round:
+			case BackgroundRepeatValue.round:
 				cssBackgroundRepeatValue = "round";
 				
-			case BackgroundRepeatStyleValue.space:
+			case BackgroundRepeatValue.space:
 				cssBackgroundRepeatValue = "space";
 		}
 		
@@ -1882,7 +1872,7 @@ class Style extends AbstractStyle
 		return _backgroundRepeat;
 	}
 	
-	override private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	override private function setOverflow(value:Overflow):Overflow
 	{
 		this._htmlElement.nativeElement.style.overflowX = getCSSOverflow(value.x);
 		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value.y);
