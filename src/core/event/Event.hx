@@ -46,11 +46,16 @@ class Event
 	
 	/**
 	 * Used to indicate the event target
-	 * 
-	 * TODO : should be of type EventTarget
 	 */ 
 	private var _target:EventTarget;
 	public var target(get_target, never):EventTarget;
+	
+	/**
+	 * Used to indicate whether Event.preventDefault()
+	 * has been called for this event.
+	 */
+	private var _defaultPrevented:Bool;
+	public var defaultPrevented(get_defaultPrevented, never):Bool;
 	
 	/**
 	 * class constructor
@@ -62,8 +67,34 @@ class Event
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * If an event is cancelable, the preventDefault method is used to signify
+	 * that the event is to be canceled, meaning any default action normally 
+	 * taken by the implementation as a result of the event will not occur.
+	 * If, during any stage of event flow, the preventDefault
+	 * method is called the event is canceled.
+	 * Any default action associated with the event will not occur.
+	 * Calling this method for a non-cancelable event has no effect.
+	 * Once preventDefault has been called it will remain in effect throughout
+	 * the remainder of the event's propagation.
+	 * This method may be used during any stage of event flow. 
+	 */
+	public function preventDefault():Void
+	{
+		_defaultPrevented = true;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_defaultPrevented():Bool 
+	{
+		return _defaultPrevented;
+	}
 	
 	private function get_type():String 
 	{
