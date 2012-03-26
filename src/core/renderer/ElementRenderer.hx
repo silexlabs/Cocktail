@@ -42,6 +42,9 @@ class ElementRenderer
 	/**
 	 * The bounds of the element renderer, relative to its
 	 * formatting context root
+	 * 
+	 * TODO : bounds for box renderer should match css box 
+	 * (width + paddings + border, no margins)
 	 */
 	private var _bounds:RectangleData;
 	public var bounds(getBounds, setBounds):RectangleData;

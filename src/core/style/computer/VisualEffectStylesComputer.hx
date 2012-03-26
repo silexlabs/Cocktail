@@ -49,7 +49,7 @@ class VisualEffectStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//opacity
-		computedStyle.opacity = getComputedOpacity(style);
+		computedStyle.opacity = style.opacity;
 		
 		//visibility
 		computedStyle.visibility = getComputedVisibility(style);
@@ -67,22 +67,6 @@ class VisualEffectStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Compute the 'opacity' style.
-	 */
-	private static function getComputedOpacity(style:AbstractStyle):Float
-	{
-		var opacity:Float;
-		
-		switch (style.opacity)
-		{
-			case Opacity.number(value):
-				opacity = value;
-		}
-		
-		return opacity;
-	}
 	
 	/**
 	 * Compute the 'visibility' style

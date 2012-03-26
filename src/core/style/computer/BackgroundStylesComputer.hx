@@ -147,12 +147,7 @@ class BackgroundStylesComputer
 	private static function getComputedBackgroundColor(style:AbstractStyle):ColorData
 	{
 		var computedColor:ColorData;
-		
-		switch (style.backgroundColor)
-		{
-			case BackgroundColor.colorValue(value):
-				computedColor = UnitManager.getColorDataFromColorValue(value);
-		}
+		computedColor = UnitManager.getColorDataFromColorValue(style.backgroundColor);
 		
 		return computedColor;
 	}
@@ -328,7 +323,7 @@ class BackgroundStylesComputer
 	 * a length, percentage or auto value
 	 * 
 	 * @param	value
-	 * @param	opositeBackgroundSizeStyleDimensionValue
+	 * @param	opositeBackgroundSizeValue
 	 * @param	backgroundPositioningAreaDimension
 	 * @param	intrinsicDimension
 	 * @param	opositeIntrinsicDimension
@@ -337,7 +332,7 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeStyleDimensionValue, opositeBackgroundSizeStyleDimensionValue:BackgroundSizeStyleDimensionValue,
+	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeDimension, opositeBackgroundSizeValue:BackgroundSizeDimension,
 	backgroundPositioningAreaDimension:Int, opositeBackgroundAreaDimension:Int, intrinsicDimension:Null<Int>, opositeIntrinsicDimension:Null<Int>, intrinsicRatio:Null<Float>,
 	emReference:Float, exReference:Float):Int
 	{
@@ -346,18 +341,18 @@ class BackgroundStylesComputer
 		switch (value)
 		{
 			//absolute or relative length value
-			case BackgroundSizeStyleDimensionValue.length(value):
+			case BackgroundSizeDimension.length(value):
 				backgroundSizeStyleDimension = UnitManager.getPixelFromLength(value, emReference, exReference);
 			
 			//percent relative to the background positioning area	
-			case BackgroundSizeStyleDimensionValue.percent(value):
+			case BackgroundSizeDimension.percent(value):
 				backgroundSizeStyleDimension = Math.round(UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension));
 			
 			//for auto, use intrinsic dimension if any or else,
 			//treated as a 100% value
-			case BackgroundSizeStyleDimensionValue.autoValue:
+			case BackgroundSizeDimension.autoValue:
 				//if the other dimension is alos auto, use the intrinsic dimension if any
-				if (intrinsicDimension != null && opositeBackgroundSizeStyleDimensionValue == BackgroundSizeStyleDimensionValue.autoValue)
+				if (intrinsicDimension != null && opositeBackgroundSizeValue == BackgroundSizeDimension.autoValue)
 				{
 					backgroundSizeStyleDimension = intrinsicDimension;
 				}
@@ -365,7 +360,7 @@ class BackgroundStylesComputer
 				//to keep the proportion of the background image
 				else if (opositeIntrinsicDimension != null && intrinsicRatio != null)
 				{
-					var opositeDimension:Int = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeStyleDimensionValue, value,
+					var opositeDimension:Int = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeValue, value,
 					opositeBackgroundAreaDimension, backgroundPositioningAreaDimension, opositeIntrinsicDimension, intrinsicDimension,
 					intrinsicRatio, emReference, exReference);
 					

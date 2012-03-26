@@ -69,23 +69,23 @@ class BackgroundDrawingManager extends DrawingManager
 		
 		switch (backgroundRepeat.x)
 		{
-			case BackgroundRepeatStyleValue.noRepeat:
+			case BackgroundRepeatValue.noRepeat:
 				maxWidth = totalWidth + imageWidth;
 				
-			case BackgroundRepeatStyleValue.repeat:
+			case BackgroundRepeatValue.repeat:
 				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				
-			case BackgroundRepeatStyleValue.space:
+			case BackgroundRepeatValue.space:
 				imageWidth = Math.round(backgroundPositioningBox.width / computedBackgroundSize.width);
 				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
 				}
 				
-			case BackgroundRepeatStyleValue.round:
+			case BackgroundRepeatValue.round:
 				while (totalWidth > backgroundPaintingBox.x)
 				{
 					totalWidth -= imageWidth;
@@ -99,23 +99,23 @@ class BackgroundDrawingManager extends DrawingManager
 		
 		switch (backgroundRepeat.y)
 		{
-			case BackgroundRepeatStyleValue.noRepeat:
+			case BackgroundRepeatValue.noRepeat:
 				maxHeight = totalHeight + imageHeight;
 				
-			case BackgroundRepeatStyleValue.repeat:
+			case BackgroundRepeatValue.repeat:
 				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
 				}
 				
-			case BackgroundRepeatStyleValue.space:
+			case BackgroundRepeatValue.space:
 				imageHeight = backgroundPositioningBox.height / computedBackgroundSize.height;
 				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;
 				}
 				
-			case BackgroundRepeatStyleValue.round:
+			case BackgroundRepeatValue.round:
 				while (totalHeight > backgroundPaintingBox.y)
 				{
 					totalHeight -= imageHeight;

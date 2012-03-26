@@ -226,8 +226,8 @@ class AbstractStyle
 	private var _visibility:Visibility;
 	public var visibility(getVisibility, setVisibility):Visibility;
 	
-	private var _overflow:OverflowStyleData;
-	public var overflow(getOverflow,  setOverflow):OverflowStyleData;
+	private var _overflow:Overflow;
+	public var overflow(getOverflow,  setOverflow):Overflow;
 	
 	////////////////////////////////
 	
@@ -326,11 +326,11 @@ class AbstractStyle
 		this.floatStyle = FloatStyle.none;
 		this.clear = Clear.none;
 		
-		this.backgroundColor = BackgroundColor.colorValue(ColorValue.transparent);
+		this.backgroundColor = ColorValue.transparent;
 		this.backgroundImage = [BackgroundImage.none];
 		this.backgroundRepeat = [{
-			x:BackgroundRepeatStyleValue.repeat,
-			y:BackgroundRepeatStyleValue.repeat
+			x:BackgroundRepeatValue.repeat,
+			y:BackgroundRepeatValue.repeat
 		}];
 		this.backgroundPosition = [{
 			x:BackgroundPositionX.percent(0),
@@ -339,8 +339,8 @@ class AbstractStyle
 		this.backgroundOrigin = [BackgroundOrigin.paddingBox];
 		this.backgroundSize = [
 			BackgroundSize.dimensions({
-				x:BackgroundSizeStyleDimensionValue.autoValue,
-				y:BackgroundSizeStyleDimensionValue.autoValue
+				x:BackgroundSizeDimension.autoValue,
+				y:BackgroundSizeDimension.autoValue
 			})];
 		this.backgroundClip = [BackgroundClip.borderBox];	
 		
@@ -357,10 +357,10 @@ class AbstractStyle
 		this.whiteSpace = WhiteSpace.normal;
 		
 		this.visibility = Visibility.visible;
-		this.opacity = Opacity.number(1.0);
+		this.opacity = 1.0;
 		this.overflow = {
-			x:OverflowStyleValue.visible,
-			y:OverflowStyleValue.visible
+			x:OverflowValue.visible,
+			y:OverflowValue.visible
 		}
 		
 		this.transformOrigin = {
@@ -419,7 +419,7 @@ class AbstractStyle
 			color:{color:0, alpha:1.0},
 			visibility:true,
 			opacity:1.0,
-			overflow:{x:OverflowStyleValue.visible, y:OverflowStyleValue.visible},
+			overflow:{x:OverflowValue.visible, y:OverflowValue.visible},
 			transformOrigin: { x:0.0, y:0.0 },
 			transform:new Matrix(),
 			backgroundColor:{color:0, alpha:1.0},
@@ -1502,7 +1502,7 @@ class AbstractStyle
 		return _transform = value;
 	}
 	
-	private function setOverflow(value:OverflowStyleData):OverflowStyleData
+	private function setOverflow(value:Overflow):Overflow
 	{
 		invalidate();
 		return _overflow = value;
@@ -1783,7 +1783,7 @@ class AbstractStyle
 		return _backgroundOrigin;
 	}
 	
-	private function getOverflow():OverflowStyleData
+	private function getOverflow():Overflow
 	{
 		return _overflow;
 	}
