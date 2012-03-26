@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import core.html.HTMLImageElement;
+import core.HTMLImageElement;
 import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 

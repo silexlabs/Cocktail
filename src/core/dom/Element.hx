@@ -33,7 +33,8 @@ class Element extends Node
 	public var tagName(get_tagName, never):String;
 	
 	/**
-	 * class constructor
+	 * class constructor. Set the name of the tag,
+	 * it can't be changed afterwards.
 	 */
 	public function new(tagName:String) 
 	{

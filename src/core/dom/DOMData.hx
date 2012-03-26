@@ -11,7 +11,6 @@ import core.HTMLElement;
 import core.renderer.TextRenderer;
 import core.unit.UnitData;
 
-import core.html.HTMLImageElement;
 
 /**
  * ...

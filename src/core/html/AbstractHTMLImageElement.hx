@@ -26,7 +26,7 @@ import core.html.EmbeddedElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLImageElement extends EmbeddedElement
+class AbstractHTMLImageElement extends EmbeddedElement
 {
 	/**
 	 * the html tag name of an image
@@ -94,13 +94,6 @@ class HTMLImageElement extends EmbeddedElement
 	override private function initEmbeddedAsset():Void
 	{
 		_embeddedAsset = _imageLoader.nativeElement;
-	}
-	
-	//TODO : should only be for JS runtime, in flash, 
-	//nativeElement should be used to draw hitRect for now
-	override private function initNativeElement():Void
-	{
-		_nativeElement = _embeddedAsset;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
