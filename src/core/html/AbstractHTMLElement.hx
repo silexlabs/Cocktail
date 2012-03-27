@@ -29,9 +29,6 @@ import core.style.StyleData;
  * Elements that only expose the HTML core attributes are represented 
  * by the base HTMLElement interface.
  * 
- * TODO : override set_tagName, in JS, should create the _nativeElement (
- * or change tag_name ? check if a new node needs to be created in JS)
- * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractHTMLElement extends Element, implements IEventTarget
@@ -40,13 +37,18 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : add click event
-	
 	/**
 	 * An instance of the cross-platform mouse class, used to listen
 	 * to native mouse events
 	 */
 	private var _mouse:Mouse;
+	
+	/**
+	 * The callback called on mouse click (rapid mouse down and mouse up)
+	 * through the mouse instance
+	 */
+	private var _onClick:MouseEvent->Void;
+	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse down through the mouse instance
@@ -343,6 +345,27 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
+	{
+		_onClick = value;
+		
+		if (_onClick == null)
+		{
+			_mouse.onClick = null;
+		}
+		else
+		{
+			_mouse.onClick = onClickCallback;
+		}
+		
+		return value;
+	}
+	
+	private function get_onClick():MouseEvent->Void
+	{
+		return _onClick;
+	}
+	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
 		_onMouseDown = value;
@@ -453,6 +476,11 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// called by the Mouse instance when the user interacts
 	// with the HTMLElement with its mouse
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onClickCallback(mouseEvent:MouseEvent):Void
+	{
+		_onClick(mouseEvent);
+	}
 	
 	private function onMouseDownCallback(mouseEvent:MouseEvent):Void
 	{

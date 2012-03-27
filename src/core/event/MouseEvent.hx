@@ -28,7 +28,17 @@ import core.HTMLElement;
  */
 class MouseEvent extends UIEvent
 {	
-	//TODO : add mouse click
+	/**
+	 * The click event occurs when the pointing device
+	 * button is clicked over an element. 
+	 * A click is defined as a mousedown and mouseup
+	 * over the same screen location.
+	 * The sequence of these events is:
+	 * mousedown
+	 * mouseup
+	 * click
+	 */
+	public static inline var CLICK:String = "click";
 	
 	/**
 	 * The mouseup event occurs when the pointing device button is

@@ -27,9 +27,15 @@ import core.mouse.MouseData;
  */
 class AbstractMouse 
 {
+	/**The callback to call when
+	 * the native element is clicked
+	 */
+	private var _onClick:MouseEvent->Void;
+	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
+	
 	/** 
 	 * The callback to call when
-	 * the native element is clicked
+	 * the mouse is pressed on the native element
 	 */
 	private var _onMouseDown:MouseEvent->Void;
 	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
@@ -65,6 +71,7 @@ class AbstractMouse
 	/**
 	 * mouse event types
 	 */
+	private var _clickEvent:String;
 	private var _mouseDownEvent:String;
 	private var _mouseUpEvent:String;
 	private var _mouseOverEvent:String;
@@ -90,6 +97,18 @@ class AbstractMouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Calls the onClick callback with the current mouse data
+	 * @param	event the native mouse down event
+	 */
+	private function onNativeClick(event:Dynamic):Void
+	{
+		if (onClick != null)
+		{
+			onClick(getMouseEvent(event));
+		}
+	}
+	
+	/**
 	 * Calls the onMouseDown callback with the current mouse data
 	 * @param	event the native mouse down event
 	 */
@@ -97,7 +116,7 @@ class AbstractMouse
 	{
 		if (onMouseDown != null)
 		{
-			onMouseDown(getMouseData(event));
+			onMouseDown(getMouseEvent(event));
 		}
 	}
 	
@@ -109,7 +128,7 @@ class AbstractMouse
 	{
 		if (onMouseUp != null)
 		{
-			onMouseUp(getMouseData(event));
+			onMouseUp(getMouseEvent(event));
 		}
 	}
 	
@@ -121,7 +140,7 @@ class AbstractMouse
 	{
 		if (onMouseOver != null)
 		{
-			onMouseOver(getMouseData(event));
+			onMouseOver(getMouseEvent(event));
 		}
 	}
 	
@@ -133,7 +152,7 @@ class AbstractMouse
 	{
 		if (onMouseOut != null)
 		{
-			onMouseOut(getMouseData(event));
+			onMouseOut(getMouseEvent(event));
 		}
 	}
 	
@@ -146,7 +165,7 @@ class AbstractMouse
 	{
 		if (onMouseMove != null)
 		{
-			onMouseMove(getMouseData(event));
+			onMouseMove(getMouseEvent(event));
 		}
 	}
 	
@@ -172,7 +191,7 @@ class AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	private function getMouseData(event:Dynamic):MouseEvent
+	private function getMouseEvent(event:Dynamic):MouseEvent
 	{
 		return null;
 	}
@@ -180,6 +199,17 @@ class AbstractMouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CALLBACK SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
+	{
+		updateListeners(_clickEvent, onNativeClick, value);
+		return this._onClick = value;
+	}
+	
+	private function get_onClick():MouseEvent->Void
+	{
+		return this._onClick;
+	}
 	
 	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{

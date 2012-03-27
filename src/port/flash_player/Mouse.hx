@@ -31,6 +31,7 @@ class Mouse extends AbstractMouse
 		super(htmlElement);
 		
 		//set the Flash event types
+		_clickEvent = flash.events.MouseEvent.CLICK;
 		_mouseDownEvent = flash.events.MouseEvent.MOUSE_DOWN;
 		_mouseUpEvent = flash.events.MouseEvent.MOUSE_UP;
 		_mouseOverEvent = flash.events.MouseEvent.MOUSE_OVER;
@@ -63,7 +64,7 @@ class Mouse extends AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	override private function getMouseData(event:Dynamic):MouseEvent
+	override private function getMouseEvent(event:Dynamic):MouseEvent
 	{
 		//cast as flash mouse event
 		var typedEvent:flash.events.MouseEvent = cast(event);
@@ -72,6 +73,9 @@ class Mouse extends AbstractMouse
 		
 		switch (typedEvent.type)
 		{
+			case flash.events.MouseEvent.CLICK:
+				eventType = MouseEvent.CLICK;
+			
 			case flash.events.MouseEvent.MOUSE_DOWN:
 				eventType = MouseEvent.MOUSE_DOWN;
 				

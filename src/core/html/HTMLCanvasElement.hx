@@ -6,7 +6,6 @@ import core.drawing.DrawingManager;
 /**
  * ...
  * 
- * TODO : override get_tagName as embedded element always match one element
  * 
  * @author Yannick DOMINGUEZ
  */
