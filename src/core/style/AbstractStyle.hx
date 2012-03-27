@@ -318,8 +318,8 @@ class AbstractStyle
 		this.lineHeight = LineHeight.normal;
 		this.verticalAlign = VerticalAlign.baseline;
 		
-		this.display = Display.inlineStyle;
-		this.position = Position.staticStyle;
+		this.display = Display.cssInline;
+		this.position = Position.cssStatic;
 		
 		this.top = PositionOffset.cssAuto;
 		this.bottom = PositionOffset.cssAuto;
@@ -403,7 +403,7 @@ class AbstractStyle
 			clear : Clear.none,
 			cssFloat : CSSFloat.none,
 			display : Display.block,
-			position: Position.staticStyle,
+			position: Position.cssStatic,
 			verticalAlign : 0.0,
 			fontSize:12.0,
 			lineHeight:14.0,
@@ -808,7 +808,7 @@ class AbstractStyle
 	 */
 	private function invalidateMargin():Void
 	{
-		if (this.position == relative || this.position == staticStyle)
+		if (this.position == relative || this.position == cssStatic)
 		{
 			invalidate();
 		}
@@ -943,7 +943,7 @@ class AbstractStyle
 				case none:
 					boxComputer = new NoneBoxStylesComputer();
 				
-				case inlineStyle:
+				case cssInline:
 					boxComputer = new EmbeddedInlineBoxStylesComputer();
 			}
 		}
@@ -1056,7 +1056,7 @@ class AbstractStyle
 			case relative, absolute, fixed:
 				ret = true;
 			
-			case staticStyle:
+			case cssStatic:
 				ret = false;
 		}
 		
@@ -1109,7 +1109,7 @@ class AbstractStyle
 		
 		switch (this._computedStyle.display) 
 		{
-			case inlineStyle, inlineBlock:
+			case cssInline, inlineBlock:
 				ret = true;
 			
 			default:
@@ -1214,14 +1214,12 @@ class AbstractStyle
 	 * displaying the document
 	 */
 	private function getWindowData():ContainingDOMElementData
-	{
-		var window:Window = new Window();
-					
+	{	
 		var windowData:ContainingDOMElementData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:window.innerWidth,
-			height:window.innerHeight
+			width:cocktail.Lib.window.innerWidth,
+			height:cocktail.Lib.window.innerHeight
 		}
 		
 		return windowData;

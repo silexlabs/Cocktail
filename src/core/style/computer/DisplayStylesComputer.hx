@@ -122,7 +122,7 @@ class DisplayStylesComputer
 			switch (style.display)
 			{
 				//for inline level value, default to block
-				case inlineStyle, inlineBlock:
+				case cssInline, inlineBlock:
 					ret = Display.block;
 				
 				//the value remains unchanged for other	
@@ -153,7 +153,7 @@ class DisplayStylesComputer
 	{
 		var ret:Clear;
 		
-		if (computedDisplay == Display.inlineStyle || computedDisplay == Display.inlineBlock)
+		if (computedDisplay == Display.cssInline || computedDisplay == Display.inlineBlock)
 		{
 			ret = Clear.none;
 		}
