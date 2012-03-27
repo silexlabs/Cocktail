@@ -170,22 +170,22 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : overflow
 	 */
-	private function getCSSOverflow(value:OverflowValue):String
+	private function getCSSOverflow(value:Overflow):String
 	{
 		var cssOverflowValue:String;
 		
 		switch (value)
 		{
-			case OverflowValue.visible:
+			case Overflow.visible:
 				cssOverflowValue = "visible";
 				
-			case OverflowValue.hidden:
+			case Overflow.hidden:
 				cssOverflowValue = "hidden";
 				
-			case OverflowValue.scroll:
+			case Overflow.scroll:
 				cssOverflowValue = "scroll";
 				
-			case OverflowValue.cssAuto:
+			case Overflow.cssAuto:
 				cssOverflowValue = "auto";
 		}
 		
@@ -1872,11 +1872,17 @@ class Style extends AbstractStyle
 		return _backgroundRepeat;
 	}
 	
-	override private function setOverflow(value:Overflow):Overflow
+	override private function setOverflowX(value:Overflow):Overflow
 	{
-		this._htmlElement.nativeElement.style.overflowX = getCSSOverflow(value.x);
-		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value.y);
-		super.setOverflow(value);
-		return _overflow = value;
+		this._htmlElement.nativeElement.style.overflowX = getCSSOverflow(value);
+		super.setOverflowX(value);
+		return _overflowX = value;
+	}
+	
+	override private function setOverflowY(value:Overflow):Overflow
+	{
+		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value);
+		super.setOverflowY(value);
+		return _overflowY = value;
 	}
 }

@@ -587,21 +587,8 @@ import core.renderer.TextRenderer;
 	 * Specifies wether the content of a block container
 	 * is clipped when its content overflows
 	 * the block container boxes.
-	 * 
-	 * A different value can be provided for x and y.
-	 * 
-	 * TODO : overflow x and y should be 2 separate styles
 	 */
-	typedef Overflow = {
-		var x:OverflowValue;
-		var y:OverflowValue;
-	}
-	
-	/**
-	 * Lists the values that x and
-	 * y overflow can use
-	 */
-	enum OverflowValue {
+	enum Overflow {
 		
 		/**
 		 * This value indicates that content is not clipped,
@@ -1213,7 +1200,8 @@ import core.renderer.TextRenderer;
 		 */
 		var opacity:Float;
 		var visibility:Bool;
-		var overflow:Overflow;
+		var overflowX:Overflow;
+		var overflowY:Overflow;
 		var transformOrigin:PointData;
 		var transform:Matrix;
 		
