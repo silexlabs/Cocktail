@@ -221,6 +221,7 @@ class BlockFormattingContext extends FormattingContext
 			width:width,
 			height:height
 		}
+		
 	}
 
 	override private function insertContainerElement(element:ElementRenderer):Void

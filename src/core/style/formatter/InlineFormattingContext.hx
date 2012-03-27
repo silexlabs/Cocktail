@@ -677,7 +677,6 @@ class InlineFormattingContext extends FormattingContext
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
 		flowX = _formattingContextRoot.style.computedStyle.marginLeft + _formattingContextRoot.style.computedStyle.paddingLeft;
 		
-		
 		//take the float into accounts and the padding of the containing DOMElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		
