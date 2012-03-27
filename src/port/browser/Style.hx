@@ -622,6 +622,39 @@ class Style extends AbstractStyle
 				
 			case bold:
 				cssFontWeightValue = "bold";
+				
+			case bolder:
+				cssFontWeightValue = "bolder";
+				
+			case lighter:
+				cssFontWeightValue = "lighter";
+				
+			case css100:
+				cssFontWeightValue = "100";
+				
+			case css200:
+				cssFontWeightValue = "200";
+				
+			case css300:
+				cssFontWeightValue = "300";	
+				
+			case css400:
+				cssFontWeightValue = "400";	
+				
+			case css500:
+				cssFontWeightValue = "500";	
+				
+			case css600:
+				cssFontWeightValue = "600";	
+				
+			case css700:
+				cssFontWeightValue = "700";
+				
+			case css800:
+				cssFontWeightValue = "800";	
+				
+			case css900:
+				cssFontWeightValue = "900";	
 		}
 		
 		return cssFontWeightValue;

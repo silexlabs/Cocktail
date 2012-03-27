@@ -142,6 +142,18 @@ class Style extends AbstractStyle
 				
 			case normal:
 				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
+				
+			case bolder:
+				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+				
+			case lighter:
+				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
+				
+			case css100, css200, css300, css400:
+				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
+				
+			case css500, css600, css700, css800, css900:
+				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
 		}
 		
 		return nativeFontWeight;
