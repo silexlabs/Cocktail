@@ -47,27 +47,4 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		_backgroundManager = new InitialBlockBackgroundManager();
 	}
-	
-	/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
-	 */
-	override public function renderBackground():Array<NativeElement>
-	{
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _style);
-		
-		for (i in 0...backgrounds.length)
-		{
-			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
-			#end
-		}
-		
-	
-		return backgrounds;
-	}
-	
 }

@@ -59,6 +59,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function renderBackground():Array<NativeElement>
 	{
+	
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _style);
 		
 		for (i in 0...backgrounds.length)
