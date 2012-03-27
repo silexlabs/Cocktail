@@ -11,7 +11,7 @@ import core.geom.Matrix;
 import core.nativeElement.NativeElement;
 import core.background.BackgroundManager;
 import core.HTMLElement;
-import core.style.computer.BackgroundStylesComputer;
+import core.style.computer.background.BackgroundStylesComputer;
 import core.style.computer.boxComputers.BlockBoxStylesComputer;
 import core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
@@ -21,9 +21,8 @@ import core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import core.style.computer.boxComputers.FloatBoxStylesComputer;
 import core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import core.style.computer.boxComputers.InLineBoxStylesComputer;
-import core.style.computer.boxComputers.NoneBoxStylesComputer;
 import core.style.computer.boxComputers.PositionedBoxStylesComputer;
-import core.style.computer.BoxStylesComputer;
+import core.style.computer.boxComputers.BoxStylesComputer;
 import core.style.computer.DisplayStylesComputer;
 import core.style.computer.FontAndTextStylesComputer;
 import core.style.computer.VisualEffectStylesComputer;
@@ -1027,8 +1026,9 @@ class AbstractStyle
 				case inlineBlock:
 					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
+				//not supposed to happen
 				case none:
-					boxComputer = new NoneBoxStylesComputer();
+					boxComputer = null;
 				
 				case cssInline:
 					boxComputer = new EmbeddedInlineBoxStylesComputer();

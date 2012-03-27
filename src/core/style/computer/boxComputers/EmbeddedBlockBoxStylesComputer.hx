@@ -9,7 +9,6 @@ package core.style.computer.boxComputers;
 
 import core.html.EmbeddedElement;
 import core.style.AbstractStyle;
-import core.style.computer.BoxStylesComputer;
 import core.style.StyleData;
 import haxe.Log;
 

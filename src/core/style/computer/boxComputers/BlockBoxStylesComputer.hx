@@ -7,7 +7,6 @@
 */
 package core.style.computer.boxComputers;
 
-import core.style.computer.BoxStylesComputer;
 import core.style.StyleData;
 
 /**
