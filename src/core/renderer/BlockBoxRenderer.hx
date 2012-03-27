@@ -75,7 +75,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
 		
 		nativeElement.graphics.clear();
-		nativeElement.graphics.beginFill(0xFF0000, 0.1);
+		nativeElement.graphics.beginFill(0xFF0000, 0.0);
 		nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
 		nativeElement.graphics.endFill();
 		

@@ -18,6 +18,8 @@ package cocktail;
  */
 typedef Element = core.dom.Element;
 typedef Node = core.dom.Node;
+typedef Text = core.dom.Text;
+typedef Document = core.dom.Document;
 
 /**
  * HTML
@@ -26,6 +28,15 @@ typedef HTMLImageElement = core.HTMLImageElement;
 typedef Image = core.HTMLImageElement;
 typedef HTMLElement = core.HTMLElement;
 typedef HTMLDocument = core.html.HTMLDocument;
+
+/**
+ * EVENT
+ */
+typedef Event = core.event.Event;
+typedef IEventTarget = core.event.IEventTarget;
+typedef MouseEvent = core.event.MouseEvent;
+typedef UIEvent = core.event.UIEvent;
+typedef KeyboardEvent = core.event.KeyboardEvent;
 
 /**
  * RESOURCE

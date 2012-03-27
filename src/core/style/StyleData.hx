@@ -60,6 +60,8 @@ import core.renderer.TextRenderer;
 	/**
 	 * Controls the weight of the
 	 * font
+	 * 
+	 * TODO : add bolder, lighter, 100, 200...
 	 */
 	enum FontWeight {
 		normal;

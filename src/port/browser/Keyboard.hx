@@ -79,7 +79,6 @@ class Keyboard extends AbstractKeyboard
 				eventType = KeyboardEvent.KEY_UP;
 				
 			default:
-				//TODO : become custom event ?
 				eventType = event.type;	
 		}
 		
