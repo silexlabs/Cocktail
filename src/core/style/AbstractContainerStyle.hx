@@ -453,7 +453,7 @@ class AbstractContainerStyle extends Style
 				case none:
 					boxComputer = new NoneBoxStylesComputer();
 				
-				case inlineStyle:
+				case cssInline:
 					boxComputer = new InLineBoxStylesComputer();
 			}
 		}
@@ -769,7 +769,7 @@ class AbstractContainerStyle extends Style
 			case block, inlineBlock:
 				ret = false;
 				
-			case inlineStyle:
+			case cssInline:
 				ret = true;
 				
 			default:

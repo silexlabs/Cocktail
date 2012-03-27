@@ -480,12 +480,8 @@ import core.renderer.TextRenderer;
 		 * Displayed on the current line. 
 		 * Can only have horizontal margins
 		 * and paddings
-		 * 
-		 * n.b : appended 'Style' to 'inline'
-		 * because inline is a reserved HaXe 
-		 * word
 		 */
-		inlineStyle;
+		cssInline;
 		
 		/**
 		 * The DOMElement isn't displays
@@ -526,11 +522,8 @@ import core.renderer.TextRenderer;
 		 * Appear after its parent in the flow, on a
 		 * new line or the current one based on its
 		 * display
-		 * 
-		 * n.b: appended 'Style' to 'static' because
-		 * 'static' is a reserved HaXe word
 		 */
-		staticStyle;
+		cssStatic;
 		
 		/**
 		 * same as static but an offset can be applied

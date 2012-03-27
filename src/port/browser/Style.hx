@@ -78,7 +78,7 @@ class Style extends AbstractStyle
 			case block:
 				cssDisplayValue = "block";
 			
-			case inlineStyle:
+			case cssInline:
 				cssDisplayValue = "inline";
 			
 			case inlineBlock:
@@ -147,7 +147,7 @@ class Style extends AbstractStyle
 		
 		switch (value)
 		{
-			case staticStyle:
+			case cssStatic:
 				cssPositionValue = "static";
 			
 			case relative:
