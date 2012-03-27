@@ -177,12 +177,11 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		if (value == null)
 		{
-			_nativeElement.onfocus = null;
+			untyped _nativeElement.removeEventListener("focus", onNativeFocus);
 		}
 		else
 		{
-			//TODO : use event listener instead
-			_nativeElement.onfocus = onNativeFocus;
+			untyped _nativeElement.addEventListener("focus", onNativeFocus);
 		}
 		
 		return _onFocus = value;
@@ -195,11 +194,11 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		if (value == null)
 		{
-			_nativeElement.onblur = null;
+			untyped _nativeElement.removeEventListener("blur", onNativeBlur);
 		}
 		else
 		{
-			_nativeElement.onblur = onNativeBlur;
+			untyped _nativeElement.addEventListener("blur", onNativeBlur);
 		}
 		
 		return _onBlur = value;

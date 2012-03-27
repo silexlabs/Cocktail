@@ -25,6 +25,8 @@ class Mouse extends AbstractMouse
 	/**
 	 * native JavaScript mouse events
 	 */
+	private static inline var MOUSE_CLICK_EVENT:String = "click";
+	 
 	private static inline var MOUSE_UP_EVENT:String = "mouseup";
 	
 	private static inline var MOUSE_DOWN_EVENT:String = "mousedown";
@@ -43,6 +45,7 @@ class Mouse extends AbstractMouse
 		super(htmlElement);
 		
 		//set the JavaScript event types
+		_clickEvent = MOUSE_CLICK_EVENT;
 		_mouseDownEvent = MOUSE_DOWN_EVENT;
 		_mouseUpEvent = MOUSE_UP_EVENT;
 		_mouseOverEvent = MOUSE_OVER_EVENT;
@@ -75,13 +78,16 @@ class Mouse extends AbstractMouse
 	 * @param	event the native mouse event
 	 * @return a sruct containing the mouse current data
 	 */
-	override private function getMouseData(event:Dynamic):MouseEvent
+	override private function getMouseEvent(event:Dynamic):MouseEvent
 	{
 		
 		var eventType:String;
 		
 		switch (event.type)
 		{
+			case MOUSE_CLICK_EVENT:
+				eventType = MouseEvent.CLICK;
+			
 			case MOUSE_UP_EVENT:
 				eventType = MouseEvent.MOUSE_DOWN;
 				
