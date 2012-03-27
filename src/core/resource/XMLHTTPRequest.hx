@@ -7,22 +7,19 @@
 */
 package core.resource;
 
-import core.dom.EventTarget;
 import core.event.Event;
+import core.event.IEventTarget;
 import haxe.Http;
 
 /**
  * This class is a wrapper around the haxe Http class
  * using the XMLHTTPRequest API to load data as strings
  * 
- * TODO : EventTarget should be interface, this class shouldn't
- * have Element methods
- * 
  * TODO : responseHeaders not implemented in flash and JS
  * 
  * @author Yannick DOMINGUEZ
  */
-class XMLHTTPRequest extends EventTarget
+class XMLHTTPRequest implements IEventTarget
 {
 	//ready states
 	
@@ -96,11 +93,7 @@ class XMLHTTPRequest extends EventTarget
 	 * class constructer. init callbacks
 	 */
 	public function new() 
-	{
-		//TODO : should not inherit any class but only implement
-		//EventTarget
-		super("");
-		
+	{	
 		_http = new Http("");
 		
 		_http.onData = onHTTPData;

@@ -8,8 +8,8 @@
 package core.html;
 
 import core.dom.Element;
-import core.dom.EventTarget;
 import core.dom.Node;
+import core.event.IEventTarget;
 import core.HTMLElement;
 import core.nativeElement.NativeElement;
 import core.event.Event;
@@ -34,7 +34,7 @@ import core.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLElement extends EventTarget
+class AbstractHTMLElement extends Element, implements IEventTarget
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
