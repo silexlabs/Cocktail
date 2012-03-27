@@ -15,7 +15,7 @@ import core.unit.UnitData;
 import core.geom.GeomData;
 import core.ImageLoader;
 import core.style.AbstractStyle;
-import core.style.computer.background.BackgroundStylesComputer;
+import core.style.computer.BackgroundStylesComputer;
 import core.unit.UnitManager;
 import haxe.Log;
 
