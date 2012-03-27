@@ -297,83 +297,85 @@ class AbstractStyle
 	{
 		initComputedStyles();
 		
-		this.width = Dimension.cssAuto;
-		this.height = Dimension.cssAuto;
+		_width = Dimension.cssAuto;
+		_height = Dimension.cssAuto;
 		
-		this.minWidth = ConstrainedDimension.length(px(0));
-		this.maxWidth = ConstrainedDimension.none;
-		this.minHeight = ConstrainedDimension.length(px(0));
-		this.maxHeight = ConstrainedDimension.none;
+		_minWidth = ConstrainedDimension.length(px(0));
+		_maxWidth = ConstrainedDimension.none;
+		_minHeight = ConstrainedDimension.length(px(0));
+		_maxHeight = ConstrainedDimension.none;
 		
-		this.marginTop = Margin.length(px(0));
-		this.marginBottom = Margin.length(px(0));
-		this.marginLeft = Margin.length(px(0));
-		this.marginRight = Margin.length(px(0));
+		_marginTop = Margin.length(px(0));
+		_marginBottom = Margin.length(px(0));
+		_marginLeft = Margin.length(px(0));
+		_marginRight = Margin.length(px(0));
 		
-		this.paddingTop = Padding.length(px(0));
-		this.paddingBottom = Padding.length(px(0));
-		this.paddingLeft = Padding.length(px(0));
-		this.paddingRight = Padding.length(px(0));
+		_paddingTop = Padding.length(px(0));
+		_paddingBottom = Padding.length(px(0));
+		_paddingLeft = Padding.length(px(0));
+		_paddingRight = Padding.length(px(0));
 		
-		this.lineHeight = LineHeight.normal;
-		this.verticalAlign = VerticalAlign.baseline;
+		_lineHeight = LineHeight.normal;
+		_verticalAlign = VerticalAlign.baseline;
 		
-		this.display = Display.cssInline;
-		this.position = Position.cssStatic;
+		_display = Display.cssInline;
+		_position = Position.cssStatic;
 		
-		this.top = PositionOffset.cssAuto;
-		this.bottom = PositionOffset.cssAuto;
-		this.left = PositionOffset.cssAuto;
-		this.right = PositionOffset.cssAuto;
+		_top = PositionOffset.cssAuto;
+		_bottom = PositionOffset.cssAuto;
+		_left = PositionOffset.cssAuto;
+		_right = PositionOffset.cssAuto;
 		
-		this.cssFloat = CSSFloat.none;
-		this.clear = Clear.none;
+		_cssFloat = CSSFloat.none;
+		_clear = Clear.none;
 		
-		this.backgroundColor = ColorValue.transparent;
-		this.backgroundImage = [BackgroundImage.none];
-		this.backgroundRepeat = [{
+		_backgroundColor = ColorValue.transparent;
+		_backgroundImage = [BackgroundImage.none];
+		_backgroundRepeat = [{
 			x:BackgroundRepeatValue.repeat,
 			y:BackgroundRepeatValue.repeat
 		}];
-		this.backgroundPosition = [{
+		_backgroundPosition = [{
 			x:BackgroundPositionX.percent(0),
 			y:BackgroundPositionY.percent(0)
 		}];
-		this.backgroundOrigin = [BackgroundOrigin.paddingBox];
-		this.backgroundSize = [
+		_backgroundOrigin = [BackgroundOrigin.paddingBox];
+		_backgroundSize = [
 			BackgroundSize.dimensions({
 				x:BackgroundSizeDimension.cssAuto,
 				y:BackgroundSizeDimension.cssAuto
 			})];
-		this.backgroundClip = [BackgroundClip.borderBox];	
+		_backgroundClip = [BackgroundClip.borderBox];	
 		
-		this.fontStyle = FontStyle.normal;
-		this.fontVariant = FontVariant.normal;
-		this.fontWeight = FontWeight.normal;
-		this.fontSize = FontSize.absoluteSize(FontSizeAbsoluteSize.medium);
+		_fontStyle = FontStyle.normal;
+		_fontVariant = FontVariant.normal;
+		_fontWeight = FontWeight.normal;
+		_fontSize = FontSize.absoluteSize(FontSizeAbsoluteSize.medium);
 		
-		this.textIndent = TextIndent.length(px(0));
-		this.textAlign = TextAlign.left;
-		this.letterSpacing = LetterSpacing.normal;
-		this.wordSpacing = WordSpacing.normal;
-		this.textTransform = TextTransform.none;
-		this.whiteSpace = WhiteSpace.normal;
+		_textIndent = TextIndent.length(px(0));
+		_textAlign = TextAlign.left;
+		_letterSpacing = LetterSpacing.normal;
+		_wordSpacing = WordSpacing.normal;
+		_textTransform = TextTransform.none;
+		_whiteSpace = WhiteSpace.normal;
 		
-		this.visibility = Visibility.visible;
-		this.opacity = 1.0;
-		this.overflowX = Overflow.visible;
-		this.overflowY = Overflow.visible;
+		_visibility = Visibility.visible;
+		_opacity = 1.0;
+		_overflowX = Overflow.visible;
+		_overflowY = Overflow.visible;
 		
-		this.transformOrigin = {
+		_transformOrigin = {
 			x:TransformOriginX.center,
 			y:TransformOriginY.center
 		}
 		
-		this.transform = Transform.none;
+		_transform = Transform.none;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
-		this.fontFamily = defaultStyles.fontFamily;
-		this.color = defaultStyles.color;
+		_fontFamily = defaultStyles.fontFamily;
+		_color = defaultStyles.color;
+		
+		applyDefaultHTMLStyles();
 	}
 	
 	/**
@@ -405,7 +407,7 @@ class AbstractStyle
 			display : Display.block,
 			position: Position.cssStatic,
 			verticalAlign : 0.0,
-			fontSize:12.0,
+			fontSize:16.0,
 			lineHeight:14.0,
 			fontWeight:FontWeight.normal,
 			fontStyle:FontStyle.normal,
@@ -444,6 +446,85 @@ class AbstractStyle
 		return {
 			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
 			color:ColorValue.keyword(ColorKeyword.black)
+		}
+	}
+	
+	/**
+	 * Apply the standard default CSS value according to this
+	 * document : http://www.w3.org/TR/CSS21/sample.html
+	 * 
+	 * This method should eventually be removed when a StyleManager
+	 * is introduced which will prevent those styles from being hard-coded
+	 */
+	private function applyDefaultHTMLStyles():Void
+	{
+		switch (_htmlElement.tagName)
+		{
+			case "html", "adress",
+			"dd", "div", "dl", "dt", "fieldset",
+			"form", "frame", "frameset", "noframes", "ol", "ul",
+			"center", "dir", "hr", "menu" :
+				_display = Display.block;
+				
+			case "head" :	
+				_display = Display.none;
+				
+			case "body" : 
+				_display = Display.block;
+				_marginLeft = _marginRight = _marginTop = _marginBottom = Margin.length(px(8));
+				
+			case "h1" : 
+				_display = Display.block;
+				_fontSize = FontSize.length(em(2));
+				_marginTop = _marginBottom = Margin.length(em(0.67));
+				
+			case "h2" : 
+				_display = Display.block;
+				_fontSize = FontSize.length(em(1.5));
+				_marginTop = _marginBottom = Margin.length(em(0.75));	
+			
+			case "h3" : 
+				_display = Display.block;
+				_fontSize = FontSize.length(em(1.17));
+				_marginTop = _marginBottom = Margin.length(em(0.83));
+			
+			case "h4" :	
+				_display = Display.block;
+				_marginTop = _marginBottom = Margin.length(em(1.12));
+			
+			case "h5" : 
+				_display = Display.block;
+				_fontSize = FontSize.length(em(0.83));
+				_marginTop = _marginBottom = Margin.length(em(1.5));	
+				
+			case "h6" : 
+				_display = Display.block;
+				_fontSize = FontSize.length(em(0.75));
+				_marginTop = _marginBottom = Margin.length(em(1.67));		
+				
+			case "p" :
+				_display = Display.block;
+				_marginTop = _marginBottom = Margin.length(em(1.67));	
+				
+			case "pre" : 
+				_display = Display.block;
+				_whiteSpace = WhiteSpace.pre;
+				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				
+			case "code" : 
+				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				
+			case "i", "cite", "em", "var" :
+				_fontStyle = FontStyle.italic;
+				
+			case "input" : 
+				_display = inlineBlock;
+				
+			case "blockquote" : 
+				_display = block;
+				_marginTop = _marginBottom = Margin.length(em(1.12));
+				_marginLeft = _marginRight = Margin.length(px(40));
+				
 		}
 	}
 	

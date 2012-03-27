@@ -104,7 +104,6 @@ class Mouse extends AbstractMouse
 				eventType = MouseEvent.MOUSE_MOVE;	
 			
 			default:
-				//TODO : become custom event ?
 				eventType = event.type;		
 		}
 		
