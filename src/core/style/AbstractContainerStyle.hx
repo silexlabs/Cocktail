@@ -170,7 +170,7 @@ class AbstractContainerStyle extends Style
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
-		if (this._width == Dimension.autoValue)
+		if (this._width == Dimension.cssAuto)
 		{
 			shrinkToFitIfNeeded(containingDOMElementData, childrenFormattingContext.maxWidth, formattingContext, lastPositionedDOMElementData, viewportData );
 		}
@@ -182,7 +182,7 @@ class AbstractContainerStyle extends Style
 		//sized. For some border cases though, the total height
 		//of the children is not used and auto height is computed in
 		//another way
-		if (this._height == Dimension.autoValue)
+		if (this._height == Dimension.cssAuto)
 		{
 			//format the children formatting context, so that the bounds
 			//of the children of this ContainerDOMElement can be found.
@@ -630,9 +630,9 @@ class AbstractContainerStyle extends Style
 		
 		return {
 			width:this._computedStyle.width,
-			isWidthAuto:this._width == Dimension.autoValue,
+			isWidthAuto:this._width == Dimension.cssAuto,
 			height:height,
-			isHeightAuto:this._height == Dimension.autoValue
+			isHeightAuto:this._height == Dimension.cssAuto
 		};
 	}
 	

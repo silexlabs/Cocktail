@@ -37,7 +37,7 @@ typedef XMLHTTPRequest = core.resource.XMLHTTPRequest;
  */
 typedef Display = core.style.StyleData.Display;
 typedef Position = core.style.StyleData.Position;
-typedef FloatStyle = core.style.StyleData.FloatStyle;
+typedef CSSFloat = core.style.StyleData.CSSFloat;
 typedef Clear = core.style.StyleData.Clear;
 
 typedef FontSize = core.style.StyleData.FontSize;

@@ -30,7 +30,7 @@ enum MouseCursorValue {
 	/**
 	 * Let the browser manage the mouse cursor
 	 */
-	autoValue;
+	cssAuto;
 	
 	/**
 	 * Hides the mouse cursor

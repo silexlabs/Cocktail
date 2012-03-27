@@ -32,7 +32,7 @@ class AbstractMouseCursor
 	 */
 	public function new() 
 	{
-		_nativeMouseCursor = autoValue;
+		_nativeMouseCursor = cssAuto;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ class AbstractMouseCursor
 				setBitmapCursor(imageDOMElement, hotSpot);
 			
 			//let the browser manage the cursor	
-			case autoValue:
+			case cssAuto:
 				setDefaultCursor();
 			
 			//hide the cursor

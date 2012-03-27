@@ -89,8 +89,8 @@ class AbstractStyle
 	private var _position:Position;
 	public var position(getPosition, setPosition):Position;
 	
-	private var _floatStyle:FloatStyle;
-	public var floatStyle(getFloatStyle, setFloatStyle):FloatStyle;
+	private var _cssFloat:CSSFloat;
+	public var cssFloat(getCSSFloat, setCSSFloat):CSSFloat;
 	
 	private var _clear:Clear;
 	public var clear(getClear, setClear):Clear;
@@ -294,8 +294,8 @@ class AbstractStyle
 	{
 		initComputedStyles();
 		
-		this.width = Dimension.autoValue;
-		this.height = Dimension.autoValue;
+		this.width = Dimension.cssAuto;
+		this.height = Dimension.cssAuto;
 		
 		this.minWidth = ConstrainedDimension.length(px(0));
 		this.maxWidth = ConstrainedDimension.none;
@@ -318,12 +318,12 @@ class AbstractStyle
 		this.display = Display.inlineStyle;
 		this.position = Position.staticStyle;
 		
-		this.top = PositionOffset.autoValue;
-		this.bottom = PositionOffset.autoValue;
-		this.left = PositionOffset.autoValue;
-		this.right = PositionOffset.autoValue;
+		this.top = PositionOffset.cssAuto;
+		this.bottom = PositionOffset.cssAuto;
+		this.left = PositionOffset.cssAuto;
+		this.right = PositionOffset.cssAuto;
 		
-		this.floatStyle = FloatStyle.none;
+		this.cssFloat = CSSFloat.none;
 		this.clear = Clear.none;
 		
 		this.backgroundColor = ColorValue.transparent;
@@ -339,8 +339,8 @@ class AbstractStyle
 		this.backgroundOrigin = [BackgroundOrigin.paddingBox];
 		this.backgroundSize = [
 			BackgroundSize.dimensions({
-				x:BackgroundSizeDimension.autoValue,
-				y:BackgroundSizeDimension.autoValue
+				x:BackgroundSizeDimension.cssAuto,
+				y:BackgroundSizeDimension.cssAuto
 			})];
 		this.backgroundClip = [BackgroundClip.borderBox];	
 		
@@ -400,7 +400,7 @@ class AbstractStyle
 			top: 0,
 			bottom : 0,
 			clear : Clear.none,
-			floatStyle : FloatStyle.none,
+			cssFloat : CSSFloat.none,
 			display : Display.block,
 			position: Position.staticStyle,
 			verticalAlign : 0.0,
@@ -1014,12 +1014,12 @@ class AbstractStyle
 	{
 		var ret:Bool = false;
 		
-		switch (this._computedStyle.floatStyle) 
+		switch (this._computedStyle.cssFloat) 
 		{
-			case FloatStyle.left, FloatStyle.right:
+			case CSSFloat.left, CSSFloat.right:
 				ret = true;
 			
-			case FloatStyle.none:
+			case CSSFloat.none:
 				ret = false;
 		}
 		
@@ -1380,10 +1380,10 @@ class AbstractStyle
 		return _right = value;
 	}
 	
-	private function setFloatStyle(value:FloatStyle):FloatStyle 
+	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
 		invalidate();
-		return _floatStyle = value;
+		return _cssFloat = value;
 	}
 	
 	private function setClear(value:Clear):Clear 
@@ -1623,9 +1623,9 @@ class AbstractStyle
 		return _right;
 	}
 	
-	private function getFloatStyle():FloatStyle 
+	private function getCSSFloat():CSSFloat 
 	{
-		return _floatStyle;
+		return _cssFloat;
 	}
 	
 	private function getClear():Clear 

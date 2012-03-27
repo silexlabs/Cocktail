@@ -379,7 +379,7 @@ import core.renderer.TextRenderer;
 		 * Margin takes the remaining space
 		 * in the parent DOMElement width or height
 		 */
-		autoValue;
+		cssAuto;
 	}
 	
 	/**
@@ -423,10 +423,8 @@ import core.renderer.TextRenderer;
 		 * takes the remaining space in
 		 * the parent element width or 
 		 * height
-		 * 
-		 * TODO : rename cssAuto ?
 		 */
-		autoValue;
+		cssAuto;
 	}
 	
 	/**
@@ -499,10 +497,8 @@ import core.renderer.TextRenderer;
 	/**
 	 * A floated DOMElement is pushed to the
 	 * left-most or the right-most of its container
-	 * 
-	 * TODO : rename cssFloat ?
 	 */
-	enum FloatStyle {
+	enum CSSFloat {
 		left;
 		right;
 		none;
@@ -581,7 +577,7 @@ import core.renderer.TextRenderer;
 		/**
 		 * no offset
 		 */
-		autoValue;
+		cssAuto;
 	}
 	
 		// VISUAL EFFECTS STYLES
@@ -632,7 +628,7 @@ import core.renderer.TextRenderer;
 		 * The scrollbar are displayed as needed, only if a containing
 		 * block's content overflows
 		 */
-		autoValue;
+		cssAuto;
 	}
 
 	/**
@@ -1107,7 +1103,7 @@ import core.renderer.TextRenderer;
 		 * use the intrinsic dimensions
 		 * of the image
 		 */
-		autoValue;
+		cssAuto;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1117,7 +1113,7 @@ import core.renderer.TextRenderer;
 	/**
 	 * Represents the width, height of a DOMElement's
 	 * parent content.
-	 * Specify for each dimension if it is 'autoValue', 
+	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
 	typedef ContainingDOMElementData = {
@@ -1150,7 +1146,7 @@ import core.renderer.TextRenderer;
 	 * 
 	 * It is used if left and right or
 	 * top and bottom styles are both
-	 * set to 'autoValue'
+	 * set to 'cssAuto'
 	 */
 	typedef PositionedDOMElementData =  {
 		var style:AbstractStyle;
@@ -1207,7 +1203,7 @@ import core.renderer.TextRenderer;
 		 * display
 		 */
 		var display:Display;
-		var floatStyle:FloatStyle;
+		var cssFloat:CSSFloat;
 		var clear:Clear;
 		var position:Position;
 		var lineHeight:Float;

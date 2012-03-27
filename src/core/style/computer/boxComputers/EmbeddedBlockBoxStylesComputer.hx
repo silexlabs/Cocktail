@@ -61,7 +61,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'height' style also is defined as 'auto'
-		if (style.height == Dimension.autoValue)
+		if (style.height == Dimension.cssAuto)
 		{
 			//first try to use the intrinsic width of the embedded
 			//DOMElement if it exist (it might for instance be a
@@ -138,7 +138,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
-		if (style.width == Dimension.autoValue)
+		if (style.width == Dimension.cssAuto)
 		{
 			//try to use the intrinsic height if not null
 			if (embeddedDOMElement.intrinsicHeight != null)

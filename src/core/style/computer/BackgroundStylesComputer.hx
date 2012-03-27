@@ -350,9 +350,9 @@ class BackgroundStylesComputer
 			
 			//for auto, use intrinsic dimension if any or else,
 			//treated as a 100% value
-			case BackgroundSizeDimension.autoValue:
+			case BackgroundSizeDimension.cssAuto:
 				//if the other dimension is alos auto, use the intrinsic dimension if any
-				if (intrinsicDimension != null && opositeBackgroundSizeValue == BackgroundSizeDimension.autoValue)
+				if (intrinsicDimension != null && opositeBackgroundSizeValue == BackgroundSizeDimension.cssAuto)
 				{
 					backgroundSizeStyleDimension = intrinsicDimension;
 				}
