@@ -44,7 +44,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var ret:Array<NativeElement> = [];
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
-		//EmbeddedStyle ?
+		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 		
 		var embeddedDOMElement:EmbeddedElement = cast(_style.htmlElement);
 		ret.push(embeddedDOMElement.embeddedAsset);
