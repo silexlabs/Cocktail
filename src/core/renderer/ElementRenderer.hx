@@ -32,8 +32,6 @@ import core.Style;
  * ElementRenderer (absolute, fixed or relative) always
  * create a new LayerRenderer
  * 
- * TODO : move package to core.renderer ?
- * 
  * @author Yannick DOMINGUEZ
  */
 class ElementRenderer 

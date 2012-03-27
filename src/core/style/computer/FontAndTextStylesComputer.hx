@@ -135,8 +135,8 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case middle:
-				//TODO : should not use htmlElement
-				verticalAlign = style.htmlElement.offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
+				var offsetHeight:Int = style.computedStyle.height + style.computedStyle.paddingTop + style.computedStyle.paddingBottom;
+				verticalAlign = offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
 				
 			case sub:
 				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;

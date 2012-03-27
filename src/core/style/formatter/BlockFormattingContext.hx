@@ -110,14 +110,14 @@ class BlockFormattingContext extends FormattingContext
 					
 				}	
 				
-				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height);
+				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height) + _elementsInFormattingContext[i].style.computedStyle.marginTop + _elementsInFormattingContext[i].style.computedStyle.marginBottom ;
 				
 				removeFloats();
 				
 				//TODO : max height might be wrong
 				_formattingContextData.maxHeight = _formattingContextData.y;
 		
-				currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height);
+				currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height + _elementsInFormattingContext[i].style.computedStyle.marginTop + _elementsInFormattingContext[i].style.computedStyle.marginBottom);
 			}
 			
 		}
@@ -173,7 +173,6 @@ class BlockFormattingContext extends FormattingContext
 
 	override private function insertEmbeddedElement(element:ElementRenderer):Void
 	{
-		
 		var x:Float = _formattingContextData.x;
 		var y:Float = _formattingContextData.y;
 		//TODO : should not use offset dimensions
@@ -194,7 +193,6 @@ class BlockFormattingContext extends FormattingContext
 	 */
 	override private function insertFloat(element:ElementRenderer):Void
 	{
-		
 		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
 		var x:Float = floatData.x + element.parent.style.computedStyle.paddingLeft;
 		var y:Float = floatData.y + element.parent.style.computedStyle.paddingTop;
@@ -207,9 +205,7 @@ class BlockFormattingContext extends FormattingContext
 			width:width,
 			height:height
 		}
-		
 	}
-	
 
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
@@ -219,38 +215,26 @@ class BlockFormattingContext extends FormattingContext
 		var width:Float = element.style.htmlElement.offsetWidth;
 		var height:Float = element.style.htmlElement.offsetHeight;
 		
-		if (element.style.computedStyle.marginTop == 60)
-		{
-			Log.trace(element.bounds);
-		}
 		element.bounds = {
 			x:x, 
 			y:y,
 			width:width,
 			height:height
 		}
-		
-				
-		
-		
-			
 	}
-	
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-			var x:Float = _formattingContextData.x;
-			var y:Float = _formattingContextData.y;
-			var width:Float = element.style.htmlElement.offsetWidth;
-			var height:Float = element.style.htmlElement.offsetHeight;
-			element.bounds = {
-				x:x, 
-				y:y,
-				width:width,
-				height:height
-			}
-			
-		
+		var x:Float = _formattingContextData.x;
+		var y:Float = _formattingContextData.y;
+		var width:Float = element.style.htmlElement.offsetWidth;
+		var height:Float = element.style.htmlElement.offsetHeight;
+		element.bounds = {
+			x:x, 
+			y:y,
+			width:width,
+			height:height
+		}
 	}
 
 	

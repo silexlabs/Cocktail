@@ -654,8 +654,6 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	isLastLine wheter it is the last line which is laid out
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
-	 * 
-	 * TODO : wordspacing don't work anymore
 	 */
 	private function alignLineBox(isLastLine:Bool):Int
 	{	
@@ -839,7 +837,7 @@ class InlineFormattingContext extends FormattingContext
 			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
-				domElementAscent = htmlElement.offsetHeight;
+				domElementAscent = htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
 				
 				domElementDescent = 0;
 				
@@ -923,7 +921,7 @@ class InlineFormattingContext extends FormattingContext
 						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
 					
 					default:	
-						_elementsInLineBox[i].bounds.y -= htmlElement.offsetHeight;
+						_elementsInLineBox[i].bounds.y -= htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
 					
 				}
 				
