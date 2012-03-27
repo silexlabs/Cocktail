@@ -206,18 +206,6 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The returned dimensions of the Body are always those of the viewport
-	 */
-	override public function getContainerDOMElementData():ContainingDOMElementData
-	{
-		return getWindowData();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -235,19 +223,6 @@ class AbstractBodyStyle extends ContainerStyle
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
 		return new BlockFormattingContext(cast(this._elementRenderer));
-	}
-
-	/**
-	 * The computed height of the BodyDOMElement is always
-	 * the same as the viewport
-	 * 
-	 * TODO : might be wrong if the Body as top/bottom margin
-	 * or padding, maybe should instead override the 
-	 * offsetHeight ?
-	 */
-	override private function getComputedHeight():Int
-	{
-		return getWindowData().height;
 	}
 	
 	/**
