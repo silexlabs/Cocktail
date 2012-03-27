@@ -1,6 +1,6 @@
 package core.window;
-import core.dom.EventTarget;
 import core.event.Event;
+import core.event.IEventTarget;
 import core.html.HTMLDocument;
 
 /**
@@ -8,7 +8,7 @@ import core.html.HTMLDocument;
  * @author Yannick DOMINGUEZ
  */
 
-class AbstractWindow extends EventTarget
+class AbstractWindow implements IEventTarget
 {
 
 	private var _onResize:Event->Void;
@@ -26,7 +26,6 @@ class AbstractWindow extends EventTarget
 	public function new(document:HTMLDocument = null) 
 	{
 		_document = document;
-		super("");
 	}
 	
 	private function set_onResize(value:Event->Void):Event->Void

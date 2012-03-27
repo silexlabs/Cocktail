@@ -6,7 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.event;
-import core.dom.EventTarget;
 import core.HTMLElement;
 
 /**
@@ -49,8 +48,8 @@ class Event
 	/**
 	 * Used to indicate the event target
 	 */ 
-	private var _target:EventTarget;
-	public var target(get_target, never):EventTarget;
+	private var _target:IEventTarget;
+	public var target(get_target, never):IEventTarget;
 	
 	/**
 	 * Used to indicate whether Event.preventDefault()
@@ -62,7 +61,7 @@ class Event
 	/**
 	 * class constructor
 	 */
-	public function new(type:String, target:EventTarget) 
+	public function new(type:String, target:IEventTarget) 
 	{
 		_type = type;
 		_target = target;
@@ -106,7 +105,7 @@ class Event
 		return _type;
 	}
 	
-	private function get_target():EventTarget
+	private function get_target():IEventTarget
 	{
 		return _target;
 	}
