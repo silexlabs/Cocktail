@@ -66,6 +66,17 @@ import core.renderer.TextRenderer;
 	enum FontWeight {
 		normal;
 		bold;
+		bolder;
+		lighter;
+		css100;
+		css200;
+		css300;
+		css400;
+		css500;
+		css600;
+		css700;
+		css800;
+		css900;
 	}
 	
 	/**

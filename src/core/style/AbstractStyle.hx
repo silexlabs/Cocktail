@@ -476,30 +476,36 @@ class AbstractStyle
 			case "h1" : 
 				_display = Display.block;
 				_fontSize = FontSize.length(em(2));
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(0.67));
 				
 			case "h2" : 
 				_display = Display.block;
 				_fontSize = FontSize.length(em(1.5));
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(0.75));	
 			
 			case "h3" : 
 				_display = Display.block;
 				_fontSize = FontSize.length(em(1.17));
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(0.83));
 			
 			case "h4" :	
 				_display = Display.block;
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(1.12));
 			
 			case "h5" : 
 				_display = Display.block;
 				_fontSize = FontSize.length(em(0.83));
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(1.5));	
 				
 			case "h6" : 
 				_display = Display.block;
 				_fontSize = FontSize.length(em(0.75));
+				_fontWeight = FontWeight.bolder;
 				_marginTop = _marginBottom = Margin.length(em(1.67));		
 				
 			case "p" :
