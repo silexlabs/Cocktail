@@ -3,6 +3,7 @@ package port.flash_player;
 import core.window.AbstractWindow;
 import core.event.Event;
 import flash.Lib;
+import core.html.HTMLDocument;
 
 /**
  * ...
@@ -12,9 +13,9 @@ import flash.Lib;
 class Window extends AbstractWindow
 {
 
-	public function new() 
+	public function new(document:HTMLDocument = null) 
 	{
-		super();
+		super(document);
 	}
 	
 	override private function set_onResize(value:Event->Void):Event->Void

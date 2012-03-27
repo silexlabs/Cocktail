@@ -7,7 +7,14 @@
 */
 package core.html;
 
-import core.HTMLElement;
+
+#if (flash9 || cpp || nme)
+import port.flash_player.HTMLElement;
+
+#elseif js
+import port.browser.HTMLElement;
+
+#end
 
 /**
  * Form control.

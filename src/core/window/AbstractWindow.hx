@@ -21,16 +21,17 @@ class AbstractWindow extends EventTarget
 	
 	public var innerWidth(get_innerWidth, never):Int;
 	
-	public function new() 
+	//TODO : Window should instantiate Document but window object
+	//is instantiated multiple time to listen to resize event
+	public function new(document:HTMLDocument = null) 
 	{
-		_document = new HTMLDocument();
+		_document = document;
 		super("");
 	}
 	
 	private function set_onResize(value:Event->Void):Event->Void
 	{
-		_onResize = value;
-		return value;
+		return _onResize = value;
 	}
 	
 	private function get_onResize():Event->Void

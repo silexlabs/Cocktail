@@ -2,6 +2,7 @@ package port.browser;
 
 import core.event.Event;
 import core.window.AbstractWindow;
+import core.html.HTMLDocument;
 import js.Lib;
 
 /**
@@ -12,20 +13,20 @@ import js.Lib;
 class Window extends AbstractWindow
 {
 
-	public function new() 
+	public function new(document:HTMLDocument = null) 
 	{
-		super();
+		super(document);
 	}
 	
 	override private function set_onResize(value:Event->Void):Event->Void
 	{
 		if (value == null)
 		{
-			Lib.window.onresize = null;
+			untyped Lib.window.removeEventListener("resize", onNativeResize);
 		}
 		else
 		{
-			Lib.window.onresize = onNativeResize;
+			untyped Lib.window.addEventListener("resize", onNativeResize);
 		}
 		
 		return _onResize = value;

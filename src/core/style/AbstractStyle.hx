@@ -9,7 +9,6 @@ package core.style;
 
 import core.geom.Matrix;
 import core.nativeElement.NativeElement;
-import cocktail.viewport.Viewport;
 import core.background.BackgroundManager;
 import core.HTMLElement;
 import core.style.computer.BackgroundStylesComputer;
@@ -41,6 +40,7 @@ import core.renderer.ElementRenderer;
 import core.renderer.EmbeddedBoxRenderer;
 import core.renderer.FlowBoxRenderer;
 import core.renderer.LayerRenderer;
+import core.Window;
 import haxe.Log;
 import haxe.Timer;
 
@@ -752,7 +752,7 @@ class AbstractStyle
 					var parentStyle:ContainerStyle = cast(parent.style);
 					var containingDOMElementData:ContainingDOMElementData = parentStyle.getContainerDOMElementData();
 					
-					var viewPortData:ContainingDOMElementData = getViewportData();
+					var viewPortData:ContainingDOMElementData = getWindowData();
 					
 					//get the data of the first positioned ancestor of this styled DOMElement
 					var lastPositionedDOMElementData:LastPositionedDOMElementData = {
@@ -1200,7 +1200,7 @@ class AbstractStyle
 		//if the DOMElement has no parent, return the viewport data
 		else
 		{
-			firstPositionedAncestorData = getViewportData();
+			firstPositionedAncestorData = getWindowData();
 		}
 		
 		return firstPositionedAncestorData;
@@ -1211,18 +1211,18 @@ class AbstractStyle
 	 * origin is always to the top left of the window
 	 * displaying the document
 	 */
-	private function getViewportData():ContainingDOMElementData
+	private function getWindowData():ContainingDOMElementData
 	{
-		var viewPort:Viewport = new Viewport();
+		var window:Window = new Window();
 					
-		var viewPortData:ContainingDOMElementData = {
+		var windowData:ContainingDOMElementData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:viewPort.width,
-			height:viewPort.height
+			width:window.innerWidth,
+			height:window.innerHeight
 		}
 		
-		return viewPortData;
+		return windowData;
 	}
 	
 	/////////////////////////////////
