@@ -56,10 +56,10 @@ class DisplayStylesComputer
 		computedStyle.position = getComputedPosition(style);
 		
 		//float
-		computedStyle.floatStyle = getComputedFloat(style, computedStyle.position);
+		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
 		
 		//display
-		computedStyle.display = getComputedDisplay(style, computedStyle.floatStyle);
+		computedStyle.display = getComputedDisplay(style, computedStyle.cssFloat);
 		
 		//clear
 		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
@@ -84,9 +84,9 @@ class DisplayStylesComputer
 	 * @param	style
 	 * @param	computedPosition the computed value of position, computed before float
 	 */
-	private static function getComputedFloat(style:AbstractStyle, computedPosition:Position):FloatStyle
+	private static function getComputedFloat(style:AbstractStyle, computedPosition:Position):CSSFloat
 	{
-		var ret:FloatStyle;
+		var ret:CSSFloat;
 		
 		//if the DOMElement is absolute or fixed position,
 		//it will act as an absolutely positioned DOMElement
@@ -94,11 +94,11 @@ class DisplayStylesComputer
 		//so it computes to none
 		if (computedPosition == Position.absolute || computedPosition == Position.fixed)
 		{
-			ret = FloatStyle.none;
+			ret = CSSFloat.none;
 		}
 		else
 		{
-			ret = style.floatStyle;
+			ret = style.cssFloat;
 		}
 		
 		return ret;
@@ -111,13 +111,13 @@ class DisplayStylesComputer
 	 * @param	computedFloat the computed value of the float which must be computed before this
 	 * one
 	 */
-	private static function getComputedDisplay(style:AbstractStyle, computedFloat:FloatStyle):Display
+	private static function getComputedDisplay(style:AbstractStyle, computedFloat:CSSFloat):Display
 	{
 		var ret:Display;
 		
 		//if the DOMElement is a float, it can't
 		//be an inline level element
-		if (computedFloat != FloatStyle.none)
+		if (computedFloat != CSSFloat.none)
 		{
 			switch (style.display)
 			{

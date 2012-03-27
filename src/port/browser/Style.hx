@@ -94,23 +94,23 @@ class Style extends AbstractStyle
 	/**
 	 * CSS : float
 	 */
-	private function getCSSFloat(value:FloatStyle):String
+	private function getCSSFloatAsString(value:CSSFloat):String
 	{
-		var cssfloatStyle:String;
+		var cssCSSFloat:String;
 		
 		switch (value)
 		{
-			case FloatStyle.left:
-				cssfloatStyle = "left";
+			case CSSFloat.left:
+				cssCSSFloat = "left";
 				
-			case FloatStyle.right:
-				cssfloatStyle = "right";
+			case CSSFloat.right:
+				cssCSSFloat = "right";
 				
-			case FloatStyle.none:
-				cssfloatStyle = "none";
+			case CSSFloat.none:
+				cssCSSFloat = "none";
 		}
 		
-		return cssfloatStyle;
+		return cssCSSFloat;
 	}
 	
 	/**
@@ -185,7 +185,7 @@ class Style extends AbstractStyle
 			case OverflowValue.scroll:
 				cssOverflowValue = "scroll";
 				
-			case OverflowValue.autoValue:
+			case OverflowValue.cssAuto:
 				cssOverflowValue = "auto";
 		}
 		
@@ -386,7 +386,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssMarginValue = getCSSPercentValue(percentValue);
 				
-			case autoValue:
+			case cssAuto:
 				cssMarginValue = "auto";
 		}
 		
@@ -427,7 +427,7 @@ class Style extends AbstractStyle
 			case Dimension.percent(percentValue):
 				cssDimensionValue = getCSSPercentValue(percentValue);
 				
-			case Dimension.autoValue:
+			case Dimension.cssAuto:
 				cssDimensionValue = "auto";
 		}
 		
@@ -450,7 +450,7 @@ class Style extends AbstractStyle
 			case percent(percentValue):
 				cssPositionOffsetValue = getCSSPercentValue(percentValue);
 				
-			case autoValue:
+			case cssAuto:
 				cssPositionOffsetValue = "auto";
 		}
 		
@@ -1004,7 +1004,7 @@ class Style extends AbstractStyle
 			case BackgroundSizeDimension.percent(value):
 				cssBackgroundSizeDimension = getCSSPercentValue(value);
 				
-			case BackgroundSizeDimension.autoValue:
+			case BackgroundSizeDimension.cssAuto:
 				cssBackgroundSizeDimension = "auto";
 		}
 		
@@ -1720,11 +1720,11 @@ class Style extends AbstractStyle
 		return _textIndent = value;
 	}
 	
-	override private function setFloatStyle(value:FloatStyle):FloatStyle 
+	override private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
-		untyped this._htmlElement.nativeElement.style.cssFloat = getCSSFloat(value);
-		super.setFloatStyle(value);
-		return floatStyle = value;
+		untyped this._htmlElement.nativeElement.style.cssFloat = getCSSFloatAsString(value);
+		super.setCSSFloat(value);
+		return _cssFloat = value;
 	}
 	
 	override private function setClear(value:Clear):Clear 
