@@ -78,6 +78,7 @@ class LayerRenderer
 					nativeElements.push(inFlowChildren[i]);
 				}
 			
+				
 				var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
 					
 				for (i in 0...childrenBlockContainerBackground.length)
@@ -138,9 +139,22 @@ class LayerRenderer
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
+			
 			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].renderBackground();
+			
+			
+			
 			for (j in 0...nativeElements.length)
 			{
+				#if flash9
+				if (childrenBlockContainer[i].establishesNewFormattingContext() == true)
+				{
+					nativeElements[j].x += childrenBlockContainer[i].style.computedStyle.marginLeft;
+					nativeElements[j].y += childrenBlockContainer[i].style.computedStyle.marginTop;
+				}
+				#end
+				
+					
 				ret.push(nativeElements[j]);
 			}
 		}
