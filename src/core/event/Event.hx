@@ -36,6 +36,8 @@ class Event
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
 	
+	public static inline var RESIZE:String = "resize";
+	
 	//TODO : add current target
 	
 	/**
