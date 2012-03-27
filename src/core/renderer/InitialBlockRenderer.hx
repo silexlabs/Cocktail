@@ -7,6 +7,7 @@
 */
 package core.renderer;
 import cocktail.Lib;
+import core.background.InitialBlockBackgroundManager;
 import core.nativeElement.NativeElement;
 import core.geom.GeomData;
 import core.Style;
@@ -42,6 +43,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	override private function init():Void
+	{
+		_backgroundManager = new InitialBlockBackgroundManager();
+	}
+	
 	/**
 	 * Render and position the background color and
 	 * image of the element using runtime specific
@@ -50,7 +56,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override public function renderBackground():Array<NativeElement>
 	{
-		Log.trace(_bounds);
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _style);
 		
 		for (i in 0...backgrounds.length)

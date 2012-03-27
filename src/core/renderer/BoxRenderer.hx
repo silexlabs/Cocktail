@@ -33,6 +33,12 @@ class BoxRenderer extends ElementRenderer
 	public function new(style:Style) 
 	{
 		super(style);
+		init();
+		
+	}
+	
+	private function init():Void
+	{
 		_backgroundManager = new BackgroundManager();
 	}
 	

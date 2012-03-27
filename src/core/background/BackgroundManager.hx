@@ -237,8 +237,8 @@ class BackgroundManager
 			
 			backgroundImageDrawingManager.drawBackgroundImage(
 			loadedBackgroundImage, 
-			computedGradientStyles.backgroundOrigin,
-			computedGradientStyles.backgroundClip,
+			getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),
+			getBackgroundPaintingBox(computedGradientStyles.backgroundClip),
 			imageLoader.intrinsicWidth,
 			imageLoader.intrinsicHeight,
 			imageLoader.intrinsicRatio,
@@ -297,7 +297,7 @@ class BackgroundManager
 			
 		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
 		backgroundBox);
-		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
+		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, getBackgroundPaintingBox(computedBackgroundStyles.backgroundClip));
 
 		_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 	}
@@ -331,13 +331,24 @@ class BackgroundManager
 			backgroundBox );
 			backgroundGradientDrawingManager.drawBackgroundGradient(
 			gradientValue,
-			computedGradientStyles.backgroundOrigin,
-			computedGradientStyles.backgroundClip,
+			getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),
+			getBackgroundPaintingBox(computedGradientStyles.backgroundClip),
 			computedGradientStyles.backgroundSize,
 			computedGradientStyles.backgroundPosition, 
 			computedGradientStyles.backgroundRepeat);
 			
 		return gradientNativeElement;
+	}
+	
+	//TODO : doc	
+	private function getBackgroundPaintingBox(computedBackgroundBox:RectangleData):RectangleData
+	{
+		return computedBackgroundBox;
+	}
+	
+	private function getBackgroundPositioningBox(computedPositioningBox:RectangleData):RectangleData
+	{
+		return computedPositioningBox;
 	}
 	
 }
