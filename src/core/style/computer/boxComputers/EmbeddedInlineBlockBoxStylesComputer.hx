@@ -6,7 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.style.computer.boxComputers;
-import core.style.computer.BoxStylesComputer;
 
 /**
  * This is the box computer for inlineBlock embedded DOMElement

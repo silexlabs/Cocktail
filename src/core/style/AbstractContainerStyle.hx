@@ -14,9 +14,8 @@ import core.style.computer.boxComputers.BlockBoxStylesComputer;
 import core.style.computer.boxComputers.FloatBoxStylesComputer;
 import core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import core.style.computer.boxComputers.InLineBoxStylesComputer;
-import core.style.computer.boxComputers.NoneBoxStylesComputer;
 import core.style.computer.boxComputers.PositionedBoxStylesComputer;
-import core.style.computer.BoxStylesComputer;
+import core.style.computer.boxComputers.BoxStylesComputer;
 import core.style.formatter.BlockFormattingContext;
 import core.style.formatter.FormattingContext;
 import core.style.formatter.InlineFormattingContext;
@@ -450,8 +449,9 @@ class AbstractContainerStyle extends Style
 				case inlineBlock:
 					boxComputer = new InlineBlockBoxStylesComputer();
 				
+				//not supposed to happen
 				case none:
-					boxComputer = new NoneBoxStylesComputer();
+					boxComputer = null;
 				
 				case cssInline:
 					boxComputer = new InLineBoxStylesComputer();
