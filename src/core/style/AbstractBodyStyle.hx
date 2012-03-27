@@ -8,7 +8,6 @@
 package core.style;
 
 import core.nativeElement.NativeElement;
-import cocktail.viewport.Viewport;
 import core.HTMLElement;
 import core.style.formatter.BlockFormattingContext;
 import core.style.formatter.FormattingContext;
@@ -74,15 +73,15 @@ class AbstractBodyStyle extends ContainerStyle
 		if (this._isDirty == false)
 		{
 			this._isDirty = true;
-			var viewPortData:ContainingDOMElementData = getViewportData();
+			var windowData:ContainingDOMElementData = getWindowData();
 		
 			//the first positioned parent of the body is always the viewport					
 			var lastPositionedDOMElementData:LastPositionedDOMElementData = {
 				children: new Array<PositionedDOMElementData>(),
-				data:viewPortData
+				data:windowData
 			}
 			
-			scheduleLayout(viewPortData, lastPositionedDOMElementData, viewPortData);
+			scheduleLayout(windowData, lastPositionedDOMElementData, windowData);
 		}
 	}
 	
@@ -215,7 +214,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override public function getContainerDOMElementData():ContainingDOMElementData
 	{
-		return getViewportData();
+		return getWindowData();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +247,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 */
 	override private function getComputedHeight():Int
 	{
-		return getViewportData().height;
+		return getWindowData().height;
 	}
 	
 	/**

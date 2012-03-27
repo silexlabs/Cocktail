@@ -181,6 +181,7 @@ class HTMLElement extends AbstractHTMLElement
 		}
 		else
 		{
+			//TODO : use event listener instead
 			_nativeElement.onfocus = onNativeFocus;
 		}
 		

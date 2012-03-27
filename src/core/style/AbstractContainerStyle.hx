@@ -8,7 +8,6 @@
 package core.style;
 
 import core.nativeElement.NativeElement;
-import cocktail.viewport.Viewport;
 import core.HTMLElement;
 import core.dom.Node;
 import core.style.computer.boxComputers.BlockBoxStylesComputer;

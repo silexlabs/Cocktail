@@ -1,8 +1,9 @@
 package core.html;
+import core.event.Event;
 import core.nativeElement.NativeElementManager;
-import cocktail.viewport.Viewport;
 import cocktailCore.focus.FocusManager;
 import core.BodyStyle;
+import core.Window;
 
 #if (flash9 || cpp || nme)
 import port.flash_player.HTMLElement;
@@ -34,7 +35,7 @@ class HTMLBodyElement extends HTMLElement
 	 * 
 	 * TODO : move to the Document ?
 	 */
-	private var _viewPort:Viewport;
+	private var _window:Window;
 	
 	/**
 	 * class constructor. Retrieve the root of the
@@ -66,8 +67,8 @@ class HTMLBodyElement extends HTMLElement
 		
 		//instantiate the view port and listen
 		//for resize on it
-		_viewPort = new Viewport();
-		_viewPort.onResize = onViewPortResize;
+		_window = new Window();
+		_window.onResize = onWindowResize;
 	}
 	
 	/**
@@ -75,7 +76,7 @@ class HTMLBodyElement extends HTMLElement
 	 * this BodyDOMElement to lay it out with
 	 * the new view port dimensions
 	 */
-	private function onViewPortResize():Void
+	private function onWindowResize(event:Event):Void
 	{
 		_style.invalidate();
 	}
