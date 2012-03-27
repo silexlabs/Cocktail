@@ -4,10 +4,10 @@ import core.event.IEventTarget;
 import core.html.HTMLDocument;
 
 /**
- * ...
+ * TODO : doc
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class AbstractWindow implements IEventTarget
 {
 

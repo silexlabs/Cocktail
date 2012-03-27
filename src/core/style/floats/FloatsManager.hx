@@ -239,6 +239,8 @@ class FloatsManager
 	{
 		//a float width and height use the margin box of a
 		//DOMElement
+		
+		//TODO : should use bounds and not htmlElement
 		var floatWidth:Int = elementRenderer.style.htmlElement.offsetWidth;
 		var floatHeight:Int = elementRenderer.style.htmlElement.offsetHeight;
 	
