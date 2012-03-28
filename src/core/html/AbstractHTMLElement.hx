@@ -586,8 +586,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * the focus on the Document
 	 * 
 	 * TODO : check if it actually work
-	 * TODO : FocusManager should no longer be singleton
-	 * but instance on the Document
 	 * TODO : check if focus must be set on Document if
 	 * this element currently doesn't have focus
 	 * TODO : should call focus on Document or Document.body
