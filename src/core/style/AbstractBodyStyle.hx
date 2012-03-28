@@ -210,6 +210,14 @@ class AbstractBodyStyle extends ContainerStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * return the dimension of the Window for the HTMLBodyElement
+	 */
+	override private function getPositionedHTMLElementData():ContainingHTMLElementData
+	{
+		return getWindowData();
+	}
+	
+	/**
 	 * The BodyHTMLElement is always a block container
 	 */
 	override public function isInlineLevel():Bool
