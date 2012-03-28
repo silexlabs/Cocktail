@@ -735,7 +735,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return _style.getFirstPositionedAncestor();
 	}
 	
-	//TODO : removed margins, will cause issue in formatting context
 	private function get_offsetWidth():Int
 	{
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
@@ -748,16 +747,45 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : should return offset from offsetParent border
+	//TODO : will it work for inline elements ?
 	private function get_offsetLeft():Int
 	{
-		return -1;
+		var firstPositionedAncestor:HTMLElement = offsetParent;
+		
+		var offsetLeft:Int = 0;
+		
+		if (firstPositionedAncestor != null)
+		{
+			var parent:HTMLElement = cast(parentNode);
+			
+			while (parent != firstPositionedAncestor)
+			{
+				offsetLeft += parent.style.computedStyle.paddingLeft + parent.style.computedStyle.marginLeft;
+				parent = cast(parent.parentNode);
+			}
+		}
+		
+		return offsetLeft;
 	}
 	
-	//TODO : should return offset from offsetParent border
 	private function get_offsetTop():Int
 	{
-		return -1;
+		var firstPositionedAncestor:HTMLElement = offsetParent;
+		
+		var offsetTop:Int = 0;
+		
+		if (firstPositionedAncestor != null)
+		{
+			var parent:HTMLElement = cast(parentNode);
+			
+			while (parent != firstPositionedAncestor)
+			{
+				offsetTop += parent.style.computedStyle.paddingTop + parent.style.computedStyle.marginTop;
+				parent = cast(parent.parentNode);
+			}
+		}
+		
+		return offsetTop;
 	}
 	
 	private function get_clientWidth():Int
@@ -770,13 +798,11 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return _style.computedStyle.height;
 	}
 	
-	//TODO : will need to add border
 	private function get_clientTop():Int
 	{
 		return _style.computedStyle.paddingTop;
 	}
 	
-	//TODO : will need to add border
 	private function get_clientLeft():Int
 	{
 		return _style.computedStyle.paddingLeft;
