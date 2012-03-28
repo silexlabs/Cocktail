@@ -1218,6 +1218,42 @@ class AbstractStyle
 		return false;
 	}
 	
+	/**
+	 * Get the first parent HTMLElement which is positioned
+	 * or null if the HTMLElement has no parent (it is
+	 * not attached to the DOM or is the HTMLBodyElement)
+	 */
+	public function getFirstPositionedAncestor():HTMLElement
+	{
+		//here it is either the HTMLBodyElement
+		//or not attached to the DOM
+		if (_htmlElement.parentNode == null)
+		{
+			return null;
+		}
+		
+		var parent:HTMLElement = cast(_htmlElement.parentNode);
+		
+		//loop in all the parents until a positioned or a null parent is found
+		var isPositioned:Bool = parent.style.isPositioned();
+		
+		while (isPositioned == false)
+		{
+			if (parent.parentNode != null)
+			{
+				parent = cast(parent.parentNode);
+				isPositioned = parent.style.isPositioned();
+			}
+			//break the loop if the current parent has no parent
+			else
+			{
+				isPositioned = true;
+			}
+		}
+		
+		return parent;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1258,36 +1294,20 @@ class AbstractStyle
 	/**
 	 * Get the dimensions of the first ancestor
 	 * of the styled HTMLElement which is positioned
+	 * or of the HTMLBodyElement
 	 */
 	private function getFirstPositionedAncestorData():ContainingHTMLElementData
 	{
 		var firstPositionedAncestorData:ContainingHTMLElementData;
-		var parent:HTMLElement = cast(_htmlElement.parentNode);
+		var firstPositionedAncestor:HTMLElement = getFirstPositionedAncestor();
 		
 		//if the htmlElement has a parent
-		if (parent != null)
+		if (firstPositionedAncestor != null)
 		{
-			//loop in all the parents until a positioned or a null parent is found
-			var isPositioned:Bool = parent.style.isPositioned();
-			while (isPositioned == false)
-			{
-				if (parent.parentNode != null)
-				{
-					parent = cast(parent.parentNode);
-					isPositioned = parent.style.isPositioned();
-				}
-				//break the loop if the current parent has no parent
-				else
-				{
-					isPositioned = true;
-				}
-				
-			}
-			//get the data of the parent
-			var parentStyle:ContainerStyle = cast(parent.style);
-			firstPositionedAncestorData = parentStyle.getContainerHTMLElementData();
+			var firstPositionedAncestorStyle:ContainerStyle = cast(firstPositionedAncestor.style);
+			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
 		}
-		//if the HTMLElement has no parent, return the viewport data
+		//if the HTMLElement has no parent, return the Window data
 		else
 		{
 			firstPositionedAncestorData = getWindowData();
