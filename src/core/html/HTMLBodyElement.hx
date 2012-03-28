@@ -39,7 +39,7 @@ class HTMLBodyElement extends HTMLElement
 	
 	/**
 	 * class constructor. Retrieve the root of the
-	 * runtime and set it as this DOMElement's
+	 * runtime and set it as this HTMLElement's
 	 * NativeElement
 	 * 
 	 * TODO : init keyboard with document in JS ?
@@ -59,7 +59,7 @@ class HTMLBodyElement extends HTMLElement
 	
 	/**
 	 * Instantiate a Style specific to this
-	 * DOMElement
+	 * HTMLElement
 	 */
 	override private function initStyle():Void
 	{
@@ -73,7 +73,7 @@ class HTMLBodyElement extends HTMLElement
 	
 	/**
 	 * When the view port is resized, insvalidate
-	 * this BodyDOMElement to lay it out with
+	 * this BodyHTMLElement to lay it out with
 	 * the new view port dimensions
 	 */
 	private function onWindowResize(event:Event):Void

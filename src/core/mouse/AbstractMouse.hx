@@ -179,9 +179,9 @@ class AbstractMouse
 	 * 
 	 * @param mouseEvent the mouse event type that must be listened to
 	 * @param nativeCallback the native, runtime-specific callback
-	 * @param domElementCallback the cross-platform mouse callback defined on the DOMElement
+	 * @param htmlElementCallback the cross-platform mouse callback defined on the htmlElement
 	 */
-	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
+	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:MouseEvent->Void):Void
 	{
 		//abstract
 	}

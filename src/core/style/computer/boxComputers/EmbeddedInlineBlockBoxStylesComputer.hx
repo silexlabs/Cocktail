@@ -8,9 +8,9 @@
 package core.style.computer.boxComputers;
 
 /**
- * This is the box computer for inlineBlock embedded DOMElement
+ * This is the box computer for inlineBlock embedded HTMLElement
  * It has the same behaviour as the computer for inline embedded
- * DOMElements
+ * HTMLElements
  * 
  * @author Yannick DOMINGUEZ
  */

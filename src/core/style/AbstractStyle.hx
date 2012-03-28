@@ -46,10 +46,10 @@ import haxe.Timer;
 
 /**
  * This is the base class for all Style classes. Style classes
- * are in charge of storing the style value for a DOMElement
+ * are in charge of storing the style value for a HTMLElement
  * and applying them.
  * 
- * This class holds a reference to the styled DOMElement.
+ * This class holds a reference to the styled HTMLElement.
  * 
  * During the layout, a rendering tree, paralleling the DOM tree
  * is built. The rendering tree contains objects of type
@@ -59,16 +59,16 @@ import haxe.Timer;
  * Those objects know how to render themselves.
  * 
  * Styling is done in 2 phases : 
- * - first the styles of the DOMElement are computed into
+ * - first the styles of the HTMLElement are computed into
  * usable values, for instance values defined as percentage
  * are converted to absolute values. During this phase, an
  * abstract rendering tree of the element is built, containing
- * an array of all its children (background, border, other DOMElements...)
+ * an array of all its children (background, border, other HTMLElements...)
  * ordered by z-index
  * - once all the styles are computed and the rendering tree is ready, it
  * renders itself
  * 
- * This class implements the default behaviour of an embedded DOMElement
+ * This class implements the default behaviour of an embedded HTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -243,7 +243,7 @@ class AbstractStyle
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
 	
 	/**
-	 * A reference to the DOMElement to which these styles
+	 * A reference to the HTMLElement to which these styles
 	 * apply
 	 */
 	private var _htmlElement:HTMLElement;
@@ -259,7 +259,7 @@ class AbstractStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
-	 * determine wether the DOMElement and its chidlren must
+	 * determine wether the HTMLElement and its chidlren must
 	 * be laid out again
 	 */
 	private var _isDirty:Bool;
@@ -276,11 +276,11 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Class constructor. Stores the target DOMElement.
+	 * Class constructor. Stores the target HTMLElement.
 	 * Init the class attributes
 	 * 
 	 * The style is invalid by default and will be updated
-	 * when the DOMElement is added to the DOM.
+	 * when the HTMLElement is added to the DOM.
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
@@ -581,52 +581,52 @@ class AbstractStyle
 	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
 	 * to the layout.
 	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent DOMElement into which 
-	 * this DOMElement must be laid out
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' style other than 'static'. When positioning an absolutely positioned DOMElement (a DOMElement with a 'position' style
+	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
+	 * this HTMLElement must be laid out
+	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
+	 * it has a 'position' style other than 'static'. When positioning an absolutely positioned HTMLElement (a HTMLElement with a 'position' style
 	 * of 'absolute'), it it used as origin.
-	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned DOMElement
-	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
-	 * @param containingDOMElementFontMetricsData contains font metrics of the parent DOMElement, used for instance
+	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
+	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
+	 * @param containingHTMLElementFontMetricsData contains font metrics of the parent HTMLElement, used for instance
 	 * to layout children in an inline formatting context
 	 */
-	public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * This method is in charge of placing "in-flow" DOMElements (DOMElement with a 'position' style of 'static' or 'relative') into
-	 * its parent flow and "positioned" DOMElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
+	 * This method is in charge of placing "in-flow" HTMLElements (HTMLElement with a 'position' style of 'static' or 'relative') into
+	 * its parent flow and "positioned" HTMLElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
 	 * ancestor.
 	 * 
-	 * The DOMElement first compute its own styles (box model, font, text...), then insert its ElementRenderer into the document based 
+	 * The HTMLElement first compute its own styles (box model, font, text...), then insert its ElementRenderer into the document based 
 	 * on its positioning scheme.
 	 * 
-	 * This method is called recursively on every children of the DOMElement if it has any
+	 * This method is called recursively on every children of the HTMLElement if it has any
 	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent DOMElement into which 
-	 * this DOMElement must be laid out
-	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned DOMElement
-	 * (a DOMElement with a 'position' of 'fixed'), it is used as origin
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor DOMElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned DOMElement ( a DOMElement with a 'position' style
+	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
+	 * this HTMLElement must be laid out
+	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
+	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
+	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
+	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned HTMLElement ( a HTMLElement with a 'position' style
 	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
-	 * to position their DOMElement
-	 * @param   containingDOMElementFontMetricsData contains font metrics used to layout children in an inline formatting context
-	 * @param	formattingContext can be an inline or block formatting context. "In-flow" DOMElements insert themselves into the 
+	 * to position their HTMLElement
+	 * @param   containingHTMLElementFontMetricsData contains font metrics used to layout children in an inline formatting context
+	 * @param	formattingContext can be an inline or block formatting context. "In-flow" HTMLElements insert themselves into the 
 	 * formattingContext to be placed in the document flow
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
-	public function flow(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	public function flow(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{		
 		if (_elementRenderer != null && parentElementRenderer != null)
 		{
 			parentElementRenderer.removeChild(_elementRenderer);
 		}
 		
-		//do nothing if the DOMElement must not be displayed, i.e, added
+		//do nothing if the HTMLElement must not be displayed, i.e, added
 		//to the display list
 		if (isNotDisplayed() == true)
 		{
@@ -639,47 +639,47 @@ class AbstractStyle
 		//font and text styles which use the computed height value
 		initComputedStyles();
 		
-		//compute all the styles of a DOMElement
-		computeDOMElementStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, containingDOMElementFontMetricsData);
+		//compute all the styles of a HTMLElement
+		computeHTMLElementStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, containingHTMLElementFontMetricsData);
 		
-		//the DOMElement creates its own ElementRenderer
+		//the HTMLElement creates its own ElementRenderer
 		_elementRenderer = createElementRenderer(parentElementRenderer);
 		
-		//flow all the children of the DOMElement if it has any
-		flowChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingDOMElementFontMetricsData, formattingContext);
+		//flow all the children of the HTMLElement if it has any
+		flowChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
 		
-		//when all the dimensions of the domElement are known, compute the 
+		//when all the dimensions of the htmlElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
 		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the DOMElement
+		//instance the transform style use the height and width of the HTMLElement
 		//to determine the transformation center
 		computeVisualEffectStyles();
 		
 		//some text and font styles needs to be re-computed now that all the dimension
-		//of the DOMElement are known, for instance some values of the VerticalAlign style
+		//of the HTMLElement are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
-		computeTextAndFontStyles(containingHTMLElementData, containingDOMElementFontMetricsData);
+		computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
 		
 		//compute the background styles which can be computed at this time,
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
 		computeBackgroundStyles();
 		
-		//insert the DOMElement in its parent's formatting context based on its positioning scheme
-		insertDOMElement(formattingContext, lastPositionedHTMLElementData, viewportData);
+		//insert the HTMLElement in its parent's formatting context based on its positioning scheme
+		insertHTMLElement(formattingContext, lastPositionedHTMLElementData, viewportData);
 		
-		//The DOMElement has been laid out and is now valid
+		//The HTMLElement has been laid out and is now valid
 		this._isDirty = false;
 	}
 	
 	/**
-	 * Place a positioned DOMElement (a DOMElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
-	 * flow, the last positioned DOMElement or the viewport of the document, then apply an offset defined by the 'top',
+	 * Place a positioned HTMLElement (a HTMLElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
+	 * flow, the last positioned HTMLElement or the viewport of the document, then apply an offset defined by the 'top',
 	 * 'left', 'bottom' and 'right' computed styles values
 	 * 
 	 * @param lastPositionedHTMLElementData
 	 * @param viewportData
-	 * @param staticPosition the x,y position that the DOMElement would have had if it were 'in-flow'
+	 * @param staticPosition the x,y position that the HTMLElement would have had if it were 'in-flow'
 	 */
 	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
 	{
@@ -689,17 +689,17 @@ class AbstractStyle
 		
 		switch (this._htmlElement.style.computedStyle.position)
 		{
-			//positioned 'relative' DOMElement
+			//positioned 'relative' HTMLElement
 			case relative:
 				positioner = new RelativePositioner();
 				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
 			
-			//positioned 'fixed' DOMElement, use the viewport
+			//positioned 'fixed' HTMLElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
 				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
 				
-			//positioned 'absolute' DOMElement	
+			//positioned 'absolute' HTMLElement	
 			case absolute:
 				positioner = new AbsolutePositioner();
 				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
@@ -719,7 +719,7 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Set a timer to trigger a layout of the DOMElement asynchronously. this method is used by the invalidation
+	 * Set a timer to trigger a layout of the HTMLElement asynchronously. this method is used by the invalidation
 	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
 	 * values are set instead of happening for every change.
 	 */
@@ -733,36 +733,36 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Flow all the children of a DOMElement if it has any
+	 * Flow all the children of a HTMLElement if it has any
 	 */
-	private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		
 	}
 	
 	/**
-	 * Insert the DOMElement in the document, in or out of the flow.
+	 * Insert the HTMLElement in the document, in or out of the flow.
 	 * 
-	 * @param	formattingContext the formatting context into which the DOMElement insert itself if it
+	 * @param	formattingContext the formatting context into which the HTMLElement insert itself if it
 	 * is 'in flow'
 	 * @param	lastPositionedHTMLElementData
 	 * @param	viewportData
 	 */
-	private function insertDOMElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
 		//insert in the flow
 		if (isPositioned() == false)
 		{
 			formattingContext.insertElement(_elementRenderer);
 		}
-		//else the DOMElement is positioned
+		//else the HTMLElement is positioned
 		else
 		{
 			
-			//retrieve the static position (the position of the DOMElement
+			//retrieve the static position (the position of the HTMLElement
 			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			//a relative DOMElement is both inserted in the flow
+			//a relative HTMLElement is both inserted in the flow
 			//and positioned
 			//
 			//TODO : relative element are not placed correctly when a margin is applied to the formatting
@@ -772,22 +772,22 @@ class AbstractStyle
 				formattingContext.insertElement(_elementRenderer);
 			}
 			
-			//insert as a positioned DOMElement.
-			//an absolutely positioned DOMElement is not positioned right away, it must
+			//insert as a positioned HTMLElement.
+			//an absolutely positioned HTMLElement is not positioned right away, it must
 			//wait for its first positioned ancestor to be laid out. The reason is that
 			//if the positioned ancestor height is 'auto', the height of the positioned
-			//ancestor is not yet determined and so this DOMElement can't be positioned
+			//ancestor is not yet determined and so this HTMLElement can't be positioned
 			//using the bottom or right style yet. Once the first ancestor is laid out, it
 			//calls the positionElement method on all the stored positioned children
 			//
-			//relative positioned DOMElement are also stored in that array
+			//relative positioned HTMLElement are also stored in that array
 			//
 			var positionedHTMLElementData:PositionedHTMLElementData = {
 				staticPosition:staticPosition,
 				style:this
 			}
 			
-			//store the DOMElement to be positioned later
+			//store the HTMLElement to be positioned later
 			lastPositionedHTMLElementData.children.push(positionedHTMLElementData);
 		}
 	}
@@ -801,10 +801,10 @@ class AbstractStyle
 	 * a re-layout (such as width, height, display...) is
 	 * changed.
 	 * 
-	 * An invalidated DOMElement will in turn invalidate its
-	 * parent and so on until the root DOMElement (most likely
-	 * a BodyDOMElement) is invalidated.
-	 * The root DOMElement will then layout itself, laying out
+	 * An invalidated HTMLElement will in turn invalidate its
+	 * parent and so on until the root HTMLElement (most likely
+	 * a BodyHTMLElement) is invalidated.
+	 * The root HTMLElement will then layout itself, laying out
 	 * at the same time all its invalidated children.
 	 * 
 	 * In some cases, only a partial re-layout of the DOM tree
@@ -817,12 +817,12 @@ class AbstractStyle
 		if (this._isDirty == false)
 		{
 			//set the dirty flag to prevent multiple
-			//layout of the DOMElement in a row
-			//The DOMElement will be able to be invalidated
+			//layout of the HTMLElement in a row
+			//The HTMLElement will be able to be invalidated
 			//again once it has been laid out
 			this._isDirty = true;
 			
-			//if the DOMElement doesn't have a parent, then it
+			//if the HTMLElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			if (this._htmlElement.parentNode != null)
@@ -833,17 +833,17 @@ class AbstractStyle
 					var parent:HTMLElement = cast(_htmlElement.parentNode);
 					parent.style.invalidate();	
 				}
-				//else schedule a layout for this DOMElement
+				//else schedule a layout for this HTMLElement
 				else
 				{
 					var parent:HTMLElement = cast(_htmlElement.parentNode);
 					//retrieve its parent and the viewport dimension
 					var parentStyle:ContainerStyle = cast(parent.style);
-					var containingHTMLElementData:ContainingHTMLElementData = parentStyle.getContainerDOMElementData();
+					var containingHTMLElementData:ContainingHTMLElementData = parentStyle.getContainerHTMLElementData();
 					
 					var viewPortData:ContainingHTMLElementData = getWindowData();
 					
-					//get the data of the first positioned ancestor of this styled DOMElement
+					//get the data of the first positioned ancestor of this styled HTMLElement
 					var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
 						children: new Array<PositionedHTMLElementData>(),
 						data:getFirstPositionedAncestorData()
@@ -879,7 +879,7 @@ class AbstractStyle
 	/**
 	 * When a position offset style changes (top, left, 
 	 * right, bottom), it only requires a layout if the
-	 * DOMElement is positioned (not static).
+	 * HTMLElement is positioned (not static).
 	 */
 	private function invalidatePositionOffset():Void
 	{
@@ -890,7 +890,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * When the margin style changes, if the DOMElement
+	 * When the margin style changes, if the HTMLElement
 	 * is absolutely positioned, there is no need for a layout
 	 */
 	private function invalidateMargin():Void
@@ -902,7 +902,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Determine wheter the parent of the DOMElement needs
+	 * Determine wheter the parent of the HTMLElement needs
 	 * to be dirtied too. 
 	 * 
 	 * TODO : implement this method
@@ -921,11 +921,11 @@ class AbstractStyle
 	
 	/**
 	 * This method computes the styles determing
-	 * the DOMElement's layout scheme :
+	 * the HTMLElement's layout scheme :
 	 * position, display, float and clear.
 	 * 
 	 * It is public as it may be called by the
-	 * ContainerStyle of the parent DOMElement
+	 * ContainerStyle of the parent HTMLElement
 	 * which may need to known the display style of its
 	 * children to determine which type of formatting context
 	 * to establish for its children
@@ -942,7 +942,7 @@ class AbstractStyle
 	
 	/**
 	 * Computes the styles determining the background
-	 * color, images... of a DOMElement
+	 * color, images... of a HTMLElement
 	 */
 	private function computeBackgroundStyles():Void
 	{
@@ -950,7 +950,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Compute first the styles determining the DOMElement's
+	 * Compute first the styles determining the HTMLElement's
 	 * positioning scheme (position, float, clear...),
 	 * the style detemining font and text display,
 	 * then the styles determining its box model (width, height, margins
@@ -958,10 +958,10 @@ class AbstractStyle
 	 * some font metrics to compute the box model, for instance
 	 * when a dimension is defined with an 'em' unit
 	 */
-	private function computeDOMElementStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function computeHTMLElementStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		computeDisplayStyles();
-		computeTextAndFontStyles(containingHTMLElementData, containingDOMElementFontMetricsData);
+		computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
 		computeBoxModelStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData);
 	}
 	
@@ -974,15 +974,15 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Computes the DOMElement font and text styles (font size, font name, text color...)
+	 * Computes the HTMLElement font and text styles (font size, font name, text color...)
 	 */
-	private function computeTextAndFontStyles(containingHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	private function computeTextAndFontStyles(containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
-		FontAndTextStylesComputer.compute(this, containingHTMLElementData, containingDOMElementFontMetricsData);
+		FontAndTextStylesComputer.compute(this, containingHTMLElementData, containingHTMLElementFontMetricsData);
 	}
 	
 	/**
-	 * Compute the box model styles (width, height, paddings, margins...) of the DOMElement, based on
+	 * Compute the box model styles (width, height, paddings, margins...) of the HTMLElement, based on
 	 * its positioning scheme
 	 */ 
 	private function computeBoxModelStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):Void
@@ -990,8 +990,8 @@ class AbstractStyle
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		//get the right containing dimensions. For example,
-		//for a DOMElement with a 'position' style of 'absolute',
-		//it is the last positioned DOMElement
+		//for a HTMLElement with a 'position' style of 'absolute',
+		//it is the last positioned HTMLElement
 		var containingBlockDimensions:ContainingHTMLElementData = getContainingHTMLElementData(containingHTMLElementData, viewportData, lastPositionedHTMLElementData );
 		
 		//do compute the box model styles
@@ -1000,7 +1000,7 @@ class AbstractStyle
 	
 	/**
 	 * instantiate the right box computer class
-	 *	based on the DOMElement's positioning
+	 *	based on the HTMLElement's positioning
 	 *	scheme
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
@@ -1040,17 +1040,17 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Get the right containing parent dimensions for a DOMElement
+	 * Get the right containing parent dimensions for a HTMLElement
 	 * based on its position style value
 	 */
 	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
 	{
 		var containingBlockDimensions:ContainingHTMLElementData;
 		
-		//for 'positioned' DOMElement
+		//for 'positioned' HTMLElement
 		if (isPositioned() == true)
 		{
-			//for 'fixed' DOMElement, takes the viewport (the 'window' through which the document is viewed)
+			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
 			if (this._computedStyle.position == Position.fixed)
 			{
 				containingBlockDimensions = {
@@ -1068,13 +1068,13 @@ class AbstractStyle
 					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
 					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
 			}
-			//else for 'relative', takes the parent as 'relative' are "in-flow" DOMElements
+			//else for 'relative', takes the parent as 'relative' are "in-flow" HTMLElements
 			else
 			{
 				containingBlockDimensions = containingHTMLElementData;
 			}
 		}
-		//else, for not 'positioned' DOMElement, takes the containing DOMElement dimensions which is the parent
+		//else, for not 'positioned' HTMLElement, takes the containing HTMLElement dimensions which is the parent
 		else
 		{
 			containingBlockDimensions = containingHTMLElementData;
@@ -1088,16 +1088,16 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine if the DOMElement is a floated
-	 * DOMElement. A floated DOMElement is first
+	 * Determine if the HTMLElement is a floated
+	 * HTMLElement. A floated HTMLElement is first
 	 * placed in the flow then moved to the
 	 * left-most or right-most of its container.
-	 * Any subsequent DOMElement flows
+	 * Any subsequent HTMLElement flows
 	 * around the float until a new line 
 	 * starts below the float or if it is cleared
-	 * by another DOMElement.
+	 * by another HTMLElement.
 	 * 
-	 * A DOMElement is float if he declares either
+	 * A HTMLElement is float if he declares either
 	 * a left or right float
 	 */
 	public function isFloat():Bool
@@ -1123,11 +1123,11 @@ class AbstractStyle
 	 * 
 	 * The 'relative', 'absolute' and'fixed'
 	 * values of the 'position' style makes
-	 * a DOMElement 'positioned'. 
+	 * a HTMLElement 'positioned'. 
 	 * 
 	 * The 'absolute' and 'fixed' value make
-	 * a DOMElement an 'absolutely positioned'
-	 * DOMElement. This kind of DOMElement
+	 * a HTMLElement an 'absolutely positioned'
+	 * HTMLElement. This kind of HTMLElement
 	 * doesn't affect the normal flow (it is
 	 * treated as if it doesn't exist). It
 	 * uses as origin its first ancestor
@@ -1152,10 +1152,10 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Determine wether a DOMElement has
+	 * Determine wether a HTMLElement has
 	 * the 'position' value 'relative'.
 	 * 
-	 * A 'relative' DOMElement is first placed
+	 * A 'relative' HTMLElement is first placed
 	 * normally in the flow then an offset is 
 	 * applied to it with the top, left, right
 	 * and bottom computed styles.
@@ -1163,7 +1163,7 @@ class AbstractStyle
 	 * It is used as origin for any 'absolute'
 	 * or 'fixed' positioned children and 
 	 * grand-children until another positioned
-	 * DOMElement is found
+	 * HTMLElement is found
 	 */
 	public function isRelativePositioned():Bool
 	{
@@ -1172,8 +1172,8 @@ class AbstractStyle
 	
 	/**
 	 * Determine if all the children of the 
-	 * DOMElement are inline-level. 
-	 * Default is false when the DOMElement
+	 * HTMLElement are inline-level. 
+	 * Default is false when the HTMLElement
 	 * can't have children
 	 */
 	public function childrenInline():Bool
@@ -1182,9 +1182,9 @@ class AbstractStyle
 	}
 	
 	/**
-	 * An inline-level DOMElement is one that is
+	 * An inline-level HTMLElement is one that is
 	 * laid out on a line. It will be placed
-	 * either next to the preceding DOMElement
+	 * either next to the preceding HTMLElement
 	 * or on a new line if the current line
 	 * is too short to host it.
 	 * 
@@ -1208,9 +1208,9 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Wheter this DOMElement starts a new
+	 * Wheter this HTMLElement starts a new
 	 * formatting context for its children.
-	 * Default is false as only ContainerDOMElements
+	 * Default is false as only ContainerHTMLElements
 	 * can start new formatting context
 	 */
 	public function establishesNewFormattingContext():Bool
@@ -1223,10 +1223,10 @@ class AbstractStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine wether the DOMElement introduces
+	 * Determine wether the HTMLElement introduces
 	 * 'clearance', which as the effect of placing
-	 * the DOMElement below any preceding floated
-	 * DOMElement. A DOMElement introduces clearance
+	 * the HTMLElement below any preceding floated
+	 * HTMLElement. A HTMLElement introduces clearance
 	 * if he clears either left floats, right floats
 	 * or both
 	 */
@@ -1247,7 +1247,7 @@ class AbstractStyle
 	}
 	
 	/**
-	 * Determine wether the DOMElement is added
+	 * Determine wether the HTMLElement is added
 	 * to the document
 	 */
 	private function isNotDisplayed():Bool
@@ -1257,14 +1257,14 @@ class AbstractStyle
 	
 	/**
 	 * Get the dimensions of the first ancestor
-	 * of the styled DOMElement which is positioned
+	 * of the styled HTMLElement which is positioned
 	 */
 	private function getFirstPositionedAncestorData():ContainingHTMLElementData
 	{
 		var firstPositionedAncestorData:ContainingHTMLElementData;
 		var parent:HTMLElement = cast(_htmlElement.parentNode);
 		
-		//if the domElement has a parent
+		//if the htmlElement has a parent
 		if (parent != null)
 		{
 			//loop in all the parents until a positioned or a null parent is found
@@ -1285,9 +1285,9 @@ class AbstractStyle
 			}
 			//get the data of the parent
 			var parentStyle:ContainerStyle = cast(parent.style);
-			firstPositionedAncestorData = parentStyle.getContainerDOMElementData();
+			firstPositionedAncestorData = parentStyle.getContainerHTMLElementData();
 		}
-		//if the DOMElement has no parent, return the viewport data
+		//if the HTMLElement has no parent, return the viewport data
 		else
 		{
 			firstPositionedAncestorData = getWindowData();

@@ -167,14 +167,14 @@ class FloatsManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FLOAT CREATION METHODS
 	// used to create structure to hold floats data from a 
-	// floated DOMElement
+	// floated HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Create and store a float data structure from a floated DOMElement
-	 * @param	domElement the floated DOMElement
+	 * Create and store a float data structure from a floated HTMLElement
+	 * @param	htmlElement the floated HTMLElement
 	 * @param	formattingContextData the flow data of the formatting context placing the floated
-	 * DOMElement
+	 * HTMLElement
 	 * 
 	 * TODO : shouldn't need a ref to HTMLElement
 	 */
@@ -238,7 +238,7 @@ class FloatsManager
 	private function getFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
 		//a float width and height use the margin box of a
-		//DOMElement
+		//HTMLElement
 		
 		//TODO : should use bounds and not htmlElement
 		var floatWidth:Int = elementRenderer.style.htmlElement.offsetWidth;
@@ -260,8 +260,8 @@ class FloatsManager
 	
 	/**
 	 * Get the first y position in the current flow where an element
-	 * (float or DOMElement) with a width equal to elementWidth can be inserted
-	 * without overlapping floats or other DOMElements
+	 * (float or HTMLElement) with a width equal to elementWidth can be inserted
+	 * without overlapping floats or other HTMLElements
 	 * @param	formattingContextData the current formattingContextData
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in a line
@@ -343,7 +343,7 @@ class FloatsManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FLOAT REMOVAL METHODS
 	// a float is removed from the list once the documents flow is below it,
-	// which can happen after a DOMElement is placed or after the floats are cleared
+	// which can happen after a HTMLElement is placed or after the floats are cleared
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**

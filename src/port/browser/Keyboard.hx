@@ -48,14 +48,14 @@ class Keyboard extends AbstractKeyboard
 	
 	/**
 	 * Actually remove and set listeners on the nativeElement.
-	 * The listener is always removed and if the domElement
+	 * The listener is always removed and if the htmlElement
 	 * callback is not null a new listener is set
 	 */
-	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
+	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
 	{
 		untyped _htmlElement.nativeElement.removeEventListener(keyboardEvent, nativeCallback);
 		
-		if (domElementCallback != null)
+		if (htmlElementCallback != null)
 		{
 			untyped _htmlElement.nativeElement.addEventListener(keyboardEvent, nativeCallback);
 		}

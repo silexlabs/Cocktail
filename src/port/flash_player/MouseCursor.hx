@@ -11,7 +11,7 @@ import flash.display.BitmapData;
 import flash.ui.MouseCursorData;
 import flash.ui.Mouse;
 import flash.Vector;
-import cocktail.domElement.ImageDOMElement;
+import cocktail.htmlElement.ImageHTMLElement;
 import core.mouse.AbstractMouseCursor;
 import core.geom.GeomData;
 import core.mouseMouseData;
@@ -41,7 +41,7 @@ class MouseCursor extends AbstractMouseCursor
 	/**
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
+	override private function setBitmapCursor(imageHTMLElement:ImageHTMLElement, hotSpot:PointData):Void
 	{
 		//init the hotSpot if null
 		//to the top left of the cursor
@@ -52,7 +52,7 @@ class MouseCursor extends AbstractMouseCursor
 		
 		//draw the image dom element onto a 32x32 transparent bitmap data
 		var mouseCursorBitmapData:BitmapData = new BitmapData(32, 32, true, 0x00FFFFFF);
-		mouseCursorBitmapData.draw(imageDOMElement.nativeElement);
+		mouseCursorBitmapData.draw(imageHTMLElement.nativeElement);
 		
 		//set the flash mouse cursor data with the drawn bitmap data
 		//and the cursor hot spot

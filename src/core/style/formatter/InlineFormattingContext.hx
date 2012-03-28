@@ -22,13 +22,13 @@ import haxe.Log;
  * are created to contain all the elements.
  * 
  * The formatting of a line if done in 2 phases : 
- * - first the element (text, DOMElement, spaces...) are
+ * - first the element (text, HTMLElement, spaces...) are
  * added to the line and the white space rules of the element
  * are applied for instance to collapse sequences of white
  * spaces if necessary.
  * - when the line is full of elements, the x and yposition of 
  * each element in the line is computed, the x position using
- * the textAlign property of the DOMElement which started
+ * the textAlign property of the HTMLElement which started
  * the inline formatting context and the y position using
  * the vertical align property
  * 
@@ -38,7 +38,7 @@ class InlineFormattingContext extends FormattingContext
 {
 
 	/**
-	 * The DOMElements in the current line. This array
+	 * The HTMLElements in the current line. This array
 	 * is reseted each time a new line starts
 	 */
 	private var _elementsInLineBox:Array<ElementRenderer>;
@@ -79,7 +79,7 @@ class InlineFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 		
 		//set the textIndent as an offset on the first line of text
-		//insertElement(BoxElementValue.offset(_containingDOMElement.style.computedStyle.textIndent, _containingDOMElement));
+		//insertElement(BoxElementValue.offset(_containingHTMLElement.style.computedStyle.textIndent, _containingHTMLElement));
 	}
 	
 	
@@ -131,7 +131,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	
 	/**
-	 * Insert a DOMElement and instroduce the corresponding break opportunities
+	 * Insert a HTMLElement and instroduce the corresponding break opportunities
 	 * 
 	 * TODO : move addWidth to insertElement ?
 	 */
@@ -149,7 +149,7 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * Insert a DOMElement and instroduce the corresponding break opportunities
+	 * Insert a HTMLElement and instroduce the corresponding break opportunities
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
@@ -426,7 +426,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			switch (lastInsertedElement)
 			{
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentDOMElement):
+				case BoxElementValue.space(whiteSpace, spaceWidth, parentHTMLElement):
 				
 				switch (whiteSpace)
 				{
@@ -602,14 +602,14 @@ class InlineFormattingContext extends FormattingContext
 	private function removeSpaces():Void
 	{
 		/**
-		switch (_elementsInLineBox[0].domElement.style.computedStyle.whiteSpace)
+		switch (_elementsInLineBox[0].htmlElement.style.computedStyle.whiteSpace)
 		{
 			case WhiteSpace.normal,
 			WhiteSpace.nowrap,
 			WhiteSpace.preLine:
 				
 				
-				switch(_elementsInLineBox[0].domElementType)
+				switch(_elementsInLineBox[0].htmlElementType)
 				{
 					case InlineBoxValue.space:
 						_elementsInLineBox.shift();
@@ -623,13 +623,13 @@ class InlineFormattingContext extends FormattingContext
 		
 		if (_elementsInLineBox.length > 0)
 		{
-			switch (_elementsInLineBox[_elementsInLineBox.length - 1].domElement.style.computedStyle.whiteSpace)
+			switch (_elementsInLineBox[_elementsInLineBox.length - 1].htmlElement.style.computedStyle.whiteSpace)
 			{
 				case WhiteSpace.normal,
 				WhiteSpace.nowrap,
 				WhiteSpace.preLine:
 					
-				switch(	_elementsInLineBox[_elementsInLineBox.length - 1].domElementType)
+				switch(	_elementsInLineBox[_elementsInLineBox.length - 1].htmlElementType)
 				{
 					case InlineBoxValue.space:
 						_elementsInLineBox.pop();
@@ -650,7 +650,7 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * before a new line starts or before the inline
 	 * formarring context get destroyed, align all the
-	 * DOMElements in the current line horizontally
+	 * HTMLElements in the current line horizontally
 	 * @param	isLastLine wheter it is the last line which is laid out
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
@@ -658,7 +658,7 @@ class InlineFormattingContext extends FormattingContext
 	private function alignLineBox(isLastLine:Bool):Int
 	{	
 		//determine the added offset width of
-		//all DOMElements in the line box
+		//all HTMLElements in the line box
 		var concatenatedLength:Int = 0;
 		for (i in 0..._elementsInLineBox.length)
 		{
@@ -666,9 +666,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		
-		//determine the remaining space in the line once all the width of the DOMElements
+		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total avalable line width, and the x position where to 
-		//insert the first DOMElement of the line, which might be influenced for instance
+		//insert the first HTMLElement of the line, which might be influenced for instance
 		//by a float
 		var remainingSpace:Int;
 		var flowX:Int;
@@ -677,10 +677,10 @@ class InlineFormattingContext extends FormattingContext
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
 		flowX = _formattingContextRoot.style.computedStyle.marginLeft + _formattingContextRoot.style.computedStyle.paddingLeft;
 		
-		//take the float into accounts and the padding of the containing DOMElement
+		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		
-		//do align the DOMElements, the text align style of the containing DOMElement
+		//do align the HTMLElements, the text align style of the containing HTMLElement
 		//determining the alignement to apply
 		switch (_formattingContextRoot.style.computedStyle.textAlign)
 		{
@@ -696,15 +696,15 @@ class InlineFormattingContext extends FormattingContext
 			case justify:	
 				//the last line of an inline formatting context
 				//is not justified to avoid stretching too much
-				//the space between DOMElements if there are few of them
+				//the space between HTMLElements if there are few of them
 				if (isLastLine == true)
 				{
 					alignLeft(flowX);
 				}
 				else
 				{
-					//when justified, the concatenated width of the DOMElements
-					//must take all the containing DOMElement width
+					//when justified, the concatenated width of the HTMLElements
+					//must take all the containing HTMLElement width
 					concatenatedLength = _formattingContextRoot.style.computedStyle.width;
 					
 					alignJustify(flowX, remainingSpace);
@@ -715,8 +715,8 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * align the DOMElements starting from the left edge of the containing DOMElement
-	 * @param	flowX the x position of the first DOMElement
+	 * align the HTMLElements starting from the left edge of the containing HTMLElement
+	 * @param	flowX the x position of the first HTMLElement
 	 */
 	private function alignLeft(flowX:Int):Void
 	{
@@ -729,9 +729,9 @@ class InlineFormattingContext extends FormattingContext
 	
 
 	/**
-	 * Center the DOMElements in the line by moving each to the right by half the remaining space
-	 * @param	flowX the first availbable x position for the DOMElement to the left most of the line box
-	 * @param	remainingSpace the available width in the line box after all DOMElements
+	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
+	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
+	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
 	private function alignCenter(flowX:Int, remainingSpace:Int):Void
@@ -744,10 +744,10 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * align the DOMElements starting from the right edge to the left edge of the
-	 * containing DOMElement
-	 * @param	flowX the x position of the DOMElement to left most of the line box
-	 * @param	remainingSpace the available width in the line box after all DOMElements
+	 * align the HTMLElements starting from the right edge to the left edge of the
+	 * containing HTMLElement
+	 * @param	flowX the x position of the HTMLElement to left most of the line box
+	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
 	private function alignRight(flowX:Int, remainingSpace:Int):Void
@@ -760,7 +760,7 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * Justify the DOMElements in the line box by adjusting
+	 * Justify the HTMLElements in the line box by adjusting
 	 * the width of the space characters
 	 * @param	flowX
 	 * @param	remainingSpace
@@ -768,7 +768,7 @@ class InlineFormattingContext extends FormattingContext
 	private function alignJustify(flowX:Int, remainingSpace:Int):Void
 	{
 		//determine how many space there are among the 
-		//DOMElements of the line box
+		//HTMLElements of the line box
 		var spacesNumber:Int = 0;
 		for (i in 0..._elementsInLineBox.length)
 		{
@@ -778,7 +778,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 		}
 		
-		//justify all DOMElements
+		//justify all HTMLElements
 		for (i in 0..._elementsInLineBox.length)
 		{	
 			if (_elementsInLineBox[i].isSpace() == true)
@@ -802,11 +802,11 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * When a line box is full and a new line will
 	 * be created, compute the height of the current line
-	 * box and place its DOMElement vertically.
+	 * box and place its HTMLElement vertically.
 	 * 
 	 * A line box height corresponds to the addition 
 	 * of the highest ascent and descent of its
-	 * DOMElement above the baseline
+	 * HTMLElement above the baseline
 	 * 
 	 * TODO : finish implementation of verticalAlign + duplicated
 	 * code
@@ -817,34 +817,34 @@ class InlineFormattingContext extends FormattingContext
 		var lineBoxAscent:Float = 0;
 		var lineBoxDescent:Float = 0;
 		
-		//loop in all DOMElement in the line box to find
+		//loop in all HTMLElement in the line box to find
 		//the highest ascent and descent among them
 		for (i in 0..._elementsInLineBox.length)
 		{
 			//TODO : shouldn't need an html element here, only style
 			var htmlElement:HTMLElement = _elementsInLineBox[i].style.htmlElement;
 			
-			var domElementAscent:Int;
-			var domElementDescent:Int;
+			var htmlElementAscent:Int;
+			var htmlElementDescent:Int;
 			
 			//the computed vertical align is the offset of the DOMElemenet relative
 			//to the baseline
-			var domElementVerticalAlign:Float = htmlElement.style.computedStyle.verticalAlign;
+			var htmlElementVerticalAlign:Float = htmlElement.style.computedStyle.verticalAlign;
 			
 			//for embedded or inlineBlock elements, which have no baseline, the height above
 			//the baseline is the offset height and they have no descent
 			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
-				domElementAscent = htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
+				htmlElementAscent = htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
 				
-				domElementDescent = 0;
+				htmlElementDescent = 0;
 				
 				switch (htmlElement.style.verticalAlign)
 				{
 					case top:
-						domElementAscent = Math.round(lineBoxAscent);
-						domElementDescent = Math.round(htmlElement.offsetHeight - lineBoxAscent);
+						htmlElementAscent = Math.round(lineBoxAscent);
+						htmlElementDescent = Math.round(htmlElement.offsetHeight - lineBoxAscent);
 						
 					default:	
 						
@@ -853,28 +853,28 @@ class InlineFormattingContext extends FormattingContext
 			//else retrieve the ascent and descent and apply leading to it
 			else
 			{
-				domElementAscent = htmlElement.style.fontMetrics.ascent;
-				domElementDescent = htmlElement.style.fontMetrics.descent;	
+				htmlElementAscent = htmlElement.style.fontMetrics.ascent;
+				htmlElementDescent = htmlElement.style.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = htmlElement.style.computedStyle.lineHeight - (domElementAscent + domElementDescent);
+				var leading:Float = htmlElement.style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
-				domElementAscent = Math.round((domElementAscent + leading / 2));
-				domElementDescent = Math.round((domElementDescent + leading / 2));
+				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
+				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
 			}
 			
 			//if the ascent or descent is superior to the current maximum
 			//ascent or descent, it becomes the line box ascent/descent
-			if (domElementAscent - domElementVerticalAlign > lineBoxAscent)
+			if (htmlElementAscent - htmlElementVerticalAlign > lineBoxAscent)
 			{
-				lineBoxAscent = domElementAscent - domElementVerticalAlign;
+				lineBoxAscent = htmlElementAscent - htmlElementVerticalAlign;
 			}
 			
-			if (domElementDescent + domElementVerticalAlign > lineBoxDescent)
+			if (htmlElementDescent + htmlElementVerticalAlign > lineBoxDescent)
 			{
-				lineBoxDescent = domElementDescent + domElementVerticalAlign;
+				lineBoxDescent = htmlElementDescent + htmlElementVerticalAlign;
 			}
 		
 		}
@@ -882,7 +882,7 @@ class InlineFormattingContext extends FormattingContext
 		//compute the line box height
 		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent;
 		
-		//for each DOMElement, place it vertically using the line box ascent and vertical align
+		//for each HTMLElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._elementsInLineBox.length)
 		{
 			

@@ -23,7 +23,7 @@ import core.dom.DOMData;
  * The abstract implementation of the focus
  * manager. Listens for TAB and ENTER/SPACE
  * event on keyboard to either switch the 
- * focused DOMElement or trigger a simulated
+ * focused HTMLElement or trigger a simulated
  * click event on it
  * 
  * @author Yannick DOMINGUEZ
@@ -31,15 +31,15 @@ import core.dom.DOMData;
 class AbstractFocusManagerImpl 
 {
 	/**
-	 * set/get the reference to the BodyDOMElement use as 
+	 * set/get the reference to the BodyHTMLElement use as 
 	 * starting point when traversing the DOM looking 
-	 * for focusable DOMElements
+	 * for focusable HTMLElements
 	 */
 	private var _bodyElement:HTMLBodyElement;
 	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
 	
 	/**
-	 * set/get the currently focused DOMElement
+	 * set/get the currently focused HTMLElement
 	 * 
 	 * TODO : move to Document
 	 */
@@ -48,13 +48,13 @@ class AbstractFocusManagerImpl
 	
 	/**
 	 * Holds a list of all the focusable
-	 * DOMElements in the DOM, ordered in the
+	 * HTMLElements in the DOM, ordered in the
 	 * right focus order
 	 */
 	private var _tabList:Array<HTMLElement>;
 	
 	/**
-	 * The index of the currently active DOMElement
+	 * The index of the currently active HTMLElement
 	 * in the tabList
 	 */
 	private var _tabListIndex:Int;
@@ -108,7 +108,7 @@ class AbstractFocusManagerImpl
 	 * 
 	 * If it is any other key, redirect the 
 	 * key down event to the currently active
-	 * DOMElement
+	 * HTMLElement
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
@@ -123,16 +123,16 @@ class AbstractFocusManagerImpl
 				simulateMouseClick(keyEventData);
 				
 			default:
-				if (activeDOMElement.onKeyDown != null)
+				if (activeHTMLElement.onKeyDown != null)
 				{
-					activeDOMElement.onKeyDown(keyEventData);
+					activeHTMLElement.onKeyDown(keyEventData);
 				}
 		}*/
 	}
 	
 	/**
 	 * When a key up event happens, redirect to the
-	 * currently active DOMElement
+	 * currently active HTMLElement
 	 */
 	private function onKeyUp(keyEventData:KeyboardEvent):Void
 	{
@@ -144,11 +144,11 @@ class AbstractFocusManagerImpl
 	
 	/**
 	 * When TAB is pressed, determine the next
-	 * DOMElement in the _tabList array which
+	 * HTMLElement in the _tabList array which
 	 * must be focused
 	 * 
 	 * @param	reverse when Shift is also pressed,
-	 * focus the previous focusable DOMElement in
+	 * focus the previous focusable HTMLElement in
 	 * the _tabList array
 	 */
 	private function doTabFocus(reverse:Bool):Void
@@ -189,8 +189,8 @@ class AbstractFocusManagerImpl
 				}
 			}
 		}
-		//if the currently activeDOMElement is the body, it means
-		//no DOMElement is actually focused and there is no need
+		//if the currently activeHTMLElement is the body, it means
+		//no HTMLElement is actually focused and there is no need
 		//to increment/decrement
 		else
 		{
@@ -204,18 +204,18 @@ class AbstractFocusManagerImpl
 			}
 		}
 		
-		//set the activeDOMElement with the found tab list index
+		//set the activeHTMLElement with the found tab list index
 		activeElement = _tabList[_tabListIndex];
 	}
 	
 	/**
 	 * Traverse all the DOM once to build a flat list of all the focusable
-	 * DOMElements in the DOM.
+	 * HTMLElements in the DOM.
 	 * 
-	 * The list is first composed of all the focusable DOMElement with a tabIndex
+	 * The list is first composed of all the focusable HTMLElement with a tabIndex
 	 * superior to 0, ordered form smaller to bigger then the list contains all the
-	 * focusable DOMElement with a tabIndex of 0, ordered in DOM order starting from
-	 * the BodyDOMElement
+	 * focusable HTMLElement with a tabIndex of 0, ordered in DOM order starting from
+	 * the BodyHTMLElement
 	 */
 	private function buildTabList(htmlElement:HTMLElement):Array<HTMLElement>
 	{
@@ -224,10 +224,10 @@ class AbstractFocusManagerImpl
 		//the user press tab
 		_tabListIndex = 0;
 		
-		//contains the DOMElement with a 0 tabIndex
+		//contains the HTMLElement with a 0 tabIndex
 		var orderedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
-		//contains the DOMElement with a tabIndex > 0
+		//contains the HTMLElement with a tabIndex > 0
 		var indexedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
 		//build the list
@@ -245,7 +245,7 @@ class AbstractFocusManagerImpl
 	/**
 	 * Recursive method traversing all the DOM and filling
 	 * the reference to the arrays which must contain
-	 * the ordered focusable DOMElements
+	 * the ordered focusable HTMLElements
 	 */
 	private function doBuildTabList(htmlElement:HTMLElement, orderedTabList:Array<HTMLElement>, indexedTabList:Array<HTMLElement>):Void
 	{
@@ -259,11 +259,11 @@ class AbstractFocusManagerImpl
 			{
 				var child:HTMLElement = htmlElement.childNodes[i];
 				
-				//if the child is also a ContainerDOMElement, call the doBuildTabList
+				//if the child is also a ContainerHTMLElement, call the doBuildTabList
 				//recursively
-				if (Std.is(child, ContainerDOMElement) == true)
+				if (Std.is(child, ContainerHTMLElement) == true)
 				{
-					var containerChild:ContainerDOMElement = cast(child);
+					var containerChild:ContainerHTMLElement = cast(child);
 					doBuildTabList(containerChild, orderedTabList, indexedTabList);
 				}
 				//check if the child can be focused
@@ -279,7 +279,7 @@ class AbstractFocusManagerImpl
 					else if (child.tabIndex > 0)
 					{
 						//find where to insert it in the 
-						//indexed DOMElement array which is
+						//indexed HTMLElement array which is
 						//ordered starting from the DOMelement
 						//with the smallest tabIndex to the
 						//biggest
@@ -307,7 +307,7 @@ class AbstractFocusManagerImpl
 							}
 						}
 					}
-					//note : DOMElements which are tabEnabled but with a negative
+					//note : HTMLElements which are tabEnabled but with a negative
 					//tabIndex can't be selected with tab focus
 				}
 			}
@@ -317,9 +317,9 @@ class AbstractFocusManagerImpl
 	
 	/**
 	 * When a simulated mouse click must happen on the 
-	 * active DOMElement, create all the necessary
+	 * active HTMLElement, create all the necessary
 	 * element such as a fake mouse position, and
-	 * cal the active DOMElement's mouse down callback
+	 * cal the active HTMLElement's mouse down callback
 	 * if it exists
 	 */
 	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
@@ -340,14 +340,14 @@ class AbstractFocusManagerImpl
 	/////////////////////////////////
 	
 	/**
-	 * When a new activeDOMElement is set, call 
+	 * When a new activeHTMLElement is set, call 
 	 * the focus out (blur) method on the previous
 	 * one and then call the focus in on the 
 	 * new one
 	 */
 	private function setActiveElement(value:HTMLElement):HTMLElement
 	{
-		//only call if there is a previous activeDOMElement
+		//only call if there is a previous activeHTMLElement
 		if (_activeElement != null)
 		{
 			if (_activeElement.onBlur != null)
@@ -356,14 +356,14 @@ class AbstractFocusManagerImpl
 			}
 		}
 		
-		//if the activeDOMElement is set to null, it defaults
-		//to the BodyDOMElement
+		//if the activeHTMLElement is set to null, it defaults
+		//to the BodyHTMLElement
 		if (value == null)
 		{
 			value = _bodyElement;
 		}
 		
-		//do nothing if the new avctiveDOMElement is the same
+		//do nothing if the new avctiveHTMLElement is the same
 		//as the current one
 		if (value != _activeElement)
 		{
@@ -384,7 +384,7 @@ class AbstractFocusManagerImpl
 	
 	/**
 	 * when the bodyDOMelement is defined for the FocusManager,
-	 * reset the activeDOMElement and the tab list
+	 * reset the activeHTMLElement and the tab list
 	 */
 	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
 	{

@@ -28,7 +28,7 @@ import haxe.Log;
  * are computed
  * - then, at rendering time when each of the background
  * box (the boxes onto which a background is drawn,
- * for instance for an inline DOMElement displayed on multiple
+ * for instance for an inline HTMLElement displayed on multiple
  * lines, there will be one background box for each line) and
  * each of the background image dimensions are known, all
  * the styles are computed
@@ -77,10 +77,10 @@ class BackgroundStylesComputer
 	}
 	
 	/**
-	 * This method is called during rendering for each background image of a DOMElement
+	 * This method is called during rendering for each background image of a HTMLElement
 	 * for each background boxes
 	 * 
-	 * At this point, all the background boxes of the DOMElement are known and also
+	 * At this point, all the background boxes of the HTMLElement are known and also
 	 * the intrinsic dimension of the background-image which can be an externally loaded
 	 * bitmap or a programatically drawn gradient. The dimension of the background
 	 * image is used to compute some styles.
@@ -386,7 +386,7 @@ class BackgroundStylesComputer
 	 * This area can be sized to the border, padding or content box
 	 * of the background box
 	 * 
-	 * The positioning area is defined in the space of the margin box of the DOMElement
+	 * The positioning area is defined in the space of the margin box of the HTMLElement
 	 * 
 	 * @param	style
 	 * @param	backgroundOrigin
@@ -442,7 +442,7 @@ class BackgroundStylesComputer
 	 * positioning area.
 	 * 
 	 * The painting area is defined in the space of the margin box
-	 * of the DOMElement,like the positioning area
+	 * of the HTMLElement,like the positioning area
 	 * 
 	 * @param	style
 	 * @param	backgroundClip

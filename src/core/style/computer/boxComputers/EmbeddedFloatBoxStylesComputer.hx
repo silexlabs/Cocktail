@@ -8,9 +8,9 @@
 package core.style.computer.boxComputers;
 
 /**
- * This is the box computer for floated embedded DOMElement,
- * such as a floated ImagdDOMElement. It behaves the same
- * as the box computer for inline embedded DOMElement
+ * This is the box computer for floated embedded htmlElement,
+ * such as a floated ImagdHTMLElement. It behaves the same
+ * as the box computer for inline embedded htmlElement
  * 
  * @author Yannick DOMINGUEZ
  */

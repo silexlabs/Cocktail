@@ -46,14 +46,14 @@ class Mouse extends AbstractMouse
 	/**
 	 * Actually remove and set listeners on the native flash DisplayObject. Listeners
 	 * are always removed, as they must be removed if the user either removes the 
-	 * listener or set a new one. Listeners are only added if the domElement callback
+	 * listener or set a new one. Listeners are only added if the htmlElement callback
 	 * is not null
 	 */
-	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, domElementCallback:MouseEvent->Void):Void
+	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:MouseEvent->Void):Void
 	{
 		_htmlElement.nativeElement.removeEventListener(mouseEvent, nativeCallback);
 		
-		if (domElementCallback != null)
+		if (htmlElementCallback != null)
 		{
 			_htmlElement.nativeElement.addEventListener(mouseEvent, nativeCallback);
 		}

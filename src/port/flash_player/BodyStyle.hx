@@ -22,7 +22,7 @@ class BodyStyle extends AbstractBodyStyle
 {
 	/**
 	 * class constructor
-	 * @param	domElement
+	 * @param	htmlElement
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{

@@ -29,7 +29,7 @@ import flash.text.TextFormat;
  * using the flash text engine introduced in flash player 10.
  * 
  * It's purpose is to create as many TextRenderer as necessary
- * to render every TextElement of the styled ContainerDOMElement.
+ * to render every TextElement of the styled ContainerHTMLElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -58,7 +58,7 @@ class ContainerStyle extends AbstractContainerStyle
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		textField.setTextFormat(getTextFormat());
 		
-		var textRenderer:TextRenderer = new TextRenderer(_domElement, textField, textToken);
+		var textRenderer:TextRenderer = new TextRenderer(_htmlElement, textField, textToken);
 
 		//wrap the flash text line in a TextRenderer
 		return textFragment;

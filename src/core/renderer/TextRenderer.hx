@@ -32,7 +32,7 @@ class TextRenderer extends ElementRenderer
 	 * Class constructor. Set the width and height bounds
 	 * to those of the generated text
 	 * 
-	 * @param domElement the generated text
+	 * @param htmlElement the generated text
 	 */
 	public function new(style:Style, nativeElement:NativeElement, textToken:TextTokenValue) 
 	{

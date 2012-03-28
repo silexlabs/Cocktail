@@ -38,12 +38,12 @@ class UnitManager
 	 * @param	length contains the unit type and the value
 	 * @param	emReference the computed value used as reference
 	 * when computing an em relative length value. It can be either the
-	 * DOMElement's computed font size or its parent's if the computed em
-	 * value is the font size of the DOMElement
+	 * htmlElement's computed font size or its parent's if the computed em
+	 * value is the font size of the htmlElement
 	 * @param exReference he computed value used as reference
 	 * when computing an ex relative length value. It can be either the
-	 * DOMElement's x-height or its parent's x-height if the computed ex value
-	 * is the font size of the DOMElement
+	 * htmlElement's x-height or its parent's x-height if the computed ex value
+	 * is the font size of the htmlElement
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 

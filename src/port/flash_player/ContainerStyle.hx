@@ -37,7 +37,7 @@ import flash.text.engine.TypographicCase;
  * using the flash text engine introduced in flash player 10.
  * 
  * It's purpose is to create as many TextRenderer as necessary
- * to render every TextElement of the styled ContainerDOMElement.
+ * to render every TextElement of the styled ContainerHTMLElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -113,7 +113,7 @@ class ContainerStyle extends AbstractContainerStyle
 	 * to create flash textLines. The TextElement contains
 	 * both a string of text and the display properties
 	 * to apply to it when rendered. The styles of the
-	 * ContainerDOMElement will be converted to work
+	 * ContainerHTMLElement will be converted to work
 	 * with the flash TextElement
 	 */
 	private function getNativeTextElement(text:String):TextElement
@@ -125,7 +125,7 @@ class ContainerStyle extends AbstractContainerStyle
 		var textElement:TextElement = new TextElement(transformedText);
 		
 		//create a flash element format object and set its
-		//attribute to match the styles defined in this ContainerDOMElement
+		//attribute to match the styles defined in this ContainerHTMLElement
 		var elementFormat:ElementFormat = new ElementFormat();
 		
 		//set font size
@@ -161,7 +161,7 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	/**
 	 * Return a flash FontPosture object from
-	 * the fontStyle style of the ContainerDOMElement
+	 * the fontStyle style of the ContainerHTMLElement
 	 */
 	private static function getNativeFontPosture(fontStyle:FontStyle):FontPosture
 	{
@@ -181,7 +181,7 @@ class ContainerStyle extends AbstractContainerStyle
 	
 	/**
 	 * Return a flash TypographicCase object from
-	 * the font variant style of the ContainerDOMElement
+	 * the font variant style of the ContainerHTMLElement
 	 */
 	private static function getNativeFontVariant(fontVariant:FontVariant):TypographicCase
 	{

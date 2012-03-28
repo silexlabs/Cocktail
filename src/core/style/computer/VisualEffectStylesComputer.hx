@@ -40,7 +40,7 @@ class VisualEffectStylesComputer
 	 * Compute all the visual effect styles
 	 * 
 	 * @param	style contain the styles definition of the 
-	 * target DOMElement
+	 * target htmlElement
 	 */
 	public static function compute(style:AbstractStyle):Void
 	{
@@ -145,7 +145,7 @@ class VisualEffectStylesComputer
 	}
 	
 	/**
-	 * Compute a transformation matrix to apply to the DOMElement
+	 * Compute a transformation matrix to apply to the htmlElement
 	 * from the array of transform functions concatenated in order
 	 */
 	private static function getComputedTransform(style:AbstractStyle):Matrix

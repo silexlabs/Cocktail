@@ -13,8 +13,8 @@ import core.unit.UnitManager;
 import haxe.Log;
 
 /**
- * This is the box computer for inline embedded DOMElement,
- * such as for instance an ImageDOMElement inserted in a
+ * This is the box computer for inline embedded HTMLElement,
+ * such as for instance an ImageHTMLElement inserted in a
  * text
  * 
  * @author Yannick DOMINGUEZ
@@ -30,9 +30,9 @@ class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	}
 	
 	/**
-	 * for inline embedded DOMElement, auto margins compute to 0
+	 * for inline embedded HTMLElement, auto margins compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		return 0;
 	}

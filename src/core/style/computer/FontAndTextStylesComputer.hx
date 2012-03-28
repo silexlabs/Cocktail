@@ -15,8 +15,8 @@ import haxe.Log;
 
 /**
  * Compute the Font and Text related styles
- * of a DOMElement, helped by the containing
- * DOMElement dimensions and font metrics
+ * of a HTMLElement, helped by the containing
+ * HTMLElement dimensions and font metrics
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -37,19 +37,19 @@ class FontAndTextStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * compute all the font and text styles of the DOMElement
+	 * compute all the font and text styles of the HTMLElement
 	 * @param	style
 	 * @param	containingHTMLElementData
-	 * @param	containingDOMElementFontMetricsData
+	 * @param	containingHTMLElementFontMetricsData
 	 */
-	public static function compute(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
-		if (containingDOMElementFontMetricsData != null)
+		if (containingHTMLElementFontMetricsData != null)
 		{
 			//font size
-			computedStyle.fontSize = getComputedFontSize(style, containingDOMElementFontMetricsData.fontSize, containingDOMElementFontMetricsData.xHeight);
+			computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
 		}
 		else
 		{
@@ -61,7 +61,7 @@ class FontAndTextStylesComputer
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingHTMLElementData, containingDOMElementFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingHTMLElementData, containingHTMLElementFontMetricsData);
 		
 		//font weight
 		computedStyle.fontWeight = style.fontWeight;
@@ -122,10 +122,10 @@ class FontAndTextStylesComputer
 	}
 	
 	/**
-	 * Compute the vertical offset to apply to a DOMElement in an inline
+	 * Compute the vertical offset to apply to a HTMLElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedVerticalAlign(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -136,13 +136,13 @@ class FontAndTextStylesComputer
 				
 			case middle:
 				var offsetHeight:Int = style.computedStyle.height + style.computedStyle.paddingTop + style.computedStyle.paddingBottom;
-				verticalAlign = offsetHeight / 2 + containingDOMElementFontMetricsData.xHeight / 2;
+				verticalAlign = offsetHeight / 2 + containingHTMLElementFontMetricsData.xHeight / 2;
 				
 			case sub:
-				verticalAlign = containingDOMElementFontMetricsData.subscriptOffset;
+				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
 				
 			case superStyle:
-				verticalAlign = containingDOMElementFontMetricsData.superscriptOffset;
+				verticalAlign = containingHTMLElementFontMetricsData.superscriptOffset;
 				
 			case textTop:
 				verticalAlign = 0;
@@ -192,7 +192,7 @@ class FontAndTextStylesComputer
 	}
 	
 	/**
-	 * Computed the color of a text of the DOMElement
+	 * Computed the color of a text of the HTMLElement
 	 */
 	private static function getComputedColor(style:AbstractStyle):ColorData
 	{
@@ -220,7 +220,7 @@ class FontAndTextStylesComputer
 	}
 	
 	/**
-	 * Compute the line height of a DOMElement in an inline
+	 * Compute the line height of a HTMLElement in an inline
 	 * formatting context
 	 */
 	private static function getComputedLineHeight(style:AbstractStyle):Float
@@ -267,7 +267,7 @@ class FontAndTextStylesComputer
 	}
 	
 	/**
-	 * Compute the font size of the text of a DOMElement
+	 * Compute the font size of the text of a HTMLElement
 	 */
 	private static function getComputedFontSize(style:AbstractStyle, parentFontSize:Float, parentXHeight:Float):Float
 	{

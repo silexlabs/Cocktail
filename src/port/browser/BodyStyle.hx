@@ -21,7 +21,7 @@ class BodyStyle extends AbstractBodyStyle
 {
 	/**
 	 * class constructor
-	 * @param	domElement
+	 * @param	htmlElement
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
@@ -47,7 +47,7 @@ class BodyStyle extends AbstractBodyStyle
 	/**
 	 * overriden as in JS, the browser takes care of the layout
 	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{	
 		
 	}

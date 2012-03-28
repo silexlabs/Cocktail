@@ -46,9 +46,9 @@ import port.browser.Style;
 import haxe.Log;
 
 /**
- * This is the style implementation for ContainerDOMElement.
+ * This is the style implementation for ContainerHTMLElement.
  * 
- * ContainerDOMElement can have children, and when laid out,
+ * ContainerHTMLElement can have children, and when laid out,
  * also start the layout on each of its children using
  * either a block or inline formatting
  * 
@@ -69,7 +69,7 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * ContainerDOMElement create either a BlockBoxRenderer or an InlineBoxRenderer
+	 * ContainerHTMLElement create either a BlockBoxRenderer or an InlineBoxRenderer
 	 * depending on wheter they participate in a block or inline formatting context
 	 * then attach it to their parent ElementRenderer
 	 */
@@ -97,10 +97,10 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * This method is overriden to start a recursive layout when called on a ContainerDOMElement. The ContainerDOMElement
+	 * This method is overriden to start a recursive layout when called on a ContainerHTMLElement. The ContainerHTMLElement
 	 * will be measured and placed as well as all of its children.
 	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{		
 		flow(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, null, null, null);
 	}
@@ -110,9 +110,9 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Lay out all the children of the ContainerDOMElement
+	 * Lay out all the children of the ContainerHTMLElement
 	 */
-	override private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 
 		//compute all the styles of the children that will affect
@@ -122,10 +122,10 @@ class AbstractContainerStyle extends Style
 		//depends on the children computed 'display' style value
 		for (i in 0..._htmlElement.childNodes.length)
 		{
-			//only DOMElement styles are computed, not TextElement as they have no style.
+			//only HTMLElement styles are computed, not TextElement as they have no style.
 			//When determining the formatting context to use, TextElement are always assumed
 			//to be inline as text is always laid out on a line when rendered.
-			//Text use its ContainerDOMElement's styles for rendering
+			//Text use its ContainerHTMLElement's styles for rendering
 			if (isElementNode(_htmlElement.childNodes[i]) == true)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
@@ -134,36 +134,36 @@ class AbstractContainerStyle extends Style
 		}
 		
 		//The children use either a new formatting context to
-		//be laid out into if the ContainerDOMElement establishes
+		//be laid out into if the ContainerHTMLElement establishes
 		//a new formatting context or participate in the current formatting
 		//context
 		var childrenFormattingContext:FormattingContext = getformattingContext(formattingContext);
 		
 		//get the dimensions that will be used to lay out the children
-		//of the DOMElement. For instance, if the ContainerDOMElement establishes an
+		//of the HTMLElement. For instance, if the ContainerHTMLElement establishes an
 		//inline formatting context, then its lineHeight will be used
 		//instead of its height as containing height
-		var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerDOMElementData();
+		var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
 		
-		//get the computed font metrics of the ContainerDOMElement. Those metrics
+		//get the computed font metrics of the ContainerHTMLElement. Those metrics
 		//are based on the font itself and the font size used
-		var childrenContainingDOMElementFontMetricsData:FontMetricsData = this.fontMetrics;
+		var childrenContainingHTMLElementFontMetricsData:FontMetricsData = this.fontMetrics;
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children and to each of the children using it as first positioned ancestor
 		var childLastPositionedHTMLElementData:LastPositionedHTMLElementData;
 		
-		//if the ContainerDOMElement is positioned, it becomes the last positioned DOMElement for the children it
+		//if the ContainerHTMLElement is positioned, it becomes the last positioned HTMLElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned
-		//children will be stored and once this ContainerDOMElement is laid out, it will position all those children.
-		//The layout of absolutely positioned children must happen once the dimensions of this ContainerDOMElement are 
+		//children will be stored and once this ContainerHTMLElement is laid out, it will position all those children.
+		//The layout of absolutely positioned children must happen once the dimensions of this ContainerHTMLElement are 
 		//known so that children can be positioned using the 'bottom' and 'right' styles which use the dimensions
-		//of the ContainerDOMElement as reference
+		//of the ContainerHTMLElement as reference
 		childLastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
 		
-		//flow all children and store their laid out position in the created child ElementRenderers, relative to the ContainerDOMElement
+		//flow all children and store their laid out position in the created child ElementRenderers, relative to the ContainerHTMLElement
 		//which started the children formatting context
-		childrenFormattingContext = doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext);
+		childrenFormattingContext = doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 	
 
 		
@@ -174,19 +174,19 @@ class AbstractContainerStyle extends Style
 			shrinkToFitIfNeeded(containingHTMLElementData, childrenFormattingContext.maxWidth, formattingContext, lastPositionedHTMLElementData, viewportData );
 		}
 		
-		//if the 'height' style of this ContainerDOMElement is 
+		//if the 'height' style of this ContainerHTMLElement is 
 		//defined as 'auto', then in most cases, it depends on its content height
 		//and it must now be adjusted to the total height
-		//of its children before the ContainerDOMElement is actually
+		//of its children before the ContainerHTMLElement is actually
 		//sized. For some border cases though, the total height
 		//of the children is not used and auto height is computed in
 		//another way
 		if (this._height == Dimension.cssAuto)
 		{
 			//format the children formatting context, so that the bounds
-			//of the children of this ContainerDOMElement can be found.
+			//of the children of this ContainerHTMLElement can be found.
 			//The height of this bound is applied as the new height
-			//It only needs to be done for ContainerDOMElement which doesn't
+			//It only needs to be done for ContainerHTMLElement which doesn't
 			//establish a new formatting context for its children, else
 			//the formatting context would have been already formatted
 			//at this point
@@ -198,9 +198,9 @@ class AbstractContainerStyle extends Style
 			this._computedStyle.height = applyContentHeightIfNeeded(containingHTMLElementData,childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
 		}
 		
-		//if this ContainerDOMElement is positioned, it means that it is the first positioned ancestor
+		//if this ContainerHTMLElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them.
-		positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedHTMLElementData, viewportData);
+		positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData, viewportData);
 		
 		//clean up the children formatting context for garbage collection
 		if (establishesNewFormattingContext() == true)
@@ -215,34 +215,34 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually flow all the children of the ContainerDOMElement
+	 * Actually flow all the children of the ContainerHTMLElement
 	 * 
 	 * TODO : re-add the code to insert offset before and after children ?
 	 * 
 	 */
-	private function doFlowChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingDOMElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
+	private function doFlowChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
 		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
 		
 		//flow all children 
 		for (i in 0..._htmlElement.childNodes.length)
 		{
-			//if the children is a DOMElement, call its flow method
+			//if the children is a HTMLElement, call its flow method
 			if (isElementNode(_htmlElement.childNodes[i]) == true)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
-				//the flow method also lays out recursively all the children of the childrenDOMElement
-				//if it is a ContainerDOMElement
-				childHTMLElement.style.flow(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingDOMElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
+				//the flow method also lays out recursively all the children of the childrenHTMLElement
+				//if it is a ContainerHTMLElement
+				childHTMLElement.style.flow(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
 			}
-			//else if it is a TextElement, call a method that will create as many TextFragmentDOMElement
+			//else if it is a TextElement, call a method that will create as many TextFragmentHTMLElement
 			//as necessary to render the TextElement and insert them into the document
 			else 
 			{
 				var childrenText:Text = cast(_htmlElement.childNodes[i]);
 				var insertedText:Array<TextRenderer> = insertTextElement(childrenText, childrenFormattingContext, childrenContainingHTMLElementData);
 				
-				//add the created TextRenderer to the ContainerDOMElement
+				//add the created TextRenderer to the ContainerHTMLElement
 				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
@@ -256,7 +256,7 @@ class AbstractContainerStyle extends Style
 		//ElementRenderer have the right bounds
 		//
 		//This method is only called if a new formatting
-		//context was established by this ContainerDOMElement,
+		//context was established by this ContainerHTMLElement,
 		//meaning that it also is responsible to format it
 		if (establishesNewFormattingContext() == true)
 		{
@@ -267,28 +267,28 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Do position absolutely positioned descendant if this ContainerDOMElement is positioned
+	 * Do position absolutely positioned descendant if this ContainerHTMLElement is positioned
 	 */
-	private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
 		if (isPositioned() == true)
 		{
-			doPositionAbsolutelyPositionedDOMElements(childLastPositionedHTMLElementData, viewportData);
+			doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData, viewportData);
 		}
 	}
 	
 	/**
-	 * When this ContainerDOMElement is positioned, position each of its children using it
-	 * as its origin. This method is called once all the dimensions of ContainerDOMElement
+	 * When this ContainerHTMLElement is positioned, position each of its children using it
+	 * as its origin. This method is called once all the dimensions of ContainerHTMLElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
 	 */
-	private function doPositionAbsolutelyPositionedDOMElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
-		//update the data of the ContainerDOMElement now that its width and height are known
-		childLastPositionedHTMLElementData.data = getContainerDOMElementData();
+		//update the data of the ContainerHTMLElement now that its width and height are known
+		childLastPositionedHTMLElementData.data = getContainerHTMLElementData();
 		
-		//ensure that the actual height of the ContainerDOMElement is used instead of its lineHeight
+		//ensure that the actual height of the ContainerHTMLElement is used instead of its lineHeight
 		childLastPositionedHTMLElementData.data.height = getComputedHeight();
 		
 		//position each stored children
@@ -296,11 +296,11 @@ class AbstractContainerStyle extends Style
 		{
 			var positionedHTMLElementData:PositionedHTMLElementData = childLastPositionedHTMLElementData.children[i];
 			
-			//position the DOMElement's ElementRenderer which set its x and y bounds in the space of this ContainerDOMElement's
+			//position the HTMLElement's ElementRenderer which set its x and y bounds in the space of this ContainerHTMLElement's
 			//formatting context
 			positionedHTMLElementData.style.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
 
-			//absolutely positioned DOMElement are positioned relative to the margin box
+			//absolutely positioned HTMLElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
 			//
 			//TODO : re-implement but works for embedded elements but not container
@@ -310,7 +310,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Insert a TextElement (a string of text without formatting) by creating as many TextFragmentDOMElement as needed from it
+	 * Insert a TextElement (a string of text without formatting) by creating as many TextFragmentHTMLElement as needed from it
 	 * and inserting them into the flow
 	 * @param	textElement the string of text used as content for the created text lines
 	 */
@@ -365,25 +365,25 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * In certain cases, when the width of the ContainerDOMElement is 'auto',
+	 * In certain cases, when the width of the ContainerHTMLElement is 'auto',
 	 * its computed value is 'shrink-to-fit' meaning that it will take either
 	 * the width of the widest line formed by its children or the width of its
 	 * container if the children overflows
 	 * 
-	 * If the width of this ContainerDOMElement is indeed shrinked, all
+	 * If the width of this ContainerHTMLElement is indeed shrinked, all
 	 * its children are re-flowed
 	 * 
 	 * @param	containingHTMLElementData
 	 * @param	minimumWidth the width of the widest line of children laid out
-	 * by this ContainerDOMElement which will be the minimum width that should
-	 * have this DOMElement if it is shrinked to fit
+	 * by this ContainerHTMLElement which will be the minimum width that should
+	 * have this HTMLElement if it is shrinked to fit
 	 */
 	private function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{		
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		var shrinkedWidth:Int = boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
 		
-		//if the computed width of the ContainerDOMElement was shrinked, then
+		//if the computed width of the ContainerHTMLElement was shrinked, then
 		//a new layout must happen
 		if (this._computedStyle.width != shrinkedWidth)
 		{
@@ -392,14 +392,14 @@ class AbstractContainerStyle extends Style
 			
 			//update the structures used for the layout and starts a new layout
 			var childrenFormattingContext:FormattingContext = getformattingContext(formattingContext);
-			var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerDOMElementData();
+			var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
 			var childLastPositionedHTMLElementData:LastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
 			childrenFormattingContext = doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, this.fontMetrics, childrenFormattingContext);
 		}
 	}
 	
 	/**
-	 * In most cases, when the height of a ContainerDOMElement
+	 * In most cases, when the height of a ContainerHTMLElement
 	 * is 'auto', its computed height become the total height
 	 * of its in flow children, computed once all its
 	 * children have been laid out 
@@ -420,7 +420,7 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * overriden to use box computer specific to 
-	 * container DOMElement instead of the embedded one
+	 * container HTMLElement instead of the embedded one
 	 */
 	override private function getBoxStylesComputer():BoxStylesComputer
 	{
@@ -432,7 +432,7 @@ class AbstractContainerStyle extends Style
 			boxComputer = new FloatBoxStylesComputer();
 		}
 		
-		//get it for DOMElement with 'position' value of 'absolute' or 'fixed'
+		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			boxComputer = new PositionedBoxStylesComputer();
@@ -494,7 +494,7 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Create a TextRenderer from a string of text and
-	 * add it to the ContainerDOMElement
+	 * add it to the ContainerHTMLElement
 	 */
 	private function createTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
@@ -502,7 +502,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Actually create the TextFragmentDOMElement using runtime
+	 * Actually create the TextFragmentHTMLElement using runtime
 	 * specific API. Overriden by each runtime
 	 */
 	private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
@@ -515,7 +515,7 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine wether the ContainerDOMElement
+	 * Determine wether the ContainerHTMLElement
 	 * establishes a new formatting context for
 	 * its children
 	 */
@@ -541,7 +541,7 @@ class AbstractContainerStyle extends Style
 			{
 				case inlineBlock:
 				ret = true; 
-				//a block DOMElement may start a new inline
+				//a block HTMLElement may start a new inline
 				//formatting context if all its children are inline,
 				//else its children participate in the current block formatting
 				//context
@@ -562,13 +562,13 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Determine wether the children of this DOMElement
+	 * Determine wether the children of this HTMLElement
 	 * are all block level or if they are all inline level
 	 * elements
 	 * 
 	 * TODO : throw exception when there is a float in the children
 	 * 
-	 * @return true if all children are inline level DOMElements
+	 * @return true if all children are inline level HTMLElements
 	 */
 	override public function childrenInline():Bool
 	{
@@ -602,20 +602,20 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Return the dimensions data
-	 * of the ContainerDOMElement
+	 * of the ContainerHTMLElement
 	 */
-	public function getContainerDOMElementData():ContainingHTMLElementData
+	public function getContainerHTMLElementData():ContainingHTMLElementData
 	{
 		var height:Int;
 		
-		//if the ContainerDOMElement
+		//if the ContainerHTMLElement
 		//is inline level, then its line height will
 		//be used to lay out its children in lines
 		if (isInlineLevel() == true)
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
-		//same if the ContainerDOMElement establishes
+		//same if the ContainerHTMLElement establishes
 		//an inline formatting context
 		else if (establishesNewFormattingContext() == true && childrenInline() == true)
 		{
@@ -641,17 +641,17 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the right formatting context to layout this ContainerDOMElement
+	 * Return the right formatting context to layout this ContainerHTMLElement
 	 * children.
 	 * 
-	 * A ContainerDOMElement can either establish a new formatting context
+	 * A ContainerHTMLElement can either establish a new formatting context
 	 * or participate in the current formatting context. If it participates
 	 * in the current formatting context, then the previous formatting
 	 * is returned else a new block or inline formatting context is
 	 * instantiated
 	 * 
 	 * @param	previousformattingContext the formatting context of the parent of this
-	 * Container DOMElement, might be returned if the container DOMElement participates
+	 * Container HTMLElement, might be returned if the container HTMLElement participates
 	 * in the same formatting context as its parent
 	 * 
 	 * @return an inline or block formatting context
@@ -691,7 +691,7 @@ class AbstractContainerStyle extends Style
 	{
 		var ret:Bool = true;
 		
-		//here the children is a DOMElement
+		//here the children is a HTMLElement
 		if (isElementNode(child))
 		{
 			var childHTMLElement:HTMLElement = cast(child);
@@ -727,7 +727,7 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Return the structure used to layout absolutely positioned
-	 * children. If this ContainerDOMElement is positioned, a new
+	 * children. If this ContainerHTMLElement is positioned, a new
 	 * structure is created, else the current one is used
 	 */
 	private function getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData:LastPositionedHTMLElementData):LastPositionedHTMLElementData
@@ -737,7 +737,7 @@ class AbstractContainerStyle extends Style
 		if (isPositioned() == true)
 		{
 			childLastPositionedHTMLElementData = {
-				data: getContainerDOMElementData(),
+				data: getContainerHTMLElementData(),
 				children: new Array<PositionedHTMLElementData>()
 			}
 		}
@@ -750,9 +750,9 @@ class AbstractContainerStyle extends Style
 	}
 
 	/**
-	 * Determine wheter the container DOMElement
+	 * Determine wheter the container HTMLElement
 	 * is an inline or block container. For instance,
-	 * an inline-block containerDOMElement is both
+	 * an inline-block containerHTMLElement is both
 	 * inline level (because it is placed on a line) and
 	 * a block container, because it can layout its
 	 * children either into either a block or
@@ -780,7 +780,7 @@ class AbstractContainerStyle extends Style
 	}
 	
 	/**
-	 * Return the computed height of the ContainerDOMElement.
+	 * Return the computed height of the ContainerHTMLElement.
 	 * Use as a hook to be overriden by the BodyStyle
 	 * to return the viewport height
 	 */
@@ -791,7 +791,7 @@ class AbstractContainerStyle extends Style
 	
 	/**
 	 * Determine wether the given children is a 
-	 * DOMElement or a TextElement
+	 * HTMLElement or a TextElement
 	 */
 	private function isElementNode(node:Node):Bool
 	{

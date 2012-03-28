@@ -9,7 +9,7 @@ package port.browser;
 
 import haxe.Log;
 import js.Lib;
-import cocktail.domElement.ImageDOMElement;
+import cocktail.htmlElement.ImageHTMLElement;
 import core.mouse.AbstractMouseCursor;
 import core.geom.GeomData;
 import core.mouseMouseData;
@@ -58,9 +58,9 @@ class MouseCursor extends AbstractMouseCursor
 	/**
 	 * Set a bitmap as mouse cursor using CSS styling via JavaScript
 	 */
-	override private function setBitmapCursor(imageDOMElement:ImageDOMElement, hotSpot:PointData):Void
+	override private function setBitmapCursor(imageHTMLElement:ImageHTMLElement, hotSpot:PointData):Void
 	{
-		var cursorURL:String = untyped imageDOMElement.nativeElement.src;
+		var cursorURL:String = untyped imageHTMLElement.nativeElement.src;
 		
 		//init the hotSpot if null
 		//to the top left of the cursor

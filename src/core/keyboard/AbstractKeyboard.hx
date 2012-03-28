@@ -136,9 +136,9 @@ class AbstractKeyboard
 	 * 
 	 * @param keyboardEvent the keyboard event type that must be listened to
 	 * @param nativeCallback the native, runtime-specific callback
-	 * @param domElementCallback the cross-platform keyboard callback defined on the DOMElement
+	 * @param htmlElementCallback the cross-platform keyboard callback defined on the HTMLElement
 	 */
-	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, domElementCallback:KeyboardEvent->Void):Void
+	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
 	{
 		//abstract
 	}

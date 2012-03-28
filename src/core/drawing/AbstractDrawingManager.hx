@@ -96,7 +96,7 @@ class AbstractDrawingManager
 	}
 	
 	/**
-	 * Clears the current shape and line of the graphic DOMElement.
+	 * Clears the current shape and line of the graphic HTMLElement.
 	 */
 	public function clear():Void
 	{
@@ -108,7 +108,7 @@ class AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Do set the line style on the DOMElement
+	 * Do set the line style on the HTMLElement
 	 * @param	lineStyle
 	 */
 	public function setLineStyle(lineStyle:LineStyleValue):Void
@@ -117,7 +117,7 @@ class AbstractDrawingManager
 	}
 	
 	/**
-	 * Do set the fill style on the DOMElement
+	 * Do set the fill style on the HTMLElement
 	 * @param	fillStyle
 	 */
 	public function setFillStyle(fillStyle:FillStyleValue):Void
@@ -231,7 +231,7 @@ class AbstractDrawingManager
 	
 	/**
 	 * Draws a line from current drawing point to point x,y. 
-	 * If a linestyle is defined for this Graphic DOMElement, draw a line with the current 
+	 * If a linestyle is defined for this Graphic HTMLElement, draw a line with the current 
 	 * linestyle from current point to point x,y. The current position becomes point x,y.
 	 * @param	x target point x
 	 * @param	y target point y

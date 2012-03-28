@@ -47,7 +47,7 @@ class FormattingContext
 	private var _formattingContextRoot:BlockBoxRenderer;
 	
 	/**
-	 * An instance of the class managing the floated DOMElements.
+	 * An instance of the class managing the floated HTMLElements.
 	 * During formatting, determine the position of the floats.
 	 */
 	private var _floatsManager:FloatsManager;
@@ -89,7 +89,7 @@ class FormattingContext
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		_formattingContextRoot = formattingContextRoot;
-		//will store the data of the floated DOMElement of this
+		//will store the data of the floated HTMLElement of this
 		//formatting context
 		_floatsManager = new FloatsManager();
 		initFormattingContextData();
@@ -192,7 +192,7 @@ class FormattingContext
 		}
 		else
 		{
-			//add all the DOMElement boxesData's height
+			//add all the HTMLElement boxesData's height
 			var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
 			height = Math.round(getBounds(elementRenderers).height);
 			/**
@@ -422,7 +422,7 @@ class FormattingContext
 	}
 	
 	/**
-	 * Insert a floated DOMElement. overriden by sub-classes
+	 * Insert a floated HTMLElement. overriden by sub-classes
 	 * 
 	 * TODO : re-implement floats
 	 */
@@ -450,7 +450,7 @@ class FormattingContext
 	/**
 	 * Removed the floats which don't influence the 
 	 * flow anymore. A float don't influence the flow
-	 * anymore once the flow place DOMElement's below it
+	 * anymore once the flow place HTMLElement's below it
 	 * 
 	 * TODO : re-implement floats
 	 */

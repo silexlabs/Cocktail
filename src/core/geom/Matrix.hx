@@ -14,7 +14,7 @@ import core.geom.GeomData;
  * cross-platform and as such doesn't rely on any runtime specific API.
  * 
  * It exposes method to create and manipulate a matrix which can then be 
- * used to apply 2d transformations to a DOMElement.
+ * used to apply 2d transformations to an htmlElement.
  * 
  * @author Yannick DOMINGUEZ
  */
