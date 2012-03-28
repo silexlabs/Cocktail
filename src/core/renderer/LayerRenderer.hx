@@ -147,7 +147,7 @@ class LayerRenderer
 			for (j in 0...nativeElements.length)
 			{
 				#if flash9
-				if (childrenBlockContainer[i].establishesNewFormattingContext() == true)
+				if (true == true)
 				{
 					nativeElements[j].x += childrenBlockContainer[i].style.computedStyle.marginLeft;
 					nativeElements[j].y += childrenBlockContainer[i].style.computedStyle.marginTop;

@@ -144,24 +144,7 @@ class BlockFormattingContext extends FormattingContext
 		return isAncestorOfElement;
 	}
 	
-	override public function getStaticPosition(element:ElementRenderer):PointData
-	{
-		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0..._elementsInFormattingContext.length)
-		{
-			elementsToFormat.push(_elementsInFormattingContext[i]);
-		}
-		
-		elementsToFormat.push(element);
-		
-		doFormat(elementsToFormat);
-		
-		var x:Float = element.bounds.x;
-		var y:Float = element.bounds.y;
-		
-		return {x:x, y:y};
-	}
+
 	
 	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
 	{
