@@ -1,4 +1,12 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package core.html;
+
 import core.event.Event;
 import core.nativeElement.NativeElementManager;
 import cocktailCore.focus.FocusManager;
@@ -30,28 +38,16 @@ class HTMLBodyElement extends HTMLElement
 	private static inline var HTML_BODY_TAG_NAME:String = "body";
 	
 	/**
-	 * A reference to the view port used to listen for
-	 * resize events
-	 * 
-	 * TODO : move to the Document ?
-	 */
-	private var _window:Window;
-	
-	/**
-	 * class constructor. Retrieve the root of the
-	 * runtime and set it as this HTMLElement's
-	 * NativeElement
-	 * 
-	 * TODO : init keyboard with document in JS ?
+	 * class constructor.
 	 */
 	public function new() 
 	{	
-		
-		//TODO : should be moved to Document
-		FocusManager.getInstance().bodyElement = cast(this);
 		super(HTML_BODY_TAG_NAME);
 	}
 	
+	/**
+	 * overriden to use the root of the runtime
+	 */
 	override private function initNativeElement():Void
 	{
 		_nativeElement = NativeElementManager.getRoot();
@@ -64,22 +60,5 @@ class HTMLBodyElement extends HTMLElement
 	override private function initStyle():Void
 	{
 		_style = new BodyStyle(this);
-		
-		//instantiate the view port and listen
-		//for resize on it
-		_window = new Window();
-		_window.onResize = onWindowResize;
 	}
-	
-	/**
-	 * When the view port is resized, insvalidate
-	 * this BodyHTMLElement to lay it out with
-	 * the new view port dimensions
-	 */
-	private function onWindowResize(event:Event):Void
-	{
-		_style.invalidate();
-	}
-	
-	
 }

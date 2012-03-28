@@ -7,10 +7,13 @@
 */
 package core.html;
 
+import cocktailCore.focus.FocusManager;
 import core.dom.Document;
 import core.dom.Element;
+import core.event.Event;
 import core.HTMLElement;
 import core.HTMLInputElement;
+import core.Window;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -38,12 +41,26 @@ class HTMLDocument extends Document
 	public var body(get_body, never):HTMLElement;
 	
 	/**
+	 * A reference to the Window used to listen for
+	 * resize events
+	 */
+	private var _window:Window;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
 		super();
 		_body = new HTMLBodyElement();
+		
+		//TODO : should not be singleton
+		FocusManager.getInstance().bodyElement = cast(_body);
+		
+		//listen to the Window resizes
+		_window = new Window();
+		_window.onResize = onWindowResize;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +91,20 @@ class HTMLDocument extends Document
 		}
 		
 		return element;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the view port is resized, insvalidate
+	 * this BodyHTMLElement to lay it out with
+	 * the new Window dimensions
+	 */
+	private function onWindowResize(event:Event):Void
+	{
+		_body.style.invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
