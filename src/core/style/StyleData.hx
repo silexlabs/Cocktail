@@ -438,8 +438,6 @@ import core.renderer.TextRenderer;
 	 * The constraint applied to the content
 	 * of an htmlElement contrained its max/min
 	 * width or height
-	 * 
-	 * TODO : move to unit ?
 	 */
 	enum ConstrainedDimension {
 		
