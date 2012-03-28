@@ -79,6 +79,7 @@ typedef BackgroundSize = core.style.StyleData.BackgroundSize;
 typedef BackgroundPosition = core.style.StyleData.BackgroundPosition;
 
 typedef Dimension = core.style.StyleData.Dimension;
+typedef PositionOffset = core.style.StyleData.PositionOffset;
 
 /**
  * UNIT

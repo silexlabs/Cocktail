@@ -49,6 +49,7 @@ class BlockFormattingContext extends FormattingContext
 		//format all the box element in order
 		for (i in 0...elementsInFormattingContext.length)
 		{
+			
 			if (elementsInFormattingContext[i].isFloat() == true)
 			{
 				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
@@ -94,7 +95,7 @@ class BlockFormattingContext extends FormattingContext
 				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 				
 				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
-				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(_elementsInFormattingContext[i].bounds.width), Math.round(_elementsInFormattingContext[i].parent.bounds.width));
+				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(elementsInFormattingContext[i].bounds.width), Math.round(elementsInFormattingContext[i].parent.bounds.width));
 			
 			
 				elementsInFormattingContext[i].bounds.y += _formattingContextRoot.style.computedStyle.marginTop +  _formattingContextRoot.style.computedStyle.paddingTop;
@@ -110,16 +111,17 @@ class BlockFormattingContext extends FormattingContext
 					
 				}	
 				
-				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height) + _elementsInFormattingContext[i].style.computedStyle.marginTop + _elementsInFormattingContext[i].style.computedStyle.marginBottom ;
+				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height) + elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.marginBottom ;
 				
 				removeFloats();
 				
 				//TODO : max height might be wrong
 				_formattingContextData.maxHeight = _formattingContextData.y;
 		
-				currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height + _elementsInFormattingContext[i].style.computedStyle.marginTop + _elementsInFormattingContext[i].style.computedStyle.marginBottom);
+					currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height + elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.marginBottom);
+
 			}
-			
+		
 		}
 	}
 	
