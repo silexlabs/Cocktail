@@ -45,7 +45,7 @@ class RelativePositioner extends BoxPositioner
 	
 	override private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
-		return staticPosition + containingHTMLElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
+		return staticPosition - htmlElement.style.computedStyle.right;
 	}
 	
 	override private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
