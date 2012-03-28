@@ -340,12 +340,23 @@ class BackgroundManager
 		return gradientNativeElement;
 	}
 	
-	//TODO : doc	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * return the right painting box. Used as a hook
+	 * to be overriden
+	 */
 	private function getBackgroundPaintingBox(computedBackgroundBox:RectangleData):RectangleData
 	{
 		return computedBackgroundBox;
 	}
 	
+	/**
+	 * return the right positioning box. Used as a hook
+	 * to be overriden
+	 */
 	private function getBackgroundPositioningBox(computedPositioningBox:RectangleData):RectangleData
 	{
 		return computedPositioningBox;

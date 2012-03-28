@@ -21,7 +21,9 @@ import core.unit.UnitManager;
 import haxe.Log;
 
 /**
- * TODO : doc
+ * This is the background manager for the initial block
+ * (the body in an HTML document) whose background is always
+ * drawn over the whole window
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -29,7 +31,7 @@ class InitialBlockBackgroundManager extends BackgroundManager
 {
 	
 	/**
-	 * class constructor. init class atribute
+	 * class constructor.
 	 */
 	public function new()
 	{
@@ -40,16 +42,29 @@ class InitialBlockBackgroundManager extends BackgroundManager
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * always return the Window rect
+	 */
 	override private function getBackgroundPaintingBox(computedBackgroundBox:RectangleData):RectangleData
 	{
 		return getWindowRectangleData();
 	}
 	
+	/**
+	 * always return the Window rect
+	 */
 	override private function getBackgroundPositioningBox(computedPositioningBox:RectangleData):RectangleData
 	{
 		return getWindowRectangleData();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * return the Window Rectangle
+	 */
 	private function getWindowRectangleData():RectangleData
 	{
 		var windowWidth:Float = Lib.window.innerWidth;

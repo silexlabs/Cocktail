@@ -507,7 +507,7 @@ class DrawingManager extends AbstractDrawingManager
 		clear();
 		super.setWidth(value);
 		
-		//TODO : doc
+		//set the width attribute on the native canvas
 		untyped _nativeElement.width = value;
 		
 		return _width = value;
@@ -519,7 +519,7 @@ class DrawingManager extends AbstractDrawingManager
 		clear();
 		super.setHeight(value);
 		
-		//TODO : doc
+		//set the height attribute on the native canvas
 		untyped _nativeElement.height = value;
 		
 		return _height = value;
