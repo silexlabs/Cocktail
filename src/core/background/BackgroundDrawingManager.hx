@@ -175,6 +175,8 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	computedBackgroundSize
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
+	 * 
+	 * TODO : flash gradient doesn't use the same rotation
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
@@ -193,10 +195,6 @@ class BackgroundDrawingManager extends DrawingManager
 					rotation:getRotation(value.angle)
 				}
 				
-				//TODO : clean this up
-				#if flash9
-				//gradientStyle.rotation -= 90;
-				#end
 				fillStyle = FillStyleValue.gradient(gradientStyle);
 		}
 		
