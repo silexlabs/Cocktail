@@ -724,7 +724,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// Setters/Getters for an HTMLElement position and dimensions in the publication
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should return Style.getFirstPositionedAncestor
 	/**
 	 * return the first positioned ancestor of the HTMLElement
 	 * 
@@ -733,7 +732,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function get_offsetParent():HTMLElement
 	{
-		return null;
+		return _style.getFirstPositionedAncestor();
 	}
 	
 	//TODO : removed margins, will cause issue in formatting context
