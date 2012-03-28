@@ -37,15 +37,15 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden to process width before margins. For an embedded element a
 	 * computed width can always be computed event when width is auto
 	 */
-	override private function measureAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	override private function measureAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//width
-		setComputedWidth(style, getComputedAutoWidth(style, containingDOMElementData));
+		setComputedWidth(style, getComputedAutoWidth(style, containingHTMLElementData));
 			
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingDOMElementData);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingHTMLElementData);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingDOMElementData);
+		style.computedStyle.marginRight = getComputedMarginRight(style, containingHTMLElementData);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		
@@ -83,11 +83,11 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//does not itself depend on the replaced element's width,
 				//then the used value of 'width' is calculated from the
 				//constraint equation used for block-level, non-replaced elements in normal flow. 
-				if (containingDOMElementData.isWidthAuto == false)
+				if (containingHTMLElementData.isWidthAuto == false)
 				{
 					var computedStyle:ComputedStyleData = style.computedStyle;
 					
-					ret = containingDOMElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+					ret = containingHTMLElementData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 				}
 				else
 				{
@@ -100,7 +100,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used height
-			var computedHeight:Int = getComputedDimension(style.height, containingDOMElementData.height, containingDOMElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedHeight:Int = getComputedDimension(style.height, containingHTMLElementData.height, containingHTMLElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			setComputedHeight(style, computedHeight);
 			
 			//deduce the width from the intrinsic ratio and the computed height
@@ -130,7 +130,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded DOMElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		
@@ -149,7 +149,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used value of 'width'
-			var computedWidth:Int = getComputedDimension(style.width, containingDOMElementData.width, containingDOMElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedWidth:Int = getComputedDimension(style.width, containingHTMLElementData.width, containingHTMLElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			setComputedWidth(style, computedWidth);
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined

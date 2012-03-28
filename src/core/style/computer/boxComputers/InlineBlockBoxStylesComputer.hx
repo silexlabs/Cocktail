@@ -42,20 +42,20 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	 * with 'auto'
 	 * , maybe should use the available width
 	 */
-	override public function shrinkToFit(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, minimumWidth:Int):Int
+	override public function shrinkToFit(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
 		var shrinkedWidth:Int;
 		
 		//if the minimum width that must use the inlineBlock
 		//is not superior to the width of the containing
 		//DOMElement, use the minimum width
-		if (minimumWidth < containingDOMElementData.width)
+		if (minimumWidth < containingHTMLElementData.width)
 		{
 			shrinkedWidth = minimumWidth;
 		}
 		else
 		{
-			shrinkedWidth = containingDOMElementData.width;
+			shrinkedWidth = containingHTMLElementData.width;
 		}
 		
 		return shrinkedWidth;

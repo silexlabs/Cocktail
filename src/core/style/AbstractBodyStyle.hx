@@ -73,15 +73,15 @@ class AbstractBodyStyle extends ContainerStyle
 		if (this._isDirty == false)
 		{
 			this._isDirty = true;
-			var windowData:ContainingDOMElementData = getWindowData();
+			var windowData:ContainingHTMLElementData = getWindowData();
 		
 			//the first positioned parent of the body is always the viewport					
-			var lastPositionedDOMElementData:LastPositionedDOMElementData = {
-				children: new Array<PositionedDOMElementData>(),
+			var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
+				children: new Array<PositionedHTMLElementData>(),
 				data:windowData
 			}
 			
-			scheduleLayout(windowData, lastPositionedDOMElementData, windowData);
+			scheduleLayout(windowData, lastPositionedHTMLElementData, windowData);
 		}
 	}
 	
@@ -173,12 +173,12 @@ class AbstractBodyStyle extends ContainerStyle
 	 * 
 	 * TODO : should instead be on a Document class
 	 */
-	override public function layout(containingDOMElementData:ContainingDOMElementData, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{	
 		//first detach all previously added children
 		detachNativeElements(_nativeElements);
 		
-		super.layout(containingDOMElementData, lastPositionedDOMElementData, viewportData, containingDOMElementFontMetricsData);
+		super.layout(containingHTMLElementData, lastPositionedHTMLElementData, viewportData, containingDOMElementFontMetricsData);
 		render(_htmlElement.nativeElement);
 	}
 	
@@ -191,7 +191,7 @@ class AbstractBodyStyle extends ContainerStyle
 	 * always located at the origin of the viewport, it is automatically
 	 * inserted
 	 */
-	override private function insertDOMElement(formattingContext:FormattingContext, lastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	override private function insertDOMElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
 		
 	}
@@ -200,9 +200,9 @@ class AbstractBodyStyle extends ContainerStyle
 	 * overriden as the BodyDOMElement, being at the top of the hierarchy, always position its positioned
 	 * children
 	 */
-	override private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedDOMElementData:LastPositionedDOMElementData, viewportData:ContainingDOMElementData):Void
+	override private function positionAbsolutelyPositionedDOMElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
-		doPositionAbsolutelyPositionedDOMElements(childLastPositionedDOMElementData, viewportData);	
+		doPositionAbsolutelyPositionedDOMElements(childLastPositionedHTMLElementData, viewportData);	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
