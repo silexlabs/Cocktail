@@ -31,7 +31,7 @@ class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 	 * for floated non-embedded DOMElements, an auto width is computed as 'shrink-to-fit' once all the children
 	 * have been laid out
 	 */
-	override private function getComputedAutoWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}

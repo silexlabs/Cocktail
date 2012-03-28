@@ -30,7 +30,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical paddings don't apply to non-embedded inline DOMElements
 	 */
-	override private function measureVerticalPaddings(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	override private function measureVerticalPaddings(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//top
 		style.computedStyle.paddingTop = 0;
@@ -41,10 +41,10 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline DOMElements
 	 */
-	override private function measureAutoHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	override private function measureAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//the height is set to null by default
-		setComputedHeight(style, getComputedAutoHeight(style, containingDOMElementData));
+		setComputedHeight(style, getComputedAutoHeight(style, containingHTMLElementData));
 		
 		//left margin
 		style.computedStyle.marginTop = 0;
@@ -56,10 +56,10 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline DOMElements
 	 */
-	override private function measureHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Void
+	override private function measureHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//get the computed height in pixel
-		setComputedHeight(style, getComputedHeight(style, containingDOMElementData));
+		setComputedHeight(style, getComputedHeight(style, containingHTMLElementData));
 		//left margin
 		style.computedStyle.marginTop = 0;
 		//right margin
@@ -77,7 +77,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded DOMElement, the width doesn't apply
 	 */
-	override private function getComputedWidth(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}
@@ -85,7 +85,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded DOMElement, the height doesn't apply
 	 */
-	override private function getComputedHeight(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	override private function getComputedHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}

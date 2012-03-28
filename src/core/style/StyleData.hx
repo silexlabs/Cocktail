@@ -16,8 +16,6 @@ import core.renderer.ElementRenderer;
 import core.renderer.InlineBoxRenderer;
 import core.renderer.TextRenderer;
 	
-//TODO : remove ref to DOMElement
-	
 		// FONT STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1105,7 +1103,7 @@ import core.renderer.TextRenderer;
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
-	typedef ContainingDOMElementData = {
+	typedef ContainingHTMLElementData = {
 		var width:Int;
 		var isWidthAuto:Bool;
 		var height:Int;
@@ -1121,9 +1119,9 @@ import core.renderer.TextRenderer;
 	 * as origin to layout an absolutely
 	 * positioned htmlElement.
 	 */
-	typedef LastPositionedDOMElementData = {
-		var children:Array<PositionedDOMElementData>;
-		var data:ContainingDOMElementData;
+	typedef LastPositionedHTMLElementData = {
+		var children:Array<PositionedHTMLElementData>;
+		var data:ContainingHTMLElementData;
 	}
 	
 	/**
@@ -1137,7 +1135,7 @@ import core.renderer.TextRenderer;
 	 * top and bottom styles are both
 	 * set to 'cssAuto'
 	 */
-	typedef PositionedDOMElementData =  {
+	typedef PositionedHTMLElementData =  {
 		var style:AbstractStyle;
 		var staticPosition:PointData;
 	}

@@ -61,7 +61,7 @@ class BoxPositioner
 	 * @param staticPosition the position the ElementRenderer would have had in the flow if it weren't positioned. Used if
 	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
-	public function position(elementRenderer:ElementRenderer, containingDOMElementData:ContainingDOMElementData, staticPosition:PointData):ElementRenderer
+	public function position(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
 	{
 		var htmlElement:HTMLElement = elementRenderer.style.htmlElement;
 		
@@ -76,7 +76,7 @@ class BoxPositioner
 		//width of the positioned children as value for a 0 right offset
 		else if (htmlElement.style.right != PositionOffset.cssAuto)
 		{
-			elementRenderer.bounds.x = getRightOffset(htmlElement, containingDOMElementData.width, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the DOMElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
@@ -92,7 +92,7 @@ class BoxPositioner
 		}
 		else if (htmlElement.style.bottom != PositionOffset.cssAuto)
 		{
-			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingDOMElementData.height, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingHTMLElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{

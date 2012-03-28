@@ -39,10 +39,10 @@ class FontAndTextStylesComputer
 	/**
 	 * compute all the font and text styles of the DOMElement
 	 * @param	style
-	 * @param	containingDOMElementData
+	 * @param	containingHTMLElementData
 	 * @param	containingDOMElementFontMetricsData
 	 */
-	public static function compute(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
@@ -61,7 +61,7 @@ class FontAndTextStylesComputer
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingDOMElementData, containingDOMElementFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingHTMLElementData, containingDOMElementFontMetricsData);
 		
 		//font weight
 		computedStyle.fontWeight = style.fontWeight;
@@ -85,7 +85,7 @@ class FontAndTextStylesComputer
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
 		//text indent
-		computedStyle.textIndent = getComputedTextIndent(style, containingDOMElementData);
+		computedStyle.textIndent = getComputedTextIndent(style, containingHTMLElementData);
 		
 		//white space
 		computedStyle.whiteSpace = style.whiteSpace;
@@ -105,7 +105,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData):Int
+	private static function getComputedTextIndent(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var textIndent:Float;
 		
@@ -115,7 +115,7 @@ class FontAndTextStylesComputer
 				textIndent = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
-				textIndent = UnitManager.getPixelFromPercent(value, containingDOMElementData.width);
+				textIndent = UnitManager.getPixelFromPercent(value, containingHTMLElementData.width);
 		}
 		
 		return Math.round(textIndent);
@@ -125,7 +125,7 @@ class FontAndTextStylesComputer
 	 * Compute the vertical offset to apply to a DOMElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedVerticalAlign(style:AbstractStyle, containingDOMElementData:ContainingDOMElementData, containingDOMElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, containingDOMElementFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
