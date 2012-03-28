@@ -132,7 +132,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Controls how white space inside
-	 * a DOMElement is handled
+	 * an htmlElement is handled
 	 */
 	enum WhiteSpace {
 		
@@ -228,7 +228,7 @@ import core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * Controls how inline DOMElement inside
+	 * Controls how inline htmlElement inside
 	 * a block container is aligned
 	 */
 	enum TextAlign {
@@ -253,13 +253,13 @@ import core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * On a container DOMElement with inline level
+	 * On a container htmlElement with inline level
 	 * children, this style controls the minimum height
 	 * of each line 
 	 * 
-	 * On a non-embedded inline DOMElement, it controls
-	 * the height of the DOMElement, used to calculate
-	 * its line height
+	 * On a non-embedded inline htmlElement, it controls
+	 * the height of the htmlElement, used to calculate
+	 * its line box height
 	 */
 	enum LineHeight {
 		
@@ -291,8 +291,8 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Controls the vertical alignement of an 
-	 * inline DOMElement in its containing
-	 * DOMElement
+	 * inline htmlElement in its containing
+	 * htmlElement
 	 */
 	enum VerticalAlign {
 		
@@ -381,14 +381,14 @@ import core.renderer.TextRenderer;
 		length(value:Length);
 		
 		/**
-		 * thickness relatvie to the
-		 * parent DOMElement's widthor height
+		 * thickness relative to the
+		 * parent htmlElement's width or height
 		 */
 		percent(value:Int);
 		
 		/**
 		 * Margin takes the remaining space
-		 * in the parent DOMElement width or height
+		 * in the parent htmlElement width or height
 		 */
 		cssAuto;
 	}
@@ -405,17 +405,15 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * thickness relative to the
-		 * parent DOMElement width or height
+		 * parent htmlElement's width or height
 		 */
 		percent(value:Int);
 	}
 	
 	/**
 	 * The dimension of the content of 
-	 * a DOMElement (without margins 
+	 * an htmlElement (without margins 
 	 * and paddings)
-	 * 
-	 * TODO : move to unit ?
 	 */
 	enum Dimension {
 		
@@ -425,7 +423,7 @@ import core.renderer.TextRenderer;
 		length(value:Length);
 		
 		/**
-		 * relative the parent DOMElement
+		 * relative the parent htmlElement
 		 * dimensions
 		 */
 		percent(value:Int);
@@ -440,7 +438,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * The constraint applied to the content
-	 * of a DOMElement contrained its max/min
+	 * of an htmlElement contrained its max/min
 	 * width or height
 	 * 
 	 * TODO : move to unit ?
@@ -453,7 +451,7 @@ import core.renderer.TextRenderer;
 		length(value:Length);
 		
 		/**
-		 * relative to the parent DOMElement
+		 * relative to the parent htmlElement
 		 * dimensions 
 		 */
 		percent(value:Int);
@@ -468,16 +466,16 @@ import core.renderer.TextRenderer;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Display of a DOMElement in a 
-	 * DOMElements flow
+	 * Display of an htmlElement in the 
+	 * flow
 	 */
 	enum Display {
 		
 		/**
 		 * add a line break before 
-		 * and after the DOMElement. Act
+		 * and after the htmlElement. Act
 		 * as a box with margins, paddings
-		 * and dimensions
+		 * and content area
 		 */
 		block;
 		
@@ -490,19 +488,20 @@ import core.renderer.TextRenderer;
 		/**
 		 * Displayed on the current line. 
 		 * Can only have horizontal margins
-		 * and paddings
+		 * and paddings unless it is
+		 * embedded
 		 */
 		cssInline;
 		
 		/**
-		 * The DOMElement isn't displays
+		 * The htmlElement isn't displays
 		 * and doesn't influence the flow
 		 */
 		none;
 	}
 	
 	/**
-	 * A floated DOMElement is pushed to the
+	 * A floated htmlElement is pushed to the
 	 * left-most or the right-most of its container
 	 */
 	enum CSSFloat {
@@ -512,7 +511,7 @@ import core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * A DOMElement with clearance cancels a preceding
+	 * An htmlElement with clearance cancels a preceding
 	 * float. It is placed below any preceding left
 	 * or right float that it clears
 	 */
@@ -524,7 +523,7 @@ import core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * Determine how a DOMElement is positioned relative
+	 * Determine how an htmlElement is positioned relative
 	 * to its ancestors
 	 */
 	enum Position {
@@ -539,12 +538,12 @@ import core.renderer.TextRenderer;
 		/**
 		 * same as static but an offset can be applied
 		 * with the top, left, right and bottom styles
-		 * once the DOMElement is placed in the flow
+		 * once the htmlElement is placed in the flow
 		 */
 		relative;
 		
 		/**
-		 * The DOMElement is outside of the flow, it 
+		 * The htmlElement is outside of the flow, it 
 		 * is placed using its left, right, bottom and
 		 * top offsets, its origin being its first ancestor
 		 * with a position different from static
@@ -552,17 +551,16 @@ import core.renderer.TextRenderer;
 		absolute;
 		
 		/**
-		 * The DOMElement is outside the flow, it
+		 * The htmlElement is outside the flow, it
 		 * is placed using its left, right, bottom
-		 * and top offsets, its origin being the first
-		 * DOMElement (the one at the top of the 
-		 * hierarchy)
+		 * and top offsets, its origin being the document's
+		 * Window
 		 */
 		fixed;
 	}
 	
 	/**
-	 * The offset applied to a DOMElement
+	 * The offset applied to an htmlElement
 	 * once positioned
 	 */
 	enum PositionOffset {
@@ -574,7 +572,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * relative to the parent
-		 * DOMElement width or heigt
+		 * htmlElement width or heigt
 		 */
 		percent(value:Int);
 		
@@ -623,36 +621,36 @@ import core.renderer.TextRenderer;
 	}
 
 	/**
-	 * Specifies wether the DOMElement is
-	 * displayed. A hidden DOMElement
+	 * Specifies wether the htmlElement is
+	 * displayed. A hidden htmlElement
 	 * still affects layout
 	 */
 	enum Visibility {
 		
 		/**
-		 * The DOMElement is visible
+		 * The htmlElement is visible
 		 */
 		visible;
 		
 		/**
-		 * The DOMElement is invisible 
+		 * The htmlElement is invisible 
 		 * (fully transparent, nothing is drawn),
 		 * but still affects layout.
-		 * Furthermore, children of the DOMElement will
+		 * Furthermore, children of the htmlElement will
 		 * be visible if they have 'visibility: visible'.
 		 */
 		hidden;
 	}
 	
 	/**
-	 * Specifies the transparency of a DOMElement
+	 * Specifies the transparency of an htmlElement
 	 * where 1.0 is opaque and 0 is transparent
 	 */
 	typedef Opacity = Float;
 	
 	/**
 	 * Specifiy a list of transormation to apply
-	 * to the DOMElement. The transformation
+	 * to the htmlElement. The transformation
 	 * are applied in order. The final 
 	 * transformation is obtained by performing
 	 * a matrix concatenation of each entry in the list
@@ -674,7 +672,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * The list of allowed transform functions to
-	 * apply to a DOMElement
+	 * apply to a htmlElement
 	 */
 	enum TransformFunction {
 		
@@ -757,7 +755,7 @@ import core.renderer.TextRenderer;
 		length(value:Length);
 		
 		/**
-		 * a percentage relative to the DOMElement
+		 * a percentage relative to the htmlElement's
 		 * dimensions
 		 */
 		percent(value:Int);
@@ -765,7 +763,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Specifies the origin of transformation
-	 * for a DOMElement along the x and y
+	 * for an htmlElement along the x and y
 	 * axis
 	 */
 	typedef TransformOrigin = {
@@ -795,7 +793,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * a percentage relative
-		 * to the DOMElement's width
+		 * to the htmlElement's width
 		 */
 		percent(value:Int);
 		
@@ -828,7 +826,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * a percentage relative
-		 * to the DOMElement's height
+		 * to the htmlElement's height
 		 */
 		percent(value:Int);
 		
@@ -852,13 +850,13 @@ import core.renderer.TextRenderer;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Sets the background color of a DOMElement. 
+	 * Sets the background color of an htmlElement. 
 	 * The color is drawn behind any background images.
 	 */
 	typedef BackgroundColor =  ColorValue;
 	
 	/**
-	 * Set a background image of a DOMElement. A DOMElement can
+	 * Set a background image of an htmlElement. An htmlElement can
 	 * have any number of background image.
 	 * Images are drawn with the first specified one on top 
 	 * (closest to the user) and each subsequent image behind
@@ -944,7 +942,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * a percentage relative
-		 * to the DOMElement's width
+		 * to the htmlElement's width
 		 */
 		percent(value:Int);
 		
@@ -977,7 +975,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * a percentage relative
-		 * to the DOMElement's height
+		 * to the htmlElement's height
 		 */
 		percent(value:Int);
 		
@@ -1086,7 +1084,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * a percentage relative
-		 * to the DOMElement's height or width
+		 * to the htmlElement's height or width
 		 */
 		percent(value:Int);
 		
@@ -1102,7 +1100,7 @@ import core.renderer.TextRenderer;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Represents the width, height of a DOMElement's
+	 * Represents the width, height of an htmlElement's
 	 * parent content.
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
@@ -1116,12 +1114,12 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Contains the data of the first 
-	 * positioned ancestor (a DOMElement with
+	 * positioned ancestor (an htmlElement with
 	 * a position style of relative, absolute,
 	 * or fixed) dimensions and a reference to each of
 	 * the style objects using those dimensions
 	 * as origin to layout an absolutely
-	 * positioned DOMElement.
+	 * positioned htmlElement.
 	 */
 	typedef LastPositionedDOMElementData = {
 		var children:Array<PositionedDOMElementData>;
@@ -1130,8 +1128,8 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Holds a reference to the Style of a
-	 * positioned DOMElement. The static position
-	 * is the x,y point where the DOMElement
+	 * positioned htmlElement. The static position
+	 * is the x,y point where the htmlElement
 	 * would have been if its position style
 	 * had been 'static'.
 	 * 
@@ -1146,7 +1144,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Stores all the computed styles
-	 * of a DOMElement as they are 
+	 * of an htmlElement as they are 
 	 * used multiple times when applying
 	 * styles
 	 */
@@ -1267,7 +1265,7 @@ import core.renderer.TextRenderer;
 		/**
 		 * The rectangle clipping the background
 		 * image, might be the rectangle of the content,
-		 * padding or border box of the DOMElement
+		 * padding or border box of the htmlElement
 		 */
 		var backgroundClip:RectangleData;
 		
@@ -1304,18 +1302,18 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Contains the data necessary to place
-	 * a DOMElement in flow into the current
+	 * an htmlElement in flow into the current
 	 * formatting context
 	 */
 	typedef FormattingContextData = {
 		/**
-		 * the x position where the next in flow DOMElement
+		 * the x position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
 		var x:Int;
 		
 		/**
-		 * the y position where the next in flow DOMElement
+		 * the y position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
 		var y:Int;
@@ -1327,7 +1325,7 @@ import core.renderer.TextRenderer;
 		var maxWidth:Int;
 		
 		/**
-		 * The accumulated height of all the in flow DOMElements
+		 * The accumulated height of all the in flow htmlElements
 		 * (includes paddings and margins) of the current
 		 * formatting context
 		 */
@@ -1358,7 +1356,7 @@ import core.renderer.TextRenderer;
 	
 	/**
 	 * Given a font family and a font size
-	 * provided by the DOMElement's styles, 
+	 * provided by the htmlElement's styles, 
 	 * this structures return metrics info
 	 * on the font
 	 */
@@ -1366,7 +1364,7 @@ import core.renderer.TextRenderer;
 		
 		/**
 		 * The font size of 
-		 * the DOMElement, in pixels
+		 * the htmlElement, in pixels
 		 */
 		var fontSize:Float;
 		
