@@ -286,10 +286,7 @@ class AbstractContainerStyle extends Style
 	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
 		//update the data of the ContainerHTMLElement now that its width and height are known
-		childLastPositionedHTMLElementData.data = getContainerHTMLElementData();
-		
-		//ensure that the actual height of the ContainerHTMLElement is used instead of its lineHeight
-		childLastPositionedHTMLElementData.data.height = getComputedHeight();
+		childLastPositionedHTMLElementData.data = getPositionedHTMLElementData();
 		
 		//position each stored children
 		for (i in 0...childLastPositionedHTMLElementData.children.length)
@@ -639,6 +636,21 @@ class AbstractContainerStyle extends Style
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * return the data of this htmlElement to be used when it is
+	 * the first positioned ancestor for its children.
+	 * Meant to be overriden
+	 */
+	private function getPositionedHTMLElementData():ContainingHTMLElementData
+	{
+		var positionedHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
+		
+		//ensure that the actual height of the ContainerHTMLElement is used instead of its lineHeight
+		positionedHTMLElementData.height = getComputedHeight();
+		
+		return positionedHTMLElementData;
+	}
 	
 	/**
 	 * Return the right formatting context to layout this ContainerHTMLElement
