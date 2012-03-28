@@ -144,6 +144,7 @@ class EmbeddedElement extends HTMLElement
 	}
 	
 	//TODO : override in JS to set attribute on native element
+	// or use generic set_attribute method on JS HTMLElement ?
 	private function set_width(value:Int):Int
 	{
 		return _width = value;

@@ -176,9 +176,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	/**
 	 * An abstract reference to the native element wrapped by this HTMLElement.
 	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite,
-	 * 
-	 * TODO : for mouse event in flash, hack for now, draw the bounds of the HTMLElement
-	 * on the _nativeElement during rendering ?
 	 */
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
