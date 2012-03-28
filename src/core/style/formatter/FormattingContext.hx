@@ -177,36 +177,15 @@ class FormattingContext
 	 * an auto height to determine its height
 	 * 
 	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
-	 * 
-	 * TODO : adding height isn't enough, get height of the bounds of children instead ?
-	 * (to account for margin and paddings ?) -> should not margin into account in the getBounds
-	 * method
 	 */
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
 		var height:Int = 0;
 		
-		if (elementRenderer == _formattingContextRoot)
-		{
-			height = _formattingContextData.maxHeight;
-		}
-		else
-		{
-			//add all the HTMLElement boxesData's height
-			var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
-			height = Math.round(getBounds(elementRenderers).height);
-			/**
-			for (i in 0...elementRenderers.length)
-			{
-				TODO : float can still account in max height if it overflows
-				if (elementRenderers[i].isFloat() == false)
-				{
-					height += Math.round(elementRenderers[i].bounds.height);
-				}
-			}*/
-		}
-		
-		//Log.trace(
+		//get bounds of all the children of the element in the formatting context root space
+		var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
+		height = Math.round(getBounds(elementRenderers).height);
+
 		return height;
 	}
 

@@ -20,8 +20,6 @@ class CanvasRenderingContext2D
 	 * Returns the current line cap style.
 	 * Can be set, to change the line cap style.
 	 * The possible line cap styles are butt, round, and square.
-	 * 
-	 * TODO : implement as String ?
 	 */
 	private var _lineCap:LineCap;
 	public var lineCap(get_lineCap, set_lineCap):LineCap;
