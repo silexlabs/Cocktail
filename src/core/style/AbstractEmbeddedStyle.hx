@@ -18,7 +18,7 @@ import port.browser.Style;
 
 /**
  * This is the style implementation for embedded
- * DOMElement. Embedded DOMElement include external
+ * HTMLElement. Embedded HTMLElement include external
  * content in the document, such as picture or video.
  * 
  * They can't have any children.

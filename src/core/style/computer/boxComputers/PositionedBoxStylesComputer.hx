@@ -13,8 +13,8 @@ import haxe.Log;
 
 /**
  * This is the box computer for non-replaced
- * absolutely positioned DOMElement, such as
- * an absolutely positioned ContainerDOMElement
+ * absolutely positioned HTMLElement, such as
+ * an absolutely positioned ContainerHTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -35,7 +35,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 
 	/**
 	 * if the width is set to 'auto', then this method is called and might shrink the
-	 * width of the DOMElement to fit its content
+	 * width of the HTMLElement to fit its content
 	 */
 	override public function shrinkToFit(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
@@ -82,7 +82,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * Overriden as in some cases, depending on the specified value of
 	 * top and bottom style, the height used value might not be the children
-	 * height of the DOMElement
+	 * height of the HTMLElement
 	 */
 	override public function applyContentHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
 	{
@@ -158,7 +158,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			computedStyle.right = getComputedPositionOffset(style.right, containingHTMLElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//the computed width is deduced from all the other computed horizontal values. It is the remaining space when all the other value
-			//are substracted from the containing DOMElement width
+			//are substracted from the containing HTMLElement width
 			setComputedWidth(style, containingHTMLElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
 		}
 		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
@@ -310,7 +310,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingHTMLElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			
 			//the computed height is deduced from all the other computed vertical values. It is the remaining space when all the other value
-			//are substracted from the containing DOMElement height
+			//are substracted from the containing HTMLElement height
 			setComputedHeight(style, containingHTMLElementData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
 		}
 		//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
@@ -328,7 +328,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		}
 		
 		//if top or bottom are auto, then the height will be computed once the layout
-		//of the DOMElement children is done
+		//of the HTMLElement children is done
 	}
 	
 	/**
@@ -440,7 +440,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	
 	/**
 	 * compute the static value for left which is the value that will place the left margin edge
-	 * of the DOMElement to the left edge of its containing DOMElement
+	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
 	private function getComputedStaticLeft(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
@@ -449,7 +449,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	
 	/**
 	 * compute the static value for top which is the value that will place the top margin edge
-	 * of the DOMElement to the top edge of its containing DOMElement
+	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
 	private function getComputedStaticTop(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{

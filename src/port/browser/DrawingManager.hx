@@ -105,7 +105,7 @@ class DrawingManager extends AbstractDrawingManager
 	{
 		var canvasContext:Dynamic = getContext();
 		
-		//clears a rect with the size of this DOMElement
+		//clears a rect with the size of this HTMLElement
 		canvasContext.clearRect(0, 0, width, height);
 	}
 	
@@ -135,9 +135,9 @@ class DrawingManager extends AbstractDrawingManager
 			case gradient(gradientStyle):
 				canvasContext.fillStyle = getGradient(gradientStyle);
 			
-			//for bitmap fill, create a canvas pattern from an image DOMElement
-			case bitmap(imageDOMElement, repeat):
-				canvasContext.fillStyle = getCanvasPattern(imageDOMElement, repeat);
+			//for bitmap fill, create a canvas pattern from an image HTMLElement
+			case bitmap(imageHTMLElement, repeat):
+				canvasContext.fillStyle = getCanvasPattern(imageHTMLElement, repeat);
 		}	
 	}
 	
@@ -165,10 +165,10 @@ class DrawingManager extends AbstractDrawingManager
 				initLineStyle(lineStyleData);
 				canvasContext.strokeStyle = getGradient(gradientStyle);
 			
-			//for bitmap stroke, create a canvas pattern from an image DOMElement
-			case bitmap(imageDOMElement, lineStyleData, repeat):
+			//for bitmap stroke, create a canvas pattern from an image HTMLElement
+			case bitmap(imageHTMLElement, lineStyleData, repeat):
 				initLineStyle(lineStyleData);
-				canvasContext.strokeStyle = getCanvasPattern(imageDOMElement, repeat);
+				canvasContext.strokeStyle = getCanvasPattern(imageHTMLElement, repeat);
 		}
 	}
 	
@@ -177,7 +177,7 @@ class DrawingManager extends AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from an ImageDOMElement onto the canvas.
+	 * Draw a bitmap extracted from an ImageHTMLElement onto the canvas.
 	 */
 	override public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
@@ -395,7 +395,7 @@ class DrawingManager extends AbstractDrawingManager
 	/**
 	 * Create and return a JavaScript CanvasPattern object, used to draw
 	 * picture on a canvas
-	 * @param	imageDOMElement the imageDomObject whose native <img> element will create the 
+	 * @param	imageHTMLElement the imageDomObject whose native <img> element will create the 
 	 * CanvasPattern
 	 * @param	repeat whether to tile the CanvasPattern
 	 */

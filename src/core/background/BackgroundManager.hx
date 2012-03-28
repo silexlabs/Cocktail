@@ -21,7 +21,7 @@ import haxe.Log;
 
 /**
  * This class manages the instantation and drawing of the
- * background "layers" of a DOMElement. A DOMElement can have
+ * background "layers" of a HTMLElement. A HTMLElement can have
  * one background color, and one or more background images
  * which can either be external bitmaps or programmatically
  * drawn gradients. 
@@ -35,7 +35,7 @@ class BackgroundManager
 	/**
 	 * an array of each of the background managers instantiated by this class.
 	 * One background drawing manager must be instantiated for each layer of background.
-	 * for instance, for a DOMElement with a background color and one background image,
+	 * for instance, for a HTMLElement with a background color and one background image,
 	 * 2 background drawing manager will be instantiated and stored
 	 */
 	private var _backgroundDrawingManagers:Array<BackgroundDrawingManager>;
@@ -58,13 +58,13 @@ class BackgroundManager
 	}
 	
 	/**
-	 * Render the different layers of the background of a DOMElement using the backgroundBox
+	 * Render the different layers of the background of a HTMLElement using the backgroundBox
 	 * dimensions for each layer, then return an array containing each of the rendered layer.
 	 * 
-	 * It is called for each rendered box of a DOMElement. For instance, an inline level container DOMElement
+	 * It is called for each rendered box of a HTMLElement. For instance, an inline level container HTMLElement
 	 * can be split into multiple line. This method will be called for each line
 	 * 
-	 * @param	backgroundBox the dimensions and position of a box of a DOMElement
+	 * @param	backgroundBox the dimensions and position of a box of a HTMLElement
 	 * @param	style
 	 * @return
 	 */
@@ -78,7 +78,7 @@ class BackgroundManager
 			return nativeElements;
 		}
 		
-		//loop in all the background images style of the DOMElement. It is expected
+		//loop in all the background images style of the HTMLElement. It is expected
 		//that each array of background styles (such as background origin, background size...)
 		//has the same length
 		for (i in 0...style.backgroundImage.length)

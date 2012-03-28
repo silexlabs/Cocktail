@@ -96,7 +96,7 @@ typedef TextFragmentData = {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// Graphic DOMElement structures and enums
+// Graphic HTMLElement structures and enums
 //////////////////////////////////////////////////////////////////////////////////////////
 
 		//////////////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ typedef TextFragmentData = {
 			//the gradient might be rotated
 			gradient(gradientStyle:GradientStyleData);
 			
-			//a bitmap fill, created with the data of an image DOMElement.
+			//a bitmap fill, created with the data of an image htmlElement.
 			//The fill might be repeated (tiled)
 			bitmap(htmlImageElement:HTMLImageElement, repeat:Bool);
 		}
@@ -219,7 +219,7 @@ typedef TextFragmentData = {
 			//the gradient might be rotated
 			gradient(gradientStyle:GradientStyleData, lineStyle:LineStyleData);
 			
-			//a bitmap line, created with the data of an image DOMElement.
+			//a bitmap line, created with the data of an image htmlElement.
 			//The line fill might be repeated (tiled)
 			bitmap(htmlImageElement:HTMLImageElement, lineStyle:LineStyleData, repeat:Bool);
 		}

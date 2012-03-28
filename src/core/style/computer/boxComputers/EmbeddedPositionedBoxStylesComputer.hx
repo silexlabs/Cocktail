@@ -12,8 +12,8 @@ import haxe.Log;
 
 /**
  * This is the box computer for replaced
- * absolutely positioned DOMElement, such as
- * an absolutely positioned ImageDOMElement
+ * absolutely positioned HTMLElement, such as
+ * an absolutely positioned ImageHTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -197,7 +197,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	
 	/**
 	 * compute the static value for left which is the value that will place the left margin edge
-	 * of the DOMElement to the left edge of its containing DOMElement
+	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
 	private function getComputedStaticLeft(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
@@ -206,7 +206,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	
 		/**
 	 * compute the static value for top which is the value that will place the top margin edge
-	 * of the DOMElement to the top edge of its containing DOMElement
+	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
 	private function getComputedStaticTop(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{

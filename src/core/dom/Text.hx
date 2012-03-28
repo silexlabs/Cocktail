@@ -52,7 +52,7 @@ class Text extends CharacterData
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
-	 * a space, a tab...) and the corresponding TextFragmentDOMElement,
+	 * a space, a tab...) and the corresponding TextFragmentHTMLElement,
 	 * created when the text is rendered
 	 * 
 	 * TODO : should be on text renderer instead
@@ -77,7 +77,7 @@ class Text extends CharacterData
 	 * Remove a reference to every generated
 	 * TextRenderer. Used when the content
 	 * of the TextElement changes or when the style
-	 * of its ContainerDOMElement changes
+	 * of its ContainerHTMLElement changes
 	 */
 	public function reset():Void
 	{
@@ -111,7 +111,7 @@ class Text extends CharacterData
 	 * Transform a text letters into uppercase, lowercase
 	 * or capitalise them (only the first letter of each word
 	 * is transformed to uppercase), based on the textTransform
-	 * style of this container DOMElement
+	 * style of this container HTMLElement
 	 */
 	public static function applyTextTransform(text:String, textTransform:TextTransform):String
 	{
@@ -167,7 +167,7 @@ class Text extends CharacterData
 	/**
 	 * Actually convert a text into an array
 	 * of text token. Each item of the array
-	 * also has a null TextFragmentDOMElement,
+	 * also has a null TextFragmentHTMLElement,
 	 * as it is only created once the text is laid
 	 * out
 	 * 
@@ -262,7 +262,7 @@ class Text extends CharacterData
 	
 	/**
 	 * Utils method wrapping a textToken into a textFragmentData
-	 * with a null textFragmentDOMElement
+	 * with a null textFragmentHTMLElement
 	 */
 	private static function insertTextToken(textToken:TextTokenValue):TextFragmentData
 	{

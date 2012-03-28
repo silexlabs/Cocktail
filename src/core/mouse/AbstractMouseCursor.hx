@@ -49,10 +49,10 @@ class AbstractMouseCursor
 		switch (value)
 		{
 			//if the cursor is a bitmap, calls
-			//a dedicated method with the imageDOMElement
+			//a dedicated method with the imageHTMLElement
 			//to be used as cursor
-			case custom(imageDOMElement, hotSpot):
-				setBitmapCursor(imageDOMElement, hotSpot);
+			case custom(imageHTMLElement, hotSpot):
+				setBitmapCursor(imageHTMLElement, hotSpot);
 			
 			//let the browser manage the cursor	
 			case cssAuto:
@@ -86,7 +86,7 @@ class AbstractMouseCursor
 	 * Set a bitmap as mouse cursor using native API. The hotSpot is the registration
 	 * point of the mouse cursor
 	 */
-	private function setBitmapCursor(imageDOMElement:HTMLImageElement, hotSpot:PointData):Void
+	private function setBitmapCursor(imageHTMLElement:HTMLImageElement, hotSpot:PointData):Void
 	{
 		//abstract
 	}

@@ -28,9 +28,9 @@ class FocusManagerImpl extends cocktailCore.focus.abstract.AbstractFocusManagerI
 #end
 
 /**
- * The Focus Manager determine which DOMElement in the 
+ * The Focus Manager determine which HTMLElement in the 
  * DOM has focus, meaning that it will receive keyboard
- * events. Focus can be given by clicking on a DOMElement
+ * events. Focus can be given by clicking on a HTMLElement
  * which can receive the focus or by using the TAB key on
  * the keyboard
  * 
@@ -47,12 +47,12 @@ class FocusManager
 	private static var _instance:FocusManager;
 	
 	/**
-	 * get/set the bodyDOMElement at the top of the DOM
+	 * get/set the bodyHTMLElement at the top of the DOM
 	 */
 	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
 	
 	/**
-	 * get/set the currently active (focused) DOMElement
+	 * get/set the currently active (focused) HTMLElement
 	 */
 	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
 	
@@ -90,7 +90,7 @@ class FocusManager
 	
 	/**
 	 * Invalidate the focus manager order of 
-	 * DOMElement to focus when using the TAB
+	 * HTMLElement to focus when using the TAB
 	 * key
 	 */
 	public function invalidate():Void

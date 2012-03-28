@@ -32,14 +32,14 @@ import core.style.StyleData;
  * 
  * On the other hand, relying on CSS implies a few browser inconsistencies.
  * 
- * For each abstract style applied to a DOMElement, this class converts it to a CSS String
+ * For each abstract style applied to a HTMLElement, this class converts it to a CSS String
  * which is applied to the style object of the native HTML element
  * 
  * Each time a layout happens (when a style changes, when the viewport is resized...), 
  * The width, height, x and y of the native JavaScript HTMLElement are stored.
  * 
- * They are also stored when the width/height/x/y are set directly on the DOMElement
- * (with DOMElement.x, DOMElement.y ...).
+ * They are also stored when the width/height/x/y are set directly on the HTMLElement
+ * (with HTMLElement.x, HTMLElement.y ...).
  * Those value are stored immediately because in JavaScript when changing a style on an object,
  * methods to get the actual dimensions of an element (like clientWidth) are set asynchronously,
  * meaning that in the following example, the width var will be equal to 0 instead of 100 : 
@@ -48,7 +48,7 @@ import core.style.StyleData;
  * 
  * A Timer needs to be set to retrieve the value and that is why it is set after a layout
  * which is asynchronous to prevent having multiple timers and also immediately after
- * setting it using the x,y,width or height attributes of the DOMElement
+ * setting it using the x,y,width or height attributes of the HTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -1525,7 +1525,7 @@ class Style extends AbstractStyle
 	// All methods convert the Style
 	// value into a CSS style value
 	// (as a String) and set the native
-	// CSS style on the DOMElement's
+	// CSS style on the HTMLElement's
 	// NativeElement
 	////////////////////////////////
 	

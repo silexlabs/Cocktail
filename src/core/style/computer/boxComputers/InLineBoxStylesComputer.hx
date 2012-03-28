@@ -13,7 +13,7 @@ import core.unit.UnitManager;
 
 /**
  * The is the box style computer for inline non-embedded
- * DOMElement, such as a fragment of text
+ * HTMLElement, such as a fragment of text
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -28,7 +28,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * vertical paddings don't apply to non-embedded inline DOMElements
+	 * vertical paddings don't apply to non-embedded inline HTMLElements
 	 */
 	override private function measureVerticalPaddings(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
@@ -39,7 +39,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * vertical margins don't apply to non-embedded inline DOMElements
+	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
 	override private function measureAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
@@ -54,7 +54,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * vertical margins don't apply to non-embedded inline DOMElements
+	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
 	override private function measureHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
@@ -67,15 +67,15 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * auto margin compute to 0 for inline non-embedded DOMElement
+	 * auto margin compute to 0 for inline non-embedded HTMLElement
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{	
 		return 0;
 	}
 	
 	/**
-	 * for inline, non embedded DOMElement, the width doesn't apply
+	 * for inline, non embedded HTMLElement, the width doesn't apply
 	 */
 	override private function getComputedWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
@@ -83,7 +83,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * for inline, non embedded DOMElement, the height doesn't apply
+	 * for inline, non embedded HTMLElement, the height doesn't apply
 	 */
 	override private function getComputedHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{

@@ -14,10 +14,10 @@ import haxe.Log;
 
 /**
  * This is the box computer implementation for an
- * embedded block DOMElement.
+ * embedded block HTMLElement.
  * 
  * It add special treatement for dimensions
- * computation, as an embedded DOMElement has intrinsic
+ * computation, as an embedded HTMLElement has intrinsic
  * dimensions
  * 
  * @author Yannick DOMINGUEZ
@@ -50,31 +50,31 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	
 	/**
 	 * Override the way a value of 'auto' for the width style
-	 * is computed, as an embedded DOMElement may have an intrinsic width
+	 * is computed, as an embedded HTMLElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
 	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		
-		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
+		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'height' style also is defined as 'auto'
 		if (style.height == Dimension.cssAuto)
 		{
 			//first try to use the intrinsic width of the embedded
-			//DOMElement if it exist (it might for instance be a
-			//picture width for an ImageDOMElement)
-			if (embeddedDOMElement.intrinsicWidth != null)
+			//HTMLElement if it exist (it might for instance be a
+			//picture width for an ImageHTMLElement)
+			if (embeddedHTMLElement.intrinsicWidth != null)
 			{
-				ret = embeddedDOMElement.intrinsicWidth;
+				ret = embeddedHTMLElement.intrinsicWidth;
 			}
 			//else deduce the intrinsic width from the intrinsic height and ratio
-			else if (embeddedDOMElement.intrinsicHeight != null && embeddedDOMElement.intrinsicRatio != null)
+			else if (embeddedHTMLElement.intrinsicHeight != null && embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(embeddedDOMElement.intrinsicHeight * embeddedDOMElement.intrinsicRatio);
+				ret = Math.round(embeddedHTMLElement.intrinsicHeight * embeddedHTMLElement.intrinsicRatio);
 			}
-			else if (embeddedDOMElement.intrinsicRatio != null)
+			else if (embeddedHTMLElement.intrinsicRatio != null)
 			{
 				//If 'height' and 'width' both have computed values of 'auto' 
 				//and the element has an intrinsic ratio but no intrinsic height
@@ -104,14 +104,14 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			setComputedHeight(style, computedHeight);
 			
 			//deduce the width from the intrinsic ratio and the computed height
-			if (embeddedDOMElement.intrinsicRatio != null)
+			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(computedHeight * embeddedDOMElement.intrinsicRatio);
+				ret = Math.round(computedHeight * embeddedHTMLElement.intrinsicRatio);
 			}
 			//else use the intrinsic width if defined
-			else if (embeddedDOMElement.intrinsicWidth != null)
+			else if (embeddedHTMLElement.intrinsicWidth != null)
 			{
-				ret = embeddedDOMElement.intrinsicWidth;
+				ret = embeddedHTMLElement.intrinsicWidth;
 			}
 			else
 			{
@@ -127,22 +127,22 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	
 	/**
 	 * Override the way a value of 'auto' for the height style
-	 * is computed, as an embedded DOMElement may have an intrinsic height
+	 * is computed, as an embedded HTMLElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
 	override private function getComputedAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		
-		var embeddedDOMElement:EmbeddedElement = cast(style.htmlElement);
+		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
 		//if the 'width' style is also set to 'auto'
 		if (style.width == Dimension.cssAuto)
 		{
 			//try to use the intrinsic height if not null
-			if (embeddedDOMElement.intrinsicHeight != null)
+			if (embeddedHTMLElement.intrinsicHeight != null)
 			{
-				ret = embeddedDOMElement.intrinsicHeight;
+				ret = embeddedHTMLElement.intrinsicHeight;
 			}
 		}
 		//else if 'width' is not 'auto'
@@ -153,9 +153,9 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			setComputedWidth(style, computedWidth);
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
-			if (embeddedDOMElement.intrinsicRatio != null)
+			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(style.computedStyle.width / embeddedDOMElement.intrinsicRatio);
+				ret = Math.round(style.computedStyle.width / embeddedHTMLElement.intrinsicRatio);
 			}
 			else
 			{
@@ -170,10 +170,10 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * for block embedded DOMElement, an 'auto' for vertical margin compute to 0, 
-	 * horizontal margin are computed like for non-embedded block DOMElements
+	 * for block embedded HTMLElement, an 'auto' for vertical margin compute to 0, 
+	 * horizontal margin are computed like for non-embedded block HTMLElements
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		var computedMargin:Int;
 	
@@ -185,7 +185,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//the "isDimensionAuto" flag is set to false, as for embedded element, there is always a computed width 
 			//at this point
-			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingDOMElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
+			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
 		}
 		
 		return computedMargin;

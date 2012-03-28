@@ -14,7 +14,7 @@ import core.style.StyleData;
 /**
  * This is a static class in charge of
  * computing the styles that affect how a
- * DOMElement will be displayed
+ * htmlElement will be displayed
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -37,14 +37,14 @@ class DisplayStylesComputer
 	/**
 	 * Compute all the styles affecting display by applying CSS
 	 * rules. Each of this style might affect the computed value
-	 * of another style. For example, a DOMElement which is a float
+	 * of another style. For example, an htmlElement which is a float
 	 * must have a display of 'block'.
 	 * 
 	 * Some computed style value are the same as the defined
 	 * style values
 	 * 
 	 * @param	style contain the styles definition of the 
-	 * target DOMElement
+	 * target htmlElement
 	 */
 	public static function compute(style:AbstractStyle):Void
 	{
@@ -80,7 +80,7 @@ class DisplayStylesComputer
 	
 	/**
 	 * Compute the 'float' style which might be affect affected by the 'position'
-	 * style, as an absolute positioned DOMElement can't be floated
+	 * style, as an absolute positioned htmlElement can't be floated
 	 * @param	style
 	 * @param	computedPosition the computed value of position, computed before float
 	 */
@@ -88,8 +88,8 @@ class DisplayStylesComputer
 	{
 		var ret:CSSFloat;
 		
-		//if the DOMElement is absolute or fixed position,
-		//it will act as an absolutely positioned DOMElement
+		//if the htmlElement is absolute or fixed position,
+		//it will act as an absolutely positioned htmlElement
 		//and won't take the float style into account,
 		//so it computes to none
 		if (computedPosition == Position.absolute || computedPosition == Position.fixed)
@@ -115,7 +115,7 @@ class DisplayStylesComputer
 	{
 		var ret:Display;
 		
-		//if the DOMElement is a float, it can't
+		//if the htmlElement is a float, it can't
 		//be an inline level element
 		if (computedFloat != CSSFloat.none)
 		{
@@ -141,7 +141,7 @@ class DisplayStylesComputer
 	/**
 	 * Compute the clear style which might be affected by 
 	 * the display and position style. Only block level
-	 * DOMElement can clear floats and they must
+	 * htmlElement can clear floats and they must
 	 * also be 'in-flow' element (with a 'position' value
 	 * of relative or static)
 	 * 

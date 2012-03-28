@@ -25,7 +25,7 @@ import haxe.Log;
 /**
  * This is the Flash AVM2 implementation of the DrawingManager.
  * It draws shape programatically onto a native Sprite object.
- * The sprite DOMElement is then cached as a bitmap. It allows to work
+ * The sprite HTMLElement is then cached as a bitmap. It allows to work
  * with both the flash vector drawing API and bitmaps.
  * 
  * @author Yannick DOMINGUEZ
@@ -148,9 +148,9 @@ class DrawingManager extends AbstractDrawingManager
 				);
 		
 			//for a bitmap fill, use the natvie beginBitmapFill method, using
-			//an ImageDOMElement as source for the bitmap data
-			case bitmap(imageDOMElement, repeat):
-				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageDOMElement.nativeElement), new flash.geom.Matrix(), repeat);
+			//an ImageHTMLElement as source for the bitmap data
+			case bitmap(imageHTMLElement, repeat):
+				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageHTMLElement.nativeElement), new flash.geom.Matrix(), repeat);
 		}	
 	}
 	
@@ -200,10 +200,10 @@ class DrawingManager extends AbstractDrawingManager
 					getGradientBox(gradientStyle)
 				);
 			
-			//for a bitmap line style, use an ImageDOMElement as the source
+			//for a bitmap line style, use an ImageHTMLElement as the source
 			//for the BitmapData. The line style must also be set before
 			//setting the bitmap data on the line
-			case bitmap(imageDOMElement, lineStyleData, repeat):
+			case bitmap(imageHTMLElement, lineStyleData, repeat):
 				//set first the line style so that the line is visible	
 				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
@@ -216,7 +216,7 @@ class DrawingManager extends AbstractDrawingManager
 					lineStyleData.miterLimit);
 				
 				//then set the bitmap data on it
-				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageDOMElement.nativeElement), new flash.geom.Matrix(), repeat);
+				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageHTMLElement.nativeElement), new flash.geom.Matrix(), repeat);
 		}
 	}
 	
@@ -248,7 +248,7 @@ class DrawingManager extends AbstractDrawingManager
 			};
 		}
 		
-		//get the ImageDOMElement bitmap data and current bitmap data
+		//get the ImageHTMLElement bitmap data and current bitmap data
 		var sourceBitmapData:BitmapData = getBitmapData(source);
 		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
 		
@@ -258,7 +258,7 @@ class DrawingManager extends AbstractDrawingManager
 		var matrixData:MatrixData = matrix.data;
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
-		//draw the ImageDOMElement bitmap data onto the current bitmap data
+		//draw the ImageHTMLElement bitmap data onto the current bitmap data
 		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect);
 	}
 	
@@ -453,7 +453,7 @@ class DrawingManager extends AbstractDrawingManager
 
 	/**
 	 * create and return a gradient box corresponding to the size of the
-	 * whole DOMElement
+	 * whole HTMLElement
 	 */
 	private function getGradientBox(gradientStyle:GradientStyleData):flash.geom.Matrix
 	{

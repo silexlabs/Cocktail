@@ -12,7 +12,7 @@ import haxe.Log;
 
 /**
  * This is the box computer for inlineBlock non-embedded
- * DOMElement
+ * HTMLElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -27,9 +27,9 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * for inlineBlock non-embedded DOMElements, auto margin compute to 0
+	 * for inlineBlock non-embedded HTMLElements, auto margin compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingDOMElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
 		return 0;
 	}
@@ -48,7 +48,7 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 		
 		//if the minimum width that must use the inlineBlock
 		//is not superior to the width of the containing
-		//DOMElement, use the minimum width
+		//HTMLElement, use the minimum width
 		if (minimumWidth < containingHTMLElementData.width)
 		{
 			shrinkedWidth = minimumWidth;

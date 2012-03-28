@@ -13,10 +13,10 @@ import core.renderer.ElementRenderer;
 import haxe.Log;
 
 /**
- * This formatting context layout DOMElement below each other
+ * This formatting context layout HTMLElement below each other
  * generally following the formattable tree order.
  * 
- * There might be exception, for instance if a container DOMElement
+ * There might be exception, for instance if a container HTMLElement
  * with a fixed has overflowing children, its siblings will use
  * the height of the container to be positioned below, not the
  * added height of its children.
@@ -188,7 +188,7 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * Insert a floated DOMElement. overriden by sub-classes
+	 * Insert a floated HTMLElement. overriden by sub-classes
 	 * 
 	 */
 	override private function insertFloat(element:ElementRenderer):Void

@@ -12,8 +12,8 @@ import core.style.StyleData;
 import core.unit.UnitManager;
 
 /**
- * this is the box computer for floated non-embedded DOMElement
- * such as a floated ContainerDOMElement.
+ * this is the box computer for floated non-embedded HTMLElement
+ * such as a floated ContainerHTMLElement.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -28,7 +28,7 @@ class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 	}
 	
 	/**
-	 * for floated non-embedded DOMElements, an auto width is computed as 'shrink-to-fit' once all the children
+	 * for floated non-embedded HTMLElements, an auto width is computed as 'shrink-to-fit' once all the children
 	 * have been laid out
 	 */
 	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int

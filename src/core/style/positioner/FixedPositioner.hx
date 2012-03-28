@@ -9,7 +9,7 @@ package core.style.positioner;
 
 /**
  * This is the box positioner class for
- * 'fixed' DOMElements. They are positioned
+ * 'fixed' htmlElement. They are positioned
  * by using the viewport as origin
  * 
  * @author Yannick DOMINGUEZ

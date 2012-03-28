@@ -104,7 +104,7 @@ enum FontSizeAbsoluteSize {
 /**
  * Lists the possible relative values
  * to define the font size of a
- * DOMElement in relation
+ * HTMLElement in relation
  * with the parent font size.
  */
 enum FontSizeRelativeSize {

@@ -59,7 +59,7 @@ class Style extends AbstractStyle
 	/**
 	 * The flash text block used to create the 
 	 * flash text line that will be wrapped in
-	 * TextFragmentDOMElement
+	 * TextFragmentHTMLElement
 	 */
 	private var _textBlock:TextBlock;
 	
@@ -78,7 +78,7 @@ class Style extends AbstractStyle
 	/**
 	 * Returns a font metrics data object created using font metrics
 	 * provided by the flash text engine. The font metrics are 
-	 * processed using the styles of the DOMElement. The
+	 * processed using the styles of the HTMLElement. The
 	 * font metrics are provided for a given font at a given size
 	 */
 	override private function getFontMetricsData():FontMetricsData
@@ -129,7 +129,7 @@ class Style extends AbstractStyle
 	
 	/**
 	 * Return a flash FontWeight object from
-	 * the font weight style of the DOMElement
+	 * the font weight style of the HTMLElement
 	 */
 	private function getNativeFontWeight(fontWeight:FontWeight):flash.text.engine.FontWeight
 	{

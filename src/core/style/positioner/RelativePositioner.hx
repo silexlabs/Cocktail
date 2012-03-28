@@ -14,13 +14,13 @@ import haxe.Log;
 
 /**
  * This is the box positioner implementation
- * for 'relative' DOMElement.
+ * for 'relative' htmlElement.
  * 
  * Override all the methods computing the offset
- * to apply to the DOMElement relative to its first positioned
+ * to apply to the htmlElement relative to its first positioned
  * ancestor, as for a 'relative' positioned ancestor, the static
  * x or y position is always added because the offset is applied
- * relative to the static position of the DOMElement
+ * relative to the static position of the htmlElement
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -43,9 +43,9 @@ class RelativePositioner extends BoxPositioner
 		return staticPosition + htmlElement.style.computedStyle.left;
 	}
 	
-	override private function getRightOffset(htmlElement:HTMLElement, containingDOMElementWidth:Int, staticPosition:Int):Int
+	override private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
-		return staticPosition + containingDOMElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
+		return staticPosition + containingHTMLElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
 	}
 	
 	override private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
@@ -53,7 +53,7 @@ class RelativePositioner extends BoxPositioner
 		return staticPosition + htmlElement.style.computedStyle.top;
 	}
 	
-	override private function getBottomOffset(htmlElement:HTMLElement, containingDOMElementHeight:Int, staticPosition:Int):Int
+	override private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int, staticPosition:Int):Int
 	{
 		return staticPosition - htmlElement.style.computedStyle.bottom;
 	}

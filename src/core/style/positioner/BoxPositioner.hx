@@ -15,19 +15,19 @@ import haxe.Log;
 
 /**
  * This is the base classes for classes 
- * in charge of laying out 'positioned' DOMElements.
+ * in charge of laying out 'positioned' HTMLElements.
  * 
- * A positioned DOMElement is one with a 'position' style value
+ * A positioned HTMLElement is one with a 'position' style value
  * of 'relative', 'absolute' or 'fixed' (any value but 'static').
  * 
- * There are 2 kinds of positioned DOMElements : absolutely positioned
+ * There are 2 kinds of positioned HTMLElements : absolutely positioned
  * ('absolute' or 'fixed') and relatively positioned ('relative').
  * 
- * Absolutely positioned DOMElements are taken out of the flow
+ * Absolutely positioned HTMLElements are taken out of the flow
  * and positioned by taking either their first positioned ancestor
  * as origin ('absolute') or the viewport('fixed').
  * 
- * Relatively positioned DOMElement are first placed into the normal
+ * Relatively positioned HTMLElement are first placed into the normal
  * flow, then an offset is applied to them using the top, left, right
  * and bottom styles.
  * 
@@ -52,12 +52,12 @@ class BoxPositioner
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Main entry point, determine the position of the DOMElement's ElementRenderer relative to its first positioned
+	 * Main entry point, determine the position of the HTMLElement's ElementRenderer relative to its first positioned
 	 * ancestor
 	 * 
-	 * @param elementRenderer the ElementRenderer created by the DOMElement
-	 * @param	containingDOMElement the dimensions and positions of the DOMElement used to position the 
-	 * target DOMElement for absolutely positioned DOMElements (its first positioned ancestor or the viewport)
+	 * @param elementRenderer the ElementRenderer created by the HTMLElement
+	 * @param	containingHTMLElement the dimensions and positions of the HTMLElement used to position the 
+	 * target HTMLElement for absolutely positioned HTMLElements (its first positioned ancestor or the viewport)
 	 * @param staticPosition the position the ElementRenderer would have had in the flow if it weren't positioned. Used if
 	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
 	 */
@@ -72,13 +72,13 @@ class BoxPositioner
 			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
-		//Right offset takes the containing DOMElement width minus the
+		//Right offset takes the containing HTMLElement width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (htmlElement.style.right != PositionOffset.cssAuto)
 		{
 			elementRenderer.bounds.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
 		}
-		//if both right and left are 'auto', then the DOMElement is positioned to its
+		//if both right and left are 'auto', then the HTMLElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
 		else
 		{
@@ -118,9 +118,9 @@ class BoxPositioner
 	/**
 	 * get the right offset to apply the ElementRenderer
 	 */
-	private function getRightOffset(htmlElement:HTMLElement, containingDOMElementWidth:Int, staticPosition:Int):Int
+	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
-		return containingDOMElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
+		return containingHTMLElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
 	}
 	
 	/**
@@ -134,9 +134,9 @@ class BoxPositioner
 	/**
 	 * get the bottom offset to apply the ElementRenderer
 	 */
-	private function getBottomOffset(htmlElement:HTMLElement, containingDOMElementHeight:Int, staticPosition:Int):Int
+	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int, staticPosition:Int):Int
 	{
-		return containingDOMElementHeight - htmlElement.offsetHeight - htmlElement.style.computedStyle.bottom;
+		return containingHTMLElementHeight - htmlElement.offsetHeight - htmlElement.style.computedStyle.bottom;
 	}
 	
 }

@@ -61,15 +61,15 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		ret.push(nativeElement);
 		#end
 		
-		var embeddedDOMElement:EmbeddedElement = cast(_style.htmlElement);
-		ret.push(embeddedDOMElement.embeddedAsset);
+		var embeddedHTMLElement:EmbeddedElement = cast(_style.htmlElement);
+		ret.push(embeddedHTMLElement.embeddedAsset);
 		
 		#if (flash9 || nme)
-		embeddedDOMElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
-		embeddedDOMElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop + _style.computedStyle.marginTop;
+		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
+		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop + _style.computedStyle.marginTop;
 
-		embeddedDOMElement.embeddedAsset.width = _style.computedStyle.width;
-		embeddedDOMElement.embeddedAsset.height = _style.computedStyle.height;
+		embeddedHTMLElement.embeddedAsset.width = _style.computedStyle.width;
+		embeddedHTMLElement.embeddedAsset.height = _style.computedStyle.height;
 		#end
 		
 		

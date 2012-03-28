@@ -127,8 +127,7 @@ class AbstractHTMLImageElement extends EmbeddedElement
 		
 		this._style.invalidate();
 		
-		//if provided, call the callback
-		//with the ImageDOMElement
+		//if provided, call the onload callback
 		if (onLoad != null)
 		{
 			var loadEvent:Event = new Event(Event.LOAD, this);

@@ -9,7 +9,7 @@ package core.style.positioner;
 
 /**
  * This is the implementation of the box positioner
- * for 'absolute' DOMElement, doesn't add anything
+ * for 'absolute' htmlElement, doesn't add anything
  * as this is the default behaviour
  * 
  * @author Yannick DOMINGUEZ
