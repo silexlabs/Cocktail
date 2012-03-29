@@ -12,6 +12,7 @@ import cocktail.domElement.DOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.domElement.GraphicDOMElement;
+import cocktail.viewport.Viewport;
 
 // Native Elements
 import cocktail.nativeElement.NativeElementManager;
@@ -20,28 +21,25 @@ import cocktail.nativeElement.NativeElementData;
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
-import org.intermedia.view.ScreenResolution;
-
+import org.intermedia.view.Constants;
 
 /**
- * This class defines the styles used by the CellThumb
+ * This class defines the default style used by a ListView
  * 
  * @author Raphael Harmel
  */
 
-class CellThumbStyle2
+class MenuListViewStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
-	
 	/**
-	 * Defines cell Style
+	 * Defines default Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
+	public static function setListStyle(domElement:DOMElement):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.display = DisplayStyleValue.block;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -50,38 +48,19 @@ class CellThumbStyle2
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		// compute cell width depending on cellPerLine value
-		var cellPercentWidth:Int = 0;
-		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
-		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
-		else cellPercentWidth = 100;
-		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
-	}
-	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setThumbnailStyle(domElement:DOMElement):Void
-	{
-		domElement.style.display = DisplayStyleValue.inlineStyle;
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(Constants.MENU_HEIGHT));
 		
-		//domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		//domElement.style.paddingRight = PaddingStyleValue.percent(1);
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
-		//domElement.style.paddingRight = PaddingStyleValue.length(px(5));
+		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
+		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
+		
+		domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
 
-
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-
-		domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(156));
-		domElement.style.width = DimensionStyleValue.percent(100);	
-
-		domElement.style.opacity = OpacityStyleValue.number(0);
+		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
 		
 	}
 	

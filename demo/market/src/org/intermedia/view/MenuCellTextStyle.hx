@@ -20,28 +20,27 @@ import cocktail.nativeElement.NativeElementData;
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
-import org.intermedia.view.ScreenResolution;
 
 
 /**
- * This class defines the styles used by the CellThumb
+ * This class defines the styles used by the CellText
  * 
  * @author Raphael Harmel
  */
 
-class CellThumbStyle2
+class MenuCellTextStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
+	static inline var CELL_VERTICAL_SPACE:Int = 5;
 	
 	/**
 	 * Defines cell Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
+	public static function setCellStyle(domElement:ContainerDOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		domElement.style.position = PositionStyleValue.relative;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -53,36 +52,44 @@ class CellThumbStyle2
 		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		// compute cell width depending on cellPerLine value
-		var cellPercentWidth:Int = 0;
-		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
-		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
-		else cellPercentWidth = 100;
-		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
+		domElement.style.width = DimensionStyleValue.percent(33);
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(33);
+
+		domElement.style.textAlign = TextAlignStyleValue.center;
 	}
 	
 	/**
-	 * Defines cell image Style
+	 * Defines cell text Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function setThumbnailStyle(domElement:DOMElement):Void
+	public static function setCellTextStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineStyle;
+		domElement.style.position = PositionStyleValue.relative;
+
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		
-		//domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		//domElement.style.paddingRight = PaddingStyleValue.percent(1);
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
-		//domElement.style.paddingRight = PaddingStyleValue.length(px(5));
-
-
+		domElement.style.fontSize = FontSizeStyleValue.length(px(16));
+		domElement.style.lineHeight = LineHeightStyleValue.normal;
+		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		domElement.style.fontStyle = FontStyleStyleValue.normal;
+		domElement.style.fontFamily =
+			[
+				FontFamilyStyleValue.familyName('Helvetica'),
+				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
+			];
+		domElement.style.fontVariant = FontVariantStyleValue.normal;
+		domElement.style.textTransform = TextTransformStyleValue.none;
+		domElement.style.letterSpacing = LetterSpacingStyleValue.normal;
+		domElement.style.wordSpacing = WordSpacingStyleValue.normal;
+		domElement.style.textIndent = TextIndentStyleValue.length(px(0));
+		domElement.style.whiteSpace = WhiteSpaceStyleValue.normal;
+		
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-
-		domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(156));
-		domElement.style.width = DimensionStyleValue.percent(100);	
-
-		domElement.style.opacity = OpacityStyleValue.number(0);
 		
+		domElement.style.color = ColorValue.hex('#444444');
 	}
 	
 }

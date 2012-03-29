@@ -48,8 +48,8 @@ class ViewManagerStyle
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		domElement.style.width = DimensionStyleValue.percent(130);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.percent(130);
 		
 		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
 	}

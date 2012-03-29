@@ -122,9 +122,13 @@ class ThumbTextListRssStandard
 						cell.category = itemParam.firstChild().nodeValue;
 					}*/
 				}
-				// add cell to cell array
-				//trace(cell.thumbUrl);
-				cells.push(cell);
+				
+				// if the cell contains at least a title and a description
+				//if (cell.title != "" && cell.description != "")
+				//{
+					// add cell to cell array
+					cells.push(cell);
+				//}
 			}
 		}
 		// return cell array
@@ -142,6 +146,9 @@ class ThumbTextListRssStandard
 		// get thumbnail from description
 		var imgNodeStartIndex:Int = htmlString.indexOf("<img ");
 		var imgNode:String = "";
+		var imgUrl:String = "";
+		var imgUrlStartIndex:Int = 0;
+		// if img node name has been found
 		if ( imgNodeStartIndex != -1)
 		{
 			// get img node content
@@ -150,18 +157,46 @@ class ThumbTextListRssStandard
 			imgNode = htmlString.substr(0, imgNodeEndIndex);
 			
 			// get image url
-			var srcKeyWord:String = 'src="';
-			var imageUrlStartIndex:Int = imgNode.indexOf(srcKeyWord);
-			var imageUrl:String = "";
-			if (imageUrlStartIndex != -1)
+			var srcKeyWord:String = 'src=';
+			imgUrlStartIndex = imgNode.indexOf(srcKeyWord);
+			// if srcKeyWord string has been found
+			if (imgUrlStartIndex != -1)
 			{
-				imageUrl = imgNode.substr(imageUrlStartIndex + srcKeyWord.length);
-				var imgUrlEndIndex:Int = imageUrl.indexOf('"');
-				imageUrl = imageUrl.substr(0, imgUrlEndIndex);
-				return imageUrl;
-				//trace(imageUrl);
+				// get the delimitor
+				var imgUrlDelimitor:String = imgNode.substr(imgUrlStartIndex + srcKeyWord.length, 1);
+				
+				// get the image url
+				imgUrl = imgNode.substr(imgUrlStartIndex + srcKeyWord.length + 1);
+				var imgUrlEndIndex:Int = imgUrl.indexOf(imgUrlDelimitor);
+				imgUrl = imgUrl.substr(0, imgUrlEndIndex);
+				
+				return imgUrl;
 			}
 		}
+		// workaround for silicon sentier feed: if no img field, get the thumb from description only
+		else
+		{
+			imgUrlStartIndex = htmlString.indexOf("<p>http://");
+			//trace(htmlString);
+			if ( imgUrlStartIndex != -1)
+			{
+				// get img node content
+				/*htmlString = htmlString.substr(imgNodeStartIndex);
+				var imgNodeEndIndex:Int = htmlString.indexOf(">") + 1;
+				imgNode = htmlString.substr(0, imgNodeEndIndex);*/
+				
+				// get image url
+				var srcKeyWord:String = '<p>';
+				//var imgUrlStartIndex:Int = imgNode.indexOf(srcKeyWord);
+				imgUrl = htmlString.substr(imgUrlStartIndex + srcKeyWord.length);
+				var imgUrlEndIndex:Int = imgUrl.indexOf("</p>");
+				imgUrl = imgUrl.substr(0, imgUrlEndIndex);
+				
+				//trace(imgUrl);
+				return imgUrl;
+			}
+		}
+		
 		return "";
 		
 	}

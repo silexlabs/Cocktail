@@ -11736,18 +11736,29 @@ org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss) {
 org.intermedia.model.ThumbTextListRssStandard.getThumb = function(htmlString) {
 	var imgNodeStartIndex = htmlString.indexOf("<img ");
 	var imgNode = "";
+	var imgUrl = "";
+	var imgUrlStartIndex = 0;
 	if(imgNodeStartIndex != -1) {
 		htmlString = htmlString.substr(imgNodeStartIndex);
 		var imgNodeEndIndex = htmlString.indexOf(">") + 1;
 		imgNode = htmlString.substr(0,imgNodeEndIndex);
-		var srcKeyWord = "src=\"";
-		var imageUrlStartIndex = imgNode.indexOf(srcKeyWord);
-		var imageUrl = "";
-		if(imageUrlStartIndex != -1) {
-			imageUrl = imgNode.substr(imageUrlStartIndex + srcKeyWord.length);
-			var imgUrlEndIndex = imageUrl.indexOf("\"");
-			imageUrl = imageUrl.substr(0,imgUrlEndIndex);
-			return imageUrl;
+		var srcKeyWord = "src=";
+		imgUrlStartIndex = imgNode.indexOf(srcKeyWord);
+		if(imgUrlStartIndex != -1) {
+			var imgUrlDelimitor = imgNode.substr(imgUrlStartIndex + srcKeyWord.length,1);
+			imgUrl = imgNode.substr(imgUrlStartIndex + srcKeyWord.length + 1);
+			var imgUrlEndIndex = imgUrl.indexOf(imgUrlDelimitor);
+			imgUrl = imgUrl.substr(0,imgUrlEndIndex);
+			return imgUrl;
+		}
+	} else {
+		imgUrlStartIndex = htmlString.indexOf("<p>http://");
+		if(imgUrlStartIndex != -1) {
+			var srcKeyWord = "<p>";
+			imgUrl = htmlString.substr(imgUrlStartIndex + srcKeyWord.length);
+			var imgUrlEndIndex = imgUrl.indexOf("</p>");
+			imgUrl = imgUrl.substr(0,imgUrlEndIndex);
+			return imgUrl;
 		}
 	}
 	return "";
@@ -11953,7 +11964,7 @@ org.intermedia.view.CellThumbStyle.setCellStyle = function(domElement,cellPerLin
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(2)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	var cellPercentWidth = 0;
 	if(cellPerLine != 0) cellPercentWidth = 100 / cellPerLine | 0; else cellPercentWidth = 100;
@@ -11962,8 +11973,6 @@ org.intermedia.view.CellThumbStyle.setCellStyle = function(domElement,cellPerLin
 org.intermedia.view.CellThumbStyle.setThumbnailStyle = function(domElement) {
 	var imageMaxWidth = 200;
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
 	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
 	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
@@ -11985,7 +11994,7 @@ org.intermedia.view.CellThumbStyle2.setCellStyle = function(domElement,cellPerLi
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(2)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	var cellPercentWidth = 0;
 	if(cellPerLine != 0) cellPercentWidth = 100 / cellPerLine | 0; else cellPercentWidth = 100;
@@ -11993,8 +12002,6 @@ org.intermedia.view.CellThumbStyle2.setCellStyle = function(domElement,cellPerLi
 }
 org.intermedia.view.CellThumbStyle2.setThumbnailStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(1));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.percent(1));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
 	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(156)));
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
@@ -12010,7 +12017,7 @@ org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellTh
 org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellThumb;
 org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellThumb.prototype,{
 	initCellStyle: function() {
-		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
+		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbText1Style.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 	}
 	,updateView: function() {
 		org.intermedia.view.CellThumb.prototype.updateView.call(this);
@@ -12023,13 +12030,6 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellT
 			cellTitleContainer.addText(textElement);
 			this._cellStyle.title(cellTitleContainer);
 			cellTextBlockContainer.addChild(cellTitleContainer);
-		}
-		if(this._data.author != "" && this._data.author != null) {
-			var cellAuthorContainer = new cocktailCore.domElement.js.ContainerDOMElement();
-			var textElement = new cocktailCore.textElement.js.TextElement(this._data.author);
-			cellAuthorContainer.addText(textElement);
-			this._cellStyle.author(cellAuthorContainer);
-			cellTextBlockContainer.addChild(cellAuthorContainer);
 		}
 		var line = new cocktailCore.domElement.js.ImageDOMElement();
 		this._cellStyle.line(line);
@@ -12050,17 +12050,26 @@ org.intermedia.view.CellThumbText1Style.setCellStyle = function(domElement,cellP
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(2)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	var cellPercentWidth = 0;
 	if(cellPerLine != 0) cellPercentWidth = 100 / cellPerLine | 0; else cellPercentWidth = 100;
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(cellPercentWidth));
 }
+org.intermedia.view.CellThumbText1Style.setThumbnailStyle = function(domElement) {
+	var imageMaxWidth = 200;
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setMaxWidth(cocktail.style.ConstrainedDimensionStyleValue.length(cocktail.unit.LengthValue.px(imageMaxWidth)));
+	domElement.getStyle().setMaxHeight(cocktail.style.ConstrainedDimensionStyleValue.percent(50));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(35));
+	domElement.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(0));
+}
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.percent(2));
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(55));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(60));
 }
 org.intermedia.view.CellThumbText1Style.setTextStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
@@ -12069,8 +12078,9 @@ org.intermedia.view.CellThumbText1Style.setTextStyle = function(domElement) {
 }
 org.intermedia.view.CellThumbText1Style.setTitleStyle = function(domElement,screenResolutionSize) {
 	org.intermedia.view.CellThumbText1Style.setTextStyle(domElement);
-	var fontSize = 14;
-	if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.small) fontSize = 14; else if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.normal) fontSize = 16; else fontSize = 18;
+	if(screenResolutionSize == null) screenResolutionSize = org.intermedia.view.ScreenResolutionSize.small;
+	var fontSize = 12;
+	if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.small) fontSize = 12; else if(screenResolutionSize == org.intermedia.view.ScreenResolutionSize.normal) fontSize = 15; else fontSize = 18;
 	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(fontSize)));
 	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
 }
@@ -12086,7 +12096,7 @@ org.intermedia.view.CellThumbText1Style.setLineStyle = function(domElement) {
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(1)));
-	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(2)));
 }
 org.intermedia.view.CellThumbText1Style.prototype = {
 	__class__: org.intermedia.view.CellThumbText1Style
@@ -12197,23 +12207,27 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this._authorContainer.removeText(this._authorElement);
 		this._authorElement.setText(this._data.author);
 		this._authorContainer.addText(this._authorElement);
-		this._thumbnail.load(this._data.thumbUrl);
+		if(this._thumbnail.getParent() != null) this.removeChild(this._thumbnail);
+		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
+			this._thumbnail.load(this._data.thumbUrl);
+			this.addChild(this._thumbnail);
+		}
 		this.html2DOM(this._data.description);
 		this.html2DOM(this._data.content);
 	}
 	,html2DOM: function(htmlString) {
-		var xml = Xml.parse(htmlString);
-		var htmlPageData = null;
 		try {
+			var xml = Xml.parse(htmlString);
+			var htmlPageData = null;
 			htmlPageData = new hxtml2.HTMLParser().parse(xml.firstElement());
 			this.getNativeElement().appendChild(htmlPageData.htmlDom);
 		} catch( $e0 ) {
 			if( js.Boot.__instanceof($e0,String) ) {
 				var msg = $e0;
-				haxe.Log.trace("Error, parsing XML tag " + xml.firstElement() + "\n" + msg,{ fileName : "DetailView.hx", lineNumber : 139, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
+				haxe.Log.trace("Error, parsing XML tag \n" + msg,{ fileName : "DetailView.hx", lineNumber : 148, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
 			} else {
 			var unknown = $e0;
-			haxe.Log.trace("Error, parsing XML tag " + xml.firstElement() + "\n" + Std.string(unknown),{ fileName : "DetailView.hx", lineNumber : 141, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
+			haxe.Log.trace("Error, parsing XML tag \n" + Std.string(unknown),{ fileName : "DetailView.hx", lineNumber : 151, className : "org.intermedia.view.DetailView", methodName : "html2DOM"});
 			}
 		}
 	}
@@ -12347,6 +12361,60 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 	,__class__: org.intermedia.view.HeaderView
 	,__properties__: $extend(org.intermedia.view.ViewBase.prototype.__properties__,{set_displayBackButton:"setDisplayBackButton",get_displayBackButton:"getDisplayBackButton"})
 });
+org.intermedia.view.HomePage = $hxClasses["org.intermedia.view.HomePage"] = function(initData) {
+	this._data = initData;
+	org.intermedia.view.ViewBase.call(this);
+};
+org.intermedia.view.HomePage.__name__ = ["org","intermedia","view","HomePage"];
+org.intermedia.view.HomePage.__super__ = org.intermedia.view.ViewBase;
+org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
+	onListItemSelected: null
+	,buildView: function() {
+		var me = this;
+		var cell0Style = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle2.setThumbnailStyle, textBlock : null, title : null, author : null, line : null};
+		var cell0 = new org.intermedia.view.CellThumb(1,cell0Style);
+		cell0.setData(this._data[0]);
+		cell0.setOnMouseUp(function(mouseEventData) {
+			me.onListItemSelectedCallback(cell0.getData());
+		});
+		this.addChild(cell0);
+		var cell1 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell1.setData(this._data[1]);
+		cell1.setOnMouseUp(function(mouseEventData) {
+			me.onListItemSelectedCallback(cell1.getData());
+		});
+		this.addChild(cell1);
+		var cell2 = new org.intermedia.view.CellThumb(2,cell0Style);
+		cell2.setData(this._data[2]);
+		cell2.setOnMouseUp(function(mouseEventData) {
+			me.onListItemSelectedCallback(cell2.getData());
+		});
+		this.addChild(cell2);
+		var cell3 = new org.intermedia.view.CellThumbText1(2);
+		cell3.setData(this._data[3]);
+		cell3.setOnMouseUp(function(mouseEventData) {
+			me.onListItemSelectedCallback(cell3.getData());
+		});
+		this.addChild(cell3);
+		var cell4 = new org.intermedia.view.CellThumbText1(2);
+		cell4.setData(this._data[4]);
+		cell4.setOnMouseUp(function(mouseEventData) {
+			me.onListItemSelectedCallback(cell4.getData());
+		});
+		this.addChild(cell4);
+	}
+	,loadThumb: function(url) {
+		var image = new cocktailCore.domElement.js.ImageDOMElement();
+		image.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+		this.addChild(image);
+		image.load(url);
+		return image;
+	}
+	,onListItemSelectedCallback: function(cellData) {
+		if(this.onListItemSelected != null) this.onListItemSelected(cellData);
+	}
+	,__class__: org.intermedia.view.HomePage
+});
 org.intermedia.view.ListViewBase = $hxClasses["org.intermedia.view.ListViewBase"] = function() {
 	org.intermedia.view.ViewBase.call(this);
 	this.displayListBottomLoader = true;
@@ -12383,7 +12451,6 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		}
 		if(this._listBottomLoader.getParent() != null) this.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.addChild(this._listBottomLoader);
-		if(this.getNativeElement().scrollHeight < new cocktailCore.viewport.js.Viewport()._getHeight()) haxe.Log.trace("request more data",{ fileName : "ListViewBase.hx", lineNumber : 102, className : "org.intermedia.view.ListViewBase", methodName : "updateView"});
 	}
 	,createCell: function() {
 		var cell = new org.intermedia.view.CellBase();
@@ -12400,84 +12467,24 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 	}
 	,__class__: org.intermedia.view.ListViewBase
 });
-org.intermedia.view.HomePage = $hxClasses["org.intermedia.view.HomePage"] = function() {
-	org.intermedia.view.ListViewBase.call(this);
-};
-org.intermedia.view.HomePage.__name__ = ["org","intermedia","view","HomePage"];
-org.intermedia.view.HomePage.__super__ = org.intermedia.view.ListViewBase;
-org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
-	buildView: function() {
-		var me = this;
-		var cell0Style = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle2.setThumbnailStyle, textBlock : null, title : null, author : null, line : null};
-		var cell0 = new org.intermedia.view.CellThumb(1,cell0Style);
-		cell0.setData({ id : 130523, thumbUrl : "assets/400-156.png", title : "incredible plugin", author : "vador"});
-		cell0.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell0.getData());
-		});
-		this.addChild(cell0);
-		var cell1 = new org.intermedia.view.CellThumb(2,cell0Style);
-		cell1.setData({ id : 130523, thumbUrl : "assets/200-156_red.png", title : "incredible plugin", author : "vador"});
-		cell1.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell1.getData());
-		});
-		this.addChild(cell1);
-		var cell2 = new org.intermedia.view.CellThumb(2,cell0Style);
-		cell2.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
-		cell2.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell2.getData());
-		});
-		this.addChild(cell2);
-		var cell3 = new org.intermedia.view.CellThumb(2,cell0Style);
-		cell3.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
-		cell3.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell3.getData());
-		});
-		this.addChild(cell3);
-		var cell10 = new org.intermedia.view.CellThumbText1(2);
-		cell10.setData({ id : 130523, title : "incredible plugin", author : "itzel", thumbUrl : "assets/200-156_red.png"});
-		cell10.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell10.getData());
-		});
-		this.addChild(cell10);
-		var cell20 = new org.intermedia.view.CellThumbText1(2);
-		cell20.setData({ id : 130523, title : "incredible theme", author : "raph", thumbUrl : "assets/200-156_red.png"});
-		this.addChild(cell20);
-		cell20.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell20.getData());
-		});
-		var cell4 = new org.intermedia.view.CellThumb(2,cell0Style);
-		cell4.setData({ id : 130523, thumbUrl : "assets/200-156_purple.png", title : "incredible plugin", author : "vador"});
-		cell4.setOnMouseUp(function(mouseEventData) {
-			me.onListItemSelectedCallback(cell4.getData());
-		});
-		this.addChild(cell4);
-	}
-	,loadThumb: function(url) {
-		var image = new cocktailCore.domElement.js.ImageDOMElement();
-		image.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
-		this.addChild(image);
-		image.load(url);
-		return image;
-	}
-	,__class__: org.intermedia.view.HomePage
-});
 org.intermedia.view.ListViewStyle = $hxClasses["org.intermedia.view.ListViewStyle"] = function() { }
 org.intermedia.view.ListViewStyle.__name__ = ["org","intermedia","view","ListViewStyle"];
-org.intermedia.view.ListViewStyle.setListStyle = function(domElement) {
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
-	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
+org.intermedia.view.ListViewStyle.setListStyle = function(domElement,listTop) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.percent(0));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
-	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.autoValue);
-	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(43)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(new cocktailCore.viewport.js.Viewport()._getWidth())));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(new cocktailCore.viewport.js.Viewport()._getHeight())));
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(listTop)));
 	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.top);
 	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.autoValue});
 }
 org.intermedia.view.ListViewStyle.loader = function(domElement) {
@@ -12496,7 +12503,7 @@ org.intermedia.view.ListViewStyle.prototype = {
 }
 org.intermedia.view.ListViewText = $hxClasses["org.intermedia.view.ListViewText"] = function() {
 	org.intermedia.view.ListViewBase.call(this);
-	org.intermedia.view.ListViewStyle.setListStyle(this);
+	org.intermedia.view.ListViewStyle.setListStyle(this,78);
 };
 org.intermedia.view.ListViewText.__name__ = ["org","intermedia","view","ListViewText"];
 org.intermedia.view.ListViewText.__super__ = org.intermedia.view.ListViewBase;
@@ -12546,6 +12553,101 @@ org.intermedia.view.LoadingViewStyle.setThumbnailStyle = function(domElement) {
 org.intermedia.view.LoadingViewStyle.prototype = {
 	__class__: org.intermedia.view.LoadingViewStyle
 }
+org.intermedia.view.MenuCellText = $hxClasses["org.intermedia.view.MenuCellText"] = function() {
+	org.intermedia.view.CellBase.call(this);
+	org.intermedia.view.MenuCellTextStyle.setCellStyle(this);
+};
+org.intermedia.view.MenuCellText.__name__ = ["org","intermedia","view","MenuCellText"];
+org.intermedia.view.MenuCellText.__super__ = org.intermedia.view.CellBase;
+org.intermedia.view.MenuCellText.prototype = $extend(org.intermedia.view.CellBase.prototype,{
+	updateView: function() {
+		var cellData = this._data;
+		var cellTextContainer = new cocktailCore.domElement.js.ContainerDOMElement();
+		if(cellData.title != "" && cellData.title != null) {
+			var textElement = new cocktailCore.textElement.js.TextElement(cellData.title);
+			cellTextContainer.addText(textElement);
+			org.intermedia.view.MenuCellTextStyle.setCellTextStyle(cellTextContainer);
+			this.addChild(cellTextContainer);
+		}
+	}
+	,__class__: org.intermedia.view.MenuCellText
+});
+org.intermedia.view.MenuCellTextStyle = $hxClasses["org.intermedia.view.MenuCellTextStyle"] = function() { }
+org.intermedia.view.MenuCellTextStyle.__name__ = ["org","intermedia","view","MenuCellTextStyle"];
+org.intermedia.view.MenuCellTextStyle.setCellStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(5)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(33));
+	domElement.getStyle().setMinWidth(cocktail.style.ConstrainedDimensionStyleValue.percent(33));
+	domElement.getStyle().setTextAlign(cocktail.style.TextAlignStyleValue.center);
+}
+org.intermedia.view.MenuCellTextStyle.setCellTextStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.relative);
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(8)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setFontSize(cocktail.style.FontSizeStyleValue.length(cocktail.unit.LengthValue.px(16)));
+	domElement.getStyle().setLineHeight(cocktail.style.LineHeightStyleValue.normal);
+	domElement.getStyle().setFontWeight(cocktail.style.FontWeightStyleValue.bold);
+	domElement.getStyle().setFontStyle(cocktail.style.FontStyleStyleValue.normal);
+	domElement.getStyle().setFontFamily([cocktail.style.FontFamilyStyleValue.familyName("Helvetica"),cocktail.style.FontFamilyStyleValue.genericFamily(cocktail.style.GenericFontFamilyValue.sansSerif)]);
+	domElement.getStyle().setFontVariant(cocktail.style.FontVariantStyleValue.normal);
+	domElement.getStyle().setTextTransform(cocktail.style.TextTransformStyleValue.none);
+	domElement.getStyle().setLetterSpacing(cocktail.style.LetterSpacingStyleValue.normal);
+	domElement.getStyle().setWordSpacing(cocktail.style.WordSpacingStyleValue.normal);
+	domElement.getStyle().setTextIndent(cocktail.style.TextIndentStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setWhiteSpace(cocktail.style.WhiteSpaceStyleValue.normal);
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setColor(cocktail.unit.ColorValue.hex("#444444"));
+}
+org.intermedia.view.MenuCellTextStyle.prototype = {
+	__class__: org.intermedia.view.MenuCellTextStyle
+}
+org.intermedia.view.MenuListViewStyle = $hxClasses["org.intermedia.view.MenuListViewStyle"] = function() { }
+org.intermedia.view.MenuListViewStyle.__name__ = ["org","intermedia","view","MenuListViewStyle"];
+org.intermedia.view.MenuListViewStyle.setListStyle = function(domElement) {
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.fixed);
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.block);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMinWidth(cocktail.style.ConstrainedDimensionStyleValue.percent(100));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(35)));
+	domElement.getStyle().setTop(cocktail.style.PositionOffsetStyleValue.length(cocktail.unit.LengthValue.px(43)));
+	domElement.getStyle().setBottom(cocktail.style.PositionOffsetStyleValue.autoValue);
+	domElement.getStyle().setBackgroundImage([cocktail.style.BackgroundImageStyleValue.image(cocktail.unit.ImageValue.url("assets/headerBlue.png"))]);
+	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.autoValue});
+}
+org.intermedia.view.MenuListViewStyle.prototype = {
+	__class__: org.intermedia.view.MenuListViewStyle
+}
+org.intermedia.view.MenuListViewText = $hxClasses["org.intermedia.view.MenuListViewText"] = function() {
+	org.intermedia.view.ListViewBase.call(this);
+	org.intermedia.view.MenuListViewStyle.setListStyle(this);
+};
+org.intermedia.view.MenuListViewText.__name__ = ["org","intermedia","view","MenuListViewText"];
+org.intermedia.view.MenuListViewText.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	createCell: function() {
+		var cell = new org.intermedia.view.MenuCellText();
+		return cell;
+	}
+	,__class__: org.intermedia.view.MenuListViewText
+});
 org.intermedia.view.ScreenResolutionSize = $hxClasses["org.intermedia.view.ScreenResolutionSize"] = { __ename__ : ["org","intermedia","view","ScreenResolutionSize"], __constructs__ : ["small","normal","large"] }
 org.intermedia.view.ScreenResolutionSize.small = ["small",0];
 org.intermedia.view.ScreenResolutionSize.small.toString = $estr;
@@ -12574,17 +12676,19 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._viewport = new cocktailCore.viewport.js.Viewport();
 	this._viewportWidth = this._viewport._getWidth();
 	this._viewportHeight = this._viewport._getHeight();
+	this._homePageData = new Array();
+	this._homePageDataSet = false;
 	org.intermedia.view.SwippableListViewStyle.setListStyle(this);
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
-	this.list0.id = "http://fr.techcrunch.com/feed/";
+	this.list0.id = { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url;
 	this._listViews.push(this.list0);
 	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
-	this.list1.id = "http://frenchweb.fr/feed/";
+	this.list1.id = { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url;
 	this._listViews.push(this.list1);
 	this.list1.setX(this._viewportWidth);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
-	this.list2.id = "http://siliconsentier.org/feed/";
+	this.list2.id = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url;
 	this._listViews.push(this.list2);
 	this.list2.setX(2 * this._viewportWidth);
 	var _g = 0, _g1 = this._listViews;
@@ -12594,7 +12698,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 		listView.onDataRequest = this.onDataRequestCallback.$bind(this);
 		this.addChild(listView);
 	}
-	this._index = 0;
+	this._index = 1;
 	this._currentListView = this._listViews[this._index];
 	this.getNativeElement().scrollLeft = this._viewportWidth;
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
@@ -12607,12 +12711,17 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,list0: null
 	,list1: null
 	,list2: null
+	,_list1Data: null
 	,_currentListView: null
 	,_index: null
+	,index: null
 	,_offset: null
 	,_offsetStart: null
 	,_initialPosition: null
 	,_direction: null
+	,onHorizontalTweenEnd: null
+	,_homePageData: null
+	,_homePageDataSet: null
 	,_viewport: null
 	,_viewportWidth: null
 	,_viewportHeight: null
@@ -12622,14 +12731,56 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		while(_g < _g1.length) {
 			var list = _g1[_g];
 			++_g;
-			if(v.id == list.id) {
+			if(v.id == list.id && v.id != this.list1.id) {
+				if(this._homePageData.length < 6) {
+					var _g2 = 0;
+					while(_g2 < 3) {
+						var i = _g2++;
+						this._homePageData.push(this.getData().cells[i]);
+					}
+				}
 				list.setData(v.cells);
 				break;
 			}
+			if(v.id == this.list1.id) this._list1Data = v.cells;
 		}
+		if(!this._homePageDataSet && this._homePageData.length == 6) {
+			this.list1.buildHomePage(this._homePageData);
+			this._homePageDataSet = true;
+		}
+		if(this._homePageDataSet) this.list1.setData(this._list1Data);
 		return this._data;
 	}
-	,onUpCallback2: function(x) {
+	,setIndex: function(v) {
+		this._index = v;
+		this._currentListView = this._listViews[this._index];
+		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+		this.horizontalReleaseTween();
+		return v;
+	}
+	,onDownCallback2: function(event) {
+		this._initialPosition.x = event.pageX;
+		this._initialPosition.y = event.pageY;
+		this._offsetStart.x = this.getParent().getNativeElement().scrollLeft;
+		this._direction = org.intermedia.view.Direction.notYetSet;
+	}
+	,onMoveCallback2: function(event) {
+		this.getParent().getNativeElement().scrollLeft -= event.pageX - this._initialPosition.x | 0;
+		this._offset.x = event.pageX - this._initialPosition.x | 0;
+		this._offset.y = event.pageY - this._initialPosition.y | 0;
+		if(this._currentListView.getNativeElement().scrollTop <= 0 && this._offset.y > 0) event.preventDefault();
+		if(this._direction == org.intermedia.view.Direction.notYetSet) {
+			var absX = Math.abs(this._offset.x);
+			var absY = Math.abs(this._offset.y);
+			if(Math.max(absX,absY) >= 5) {
+				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
+			}
+		}
+		if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault(); else if(this._direction == org.intermedia.view.Direction.vertical) this.getParent().getNativeElement().scrollLeft = this._offsetStart.x;
+	}
+	,onUpCallback2: function(event) {
+		if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault();
+		var x = this.getParent().getNativeElement().scrollLeft;
 		if(this._direction == org.intermedia.view.Direction.horizontal) {
 			var w = this._viewportWidth / 2;
 			if(x < w) this._index = 0; else if(x < 3 * w) this._index = 1; else this._index = 2;
@@ -12637,53 +12788,42 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 			this.horizontalReleaseTween();
 		} else this.verticalReleaseTween();
+		this._direction = org.intermedia.view.Direction.notYetSet;
+	}
+	,scrollToCurrentList: function() {
+		this.getParent().getNativeElement().scrollLeft = this._currentListView.getX();
 	}
 	,horizontalReleaseTween: function() {
 		var tween = new feffects.Tween(this.getParent().getNativeElement().scrollLeft,this._currentListView.getX(),600,feffects.easing.Quint.easeOut);
-		tween.setTweenHandlers(this.horizontalTweenMove.$bind(this),this.tweenEnd.$bind(this));
+		tween.setTweenHandlers(this.horizontalTweenMove.$bind(this),this.horizontalTweenEnd.$bind(this));
 		tween.start();
 	}
 	,horizontalTweenMove: function(e) {
 		this.getParent().getNativeElement().scrollLeft = e | 0;
 	}
+	,horizontalTweenEnd: function(e) {
+		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd();
+	}
 	,verticalReleaseTween: function() {
 		var verticalTweenEnd = 0;
 		if(this._offset.y > 0) verticalTweenEnd = this._currentListView.getNativeElement().scrollTop - 150; else verticalTweenEnd = this._currentListView.getNativeElement().scrollTop + 150;
 		var tween = new feffects.Tween(this._currentListView.getNativeElement().scrollTop,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
-		tween.setTweenHandlers(this.verticalTweenMove.$bind(this),this.tweenEnd.$bind(this));
+		tween.setTweenHandlers(this.verticalTweenMove.$bind(this),null);
 		tween.start();
 	}
 	,verticalTweenMove: function(e) {
 		this._currentListView.getNativeElement().scrollTop = e | 0;
 	}
-	,tweenEnd: function(e) {
-	}
 	,touchHandler: function(event) {
 		switch(event.type) {
 		case "touchstart":
-			this._initialPosition.x = event.pageX;
-			this._initialPosition.y = event.pageY;
-			this._offsetStart.x = this.getParent().getNativeElement().scrollLeft;
-			this._direction = org.intermedia.view.Direction.notYetSet;
+			this.onDownCallback2(event);
 			break;
 		case "touchmove":
-			this.getParent().getNativeElement().scrollLeft -= event.pageX - this._initialPosition.x | 0;
-			this._offset.x = event.pageX - this._initialPosition.x | 0;
-			this._offset.y = event.pageY - this._initialPosition.y | 0;
-			if(this._currentListView.getNativeElement().scrollTop == 0 && this._offset.y > 0) event.preventDefault();
-			if(this._direction == org.intermedia.view.Direction.notYetSet) {
-				var absX = Math.abs(this._offset.x);
-				var absY = Math.abs(this._offset.y);
-				if(Math.max(absX,absY) >= 5) {
-					if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
-				}
-			}
-			if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault(); else if(this._direction == org.intermedia.view.Direction.vertical) this.getParent().getNativeElement().scrollLeft = this._offsetStart.x;
+			this.onMoveCallback2(event);
 			break;
 		case "touchend":
-			if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault();
-			this.onUpCallback2(this.getParent().getNativeElement().scrollLeft);
-			this._direction = org.intermedia.view.Direction.notYetSet;
+			this.onUpCallback2(event);
 			break;
 		default:
 			return;
@@ -12696,6 +12836,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		document.addEventListener("touchcancel",this.touchHandler.$bind(this),true);
 	}
 	,__class__: org.intermedia.view.SwippableListView
+	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex"})
 });
 org.intermedia.view.Direction = $hxClasses["org.intermedia.view.Direction"] = { __ename__ : ["org","intermedia","view","Direction"], __constructs__ : ["horizontal","vertical","notYetSet"] }
 org.intermedia.view.Direction.horizontal = ["horizontal",0];
@@ -12714,12 +12855,12 @@ org.intermedia.view.SwippableListViewStyle.setListStyle = function(domElement) {
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(78)));
 	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(300));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
 }
 org.intermedia.view.SwippableListViewStyle.setContainerStyle = function(domElement) {
@@ -12735,7 +12876,7 @@ org.intermedia.view.ThumbTextList1 = $hxClasses["org.intermedia.view.ThumbTextLi
 	if(cellPerLine == null) cellPerLine = 1;
 	this._cellsPerLine = cellPerLine;
 	org.intermedia.view.ListViewBase.call(this);
-	org.intermedia.view.ListViewStyle.setListStyle(this);
+	org.intermedia.view.ListViewStyle.setListStyle(this,78);
 };
 org.intermedia.view.ThumbTextList1.__name__ = ["org","intermedia","view","ThumbTextList1"];
 org.intermedia.view.ThumbTextList1.__super__ = org.intermedia.view.ListViewBase;
@@ -12754,8 +12895,9 @@ org.intermedia.view.ThumbTextList1Bis = $hxClasses["org.intermedia.view.ThumbTex
 org.intermedia.view.ThumbTextList1Bis.__name__ = ["org","intermedia","view","ThumbTextList1Bis"];
 org.intermedia.view.ThumbTextList1Bis.__super__ = org.intermedia.view.ThumbTextList1;
 org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.ThumbTextList1.prototype,{
-	buildView: function() {
-		var homePage = new org.intermedia.view.HomePage();
+	_homePageData: null
+	,buildHomePage: function(homePageData) {
+		var homePage = new org.intermedia.view.HomePage(homePageData);
 		homePage.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this.addChild(homePage);
 	}
@@ -12773,11 +12915,17 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._header.setData("Market");
 	this._header.onBackButtonClick = this.onHeaderBackButtonPressed.$bind(this);
 	this._body.addChild(this._header);
+	this._menu = new org.intermedia.view.MenuListViewText();
+	this._menu.displayListBottomLoader = false;
+	this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}]);
+	this._body.addChild(this._menu);
 	this._swippableListView = new org.intermedia.view.SwippableListView();
 	this._currentView = this._swippableListView;
 	this._body.addChild(this._swippableListView);
 	haxe.Timer.delay(function() {
 		me._body.getNativeElement().scrollLeft = new cocktailCore.viewport.js.Viewport()._getWidth();
+		me.setZIndexToMax(me._menu);
+		me.setZIndexToMax(me._header);
 	},5000);
 	haxe.Timer.delay(this.resetHeaderPosition.$bind(this),200);
 	this.init();
@@ -12786,6 +12934,7 @@ org.intermedia.view.ViewManager.__name__ = ["org","intermedia","view","ViewManag
 org.intermedia.view.ViewManager.prototype = {
 	_body: null
 	,_header: null
+	,_menu: null
 	,_swippableListView: null
 	,_detailView: null
 	,_applicationModel: null
@@ -12793,6 +12942,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,_currentView: null
 	,resetHeaderPosition: function() {
 		this._header.setX(0);
+		this._menu.setX(0);
 		haxe.Timer.delay(this.resetHeaderPosition.$bind(this),200);
 	}
 	,init: function() {
@@ -12800,14 +12950,20 @@ org.intermedia.view.ViewManager.prototype = {
 		this._applicationModel.onModelDataLoadError = this.onLoadingError.$bind(this);
 		this._applicationModel.onModelCellDataLoaded = this.onCellDataLoaded.$bind(this);
 		this._applicationModel.onModelDetailDataLoaded = this.onDetailDataLoaded.$bind(this);
+		this._menu.onListItemSelected = this.onMenuItemSelectedCallback.$bind(this);
 		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+		this._swippableListView.onHorizontalTweenEnd = this.updateZIndexes.$bind(this);
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$_.loadCellData.$bind($_));
-		this._applicationController.loadCellData("http://fr.techcrunch.com/feed/");
-		this._applicationController.loadCellData("http://frenchweb.fr/feed/");
-		this._applicationController.loadCellData("http://siliconsentier.org/feed/");
+		this._applicationController.loadCellData({ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url);
+		this._applicationController.loadCellData({ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url);
+		this._applicationController.loadCellData({ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url);
+	}
+	,onMenuItemSelectedCallback: function(cellData) {
+		this._swippableListView.setIndex(cellData.id);
 	}
 	,onListItemSelectedCallback: function(cellData) {
 		this._body.removeChild(this._swippableListView);
+		this._body.removeChild(this._menu);
 		this._detailView = new org.intermedia.view.DetailView();
 		this._body.addChild(this._detailView);
 		this._currentView = this._detailView;
@@ -12816,33 +12972,41 @@ org.intermedia.view.ViewManager.prototype = {
 	,onCellDataLoaded: function(listData) {
 		if(listData.cells.length == 0) this._swippableListView.displayListBottomLoader = false;
 		this._swippableListView.setData(listData);
-		this.updateHeaderZIndex();
+		this.setZIndexToMax(this._menu);
+		this.setZIndexToMax(this._header);
 		this._swippableListView.setDisplayLoading(false);
 	}
 	,onDetailDataLoaded: function(detailData) {
 		this._detailView.setData(detailData);
 		this._header.setData("Infos");
 		this._header.setDisplayBackButton(true);
-		this.updateHeaderZIndex();
+		this.setZIndexToMax(this._header);
 		this._detailView.setDisplayLoading(false);
 	}
 	,onStartLoading: function() {
 		this._currentView.setDisplayLoading(true);
 	}
 	,onLoadingError: function(error) {
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 205, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 245, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("Market");
 		this._header.setDisplayBackButton(false);
 		this._body.removeChild(this._detailView);
+		this._body.addChild(this._menu);
 		this._body.addChild(this._swippableListView);
-		this.updateHeaderZIndex();
+		this._swippableListView.scrollToCurrentList();
+		this.setZIndexToMax(this._menu);
+		this.setZIndexToMax(this._header);
 		this._currentView = this._swippableListView;
 	}
-	,updateHeaderZIndex: function() {
-		this._body.removeChild(this._header);
-		this._body.addChild(this._header);
+	,updateZIndexes: function() {
+		this.setZIndexToMax(this._menu);
+		this.setZIndexToMax(this._header);
+	}
+	,setZIndexToMax: function(dom) {
+		this._body.removeChild(dom);
+		this._body.addChild(dom);
 	}
 	,__class__: org.intermedia.view.ViewManager
 }
@@ -12857,8 +13021,8 @@ org.intermedia.view.ViewManagerStyle.setBodyStyle = function(domElement) {
 	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
 	domElement.getStyle().setPaddingBottom(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(130));
-	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(130));
 	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.hidden});
 }
 org.intermedia.view.ViewManagerStyle.prototype = {
@@ -13012,17 +13176,24 @@ feffects.Tween._aPaused = new haxe.FastList();
 feffects.Tween.INTERVAL = 10;
 js.Lib.onerror = null;
 org.intermedia.model.ApplicationModel.CELL_QTY = 10;
-org.intermedia.model.Feeds.FEED_2 = "http://frenchweb.fr/feed/";
-org.intermedia.model.Feeds.FEED_1 = "http://fr.techcrunch.com/feed/";
-org.intermedia.model.Feeds.FEED_3 = "http://siliconsentier.org/feed/";
+org.intermedia.model.Feeds.FEED_1 = { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"};
+org.intermedia.model.Feeds.FEED_2 = { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"};
+org.intermedia.model.Feeds.FEED_3 = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"};
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 5;
-org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 5;
-org.intermedia.view.CellThumbStyle2.CELL_VERTICAL_SPACE = 5;
-org.intermedia.view.CellThumbText1Style.CELL_VERTICAL_SPACE = 5;
+org.intermedia.view.CellThumbStyle.CELL_VERTICAL_SPACE = 2;
+org.intermedia.view.CellThumbStyle2.CELL_VERTICAL_SPACE = 2;
+org.intermedia.view.CellThumbText1Style.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
+org.intermedia.view.Constants.MENU_HEIGHT = 35;
+org.intermedia.view.Constants.LIST_TOP = 78;
+org.intermedia.view.Constants.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
+org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.VERTICAL_TWEEN_DELTA = 150;
+org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;
+org.intermedia.view.SwippableListView.LIST_QTY = 2;
+org.intermedia.view.SwippableListView.HOMEPAGE_ITEMS = 6;
 org.intermedia.view.ViewManager.HEADER_HOME_TITLE = "Market";
 org.intermedia.view.ViewManager.HEADER_DETAIL_TITLE = "Infos";
 org.intermedia.Application.main()

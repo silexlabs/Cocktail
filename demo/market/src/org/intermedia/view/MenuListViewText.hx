@@ -9,37 +9,32 @@ package org.intermedia.view;
 
 import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
-import cocktail.domElement.ImageDOMElement;
 
 /**
- * This class defines a thumb & text cell
+ * Text list view
  * 
  * @author Raphael Harmel
  */
 
-class ThumbTextList1Bis extends ThumbTextList1
+class MenuListViewText extends ListViewBase
 {
-	private var _homePageData:Array<Dynamic>;
-	
-	//public function new(?cellPerLine:Int = 1, homePageData:Array<Dynamic>)
-	public function new(?cellPerLine:Int = 1)
-	{
-		//trace(homePageData);
-		//_homePageData = homePageData;
-		super(cellPerLine);
-	}
 
-	
-	//override private function buildView():Void
-	public function buildHomePage(homePageData:Array<Dynamic>):Void
-	//override private function updateView():Void
+	public function new() 
 	{
-		//trace(_homePageData);
-		// add home page data at the top of the list
-		var homePage:HomePage = new HomePage(homePageData);
-		homePage.onListItemSelected = onListItemSelectedCallback;
-		this.addChild(homePage);
+		super();
+		MenuListViewStyle.setListStyle(this);
 	}
 	
-
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	override private function createCell():CellBase
+	{
+		var cell:MenuCellText = new MenuCellText();
+		return cell;
+	}
+	
 }

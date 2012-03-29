@@ -66,19 +66,21 @@ class CellThumb extends CellBase
 	private function loadThumb():Void
 	{
 		// image part
-		if (_data.thumbUrl != "" && _data.thumbUrl != null)
-		{
-			_cellImage = new ImageDOMElement();
-			// set image style
-			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-			_cellStyle.thumbnail(_cellImage);
-			// add image
-			this.addChild(_cellImage);
-			// load image
-			_cellImage.onLoad = onImageLoadSuccess;
-			_cellImage.load(_data.thumbUrl);
-		}
-		
+		//if (Reflect.hasField(_data, "thumbUrl"))
+		//{
+			if (_data.thumbUrl != "" && _data.thumbUrl != null)
+			{
+				_cellImage = new ImageDOMElement();
+				// set image style
+				//listStyle.cellThumbnail(cellImage,screenResolutionSize);
+				_cellStyle.thumbnail(_cellImage);
+				// add image
+				this.addChild(_cellImage);
+				// load image
+				_cellImage.onLoad = onImageLoadSuccess;
+				_cellImage.load(_data.thumbUrl);
+			}
+		//}
 	}
 	
 	/**

@@ -22,7 +22,7 @@ class ListViewText extends ListViewBase
 	public function new() 
 	{
 		super();
-		ListViewStyle.setListStyle(this);
+		ListViewStyle.setListStyle(this,Constants.LIST_TOP);
 	}
 	
 	/**

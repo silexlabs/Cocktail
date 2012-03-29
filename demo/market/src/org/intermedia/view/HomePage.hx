@@ -14,17 +14,25 @@ import cocktail.unit.UnitData;
 import org.intermedia.view.Constants;
 import cocktail.mouse.MouseData;
 import org.intermedia.view.StyleModel;
+import org.intermedia.model.ApplicationModel;
 
 
-class HomePage extends ListViewBase
+//class HomePage extends ListViewBase
+class HomePage extends ViewBase
 {
-
-	public function new() 
+	
+	//Called when an item is selected.
+	public var onListItemSelected:CellData->Void;
+	
+	public function new(initData:Dynamic) 
 	{
+		_data = initData;
 		super();
+		//trace(initData);
 	}
 	
 	override private function buildView():Void
+	//override private function updateView():Void
 	{
 		// add custom cells to the homepage
 		
@@ -38,81 +46,59 @@ class HomePage extends ListViewBase
 		};
 		
 		var cell0 = new CellThumb(1,cell0Style);
-		cell0.data = {
-			id:130523,
-			thumbUrl:"assets/400-156.png",
-			title:"incredible plugin",
-			author:"vador"
-			}
+		cell0.data = _data[0];
 		// set mouseUp callback
 		cell0.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell0.data); };
 		this.addChild(cell0);
 
 		var cell1 = new CellThumb(2,cell0Style);
-		cell1.data = {
-			id:130523,
-			thumbUrl:"assets/200-156_red.png",
-			title:"incredible plugin",
-			author:"vador"
-			}
+		cell1.data = _data[1];
 		// set mouseUp callback
 		cell1.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell1.data); };
 		this.addChild(cell1);
 
 		var cell2 = new CellThumb(2,cell0Style);
-		cell2.data = {
-			id:130523,
-			thumbUrl:"assets/200-156_purple.png",
-			title:"incredible plugin",
-			author:"vador"
-			}
+		cell2.data = _data[2];
 		// set mouseUp callback
 		cell2.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell2.data); };
 		this.addChild(cell2);
 
-		var cell3 = new CellThumb(2,cell0Style);
-		cell3.data = {
-			id:130523,
-			thumbUrl:"assets/200-156_purple.png",
-			title:"incredible plugin",
-			author:"vador"
-			}
+		var cell3 = new CellThumbText1(2);
+		cell3.data = _data[3];
+		//trace(cell3.data);
 		// set mouseUp callback
 		cell3.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell3.data); };
 		this.addChild(cell3);
 
-		var cell10 = new CellThumbText1(2);
-		cell10.data = {
-			id:130523,
-			title:"incredible plugin",
-			author:"itzel",
-			thumbUrl:"assets/200-156_red.png"
-			}
-		// set mouseUp callback
-		cell10.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell10.data); };
-		this.addChild(cell10);
-		
-		var cell20 = new CellThumbText1(2);
-		cell20.data = {
-			id:130523,
-			title:"incredible theme",
-			author:"raph",
-			thumbUrl:"assets/200-156_red.png"
-			}
-		this.addChild(cell20);
-		// set mouseUp callback
-		cell20.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell20.data); };
-		
-		var cell4 = new CellThumb(2,cell0Style);
-		cell4.data = {
-			id:130523,
-			thumbUrl:"assets/200-156_purple.png",
-			title:"incredible plugin",
-			author:"vador"
-			}
+		var cell4 = new CellThumbText1(2);
+		cell4.data = _data[4];
 		// set mouseUp callback
 		cell4.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell4.data); };
 		this.addChild(cell4);
+		
+		/*var cell5 = new CellThumbText1(2);
+		cell5.data = _data[5];
+		// set mouseUp callback
+		cell5.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell5.data); };
+		this.addChild(cell5);
+		
+		var cell6 = new CellThumb(2,cell0Style);
+		cell6.data = _data[6];
+		// set mouseUp callback
+		cell6.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell6.data); };
+		this.addChild(cell6);
+
+		var cell7 = new CellThumbText1(2);
+		cell7.data = _data[7];
+		// set mouseUp callback
+		cell7.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell7.data); };
+		this.addChild(cell7);
+		
+		var cell8 = new CellThumb(2,cell0Style);
+		cell8.data = _data[8];
+		// set mouseUp callback
+		cell8.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell8.data); };
+		this.addChild(cell8);*/
 
 	}
 	
@@ -132,5 +118,18 @@ class HomePage extends ListViewBase
 		
 		return image;
 	}
+
+	/**
+	 * onListItemSelected callback
+	 * @param	cellData
+	 */
+	public function onListItemSelectedCallback(cellData:CellData)
+	{
+		if (onListItemSelected != null)
+		{
+			onListItemSelected(cellData);
+		}
+	}
+	
 	
 }

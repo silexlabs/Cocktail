@@ -96,12 +96,12 @@ class ListViewBase extends ViewBase
 		//{
 			// if list content height is not filling the totality of the screen's height
 			//if (this.nativeElement.scrollHeight < new Viewport().height && this.nativeElement.scrollHeight != 0)
-			if (this.nativeElement.scrollHeight < new Viewport().height)
+			/*if (this.nativeElement.scrollHeight < new Viewport().height)
 			{
 				// request more data
 				trace("request more data");
-				//onDataRequestCallback(id);
-			}
+				onDataRequestCallback(id);
+			}*/
 		//}
 	}
 	

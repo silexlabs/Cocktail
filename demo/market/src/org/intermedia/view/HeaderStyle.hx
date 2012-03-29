@@ -20,7 +20,7 @@ import cocktail.unit.UnitData;
 import org.intermedia.view.Constants;
 
 /**
- * Defines the style of the app
+ * Defines the style of the header
  * 
  * @author Raphael Harmel
  */
