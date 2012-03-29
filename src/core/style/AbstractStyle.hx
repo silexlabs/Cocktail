@@ -232,6 +232,12 @@ class AbstractStyle
 	private var _overflowY:Overflow;
 	public var overflowY(getOverflowY,  setOverflowY):Overflow;
 	
+	/**
+	 * user interface styles
+	 */
+	private var _cursor:Cursor;
+	public var cursor(getCursor, setCursor):Cursor;
+	
 	////////////////////////////////
 	
 	/**
@@ -371,6 +377,8 @@ class AbstractStyle
 		
 		_transform = Transform.none;
 		
+		_cursor = Cursor.cssDefault;
+		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		_fontFamily = defaultStyles.fontFamily;
 		_color = defaultStyles.color;
@@ -432,7 +440,8 @@ class AbstractStyle
 			backgroundImage:[],
 			backgroundClip:[],
 			backgroundPosition:[],
-			backgroundRepeat:[]
+			backgroundRepeat:[],
+			cursor:Cursor.cssDefault
 		};
 	}
 	
@@ -1905,5 +1914,15 @@ class AbstractStyle
 	private function getOverflowY():Overflow
 	{
 		return _overflowY;
+	}
+	
+	private function setCursor(value:Cursor):Cursor
+	{
+		return _cursor = value;
+	}
+	
+	private function getCursor():Cursor
+	{
+		return _cursor;
 	}
 }
