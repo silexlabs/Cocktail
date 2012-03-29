@@ -8,8 +8,8 @@
 package core.mouse;
 
 import core.geom.GeomData;
-import core.html.HTMLImageElement;
-import core.mouseMouseData;
+import core.HTMLImageElement;
+import core.mouse.MouseData;
 
 /**
  * This is the base class for mouse cursor abstration.
