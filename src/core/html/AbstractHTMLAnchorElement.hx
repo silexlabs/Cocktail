@@ -7,10 +7,13 @@
 */
 package core.html;
 
+import core.mouse.MouseCursorManager;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.MouseEvent;
 import core.dom.DOMData;
+import haxe.Log;
+import core.mouse.MouseData;
 
 
 #if (flash9 || cpp || nme)
@@ -86,6 +89,28 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		return _onMouseDown;
 	}
 	
+	/**
+	 * TODO : doc
+	 */
+	override private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
+	{
+		_onMouseOver = value;
+		_mouse.onMouseOver = onMouseOverCallback;
+		
+		return _onMouseOver;
+	}
+	
+	/**
+	 * TODO : doc
+	 */
+	override private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
+	{
+		_onMouseOut = value;
+		_mouse.onMouseOut = onMouseOutCallback;
+		
+		return _onMouseOut;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN MOUSE EVENT CALLBACK
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +132,26 @@ class AbstractHTMLAnchorElement extends HTMLElement
 			openDocument();
 		}
 	}
+
+	override private function onMouseOverCallback(mouseEvent:MouseEvent):Void
+	{
+		if (_onMouseOver != null)
+		{
+			_onMouseOver(mouseEvent);
+		}
+		
+		displayPointerCursor();
+	}
+	
+	override private function onMouseOutCallback(mouseEvent:MouseEvent):Void
+	{
+		if (_onMouseOut != null)
+		{
+			_onMouseOut(mouseEvent);
+		}
+		
+		hidePointerCursor();
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +166,16 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	private function openDocument():Void
 	{
 		//abstract
+	}
+	
+	private function displayPointerCursor():Void
+	{
+		MouseCursorManager.setMouseCursor(MouseCursorValue.native(NativeOSMouseCursorValue.pointer));
+	}
+	
+	private function hidePointerCursor():Void
+	{
+		MouseCursorManager.setMouseCursor(MouseCursorValue.cssAuto);
 	}
 	
 	/**
@@ -162,6 +217,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	{
 		_href = value;
 		set_onMouseDown(_onMouseDown);
+		set_onMouseOver(_onMouseOver);
+		set_onMouseOut(_onMouseOut);
 		return value;
 	}
 	
@@ -179,7 +236,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	{
 		_target = value;
 		set_onMouseDown(_onMouseDown);
-		
+		set_onMouseOver(_onMouseOver);
+		set_onMouseOut(_onMouseOut);
 		return value;
 	}
 	

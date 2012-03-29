@@ -11,10 +11,10 @@ import flash.display.BitmapData;
 import flash.ui.MouseCursorData;
 import flash.ui.Mouse;
 import flash.Vector;
-import cocktail.htmlElement.ImageHTMLElement;
+import core.HTMLImageElement;
 import core.mouse.AbstractMouseCursor;
 import core.geom.GeomData;
-import core.mouseMouseData;
+import core.mouse.MouseData;
 
 /**
  * This is the flash AVM2 implementation of the mouse cursor
@@ -41,7 +41,7 @@ class MouseCursor extends AbstractMouseCursor
 	/**
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	override private function setBitmapCursor(imageHTMLElement:ImageHTMLElement, hotSpot:PointData):Void
+	override private function setBitmapCursor(imageHTMLElement:HTMLImageElement, hotSpot:PointData):Void
 	{
 		//init the hotSpot if null
 		//to the top left of the cursor
