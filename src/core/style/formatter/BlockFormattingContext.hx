@@ -27,8 +27,6 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-
-	
 	/**
 	 * class constructor
 	 */
@@ -37,17 +35,19 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
+	//TODO : should not be 2 methods
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
-		doFormat2(_formattingContextRoot);
+		doFormat2(_formattingContextRoot, 0);
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer):Void
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int):Void
 	{
 		
 		var currentAddedSiblingsHeight:Int = 0;
 		
-		_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
+		//_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
+		concatenatedX += elementRenderer.style.computedStyle.marginLeft;
 		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
@@ -70,30 +70,16 @@ class BlockFormattingContext extends FormattingContext
 			{
 				if (child.establishesNewFormattingContext() == false)
 				{
-					doFormat2(child);
+					doFormat2(child, concatenatedX);
 				}
 			}
 		
 			
-			var marginBottom:Int = child.style.computedStyle.marginBottom;
-			
-			if (child.nextSibling != null)
-			{
-				var nextSibling:ElementRenderer = cast(child.nextSibling);
-				
-				if (nextSibling.style.computedStyle.marginTop > marginBottom)
-				{
-					marginBottom = 0;
-				}
-				else
-				{
-					marginBottom -= nextSibling.style.computedStyle.marginTop;
-				}
-			}
+			var marginBottom:Int = getCollapsedMarginBottom(child);
 		
 		
 			
-			var x:Float = _formattingContextData.x;
+			var x:Float = _formattingContextData.x + concatenatedX + child.style.computedStyle.marginLeft;
 			var y:Float = _formattingContextData.y + marginTop + elementRenderer.style.computedStyle.paddingTop ;
 			var width:Float = child.style.htmlElement.offsetWidth;
 			var height:Float = child.style.htmlElement.offsetHeight;
@@ -104,15 +90,34 @@ class BlockFormattingContext extends FormattingContext
 				width:width,
 				height:height
 			}
-	
+			
 			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
 			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
 			
 		}
 		
-		
-
 		_formattingContextData.y -= currentAddedSiblingsHeight;
+	}
+	
+	private function getCollapsedMarginBottom(child:ElementRenderer):Int
+	{
+		var marginBottom:Int = child.style.computedStyle.marginBottom;
+		
+		if (child.nextSibling != null)
+		{
+			var nextSibling:ElementRenderer = cast(child.nextSibling);
+			
+			if (nextSibling.style.computedStyle.marginTop > marginBottom)
+			{
+				marginBottom = 0;
+			}
+			else
+			{
+				marginBottom -= nextSibling.style.computedStyle.marginTop;
+			}
+		}
+		
+		return marginBottom;
 	}
 	
 	/**
