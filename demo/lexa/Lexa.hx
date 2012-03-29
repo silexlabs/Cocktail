@@ -13,6 +13,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package;
 
 
+import core.HTMLAnchorElement;
 import core.HTMLElement;
 import core.Text;
 
@@ -52,9 +53,11 @@ class Lexa
 		text.style.color = hex("#FFFFFF");
 		text.style.paddingLeft = text.style.paddingTop = text.style.paddingBottom = text.style.paddingRight = Padding.length(px(10));
 		
-		var logoContainer:HTMLElement = cast(Lib.document.createElement("div"));
+		var logoContainer:HTMLAnchorElement = cast(Lib.document.createElement("a"));
 		logoContainer.style.textAlign = center;
 		logoContainer.appendChild(logo);
+		logoContainer.style.display = block;
+		logoContainer.href = "http://www.silexlabs.org/groups/labs/cocktail/";
 		
 		site.appendChild(title);
 		site.appendChild(subTitle);

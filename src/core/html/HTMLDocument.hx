@@ -11,6 +11,7 @@ import cocktailCore.focus.FocusManager;
 import core.dom.Document;
 import core.dom.Element;
 import core.event.Event;
+import core.HTMLAnchorElement;
 import core.HTMLElement;
 import core.HTMLInputElement;
 import core.Window;
@@ -33,6 +34,8 @@ class HTMLDocument extends Document
 	private static inline var HTML_CANVAS_ELEMENT_TAG_NAME:String = "canvas";
 	
 	private static inline var HTML_INPUT_ELEMENT_TAG_NAME:String = "input";
+	
+	private static inline var HTML_ANCHOR_ELEMENT_TAG_NAME:String = "a";
 	
 	/**
 	 * The element that contains the content for the document.
@@ -85,6 +88,9 @@ class HTMLDocument extends Document
 				
 			case HTML_INPUT_ELEMENT_TAG_NAME:
 				element = new HTMLInputElement();
+				
+			case HTML_ANCHOR_ELEMENT_TAG_NAME:
+				element = new HTMLAnchorElement();
 				
 			default:
 				element = new HTMLElement(tagName);
