@@ -64,6 +64,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var embeddedHTMLElement:EmbeddedElement = cast(_style.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
+		//TODO : shouldn't have to add margins
 		#if (flash9 || nme)
 		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
 		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop + _style.computedStyle.marginTop;

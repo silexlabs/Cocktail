@@ -185,7 +185,8 @@ class FormattingContext
 		//get bounds of all the children of the element in the formatting context root space
 		var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
 		height = Math.round(getBounds(elementRenderers).height);
-
+		
+		
 		return height;
 	}
 
@@ -272,7 +273,6 @@ class FormattingContext
 					width : right - left,
 					height :  bottom - top,
 				}
-				Log.trace(bounds);
 				
 		return bounds;
 		
