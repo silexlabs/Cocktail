@@ -5,51 +5,36 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package core.style;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
 import core.HTMLElement;
+import haxe.Log;
+
+#if (flash9 || cpp || nme)
+import port.flash_player.Style;
+#elseif js
+import port.browser.Style;
+#end
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is the style implementation for embedded
+ * HTMLElement. Embedded HTMLElement include external
+ * content in the document, such as picture or video.
+ * 
+ * They can't have any children.
+ * 
+ * Doesn't add any behaviour as this is the default beahviour
+ * implemented by the Style class
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class AbstractEmbeddedStyle extends Style
 {
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super();
+		super(htmlElement);
 	}
-	
-	/**
-	 * don't listen to keyboard, as it is managed by the browser
-	 */
-	override private function initKeyboardListeners():Void
-	{
-		
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
-	}
-	
 }

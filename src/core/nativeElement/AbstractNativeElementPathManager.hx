@@ -5,51 +5,33 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package core.nativeElement;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
+import core.nativeElement.NativeElement;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is a base class for the path manager. 
+ * It retrieves and return the root of the DOM, 
+ * sush as the body tag in HTML
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class AbstractNativeElementPathManager
 {
 	/**
-	 * class constructor
+	 * class contructor
 	 */
 	public function new() 
-	{
-		super();
-	}
-	
-	/**
-	 * don't listen to keyboard, as it is managed by the browser
-	 */
-	override private function initKeyboardListeners():Void
 	{
 		
 	}
 	
 	/**
-	 * only store the value
+	 * Returns the root of the DOM. Implemented by subclasses
 	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
+	public function getRoot():NativeElement
 	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
+		return null;
 	}
 	
 }
