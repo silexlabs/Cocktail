@@ -163,20 +163,19 @@ class BlockFormattingContext extends FormattingContext
 		
 		var currentAddedSiblingsHeight:Int = 0;
 		
+		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			var marginTop:Int = child.style.computedStyle.marginTop;
-			var marginBottom:Int = child.style.computedStyle.marginBottom;
 			
 			if (i == 0)
 			{
 				var firstChild:ElementRenderer = cast(child.firstChild);
 				if (firstChild.style.computedStyle.marginTop > marginTop)
 				{
-					marginTop = firstChild.style.computedStyle.marginTop;
-					
+						marginTop = firstChild.style.computedStyle.marginTop;
 				}
 				else 
 				{
@@ -192,14 +191,29 @@ class BlockFormattingContext extends FormattingContext
 				}
 			}
 			
+			var marginBottom:Int = child.style.computedStyle.marginBottom;
+			
+			if (child.nextSibling != null)
+			{
+				var nextSibling:ElementRenderer = cast(child.nextSibling);
+				
+				if (nextSibling.style.computedStyle.marginTop > marginBottom)
+				{
+					marginBottom = 0;
+				}
+				else
+				{
+					marginBottom -= nextSibling.style.computedStyle.marginTop;
+				}
+			}
 		
 		
 			
 			var x:Float = _formattingContextData.x + child.style.computedStyle.marginLeft;
-			var y:Float = _formattingContextData.y + marginTop;
+			var y:Float = _formattingContextData.y + marginTop + elementRenderer.style.computedStyle.paddingTop ;
 			var width:Float = child.style.htmlElement.offsetWidth;
 			var height:Float = child.style.htmlElement.offsetHeight;
-
+			
 			child.bounds = {
 				x:x, 
 				y:y,
@@ -207,8 +221,8 @@ class BlockFormattingContext extends FormattingContext
 				height:height
 			}
 		
-			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + child.style.computedStyle.marginBottom ;
-			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + child.style.computedStyle.marginBottom;
+			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
+			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
 		}
 		
 		
