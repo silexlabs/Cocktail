@@ -272,7 +272,7 @@ class FormattingContext
 					width : right - left,
 					height :  bottom - top,
 				}
-				
+				Log.trace(bounds);
 				
 		return bounds;
 		
@@ -335,7 +335,7 @@ class FormattingContext
 		
 		for (i in 0..._elementsInFormattingContext.length)
 		{
-			if (_elementsInFormattingContext[i].parent == elementRenderer)
+			if (_elementsInFormattingContext[i].parentNode == elementRenderer)
 			{
 				elementRenderers.push(_elementsInFormattingContext[i]);
 			}

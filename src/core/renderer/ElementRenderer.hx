@@ -7,6 +7,7 @@
 */
 package core.renderer;
 
+import core.dom.Node;
 import core.nativeElement.NativeElement;
 import core.drawing.DrawingManager;
 import core.geom.GeomData;
@@ -32,9 +33,12 @@ import core.Style;
  * ElementRenderer (absolute, fixed or relative) always
  * create a new LayerRenderer
  * 
+ * TODO : should elementRenderer inherit Node to have appendChild,
+ * removeChild... ?
+ * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer 
+class ElementRenderer extends Node
 {
 
 	/**
@@ -52,13 +56,6 @@ class ElementRenderer
 	public var style(getStyle, never):Style;
 	
 	/**
-	 * A reference to the parent ElementRenderer
-	 * in the rendering tree
-	 */
-	private var _parent:FlowBoxRenderer;
-	public var parent(getParent, setParent):FlowBoxRenderer;
-	
-	/**
 	 * A reference to the LayerRenderer rendering this
 	 * ElementRenderer
 	 */
@@ -72,6 +69,7 @@ class ElementRenderer
 	 */
 	public function new(style:Style) 
 	{
+		super();
 		_style = style;
 		_bounds = {
 			x:0.0,
@@ -108,7 +106,6 @@ class ElementRenderer
 		
 		_bounds = null;
 		_style = null;
-		_parent = null;
 		//TODO : cause null runtime error
 		//_layerRenderer.dispose();
 		_layerRenderer = null;
@@ -185,16 +182,6 @@ class ElementRenderer
 	private function getStyle():Style
 	{
 		return _style;
-	}
-	
-	private function getParent():FlowBoxRenderer
-	{
-		return _parent;
-	}
-	
-	private function setParent(value:FlowBoxRenderer):FlowBoxRenderer
-	{
-		return _parent = value;
 	}
 	
 	private function getBounds():RectangleData

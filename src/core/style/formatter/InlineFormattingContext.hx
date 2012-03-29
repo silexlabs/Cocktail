@@ -507,10 +507,10 @@ class InlineFormattingContext extends FormattingContext
 			
 			for (i in 0..._elementsInLineBox.length)
 			{
-				if (_elementsInLineBox[i].parent != _formattingContextRoot.style.elementRenderer)
+				if (_elementsInLineBox[i].parentNode != _formattingContextRoot.style.elementRenderer)
 				{
 				
-					getParentInlineBoxesData(cast(_elementsInLineBox[i].parent)).children.push(_elementsInLineBox[i]);
+					getParentInlineBoxesData(cast(_elementsInLineBox[i].parentNode)).children.push(_elementsInLineBox[i]);
 				}
 				else
 				{

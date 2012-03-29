@@ -87,7 +87,7 @@ class AbstractContainerStyle extends Style
 		}
 		
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
-		parentElementRenderer.addChild(elementRenderer);
+		parentElementRenderer.appendChild(elementRenderer);
 		
 		return elementRenderer;
 	}
@@ -246,7 +246,7 @@ class AbstractContainerStyle extends Style
 				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
-					flowBoxRenderer.addChild(insertedText[j]);
+					flowBoxRenderer.appendChild(insertedText[j]);
 				}
 			}
 		}

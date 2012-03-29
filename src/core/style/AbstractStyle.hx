@@ -546,7 +546,7 @@ class AbstractStyle
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(cast(this));
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		parentElementRenderer.addChild(elementRenderer);
+		parentElementRenderer.appendChild(elementRenderer);
 		
 		return elementRenderer;
 	}

@@ -24,18 +24,11 @@ import haxe.Log;
 class FlowBoxRenderer extends BoxRenderer
 {
 	/**
-	 * A reference to all the children of this FolowBoxRenderer
-	 */
-	private var _children:Array<ElementRenderer>;
-	public var children(getChildren, never):Array<ElementRenderer>;
-	
-	/**
 	 * class constructor
 	 */
 	public function new(style:Style) 
 	{
 		super(style);
-		_children = new Array<ElementRenderer>();
 	}
 	
 	/////////////////////////////////
@@ -46,49 +39,13 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		super.dispose();
 		
-		for (i in 0...children.length)
+		for (i in 0..._childNodes.length)
 		{
-			_children[i].dispose();
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.dispose();
 		}
-		_children = null;
+		_childNodes = null;
 	}
-	
-	/**
-	 * add a children to the FlowBoxRenderer
-	 */
-	public function addChild(elementRenderer:ElementRenderer):Void
-	{
-		_children.push(elementRenderer);
-		
-		if (elementRenderer.parent != null)
-		{
-			elementRenderer.parent.removeChild(elementRenderer);
-		}
-		
-		elementRenderer.parent = this;
-	}
-	
-	/**
-	 * Remove a children of the FlowBoxRenderer
-	 */
-	public function removeChild(elementRenderer:ElementRenderer):Void
-	{
-		var newChildren:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0..._children.length)
-		{
-			if (_children[i] != elementRenderer)
-			{
-				newChildren.push(_children[i]);
-			}
-			else
-			{
-				_children[i].dispose();
-			}
-		}
-		_children = newChildren;
-	}
-	
 	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
@@ -108,16 +65,6 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		return true;
 	}
-	
-	/////////////////////////////////
-	// SETTERS/GETTERS
-	////////////////////////////////
-	
-	private function getChildren():Array<ElementRenderer>
-	{
-		return _children;
-	}
-	
 
 	
 	
