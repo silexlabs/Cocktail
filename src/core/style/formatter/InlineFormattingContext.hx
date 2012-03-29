@@ -675,7 +675,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		remainingSpace = _formattingContextRoot.style.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
-		flowX = _formattingContextRoot.style.computedStyle.marginLeft + _formattingContextRoot.style.computedStyle.paddingLeft;
+		flowX = _formattingContextRoot.style.computedStyle.paddingLeft;
 		
 		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
@@ -902,8 +902,8 @@ class InlineFormattingContext extends FormattingContext
 					verticalAlign = htmlElement.style.computedStyle.verticalAlign;
 			}
 			
-			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y + 
-			_formattingContextRoot.style.computedStyle.marginTop + _formattingContextRoot.style.computedStyle.paddingTop;
+			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y
+			+ _formattingContextRoot.style.computedStyle.paddingTop;
 			
 
 			

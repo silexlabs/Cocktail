@@ -39,6 +39,11 @@ class BlockFormattingContext extends FormattingContext
 	
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
+		initFormattingContextData();
+		doFormat2(_formattingContextRoot, 0);
+		
+		return;
+		
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		initFormattingContextData();
@@ -62,20 +67,20 @@ class BlockFormattingContext extends FormattingContext
 				var marginTop:Int = elementsInFormattingContext[i].style.computedStyle.marginTop;
 				var marginBottom:Int = elementsInFormattingContext[i].style.computedStyle.marginBottom;
 				
-				//TODO : implement firstChild, lastChild, nextSibling... on Node
-				if (isSiblingOfLastInsertedElement(elementsInFormattingContext[i]))
+				if (elementsInFormattingContext[i].parentNode == _lastInsertedElement.parentNode)
 				{
 					if (marginTop > _lastInsertedElement.style.computedStyle.marginBottom)
 					{
 						
 					}
 					else
-					{
+					{ 
 						marginTop = 0;
 					}
 				}
-				else if (isParentOfLastInsertedElement(elementsInFormattingContext[i]))
+				else if (elementsInFormattingContext[i] == _lastInsertedElement.parentNode)
 				{
+					
 					_formattingContextData.y -= currentAddedSiblingsHeight;
 					currentAddedSiblingsHeight = 0;
 					
@@ -153,6 +158,64 @@ class BlockFormattingContext extends FormattingContext
 		}
 	}
 	
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedY:Int ):Void
+	{
+		
+		var currentAddedSiblingsHeight:Int = 0;
+		
+		for (i in 0...elementRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			
+			var marginTop:Int = child.style.computedStyle.marginTop;
+			var marginBottom:Int = child.style.computedStyle.marginBottom;
+			
+			if (i == 0)
+			{
+				var firstChild:ElementRenderer = cast(child.firstChild);
+				if (firstChild.style.computedStyle.marginTop > marginTop)
+				{
+					marginTop = firstChild.style.computedStyle.marginTop;
+					
+				}
+				else 
+				{
+					concatenatedY += marginTop;
+				}
+			}
+			
+			if (child.hasChildNodes == true)
+			{
+				if (child.establishesNewFormattingContext() == false)
+				{
+					doFormat2(child, concatenatedY);
+				}
+			}
+			
+		
+		
+			
+			var x:Float = _formattingContextData.x + child.style.computedStyle.marginLeft;
+			var y:Float = _formattingContextData.y + marginTop;
+			var width:Float = child.style.htmlElement.offsetWidth;
+			var height:Float = child.style.htmlElement.offsetHeight;
+
+			child.bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
+			}
+		
+			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + child.style.computedStyle.marginBottom ;
+			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + child.style.computedStyle.marginBottom;
+		}
+		
+		
+		
+		_formattingContextData.y -= currentAddedSiblingsHeight;
+	}
+	
 	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
 	{
 		var isAncestorOfElement:Bool = false;
@@ -172,18 +235,6 @@ class BlockFormattingContext extends FormattingContext
 		return isAncestorOfElement;
 	}
 	
-
-	
-	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
-	{
-		return element == _lastInsertedElement.parentNode;
-	}
-	
-	private function isSiblingOfLastInsertedElement(element:ElementRenderer):Bool
-	{
-		return _lastInsertedElement.parentNode == element.parentNode;
-	}
-
 	override private function insertEmbeddedElement(element:ElementRenderer):Void
 	{
 		var x:Float = _formattingContextData.x;
