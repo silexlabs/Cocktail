@@ -5,20 +5,19 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package core.style.computer.boxComputers;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
+import core.style.AbstractStyle;
+import core.style.StyleData;
+import core.unit.UnitManager;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * this is the box computer for floated non-embedded HTMLElement
+ * such as a floated ContainerHTMLElement.
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 {
 	/**
 	 * class constructor
@@ -29,27 +28,12 @@ class FocusManagerImpl extends AbstractFocusManagerImpl
 	}
 	
 	/**
-	 * don't listen to keyboard, as it is managed by the browser
+	 * for floated non-embedded HTMLElements, an auto width is computed as 'shrink-to-fit' once all the children
+	 * have been laid out
 	 */
-	override private function initKeyboardListeners():Void
+	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
-		
+		return 0;
 	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
-	}
-	
+
 }
