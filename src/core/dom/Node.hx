@@ -63,6 +63,35 @@ class Node
 	public var childNodes(get_childNodes, never):Array<Node>;
 	
 	/**
+	 * The first child of this node. If there is no such node,
+	 * this returns null.
+	 */
+	public var firstChild(get_firstChild, never):Node;
+	
+	/**
+	 * The last child of this node. If there is no such node,
+	 * this returns null.
+	 */
+	public var lastChild(get_lastChild, never):Node;
+	
+	/**
+	 * The node immediately following this node. 
+	 * If there is no such node, this returns null.
+	 */
+	public var nextSibling(get_nextSibling, never):Node;
+	
+	/**
+	 * The node immediately preceding this node. 
+	 * If there is no such node, this returns null.
+	 */
+	public var previousSibling(get_previousSibling, never):Node;
+	
+	/**
+	 * Returns whether this node has any children.
+	 */
+	public var hasChildNodes(get_hasChildNodes, never):Bool;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -124,6 +153,85 @@ class Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_firstChild():Node
+	{
+		if (hasChildNodes == true)
+		{
+			return _childNodes[0];
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	private function get_lastChild():Node
+	{
+		if (hasChildNodes == true)
+		{
+			return _childNodes[_childNodes.length - 1];
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	private function get_nextSibling():Node
+	{
+		//if the node is not attached, it
+		//has no siblings
+		if (_parentNode == null)
+		{
+			return null;
+		}
+		
+		else if (_parentNode.lastChild != this)
+		{
+			//loop in all child to finf this node and return
+			//the next one
+			for (i in 0..._parentNode.childNodes.length)
+			{
+				if (_parentNode.childNodes[i] == this)
+				{
+					return _parentNode.childNodes[i + 1];
+				}
+			}
+		}
+		
+		//if the node is the last of its parent, it has no
+		//next sibling
+		return null;
+	}
+	
+	/**
+	 * same as get_nextSibling
+	 */
+	private function get_previousSibling():Node
+	{
+		if (_parentNode == null)
+		{
+			return null;
+		}
+		else if (_parentNode.firstChild != this)
+		{
+			for (i in 0..._parentNode.childNodes.length)
+			{
+				if (_parentNode.childNodes[i] == this)
+				{
+					return _parentNode.childNodes[i - 1];
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private function get_hasChildNodes():Bool
+	{
+		return _childNodes.length > 0;
+	}
 	
 	private function get_nodeType():NodeType 
 	{
