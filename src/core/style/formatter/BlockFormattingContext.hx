@@ -173,13 +173,13 @@ class BlockFormattingContext extends FormattingContext
 			if (i == 0)
 			{
 				var firstChild:ElementRenderer = cast(child.firstChild);
-				if (firstChild.style.computedStyle.marginTop > marginTop)
+				if (firstChild.style.computedStyle.marginTop > marginTop && child.style.computedStyle.paddingTop == 0)
 				{
 						marginTop = firstChild.style.computedStyle.marginTop;
 				}
 				else 
 				{
-					concatenatedY += marginTop;
+					//concatenatedY += marginTop + elementRenderer.style.computedStyle.paddingTop;
 				}
 			}
 			
@@ -199,17 +199,18 @@ class BlockFormattingContext extends FormattingContext
 				
 				if (nextSibling.style.computedStyle.marginTop > marginBottom)
 				{
-					marginBottom = 0;
+					//marginBottom = 0;
 				}
 				else
 				{
-					marginBottom -= nextSibling.style.computedStyle.marginTop;
+					//marginBottom -= nextSibling.style.computedStyle.marginTop;
 				}
 			}
 		
 		
 			
-			var x:Float = _formattingContextData.x + child.style.computedStyle.marginLeft;
+			var x:Float = _formattingContextData.x + child.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft + 
+			elementRenderer.style.computedStyle.marginLeft ;
 			var y:Float = _formattingContextData.y + marginTop + elementRenderer.style.computedStyle.paddingTop ;
 			var width:Float = child.style.htmlElement.offsetWidth;
 			var height:Float = child.style.htmlElement.offsetHeight;
@@ -220,7 +221,7 @@ class BlockFormattingContext extends FormattingContext
 				width:width,
 				height:height
 			}
-		
+	
 			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
 			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
 		}
