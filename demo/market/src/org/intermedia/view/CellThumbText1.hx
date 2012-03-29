@@ -36,7 +36,7 @@ class CellThumbText1 extends CellThumb
 		// init style model
 		_cellStyle = {
 			cell:CellThumbText1Style.setCellStyle,
-			thumbnail:CellThumbStyle.setThumbnailStyle,
+			thumbnail:CellThumbText1Style.setThumbnailStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
 			author:CellThumbText1Style.setAuthorStyle,
@@ -91,7 +91,7 @@ class CellThumbText1 extends CellThumb
 		}
 		
 		// add author
-		if (_data.author != "" && _data.author != null)
+		/*if (_data.author != "" && _data.author != null)
 		{
 			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
 			var textElement:TextElement = new TextElement(_data.author);
@@ -99,7 +99,7 @@ class CellThumbText1 extends CellThumb
 			_cellStyle.author(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
 			cellTextBlockContainer.addChild(cellAuthorContainer);
-		}
+		}*/
 		
 		
 		// LINE

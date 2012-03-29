@@ -31,7 +31,7 @@ import org.intermedia.view.ScreenResolution;
 
 class CellThumbStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = 5;
+	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
 	
 	/**
 	 * Defines cell Style
@@ -50,6 +50,8 @@ class CellThumbStyle
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingLeft = PaddingStyleValue.percent(1);
+		//domElement.style.paddingRight = PaddingStyleValue.percent(1);
 		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
@@ -74,14 +76,16 @@ class CellThumbStyle
 		
 		domElement.style.display = DisplayStyleValue.inlineStyle;
 		
-		domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		domElement.style.paddingRight = PaddingStyleValue.percent(1);
+		//domElement.style.paddingLeft = PaddingStyleValue.percent(0);
+		//domElement.style.paddingRight = PaddingStyleValue.percent(0);
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
+		//domElement.style.paddingRight = PaddingStyleValue.length(px(5));
 
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-			domElement.style.width = DimensionStyleValue.percent(100);	
+		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
+		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+		domElement.style.width = DimensionStyleValue.percent(100);	
 
 		domElement.style.opacity = OpacityStyleValue.number(0);
 		

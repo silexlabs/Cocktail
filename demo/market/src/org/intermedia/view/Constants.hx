@@ -13,9 +13,12 @@ package org.intermedia.view;
  * @author Raphael Harmel
  */
 
-class Constants 
+class Constants
 {
 
 	public static inline var HEADER_HEIGHT:Int = 43;
-	
+	public static inline var MENU_HEIGHT:Int = 35;
+	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;
+	public static inline var CELL_VERTICAL_SPACE = 2;
+
 }

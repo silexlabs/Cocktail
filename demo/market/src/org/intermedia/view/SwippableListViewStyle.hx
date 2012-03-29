@@ -43,14 +43,15 @@ class SwippableListViewStyle
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(Constants.LIST_TOP));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(300);
 		domElement.style.height = DimensionStyleValue.percent(100);
 	}
 	

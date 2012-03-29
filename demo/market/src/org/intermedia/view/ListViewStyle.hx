@@ -36,29 +36,35 @@ class ListViewStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function setListStyle(domElement:DOMElement):Void
+	public static function setListStyle(domElement:DOMElement,listTop:Int):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.position = PositionStyleValue.staticStyle;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
 		domElement.style.marginTop = MarginStyleValue.length(px(0));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingLeft = PaddingStyleValue.percent(0);
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.autoValue;
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(33);
+		domElement.style.width = DimensionStyleValue.length(px(new Viewport().width));
+		//domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px( new Viewport().height));
+		//domElement.style.height = DimensionStyleValue.length(px( new Viewport().height - Constants.LIST_TOP ));
+		//domElement.style.height = DimensionStyleValue.autoValue;
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
+		domElement.style.top = PositionOffsetStyleValue.length(px(listTop));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 		
+		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
 		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
-		
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package org.intermedia.view;
 //import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
+import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
 import haxe.Timer;
@@ -30,6 +31,9 @@ class ViewManager
 	
 	static inline var HEADER_HOME_TITLE:String = "Market";
 	static inline var HEADER_DETAIL_TITLE:String = "Infos";
+	
+	// reference to the menu
+	private var _menu:MenuListViewText;
 	
 	//Ref to the container managing the swippable list view
 	private var _swippableListView:SwippableListView;
@@ -71,11 +75,25 @@ class ViewManager
 		_body = new BodyDOMElement();
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
-		//_header.isVisible = false;
 		_header.data = HEADER_HOME_TITLE;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		_body.addChild(_header);
 		
+		// init menu
+		_menu = new MenuListViewText();
+		_menu.displayListBottomLoader = false;
+		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"},{title:"menu4"},{title:"menu5"}];
+		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"}];
+		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"}];
+		//_menu.data = [{title:Feeds.FEED_1_TITLE},{title:Feeds.FEED_2_TITLE},{title:Feeds.FEED_3_TITLE}];
+		//_menu.data = [{title:Feeds.FEED_1.title},{title:Feeds.FEED_2.title},{title:Feeds.FEED_3.title}];
+		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
+		_body.addChild(_menu);
+		
+		//_header.isVisible = false;
+		//_menu.isVisible = false;
+		
+		// inti swippable view
 		_swippableListView = new SwippableListView();
 		// set current view on swippable view
 		_currentView = _swippableListView;
@@ -85,6 +103,8 @@ class ViewManager
 		Timer.delay(function () {
 			// scroll to the second item in the swippable view
 			_body.nativeElement.scrollLeft = new Viewport().width;
+			setZIndexToMax(_menu);
+			setZIndexToMax(_header);
 		},5000);
 		Timer.delay(resetHeaderPosition,200);
 		// call init()
@@ -94,9 +114,11 @@ class ViewManager
 	/**
 	 * reset header position
 	 */
-	function resetHeaderPosition() {
-			_header.x = 0;
-			Timer.delay(resetHeaderPosition,200);
+	function resetHeaderPosition()
+	{
+		_header.x = 0;
+		_menu.x = 0;
+		Timer.delay(resetHeaderPosition,200);
 	}
 	
 	/**
@@ -114,7 +136,9 @@ class ViewManager
 		
 		// Sets callback on the view to be notified of user actions.
 		// set list item selelected callback
+		_menu.onListItemSelected = onMenuItemSelectedCallback;
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
+		_swippableListView.onHorizontalTweenEnd = updateZIndexes;
 		// set callback when the bottom of the scrollbar is reached
 		//_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
 		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.loadCellData(feed); };
@@ -123,9 +147,21 @@ class ViewManager
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		//_applicationController.loadCellData(CELL_QTY);
 		//_applicationController.loadCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
-		_applicationController.loadCellData(Feeds.FEED_1);
-		_applicationController.loadCellData(Feeds.FEED_2);
-		_applicationController.loadCellData(Feeds.FEED_3);
+		_applicationController.loadCellData(Feeds.FEED_1.url);
+		_applicationController.loadCellData(Feeds.FEED_2.url);
+		_applicationController.loadCellData(Feeds.FEED_3.url);
+	}
+	
+	/**
+	 * on menu item item clicked
+	 * 
+	 * @param	cellData
+	 */
+	private function onMenuItemSelectedCallback(cellData:CellData):Void
+	{
+		//trace(cellData.title + " clicked");
+		//trace(cellData.id + " clicked");
+		_swippableListView.index = cellData.id;
 	}
 	
 	/**
@@ -133,8 +169,9 @@ class ViewManager
 	 */
 	private function onListItemSelectedCallback(cellData:CellData):Void
 	{
-		// remove swippableListView and add empty detail view
+		// remove swippableListView and menu and add empty detail view
 		_body.removeChild(_swippableListView);
+		_body.removeChild(_menu);
 		_detailView = new DetailView();
 		_body.addChild(_detailView);
 
@@ -162,7 +199,9 @@ class ViewManager
 		_swippableListView.data = listData;
 		
 		// update header zIndex using a workaround so it always visible
-		updateHeaderZIndex();
+		//updateZIndexes();
+		setZIndexToMax(_menu);
+		setZIndexToMax(_header);
 		
 		// remove loading view from swippable view
 		_swippableListView.displayLoading = false;
@@ -183,7 +222,8 @@ class ViewManager
 		_header.displayBackButton = true;
 		
 		// update header zIndex using a workaround
-		updateHeaderZIndex();
+		//updateZIndexes();
+		setZIndexToMax(_header);
 		
 		// hide loader
 		_detailView.displayLoading = false;
@@ -219,24 +259,60 @@ class ViewManager
 		
 		// remove detail view and add swippableListView
 		_body.removeChild(_detailView);
+		_body.addChild(_menu);
 		_body.addChild(_swippableListView);
+		_swippableListView.scrollToCurrentList();
 		
 		// update zIndex using a workaround
-		updateHeaderZIndex();
+		//updateZIndexes();
+		setZIndexToMax(_menu);
+		setZIndexToMax(_header);
 
 		// set current view on swippable view
 		_currentView = _swippableListView;
 	}
 	
 	/**
+	 * updates header and menu zIndex to the maximum value.
+	 * Uses a workaround as zIndex is not implemented yet in Cocktail
+	 */
+	private function updateZIndexes():Void
+	{
+		setZIndexToMax(_menu);
+		setZIndexToMax(_header);
+	}
+	
+	/**
+	 * updates zIndex to the maximum value.
+	 * Uses a workaround as zIndex is not implemented yet in Cocktail
+	 */
+	private function setZIndexToMax(dom:DOMElement):Void
+	{
+		// remove and add dom so it has the higher zIndex
+		_body.removeChild(dom);
+		_body.addChild(dom);
+	}
+	
+	/**
 	 * updates header zIndex.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	private function updateHeaderZIndex():Void
+	/*private function updateHeaderZIndex():Void
 	{
 		// remove and add header so it has the higher zIndex
 		_body.removeChild(_header);
 		_body.addChild(_header);
 	}
+	
+	/**
+	 * updates menu zIndex.
+	 * Uses a workaround as zIndex is not implemented yet in Cocktail
+	 */
+	/*private function updateHeaderZIndex():Void
+	{
+		// remove and add menu so it has the higher zIndex
+		_body.removeChild(_menu);
+		_body.addChild(_menu);
+	}*/
 	
 }

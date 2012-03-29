@@ -13,7 +13,6 @@ import org.intermedia.model.ApplicationModel;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.view.ViewManager;
 
-import org.intermedia.view.HeaderStyle;
 
 /**
  * Entry point, instantiate the view, model and controller.

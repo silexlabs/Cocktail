@@ -31,7 +31,7 @@ import org.intermedia.view.ScreenResolution;
 
 class CellThumbText1Style
 {
-	static inline var CELL_VERTICAL_SPACE:Int = 5;
+	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
 	
 	/**
 	 * Defines cell Style
@@ -62,6 +62,34 @@ class CellThumbText1Style
 	}
 	
 	/**
+	 * Defines cell image Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function setThumbnailStyle(domElement:DOMElement):Void
+	{
+		var imageMaxWidth:Int = 200;
+		
+		//setCellStyle(domElement);
+		
+		domElement.style.display = DisplayStyleValue.inlineStyle;
+		
+		//domElement.style.paddingLeft = PaddingStyleValue.percent(0);
+		//domElement.style.paddingRight = PaddingStyleValue.percent(0);
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
+		//domElement.style.paddingRight = PaddingStyleValue.length(px(5));
+
+		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+
+		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
+		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+		domElement.style.width = DimensionStyleValue.percent(35);	
+
+		domElement.style.opacity = OpacityStyleValue.number(0);
+		
+	}
+		
+	/**
 	 * Defines cell text block Style
 	 * 
 	 * @param	domElement
@@ -73,7 +101,7 @@ class CellThumbText1Style
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.marginLeft = MarginStyleValue.percent(2);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.width = DimensionStyleValue.percent(55);
+		domElement.style.width = DimensionStyleValue.percent(60);
 	}
 
 	/**
@@ -101,9 +129,12 @@ class CellThumbText1Style
 	{
 		setTextStyle(domElement);
 		
-		var fontSize:Int = 14;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
+		if (screenResolutionSize == null)
+			screenResolutionSize = ScreenResolutionSize.small;
+		
+		var fontSize:Int = 12;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 12;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 15;
 		else  fontSize = 18;
 		
 		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));

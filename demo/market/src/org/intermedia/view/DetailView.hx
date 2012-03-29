@@ -107,8 +107,18 @@ class DetailView extends ViewBase
 		_authorElement.text = _data.author;
 		_authorContainer.addText(_authorElement);
 		
-		// update thumbnail
-		_thumbnail.load(_data.thumbUrl);
+		// detach thumbnail from detail view
+		if (_thumbnail.parent != null)
+		{
+			this.removeChild(_thumbnail);
+		}
+		// update thumbnail if data exists. check is done here to avoid having a "?" if not thumb is existing
+		if(_data.thumbUrl != "" && _data.thumbUrl != null)
+		{
+			_thumbnail.load(_data.thumbUrl);
+			this.addChild(_thumbnail);
+		}
+			//_thumbnail.load(_data.thumbUrl);
 		
 		// update description
 		/*_descriptionContainer.removeText(_descriptionElement);
@@ -122,23 +132,23 @@ class DetailView extends ViewBase
 		
 		html2DOM(_data.description);
 		html2DOM(_data.content);
-		
-		
 	}
 	
 	private function html2DOM(htmlString:String):Void
 	{
-		var xml:Xml = Xml.parse(htmlString);
-		var htmlPageData:HTMLPageData = null;
 		try
 		{
+			var xml:Xml = Xml.parse(htmlString);
+			var htmlPageData:HTMLPageData = null;
 			htmlPageData = (new HTMLParser()).parse(xml.firstElement());
 			// add the parsed data to the detail view
 			this.nativeElement.appendChild(htmlPageData.htmlDom);
 		}catch(msg : String){
-			trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
+			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
+			trace("Error, parsing XML tag \n"+msg);
 		} catch( unknown : Dynamic ) {
-			trace("Error, parsing XML tag "+xml.firstElement()+"\n"+Std.string(unknown));
+			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+Std.string(unknown));
+			trace("Error, parsing XML tag \n"+Std.string(unknown));
 		}
 	}
 	
