@@ -53,7 +53,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		nativeElement.graphics.clear();
 		nativeElement.graphics.beginFill(0x00FF00, 0.0);
-		nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
+		nativeElement.graphics.drawRect(_bounds.x +_style.computedStyle.paddingLeft,
+		_bounds.y + _style.computedStyle.paddingTop, _bounds.width, _bounds.height);
 		nativeElement.graphics.endFill();
 		
 		//nativeElement.x = _style.computedStyle.marginLeft;
@@ -66,8 +67,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//TODO : shouldn't have to add margins
 		#if (flash9 || nme)
-		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft + _style.computedStyle.marginLeft;
-		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop + _style.computedStyle.marginTop;
+		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft ;
+		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop;
 
 		embeddedHTMLElement.embeddedAsset.width = _style.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _style.computedStyle.height;

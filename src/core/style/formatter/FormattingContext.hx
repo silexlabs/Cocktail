@@ -177,6 +177,8 @@ class FormattingContext
 	 * an auto height to determine its height
 	 * 
 	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
+	 * 
+	 * TODO : no longer need getChildElementRenderers, use childNodes ?
 	 */
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
