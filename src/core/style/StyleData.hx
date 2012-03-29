@@ -1091,6 +1091,37 @@ import core.renderer.TextRenderer;
 		cssAuto;
 	}
 
+			// USER INTERFACE STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * This property specifies the type of cursor to be displayed for the pointing device.
+	 * 
+	 * TODO : missing values
+	 */
+	enum Cursor {
+		
+		/**
+		 * The UA determines the cursor to display based on the current context.
+		 */
+		auto;
+		
+		/**
+		 * A simple crosshair (e.g., short line segments resembling a "+" sign). 
+		 */
+		crosshair;
+		
+		/**
+		 * The platform-dependent default cursor. Often rendered as an arrow. 
+		 */
+		cssDefault;
+		
+		/**
+		 * The cursor is a pointer that indicates a link. 
+		 */
+		pointer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1235,6 +1266,10 @@ import core.renderer.TextRenderer;
 		var textAlign:TextAlign;
 		var color:ColorData;
 		
+		/**
+		 * user interface
+		 */
+		var cursor:Cursor;
 	}
 
 	/**

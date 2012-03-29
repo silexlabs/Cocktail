@@ -1157,6 +1157,32 @@ class Style extends AbstractStyle
 	}
 	
 	/////////////////////////////////
+	// USER INTERFACE STYLES
+	////////////////////////////////
+	
+	private function getCSSCursor(value:Cursor):String
+	{
+		var cssCursorValue:String;
+		
+		switch (value)
+		{
+			case Cursor.auto:
+				cssCursorValue = "auto";
+				
+			case Cursor.crosshair:
+				cssCursorValue = "crosshair";
+				
+			case Cursor.cssDefault:
+				cssCursorValue = "default";
+				
+			case Cursor.pointer:
+				cssCursorValue = "pointer";
+		}
+		
+		return cssCursorValue;
+	}
+	
+	/////////////////////////////////
 	// UNIT CONVERSION
 	// Convert abstract styles units
 	// to CSS units
@@ -1917,5 +1943,12 @@ class Style extends AbstractStyle
 		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value);
 		super.setOverflowY(value);
 		return _overflowY = value;
+	}
+	
+	override private function setCursor(value:Cursor):Cursor
+	{
+		_htmlElement.nativeElement.style.cursor = getCSSCursor(value);
+		super.setCursor(value);
+		return _cursor = value;
 	}
 }
