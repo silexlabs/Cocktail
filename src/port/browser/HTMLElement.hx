@@ -89,6 +89,34 @@ class HTMLElement extends AbstractHTMLElement
 		return newChild;
 	}
 	
+	/**
+	 * Overriden to also insert before the native 
+	 * HTML DOM
+	 */
+	override public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//TODO : test
+		untyped _nativeElement.insertBefore(newChild.nativeElement, refChild.nativeElement);
+		
+		return newChild;
+	}
+	
+	/**
+	 * Overriden to also replace the child of the native 
+	 * HTML DOM
+	 */
+	override public function replaceChild(newChild:Node, oldChild:Node):Node
+	{
+		super.replaceChild(newChild, oldChild);
+		
+		//TODO : test
+		untyped _nativeElement.replaceChild(newChild.nativeElement, refChild.nativeElement);
+		
+		return oldChild;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN POSITIONING SETTERS/GETTERS
 	// Return the native offset width and height of the HTML element
