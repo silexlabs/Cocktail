@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.resource.AbstractMediaLoader;
 import core.resource.AbstractResourceLoader;
 import flash.display.Loader;

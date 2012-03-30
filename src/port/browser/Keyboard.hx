@@ -7,7 +7,7 @@
 */
 package port.browser;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.event.KeyboardEvent;
 import haxe.Log;
 import js.Lib;

@@ -10,7 +10,10 @@ package core;
 /**
  * Set the right runtime specific keyboard manager at compile-time
  */
-#if (flash9 || cpp || nme)
+#if flash9
+typedef Keyboard =  port.flash_player.Keyboard;
+
+#elseif nme
 typedef Keyboard =  port.flash_player.Keyboard;
 
 #elseif js

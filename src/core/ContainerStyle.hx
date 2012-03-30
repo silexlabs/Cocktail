@@ -10,8 +10,11 @@ package core;
 /**
  * Set the right runtime specific ContainerStyle at compile-time
  */
-#if (flash9 || cpp || nme)
+#if flash9
 typedef ContainerStyle =  port.flash_player.ContainerStyle;
+
+#elseif nme
+typedef ContainerStyle =  port.nme.ContainerStyle;
 
 #elseif js
 typedef ContainerStyle =  core.style.AbstractContainerStyle;

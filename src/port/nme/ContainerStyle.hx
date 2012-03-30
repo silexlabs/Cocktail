@@ -12,7 +12,7 @@ import core.style.AbstractContainerStyle;
 import core.style.AbstractStyle;
 import core.style.StyleData;
 import core.renderer.TextRenderer;
-import core.Text.abstract.AbstractTextElement;
+import core.Text;
 import core.Text.TextElementData;
 import core.unit.UnitManager;
 import core.unit.UnitData;
@@ -50,6 +50,7 @@ class ContainerStyle extends AbstractContainerStyle
 
 	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
+		/**
 		text = AbstractTextElement.applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textField:flash.text.TextField = new flash.text.TextField();
@@ -62,11 +63,13 @@ class ContainerStyle extends AbstractContainerStyle
 
 		//wrap the flash text line in a TextRenderer
 		return textFragment;
+		*/
 
 	}	
 	
 	private function getTextFormat():TextFormat
 	{
+		/**
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
 		
@@ -80,6 +83,7 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		textFormat.color = _computedStyle.color.color;
 		return textFormat;
+		*/
 	}
 
 }

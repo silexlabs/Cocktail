@@ -1,6 +1,6 @@
 package core.renderer;
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import haxe.Log;
 /*
 	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/

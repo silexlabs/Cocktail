@@ -8,7 +8,7 @@
 package core.background;
 
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.drawing.DrawingManager;

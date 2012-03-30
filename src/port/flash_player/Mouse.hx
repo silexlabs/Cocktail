@@ -9,7 +9,7 @@ package port.flash_player;
 
 import core.event.MouseEvent;
 import core.mouse.AbstractMouse;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 import core.mouse.MouseData;
 

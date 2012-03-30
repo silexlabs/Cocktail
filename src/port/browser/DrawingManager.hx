@@ -9,7 +9,7 @@ package port.browser;
 
 import core.HTMLImageElement;
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 import core.drawing.AbstractDrawingManager;
 import js.Dom;

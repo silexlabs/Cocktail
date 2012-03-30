@@ -7,7 +7,7 @@
 */
 package core.resource;
 import cocktail.htmlElement.HTMLElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.resource.ResourceLoader;

@@ -10,7 +10,10 @@ package core;
 /**
  * Set the right runtime specific ImageLoader at compile-time
  */
-#if (flash9 || cpp || nme)
+#if flash9
+typedef ImageLoader = core.resource.AbstractImageLoader;
+
+#elseif nme
 typedef ImageLoader = core.resource.AbstractImageLoader;
 
 #elseif js

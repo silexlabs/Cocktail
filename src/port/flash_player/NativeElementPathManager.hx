@@ -9,7 +9,7 @@ package port.flash_player;
 
 import flash.Lib;
 import core.nativeElement.AbstractNativeElementPathManager;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 /**
  * This is the flash AVM2 implementation for the path manager. 

@@ -7,7 +7,7 @@
 */
 package core.style;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.HTMLElement;
 import core.style.formatter.BlockFormattingContext;
 import core.style.formatter.FormattingContext;
@@ -19,8 +19,12 @@ import core.renderer.InitialBlockRenderer;
 import core.renderer.LayerRenderer;
 import haxe.Log;
 
-#if (flash9 || cpp || nme)
+#if flash9
 import port.flash_player.ContainerStyle;
+
+#elseif nme
+import port.flash_player.ContainerStyle;
+
 #elseif js
 import core.style.AbstractContainerStyle;
 #end

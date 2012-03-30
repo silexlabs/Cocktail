@@ -16,7 +16,10 @@ import haxe.Log;
 import core.mouse.MouseData;
 
 
-#if (flash9 || cpp || nme)
+#if flash9
+import port.flash_player.HTMLElement;
+
+#elseif nme
 import port.flash_player.HTMLElement;
 
 #elseif js

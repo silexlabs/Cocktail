@@ -9,7 +9,7 @@ package port.browser;
 
 import js.Lib;
 import core.nativeElement.NativeElementData;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.AbstractNativeElementCreator;
 
 /**

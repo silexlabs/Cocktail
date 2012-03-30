@@ -7,7 +7,7 @@
 */
 package core.renderer;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.Style;
 import core.dom.DOMData;
 import haxe.Log;

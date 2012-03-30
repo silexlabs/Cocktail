@@ -8,7 +8,7 @@
 package core.renderer;
 import cocktail.Lib;
 import core.background.InitialBlockBackgroundManager;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.geom.GeomData;
 import core.Style;
 import core.Window;

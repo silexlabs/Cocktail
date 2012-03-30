@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.resource;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import haxe.Http;
 import haxe.Log;
 

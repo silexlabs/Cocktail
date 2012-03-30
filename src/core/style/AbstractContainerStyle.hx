@@ -7,7 +7,7 @@
 */
 package core.style;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.HTMLElement;
 import core.dom.Node;
 import core.style.computer.boxComputers.BlockBoxStylesComputer;
@@ -37,8 +37,12 @@ import core.geom.GeomData;
 import core.dom.DOMData;
 import haxe.Timer;
 
-#if (flash9 || cpp || nme)
+#if flash9
 import port.flash_player.Style;
+
+#elseif nme
+import port.nme.Style;
+
 #elseif js
 import port.browser.Style;
 #end

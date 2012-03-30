@@ -13,7 +13,10 @@ import cocktailCore.focus.FocusManager;
 import core.BodyStyle;
 import core.Window;
 
-#if (flash9 || cpp || nme)
+#if flash9
+import port.flash_player.HTMLElement;
+
+#elseif nme
 import port.flash_player.HTMLElement;
 
 #elseif js

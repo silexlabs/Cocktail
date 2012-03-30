@@ -8,7 +8,7 @@
 package core.mouse;
 
 import core.HTMLElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.event.MouseEvent;
 
 import core.mouse.MouseData;

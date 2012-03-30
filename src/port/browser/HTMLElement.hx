@@ -10,7 +10,7 @@ package port.browser;
 import core.dom.Node;
 import core.html.AbstractHTMLElement;
 import core.event.Event;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import haxe.Log;
