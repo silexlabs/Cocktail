@@ -13,9 +13,6 @@ package core;
 #if flash9
 typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 
-#elseif nme
-typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
-
 #elseif js
 typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 

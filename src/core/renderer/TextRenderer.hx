@@ -42,7 +42,7 @@ class TextRenderer extends ElementRenderer
 		
 		super(style);
 		
-		#if (flash9 || nme)
+		#if flash9
 		_bounds.width = getOffsetWidth();
 		_bounds.height = getOffsetHeight();
 		#end

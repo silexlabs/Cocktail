@@ -10,10 +10,7 @@ package core;
 /**
  * Set the right runtime specific HTMLImageElement at compile-time
  */
-#if flash9
-typedef HTMLImageElement =  core.html.AbstractHTMLImageElement;
-
-#elseif nme
+#if (flash9 || nme)
 typedef HTMLImageElement =  core.html.AbstractHTMLImageElement;
 
 #elseif js

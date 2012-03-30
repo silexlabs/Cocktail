@@ -13,9 +13,6 @@ package core.drawing;
 #if flash9
 typedef DrawingManager =  port.flash_player.DrawingManager;
 
-#elseif nme
-typedef DrawingManager =  port.flash_player.DrawingManager;
-
 #elseif js
 typedef DrawingManager =  port.browser.DrawingManager;
 

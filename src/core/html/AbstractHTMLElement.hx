@@ -15,12 +15,11 @@ import core.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
 import core.event.MouseEvent;
-import cocktailCore.focus.FocusManager;
+//import cocktailCore.focus.FocusManager;
 import core.Keyboard;
 import core.Mouse;
 import core.ContainerStyle;
 import core.nativeElement.NativeElementManager;
-import core.Style;
 import core.nativeElement.NativeElementData;
 import core.style.StyleData;
 
@@ -576,7 +575,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	public function focus():Void
 	{
-		FocusManager.getInstance().activeElement = cast(this);
+		//FocusManager.getInstance().activeElement = cast(this);
 	}
 	
 	/**
@@ -593,7 +592,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	public function blur():Void
 	{
-		FocusManager.getInstance().activeElement = null;
+		//FocusManager.getInstance().activeElement = null;
 	}
 	
 	/**
@@ -632,7 +631,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
-		FocusManager.getInstance().invalidate();
+		//FocusManager.getInstance().invalidate();
 		return _tabIndex = value;
 	}
 	

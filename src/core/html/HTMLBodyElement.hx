@@ -9,18 +9,15 @@ package core.html;
 
 import core.event.Event;
 import core.nativeElement.NativeElementManager;
-import cocktailCore.focus.FocusManager;
-import core.BodyStyle;
-import core.Window;
 
-#if flash9
-import port.flash_player.HTMLElement;
 
-#elseif nme
+#if (flash9 || nme)
 import port.flash_player.HTMLElement;
+import port.flash_player.BodyStyle;
 
 #elseif js
 import port.browser.HTMLElement;
+import core.style.AbstractBodyStyle;
 
 #end
 

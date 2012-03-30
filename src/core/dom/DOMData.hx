@@ -8,6 +8,7 @@
 package core.dom;
 
 import core.HTMLElement;
+import core.HTMLImageElement;
 import core.renderer.TextRenderer;
 import core.unit.UnitData;
 

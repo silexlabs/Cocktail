@@ -17,6 +17,8 @@ import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
+#if flash9
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -26,6 +28,7 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 
+#end
 /**
  * This is the Flash AS3 implementation of the Style object.
  * 
@@ -56,6 +59,7 @@ class Style extends AbstractStyle
 	 */
 	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "_typewriter";
 	
+	#if flash9
 	/**
 	 * The flash text block used to create the 
 	 * flash text line that will be wrapped in
@@ -63,18 +67,19 @@ class Style extends AbstractStyle
 	 */
 	private var _textBlock:TextBlock;
 	
-	
+	#end
 	public function new(htmlElement:HTMLElement) 
 	{
+		#if flash9
 	   _textBlock = new TextBlock();
-		
+		#end
 		super(htmlElement);
 	}
 
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
 	////////////////////////////////
-	
+	#if flash9
 	/**
 	 * Returns a font metrics data object created using font metrics
 	 * provided by the flash text engine. The font metrics are 
@@ -228,4 +233,6 @@ class Style extends AbstractStyle
 		
 		return Math.round(_textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width);
 	}
+	
+	#end
 }
