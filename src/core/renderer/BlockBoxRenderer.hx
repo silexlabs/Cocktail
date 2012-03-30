@@ -69,7 +69,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var ret:Array<NativeElement> = [];
 		
-		#if flash9
+		#if (flash9 || nme)
 		
 		//TODO : implement properly hit area for flash_player
 		var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);

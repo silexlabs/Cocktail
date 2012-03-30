@@ -46,7 +46,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 		
-		#if flash9
+		#if (flash9 || nme)
 		
 		//TODO : implement properly hit area for flash_player
 		var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
@@ -65,7 +65,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var embeddedHTMLElement:EmbeddedElement = cast(_style.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
-		#if flash9
+		#if (flash9 || nme)
 		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft ;
 		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop;
 

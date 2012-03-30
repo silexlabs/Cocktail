@@ -86,7 +86,7 @@ class LayerRenderer
 					nativeElements.push(childrenBlockContainerBackground[i]);
 				}
 			
-				#if flash9
+				#if (flash9 || nme)
 				for (i in 0...nativeElements.length)
 				{
 					nativeElements[i].x += _rootRenderer.bounds.x;
@@ -269,7 +269,7 @@ class LayerRenderer
 						var ne = d[l].render();
 						for (m in 0...ne.length)
 						{
-							#if flash9
+							#if (flash9 || nme)
 							ne[m].x += inFlowChildren[i].bounds.x;
 							ne[m].y += inFlowChildren[i].bounds.y;
 							#end

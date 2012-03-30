@@ -64,13 +64,13 @@ class BoxRenderer extends ElementRenderer
 		
 		for (i in 0...backgrounds.length)
 		{
-			#if flash9
+			#if (flash9 || nme)
 			backgrounds[i].x = _bounds.x;
 			backgrounds[i].y = _bounds.y;
 			#end
 		}
 		
-		#if flash9
+		#if (flash9 || nme)
 		
 		if (isInitialContainer() == false)
 		{
