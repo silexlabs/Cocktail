@@ -498,7 +498,7 @@ class Style extends AbstractStyle
 			case sub:
 				cssVerticalAlignValue = "sub";
 				
-			case superStyle:
+			case cssSuper:
 				cssVerticalAlignValue = "super";
 				
 			case textTop:

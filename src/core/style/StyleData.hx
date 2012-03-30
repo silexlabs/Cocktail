@@ -315,7 +315,7 @@ import core.renderer.TextRenderer;
 		 * n.b: appended 'Style' to 'super' because 'super'
 		 * is a reserved HaXe word
 		 */
-		superStyle;
+		cssSuper;
 		
 		/**
 		 * Align the top of the aligned subtree with 
