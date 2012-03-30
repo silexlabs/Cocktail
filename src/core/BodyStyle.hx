@@ -13,9 +13,6 @@ package core;
 #if flash9
 typedef BodyStyle =  port.flash_player.BodyStyle;
 
-#elseif nme
-typedef BodyStyle =  port.flash_player.BodyStyle;
-
 #elseif js
 typedef BodyStyle =  port.browser.BodyStyle;
 

@@ -10,10 +10,7 @@ package core;
 /**
  * Set the right runtime specific drawing manager at compile-time
  */
-#if flash9
-typedef DrawingManager =  port.flash_player.DrawingManager;
-
-#elseif nme
+#if (flash9 || nme)
 typedef DrawingManager =  port.flash_player.DrawingManager;
 
 #elseif js

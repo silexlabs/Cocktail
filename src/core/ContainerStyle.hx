@@ -13,9 +13,6 @@ package core;
 #if flash9
 typedef ContainerStyle =  port.flash_player.ContainerStyle;
 
-#elseif nme
-typedef ContainerStyle =  port.nme.ContainerStyle;
-
 #elseif js
 typedef ContainerStyle =  core.style.AbstractContainerStyle;
 

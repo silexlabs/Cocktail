@@ -8,11 +8,7 @@
 package core.nativeElement;
 
 //import the right runtime implementations
-#if flash9
-import port.flash_player.NativeElementCreator;
-import port.flash_player.NativeElementPathManager;
-
-#elseif nme
+#if (flash9 || nme)
 import port.flash_player.NativeElementCreator;
 import port.flash_player.NativeElementPathManager;
 

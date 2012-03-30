@@ -11,9 +11,6 @@ package core.html;
 #if flash9
 import port.flash_player.HTMLElement;
 
-#elseif nme
-import port.flash_player.HTMLElement;
-
 #elseif js
 import port.browser.HTMLElement;
 

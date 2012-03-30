@@ -10,10 +10,7 @@ package core.html;
 import core.dom.Node;
 import core.NativeElement;
 
- #if flash9
-import port.flash_player.HTMLElement;
-
-#elseif nme
+ #if (flash9 || nme)
 import port.flash_player.HTMLElement;
 
 #elseif js

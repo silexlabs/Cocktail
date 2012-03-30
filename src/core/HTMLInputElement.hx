@@ -10,10 +10,7 @@ package core;
 /**
  * Set the right runtime specific HTMLInputElement at compile-time
  */
-#if flash9
-typedef HTMLInputElement =  port.flash_player.HTMLInputElement;
-
-#elseif nme
+#if (flash9 || nme)
 typedef HTMLInputElement =  port.flash_player.HTMLInputElement;
 
 #elseif js

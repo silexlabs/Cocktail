@@ -10,10 +10,7 @@ package core;
 /**
  * Set the right runtime specific ResourceLoader at compile-time
  */
-#if flash9
-typedef MediaLoader = port.flash_player.MediaLoader;
-
-#elseif nme
+#if (flash9 || nme)
 typedef MediaLoader = port.flash_player.MediaLoader;
 
 #elseif js

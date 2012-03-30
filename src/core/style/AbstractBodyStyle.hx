@@ -19,10 +19,7 @@ import core.renderer.InitialBlockRenderer;
 import core.renderer.LayerRenderer;
 import haxe.Log;
 
-#if flash9
-import port.flash_player.ContainerStyle;
-
-#elseif nme
+#if (flash9 || nme)
 import port.flash_player.ContainerStyle;
 
 #elseif js

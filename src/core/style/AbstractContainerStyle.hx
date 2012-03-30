@@ -37,11 +37,8 @@ import core.geom.GeomData;
 import core.dom.DOMData;
 import haxe.Timer;
 
-#if flash9
+#if (flash9 || nme)
 import port.flash_player.Style;
-
-#elseif nme
-import port.nme.Style;
 
 #elseif js
 import port.browser.Style;

@@ -10,11 +10,8 @@ package core;
 /**
  * Set the right runtime specific Style at compile-time
  */
-#if flash9
+#if (flash9 || nme)
 typedef Style =  port.flash_player.Style;
-
-#elseif nme
-typedef Style =  port.nme.Style;
 
 #elseif js
 typedef Style =  port.browser.Style;

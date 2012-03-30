@@ -13,9 +13,6 @@ package core;
 #if flash9
 typedef Text = port.flash_player.Text;
 
-#elseif nme
-typedef Text = port.flash_player.Text;
-
 #elseif js
 typedef Text =  port.browser.Text;
 

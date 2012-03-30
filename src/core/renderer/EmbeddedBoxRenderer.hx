@@ -65,7 +65,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var embeddedHTMLElement:EmbeddedElement = cast(_style.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
-		#if (flash9 || nme)
+		#if flash9
 		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft ;
 		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop;
 

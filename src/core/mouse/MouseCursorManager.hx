@@ -9,10 +9,7 @@ package core.mouse;
 
 
 //import the right runtime implementations
-#if flash9
-import port.flash_player.MouseCursor;
-
-#elseif nme
+#if (flash9 || nme)
 import port.flash_player.MouseCursor;
 
 #elseif js
