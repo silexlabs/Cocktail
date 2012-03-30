@@ -1343,29 +1343,29 @@ class Style extends AbstractStyle
 		return cssCornerValue;
 	}
 	
-	private function getCSSColor(value:ColorValue):String
+	private function getCSSColor(value:Color):String
 	{
-		var cssColorValue:String;
+		var cssColor:String;
 		
 		switch (value)
 		{
 			case hex(value):
-				cssColorValue = value;
+				cssColor = value;
 				
 			case rgb(red, green, blue):
-				cssColorValue = "rgb(" + red + "," + green + "," + blue + ")";
+				cssColor = "rgb(" + red + "," + green + "," + blue + ")";
 				
 			case rgba(red, green, blue, alpha):
-				cssColorValue = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+				cssColor = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 				
 			case keyword(value):
-				cssColorValue = getColorFromKeyword(value);
+				cssColor = getColorFromKeyword(value);
 				
 			case transparent:
-				cssColorValue = "transparent";
+				cssColor = "transparent";
 		}
 		
-		return cssColorValue;
+		return cssColor;
 	}
 	
 	private function getCSSLength(lengthValue:Length):String
@@ -1562,7 +1562,7 @@ class Style extends AbstractStyle
 		return _verticalAlign = value;
 	}
 	
-	override private function setColor(value:ColorValue):ColorValue
+	override private function setColor(value:Color):Color
 	{
 		this._htmlElement.nativeElement.style.color = getCSSColor(value);
 		super.setColor(value);

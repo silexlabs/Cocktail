@@ -187,8 +187,8 @@ class AbstractStyle
 	private var _fontVariant:FontVariant;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
 	
-	private var _color:ColorValue;
-	public var color(getColor, setColor):ColorValue;
+	private var _color:Color;
+	public var color(getColor, setColor):Color;
 	
 	/**
 	 * text styles
@@ -335,7 +335,7 @@ class AbstractStyle
 		_cssFloat = CSSFloat.none;
 		_clear = Clear.none;
 		
-		_backgroundColor = ColorValue.transparent;
+		_backgroundColor = Color.transparent;
 		_backgroundImage = [BackgroundImage.none];
 		_backgroundRepeat = [{
 			x:BackgroundRepeatValue.repeat,
@@ -454,7 +454,7 @@ class AbstractStyle
 	{
 		return {
 			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
-			color:ColorValue.keyword(ColorKeyword.black)
+			color:Color.keyword(ColorKeyword.black)
 		}
 	}
 	
@@ -1579,7 +1579,7 @@ class AbstractStyle
 		return _lineHeight = value;
 	}
 	
-	private function setColor(value:ColorValue):ColorValue
+	private function setColor(value:Color):Color
 	{
 		invalidateText();
 		return _color = value;
@@ -1807,7 +1807,7 @@ class AbstractStyle
 		return _letterSpacing;
 	}
 	
-	private function getColor():ColorValue
+	private function getColor():Color
 	{
 		return _color;
 	}

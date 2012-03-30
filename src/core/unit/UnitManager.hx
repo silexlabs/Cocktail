@@ -163,7 +163,7 @@ class UnitManager
 	/**
 	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
 	 */
-	public static function getColorDataFromColorValue(value:ColorValue):ColorData
+	public static function getColorDataFromCSSColor(value:CSSColor):ColorData
 	{
 		var colorValue:Int;
 		var alphaValue:Float;
@@ -187,7 +187,7 @@ class UnitManager
 				alphaValue = 1.0;
 				
 			case keyword(value):
-				colorValue = getColorDataFromColorValueKeyword(value).color;
+				colorValue = getColorDataFromColorKeyword(value).color;
 				alphaValue = 1.0;
 			
 			case transparent:
@@ -260,7 +260,7 @@ class UnitManager
 	/**
 	 * Get an integer color value from a keyword color value
 	 */
-	private static function getColorDataFromColorValueKeyword(value:ColorKeyword):ColorData
+	private static function getColorDataFromColorKeyword(value:ColorKeyword):ColorData
 	{
 		var hexColor:String;
 		
@@ -319,7 +319,7 @@ class UnitManager
 				
 		}
 		
-		return getColorDataFromColorValue(ColorValue.hex(hexColor));
+		return getColorDataFromCSSColor(CSSColor.hex(hexColor));
 	}
 	
 	/**
