@@ -1,0 +1,10 @@
+-main ApplicationMain 
+-D nme_install_tool
+-cp ../../src
+-lib nme
+-D desktop
+-cp bin/cpp/windows/haxe
+-cpp bin/cpp/windows/obj
+-cp bin/cpp/haxe
+--remap flash:nme
+-debug
