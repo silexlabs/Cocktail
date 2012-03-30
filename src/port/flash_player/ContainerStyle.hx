@@ -238,7 +238,20 @@ class ContainerStyle extends AbstractContainerStyle
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
 		textFormat.size = _computedStyle.fontSize;
 		
-		textFormat.bold = _computedStyle.fontWeight == FontWeight.bold;
+		var bold:Bool;
+		
+		switch (_computedStyle.fontWeight)
+		{
+			case lighter, FontWeight.normal,
+			css100, css200, css300, css400:
+				bold = false;
+				
+			case FontWeight.bold, bolder, css500, css600,
+			css700, css800, css900:
+				bold = true;
+		}
+		
+		textFormat.bold = bold;
 		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
 		
 		textFormat.letterSpacing = _computedStyle.letterSpacing;
