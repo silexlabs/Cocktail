@@ -7,6 +7,7 @@
 */
 package core.html;
 
+import core.EmbeddedStyle;
 
 #if flash9
 import port.flash_player.HTMLElement;
