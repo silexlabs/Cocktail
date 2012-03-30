@@ -31,6 +31,9 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 
+#elseif nme 
+import flash.text.TextFormat;
+
 #end
 
 /**
@@ -202,6 +205,47 @@ class ContainerStyle extends AbstractContainerStyle
 		}
 		
 		return nativeFontVariant;
+	}
+	
+	
+	#elseif nme
+	
+	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
+	{
+		
+		text = core.dom.Text.applyTextTransform(text, _computedStyle.textTransform);
+		
+		var textField:flash.text.TextField = new flash.text.TextField();
+		textField.text = text;
+		textField.selectable = false;
+		textField.autoSize = TextFieldAutoSize.LEFT;
+		textField.setTextFormat(getTextFormat());
+		
+		var textRenderer:TextRenderer = new TextRenderer(this, textField, textToken);
+
+		//wrap the flash text line in a TextRenderer
+		return textRenderer;
+		
+
+	}	
+	
+	private function getTextFormat():TextFormat
+	{
+		
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		textFormat.size = _computedStyle.fontSize;
+		
+		textFormat.bold = _computedStyle.fontWeight == FontWeight.bold;
+		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		
+		textFormat.color = _computedStyle.color.color;
+		return textFormat;
+		
 	}
 	
 	#end

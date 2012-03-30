@@ -26,9 +26,12 @@ class KeyboardEvent extends UIEvent
 	
 	/**
 	 * char holds the character value of the key pressed.
+	 * 
+	 * TODO : should be named char but prevent cpp
+	 * compilation
 	 */
-	private var _char:Int;
-	public var char(get_char, null):Int;
+	private var _keyChar:Int;
+	public var keyChar(get_keyChar, null):Int;
 	
 	//TODO : should be String
 	
@@ -57,11 +60,11 @@ class KeyboardEvent extends UIEvent
 	public var altKey(get_altKey, null):Bool;
 	
 	
-	public function new(type:String, target:HTMLElement, detail:Float, char:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	public function new(type:String, target:HTMLElement, detail:Float, keyChar:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
 		super(type, target, detail);
 		
-		_char = char;
+		_keyChar = keyChar;
 		_key = key;
 		_ctrlKey = ctrlKey;
 		_shiftKey = shiftKey;
@@ -87,9 +90,9 @@ class KeyboardEvent extends UIEvent
 		return _ctrlKey;
 	}
 	
-	private function get_char():Int 
+	private function get_keyChar():Int 
 	{
-		return _char;
+		return _keyChar;
 	}
 	
 	private function get_key():Int 

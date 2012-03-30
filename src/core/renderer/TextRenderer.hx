@@ -42,7 +42,7 @@ class TextRenderer extends ElementRenderer
 		
 		super(style);
 		
-		#if flash9
+		#if (flash9 || nme)
 		_bounds.width = getOffsetWidth();
 		_bounds.height = getOffsetHeight();
 		#end
@@ -120,11 +120,13 @@ class TextRenderer extends ElementRenderer
 	private function getOffsetWidth():Int
 	{
 		//TODO : shouldn't be here but in a Document class
-		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		//flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		//
+		//var ret:Int = _nativeElement.textWidth;
+		//
+		//return ret;
 		
-		var ret:Int = _nativeElement.textWidth;
-		
-		return ret;
+		return 50;
 	}
 	
 	#end
@@ -135,7 +137,7 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function getOffsetHeight():Int
 	{
-		
+		/**
 		var ascent:Float =  _style.fontMetrics.ascent;
 		var descent:Float = _style.fontMetrics.descent;
 		
@@ -148,6 +150,8 @@ class TextRenderer extends ElementRenderer
 		var leadedDescent:Float = (descent + leading / 2);
 		
 		return Math.round(leadedAscent + leadedDescent);
+		*/
+		return 50;
 	}
 	
 	/////////////////////////////////
