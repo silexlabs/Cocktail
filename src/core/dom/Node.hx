@@ -139,15 +139,98 @@ class Node
 	 */
 	public function appendChild(newChild:Node):Node
 	{
+		removeFromParentIfNecessary(newChild);
+		
+		newChild.parentNode = this;
+		_childNodes.push(newChild);
+
+		return newChild;
+	}
+	
+	/**
+	 * Inserts the node newChild before the existing child node refChild. 
+	 * If refChild is null, insert newChild at the end of the list of children.
+	 * If newChild is a DocumentFragment object, all of its children are
+	 * inserted, in the same order, before refChild. 
+	 * If the newChild is already in the tree, it is first removed.	
+	 * 
+	 * @param	newChild The node to insert.
+	 * @param	refChild The reference node, i.e., the node before 
+	 * which the new node must be inserted.
+	 * @return	The node being inserted
+	 */
+	public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+		if (refChild == null)
+		{
+			appendChild(newChild);
+		}
+		else
+		{
+			removeFromParentIfNecessary(newChild);
+			
+			var newChildNodes:Array<Node> = new Array<Node>();
+			
+			for (i in 0..._childNodes.length)
+			{
+				if (_childNodes[i] == refChild)
+				{
+					newChildNodes.push(newChild);
+				}
+				newChildNodes.push(_childNodes[i]);
+			}
+			
+			_childNodes = newChildNodes;
+		}
+		
+		return newChild;
+	}
+	
+	/**
+	 * Replaces the child node oldChild with newChild in the list of children,
+	 * and returns the oldChild node.
+	 * If newChild is a DocumentFragment object, oldChild is replaced by all
+	 * of the DocumentFragment children, which are inserted in the same order.
+	 * If the newChild is already in the tree, it is first removed.
+	 * 
+	 * @param	newChild The new node to put in the child list.
+	 * @param	oldChild The node being replaced in the list.
+	 * @return	The node replaced.
+	 */
+	public function replaceChild(newChild:Node, oldChild:Node):Node
+	{
+		var newChildNodes:Array<Node> = new Array<Node>();
+		
+		for (i in 0..._childNodes.length)
+		{
+			if (_childNodes[i] == oldChild)
+			{
+				newChildNodes.push(newChild);
+			}
+			else
+			{
+				newChildNodes.push(_childNodes[i]);
+			}
+		}
+		
+		return oldChild;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When a node is about to be added to another, 
+	 * first detach it if it was already attached to the tree
+	 */
+	private function removeFromParentIfNecessary(newChild:Node):Void
+	{
 		if (newChild.parentNode != null)
 		{
 			var parentNode:Node = newChild.parentNode;
 			parentNode.removeChild(newChild);
 		}
-		newChild.parentNode = this;
-		_childNodes.push(newChild);
-
-		return newChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
