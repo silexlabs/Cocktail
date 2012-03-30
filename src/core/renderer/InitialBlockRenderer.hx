@@ -6,12 +6,11 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.renderer;
-import cocktail.Lib;
+
 import core.background.InitialBlockBackgroundManager;
 import core.NativeElement;
 import core.geom.GeomData;
 import core.Style;
-import core.Window;
 import haxe.Log;
 
 /**
@@ -31,8 +30,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		super(style);
 		
 		
-		var width:Float = Lib.window.innerWidth;
-		var height:Float = Lib.window.innerHeight;
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
 		
 		_bounds.width = width;
 		_bounds.height = height;

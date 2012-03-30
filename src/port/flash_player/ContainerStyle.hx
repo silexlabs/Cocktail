@@ -20,6 +20,8 @@ import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
+#if flash9
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -29,6 +31,7 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 
+#end
 
 /**
  * This is the Flash AS3 implementation of the ContainerStyle.
@@ -50,6 +53,8 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		super(htmlElement);
 	}
+	
+	#if flash9
 	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
@@ -198,5 +203,7 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
+	
+	#end
 
 }

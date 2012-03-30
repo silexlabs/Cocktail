@@ -10,6 +10,9 @@ package core.html;
 import core.dom.Node;
 import core.NativeElement;
 
+import core.EmbeddedStyle;
+
+
  #if (flash9 || nme)
 import port.flash_player.HTMLElement;
 
