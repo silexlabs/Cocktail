@@ -141,7 +141,7 @@ class FontAndTextStylesComputer
 			case sub:
 				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
 				
-			case superStyle:
+			case cssSuper:
 				verticalAlign = containingHTMLElementFontMetricsData.superscriptOffset;
 				
 			case textTop:

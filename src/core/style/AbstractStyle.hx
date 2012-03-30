@@ -540,6 +540,22 @@ class AbstractStyle
 				_marginTop = _marginBottom = Margin.length(em(1.12));
 				_marginLeft = _marginRight = Margin.length(px(40));
 				
+			case "strong" : 
+				_fontWeight = FontWeight.bolder;
+				
+			case "big" : 
+				_fontSize = FontSize.length(em(1.17));
+				
+			case "small" :
+				_fontSize = FontSize.length(em(0.83));
+				
+			case "sub" : 
+				_fontSize = FontSize.length(em(0.83));
+				_verticalAlign = VerticalAlign.sub;
+				
+			case "sup" :
+				_fontSize = FontSize.length(em(0.83));
+				_verticalAlign = VerticalAlign.cssSuper;
 		}
 	}
 	
