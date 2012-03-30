@@ -10,7 +10,10 @@ package core;
 /**
  * Set the right runtime specific HTMLElement at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9)
+typedef HTMLElement =  port.flash_player.HTMLElement;
+
+#elseif nme
 typedef HTMLElement =  port.flash_player.HTMLElement;
 
 #elseif js

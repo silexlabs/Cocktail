@@ -8,7 +8,7 @@
 package core.renderer;
 
 import core.html.EmbeddedElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.style.StyleData;
 import core.Style;
 import haxe.Log;

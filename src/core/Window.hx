@@ -10,7 +10,10 @@ package core;
 /**
  * Set the right runtime specific Window at compile-time
  */
-#if (flash9 || cpp || nme)
+#if flash9
+typedef Window =  port.flash_player.Window;
+
+#elseif nme
 typedef Window =  port.flash_player.Window;
 
 #elseif js

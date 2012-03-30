@@ -10,7 +10,10 @@ package core;
 /**
  * Set the right runtime specific Text at compile-time
  */
-#if (flash9 || cpp || nme)
+#if flash9
+typedef Text = port.flash_player.Text;
+
+#elseif nme
 typedef Text = port.flash_player.Text;
 
 #elseif js

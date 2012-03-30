@@ -10,7 +10,7 @@ package cocktail.nativeInstance;
 /**
  * Set the right runtime specific NativeInstance at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 typedef NativeInstance =  Dynamic;
 
 #elseif js

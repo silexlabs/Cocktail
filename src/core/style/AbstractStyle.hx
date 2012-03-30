@@ -8,7 +8,7 @@
 package core.style;
 
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.background.BackgroundManager;
 import core.HTMLElement;
 import core.style.computer.BackgroundStylesComputer;

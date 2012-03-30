@@ -8,7 +8,7 @@
 package core.renderer;
 
 import core.dom.Node;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.drawing.DrawingManager;
 import core.geom.GeomData;
 import core.Style;
@@ -32,9 +32,6 @@ import core.Style;
  * or use the one of its parent. For instance, a positioned
  * ElementRenderer (absolute, fixed or relative) always
  * create a new LayerRenderer
- * 
- * TODO : should elementRenderer inherit Node to have appendChild,
- * removeChild... ?
  * 
  * @author Yannick DOMINGUEZ
  */

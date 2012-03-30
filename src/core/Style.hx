@@ -10,7 +10,7 @@ package core;
 /**
  * Set the right runtime specific Style at compile-time
  */
-#if (flash9 || cpp )
+#if flash9
 typedef Style =  port.flash_player.Style;
 
 #elseif nme

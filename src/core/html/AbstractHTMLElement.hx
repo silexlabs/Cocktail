@@ -11,7 +11,7 @@ import core.dom.Element;
 import core.dom.Node;
 import core.event.IEventTarget;
 import core.HTMLElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
 import core.event.MouseEvent;
@@ -203,8 +203,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	/**
 	 * The distance from this element's left border to its 
 	 * offsetParent's left border.
-	 * 
-	 * TODO : implement border
 	 */
 	public var offsetLeft(get_offsetLeft, never):Int;
 	

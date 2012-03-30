@@ -8,7 +8,7 @@
 package core.drawing;
 
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.dom.DOMData;
 import core.geom.GeomData;
 

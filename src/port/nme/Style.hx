@@ -9,7 +9,7 @@ package port.nme;
 
 import core.geom.Matrix;
 import core.geom.GeomData;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.HTMLElement;
 import core.style.AbstractStyle;
 import core.style.StyleData;
