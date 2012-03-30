@@ -229,7 +229,7 @@ class BackgroundDrawingManager extends DrawingManager
 					ratio = value;
 			}
 			
-			var color:ColorData = UnitManager.getColorDataFromColorValue(value[i].color);
+			var color:ColorData = UnitManager.getColorDataFromCSSColor(value[i].color);
 			gradientStopsData.push( { colorStop:color, ratio:ratio } );
 		}
 		

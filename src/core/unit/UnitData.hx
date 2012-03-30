@@ -115,10 +115,8 @@ enum FontSizeRelativeSize {
 /**
  * Lists the different color format supported.
  * Each value describes one color
- * 
- * TODO : rename ColorValue and ColorData
  */
-enum ColorValue {
+enum CSSColor {
 	
 	/**
 	 * each value (red, green and blue)
@@ -196,7 +194,7 @@ enum ImageValue {
  */
 typedef ImageDeclarationData = {
 	var urls:Array<URLData>;
-	var fallbackColor:ColorValue;
+	var fallbackColor:CSSColor;
 }
 
 /**
@@ -222,7 +220,7 @@ typedef LinearGradientData = {
  * in the gradient
  */
 typedef GradientColorStopData = {
-	var color:ColorValue;
+	var color:CSSColor;
 	var stop:GradientStopValue;
 }
 

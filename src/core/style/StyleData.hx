@@ -129,6 +129,12 @@ import core.renderer.TextRenderer;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * This property describes the foreground color of
+	 * an element's text content.
+	 */
+	typedef Color = CSSColor;
+	
+	/**
 	 * Controls how white space inside
 	 * an htmlElement is handled
 	 */
@@ -849,7 +855,7 @@ import core.renderer.TextRenderer;
 	 * Sets the background color of an htmlElement. 
 	 * The color is drawn behind any background images.
 	 */
-	typedef BackgroundColor =  ColorValue;
+	typedef BackgroundColor =  CSSColor;
 	
 	/**
 	 * Set a background image of an htmlElement. An htmlElement can
@@ -1328,7 +1334,7 @@ import core.renderer.TextRenderer;
 	 */
 	typedef DefaultStylesData = {
 		var fontFamily:Array<FontFamily>;
-		var color:ColorValue;
+		var color:CSSColor;
 	}
 	
 	/**

@@ -196,7 +196,7 @@ class FontAndTextStylesComputer
 	 */
 	private static function getComputedColor(style:AbstractStyle):ColorData
 	{
-		return UnitManager.getColorDataFromColorValue(style.color);
+		return UnitManager.getColorDataFromCSSColor(style.color);
 	}
 	
 	/**
