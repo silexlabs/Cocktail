@@ -92,6 +92,18 @@ class Node
 	public var hasChildNodes(get_hasChildNodes, never):Bool;
 	
 	/**
+	 * A NamedNodeMap containing the attributes of this node 
+	 * (if it is an Element) or null otherwise.
+	 */
+	private var _attributes:NamedNodeMap;
+	public var attributes(get_attributes, never):NamedNodeMap;
+	
+	/**
+	 * Returns whether this node (if it is an element) has any attributes. 
+	 */
+	public var hasAttributes(get_hasAttributes, never):Bool;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -367,5 +379,15 @@ class Node
 	private function get_nodeName():String
 	{
 		return null;
+	}
+	
+	private function get_attributes():NamedNodeMap 
+	{
+		return null;
+	}
+	
+	private function get_hasAttributes():Bool
+	{
+		return false;
 	}
 }

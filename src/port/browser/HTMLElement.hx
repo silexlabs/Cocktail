@@ -56,7 +56,7 @@ class HTMLElement extends AbstractHTMLElement
 				var childTextElement:core.dom.Text = cast(oldChild);
 				_nativeElement.removeChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE:
+			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				//TODO : DOM exception ?
 				
 		}
@@ -82,7 +82,7 @@ class HTMLElement extends AbstractHTMLElement
 				var childTextElement:core.dom.Text = cast(newChild);
 				_nativeElement.appendChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE:
+			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				//TODO : DOM exception ?
 				
 		}
