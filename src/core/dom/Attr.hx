@@ -1,5 +1,7 @@
 package core.dom;
 
+import core.dom.DOMData;
+
 /**
  * he Attr interface represents an attribute in an Element object
  * 
@@ -45,6 +47,7 @@ class Attr extends Node
 	public function new(name:String) 
 	{
 		_name = name;
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

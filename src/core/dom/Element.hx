@@ -64,13 +64,135 @@ class Element extends Node
 	
 	/**
 	 * class constructor. Set the name of the tag,
-	 * it can't be changed afterwards.
+	 * it can't be changed afterwards. Instantiate
+	 * the attribute node map here because it is the
+	 * only type of node which can have any
 	 */
 	public function new(tagName:String) 
 	{
 		_tagName = tagName;
+		_attributes = new NamedNodeMap();
 		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Retrieves an attribute value by name.
+	 * 
+	 * @param	name The name of the attribute to retrieve.
+	 * @return The Attr value as a string, or the empty string
+	 * if that attribute does not have a specified or default value.
+	 */
+	public function getAttribute(name:String):String
+	{
+		var attribute:Attr = getAttributeNode(name);
+		if (attribute != null)
+		{
+			return attribute.value;
+		}
+		else
+		{
+			//TODO : should return null instead ?
+			return "";
+		}
+	}
+	
+	/**
+	 * Adds a new attribute. If an attribute with that name
+	 * is already present in the element,
+	 * its value is changed to be that of the value parameter.
+	 * This value is a simple string; it is not parsed as it
+	 * is being set. So any markup (such as syntax to be
+	 * recognized as an entity reference) is treated as
+	 * literal text, and needs to be appropriately escaped
+	 * by the implementation when it is written out.
+	 * In order to assign an attribute value that contains
+	 * entity references, the user must create an Attr
+	 * node plus any Text and EntityReference nodes,
+	 * build the appropriate subtree,
+	 * and use setAttributeNode to assign it as the value of an attribute.
+	 * 
+	 * @param	name The name of the attribute to create or alter.
+	 * @param	value Value to set in string form.
+	 */
+	public function setAttribute(name:String, value:String):Void
+	{
+		var attribute:Attr = cast(_attributes.getNamedItem(name));
+		if (attribute == null)
+		{
+			attribute = new Attr(name);
+			_attributes.setNamedItem(attribute);
+		}
+		
+		attribute.value = value;
+	}
+	
+	/**
+	 * Retrieves an attribute node by name.
+	 * 
+	 * @param	name The name (nodeName) of the
+	 * attribute to retrieve.
+	 * @return The Attr node with the specified name 
+	 * (nodeName) or null if there is no such attribute.
+	 */
+	public function getAttributeNode(name:String):Attr
+	{
+		var attribute:Node = _attributes.getNamedItem(name);
+		
+		if (attribute != null)
+		{
+			return cast(attribute);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Adds a new attribute node. If an attribute with that name
+	 * (nodeName) is already present in the element, 
+	 * it is replaced by the new one. 
+	 * Replacing an attribute node by itself has no effect.
+	 * 
+	 * @param newAttr The Attr node to add to the attribute list.
+	 * @return If the newAttr attribute replaces an existing attribute,
+	 * the replaced Attr node is returned, otherwise null is returned.
+	 */
+	public function setAttributeNode(newAttr:Attr):Attr
+	{
+		return cast(_attributes.setNamedItem(newAttr));
+	}
+	
+	/**
+	 * Removes an attribute by name. If a default value for the removed
+	 * attribute is defined in the DTD, a new attribute
+	 * immediately appears with the default value as well 
+	 * as the corresponding namespace URI, local name, and prefix 
+	 * when applicable. 
+	 * If no attribute with this name is found, this method has no effect.
+	 * 
+	 * @param	name The name of the attribute to remove.
+	 */
+	public function removeAttribute(name:String):Void
+	{
+		_attributes.removeNamedItem(name);
+	}
+	
+	/**
+	 * Returns true when an attribute with a given name 
+	 * is specified on this element or has a default value, false otherwise.
+	 * 
+	 * @param	name The name of the attribute to look for.
+	 * @return true if an attribute with the given name 
+	 * is specified on this element or has a default value, false otherwise.
+	 */
+	public function hasAttribute(name:String):Bool
+	{
+		return _attributes.getNamedItem(name) != null;
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
@@ -84,6 +206,16 @@ class Element extends Node
 	override private function get_nodeType():NodeType
 	{
 		return NodeType.ELEMENT_NODE;
+	}
+	
+	override private function get_attributes():NamedNodeMap 
+	{
+		return _attributes;
+	}
+	
+	override private function get_hasAttributes():Bool
+	{
+		return _attributes.length > 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -202,8 +334,6 @@ class Element extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	
 	private function get_tagName():String 
 	{

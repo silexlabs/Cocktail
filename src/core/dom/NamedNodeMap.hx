@@ -99,6 +99,43 @@ class NamedNodeMap
 	}
 	
 	/**
+	 * Removes a node specified by name. When this map contains
+	 * the attributes attached to an element,
+	 * if the removed attribute is known to have 
+	 * a default value, an attribute immediately appears
+	 * containing the default value as well as the
+	 * corresponding namespace URI, local name,
+	 * and prefix when applicable.
+	 * 
+	 * @param	name The nodeName of the node to remove.
+	 * @return The node removed from this map if a node
+	 * with such a name exists.
+	 */
+	public function removeNamedItem(name:String):Node
+	{
+		var removedNode:Node = getNamedItem(name);
+		
+		if (removedNode == null)
+		{
+			return null;
+		}
+		
+		var newNodes:Array<Node> = new Array<Node>();
+		
+		for (i in 0...length)
+		{
+			if (_nodes[i].isSameNode(removedNode) == false)
+			{
+				newNodes.push(_nodes[i]);
+			}
+		}
+		
+		_nodes = newNodes;
+		
+		return removedNode;
+	}
+	
+	/**
 	 * Returns the indexth item in the map.
 	 * If index is greater than or equal to the number of
 	 * nodes in this map, this returns null.
