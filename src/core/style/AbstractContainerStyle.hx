@@ -815,7 +815,7 @@ class AbstractContainerStyle extends Style
 			case NodeType.ELEMENT_NODE:
 				ret = true;
 			
-			case NodeType.TEXT_NODE, NodeType.DOCUMENT_NODE:
+			case NodeType.TEXT_NODE, NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				ret = false;
 		}
 		
