@@ -790,8 +790,6 @@ class AbstractStyle
 			//a relative HTMLElement is both inserted in the flow
 			//and positioned
 			//
-			//TODO : relative element are not placed correctly when a margin is applied to the formatting
-			//context root
 			if (isRelativePositioned() == true)
 			{
 				formattingContext.insertElement(_elementRenderer);

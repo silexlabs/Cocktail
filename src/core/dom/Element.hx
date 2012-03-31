@@ -33,6 +33,36 @@ class Element extends Node
 	public var tagName(get_tagName, never):String;
 	
 	/**
+	 * returns a reference to the first child node of that element which is of nodeType Element.
+	 * returns, null if this Element has no child nodes or no Element child nodes
+	 */
+	public var firtsElementChild(get_firstElementChild, never):Element;
+	
+	/**
+	 * returns a reference to the first last child node of that element which is of nodeType Element.
+	 * returns, null if this Element has no child nodes or no Element child nodes
+	 */
+	public var lastElementChild(get_lastElementChild, never):Element;
+	
+	/**
+	 * returns a reference to the first previous sibling element which is of nodeType Element.
+	 * returns, null if this Element has no previous siblings or none of them are Element
+	 */
+	public var previousElementSibling(get_previousElementSibling, never):Element;
+	
+	/**
+	 * returns a reference to the first next sibling element which is of nodeType Element.
+	 * returns, null if this Element has no next siblings or none of them are Element
+	 */
+	public var nextElementSibling(get_nextElementSibling, never):Element;
+	
+	/**
+	 * Returns the number of children of this Element which are 
+	 * Element
+	 */
+	public var childElementCount(get_childElementCount, never):Int;
+	
+	/**
 	 * class constructor. Set the name of the tag,
 	 * it can't be changed afterwards.
 	 */
@@ -57,8 +87,123 @@ class Element extends Node
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// ELEMENT TRAVERSAL GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_firstElementChild():Element
+	{
+		if (hasChildNodes == false)
+		{
+			return null;
+		}
+		
+		if (firstChild.nodeType == NodeType.ELEMENT_NODE)
+		{
+			return cast(firstChild);
+		}
+		else
+		{
+			for (i in 0..._childNodes.length)
+			{
+				if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+				{
+					return cast(_childNodes[i]);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private function get_lastElementChild():Element
+	{
+		if (hasChildNodes == false)
+		{
+			return null;
+		}
+		
+		if (lastChild.nodeType == NodeType.ELEMENT_NODE)
+		{
+			return cast(lastChild);
+		}
+		else
+		{
+			for (i in _childNodes.length...0)
+			{
+				if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+				{
+					return cast(_childNodes[i]);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private function get_nextElementSibling():Element
+	{
+		if (nextSibling == null)
+		{
+			return null;
+		}
+		
+		var nextElementSibling:Node = nextSibling;
+		
+		while (nextElementSibling.nodeType != NodeType.ELEMENT_NODE)
+		{
+			nextElementSibling = nextElementSibling.nextSibling;
+			
+			if (nextElementSibling == null)
+			{
+				return null;
+			}
+		}
+		
+		return cast(nextElementSibling);
+	}
+	
+	private function get_previousElementSibling():Element
+	{
+		if (previousSibling == null)
+		{
+			return null;
+		}
+		
+		var previousElementSibling:Node = previousSibling;
+		
+		while (previousElementSibling.nodeType != NodeType.ELEMENT_NODE)
+		{
+			previousElementSibling = previousElementSibling.previousSibling;
+			
+			if (previousElementSibling == null)
+			{
+				return null;
+			}
+		}
+		
+		return cast(previousElementSibling);
+	}
+	
+	private function get_childElementCount():Int
+	{
+		var childElementCount:Int = 0;
+		
+		for (i in 0..._childNodes.length)
+		{
+			if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+			{
+				childElementCount++;
+			}
+		}
+		
+		return childElementCount;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	
 	private function get_tagName():String 
 	{

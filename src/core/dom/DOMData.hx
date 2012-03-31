@@ -18,10 +18,12 @@ import core.unit.UnitData;
  * @author Yannick DOMINGUEZ
  */
 
+//TODO : doc
 enum NodeType {
 	ELEMENT_NODE;
 	TEXT_NODE;
 	DOCUMENT_NODE;
+	ATTRIBUTE_NODE;
 }
 
 /**

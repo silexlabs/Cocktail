@@ -90,7 +90,9 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	}
 	
 	/**
-	 * TODO : doc
+	 * Same as mouse down, the callbakc is always set
+	 * to add the default behaviour of setting the mouse
+	 * cursor on mouse over
 	 */
 	override private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
@@ -101,7 +103,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	}
 	
 	/**
-	 * TODO : doc
+	 * Same as mouse out
 	 */
 	override private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
@@ -133,6 +135,9 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		}
 	}
 
+	/**
+	 * Display a pointer cursor when hovering an anchor
+	 */
 	override private function onMouseOverCallback(mouseEvent:MouseEvent):Void
 	{
 		if (_onMouseOver != null)
@@ -143,6 +148,9 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		displayPointerCursor();
 	}
 	
+	/**
+	 * Remove the pointer cursor when hovering out of an anchor
+	 */
 	override private function onMouseOutCallback(mouseEvent:MouseEvent):Void
 	{
 		if (_onMouseOut != null)
@@ -168,11 +176,17 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		//abstract
 	}
 	
+	/**
+	 * set the pointer cursor
+	 */
 	private function displayPointerCursor():Void
 	{
 		MouseCursorManager.setMouseCursor(MouseCursorValue.native(NativeOSMouseCursorValue.pointer));
 	}
 	
+	/**
+	 * switch back to the default cursor
+	 */
 	private function hidePointerCursor():Void
 	{
 		MouseCursorManager.setMouseCursor(MouseCursorValue.cssAuto);

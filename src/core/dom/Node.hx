@@ -216,6 +216,24 @@ class Node
 		return oldChild;
 	}
 	
+	/**
+	 * Returns whether this node is the same node as the given one.
+	 * This method provides a way to determine whether two Node
+	 * references returned by the implementation reference
+	 * the same object. When two Node references are references
+	 * to the same object, even if through a proxy, the references 
+	 * may be used completely interchangeably, such that all attributes
+	 * have the same values and calling the same DOM method on either
+	 * reference always has exactly the same effect.
+	 * 
+	 * @param	other The node to test against.
+	 * @return Returns true if the nodes are the same, false otherwise.
+	 */
+	public function isSameNode(other:Node):Bool
+	{
+		return other == this;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +294,7 @@ class Node
 			//the next one
 			for (i in 0..._parentNode.childNodes.length)
 			{
-				if (_parentNode.childNodes[i] == this)
+				if (isSameNode(_parentNode.childNodes[i]) == true)
 				{
 					return _parentNode.childNodes[i + 1];
 				}
@@ -301,7 +319,7 @@ class Node
 		{
 			for (i in 0..._parentNode.childNodes.length)
 			{
-				if (_parentNode.childNodes[i] == this)
+				if (isSameNode(_parentNode.childNodes[i]) == true)
 				{
 					return _parentNode.childNodes[i - 1];
 				}
