@@ -15,6 +15,7 @@ import core.NativeElement;
 import core.event.Event;
 import core.event.KeyboardEvent;
 import core.event.MouseEvent;
+import haxe.Log;
 //import cocktailCore.focus.FocusManager;
 import core.Keyboard;
 import core.Mouse;
@@ -731,12 +732,18 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	private function get_offsetWidth():Int
 	{
+		//need to perform an immediate layout to be sure
+		//that the computed styles are up to date
+		//_style.invalidate(true);
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
+		//need to perform an immediate layout to be sure
+		//that the computed styles are up to date
+		//_style.invalidate(true);
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -784,11 +791,18 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	private function get_clientWidth():Int
 	{
+		//need to perform an immediate layout to be sure
+		//that the computed styles are up to date
+		_style.invalidate(true);
+		Log.trace("boum");
 		return _style.computedStyle.width;
 	}
 	
 	private function get_clientHeight():Int
 	{
+		//need to perform an immediate layout to be sure
+		//that the computed styles are up to date
+		_style.invalidate(true);
 		return _style.computedStyle.height;
 	}
 	

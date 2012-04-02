@@ -291,7 +291,7 @@ class AbstractStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this._htmlElement = htmlElement;
-		this._isDirty = true;
+		this._isDirty = false;
 		
 		initDefaultStyleValues();
 	}
@@ -825,19 +825,19 @@ class AbstractStyle
 	 * changed.
 	 * 
 	 * An invalidated HTMLElement will in turn invalidate its
-	 * parent and so on until the root HTMLElement (most likely
-	 * a BodyHTMLElement) is invalidated.
-	 * The root HTMLElement will then layout itself, laying out
+	 * parent and so on until the root HTMLBodyElement is invalidated.
+	 * The root HTMLBodyElement will then layout itself, laying out
 	 * at the same time all its invalidated children.
 	 * 
-	 * In some cases, only a partial re-layout of the DOM tree
-	 * is required, thus increasing performance
+	 * A layout can be immediate or scheduled asynchronously, which
+	 * increase preformance when many style value are set in a 
+	 * row as the layout only happen once
 	 */
-	public function invalidate():Void
+	public function invalidate(immediate:Bool = false):Void
 	{
 		//only invalidate the parent if it isn't
-		//done already
-		if (this._isDirty == false)
+		//done already or if an immediate layout is required
+		if (this._isDirty == false || immediate == true)
 		{
 			//set the dirty flag to prevent multiple
 			//layout of the HTMLElement in a row
@@ -850,31 +850,8 @@ class AbstractStyle
 			//a layout
 			if (this._htmlElement.parentNode != null)
 			{
-				//dirties its parent if it must
-				if (isParentDirty() == true)
-				{
-					var parent:HTMLElement = cast(_htmlElement.parentNode);
-					parent.style.invalidate();	
-				}
-				//else schedule a layout for this HTMLElement
-				else
-				{
-					var parent:HTMLElement = cast(_htmlElement.parentNode);
-					//retrieve its parent and the viewport dimension
-					var parentStyle:ContainerStyle = cast(parent.style);
-					var containingHTMLElementData:ContainingHTMLElementData = parentStyle.getContainerHTMLElementData();
-					
-					var viewPortData:ContainingHTMLElementData = getWindowData();
-					
-					//get the data of the first positioned ancestor of this styled HTMLElement
-					var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
-						children: new Array<PositionedHTMLElementData>(),
-						data:getFirstPositionedAncestorData()
-					}
-					
-					//schedule an asynchronous layout
-					scheduleLayout(containingHTMLElementData, lastPositionedHTMLElementData, viewPortData);
-				}
+				var parent:HTMLElement = cast(_htmlElement.parentNode);
+				parent.style.invalidate(immediate);	
 			}
 		}
 	}
@@ -893,50 +870,7 @@ class AbstractStyle
 		invalidate();
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	// Those method allow for
-	// the re-layout of only a part of the DOM tree
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When a position offset style changes (top, left, 
-	 * right, bottom), it only requires a layout if the
-	 * HTMLElement is positioned (not static).
-	 */
-	private function invalidatePositionOffset():Void
-	{
-		if (isPositioned() == false)
-		{
-			invalidate();
-		}
-	}
-	
-	/**
-	 * When the margin style changes, if the HTMLElement
-	 * is absolutely positioned, there is no need for a layout
-	 */
-	private function invalidateMargin():Void
-	{
-		if (this.position == relative || this.position == cssStatic)
-		{
-			invalidate();
-		}
-	}
-	
-	/**
-	 * Determine wheter the parent of the HTMLElement needs
-	 * to be dirtied too. 
-	 * 
-	 * TODO : implement this method
-	 */
-	private function isParentDirty():Bool
-	{
-		var ret:Bool = true;
-		
-		return ret;
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC COMPUTING METHODS
 	// compute styles definition into usable values
@@ -1399,25 +1333,25 @@ class AbstractStyle
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
-		invalidateMargin();
+		invalidate();
 		return _marginLeft = value;
 	}
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
-		invalidateMargin();
+		invalidate();
 		return _marginRight = value;
 	}
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
-		invalidateMargin();
+		invalidate();
 		return _marginTop = value;
 	}
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
-		invalidateMargin();
+		invalidate();
 		return _marginBottom = value;
 	}
 	
@@ -1489,25 +1423,25 @@ class AbstractStyle
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
-		invalidatePositionOffset();
+		invalidate();
 		return _top = value;
 	}
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
-		invalidatePositionOffset();
+		invalidate();
 		return _left = value;
 	}
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
-		invalidatePositionOffset();
+		invalidate();
 		return _bottom = value;
 	}
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
-		invalidatePositionOffset();
+		invalidate();
 		return _right = value;
 	}
 	

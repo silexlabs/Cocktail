@@ -66,12 +66,14 @@ class AbstractBodyStyle extends ContainerStyle
 	
 	/**
 	 * The BodyHTMLElement doesn't have a parent, so when invalidated,
-	 * it always schedule a layout using the viewport dimensions as
+	 * it always schedule a layout using the window dimensions as
 	 * its containing HTMLElement dimensions
 	 */
-	override public function invalidate():Void
+	override public function invalidate(immediate:Bool = false):Void
 	{
-		if (this._isDirty == false)
+		//don't call if the body has already scheduled a layout, unless
+		//an immediate layout is required
+		if (this._isDirty == false || immediate == true)
 		{
 			this._isDirty = true;
 			var windowData:ContainingHTMLElementData = getWindowData();
@@ -82,7 +84,15 @@ class AbstractBodyStyle extends ContainerStyle
 				data:windowData
 			}
 			
-			scheduleLayout(windowData, lastPositionedHTMLElementData, windowData);
+			//either schedule an asynchronous layout, or layout immediately
+			if (immediate == false)
+			{
+				scheduleLayout(windowData, lastPositionedHTMLElementData, windowData);
+			}
+			else
+			{
+				layout(windowData, lastPositionedHTMLElementData, windowData, null);
+			}
 		}
 	}
 	

@@ -69,7 +69,8 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * to call src setter ? or use Reflection ?
 	 * should not be _src attribute anymore
 	 * Or, add an _srcAttr class attribute and attach it 
-	 * to the attributes, then get/set src, set its value
+	 * to the attributes, then get/set src, set its value. Or 
+	 * _src is of type Attr ?
 	 */
 	private var _src:String;
 	public var src(get_src, set_src):String;
