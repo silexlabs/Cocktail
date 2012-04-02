@@ -153,6 +153,16 @@ class DOMTests
 		
 		Assert.equals(el.getAttributeNode("test"), attr);
 		
+		
+		var childDivs = el.getElementsByTagName("div");
+		
+		Assert.equals(childDivs[0], childEl);
+		Assert.equals(childDivs[1], siblingEl);
+		
+		var childEls = el.getElementsByTagName("*");
+		
+		Assert.equals(childEls[0], childEl);
+		Assert.equals(childEls[1], siblingEl);
 	}
 	
 	function testText()
