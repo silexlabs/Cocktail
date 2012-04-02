@@ -64,6 +64,10 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	
 	/**
 	 * set/get the URL of the loaded picture.
+	 * 
+	 * TODO : get/set from attributes map ? + override setAttribute
+	 * to call src setter ? or use Reflection ?
+	 * should not be _src attribute anymore
 	 */
 	private var _src:String;
 	public var src(get_src, set_src):String;

@@ -225,6 +225,8 @@ class Node
 			}
 		}
 		
+		_childNodes = newChildNodes;
+		
 		return oldChild;
 	}
 	
