@@ -9,7 +9,7 @@ package port.browser;
 
 import js.Lib;
 import core.nativeElement.AbstractNativeElementPathManager;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 /**
  * This is the JavaScript implementation for the path manager. 

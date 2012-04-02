@@ -7,7 +7,7 @@
 */
 package core.renderer;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.Style;
 import core.dom.DOMData;
 import haxe.Log;
@@ -125,6 +125,8 @@ class TextRenderer extends ElementRenderer
 		var ret:Int = _nativeElement.textWidth;
 		
 		return ret;
+		
+		
 	}
 	
 	#end
@@ -148,6 +150,8 @@ class TextRenderer extends ElementRenderer
 		var leadedDescent:Float = (descent + leading / 2);
 		
 		return Math.round(leadedAscent + leadedDescent);
+		
+		return 50;
 	}
 	
 	/////////////////////////////////

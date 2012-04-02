@@ -20,6 +20,8 @@ import flash.text.TextFieldAutoSize;
 
 import haxe.Log;
 
+#if flash9
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -29,6 +31,10 @@ import flash.text.engine.TextElement;
 import flash.text.engine.TextLine;
 import flash.text.engine.TypographicCase;
 
+#elseif nme 
+import flash.text.TextFormat;
+
+#end
 
 /**
  * This is the Flash AS3 implementation of the ContainerStyle.
@@ -50,6 +56,8 @@ class ContainerStyle extends AbstractContainerStyle
 	{
 		super(htmlElement);
 	}
+	
+	#if flash9
 	
 	/////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
@@ -198,5 +206,61 @@ class ContainerStyle extends AbstractContainerStyle
 		
 		return nativeFontVariant;
 	}
+	
+	
+	#elseif nme
+	
+	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
+	{
+		
+		text = core.dom.Text.applyTextTransform(text, _computedStyle.textTransform);
+		
+		var textField:flash.text.TextField = new flash.text.TextField();
+		textField.text = text;
+		textField.selectable = false;
+		textField.autoSize = TextFieldAutoSize.LEFT;
+		textField.setTextFormat(getTextFormat());
+		
+		var textRenderer:TextRenderer = new TextRenderer(this, textField, textToken);
+
+		//wrap the flash text line in a TextRenderer
+		return textRenderer;
+		
+
+	}	
+	
+	private function getTextFormat():TextFormat
+	{
+		
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		textFormat.size = _computedStyle.fontSize;
+		
+		var bold:Bool;
+		
+		switch (_computedStyle.fontWeight)
+		{
+			case lighter, FontWeight.normal,
+			css100, css200, css300, css400:
+				bold = false;
+				
+			case FontWeight.bold, bolder, css500, css600,
+			css700, css800, css900:
+				bold = true;
+		}
+		
+		textFormat.bold = bold;
+		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
+		
+		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		
+		textFormat.color = _computedStyle.color.color;
+		return textFormat;
+		
+	}
+	
+	#end
 
 }

@@ -7,7 +7,7 @@
 */
 package core.style;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.HTMLElement;
 import core.dom.Node;
 import core.style.computer.boxComputers.BlockBoxStylesComputer;
@@ -37,8 +37,9 @@ import core.geom.GeomData;
 import core.dom.DOMData;
 import haxe.Timer;
 
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 import port.flash_player.Style;
+
 #elseif js
 import port.browser.Style;
 #end
@@ -87,7 +88,7 @@ class AbstractContainerStyle extends Style
 		}
 		
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
-		parentElementRenderer.addChild(elementRenderer);
+		parentElementRenderer.appendChild(elementRenderer);
 		
 		return elementRenderer;
 	}
@@ -246,7 +247,7 @@ class AbstractContainerStyle extends Style
 				//ElementRenderer
 				for (j in 0...insertedText.length)
 				{
-					flowBoxRenderer.addChild(insertedText[j]);
+					flowBoxRenderer.appendChild(insertedText[j]);
 				}
 			}
 		}
@@ -814,7 +815,7 @@ class AbstractContainerStyle extends Style
 			case NodeType.ELEMENT_NODE:
 				ret = true;
 			
-			case NodeType.TEXT_NODE, NodeType.DOCUMENT_NODE:
+			case NodeType.TEXT_NODE, NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				ret = false;
 		}
 		

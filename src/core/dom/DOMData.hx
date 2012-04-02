@@ -8,6 +8,7 @@
 package core.dom;
 
 import core.HTMLElement;
+import core.HTMLImageElement;
 import core.renderer.TextRenderer;
 import core.unit.UnitData;
 
@@ -17,10 +18,12 @@ import core.unit.UnitData;
  * @author Yannick DOMINGUEZ
  */
 
+//TODO : doc
 enum NodeType {
 	ELEMENT_NODE;
 	TEXT_NODE;
 	DOCUMENT_NODE;
+	ATTRIBUTE_NODE;
 }
 
 /**

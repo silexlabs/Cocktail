@@ -8,7 +8,7 @@
 package core.nativeElement;
 
 import core.nativeElement.NativeElementData;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 /**
  * This is a base class for the native element

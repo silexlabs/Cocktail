@@ -147,7 +147,7 @@ class BackgroundStylesComputer
 	private static function getComputedBackgroundColor(style:AbstractStyle):ColorData
 	{
 		var computedColor:ColorData;
-		computedColor = UnitManager.getColorDataFromColorValue(style.backgroundColor);
+		computedColor = UnitManager.getColorDataFromCSSColor(style.backgroundColor);
 		
 		return computedColor;
 	}

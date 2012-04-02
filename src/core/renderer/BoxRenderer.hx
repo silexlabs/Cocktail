@@ -7,7 +7,7 @@
 */
 package core.renderer;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.background.BackgroundManager;
 import core.Style;
 import haxe.Log;
@@ -70,7 +70,28 @@ class BoxRenderer extends ElementRenderer
 			#end
 		}
 		
+		#if (flash9 || nme)
+		
+		if (isInitialContainer() == false)
+		{
+			//TODO : implement properly hit area for flash_player
+			var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
+			
+			nativeElement.graphics.clear();
+			nativeElement.graphics.beginFill(0x00FF00, 0.0);
+			nativeElement.graphics.drawRect(_bounds.x +_style.computedStyle.paddingLeft,
+			_bounds.y + _style.computedStyle.paddingTop, _bounds.width, _bounds.height);
+			nativeElement.graphics.endFill();
+			
+			//nativeElement.x = _style.computedStyle.marginLeft;
+			
+			backgrounds.push(nativeElement);
+			
+		}
+	#end
+		
 	
 		return backgrounds;
 	}
+
 }

@@ -8,7 +8,7 @@
 package core.background;
 
 import cocktail.Lib;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.style.StyleData;

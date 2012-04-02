@@ -53,6 +53,12 @@ class DOMTests
 	{
 		var container:HTMLElement = cast(Lib.document.createElement("div"));
 		
+		container.style.position = absolute;
+		container.style.bottom = PositionOffset.length(px(0));
+		container.style.left = PositionOffset.length(px(250));
+		
+		container.style.height = Dimension.length(em(25));
+		
 		//container.style.display = block;
 		
 		var img = new Image();
@@ -64,6 +70,9 @@ class DOMTests
 		img.style.paddingBottom = Padding.length(px(50));
 		container.appendChild(img);
 	
+		
+		img.style.position = relative;
+		img.style.bottom = PositionOffset.length(px(70));
 		
 		img.onClick = function(e) {
 			container.appendChild(Lib.document.createTextNode("hello HaXe !"));
@@ -85,9 +94,42 @@ class DOMTests
 		h1.appendChild(Lib.document.createTextNode("title"));
 		h1.style.textAlign = TextAlign.center;
 		
-		//Lib.document.body.style.marginLeft = Lib.document.body.style.marginRight = Lib.document.body.style.marginTop = Lib.document.body.style.marginBottom = Margin.length(px(0));
+		Lib.document.body.style.marginLeft = Lib.document.body.style.marginRight = Lib.document.body.style.marginTop = Lib.document.body.style.marginBottom = Margin.length(px(0));
 		
 		Lib.document.body.appendChild(h1);
+		
+		
+		
+		Lib.document.body.appendChild(container);
+	}
+	
+	function testBlockBackground()
+	{
+		var container:HTMLElement = cast(Lib.document.createElement("div"));
+		container.style.width = Dimension.length(px(600));
+		container.style.marginLeft = container.style.marginRight = Margin.cssAuto;
+		
+		Lib.document.body.style.marginLeft = Lib.document.body.style.marginRight = Lib.document.body.style.marginTop = Lib.document.body.style.marginBottom = Margin.length(px(0));
+	
+		var h1:HTMLElement = cast(Lib.document.createElement("h1"));
+		h1.appendChild(Lib.document.createTextNode("Titlej"));
+		
+		h1.style.paddingTop = Padding.length(px(60));
+		
+		var h2:HTMLElement = cast(Lib.document.createElement("h2"));
+		
+		h2.style.paddingTop = Padding.length(px(60));
+		
+		var h3 = Lib.document.createElement("h3");
+		h3.appendChild(Lib.document.createTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit nisl ac erat blandit eget dictum erat feugiat. Praesent vitae dolor vitae tellus luctus vulputate non eu neque. Sed vitae tortor dolor. Etiam tempus iaculis pretium. Sed ac est lorem, vel commodo diam. Vestibulum ultricies nisl in risus ultricies facilisis. Ut accumsan ullamcorper elementum. Maecenas tincidunt odio ut risus egestas convallis. Etiam ornare, orci ut viverra vehicula, purus nunc fermentum tellus, at gravida urna purus et tellus. Sed urna nulla, rhoncus a ultricies eget, facilisis vitae lorem. Duis eget nisl nunc. Nullam sit amet enim ac libero suscipit tempor id sed mauris. Pellentesque fermentum elementum nisl quis convallis. Donec vulputate aliquam congue. Vivamus sed arcu eu massa pharetra commodo in vitae purus. Sed nunc leo, consectetur ac fringilla in, mattis semper arcu."));
+		
+		//container.style.height = Dimension.length(px(50));
+		//container.style.marginTop = Margin.length(px(50));
+		container.appendChild(h1);
+		container.appendChild(h2);
+		h2.appendChild(h3);
+		
+		container.style.backgroundColor = keyword(red);
 		
 		Lib.document.body.appendChild(container);
 	}

@@ -10,7 +10,7 @@ package core;
 /**
  * Set the right runtime specific mouse manager at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 typedef Mouse =  port.flash_player.Mouse;
 
 #elseif js

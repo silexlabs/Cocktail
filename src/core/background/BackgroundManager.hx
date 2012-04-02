@@ -7,7 +7,7 @@
 */
 package core.background;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.style.StyleData;
@@ -99,7 +99,7 @@ class BackgroundManager
 							//way than a list of urls
 							var imageDeclaration:ImageDeclarationData = {
 								urls:[value],
-								fallbackColor:ColorValue.transparent
+								fallbackColor:Color.transparent
 							}
 							
 							//draw the background image and store the resulting nativeElement
@@ -191,7 +191,7 @@ class BackgroundManager
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoaded;
 		
-		var onBackgroundImageLoadErrorDelegate:String->ColorValue->NativeElement->AbstractStyle->RectangleData->BackgroundPosition->
+		var onBackgroundImageLoadErrorDelegate:String->Color->NativeElement->AbstractStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoadError;
 		
@@ -265,11 +265,11 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoadError(error:String, backgroundColor:ColorValue, backgroundImageNativeElement:NativeElement, style:AbstractStyle, backgroundBox:RectangleData,
+	private function onBackgroundImageLoadError(error:String, backgroundColor:CSSColor, backgroundImageNativeElement:NativeElement, style:AbstractStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
-		drawBackgroundColor(style, UnitManager.getColorDataFromColorValue(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
+		drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 	}
 	

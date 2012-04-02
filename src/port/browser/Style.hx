@@ -8,7 +8,7 @@
 package port.browser;
 
 import core.HTMLElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.style.AbstractStyle;
 import core.unit.UnitData;
 import core.style.formatter.FormattingContext;
@@ -498,7 +498,7 @@ class Style extends AbstractStyle
 			case sub:
 				cssVerticalAlignValue = "sub";
 				
-			case superStyle:
+			case cssSuper:
 				cssVerticalAlignValue = "super";
 				
 			case textTop:
@@ -1157,6 +1157,32 @@ class Style extends AbstractStyle
 	}
 	
 	/////////////////////////////////
+	// USER INTERFACE STYLES
+	////////////////////////////////
+	
+	private function getCSSCursor(value:Cursor):String
+	{
+		var cssCursorValue:String;
+		
+		switch (value)
+		{
+			case Cursor.auto:
+				cssCursorValue = "auto";
+				
+			case Cursor.crosshair:
+				cssCursorValue = "crosshair";
+				
+			case Cursor.cssDefault:
+				cssCursorValue = "default";
+				
+			case Cursor.pointer:
+				cssCursorValue = "pointer";
+		}
+		
+		return cssCursorValue;
+	}
+	
+	/////////////////////////////////
 	// UNIT CONVERSION
 	// Convert abstract styles units
 	// to CSS units
@@ -1317,29 +1343,29 @@ class Style extends AbstractStyle
 		return cssCornerValue;
 	}
 	
-	private function getCSSColor(value:ColorValue):String
+	private function getCSSColor(value:Color):String
 	{
-		var cssColorValue:String;
+		var cssColor:String;
 		
 		switch (value)
 		{
 			case hex(value):
-				cssColorValue = value;
+				cssColor = value;
 				
 			case rgb(red, green, blue):
-				cssColorValue = "rgb(" + red + "," + green + "," + blue + ")";
+				cssColor = "rgb(" + red + "," + green + "," + blue + ")";
 				
 			case rgba(red, green, blue, alpha):
-				cssColorValue = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+				cssColor = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
 				
 			case keyword(value):
-				cssColorValue = getColorFromKeyword(value);
+				cssColor = getColorFromKeyword(value);
 				
 			case transparent:
-				cssColorValue = "transparent";
+				cssColor = "transparent";
 		}
 		
-		return cssColorValue;
+		return cssColor;
 	}
 	
 	private function getCSSLength(lengthValue:Length):String
@@ -1536,7 +1562,7 @@ class Style extends AbstractStyle
 		return _verticalAlign = value;
 	}
 	
-	override private function setColor(value:ColorValue):ColorValue
+	override private function setColor(value:Color):Color
 	{
 		this._htmlElement.nativeElement.style.color = getCSSColor(value);
 		super.setColor(value);
@@ -1917,5 +1943,12 @@ class Style extends AbstractStyle
 		this._htmlElement.nativeElement.style.overflowY = getCSSOverflow(value);
 		super.setOverflowY(value);
 		return _overflowY = value;
+	}
+	
+	override private function setCursor(value:Cursor):Cursor
+	{
+		_htmlElement.nativeElement.style.cursor = getCSSCursor(value);
+		super.setCursor(value);
+		return _cursor = value;
 	}
 }

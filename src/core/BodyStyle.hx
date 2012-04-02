@@ -10,7 +10,7 @@ package core;
 /**
  * Set the right runtime specific BodyStyle at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 typedef BodyStyle =  port.flash_player.BodyStyle;
 
 #elseif js

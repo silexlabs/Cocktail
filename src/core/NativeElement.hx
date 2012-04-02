@@ -10,10 +10,10 @@ package core;
 /**
  * Set the right runtime specific NativeElement at compile-time
  */
-#if (flash9)
+#if flash9
 typedef NativeElement =  flash.display.DisplayObjectContainer;
 
-#elseif (nme || cpp)
+#elseif nme
 typedef NativeElement =  Dynamic;
 
 #elseif js

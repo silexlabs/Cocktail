@@ -10,7 +10,7 @@ package core;
 /**
  * Set the right runtime specific HTMLAnchorElement at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 typedef HTMLAnchorElement =  port.flash_player.HTMLAnchorElement;
 
 #elseif js

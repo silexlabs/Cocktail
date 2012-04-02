@@ -7,7 +7,7 @@
 */
 package core.nativeElement;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 /**
  * This is a base class for the path manager. 

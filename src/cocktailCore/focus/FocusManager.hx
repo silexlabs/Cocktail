@@ -16,7 +16,7 @@ import core.dom.DOMData;
 import haxe.Log;
 
 //import the right runtime implementations
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 import cocktailCore.focus.as3.FocusManagerImpl;
 
 #elseif js
