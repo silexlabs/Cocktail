@@ -95,8 +95,7 @@ class Element extends Node
 		}
 		else
 		{
-			//TODO : should return null instead ?
-			return "";
+			return null;
 		}
 	}
 	
