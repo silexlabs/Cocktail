@@ -27,6 +27,13 @@ import core.dom.DOMData;
 class Document extends Node
 {
 	/**
+	 * This is a convenience attribute that allows direct access
+	 * to the child node that is the document element of the document.
+	 */
+	private var _documentElement:Element;
+	public var documentElement(get_documentElement, never):Element;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -72,6 +79,73 @@ class Document extends Node
 		return text;
 	}
 	
+	/**
+	 * Returns the Element that has an ID attribute with the given value.
+	 * If no such element exists, this returns null.
+	 * If more than one element has an ID attribute with that value, return the first found one.
+	 * use Attr.isId to determine if an attribute is of type ID.
+	 * 
+	 * @param	elementId The unique id value for an element.
+	 * @return	The matching element or null if there is none.
+	 */
+	public function getElementById(elementId:String):Element
+	{
+		return doGetElementById(_documentElement, elementId);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually return the Element matching the
+	 * elementId, by traversing recursively the 
+	 * DOM tree
+	 */
+	private function doGetElementById(node:Node, elementId:String):Element
+	{
+		//call method recursively if node has child and is itself an element
+		if (node.hasChildNodes() == true && node.nodeType == NodeType.ELEMENT_NODE)
+		{
+			for (i in 0...node.childNodes.length)
+			{
+				var matchingElement:Element = doGetElementById(node.childNodes[i], elementId);
+				//if a matching element is found, return it
+				if (matchingElement != null)
+				{
+					return matchingElement;
+				}
+			}
+		}
+		
+		//check if node has atribute, as it can't have
+		//an Id with no attributes
+		if (node.hasAttributes() == true)
+		{
+			var attributes:NamedNodeMap = node.attributes;
+			var element:Element = cast(node);
+			
+			//loop in all the element's attributes to find the
+			//Id attribute if defined
+			for (i in 0...attributes.length)
+			{
+				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
+				//if an Id attribute is found and specified
+				if (attribute.isId == true && attribute.specified == true)
+				{
+					//if it matches the searched element Id, return the element
+					if (attribute.value == elementId)
+					{
+						return attribute.ownerElement;
+					}
+				}
+			}
+		}
+		
+		//at this point no element with a matching Id was found
+		return null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -81,4 +155,12 @@ class Document extends Node
 		return NodeType.DOCUMENT_NODE;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_documentElement():Element
+	{
+		return _documentElement;
+	}
 }

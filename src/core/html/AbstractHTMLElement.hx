@@ -182,6 +182,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
 	
+	/**
+	 * This attribute assigns a name to an element. 
+	 * This name must be unique in a document.
+	 */
+	private var _id:String;
+	public var id(get_id, set_id):String;
+	
 	/////////////////////////////////
 	// COORDS attributes
 	////////////////////////////////
@@ -702,7 +709,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM GETTER
+	// DOM GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -712,6 +719,16 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	private function get_nativeElement():NativeElement
 	{
 		return this._nativeElement;
+	}
+	
+	private function get_id():String
+	{
+		return _id;
+	}
+	
+	private function set_id(value:String):String
+	{
+		return _id = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

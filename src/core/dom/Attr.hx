@@ -42,6 +42,23 @@ class Attr extends Node
 	public var specified(get_specified, never):Bool;
 	
 	/**
+	 * Returns whether this attribute is known to be of type ID
+	 * (i.e. to contain an identifier for its owner element)
+	 * or not. When it is and its value is unique,
+	 * the ownerElement of this attribute
+	 * can be retrieved using the method Document.getElementById
+	 */
+	private var _isId:Bool;
+	public var isId(get_isId, set_isId):Bool;
+	
+	/**
+	 * The Element node this attribute is attached 
+	 * to or null if this attribute is not in use.
+	 */
+	private var _ownerElement:Element;
+	public var ownerElement(get_ownerElement, set_ownerElement):Element;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(name:String) 
@@ -78,6 +95,26 @@ class Attr extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_ownerElement():Element 
+	{
+		return _ownerElement;
+	}
+	
+	private function set_ownerElement(value:Element):Element 
+	{
+		return _ownerElement = value;
+	}
+	
+	private function get_isId():Bool
+	{
+		return _isId;
+	}
+	
+	private function set_isId(value:Bool):Bool
+	{
+		return _isId = value;
+	}
 	
 	private function get_name():String 
 	{
