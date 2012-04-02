@@ -8,6 +8,7 @@
 package core.dom;
 
 import core.Text;
+import core.dom.DOMData;
 
 /**
  * The Document interface represents the entire HTML or XML document.
@@ -69,6 +70,15 @@ class Document extends Node
 		var text:Text = new Text();
 		text.nodeValue = data;
 		return text;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function get_nodeType():NodeType
+	{
+		return NodeType.DOCUMENT_NODE;
 	}
 	
 }

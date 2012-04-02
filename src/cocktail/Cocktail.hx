@@ -20,6 +20,7 @@ typedef Element = core.dom.Element;
 typedef Node = core.dom.Node;
 typedef Text = core.dom.Text;
 typedef Document = core.dom.Document;
+typedef NodeType = core.dom.DOMData.NodeType;
 
 /**
  * HTML

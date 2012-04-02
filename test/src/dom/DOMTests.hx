@@ -41,6 +41,7 @@ class DOMTests
 	
 	function testDocument()
 	{
+		Assert.equals(Lib.document.nodeType, NodeType.DOCUMENT_NODE);
 		
 		var div = Lib.document.createElement("div");
 		
@@ -64,6 +65,8 @@ class DOMTests
 		Assert.equals(node.firstChild, childNode);
 		Assert.equals(node.lastChild, childNode);
 		Assert.equals(childNode.parentNode, node);
+		
+		Assert.isNull(node.nodeType);
 		
 		var siblingNode = new Node();
 		node.appendChild(siblingNode);
@@ -99,6 +102,7 @@ class DOMTests
 		Assert.equals(el.tagName, "div");
 		Assert.equals(el.nodeName, "div");
 		Assert.isNull(el.nodeValue);
+		Assert.equals(el.nodeType, NodeType.ELEMENT_NODE);
 		
 		var childEl = new Element("div");
 		el.appendChild(childEl);
@@ -143,4 +147,20 @@ class DOMTests
 		
 	}
 	
+	function testText()
+	{
+		var txt = new Text();
+		txt.nodeValue = "bim";
+		
+		Assert.equals(txt.nodeValue, "bim");
+		Assert.equals(txt.data, "bim");
+		
+		txt.data = "bam";
+		Assert.equals(txt.nodeValue, "bam");
+		Assert.equals(txt.data, "bam");
+		
+		Assert.equals(txt.nodeType, NodeType.TEXT_NODE);
+		
+		
+	}
 }
