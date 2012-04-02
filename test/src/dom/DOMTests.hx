@@ -16,6 +16,7 @@ import cocktail.Cocktail;
 import cocktail.Lib;
 import core.dom.Attr;
 import core.dom.Element;
+import core.dom.NamedNodeMap;
 import core.dom.Node;
 import core.dom.Text;
 
@@ -160,7 +161,46 @@ class DOMTests
 		Assert.equals(txt.data, "bam");
 		
 		Assert.equals(txt.nodeType, NodeType.TEXT_NODE);
+	}
+	
+	function testNamedNodeMap()
+	{
+		var nnm = new NamedNodeMap();
+		var attr:Attr = new Attr("test");
+		var ret = nnm.setNamedItem(attr);
 		
+		Assert.isNull(ret);
+		Assert.equals(nnm.getNamedItem("test"), attr);
 		
+		var replacementNode = new Attr("test");
+		ret = nnm.setNamedItem(replacementNode);
+		
+		Assert.equals(ret, attr);
+		Assert.equals(nnm.getNamedItem("test"), replacementNode);
+		
+		var addedAttr = new Attr("test2");
+		nnm.setNamedItem(addedAttr);
+		
+		Assert.equals(addedAttr, nnm.item(1));
+	}
+	
+	function testAttr()
+	{
+		var attr = new Attr("test");
+		
+		Assert.equals(attr.nodeName, "test");
+		Assert.equals(attr.nodeType, NodeType.ATTRIBUTE_NODE);
+		Assert.isFalse(attr.specified);
+		
+		attr.value = "value";
+		
+		Assert.equals(attr.nodeValue, "value");
+		Assert.equals(attr.value, "value");
+		Assert.isTrue(attr.specified);
+		
+		attr.nodeValue = "value2";
+		
+		Assert.equals(attr.nodeValue, "value2");
+		Assert.equals(attr.value, "value2");
 	}
 }
