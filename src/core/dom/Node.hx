@@ -87,21 +87,11 @@ class Node
 	public var previousSibling(get_previousSibling, never):Node;
 	
 	/**
-	 * Returns whether this node has any children.
-	 */
-	public var hasChildNodes(get_hasChildNodes, never):Bool;
-	
-	/**
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
 	private var _attributes:NamedNodeMap;
 	public var attributes(get_attributes, never):NamedNodeMap;
-	
-	/**
-	 * Returns whether this node (if it is an element) has any attributes. 
-	 */
-	public var hasAttributes(get_hasAttributes, never):Bool;
 	
 	/**
 	 * class constructor
@@ -248,6 +238,23 @@ class Node
 		return other == this;
 	}
 	
+	/**
+	 * Returns whether this node has any children.
+	 */
+	public function hasChildNodes():Bool
+	{
+		return _childNodes.length > 0;
+	}
+	
+	/**
+	 * Returns whether this node (if it is an element) has any attributes. 
+	 * Always false for any other Node sub classes
+	 */
+	public function hasAttributes():Bool
+	{
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -271,7 +278,7 @@ class Node
 	
 	private function get_firstChild():Node
 	{
-		if (hasChildNodes == true)
+		if (hasChildNodes() == true)
 		{
 			return _childNodes[0];
 		}
@@ -283,7 +290,7 @@ class Node
 	
 	private function get_lastChild():Node
 	{
-		if (hasChildNodes == true)
+		if (hasChildNodes() == true)
 		{
 			return _childNodes[_childNodes.length - 1];
 		}
@@ -343,11 +350,6 @@ class Node
 		return null;
 	}
 	
-	private function get_hasChildNodes():Bool
-	{
-		return _childNodes.length > 0;
-	}
-	
 	private function get_nodeType():NodeType 
 	{
 		return null;
@@ -386,10 +388,5 @@ class Node
 	private function get_attributes():NamedNodeMap 
 	{
 		return null;
-	}
-	
-	private function get_hasAttributes():Bool
-	{
-		return false;
 	}
 }

@@ -70,7 +70,7 @@ class BlockFormattingContext extends FormattingContext
 				
 			}
 			
-			if (child.hasChildNodes == true)
+			if (child.hasChildNodes() == true)
 			{
 				if (child.establishesNewFormattingContext() == false)
 				{

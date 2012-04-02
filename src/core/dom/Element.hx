@@ -36,7 +36,7 @@ class Element extends Node
 	 * returns a reference to the first child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var firtsElementChild(get_firstElementChild, never):Element;
+	public var firstElementChild(get_firstElementChild, never):Element;
 	
 	/**
 	 * returns a reference to the first last child node of that element which is of nodeType Element.
@@ -192,6 +192,14 @@ class Element extends Node
 		return _attributes.getNamedItem(name) != null;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function hasAttributes():Bool
+	{
+		return _attributes.length > 0;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
@@ -212,18 +220,13 @@ class Element extends Node
 		return _attributes;
 	}
 	
-	override private function get_hasAttributes():Bool
-	{
-		return _attributes.length > 0;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ELEMENT TRAVERSAL GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_firstElementChild():Element
 	{
-		if (hasChildNodes == false)
+		if (hasChildNodes() == false)
 		{
 			return null;
 		}
@@ -248,7 +251,7 @@ class Element extends Node
 	
 	private function get_lastElementChild():Element
 	{
-		if (hasChildNodes == false)
+		if (hasChildNodes() == false)
 		{
 			return null;
 		}
