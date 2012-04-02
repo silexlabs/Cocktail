@@ -336,8 +336,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	private function initId():Void
 	{
 		_id = new Attr(HTML_ID_ATTRIBUTE);
-		_id.isId = true;
-		setAttributeNode(_id);
+		setIdAttributeNode(_id, true);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -82,5 +82,9 @@ class HTMLTests
 		Assert.equals(htmlEl.offsetTop, 8);
 		Assert.equals(htmlEl.offsetLeft, 8);
 		
+		htmlEl.id = "myId";
+		
+		Assert.equals(htmlEl.id, "myId");
+		
 	}
 }
