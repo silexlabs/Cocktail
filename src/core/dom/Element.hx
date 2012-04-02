@@ -27,6 +27,12 @@ class Element extends Node
 {
 
 	/**
+	 * When using getElementsByTagName, this value
+	 * used as tagName returns all the child elements
+	 */
+	private static inline var MATCH_ALL_TAG_NAME:String = "*";
+	
+	/**
 	 * The name of the element
 	 */
 	private var _tagName:String;
@@ -247,6 +253,55 @@ class Element extends Node
 		return _attributes.getNamedItem(name) != null;
 	}
 	
+	/**
+	 * Returns a NodeList of all descendant
+	 * Elements with a given tag name, in document order.
+	 * 
+	 * TODO : implement NodeList ?
+	 * TODO : override in HTMLElement to make it case-insensitive
+	 * 
+	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
+	 * @return	A list of matching Element nodes.
+	 */
+	public function getElementsByTagName(tagName:String):Array<Node>
+	{
+		var elements:Array<Node> = new Array<Node>();
+		doGetElementsByTagName(this, tagName, elements);
+		return elements;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * do get the matching child elements by 
+	 * traversing the DOM tree recursively
+	 */
+	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<Node>):Void
+	{
+		if (node.hasChildNodes() == true)
+		{
+			for (i in 0...node.childNodes.length)
+			{
+				var childNode:Node = node.childNodes[i];
+				
+				//if matching tagName, push child node
+				if (childNode.nodeName == tagName)
+				{
+					elements.push(childNode);
+				}
+				//else if any tagName is accepted and the child node is an element node, push child node
+				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == NodeType.ELEMENT_NODE)
+				{
+					elements.push(childNode);
+				}
+				
+				doGetElementsByTagName(childNode, tagName, elements);
+			}
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +310,8 @@ class Element extends Node
 	{
 		return _attributes.length > 0;
 	}
+	
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS

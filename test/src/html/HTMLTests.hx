@@ -87,4 +87,9 @@ class HTMLTests
 		Assert.equals(htmlEl.id, "myId");
 		
 	}
+	
+	function testHTMLImageElement()
+	{
+		var img = new Image();
+	}
 }

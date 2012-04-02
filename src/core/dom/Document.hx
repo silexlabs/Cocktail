@@ -148,6 +148,24 @@ class Document extends Node
 		return null;
 	}
 	
+	/**
+	 * Returns a NodeList of all the Elements in 
+	 * document order with a given tag name and
+	 * are contained in the document.
+	 * 
+	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
+	 * For XML, the tagname parameter is case-sensitive, otherwise
+	 * it depends on the case-sensitivity of the markup language in use. 
+	 * 
+	 * @return A new NodeList object containing all the matched Elements.
+	 */
+	public function getElementsByTagName(tagName:String):Array<Node>
+	{
+		//use the implementation on the document element (for instance,
+		//the HTML element in HTML)
+		return _documentElement.getElementsByTagName(tagName);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
