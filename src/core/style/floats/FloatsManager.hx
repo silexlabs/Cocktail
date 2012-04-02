@@ -240,9 +240,9 @@ class FloatsManager
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
-		//TODO : should use bounds and not htmlElement
-		var floatWidth:Int = elementRenderer.style.htmlElement.offsetWidth;
-		var floatHeight:Int = elementRenderer.style.htmlElement.offsetHeight;
+		var computedStyle:ComputedStyleData = elementRenderer.style.computedStyle;
+		var floatWidth:Int = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		var floatHeight:Int = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	
 		//get the first y position where the float can be placed
 		var floatY:Int = getFirstAvailableY(formattingContextData, floatWidth, containingBlockWidth);

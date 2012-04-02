@@ -30,8 +30,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	public function new(style:Style) 
 	{
 		super(style);
-		_bounds.width = style.htmlElement.offsetWidth;
-		_bounds.height = style.htmlElement.offsetHeight;
+		var computedStyle:ComputedStyleData = style.computedStyle;
+		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
 	/**

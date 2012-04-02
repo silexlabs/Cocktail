@@ -153,8 +153,11 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
-		element.bounds.width = element.style.htmlElement.offsetWidth;
-		element.bounds.height = element.style.htmlElement.offsetHeight;
+		var computedStyle:ComputedStyleData = element.style.computedStyle;
+		
+		
+		element.bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		element.bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 		
 		insertBreakOpportunity(false);
 		
@@ -836,7 +839,8 @@ class InlineFormattingContext extends FormattingContext
 			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
-				htmlElementAscent = htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
+				htmlElementAscent = htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
+				+ _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
 				
 				htmlElementDescent = 0;
 				
@@ -844,7 +848,8 @@ class InlineFormattingContext extends FormattingContext
 				{
 					case top:
 						htmlElementAscent = Math.round(lineBoxAscent);
-						htmlElementDescent = Math.round(htmlElement.offsetHeight - lineBoxAscent);
+						htmlElementDescent = Math.round(htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
+				 - lineBoxAscent);
 						
 					default:	
 						
@@ -920,7 +925,8 @@ class InlineFormattingContext extends FormattingContext
 						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
 					
 					default:	
-						_elementsInLineBox[i].bounds.y -= htmlElement.offsetHeight + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
+						_elementsInLineBox[i].bounds.y -= htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
+				 + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
 					
 				}
 				
