@@ -734,23 +734,23 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		//_style.invalidate(true);
+		_style.invalidate(true);
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		//need to perform an immediate layout to be sure
-		//that the computed styles are up to date
-		//_style.invalidate(true);
+		_style.invalidate(true);
 		var computedStyle:ComputedStyleData = this._style.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : will it work for inline elements ?
+	//TODO : will it work for inline elements ? use ElementRenderer bounds ?
 	private function get_offsetLeft():Int
 	{
+		_style.invalidate(true);
+		
 		var firstPositionedAncestor:HTMLElement = offsetParent;
 		
 		var offsetLeft:Int = 0;
@@ -771,6 +771,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	private function get_offsetTop():Int
 	{
+		_style.invalidate(true);
+		
 		var firstPositionedAncestor:HTMLElement = offsetParent;
 		
 		var offsetTop:Int = 0;
@@ -794,25 +796,24 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		_style.invalidate(true);
-		Log.trace("boum");
 		return _style.computedStyle.width;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		//need to perform an immediate layout to be sure
-		//that the computed styles are up to date
 		_style.invalidate(true);
 		return _style.computedStyle.height;
 	}
 	
 	private function get_clientTop():Int
 	{
+		_style.invalidate(true);
 		return _style.computedStyle.paddingTop;
 	}
 	
 	private function get_clientLeft():Int
 	{
+		_style.invalidate(true);
 		return _style.computedStyle.paddingLeft;
 	}
 	

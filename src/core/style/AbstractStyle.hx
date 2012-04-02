@@ -733,8 +733,8 @@ class AbstractStyle
 		}
 		
 		//update the bounds of the ElementRenderer
-		_elementRenderer.bounds.width = _htmlElement.offsetWidth;
-		_elementRenderer.bounds.height = _htmlElement.offsetHeight;
+		_elementRenderer.bounds.width = _computedStyle.width + _computedStyle.paddingLeft + _computedStyle.paddingRight;
+		_elementRenderer.bounds.height = _computedStyle.height + _computedStyle.paddingTop + _computedStyle.paddingBottom;
 		
 		return _elementRenderer;
 	}

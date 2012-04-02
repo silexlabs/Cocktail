@@ -120,7 +120,8 @@ class BoxPositioner
 	 */
 	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
-		return containingHTMLElementWidth - htmlElement.offsetWidth - htmlElement.style.computedStyle.right;
+		return containingHTMLElementWidth - htmlElement.style.computedStyle.width +
+		htmlElement.style.computedStyle.paddingLeft + htmlElement.style.computedStyle.width  - htmlElement.style.computedStyle.right;
 	}
 	
 	/**
@@ -136,7 +137,8 @@ class BoxPositioner
 	 */
 	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int, staticPosition:Int):Int
 	{
-		return containingHTMLElementHeight - htmlElement.offsetHeight - htmlElement.style.computedStyle.bottom;
+		return containingHTMLElementHeight - htmlElement.style.computedStyle.height + htmlElement.style.computedStyle.paddingTop +
+		htmlElement.style.computedStyle.paddingBottom - htmlElement.style.computedStyle.bottom;
 	}
 	
 }
