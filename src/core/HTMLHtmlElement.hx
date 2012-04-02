@@ -5,35 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package core.html;
-
-import core.HTMLElement;
-
-#if (flash9 || nme)
-import port.flash_player.HTMLElement;
-
-#elseif js
-import port.browser.HTMLElement;
-
-#end
+package core;
 
 /**
- * Root of an HTML document
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific HTMLHtmlElement at compile-time
  */
-class HTMLHtmlElement extends HTMLElement
-{
-	/**
-	 * the html tag name for the html root element
-	 */
-	private static inline var HTML_HTML_TAG_NAME:String = "html";
-	
-	/**
-	 * class constructor
-	 */
-	public function new() 
-	{
-		super(HTML_HTML_TAG_NAME);
-	}
-}
+#if (flash9 || nme)
+typedef HTMLHtmlElement =  core.html.AbstractHTMLHtmlElement;
+
+#elseif js
+typedef HTMLHtmlElement =  port.browser.HTMLHtmlElement;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class HTMLHtmlElement extends core.style.abstract.AbstractEmbeddedStyle { }
+
+#end
