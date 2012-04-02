@@ -51,13 +51,15 @@ class EmbeddedElement extends HTMLElement
 	public var intrinsicRatio(get_intrinsicRatio, never):Null<Float>;
 
 	/**
-	 * get/set the height of the embedded asset in the document
+	 * get/set the height of the embedded asset in the document. Return
+	 * 0 if the height is unknown
 	 */
 	private var _height:Int;
 	public var height(get_height, set_height):Int;
 		
 	/**
-	 * get/set the width of the embedded asset in the document
+	 * get/set the width of the embedded asset in the document. Return
+	 * 0 if the width is unknown
 	 */
 	private var _width:Int;
 	public var width(get_width, set_width):Int;
