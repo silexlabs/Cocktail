@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.font;
 
 
-#if (flash9 || cpp || nme)
+#if flash9 
 typedef FontManager = cocktailCore.font.as3.FontManager;
 #elseif js
 typedef FontManager = cocktailCore.font.js.FontManager;

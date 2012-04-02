@@ -10,7 +10,7 @@ package port.browser;
 import core.dom.Node;
 import core.html.AbstractHTMLElement;
 import core.event.Event;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import haxe.Log;
@@ -56,7 +56,7 @@ class HTMLElement extends AbstractHTMLElement
 				var childTextElement:core.dom.Text = cast(oldChild);
 				_nativeElement.removeChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE:
+			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				//TODO : DOM exception ?
 				
 		}
@@ -82,11 +82,39 @@ class HTMLElement extends AbstractHTMLElement
 				var childTextElement:core.dom.Text = cast(newChild);
 				_nativeElement.appendChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE:
+			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
 				//TODO : DOM exception ?
 				
 		}
 		return newChild;
+	}
+	
+	/**
+	 * Overriden to also insert before the native 
+	 * HTML DOM
+	 */
+	override public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//TODO : test
+		untyped _nativeElement.insertBefore(newChild.nativeElement, refChild.nativeElement);
+		
+		return newChild;
+	}
+	
+	/**
+	 * Overriden to also replace the child of the native 
+	 * HTML DOM
+	 */
+	override public function replaceChild(newChild:Node, oldChild:Node):Node
+	{
+		super.replaceChild(newChild, oldChild);
+		
+		//TODO : test
+		untyped _nativeElement.replaceChild(newChild.nativeElement, refChild.nativeElement);
+		
+		return oldChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

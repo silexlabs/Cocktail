@@ -6,6 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package core.style.formatter;
+import core.dom.Node;
+import core.renderer.FlowBoxRenderer;
 import core.style.StyleData;
 import core.geom.GeomData;
 import core.renderer.BlockBoxRenderer;
@@ -25,8 +27,6 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-
-	
 	/**
 	 * class constructor
 	 */
@@ -35,141 +35,93 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
+	//TODO : should not be 2 methods
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
 	{
-		//init/reset the formating context data to insert the first element at the
-		//origin of the containing block
-		initFormattingContextData();
+		doFormat2(_formattingContextRoot, 0);
+	}
+	
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int):Void
+	{
+		
 		var currentAddedSiblingsHeight:Int = 0;
-		_lastInsertedElement = _formattingContextRoot;
-
-		var elementsInColumn = new Array<ElementRenderer>();
 		
+		//_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
+		concatenatedX += elementRenderer.style.computedStyle.marginLeft;
 		
-		//format all the box element in order
-		for (i in 0...elementsInFormattingContext.length)
+		for (i in 0...elementRenderer.childNodes.length)
 		{
+
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
-			if (elementsInFormattingContext[i].isFloat() == true)
+			
+			var marginTop:Int = child.style.computedStyle.marginTop;
+			
+			if (i == 0)
 			{
-				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
+				if (child.firstChild != null)
+				{
+					var firstChild:ElementRenderer = cast(child.firstChild);
+					if (firstChild.style.computedStyle.marginTop > marginTop && child.style.computedStyle.paddingTop == 0)
+					{
+							marginTop = firstChild.style.computedStyle.marginTop;
+					}
+				}
+				
+			}
+			
+			if (child.hasChildNodes == true)
+			{
+				if (child.establishesNewFormattingContext() == false)
+				{
+					doFormat2(child, concatenatedX);
+				}
+			}
+		
+			
+			var marginBottom:Int = getCollapsedMarginBottom(child);
+		
+		
+			
+			var x:Float = _formattingContextData.x + concatenatedX + child.style.computedStyle.marginLeft;
+			var y:Float = _formattingContextData.y + marginTop + elementRenderer.style.computedStyle.paddingTop ;
+			var width:Float = child.style.htmlElement.offsetWidth;
+			var height:Float = child.style.htmlElement.offsetHeight;
+			
+			child.bounds = {
+				x:x, 
+				y:y,
+				width:width,
+				height:height
+			}
+			
+			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
+			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
+			
+		}
+		
+		_formattingContextData.y -= currentAddedSiblingsHeight;
+	}
+	
+	private function getCollapsedMarginBottom(child:ElementRenderer):Int
+	{
+		var marginBottom:Int = child.style.computedStyle.marginBottom;
+		
+		if (child.nextSibling != null)
+		{
+			var nextSibling:ElementRenderer = cast(child.nextSibling);
+			
+			if (nextSibling.style.computedStyle.marginTop > marginBottom)
+			{
+				marginBottom = 0;
 			}
 			else
 			{
-				
-				if (isSiblingOfLastInsertedElement(elementsInFormattingContext[i]))
-				{
-					
-				}
-				else if (isParentOfLastInsertedElement(elementsInFormattingContext[i]))
-				{
-					_formattingContextData.y -= currentAddedSiblingsHeight;
-					currentAddedSiblingsHeight = 0;
-					
-					for (j in 0...elementsInColumn.length)
-					{
-						if (isAncestorOfElement(elementsInColumn[j], elementsInFormattingContext[i] ) == true )
-						{
-
-							
-							elementsInColumn[j].bounds.y += elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.paddingTop;
-							elementsInColumn[j].bounds.x += elementsInFormattingContext[i].style.computedStyle.marginLeft + elementsInFormattingContext[i].style.computedStyle.paddingLeft;
-					
-						}
-						
-					}
-					
-						
-				}
-				else
-				{
-					currentAddedSiblingsHeight = 0;	
-				}
-				
-				
-				
-				_lastInsertedElement = elementsInFormattingContext[i];
-				
-				elementsInColumn.push(elementsInFormattingContext[i]);
-				
-				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-				
-				doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
-				//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, Math.round(elementsInFormattingContext[i].bounds.width), Math.round(elementsInFormattingContext[i].parent.bounds.width));
-			
-			
-				elementsInFormattingContext[i].bounds.y += _formattingContextRoot.style.computedStyle.marginTop +  _formattingContextRoot.style.computedStyle.paddingTop;
-				elementsInFormattingContext[i].bounds.x +=  _formattingContextRoot.style.computedStyle.marginLeft +  _formattingContextRoot.style.computedStyle.paddingLeft;
-				
-			
-			
-				
-				
-				if (elementsInFormattingContext[i].bounds.width > _formattingContextData.maxWidth)
-				{
-					_formattingContextData.maxWidth = Math.round(elementsInFormattingContext[i].bounds.width);
-					
-				}	
-				
-				_formattingContextData.y += Math.round(elementsInFormattingContext[i].bounds.height) + elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.marginBottom ;
-				
-				removeFloats();
-				
-				//TODO : max height might be wrong
-				_formattingContextData.maxHeight = _formattingContextData.y;
-		
-					currentAddedSiblingsHeight += Math.round(elementsInFormattingContext[i].bounds.height + elementsInFormattingContext[i].style.computedStyle.marginTop + elementsInFormattingContext[i].style.computedStyle.marginBottom);
-
+				marginBottom -= nextSibling.style.computedStyle.marginTop;
 			}
-		
 		}
-	}
-	
-	private function isAncestorOfElement(element:ElementRenderer, ancestor:ElementRenderer):Bool
-	{
-		var isAncestorOfElement:Bool = false;
 		
-		
-		var parent:ElementRenderer = element.parent;
-		while (parent != _formattingContextRoot)
-		{
-			if (parent == ancestor)
-			{
-				isAncestorOfElement = true;
-				break;
-			}
-			
-			parent = parent.parent;
-		}
-		return isAncestorOfElement;
-	}
-	
-
-	
-	private function isParentOfLastInsertedElement(element:ElementRenderer):Bool
-	{
-		return element == _lastInsertedElement.parent;
-	}
-	
-	private function isSiblingOfLastInsertedElement(element:ElementRenderer):Bool
-	{
-		return _lastInsertedElement.parent == element.parent;
-	}
-
-	override private function insertEmbeddedElement(element:ElementRenderer):Void
-	{
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
-		//TODO : should not use offset dimensions
-		var width:Float = element.style.htmlElement.offsetWidth;
-		var height:Float = element.style.htmlElement.offsetHeight;
-		
-		element.bounds = {
-			x:x, 
-			y:y,
-			width:width,
-			height:height
-		}
+		return marginBottom;
 	}
 	
 	/**
@@ -178,9 +130,11 @@ class BlockFormattingContext extends FormattingContext
 	 */
 	override private function insertFloat(element:ElementRenderer):Void
 	{
-		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(element.parent.style.computedStyle.width));
-		var x:Float = floatData.x + element.parent.style.computedStyle.paddingLeft;
-		var y:Float = floatData.y + element.parent.style.computedStyle.paddingTop;
+		var parent:FlowBoxRenderer = cast( element.parentNode);
+		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(parent.style.computedStyle.width));
+		
+		var x:Float = floatData.x + parent.style.computedStyle.paddingLeft;
+		var y:Float = floatData.y + parent.style.computedStyle.paddingTop;
 		var width:Float = floatData.width;
 		var height:Float = floatData.height;
 		
@@ -191,44 +145,5 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 	}
-
-	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
-	{
-
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
-		var width:Float = element.style.htmlElement.offsetWidth;
-		var height:Float = element.style.htmlElement.offsetHeight;
-		
-		element.bounds = {
-			x:x, 
-			y:y,
-			width:width,
-			height:height
-		}
-		
-	}
-
-	override private function insertContainerElement(element:ElementRenderer):Void
-	{
-		var x:Float = _formattingContextData.x;
-		var y:Float = _formattingContextData.y;
-		var width:Float = element.style.htmlElement.offsetWidth;
-		var height:Float = element.style.htmlElement.offsetHeight;
-		element.bounds = {
-			x:x, 
-			y:y,
-			width:width,
-			height:height
-		}
-	}
-
-	
-	
-	
-	
-	
-	
-
 	
 }

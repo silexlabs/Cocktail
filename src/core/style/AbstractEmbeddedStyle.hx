@@ -10,8 +10,9 @@ package core.style;
 import core.HTMLElement;
 import haxe.Log;
 
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 import port.flash_player.Style;
+
 #elseif js
 import port.browser.Style;
 #end

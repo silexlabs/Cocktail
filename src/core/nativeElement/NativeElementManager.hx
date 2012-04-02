@@ -8,7 +8,7 @@
 package core.nativeElement;
 
 //import the right runtime implementations
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 import port.flash_player.NativeElementCreator;
 import port.flash_player.NativeElementPathManager;
 
@@ -23,7 +23,7 @@ class NativeElementPathManager extends core.nativeElement.AbstractNativeElementP
 #end
 
 import core.nativeElement.NativeElementData;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 
 /**
  * this class abstract and manages the interaction with a

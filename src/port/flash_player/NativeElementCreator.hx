@@ -11,7 +11,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 import flash.display.Sprite;
 import core.nativeElement.NativeElementData;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.nativeElement.AbstractNativeElementCreator;
 
 /**

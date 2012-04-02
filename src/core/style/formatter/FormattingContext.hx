@@ -177,6 +177,8 @@ class FormattingContext
 	 * an auto height to determine its height
 	 * 
 	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
+	 * 
+	 * TODO : no longer need getChildElementRenderers, use childNodes ?
 	 */
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
@@ -185,7 +187,8 @@ class FormattingContext
 		//get bounds of all the children of the element in the formatting context root space
 		var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
 		height = Math.round(getBounds(elementRenderers).height);
-
+		
+		
 		return height;
 	}
 
@@ -273,7 +276,6 @@ class FormattingContext
 					height :  bottom - top,
 				}
 				
-				
 		return bounds;
 		
 	}
@@ -335,7 +337,7 @@ class FormattingContext
 		
 		for (i in 0..._elementsInFormattingContext.length)
 		{
-			if (_elementsInFormattingContext[i].parent == elementRenderer)
+			if (_elementsInFormattingContext[i].parentNode == elementRenderer)
 			{
 				elementRenderers.push(_elementsInFormattingContext[i]);
 			}

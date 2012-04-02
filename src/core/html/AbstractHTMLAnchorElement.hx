@@ -1,9 +1,28 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package core.html;
 
+import core.mouse.MouseCursorManager;
 import core.nativeElement.NativeElementManager;
 import core.nativeElement.NativeElementData;
 import core.event.MouseEvent;
 import core.dom.DOMData;
+import haxe.Log;
+import core.mouse.MouseData;
+
+
+#if (flash9 || nme)
+import port.flash_player.HTMLElement;
+
+#elseif js
+import port.browser.HTMLElement;
+
+#end
 
 /**
  * The anchor element, used to link to an external document, or
@@ -13,6 +32,11 @@ import core.dom.DOMData;
  */
 class AbstractHTMLAnchorElement extends HTMLElement
 {
+	/**
+	 * the html tag name for the anchor
+	 */
+	private static inline var HTML_ANCHOR_TAG_NAME:String = "a";
+	
 	/**
 	 * The absolute URI of the linked resource.
 	 * This attribute specifies the location of a Web resource, thus defining
@@ -34,7 +58,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 */
 	public function new() 
 	{
-		super();
+		super(HTML_ANCHOR_TAG_NAME);
 		_target = AnchorTarget.self;
 	}
 	
@@ -65,6 +89,30 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		return _onMouseDown;
 	}
 	
+	/**
+	 * Same as mouse down, the callbakc is always set
+	 * to add the default behaviour of setting the mouse
+	 * cursor on mouse over
+	 */
+	override private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
+	{
+		_onMouseOver = value;
+		_mouse.onMouseOver = onMouseOverCallback;
+		
+		return _onMouseOver;
+	}
+	
+	/**
+	 * Same as mouse out
+	 */
+	override private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
+	{
+		_onMouseOut = value;
+		_mouse.onMouseOut = onMouseOutCallback;
+		
+		return _onMouseOut;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN MOUSE EVENT CALLBACK
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +134,32 @@ class AbstractHTMLAnchorElement extends HTMLElement
 			openDocument();
 		}
 	}
+
+	/**
+	 * Display a pointer cursor when hovering an anchor
+	 */
+	override private function onMouseOverCallback(mouseEvent:MouseEvent):Void
+	{
+		if (_onMouseOver != null)
+		{
+			_onMouseOver(mouseEvent);
+		}
+		
+		displayPointerCursor();
+	}
+	
+	/**
+	 * Remove the pointer cursor when hovering out of an anchor
+	 */
+	override private function onMouseOutCallback(mouseEvent:MouseEvent):Void
+	{
+		if (_onMouseOut != null)
+		{
+			_onMouseOut(mouseEvent);
+		}
+		
+		hidePointerCursor();
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +174,22 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	private function openDocument():Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * set the pointer cursor
+	 */
+	private function displayPointerCursor():Void
+	{
+		MouseCursorManager.setMouseCursor(MouseCursorValue.native(NativeOSMouseCursorValue.pointer));
+	}
+	
+	/**
+	 * switch back to the default cursor
+	 */
+	private function hidePointerCursor():Void
+	{
+		MouseCursorManager.setMouseCursor(MouseCursorValue.cssAuto);
 	}
 	
 	/**
@@ -141,6 +231,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	{
 		_href = value;
 		set_onMouseDown(_onMouseDown);
+		set_onMouseOver(_onMouseOver);
+		set_onMouseOut(_onMouseOut);
 		return value;
 	}
 	
@@ -158,7 +250,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	{
 		_target = value;
 		set_onMouseDown(_onMouseDown);
-		
+		set_onMouseOver(_onMouseOver);
+		set_onMouseOut(_onMouseOut);
 		return value;
 	}
 	

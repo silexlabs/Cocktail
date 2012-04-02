@@ -129,6 +129,12 @@ import core.renderer.TextRenderer;
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * This property describes the foreground color of
+	 * an element's text content.
+	 */
+	typedef Color = CSSColor;
+	
+	/**
 	 * Controls how white space inside
 	 * an htmlElement is handled
 	 */
@@ -315,7 +321,7 @@ import core.renderer.TextRenderer;
 		 * n.b: appended 'Style' to 'super' because 'super'
 		 * is a reserved HaXe word
 		 */
-		superStyle;
+		cssSuper;
 		
 		/**
 		 * Align the top of the aligned subtree with 
@@ -849,7 +855,7 @@ import core.renderer.TextRenderer;
 	 * Sets the background color of an htmlElement. 
 	 * The color is drawn behind any background images.
 	 */
-	typedef BackgroundColor =  ColorValue;
+	typedef BackgroundColor =  CSSColor;
 	
 	/**
 	 * Set a background image of an htmlElement. An htmlElement can
@@ -1091,6 +1097,37 @@ import core.renderer.TextRenderer;
 		cssAuto;
 	}
 
+			// USER INTERFACE STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * This property specifies the type of cursor to be displayed for the pointing device.
+	 * 
+	 * TODO : missing values
+	 */
+	enum Cursor {
+		
+		/**
+		 * The UA determines the cursor to display based on the current context.
+		 */
+		auto;
+		
+		/**
+		 * A simple crosshair (e.g., short line segments resembling a "+" sign). 
+		 */
+		crosshair;
+		
+		/**
+		 * The platform-dependent default cursor. Often rendered as an arrow. 
+		 */
+		cssDefault;
+		
+		/**
+		 * The cursor is a pointer that indicates a link. 
+		 */
+		pointer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1235,6 +1272,10 @@ import core.renderer.TextRenderer;
 		var textAlign:TextAlign;
 		var color:ColorData;
 		
+		/**
+		 * user interface
+		 */
+		var cursor:Cursor;
 	}
 
 	/**
@@ -1293,7 +1334,7 @@ import core.renderer.TextRenderer;
 	 */
 	typedef DefaultStylesData = {
 		var fontFamily:Array<FontFamily>;
-		var color:ColorValue;
+		var color:CSSColor;
 	}
 	
 	/**

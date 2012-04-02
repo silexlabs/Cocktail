@@ -141,7 +141,7 @@ class FontAndTextStylesComputer
 			case sub:
 				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
 				
-			case superStyle:
+			case cssSuper:
 				verticalAlign = containingHTMLElementFontMetricsData.superscriptOffset;
 				
 			case textTop:
@@ -196,7 +196,7 @@ class FontAndTextStylesComputer
 	 */
 	private static function getComputedColor(style:AbstractStyle):ColorData
 	{
-		return UnitManager.getColorDataFromColorValue(style.color);
+		return UnitManager.getColorDataFromCSSColor(style.color);
 	}
 	
 	/**

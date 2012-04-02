@@ -86,5 +86,5 @@ typedef PositionOffset = core.style.StyleData.PositionOffset;
  */
 typedef Length = core.unit.UnitData.Length;
 typedef ImageValue = core.unit.UnitData.ImageValue;
-typedef ColorValue = core.unit.UnitData.ColorValue;
+typedef Color = core.unit.UnitData.CSSColor;
 typedef ColorKeyword = core.unit.UnitData.ColorKeyword;

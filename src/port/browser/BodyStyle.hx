@@ -8,7 +8,7 @@
 package port.browser;
 
 import core.HTMLElement;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.style.AbstractBodyStyle;
 import core.style.StyleData;
 

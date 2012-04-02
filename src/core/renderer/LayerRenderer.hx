@@ -1,6 +1,6 @@
 package core.renderer;
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import haxe.Log;
 /*
 	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
@@ -86,7 +86,7 @@ class LayerRenderer
 					nativeElements.push(childrenBlockContainerBackground[i]);
 				}
 			
-				#if (flash9 ||nme)
+				#if (flash9 || nme)
 				for (i in 0...nativeElements.length)
 				{
 					nativeElements[i].x += _rootRenderer.bounds.x;
@@ -142,19 +142,8 @@ class LayerRenderer
 			
 			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].renderBackground();
 			
-			
-			
 			for (j in 0...nativeElements.length)
 			{
-				#if flash9
-				if (true == true)
-				{
-					nativeElements[j].x += childrenBlockContainer[i].style.computedStyle.marginLeft;
-					nativeElements[j].y += childrenBlockContainer[i].style.computedStyle.marginTop;
-				}
-				#end
-				
-					
 				ret.push(nativeElements[j]);
 			}
 		}
@@ -173,18 +162,20 @@ class LayerRenderer
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...rootRenderer.children.length)
+		for (i in 0...rootRenderer.childNodes.length)
 		{
-			if (rootRenderer.children[i].layerRenderer == this)
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			
+			if (child.layerRenderer == this)
 			{
-				if (rootRenderer.children[i].canHaveChildren() == true)
+				if (child.canHaveChildren() == true)
 				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer.children[i]));
+					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(child));
 					for (j in 0...childElementRenderer.length)
 					{
 						ret.push(childElementRenderer[j]);
 					}
-					ret.push(cast(rootRenderer.children[i]));
+					ret.push(cast(child));
 				}
 			}
 		}
@@ -225,15 +216,17 @@ class LayerRenderer
 		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
 		//loop in all the children of the root renderer of this LayerRenderer
-		for (i in 0...rootRenderer.children.length)
+		for (i in 0...rootRenderer.childNodes.length)
 		{
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			
 			//if the child uses this layer
-			if (rootRenderer.children[i].layerRenderer == referenceLayer)
+			if (child.layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (rootRenderer.children[i].canHaveChildren() == true && rootRenderer.children[i].style.display != inlineBlock)
+				if (child.canHaveChildren() == true && child.style.display != inlineBlock)
 				{
-					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(rootRenderer.children[i]), referenceLayer);
+					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
 					for (j in 0...childElementRenderer.length)
 					{
 						childLayers.push(childElementRenderer[j]);
@@ -243,7 +236,7 @@ class LayerRenderer
 			//if the child has a different LayerRenderer, store it in the childLayers array
 			else
 			{
-				childLayers.push(rootRenderer.children[i].layerRenderer);
+				childLayers.push(child.layerRenderer);
 			}
 		}
 		
@@ -276,7 +269,7 @@ class LayerRenderer
 						var ne = d[l].render();
 						for (m in 0...ne.length)
 						{
-							#if (flash9 ||nme)
+							#if (flash9 || nme)
 							ne[m].x += inFlowChildren[i].bounds.x;
 							ne[m].y += inFlowChildren[i].bounds.y;
 							#end
@@ -355,23 +348,24 @@ class LayerRenderer
 		}
 		else
 		{
-			for (i in 0...rootRenderer.children.length)
+			for (i in 0...rootRenderer.childNodes.length)
 			{
+				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 				
-				if (rootRenderer.children[i].layerRenderer == this)
+				if (child.layerRenderer == this)
 				{
-					if (rootRenderer.children[i].isPositioned() == false)
+					if (child.isPositioned() == false)
 					{
-						ret.push(rootRenderer.children[i]);
-						if (rootRenderer.children[i].canHaveChildren() == true)
+						ret.push(child);
+						if (child.canHaveChildren() == true)
 						{
-							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(rootRenderer.children[i]));
+							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
 							for (j in 0...childElementRenderer.length)
 							{
-								if (rootRenderer.children[i].establishesNewFormattingContext() == true)
+								if (child.establishesNewFormattingContext() == true)
 								{
-									childElementRenderer[j].bounds.x += rootRenderer.children[i].bounds.x;
-									childElementRenderer[j].bounds.y += rootRenderer.children[i].bounds.y;
+									childElementRenderer[j].bounds.x += child.bounds.x;
+									childElementRenderer[j].bounds.y += child.bounds.y;
 								}
 							
 								ret.push(childElementRenderer[j]);

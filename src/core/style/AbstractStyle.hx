@@ -8,7 +8,7 @@
 package core.style;
 
 import core.geom.Matrix;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.background.BackgroundManager;
 import core.HTMLElement;
 import core.style.computer.BackgroundStylesComputer;
@@ -187,8 +187,8 @@ class AbstractStyle
 	private var _fontVariant:FontVariant;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
 	
-	private var _color:ColorValue;
-	public var color(getColor, setColor):ColorValue;
+	private var _color:Color;
+	public var color(getColor, setColor):Color;
 	
 	/**
 	 * text styles
@@ -231,6 +231,12 @@ class AbstractStyle
 	
 	private var _overflowY:Overflow;
 	public var overflowY(getOverflowY,  setOverflowY):Overflow;
+	
+	/**
+	 * user interface styles
+	 */
+	private var _cursor:Cursor;
+	public var cursor(getCursor, setCursor):Cursor;
 	
 	////////////////////////////////
 	
@@ -329,7 +335,7 @@ class AbstractStyle
 		_cssFloat = CSSFloat.none;
 		_clear = Clear.none;
 		
-		_backgroundColor = ColorValue.transparent;
+		_backgroundColor = Color.transparent;
 		_backgroundImage = [BackgroundImage.none];
 		_backgroundRepeat = [{
 			x:BackgroundRepeatValue.repeat,
@@ -370,6 +376,8 @@ class AbstractStyle
 		}
 		
 		_transform = Transform.none;
+		
+		_cursor = Cursor.cssDefault;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
 		_fontFamily = defaultStyles.fontFamily;
@@ -432,7 +440,8 @@ class AbstractStyle
 			backgroundImage:[],
 			backgroundClip:[],
 			backgroundPosition:[],
-			backgroundRepeat:[]
+			backgroundRepeat:[],
+			cursor:Cursor.cssDefault
 		};
 	}
 	
@@ -445,7 +454,7 @@ class AbstractStyle
 	{
 		return {
 			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
-			color:ColorValue.keyword(ColorKeyword.black)
+			color:Color.keyword(ColorKeyword.black)
 		}
 	}
 	
@@ -531,6 +540,22 @@ class AbstractStyle
 				_marginTop = _marginBottom = Margin.length(em(1.12));
 				_marginLeft = _marginRight = Margin.length(px(40));
 				
+			case "strong" : 
+				_fontWeight = FontWeight.bolder;
+				
+			case "big" : 
+				_fontSize = FontSize.length(em(1.17));
+				
+			case "small" :
+				_fontSize = FontSize.length(em(0.83));
+				
+			case "sub" : 
+				_fontSize = FontSize.length(em(0.83));
+				_verticalAlign = VerticalAlign.sub;
+				
+			case "sup" :
+				_fontSize = FontSize.length(em(0.83));
+				_verticalAlign = VerticalAlign.cssSuper;
 		}
 	}
 	
@@ -546,7 +571,7 @@ class AbstractStyle
 		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(cast(this));
 		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
 		
-		parentElementRenderer.addChild(elementRenderer);
+		parentElementRenderer.appendChild(elementRenderer);
 		
 		return elementRenderer;
 	}
@@ -765,8 +790,6 @@ class AbstractStyle
 			//a relative HTMLElement is both inserted in the flow
 			//and positioned
 			//
-			//TODO : relative element are not placed correctly when a margin is applied to the formatting
-			//context root
 			if (isRelativePositioned() == true)
 			{
 				formattingContext.insertElement(_elementRenderer);
@@ -1554,7 +1577,7 @@ class AbstractStyle
 		return _lineHeight = value;
 	}
 	
-	private function setColor(value:ColorValue):ColorValue
+	private function setColor(value:Color):Color
 	{
 		invalidateText();
 		return _color = value;
@@ -1782,7 +1805,7 @@ class AbstractStyle
 		return _letterSpacing;
 	}
 	
-	private function getColor():ColorValue
+	private function getColor():Color
 	{
 		return _color;
 	}
@@ -1905,5 +1928,15 @@ class AbstractStyle
 	private function getOverflowY():Overflow
 	{
 		return _overflowY;
+	}
+	
+	private function setCursor(value:Cursor):Cursor
+	{
+		return _cursor = value;
+	}
+	
+	private function getCursor():Cursor
+	{
+		return _cursor;
 	}
 }

@@ -7,7 +7,7 @@
 */
 package port.flash_player;
 
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.drawing.AbstractDrawingManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;

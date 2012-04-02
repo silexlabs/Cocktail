@@ -10,7 +10,7 @@ package core;
 /**
  * Set the right runtime specific EmbeddedStyle at compile-time
  */
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 typedef EmbeddedStyle =  core.style.AbstractEmbeddedStyle;
 
 #elseif js

@@ -9,18 +9,18 @@ package core.mouse;
 
 
 //import the right runtime implementations
-#if (flash9 || cpp || nme)
-import port.flash_player.mouse.MouseCursor;
+#if (flash9 || nme)
+import port.flash_player.MouseCursor;
 
 #elseif js
-import port.browser.mouse.MouseCursor;
+import port.browser.MouseCursor;
 
 #elseif doc
 class MouseCursor extends core.mouse.AbstractMouseCursor { }
 
 #end
 
-import core.mouseMouseData;
+import core.mouse.MouseData;
 
 /**
  * This class manages the mouse cursor display.

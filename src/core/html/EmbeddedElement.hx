@@ -8,9 +8,12 @@
 package core.html;
 
 import core.dom.Node;
-
- #if (flash9 || cpp || nme)
 import core.NativeElement;
+
+import core.EmbeddedStyle;
+
+
+ #if (flash9 || nme)
 import port.flash_player.HTMLElement;
 
 #elseif js

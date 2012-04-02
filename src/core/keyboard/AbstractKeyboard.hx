@@ -10,7 +10,7 @@ package core.keyboard;
 import core.event.KeyboardEvent;
 import core.HTMLElement;
 import haxe.Log;
-import core.nativeElement.NativeElement;
+import core.NativeElement;
 import core.keyboard.KeyboardData;
 
 /**
