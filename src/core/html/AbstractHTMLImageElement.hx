@@ -53,14 +53,16 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	/////////////////////
 	
 	/**
-	 * The instrinsic width of the loaded picture
+	 * The instrinsic width of the loaded picture or
+	 * return 0 if not available
 	 */
-	public var naturalWidth(get_naturalWidth, never):Null<Int>;
+	public var naturalWidth(get_naturalWidth, never):Int;
 	
 	/**
-	 * The instrinsic height of the loaded picture
+	 * The instrinsic height of the loaded picture  or
+	 * return 0 if not available
 	 */
-	public var naturalHeight(get_naturalHeight, never):Null<Int>;
+	public var naturalHeight(get_naturalHeight, never):Int;
 	
 	/**
 	 * set/get the URL of the loaded picture.
@@ -167,13 +169,21 @@ class AbstractHTMLImageElement extends EmbeddedElement
 		return _src;
 	}
 	
-	private function get_naturalHeight():Null<Int>
+	private function get_naturalHeight():Int
 	{
+		if (_intrinsicHeight == null)
+		{
+			return 0;
+		}
 		return _intrinsicHeight;
 	}
 	
-	private function get_naturalWidth():Null<Int>
+	private function get_naturalWidth():Int
 	{
+		if (_intrinsicWidth == null)
+		{
+			return 0;
+		}
 		return _intrinsicWidth;
 	}
 	
