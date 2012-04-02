@@ -47,6 +47,7 @@ class Attr extends Node
 	public function new(name:String) 
 	{
 		_name = name;
+		_specified = false;
 		super();
 	}
 	
@@ -69,6 +70,11 @@ class Attr extends Node
 		return _value;
 	}
 	
+	override private function set_nodeValue(value:String):String 
+	{
+		return this.value = value;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +91,7 @@ class Attr extends Node
 	
 	private function set_value(value:String):String 
 	{
+		_specified = true;
 		return _value = value;
 	}
 	
