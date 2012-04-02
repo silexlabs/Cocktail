@@ -124,6 +124,7 @@ class Element extends Node
 		{
 			attribute = new Attr(name);
 			_attributes.setNamedItem(attribute);
+			attribute.ownerElement = this;
 		}
 		
 		attribute.value = value;
@@ -161,6 +162,7 @@ class Element extends Node
 	 */
 	public function setAttributeNode(newAttr:Attr):Attr
 	{
+		newAttr.ownerElement = this;
 		return cast(_attributes.setNamedItem(newAttr));
 	}
 	
@@ -176,7 +178,60 @@ class Element extends Node
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		_attributes.removeNamedItem(name);
+		var removedAttribute:Attr = cast(_attributes.removeNamedItem(name));
+		
+		if (removedAttribute != null)
+		{
+			removedAttribute.ownerElement = null;
+		}
+	}
+	
+	/**
+	 * If the parameter isId is true, this method 
+	 * declares the specified attribute to be a user-determined 
+	 * ID attribute. This affects the value of Attr.isId and
+	 * the behavior of Document.getElementById, but does not
+	 * change any schema that may be in use, in particular this
+	 * does not affect the Attr.schemaTypeInfo of the specified
+	 * Attr node. Use the value false for the parameter isId to
+	 * undeclare an attribute for being a user-determined ID attribute. 
+	 * 
+	 * TODO : implement schemaTypeInfo
+	 * 
+	 * @param	name The name of the attribute.
+	 * @param	isId Whether the attribute is a of type ID.
+	 */
+	public function setIdAttribute(name:String, isId:Bool):Void
+	{
+		var idAttribute:Attr = cast(_attributes.getNamedItem(name));
+		if (idAttribute == null)
+		{
+			idAttribute = new Attr(name);
+			_attributes.setNamedItem(idAttribute);
+			idAttribute.ownerElement = this;
+		}
+		
+		idAttribute.isId = isId;
+	}
+	
+	/**
+	 * If the parameter isId is true, this method declares
+	 * the specified attribute to be a user-determined 
+	 * ID attribute. This affects the value of Attr.isId
+	 * and the behavior of Document.getElementById, but does
+	 * not change any schema that may be in use, in particular
+	 * this does not affect the Attr.schemaTypeInfo of the
+	 * specified Attr node. Use the value false for the parameter
+	 * isId to undeclare an attribute for being a user-determined
+	 * ID attribute. 
+	 * 
+	 * @param	idAttr The attribute node.
+	 * @param	isId Whether the attribute is a of type ID.
+	 */
+	public function setIdAttributeNode(idAttr:Attr, isId:Bool):Void
+	{
+		idAttr.isId = isId;
+		_attributes.setNamedItem(idAttr);
 	}
 	
 	/**

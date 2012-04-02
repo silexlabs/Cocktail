@@ -129,14 +129,16 @@ class Document extends Node
 			//Id attribute if defined
 			for (i in 0...attributes.length)
 			{
+				
 				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
+				
 				//if an Id attribute is found and specified
 				if (attribute.isId == true && attribute.specified == true)
 				{
 					//if it matches the searched element Id, return the element
 					if (attribute.value == elementId)
 					{
-						return attribute.ownerElement;
+						return element;
 					}
 				}
 			}

@@ -52,6 +52,13 @@ class DOMTests
 		
 		Assert.equals(txt.nodeValue, "test text");
 		
+		Lib.document.body.appendChild(div);
+		div.setIdAttribute("id", true);
+		div.setAttribute("id", "myDiv");
+		var retrievedDiv = Lib.document.getElementById("myDiv");
+		
+		Assert.equals(div, retrievedDiv);
+		
 	}
 	
 	function testNode()
@@ -202,5 +209,11 @@ class DOMTests
 		
 		Assert.equals(attr.nodeValue, "value2");
 		Assert.equals(attr.value, "value2");
+		
+		var el = Lib.document.createElement("div");
+		el.setAttributeNode(attr);
+		
+		Assert.equals(attr.ownerElement, el);
+		
 	}
 }
