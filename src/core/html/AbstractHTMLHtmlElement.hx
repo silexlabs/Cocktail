@@ -8,7 +8,6 @@
 package core.html;
 
 import core.HTMLElement;
-
 #if (flash9 || nme)
 import port.flash_player.HTMLElement;
 

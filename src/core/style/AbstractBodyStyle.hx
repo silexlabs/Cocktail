@@ -237,16 +237,6 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	/**
-	 * The HTMLBodyElement is always considered
-	 * positioned as it always positions its positioned
-	 * children
-	 */
-	override public function isPositioned():Bool
-	{
-		return true;
-	}
-	
-	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
