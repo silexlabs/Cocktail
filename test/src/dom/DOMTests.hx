@@ -14,7 +14,10 @@ package dom;
 
 import cocktail.Cocktail;
 import cocktail.Lib;
+import core.dom.Attr;
+import core.dom.Element;
 import core.dom.Node;
+import core.dom.Text;
 
 import utest.Assert;
 import utest.Runner;
@@ -53,35 +56,25 @@ class DOMTests
 	{
 		
 		var node = new Node();
-		
 		var childNode = new Node();
-		
 		node.appendChild(childNode);
 		
-		Assert.isTrue(node.hasChildNodes);
-		
+		Assert.isTrue(node.hasChildNodes());
 		Assert.equals(node.childNodes.length, 1);
-		
 		Assert.equals(node.firstChild, childNode);
-		
 		Assert.equals(node.lastChild, childNode);
-		
 		Assert.equals(childNode.parentNode, node);
 		
 		var siblingNode = new Node();
-		
 		node.appendChild(siblingNode);
 		
 		Assert.equals(childNode.nextSibling, siblingNode);
-		
 		Assert.equals(siblingNode.previousSibling, childNode);
 		
 		var removedNode = node.removeChild(childNode);
 		
 		Assert.equals(removedNode, childNode);
-		
 		Assert.isTrue(removedNode.isSameNode(childNode));
-		
 		Assert.isNull(childNode.parentNode);
 		
 		siblingNode.appendChild(childNode);
@@ -89,7 +82,6 @@ class DOMTests
 		Assert.equals(siblingNode.firstChild, childNode);
 		
 		var nodeInsertedBefore = new Node();
-		
 		siblingNode.insertBefore(nodeInsertedBefore, childNode);
 		
 		Assert.equals(siblingNode.firstChild, nodeInsertedBefore);
@@ -97,8 +89,57 @@ class DOMTests
 		var replacedNode = siblingNode.replaceChild(node, childNode);
 		
 		Assert.equals(replacedNode, childNode);
-		
 		Assert.equals(siblingNode.lastChild, node);
+	}
+	
+	function testElement()
+	{
+		var el = new Element("div");
+		
+		Assert.equals(el.tagName, "div");
+		Assert.equals(el.nodeName, "div");
+		Assert.isNull(el.nodeValue);
+		
+		var childEl = new Element("div");
+		el.appendChild(childEl);
+		
+		Assert.equals(el.firstElementChild, childEl);
+		Assert.equals(el.lastElementChild, childEl);
+		Assert.isNull(el.nextElementSibling);
+		
+		var txt = new Text();
+		el.appendChild(txt);
+		
+		Assert.equals(el.firstElementChild, childEl);
+		
+		var siblingEl =  new Element("div");
+		
+		el.appendChild(siblingEl);
+		
+		Assert.equals(siblingEl.previousElementSibling, childEl);
+		Assert.equals(childEl.nextElementSibling, siblingEl);
+		Assert.equals(el.childElementCount, 2);
+		
+		el.setAttribute("test", "value");
+		
+		Assert.equals(el.getAttribute("test"), "value");
+		
+		el.setAttribute("test", "newValue");
+		
+		Assert.equals(el.getAttribute("test"), "newValue");
+		Assert.isNull(el.getAttribute("undefined"));
+		Assert.isTrue(el.hasAttribute("test"));
+		Assert.isFalse(el.hasAttribute("undefined"));
+		Assert.isTrue(el.hasAttributes());
+		
+		el.removeAttribute("test");
+		Assert.isFalse(el.hasAttribute("test"));
+		Assert.isFalse(el.hasAttributes());
+		
+		var attr:Attr = new Attr("test");
+		el.setAttributeNode(attr);
+		
+		Assert.equals(el.getAttributeNode("test"), attr);
 		
 	}
 	
