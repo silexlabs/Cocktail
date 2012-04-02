@@ -80,6 +80,27 @@ class Document extends Node
 	}
 	
 	/**
+	 * Creates an Attr of the given name. Note that the 
+	 * Attr instance can then be set on an Element using
+	 * the setAttributeNode method.
+	 * To create an attribute with a qualified name
+	 * and namespace URI, use the createAttributeNS method.
+	 * 
+	 * TODO : implement localName, prefix, namespaceURI
+	 * 
+	 * @param	name The name of the attribute.
+	 * @return A new Attr object with the nodeName attribute 
+	 * set to name, and localName, prefix, 
+	 * and namespaceURI set to null. The value 
+	 * of the attribute is the empty string.
+	 */
+	public function createAttribute(name:String):Attr
+	{
+		var attribute:Attr = new Attr(name);
+		return attribute;
+	}
+	
+	/**
 	 * Returns the Element that has an ID attribute with the given value.
 	 * If no such element exists, this returns null.
 	 * If more than one element has an ID attribute with that value, return the first found one.

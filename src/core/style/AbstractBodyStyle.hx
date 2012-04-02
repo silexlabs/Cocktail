@@ -237,6 +237,24 @@ class AbstractBodyStyle extends ContainerStyle
 	}
 	
 	/**
+	 * The HTMLBodyElement is always an
+	 * offset parent
+	 */
+	override public function isOffsetParent():Bool
+	{
+		return true;
+	}
+	
+	/**
+	 * The HTMLBodyElement has no offset parent has it is
+	 * the first visual node of the document
+	 */
+	override public function getFirstPositionedAncestor():HTMLElement
+	{
+		return null;
+	}
+	
+	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
 	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext

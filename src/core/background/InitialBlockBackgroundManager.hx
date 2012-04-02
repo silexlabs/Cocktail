@@ -76,7 +76,6 @@ class InitialBlockBackgroundManager extends BackgroundManager
 			width:windowWidth,
 			height:windowHeight
 		}
-		
 		return window;
 	}
 	
