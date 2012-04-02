@@ -13,6 +13,7 @@ import core.dom.Element;
 import core.event.Event;
 import core.HTMLAnchorElement;
 import core.HTMLElement;
+import core.HTMLHtmlElement;
 import core.HTMLInputElement;
 import core.Window;
 
@@ -99,7 +100,7 @@ class HTMLDocument extends Document
 				element = new HTMLAnchorElement();
 				
 			case HTML_HTML_TAG_NAME:
-				element = new HTMLHtmlElement();
+				element = new HTMLHtmlElement(); 
 				
 			default:
 				element = new HTMLElement(tagName);

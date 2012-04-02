@@ -7,6 +7,7 @@
 */
 package core.html;
 
+import core.dom.Attr;
 import core.dom.Element;
 import core.dom.Node;
 import core.event.IEventTarget;
@@ -35,6 +36,11 @@ import core.style.StyleData;
  */
 class AbstractHTMLElement extends Element, implements IEventTarget
 {
+	/**
+	 * The name of the id attribute in HTML
+	 */
+	private static inline var HTML_ID_ATTRIBUTE:String = "id";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +192,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * This attribute assigns a name to an element. 
 	 * This name must be unique in a document.
 	 */
-	private var _id:String;
+	private var _id:Attr;
 	public var id(get_id, set_id):String;
 	
 	/////////////////////////////////
@@ -281,6 +287,9 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		
 		//init the style for this HTMLElement
 		initStyle();
+		
+		//init the Id attribute
+		initId();
 	}
 	
 	/**
@@ -318,6 +327,17 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	private function initStyle():Void
 	{
 		this._style = new ContainerStyle(cast(this));
+	}
+	
+	/**
+	 * instantiate the Id attribute
+	 * of the HTML element
+	 */
+	private function initId():Void
+	{
+		_id = new Attr(HTML_ID_ATTRIBUTE);
+		_id.isId = true;
+		setAttributeNode(_id);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -723,12 +743,12 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	private function get_id():String
 	{
-		return _id;
+		return _id.value;
 	}
 	
 	private function set_id(value:String):String
 	{
-		return _id = value;
+		return _id.value = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
