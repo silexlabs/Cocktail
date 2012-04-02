@@ -37,6 +37,8 @@ class HTMLDocument extends Document
 	
 	private static inline var HTML_ANCHOR_ELEMENT_TAG_NAME:String = "a";
 	
+	private static inline var HTML_HTML_TAG_NAME:String = "html";
+	
 	/**
 	 * The element that contains the content for the document.
 	 */
@@ -55,7 +57,11 @@ class HTMLDocument extends Document
 	public function new() 
 	{
 		super();
+		
 		_body = new HTMLBodyElement();
+		
+		_documentElement = new HTMLHtmlElement();
+		_documentElement.appendChild(_body);
 		
 		//TODO : should not be singleton
 		FocusManager.getInstance().bodyElement = cast(_body);
@@ -91,6 +97,9 @@ class HTMLDocument extends Document
 				
 			case HTML_ANCHOR_ELEMENT_TAG_NAME:
 				element = new HTMLAnchorElement();
+				
+			case HTML_HTML_TAG_NAME:
+				element = new HTMLHtmlElement();
 				
 			default:
 				element = new HTMLElement(tagName);
