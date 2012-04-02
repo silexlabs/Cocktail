@@ -275,6 +275,17 @@ class FormattingContext
 					width : right - left,
 					height :  bottom - top,
 				}
+		
+		//need to implement better fix,
+		//sould not be negative
+		if (bounds.width < 0)
+		{
+			bounds.width = 0;
+		}
+		if (bounds.height < 0)
+		{
+			bounds.height = 0;
+		}
 				
 		return bounds;
 		

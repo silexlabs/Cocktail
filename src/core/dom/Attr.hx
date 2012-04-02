@@ -84,7 +84,7 @@ class Attr extends Node
 	
 	override private function get_nodeValue():String 
 	{
-		return _value;
+		return value;
 	}
 	
 	override private function set_nodeValue(value:String):String 
@@ -121,8 +121,13 @@ class Attr extends Node
 		return _name;
 	}
 	
+	//TODO : check if indeed suposed to return empty string
 	private function get_value():String 
 	{
+		if (_value == null)
+		{
+			return "";
+		}
 		return _value;
 	}
 	

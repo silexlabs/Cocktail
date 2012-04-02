@@ -1196,23 +1196,32 @@ class AbstractStyle
 		var parent:HTMLElement = cast(_htmlElement.parentNode);
 		
 		//loop in all the parents until a positioned or a null parent is found
-		var isPositioned:Bool = parent.style.isPositioned();
+		var isOffsetParent:Bool = parent.style.isOffsetParent();
 		
-		while (isPositioned == false)
+		while (isOffsetParent == false)
 		{
 			if (parent.parentNode != null)
 			{
 				parent = cast(parent.parentNode);
-				isPositioned = parent.style.isPositioned();
+				isOffsetParent = parent.style.isOffsetParent();
 			}
 			//break the loop if the current parent has no parent
 			else
 			{
-				isPositioned = true;
+				isOffsetParent = true;
 			}
 		}
 		
 		return parent;
+	}
+	
+	/**
+	 * Return wether this Style is the 
+	 * offset parent for its children
+	 */
+	public function isOffsetParent():Bool
+	{
+		return isPositioned();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

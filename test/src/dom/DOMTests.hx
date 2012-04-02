@@ -42,6 +42,7 @@ class DOMTests
 	
 	function testDocument()
 	{
+		
 		Assert.equals(Lib.document.nodeType, NodeType.DOCUMENT_NODE);
 		
 		var div = Lib.document.createElement("div");
@@ -53,11 +54,32 @@ class DOMTests
 		Assert.equals(txt.nodeValue, "test text");
 		
 		Lib.document.body.appendChild(div);
+		
 		div.setIdAttribute("id", true);
 		div.setAttribute("id", "myDiv");
 		var retrievedDiv = Lib.document.getElementById("myDiv");
 		
 		Assert.equals(div, retrievedDiv);
+		
+		var li = Lib.document.createElement("li");
+		
+		var li2 = Lib.document.createElement("li");
+		
+		li.appendChild(li2);
+		
+		Lib.document.body.appendChild(li);
+		
+		var lis = Lib.document.getElementsByTagName("li");
+		
+		Assert.equals(lis[0], li);
+		Assert.equals(lis[1], li2);
+		
+		
+		var attr = Lib.document.createAttribute("bim");
+		
+		Assert.equals(attr.nodeName, "bim");
+		Assert.equals(attr.value, "");
+		
 		
 	}
 	
