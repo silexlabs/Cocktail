@@ -758,6 +758,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		if (firstPositionedAncestor != null)
 		{
 			var parent:HTMLElement = cast(parentNode);
+			offsetLeft = parent.style.computedStyle.paddingLeft + parent.style.computedStyle.marginLeft;
 			
 			while (parent != firstPositionedAncestor)
 			{
@@ -780,6 +781,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		if (firstPositionedAncestor != null)
 		{
 			var parent:HTMLElement = cast(parentNode);
+			offsetTop = parent.style.computedStyle.paddingTop + parent.style.computedStyle.marginTop;
 			
 			while (parent != firstPositionedAncestor)
 			{
@@ -796,25 +798,29 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		_style.invalidate(true);
-		return _style.computedStyle.width;
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
 		_style.invalidate(true);
-		return _style.computedStyle.height;
+		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
+	//TODO : should be top border height
 	private function get_clientTop():Int
 	{
 		_style.invalidate(true);
-		return _style.computedStyle.paddingTop;
+		return 0;
 	}
 	
+	//TODO : should be left border width
 	private function get_clientLeft():Int
 	{
 		_style.invalidate(true);
-		return _style.computedStyle.paddingLeft;
+		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

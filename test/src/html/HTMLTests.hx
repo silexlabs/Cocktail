@@ -48,5 +48,39 @@ class HTMLTests
 		htmlEl.style.width = Dimension.length(px(50));
 		
 		Assert.equals(htmlEl.clientWidth, 50);
+		Assert.equals(htmlEl.offsetWidth, 50);
+		
+		htmlEl.style.paddingLeft = Padding.length(px(50));
+		
+		Assert.equals(htmlEl.clientWidth, 100);
+		Assert.equals(htmlEl.offsetWidth, 100);
+		
+		htmlEl.style.paddingRight = Padding.length(px(50));
+		
+		Assert.equals(htmlEl.offsetWidth, 150);
+		Assert.equals(htmlEl.clientWidth, 150);
+		
+		htmlEl.style.height = Dimension.length(px(50));
+		
+		Assert.equals(htmlEl.clientHeight, 50);
+		Assert.equals(htmlEl.offsetHeight, 50);
+		
+		htmlEl.style.paddingTop = Padding.length(px(50));
+		
+		Assert.equals(htmlEl.clientHeight, 100);
+		Assert.equals(htmlEl.offsetHeight, 100);
+		
+		htmlEl.style.paddingBottom = Padding.length(px(50));
+		
+		Assert.equals(htmlEl.clientHeight, 150);
+		Assert.equals(htmlEl.offsetHeight, 150);
+		
+		Assert.equals(htmlEl.offsetParent, Lib.document.body);
+		
+		Assert.equals(htmlEl.clientTop, 0);
+		Assert.equals(htmlEl.clientLeft,0);
+		Assert.equals(htmlEl.offsetTop, 8);
+		Assert.equals(htmlEl.offsetLeft, 8);
+		
 	}
 }
