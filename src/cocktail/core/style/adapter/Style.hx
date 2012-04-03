@@ -1,10 +1,26 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.style.adapter;
 
+import cocktail.core.unit.UnitManager;
+import cocktail.core.style.StyleData;
+import haxe.Log;
+
 /**
- * ...
+ * This class is the public CSS Style API, similar
+ * to using the Style object in JavaScript.
+ * 
+ * It proxies access to the CoreStyle which use typed
+ * style object and set/get those styles using CSS
+ * which it converts into typed style object
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class Style 
 {
 	/**
@@ -87,15 +103,21 @@ class Style
 	 */
 	public var cursor(get_cursor, set_cursor):String;
 	
-	
+	/**
+	 * A ref to the CoreStyle instance wrapped 
+	 * by this Style adapter
+	 */
 	private var _coreStyle:CoreStyle;
 	
+	/**
+	 * class constructor. Store the ref to 
+	 * the CoreStyle
+	 */
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
 	}
 
-	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -127,6 +149,7 @@ class Style
 	
 	private function set_marginLeft(value:String):String 
 	{
+		_coreStyle.marginLeft = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
 	
@@ -137,6 +160,7 @@ class Style
 	
 	private function set_marginRight(value:String):String 
 	{
+		_coreStyle.marginRight = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
 	
@@ -147,6 +171,7 @@ class Style
 	
 	private function set_marginTop(value:String):String 
 	{
+		_coreStyle.marginTop = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
 	
@@ -157,6 +182,7 @@ class Style
 	
 	private function set_marginBottom(value:String):String 
 	{
+		_coreStyle.marginBottom = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
 	
@@ -167,6 +193,7 @@ class Style
 	
 	private function set_paddingLeft(value:String):String 
 	{
+		_coreStyle.paddingLeft = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
 	
@@ -177,6 +204,7 @@ class Style
 	
 	private function set_paddingRight(value:String):String
 	{
+		_coreStyle.paddingRight = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
 	
@@ -187,6 +215,7 @@ class Style
 	
 	private function set_paddingTop(value:String):String 
 	{
+		_coreStyle.paddingTop = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
 	
@@ -197,6 +226,7 @@ class Style
 	
 	private function set_paddingBottom(value:String):String 
 	{
+		_coreStyle.paddingBottom = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
 	
@@ -227,6 +257,7 @@ class Style
 	
 	private function set_width(value:String):String 
 	{
+		_coreStyle.width = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
 	
@@ -237,6 +268,7 @@ class Style
 	
 	private function set_height(value:String):String 
 	{
+		_coreStyle.height = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
 	
@@ -482,6 +514,8 @@ class Style
 	
 	private function set_backgroundColor(value:String):String
 	{
+		_coreStyle.backgroundColor = UnitManager.colorEnum(value);
+		
 		return value;
 	}
 	
