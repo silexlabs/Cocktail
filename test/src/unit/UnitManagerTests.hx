@@ -14,6 +14,7 @@ import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import cocktail.Lib;
+import cocktail.core.unit.UnitManager;
 import cocktail.Cocktail;
 
 /**
@@ -38,58 +39,75 @@ class UnitManagerTests
 		container.appendChild(text);
 		Lib.document.body.appendChild(container);
 	}
+    public function testUnits() {
+/*
+		Assert.equals("http://test.com", UnitManager.string2URLData('url("http://test.com")'));
+		Assert.equals("http://test.com", UnitManager.string2URLData('url( "http://test.com" )'));
+		Assert.equals("http://test.com", UnitManager.string2URLData('url(http://test.com)'));
+		Assert.equals("http://test.com", UnitManager.string2URLData(' url(http://test.com)'));
+		Assert.equals("http://test.com", UnitManager.string2URLData(' url( http://test.com ) '));
+ /*
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px 2pt 3px 4%"));
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList(" 1px 2pt 3px 4%"));
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px   2pt  3px 4%"));
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("  1px 2pt 3px   4% "));
+		
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px,2pt,3px,4%", ","));
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px, 2pt, 3px, 4%", ","));
+		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px,2pt ,   3px , 4%", ","));
+/**/
+	}
     public function testBoxStyleEnum() {
 		// "px" tests 
-		Assert.same(Margin.length(Length.px(100)), CSSParser.boxStyleEnum(Margin, "100px"));		
-		Assert.same(Margin.length(Length.px(100)), CSSParser.boxStyleEnum(Margin, "100 px"));
-		Assert.same(Margin.length(Length.px(100)), CSSParser.boxStyleEnum(Margin, "100px "));
-		Assert.same(Margin.length(Length.px(100)), CSSParser.boxStyleEnum(Margin, "100 px "));
+		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100px"));		
+		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100 px"));
+		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100px "));
+		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100 px "));
 
 		// "%" tests
-		Assert.same(Margin.percent(100), CSSParser.boxStyleEnum(Margin, "100%"));		
-		Assert.same(Margin.percent((100)), CSSParser.boxStyleEnum(Margin, "100 %"));
-		Assert.same(Margin.percent((100)), CSSParser.boxStyleEnum(Margin, "100% "));
-		Assert.same(Margin.percent((100)), CSSParser.boxStyleEnum(Margin, "100 % "));
+		Assert.same(Margin.percent(100), UnitManager.boxStyleEnum(Margin, "100%"));		
+		Assert.same(Margin.percent((100)), UnitManager.boxStyleEnum(Margin, "100 %"));
+		Assert.same(Margin.percent((100)), UnitManager.boxStyleEnum(Margin, "100% "));
+		Assert.same(Margin.percent((100)), UnitManager.boxStyleEnum(Margin, "100 % "));
 
 		// "auto"
-		Assert.same(Margin.cssAuto, CSSParser.boxStyleEnum(Margin, "auto"));
+		Assert.same(Margin.cssAuto, UnitManager.boxStyleEnum(Margin, "auto"));
 	}
    public function testColor() {
 		// keywords and transparent
-		Assert.same(Color.keyword(ColorKeyword.yellow), CSSParser.colorEnum("yellow"));
-		Assert.same(Color.transparent, CSSParser.colorEnum("transparent"));
+		Assert.same(Color.keyword(ColorKeyword.yellow), UnitManager.colorEnum("yellow"));
+		Assert.same(Color.transparent, UnitManager.colorEnum("transparent"));
 		
 		// rgba
-		Assert.same(Color.rgba(10, 20, 30, .5), CSSParser.colorEnum("rgba(10,20,30,.5)"));
-		Assert.same(Color.rgba(10, 20, 30, .5), CSSParser.colorEnum("rgba(10,20,30,0.5)"));
-		Assert.same(Color.rgba(10, 20, 30, .5), CSSParser.colorEnum("rgba(10,20,30 ,.5)"));
-		Assert.same(Color.rgba(10, 20, 30, .5), CSSParser.colorEnum("rgba(10,20, 30 ,.5)"));
-		Assert.same(Color.rgba(10, 20, 30, .5), CSSParser.colorEnum("rgba( 10,20,30,.5) "));
+		Assert.same(Color.rgba(10, 20, 30, .5), UnitManager.colorEnum("rgba(10,20,30,.5)"));
+		Assert.same(Color.rgba(10, 20, 30, .5), UnitManager.colorEnum("rgba(10,20,30,0.5)"));
+		Assert.same(Color.rgba(10, 20, 30, .5), UnitManager.colorEnum("rgba(10,20,30 ,.5)"));
+		Assert.same(Color.rgba(10, 20, 30, .5), UnitManager.colorEnum("rgba(10,20, 30 ,.5)"));
+		Assert.same(Color.rgba(10, 20, 30, .5), UnitManager.colorEnum("rgba( 10,20,30,.5) "));
 
 		// rgb
-		Assert.same(Color.rgb(10, 20, 30), CSSParser.colorEnum("rgb(10,20,30)"));
-		Assert.same(Color.rgb(10, 20, 30), CSSParser.colorEnum("rgb(10,20 ,30)"));
-		Assert.same(Color.rgb(10, 20, 30), CSSParser.colorEnum("rgb(10,20, 30)"));
-		Assert.same(Color.rgb(10, 20, 30), CSSParser.colorEnum("rgb( 10,20,30) "));
+		Assert.same(Color.rgb(10, 20, 30), UnitManager.colorEnum("rgb(10,20,30)"));
+		Assert.same(Color.rgb(10, 20, 30), UnitManager.colorEnum("rgb(10,20 ,30)"));
+		Assert.same(Color.rgb(10, 20, 30), UnitManager.colorEnum("rgb(10,20, 30)"));
+		Assert.same(Color.rgb(10, 20, 30), UnitManager.colorEnum("rgb( 10,20,30) "));
 
 		// hex
-		Assert.same(Color.hex("6789AB"), CSSParser.colorEnum("#6789AB"));
-		Assert.same(Color.hex("789AB"), CSSParser.colorEnum("#789AB"));
-		Assert.same(Color.hex("89AB"), CSSParser.colorEnum("#89AB"));
-		Assert.same(Color.hex("AB"), CSSParser.colorEnum("#AB"));
+		Assert.same(Color.hex("6789AB"), UnitManager.colorEnum("#6789AB"));
+		Assert.same(Color.hex("789AB"), UnitManager.colorEnum("#789AB"));
+		Assert.same(Color.hex("89AB"), UnitManager.colorEnum("#89AB"));
+		Assert.same(Color.hex("AB"), UnitManager.colorEnum("#AB"));
 	}
     public function testSetterGetter() {
 		// "px" tests 
 		container.style.marginLeft = "100px";
-		Assert.same(Margin.length(Length.px(100)), container.style.marginLeft);		
-		return;
+		Assert.same(Margin.length(Length.px(100)), container.coreStyle.marginLeft);		
 
 		// "%" tests
 		container.style.marginLeft = "100%";
-		Assert.same(Margin.percent((100)), container.style.marginLeft);
+		Assert.same(Margin.percent((100)), container.coreStyle.marginLeft);
 
 		// "auto"
 		container.style.marginLeft = "auto";
-		Assert.same(Margin.cssAuto, container.style.marginLeft);
+		Assert.same(Margin.cssAuto, container.coreStyle.marginLeft);
 	}
 }
