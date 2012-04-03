@@ -261,6 +261,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * internally doing all the style heavy lifting.
 	 * It can be used by end-user when they want to
 	 * define styles using typed object instead of string
+	 * 
+	 * TODO : update doc for this all around
 	 */
 	private var _coreStyle:CoreStyle;
 	public var coreStyle(get_coreStyle, never):CoreStyle;
@@ -301,7 +303,10 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		//init key listeners
 		initKeyboard();
 		
-		//init the style for this HTMLElement
+		//init the core style for this HTMLElement
+		initCoreStyle();
+		
+		//init the CSS style adapter
 		initStyle();
 		
 		//init the Id attribute
@@ -340,9 +345,18 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * HTMLElement. Overriden by HTMLElements with
 	 * specific style objects, such as HTMLImageElement
 	 */
-	private function initStyle():Void
+	private function initCoreStyle():Void
 	{
 		this._coreStyle = new ContainerCoreStyle(cast(this));
+	}
+	
+	/**
+	 * Init the style adapter providing manipulation
+	 * of the styles through CSS strings
+	 */
+	private function initStyle():Void
+	{
+		_style = new Style(_coreStyle);
 	}
 	
 	/**

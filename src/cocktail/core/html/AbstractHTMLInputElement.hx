@@ -97,7 +97,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	 * TODO : implement a separate style
 	 * for form control ?
 	 */
-	override private function initStyle():Void
+	override private function initCoreStyle():Void
 	{
 		_coreStyle = new EmbeddedCoreStyle(this);
 	}

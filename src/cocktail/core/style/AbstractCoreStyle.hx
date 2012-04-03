@@ -1274,7 +1274,7 @@ class AbstractCoreStyle
 		//if the htmlElement has a parent
 		if (firstPositionedAncestor != null)
 		{
-			var firstPositionedAncestorStyle:ContainerStyle = cast(firstPositionedAncestor.coreStyle);
+			var firstPositionedAncestorStyle:ContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
 			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
 		}
 		//if the HTMLElement has no parent, return the Window data
