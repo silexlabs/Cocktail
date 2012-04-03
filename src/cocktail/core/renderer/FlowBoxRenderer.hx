@@ -53,7 +53,7 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	override public function establishesNewFormattingContext():Bool
 	{
-		return _style.establishesNewFormattingContext();
+		return coreStyle.establishesNewFormattingContext();
 	}
 	
 	override public function isEmbedded():Bool

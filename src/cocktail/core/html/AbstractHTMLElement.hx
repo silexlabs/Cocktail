@@ -255,8 +255,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * This Style object stores the styles of
 	 * an HTMLElement and manages how they are applied
 	 */
-	private var _style:Style;
-	public var style(get_style, never):Style;
+	private var _coreStyle:Style;
+	public var coreStyle(get_coreStyle, never):Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -326,7 +326,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		this._style = new ContainerStyle(cast(this));
+		this._coreStyle = new ContainerStyle(cast(this));
 	}
 	
 	/**
@@ -349,7 +349,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		_style.invalidate();
+		_coreStyle.invalidate();
 		return newChild;
 	}
 	
@@ -359,7 +359,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		_style.invalidate();
+		_coreStyle.invalidate();
 		return oldChild;
 	}
 	
@@ -763,29 +763,29 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function get_offsetParent():HTMLElement
 	{
-		return _style.getFirstPositionedAncestor();
+		return _coreStyle.getFirstPositionedAncestor();
 	}
 	
 	private function get_offsetWidth():Int
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		_style.invalidate(true);
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		_coreStyle.invalidate(true);
+		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		_style.invalidate(true);
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		_coreStyle.invalidate(true);
+		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
 	//TODO : will it work for inline elements ? use ElementRenderer bounds ?
 	private function get_offsetLeft():Int
 	{
-		_style.invalidate(true);
+		_coreStyle.invalidate(true);
 		
 		var firstPositionedAncestor:HTMLElement = offsetParent;
 		
@@ -794,11 +794,11 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		if (firstPositionedAncestor != null)
 		{
 			var parent:HTMLElement = cast(parentNode);
-			offsetLeft = parent.style.computedStyle.paddingLeft + parent.style.computedStyle.marginLeft;
+			offsetLeft = parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
 			
 			while (parent != firstPositionedAncestor)
 			{
-				offsetLeft += parent.style.computedStyle.paddingLeft + parent.style.computedStyle.marginLeft;
+				offsetLeft += parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
 				parent = cast(parent.parentNode);
 			}
 		}
@@ -808,7 +808,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	private function get_offsetTop():Int
 	{
-		_style.invalidate(true);
+		_coreStyle.invalidate(true);
 		
 		var firstPositionedAncestor:HTMLElement = offsetParent;
 		
@@ -817,11 +817,11 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		if (firstPositionedAncestor != null)
 		{
 			var parent:HTMLElement = cast(parentNode);
-			offsetTop = parent.style.computedStyle.paddingTop + parent.style.computedStyle.marginTop;
+			offsetTop = parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
 			
 			while (parent != firstPositionedAncestor)
 			{
-				offsetTop += parent.style.computedStyle.paddingTop + parent.style.computedStyle.marginTop;
+				offsetTop += parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
 				parent = cast(parent.parentNode);
 			}
 		}
@@ -833,29 +833,29 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		_style.invalidate(true);
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		_coreStyle.invalidate(true);
+		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		_style.invalidate(true);
-		var computedStyle:ComputedStyleData = this._style.computedStyle;
+		_coreStyle.invalidate(true);
+		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
 	//TODO : should be top border height
 	private function get_clientTop():Int
 	{
-		_style.invalidate(true);
+		_coreStyle.invalidate(true);
 		return 0;
 	}
 	
 	//TODO : should be left border width
 	private function get_clientLeft():Int
 	{
-		_style.invalidate(true);
+		_coreStyle.invalidate(true);
 		return 0;
 	}
 	
@@ -863,9 +863,9 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_style():Style
+	private function get_coreStyle():Style
 	{
-		return this._style;
+		return this._coreStyle;
 	}
 	
 }

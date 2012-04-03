@@ -75,7 +75,7 @@ class TextRenderer extends ElementRenderer
 		_nativeElement.y = _bounds.y;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (_style.fontMetrics.ascent + _style.fontMetrics.descent);
+		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
 		#end
 		
 		ret.push(_nativeElement);
@@ -102,7 +102,7 @@ class TextRenderer extends ElementRenderer
 		{
 			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
 			//which also apply to space and the word spacing which aplies only to text
-			return _style.fontMetrics.spaceWidth + _style.computedStyle.letterSpacing + _style.computedStyle.wordSpacing;
+			return _coreStyle.fontMetrics.spaceWidth + _coreStyle.computedStyle.letterSpacing + _coreStyle.computedStyle.wordSpacing;
 		}
 		//in this case the text fragment is a word, the text width is returned, it already
 		//contains the letter spacing which was applied when the text was rendered
@@ -138,12 +138,12 @@ class TextRenderer extends ElementRenderer
 	private function getOffsetHeight():Int
 	{
 		
-		var ascent:Float =  _style.fontMetrics.ascent;
-		var descent:Float = _style.fontMetrics.descent;
+		var ascent:Float =  _coreStyle.fontMetrics.ascent;
+		var descent:Float = _coreStyle.fontMetrics.descent;
 		
 		//the leading is an extra height to apply equally to the ascent
 		//and the descent when laying out lines of text
-		var leading:Float = _style.computedStyle.lineHeight - (ascent + descent);
+		var leading:Float = _coreStyle.computedStyle.lineHeight - (ascent + descent);
 		
 		//apply leading to the ascent and descent
 		var leadedAscent:Float = (ascent + leading/2);

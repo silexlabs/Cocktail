@@ -59,6 +59,6 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		_style = new BodyStyle(this);
+		_coreStyle = new BodyStyle(this);
 	}
 }

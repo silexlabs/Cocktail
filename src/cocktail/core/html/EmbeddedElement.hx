@@ -98,7 +98,7 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		this._style = new EmbeddedStyle(this);
+		this._coreStyle = new EmbeddedStyle(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

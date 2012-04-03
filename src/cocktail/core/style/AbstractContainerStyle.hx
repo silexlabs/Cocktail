@@ -130,7 +130,7 @@ class AbstractContainerStyle extends Style
 			if (_htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
-				childHTMLElement.style.computeDisplayStyles();
+				childHTMLElement.coreStyle.computeDisplayStyles();
 			}
 		}
 		
@@ -234,7 +234,7 @@ class AbstractContainerStyle extends Style
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
 				//the flow method also lays out recursively all the children of the childrenHTMLElement
 				//if it is a ContainerHTMLElement
-				childHTMLElement.style.flow(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
+				childHTMLElement.coreStyle.flow(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
 			}
 			//else if it is a TextElement, call a method that will create as many TextFragmentHTMLElement
 			//as necessary to render the TextElement and insert them into the document
@@ -296,7 +296,7 @@ class AbstractContainerStyle extends Style
 			
 			//position the HTMLElement's ElementRenderer which set its x and y bounds in the space of this ContainerHTMLElement's
 			//formatting context
-			positionedHTMLElementData.style.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
+			positionedHTMLElementData.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
 
 			//absolutely positioned HTMLElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
@@ -709,15 +709,15 @@ class AbstractContainerStyle extends Style
 		{
 			var childHTMLElement:HTMLElement = cast(child);
 			//here the child is of type block
-			if (childHTMLElement.style.computedStyle.display == block)
+			if (childHTMLElement.coreStyle.computedStyle.display == block)
 			{
 				//floated children are not taken into account 
-				if (childHTMLElement.style.isFloat() == false)
+				if (childHTMLElement.coreStyle.isFloat() == false)
 				{
 					ret = false;
 				}
 				//absolutely positioned children are not taken into account but relative positioned are
-				else if (childHTMLElement.style.isPositioned() == false || childHTMLElement.style.isRelativePositioned() == true)
+				else if (childHTMLElement.coreStyle.isPositioned() == false || childHTMLElement.coreStyle.isRelativePositioned() == true)
 				{
 					ret = false;
 				}

@@ -63,18 +63,18 @@ class BoxPositioner
 	 */
 	public function position(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
 	{
-		var htmlElement:HTMLElement = elementRenderer.style.htmlElement;
+		var htmlElement:HTMLElement = elementRenderer.coreStyle.htmlElement;
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (htmlElement.style.left != PositionOffset.cssAuto)
+		if (htmlElement.coreStyle.left != PositionOffset.cssAuto)
 		{
 			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing HTMLElement width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (htmlElement.style.right != PositionOffset.cssAuto)
+		else if (htmlElement.coreStyle.right != PositionOffset.cssAuto)
 		{
 			elementRenderer.bounds.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
 		}
@@ -86,11 +86,11 @@ class BoxPositioner
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (htmlElement.style.top != PositionOffset.cssAuto)
+		if (htmlElement.coreStyle.top != PositionOffset.cssAuto)
 		{
 			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
 		}
-		else if (htmlElement.style.bottom != PositionOffset.cssAuto)
+		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
 		{
 			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingHTMLElementData.height, Math.round(staticPosition.y));
 		}
@@ -112,7 +112,7 @@ class BoxPositioner
 	 */
 	private function getLeftOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return htmlElement.style.computedStyle.left;
+		return htmlElement.coreStyle.computedStyle.left;
 	}
 	
 	/**
@@ -120,8 +120,8 @@ class BoxPositioner
 	 */
 	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
-		return containingHTMLElementWidth - htmlElement.style.computedStyle.width +
-		htmlElement.style.computedStyle.paddingLeft + htmlElement.style.computedStyle.width  - htmlElement.style.computedStyle.right;
+		return containingHTMLElementWidth - htmlElement.coreStyle.computedStyle.width +
+		htmlElement.coreStyle.computedStyle.paddingLeft + htmlElement.coreStyle.computedStyle.width  - htmlElement.coreStyle.computedStyle.right;
 	}
 	
 	/**
@@ -129,7 +129,7 @@ class BoxPositioner
 	 */
 	private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
 	{
-		return htmlElement.style.computedStyle.top;
+		return htmlElement.coreStyle.computedStyle.top;
 	}
 	
 	/**
@@ -137,8 +137,8 @@ class BoxPositioner
 	 */
 	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int, staticPosition:Int):Int
 	{
-		return containingHTMLElementHeight - htmlElement.style.computedStyle.height + htmlElement.style.computedStyle.paddingTop +
-		htmlElement.style.computedStyle.paddingBottom - htmlElement.style.computedStyle.bottom;
+		return containingHTMLElementHeight - htmlElement.coreStyle.computedStyle.height + htmlElement.coreStyle.computedStyle.paddingTop +
+		htmlElement.coreStyle.computedStyle.paddingBottom - htmlElement.coreStyle.computedStyle.bottom;
 	}
 	
 }

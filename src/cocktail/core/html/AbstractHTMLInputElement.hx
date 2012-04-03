@@ -99,7 +99,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		_style = new EmbeddedStyle(this);
+		_coreStyle = new EmbeddedStyle(this);
 	}
 	
 	

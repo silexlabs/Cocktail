@@ -7,6 +7,7 @@
 */
 package cocktail.core.dom;
 
+import cocktail.core.HTMLElement;
 import cocktail.core.Text;
 import cocktail.core.dom.DOMData;
 
@@ -61,9 +62,9 @@ class Document extends Node
 	 * 
 	 * TODO : implement localName, prefix and namespaceURI
 	 */
-	public function createElement(tagName:String):Element
+	public function createElement(tagName:String):HTMLElement
 	{
-		var element:Element = new Element(tagName);
+		var element:HTMLElement = new HTMLElement(tagName);
 		return element;
 	}
 	

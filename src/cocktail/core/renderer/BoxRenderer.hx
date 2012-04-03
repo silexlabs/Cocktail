@@ -59,7 +59,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function renderBackground():Array<NativeElement>
 	{
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _style);
+		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{
@@ -74,12 +74,12 @@ class BoxRenderer extends ElementRenderer
 		if (isInitialContainer() == false)
 		{
 			//TODO : implement properly hit area for flash_player
-			var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
+			var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 			
 			nativeElement.graphics.clear();
 			nativeElement.graphics.beginFill(0x00FF00, 0.0);
-			nativeElement.graphics.drawRect(_bounds.x +_style.computedStyle.paddingLeft,
-			_bounds.y + _style.computedStyle.paddingTop, _bounds.width, _bounds.height);
+			nativeElement.graphics.drawRect(_bounds.x +_coreStyle.computedStyle.paddingLeft,
+			_bounds.y + _coreStyle.computedStyle.paddingTop, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
 			//nativeElement.x = _style.computedStyle.marginLeft;

@@ -182,7 +182,7 @@ class FloatsManager
 	{
 		var ret:FloatData;
 		
-		switch (elementRenderer.style.computedStyle.cssFloat)
+		switch (elementRenderer.coreStyle.computedStyle.cssFloat)
 		{
 			case left:
 				ret = getLeftFloatData(elementRenderer, formattingContextData, containingBlockWidth);
@@ -240,7 +240,7 @@ class FloatsManager
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
-		var computedStyle:ComputedStyleData = elementRenderer.style.computedStyle;
+		var computedStyle:ComputedStyleData = elementRenderer.coreStyle.computedStyle;
 		var floatWidth:Int = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		var floatHeight:Int = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	

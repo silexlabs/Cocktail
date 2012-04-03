@@ -114,8 +114,8 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function getRemainingLineWidth():Int
 	{
-		return _formattingContextRoot.style.computedStyle.width - _formattingContextData.x - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
+		return _formattingContextRoot.coreStyle.computedStyle.width - _formattingContextData.x - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
 	}
 	
 	
@@ -153,7 +153,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
-		var computedStyle:ComputedStyleData = element.style.computedStyle;
+		var computedStyle:ComputedStyleData = element.coreStyle.computedStyle;
 		
 		
 		element.bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -510,7 +510,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			for (i in 0..._elementsInLineBox.length)
 			{
-				if (_elementsInLineBox[i].parentNode != _formattingContextRoot.style.elementRenderer)
+				if (_elementsInLineBox[i].parentNode != _formattingContextRoot.coreStyle.elementRenderer)
 				{
 				
 					getParentInlineBoxesData(cast(_elementsInLineBox[i].parentNode)).children.push(_elementsInLineBox[i]);
@@ -537,7 +537,7 @@ class InlineFormattingContext extends FormattingContext
 			for (i in 0..._currentInlineBoxesData.length)
 			{		
 			
-				var inlineBoxRenderer:InlineBoxRenderer = new InlineBoxRenderer(_currentInlineBoxesData[i].element.style);
+				var inlineBoxRenderer:InlineBoxRenderer = new InlineBoxRenderer(_currentInlineBoxesData[i].element.coreStyle);
 				inlineBoxRenderer.layerRenderer = _currentInlineBoxesData[i].element.layerRenderer;
 				inlineBoxRenderer.bounds = getBounds(_currentInlineBoxesData[i].children);
 				inlineBoxes.push(inlineBoxRenderer);
@@ -563,7 +563,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
 				
 				if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
 				{
@@ -578,7 +578,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				_formattingContextData.y += lineBoxHeight;
 				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.style.computedStyle.width);
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
 				
 				
 				if (_formattingContextData.y  > _formattingContextData.maxHeight)
@@ -676,16 +676,16 @@ class InlineFormattingContext extends FormattingContext
 		var remainingSpace:Int;
 		var flowX:Int;
 		
-		remainingSpace = _formattingContextRoot.style.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.style.computedStyle.width);
-		flowX = _formattingContextRoot.style.computedStyle.paddingLeft;
+		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
+		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
 		
 		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		
 		//do align the HTMLElements, the text align style of the containing HTMLElement
 		//determining the alignement to apply
-		switch (_formattingContextRoot.style.computedStyle.textAlign)
+		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
 		{
 			case left:
 				alignLeft(flowX);
@@ -708,7 +708,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					//when justified, the concatenated width of the HTMLElements
 					//must take all the containing HTMLElement width
-					concatenatedLength = _formattingContextRoot.style.computedStyle.width;
+					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
 					
 					alignJustify(flowX, remainingSpace);
 				}
@@ -825,30 +825,30 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0..._elementsInLineBox.length)
 		{
 			//TODO : shouldn't need an html element here, only style
-			var htmlElement:HTMLElement = _elementsInLineBox[i].style.htmlElement;
+			var htmlElement:HTMLElement = _elementsInLineBox[i].coreStyle.htmlElement;
 			
 			var htmlElementAscent:Int;
 			var htmlElementDescent:Int;
 			
 			//the computed vertical align is the offset of the DOMElemenet relative
 			//to the baseline
-			var htmlElementVerticalAlign:Float = htmlElement.style.computedStyle.verticalAlign;
+			var htmlElementVerticalAlign:Float = htmlElement.coreStyle.computedStyle.verticalAlign;
 			
 			//for embedded or inlineBlock elements, which have no baseline, the height above
 			//the baseline is the offset height and they have no descent
 			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{
-				htmlElementAscent = htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
-				+ _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
+				htmlElementAscent = htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
+				+ _elementsInLineBox[i].coreStyle.computedStyle.marginTop + _elementsInLineBox[i].coreStyle.computedStyle.marginBottom;
 				
 				htmlElementDescent = 0;
 				
-				switch (htmlElement.style.verticalAlign)
+				switch (htmlElement.coreStyle.verticalAlign)
 				{
 					case top:
 						htmlElementAscent = Math.round(lineBoxAscent);
-						htmlElementDescent = Math.round(htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
+						htmlElementDescent = Math.round(htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
 				 - lineBoxAscent);
 						
 					default:	
@@ -858,12 +858,12 @@ class InlineFormattingContext extends FormattingContext
 			//else retrieve the ascent and descent and apply leading to it
 			else
 			{
-				htmlElementAscent = htmlElement.style.fontMetrics.ascent;
-				htmlElementDescent = htmlElement.style.fontMetrics.descent;	
+				htmlElementAscent = htmlElement.coreStyle.fontMetrics.ascent;
+				htmlElementDescent = htmlElement.coreStyle.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = htmlElement.style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
+				var leading:Float = htmlElement.coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
 				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
@@ -891,10 +891,10 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0..._elementsInLineBox.length)
 		{
 			
-			var htmlElement:HTMLElement = _elementsInLineBox[i].style.htmlElement;
+			var htmlElement:HTMLElement = _elementsInLineBox[i].coreStyle.htmlElement;
 			
 			var verticalAlign:Float;
-			switch (htmlElement.style.verticalAlign)
+			switch (htmlElement.coreStyle.verticalAlign)
 			{
 				case top:
 					verticalAlign = 0;
@@ -904,11 +904,11 @@ class InlineFormattingContext extends FormattingContext
 					verticalAlign = 0;
 					
 				default:
-					verticalAlign = htmlElement.style.computedStyle.verticalAlign;
+					verticalAlign = htmlElement.coreStyle.computedStyle.verticalAlign;
 			}
 			
 			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y
-			+ _formattingContextRoot.style.computedStyle.paddingTop;
+			+ _formattingContextRoot.coreStyle.computedStyle.paddingTop;
 			
 
 			
@@ -919,14 +919,14 @@ class InlineFormattingContext extends FormattingContext
 			_elementsInLineBox[i].establishesNewFormattingContext() == true)
 			{	
 				
-				switch (htmlElement.style.verticalAlign)
+				switch (htmlElement.coreStyle.verticalAlign)
 				{
 					case top:
 						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
 					
 					default:	
-						_elementsInLineBox[i].bounds.y -= htmlElement.style.computedStyle.height +  htmlElement.style.computedStyle.paddingTop + htmlElement.style.computedStyle.paddingBottom
-				 + _elementsInLineBox[i].style.computedStyle.marginTop + _elementsInLineBox[i].style.computedStyle.marginBottom;
+						_elementsInLineBox[i].bounds.y -= htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
+				 + _elementsInLineBox[i].coreStyle.computedStyle.marginTop + _elementsInLineBox[i].coreStyle.computedStyle.marginBottom;
 					
 				}
 				
