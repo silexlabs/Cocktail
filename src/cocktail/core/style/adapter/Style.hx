@@ -415,6 +415,7 @@ class Style
 	
 	private function set_fontStyle(value:String):String
 	{
+		_coreStyle.fontStyle = UnitManager.fontStyleEnum(value);
 		return value;
 	}
 	
@@ -435,6 +436,7 @@ class Style
 	
 	private function set_fontVariant(value:String):String
 	{
+		_coreStyle.fontVariant = UnitManager.fontVariantEnum(value);
 		return value;
 	}
 	
@@ -445,6 +447,7 @@ class Style
 	
 	private function set_textTransform(value:String):String
 	{
+		_coreStyle.textTransform = UnitManager.textTransformEnum(value);
 		return value;
 	}
 	
@@ -517,6 +520,7 @@ class Style
 	
 	private function set_whiteSpace(value:String):String
 	{
+		_coreStyle.whiteSpace = UnitManager.whiteSpaceEnum(value);
 		return value;
 	}
 	
@@ -527,6 +531,7 @@ class Style
 	
 	private function set_textAlign(value:String):String
 	{
+		_coreStyle.textAlign = UnitManager.textAlignEnum(value);
 		return value;
 	}
 	

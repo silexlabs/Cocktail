@@ -240,6 +240,65 @@ class UnitManager
 		return  position;
 	}
 	
+	static public function whiteSpaceEnum(string:String):WhiteSpace
+	{
+		var parsed:String = trim(string);
+		
+		var whiteSpace:WhiteSpace;
+		
+		switch(parsed)
+		{
+			case "normal":
+				whiteSpace = WhiteSpace.normal;
+				
+			case "nowrap":
+				whiteSpace = WhiteSpace.nowrap;
+				
+			case "pre":
+				whiteSpace = WhiteSpace.pre;
+				
+			case "preLine":
+				whiteSpace = WhiteSpace.preLine;
+				
+			case "preWrap":
+				whiteSpace = WhiteSpace.preWrap;	
+				
+			default:
+				//TODO : throw exception ?
+				whiteSpace = null;
+		}
+		
+		return  whiteSpace;
+	}
+	
+	static public function textAlignEnum(string:String):TextAlign
+	{
+		var parsed:String = trim(string);
+		
+		var textAlign:WhiteSpace;
+		
+		switch(parsed)
+		{
+			case "left":
+				textAlign = TextAlign.left;
+				
+			case "right":
+				textAlign = TextAlign.right;
+				
+			case "center":
+				textAlign = TextAlign.center;
+				
+			case "justify":
+				textAlign = TextAlign.justify;
+				
+			default:
+				//TODO : throw exception ?
+				textAlign = null;
+		}
+		
+		return  textAlign;
+	}
+	
 	static public function fontWeightEnum(string:String):FontWeight
 	{
 		var parsed:String = trim(string);
@@ -294,6 +353,79 @@ class UnitManager
 		
 		return  fontWeight;
 	}
+	
+	static public function fontStyleEnum(string:String):FontStyle
+	{
+		var parsed:String = trim(string);
+		
+		var fontStyle:FontStyle;
+		
+		switch(parsed)
+		{
+			case "italic":
+				fontStyle = FontStyle.italic;
+				
+			case "normal":
+				fontStyle = FontStyle.normal;
+				
+			default:
+				//TODO : throw exception ?
+				fontStyle = null;
+		}
+		
+		return  fontStyle;
+	}
+	
+	static public function fontVariantEnum(string:String):FontVariant
+	{
+		var parsed:String = trim(string);
+		
+		var fontVariant:FontVariant;
+		
+		switch(parsed)
+		{
+			case "normal":
+				fontVariant = FontVariant.normal;
+				
+			case "small-caps":
+				fontVariant = FontVariant.smallCaps;
+				
+			default:
+				//TODO : throw exception ?
+				fontVariant = null;
+		}
+		
+		return  fontVariant;
+	}
+	
+	static public function textTransformEnum(string:String):TextTransform
+	{
+		var parsed:String = trim(string);
+		
+		var textTransform:TextTransform;
+		
+		switch(parsed)
+		{
+			case "capitalize":
+				textTransform = TextTransform.capitalize;
+				
+			case "lowercase":
+				textTransform = TextTransform.lowercase;
+				
+			case "uppercase":
+				textTransform = TextTransform.uppercase;
+				
+			case "none":
+				textTransform = TextTransform.none;
+				
+			default:
+				//TODO : throw exception ?
+				textTransform = null;
+		}
+		
+		return  textTransform;
+	}
+	
 	
 	static public function visibilityEnum(string:String):Visibility
 	{
