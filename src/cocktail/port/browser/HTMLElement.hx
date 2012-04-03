@@ -48,15 +48,15 @@ class HTMLElement extends AbstractHTMLElement
 		
 		switch (oldChild.nodeType)
 		{
-			case NodeType.ELEMENT_NODE:
+			case Node.ELEMENT_NODE:
 				var childHTMLElement:HTMLElement = cast(oldChild);
 				_nativeElement.removeChild(childHTMLElement.nativeElement);
 				
-			case NodeType.TEXT_NODE:
+			case Node.TEXT_NODE:
 				var childTextElement:cocktail.core.dom.Text = cast(oldChild);
 				_nativeElement.removeChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
+			default:
 				//TODO : DOM exception ?
 				
 		}
@@ -74,15 +74,15 @@ class HTMLElement extends AbstractHTMLElement
 		
 		switch (newChild.nodeType)
 		{
-			case NodeType.ELEMENT_NODE:
+			case Node.ELEMENT_NODE:
 				var childHTMLElement:HTMLElement = cast(newChild);
 				_nativeElement.appendChild(childHTMLElement.nativeElement);
 				
-			case NodeType.TEXT_NODE:
+			case Node.TEXT_NODE:
 				var childTextElement:cocktail.core.dom.Text = cast(newChild);
 				_nativeElement.appendChild(childTextElement.nativeElement);
 				
-			case NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
+			default:
 				//TODO : DOM exception ?
 				
 		}

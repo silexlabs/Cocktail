@@ -126,7 +126,7 @@ class Document extends Node
 	private function doGetElementById(node:Node, elementId:String):Element
 	{
 		//call method recursively if node has child and is itself an element
-		if (node.hasChildNodes() == true && node.nodeType == NodeType.ELEMENT_NODE)
+		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
 			for (i in 0...node.childNodes.length)
 			{
@@ -191,9 +191,9 @@ class Document extends Node
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_nodeType():NodeType
+	override private function get_nodeType():Int
 	{
-		return NodeType.DOCUMENT_NODE;
+		return Node.DOCUMENT_NODE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -127,7 +127,7 @@ class AbstractContainerStyle extends Style
 			//When determining the formatting context to use, TextElement are always assumed
 			//to be inline as text is always laid out on a line when rendered.
 			//Text use its ContainerHTMLElement's styles for rendering
-			if (isElementNode(_htmlElement.childNodes[i]) == true)
+			if (_htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
 				childHTMLElement.style.computeDisplayStyles();
@@ -229,7 +229,7 @@ class AbstractContainerStyle extends Style
 		for (i in 0..._htmlElement.childNodes.length)
 		{
 			//if the children is a HTMLElement, call its flow method
-			if (isElementNode(_htmlElement.childNodes[i]) == true)
+			if (_htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
 				//the flow method also lays out recursively all the children of the childrenHTMLElement
@@ -705,7 +705,7 @@ class AbstractContainerStyle extends Style
 		var ret:Bool = true;
 		
 		//here the children is a HTMLElement
-		if (isElementNode(child))
+		if (child.nodeType == Node.ELEMENT_NODE)
 		{
 			var childHTMLElement:HTMLElement = cast(child);
 			//here the child is of type block
@@ -800,26 +800,6 @@ class AbstractContainerStyle extends Style
 	private function getComputedHeight():Int
 	{
 		return this._computedStyle.height;
-	}
-	
-	/**
-	 * Determine wether the given children is a 
-	 * HTMLElement or a TextElement
-	 */
-	private function isElementNode(node:Node):Bool
-	{
-		var ret:Bool = false;
-		
-		switch (node.nodeType)
-		{
-			case NodeType.ELEMENT_NODE:
-				ret = true;
-			
-			case NodeType.TEXT_NODE, NodeType.DOCUMENT_NODE, NodeType.ATTRIBUTE_NODE:
-				ret = false;
-		}
-		
-		return ret;
 	}
 	
 }

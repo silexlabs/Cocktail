@@ -292,7 +292,7 @@ class Element extends Node
 					elements.push(childNode);
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
-				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == NodeType.ELEMENT_NODE)
+				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == Node.ELEMENT_NODE)
 				{
 					elements.push(childNode);
 				}
@@ -322,9 +322,9 @@ class Element extends Node
 		return _tagName;
 	}
 	
-	override private function get_nodeType():NodeType
+	override private function get_nodeType():Int
 	{
-		return NodeType.ELEMENT_NODE;
+		return Node.ELEMENT_NODE;
 	}
 	
 	override private function get_attributes():NamedNodeMap 
@@ -343,7 +343,7 @@ class Element extends Node
 			return null;
 		}
 		
-		if (firstChild.nodeType == NodeType.ELEMENT_NODE)
+		if (firstChild.nodeType == Node.ELEMENT_NODE)
 		{
 			return cast(firstChild);
 		}
@@ -351,7 +351,7 @@ class Element extends Node
 		{
 			for (i in 0..._childNodes.length)
 			{
-				if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
 					return cast(_childNodes[i]);
 				}
@@ -368,7 +368,7 @@ class Element extends Node
 			return null;
 		}
 		
-		if (lastChild.nodeType == NodeType.ELEMENT_NODE)
+		if (lastChild.nodeType == Node.ELEMENT_NODE)
 		{
 			return cast(lastChild);
 		}
@@ -376,7 +376,7 @@ class Element extends Node
 		{
 			for (i in _childNodes.length...0)
 			{
-				if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
 					return cast(_childNodes[i]);
 				}
@@ -395,7 +395,7 @@ class Element extends Node
 		
 		var nextElementSibling:Node = nextSibling;
 		
-		while (nextElementSibling.nodeType != NodeType.ELEMENT_NODE)
+		while (nextElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
 			nextElementSibling = nextElementSibling.nextSibling;
 			
@@ -417,7 +417,7 @@ class Element extends Node
 		
 		var previousElementSibling:Node = previousSibling;
 		
-		while (previousElementSibling.nodeType != NodeType.ELEMENT_NODE)
+		while (previousElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
 			previousElementSibling = previousElementSibling.previousSibling;
 			
@@ -436,7 +436,7 @@ class Element extends Node
 		
 		for (i in 0..._childNodes.length)
 		{
-			if (_childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+			if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				childElementCount++;
 			}
