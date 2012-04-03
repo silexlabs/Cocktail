@@ -7,7 +7,7 @@
 */
 package core.html;
 
-import cocktailCore.focus.FocusManager;
+import core.focus.FocusManager;
 import core.dom.Document;
 import core.dom.Element;
 import core.event.Event;
