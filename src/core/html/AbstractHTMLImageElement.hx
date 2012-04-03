@@ -148,8 +148,6 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * Called when there was an error during loading.
 	 * Call the error callback if provided
 	 * 
-	 * TODO : check how to pass an error string to the event
-	 * 
 	 * @param	message the error message
 	 */
 	private function onLoadError(message:String):Void
