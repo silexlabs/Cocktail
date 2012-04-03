@@ -73,6 +73,8 @@ enum Length {
 	
 	/**
 	 * inches, 1in is equal to 2.54cm.
+	 * 
+	 * TODO : rename cssIn
 	 */
 	_in(value:Float);
 	

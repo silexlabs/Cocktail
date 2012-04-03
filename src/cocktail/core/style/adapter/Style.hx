@@ -491,6 +491,7 @@ class Style
 	
 	private function set_lineHeight(value:String):String
 	{
+		_coreStyle.lineHeight = UnitManager.lineHeightEnum(value);
 		return value;
 	}
 	
@@ -512,6 +513,7 @@ class Style
 	
 	private function set_textIndent(value:String):String
 	{
+		_coreStyle.textIndent = UnitManager.textIndentEnum(value);
 		return value;
 	}
 	
@@ -621,7 +623,7 @@ class Style
 	
 	private function get_overflowY():String
 	{
-		return "";
+		return UnitManager.getCSSOverflow(_coreStyle.overflowY);
 	}
 	
 	private function set_overflowY(value:String):String
