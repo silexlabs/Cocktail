@@ -458,6 +458,7 @@ class Style
 	
 	private function set_letterSpacing(value:String):String
 	{
+		_coreStyle.letterSpacing = UnitManager.letterSpacingEnum(value);
 		return value;
 	}
 	
@@ -479,6 +480,7 @@ class Style
 	
 	private function set_wordSpacing(value:String):String
 	{
+		_coreStyle.wordSpacing = UnitManager.wordSpacingEnum(value);
 		return value;
 	}
 	
@@ -630,6 +632,7 @@ class Style
 	
 	private function set_cursor(value:String):String
 	{
+		_coreStyle.cursor = UnitManager.cursorEnum(value);
 		return value;
 	}
 	
