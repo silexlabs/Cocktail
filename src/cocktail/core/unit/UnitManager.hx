@@ -9,7 +9,6 @@ package cocktail.core.unit;
 
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
-import flash.text.engine.FontWeight;
 import haxe.Log;
 
 /**
@@ -393,7 +392,8 @@ class UnitManager
 	/**
 	 * function used internally to convert an rgba value to a 4 digit object of type VCol
 	 */
-	static private function string2RGBA(string:String):VCol{
+	static private function string2RGBA(string:String):VCol
+	{
 		// remove "rgba(" and ")"
 		string = string.substr(5, string.length - 6);
 		// split into [r, g, b, a]
@@ -412,7 +412,8 @@ class UnitManager
 	/**
 	 * function used internally to convert an rgb value to a 3 digit object of type VCol
 	 */
-	static private function string2RGB(string:String):VCol{
+	static private function string2RGB(string:String):VCol
+	{
 		// remove "rgb(" and ")"
 		string = string.substr(4, string.length - 5);
 		// split into [r, g, b, a]
@@ -431,13 +432,15 @@ class UnitManager
 	/**
 	 * function used internally to trim left and right a string   
 	 */
-	static private function trim(string:String):String{
+	static private function trim(string:String):String
+	{
 		return StringTools.ltrim(StringTools.rtrim(string));
 	} 
 	/**
 	 * function used internally to split a string to a value/unit strings pair   
 	 */
-	static private function string2VUnit(string:String):VUnit{
+	static private function string2VUnit(string:String):VUnit
+	{
 		var r : EReg = ~/([0-9]*)(.*)/;
 		r.match(string);
 //		trace("return "+r.matched(1)+"+"+r.matched(2));
@@ -449,7 +452,8 @@ class UnitManager
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
 	 */
-	static private function string2Length(parsed):Length{
+	static private function string2Length(parsed):Length
+	{
 		return switch (parsed.unit)
 		{
 			case "in":
@@ -468,9 +472,53 @@ class UnitManager
 				Length.pt(Std.parseInt(parsed.value));	
 			case "px":
 				Length.px(Std.parseInt(parsed.value));
+			case "":
+				// special case of "0" without unit
+				var v:Int = Std.parseInt(parsed.value);
+				if (v == 0)
+					Length.px(v);
+				else 
+					throw("Bad unit \"" + parsed.unit+"\"");
 			default:
 				throw("Bad unit \"" + parsed.unit+"\"");
 		}
+	}
+	/**
+	 * function used internally to convert a value/unit strings pair to an enum  
+	 */
+	static private function string2URLData(string:String):URLData
+	{
+		// trim
+		string = trim(string);
+		// remove "url(" and ")" + trim
+		string = trim(string.substr(4, string.length - 5));
+		// remove the quotes if there are some
+		if (StringTools.startsWith(string, "\""))
+			string = string.substr(1);
+		if (StringTools.endsWith(string, "\""))
+			string = string.substr(0, string.length - 1);
+		return cast(string);
+	}
+	/**
+	 * function used internally to convert a value/unit strings pair to an enum  
+	 */
+	static private function string2VList(string:String, sep:String = " "):Array<String>
+	{
+		if (sep == " ") 
+		{
+			// if the sep char is a blank space, remove only the double spaces
+			string = ~/[ ]{2,}/g.replace(string, " ");
+		}
+		else
+		{
+			// else, remove all spaces
+			string = StringTools.replace(string, " ", "");
+		}
+		// trim
+		string = trim(string);
+		// split
+		var array:Array<String> = string.split(sep);
+		return array;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
