@@ -16,6 +16,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.Style;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
@@ -252,11 +253,25 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	////////////////////////////////
 	
 	/**
-	 * This Style object stores the styles of
-	 * an HTMLElement and manages how they are applied
+	 * This attributes stores the Style data
+	 * as typed objects and use them to compute
+	 * the box model and the text rendering of the
+	 * HTMLElement. It is the style object used
+	 * internally doing all the style heavy lifting.
+	 * It can be used by end-user when they want to
+	 * define styles using typed object instead of string
 	 */
 	private var _coreStyle:Style;
 	public var coreStyle(get_coreStyle, never):Style;
+	
+	/**
+	 * This is the style object exposed by the public API.
+	 * It is used to set and get CSS styles with strings
+	 * and is in charge of converting them to typed object
+	 * which it sets on coreStyle
+	 */
+	private var _style:cocktail.core.style.adapter.Style;
+	public var style(get_style, never):cocktail.core.style.adapter.Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -866,6 +881,11 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	private function get_coreStyle():Style
 	{
 		return this._coreStyle;
+	}
+	
+	private function get_style():cocktail.core.style.adapter.Style
+	{
+		return _style;
 	}
 	
 }

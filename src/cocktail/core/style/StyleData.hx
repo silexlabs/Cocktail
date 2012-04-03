@@ -51,8 +51,6 @@ import cocktail.core.renderer.TextRenderer;
 		 * the font size
 		 */
 		relativeSize(value:FontSizeRelativeSize);
-		
-		
 	}
 	
 	/**
