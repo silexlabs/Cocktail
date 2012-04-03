@@ -51,6 +51,219 @@ class UnitManager
 				Type.createEnum(enumType, "length", [string2Length(parsed)]);
 		}
 	}
+	
+	
+	static public function constrainedDimensionEnum(string:String):ConstrainedDimension
+	{
+		if (string == "none")
+			return ConstrainedDimension.none;
+		
+		var parsed:VUnit = string2VUnit(string);
+		var constrainedDimension:ConstrainedDimension;
+		
+		switch(parsed.unit)
+		{
+			case "%":
+				constrainedDimension = ConstrainedDimension.percent(Std.parseInt(parsed.value));
+				
+			default:
+				constrainedDimension = ConstrainedDimension.length(string2Length(parsed));
+		}
+		
+		return  constrainedDimension;
+	}
+	
+	static public function displayEnum(string:String):Display
+	{
+		var parsed:String = trim(string);
+		
+		var display:Display;
+		
+		switch(parsed)
+		{
+			case "inline":
+				display = Display.cssInline;
+				
+			case "block":
+				display = Display.block;
+				
+			case "inline-block":
+				display = Display.inlineBlock;
+				
+			case "none":
+				display = Display.none;
+				
+			default:
+				//TODO : throw exception ?
+				display = null;
+		}
+		
+		return  display;
+	}
+	
+	static public function overflowEnum(string:String):Overflow
+	{
+		var parsed:String = trim(string);
+		
+		var overflow:Overflow;
+		
+		switch(parsed)
+		{
+			case "visible":
+				overflow = Overflow.visible;
+				
+			case "scroll":
+				overflow = Overflow.scroll;
+				
+			case "auto":
+				overflow = Overflow.cssAuto;
+				
+			case "hidden":
+				overflow = Overflow.hidden;
+				
+			default:
+				//TODO : throw exception ?
+				overflow = null;
+		}
+		
+		return  overflow;
+	}
+	
+	static public function verticalAlignEnum(string:String):VerticalAlign
+	{
+		string = trim(string);
+		
+		var verticalAlign:VerticalAlign;
+		
+		switch(string)
+		{
+			case "baseline":
+				verticalAlign = VerticalAlign.baseline;
+				
+			case "bottom":
+				verticalAlign = VerticalAlign.bottom;
+				
+			case "super":
+				verticalAlign = VerticalAlign.cssSuper;
+				
+			case "middle":
+				verticalAlign = VerticalAlign.middle;
+				
+			case "top":
+				verticalAlign = VerticalAlign.top;
+				
+			case "textBottom":
+				verticalAlign = VerticalAlign.textBottom;	
+				
+			case "textTop":
+				verticalAlign = VerticalAlign.textTop;	
+				
+			case "sub":
+				verticalAlign = VerticalAlign.sub;		
+				
+			default:
+				//TODO : throw exception ?
+				verticalAlign = null;
+		}
+		
+		if (verticalAlign == null)
+		{
+			var parsed:VUnit = string2VUnit(string);
+			
+			switch (parsed.unit)
+			{
+				case "%":
+					verticalAlign = VerticalAlign.percent(Std.parseInt(parsed.value));
+					
+				default:
+					verticalAlign = VerticalAlign.length(string2Length(parsed));
+			}
+		}
+		
+		return  verticalAlign;
+	}
+	
+	static public function clearEnum(string:String):Clear
+	{
+		var parsed:String = trim(string);
+		
+		var clear:Clear;
+		
+		switch(parsed)
+		{
+			case "both":
+				clear = Clear.both;
+				
+			case "left":
+				clear = Clear.left;
+				
+			case "right":
+				clear = Clear.right;
+				
+			case "none":
+				clear = Clear.none;
+				
+			default:
+				//TODO : throw exception ?
+				clear = null;
+		}
+		
+		return  clear;
+	}
+	
+	static public function positionEnum(string:String):Position
+	{
+		var parsed:String = trim(string);
+		
+		var position:Position;
+		
+		switch(parsed)
+		{
+			case "static":
+				position = Position.cssStatic;
+				
+			case "absolute":
+				position = Position.absolute;
+				
+			case "relative":
+				position = Position.relative;
+				
+			case "fixed":
+				position = Position.fixed;
+				
+			default:
+				//TODO : throw exception ?
+				position = null;
+		}
+		
+		return  position;
+	}
+	
+	static public function cssFloatEnum(string:String):CSSFloat
+	{
+		var parsed:String = trim(string);
+		
+		var cssFloat:CSSFloat;
+		
+		switch(parsed)
+		{
+			case "left":
+				cssFloat = CSSFloat.left;
+				
+			case "right":
+				cssFloat = CSSFloat.right;
+				
+			case "none":
+				cssFloat = CSSFloat.none;
+				
+			default:
+				//TODO : throw exception ?
+				cssFloat = null;
+		}
+		
+		return  cssFloat;
+	}
+	
 	/**
 	 * convert a string into a typed Color enum
 	 * @example CSSParser.colorEnum("yellow") returns Color.yellow
