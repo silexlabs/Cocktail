@@ -599,7 +599,7 @@ class UnitManager
 		if (StringTools.startsWith(string, "rgba")){
 			var vcol:VCol = string2RGBA(string);
 			return rgba(vcol.r, vcol.g, vcol.b, vcol.a);
-		}
+		} 
 		// case of rgb values, e.g. rgb(255, 255, 255)
 		if (StringTools.startsWith(string, "rgb")){
 			var vcol:VCol = string2RGB(string);
