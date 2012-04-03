@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Silicon Sentier</title>
+	<atom:link href="http://siliconsentier.org/feed/?posts_per_page=10" rel="self" type="application/rss+xml" />
+	<link>http://siliconsentier.org</link>
+	<description>Silicon Sentier connecte et agit pour l&#039;innovation</description>
+	<lastBuildDate>Fri, 30 Mar 2012 11:04:10 +0000</lastBuildDate>
+
+	<language>en</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>http://wordpress.org/?v=3.3.1</generator>
+		<item>
+		<title>Evènement Silicon Maniacs 11 avril : “AUX URNES, ET CAETERA !!”</title>
+
+		<link>http://siliconsentier.org/evenement-silicon-maniacs-11-avril-aux-urnes-et-caetera/</link>
+		<comments>http://siliconsentier.org/evenement-silicon-maniacs-11-avril-aux-urnes-et-caetera/#comments</comments>
+		<pubDate>Fri, 30 Mar 2012 11:02:49 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90113</guid>
+
+		<description><![CDATA[<p>Une semaine avant le 1er tour des élections, le 11 avril de 19H à minuit, La Cantine se transforme en studio radio ouvert (très ouvert) au public. Avant de passer aux urnes, inscrivez vous pour écouter, débattre, et participer à cette soirée radio festive et participative!</p>
+]]></description>
+			<content:encoded><![CDATA[<p><iframe src="http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F41218092&amp;show_artwork=true" frameborder="0" scrolling="no" width="100%" height="165"></iframe></p>
+<p>&nbsp;</p>
+<p><a href="http://www.siliconmaniacs.org/evenement-11-avril-aux-urnes-et-caetera/">Plus d&#8217;info</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/evenement-silicon-maniacs-11-avril-aux-urnes-et-caetera/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title></title>
+		<link>http://siliconsentier.org/le-camping-saison-3-go-2/</link>
+
+		<comments>http://siliconsentier.org/le-camping-saison-3-go-2/#comments</comments>
+		<pubDate>Fri, 30 Mar 2012 10:36:18 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[petite une]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90108</guid>
+		<description><![CDATA[<p>http://siliconsentier.org/wp-content/uploads/2012/03/2012-03-06-Le-Camping-Saison-3.jpg</p>
+]]></description>
+
+			<content:encoded><![CDATA[<p><span style="color: #ffffff;"><span style="font-size: 18px;"><strong><span style="background-color: #000000;"> Le Camping lance sa troisième saison.</span></strong></span></span></p>
+<p>Ferez-vous partie des 12 startups sélectionnées ?</p>
+<p><span style="font-size: 14px;"><span style="font-family: arial,helvetica,sans-serif;"><em>Après le succès rencontré lors de ses deux premières saisons, </em></span></span><span style="font-size: 14px;"><span style="font-family: arial,helvetica,sans-serif;"><span style="font-style: italic;">Le Camping inscrit son action dans la durée en lançant la saison 3. </span></span></span><span style="font-size: 14px;"><span style="font-family: arial,helvetica,sans-serif;"><em>Sur les 24 startups</em><span style="font-style: italic;"> « accélérées », plus d’un tiers ont levé des fonds, plus de 75% ont des clients et 100% forment une communauté innovante et unie. </span></span></span></p>
+<div style="text-align: center;"><a href="http://www.f6s.com/lecampingapply"><img style="width: 401px; height: 150px;" src="https://d2q0qd5iz04n9u.cloudfront.net/_ssl/proxy.php/http/gallery.mailchimp.com/f0a9c49ba311b971d61906a5a/images/Bouton_apply.gif" alt="" width="401" height="150" align="none" /></a></div>
+<p><span style="font-size: 14px;"><span style="color: #ffffff;"><span style="background-color: #ff0066;"> Entrepreneurs, entrepreneuses, ingénieurs,  graphistes,  marketeurs,  développeurs</span></span></span></p>
+<p>Accélérez le développement de votre startup, passez du prototype au business, vivez une immersion totale dans l&#8217;écosystème technologique local.</p>
+<p><span style="font-size: 24px;"> <span style="color: #ffffff;"><span style="font-size: 18px;"><strong><span style="background-color: #000000;">  Saison 3 : de juin à novembre </span></strong></span></span></span></p>
+<p><span style="color: #0000cd;"><strong>Dates importantes </strong></span></p>
+<p><strong>- Du 2 mars au 13 avril: </strong>dépôt des dossiers</p>
+<p><strong>- Mai: </strong>séléction</p>
+<p><strong>- Juin: </strong>début de la saison 3</p>
+<p><span style="color: #0000cd;"><span><strong>Programme</strong></span></span><span style="color: #33cccc;"><span style="color: #000000;">: du prototype au produit, du produit aux clients, de la levée de fonds au développement international</span></span></p>
+<p><span style="color: #0000cd;"><strong><span>Ressources:</span></strong></span><span> une équipe Camping dédidée de 3 membres &#8211; Une communité de campers &#8211; 60 mentors &#8211; Un open space &#8211; 4,500 euros par équipe &#8211; 0% equity</span></p>
+<p><span style="color: #ffffff;"><span style="font-size: 18px;"><strong><span style="background-color: #000000;"> Plus d&#8217;informations sur Le Camping ?  </span></strong></span></span></p>
+<p>Nous organisons une session d&#8217;informations le 20 mars à 19h00 au Camping.</p>
+<p><a href="http://www.amiando.com/ILAROIO.html?&amp;id=99517579&amp;step=success#EventRegistrationPanel" target="_blank">Inscrivez-vous ici</a></p>
+<p><span style="color: #ffffff;"><span style="font-size: 18px;"><strong><span style="background-color: #000000;"> En savoir plus </span></strong></span></span></p>
+<p><strong>Le Camping, une réponse aux besoins des nouveaux entrepreneurs du Web </strong></p>
+<p><span style="font-family: arial,helvetica,sans-serif;"><span style="font-size: 14px;">Ce concept d&#8217;incubation accélérée a été initié en 2005 par le très populaire Y Combinator, au cœur de la Silicon Valley. Les <span style="font-style: italic;">success stories </span>qui en sont sorties -­ DropBox ou encore AirBnB, ont forgé sa réputation. On assiste depuis à une forte émergence du modèle, les Etats-­Unis comptent désormais plus de 50 accélérateurs.</span></span></p>
+<p>La France, forte d’excellents ingénieurs et designers, aux talents mondialement reconnus et d’entrepreneurs désireux de donner une dimension internationale à leur projet, ne pouvait se passer d’un accélérateur. C’est donc le pari relevé par le camping depuis plus d’un an.</p>
+<p><span style="font-size: 14px;"><span style="font-family: arial,helvetica,sans-serif;"><strong>L&#8217;expérience réussie des saisons 1 et 2</strong></span></span></p>
+<p>En un an, Le Camping a accompagné 24 startups. 2 millions d’euros ont été levés par plus d&#8217;un tiers d’entre elles, 43 emplois ont été créés et 60 contrats ont été signés avec des clients dont de grands comptes comme SNCF, Orange, Bouygues&#8230; L’expérience est extrêmement bénéfique pour les entrepreneurs sélectionnés, mais surtout, fondamentale pour encourager et diffuser la culture de l‘entrepreneuriat. Tout le modèle du Camping repose sur le passage de relai, entre ceux qui ont réussi et ceux qui démarrent. Cet échange est intégré et se poursuit après l’accélération de 6 mois. C’est un travail de fond auquel s’atèle ce programme: perpétuer des valeurs de partage et d’entraide au sein de l’écosystème innovant local.</p>
+<p><strong>Le programme du Camping</strong></p>
+<p><span style="font-family: arial,helvetica,sans-serif;"><span style="font-size: 14px;">A leur arrivée dans le prestigieux Palais Brongniart, ancienne Bourse de Paris, les startups entrent dans une phase d’accélération de 3 mois avec un seul but : dialoguer avec les utilisateurs et développer leur produit, trouver leurs premiers clients. Cette phase s’achève avec le Demo day : à Paris et à Londres, les 12 équipes présentent leur projet devant plus de 100 investisseurs. Cet exercice les confronte à la réalité du terrain et leur permet de créer des liens avec les Business Angels et VCs. Les 3 mois suivants sont axés sur le perfectionnement de leur produit, le développement de leur communauté, le lancement à l’international et la préparation de « l’après camping ».</span></span></p>
+<p><span style="font-family: arial, helvetica, sans-serif;">Pendant 6 mois, des mentors -­ entrepreneurs du web, aguerris et volontaires, interviennent chaque semaine pour partager leurs expériences, écouter et challenger les pépites du Camping. </span></p>
+<p><strong>Silicon Sentier</strong></p>
+<p><span style="font-family: arial,helvetica,sans-serif;"><span style="font-size: 14px;">Le Camping est un projet lancé en 2011 par l’association Silicon Sentier. Créée en 2000, Silicon Sentier a accompagné l’essor de l’économie numérique et participé à l’émergence d’un écosystème innovant en Ile-­de-­France. Année après année, l’ambition de l’association a été de déployer de nouveaux projets tels que l’ouverture et le développement du réseau des Cantines en France et à l’international, la création de Silicon Maniacs, média de Silicon Sentier sur l’innovation, la création de SIlicon Xperience, un laboratoire d’usages pour les PME innovantes. </span></span></p>
+<p>*<strong>Les inscriptions commencent dès maintenant, c&#8217;est ici: </strong><a href="http://www.f6s.com/lecampingapply" target="_blank">http://www.f6s.com/lecampingapply</a></p>
+<p><a href="http://www.lecamping.org/"><strong>www.lecamping.org</strong></a></p>
+<p><a href="http://www.siliconsentier.org/"><strong>www.siliconsentier.org</strong></a></p>
+<p><strong>Le Camping is a project from Silicon Sentier.</strong></p>
+<p><a href="http://siliconsentier.org/"><img style="width: 227px; height: 92px;" src="https://d2q0qd5iz04n9u.cloudfront.net/_ssl/proxy.php/http/gallery.mailchimp.com/f0a9c49ba311b971d61906a5a/images/Silicon_Sentier.jpg" alt="" align="none" /></a></p>
+<p><strong>Le Camping is possible thanks to the active support of its partners: </strong></p>
+<p><a href="http://www.lecamping.org/partenaires/" target="_blank"><img style="width: 467px; height: 120px;" src="https://d2q0qd5iz04n9u.cloudfront.net/_ssl/proxy.php/http/gallery.mailchimp.com/f0a9c49ba311b971d61906a5a/images/Capture_d_e_cran_2012_03_03_a_16.16.03.png" alt="" align="none" /></a></p>
+<p><a href="*%7CTWITTER:PROFILEURL%7C*">follow on Twitter</a> | <a href="*%7CFACEBOOK:PROFILEURL%7C*">friend on Facebook</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/le-camping-saison-3-go-2/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title></title>
+		<link>http://siliconsentier.org/qg-numerique-proposez-votre-tribune-sur-le-site-de-newsring/</link>
+
+		<comments>http://siliconsentier.org/qg-numerique-proposez-votre-tribune-sur-le-site-de-newsring/#comments</comments>
+		<pubDate>Fri, 23 Mar 2012 12:12:27 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[Uncategorized]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90075</guid>
+		<description><![CDATA[<p><iframe src="https://docs.google.com/spreadsheet/embeddedform?formkey=dElELXRjdUJpbXQxRGtfUWhZSmd1bmc6MQ" frameborder="0" marginwidth="0" marginheight="0" width="675" height="745"></iframe></p>
+<p>&#160;</p>
+<p><span style="font-size: medium;"><strong>Retrouvez toutes les tribunes sur le site <a href="http://www.qg-numerique.org/index.php">QG Numérique</a>.</strong></span></p>
+<p><strong><span style="font-size: medium;">Réagissez aux débats actuellement en cours sur le site de <a href="http://www.newsring.fr/5292-sophie-andre">Newsring</a></span></strong></p>
+<p><strong><span style="font-size: medium;">Proposez votre propre débat sur le site de <a href="http://www.newsring.fr/5292-sophie-andre">Newring</a>.</span></strong></p>
+<p>&#160;</p>
+<p>&#160;</p>
+<p>&#160;</p>
+<p>&#160;</p>
+]]></description>
+
+			<content:encoded><![CDATA[<p><iframe src="https://docs.google.com/spreadsheet/embeddedform?formkey=dElELXRjdUJpbXQxRGtfUWhZSmd1bmc6MQ" frameborder="0" marginwidth="0" marginheight="0" width="675" height="745"></iframe></p>
+<p>&nbsp;</p>
+<p><span style="font-size: medium;"><strong>Retrouvez toutes les tribunes sur le site <a href="http://www.qg-numerique.org/index.php">QG Numérique</a>.</strong></span></p>
+<p><strong><span style="font-size: medium;">Réagissez aux débats actuellement en cours sur le site de <a href="http://www.newsring.fr/5292-sophie-andre">Newsring</a></span></strong></p>
+<p><strong><span style="font-size: medium;">Proposez votre propre débat sur le site de <a href="http://www.newsring.fr/5292-sophie-andre">Newring</a>.</span></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/qg-numerique-proposez-votre-tribune-sur-le-site-de-newsring/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>La campagne présidentielle sera numérique !</title>
+		<link>http://siliconsentier.org/la-campagne-presidentielle-sera-numerique/</link>
+
+		<comments>http://siliconsentier.org/la-campagne-presidentielle-sera-numerique/#comments</comments>
+		<pubDate>Wed, 21 Mar 2012 13:53:24 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[a_la_une]]></category>
+		<category><![CDATA[QG numérique]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90065</guid>
+
+		<description><![CDATA[<p>http://siliconsentier.org/wp-content/uploads/2012/03/2012-03-22-QG-site.jpg</p>
+]]></description>
+			<content:encoded><![CDATA[<p>La campagne présidentielle a officiellement commencé et le numérique compte bien y prendre part.</p>
+<p>&nbsp;</p>
+<p>Pour que le numérique ne soit pas un sujet accessoire et que les candidats s&#8217;approprient ses vrais enjeux, ses acteurs s&#8217;organisent pour entrer en campagne, eux aussi.</p>
+<p>&nbsp;</p>
+<p>Associations, entreprises, médias&#8230; Près de 17 structures se réunissent autour de la volonté de placer le numérique au cœur des présidentielles et ouvrent un espace de dialogue dédié à cette fin : <a href="http://www.qg-numerique.org">QG Numérique</a></p>
+<p>&nbsp;</p>
+<p>Sandrine Murcia, Présidente de Silicon Sentier, souligne « les entrepreneurs, les acteurs du numérique ont de l’expérience, des idées, du savoir-faire. Le QG Numérique est là pour ouvrir un vrai dialogue avec les politiques et préparer ensemble dès maintenant les transformations inéluctables de notre société ».<br />
+Alimenté par des contributions en tout genre, <a href="http://www.qg-numerique.org">QG Numérique</a> est ouvert à tous !<br />
+Toutes les semaines seront proposées des thématiques autour desquelles tout internaute est invité en effet à s&#8217;exprimer.<br />
+Le partenariat avec le site de débats <a href="http://www.newsring.fr/">Newsring</a> permettra de poursuivre les échanges.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><a href="http://www.qg-numerique.org/fr/qui-sommes-nous-">Découvrez les structures impliquées.</a><br />
+<a href="https://www.facebook.com/QGNUM">Soutenez cette initiative sur Facebook</a><br />
+<a href="https://twitter.com/#!/QGNUM">Suivez-nous sur Twitter !</a></p>
+<p>&nbsp;</p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/la-campagne-presidentielle-sera-numerique/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Skimm! arrive à La Cantine par Silicon Sentier !</title>
+
+		<link>http://siliconsentier.org/skimm-arrive-a-la-cantine-par-silicon-sentier/</link>
+		<comments>http://siliconsentier.org/skimm-arrive-a-la-cantine-par-silicon-sentier/#comments</comments>
+		<pubDate>Mon, 12 Mar 2012 09:01:42 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90032</guid>
+
+		<description><![CDATA[<p>Vous pourrez désormais régler vos forfaits de co-working et vos consommations depuis votre smartphone.<br />
+Ce qui tombe plutôt bien, étant donné que la Cantine n’accepte pas les paiements par carte bancaire.</p>
+]]></description>
+			<content:encoded><![CDATA[<div>
+<div>
+<div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><a href="http://siliconsentier.org/wp-content/uploads/2012/03/2012-03-16-SKIMM.png"><img class="alignnone size-medium wp-image-90063" title="2012-03-16-SKIMM" src="http://siliconsentier.org/wp-content/uploads/2012/03/2012-03-16-SKIMM-200x300.png" alt="" width="200" height="300" /></a></span></div>
+</div>
+</div>
+<p><span style="color: #222222; font-family: arial,sans-serif;"><a href="https://www.skimm.fr/">Skimm!</a> arrive à La Cantine par Silicon Sentier !</span></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><strong>Vous pourrez désormais régler vos forfaits de coworking et vos consommations depuis votre smartphone.</strong> </span></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+<div>Plus besoin d&#8217;aller retirer de l&#8217;argent en espèce !</div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">Vous pouvez également essayer Skimm! chez plusieurs commerçants du quartier :</span></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">• Aux</span><em><a href="http://maps.google.fr/maps/ms?hl=fr&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=213038470292898916431.0004b8df397a1734a9ca6&amp;ll=48.883457,2.307816&amp;spn=0.141555,0.368729&amp;t=m&amp;z=12&amp;vpsrc=6&amp;iwloc=0004b8df48e36657327dd" target="_blank"> Bons P’tits Plats</a> (la cantine vietnamienne à côté&#8230;.. de la Cantine)</em></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">• A</span> <em><a href="http://maps.google.fr/maps/ms?hl=fr&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=213038470292898916431.0004b8df397a1734a9ca6&amp;ll=48.883457,2.307816&amp;spn=0.141555,0.368729&amp;t=m&amp;z=12&amp;vpsrc=6&amp;iwloc=0004b8df48e35255548cf" target="_blank">Croq2dent</a></em></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">• A</span><em><a href="http://maps.google.fr/maps/ms?hl=fr&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=213038470292898916431.0004b8df397a1734a9ca6&amp;ll=48.883457,2.307816&amp;spn=0.141555,0.368729&amp;t=m&amp;z=12&amp;vpsrc=6&amp;iwloc=0004b8df658a5fae2b857" target="_blank"> VertMidi</a></em></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">• A</span> <em><a href="http://maps.google.fr/maps/ms?hl=fr&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=213038470292898916431.0004b8df397a1734a9ca6&amp;ll=48.883457,2.307816&amp;spn=0.141555,0.368729&amp;t=m&amp;z=12&amp;vpsrc=6&amp;iwloc=0004b8df48e33b73d7d0a" target="_blank">Francesca</a></em> <span style="color: #222222; font-family: arial,sans-serif;"> Quatre Septembre</span></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">• A</span><em><a href="http://maps.google.fr/maps/ms?hl=fr&amp;ie=UTF8&amp;oe=UTF8&amp;msa=0&amp;msid=213038470292898916431.0004b8df397a1734a9ca6&amp;ll=48.883457,2.307816&amp;spn=0.141555,0.368729&amp;t=m&amp;z=12&amp;vpsrc=6&amp;iwloc=0004b8df4c7a33a2bf137" target="_blank"> Shake-Eat</a></em></div>
+<div></div>
+<div></div>
+<div></div>
+<p>&nbsp;</p>
+<div><span style="color: #222222; font-family: arial,sans-serif;">L&#8217;application se télécharge sur les smartphones disposant d’un système d’exploitation IOS. Utilisateurs iPhone, <span style="font-size: large;"><strong><a href="http://itunes.apple.com/fr/app/skimm%21/id494543194">par ici</a></strong></span> pour transformer votre iPhone en moyen de paiement. </span></div>
+<div>
+<div></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">Amis Androïd, ne soyez pas jaloux, son alter-ego sera disponible dans quelques semaines <img src='http://siliconsentier.org/wp-includes/images/smilies/icon_wink.gif' alt=';-)' class='wp-smiley' /> </span></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">L&#8217;application est gratuite pour l&#8217;utilisateur et entièrement sécurisée.<br />
+</span></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+</div>
+<div>
+<div><span style="color: #222222; font-family: arial,sans-serif;">On attend <a href="http://skimm.uservoice.com/">vos retours et votre feedback</a> ! (sur la qualité de la nourriture aussi <img src='http://siliconsentier.org/wp-includes/images/smilies/icon_wink.gif' alt=';-)' class='wp-smiley' /> )</span></div>
+<div></div>
+<div></div>
+<div><a href="https://www.skimm.fr/">https://www.skimm.fr/</a></div>
+<div></div>
+<div><span style="color: #222222; font-family: arial,sans-serif;"><br />
+</span></div>
+</div>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/skimm-arrive-a-la-cantine-par-silicon-sentier/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Nod-A et l&#8217;ADEME : Séminaire de co-création le 26 mars à La Cantine</title>
+
+		<link>http://siliconsentier.org/nod-a-et-ademe-seminaire-de-co-creation-le-26-mars-a-la-cantine/</link>
+		<comments>http://siliconsentier.org/nod-a-et-ademe-seminaire-de-co-creation-le-26-mars-a-la-cantine/#comments</comments>
+		<pubDate>Sat, 10 Mar 2012 12:57:52 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90030</guid>
+
+		<description><![CDATA[<p>L&#8217;ADEME, dans le cadre des Investissements d&#8217;Avenir, a ouvert un second appel à manifestations d&#8217;intérêt (AMI) sur un sujet dédié aux chaînes logistiques et à la mobilité occasionnelle des personnes. Nod-A les accompagne afin de favoriser les réponses croisées en organisant un autre séminaire de co-création le 26 mars à&#8230;</p>]]></description>
+			<content:encoded><![CDATA[<p>L&#8217;ADEME, dans le cadre des Investissements d&#8217;Avenir, a ouvert un second appel à manifestations d&#8217;intérêt (AMI) sur un sujet dédié aux chaînes logistiques et à la mobilité occasionnelle des personnes. Nod-A les accompagne afin de favoriser les réponses croisées en organisant un autre séminaire de co-création le 26 mars à La Cantine.</p>
+<p>&nbsp;</p>
+<p>Ils seront l&#8217;occasion de détailler les objectifs de l&#8217;AMI pour comprendre les enjeux et les possibilités, ainsi que d&#8217;identifier des compétences, des innovations dans de nombreux domaines et de les rassembler pour co-concevoir des projets à haute valeur ajoutée, proches du marché.</p>
+<p>&nbsp;<br />
+Si vous cherchez des partenaires pour présenter un projet pour cet appel, inscrivez-vous au séminaire via ce lien <a href="http://www.ami-mobilite.com/seminaires/.">http://www.ami-mobilite.com/seminaires/.</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/nod-a-et-ademe-seminaire-de-co-creation-le-26-mars-a-la-cantine/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>[La Cantine] Retour sur&#8230; La cocotte-minute de La Cantine : ce que les coworkers ont sur le feu !</title>
+
+		<link>http://siliconsentier.org/la-cantine-retour-sur-la-cocotte-minute-de-la-cantine-ce-que-les-coworkers-ont-sur-le-feu/</link>
+		<comments>http://siliconsentier.org/la-cantine-retour-sur-la-cocotte-minute-de-la-cantine-ce-que-les-coworkers-ont-sur-le-feu/#comments</comments>
+		<pubDate>Fri, 09 Mar 2012 09:23:04 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=90021</guid>
+
+		<description><![CDATA[<p>Le concept de coworking fait couler de l’encre mais qu’en est-il de ceux qui sont au coeur de ces espaces : les coworkers ?<br />
+Qui sont-ils ? Que font-ils ? Quels sont leurs projets ? Qu’ont-ils dans leur cocotte-minute  ?  Et pourquoi ont-il choisi le coworking ?</p>
+]]></description>
+			<content:encoded><![CDATA[<p>Le concept de coworking fait couler de l’encre mais qu’en est-il de ceux qui sont au coeur de ces espaces : les coworkers ?<br />
+Qui sont-ils ? Que font-ils ? Quels sont leurs projets ? Qu’ont-ils dans leur cocotte-minute  ?  Et pourquoi ont-il choisi le coworking ?<br />
+Retour sur cette dégustation de projets à s’en lécher les babines et sur les motivations qui poussent ces professionnels au coworking.</p>
+<p>&nbsp;</p>
+<h2 dir="ltr">Dégustation : régalez-vous !</h2>
+<p><strong>Le prestatataire.fr </strong><br />
+<em> Roger Pelaud</em></p>
+<p>&nbsp;</p>
+<p>Le <a href="http://prestatataire.fr/">prestatataire.fr</a> est un site d’annonces qui vise à mettre en relation utilisateurs et prestataires de services aux particuliers.<br />
+Les prestataires que nous ciblons sont aussi des particuliers : des étudiants, des entrepreneurs&#8230; Bref, toute personne qui propose des services aux particuliers.<br />
+Nous proposons aussi bien des services classiques (baby-sitting, ménage, etc.) que des services originaux (cours de tango, chef à domicile pour soirée crêpes).<br />
+Nos ambitions sont de simplifier le quotidien, d’augmenter les revenus des particuliers et surtout d’avoir une influence positive sur la vie des personnes.</p>
+<p><strong><a href="http://beta.leprestataire.fr/"> http://beta.leprestataire.fr/</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Fikji</strong><br />
+<em> Laurent Perez</em></p>
+<p>&nbsp;</p>
+<p>Fikji est une agence de gestion de l’affiliation (plateforme de mise en relation entre l’annonceur et les espaces publicitaires). Nous menons des campagnes de génération de trafic, de leads, de collecte et de fans. Nous travaillons essentiellement à la performance : l’annonceur ne paie que lorsque la campagne fonctionne.<br />
+Fikji a développé son propre système de tracking : nous sommes indépendant et maîtrisons ainsi nos coûts.<br />
+Nous portons également une attention particulière au choix de nos partenaires. Nous avons fait le pari de ne travailler qu’avec les meilleurs.<br />
+Enfin, nous privilégions l’amélioration des campagnes par l’analyse en A/B testant systématiquement.</p>
+<p><strong><a href="http://www.fikji.com/">www.fikji.com</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Ikedum</strong><br />
+<em> Alexis Ainouz</em></p>
+<p>&nbsp;</p>
+<p>Principalement, les clients font appel à mes services pour des raisons d’affect et d’effet de mode. Et d’après moi, bien qu’il puisse s’agir de démarches intéressantes, ces initiatives ne sont pas fondées sur des données statistiques avérées, ce qui très dommage je trouve.<br />
+La raison d’être d’Ikedum est de fournir à nos clients des données fiables issues du trafic de leur site pour qu’ils puissent piloter leur business efficacement. A partir de ces données, nos clients vont pouvoir faire des choix éclairés et améliorer la qualité de leur business en ligne.</p>
+<p><strong><a href="http://www.ikedum.com/">www.ikedum.com</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Ubimix</strong><br />
+<em> Stéphane Laurière</em></p>
+<p>&nbsp;</p>
+<p>Ubimix est l’association d’”Ubi” et de “Mix”.<br />
+Ubi fait référence à la notion de lieu et d’ubiquité.<br />
+Mix fait référence au mot de Remix, tel qui peut exister en ligne avec le recyclage des contenus.<br />
+Ubimix est né d’un besoin personnel : pouvoir lire des contenus web de différentes natures sur différents supports : un ordinateur, un téléphone, etc.<br />
+Notre technologie vise à traduire l’hétérogénéité des contenus web vers une lecture homogène.<br />
+Nous permettons aussi à des entreprises d’avoir un accès unifié à des contenus hétérogènes.</p>
+<p><strong><a href="http://webreformatter.com/">http://webreformatter.com/</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>IT Social</strong><br />
+<em> Samuel Gaulay</em></p>
+<p>&nbsp;</p>
+<p>Avec IT Social nous souhaitons réinventer les modes de partage et transformer les connaissances individuelles en intelligences collectives. IT Social est une plate-forme qui facilite le partage et sa restitution. Les articles sont rédigés par différents contributeurs qui vont être notés par la communauté des lecteurs.<br />
+Parallèlement, des experts se sont engagés à écrire régulièrement des billets à forte valeur ajoutée.<br />
+Nous travaillons aussi sur des Web shows : des vidéos de 20 minutes très dynamiques, à l’instar de ce que propose Ted.</p>
+<p><strong><a href="http://itil.fr/"> http://itil.fr/</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Fada</strong><br />
+<em> Damien Douani</em></p>
+<p>&nbsp;</p>
+<p>Jacques Segela définit Internet comme &#8220;la plus grande saloperie qu’aient jamais inventée les hommes&#8221;.<br />
+Partant de ce constat, fin 2010, j’ai quitté ma société, je me suis dit “soyons fous” et j’ai monté ma boîte avec pour objectif de faire aimer le digital autrement.<br />
+Je me suis associée à ma femme (exit les problèmes harcèlement sexuel) qui est spécialiste des RP 2.0, et qui elle aussi avait envie de travailler différemment.<br />
+Et Fada est né.<br />
+Fada est une agence de conseil web qui propose une méthodologie progressive, adaptée à la maturité des entreprises. Nous essayons de travailler vraiment avec l’entreprise en visant sa progression.</p>
+<p><strong><a href="http://www.fadasocialagency.com/"> http://www.fadasocialagency.com/</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Wallmuse</strong><br />
+<em> Alexandre Khan</em></p>
+<p>&nbsp;</p>
+<p>Nous nous intéressons à toutes les formes d’art dont la diffusion est compliquée sur Internet. Notre objectif est de sensibiliser des musées, des centres d’arts, des artistes à la composition de montages en ligne qui associent, images, sons, vidéos, etc.</p>
+<p><strong><a href="http://www.wallmuse.com/">www.wallmuse.com</a></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 dir="ltr">Une cuillère à soupe de coworking : ce que les coworkers nous disent de La Cantine.</h2>
+<p>Le coworking offre une émulation qui fait avancer. Ces espaces permettent d’apprendre beaucoup des autres, de partager des savoirs, d’échanger sur différents sujets. Les exemples de collaboration sont nombreux : de la mini-formation aux échanges de bons procédés en passant par les conseils avisés d’experts sur différents sujets. Le coworking est un nouveau mode de fonctionnement à part entière. L’intérêt que lui portent les médias est d’ailleurs symptomatique d’un mouvement qui émerge vraiment.</p>
+<p>&nbsp;</p>
+<p>“Je cherchais un lieu de coworking. J’ai trouvé un lieu d’énergie et de collaboration, j’ai trouvé La Cantine !” nous dit Roger Pelaud du prestataire.fr.<br />
+La Cantine est vu comme un endroit facile, on y entre, on y boit un café, on y fait naturellement des rencontres.<br />
+L’engagement peut-être variable : du café à la location de bureau mais il s’agit toujours d’y trouver un espace de dialogue voire d&#8217;entre-aide, “créatrice d’intelligence collective” comme le rappelle Stéphane Laurière d’Ubimix.<br />
+“Bref La Cantine c’est cool”, conclut Laurent Perez de Fikji.</p>
+<p>&nbsp;</p>
+<p>Merci coworkers pour ce moment de partage très agréable.</p>
+<p>Bon coworking à tous !</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/la-cantine-retour-sur-la-cocotte-minute-de-la-cantine-ce-que-les-coworkers-ont-sur-le-feu/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title></title>
+		<link>http://siliconsentier.org/j_hack-comment-contourner-la-censure-et-la-surveillance/</link>
+
+		<comments>http://siliconsentier.org/j_hack-comment-contourner-la-censure-et-la-surveillance/#comments</comments>
+		<pubDate>Thu, 08 Mar 2012 16:18:45 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[petite une]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=89997</guid>
+		<description><![CDATA[<p>http://siliconsentier.org/wp-content/uploads/2012/03/2012-03-08-maniacs.jpg</p>
+]]></description>
+
+			<content:encoded><![CDATA[<h1>#J_Hack : comment contourner la censure et la surveillance ?</h1>
+<p>&nbsp;</p>
+<p>Le 25 février dernier, Silicon Maniacs réunissait hackers et journalistes autour des problématiques de censure et de surveillance du réseau.</p>
+<p>&nbsp;</p>
+<p>Quelles sont les bonnes pratiques, comment protéger ses données, quels sont les enjeux de demain. Autant de questions abordées avec <a href="http://fr.rsf.org/">Reporter Sans Frontière</a>, <a href="http://telecomix.org/">Telecomix</a> et <a href="http://reflets.info/">Reflets.info</a>.</p>
+<p>&nbsp;</p>
+<p><a href="http://www.siliconmaniacs.org/j_hack-comment-contourner-la-censure-et-la-surveillance/">Découvrez les podcasts de l&#8217;évènement sur le site de Silicon Maniacs.</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/j_hack-comment-contourner-la-censure-et-la-surveillance/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Lancement de l&#8217;appel à projets e-inclusion 2012</title>
+		<link>http://siliconsentier.org/lancement-de-lappel-a-projets-e-inclusion-2012/</link>
+
+		<comments>http://siliconsentier.org/lancement-de-lappel-a-projets-e-inclusion-2012/#comments</comments>
+		<pubDate>Thu, 08 Mar 2012 15:08:16 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=89984</guid>
+		<description><![CDATA[<p>La Région Ile-de-France, en partenariat avec l’Artesi, l’Agence numérique régionale d’Île-de-France, lance ce 30 janvier l’appel à projets e-inclusion 2012.<br />
+L’objectif de cet appel à projet est d’aider au financement d’initiatives innovantes qui placent les nouvelles technologies de l’information et de la communication au cœur d’un projet à dimension sociale.&#8230;</p>]]></description>
+
+			<content:encoded><![CDATA[<p>La Région Ile-de-France, en partenariat avec l’Artesi, l’Agence numérique régionale d’Île-de-France, lance ce 30 janvier l’appel à projets e-inclusion 2012.<br />
+L’objectif de cet appel à projet est d’aider au financement d’initiatives innovantes qui placent les nouvelles technologies de l’information et de la communication au cœur d’un projet à dimension sociale.</p>
+<p>&nbsp;</p>
+<p>Les associations, les collectivités locales et les établissements publics de coopération intercommunale (EPCI) peuvent candidater. La date impérative de clôture de l’appel à projets est fixée au 21 mars 2012.</p>
+<p>&nbsp;</p>
+<p>Pour plus d’informations sur l’appel à projets et sur les modalités de candidature, vous trouverez en pièce jointe un document qui reprend les informations essentielles.</p>
+<p>&nbsp;</p>
+<p>Les documents nécessaires pour candidater à l’appel à projets e-inclusion 2012 peuvent être téléchargés sur le site de la Région Ile-de-France : <a href="http://www.iledefrance.fr/appels-a-projets/recherche-enseignement-sup/e-inclusion/">http://www.iledefrance.fr/appels-a-projets/recherche-enseignement-sup/e-inclusion/</a></p>
+<p>Toute question peut être adressée à l’adresse suivante : e-inclusion-2012@artesi-idf.com</p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/lancement-de-lappel-a-projets-e-inclusion-2012/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>Atelier Silex &#8211; Un atelier gratuit à l’attention des designers le 15/03 !</title>
+
+		<link>http://siliconsentier.org/atelier-silex-un-atelier-gratuit-a-lattention-des-designers-le-1503/</link>
+		<comments>http://siliconsentier.org/atelier-silex-un-atelier-gratuit-a-lattention-des-designers-le-1503/#comments</comments>
+		<pubDate>Thu, 08 Mar 2012 14:23:05 +0000</pubDate>
+		<dc:creator>Silicon Sentier</dc:creator>
+				<category><![CDATA[home actu]]></category>
+
+		<guid isPermaLink="false">http://siliconsentier.org/?p=89981</guid>
+
+		<description><![CDATA[<p>Silex Labs, l’association qui représente les projets open source Silex et amfPHP, vous réunit pour un atelier gratuit à l’attention des designers, web designers et web masters, dans les locaux de l’IESA Multimédia, l’école des métiers numériques  le 15/03.</p>
+<p>&#160;</p>
+]]></description>
+			<content:encoded><![CDATA[<p>Silex Labs, l’association qui représente les projets open source Silex et amfPHP, vous réunit pour un atelier gratuit à l’attention des designers, web designers et web masters, dans les locaux de l’IESA Multimédia, l’école des métiers numériques.</p>
+<p>&nbsp;<br />
+Participez à cet évènement incontournable organisé par la communauté elle même, en mode “dev camp&#8221;. Vous y rencontrerez des acteurs du web Français, des gens de terrain, indépendants, entrepreneurs, activistes de l’open source. Quel que soit votre niveau technique, vous repartirez avec un site vitrine en Flash ou HTML5.</p>
+<p>&nbsp;</p>
+<p>Pour plus d&#8217;informations sur l&#8217;atelier du 15 mars : <a href="http://www.silexlabs.org/131828/the-blog/blog-silex/atelier-silex-6eme-edition/#more-131828">http://www.silexlabs.org/131828/the-blog/blog-silex/atelier-silex-6eme-edition/#more-131828</a></p>
+<p>Pour plus d&#8217;informations sur le principe des ateliers : <a href="http://www.silexlabs.org/131828/the-blog/blog-silex/atelier-silex-6eme-edition/#more-131828">http://www.silexlabs.org/events/ateliers-silex/</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://siliconsentier.org/atelier-silex-un-atelier-gratuit-a-lattention-des-designers-le-1503/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+	</channel>
+</rss>

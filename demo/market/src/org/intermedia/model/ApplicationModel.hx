@@ -180,3 +180,13 @@ typedef ListData =
 }
 
 //typedef ListData = Hash<Array<CellData>>;
+
+/**
+ * Size defines the size of a dom
+ */
+typedef Size =
+{
+	var width:Int;
+	var height:Int;
+}
+

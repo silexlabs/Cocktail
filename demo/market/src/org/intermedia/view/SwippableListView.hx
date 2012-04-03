@@ -8,6 +8,7 @@ import cocktail.mouse.MouseData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktail.domElement.DOMElementData;
+//import cocktail.style.StyleData;
 
 import feffects.Tween;
 import feffects.easing.Quart;
@@ -79,6 +80,7 @@ class SwippableListView extends ListViewBase
 	public function new()
 	{
 		super();
+		
 		
 		// init attributes
 		_offset = { x:0, y:0 };
@@ -190,8 +192,12 @@ class SwippableListView extends ListViewBase
 		for (listView in _listViews)
 		{
 			listView.onDataRequest = onDataRequestCallback;
+			//listView.style.display = DisplayStyleValue.none;
 			this.addChild(listView);
+
 		}
+		
+		displayLoading = true;
 		
 		// set index
 		//_index = 1;
@@ -200,7 +206,7 @@ class SwippableListView extends ListViewBase
 		_currentListView = cast _listViews[_index];
 		//this.parent.nativeElement.scrollLeft = 0;
 		//this.parent.nativeElement.scrollLeft = _viewportWidth;
-		this.nativeElement.scrollLeft = _viewportWidth;
+		//this.nativeElement.scrollLeft = _viewportWidth;
 		//this.x = -_viewportWidth;
 		
 		
@@ -255,13 +261,25 @@ class SwippableListView extends ListViewBase
 			
 		}
 		
-		// if home page data is not set yet and _homePageData elements quantity is equal to HOMEPAGE_ITEMS
+		// if home page data is not set yet and _homePageData elements quantity is equal to HOMEPAGE_ITEMS,
+		// build home page and attach lists to swippable view
 		if (!_homePageDataSet && _homePageData.length == HOMEPAGE_ITEMS)
 		{
 			// build home page with its data
 			list1.buildHomePage(_homePageData);
 			// set _homePageDataSet flag to true
 			_homePageDataSet = true;
+			
+			// add all lists to the view
+			/*for (listView in _listViews)
+			{
+				//listView.onDataRequest = onDataRequestCallback;
+				//this.addChild(listView);
+				//listView.style.display = DisplayStyleValue.inlineBlock;
+			}*/
+			
+			//displayLoading = false;
+
 		}
 		
 		// if homepage is set, add or update list1 data
@@ -281,9 +299,15 @@ class SwippableListView extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
+		// unset current list item selected callback
+		_currentListView.onListItemSelected = null;
+		// set _index
 		_index = v;
-		_currentListView = cast _listViews[_index];
+		// update current list to new index
+		_currentListView = cast _listViews[v];
+		// set current list item selected callback
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
+		// launch horizontal tween
 		horizontalReleaseTween();
 
 		return v;	
@@ -588,6 +612,7 @@ class SwippableListView extends ListViewBase
 		// create the tween
 		//trace("horizontalReleaseTween from " + this.parent.nativeElement.scrollLeft + " to " + _currentListView.x);
         //var tween = new Tween( this.nativeElement.scrollLeft, -_currentListView.x, 600, Quint.easeOut );
+		//trace("scrollLeft: " + this.parent.nativeElement.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
         var tween = new Tween( this.parent.nativeElement.scrollLeft, _currentListView.x, 600, Quint.easeOut );
 		tween.setTweenHandlers( horizontalTweenMove, horizontalTweenEnd );
         // launch the tween
@@ -637,7 +662,7 @@ class SwippableListView extends ListViewBase
 		// create the tween
         //var tween = new Tween( this.nativeElement.scrollLeft, -_currentListView.x, 600, Quint.easeOut );
         var tween = new Tween( _currentListView.nativeElement.scrollTop, verticalTweenEnd, 600, Quint.easeOut );
-		tween.setTweenHandlers( verticalTweenMove, null );
+		tween.setTweenHandlers( onVerticalTweenMove, onVerticalTweenEnd );
         // launch the tween
         tween.start();
 	}
@@ -647,7 +672,7 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-    private function verticalTweenMove( e : Float )
+    private function onVerticalTweenMove( e : Float )
     {
 		//this.nativeElement.scrollLeft = Std.int(e);
 		//_currentListView.nativeElement.scrollTop = _viewportHeight - Std.int(e);
@@ -660,10 +685,10 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-	/*private function verticalTweenEnd(e : Float )
+	private function onVerticalTweenEnd(e : Float )
 	{
 		
-	}*/
+	}
 	
 // Touch event workaround	
 #if js

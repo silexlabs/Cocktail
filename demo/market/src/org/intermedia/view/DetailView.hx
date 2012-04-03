@@ -130,7 +130,7 @@ class DetailView extends ViewBase
 		_contentElement.text = _data.content;
 		_contentContainer.addText(_contentElement);*/
 		
-		html2DOM(_data.description);
+		//html2DOM(_data.description);
 		html2DOM(_data.content);
 	}
 	

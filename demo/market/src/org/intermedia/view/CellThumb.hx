@@ -2,12 +2,14 @@ package org.intermedia.view;
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.style.StyleData;
+import haxe.Timer;
 import org.intermedia.model.ApplicationModel;
 import cocktail.textElement.TextElement;
 import cocktail.domElement.ImageDOMElement;
 
-import org.intermedia.view.CellThumbText1Style;
+//import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
+import org.intermedia.model.ApplicationModel;
 
 import feffects.Tween;
 
@@ -21,24 +23,35 @@ import feffects.Tween;
 class CellThumb extends CellBase
 {
 	// cell style
-	private var _cellStyle:CellThumbText1StyleModel;
+	//private var _cellStyle:CellStyleModel;
 	
+	// thumb mask
+	private var _thumbMask:Size;
+	
+	// cell thumb image
 	private var _cellImage:ImageDOMElement;
 
 	/**
+	 * constructor
 	 * 
-	 * 
-	 * @param	?cellPerLine	number of cells per line
+	 * @param	?cellPerLine			number of cells per line
+	 * @param	?cellStyle				cell style
+	 * @param	?thumbWidthPercent		thumb percentage of the cell
 	 */
-	public function new(?cellPerLine:Int = 1, ?cellStyle:CellThumbText1StyleModel) 
+	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel, ?thumbWidthPercent:Int) 
 	{
-		super();
-		if (cellStyle != null) _cellStyle = cellStyle;
-		else initCellStyle();
-		_cellStyle.cell(this,cellPerLine);
+		super(cellPerLine);
+		//if (cellStyle != null) _cellStyle = cellStyle;
+		//else initCellStyle();
+		// apply cell style and gets the cell dimension, for image cropping
+		//_thumbMask = _cellStyle.cell(this, cellPerLine, thumbWidthPercent);
+		_thumbMask = _cellStyle.cell(this, cellPerLine);
 	}
 	
-	private function initCellStyle():Void
+	/**
+	 * initialize the default cell style
+	 */
+	override private function initCellStyle():Void
 	{
 		// init style model
 		_cellStyle = {
@@ -71,9 +84,6 @@ class CellThumb extends CellBase
 			if (_data.thumbUrl != "" && _data.thumbUrl != null)
 			{
 				_cellImage = new ImageDOMElement();
-				// set image style
-				//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-				_cellStyle.thumbnail(_cellImage);
 				// add image
 				this.addChild(_cellImage);
 				// load image
@@ -88,7 +98,13 @@ class CellThumb extends CellBase
 	 */
 	private function onImageLoadSuccess(image:ImageDOMElement):Void
 	{
-		fadeIn();
+		// set image style. It is needed to do it here as we need to access to the intrisic size of the image,
+		// which we can access only when the image has been loaded
+		//listStyle.cellThumbnail(cellImage,screenResolutionSize);
+		_cellStyle.thumbnail(_cellImage, _thumbMask);
+		
+		// display thumb using a random effect
+		Timer.delay(fadeIn,Std.random(1000));
 	}
 	
 	/**
@@ -99,6 +115,7 @@ class CellThumb extends CellBase
 		// create the tween
         var tween = new Tween( 0, 1, 400 );
 		tween.setTweenHandlers( tweenOpacity, tweenEnd );
+		//tween.setTweenHandlers( tweenOpacity, null );
         // launch the tween
         tween.start();
 	}

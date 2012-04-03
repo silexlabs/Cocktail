@@ -77,7 +77,16 @@ class DataLoader
 			
 		}
 		// prepare local feed url
-		else fullUrl = "data/silex_plugins.rss";
+		else
+		{
+			//fullUrl = "data/silex_plugins.rss";
+			if (feed == Feeds.FEED_1.url)
+				fullUrl = "data/feed1.rss";
+			else if (feed == Feeds.FEED_2.url)
+				fullUrl = "data/feed2.rss";
+			else if (feed == Feeds.FEED_3.url)
+				fullUrl = "data/feed3.rss";
+		}
 		
 		// load xml feed
 		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);

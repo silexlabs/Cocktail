@@ -36,9 +36,10 @@ class HomePage extends ViewBase
 	{
 		// add custom cells to the homepage
 		
-		var cell0Style:CellThumbText1StyleModel = {
-			cell:CellThumbText1Style.setCellStyle,
-			thumbnail:CellThumbStyle2.setThumbnailStyle,
+		var cell0Style:CellStyleModel = {
+			//cell:CellThumbText1Style.setCellStyle,
+			cell:CellThumbStyle.setCellStyle,
+			thumbnail:CellThumbStyle.setThumbnailStyle,
 			textBlock:null,
 			title:null,
 			author:null,
@@ -63,14 +64,16 @@ class HomePage extends ViewBase
 		cell2.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell2.data); };
 		this.addChild(cell2);
 
-		var cell3 = new CellThumbText1(2);
+		//var cell3 = new CellThumbText1(2);
+		var cell3 = new CellThumb(2,cell0Style);
 		cell3.data = _data[3];
 		//trace(cell3.data);
 		// set mouseUp callback
 		cell3.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell3.data); };
 		this.addChild(cell3);
 
-		var cell4 = new CellThumbText1(2);
+		//var cell4 = new CellThumbText1(2);
+		var cell4 = new CellThumb(2,cell0Style);
 		cell4.data = _data[4];
 		// set mouseUp callback
 		cell4.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell4.data); };

@@ -6,7 +6,7 @@ package org.intermedia.view;
  * @author Raphael Harmel
  */
 
-typedef CellThumbText1StyleModel =
+typedef CellStyleModel =
 {
 	var cell:Dynamic;
 	var thumbnail:Dynamic;
