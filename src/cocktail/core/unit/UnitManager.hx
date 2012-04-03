@@ -537,7 +537,7 @@ class UnitManager
 	/**
 	 * CSS : display
 	 */
-	private static function getCSSDisplay(value:Display):String
+	public static function getCSSDisplay(value:Display):String
 	{
 		var cssDisplayValue:String;
 		
@@ -562,7 +562,7 @@ class UnitManager
 	/**
 	 * CSS : float
 	 */
-	private static function getCSSFloatAsString(value:CSSFloat):String
+	public static function getCSSFloatAsString(value:CSSFloat):String
 	{
 		var cssCSSFloat:String;
 		
@@ -584,7 +584,7 @@ class UnitManager
 	/**
 	 * CSS : clear
 	 */
-	private static function getCSSClear(value:Clear):String
+	public static function getCSSClear(value:Clear):String
 	{
 		var cssClearValue:String;
 		
@@ -609,7 +609,7 @@ class UnitManager
 	/**
 	 * CSS : position
 	 */
-	private static function getCSSPosition(value:Position):String
+	public static function getCSSPosition(value:Position):String
 	{
 		var cssPositionValue:String;
 		
@@ -638,7 +638,7 @@ class UnitManager
 	/**
 	 * CSS : overflow
 	 */
-	private static function getCSSOverflow(value:Overflow):String
+	public static function getCSSOverflow(value:Overflow):String
 	{
 		var cssOverflowValue:String;
 		
@@ -663,7 +663,7 @@ class UnitManager
 	/**
 	 * CSS : opacity
 	 */
-	private static function getCSSOpacity(value:Opacity):String
+	public static function getCSSOpacity(value:Opacity):String
 	{
 		var cssOpacityValue:String;
 		cssOpacityValue = Std.string(value);
@@ -674,7 +674,7 @@ class UnitManager
 	/**
 	 * CSS : visibility
 	 */
-	private static function getCSSVisibility(value:Visibility):String
+	public static function getCSSVisibility(value:Visibility):String
 	{
 		var cssVisibilityValue:String;
 		
@@ -693,7 +693,7 @@ class UnitManager
 	/**
 	 * CSS : transform
 	 */
-	private static function getCSSTransform(value:Transform):String
+	public static function getCSSTransform(value:Transform):String
 	{
 		var cssTransformValue:String;
 		
@@ -787,7 +787,7 @@ class UnitManager
 	/**
 	 * CSS : transform-origin
 	 */
-	private static function getCSSTransformOrigin(value:TransformOrigin):String
+	public static function getCSSTransformOrigin(value:TransformOrigin):String
 	{
 		var cssTransformOriginValue:String;
 		
@@ -842,7 +842,7 @@ class UnitManager
 	/**
 	 * CSS : margin-top, margin-left...
 	 */
-	private static function getCSSMargin(value:Margin):String
+	public static function getCSSMargin(value:Margin):String
 	{
 		var cssMarginValue:String;
 		
@@ -864,7 +864,7 @@ class UnitManager
 	/**
 	 * CSS : padding-top, padding-left...
 	 */
-	private static function getCSSPadding(value:Padding):String
+	public static function getCSSPadding(value:Padding):String
 	{
 		var cssPaddingValue:String;
 		
@@ -883,7 +883,7 @@ class UnitManager
 	/**
 	 * CSS : width, height
 	 */
-	private static function getCSSDimension(value:Dimension):String
+	public static function getCSSDimension(value:Dimension):String
 	{
 		var cssDimensionValue:String;
 		
@@ -905,7 +905,7 @@ class UnitManager
 	/**
 	 * CSS : top, left, right, bottom
 	 */
-	private static function getCSSPositionOffset(value:PositionOffset):String
+	public static function getCSSPositionOffset(value:PositionOffset):String
 	{
 		var cssPositionOffsetValue:String;
 		
@@ -928,7 +928,7 @@ class UnitManager
 	/**
 	 * CSS : min-width, max-width, min-height, max-height
 	 */
-	private static function getCSSConstrainedDimension(value:ConstrainedDimension):String
+	public static function getCSSConstrainedDimension(value:ConstrainedDimension):String
 	{
 		var cssConstrainedValue:String;
 		
@@ -951,7 +951,7 @@ class UnitManager
 	/**
 	 * CSS : vertical-align
 	 */
-	private static function getCSSVerticalAlign(value:VerticalAlign):String
+	public static function getCSSVerticalAlign(value:VerticalAlign):String
 	{
 		var cssVerticalAlignValue:String;
 		
@@ -995,7 +995,7 @@ class UnitManager
 	/**
 	 * CSS : line-height
 	 */
-	private static function getCSSLineHeight(value:LineHeight):String
+	public static function getCSSLineHeight(value:LineHeight):String
 	{
 		var cssLineHeightValue:String;
 		
@@ -1025,7 +1025,7 @@ class UnitManager
 	/**
 	 * CSS : font-size
 	 */
-	private static function getCSSFontSize(value:FontSize):String
+	public static function getCSSFontSize(value:FontSize):String
 	{
 		var cssFontSizeValue:String;
 		
@@ -1079,7 +1079,7 @@ class UnitManager
 	/**
 	 * CSS : font-weight
 	 */
-	private static function getCSSFontWeight(value:FontWeight):String
+	public static function getCSSFontWeight(value:FontWeight):String
 	{
 		var cssFontWeightValue:String;
 		
@@ -1131,7 +1131,7 @@ class UnitManager
 	/**
 	 * CSS : font-style
 	 */
-	private static function getCSSFontStyle(value:FontStyle):String
+	public static function getCSSFontStyle(value:FontStyle):String
 	{
 		var cssFontStyleValue:String;
 		
@@ -1150,7 +1150,7 @@ class UnitManager
 	/**
 	 * CSS : font-variant
 	 */
-	private static function getCSSFontVariant(value:FontVariant):String
+	public static function getCSSFontVariant(value:FontVariant):String
 	{
 		var cssFontVariantValue:String;
 		
@@ -1169,7 +1169,7 @@ class UnitManager
 	/**
 	 * CSS : font-family
 	 */
-	private static function getCSSFontFamily(value:Array<FontFamily>):String
+	public static function getCSSFontFamily(value:Array<FontFamily>):String
 	{
 		var cssFontFamilyValue:String = "";
 		
@@ -1220,7 +1220,7 @@ class UnitManager
 	/**
 	 * CSS : text-align
 	 */
-	private static function getCSSTextAlign(value:TextAlign):String
+	public static function getCSSTextAlign(value:TextAlign):String
 	{
 		var cssTextAlignValue:String;
 		
@@ -1245,7 +1245,7 @@ class UnitManager
 	/**
 	 * CSS : white-space
 	 */
-	private static function getCSSWhiteSpace(value:WhiteSpace):String
+	public static function getCSSWhiteSpace(value:WhiteSpace):String
 	{
 		var cssWhiteSpaceValue:String;
 		
@@ -1273,7 +1273,7 @@ class UnitManager
 	/**
 	 * CSS : text-transform
 	 */
-	private static function getCSSTextTransform(value:TextTransform):String
+	public static function getCSSTextTransform(value:TextTransform):String
 	{
 		var cssTextTransformValue:String;
 		
@@ -1298,7 +1298,7 @@ class UnitManager
 	/**
 	 * CSS : text-indent
 	 */
-	private static function getCSSTextIndent(value:TextIndent):String
+	public static function getCSSTextIndent(value:TextIndent):String
 	{
 		var cssTextIndentValue:String;
 		
@@ -1317,7 +1317,7 @@ class UnitManager
 	/**
 	 * CSS : letter-spacing
 	 */
-	private static function getCSSLetterSpacing(value:LetterSpacing):String
+	public static function getCSSLetterSpacing(value:LetterSpacing):String
 	{
 		var cssLetterSpacingValue:String;
 		
@@ -1336,7 +1336,7 @@ class UnitManager
 	/**
 	 * CSS : word-spacing
 	 */
-	private static function getCSSWordSpacing(value:WordSpacing):String
+	public static function getCSSWordSpacing(value:WordSpacing):String
 	{
 		var cssWordSpacingValue:String;
 		
@@ -1361,7 +1361,7 @@ class UnitManager
 	/**
 	 * CSS : background-color
 	 */
-	private static function getCSSBackgroundColor(value:BackgroundColor):String
+	public static function getCSSBackgroundColor(value:BackgroundColor):String
 	{
 		var cssBackgroundColor:String;
 		cssBackgroundColor = getCSSColor(value);
@@ -1372,7 +1372,7 @@ class UnitManager
 	/**
 	 * CSS : background-origin
 	 */
-	private static function getCSSBackgroundOrigin(value:Array<BackgroundOrigin>):String
+	public static function getCSSBackgroundOrigin(value:Array<BackgroundOrigin>):String
 	{
 		var cssBackgroundOrigin:String = "";
 		
@@ -1402,7 +1402,7 @@ class UnitManager
 	/**
 	 * CSS : background-clip
 	 */
-	private static function getCSSBackgroundClip(value:Array<BackgroundClip>):String
+	public static function getCSSBackgroundClip(value:Array<BackgroundClip>):String
 	{
 		var cssBackgroundClip:String = "";
 		
@@ -1432,7 +1432,7 @@ class UnitManager
 	/**
 	 * CSS : background-image
 	 */
-	private static function getCSSBackgroundImage(value:Array<BackgroundImage>):String
+	public static function getCSSBackgroundImage(value:Array<BackgroundImage>):String
 	{
 		var cssBackgroundImage:String = "";
 		
@@ -1460,7 +1460,7 @@ class UnitManager
 	/**
 	 * CSS : background-size
 	 */
-	private static function getCSSBackgroundSize(value:Array<BackgroundSize>):String
+	public static function getCSSBackgroundSize(value:Array<BackgroundSize>):String
 	{
 		var cssBackgroundSize:String = "";
 		
@@ -1515,7 +1515,7 @@ class UnitManager
 	/**
 	 * CSS : background-position
 	 */
-	private static function getCSSBackgroundPosition(value:Array<BackgroundPosition>):String
+	public static function getCSSBackgroundPosition(value:Array<BackgroundPosition>):String
 	{
 		var cssBackgroundPositionData:String = "";
 		
@@ -1585,7 +1585,7 @@ class UnitManager
 	/**
 	 * CSS : background-repeat
 	 */
-	private static function getCSSBackgroundRepeat(value:Array<BackgroundRepeat>):String
+	public static function getCSSBackgroundRepeat(value:Array<BackgroundRepeat>):String
 	{
 		var cssBackgroundRepeat:String = "";
 		
@@ -1628,7 +1628,10 @@ class UnitManager
 	// USER INTERFACE STYLES
 	////////////////////////////////
 	
-	private static function getCSSCursor(value:Cursor):String
+	/**
+	 * CSS : cursor
+	 */
+	public static function getCSSCursor(value:Cursor):String
 	{
 		var cssCursorValue:String;
 		
@@ -1811,7 +1814,7 @@ class UnitManager
 		return cssCornerValue;
 	}
 	
-	private static function getCSSColor(value:Color):String
+	public static function getCSSColor(value:Color):String
 	{
 		var cssColor:String;
 		
