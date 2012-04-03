@@ -8,9 +8,8 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
+import cocktail.core.EmbeddedCoreStyle;
 import cocktail.core.NativeElement;
-
-import cocktail.core.EmbeddedStyle;
 
 
  #if (flash9 || nme)
@@ -98,7 +97,7 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		this._coreStyle = new EmbeddedStyle(this);
+		this._coreStyle = new EmbeddedCoreStyle(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

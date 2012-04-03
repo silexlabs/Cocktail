@@ -7,7 +7,7 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.EmbeddedStyle;
+import cocktail.core.EmbeddedCoreStyle;
 
 #if (flash9 || nme)
 import cocktail.port.flash_player.HTMLElement;
@@ -99,7 +99,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		_coreStyle = new EmbeddedStyle(this);
+		_coreStyle = new EmbeddedCoreStyle(this);
 	}
 	
 	

@@ -8,8 +8,8 @@
 package cocktail.core.style.computer;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.AbstractStyle;
-import cocktail.core.Style;
+import cocktail.core.CoreStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
@@ -42,7 +42,7 @@ class VisualEffectStylesComputer
 	 * @param	style contain the styles definition of the 
 	 * target htmlElement
 	 */
-	public static function compute(style:AbstractStyle):Void
+	public static function compute(style:AbstractCoreStyle):Void
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
@@ -72,7 +72,7 @@ class VisualEffectStylesComputer
 	/**
 	 * Compute the 'visibility' style
 	 */
-	private static function getComputedVisibility(style:AbstractStyle):Bool
+	private static function getComputedVisibility(style:AbstractCoreStyle):Bool
 	{
 		var visibility:Bool;
 		
@@ -92,7 +92,7 @@ class VisualEffectStylesComputer
 	 * Compute the transformation origin and returns it as a 2d point
 	 * in pixel
 	 */
-	private static function getComputedTransformOrigin(style:AbstractStyle):PointData
+	private static function getComputedTransformOrigin(style:AbstractCoreStyle):PointData
 	{
 		var x:Float;
 		var y:Float;
@@ -148,7 +148,7 @@ class VisualEffectStylesComputer
 	 * Compute a transformation matrix to apply to the htmlElement
 	 * from the array of transform functions concatenated in order
 	 */
-	private static function getComputedTransform(style:AbstractStyle):Matrix
+	private static function getComputedTransform(style:AbstractCoreStyle):Matrix
 	{
 		var transformFunctions:Array<TransformFunction>;
 		var transformOrigin:PointData = style.computedStyle.transformOrigin;
@@ -234,7 +234,7 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:AbstractStyle, translation:Translation, percentReference:Int):Float
+	private static function getComputedTranslation(style:AbstractCoreStyle, translation:Translation, percentReference:Int):Float
 	{
 		var computedTranslation:Float;
 		

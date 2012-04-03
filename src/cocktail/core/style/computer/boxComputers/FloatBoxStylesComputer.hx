@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
-import cocktail.core.style.AbstractStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
 
@@ -31,7 +31,7 @@ class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 	 * for floated non-embedded HTMLElements, an auto width is computed as 'shrink-to-fit' once all the children
 	 * have been laid out
 	 */
-	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	override private function getComputedAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}
