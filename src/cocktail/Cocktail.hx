@@ -16,76 +16,76 @@ package cocktail;
 /**
  * DOM
  */
-typedef Element = core.dom.Element;
-typedef Node = core.dom.Node;
-typedef Text = core.dom.Text;
-typedef Document = core.dom.Document;
-typedef NodeType = core.dom.DOMData.NodeType;
+typedef Element = cocktail.core.dom.Element;
+typedef Node = cocktail.core.dom.Node;
+typedef Text = cocktail.core.dom.Text;
+typedef Document = cocktail.core.dom.Document;
+typedef NodeType = cocktail.core.dom.DOMData.NodeType;
 
 /**
  * HTML
  */
-typedef HTMLImageElement = core.HTMLImageElement;
-typedef Image = core.HTMLImageElement;
-typedef HTMLElement = core.HTMLElement;
-typedef HTMLDocument = core.html.HTMLDocument;
+typedef HTMLImageElement = cocktail.core.HTMLImageElement;
+typedef Image = cocktail.core.HTMLImageElement;
+typedef HTMLElement = cocktail.core.HTMLElement;
+typedef HTMLDocument = cocktail.core.html.HTMLDocument;
 
 /**
  * EVENT
  */
-typedef Event = core.event.Event;
-typedef IEventTarget = core.event.IEventTarget;
-typedef MouseEvent = core.event.MouseEvent;
-typedef UIEvent = core.event.UIEvent;
-typedef KeyboardEvent = core.event.KeyboardEvent;
+typedef Event = cocktail.core.event.Event;
+typedef IEventTarget = cocktail.core.event.IEventTarget;
+typedef MouseEvent = cocktail.core.event.MouseEvent;
+typedef UIEvent = cocktail.core.event.UIEvent;
+typedef KeyboardEvent = cocktail.core.event.KeyboardEvent;
 
 /**
  * RESOURCE
  */
-typedef XMLHTTPRequest = core.resource.XMLHTTPRequest;
+typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
 
 /**
  * STYLE
  */
-typedef Display = core.style.StyleData.Display;
-typedef Position = core.style.StyleData.Position;
-typedef CSSFloat = core.style.StyleData.CSSFloat;
-typedef Clear = core.style.StyleData.Clear;
+typedef Display = cocktail.core.style.StyleData.Display;
+typedef Position = cocktail.core.style.StyleData.Position;
+typedef CSSFloat = cocktail.core.style.StyleData.CSSFloat;
+typedef Clear = cocktail.core.style.StyleData.Clear;
 
-typedef FontSize = core.style.StyleData.FontSize;
-typedef FontWeight = core.style.StyleData.FontWeight;
-typedef FontStyle = core.style.StyleData.FontStyle;
-typedef FontFamily = core.style.StyleData.FontFamily;
-typedef FontVariant = core.style.StyleData.FontVariant;
+typedef FontSize = cocktail.core.style.StyleData.FontSize;
+typedef FontWeight = cocktail.core.style.StyleData.FontWeight;
+typedef FontStyle = cocktail.core.style.StyleData.FontStyle;
+typedef FontFamily = cocktail.core.style.StyleData.FontFamily;
+typedef FontVariant = cocktail.core.style.StyleData.FontVariant;
 
-typedef WhiteSpace = core.style.StyleData.WhiteSpace;
-typedef LetterSpacing = core.style.StyleData.LetterSpacing;
-typedef WordSpacing = core.style.StyleData.WordSpacing;
-typedef TextTransform = core.style.StyleData.TextTransform;
-typedef TextIndent = core.style.StyleData.TextIndent;
-typedef TextAlign = core.style.StyleData.TextAlign;
+typedef WhiteSpace = cocktail.core.style.StyleData.WhiteSpace;
+typedef LetterSpacing = cocktail.core.style.StyleData.LetterSpacing;
+typedef WordSpacing = cocktail.core.style.StyleData.WordSpacing;
+typedef TextTransform = cocktail.core.style.StyleData.TextTransform;
+typedef TextIndent = cocktail.core.style.StyleData.TextIndent;
+typedef TextAlign = cocktail.core.style.StyleData.TextAlign;
 
-typedef Overflow = core.style.StyleData.Overflow;
-typedef Visibility = core.style.StyleData.Visibility;
-typedef Opacity = core.style.StyleData.Opacity;
-typedef Transform = core.style.StyleData.Transform;
+typedef Overflow = cocktail.core.style.StyleData.Overflow;
+typedef Visibility = cocktail.core.style.StyleData.Visibility;
+typedef Opacity = cocktail.core.style.StyleData.Opacity;
+typedef Transform = cocktail.core.style.StyleData.Transform;
 
-typedef Margin = core.style.StyleData.Margin;
-typedef Padding = core.style.StyleData.Padding;
+typedef Margin = cocktail.core.style.StyleData.Margin;
+typedef Padding = cocktail.core.style.StyleData.Padding;
 
-typedef BackgroundImage = core.style.StyleData.BackgroundImage;
-typedef BackgroundColor = core.style.StyleData.BackgroundColor;
-typedef BackgroundRepeat = core.style.StyleData.BackgroundRepeat;
-typedef BackgroundSize = core.style.StyleData.BackgroundSize;
-typedef BackgroundPosition = core.style.StyleData.BackgroundPosition;
+typedef BackgroundImage = cocktail.core.style.StyleData.BackgroundImage;
+typedef BackgroundColor = cocktail.core.style.StyleData.BackgroundColor;
+typedef BackgroundRepeat = cocktail.core.style.StyleData.BackgroundRepeat;
+typedef BackgroundSize = cocktail.core.style.StyleData.BackgroundSize;
+typedef BackgroundPosition = cocktail.core.style.StyleData.BackgroundPosition;
 
-typedef Dimension = core.style.StyleData.Dimension;
-typedef PositionOffset = core.style.StyleData.PositionOffset;
+typedef Dimension = cocktail.core.style.StyleData.Dimension;
+typedef PositionOffset = cocktail.core.style.StyleData.PositionOffset;
 
 /**
  * UNIT
  */
-typedef Length = core.unit.UnitData.Length;
-typedef ImageValue = core.unit.UnitData.ImageValue;
-typedef Color = core.unit.UnitData.CSSColor;
-typedef ColorKeyword = core.unit.UnitData.ColorKeyword;
+typedef Length = cocktail.core.unit.UnitData.Length;
+typedef ImageValue = cocktail.core.unit.UnitData.ImageValue;
+typedef Color = cocktail.core.unit.UnitData.CSSColor;
+typedef ColorKeyword = cocktail.core.unit.UnitData.ColorKeyword;
