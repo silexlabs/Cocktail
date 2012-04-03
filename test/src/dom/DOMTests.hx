@@ -14,11 +14,6 @@ package dom;
 
 import cocktail.Cocktail;
 import cocktail.Lib;
-import core.dom.Attr;
-import core.dom.Element;
-import core.dom.NamedNodeMap;
-import core.dom.Node;
-import core.dom.Text;
 
 import utest.Assert;
 import utest.Runner;
@@ -29,10 +24,10 @@ class DOMTests
 	
 	public static function main()
 	{	
-		var runner = new Runner();
+		/*var runner = new Runner();
 		runner.addCase(new DOMTests());
 		Report.create(runner);
-		runner.run();
+		runner.run();*/
 	}
 	
 	public function new() 
@@ -43,7 +38,7 @@ class DOMTests
 	function testDocument()
 	{
 		
-		Assert.equals(Lib.document.nodeType, NodeType.DOCUMENT_NODE);
+		Assert.equals(Lib.document.nodeType, Node.DOCUMENT_NODE);
 		
 		var div = Lib.document.createElement("div");
 		
@@ -132,7 +127,7 @@ class DOMTests
 		Assert.equals(el.tagName, "div");
 		Assert.equals(el.nodeName, "div");
 		Assert.isNull(el.nodeValue);
-		Assert.equals(el.nodeType, NodeType.ELEMENT_NODE);
+		Assert.equals(el.nodeType, Node.ELEMENT_NODE);
 		
 		var childEl = new Element("div");
 		el.appendChild(childEl);
@@ -199,7 +194,7 @@ class DOMTests
 		Assert.equals(txt.nodeValue, "bam");
 		Assert.equals(txt.data, "bam");
 		
-		Assert.equals(txt.nodeType, NodeType.TEXT_NODE);
+		Assert.equals(txt.nodeType, Node.TEXT_NODE);
 	}
 	
 	function testNamedNodeMap()
@@ -228,7 +223,7 @@ class DOMTests
 		var attr = new Attr("test");
 		
 		Assert.equals(attr.nodeName, "test");
-		Assert.equals(attr.nodeType, NodeType.ATTRIBUTE_NODE);
+		Assert.equals(attr.nodeType, Node.ATTRIBUTE_NODE);
 		Assert.isFalse(attr.specified);
 		
 		attr.value = "value";

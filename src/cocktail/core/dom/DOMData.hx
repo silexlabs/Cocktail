@@ -18,14 +18,6 @@ import cocktail.core.unit.UnitData;
  * @author Yannick DOMINGUEZ
  */
 
-//TODO : doc
-enum NodeType {
-	ELEMENT_NODE;
-	TEXT_NODE;
-	DOCUMENT_NODE;
-	ATTRIBUTE_NODE;
-}
-
 /**
  * Specifies where to open the linked document
  */

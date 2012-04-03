@@ -77,9 +77,9 @@ class Attr extends Node
 		return _name;
 	}
 	
-	override private function get_nodeType():NodeType
+	override private function get_nodeType():Int
 	{
-		return NodeType.ATTRIBUTE_NODE;
+		return Node.ATTRIBUTE_NODE;
 	}
 	
 	override private function get_nodeValue():String 
