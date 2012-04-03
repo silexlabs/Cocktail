@@ -275,7 +275,7 @@ class UnitManager
 	{
 		var parsed:String = trim(string);
 		
-		var textAlign:WhiteSpace;
+		var textAlign:TextAlign;
 		
 		switch(parsed)
 		{
@@ -448,6 +448,77 @@ class UnitManager
 		
 		return  visibility;
 	}
+	
+	static public function cursorEnum(string:String):Cursor
+	{
+		var parsed:String = trim(string);
+		
+		var cursor:Cursor;
+		
+		switch(parsed)
+		{
+			case "auto":
+				cursor = Cursor.auto;
+				
+			case "crosshair":
+				cursor = Cursor.crosshair;
+				
+			case "pointer":
+				cursor = Cursor.pointer;	
+				
+			case "default":
+				cursor = Cursor.cssDefault;		
+				
+			default:
+				//TODO : throw exception ?
+				cursor = null;
+		}
+		
+		return  cursor;
+	}
+	
+	static public function wordSpacingEnum(string:String):WordSpacing
+	{
+		if (string == "normal")
+			return WordSpacing.normal;
+			
+		var parsed:VUnit = string2VUnit(string);
+		
+		var wordSpacing:WordSpacing;
+		
+		switch(parsed.unit)
+		{
+			case "%":
+				wordSpacing = null;
+				
+			default:
+				wordSpacing = WordSpacing.length(string2Length(parsed));
+		}
+		
+		return  wordSpacing;
+	}
+	
+	static public function letterSpacingEnum(string:String):LetterSpacing
+	{
+		if (string == "normal")
+			return LetterSpacing.normal;
+			
+		var parsed:VUnit = string2VUnit(string);
+		
+		var letterSpacing:LetterSpacing;
+		
+		switch(parsed.unit)
+		{
+			case "%":
+				letterSpacing = null;
+				
+			default:
+				letterSpacing = LetterSpacing.length(string2Length(parsed));
+		}
+		
+		return  letterSpacing;
+	}
+	
 	
 	static public function cssFloatEnum(string:String):CSSFloat
 	{

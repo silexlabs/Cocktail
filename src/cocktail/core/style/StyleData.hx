@@ -1107,6 +1107,8 @@ import cocktail.core.renderer.TextRenderer;
 		
 		/**
 		 * The UA determines the cursor to display based on the current context.
+		 * 
+		 * TODO : rename cssAuto
 		 */
 		auto;
 		
