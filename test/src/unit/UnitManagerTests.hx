@@ -56,6 +56,7 @@ class UnitManagerTests
 		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px, 2pt, 3px, 4%", ","));
 		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px,2pt ,   3px , 4%", ","));
 /**/
+		Assert.isTrue(true);
 	}
     public function testBoxStyleEnum() {
 		// "px" tests 
@@ -100,7 +101,7 @@ class UnitManagerTests
     public function testSetterGetter() {
 		// "px" tests 
 		container.style.marginLeft = "100px";
-		Assert.same(Margin.length(Length.px(100)), container.coreStyle.marginLeft);		
+		Assert.same(Margin.length(Length.px(100)), container.coreStyle.marginLeft);
 
 		// "%" tests
 		container.style.marginLeft = "100%";
