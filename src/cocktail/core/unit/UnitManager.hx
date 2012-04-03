@@ -519,6 +519,47 @@ class UnitManager
 		return  letterSpacing;
 	}
 	
+	//TODO : parse number value for lineHeight
+	static public function lineHeightEnum(string:String):LineHeight
+	{
+		if (string == "normal")
+			return LineHeight.normal;
+		
+			
+		var parsed:VUnit = string2VUnit(string);
+		
+		var lineHeight:LineHeight;
+		
+		switch(parsed.unit)
+		{
+			case "%":
+				lineHeight = LineHeight.percentage(Std.parseInt(parsed.value));
+				
+			default:
+				lineHeight = LineHeight.length(string2Length(parsed));
+		}
+		
+		return  lineHeight;
+	}
+	
+	static public function textIndentEnum(string:String):TextIndent
+	{
+		var parsed:VUnit = string2VUnit(string);
+		
+		var textIndent:TextIndent;
+		
+		switch(parsed.unit)
+		{
+			case "%":
+				textIndent = TextIndent.percentage(Std.parseInt(parsed.value));
+				
+			default:
+				textIndent = TextIndent.length(string2Length(parsed));
+		}
+		
+		return  textIndent;
+	}
+	
 	
 	static public function cssFloatEnum(string:String):CSSFloat
 	{
