@@ -7,8 +7,8 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
-import cocktail.core.style.AbstractStyle;
-import cocktail.core.Style;
+import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.unit.UnitManager;
@@ -57,7 +57,7 @@ class BoxStylesComputer
 	 * @param	containingHTMLElementData the width and height dimensions of the containing block of this 
 	 * HTMLElement, used when computing styles determined as percent or "auto"
 	 */
-	public function measure(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	public function measure(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//measure paddings
 		measureHorizontalPaddings(style, containingHTMLElementData);
@@ -96,7 +96,7 @@ class BoxStylesComputer
 	 * to its content width
 	 * @return
 	 */
-	public function shrinkToFit(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
+	public function shrinkToFit(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
 		return style.computedStyle.width;
 	}
@@ -109,7 +109,7 @@ class BoxStylesComputer
 	 * @param	childrenHeight
 	 * @return
 	 */
-	public function applyContentHeight(style:AbstractStyle, cotainingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
+	public function applyContentHeight(style:AbstractCoreStyle, cotainingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
 	{
 		return childrenHeight;
 	}
@@ -125,7 +125,7 @@ class BoxStylesComputer
 	 * Compute the 'dimensions constraints' styles :
 	 * min-height, max-height, min-width and max-width
 	 */
-	private function measureDimensionsConstraints(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureDimensionsConstraints(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//max height
 		style.computedStyle.maxHeight = getComputedConstrainedDimension(style.maxHeight, containingHTMLElementData.height, containingHTMLElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -145,7 +145,7 @@ class BoxStylesComputer
 	 * top, left, bottom, right, used if the HTMLElement
 	 * is 'positioned' (position style other than 'static')
 	 */
-	private function measurePositionOffsets(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measurePositionOffsets(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//left
 		style.computedStyle.left = getComputedPositionOffset(style.left, containingHTMLElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -168,7 +168,7 @@ class BoxStylesComputer
 	 * Compute the top and bottom paddings of
 	 * the HTMLElement's box model
 	 */
-	private function measureVerticalPaddings(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureVerticalPaddings(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//top
 		style.computedStyle.paddingTop = getComputedPadding(style.paddingTop, containingHTMLElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -181,7 +181,7 @@ class BoxStylesComputer
 	 * Compute the left and right paddings of
 	 * the HTMLElement's box model
 	 */
-	private function measureHorizontalPaddings(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureHorizontalPaddings(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//left
 		style.computedStyle.paddingLeft = getComputedPadding(style.paddingLeft, containingHTMLElementData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -197,7 +197,7 @@ class BoxStylesComputer
 	 * Measure the width and the horizontal margins
 	 * of the HTMLElement
 	 */
-	private function measureWidthAndHorizontalMargins(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureWidthAndHorizontalMargins(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		if (style.width == Dimension.cssAuto)
 		{
@@ -218,7 +218,7 @@ class BoxStylesComputer
 	 * An auto width is equal to the containing HTMLElement width minus
 	 * horizontal paddings and margins.
 	 */
-	private function measureAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//the width is first set to 0, 
 		//it will be computed once the margins are computed
@@ -239,7 +239,7 @@ class BoxStylesComputer
 	 * HTMLElement width or a length value defined
 	 * in pixels or any other length unit
 	 */
-	private function measureWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//get the content width (width without margins and paddings)
 		setComputedWidth(style, getComputedWidth(style, containingHTMLElementData));
@@ -258,7 +258,7 @@ class BoxStylesComputer
 	 * vertical margins of the 
 	 * HTMLElement
 	 */
-	private function measureHeightAndVerticalMargins(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureHeightAndVerticalMargins(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//get the content height (height without margins and paddings)
 		//the height might be null at this point if it must take the content size
@@ -285,7 +285,7 @@ class BoxStylesComputer
 	 * is the addition of all of the offset heights (margin + padding + content height)
 	 * of its children.
 	 */
-	private function measureAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureAutoHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//the height is set to null by default
 		setComputedHeight(style, getComputedAutoHeight(style, containingHTMLElementData));
@@ -304,7 +304,7 @@ class BoxStylesComputer
 	 * or a length value exprimend in a supported unit, such
 	 * as pixel
 	 */
-	private function measureHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//get the computed height in pixel
 		setComputedHeight(style, getComputedHeight(style, containingHTMLElementData));
@@ -321,7 +321,7 @@ class BoxStylesComputer
 	/**
 	 * Constrain computed width if it is above/below max/min width
 	 */
-	private function constrainWidth(style:AbstractStyle, computedWidth:Int):Int
+	private function constrainWidth(style:AbstractCoreStyle, computedWidth:Int):Int
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -349,7 +349,7 @@ class BoxStylesComputer
 	/**
 	 * Constrain computed height if it is above/below max/min height
 	 */
-	private function constrainHeight(style:AbstractStyle, computedHeight:Int):Int
+	private function constrainHeight(style:AbstractCoreStyle, computedHeight:Int):Int
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 	
@@ -375,7 +375,7 @@ class BoxStylesComputer
 	 * Utils method to insure that height is constrained each time
 	 * it is set
 	 */
-	private function setComputedHeight(style:AbstractStyle, computedHeight:Int):Void
+	private function setComputedHeight(style:AbstractCoreStyle, computedHeight:Int):Void
 	{
 		style.computedStyle.height = constrainHeight(style, computedHeight);
 	}
@@ -384,7 +384,7 @@ class BoxStylesComputer
 	 * Utils method to insure that width is constrained each time
 	 * it is set
 	 */
-	private function setComputedWidth(style:AbstractStyle, computedWidth:Int):Void
+	private function setComputedWidth(style:AbstractCoreStyle, computedWidth:Int):Void
 	{
 		style.computedStyle.width = constrainWidth(style, computedWidth);
 	}
@@ -401,7 +401,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getComputedWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return getComputedDimension(style.width, containingHTMLElementData.width, containingHTMLElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -411,7 +411,7 @@ class BoxStylesComputer
 	 * the remaining width of the containing HTMLElement once the margins and paddings width have been
 	 * removed
 	 */
-	private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return containingHTMLElementData.width - style.computedStyle.paddingLeft - style.computedStyle.paddingRight - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 	}
@@ -423,7 +423,7 @@ class BoxStylesComputer
 	/**
 	 * Get the computed height of the HTMLElement when not 'auto' and returns it as pixels
 	 */ 
-	private function getComputedHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{		
 		return getComputedDimension(style.height, containingHTMLElementData.height, containingHTMLElementData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -433,7 +433,7 @@ class BoxStylesComputer
 	 * as its children total height is not known yet, it will be set once all its children have been
 	 * laid out
 	 */ 
-	private function getComputedAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedAutoHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}
@@ -444,7 +444,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the left margin and return it as pixels
 	 */
-	private function getComputedMarginLeft(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedMarginLeft(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return getComputedMargin(style.marginLeft, style.marginRight, containingHTMLElementData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
@@ -452,7 +452,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the right margin and return it as pixels
 	 */
-	private function getComputedMarginRight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedMarginRight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return getComputedMargin(style.marginRight, style.marginLeft, containingHTMLElementData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
@@ -460,7 +460,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the top margin and return it as pixels
 	 */
-	private function getComputedMarginTop(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedMarginTop(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return getComputedMargin(style.marginTop, style.marginBottom, containingHTMLElementData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}
@@ -468,7 +468,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the bottom margin and return it as pixels
 	 */
-	private function getComputedMarginBottom(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedMarginBottom(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return getComputedMargin(style.marginBottom, style.marginTop, containingHTMLElementData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}

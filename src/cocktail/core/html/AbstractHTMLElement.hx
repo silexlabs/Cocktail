@@ -16,12 +16,13 @@ import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
-import cocktail.core.Style;
+import cocktail.core.CoreStyle;
+import cocktail.core.style.adapter.Style;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
-import cocktail.core.ContainerStyle;
+import cocktail.core.ContainerCoreStyle;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
@@ -261,8 +262,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * It can be used by end-user when they want to
 	 * define styles using typed object instead of string
 	 */
-	private var _coreStyle:Style;
-	public var coreStyle(get_coreStyle, never):Style;
+	private var _coreStyle:CoreStyle;
+	public var coreStyle(get_coreStyle, never):CoreStyle;
 	
 	/**
 	 * This is the style object exposed by the public API.
@@ -270,8 +271,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * and is in charge of converting them to typed object
 	 * which it sets on coreStyle
 	 */
-	private var _style:cocktail.core.style.adapter.Style;
-	public var style(get_style, never):cocktail.core.style.adapter.Style;
+	private var _style:Style;
+	public var style(get_style, never):Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -341,7 +342,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		this._coreStyle = new ContainerStyle(cast(this));
+		this._coreStyle = new ContainerCoreStyle(cast(this));
 	}
 	
 	/**
@@ -878,12 +879,12 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_coreStyle():Style
+	private function get_coreStyle():CoreStyle
 	{
 		return this._coreStyle;
 	}
 	
-	private function get_style():cocktail.core.style.adapter.Style
+	private function get_style():Style
 	{
 		return _style;
 	}

@@ -8,7 +8,7 @@
 package cocktail.core.style.computer.boxComputers;
 
 import cocktail.core.html.EmbeddedElement;
-import cocktail.core.style.AbstractStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -37,7 +37,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden to process width before margins. For an embedded element a
 	 * computed width can always be computed event when width is auto
 	 */
-	override private function measureAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//width
 		setComputedWidth(style, getComputedAutoWidth(style, containingHTMLElementData));
@@ -53,7 +53,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	override private function getComputedAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		
@@ -130,7 +130,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	override private function getComputedAutoHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var ret:Int = 0;
 		

@@ -13,11 +13,11 @@ import cocktail.core.nativeElement.NativeElementManager;
 
 #if (flash9 || nme)
 import cocktail.port.flash_player.HTMLElement;
-import cocktail.port.flash_player.BodyStyle;
+import cocktail.port.flash_player.BodyCoreStyle;
 
 #elseif js
 import cocktail.port.browser.HTMLElement;
-import cocktail.core.style.AbstractBodyStyle;
+import cocktail.core.style.AbstractBodyCoreStyle;
 
 #end
 
@@ -59,6 +59,6 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	override private function initStyle():Void
 	{
-		_coreStyle = new BodyStyle(this);
+		_coreStyle = new BodyCoreStyle(this);
 	}
 }

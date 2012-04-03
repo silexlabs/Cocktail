@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
-import cocktail.core.style.AbstractStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -37,7 +37,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * if the width is set to 'auto', then this method is called and might shrink the
 	 * width of the HTMLElement to fit its content
 	 */
-	override public function shrinkToFit(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
+	override public function shrinkToFit(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
 		var shrinkedWidth:Int;
 		
@@ -84,7 +84,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * top and bottom style, the height used value might not be the children
 	 * height of the HTMLElement
 	 */
-	override public function applyContentHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
+	override public function applyContentHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
 	{
 		var height:Int;
 		
@@ -114,7 +114,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * top and bottom which in this case are computed in the 
 	 * width and height methods
 	 */
-	override private function measurePositionOffsets(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measurePositionOffsets(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		
 	}
@@ -127,7 +127,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * auto width is computed. Left and right might be computed in the shrink-to-fit
 	 * method if they are defined as auto
 	 */ 
-	override private function measureAutoWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureAutoWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -174,7 +174,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * overriden to also compute left and right style
 	 */
-	override private function measureWidth(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -279,7 +279,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * overriden to compute also top, bottom and the vertical margins when an
 	 * auto height is computed.
 	 */ 
-	override private function measureAutoHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureAutoHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -334,7 +334,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * overriden to also compute top and bottom style
 	 */
-	override private function measureHeight(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -442,7 +442,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedStaticLeft(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return style.computedStyle.marginLeft;
 	}
@@ -451,7 +451,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedStaticTop(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return style.computedStyle.marginTop;
 	}
@@ -459,7 +459,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * Actually shrink the width
 	 */
-	private function doShrinkToFit(style:AbstractStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
+	private function doShrinkToFit(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
 		/**
 		 * TODO: the shrink to fit

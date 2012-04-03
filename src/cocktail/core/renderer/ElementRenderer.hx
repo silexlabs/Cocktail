@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.drawing.DrawingManager;
 import cocktail.core.geom.GeomData;
-import cocktail.core.Style;
+import cocktail.core.CoreStyle;
 
 /**
  * This is the base class for element renderers.
@@ -49,8 +49,8 @@ class ElementRenderer extends Node
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
 	 */
-	private var _coreStyle:Style;
-	public var coreStyle(getCoreStyle, never):Style;
+	private var _coreStyle:CoreStyle;
+	public var coreStyle(getCoreStyle, never):CoreStyle;
 	
 	/**
 	 * A reference to the LayerRenderer rendering this
@@ -64,7 +64,7 @@ class ElementRenderer extends Node
 	 * @param	htmlElement the Style which created
 	 * the ElementRenderer
 	 */
-	public function new(style:Style) 
+	public function new(style:CoreStyle) 
 	{
 		super();
 		_coreStyle = style;
@@ -176,7 +176,7 @@ class ElementRenderer extends Node
 		return _layerRenderer;
 	}
 	
-	private function getCoreStyle():Style
+	private function getCoreStyle():CoreStyle
 	{
 		return _coreStyle;
 	}
