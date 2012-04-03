@@ -124,7 +124,7 @@ class Style
 	
 	private function get_opacity():String
 	{
-		return "";
+		return UnitManager.getCSSOpacity(_coreStyle.opacity);
 	}
 	
 	private function set_opacity(value:String):String
@@ -134,7 +134,7 @@ class Style
 	
 	private function get_visibility():String
 	{
-		return "";
+		return UnitManager.getCSSVisibility(_coreStyle.visibility);
 	}
 	
 	private function set_visibility(value:String):String
@@ -144,7 +144,7 @@ class Style
 	
 	private function get_marginLeft():String 
 	{
-		return "";
+		return UnitManager.getCSSMargin(_coreStyle.marginLeft);
 	}
 	
 	private function set_marginLeft(value:String):String 
@@ -155,7 +155,7 @@ class Style
 	
 	private function get_marginRight():String 
 	{
-		return "";
+		return UnitManager.getCSSMargin(_coreStyle.marginRight);
 	}
 	
 	private function set_marginRight(value:String):String 
@@ -166,7 +166,7 @@ class Style
 	
 	private function get_marginTop():String 
 	{
-		return "";
+		return UnitManager.getCSSMargin(_coreStyle.marginTop);
 	}
 	
 	private function set_marginTop(value:String):String 
@@ -177,7 +177,7 @@ class Style
 	
 	private function get_marginBottom():String 
 	{
-		return "";
+		return UnitManager.getCSSMargin(_coreStyle.marginBottom);
 	}
 	
 	private function set_marginBottom(value:String):String 
@@ -188,7 +188,7 @@ class Style
 	
 	private function get_paddingLeft():String 
 	{
-		return "";
+		return UnitManager.getCSSPadding(_coreStyle.paddingLeft);
 	}
 	
 	private function set_paddingLeft(value:String):String 
@@ -199,7 +199,7 @@ class Style
 	
 	private function get_paddingRight():String 
 	{
-		return "";
+		return UnitManager.getCSSPadding(_coreStyle.paddingRight);
 	}
 	
 	private function set_paddingRight(value:String):String
@@ -210,7 +210,7 @@ class Style
 	
 	private function get_paddingTop():String 
 	{
-		return "";
+		return UnitManager.getCSSPadding(_coreStyle.paddingTop);
 	}
 	
 	private function set_paddingTop(value:String):String 
@@ -221,7 +221,7 @@ class Style
 	
 	private function get_paddingBottom():String 
 	{
-		return "";
+		return UnitManager.getCSSPadding(_coreStyle.paddingBottom);
 	}
 	
 	private function set_paddingBottom(value:String):String 
@@ -232,7 +232,7 @@ class Style
 	
 	private function get_display():String 
 	{
-		return "";
+		return UnitManager.getCSSDisplay(_coreStyle.display);
 	}
 	
 	private function set_display(value:String):String 
@@ -242,7 +242,7 @@ class Style
 	
 	private function get_position():String 
 	{
-		return "";
+		return UnitManager.getCSSPosition(_coreStyle.position);
 	}
 	
 	private function set_position(value:String):String 
@@ -252,7 +252,7 @@ class Style
 	
 	private function get_width():String 
 	{
-		return "";
+		return UnitManager.getCSSDimension(_coreStyle.width);
 	}
 	
 	private function set_width(value:String):String 
@@ -263,7 +263,7 @@ class Style
 	
 	private function get_height():String 
 	{
-		return "";
+		return UnitManager.getCSSDimension(_coreStyle.height);
 	}
 	
 	private function set_height(value:String):String 
@@ -274,7 +274,7 @@ class Style
 	
 	private function get_minHeight():String 
 	{
-		return "";
+		return UnitManager.getCSSConstrainedDimension(_coreStyle.minHeight);
 	}
 	
 	private function set_minHeight(value:String):String 
@@ -284,7 +284,7 @@ class Style
 	
 	private function get_maxHeight():String 
 	{
-		return "";
+		return UnitManager.getCSSConstrainedDimension(_coreStyle.maxHeight);
 	}
 
 	private function set_maxHeight(value:String):String 
@@ -294,7 +294,7 @@ class Style
 	
 	private function get_minWidth():String 
 	{
-		return "";
+		return UnitManager.getCSSConstrainedDimension(_coreStyle.minWidth);
 	}
 		
 	private function set_minWidth(value:String):String 
@@ -304,7 +304,7 @@ class Style
 	
 	private function get_maxWidth():String 
 	{
-		return "";
+		return UnitManager.getCSSConstrainedDimension(_coreStyle.maxWidth);
 	}
 	
 	private function set_maxWidth(value:String):String 
@@ -314,7 +314,7 @@ class Style
 	
 	private function get_top():String 
 	{
-		return "";
+		return UnitManager.getCSSPositionOffset(_coreStyle.top);
 	}
 	
 	private function set_top(value:String):String 
@@ -324,7 +324,7 @@ class Style
 	
 	private function get_left():String 
 	{
-		return "";
+		return UnitManager.getCSSPositionOffset(_coreStyle.left);
 	}
 		
 	private function set_left(value:String):String 
@@ -334,7 +334,7 @@ class Style
 	
 	private function get_bottom():String 
 	{
-		return "";
+		return UnitManager.getCSSPositionOffset(_coreStyle.bottom);
 	}
 	
 	private function set_bottom(value:String):String 
@@ -344,7 +344,7 @@ class Style
 	
 	private function get_right():String 
 	{
-		return "";
+		return UnitManager.getCSSPositionOffset(_coreStyle.right);
 	}
 	
 	private function set_right(value:String):String 
@@ -354,7 +354,7 @@ class Style
 	
 	private function get_CSSFloat():String 
 	{
-		return "";
+		return UnitManager.getCSSFloatAsString(_coreStyle.cssFloat);
 	}
 	
 	private function set_CSSFloat(value:String):String 
@@ -364,7 +364,7 @@ class Style
 	
 	private function get_clear():String 
 	{
-		return "";
+		return UnitManager.getCSSClear(_coreStyle.clear);
 	}
 	
 	private function set_clear(value:String):String 
@@ -374,7 +374,7 @@ class Style
 	
 	private function get_fontSize():String
 	{
-		return "";
+		return UnitManager.getCSSFontSize(_coreStyle.fontSize);
 	}
 	
 	private function set_fontSize(value:String):String
@@ -384,7 +384,7 @@ class Style
 	
 	private function get_fontWeight():String
 	{
-		return "";
+		return UnitManager.getCSSFontWeight(_coreStyle.fontWeight);
 	}
 	
 	private function set_fontWeight(value:String):String
@@ -394,7 +394,7 @@ class Style
 	
 	private function get_fontStyle():String
 	{
-		return "";
+		return UnitManager.getCSSFontStyle(_coreStyle.fontStyle);
 	}
 	
 	private function set_fontStyle(value:String):String
@@ -404,7 +404,7 @@ class Style
 	
 	private function get_fontFamily():String
 	{
-		return "";
+		return UnitManager.getCSSFontFamily(_coreStyle.fontFamily);
 	}
 	
 	private function set_fontFamily(value:String):String
@@ -414,7 +414,7 @@ class Style
 
 	private function get_fontVariant():String
 	{
-		return "";
+		return UnitManager.getCSSFontVariant(_coreStyle.fontVariant);
 	}
 	
 	private function set_fontVariant(value:String):String
@@ -424,7 +424,7 @@ class Style
 	
 	private function get_textTransform():String
 	{
-		return "";
+		return UnitManager.getCSSTextTransform(_coreStyle.textTransform);
 	}
 	
 	private function set_textTransform(value:String):String
@@ -434,7 +434,7 @@ class Style
 	
 	private function get_letterSpacing():String
 	{
-		return "";
+		return UnitManager.getCSSLetterSpacing(_coreStyle.letterSpacing);
 	}
 	
 	private function set_letterSpacing(value:String):String
@@ -444,7 +444,7 @@ class Style
 	
 	private function get_color():String
 	{
-		return "";
+		return UnitManager.getCSSColor(_coreStyle.color);
 	}
 	
 	private function set_color(value:String):String
@@ -454,7 +454,7 @@ class Style
 	
 	private function get_wordSpacing():String
 	{
-		return "";
+		return UnitManager.getCSSWordSpacing(_coreStyle.wordSpacing);
 	}
 	
 	private function set_wordSpacing(value:String):String
@@ -464,7 +464,7 @@ class Style
 	
 	private function get_lineHeight():String
 	{
-		return "";
+		return UnitManager.getCSSLineHeight(_coreStyle.lineHeight);
 	}
 	
 	private function set_lineHeight(value:String):String
@@ -474,7 +474,7 @@ class Style
 	
 	private function get_verticalAlign():String
 	{
-		return "";
+		return UnitManager.getCSSVerticalAlign(_coreStyle.verticalAlign);
 	}
 	
 	private function set_verticalAlign(value:String):String
@@ -484,7 +484,7 @@ class Style
 	
 	private function get_textIndent():String
 	{
-		return "";
+		return UnitManager.getCSSTextIndent(_coreStyle.textIndent);
 	}
 	
 	private function set_textIndent(value:String):String
@@ -494,7 +494,7 @@ class Style
 	
 	private function get_whiteSpace():String
 	{
-		return "";
+		return UnitManager.getCSSWhiteSpace(_coreStyle.whiteSpace);
 	}
 	
 	private function set_whiteSpace(value:String):String
@@ -504,7 +504,7 @@ class Style
 	
 	private function get_textAlign():String
 	{
-		return "";
+		return UnitManager.getCSSTextAlign(_coreStyle.textAlign);
 	}
 	
 	private function set_textAlign(value:String):String
@@ -521,7 +521,7 @@ class Style
 	
 	private function get_backgroundColor():String
 	{
-		return "";
+		return UnitManager.getCSSColor(_coreStyle.backgroundColor);
 	}
 	
 	private function set_backgroundImage(value:String):String
@@ -531,7 +531,7 @@ class Style
 	
 	private function get_backgroundImage():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundImage(_coreStyle.backgroundImage);
 	}
 	
 	private function set_backgroundRepeat(value:String):String
@@ -541,7 +541,7 @@ class Style
 	
 	private function get_backgroundRepeat():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundRepeat(_coreStyle.backgroundRepeat);
 	}
 	
 	private function set_backgroundSize(value:String):String
@@ -551,7 +551,7 @@ class Style
 	
 	private function get_backgroundSize():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundSize(_coreStyle.backgroundSize);
 	}
 	
 	private function set_backgroundClip(value:String):String
@@ -561,7 +561,7 @@ class Style
 	
 	private function get_backgroundClip():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundClip(_coreStyle.backgroundClip);
 	}
 	
 	private function set_backgroundPosition(value:String):String
@@ -571,7 +571,7 @@ class Style
 	
 	private function get_backgroundPosition():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundPosition(_coreStyle.backgroundPosition);
 	}
 	
 	private function set_backgroundOrigin(value:String):String
@@ -581,12 +581,12 @@ class Style
 	
 	private function get_backgroundOrigin():String
 	{
-		return "";
+		return UnitManager.getCSSBackgroundOrigin(_coreStyle.backgroundOrigin);
 	}
 	
 	private function get_overflowX():String
 	{
-		return "";
+		return UnitManager.getCSSOverflow(_coreStyle.overflowX);
 	}
 	
 	private function set_overflowX(value:String):String
@@ -601,7 +601,7 @@ class Style
 	
 	private function set_overflowY(value:String):String
 	{
-		return value;
+		return UnitManager.getCSSOverflow(_coreStyle.overflowY);
 	}
 	
 	private function set_cursor(value:String):String
@@ -611,7 +611,7 @@ class Style
 	
 	private function get_cursor():String
 	{
-		return "";
+		return UnitManager.getCSSCursor(_coreStyle.cursor);
 	}
 	
 }
