@@ -6,7 +6,9 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.unit;
+
 import cocktail.core.unit.UnitData;
+import cocktail.core.style.StyleData;
 import haxe.Log;
 
 /**
@@ -522,6 +524,1438 @@ class UnitManager
 		}
 			
 		return fontSize;
+	}
+	
+	//////////////////////////////////////////////////////////////////////
+	// METHODS CONVERTING A TYPED STYLE INTO A CSS STRING
+	//////////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////////
+	// DISPLAY STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : display
+	 */
+	private static function getCSSDisplay(value:Display):String
+	{
+		var cssDisplayValue:String;
+		
+		switch (value)
+		{
+			case block:
+				cssDisplayValue = "block";
+			
+			case cssInline:
+				cssDisplayValue = "inline";
+			
+			case inlineBlock:
+				cssDisplayValue = "inline-block";
+				
+			case Display.none:
+				cssDisplayValue = "none";
+		}
+		
+		return cssDisplayValue;
+	}
+	
+	/**
+	 * CSS : float
+	 */
+	private static function getCSSFloatAsString(value:CSSFloat):String
+	{
+		var cssCSSFloat:String;
+		
+		switch (value)
+		{
+			case CSSFloat.left:
+				cssCSSFloat = "left";
+				
+			case CSSFloat.right:
+				cssCSSFloat = "right";
+				
+			case CSSFloat.none:
+				cssCSSFloat = "none";
+		}
+		
+		return cssCSSFloat;
+	}
+	
+	/**
+	 * CSS : clear
+	 */
+	private static function getCSSClear(value:Clear):String
+	{
+		var cssClearValue:String;
+		
+		switch (value)
+		{
+			case Clear.left:
+				cssClearValue = "left";
+				
+			case Clear.right:
+				cssClearValue = "right";
+				
+			case Clear.both:
+				cssClearValue = "both";
+				
+			case Clear.none:
+				cssClearValue = "none";
+		}
+		
+		return cssClearValue;
+	}
+	
+	/**
+	 * CSS : position
+	 */
+	private static function getCSSPosition(value:Position):String
+	{
+		var cssPositionValue:String;
+		
+		switch (value)
+		{
+			case cssStatic:
+				cssPositionValue = "static";
+			
+			case relative:
+				cssPositionValue = "relative";
+			
+			case absolute:
+				cssPositionValue = "absolute";
+				
+			case fixed:
+				cssPositionValue = "fixed";
+		}
+		
+		return cssPositionValue;
+	}
+	
+	/////////////////////////////////
+	// VISUAL EFFECTS STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : overflow
+	 */
+	private static function getCSSOverflow(value:Overflow):String
+	{
+		var cssOverflowValue:String;
+		
+		switch (value)
+		{
+			case Overflow.visible:
+				cssOverflowValue = "visible";
+				
+			case Overflow.hidden:
+				cssOverflowValue = "hidden";
+				
+			case Overflow.scroll:
+				cssOverflowValue = "scroll";
+				
+			case Overflow.cssAuto:
+				cssOverflowValue = "auto";
+		}
+		
+		return cssOverflowValue;
+	}
+	
+	/**
+	 * CSS : opacity
+	 */
+	private static function getCSSOpacity(value:Opacity):String
+	{
+		var cssOpacityValue:String;
+		cssOpacityValue = Std.string(value);
+		
+		return cssOpacityValue;
+	}
+	
+	/**
+	 * CSS : visibility
+	 */
+	private static function getCSSVisibility(value:Visibility):String
+	{
+		var cssVisibilityValue:String;
+		
+		switch (value)
+		{
+			case visible:
+				cssVisibilityValue = "visible";
+				
+			case hidden:
+				cssVisibilityValue = "hidden";
+		}
+		
+		return cssVisibilityValue;
+	}
+	
+	/**
+	 * CSS : transform
+	 */
+	private static function getCSSTransform(value:Transform):String
+	{
+		var cssTransformValue:String;
+		
+		switch(value)
+		{
+			case Transform.none:
+				cssTransformValue = "none";
+				
+			case Transform.transformFunctions(value):
+				cssTransformValue = "";
+				for (i in 0...value.length)
+				{
+					cssTransformValue += getCSSTransformFunction(value[i]);
+					if (i < value.length - 1)
+					{
+						cssTransformValue += " ";
+					}
+				}		
+		}
+		
+		return cssTransformValue;
+	}
+	
+	/**
+	 * Returns the CSS representation of one transform
+	 * function
+	 */
+	private static function getCSSTransformFunction(transformFunction:TransformFunction):String
+	{
+		var cssTransformFunction:String;
+		
+		switch (transformFunction)
+		{
+			case TransformFunction.matrix(value):
+				cssTransformFunction = "matrix(" + value.a + "," + value.b + "," + value.c + "," + value.d + "," + value.e + "," + value.f + ")";
+				
+			case TransformFunction.rotate(angle):
+				cssTransformFunction = "rotate(" + getCSSAngle(angle) + ")";
+				
+			case TransformFunction.scale(sx, sy):
+				cssTransformFunction = "scale(" + sx + "," + sy + ")";
+				
+			case TransformFunction.scaleX(sx):
+				cssTransformFunction = "scaleX(" + sx + ")";
+				
+			case TransformFunction.scaleY(sy):
+				cssTransformFunction = "scaleY(" + sy + ")";	
+				
+			case TransformFunction.skew(skewX, skewY):
+				cssTransformFunction = "skew(" + getCSSAngle(skewX) + "," + getCSSAngle(skewY) + ")";
+			
+			case TransformFunction.skewX(skewX):
+				cssTransformFunction = "skewX(" + getCSSAngle(skewX) + ")";
+				
+			case TransformFunction.skewY(skewY):
+				cssTransformFunction = "skewY(" + getCSSAngle(skewY) + ")";	
+				
+			case TransformFunction.translate(tx, ty):
+				cssTransformFunction = "translate(" + getCSSTranslation(tx) + "," + getCSSTranslation(ty) + ")";
+				
+			case TransformFunction.translateX(tx):
+				cssTransformFunction = "translateX(" + getCSSTranslation(tx)  +")";
+				
+			case TransformFunction.translateY(ty):
+				cssTransformFunction = "translateY(" + getCSSTranslation(ty)  +")";		
+		}
+		
+		return cssTransformFunction;
+	}
+	
+	/**
+	 * Return the CSS representation of a
+	 * translation amount
+	 */
+	private static function getCSSTranslation(translation:Translation):String
+	{
+		var cssTranslation:String;
+		
+		switch (translation)
+		{
+			case Translation.length(value):
+				cssTranslation = getCSSLength(value);
+				
+			case Translation.percent(value):
+				cssTranslation = getCSSPercentValue(value);
+		}
+		
+		return cssTranslation;
+	}
+	
+	/**
+	 * CSS : transform-origin
+	 */
+	private static function getCSSTransformOrigin(value:TransformOrigin):String
+	{
+		var cssTransformOriginValue:String;
+		
+		//x axis
+		switch (value.x)
+		{
+			case TransformOriginX.length(value):
+				cssTransformOriginValue = getCSSLength(value);
+				
+			case TransformOriginX.percent(value):
+				cssTransformOriginValue = getCSSPercentValue(value);
+				
+			case TransformOriginX.left:
+				cssTransformOriginValue = "left";
+				
+			case TransformOriginX.center:
+				cssTransformOriginValue = "center";
+				
+			case TransformOriginX.right:
+				cssTransformOriginValue = "right";
+		}
+		
+		//add space to separat x and y axis values
+		cssTransformOriginValue += " ";
+		
+		//y axis
+		switch (value.y)
+		{
+			case TransformOriginY.length(value):
+				cssTransformOriginValue += getCSSLength(value);
+				
+			case TransformOriginY.percent(value):
+				cssTransformOriginValue += getCSSPercentValue(value);
+				
+			case TransformOriginY.top:
+				cssTransformOriginValue += "top";
+				
+			case TransformOriginY.center:
+				cssTransformOriginValue += "center";
+				
+			case TransformOriginY.bottom:
+				cssTransformOriginValue += "bottom";
+		}
+		
+		return cssTransformOriginValue;
+	}
+	
+	/////////////////////////////////
+	// BOX MODEL STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : margin-top, margin-left...
+	 */
+	private static function getCSSMargin(value:Margin):String
+	{
+		var cssMarginValue:String;
+		
+		switch(value)
+		{
+			case length(unit):
+				cssMarginValue = getCSSLength(unit);
+			
+			case percent(percentValue):
+				cssMarginValue = getCSSPercentValue(percentValue);
+				
+			case cssAuto:
+				cssMarginValue = "auto";
+		}
+		
+		return cssMarginValue;
+	}
+	
+	/**
+	 * CSS : padding-top, padding-left...
+	 */
+	private static function getCSSPadding(value:Padding):String
+	{
+		var cssPaddingValue:String;
+		
+		switch(value)
+		{
+			case length(unit):
+				cssPaddingValue = getCSSLength(unit);
+			
+			case percent(percentValue):
+				cssPaddingValue = getCSSPercentValue(percentValue);
+		}
+		
+		return cssPaddingValue;
+	}
+	
+	/**
+	 * CSS : width, height
+	 */
+	private static function getCSSDimension(value:Dimension):String
+	{
+		var cssDimensionValue:String;
+		
+		switch (value)
+		{
+			case Dimension.length(unit):
+				cssDimensionValue = getCSSLength(unit);
+				
+			case Dimension.percent(percentValue):
+				cssDimensionValue = getCSSPercentValue(percentValue);
+				
+			case Dimension.cssAuto:
+				cssDimensionValue = "auto";
+		}
+		
+		return cssDimensionValue;
+	}
+	
+	/**
+	 * CSS : top, left, right, bottom
+	 */
+	private static function getCSSPositionOffset(value:PositionOffset):String
+	{
+		var cssPositionOffsetValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				cssPositionOffsetValue = getCSSLength(unit);	
+			
+			
+			case percent(percentValue):
+				cssPositionOffsetValue = getCSSPercentValue(percentValue);
+				
+			case cssAuto:
+				cssPositionOffsetValue = "auto";
+		}
+		
+		return cssPositionOffsetValue;
+	}
+	
+	/**
+	 * CSS : min-width, max-width, min-height, max-height
+	 */
+	private static function getCSSConstrainedDimension(value:ConstrainedDimension):String
+	{
+		var cssConstrainedValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				cssConstrainedValue = getCSSLength(unit);
+			
+			case percent(percentValue):
+				cssConstrainedValue = getCSSPercentValue(percentValue);
+				
+			case none:	
+				cssConstrainedValue = "none";
+		}
+		
+		return cssConstrainedValue;
+		
+	}
+	
+	/**
+	 * CSS : vertical-align
+	 */
+	private static function getCSSVerticalAlign(value:VerticalAlign):String
+	{
+		var cssVerticalAlignValue:String;
+		
+		switch (value)
+		{
+			case baseline:
+				cssVerticalAlignValue = "baseline";
+				
+			case middle:
+				cssVerticalAlignValue = "middle";
+				
+			case sub:
+				cssVerticalAlignValue = "sub";
+				
+			case cssSuper:
+				cssVerticalAlignValue = "super";
+				
+			case textTop:
+				cssVerticalAlignValue = "text-top";
+				
+			case textBottom:
+				cssVerticalAlignValue = "text-bottom";
+				
+			case VerticalAlign.top:
+				cssVerticalAlignValue = "top";
+				
+			case VerticalAlign.bottom:
+				cssVerticalAlignValue = "bottom";
+				
+			case percent(value):
+				cssVerticalAlignValue = getCSSPercentValue(value);
+				
+			case length(value):
+				cssVerticalAlignValue = getCSSLength(value);
+		}
+		
+		return cssVerticalAlignValue;
+		
+	}
+	
+	/**
+	 * CSS : line-height
+	 */
+	private static function getCSSLineHeight(value:LineHeight):String
+	{
+		var cssLineHeightValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				cssLineHeightValue = getCSSLength(unit);
+				
+			case normal:
+				cssLineHeightValue = "normal";
+				
+			case percentage(value):
+				cssLineHeightValue = getCSSPercentValue(value);
+				
+			case number(value):
+				cssLineHeightValue = Std.string(value);	
+		}
+		
+		return cssLineHeightValue;
+	}
+	
+	/////////////////////////////////
+	// FONT STYLES
+	////////////////////////////////
+	
+		
+	/**
+	 * CSS : font-size
+	 */
+	private static function getCSSFontSize(value:FontSize):String
+	{
+		var cssFontSizeValue:String;
+		
+		switch (value)
+		{
+			case length(unit):
+				cssFontSizeValue = getCSSLength(unit);
+				
+			case percentage(percent):
+				cssFontSizeValue = getCSSPercentValue(percent);
+				
+			case absoluteSize(value):
+				switch (value)
+				{
+					case xxSmall:
+						cssFontSizeValue = "xx-small";
+					
+					case xSmall:
+						cssFontSizeValue = "x-small";
+						
+					case small:
+						cssFontSizeValue = "small";
+						
+					case medium:
+						cssFontSizeValue = "medium";
+						
+					case large:
+						cssFontSizeValue = "large";
+						
+					case xLarge:
+						cssFontSizeValue = "x-large";
+						
+					case xxLarge:	
+						cssFontSizeValue = "xx-large";
+				}
+				
+			case relativeSize(value):
+				switch (value)
+				{
+					case larger:
+						cssFontSizeValue = "larger";
+						
+					case smaller:
+						cssFontSizeValue = "smaller";
+				}
+		}
+		
+		return cssFontSizeValue;
+	}
+	
+	/**
+	 * CSS : font-weight
+	 */
+	private static function getCSSFontWeight(value:FontWeight):String
+	{
+		var cssFontWeightValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				cssFontWeightValue = "normal";
+				
+			case bold:
+				cssFontWeightValue = "bold";
+				
+			case bolder:
+				cssFontWeightValue = "bolder";
+				
+			case lighter:
+				cssFontWeightValue = "lighter";
+				
+			case css100:
+				cssFontWeightValue = "100";
+				
+			case css200:
+				cssFontWeightValue = "200";
+				
+			case css300:
+				cssFontWeightValue = "300";	
+				
+			case css400:
+				cssFontWeightValue = "400";	
+				
+			case css500:
+				cssFontWeightValue = "500";	
+				
+			case css600:
+				cssFontWeightValue = "600";	
+				
+			case css700:
+				cssFontWeightValue = "700";
+				
+			case css800:
+				cssFontWeightValue = "800";	
+				
+			case css900:
+				cssFontWeightValue = "900";	
+		}
+		
+		return cssFontWeightValue;
+	}
+	
+	/**
+	 * CSS : font-style
+	 */
+	private static function getCSSFontStyle(value:FontStyle):String
+	{
+		var cssFontStyleValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				cssFontStyleValue = "normal";
+				
+			case italic:
+				cssFontStyleValue = "italic";
+		}
+		
+		return cssFontStyleValue;
+	}
+	
+	/**
+	 * CSS : font-variant
+	 */
+	private static function getCSSFontVariant(value:FontVariant):String
+	{
+		var cssFontVariantValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				cssFontVariantValue = "normal";
+				
+			case smallCaps:
+				cssFontVariantValue = "small-caps";
+		}
+		
+		return cssFontVariantValue;
+	}
+	
+	/**
+	 * CSS : font-family
+	 */
+	private static function getCSSFontFamily(value:Array<FontFamily>):String
+	{
+		var cssFontFamilyValue:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String;
+			
+			switch (value[i])
+			{
+				case FontFamily.familyName(name):
+					fontName = name;
+				
+				case FontFamily.genericFamily(genericName):
+					switch (genericName)
+					{
+						case GenericFontFamily.serif:
+							fontName = "serif";
+						
+						case GenericFontFamily.sansSerif:
+							fontName = "sans-serif";
+							
+						case GenericFontFamily.monospace:
+							fontName = "monospace";
+					}
+			}
+			
+			//escapes font name constituted of multiple words
+			if (fontName.indexOf(" ") != -1)
+			{
+				fontName = "'" + fontName + "'";
+			}
+			
+			cssFontFamilyValue += fontName;
+			
+			if (i < value.length -1)
+			{
+				cssFontFamilyValue += ",";
+			}
+		}
+		
+		return cssFontFamilyValue;
+	}
+	
+	/////////////////////////////////
+	// TEXT STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : text-align
+	 */
+	private static function getCSSTextAlign(value:TextAlign):String
+	{
+		var cssTextAlignValue:String;
+		
+		switch (value)
+		{
+			case TextAlign.left:
+				cssTextAlignValue = "left";
+				
+			case TextAlign.right:
+				cssTextAlignValue = "right";
+				
+			case TextAlign.center:
+				cssTextAlignValue = "center";
+				
+			case TextAlign.justify:
+				cssTextAlignValue = "justify";
+		}
+		
+		return cssTextAlignValue;
+	}
+	
+	/**
+	 * CSS : white-space
+	 */
+	private static function getCSSWhiteSpace(value:WhiteSpace):String
+	{
+		var cssWhiteSpaceValue:String;
+		
+		switch (value)
+		{
+			case WhiteSpace.normal:
+				cssWhiteSpaceValue = "normal";
+				
+			case pre:
+				cssWhiteSpaceValue = "pre";
+				
+			case nowrap:
+				cssWhiteSpaceValue = "nowrap";
+				
+			case preWrap:
+				cssWhiteSpaceValue = "pre-wrap";
+				
+			case preLine:
+				cssWhiteSpaceValue = "pre-line";
+		}
+		
+		return cssWhiteSpaceValue;
+	}
+	
+	/**
+	 * CSS : text-transform
+	 */
+	private static function getCSSTextTransform(value:TextTransform):String
+	{
+		var cssTextTransformValue:String;
+		
+		switch (value)
+		{
+			case none:
+				cssTextTransformValue = "none";
+				
+			case uppercase:
+				cssTextTransformValue = "uppercase";
+				
+			case lowercase:
+				cssTextTransformValue = "lowercase";
+				
+			case capitalize:
+				cssTextTransformValue = "capitalize";
+		}
+		
+		return cssTextTransformValue;
+	}
+	
+	/**
+	 * CSS : text-indent
+	 */
+	private static function getCSSTextIndent(value:TextIndent):String
+	{
+		var cssTextIndentValue:String;
+		
+		switch (value)
+		{
+			case length(value):
+				cssTextIndentValue = getCSSLength(value);
+				
+			case percentage(value):
+				cssTextIndentValue = getCSSPercentValue(value);
+		}
+		
+		return cssTextIndentValue;
+	}
+	
+	/**
+	 * CSS : letter-spacing
+	 */
+	private static function getCSSLetterSpacing(value:LetterSpacing):String
+	{
+		var cssLetterSpacingValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				cssLetterSpacingValue = "normal";
+				
+			case length(unit):
+				cssLetterSpacingValue = getCSSLength(unit);
+		}
+		
+		return cssLetterSpacingValue;
+	}
+	
+	/**
+	 * CSS : word-spacing
+	 */
+	private static function getCSSWordSpacing(value:WordSpacing):String
+	{
+		var cssWordSpacingValue:String;
+		
+		switch (value)
+		{
+			case normal:
+				cssWordSpacingValue = "normal";
+				
+			case length(unit):
+				cssWordSpacingValue = getCSSLength(unit);
+		}
+		
+		return cssWordSpacingValue;
+	}
+	
+	
+	
+	/////////////////////////////////
+	// BACKGROUND STYLES
+	////////////////////////////////
+	
+	/**
+	 * CSS : background-color
+	 */
+	private static function getCSSBackgroundColor(value:BackgroundColor):String
+	{
+		var cssBackgroundColor:String;
+		cssBackgroundColor = getCSSColor(value);
+		
+		return cssBackgroundColor;
+	}
+	
+	/**
+	 * CSS : background-origin
+	 */
+	private static function getCSSBackgroundOrigin(value:Array<BackgroundOrigin>):String
+	{
+		var cssBackgroundOrigin:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch(value[i])
+			{
+				case BackgroundOrigin.borderBox:
+					cssBackgroundOrigin += "border-box";
+					
+				case BackgroundOrigin.contentBox:
+					cssBackgroundOrigin += "content-box";
+					
+				case BackgroundOrigin.paddingBox:
+					cssBackgroundOrigin += "padding-box";
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundOrigin += ",";
+			}
+		}
+		
+		return cssBackgroundOrigin;
+	}
+	
+	/**
+	 * CSS : background-clip
+	 */
+	private static function getCSSBackgroundClip(value:Array<BackgroundClip>):String
+	{
+		var cssBackgroundClip:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch(value[i])
+			{
+				case BackgroundClip.borderBox:
+					cssBackgroundClip += "border-box";
+					
+				case BackgroundClip.contentBox:
+					cssBackgroundClip += "content-box";
+					
+				case BackgroundClip.paddingBox:
+					cssBackgroundClip += "padding-box";
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundClip += ",";
+			}
+		}
+		
+		return cssBackgroundClip;
+	}
+	
+	/**
+	 * CSS : background-image
+	 */
+	private static function getCSSBackgroundImage(value:Array<BackgroundImage>):String
+	{
+		var cssBackgroundImage:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch (value[i])
+			{
+				case BackgroundImage.none:
+					cssBackgroundImage += "none";
+					
+				case BackgroundImage.image(value):
+					cssBackgroundImage += getCSSImageValue(value);
+			}	
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundImage += ",";
+			}
+			
+		}
+		
+		return cssBackgroundImage;
+	}
+	
+	/**
+	 * CSS : background-size
+	 */
+	private static function getCSSBackgroundSize(value:Array<BackgroundSize>):String
+	{
+		var cssBackgroundSize:String = "";
+		
+		for (i in 0...value.length)
+		{
+			switch (value[i])
+			{
+				case BackgroundSize.contain:
+					cssBackgroundSize += "contain";
+					
+				case BackgroundSize.cover:
+					cssBackgroundSize += "cover";
+					
+				case BackgroundSize.dimensions(value):
+					cssBackgroundSize += getCSSBackgroundSizeDimensions(value);
+			}
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundSize += ",";
+			}
+		}
+		
+		return cssBackgroundSize;
+	}
+	
+	private static function getCSSBackgroundSizeDimensions(value:BackgroundSizeDimensions):String
+	{
+		var cssBackgroundSizeDimensions:String = getCSSBackgroundSizeDimension(value.x) + " " + getCSSBackgroundSizeDimension(value.y);
+		return cssBackgroundSizeDimensions;
+	}
+	
+	private static function getCSSBackgroundSizeDimension(value:BackgroundSizeDimension):String
+	{
+		var cssBackgroundSizeDimension:String;
+		
+		switch (value)
+		{
+			case BackgroundSizeDimension.length(value):
+				cssBackgroundSizeDimension = getCSSLength(value);
+				
+			case BackgroundSizeDimension.percent(value):
+				cssBackgroundSizeDimension = getCSSPercentValue(value);
+				
+			case BackgroundSizeDimension.cssAuto:
+				cssBackgroundSizeDimension = "auto";
+		}
+		
+		return cssBackgroundSizeDimension;
+	}
+	
+	/**
+	 * CSS : background-position
+	 */
+	private static function getCSSBackgroundPosition(value:Array<BackgroundPosition>):String
+	{
+		var cssBackgroundPositionData:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssBackgroundPositionData += getCSSBackgroundPositionX(value[i].x) + " " + getCSSBackgroundPositionY(value[i].y);
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundPositionData += ",";
+			}
+		}
+		
+		return cssBackgroundPositionData;
+	}
+	
+	private static function getCSSBackgroundPositionX(value:BackgroundPositionX):String
+	{
+		var cssBackgroundPositionX:String;
+		
+		switch (value)
+		{
+			case BackgroundPositionX.length(value):
+				cssBackgroundPositionX = getCSSLength(value);
+				
+			case BackgroundPositionX.percent(value):
+				cssBackgroundPositionX = getCSSPercentValue(value);
+				
+			case BackgroundPositionX.center:
+				cssBackgroundPositionX = "center";
+				
+			case BackgroundPositionX.left:
+				cssBackgroundPositionX = "left";
+				
+			case BackgroundPositionX.right:
+				cssBackgroundPositionX = "right";
+		}
+		
+		return cssBackgroundPositionX;
+	}
+	
+	private static function getCSSBackgroundPositionY(value:BackgroundPositionY):String
+	{
+		var cssBackgroundPositionY:String;
+		
+		switch (value)
+		{
+			case BackgroundPositionY.length(value):
+				cssBackgroundPositionY = getCSSLength(value);
+				
+			case BackgroundPositionY.percent(value):
+				cssBackgroundPositionY = getCSSPercentValue(value);
+				
+			case BackgroundPositionY.bottom:
+				cssBackgroundPositionY = "bottom";
+				
+			case BackgroundPositionY.top:
+				cssBackgroundPositionY = "top";
+				
+			case BackgroundPositionY.center:
+				cssBackgroundPositionY = "center";
+		}
+		
+		return cssBackgroundPositionY;
+	}
+	
+	/**
+	 * CSS : background-repeat
+	 */
+	private static function getCSSBackgroundRepeat(value:Array<BackgroundRepeat>):String
+	{
+		var cssBackgroundRepeat:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssBackgroundRepeat += getCSSBackgroundRepeatValue(value[i].x) + " " + getCSSBackgroundRepeatValue(value[i].y);
+			
+			if (i < value.length -1)
+			{
+				cssBackgroundRepeat += ",";
+			}
+		}
+		
+		return cssBackgroundRepeat;
+	}
+	
+	private static function getCSSBackgroundRepeatValue(value:BackgroundRepeatValue):String
+	{
+		var cssBackgroundRepeatValue:String;
+		
+		switch (value)
+		{
+			case BackgroundRepeatValue.noRepeat:
+				cssBackgroundRepeatValue = "no-repeat";
+				
+			case BackgroundRepeatValue.repeat:
+				cssBackgroundRepeatValue = "repeat";
+				
+			case BackgroundRepeatValue.round:
+				cssBackgroundRepeatValue = "round";
+				
+			case BackgroundRepeatValue.space:
+				cssBackgroundRepeatValue = "space";
+		}
+		
+		return cssBackgroundRepeatValue;
+	}
+	
+	/////////////////////////////////
+	// USER INTERFACE STYLES
+	////////////////////////////////
+	
+	private static function getCSSCursor(value:Cursor):String
+	{
+		var cssCursorValue:String;
+		
+		switch (value)
+		{
+			case Cursor.auto:
+				cssCursorValue = "auto";
+				
+			case Cursor.crosshair:
+				cssCursorValue = "crosshair";
+				
+			case Cursor.cssDefault:
+				cssCursorValue = "default";
+				
+			case Cursor.pointer:
+				cssCursorValue = "pointer";
+		}
+		
+		return cssCursorValue;
+	}
+	
+	/////////////////////////////////
+	// UNIT CONVERSION
+	// Convert abstract styles units
+	// to CSS units
+	////////////////////////////////
+	
+	private static function getCSSImageValue(value:ImageValue):String
+	{
+		var cssImageValue:String;
+		
+		switch (value)
+		{
+			case ImageValue.url(value):
+				cssImageValue = 'url("' + value + '")';
+				
+			case ImageValue.imageList(value):
+				cssImageValue = "image(" + getCSSImageList(value) + ")";
+				
+			case ImageValue.gradient(value):
+				cssImageValue = getCSSGradientValue(value);
+		}
+		
+		return cssImageValue;
+	}
+	
+	private static function getCSSImageList(value:ImageDeclarationData):String
+	{
+		var cssImageList:String = "";
+		
+		for (i in 0...value.urls.length)
+		{
+			cssImageList += '"' + value.urls[i] + '"';
+			
+			if (i < value.urls.length -1)
+			{
+				cssImageList += ",";
+			}
+			else
+			{
+				cssImageList += ","+ getCSSColor(value.fallbackColor);
+			}
+		}
+		
+		return cssImageList;
+	}
+	
+	private static function getCSSGradientValue(value:GradientValue):String
+	{
+		var cssGradientValue:String;
+		
+		switch (value)
+		{
+			case GradientValue.linear(value):
+				cssGradientValue = "linear-gradient(" + getCSSLinearGradientValue(value) + ")";
+		}
+		
+		return cssGradientValue;
+	}
+	
+	private static function getCSSLinearGradientValue(value:LinearGradientData):String 
+	{
+		var cssLinearGradientValue:String = getCSSGradientAngle(value.angle) + "," + getCSSColorStopsValue(value.colorStops);
+		return cssLinearGradientValue;
+	}
+	
+	private static function getCSSColorStopsValue(value:Array<GradientColorStopData>):String
+	{
+		var cssColorStopsData:String = "";
+		
+		for (i in 0...value.length)
+		{
+			cssColorStopsData += getCSSColor(value[i].color) + " " + getCSSColorStopValue(value[i].stop);
+			
+			if (i < value.length -1)
+			{
+				cssColorStopsData += ",";
+			}
+		}
+		
+		return cssColorStopsData;
+	}
+	
+	private static function getCSSColorStopValue(value:GradientStopValue):String
+	{
+		var cssColorStopValue:String;
+		
+		switch (value)
+		{
+			case GradientStopValue.percent(value):
+				cssColorStopValue = getCSSPercentValue(value);
+				
+			case GradientStopValue.length(value):
+				cssColorStopValue = getCSSLength(value);
+		}
+		
+		return cssColorStopValue;
+	}
+	
+	private static function getCSSGradientAngle(value:GradientAngle):String
+	{
+		var cssGradientAngle:String;
+		
+		switch (value)
+		{
+			case GradientAngle.angle(value):
+				cssGradientAngle = getCSSAngle(value);
+				
+			case GradientAngle.corner(value):
+				cssGradientAngle = getCSSCornerValue(value);
+				
+			case GradientAngle.side(value):
+				cssGradientAngle = getCSSSideValue(value);
+		}
+		
+		return cssGradientAngle;
+	}
+	
+	private static function getCSSSideValue(value:GradientSideValue):String
+	{
+		var cssSideValue:String;
+		
+		switch (value)
+		{
+			case GradientSideValue.bottom:
+				cssSideValue = "bottom";
+				
+			case GradientSideValue.left:
+				cssSideValue = "left";
+				
+			case GradientSideValue.right:
+				cssSideValue = "right";
+				
+			case GradientSideValue.top:
+				cssSideValue = "top";
+		}
+		
+		return cssSideValue;
+	}
+	
+	private static function getCSSCornerValue(value:GradientCornerValue):String
+	{
+		var cssCornerValue:String;
+		
+		switch (value)
+		{
+			case GradientCornerValue.bottomLeft:
+				cssCornerValue = "left bottom";
+				
+			case GradientCornerValue.bottomRight:
+				cssCornerValue = "right bottom";
+				
+			case GradientCornerValue.topLeft:
+				cssCornerValue = "left top";
+				
+			case GradientCornerValue.topRight:
+				cssCornerValue = "right top";
+		}
+		
+		return cssCornerValue;
+	}
+	
+	private static function getCSSColor(value:Color):String
+	{
+		var cssColor:String;
+		
+		switch (value)
+		{
+			case hex(value):
+				cssColor = value;
+				
+			case rgb(red, green, blue):
+				cssColor = "rgb(" + red + "," + green + "," + blue + ")";
+				
+			case rgba(red, green, blue, alpha):
+				cssColor = "rgba(" + red + "," + green + "," + blue + "," + alpha + ")";
+				
+			case keyword(value):
+				cssColor = getColorFromKeyword(value);
+				
+			case transparent:
+				cssColor = "transparent";
+		}
+		
+		return cssColor;
+	}
+	
+	private static function getCSSLength(lengthValue:Length):String
+	{
+		var cssLength:String;
+		
+		switch (lengthValue)
+		{
+			case px(pixelValue):
+				cssLength = Std.string(pixelValue) + "px";
+				
+			case pt(pointValue):
+				cssLength = Std.string(pointValue) + "pt";
+				
+			case mm(milimetersValue):
+				cssLength = Std.string(milimetersValue) + "mm";
+				
+			case pc(picasValue):
+				cssLength = Std.string(picasValue) + "pc";
+				
+			case cm(centimetersValue):
+				cssLength = Std.string(centimetersValue) + "cm";
+				
+			case _in(inchesValue):
+				cssLength = Std.string(inchesValue) + "in";
+				
+			case em(emValue	):
+				cssLength = Std.string(emValue) + "em";
+				
+			case ex(exValue):
+				cssLength = Std.string(exValue) + "ex";
+		}
+	
+		return cssLength;	
+	}
+	
+	private static function getCSSPercentValue(value:Int):String
+	{
+		return Std.string(value) + "%";
+	}
+	
+	private static function getCSSAngle(value:Angle):String
+	{
+		var cssAngle:String;
+		
+		switch (value)
+		{
+			case Angle.deg(value):
+				cssAngle = Std.string(value) + "deg";
+				
+			case Angle.rad(value):
+				cssAngle = Std.string(value) + "rad";
+				
+			case Angle.grad(value):
+				cssAngle = Std.string(value) + "grad";
+				
+			case Angle.turn(value):
+				cssAngle = Std.string(value) + "turn";
+		}
+		
+		return cssAngle;
+	}
+	
+	private static function getColorFromKeyword(value:ColorKeyword):String
+	{
+		var cssColor:String;
+		
+		switch (value)
+		{
+			case aqua:
+				cssColor = "aqua";
+				
+			case black:
+				cssColor = "black";
+				
+			case blue:
+				cssColor = "blue";
+				
+			case fuchsia:
+				cssColor = "fuchsia";
+				
+			case gray:
+				cssColor = "gray";
+				
+			case green:
+				cssColor = "green";
+				
+			case lime:
+				cssColor = "lime";
+				
+			case maroon:
+				cssColor = "maroon";
+				
+			case navy:
+				cssColor = "navy";
+				
+			case olive:
+				cssColor = "olive";
+				
+			case orange:
+				cssColor = "orange";
+				
+			case purple:
+				cssColor = "purple";
+				
+			case red:
+				cssColor = "red";
+				
+			case silver:
+				cssColor = "silver";
+				
+			case teal:
+				cssColor = "teal";
+				
+			case white:
+				cssColor = "white";
+				
+			case yellow:
+				cssColor = "yellow";	
+		}
+		
+		return cssColor;
 	}
 	
 }
