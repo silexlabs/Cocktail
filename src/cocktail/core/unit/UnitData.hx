@@ -12,6 +12,25 @@ package cocktail.core.unit;
  */
 
 /**
+ * structure used to store parsed string into value / unit pairs
+ */
+typedef VUnit = 
+{
+	value:String,
+	unit:String
+};
+/**
+ * structure used to store parsed string into a 4 channels color
+ */
+typedef VCol = 
+{
+	r:Int,
+	g:Int,
+	b:Int,
+	a:Null<Float>
+};
+
+/**
  * Lists the different types of 
  * unit supported with an explicitly
  * set length such as px, cm, em...
