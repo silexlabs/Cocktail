@@ -44,13 +44,20 @@ class LoadingViewStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.position = PositionStyleValue.absolute;
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.length(px(new Viewport().width));
+		//domElement.style.height = DimensionStyleValue.percent(100);
+		domElement.style.height = DimensionStyleValue.length(px(new Viewport().height));
 		
 		domElement.style.textAlign = TextAlignStyleValue.center;
 		
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		
+		//domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
+		domElement.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
+		
+		domElement.nativeElement.style.zIndex = 1000;
 	}
 	
 	/**

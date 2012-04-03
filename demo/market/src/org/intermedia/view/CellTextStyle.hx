@@ -51,7 +51,10 @@ class CellTextStyle
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
-				
+		
+		// apply border
+		CellStyle.addBorder(domElement);
+		domElement.nativeElement.style.borderStyle = "none none solid none";
 	}
 	
 	/**
@@ -67,7 +70,7 @@ class CellTextStyle
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
+		domElement.style.fontSize = FontSizeStyleValue.length(px(15));
 		domElement.style.lineHeight = LineHeightStyleValue.normal;
 		domElement.style.fontWeight = FontWeightStyleValue.bold;
 		domElement.style.fontStyle = FontStyleStyleValue.normal;

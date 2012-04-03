@@ -44,37 +44,16 @@ class ThumbTextListRssStandard
 		{
 			if (channelChild.nodeName == "item")
 			{
-				//var cell:CellData = { id:0, title:"", author:"", thumbUrl:"", category:""};
 				var cell:CellData = { id:0, title:"", author:"", thumbUrl:"", category:"", description:"", content:""};
-				//var cell:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
 				
 				// for each node
 				for (itemParam in channelChild.elements())
 				{
-					// Standard feed
-					
-					// if node is a thumbnail image
-					/*if (itemParam.nodeName == "post_thumbnail")
-					{
-						cell.thumbUrl = itemParam.firstChild().nodeValue;
-					}
-					// in case there is no thumbnail, fill with first image in the post
-					if (itemParam.nodeName == "post_images")
-					{
-						if (!Reflect.hasField(cell, 'thumbnail') || (Reflect.field(cell, 'thumbnail') == ""))
-						{
-							for (elements in itemParam.elements())
-							{
-								cell.thumbUrl = itemParam.firstElement().firstChild().nodeValue;
-								break;
-							}
-						}
-					}*/
-					
 					// if node is a title
 					if (itemParam.nodeName == "title")
 					{
-						var title:String = itemParam.firstChild().nodeValue;
+						// get and clean the node text
+						var title:String = cleanText(itemParam.firstChild().nodeValue);
 						// remove all characters after "Name" string, used to clean themes and plugins title
 						var index:Int = title.indexOf("Name");
 						if (index != -1)
@@ -95,7 +74,8 @@ class ThumbTextListRssStandard
 					// if node is a description
 					if (itemParam.nodeName == "description")
 					{
-						cell.description = itemParam.firstChild().nodeValue;
+						// get and clean the node text
+						cell.description = cleanText(itemParam.firstChild().nodeValue);
 						
 						// get the thumb image
 						cell.thumbUrl = getThumb(cell.description);
@@ -104,36 +84,91 @@ class ThumbTextListRssStandard
 					// if node is a description
 					if (itemParam.nodeName == "content:encoded")
 					{
-						cell.content = itemParam.firstChild().nodeValue;
+						// get and clean the node text
+						cell.content = cleanText(itemParam.firstChild().nodeValue);
 						
 						// get the thumb image
 						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.content);
 					}
 					
-					// if node is the id
-					/*if (itemParam.nodeName == "ID")
-					{
-						cell.id = Std.parseInt(itemParam.firstChild().nodeValue);
-					}*/
-
-					// if node is the category
-					/*if (itemParam.nodeName == "category")
-					{
-						cell.category = itemParam.firstChild().nodeValue;
-					}*/
 				}
 				
-				// if the cell contains at least a title and a description
-				//if (cell.title != "" && cell.description != "")
-				//{
+				// if the cell contains at least a title, a thumb and a either a description or a content
+				if (cell.title != "" && cell.thumbUrl != ""  && ( cell.description != "" || cell.content != "" ) )
+				{
 					// add cell to cell array
 					cells.push(cell);
-				//}
+				}
 			}
 		}
 		// return cell array
-		//trace(cells);
 		return cells;
+	}
+	
+	/**
+	 * Cleans a text by converting html codes and html entities in it
+	 * 
+	 * @param	text	dirty string
+	 * @return			cleaned string
+	 */
+	static private function cleanText(text:String):String
+	{
+		return(StringTools.htmlUnescape(cleanCharCodes(text)));
+	}
+	
+	/**
+	 * This method cleans a string by converting all character codes such as &#8217; (cf. http://www.ascii.cl/htmlcodes.htm)
+	 * these are not html entities nor url encoding
+	 * 
+	 * @param	text	dirty string
+	 * @return			cleaned string
+	 */
+	static public function cleanCharCodes(text:String):String
+	{
+		// init variables
+		var charCodeStart:String = '&#';
+		var charCodeEnd:String = ';';
+		var charCodeStartPosition:Int = 0;
+		var charCodeEndPosition:Int = 0;
+		var charCode:Int = 0;
+		var charCodeString:String = "";
+		var char:String = "";
+		var textEnd:String = "";
+		
+		// get the character code position
+		charCodeStartPosition = text.indexOf(charCodeStart);
+		
+		// if character code has been found, start loop until ther are no more
+		while (charCodeStartPosition != -1)
+		{
+			// retrieve the code
+			charCodeString = text.substr(charCodeStartPosition + charCodeStart.length);
+			charCodeEndPosition = charCodeString.indexOf(charCodeEnd);
+			
+			// keep the text string end
+			textEnd = charCodeString.substr(charCodeEndPosition + 1);
+			
+			// continue retrieving the code
+			charCodeString = charCodeString.substr(0, charCodeEndPosition);
+			charCode = Std.parseInt(charCodeString);
+			
+			// convert the code
+			char = String.fromCharCode(charCode);
+			
+			// build the new string
+			text = text.substr(0, charCodeStartPosition) + char + textEnd;
+			
+			// get the next character code
+			charCodeStartPosition = text.indexOf(charCodeStart);
+		}
+		
+		// return the cleaned string
+		return text;
+		
+		// Nicolas Cannasse proposal to do it
+		//~/&#([0-9A-Fa-f]+);/.customReplace(function(r) return String.fromCharCode(Std.parseInt("0x" + r.matched(1))));
+		
+		return text;
 	}
 	
 	/**

@@ -9,18 +9,10 @@ package org.intermedia.view;
 
 // DOM
 import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
 
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
-import org.intermedia.view.ScreenResolution;
 
 
 /**
@@ -29,14 +21,16 @@ import org.intermedia.view.ScreenResolution;
  * @author Raphael Harmel
  */
 
-class CellThumbStyle2
+class CellStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
 	
+	//static inline var CELL_RATIO:Float = 16/9;
+
 	/**
 	 * Defines cell Style
 	 * 
 	 * @param	domElement
+	 * @return	thumbNail mask size, here cell size
 	 */
 	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
 	{
@@ -50,36 +44,43 @@ class CellThumbStyle2
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
 		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
 		
-		// compute cell width depending on cellPerLine value
-		var cellPercentWidth:Int = 0;
-		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
-		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
-		else cellPercentWidth = 100;
-		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
-		domElement.style.height = DimensionStyleValue.length(px(70));
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Int = computeWidthPercentage(cellPerLine);
+		domElement.style.width = DimensionStyleValue.percent(cellWidthPercent);
+		//domElement.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
+		
+		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
+
+		//domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
 	}
 	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	domElement
-	 */
-	public static function setThumbnailStyle(domElement:DOMElement):Void
+	public static function computeWidthPercentage(cellPerLine):Int
 	{
-		domElement.style.display = DisplayStyleValue.inlineStyle;
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Int = 100;
 		
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(156));
-		//domElement.style.width = DimensionStyleValue.percent(100);
+		if (cellPerLine != 0)
+		{
+			cellWidthPercent = Std.int( 100 / cellPerLine);
+		}
 		
-
-		domElement.style.opacity = OpacityStyleValue.number(0);
-		
+		return cellWidthPercent;
+	}
+	
+	public static function addBorder(domElement:DOMElement):Void
+	{
+		// add border
+		domElement.nativeElement.style.borderWidth = Constants.CELL_BORDER_WIDTH;
+		domElement.nativeElement.style.borderColor = Constants.CELL_BORDER_COLOR;
+		domElement.nativeElement.style.borderStyle = "solid";
+	}
+	
+	public static function removeBorder(domElement:DOMElement):Void
+	{
+		domElement.nativeElement.style.borderStyle = "none";
 	}
 	
 }

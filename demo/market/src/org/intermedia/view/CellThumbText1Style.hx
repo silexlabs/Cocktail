@@ -21,6 +21,7 @@ import cocktail.nativeElement.NativeElementData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import org.intermedia.view.ScreenResolution;
+import org.intermedia.model.ApplicationModel;
 
 
 /**
@@ -32,15 +33,19 @@ import org.intermedia.view.ScreenResolution;
 class CellThumbText1Style
 {
 	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
+	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
+	static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
 	
 	/**
 	 * Defines cell Style
 	 * 
 	 * @param	domElement
+	 * @param	?cellPerLine
+	 * @return	thumb mask size
 	 */
-	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
+	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Size
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
+		/*domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.position = PositionStyleValue.staticStyle;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
@@ -59,6 +64,28 @@ class CellThumbText1Style
 		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
 		else cellPercentWidth = 100;
 		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
+		//domElement.style.height = DimensionStyleValue.length(px(70));
+		//domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };*/
+		
+		CellStyle.setCellStyle(domElement,cellPerLine);
+		
+		// apply border
+		//CellStyle.addBorder(domElement);
+		
+		// compute cell size in pixel depending on cellPerLine value
+		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
+		var cellSize:Size = CellThumbStyle.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
+		
+		domElement.style.height = DimensionStyleValue.length(px(cellSize.height));
+		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(CELL_MAX_HEIGHT));
+
+		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		
+		// apply border
+		CellStyle.addBorder(domElement);
+		
+		return cellSize;
+
 	}
 	
 	/**
@@ -66,9 +93,9 @@ class CellThumbText1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function setThumbnailStyle(domElement:DOMElement):Void
+	public static function setThumbnailStyle(domElement:ImageDOMElement,maskSize:Size):Void
 	{
-		var imageMaxWidth:Int = 200;
+		/*var imageMaxWidth:Int = 200;
 		
 		//setCellStyle(domElement);
 		
@@ -83,10 +110,11 @@ class CellThumbText1Style
 
 		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
 		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		domElement.style.width = DimensionStyleValue.percent(35);	
+		domElement.style.width = DimensionStyleValue.percent(CELL_THUMB_WIDTH_PERCENT);	
 
-		domElement.style.opacity = OpacityStyleValue.number(0);
+		domElement.style.opacity = OpacityStyleValue.number(0);*/
 		
+		CellThumbStyle.setThumbnailStyle(domElement,maskSize);
 	}
 		
 	/**
@@ -101,7 +129,8 @@ class CellThumbText1Style
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.marginLeft = MarginStyleValue.percent(2);
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.width = DimensionStyleValue.percent(60);
+		domElement.style.width = DimensionStyleValue.percent(CELL_TEXT_WIDTH_PERCENT);
+		
 	}
 
 	/**
@@ -132,13 +161,13 @@ class CellThumbText1Style
 		if (screenResolutionSize == null)
 			screenResolutionSize = ScreenResolutionSize.small;
 		
-		var fontSize:Int = 12;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 12;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 15;
+		var fontSize:Int = 14;
+		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
+		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
 		else  fontSize = 18;
 		
 		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		//domElement.style.fontWeight = FontWeightStyleValue.bold;
 	}
 
 	/**

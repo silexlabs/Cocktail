@@ -134,13 +134,18 @@ To Do
 -create a scrollbar in each list => OK
 -custom list => OK
 -handle loading n next elements when reachin bottom of the list => OK
- => check with alex the rss parameters
- => check also the detail page
+ => check with alex the rss parameters => OK
+ => check also the detail page => OK
 -fade-in when displaying thumbs => OK
 -loading screen (main page & list bottoms) => OK
 -mouse move is not listened to on bottom of right and left lists => OK
 -handle scroll vertically in lists => OK
 -after loading n element, if page is not filled completly, load next n elements => OK
+-remove html characters => OK
+-set initial list to list1 => OK
+-lists should be placed with position:inline in swippable view => OK
+-detail view => OK
+-custom list with 3 first items of each list => OK
 -touchevents to be used on touch devices => OK, done in pure js
 -read specs to see if nothing is missing
  => missing error page with OK button
@@ -153,16 +158,27 @@ To Do
  => tweening
  => title shifts
 -menu bar for navigation
--set initial list to list1
--lists should be placed with position:inline in swippable view
--detail view => OK
--custom list with 3 first items of each list
 -cells on the same line should have the samed height
 
+To Do Alex 30/03/2012
+-retirer les cells ne contenant pas de titre, de thumb ou de description / content => OK
+-ajuster la vue detail => OK
+-titre: laisser uniquement deux lignes => OK
+-afficher seulement thumbs dans la home page => OK
+-random sur les fade-in des images => OK
+-barres de séparation verticales => OK: border js natif utilisé
+-aligner les cells sur la ligne => quantité de texte réduite: OK ?
+-Loading screen au début => bug cocktail qui override les valeurs du zindex: mis en standby car réglé dans la version js
+-crop thumbs des thumblist & thumbtext list: utiliser des masques html => deniers ajustements à faire
+-swippable view scroll non fonctionnel sur android & Firefox
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield
+
+CSS resolved issues:
+-to have a nice layout for cells, and lists, it is necessary to use vertical-align=top
+-box-sizing css property is usefull so that borders are included in container width
 
 Missing useful functionalities in cocktail
 -zIndex
@@ -176,5 +192,6 @@ Issues:
  => "nme test "WebApp.nmml" flash" command does not copy the ..\bin\assets to \Export\flash\bin\assets directory as expected
  => text fields are not displayed
  => loaded images make windows app crash
+-when using -webkit-box-sizing:border-box; on iOS safari, the first time it does not work: and lines which should contain 2 cells are only containing one
 
 

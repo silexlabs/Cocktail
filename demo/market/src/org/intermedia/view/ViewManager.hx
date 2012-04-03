@@ -90,8 +90,8 @@ class ViewManager
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		_body.addChild(_menu);
 		
-		//_header.isVisible = false;
-		//_menu.isVisible = false;
+		_header.isVisible = false;
+		_menu.isVisible = false;
 		
 		// inti swippable view
 		_swippableListView = new SwippableListView();
@@ -102,9 +102,16 @@ class ViewManager
 		// timer to scroll to the second item in the swippable view
 		Timer.delay(function () {
 			// scroll to the second item in the swippable view
-			_body.nativeElement.scrollLeft = new Viewport().width;
+			//_body.nativeElement.scrollLeft = new Viewport().width;
+			/*#if js
+			js.Lib.document.body.scrollLeft = 200;
+			#end*/
+			//_body.nativeElement.scrollLeft = 200;
+			_swippableListView.nativeElement.scrollLeft = 200;
+			//trace(js.Lib.document.body.scrollLeft);
 			setZIndexToMax(_menu);
 			setZIndexToMax(_header);
+			_swippableListView.displayLoading = false;
 		},5000);
 		Timer.delay(resetHeaderPosition,200);
 		// call init()
@@ -204,7 +211,7 @@ class ViewManager
 		setZIndexToMax(_header);
 		
 		// remove loading view from swippable view
-		_swippableListView.displayLoading = false;
+		//_swippableListView.displayLoading = false;
 	}
 	
 	/**
@@ -234,7 +241,7 @@ class ViewManager
 	 */
 	public function onStartLoading():Void
 	{
-		_currentView.displayLoading = true;
+		//_currentView.displayLoading = true;
 	}
 	
 	/**

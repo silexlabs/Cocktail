@@ -38,11 +38,11 @@ class CellText extends CellBase
 		}
 			
 		// add separation line
-		var line:ImageDOMElement = new ImageDOMElement();
+		/*var line:ImageDOMElement = new ImageDOMElement();
 		// set image style
 		CellTextStyle.setCellLineStyle(line);
 		this.addChild(line);
-		line.load("assets/greyPixel.png");
+		line.load("assets/greyPixel.png");*/
 
 	}
 

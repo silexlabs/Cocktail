@@ -25,7 +25,7 @@ class ThumbTextList1 extends ListViewBase
 	{
 		_cellsPerLine = cellPerLine;
 		super();
-		ListViewStyle.setListStyle(this,Constants.LIST_TOP);
+		ListViewStyle.setListStyle(this, Constants.LIST_TOP);
 	}
 	
 	/**

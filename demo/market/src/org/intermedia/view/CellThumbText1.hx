@@ -14,27 +14,42 @@ import org.intermedia.view.StyleModel;
  * @author Raphael Harmel
  */
 
-class CellThumbText1 extends CellThumb
+//class CellThumbText1 extends CellThumb
+class CellThumbText1 extends CellBase
 {
+	static inline var TITLE_LENGTH:Int = 40;
+	
 	// cell style
 	//private var _cellStyle:CellThumbText1StyleModel;
+	
+	// thumb
+	private var _thumb:CellThumb;
 
 	/**
-	 * 
+	 * constructor
 	 * 
 	 * @param	?cellPerLine	number of cells per line
 	 */
-	/*public function new(?cellPerLine:Int = 1) 
+	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
 	{
-		super();
-		initCellStyle();
-		_cellStyle.cell(this,cellPerLine);
-	}*/
-	
+		super(cellPerLine);
+		
+		// set cell thumb to 1/3 of the width of the cell
+		//_thumb = new CellThumb(cellPerLine);
+		_thumb = new CellThumb(cellPerLine,_cellStyle);
+		CellStyle.removeBorder(_thumb);
+		this.addChild(_thumb);
+	}
+
+	/**
+	 * cell style init
+	 */
 	override private function initCellStyle():Void
 	{
 		// init style model
 		_cellStyle = {
+			//cell:CellThumbText1Style.setCellStyle,
+			//thumbnail:CellThumbText1Style.setThumbnailStyle,
 			cell:CellThumbText1Style.setCellStyle,
 			thumbnail:CellThumbText1Style.setThumbnailStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
@@ -51,6 +66,7 @@ class CellThumbText1 extends CellThumb
 	override private function updateView():Void
 	{
 		super.updateView();
+		_thumb.data = _data;
 		//var cellData:CellData = _data;
 		//var cellData:CellData = super._data;
 		
@@ -82,8 +98,11 @@ class CellThumbText1 extends CellThumb
 		// add title
 		if (_data.title != "" && _data.title != null)
 		{
+			var text:String = _data.title;
+			if (text.length > TITLE_LENGTH)
+				text = text.substr(0, TITLE_LENGTH) + "...";
+			var textElement:TextElement = new TextElement(text);
 			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(_data.title);
 			cellTitleContainer.addText(textElement);
 			_cellStyle.title(cellTitleContainer);
 			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
@@ -105,11 +124,11 @@ class CellThumbText1 extends CellThumb
 		// LINE
 		
 		// add separation line
-		var line:ImageDOMElement = new ImageDOMElement();
+		/*var line:ImageDOMElement = new ImageDOMElement();
 		// set image style
 		_cellStyle.line(line);
 		this.addChild(line);
-		line.load("assets/greyPixel.png");
+		line.load("assets/greyPixel.png");*/
 
 	}
 

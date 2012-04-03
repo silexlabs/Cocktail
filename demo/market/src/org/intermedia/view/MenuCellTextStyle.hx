@@ -40,7 +40,7 @@ class MenuCellTextStyle
 	public static function setCellStyle(domElement:ContainerDOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.staticStyle;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
@@ -56,6 +56,10 @@ class MenuCellTextStyle
 		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(33);
 
 		domElement.style.textAlign = TextAlignStyleValue.center;
+
+		// remove border
+		domElement.nativeElement.style.borderStyle = "none";
+
 	}
 	
 	/**
@@ -90,6 +94,7 @@ class MenuCellTextStyle
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		
 		domElement.style.color = ColorValue.hex('#444444');
+		
 	}
 	
 }
