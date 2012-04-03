@@ -9,6 +9,7 @@ package cocktail.core.unit;
 
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
+import flash.text.engine.FontWeight;
 import haxe.Log;
 
 /**
@@ -237,6 +238,83 @@ class UnitManager
 		}
 		
 		return  position;
+	}
+	
+	static public function fontWeightEnum(string:String):FontWeight
+	{
+		var parsed:String = trim(string);
+		
+		var fontWeight:FontWeight;
+		
+		switch(parsed)
+		{
+			case "bold":
+				fontWeight = FontWeight.bold;
+				
+			case "bolder":
+				fontWeight = FontWeight.bolder;
+				
+			case "normal":
+				fontWeight = FontWeight.normal;
+				
+			case "lighter":
+				fontWeight = FontWeight.lighter;
+				
+			case "100":
+				fontWeight = FontWeight.css100;
+				
+			case "200":
+				fontWeight = FontWeight.css200;	
+				
+			case "300":
+				fontWeight = FontWeight.css300;
+				
+			case "400":
+				fontWeight = FontWeight.css400;	
+				
+			case "500":
+				fontWeight = FontWeight.css500;
+				
+			case "600":
+				fontWeight = FontWeight.css600;	
+				
+			case "700":
+				fontWeight = FontWeight.css700;
+				
+			case "800":
+				fontWeight = FontWeight.css800;	
+				
+			case "900":
+				fontWeight = FontWeight.css900;		
+				
+			default:
+				//TODO : throw exception ?
+				fontWeight = null;
+		}
+		
+		return  fontWeight;
+	}
+	
+	static public function visibilityEnum(string:String):Visibility
+	{
+		var parsed:String = trim(string);
+		
+		var visibility:Visibility;
+		
+		switch(parsed)
+		{
+			case "hidden":
+				visibility = Visibility.hidden;
+				
+			case "visible":
+				visibility = Visibility.visible;
+				
+			default:
+				//TODO : throw exception ?
+				visibility = null;
+		}
+		
+		return  visibility;
 	}
 	
 	static public function cssFloatEnum(string:String):CSSFloat

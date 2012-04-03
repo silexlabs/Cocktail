@@ -141,6 +141,7 @@ class Style
 	
 	private function set_visibility(value:String):String
 	{
+		_coreStyle.visibility = UnitManager.visibilityEnum(value);
 		return value;
 	}
 	
@@ -403,6 +404,7 @@ class Style
 	
 	private function set_fontWeight(value:String):String
 	{
+		_coreStyle.fontWeight = UnitManager.fontWeightEnum(value);
 		return value;
 	}
 	
