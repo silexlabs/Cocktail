@@ -57,7 +57,7 @@ class HTMLBodyElement extends HTMLElement
 	 * Instantiate a Style specific to this
 	 * HTMLElement
 	 */
-	override private function initStyle():Void
+	override private function initCoreStyle():Void
 	{
 		_coreStyle = new BodyCoreStyle(this);
 	}

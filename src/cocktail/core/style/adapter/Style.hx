@@ -13,7 +13,7 @@ class Style
 	public var display(get_display, set_display):String;
 	public var position(get_position, set_position):String;
 	public var cssFloat(get_CSSFloat, set_CSSFloat):String;
-	public var clear(get_Clear, set_Clear):String;
+	public var clear(get_clear, set_clear):String;
 	
 	/**
 	 * box model styles
@@ -102,7 +102,7 @@ class Style
 	
 	private function get_opacity():String
 	{
-		return _opacity;
+		return "";
 	}
 	
 	private function set_opacity(value:String):String
@@ -112,7 +112,7 @@ class Style
 	
 	private function get_visibility():String
 	{
-		return _visibility;
+		return "";
 	}
 	
 	private function set_visibility(value:String):String
@@ -122,7 +122,7 @@ class Style
 	
 	private function get_marginLeft():String 
 	{
-		return _marginLeft;
+		return "";
 	}
 	
 	private function set_marginLeft(value:String):String 
@@ -132,7 +132,7 @@ class Style
 	
 	private function get_marginRight():String 
 	{
-		return _marginRight;
+		return "";
 	}
 	
 	private function set_marginRight(value:String):String 
@@ -142,7 +142,7 @@ class Style
 	
 	private function get_marginTop():String 
 	{
-		return _marginTop;
+		return "";
 	}
 	
 	private function set_marginTop(value:String):String 
@@ -152,7 +152,7 @@ class Style
 	
 	private function get_marginBottom():String 
 	{
-		return _marginBottom;
+		return "";
 	}
 	
 	private function set_marginBottom(value:String):String 
@@ -162,7 +162,7 @@ class Style
 	
 	private function get_paddingLeft():String 
 	{
-		return _paddingLeft;
+		return "";
 	}
 	
 	private function set_paddingLeft(value:String):String 
@@ -172,7 +172,7 @@ class Style
 	
 	private function get_paddingRight():String 
 	{
-		return _paddingRight;
+		return "";
 	}
 	
 	private function set_paddingRight(value:String):String
@@ -182,7 +182,7 @@ class Style
 	
 	private function get_paddingTop():String 
 	{
-		return _paddingTop;
+		return "";
 	}
 	
 	private function set_paddingTop(value:String):String 
@@ -192,7 +192,7 @@ class Style
 	
 	private function get_paddingBottom():String 
 	{
-		return _paddingBottom;
+		return "";
 	}
 	
 	private function set_paddingBottom(value:String):String 
@@ -202,7 +202,7 @@ class Style
 	
 	private function get_display():String 
 	{
-		return _display;
+		return "";
 	}
 	
 	private function set_display(value:String):String 
@@ -212,7 +212,7 @@ class Style
 	
 	private function get_position():String 
 	{
-		return _position;
+		return "";
 	}
 	
 	private function set_position(value:String):String 
@@ -222,7 +222,7 @@ class Style
 	
 	private function get_width():String 
 	{
-		return _width;
+		return "";
 	}
 	
 	private function set_width(value:String):String 
@@ -232,7 +232,7 @@ class Style
 	
 	private function get_height():String 
 	{
-		return _height;
+		return "";
 	}
 	
 	private function set_height(value:String):String 
@@ -242,7 +242,7 @@ class Style
 	
 	private function get_minHeight():String 
 	{
-		return _minHeight;
+		return "";
 	}
 	
 	private function set_minHeight(value:String):String 
@@ -252,7 +252,7 @@ class Style
 	
 	private function get_maxHeight():String 
 	{
-		return _maxHeight;
+		return "";
 	}
 
 	private function set_maxHeight(value:String):String 
@@ -262,9 +262,8 @@ class Style
 	
 	private function get_minWidth():String 
 	{
-		return _minWidth;
+		return "";
 	}
-	
 		
 	private function set_minWidth(value:String):String 
 	{
@@ -273,7 +272,7 @@ class Style
 	
 	private function get_maxWidth():String 
 	{
-		return _maxWidth;
+		return "";
 	}
 	
 	private function set_maxWidth(value:String):String 
@@ -283,7 +282,7 @@ class Style
 	
 	private function get_top():String 
 	{
-		return _top;
+		return "";
 	}
 	
 	private function set_top(value:String):String 
@@ -293,7 +292,7 @@ class Style
 	
 	private function get_left():String 
 	{
-		return _left;
+		return "";
 	}
 		
 	private function set_left(value:String):String 
@@ -303,7 +302,7 @@ class Style
 	
 	private function get_bottom():String 
 	{
-		return _bottom;
+		return "";
 	}
 	
 	private function set_bottom(value:String):String 
@@ -313,7 +312,7 @@ class Style
 	
 	private function get_right():String 
 	{
-		return _right;
+		return "";
 	}
 	
 	private function set_right(value:String):String 
@@ -323,7 +322,7 @@ class Style
 	
 	private function get_CSSFloat():String 
 	{
-		return _cssFloat;
+		return "";
 	}
 	
 	private function set_CSSFloat(value:String):String 
@@ -333,7 +332,7 @@ class Style
 	
 	private function get_clear():String 
 	{
-		return _clear;
+		return "";
 	}
 	
 	private function set_clear(value:String):String 
@@ -343,7 +342,7 @@ class Style
 	
 	private function get_fontSize():String
 	{
-		return _fontSize;
+		return "";
 	}
 	
 	private function set_fontSize(value:String):String
@@ -353,7 +352,7 @@ class Style
 	
 	private function get_fontWeight():String
 	{
-		return _fontWeight;
+		return "";
 	}
 	
 	private function set_fontWeight(value:String):String
@@ -363,7 +362,7 @@ class Style
 	
 	private function get_fontStyle():String
 	{
-		return _fontStyle;
+		return "";
 	}
 	
 	private function set_fontStyle(value:String):String
@@ -373,7 +372,7 @@ class Style
 	
 	private function get_fontFamily():String
 	{
-		return _fontFamily;
+		return "";
 	}
 	
 	private function set_fontFamily(value:String):String
@@ -383,7 +382,7 @@ class Style
 
 	private function get_fontVariant():String
 	{
-		return _fontVariant;
+		return "";
 	}
 	
 	private function set_fontVariant(value:String):String
@@ -393,7 +392,7 @@ class Style
 	
 	private function get_textTransform():String
 	{
-		return _textTransform;
+		return "";
 	}
 	
 	private function set_textTransform(value:String):String
@@ -403,7 +402,7 @@ class Style
 	
 	private function get_letterSpacing():String
 	{
-		return _letterSpacing;
+		return "";
 	}
 	
 	private function set_letterSpacing(value:String):String
@@ -413,7 +412,7 @@ class Style
 	
 	private function get_color():String
 	{
-		return _color;
+		return "";
 	}
 	
 	private function set_color(value:String):String
@@ -423,7 +422,7 @@ class Style
 	
 	private function get_wordSpacing():String
 	{
-		return _wordSpacing;
+		return "";
 	}
 	
 	private function set_wordSpacing(value:String):String
@@ -433,7 +432,7 @@ class Style
 	
 	private function get_lineHeight():String
 	{
-		return _lineHeight;
+		return "";
 	}
 	
 	private function set_lineHeight(value:String):String
@@ -443,7 +442,7 @@ class Style
 	
 	private function get_verticalAlign():String
 	{
-		return _verticalAlign;
+		return "";
 	}
 	
 	private function set_verticalAlign(value:String):String
@@ -453,7 +452,7 @@ class Style
 	
 	private function get_textIndent():String
 	{
-		return _textIndent;
+		return "";
 	}
 	
 	private function set_textIndent(value:String):String
@@ -463,7 +462,7 @@ class Style
 	
 	private function get_whiteSpace():String
 	{
-		return _whiteSpace;
+		return "";
 	}
 	
 	private function set_whiteSpace(value:String):String
@@ -473,7 +472,7 @@ class Style
 	
 	private function get_textAlign():String
 	{
-		return _textAlign;
+		return "";
 	}
 	
 	private function set_textAlign(value:String):String
@@ -488,7 +487,7 @@ class Style
 	
 	private function get_backgroundColor():String
 	{
-		return _backgroundColor;
+		return "";
 	}
 	
 	private function set_backgroundImage(value:String):String
@@ -498,7 +497,7 @@ class Style
 	
 	private function get_backgroundImage():String
 	{
-		return _backgroundImage;
+		return "";
 	}
 	
 	private function set_backgroundRepeat(value:String):String
@@ -508,7 +507,7 @@ class Style
 	
 	private function get_backgroundRepeat():String
 	{
-		return _backgroundRepeat;
+		return "";
 	}
 	
 	private function set_backgroundSize(value:String):String
@@ -518,7 +517,7 @@ class Style
 	
 	private function get_backgroundSize():String
 	{
-		return _backgroundSize;
+		return "";
 	}
 	
 	private function set_backgroundClip(value:String):String
@@ -528,7 +527,7 @@ class Style
 	
 	private function get_backgroundClip():String
 	{
-		return _backgroundClip;
+		return "";
 	}
 	
 	private function set_backgroundPosition(value:String):String
@@ -538,7 +537,7 @@ class Style
 	
 	private function get_backgroundPosition():String
 	{
-		return _backgroundPosition;
+		return "";
 	}
 	
 	private function set_backgroundOrigin(value:String):String
@@ -548,12 +547,12 @@ class Style
 	
 	private function get_backgroundOrigin():String
 	{
-		return _backgroundOrigin;
+		return "";
 	}
 	
 	private function get_overflowX():String
 	{
-		return _overflowX;
+		return "";
 	}
 	
 	private function set_overflowX(value:String):String
@@ -563,7 +562,7 @@ class Style
 	
 	private function get_overflowY():String
 	{
-		return _overflowY;
+		return "";
 	}
 	
 	private function set_overflowY(value:String):String
@@ -578,7 +577,7 @@ class Style
 	
 	private function get_cursor():String
 	{
-		return _cursor;
+		return "";
 	}
 	
 }

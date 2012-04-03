@@ -9,7 +9,7 @@ package cocktail.port.browser;
 
 import cocktail.core.HTMLElement;
 import cocktail.core.NativeElement;
-import cocktail.core.style.AbstractBodyStyle;
+import cocktail.core.style.AbstractBodyCoreStyle;
 import cocktail.core.style.StyleData;
 
 /**
