@@ -100,489 +100,483 @@ class Style
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
 	
-	private function getOpacity():String
+	private function get_opacity():String
 	{
 		return _opacity;
 	}
 	
-	private function setOpacity(value:String):String
+	private function set_opacity(value:String):String
 	{
 		return value;
 	}
 	
-	private function getVisibility():String
+	private function get_visibility():String
 	{
 		return _visibility;
 	}
 	
-	private function setVisibility(value:String):String
+	private function set_visibility(value:String):String
 	{
 		return value;
 	}
 	
-	private function getMarginLeft():String 
+	private function get_marginLeft():String 
 	{
 		return _marginLeft;
 	}
 	
-	private function setMarginLeft(value:String):String 
+	private function set_marginLeft(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMarginRight():String 
+	private function get_marginRight():String 
 	{
 		return _marginRight;
 	}
 	
-	private function setMarginRight(value:String):String 
+	private function set_marginRight(value:String):String 
 	{
 		return value;
 	}
 	
-	
-	private function getMarginTop():String 
+	private function get_marginTop():String 
 	{
 		return _marginTop;
 	}
 	
-	private function setMarginTop(value:String):String 
+	private function set_marginTop(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMarginBottom():String 
+	private function get_marginBottom():String 
 	{
 		return _marginBottom;
 	}
 	
-	private function setMarginBottom(value:String):String 
+	private function set_marginBottom(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getPaddingLeft():String 
+	private function get_paddingLeft():String 
 	{
 		return _paddingLeft;
 	}
 	
-	private function setPaddingLeft(value:String):String 
+	private function set_paddingLeft(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getPaddingRight():String 
+	private function get_paddingRight():String 
 	{
 		return _paddingRight;
 	}
 	
-	private function setPaddingRight(value:String):String
+	private function set_paddingRight(value:String):String
 	{
 		return value;
 	}
 	
-	private function getPaddingTop():String 
+	private function get_paddingTop():String 
 	{
 		return _paddingTop;
 	}
 	
-	private function setPaddingTop(value:String):String 
+	private function set_paddingTop(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getPaddingBottom():String 
+	private function get_paddingBottom():String 
 	{
 		return _paddingBottom;
 	}
 	
-	private function setPaddingBottom(value:String):String 
+	private function set_paddingBottom(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getDisplay():String 
+	private function get_display():String 
 	{
 		return _display;
 	}
 	
-	private function setDisplay(value:String):String 
+	private function set_display(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getPosition():String 
+	private function get_position():String 
 	{
 		return _position;
 	}
 	
-	private function setPosition(value:String):String 
+	private function set_position(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getWidth():String 
+	private function get_width():String 
 	{
 		return _width;
 	}
 	
-	private function setWidth(value:String):String 
+	private function set_width(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getHeight():String 
+	private function get_height():String 
 	{
 		return _height;
 	}
 	
-	private function setHeight(value:String):String 
+	private function set_height(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMinHeight():String 
+	private function get_minHeight():String 
 	{
 		return _minHeight;
 	}
 	
-	private function setMinHeight(value:String):String 
+	private function set_minHeight(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMaxHeight():String 
+	private function get_maxHeight():String 
 	{
 		return _maxHeight;
 	}
 
-	private function setMaxHeight(value:String):String 
+	private function set_maxHeight(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMinWidth():String 
+	private function get_minWidth():String 
 	{
 		return _minWidth;
 	}
 	
 		
-	private function setMinWidth(value:String):String 
+	private function set_minWidth(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getMaxWidth():String 
+	private function get_maxWidth():String 
 	{
 		return _maxWidth;
 	}
 	
-	private function setMaxWidth(value:String):String 
+	private function set_maxWidth(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getTop():String 
+	private function get_top():String 
 	{
 		return _top;
 	}
 	
-	private function setTop(value:String):String 
+	private function set_top(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getLeft():String 
+	private function get_left():String 
 	{
 		return _left;
 	}
 		
-	private function setLeft(value:String):String 
+	private function set_left(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getBottom():String 
+	private function get_bottom():String 
 	{
 		return _bottom;
 	}
 	
-	private function setBottom(value:String):String 
+	private function set_bottom(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getRight():String 
+	private function get_right():String 
 	{
 		return _right;
 	}
 	
-	private function setRight(value:String):String 
+	private function set_right(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getCSSFloat():String 
+	private function get_CSSFloat():String 
 	{
 		return _cssFloat;
 	}
 	
-	private function setCSSFloat(value:String):String 
+	private function set_CSSFloat(value:String):String 
 	{
 		return value;
 	}
 	
-	
-	private function getClear():String 
+	private function get_clear():String 
 	{
 		return _clear;
 	}
 	
-	private function setClear(value:String):String 
+	private function set_clear(value:String):String 
 	{
 		return value;
 	}
 	
-	private function getFontSize():String
+	private function get_fontSize():String
 	{
 		return _fontSize;
 	}
 	
-	private function setFontSize(value:String):String
+	private function set_fontSize(value:String):String
 	{
 		return value;
 	}
 	
-	private function getFontWeight():String
+	private function get_fontWeight():String
 	{
 		return _fontWeight;
 	}
 	
-	private function setFontWeight(value:String):String
+	private function set_fontWeight(value:String):String
 	{
 		return value;
 	}
 	
-	
-	private function getFontStyle():String
+	private function get_fontStyle():String
 	{
 		return _fontStyle;
 	}
 	
-	private function setFontStyle(value:String):String
+	private function set_fontStyle(value:String):String
 	{
 		return value;
 	}
 	
-	
-	private function getFontFamily():String
+	private function get_fontFamily():String
 	{
 		return _fontFamily;
 	}
 	
-	private function setFontFamily(value:String):String
+	private function set_fontFamily(value:String):String
 	{
 		return value;
 	}
 
-	private function getFontVariant():String
+	private function get_fontVariant():String
 	{
 		return _fontVariant;
 	}
 	
-	private function setFontVariant(value:String):String
+	private function set_fontVariant(value:String):String
 	{
 		return value;
 	}
 	
-	private function getTextTransform():String
+	private function get_textTransform():String
 	{
 		return _textTransform;
 	}
 	
-	private function setTextTransform(value:String):String
+	private function set_textTransform(value:String):String
 	{
 		return value;
 	}
 	
-	private function getLetterSpacing():String
+	private function get_letterSpacing():String
 	{
 		return _letterSpacing;
 	}
 	
-	private function setLetterSpacing(value:String):String
+	private function set_letterSpacing(value:String):String
 	{
 		return value;
 	}
 	
-	private function getColor():String
+	private function get_color():String
 	{
 		return _color;
 	}
 	
-	private function setColor(value:String):String
+	private function set_color(value:String):String
 	{
 		return value;
 	}
 	
-	private function getWordSpacing():String
+	private function get_wordSpacing():String
 	{
 		return _wordSpacing;
 	}
 	
-	private function setWordSpacing(value:String):String
+	private function set_wordSpacing(value:String):String
 	{
 		return value;
 	}
 	
-	
-	
-	private function getLineHeight():String
+	private function get_lineHeight():String
 	{
 		return _lineHeight;
 	}
 	
-	private function setLineHeight(value:String):String
+	private function set_lineHeight(value:String):String
 	{
 		return value;
 	}
 	
-	private function getVerticalAlign():String
+	private function get_verticalAlign():String
 	{
 		return _verticalAlign;
 	}
 	
-	private function setVerticalAlign(value:String):String
+	private function set_verticalAlign(value:String):String
 	{
 		return value;
 	}
 	
-	private function getTextIndent():String
+	private function get_textIndent():String
 	{
 		return _textIndent;
 	}
 	
-	private function setTextIndent(value:String):String
+	private function set_textIndent(value:String):String
 	{
 		return value;
 	}
 	
-	private function getWhiteSpace():String
+	private function get_whiteSpace():String
 	{
 		return _whiteSpace;
 	}
 	
-	private function setWhiteSpace(value:String):String
+	private function set_whiteSpace(value:String):String
 	{
 		return value;
 	}
 	
-	private function getTextAlign():String
+	private function get_textAlign():String
 	{
 		return _textAlign;
 	}
 	
-	private function setTextAlign(value:String):String
+	private function set_textAlign(value:String):String
 	{
 		return value;
 	}
 	
-	private function setBackgroundColor(value:String):String
+	private function set_backgroundColor(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundColor():String
+	private function get_backgroundColor():String
 	{
 		return _backgroundColor;
 	}
 	
-	private function setBackgroundImage(value:String):String
+	private function set_backgroundImage(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundImage():String
+	private function get_backgroundImage():String
 	{
 		return _backgroundImage;
 	}
 	
-	private function setBackgroundRepeat(value:String):String
+	private function set_backgroundRepeat(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundRepeat():String
+	private function get_backgroundRepeat():String
 	{
 		return _backgroundRepeat;
 	}
 	
-	private function setBackgroundSize(value:String):String
+	private function set_backgroundSize(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundSize():String
+	private function get_backgroundSize():String
 	{
 		return _backgroundSize;
 	}
 	
-	private function setBackgroundClip(value:String):String
+	private function set_backgroundClip(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundClip():String
+	private function get_backgroundClip():String
 	{
 		return _backgroundClip;
 	}
 	
-	private function setBackgroundPosition(value:String):String
+	private function set_backgroundPosition(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundPosition():String
+	private function get_backgroundPosition():String
 	{
 		return _backgroundPosition;
 	}
 	
-	private function setBackgroundOrigin(value:String):String
+	private function set_backgroundOrigin(value:String):String
 	{
 		return value;
 	}
 	
-	private function getBackgroundOrigin():String
+	private function get_backgroundOrigin():String
 	{
 		return _backgroundOrigin;
 	}
 	
-	private function getOverflowX():String
+	private function get_overflowX():String
 	{
 		return _overflowX;
 	}
 	
-	private function setOverflowX(value:String):String
+	private function set_overflowX(value:String):String
 	{
 		return value;
 	}
 	
-	private function getOverflowY():String
+	private function get_overflowY():String
 	{
 		return _overflowY;
 	}
 	
-	private function setOverflowY(value:String):String
+	private function set_overflowY(value:String):String
 	{
 		return value;
 	}
 	
-	private function setCursor(value:String):String
+	private function set_cursor(value:String):String
 	{
 		return value;
 	}
 	
-	private function getCursor():String
+	private function get_cursor():String
 	{
 		return _cursor;
 	}
