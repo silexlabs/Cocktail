@@ -5,76 +5,51 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail;
+package cocktail.port.browser;
 
-import cocktail.core.html.HTMLDocument;
-import cocktail.core.Window;
+import cocktail.core.HTMLElement;
+import cocktail.core.NativeElement;
+import cocktail.core.style.AbstractBodyStyle;
+import cocktail.core.style.StyleData;
 
 /**
- * Entry point of the Cocktail library
- * mimicking js.Lib
+ * This is the JavaScript implementation of the BodyStyle
  * 
  * @author Yannick DOMINGUEZ
  */
-class Lib 
+class BodyStyle extends AbstractBodyStyle
 {
 	/**
-	 * Return the html document
+	 * class constructor
+	 * @param	htmlElement
 	 */
-	private static var _document:HTMLDocument;
-	public static var document(get_document, never):HTMLDocument;
+	public function new(htmlElement:HTMLElement) 
+	{
+		super(htmlElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * return the window
+	 * overriden as the browser deals with the rendering in JS
 	 */
-	private static var _window:Window;
-	public static var window(get_window, never):Window;
-	
-	/**
-	 * class constructor. private as this
-	 * class is used through static methods
-	 */
-	private function new() 
+	override public function render(nativeElement:NativeElement):Void
 	{
 		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE STATIC METHOD
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * instantiate Docuement and Window, called
-	 * the first time either of them is requested
+	 * overriden as in JS, the browser takes care of the layout
 	 */
-	private static function init():Void
-	{
-		_document = new HTMLDocument();
-		_window = new Window(_document);
+	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	{	
+		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// STATIC GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private static function get_document():HTMLDocument 
-	{
-		if (_document == null)
-		{
-			init();
-		}
-		return _document;
-	}
-	
-	private static function get_window():Window
-	{
-		if (_window == null)
-		{
-			init();
-		}
-		return _window;
-	}
-	
-	
 	
 }
