@@ -53,7 +53,7 @@ class UnitManager
 	 * convert a string into a typed Color enum
 	 * @example CSSParser.colorEnum("yellow") returns Color.yellow
 	 */
-	static public function colorEnum(string:String):Color{
+	static public function colorEnum(string:String):CSSColor{
 		// clean up a bit
 		string = trim(string);
 		// case of hex values, e.g. #FFFFFF
@@ -72,24 +72,24 @@ class UnitManager
 		// case of transparent and keywords
 		return switch (string)
 		{
-			case "transparent": Color.transparent;
-			case "aqua": Color.keyword(aqua);
-			case "black": Color.keyword(black);
-			case "blue": Color.keyword(blue);
-			case "fuchsia": Color.keyword(fuchsia);
-			case "gray": Color.keyword(gray);
-			case "green": Color.keyword(green);
-			case "lime": Color.keyword(lime);
-			case "maroon": Color.keyword(maroon);
-			case "navy": Color.keyword(navy);
-			case "olive": Color.keyword(olive);
-			case "orange": Color.keyword(orange);
-			case "purple": Color.keyword(purple);
-			case "red": Color.keyword(red);
-			case "silver": Color.keyword(silver);
-			case "teal": Color.keyword(teal);
-			case "white": Color.keyword(white);
-			case "yellow": Color.keyword(yellow);	
+			case "transparent": CSSColor.transparent;
+			case "aqua": CSSColor.keyword(aqua);
+			case "black": CSSColor.keyword(black);
+			case "blue": CSSColor.keyword(blue);
+			case "fuchsia": CSSColor.keyword(fuchsia);
+			case "gray": CSSColor.keyword(gray);
+			case "green": CSSColor.keyword(green);
+			case "lime": CSSColor.keyword(lime);
+			case "maroon": CSSColor.keyword(maroon);
+			case "navy": CSSColor.keyword(navy);
+			case "olive": CSSColor.keyword(olive);
+			case "orange": CSSColor.keyword(orange);
+			case "purple": CSSColor.keyword(purple);
+			case "red": CSSColor.keyword(red);
+			case "silver": CSSColor.keyword(silver);
+			case "teal": CSSColor.keyword(teal);
+			case "white": CSSColor.keyword(white);
+			case "yellow": CSSColor.keyword(yellow);	
 			default:
 				throw "unknown color \""+string+"\"";
 		}

@@ -49,8 +49,8 @@ class ElementRenderer extends Node
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
 	 */
-	private var _style:Style;
-	public var style(getStyle, never):Style;
+	private var _coreStyle:Style;
+	public var coreStyle(getCoreStyle, never):Style;
 	
 	/**
 	 * A reference to the LayerRenderer rendering this
@@ -67,7 +67,7 @@ class ElementRenderer extends Node
 	public function new(style:Style) 
 	{
 		super();
-		_style = style;
+		_coreStyle = style;
 		_bounds = {
 			x:0.0,
 			y:0.0,
@@ -102,7 +102,7 @@ class ElementRenderer extends Node
 	{
 		
 		_bounds = null;
-		_style = null;
+		_coreStyle = null;
 		//TODO : cause null runtime error
 		//_layerRenderer.dispose();
 		_layerRenderer = null;
@@ -124,12 +124,12 @@ class ElementRenderer extends Node
 	
 	public function isFloat():Bool
 	{
-		return _style.isFloat();
+		return _coreStyle.isFloat();
 	}
 	
 	public function isPositioned():Bool
 	{
-		return _style.isPositioned();
+		return _coreStyle.isPositioned();
 	}
 	
 	public function isEmbedded():Bool
@@ -176,9 +176,9 @@ class ElementRenderer extends Node
 		return _layerRenderer;
 	}
 	
-	private function getStyle():Style
+	private function getCoreStyle():Style
 	{
-		return _style;
+		return _coreStyle;
 	}
 	
 	private function getBounds():RectangleData

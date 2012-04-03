@@ -50,12 +50,12 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		#if (flash9 || nme)
 		
 		//TODO : implement properly hit area for flash_player
-		var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
+		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 		
 		nativeElement.graphics.clear();
 		nativeElement.graphics.beginFill(0x00FF00, 0.0);
-		nativeElement.graphics.drawRect(_bounds.x +_style.computedStyle.paddingLeft,
-		_bounds.y + _style.computedStyle.paddingTop, _bounds.width, _bounds.height);
+		nativeElement.graphics.drawRect(_bounds.x +_coreStyle.computedStyle.paddingLeft,
+		_bounds.y + _coreStyle.computedStyle.paddingTop, _bounds.width, _bounds.height);
 		nativeElement.graphics.endFill();
 		
 		//nativeElement.x = _style.computedStyle.marginLeft;
@@ -63,15 +63,15 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		ret.push(nativeElement);
 		#end
 		
-		var embeddedHTMLElement:EmbeddedElement = cast(_style.htmlElement);
+		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
 		#if (flash9 || nme)
-		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _style.computedStyle.paddingLeft ;
-		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _style.computedStyle.paddingTop;
+		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _coreStyle.computedStyle.paddingLeft ;
+		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _coreStyle.computedStyle.paddingTop;
 
-		embeddedHTMLElement.embeddedAsset.width = _style.computedStyle.width;
-		embeddedHTMLElement.embeddedAsset.height = _style.computedStyle.height;
+		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
+		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		#end
 		
 		

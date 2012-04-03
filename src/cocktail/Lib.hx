@@ -63,6 +63,7 @@ class Lib
 		{
 			init();
 		}
+		
 		return _document;
 	}
 	

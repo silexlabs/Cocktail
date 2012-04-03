@@ -47,7 +47,7 @@ class BlockFormattingContext extends FormattingContext
 		var currentAddedSiblingsHeight:Int = 0;
 		
 		//_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
-		concatenatedX += elementRenderer.style.computedStyle.marginLeft;
+		concatenatedX += elementRenderer.coreStyle.computedStyle.marginLeft;
 		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
@@ -55,16 +55,16 @@ class BlockFormattingContext extends FormattingContext
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			
-			var marginTop:Int = child.style.computedStyle.marginTop;
+			var marginTop:Int = child.coreStyle.computedStyle.marginTop;
 			
 			if (i == 0)
 			{
 				if (child.firstChild != null)
 				{
 					var firstChild:ElementRenderer = cast(child.firstChild);
-					if (firstChild.style.computedStyle.marginTop > marginTop && child.style.computedStyle.paddingTop == 0)
+					if (firstChild.coreStyle.computedStyle.marginTop > marginTop && child.coreStyle.computedStyle.paddingTop == 0)
 					{
-							marginTop = firstChild.style.computedStyle.marginTop;
+							marginTop = firstChild.coreStyle.computedStyle.marginTop;
 					}
 				}
 				
@@ -83,9 +83,9 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 			
-			var x:Float = _formattingContextData.x + concatenatedX + child.style.computedStyle.marginLeft;
-			var y:Float = _formattingContextData.y + marginTop + elementRenderer.style.computedStyle.paddingTop ;
-			var computedStyle:ComputedStyleData = child.style.computedStyle;
+			var x:Float = _formattingContextData.x + concatenatedX + child.coreStyle.computedStyle.marginLeft;
+			var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
+			var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 			
@@ -106,19 +106,19 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function getCollapsedMarginBottom(child:ElementRenderer):Int
 	{
-		var marginBottom:Int = child.style.computedStyle.marginBottom;
+		var marginBottom:Int = child.coreStyle.computedStyle.marginBottom;
 		
 		if (child.nextSibling != null)
 		{
 			var nextSibling:ElementRenderer = cast(child.nextSibling);
 			
-			if (nextSibling.style.computedStyle.marginTop > marginBottom)
+			if (nextSibling.coreStyle.computedStyle.marginTop > marginBottom)
 			{
 				marginBottom = 0;
 			}
 			else
 			{
-				marginBottom -= nextSibling.style.computedStyle.marginTop;
+				marginBottom -= nextSibling.coreStyle.computedStyle.marginTop;
 			}
 		}
 		
@@ -132,10 +132,10 @@ class BlockFormattingContext extends FormattingContext
 	override private function insertFloat(element:ElementRenderer):Void
 	{
 		var parent:FlowBoxRenderer = cast( element.parentNode);
-		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(parent.style.computedStyle.width));
+		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(parent.coreStyle.computedStyle.width));
 		
-		var x:Float = floatData.x + parent.style.computedStyle.paddingLeft;
-		var y:Float = floatData.y + parent.style.computedStyle.paddingTop;
+		var x:Float = floatData.x + parent.coreStyle.computedStyle.paddingLeft;
+		var y:Float = floatData.y + parent.coreStyle.computedStyle.paddingTop;
 		var width:Float = floatData.width;
 		var height:Float = floatData.height;
 		

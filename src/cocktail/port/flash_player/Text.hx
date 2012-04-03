@@ -42,7 +42,7 @@ class Text extends cocktail.core.dom.Text
 		if (_parentNode != null)
 		{
 			var parent:HTMLElement = cast(_parentNode);
-			parent.style.invalidateText();
+			parent.coreStyle.invalidateText();
 		}
 		
 		return value;

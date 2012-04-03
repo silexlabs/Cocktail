@@ -72,14 +72,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		#if (flash9 || nme)
 		
 		//TODO : implement properly hit area for flash_player
-		var nativeElement:flash.display.Sprite = cast(_style.htmlElement.nativeElement);
+		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 		
 		nativeElement.graphics.clear();
 		nativeElement.graphics.beginFill(0xFF0000, 0.0);
 		nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
 		nativeElement.graphics.endFill();
 		
-		nativeElement.x = _style.computedStyle.marginLeft;
+		nativeElement.x = _coreStyle.computedStyle.marginLeft;
 		
 		ret.push(nativeElement);
 		#end

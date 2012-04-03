@@ -1171,7 +1171,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * set to 'cssAuto'
 	 */
 	typedef PositionedHTMLElementData =  {
-		var style:AbstractStyle;
+		var coreStyle:AbstractStyle;
 		var staticPosition:PointData;
 	}
 	

@@ -712,7 +712,7 @@ class AbstractStyle
 		//class based on the value of the 'position' style
 		var positioner:BoxPositioner;
 		
-		switch (this._htmlElement.style.computedStyle.position)
+		switch (this._htmlElement.coreStyle.computedStyle.position)
 		{
 			//positioned 'relative' HTMLElement
 			case relative:
@@ -807,7 +807,7 @@ class AbstractStyle
 			//
 			var positionedHTMLElementData:PositionedHTMLElementData = {
 				staticPosition:staticPosition,
-				style:this
+				coreStyle:this
 			}
 			
 			//store the HTMLElement to be positioned later
@@ -851,7 +851,7 @@ class AbstractStyle
 			if (this._htmlElement.parentNode != null)
 			{
 				var parent:HTMLElement = cast(_htmlElement.parentNode);
-				parent.style.invalidate(immediate);	
+				parent.coreStyle.invalidate(immediate);	
 			}
 		}
 	}
@@ -1196,14 +1196,14 @@ class AbstractStyle
 		var parent:HTMLElement = cast(_htmlElement.parentNode);
 		
 		//loop in all the parents until a positioned or a null parent is found
-		var isOffsetParent:Bool = parent.style.isOffsetParent();
+		var isOffsetParent:Bool = parent.coreStyle.isOffsetParent();
 		
 		while (isOffsetParent == false)
 		{
 			if (parent.parentNode != null)
 			{
 				parent = cast(parent.parentNode);
-				isOffsetParent = parent.style.isOffsetParent();
+				isOffsetParent = parent.coreStyle.isOffsetParent();
 			}
 			//break the loop if the current parent has no parent
 			else
@@ -1274,7 +1274,7 @@ class AbstractStyle
 		//if the htmlElement has a parent
 		if (firstPositionedAncestor != null)
 		{
-			var firstPositionedAncestorStyle:ContainerStyle = cast(firstPositionedAncestor.style);
+			var firstPositionedAncestorStyle:ContainerStyle = cast(firstPositionedAncestor.coreStyle);
 			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
 		}
 		//if the HTMLElement has no parent, return the Window data

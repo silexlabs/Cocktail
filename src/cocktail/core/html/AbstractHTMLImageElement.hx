@@ -134,7 +134,7 @@ class AbstractHTMLImageElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		this._style.invalidate();
+		this._coreStyle.invalidate();
 		
 		//if provided, call the onload callback
 		if (onLoad != null)

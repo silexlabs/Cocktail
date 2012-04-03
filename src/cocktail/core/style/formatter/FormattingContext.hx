@@ -223,12 +223,12 @@ class FormattingContext
 				else
 				{
 					
-					var htmlElementAscent:Float = elements[i].style.fontMetrics.ascent;
-					var htmlElementDescent:Float = elements[i].style.fontMetrics.descent;	
+					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
+					var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = elements[i].style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
+				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
 				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
@@ -253,12 +253,12 @@ class FormattingContext
 					
 					
 					
-					var htmlElementAscent:Float = elements[i].style.fontMetrics.ascent;
-				var htmlElementDescent:Float = elements[i].style.fontMetrics.descent;	
+					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
+				var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
 			
 				//the leading is an extra height to apply equally to the ascent
 				//and the descent when laying out lines of text
-				var leading:Float = elements[i].style.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
+				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
 		
 				//apply leading to the ascent and descent
 				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
@@ -312,7 +312,7 @@ class FormattingContext
 		}
 		else if (element.canHaveChildren() == true)
 		{
-			if (element.style.establishesNewFormattingContext() == true)
+			if (element.coreStyle.establishesNewFormattingContext() == true)
 			{
 				insertFormattingContextRootElement(element);
 			}

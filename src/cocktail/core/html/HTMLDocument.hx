@@ -81,9 +81,9 @@ class HTMLDocument extends Document
 	 * Overriden to instantiate specific HTML element if needed based
 	 * on the tag name
 	 */
-	override public function createElement(tagName:String):Element
+	override public function createElement(tagName:String):HTMLElement
 	{
-		var element:Element;
+		var element:HTMLElement;
 		
 		switch (tagName.toLowerCase())
 		{
@@ -120,7 +120,7 @@ class HTMLDocument extends Document
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		_body.style.invalidate();
+		_body.coreStyle.invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
