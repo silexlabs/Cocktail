@@ -1166,7 +1166,7 @@ class CoreStyle extends AbstractCoreStyle
 		
 		switch (value)
 		{
-			case Cursor.auto:
+			case Cursor.cssAuto:
 				cssCursorValue = "auto";
 				
 			case Cursor.crosshair:
