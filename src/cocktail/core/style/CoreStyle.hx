@@ -1182,10 +1182,6 @@ class CoreStyle
 	 * Get the first parent HTMLElement which is positioned
 	 * or null if the HTMLElement has no parent (it is
 	 * not attached to the DOM or is the HTMLBodyElement)
-	 * 
-	 * TODO : bug, if the first positioned ancestor is
-	 * the body, it returns the root html element instead.
-	 * Can't be fixed by changing isPositioned on HTML body
 	 */
 	public function getFirstPositionedAncestor():HTMLElement
 	{

@@ -107,6 +107,8 @@ class HTMLDocument extends Document
 				element = new HTMLElement(tagName);
 		}
 		
+		element.ownerDocument = this;
+		
 		return element;
 	}
 	

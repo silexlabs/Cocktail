@@ -61,10 +61,13 @@ class Document extends Node
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
 	 * TODO : implement localName, prefix and namespaceURI
+	 * TODO : for ownerDocument, when should it be set when
+	 * instantiating classes ?
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
 		var element:HTMLElement = new HTMLElement(tagName);
+		element.ownerDocument = this;
 		return element;
 	}
 	
