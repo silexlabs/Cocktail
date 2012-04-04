@@ -1370,7 +1370,7 @@ class CoreStyle extends AbstractCoreStyle
 			case cm(centimetersValue):
 				cssLength = Std.string(centimetersValue) + "cm";
 				
-			case _in(inchesValue):
+			case cssIn(inchesValue):
 				cssLength = Std.string(inchesValue) + "in";
 				
 			case em(emValue	):

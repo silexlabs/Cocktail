@@ -73,10 +73,8 @@ enum Length {
 	
 	/**
 	 * inches, 1in is equal to 2.54cm.
-	 * 
-	 * TODO : rename cssIn
 	 */
-	_in(value:Float);
+	cssIn(value:Float);
 	
 	/**
 	 * The 'em' unit is equal to the
