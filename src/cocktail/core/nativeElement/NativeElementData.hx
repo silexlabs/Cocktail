@@ -20,57 +20,40 @@ package cocktail.core.nativeElement;
  enum NativeElementTypeValue {
 	 
 	 /**
-	  * standard container type, such as 
-	  * a div in HTML
-	  */
-	 neutral;
-	 
-	 /**
 	  * drawing type such as a Canvas in 
 	  * HTML or a sprite (with a graphic
 	  * object) in Flash
 	  */
-	 graphic;
-	 
-	 /**
-	  * text type such as an HTML TextElement
-	  */
-	 text;
+	 canvas;
 	 
 	 /**
 	  * Image type such as an HTML img tag
 	  */
-	 image;
+	 img;
 	 
 	 /**
 	  * Class library such as a script
 	  * tag in HTML
 	  */
-	 library;
-	 
-	 /**
-	  * Skin such as an HTML String in
-	  * HTML
-	  */
-	 skin;
+	 script;
 	 
 	 /**
 	  * http link type such as an <a> tag in
 	  * HTML
 	  */
-	 link;
+	 anchor;
 	 
 	 /**
 	  * an input where the user can type
 	  * text
 	  */
-	 textInput;
+	 input;
 	 
 	 /**
 	  * Can be any other type of native element.
 	  * The name can be used for instance in HTML
 	  * as a tag name
 	  */
-	 custom(name:String);
+	 semantic(name:String);
  }
  

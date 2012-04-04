@@ -5,34 +5,45 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.port.browser;
+package cocktail.core.nativeElement;
 
-import js.Lib;
-import cocktail.core.nativeElement.AbstractNativeElementPathManager;
 import cocktail.core.NativeElement;
+import cocktail.core.nativeElement.NativeElementData;
 
 /**
- * This is the JavaScript implementation for the path manager. 
- * It returns the HTML document body
+ * This is a base class for the path manager. 
+ * It retrieves and return the root of the DOM, 
+ * sush as the body tag in HTML
+ * 
+ * TODO : update all the doc
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementPathManager extends AbstractNativeElementPathManager
+class AbstractNativeElementManagerImpl
 {
 	/**
 	 * class contructor
 	 */
 	public function new() 
 	{
-		super();
+		
 	}
 	
 	/**
-	 * Returns a reference to the Flash Stage
+	 * Returns the root of the DOM. Implemented by subclasses
 	 */
-	override public function getRoot():NativeElement
+	public function getRoot():NativeElement
 	{
-		return Lib.document.body;
+		return null;
+	}
+	
+	/**
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 */
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
+	{
+		return null;
 	}
 	
 }

@@ -19,12 +19,6 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import haxe.Log;
 
-#if (flash9 || nme)
-import cocktail.port.flash_player.ContainerCoreStyle;
-
-#elseif js
-import cocktail.core.style.AbstractContainerCoreStyle;
-#end
 
 /**
  * This is the style implementation for BodyHTMLElement.

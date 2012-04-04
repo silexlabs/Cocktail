@@ -8,7 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.NativeElement;
-import cocktail.core.CoreStyle;
+import cocktail.core.style.CoreStyle;
 import haxe.Log;
 
 /**

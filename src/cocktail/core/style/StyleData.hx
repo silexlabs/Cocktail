@@ -10,7 +10,7 @@ package cocktail.core.style;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
@@ -80,36 +80,6 @@ import cocktail.core.renderer.TextRenderer;
 	enum FontStyle {
 		normal;
 		italic;
-	}
-	
-	/**
-	 * Lists the type of font which can
-	 * be affected to a text 
-	 */
-	enum FontFamily {
-		
-		/**
-		 * A custom font family name
-		 */
-		familyName(name:String);
-		
-		/**
-		 * A generic family name, most
-		 * likely used as a fallback
-		 * if a more specific font 
-		 * wasn't available
-		 */
-		genericFamily(genericName:GenericFontFamily);
-	}
-	
-	/**
-	 * Lists the available generic 
-	 * font families
-	 */
-	enum GenericFontFamily {
-		serif;
-		sansSerif;
-		monospace;
 	}
 	
 	/**
@@ -1107,10 +1077,8 @@ import cocktail.core.renderer.TextRenderer;
 		
 		/**
 		 * The UA determines the cursor to display based on the current context.
-		 * 
-		 * TODO : rename cssAuto
 		 */
-		auto;
+		cssAuto;
 		
 		/**
 		 * A simple crosshair (e.g., short line segments resembling a "+" sign). 
@@ -1171,7 +1139,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * set to 'cssAuto'
 	 */
 	typedef PositionedHTMLElementData =  {
-		var coreStyle:AbstractCoreStyle;
+		var coreStyle:CoreStyle;
 		var staticPosition:PointData;
 	}
 	
@@ -1257,7 +1225,7 @@ import cocktail.core.renderer.TextRenderer;
 		var fontSize:Float;
 		var fontWeight:FontWeight;
 		var fontStyle:FontStyle;
-		var fontFamily:Array<FontFamily>;
+		var fontFamily:Array<String>;
 		var fontVariant:FontVariant;
 		
 		/**
@@ -1333,7 +1301,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * structure.
 	 */
 	typedef DefaultStylesData = {
-		var fontFamily:Array<FontFamily>;
+		var fontFamily:Array<String>;
 		var color:CSSColor;
 	}
 	
@@ -1396,6 +1364,8 @@ import cocktail.core.renderer.TextRenderer;
 	 * provided by the htmlElement's styles, 
 	 * this structures return metrics info
 	 * on the font
+	 * 
+	 * TODO : duplicate with font package
 	 */
 	typedef FontMetricsData = {
 		

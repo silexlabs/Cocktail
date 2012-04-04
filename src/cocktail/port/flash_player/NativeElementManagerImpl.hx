@@ -7,21 +7,23 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.nativeElement.AbstractNativeElementManagerImpl;
 import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 import flash.display.Sprite;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.AbstractNativeElementCreator;
 
 /**
  * This is the flash AVM2 implementation of the native element
  * creator. It instantiate a native flash display object 
  * and returns it as a NativeElement
  * 
+ * TODO : update all the doc
+ * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementCreator extends AbstractNativeElementCreator
+class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 {
 
 	/**
@@ -30,6 +32,14 @@ class NativeElementCreator extends AbstractNativeElementCreator
 	public function new() 
 	{
 		super();
+	}
+	
+	/**
+	 * Returns a reference to the Flash Stage
+	 */
+	override public function getRoot():NativeElement
+	{
+		return flash.Lib.current.stage;
 	}
 	
 	/**
@@ -43,13 +53,13 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		switch (nativeElementType)
 		{
 			//for image, library and skin, the expected type is a Flash loader
-			case image, library, skin:
+			case img, script:
 				nativeElement = new Loader();
 				
 			//for other types, it is a Sprite	
-			case text, graphic, neutral, link, textInput:
+			case canvas, anchor, input:
 				nativeElement = new Sprite();
-			case custom(name):
+			case semantic(name):
 				nativeElement = new Sprite();
 				
 		}

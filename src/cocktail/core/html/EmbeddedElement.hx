@@ -8,7 +8,7 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
-import cocktail.core.EmbeddedCoreStyle;
+import cocktail.core.style.EmbeddedCoreStyle;
 import cocktail.core.NativeElement;
 
 
@@ -95,7 +95,7 @@ class EmbeddedElement extends HTMLElement
 	 * Override to instantiate an Style specific 
 	 * to embedded elements
 	 */
-	override private function initStyle():Void
+	override private function initCoreStyle():Void
 	{
 		this._coreStyle = new EmbeddedCoreStyle(this);
 	}

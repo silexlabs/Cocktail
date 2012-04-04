@@ -5,34 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.port.flash_player;
-
-import flash.Lib;
-import cocktail.core.nativeElement.AbstractNativeElementPathManager;
-import cocktail.core.NativeElement;
+package cocktail.core;
 
 /**
- * This is the flash AVM2 implementation for the path manager. 
- * It returns the flash Stage
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific ClassInstance at compile-time
  */
-class NativeElementPathManager extends AbstractNativeElementPathManager
-{
-	/**
-	 * class contructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-	
-	/**
-	 * Returns a reference to the Flash Stage
-	 */
-	override public function getRoot():NativeElement
-	{
-		return Lib.current.stage;
-	}
-	
-}
+#if (flash9 || nme)
+typedef ClassInstance =  cocktail.port.flash_player.ClassInstance;
+
+#elseif js
+typedef ClassInstance =  cocktail.port.browser.ClassInstance;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class DrawingManager extends core.drawing.AbstractDrawingManager{}
+
+#end

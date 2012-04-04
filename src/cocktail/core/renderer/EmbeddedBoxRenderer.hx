@@ -9,8 +9,8 @@ package cocktail.core.renderer;
 
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
-import cocktail.core.CoreStyle;
 import haxe.Log;
 
 /**

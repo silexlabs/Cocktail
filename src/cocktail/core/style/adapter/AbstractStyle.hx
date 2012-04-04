@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.adapter;
 
+import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -21,7 +22,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Style 
+class AbstractStyle 
 {
 	/**
 	 * display styles
@@ -426,6 +427,7 @@ class Style
 	
 	private function set_fontFamily(value:String):String
 	{
+		_coreStyle.fontFamily = UnitManager.fontFamilyEnum(value);
 		return value;
 	}
 
@@ -552,6 +554,7 @@ class Style
 	
 	private function set_backgroundImage(value:String):String
 	{
+		_coreStyle.backgroundImage = UnitManager.backgroundImageEnum(value);
 		return value;
 	}
 	
@@ -562,6 +565,7 @@ class Style
 	
 	private function set_backgroundRepeat(value:String):String
 	{
+		_coreStyle.backgroundRepeat = UnitManager.backgroundRepeatEnum(value);
 		return value;
 	}
 	
@@ -572,6 +576,7 @@ class Style
 	
 	private function set_backgroundSize(value:String):String
 	{
+		_coreStyle.backgroundSize = UnitManager.backgroundSizeEnum(value);
 		return value;
 	}
 	
@@ -582,6 +587,7 @@ class Style
 	
 	private function set_backgroundClip(value:String):String
 	{
+		_coreStyle.backgroundClip = UnitManager.backgroundClipEnum(value);
 		return value;
 	}
 	
@@ -592,6 +598,7 @@ class Style
 	
 	private function set_backgroundPosition(value:String):String
 	{
+		_coreStyle.backgroundPosition = UnitManager.backgroundPositionEnum(value);
 		return value;
 	}
 	
@@ -602,6 +609,7 @@ class Style
 	
 	private function set_backgroundOrigin(value:String):String
 	{
+		_coreStyle.backgroundOrigin = UnitManager.backgroundOriginEnum(value);
 		return value;
 	}
 	

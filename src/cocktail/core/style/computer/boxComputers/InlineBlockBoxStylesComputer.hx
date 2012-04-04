@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.style.computer.boxComputers;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -42,7 +42,7 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	 * with 'auto'
 	 * , maybe should use the available width
 	 */
-	override public function shrinkToFit(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
+	override public function shrinkToFit(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
 	{
 		var shrinkedWidth:Int;
 		

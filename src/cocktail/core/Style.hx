@@ -8,19 +8,19 @@
 package cocktail.core;
 
 /**
- * Set the right runtime specific EmbeddedCoreStyle at compile-time
+ * Set the right runtime specific CoreStyle at compile-time
  */
 #if (flash9 || nme)
-typedef EmbeddedCoreStyle =  cocktail.core.style.AbstractEmbeddedCoreStyle;
+typedef Style =  cocktail.core.style.adapter.AbstractStyle;
 
 #elseif js
-typedef EmbeddedCoreStyle =  cocktail.core.style.AbstractEmbeddedCoreStyle;
+typedef Style =  cocktail.port.browser.Style;
 
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
  * for each cocktail targets
  */
-class EmbeddedCoreStyle extends core.style.abstract.AbstractEmbeddedStyle { }
+class CoreStyle extends core.style.AbstractStyle { }
 
 #end

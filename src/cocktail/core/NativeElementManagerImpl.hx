@@ -8,19 +8,12 @@
 package cocktail.core;
 
 /**
- * Set the right runtime specific CoreStyle at compile-time
+ * Set the right runtime specific NativeElementManagerImpl at compile-time
  */
 #if (flash9 || nme)
-typedef CoreStyle =  cocktail.port.flash_player.CoreStyle;
+typedef NativeElementManagerImpl = cocktail.port.flash_player.NativeElementManagerImpl;
 
 #elseif js
-typedef CoreStyle =  cocktail.port.browser.CoreStyle;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class CoreStyle extends core.style.AbstractStyle { }
+typedef NativeElementManagerImpl = cocktail.port.browser.NativeElementManagerImpl;
 
 #end

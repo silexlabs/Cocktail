@@ -5,22 +5,30 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core;
+package cocktail.core.style;
+
+import cocktail.core.HTMLElement;
+import haxe.Log;
 
 /**
- * Set the right runtime specific ContainerCoreStyle at compile-time
+ * This is the style implementation for embedded
+ * HTMLElement. Embedded HTMLElement include external
+ * content in the document, such as picture or video.
+ * 
+ * They can't have any children.
+ * 
+ * Doesn't add any behaviour as this is the default beahviour
+ * implemented by the Style class
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if (flash9 || nme)
-typedef ContainerCoreStyle =  cocktail.port.flash_player.ContainerCoreStyle;
-
-#elseif js
-typedef ContainerCoreStyle =  cocktail.core.style.AbstractContainerCoreStyle;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class ContainerCoreStyle extends core.style.abstract.AbstractContainerStyle { }
-
-#end
+class EmbeddedCoreStyle extends CoreStyle
+{
+	/**
+	 * class constructor
+	 */
+	public function new(htmlElement:HTMLElement) 
+	{
+		super(htmlElement);
+	}
+}

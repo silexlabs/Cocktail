@@ -5,33 +5,23 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.nativeElement;
-
-import cocktail.core.NativeElement;
+package cocktail.core;
 
 /**
- * This is a base class for the path manager. 
- * It retrieves and return the root of the DOM, 
- * sush as the body tag in HTML
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific NativeInstance at compile-time
  */
-class AbstractNativeElementPathManager
-{
-	/**
-	 * class contructor
-	 */
-	public function new() 
-	{
-		
-	}
-	
-	/**
-	 * Returns the root of the DOM. Implemented by subclasses
-	 */
-	public function getRoot():NativeElement
-	{
-		return null;
-	}
-	
-}
+#if flash9
+typedef NativeInstance =  Dynamic;
+
+#elseif js
+typedef NativeInstance =  Dynamic;
+
+#elseif php
+typedef NativeInstance =  Dynamic;
+
+#elseif doc
+typedef NativeInstance = Dynamic;
+
+#else
+	#error
+#end

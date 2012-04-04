@@ -154,6 +154,15 @@ class Node
 	public var attributes(get_attributes, never):NamedNodeMap;
 	
 	/**
+	 * The Document object associated with this node. 
+	 * This is also the Document object used to create new nodes.
+	 * When this node is a Document or a DocumentType
+	 * which is not used with any Document yet, this is null.
+	 */
+	private var _ownerDocument:Document;
+	public var ownerDocument(get_ownerDocument, set_ownerDocument):Document;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -448,5 +457,15 @@ class Node
 	private function get_attributes():NamedNodeMap 
 	{
 		return null;
+	}
+	
+	private function get_ownerDocument():Document
+	{
+		return _ownerDocument;
+	}
+	
+	private function set_ownerDocument(value:Document):Document
+	{
+		return _ownerDocument = value;
 	}
 }

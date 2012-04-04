@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.drawing.DrawingManager;
 import cocktail.core.geom.GeomData;
-import cocktail.core.CoreStyle;
+import cocktail.core.style.CoreStyle;
 
 /**
  * This is the base class for element renderers.
