@@ -12,58 +12,56 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package org.lexa.demo;
 
-
-import core.HTMLAnchorElement;
-import core.HTMLElement;
-import core.Text;
-
-import cocktail.Cocktail;
-import cocktail.Lib;
+import js.Lib;
+import js.Dom;
 
 class Lexa 
 {
 	public static function main()
 	{	
-		var site:HTMLElement = cast(Lib.document.createElement("div"));
+		var lx = new Lexa();
+		lx.prezCocktail();
+	}
+	
+	public function new()
+	{
 		
-		site.style.width = Dimension.percent(30);
-		site.style.marginLeft = site.style.marginRight = Margin.cssAuto;
+	}
+	
+	function prezCocktail()
+	{
+		//HTML DOM & JavaScript
+		var title = Lib.document.createElement("h1");
+		title.appendChild(Lib.document.createTextNode("Hello Cocktail"));
+		Lib.document.body.appendChild(title);
+
+		//HTML & semantics
+		var paragraph = Lib.document.createElement("p");
+		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe."));
+		Lib.document.body.appendChild(paragraph);
 		
-		var title:HTMLElement = cast(Lib.document.createElement("h1"));
-		title.appendChild(Lib.document.createTextNode("Cocktail"));
-		title.style.color = keyword(orange);
-		title.style.fontSize = FontSize.length(px(48));
-		title.style.textAlign = center;
+		//CSS text
+		title.style.wordSpacing = "10px";
+		title.style.color = "orange";
+		title.style.fontFamily = "arial";
+				
+		//HTML4
+		var img:Image = cast(Lib.document.createElement("img"));
+		img.src = "cocktail.jpg";
+		paragraph.appendChild(img);
 		
-		var subTitle:HTMLElement = cast(Lib.document.createElement("h2"));
-		subTitle.appendChild(Lib.document.createTextNode("cross-platform haXe UIs"));
-		subTitle.style.fontSize = FontSize.length(px(36));
-		subTitle.style.textAlign = center;
-		
-		
-		title.style.fontFamily = subTitle.style.fontFamily = [FontFamily.familyName("arial")];
-		
-		var logo:Image = new Image();
-		logo.src = "cocktail.jpg";
-		logo.style.backgroundColor = keyword(gray);
-		
-		var text:HTMLElement = cast(Lib.document.createElement("p"));
-		text.appendChild(Lib.document.createTextNode("Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe."));
-		text.style.backgroundColor = keyword(orange);
-		text.style.color = hex("#FFFFFF");
-		text.style.paddingLeft = text.style.paddingTop = text.style.paddingBottom = text.style.paddingRight = Padding.length(px(10));
-		
-		var logoContainer:HTMLAnchorElement = cast(Lib.document.createElement("a"));
-		logoContainer.style.textAlign = center;
-		logoContainer.appendChild(logo);
-		logoContainer.style.display = block;
-		logoContainer.href = "http://www.silexlabs.org/groups/labs/cocktail/";
-		
+		//CSS layouts
+		var site = Lib.document.createElement("div");
 		site.appendChild(title);
-		site.appendChild(subTitle);
-		site.appendChild(text);
-		site.appendChild(logoContainer);
+		site.appendChild(paragraph);
+		
+		site.style.width = "50%";
+		site.style.marginLeft = site.style.marginRight = "auto";
 		
 		Lib.document.body.appendChild(site);
+		
+		//CSS backgrounds
+		site.style.backgroundColor = "rgba(255,255,255,0.5)";
+		Lib.document.body.style.backgroundImage = "url(bg.png)";
 	}
 }
