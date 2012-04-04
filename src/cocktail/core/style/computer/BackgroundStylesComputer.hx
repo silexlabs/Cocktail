@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
@@ -57,7 +57,7 @@ class BackgroundStylesComputer
 	 * the dimensions of the background images are not yet
 	 * known
 	 */
-	public static function compute(style:AbstractCoreStyle):Void
+	public static function compute(style:CoreStyle):Void
 	{
 		//actually compute the background color
 		style.computedStyle.backgroundColor = getComputedBackgroundColor(style);
@@ -99,7 +99,7 @@ class BackgroundStylesComputer
 	 * @return	a structure containing each of the computed background styles for the
 	 * current background-image
 	 */
-	public static function computeIndividualBackground(style:AbstractCoreStyle, backgroundBox:RectangleData,
+	public static function computeIndividualBackground(style:CoreStyle, backgroundBox:RectangleData,
 	intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, 
 	backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize,
@@ -144,7 +144,7 @@ class BackgroundStylesComputer
 	/**
 	 * Return the background color as an integer
 	 */
-	private static function getComputedBackgroundColor(style:AbstractCoreStyle):ColorData
+	private static function getComputedBackgroundColor(style:CoreStyle):ColorData
 	{
 		var computedColor:ColorData;
 		computedColor = UnitManager.getColorDataFromCSSColor(style.backgroundColor);
@@ -392,7 +392,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundOrigin
 	 * @return
 	 */
-	private static function getBackgroundPositioningArea(style:AbstractCoreStyle, backgroundOrigin:BackgroundOrigin, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPositioningArea(style:CoreStyle, backgroundOrigin:BackgroundOrigin, backgroundBox:RectangleData):RectangleData
 	{
 		var backgroundPositioningArea:RectangleData;
 		
@@ -450,7 +450,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundBox
 	 * @return
 	 */
-	private static function getBackgroundPaintingArea(style:AbstractCoreStyle, backgroundClip:BackgroundClip, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPaintingArea(style:CoreStyle, backgroundClip:BackgroundClip, backgroundBox:RectangleData):RectangleData
 	{
 		var backgroundPaintingArea:RectangleData;
 		

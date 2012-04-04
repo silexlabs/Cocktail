@@ -10,7 +10,7 @@ package cocktail.core.style;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
@@ -1139,7 +1139,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * set to 'cssAuto'
 	 */
 	typedef PositionedHTMLElementData =  {
-		var coreStyle:AbstractCoreStyle;
+		var coreStyle:CoreStyle;
 		var staticPosition:PointData;
 	}
 	

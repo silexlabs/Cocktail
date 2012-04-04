@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 
 /**
@@ -45,7 +45,7 @@ class DisplayStylesComputer
 	 * @param	style contain the styles definition of the 
 	 * target htmlElement
 	 */
-	public static function compute(style:AbstractCoreStyle):Void
+	public static function compute(style:CoreStyle):Void
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
@@ -72,7 +72,7 @@ class DisplayStylesComputer
 	 * Compute the 'position' style. It is the same as the defined style
 	 * as no other style can affect the computed 'position' style value
 	 */
-	private static function getComputedPosition(style:AbstractCoreStyle):Position
+	private static function getComputedPosition(style:CoreStyle):Position
 	{
 		return style.position;
 	}
@@ -83,7 +83,7 @@ class DisplayStylesComputer
 	 * @param	style
 	 * @param	computedPosition the computed value of position, computed before float
 	 */
-	private static function getComputedFloat(style:AbstractCoreStyle, computedPosition:Position):CSSFloat
+	private static function getComputedFloat(style:CoreStyle, computedPosition:Position):CSSFloat
 	{
 		var ret:CSSFloat;
 		
@@ -110,7 +110,7 @@ class DisplayStylesComputer
 	 * @param	computedFloat the computed value of the float which must be computed before this
 	 * one
 	 */
-	private static function getComputedDisplay(style:AbstractCoreStyle, computedFloat:CSSFloat):Display
+	private static function getComputedDisplay(style:CoreStyle, computedFloat:CSSFloat):Display
 	{
 		var ret:Display;
 		
@@ -148,7 +148,7 @@ class DisplayStylesComputer
 	 * @param	computedPosition
 	 * @param	computedDisplay
 	 */
-	private static function getComputedClear(style:AbstractCoreStyle, computedPosition:Position, computedDisplay:Display):Clear
+	private static function getComputedClear(style:CoreStyle, computedPosition:Position, computedDisplay:Display):Clear
 	{
 		var ret:Clear;
 		

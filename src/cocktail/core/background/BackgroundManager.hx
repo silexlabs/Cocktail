@@ -14,7 +14,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.ImageLoader;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.unit.UnitManager;
 import haxe.Log;
@@ -68,7 +68,7 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public function render(backgroundBox:RectangleData, style:AbstractCoreStyle):Array<NativeElement>
+	public function render(backgroundBox:RectangleData, style:CoreStyle):Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
@@ -178,7 +178,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:AbstractCoreStyle, backgroundBox:RectangleData,
+	private function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
@@ -187,11 +187,11 @@ class BackgroundManager
 		var imageLoader:ImageLoader = new ImageLoader();
 		
 		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
-		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->AbstractCoreStyle->RectangleData->BackgroundPosition->
+		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoaded;
 		
-		var onBackgroundImageLoadErrorDelegate:String->Color->NativeElement->AbstractCoreStyle->RectangleData->BackgroundPosition->
+		var onBackgroundImageLoadErrorDelegate:String->Color->NativeElement->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoadError;
 		
@@ -224,7 +224,7 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoaded(backgroundImageNativeElement:NativeElement, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:AbstractCoreStyle, backgroundBox:RectangleData,
+	private function onBackgroundImageLoaded(backgroundImageNativeElement:NativeElement, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
@@ -265,7 +265,7 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoadError(error:String, backgroundColor:CSSColor, backgroundImageNativeElement:NativeElement, style:AbstractCoreStyle, backgroundBox:RectangleData,
+	private function onBackgroundImageLoadError(error:String, backgroundColor:CSSColor, backgroundImageNativeElement:NativeElement, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
@@ -287,7 +287,7 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function drawBackgroundColor(style:AbstractCoreStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
 	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
@@ -316,7 +316,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private function drawBackgroundGradient(style:AbstractCoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private function drawBackgroundGradient(style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
 	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{

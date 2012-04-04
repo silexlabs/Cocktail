@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
 
@@ -30,7 +30,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical paddings don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureVerticalPaddings(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureVerticalPaddings(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//top
 		style.computedStyle.paddingTop = 0;
@@ -41,7 +41,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureAutoHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureAutoHeight(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//the height is set to null by default
 		setComputedHeight(style, getComputedAutoHeight(style, containingHTMLElementData));
@@ -56,7 +56,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measureHeight(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//get the computed height in pixel
 		setComputedHeight(style, getComputedHeight(style, containingHTMLElementData));
@@ -77,7 +77,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the width doesn't apply
 	 */
-	override private function getComputedWidth(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	override private function getComputedWidth(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}
@@ -85,7 +85,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the height doesn't apply
 	 */
-	override private function getComputedHeight(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	override private function getComputedHeight(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return 0;
 	}

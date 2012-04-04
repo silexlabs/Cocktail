@@ -5,35 +5,30 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.style.computer.boxComputers;
+package cocktail.core.style;
 
-import cocktail.core.style.CoreStyle;
-import cocktail.core.style.StyleData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.HTMLElement;
+import haxe.Log;
 
 /**
- * this is the box computer for floated non-embedded HTMLElement
- * such as a floated ContainerHTMLElement.
+ * This is the style implementation for embedded
+ * HTMLElement. Embedded HTMLElement include external
+ * content in the document, such as picture or video.
+ * 
+ * They can't have any children.
+ * 
+ * Doesn't add any behaviour as this is the default beahviour
+ * implemented by the Style class
  * 
  * @author Yannick DOMINGUEZ
  */
-class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
+class EmbeddedCoreStyle extends CoreStyle
 {
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(htmlElement:HTMLElement) 
 	{
-		super();
+		super(htmlElement);
 	}
-	
-	/**
-	 * for floated non-embedded HTMLElements, an auto width is computed as 'shrink-to-fit' once all the children
-	 * have been laid out
-	 */
-	override private function getComputedAutoWidth(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
-	{
-		return 0;
-	}
-
 }

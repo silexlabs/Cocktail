@@ -10,7 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.InitialBlockBackgroundManager;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import haxe.Log;
 
 /**
@@ -25,7 +25,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * of the ElementRenderer, as a BodyHTMLElement
 	 * always covers all of the viewport
 	 */
-	public function new(style:AbstractCoreStyle) 
+	public function new(style:CoreStyle) 
 	{
 		super(style);
 		
