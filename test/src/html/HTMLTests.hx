@@ -14,11 +14,6 @@ package html;
 
 import cocktail.Dom;
 import cocktail.Lib;
-import core.dom.Attr;
-import core.dom.Element;
-import core.dom.NamedNodeMap;
-import core.dom.Node;
-import core.dom.Text;
 
 import utest.Assert;
 import utest.Runner;
@@ -45,32 +40,32 @@ class HTMLTests
 		var htmlEl = new HTMLElement("div");
 		Lib.document.body.appendChild(htmlEl);
 		
-		htmlEl.style.width = Dimension.length(px(50));
+		htmlEl.style.width = "50px";
 		
 		Assert.equals(htmlEl.clientWidth, 50);
 		Assert.equals(htmlEl.offsetWidth, 50);
 		
-		htmlEl.style.paddingLeft = Padding.length(px(50));
+		htmlEl.style.paddingLeft = "50px";
 		
 		Assert.equals(htmlEl.clientWidth, 100);
 		Assert.equals(htmlEl.offsetWidth, 100);
 		
-		htmlEl.style.paddingRight = Padding.length(px(50));
+		htmlEl.style.paddingRight = "50px";
 		
 		Assert.equals(htmlEl.offsetWidth, 150);
 		Assert.equals(htmlEl.clientWidth, 150);
 		
-		htmlEl.style.height = Dimension.length(px(50));
+		htmlEl.style.height = "50px";
 		
 		Assert.equals(htmlEl.clientHeight, 50);
 		Assert.equals(htmlEl.offsetHeight, 50);
 		
-		htmlEl.style.paddingTop = Padding.length(px(50));
+		htmlEl.style.paddingTop = "50px";
 		
 		Assert.equals(htmlEl.clientHeight, 100);
 		Assert.equals(htmlEl.offsetHeight, 100);
 		
-		htmlEl.style.paddingBottom = Padding.length(px(50));
+		htmlEl.style.paddingBottom = "50px";
 		
 		Assert.equals(htmlEl.clientHeight, 150);
 		Assert.equals(htmlEl.offsetHeight, 150);
