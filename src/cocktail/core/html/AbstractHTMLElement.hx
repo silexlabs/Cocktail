@@ -64,31 +64,31 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * The callback called on mouse down through the mouse instance
 	 */
 	private var _onMouseDown:MouseEvent->Void;
-	public var onMouseDown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
+	public var onmousedown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
 	private var _onMouseUp:MouseEvent->Void;
-	public var onMouseUp(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
+	public var onmouseup(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this htmlElement
 	 */
 	private var _onMouseOver:MouseEvent->Void;
-	public var onMouseOver(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
+	public var onmouseover(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse out of this htmlElement
 	 */
 	private var _onMouseOut:MouseEvent->Void;
-	public var onMouseOut(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
+	public var onmouseout(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this htmlElement
 	 */
 	private var _onMouseMove:MouseEvent->Void;
-	public var onMouseMove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
+	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
