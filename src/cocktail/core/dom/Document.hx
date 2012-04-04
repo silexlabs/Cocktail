@@ -19,9 +19,7 @@ import cocktail.core.dom.DOMData;
  * context of a Document, the Document interface also contains the
  * factory methods needed to create these objects. The Node objects 
  * created have a ownerDocument attribute which associates them with
- * the Document within whose context they were created. 
- * 
- * TODO : implement ownerDocument ?
+ * the Document within whose context they were created.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -60,7 +58,6 @@ class Document extends Node
 	 * @return A new Element object with the nodeName attribute set to tagName,
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
-	 * TODO : implement localName, prefix and namespaceURI
 	 * TODO : for ownerDocument, when should it be set when
 	 * instantiating classes ?
 	 */

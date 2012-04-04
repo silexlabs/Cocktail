@@ -20,6 +20,8 @@ class HTMLCanvasElement extends EmbeddedElement
 	 */
 	private static inline var HTML_CANVAS_TAG_NAME:String = "canvas";
 	
+	private static inline var CANVAS_2D_CONTEXT:String = "2d";
+	
 	
 	/**
 	 * A reference to the manager used to 
@@ -35,7 +37,7 @@ class HTMLCanvasElement extends EmbeddedElement
 		_intrinsicWidth = CANVAS_INTRINSIC_WIDTH;
 		_intrinsicRatio = _intrinsicWidth / _intrinsicHeight;
 		
-		_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
+		
 	}
 	
 	override private function initEmbeddedAsset():Void
@@ -43,10 +45,20 @@ class HTMLCanvasElement extends EmbeddedElement
 		_embeddedAsset = _nativeElement;
 	}
 	
-	//TODO : check what to return when context ID doesn't match anything
 	public function getContext(contextID:String):DrawingManager
 	{	
-		return _drawingManager;
+		if (contextID == CANVAS_2D_CONTEXT)
+		{
+			if (_drawingManager == null)
+			{
+				_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
+			}
+			return _drawingManager;
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
