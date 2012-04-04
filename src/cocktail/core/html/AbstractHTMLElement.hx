@@ -17,8 +17,8 @@ import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.Style;
-import cocktail.core.style.AbstractContainerCoreStyle;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.ContainerCoreStyle;
+import cocktail.core.style.CoreStyle;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
@@ -264,8 +264,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * 
 	 * TODO : update doc for this all around
 	 */
-	private var _coreStyle:AbstractCoreStyle;
-	public var coreStyle(get_coreStyle, never):AbstractCoreStyle;
+	private var _coreStyle:CoreStyle;
+	public var coreStyle(get_coreStyle, never):CoreStyle;
 	
 	/**
 	 * This is the style object exposed by the public API.
@@ -347,7 +347,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new AbstractContainerCoreStyle(cast(this));
+		this._coreStyle = new ContainerCoreStyle(cast(this));
 	}
 	
 	/**
@@ -893,7 +893,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_coreStyle():AbstractCoreStyle
+	private function get_coreStyle():CoreStyle
 	{
 		return this._coreStyle;
 	}

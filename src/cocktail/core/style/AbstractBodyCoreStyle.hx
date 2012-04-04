@@ -27,7 +27,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractBodyCoreStyle extends AbstractContainerCoreStyle
+class AbstractBodyCoreStyle extends ContainerCoreStyle
 {
 		
 	/**

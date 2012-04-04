@@ -8,7 +8,7 @@
 package cocktail.core.style.computer;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
@@ -41,7 +41,7 @@ class VisualEffectStylesComputer
 	 * @param	style contain the styles definition of the 
 	 * target htmlElement
 	 */
-	public static function compute(style:AbstractCoreStyle):Void
+	public static function compute(style:CoreStyle):Void
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
@@ -71,7 +71,7 @@ class VisualEffectStylesComputer
 	/**
 	 * Compute the 'visibility' style
 	 */
-	private static function getComputedVisibility(style:AbstractCoreStyle):Bool
+	private static function getComputedVisibility(style:CoreStyle):Bool
 	{
 		var visibility:Bool;
 		
@@ -91,7 +91,7 @@ class VisualEffectStylesComputer
 	 * Compute the transformation origin and returns it as a 2d point
 	 * in pixel
 	 */
-	private static function getComputedTransformOrigin(style:AbstractCoreStyle):PointData
+	private static function getComputedTransformOrigin(style:CoreStyle):PointData
 	{
 		var x:Float;
 		var y:Float;
@@ -147,7 +147,7 @@ class VisualEffectStylesComputer
 	 * Compute a transformation matrix to apply to the htmlElement
 	 * from the array of transform functions concatenated in order
 	 */
-	private static function getComputedTransform(style:AbstractCoreStyle):Matrix
+	private static function getComputedTransform(style:CoreStyle):Matrix
 	{
 		var transformFunctions:Array<TransformFunction>;
 		var transformOrigin:PointData = style.computedStyle.transformOrigin;
@@ -233,7 +233,7 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:AbstractCoreStyle, translation:Translation, percentReference:Int):Float
+	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Int):Float
 	{
 		var computedTranslation:Float;
 		

@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -27,7 +27,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * of the element, as for embedded element
 	 * they are intrinsic to the embeddded asset
 	 */
-	public function new(style:AbstractCoreStyle) 
+	public function new(style:CoreStyle) 
 	{
 		super(style);
 		var computedStyle:ComputedStyleData = style.computedStyle;

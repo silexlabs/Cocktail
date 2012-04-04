@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.style.computer.boxComputers;
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -32,7 +32,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * top, left, bottom, right. Also compute
 	 * the margin as needed
 	 */
-	override private function measurePositionOffsets(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	override private function measurePositionOffsets(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		//horizontal position offsets and margins
 		measureHorizontalPositionOffsets(style, containingHTMLElementData);
@@ -43,7 +43,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	/**
 	 * Compute, left, right and marginLeft marginRight styles
 	 */
-	private function measureHorizontalPositionOffsets(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureHorizontalPositionOffsets(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 			
@@ -124,7 +124,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * Compute, top, bottom and marginTop marginBottom styles. Works the same as
 	 * measureHorizontalPositionOffsets
 	 */
-	private function measureVerticalPositionOffsets(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function measureVerticalPositionOffsets(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Void
 	{
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
@@ -199,7 +199,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedStaticLeft(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return style.computedStyle.marginLeft;
 	}
@@ -208,7 +208,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private function getComputedStaticTop(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		return style.computedStyle.marginTop;
 	}
