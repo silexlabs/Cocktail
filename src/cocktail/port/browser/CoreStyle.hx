@@ -701,32 +701,13 @@ class CoreStyle extends AbstractCoreStyle
 	/**
 	 * CSS : font-family
 	 */
-	private function getCSSFontFamily(value:Array<FontFamily>):String
+	public static function getCSSFontFamily(value:Array<String>):String
 	{
 		var cssFontFamilyValue:String = "";
 		
 		for (i in 0...value.length)
 		{
-			var fontName:String;
-			
-			switch (value[i])
-			{
-				case FontFamily.familyName(name):
-					fontName = name;
-				
-				case FontFamily.genericFamily(genericName):
-					switch (genericName)
-					{
-						case GenericFontFamily.serif:
-							fontName = "serif";
-						
-						case GenericFontFamily.sansSerif:
-							fontName = "sans-serif";
-							
-						case GenericFontFamily.monospace:
-							fontName = "monospace";
-					}
-			}
+			var fontName:String = value[i];
 			
 			//escapes font name constituted of multiple words
 			if (fontName.indexOf(" ") != -1)
@@ -1597,7 +1578,7 @@ class CoreStyle extends AbstractCoreStyle
 		return _fontVariant = value;
 	}
 	
-	override private function setFontFamily(value:Array<FontFamily>):Array<FontFamily>
+	override private function setFontFamily(value:Array<String>):Array<String>
 	{
 		this._htmlElement.nativeElement.style.fontFamily = getCSSFontFamily(value);
 		super.setFontFamily(value);

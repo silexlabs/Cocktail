@@ -83,36 +83,6 @@ import cocktail.core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * Lists the type of font which can
-	 * be affected to a text 
-	 */
-	enum FontFamily {
-		
-		/**
-		 * A custom font family name
-		 */
-		familyName(name:String);
-		
-		/**
-		 * A generic family name, most
-		 * likely used as a fallback
-		 * if a more specific font 
-		 * wasn't available
-		 */
-		genericFamily(genericName:GenericFontFamily);
-	}
-	
-	/**
-	 * Lists the available generic 
-	 * font families
-	 */
-	enum GenericFontFamily {
-		serif;
-		sansSerif;
-		monospace;
-	}
-	
-	/**
 	 * Controls wether text is
 	 * displayed as small caps, where
 	 * lowercase charachters look like
@@ -1255,7 +1225,7 @@ import cocktail.core.renderer.TextRenderer;
 		var fontSize:Float;
 		var fontWeight:FontWeight;
 		var fontStyle:FontStyle;
-		var fontFamily:Array<FontFamily>;
+		var fontFamily:Array<String>;
 		var fontVariant:FontVariant;
 		
 		/**
@@ -1331,7 +1301,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * structure.
 	 */
 	typedef DefaultStylesData = {
-		var fontFamily:Array<FontFamily>;
+		var fontFamily:Array<String>;
 		var color:CSSColor;
 	}
 	

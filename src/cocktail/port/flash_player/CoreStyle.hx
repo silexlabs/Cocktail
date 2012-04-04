@@ -48,20 +48,25 @@ class CoreStyle extends AbstractCoreStyle
 	/**
 	 * used to hold a runtime specific default
 	 * font name for serif font
+	 * 
+	 * TODO : update doc
 	 */
-	private static inline var SERIF_GENERIC_FONT_NAME:String = "_serif";
+	private static inline var SERIF_GENERIC_FONT_NAME:String = "serif";
+	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
 	
 	/**
 	 * used to hold a runtime specific default
 	 * font name for sans-serif font
 	 */
-	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "_sans";
+	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans";
+	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
 	
 	/**
 	 * used to hold a runtime specific default
 	 * font name for monospace font (like courier)
 	 */
-	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "_typewriter";
+	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "typewriter";
+	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	#if flash9
 	/**
@@ -174,34 +179,30 @@ class CoreStyle extends AbstractCoreStyle
 	 * font names.
 	 * @param	value an array which may contain any combination of generic
 	 * font family name and font family name
+	 * 
+	 * TODO : update doc
+	 * 
 	 * @return a comma separated list of font, generally ordered from most
 	 * specific to most generic, e.g "Universe,Arial,_sans"
 	 */
-	private function getNativeFontFamily(value:Array<FontFamily>):String
+	private function getNativeFontFamily(value:Array<String>):String
 	{
 		var fontFamily:String = "";
 		
 		for (i in 0...value.length)
 		{
-			var fontName:String;
+			var fontName:String = value[i];
 			
-			switch (value[i])
+			switch (fontName)
 			{
-				case FontFamily.familyName(name):
-					fontName = name;
-				
-				case FontFamily.genericFamily(genericName):
-					switch (genericName)
-					{
-						case GenericFontFamily.serif:
-							fontName = SERIF_GENERIC_FONT_NAME;
-						
-						case GenericFontFamily.sansSerif:
-							fontName = SANS_SERIF_GENERIC_FONT_NAME;
-							
-						case GenericFontFamily.monospace:
-							fontName = MONOSPACE_GENERIC_FONT_NAME;
-					}
+				case SERIF_GENERIC_FONT_NAME:
+					fontName = SERIF_FLASH_FONT_NAME;
+					
+				case SANS_SERIF_GENERIC_FONT_NAME:
+					fontName = SANS_SERIF_FLASH_FONT_NAME;
+					
+				case MONOSPACE_GENERIC_FONT_NAME:
+					fontName = MONOSPACE_FLASH_FONT_NAME;
 			}
 			
 			fontFamily += fontName;
@@ -291,33 +292,23 @@ class CoreStyle extends AbstractCoreStyle
 	/**
 	 * redefined as in nme only one font is supported
 	 */
-	private function getNativeFontFamily(value:Array<FontFamily>):String
+	private function getNativeFontFamily(value:Array<String>):String
 	{
 		var fontFamily:String = "";
 		
-
-		var fontName:String;
+		var fontName:String = value[0];
 		
-		switch (value[0])
+		switch (fontName)
 		{
-			case FontFamily.familyName(name):
-				fontName = name;
-			
-			case FontFamily.genericFamily(genericName):
-				switch (genericName)
-				{
-					case GenericFontFamily.serif:
-						fontName = SERIF_GENERIC_FONT_NAME;
-					
-					case GenericFontFamily.sansSerif:
-						fontName = SANS_SERIF_GENERIC_FONT_NAME;
-						
-					case GenericFontFamily.monospace:
-						fontName = MONOSPACE_GENERIC_FONT_NAME;
-				}
+			case SERIF_GENERIC_FONT_NAME:
+				fontName = SERIF_FLASH_FONT_NAME;
+				
+			case SANS_SERIF_GENERIC_FONT_NAME:
+				fontName = SANS_SERIF_FLASH_FONT_NAME;
+				
+			case MONOSPACE_GENERIC_FONT_NAME:
+				fontName = MONOSPACE_FLASH_FONT_NAME;
 		}
-		
-		
 		
 		return fontName;
 	}

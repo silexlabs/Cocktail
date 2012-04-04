@@ -497,6 +497,49 @@ class UnitManager
 		return  wordSpacing;
 	}
 	
+	//TODO
+	static public function backgroundImageEnum(string:String):Array<BackgroundImage>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundOriginEnum(string:String):Array<BackgroundOrigin>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundClipEnum(string:String):Array<BackgroundClip>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function fontFamilyEnum(string:String):Array<String>
+	{
+		return [];
+	}
+	
+	
 	static public function letterSpacingEnum(string:String):LetterSpacing
 	{
 		if (string == "normal")
@@ -1752,32 +1795,13 @@ class UnitManager
 	/**
 	 * CSS : font-family
 	 */
-	public static function getCSSFontFamily(value:Array<FontFamily>):String
+	public static function getCSSFontFamily(value:Array<String>):String
 	{
 		var cssFontFamilyValue:String = "";
 		
 		for (i in 0...value.length)
 		{
-			var fontName:String;
-			
-			switch (value[i])
-			{
-				case FontFamily.familyName(name):
-					fontName = name;
-				
-				case FontFamily.genericFamily(genericName):
-					switch (genericName)
-					{
-						case GenericFontFamily.serif:
-							fontName = "serif";
-						
-						case GenericFontFamily.sansSerif:
-							fontName = "sans-serif";
-							
-						case GenericFontFamily.monospace:
-							fontName = "monospace";
-					}
-			}
+			var fontName:String = value[i];
 			
 			//escapes font name constituted of multiple words
 			if (fontName.indexOf(" ") != -1)
