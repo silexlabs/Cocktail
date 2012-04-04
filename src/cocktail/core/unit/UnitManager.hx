@@ -457,7 +457,7 @@ class UnitManager
 		switch(parsed)
 		{
 			case "auto":
-				cursor = Cursor.auto;
+				cursor = Cursor.cssAuto;
 				
 			case "crosshair":
 				cursor = Cursor.crosshair;
@@ -2220,7 +2220,7 @@ class UnitManager
 		
 		switch (value)
 		{
-			case Cursor.auto:
+			case Cursor.cssAuto:
 				cssCursorValue = "auto";
 				
 			case Cursor.crosshair:
