@@ -181,8 +181,8 @@ class AbstractCoreStyle
 	private var _fontStyle:FontStyle;
 	public var fontStyle(getFontStyle, setFontStyle):FontStyle;
 	
-	private var _fontFamily:Array<FontFamily>;
-	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamily>;
+	private var _fontFamily:Array<String>;
+	public var fontFamily(getFontFamily, setFontFamily ):Array<String>;
 	
 	private var _fontVariant:FontVariant;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
@@ -419,7 +419,7 @@ class AbstractCoreStyle
 			lineHeight:14.0,
 			fontWeight:FontWeight.normal,
 			fontStyle:FontStyle.normal,
-			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
+			fontFamily:["serif"],
 			fontVariant:FontVariant.normal,
 			textTransform:TextTransform.none,
 			letterSpacing:0,
@@ -453,7 +453,7 @@ class AbstractCoreStyle
 	private static function getDefaultStyle():DefaultStylesData
 	{
 		return {
-			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
+			fontFamily:["serif"],
 			color:Color.keyword(ColorKeyword.black)
 		}
 	}
@@ -524,10 +524,11 @@ class AbstractCoreStyle
 			case "pre" : 
 				_display = Display.block;
 				_whiteSpace = WhiteSpace.pre;
-				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				_fontFamily = ["monospace"];
 				
 			case "code" : 
-				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				//TODO : add constant for generic fonts
+				_fontFamily = ["monospace"];
 				
 			case "i", "cite", "em", "var" :
 				_fontStyle = FontStyle.italic;
@@ -1488,7 +1489,7 @@ class AbstractCoreStyle
 		return _fontStyle = value;
 	}
 	
-	private function setFontFamily(value:Array<FontFamily>):Array<FontFamily>
+	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		invalidateText();
 		return _fontFamily = value;
@@ -1732,7 +1733,7 @@ class AbstractCoreStyle
 		return _fontStyle;
 	}
 	
-	private function getFontFamily():Array<FontFamily>
+	private function getFontFamily():Array<String>
 	{
 		return _fontFamily;
 	}
