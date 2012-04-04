@@ -34,17 +34,17 @@ class Lexa
 		var title = Lib.document.createElement("h1");
 		title.appendChild(Lib.document.createTextNode("Hello Cocktail"));
 		Lib.document.body.appendChild(title);
-
+		
 		//HTML & semantics
 		var paragraph = Lib.document.createElement("p");
 		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe."));
 		Lib.document.body.appendChild(paragraph);
-		
+	
 		//CSS text
 		title.style.wordSpacing = "10px";
 		title.style.color = "orange";
 		title.style.fontFamily = "arial";
-				
+					
 		//HTML4
 		var img:Image = cast(Lib.document.createElement("img"));
 		img.src = "cocktail.jpg";

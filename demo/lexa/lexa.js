@@ -268,7 +268,6 @@ org.lexa.demo.Lexa.prototype.prezCocktail = function() {
 	js.Lib.document.body.appendChild(site);
 	site.style.backgroundColor = "rgba(255,255,255,0.5)";
 	js.Lib.document.body.style.backgroundImage = "url(bg.png)";
-	return;
 }
 org.lexa.demo.Lexa.prototype.__class__ = org.lexa.demo.Lexa;
 $_ = {}

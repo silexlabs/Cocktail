@@ -30,6 +30,9 @@ class Lexa_obj : public hx::Object{
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("Lexa"); }
 
+		virtual Void prezCocktail( );
+		Dynamic prezCocktail_dyn();
+
 		static Void main( );
 		static Dynamic main_dyn();
 
