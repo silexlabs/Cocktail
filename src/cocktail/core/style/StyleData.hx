@@ -1107,10 +1107,8 @@ import cocktail.core.renderer.TextRenderer;
 		
 		/**
 		 * The UA determines the cursor to display based on the current context.
-		 * 
-		 * TODO : rename cssAuto
 		 */
-		auto;
+		cssAuto;
 		
 		/**
 		 * A simple crosshair (e.g., short line segments resembling a "+" sign). 
