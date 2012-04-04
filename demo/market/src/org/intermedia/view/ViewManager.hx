@@ -82,50 +82,21 @@ class ViewManager
 		// init menu
 		_menu = new MenuListViewText();
 		_menu.displayListBottomLoader = false;
-		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"},{title:"menu4"},{title:"menu5"}];
-		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"}];
-		//_menu.data = [{title:"menu1"},{title:"menu2"},{title:"menu3"}];
-		//_menu.data = [{title:Feeds.FEED_1_TITLE},{title:Feeds.FEED_2_TITLE},{title:Feeds.FEED_3_TITLE}];
-		//_menu.data = [{title:Feeds.FEED_1.title},{title:Feeds.FEED_2.title},{title:Feeds.FEED_3.title}];
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		_body.addChild(_menu);
 		
 		_header.isVisible = false;
 		_menu.isVisible = false;
 		
-		// inti swippable view
+		// init swippable view
 		_swippableListView = new SwippableListView();
 		// set current view on swippable view
 		_currentView = _swippableListView;
 		// attach swippable view to body
 		_body.addChild(_swippableListView);
-		// timer to scroll to the second item in the swippable view
-		Timer.delay(function () {
-			// scroll to the second item in the swippable view
-			//_body.nativeElement.scrollLeft = new Viewport().width;
-			/*#if js
-			js.Lib.document.body.scrollLeft = 200;
-			#end*/
-			//_body.nativeElement.scrollLeft = 200;
-			_swippableListView.nativeElement.scrollLeft = 200;
-			//trace(js.Lib.document.body.scrollLeft);
-			setZIndexToMax(_menu);
-			setZIndexToMax(_header);
-			_swippableListView.displayLoading = false;
-		},5000);
-		Timer.delay(resetHeaderPosition,200);
+		
 		// call init()
 		init();
-	}
-	
-	/**
-	 * reset header position
-	 */
-	function resetHeaderPosition()
-	{
-		_header.x = 0;
-		_menu.x = 0;
-		Timer.delay(resetHeaderPosition,200);
 	}
 	
 	/**
@@ -299,27 +270,5 @@ class ViewManager
 		_body.removeChild(dom);
 		_body.addChild(dom);
 	}
-	
-	/**
-	 * updates header zIndex.
-	 * Uses a workaround as zIndex is not implemented yet in Cocktail
-	 */
-	/*private function updateHeaderZIndex():Void
-	{
-		// remove and add header so it has the higher zIndex
-		_body.removeChild(_header);
-		_body.addChild(_header);
-	}
-	
-	/**
-	 * updates menu zIndex.
-	 * Uses a workaround as zIndex is not implemented yet in Cocktail
-	 */
-	/*private function updateHeaderZIndex():Void
-	{
-		// remove and add menu so it has the higher zIndex
-		_body.removeChild(_menu);
-		_body.addChild(_menu);
-	}*/
 	
 }

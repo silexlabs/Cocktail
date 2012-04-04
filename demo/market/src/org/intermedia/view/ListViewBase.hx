@@ -169,7 +169,7 @@ class ListViewBase extends ViewBase
 		// call callback
 		if (onDataRequest != null)
 		{
-			//trace("onDataRequest called by " + id);
+			//haxe.Firebug.trace("onDataRequest called by " + id);
 			onDataRequest(id);
 		}
 	}
