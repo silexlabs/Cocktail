@@ -136,9 +136,9 @@ class AbstractFocusManagerImpl
 	 */
 	private function onKeyUp(keyEventData:KeyboardEvent):Void
 	{
-		if (_activeElement.onKeyUp != null)
+		if (_activeElement.onkeyup != null)
 		{
-			_activeElement.onKeyUp(keyEventData);
+			_activeElement.onkeyup(keyEventData);
 		}
 	}
 	
@@ -350,9 +350,9 @@ class AbstractFocusManagerImpl
 		//only call if there is a previous activeHTMLElement
 		if (_activeElement != null)
 		{
-			if (_activeElement.onBlur != null)
+			if (_activeElement.onblur != null)
 			{
-				_activeElement.onBlur(new Event(Event.BLUR, _activeElement));
+				_activeElement.onblur(new Event(Event.BLUR, _activeElement));
 			}
 		}
 		
@@ -368,9 +368,9 @@ class AbstractFocusManagerImpl
 		if (value != _activeElement)
 		{
 			_activeElement = value;
-			if (_activeElement.onFocus != null)
+			if (_activeElement.onfocus != null)
 			{
-				_activeElement.onFocus(new Event(Event.FOCUS, _activeElement));
+				_activeElement.onfocus(new Event(Event.FOCUS, _activeElement));
 			}
 		}
 		

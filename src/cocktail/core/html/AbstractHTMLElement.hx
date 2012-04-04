@@ -104,13 +104,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * The callback called on key down through the keyboard instance
 	 */
 	private var _onKeyDown:KeyboardEvent->Void;
-	public var onKeyDown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
+	public var onkeydown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
-	public var onKeyUp(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
+	public var onkeyup(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes and callback
@@ -139,13 +139,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * the focus
 	 */
 	private var _onFocus:Event->Void;
-	public var onFocus(get_onFocus, set_onFocus):Event->Void;
+	public var onfocus(get_onFocus, set_onFocus):Event->Void;
 	
 	/**
 	 * callback called when the HTMLElement loses the focus
 	 */
 	private var _onBlur:Event->Void;
-	public var onBlur(get_onBlur, set_onBlur):Event->Void;
+	public var onblur(get_onBlur, set_onBlur):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes and callback
@@ -157,7 +157,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * is scrolled
 	 */
 	private var _onScroll:Event->Void;
-	public var onScroll(get_onScroll, set_onScroll):Event->Void;
+	public var onscroll(get_onScroll, set_onScroll):Event->Void;
 	
 	/**
 	 * Gets/sets the top scroll offset of an element
