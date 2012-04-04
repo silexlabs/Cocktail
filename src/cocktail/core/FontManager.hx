@@ -9,16 +9,11 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.font;
+package cocktail.core;
 
 
 #if flash9 
-typedef FontManager = cocktailCore.font.as3.FontManager;
+typedef FontManager = cocktail.port.flash_player.FontManager;
 #elseif js
-typedef FontManager = cocktailCore.font.js.FontManager;
-#elseif php
-typedef FontManager = cocktailCore.font.php.FontManager;
-#elseif doc
-import cocktailCore.font.abstract.AbstractFontManager;
-class FontManager extends AbstractFontManager {}
+typedef FontManager = cocktail.port.browser.FontManager;
 #end	

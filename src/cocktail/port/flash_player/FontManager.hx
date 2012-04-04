@@ -7,12 +7,16 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.font.as3;
+package cocktail.port.flash_player;
 
+import flash.text.engine.ElementFormat;
+import flash.text.engine.FontDescription;
+import flash.text.engine.TextBlock;
+import flash.text.engine.TextElement;
+import flash.text.engine.TextLine;
 import haxe.Log;
-import cocktailCore.font.abstract.AbstractFontManager;
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.font.FontData;
+import cocktail.core.font.AbstractFontManager;
+import cocktail.core.font.FontData;
 
 
 /**
@@ -72,4 +76,79 @@ class FontManager extends AbstractFontManager
 		// returns result
 		return resultArray;
 	}
+	
+	/**
+	 * Returns a font metrics data object created using font metrics
+	 * provided by the flash text engine. The font metrics are 
+	 * processed using the styles of the HTMLElement. The
+	 * font metrics are provided for a given font at a given size
+	 */
+	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	{
+		
+			//the flash object used to access flash font metrics
+			var elementFormat:ElementFormat = new ElementFormat();
+			
+
+			
+			//set font name
+			var fontDescription:FontDescription = new FontDescription();
+			fontDescription.fontName = fontFamily;
+			elementFormat.fontDescription = fontDescription;
+			
+			//set font size used for the font metrics 
+			elementFormat.fontSize = fontSize;
+			
+			//get the ascent (height above the baseline) and descent (height
+			//below the baseline) from the flash font metrics
+			var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
+			var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
+			
+			//get the x height (the height of a lower-case "x")
+			var xHeight:Int = getXHeight(elementFormat.clone());
+		
+			var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
+			
+			var fontMetrics:FontMetricsData = {
+				fontSize:fontSize,
+				ascent:Math.round(ascent),
+				descent:Math.round(descent),
+				xHeight:xHeight,
+				spaceWidth:spaceWidth,
+				superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
+				subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
+				underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
+			};
+		
+		return fontMetrics;
+	}
+	
+	/**
+	 * return the x height of the font which is equal to 
+	 * the height of a lower-case 'x'.
+	 */
+	private function getXHeight(elementFormat:ElementFormat):Int
+	{
+		var textBlock:TextBlock = new TextBlock();
+		
+		textBlock.content = new TextElement("x", elementFormat);
+		var textLine:TextLine = textBlock.createTextLine(null, 10000);
+		var descent:Float = textLine.descent;
+		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
+		return Math.round(top - descent);
+	}
+	
+	/**
+	 * Return the width of a space character for the given font
+	 * at the given size
+	 */
+	private function getSpaceWidth(elementFormat:ElementFormat):Int
+	{
+		var textBlock:TextBlock = new TextBlock();
+		
+		textBlock.content = new TextElement(" ", elementFormat);
+		
+		return Math.round(textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width);
+	}
+	
 }
