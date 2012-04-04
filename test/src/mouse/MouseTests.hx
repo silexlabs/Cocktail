@@ -48,10 +48,10 @@ class MouseTests
 		
 		//click
 		
-		var click = "not clicked";
+		var clicked = false;
 		
 		m.onClick = function(e) {
-			click = "clicked";
+			clicked = true;
 		}
 		
 		#if flash9
@@ -60,14 +60,14 @@ class MouseTests
 		untyped html.nativeElement.click();
 		#end
 		
-		Assert.equals(click, "clicked");
+		Assert.isTrue(clicked);
 		
 		//mouse down 
 		
-		var mDown = "not mouse down";
+		var mDown = false;
 		
 		m.onMouseDown = function(e) {
-			mDown = "mouse down";
+			mDown = true;
 		}
 		
 		#if flash9
@@ -78,14 +78,14 @@ class MouseTests
 		untyped html.nativeElement.dispatchEvent(e);
 		#end
 		
-		Assert.equals(mDown, "mouse down");
+		Assert.isTrue(mDown);
 		
 		//mouse over 
 		
-		var mOver = "not mouse over";
+		var mOver = false;
 		
 		m.onMouseOver = function(e) {
-			mOver = "mouse over";
+			mOver = true;
 		}
 		
 		#if flash9
@@ -96,14 +96,14 @@ class MouseTests
 		untyped html.nativeElement.dispatchEvent(e);
 		#end
 		
-		Assert.equals(mOver, "mouse over");
+		Assert.isTrue(mOver);
 		
 		//mouse up 
 		
-		var mUp = "not mouse up";
+		var mUp = false;
 		
 		m.onMouseUp = function(e) {
-			mUp = "mouse up";
+			mUp = true;
 		}
 		
 		#if flash9
@@ -114,14 +114,14 @@ class MouseTests
 		untyped html.nativeElement.dispatchEvent(e);
 		#end
 		
-		Assert.equals(mUp, "mouse up");
+		Assert.isTrue(mUp);
 		
 		//mouse out 
 		
-		var mOut = "not mouse out";
+		var mOut = false;
 		
 		m.onMouseOut = function(e) {
-			mOut = "mouse out";
+			mOut = true;
 		}
 		
 		#if flash9
@@ -132,14 +132,14 @@ class MouseTests
 		untyped html.nativeElement.dispatchEvent(e);
 		#end
 		
-		Assert.equals(mOut, "mouse out");
+		Assert.isTrue(mOut);
 		
 		//mouse move 
 		
-		var mMove = "not mouse move";
+		var mMove = false;
 		
 		m.onMouseMove = function(e) {
-			mMove = "mouse move";
+			mMove = true;
 		}
 		
 		#if flash9
@@ -150,7 +150,7 @@ class MouseTests
 		untyped html.nativeElement.dispatchEvent(e);
 		#end
 		
-		Assert.equals(mMove, "mouse move");
+		Assert.isTrue(mMove);
 		
 		
 	}
