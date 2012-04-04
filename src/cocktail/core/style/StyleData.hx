@@ -1364,6 +1364,8 @@ import cocktail.core.renderer.TextRenderer;
 	 * provided by the htmlElement's styles, 
 	 * this structures return metrics info
 	 * on the font
+	 * 
+	 * TODO : duplicate with font package
 	 */
 	typedef FontMetricsData = {
 		

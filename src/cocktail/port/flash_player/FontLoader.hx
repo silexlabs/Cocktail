@@ -9,12 +9,11 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.font.as3;
+package cocktail.port.flash_player;
 
 import haxe.Log;
-import cocktailCore.font.abstract.AbstractFontLoader;
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.font.FontData;
+import cocktail.core.font.AbstractFontLoader;
+import cocktail.core.font.FontData;
 
 
 /**
@@ -49,10 +48,12 @@ class FontLoader extends AbstractFontLoader
 	override public function load(url:String, name:String):Void
 	{
 		super.load(url, name);
+		
 
 		if (fontData.type == swf || fontData.type == unknown)
 		{
-			ResourceLoaderManager.loadLibrary(url, _onLoadComplete, _onLoadError);
+			//TODO : re-implement with updated XMLHttpRequest
+			//ResourceLoaderManager.loadLibrary(url, _onLoadComplete, _onLoadError);
 		}
 		else
 		{

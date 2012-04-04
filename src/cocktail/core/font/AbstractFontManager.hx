@@ -7,10 +7,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.font.abstract;
+package cocktail.core.font;
 
-import cocktail.font.FontData;
-import cocktailCore.font.FontLoader;
+import cocktail.core.font.FontData;
+import cocktail.core.FontLoader;
 
 /**
  * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
@@ -113,6 +113,17 @@ class AbstractFontManager
 		
 		return false;
 	}
+	
+	/**
+	 * Returns metrics for a given
+	 * font and font size
+	 */
+	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	{
+		throw ("Virtual method should be implemented in sub class");
+		return null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font loading callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////

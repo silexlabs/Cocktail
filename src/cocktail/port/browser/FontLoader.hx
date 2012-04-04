@@ -7,12 +7,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.font.js;
+package cocktail.port.browser;
 
 import js.Dom.HtmlDom;
 import js.Lib;
-import cocktailCore.font.abstract.AbstractFontLoader;
-import cocktail.font.FontData;
+import cocktail.core.font.AbstractFontLoader;
+import cocktail.core.font.FontData;
 
 /**
  * This class is in charge of loading one single font and calling the right callback(s) after the load succedeed/failed

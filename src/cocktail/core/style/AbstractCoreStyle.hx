@@ -7,6 +7,8 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.CoreStyle;
+import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
@@ -40,6 +42,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.unit.UnitManager;
 import cocktail.core.Window;
 import haxe.Log;
 import haxe.Timer;
@@ -863,7 +866,8 @@ class AbstractCoreStyle
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
 	 * 
-	 * TODO : no more text cache system, need to re-implement
+	 * TODO : no more text cache system, need to re-implement, should
+	 * be in TextRenderer
 	 */
 	public function invalidateText():Void
 	{
@@ -1315,6 +1319,14 @@ class AbstractCoreStyle
 	
 	private function getFontMetricsData():FontMetricsData
 	{
+		//only query for font metrics if it isn't
+		//already cached
+		if (_fontMetrics == null)
+		{
+			var fontManager:FontManager = new FontManager();
+			_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(_computedStyle.fontFamily), _computedStyle.fontSize);
+		}
+		
 		return _fontMetrics;
 	}
 	
