@@ -11,6 +11,8 @@ package cocktail.core.font;
 
 import cocktail.core.font.FontData;
 import cocktail.core.FontLoader;
+import cocktail.core.NativeElement;
+import cocktail.core.style.StyleData;
 
 /**
  * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
@@ -119,6 +121,18 @@ class AbstractFontManager
 	 * font and font size
 	 */
 	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	{
+		throw ("Virtual method should be implemented in sub class");
+		return null;
+	}
+	
+	/**
+	 * create a runtime specific text display
+	 * element for the provided text string
+	 * and the styles that were computed for
+	 * this text
+	 */
+	public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
 	{
 		throw ("Virtual method should be implemented in sub class");
 		return null;
