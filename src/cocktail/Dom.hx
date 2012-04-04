@@ -9,8 +9,6 @@ package cocktail;
 
 /**
  * Define type aliases for all of Cocktail's public API
- * 
- * TODO : missing types
  */
 
 /**
