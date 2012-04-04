@@ -26,10 +26,14 @@ typedef NamedNodeMap = cocktail.core.dom.NamedNodeMap;
  * HTML
  */
 
-typedef HTMLImageElement = cocktail.core.HTMLImageElement;
+//HaxeJs types
 typedef Image = cocktail.core.HTMLImageElement;
-typedef HTMLElement = cocktail.core.HTMLElement;
 typedef HtmlDom = cocktail.core.HTMLElement;
+typedef Anchor = cocktail.core.HTMLAnchorElement;
+
+typedef HTMLAnchorElement = cocktail.core.HTMLAnchorElement;
+typedef HTMLImageElement = cocktail.core.HTMLImageElement;
+typedef HTMLElement = cocktail.core.HTMLElement;
 typedef HTMLDocument = cocktail.core.html.HTMLDocument;
 
 /**

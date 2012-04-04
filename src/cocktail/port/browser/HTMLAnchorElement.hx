@@ -40,9 +40,9 @@ class HTMLAnchorElement extends AbstractHTMLAnchorElement
 		return value;
 	}
 	
-	override private function set_target(value:AnchorTarget):AnchorTarget
+	override private function set_target(value:String):String
 	{
-		untyped _nativeElement.target = getTargetAsString(value);
+		untyped _nativeElement.target = value;
 		
 		super.set_target(value);
 		return value;

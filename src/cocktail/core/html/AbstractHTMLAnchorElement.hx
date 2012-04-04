@@ -32,6 +32,28 @@ import cocktail.port.browser.HTMLElement;
  */
 class AbstractHTMLAnchorElement extends HTMLElement
 {
+	//target const
+	
+	/**
+	 * Opens the linked document in a new window or tab
+	 */ 
+	public static inline var TARGET_BLANK:String = "_blank";
+	
+	/**
+	 * Opens the linked document in the same frame as it was clicked (this is default)
+	 */
+	public static inline var TARGET_SELF:String = "_self";
+	
+	/**
+	 * Opens the linked document in the parent frame
+	 */
+	public static inline var TARGET_PARENT:String = "_parent";
+	
+	/**
+	 * Opens the linked document in the full body of the window
+	 */
+	public static inline var TARGET_TOP:String = "_top";
+	
 	/**
 	 * the html tag name for the anchor
 	 */
@@ -50,8 +72,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 * Frame to render the resource in.
 	 * This attribute specifies the name of a frame where a document is to be opened.
 	 */
-	private var _target:AnchorTarget;
-	public var target(get_target, set_target):AnchorTarget;
+	private var _target:String;
+	public var target(get_target, set_target):String;
 	
 	/**
 	 * class constructor
@@ -59,7 +81,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	public function new() 
 	{
 		super(HTML_ANCHOR_TAG_NAME);
-		_target = AnchorTarget.self;
+		_target = TARGET_SELF;
 	}
 	
 	/**
@@ -192,32 +214,6 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		MouseCursorManager.setMouseCursor(MouseCursorValue.cssAuto);
 	}
 	
-	/**
-	 * Utils method to convert the target enum to an HTML
-	 * target attribute value
-	 */
-	private function getTargetAsString(value:AnchorTarget):String
-	{
-		var target:String;
-		
-		switch (value)
-		{
-			case AnchorTarget.blank:
-				target = "_blank";
-				
-			case AnchorTarget.parent:
-				target = "_parent";
-				
-			case AnchorTarget.self:
-				target = "_self";
-				
-			case AnchorTarget.top:
-				target = "_top";
-		}
-		
-		return target;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOCUMENT LINK SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +242,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 * the mouse down callback with the new target
 	 * value
 	 */
-	private function set_target(value:AnchorTarget):AnchorTarget
+	private function set_target(value:String):String
 	{
 		_target = value;
 		set_onMouseDown(_onMouseDown);
@@ -255,7 +251,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		return value;
 	}
 	
-	private function get_target():AnchorTarget
+	private function get_target():String
 	{
 		return _target;
 	}
