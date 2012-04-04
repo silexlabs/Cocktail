@@ -17,7 +17,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.CoreStyle;
-import cocktail.core.style.adapter.Style;
+import cocktail.core.Style;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
