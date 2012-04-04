@@ -8,15 +8,18 @@
 package cocktail.core.nativeElement;
 
 import cocktail.core.NativeElement;
+import cocktail.core.nativeElement.NativeElementData;
 
 /**
  * This is a base class for the path manager. 
  * It retrieves and return the root of the DOM, 
  * sush as the body tag in HTML
  * 
+ * TODO : update all the doc
+ * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractNativeElementPathManager
+class AbstractNativeElementManagerImpl
 {
 	/**
 	 * class contructor
@@ -30,6 +33,15 @@ class AbstractNativeElementPathManager
 	 * Returns the root of the DOM. Implemented by subclasses
 	 */
 	public function getRoot():NativeElement
+	{
+		return null;
+	}
+	
+	/**
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 */
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
 		return null;
 	}

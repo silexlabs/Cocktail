@@ -7,10 +7,10 @@
 */
 package cocktail.port.browser;
 
+import cocktail.core.nativeElement.AbstractNativeElementManagerImpl;
 import js.Lib;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.AbstractNativeElementCreator;
 
 /**
  * This is the Javascript implementation of the native element
@@ -19,7 +19,7 @@ import cocktail.core.nativeElement.AbstractNativeElementCreator;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeElementCreator extends AbstractNativeElementCreator
+class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 {
 
 	/**
@@ -29,6 +29,15 @@ class NativeElementCreator extends AbstractNativeElementCreator
 	{
 		super();
 	}
+	
+	/**
+	 * Returns a reference to the Flash Stage
+	 */
+	override public function getRoot():NativeElement
+	{
+		return Lib.document.body;
+	}
+	
 	
 	/**
 	 * Instantiate a native HTML Element based on the requested type and returns a reference to it.

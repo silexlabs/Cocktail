@@ -5,34 +5,15 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.port.browser;
-
-import js.Lib;
-import cocktail.core.nativeElement.AbstractNativeElementPathManager;
-import cocktail.core.NativeElement;
+package cocktail.core;
 
 /**
- * This is the JavaScript implementation for the path manager. 
- * It returns the HTML document body
- * 
- * @author Yannick DOMINGUEZ
+ * Set the right runtime specific NativeElementManagerImpl at compile-time
  */
-class NativeElementPathManager extends AbstractNativeElementPathManager
-{
-	/**
-	 * class contructor
-	 */
-	public function new() 
-	{
-		super();
-	}
-	
-	/**
-	 * Returns a reference to the Flash Stage
-	 */
-	override public function getRoot():NativeElement
-	{
-		return Lib.document.body;
-	}
-	
-}
+#if (flash9 || nme)
+typedef NativeElementManagerImpl = cocktail.port.flash_player.NativeElementManagerImpl;
+
+#elseif js
+typedef NativeElementManagerImpl = cocktail.port.browser.NativeElementManagerImpl;
+
+#end

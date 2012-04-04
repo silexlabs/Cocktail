@@ -7,23 +7,10 @@
 */
 package cocktail.core.nativeElement;
 
-//import the right runtime implementations
-#if (flash9 || nme)
-import cocktail.port.flash_player.NativeElementCreator;
-import cocktail.port.flash_player.NativeElementPathManager;
-
-#elseif js
-import cocktail.port.browser.NativeElementCreator;
-import cocktail.port.browser.NativeElementPathManager;
-
-#elseif doc
-class NativeElementCreator extends core.nativeElement.AbstractNativeElementCreator { }
-class NativeElementPathManager extends core.nativeElement.AbstractNativeElementPathManager { }
-
-#end
 
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.NativeElement;
+import cocktail.core.NativeElementManagerImpl;
 
 /**
  * this class abstract and manages the interaction with a
@@ -35,23 +22,19 @@ import cocktail.core.NativeElement;
  * 
  * This class proxies method call to runtime specific implementations
  * 
+ * TODO : redo all the package's doc
+ * 
  * @author Yannick DOMINGUEZ
  */
 class NativeElementManager 
 {
-	//TODO : don't need 2 separate classes, create a NativeElementManagerImpl ?
+	//TODO : redo all doc
 	
 	/**
 	 * A reference to the runtime specific implementation of the class
 	 * instantiating the new native elements
 	 */
-	static private var _nativeElementCreator:NativeElementCreator;
-	
-	/**
-	 * A reference to the runtime specific implementation of the class
-	 * managing the native element paths
-	 */
-	static private var _nativeElementPathManager:NativeElementPathManager;
+	static private var _nativeElementManagerImpl:NativeElementManagerImpl;
 	
 	/**
 	 * Class constructor. Private as this class is meant to be used
@@ -69,11 +52,11 @@ class NativeElementManager
 	public static function getRoot():NativeElement
 	{
 		//instantiate the path manager if first use
-		if (_nativeElementPathManager == null)
+		if (_nativeElementManagerImpl == null)
 		{
-			_nativeElementPathManager = new NativeElementPathManager();
+			init();
 		}
-		return _nativeElementPathManager.getRoot();
+		return _nativeElementManagerImpl.getRoot();
 	}
 	
 	/**
@@ -82,12 +65,16 @@ class NativeElementManager
 	 */
 	public static function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		//instantiate the reference creator if first use
-		if (_nativeElementCreator == null)
+		//instantiate the path manager if first use
+		if (_nativeElementManagerImpl == null)
 		{
-			_nativeElementCreator = new NativeElementCreator();
+			init();
 		}
-		
-		return _nativeElementCreator.createNativeElement(nativeElementType);
+		return _nativeElementManagerImpl.createNativeElement(nativeElementType);
+	}
+	
+	private static function init():Void
+	{
+		_nativeElementManagerImpl = new NativeElementManagerImpl();
 	}
 }
