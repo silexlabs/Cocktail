@@ -22,5 +22,7 @@ class Constants
 	public static inline var CELL_VERTICAL_SPACE = 2;
 	public static inline var CELL_BORDER_WIDTH = "1px";
 	public static inline var CELL_BORDER_COLOR = "#CCCCCC";
+	//public static inline var CELL_RATIO:Float = 16/9;
+	public static inline var CELL_HEIGHT:Float = 100;
 
 }

@@ -19,11 +19,14 @@ class CellThumbText1 extends CellBase
 {
 	static inline var TITLE_LENGTH:Int = 40;
 	
+	// thumb mask
+	private var _thumbMask:Size;
+	
 	// cell style
 	//private var _cellStyle:CellThumbText1StyleModel;
 	
 	// thumb
-	private var _thumb:CellThumb;
+	//private var _thumb:CellThumb;
 
 	/**
 	 * constructor
@@ -36,9 +39,10 @@ class CellThumbText1 extends CellBase
 		
 		// set cell thumb to 1/3 of the width of the cell
 		//_thumb = new CellThumb(cellPerLine);
-		_thumb = new CellThumb(cellPerLine,_cellStyle);
-		CellStyle.removeBorder(_thumb);
-		this.addChild(_thumb);
+		//_thumb = new CellThumb(cellPerLine,_cellStyle);
+		//CellStyle.removeBorder(_thumb);
+		//this.addChild(_thumb);
+		_thumbMask = ImageUtils.computeMaskSize(cellPerLine,CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT);
 	}
 
 	/**
@@ -66,7 +70,7 @@ class CellThumbText1 extends CellBase
 	override private function updateView():Void
 	{
 		super.updateView();
-		_thumb.data = _data;
+		//_thumb.data = _data;
 		//var cellData:CellData = _data;
 		//var cellData:CellData = super._data;
 		
@@ -85,6 +89,15 @@ class CellThumbText1 extends CellBase
 			// load image
 			cellImage.load(_data.thumbUrl);
 		}*/
+		
+		// load thumb image
+		if (_data.thumbUrl != "" && _data.thumbUrl != null)
+		{
+			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			//var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, {width:50, height:50});
+			this.addChild(croppedImage);
+		}
+
 		
 
 		// TEXT

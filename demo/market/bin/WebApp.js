@@ -12011,40 +12011,20 @@ org.intermedia.view.CellTextStyle.prototype = {
 org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = function(cellPerLine,cellStyle,thumbWidthPercent) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellBase.call(this,cellPerLine);
-	this._thumbMask = this._cellStyle.cell(this,cellPerLine);
+	this._thumbMask = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine);
 };
 org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
 org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
 	_thumbMask: null
-	,_cellImage: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnail : org.intermedia.view.CellThumbStyle.setThumbnailStyle, textBlock : null, title : null, author : null, line : null};
 	}
 	,updateView: function() {
-		this.loadThumb();
-	}
-	,loadThumb: function() {
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._cellImage = new cocktailCore.domElement.js.ImageDOMElement();
-			this.addChild(this._cellImage);
-			this._cellImage.onLoad = this.onImageLoadSuccess.$bind(this);
-			this._cellImage.load(this._data.thumbUrl);
+			var croppedImage = new org.intermedia.view.CroppedImage(this._data.thumbUrl,this._thumbMask);
+			this.addChild(croppedImage);
 		}
-	}
-	,onImageLoadSuccess: function(image) {
-		this._cellStyle.thumbnail(this._cellImage,this._thumbMask);
-		haxe.Timer.delay(this.fadeIn.$bind(this),Std.random(1000));
-	}
-	,fadeIn: function() {
-		var tween = new feffects.Tween(0,1,400);
-		tween.setTweenHandlers(this.tweenOpacity.$bind(this),this.tweenEnd.$bind(this));
-		tween.start();
-	}
-	,tweenOpacity: function(e) {
-		this._cellImage.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(e));
-	}
-	,tweenEnd: function(e) {
 	}
 	,__class__: org.intermedia.view.CellThumb
 });
@@ -12054,41 +12034,17 @@ org.intermedia.view.CellThumbStyle.setCellStyle = function(domElement,cellPerLin
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellStyle.setCellStyle(domElement,cellPerLine);
 	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(2)));
-	var cellSize = org.intermedia.view.CellThumbStyle.computeMaskSize(cellPerLine);
+	var cellSize = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine);
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(cellSize.height)));
 	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.hidden});
 	org.intermedia.view.CellStyle.addBorder(domElement);
 	return cellSize;
 }
-org.intermedia.view.CellThumbStyle.computeMaskSize = function(cellPerLine,thumbWidthPercent) {
-	if(thumbWidthPercent == null) thumbWidthPercent = 100;
-	if(cellPerLine == null) cellPerLine = 1;
-	var maskPixelSize = { width : 0, height : 0};
-	if(cellPerLine != 0) maskPixelSize.width = new cocktailCore.viewport.js.Viewport()._getWidth() * thumbWidthPercent / (cellPerLine * 100) | 0; else maskPixelSize.width = new cocktailCore.viewport.js.Viewport()._getWidth() * thumbWidthPercent / 100 | 0;
-	maskPixelSize.height = 100;
-	return maskPixelSize;
-}
 org.intermedia.view.CellThumbStyle.setThumbnailStyle = function(domElement,maskSize) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineStyle);
 	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
 	domElement.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(0));
-	org.intermedia.view.CellThumbStyle.zoomImage(domElement,maskSize);
-}
-org.intermedia.view.CellThumbStyle.zoomImage = function(domElement,maskSize) {
-	var imageRatio = 0;
-	if(domElement.getIntrinsicHeight() != 0) imageRatio = domElement.getIntrinsicWidth() / domElement.getIntrinsicHeight();
-	var resizedImageSize = { width : 0, height : 0};
-	if(imageRatio > 16 / 9) {
-		resizedImageSize.height = maskSize.height;
-		resizedImageSize.width = resizedImageSize.height * imageRatio | 0;
-		domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(resizedImageSize.height)));
-		domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(-Math.abs(maskSize.width - resizedImageSize.width) / 2)));
-	} else {
-		resizedImageSize.width = maskSize.width;
-		resizedImageSize.height = resizedImageSize.width / imageRatio | 0;
-		domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(resizedImageSize.width)));
-		domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(-Math.abs(maskSize.height - resizedImageSize.height) / 2)));
-	}
+	org.intermedia.view.ImageUtils.cropImage(domElement,maskSize);
 }
 org.intermedia.view.CellThumbStyle.prototype = {
 	__class__: org.intermedia.view.CellThumbStyle
@@ -12096,20 +12052,21 @@ org.intermedia.view.CellThumbStyle.prototype = {
 org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbText1"] = function(cellPerLine,cellStyle) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellBase.call(this,cellPerLine);
-	this._thumb = new org.intermedia.view.CellThumb(cellPerLine,this._cellStyle);
-	org.intermedia.view.CellStyle.removeBorder(this._thumb);
-	this.addChild(this._thumb);
+	this._thumbMask = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine,35);
 };
 org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
 org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_thumb: null
+	_thumbMask: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnail : org.intermedia.view.CellThumbText1Style.setThumbnailStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 	}
 	,updateView: function() {
 		org.intermedia.view.CellBase.prototype.updateView.call(this);
-		this._thumb.setData(this._data);
+		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
+			var croppedImage = new org.intermedia.view.CroppedImage(this._data.thumbUrl,this._thumbMask);
+			this.addChild(croppedImage);
+		}
 		var cellTextBlockContainer = new cocktailCore.domElement.js.ContainerDOMElement();
 		this._cellStyle.textBlock(cellTextBlockContainer);
 		this.addChild(cellTextBlockContainer);
@@ -12130,7 +12087,7 @@ org.intermedia.view.CellThumbText1Style.__name__ = ["org","intermedia","view","C
 org.intermedia.view.CellThumbText1Style.setCellStyle = function(domElement,cellPerLine) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellStyle.setCellStyle(domElement,cellPerLine);
-	var cellSize = org.intermedia.view.CellThumbStyle.computeMaskSize(cellPerLine,35);
+	var cellSize = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine,35);
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(cellSize.height)));
 	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.hidden});
 	org.intermedia.view.CellStyle.addBorder(domElement);
@@ -12142,7 +12099,7 @@ org.intermedia.view.CellThumbText1Style.setThumbnailStyle = function(domElement,
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.percent(2));
-	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.middle);
+	domElement.getStyle().setVerticalAlign(cocktail.style.VerticalAlignStyleValue.top);
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(60));
 }
 org.intermedia.view.CellThumbText1Style.setTextStyle = function(domElement) {
@@ -12179,6 +12136,37 @@ org.intermedia.view.Constants.__name__ = ["org","intermedia","view","Constants"]
 org.intermedia.view.Constants.prototype = {
 	__class__: org.intermedia.view.Constants
 }
+org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"] = function(imageUrl,maskSize) {
+	cocktailCore.domElement.js.ContainerDOMElement.call(this);
+	this._image = new cocktailCore.domElement.js.ImageDOMElement();
+	this._maskSize = maskSize;
+	this.loadThumb(imageUrl);
+};
+org.intermedia.view.CroppedImage.__name__ = ["org","intermedia","view","CroppedImage"];
+org.intermedia.view.CroppedImage.__super__ = cocktailCore.domElement.js.ContainerDOMElement;
+org.intermedia.view.CroppedImage.prototype = $extend(cocktailCore.domElement.js.ContainerDOMElement.prototype,{
+	_image: null
+	,_maskSize: null
+	,loadThumb: function(imageUrl) {
+		this._image.onLoad = this.onImageLoadSuccess.$bind(this);
+		this._image.load(imageUrl);
+	}
+	,onImageLoadSuccess: function(image) {
+		this.addChild(org.intermedia.view.ImageUtils.cropImage(image,this._maskSize));
+		haxe.Timer.delay(this.fadeIn.$bind(this),Std.random(1000));
+	}
+	,fadeIn: function() {
+		var tween = new feffects.Tween(0,1,400);
+		tween.setTweenHandlers(this.tweenOpacity.$bind(this),this.tweenEnd.$bind(this));
+		tween.start();
+	}
+	,tweenOpacity: function(e) {
+		this._image.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(e));
+	}
+	,tweenEnd: function(e) {
+	}
+	,__class__: org.intermedia.view.CroppedImage
+});
 org.intermedia.view.DetailStyle = $hxClasses["org.intermedia.view.DetailStyle"] = function() { }
 org.intermedia.view.DetailStyle.__name__ = ["org","intermedia","view","DetailStyle"];
 org.intermedia.view.DetailStyle.setDefault = function(domElement) {
@@ -12487,6 +12475,42 @@ org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ViewBase.pr
 	}
 	,__class__: org.intermedia.view.HomePage
 });
+org.intermedia.view.ImageUtils = $hxClasses["org.intermedia.view.ImageUtils"] = function() { }
+org.intermedia.view.ImageUtils.__name__ = ["org","intermedia","view","ImageUtils"];
+org.intermedia.view.ImageUtils.computeMaskSize = function(cellPerLine,thumbWidthPercent) {
+	if(thumbWidthPercent == null) thumbWidthPercent = 100;
+	var maskPixelSize = { width : 0, height : 0};
+	if(cellPerLine != 0) maskPixelSize.width = new cocktailCore.viewport.js.Viewport()._getWidth() * thumbWidthPercent / (cellPerLine * 100) | 0; else maskPixelSize.width = new cocktailCore.viewport.js.Viewport()._getWidth() * thumbWidthPercent / 100 | 0;
+	maskPixelSize.height = 100;
+	return maskPixelSize;
+}
+org.intermedia.view.ImageUtils.cropImage = function(image,maskSize) {
+	var mask = new cocktailCore.domElement.js.ContainerDOMElement();
+	mask.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(maskSize.width)));
+	mask.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(maskSize.height)));
+	mask.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.hidden, y : cocktail.style.OverflowStyleValue.hidden});
+	mask.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	var maskRatio = maskSize.width / maskSize.height;
+	var imageRatio = 0;
+	if(image.getIntrinsicHeight() != 0) imageRatio = image.getIntrinsicWidth() / image.getIntrinsicHeight();
+	var resizedImageSize = { width : 0, height : 0};
+	if(imageRatio > maskRatio) {
+		resizedImageSize.height = maskSize.height;
+		resizedImageSize.width = resizedImageSize.height * imageRatio | 0;
+		image.getStyle().setHeight(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(resizedImageSize.height)));
+		image.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(-Math.abs(maskSize.width - resizedImageSize.width) / 2)));
+	} else {
+		resizedImageSize.width = maskSize.width;
+		resizedImageSize.height = resizedImageSize.width / imageRatio | 0;
+		image.getStyle().setWidth(cocktail.style.DimensionStyleValue.length(cocktail.unit.LengthValue.px(resizedImageSize.width)));
+		image.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(-Math.abs(maskSize.height - resizedImageSize.height) / 2)));
+	}
+	mask.addChild(image);
+	return mask;
+}
+org.intermedia.view.ImageUtils.prototype = {
+	__class__: org.intermedia.view.ImageUtils
+}
 org.intermedia.view.ListViewBase = $hxClasses["org.intermedia.view.ListViewBase"] = function() {
 	org.intermedia.view.ViewBase.call(this);
 	this.displayListBottomLoader = true;
@@ -13275,6 +13299,7 @@ org.intermedia.view.Constants.LIST_TOP = 78;
 org.intermedia.view.Constants.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.Constants.CELL_BORDER_WIDTH = "1px";
 org.intermedia.view.Constants.CELL_BORDER_COLOR = "#CCCCCC";
+org.intermedia.view.Constants.CELL_HEIGHT = 100;
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;

@@ -34,7 +34,7 @@ class CellThumbText1Style
 {
 	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
 	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
-	static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
+	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
 	
 	/**
 	 * Defines cell Style
@@ -74,7 +74,7 @@ class CellThumbText1Style
 		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
-		var cellSize:Size = CellThumbStyle.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
+		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
 		
 		domElement.style.height = DimensionStyleValue.length(px(cellSize.height));
 		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(CELL_MAX_HEIGHT));
@@ -128,7 +128,7 @@ class CellThumbText1Style
 		
 		domElement.style.display = DisplayStyleValue.inlineBlock;
 		domElement.style.marginLeft = MarginStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
 		domElement.style.width = DimensionStyleValue.percent(CELL_TEXT_WIDTH_PERCENT);
 		
 	}

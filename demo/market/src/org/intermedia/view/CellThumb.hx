@@ -29,7 +29,7 @@ class CellThumb extends CellBase
 	private var _thumbMask:Size;
 	
 	// cell thumb image
-	private var _cellImage:ImageDOMElement;
+	//private var _cellImage:ImageDOMElement;
 
 	/**
 	 * constructor
@@ -45,7 +45,8 @@ class CellThumb extends CellBase
 		//else initCellStyle();
 		// apply cell style and gets the cell dimension, for image cropping
 		//_thumbMask = _cellStyle.cell(this, cellPerLine, thumbWidthPercent);
-		_thumbMask = _cellStyle.cell(this, cellPerLine);
+		//_thumbMask = _cellStyle.cell(this, cellPerLine);
+		_thumbMask = ImageUtils.computeMaskSize(cellPerLine);
 	}
 	
 	/**
@@ -70,68 +71,11 @@ class CellThumb extends CellBase
 	override private function updateView():Void
 	{
 		// load thumb image
-		loadThumb();
-	}
-
-	/**
-	 *  load thumb image
-	 */
-	private function loadThumb():Void
-	{
-		// image part
-		//if (Reflect.hasField(_data, "thumbUrl"))
-		//{
-			if (_data.thumbUrl != "" && _data.thumbUrl != null)
-			{
-				_cellImage = new ImageDOMElement();
-				// add image
-				this.addChild(_cellImage);
-				// load image
-				_cellImage.onLoad = onImageLoadSuccess;
-				_cellImage.load(_data.thumbUrl);
-			}
-		//}
-	}
-	
-	/**
-	 * image load success callback
-	 */
-	private function onImageLoadSuccess(image:ImageDOMElement):Void
-	{
-		// set image style. It is needed to do it here as we need to access to the intrisic size of the image,
-		// which we can access only when the image has been loaded
-		//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-		_cellStyle.thumbnail(_cellImage, _thumbMask);
-		
-		// display thumb using a random effect
-		Timer.delay(fadeIn,Std.random(1000));
-	}
-	
-	/**
-	 * thum display fade in
-	 */
-	private function fadeIn():Void
-	{
-		// create the tween
-        var tween = new Tween( 0, 1, 400 );
-		tween.setTweenHandlers( tweenOpacity, tweenEnd );
-		//tween.setTweenHandlers( tweenOpacity, null );
-        // launch the tween
-        tween.start();
-	}
-	
-	/**
-	 * opacity tweening
-	 * @param	e
-	 */
-    function tweenOpacity( e : Float )
-    {
-        _cellImage.style.opacity = OpacityStyleValue.number(e);
-    }
-
-    function tweenEnd(e : Float )
-	{
-		
+		if (_data.thumbUrl != "" && _data.thumbUrl != null)
+		{
+			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			this.addChild(croppedImage);
+		}
 	}
 
 }

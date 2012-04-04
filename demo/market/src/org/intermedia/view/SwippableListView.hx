@@ -10,7 +10,6 @@ import cocktail.mouse.MouseData;
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import cocktail.domElement.DOMElementData;
-//import cocktail.style.StyleData;
 
 import feffects.Tween;
 import feffects.easing.Quart;
@@ -343,18 +342,6 @@ class SwippableListView extends ListViewBase
 		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
 		/*_viewport.onResize = null;
 		
-		//trace("mousedown");
-		// set _xOffset to current mouse position
-		//_xOffsetStart = Std.int(mouseEvent.mousePosition.localX);
-		//_xOffsetStart = Std.int(x);
-		_offsetStart = { x:Std.int(x), y:Std.int(y) };
-		
-		//trace( x + ", " + y + ", " + _xOffsetStart + ", " + _xOffset + ", " + _viewportWidth);
-
-		// set initial position to x & Y coordinate of the swippable view 
-		//_xInitial = this.x;
-		_initialPosition = { x:this.x, y:this.y };
-		
 		// set onMouseMove & onMouseUp callbacks
 		//onMouseMove = onMoveCallback2;
 		//onMouseUp = onUpCallback2;
@@ -381,48 +368,6 @@ class SwippableListView extends ListViewBase
 	//private function onMoveCallback2(x:Float,y:Float,event:Dynamic):Void
 	private function onMoveCallback2(event:Dynamic):Void
 	{
-		/*
-		//trace("onMoveCallback2");
-		
-		// unset listItemSelected callback on current list to avoid opening detail view while swipping
-		_currentListView.onListItemSelected = null;
-		_currentListView.onListScrolled = null;
-		
-		// compute offset
-		//_xOffset = Std.int(mouseEvent.mousePosition.localX) - _xOffsetStart;
-		//_xOffset = Std.int(x) - _xOffsetStart;
-		_offset.x = Std.int(x) - _offsetStart.x;
-		_offset.y = Std.int(y) - _offsetStart.y;
-		
-		// if direction is not set, set it to horizontal or vertical if movement is at least a few pixels
-		if (_direction == Direction.notYetSet)
-		{
-			if (Math.abs(_offset.x) >= DIRECTION_PIXEL_MINIMUM)
-				_direction = Direction.horizontal;
-			if (Math.abs(_offset.y) >= DIRECTION_PIXEL_MINIMUM)
-				_direction = Direction.vertical;
-		}
-		
-		//trace( x + ", " + y + ", " + _xOffsetStart + ", " + _xOffset + ", " + _viewportWidth + ", " + this.x);
-
-		// move the swippable view according to the direction and the offset
-		if (_direction == Direction.horizontal)
-		{
-			//trace("horizontal");
-			event.preventDefault();
-			this.x = _initialPosition.x + _offset.x;
-		}
-		/*if (_direction == Direction.vertical)
-		{
-			//_currentListView.y = _initialPosition.y + _offset.y;
-			// js workaround to scroll up
-			#if js
-			var scroll:Int = -(_initialPosition.y + _offset.y);
-			//js.Lib.window.scrollTo(0, _initialPosition.y + _offset.y);
-			js.Lib.window.scrollTo(0, scroll);
-			#end
-		}*/
-		
 		_currentListView.onListItemSelected = null;
 		//trace(event.pageX - _initialPosition.x);
 		this.nativeElement.scrollLeft = _offsetStart.x - Std.int(event.pageX - _initialPosition.x);
@@ -485,9 +430,6 @@ class SwippableListView extends ListViewBase
 	{
 		//trace("onUpCallback2: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
 
-		
-		//return;
-		
 		//trace(_direction);
 		if (_direction == Direction.horizontal)
 		{
@@ -499,17 +441,6 @@ class SwippableListView extends ListViewBase
 		
 		if (_direction == Direction.horizontal)
 		{
-			// compute offset
-			//_xOffset = Std.int(mouseEvent.mousePosition.localX) - _xOffsetStart;
-			//_offset.x = Std.int(x) - _offsetStart.x;
-			//_offset.y = Std.int(y) - _offsetStart.y;
-			//_offset.x = Std.int(x);
-			//_offset.y = Std.int(y);
-			
-			//trace("onUpCallback2");
-			//trace( x + ", " + y + ", " + _xOffsetStart + ", " + _xOffset + ", " + _viewportWidth);
-			//trace( x + ", " + y);
-			
 			// go to list which user has scrolled to
 			
 			var w = _viewportWidth / 2;
@@ -528,43 +459,6 @@ class SwippableListView extends ListViewBase
 				//this.nativeElement.scrollLeft = 2 * _viewportWidth;
 				index = 2;
 			}
-			//trace(_index);
-			//_currentListView = cast _listViews[_index];
-		
-			// if the mouse movement is from left to right
-			// and if _xOffset is bigger than half the width of the viewport,
-			// display next list and set _currentlist to the next list
-			/*if (_offset.x < -_viewportWidth/2)
-			{
-				// if the current list is not the last list
-				if(_index < _listViews.length-1)
-				{
-					_index++;
-					//_currentListView = _listViews[_index];
-					_currentListView = cast _listViews[_index];
-				}
-			}
-			// if the mouse movement is from right to left
-			// and if _xOffset is lower than minus half the width of the viewport,
-			// display previous list and set _currentlist to the previous list
-			else if (_offset.x > _viewportWidth/2)
-			{
-				// if the current list is not the first list
-				if(_index > 0)
-				{
-					_index--;
-					_currentListView = cast _listViews[_index];
-				}
-			}*/
-			
-			// set listItemSelected callback on current list
-			//_currentListView.onListItemSelected = onListItemSelectedCallback;
-			//_currentListView.onListScrolled = onScrolledCallback;
-			//_currentListView.onDataRequest = onDataRequestCallback;
-
-			// tween the swippable view in the correct position
-			//horizontalReleaseTween();
-		
 			// js workaround to scroll up
 			/*#if js
 			js.Lib.window.scrollTo(0, 0);
@@ -605,13 +499,7 @@ class SwippableListView extends ListViewBase
 	 */
 	private function horizontalReleaseTween():Void
 	{
-		//trace("releaseTween");
-		//trace("releaseTween: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
-		//trace( x + ", " + y + ", " + _offsetStart.x + ", " + _offset.x + ", " + _viewportWidth + ", " + this.x + ", " + -_currentListView.x);
-
 		// create the tween
-		//trace("horizontalReleaseTween from " + this.nativeElement.scrollLeft + " to " + _currentListView.x);
-        //var tween = new Tween( this.nativeElement.scrollLeft, -_currentListView.x, 600, Quint.easeOut );
 		//haxe.Firebug.trace("index: " + _index + " - scrollLeft: " + this.nativeElement.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
         var tween = new Tween( this.nativeElement.scrollLeft, _currentListView.x, 600, Quint.easeOut );
 		tween.setTweenHandlers( horizontalTweenMove, horizontalTweenEnd );
@@ -660,7 +548,6 @@ class SwippableListView extends ListViewBase
 		else
 			verticalTweenEnd = _currentListView.nativeElement.scrollTop + VERTICAL_TWEEN_DELTA;
 		// create the tween
-        //var tween = new Tween( this.nativeElement.scrollLeft, -_currentListView.x, 600, Quint.easeOut );
         var tween = new Tween( _currentListView.nativeElement.scrollTop, verticalTweenEnd, 600, Quint.easeOut );
 		tween.setTweenHandlers( onVerticalTweenMove, onVerticalTweenEnd );
         // launch the tween
@@ -674,10 +561,7 @@ class SwippableListView extends ListViewBase
 	 */
     private function onVerticalTweenMove( e : Float )
     {
-		//this.nativeElement.scrollLeft = Std.int(e);
-		//_currentListView.nativeElement.scrollTop = _viewportHeight - Std.int(e);
 		_currentListView.nativeElement.scrollTop = Std.int(e);
-		//_currentListView.nativeElement.scrollTop = _currentListView.nativeElement.scrollHeight - Std.int(e);
     }
 	
 	/**
