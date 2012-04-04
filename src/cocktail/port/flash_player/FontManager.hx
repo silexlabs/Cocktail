@@ -236,7 +236,7 @@ class FontManager extends AbstractFontManager
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
-		var transformedText:String = cocktail.core.dom.Text.applyTextTransform(text, computedStyle.textTransform);
+		var transformedText:String = applyTextTransform(text, computedStyle.textTransform);
 		
 		var textElement:TextElement = new TextElement(transformedText);
 		
@@ -471,7 +471,7 @@ class FontManager extends AbstractFontManager
 	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
 	{
 		
-		text = cocktail.core.dom.Text.applyTextTransform(text, _computedStyle.textTransform);
+		text = applyTextTransform(text, _computedStyle.textTransform);
 		
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;

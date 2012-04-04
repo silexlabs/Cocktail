@@ -104,63 +104,6 @@ class Text extends CharacterData
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC STATIC TEXT HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Transform a text letters into uppercase, lowercase
-	 * or capitalise them (only the first letter of each word
-	 * is transformed to uppercase), based on the textTransform
-	 * style of this container HTMLElement
-	 */
-	public static function applyTextTransform(text:String, textTransform:TextTransform):String
-	{
-		switch (textTransform)
-		{
-			case uppercase:
-				text = text.toUpperCase();
-				
-			case lowercase:
-				text = text.toLowerCase();
-				
-			case capitalize:
-				text = capitalizeText(text);
-				
-			case none:
-		}
-		
-		return text;
-	}
-	
-	/**
-	 * Capitalise a text (turn each first letter
-	 * of a word to uppercase)
-	 * 
-	 * TODO : doesn't work
-	 */
-	public static function capitalizeText(text:String):String
-	{
-		var capitalizedText:String = text.charAt(0);
-		
-		/**
-		 * loop in all charachter looking for word breaks
-		 * and capitalize each word's first letter
-		 */
-		for (i in 1...text.length)
-		{	
-			if (text.charAt(i - 1) == " ")
-			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
-			}
-		}
-		return capitalizedText;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
