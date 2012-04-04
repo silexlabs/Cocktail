@@ -324,13 +324,13 @@ class AbstractFocusManagerImpl
 	 */
 	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
 	{
-		if (activeElement.onMouseDown != null)
+		if (activeElement.onmousedown != null)
 		{
 			//TODO : replace mouse click event + add right coordinate
 			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, _activeElement, 0.0,
 			0.0, 0.0, 0.0, 0.0, false, false, false);
 			
-			activeElement.onMouseDown(mouseEvent);
+			activeElement.onmousedown(mouseEvent);
 		}
 	
 	}
