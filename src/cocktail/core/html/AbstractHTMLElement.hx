@@ -58,7 +58,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * through the mouse instance
 	 */
 	private var _onClick:MouseEvent->Void;
-	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
+	public var onclick(get_onClick, set_onClick):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse down through the mouse instance
