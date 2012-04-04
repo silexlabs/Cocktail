@@ -89,7 +89,7 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 */
 	override private function initNativeElement():Void
 	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.link);
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.anchor);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

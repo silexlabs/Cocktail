@@ -32,7 +32,7 @@ class AbstractLibraryLoader extends ResourceLoader
 		//create a library NativeElement if none is provided
 		if (nativeElement == null)
 		{
-			nativeElement = NativeElementManager.createNativeElement(library);
+			nativeElement = NativeElementManager.createNativeElement(script);
 		}
 		
 		super(nativeElement);

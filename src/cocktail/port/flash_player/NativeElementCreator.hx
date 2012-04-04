@@ -43,13 +43,13 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		switch (nativeElementType)
 		{
 			//for image, library and skin, the expected type is a Flash loader
-			case image, library, skin:
+			case img, script:
 				nativeElement = new Loader();
 				
 			//for other types, it is a Sprite	
-			case text, graphic, neutral, link, textInput:
+			case canvas, anchor, input:
 				nativeElement = new Sprite();
-			case custom(name):
+			case semantic(name):
 				nativeElement = new Sprite();
 				
 		}
