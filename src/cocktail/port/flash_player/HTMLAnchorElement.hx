@@ -33,7 +33,7 @@ class HTMLAnchorElement extends AbstractHTMLAnchorElement
 	{
 		if (_href != null)
 		{
-			flash.Lib.getURL(new URLRequest(_href), getTargetAsString(_target));
+			flash.Lib.getURL(new URLRequest(_href), _target);
 		}
 	}
 	
