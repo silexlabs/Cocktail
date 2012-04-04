@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.style.AbstractCoreStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
@@ -42,7 +42,7 @@ class FontAndTextStylesComputer
 	 * @param	containingHTMLElementData
 	 * @param	containingHTMLElementFontMetricsData
 	 */
-	public static function compute(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 		
@@ -105,7 +105,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private static function getComputedTextIndent(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
 	{
 		var textIndent:Float;
 		
@@ -125,7 +125,7 @@ class FontAndTextStylesComputer
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedVerticalAlign(style:AbstractCoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -172,7 +172,7 @@ class FontAndTextStylesComputer
 	 * white space style. when there are no line-break,
 	 * the text can't be justified
 	 */
-	private static function getComputedTextAlign(style:AbstractCoreStyle, computedWhiteSpace:WhiteSpace):TextAlign
+	private static function getComputedTextAlign(style:CoreStyle, computedWhiteSpace:WhiteSpace):TextAlign
 	{
 		var textAlign:TextAlign = style.textAlign;
 		
@@ -194,7 +194,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Computed the color of a text of the HTMLElement
 	 */
-	private static function getComputedColor(style:AbstractCoreStyle):ColorData
+	private static function getComputedColor(style:CoreStyle):ColorData
 	{
 		return UnitManager.getColorDataFromCSSColor(style.color);
 	}
@@ -203,7 +203,7 @@ class FontAndTextStylesComputer
 	 * Compute the space to add between each word in a text in
 	 * addition of the regular font space
 	 */
-	private static function getComputedWordSpacing(style:AbstractCoreStyle):Int
+	private static function getComputedWordSpacing(style:CoreStyle):Int
 	{
 		var wordSpacing:Int;
 		
@@ -223,7 +223,7 @@ class FontAndTextStylesComputer
 	 * Compute the line height of a HTMLElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedLineHeight(style:AbstractCoreStyle):Float
+	private static function getComputedLineHeight(style:CoreStyle):Float
 	{
 		var lineHeight:Float;
 		
@@ -250,7 +250,7 @@ class FontAndTextStylesComputer
 	 * letter in a text, in addition to the regular
 	 * font letter spacing
 	 */
-	private static function getComputedLetterSpacing(style:AbstractCoreStyle):Int
+	private static function getComputedLetterSpacing(style:CoreStyle):Int
 	{
 		var letterSpacing:Int;
 		
@@ -269,7 +269,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the font size of the text of a HTMLElement
 	 */
-	private static function getComputedFontSize(style:AbstractCoreStyle, parentFontSize:Float, parentXHeight:Float):Float
+	private static function getComputedFontSize(style:CoreStyle, parentFontSize:Float, parentXHeight:Float):Float
 	{
 		var fontSize:Float;
 		

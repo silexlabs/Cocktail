@@ -5,10 +5,10 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.classInstance.as3;
+package cocktail.port.flash_player;
 
 import haxe.Log;
-import cocktailCore.classInstance.abstract.AbstractClassInstance;
+import cocktail.core.classInstance.AbstractClassInstance;
 
 /**
  * This is the implementation of the native instance proxy for Flash. It implemenents

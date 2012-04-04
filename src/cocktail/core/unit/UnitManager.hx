@@ -457,7 +457,7 @@ class UnitManager
 		switch(parsed)
 		{
 			case "auto":
-				cursor = Cursor.auto;
+				cursor = Cursor.cssAuto;
 				
 			case "crosshair":
 				cursor = Cursor.crosshair;
@@ -496,6 +496,49 @@ class UnitManager
 		
 		return  wordSpacing;
 	}
+	
+	//TODO
+	static public function backgroundImageEnum(string:String):Array<BackgroundImage>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundOriginEnum(string:String):Array<BackgroundOrigin>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function backgroundClipEnum(string:String):Array<BackgroundClip>
+	{
+		return [];
+	}
+	
+	//TODO
+	static public function fontFamilyEnum(string:String):Array<String>
+	{
+		return [];
+	}
+	
 	
 	static public function letterSpacingEnum(string:String):LetterSpacing
 	{
@@ -701,7 +744,7 @@ class UnitManager
 		return switch (parsed.unit)
 		{
 			case "in":
-				Length._in(Std.parseInt(parsed.value));	
+				Length.cssIn(Std.parseInt(parsed.value));	
 			case "cm":
 				Length.cm(Std.parseInt(parsed.value));	
 			case "em":
@@ -803,7 +846,7 @@ class UnitManager
 			case pt(value):
 				lengthValue = value * 1/0.75;	
 				
-			case _in(value):
+			case cssIn(value):
 				lengthValue = value * (72 * (1/0.75));
 				
 			case pc(value):
@@ -1752,32 +1795,13 @@ class UnitManager
 	/**
 	 * CSS : font-family
 	 */
-	public static function getCSSFontFamily(value:Array<FontFamily>):String
+	public static function getCSSFontFamily(value:Array<String>):String
 	{
 		var cssFontFamilyValue:String = "";
 		
 		for (i in 0...value.length)
 		{
-			var fontName:String;
-			
-			switch (value[i])
-			{
-				case FontFamily.familyName(name):
-					fontName = name;
-				
-				case FontFamily.genericFamily(genericName):
-					switch (genericName)
-					{
-						case GenericFontFamily.serif:
-							fontName = "serif";
-						
-						case GenericFontFamily.sansSerif:
-							fontName = "sans-serif";
-							
-						case GenericFontFamily.monospace:
-							fontName = "monospace";
-					}
-			}
+			var fontName:String = value[i];
 			
 			//escapes font name constituted of multiple words
 			if (fontName.indexOf(" ") != -1)
@@ -2220,7 +2244,7 @@ class UnitManager
 		
 		switch (value)
 		{
-			case Cursor.auto:
+			case Cursor.cssAuto:
 				cssCursorValue = "auto";
 				
 			case Cursor.crosshair:
@@ -2443,7 +2467,7 @@ class UnitManager
 			case cm(centimetersValue):
 				cssLength = Std.string(centimetersValue) + "cm";
 				
-			case _in(inchesValue):
+			case cssIn(inchesValue):
 				cssLength = Std.string(inchesValue) + "in";
 				
 			case em(emValue	):

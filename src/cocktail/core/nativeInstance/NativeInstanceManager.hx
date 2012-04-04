@@ -5,9 +5,9 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package cocktail.core.nativeInstance;
 
-import cocktail.classInstance.ClassInstance;
+import cocktail.core.ClassInstance;
 
 /**
  * This class exposes static method used to get instances of native class.

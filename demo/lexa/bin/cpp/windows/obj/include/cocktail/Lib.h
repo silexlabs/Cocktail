@@ -6,12 +6,12 @@
 #endif
 
 HX_DECLARE_CLASS1(cocktail,Lib)
-HX_DECLARE_CLASS2(core,dom,Document)
-HX_DECLARE_CLASS2(core,dom,Node)
-HX_DECLARE_CLASS2(core,event,IEventTarget)
-HX_DECLARE_CLASS2(core,html,HTMLDocument)
-HX_DECLARE_CLASS2(core,window,AbstractWindow)
-HX_DECLARE_CLASS2(port,flash_player,Window)
+HX_DECLARE_CLASS3(cocktail,core,dom,Document)
+HX_DECLARE_CLASS3(cocktail,core,dom,Node)
+HX_DECLARE_CLASS3(cocktail,core,event,IEventTarget)
+HX_DECLARE_CLASS3(cocktail,core,html,HTMLDocument)
+HX_DECLARE_CLASS3(cocktail,core,window,AbstractWindow)
+HX_DECLARE_CLASS3(cocktail,port,flash_player,Window)
 namespace cocktail{
 
 
@@ -34,17 +34,17 @@ class Lib_obj : public hx::Object{
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("Lib"); }
 
-		static ::core::html::HTMLDocument _document; /* REM */ 
-		static ::core::html::HTMLDocument document; /* REM */ 
-		static ::port::flash_player::Window _window; /* REM */ 
-		static ::port::flash_player::Window window; /* REM */ 
+		static ::cocktail::core::html::HTMLDocument _document; /* REM */ 
+		static ::cocktail::core::html::HTMLDocument document; /* REM */ 
+		static ::cocktail::port::flash_player::Window _window; /* REM */ 
+		static ::cocktail::port::flash_player::Window window; /* REM */ 
 		static Void init( );
 		static Dynamic init_dyn();
 
-		static ::core::html::HTMLDocument get_document( );
+		static ::cocktail::core::html::HTMLDocument get_document( );
 		static Dynamic get_document_dyn();
 
-		static ::port::flash_player::Window get_window( );
+		static ::cocktail::port::flash_player::Window get_window( );
 		static Dynamic get_window_dyn();
 
 };

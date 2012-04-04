@@ -14,6 +14,7 @@ import cocktail.core.event.Event;
 import cocktail.core.HTMLAnchorElement;
 import cocktail.core.HTMLElement;
 import cocktail.core.HTMLHtmlElement;
+import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
 import cocktail.core.Window;
 
@@ -105,6 +106,8 @@ class HTMLDocument extends Document
 			default:
 				element = new HTMLElement(tagName);
 		}
+		
+		element.ownerDocument = this;
 		
 		return element;
 	}

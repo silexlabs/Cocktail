@@ -10,13 +10,6 @@ package cocktail.core.style;
 import cocktail.core.HTMLElement;
 import haxe.Log;
 
-#if (flash9 || nme)
-import cocktail.port.flash_player.CoreStyle;
-
-#elseif js
-import cocktail.port.browser.CoreStyle;
-#end
-
 /**
  * This is the style implementation for embedded
  * HTMLElement. Embedded HTMLElement include external
@@ -29,7 +22,7 @@ import cocktail.port.browser.CoreStyle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractEmbeddedCoreStyle extends CoreStyle
+class AbstractEmbeddedCoreStyle extends AbstractCoreStyle
 {
 	/**
 	 * class constructor

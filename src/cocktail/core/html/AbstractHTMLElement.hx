@@ -16,13 +16,13 @@ import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
-import cocktail.core.CoreStyle;
-import cocktail.core.style.adapter.Style;
+import cocktail.core.Style;
+import cocktail.core.style.ContainerCoreStyle;
+import cocktail.core.style.CoreStyle;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
-import cocktail.core.ContainerCoreStyle;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
@@ -58,37 +58,37 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * through the mouse instance
 	 */
 	private var _onClick:MouseEvent->Void;
-	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
+	public var onclick(get_onClick, set_onClick):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse down through the mouse instance
 	 */
 	private var _onMouseDown:MouseEvent->Void;
-	public var onMouseDown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
+	public var onmousedown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse up through the mouse instance
 	 */
 	private var _onMouseUp:MouseEvent->Void;
-	public var onMouseUp(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
+	public var onmouseup(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this htmlElement
 	 */
 	private var _onMouseOver:MouseEvent->Void;
-	public var onMouseOver(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
+	public var onmouseover(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse out of this htmlElement
 	 */
 	private var _onMouseOut:MouseEvent->Void;
-	public var onMouseOut(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
+	public var onmouseout(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this htmlElement
 	 */
 	private var _onMouseMove:MouseEvent->Void;
-	public var onMouseMove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
+	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
@@ -104,13 +104,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * The callback called on key down through the keyboard instance
 	 */
 	private var _onKeyDown:KeyboardEvent->Void;
-	public var onKeyDown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
+	public var onkeydown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback called on key up through the keyboard instance
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
-	public var onKeyUp(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
+	public var onkeyup(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes and callback
@@ -139,13 +139,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * the focus
 	 */
 	private var _onFocus:Event->Void;
-	public var onFocus(get_onFocus, set_onFocus):Event->Void;
+	public var onfocus(get_onFocus, set_onFocus):Event->Void;
 	
 	/**
 	 * callback called when the HTMLElement loses the focus
 	 */
 	private var _onBlur:Event->Void;
-	public var onBlur(get_onBlur, set_onBlur):Event->Void;
+	public var onblur(get_onBlur, set_onBlur):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes and callback
@@ -157,7 +157,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * is scrolled
 	 */
 	private var _onScroll:Event->Void;
-	public var onScroll(get_onScroll, set_onScroll):Event->Void;
+	public var onscroll(get_onScroll, set_onScroll):Event->Void;
 	
 	/**
 	 * Gets/sets the top scroll offset of an element
@@ -318,7 +318,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initNativeElement():Void
 	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.custom(_tagName));
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.semantic(_tagName));
 	}
 	
 	/**
@@ -356,7 +356,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(_coreStyle);
+		_style = new Style(cast(_coreStyle));
 	}
 	
 	/**

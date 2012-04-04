@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
@@ -27,7 +28,6 @@ import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
-import cocktail.core.ContainerCoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.positioner.AbsolutePositioner;
 import cocktail.core.style.positioner.BoxPositioner;
@@ -40,6 +40,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.unit.UnitManager;
 import cocktail.core.Window;
 import haxe.Log;
 import haxe.Timer;
@@ -181,8 +182,8 @@ class AbstractCoreStyle
 	private var _fontStyle:FontStyle;
 	public var fontStyle(getFontStyle, setFontStyle):FontStyle;
 	
-	private var _fontFamily:Array<FontFamily>;
-	public var fontFamily(getFontFamily, setFontFamily ):Array<FontFamily>;
+	private var _fontFamily:Array<String>;
+	public var fontFamily(getFontFamily, setFontFamily ):Array<String>;
 	
 	private var _fontVariant:FontVariant;
 	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
@@ -419,7 +420,7 @@ class AbstractCoreStyle
 			lineHeight:14.0,
 			fontWeight:FontWeight.normal,
 			fontStyle:FontStyle.normal,
-			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
+			fontFamily:["serif"],
 			fontVariant:FontVariant.normal,
 			textTransform:TextTransform.none,
 			letterSpacing:0,
@@ -453,7 +454,7 @@ class AbstractCoreStyle
 	private static function getDefaultStyle():DefaultStylesData
 	{
 		return {
-			fontFamily:[FontFamily.genericFamily(GenericFontFamily.serif)],
+			fontFamily:["serif"],
 			color:Color.keyword(ColorKeyword.black)
 		}
 	}
@@ -524,10 +525,11 @@ class AbstractCoreStyle
 			case "pre" : 
 				_display = Display.block;
 				_whiteSpace = WhiteSpace.pre;
-				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				_fontFamily = ["monospace"];
 				
 			case "code" : 
-				_fontFamily = [FontFamily.genericFamily(GenericFontFamily.monospace)];
+				//TODO : add constant for generic fonts
+				_fontFamily = ["monospace"];
 				
 			case "i", "cite", "em", "var" :
 				_fontStyle = FontStyle.italic;
@@ -862,7 +864,8 @@ class AbstractCoreStyle
 	 * structure must be reseted so that it is re-created
 	 * with updating values on next layout
 	 * 
-	 * TODO : no more text cache system, need to re-implement
+	 * TODO : no more text cache system, need to re-implement, should
+	 * be in TextRenderer
 	 */
 	public function invalidateText():Void
 	{
@@ -1274,7 +1277,7 @@ class AbstractCoreStyle
 		//if the htmlElement has a parent
 		if (firstPositionedAncestor != null)
 		{
-			var firstPositionedAncestorStyle:ContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
+			var firstPositionedAncestorStyle:AbstractContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
 			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
 		}
 		//if the HTMLElement has no parent, return the Window data
@@ -1314,6 +1317,14 @@ class AbstractCoreStyle
 	
 	private function getFontMetricsData():FontMetricsData
 	{
+		//only query for font metrics if it isn't
+		//already cached
+		if (_fontMetrics == null)
+		{
+			var fontManager:FontManager = new FontManager();
+			_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(_computedStyle.fontFamily), _computedStyle.fontSize);
+		}
+		
 		return _fontMetrics;
 	}
 	
@@ -1488,7 +1499,7 @@ class AbstractCoreStyle
 		return _fontStyle = value;
 	}
 	
-	private function setFontFamily(value:Array<FontFamily>):Array<FontFamily>
+	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		invalidateText();
 		return _fontFamily = value;
@@ -1732,7 +1743,7 @@ class AbstractCoreStyle
 		return _fontStyle;
 	}
 	
-	private function getFontFamily():Array<FontFamily>
+	private function getFontFamily():Array<String>
 	{
 		return _fontFamily;
 	}

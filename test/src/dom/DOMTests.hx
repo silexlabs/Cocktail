@@ -12,8 +12,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package dom;
 
-import cocktail.Cocktail;
 import cocktail.Lib;
+import cocktail.Dom;
 
 import utest.Assert;
 import utest.Runner;
@@ -24,10 +24,10 @@ class DOMTests
 	
 	public static function main()
 	{	
-		/*var runner = new Runner();
+		var runner = new Runner();
 		runner.addCase(new DOMTests());
 		Report.create(runner);
-		runner.run();*/
+		runner.run();
 	}
 	
 	public function new() 
@@ -91,7 +91,7 @@ class DOMTests
 		Assert.equals(node.lastChild, childNode);
 		Assert.equals(childNode.parentNode, node);
 		
-		Assert.isNull(node.nodeType);
+		Assert.equals(node.nodeType, -1);
 		
 		var siblingNode = new Node();
 		node.appendChild(siblingNode);

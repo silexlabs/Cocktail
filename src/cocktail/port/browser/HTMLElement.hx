@@ -264,9 +264,9 @@ class HTMLElement extends AbstractHTMLElement
 	 */
 	private function onNativeFocus(event:Dynamic):Void
 	{
-		if (onFocus != null)
+		if (_onFocus != null)
 		{
-			onFocus(new Event(Event.FOCUS, this));
+			_onFocus(new Event(Event.FOCUS, this));
 		}
 	}
 	
@@ -276,9 +276,9 @@ class HTMLElement extends AbstractHTMLElement
 	 */
 	private function onNativeBlur(event:Dynamic):Void
 	{
-		if (onBlur != null)
+		if (_onBlur != null)
 		{
-			onBlur(new Event(Event.BLUR, this));
+			_onBlur(new Event(Event.BLUR, this));
 		}
 	}
 	

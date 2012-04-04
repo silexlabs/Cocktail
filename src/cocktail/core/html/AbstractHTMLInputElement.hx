@@ -7,7 +7,7 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.EmbeddedCoreStyle;
+import cocktail.core.style.EmbeddedCoreStyle;
 
 #if (flash9 || nme)
 import cocktail.port.flash_player.HTMLElement;
@@ -36,7 +36,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	 * focus if the value of the text input changed
 	 */
 	private var _onChange:Void->Void;
-	public var onChange(get_onChange, set_onChange):Void->Void;
+	public var onchange(get_onChange, set_onChange):Void->Void;
 	
 	/**
 	 * The control is unavailable in this context.
