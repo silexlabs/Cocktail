@@ -20,7 +20,7 @@ import cocktail.core.renderer.LayerRenderer;
 import haxe.Log;
 
 #if (flash9 || nme)
-import cocktail.port.flash_player.ContainerCoreStyle;
+import cocktail.core.style.AbstractContainerCoreStyle;
 
 #elseif js
 import cocktail.core.style.AbstractContainerCoreStyle;

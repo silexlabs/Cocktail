@@ -11,7 +11,7 @@ package cocktail.core;
  * Set the right runtime specific ContainerCoreStyle at compile-time
  */
 #if (flash9 || nme)
-typedef ContainerCoreStyle =  cocktail.port.flash_player.ContainerCoreStyle;
+typedef ContainerCoreStyle =  cocktail.core.style.AbstractContainerCoreStyle;
 
 #elseif js
 typedef ContainerCoreStyle =  cocktail.core.style.AbstractContainerCoreStyle;
