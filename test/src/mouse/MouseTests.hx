@@ -17,11 +17,9 @@ package mouse;
  * @author Yannick DOMINGUEZ
  */
 
-import core.HTMLElement;
-import core.Mouse;
-import core.nativeElement.NativeElementManager;
-import core.nativeElement.NativeElementData;
-import haxe.Log;
+import cocktail.core.HTMLElement;
+import cocktail.core.Mouse;
+
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
