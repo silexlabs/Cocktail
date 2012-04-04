@@ -21,7 +21,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Style 
+class AbstractStyle 
 {
 	/**
 	 * display styles
