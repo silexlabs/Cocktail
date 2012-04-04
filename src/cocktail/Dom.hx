@@ -39,6 +39,7 @@ typedef HTMLDocument = cocktail.core.html.HTMLDocument;
 /**
  * EVENT
  */
+ 
 typedef Event = cocktail.core.event.Event;
 typedef IEventTarget = cocktail.core.event.IEventTarget;
 typedef MouseEvent = cocktail.core.event.MouseEvent;
