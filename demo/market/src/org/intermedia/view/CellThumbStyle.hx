@@ -65,7 +65,7 @@ class CellThumbStyle
 		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
-		var cellSize:Size = computeMaskSize(cellPerLine);
+		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine);
 		
 		domElement.style.height = DimensionStyleValue.length(px(cellSize.height));
 		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(CELL_MAX_HEIGHT));
@@ -78,40 +78,6 @@ class CellThumbStyle
 		return cellSize;
 	}
 	
-	
-	/**
-	 * computes the thumb mask size
-	 * 
-	 * @param	?cellPerLine				number of cells per line
-	 * @param	?thumbWidthPercent = 100	thumb percentage of the cell
-	 * @return
-	 */
-	public static function computeMaskSize(?cellPerLine:Int = 1, ?thumbWidthPercent:Int=100):Size
-	{
-		var maskPixelSize:Size = { width:0, height:0 };
-		
-		// compute cell width depending on cellPerLine value
-		//var maskWidthPercent:Int = 100;
-		if (cellPerLine != 0)
-		{
-			//maskWidthPercent = Std.int(thumbWidthPercent / cellPerLine);
-			maskPixelSize.width = Std.int(new Viewport().width * thumbWidthPercent / (cellPerLine * 100));
-			//maskPixelSize.width = Std.int(new Viewport().width / cellPerLine );
-		}
-		else
-		{
-			//maskWidthPercent = thumbWidthPercent;
-			maskPixelSize.width = Std.int(new Viewport().width * thumbWidthPercent / 100);
-			//maskPixelSize.width = Std.int(new Viewport().width);
-		}
-		
-		// compute height depending on the width
-		//maskPixelSize.height = Std.int(maskPixelSize.width / CELL_RATIO);
-		maskPixelSize.height = CELL_HEIGHT;
-
-		return maskPixelSize;
-		
-	}
 	
 	/**
 	 * Defines cell image Style
@@ -127,7 +93,8 @@ class CellThumbStyle
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
 		domElement.style.opacity = OpacityStyleValue.number(0);
 		
-		zoomImage(domElement, maskSize);
+		//zoomImage(domElement, maskSize);
+		ImageUtils.cropImage(domElement, maskSize);
 		
 	}
 	
@@ -137,7 +104,7 @@ class CellThumbStyle
 	 * @param	domElement
 	 * @param	maskSize
 	 */
-	public static function zoomImage(domElement:ImageDOMElement, maskSize:Size):Void
+	/*public static function zoomImage(domElement:ImageDOMElement, maskSize:Size):Void
 	{
 		
 		var imageRatio:Float = 0;
@@ -173,6 +140,6 @@ class CellThumbStyle
 			domElement.style.marginTop = MarginStyleValue.length(px(-Math.abs((maskSize.height-resizedImageSize.height))/2));
 		}
 				
-	}
+	}*/
 	
 }
