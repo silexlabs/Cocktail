@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package html;
 
-import cocktail.Cocktail;
+import cocktail.Dom;
 import cocktail.Lib;
 import core.dom.Attr;
 import core.dom.Element;
