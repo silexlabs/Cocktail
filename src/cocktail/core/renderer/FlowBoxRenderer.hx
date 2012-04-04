@@ -8,7 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.NativeElement;
-import cocktail.core.CoreStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import haxe.Log;
 
 /**
@@ -26,7 +26,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(style:CoreStyle) 
+	public function new(style:AbstractCoreStyle) 
 	{
 		super(style);
 	}

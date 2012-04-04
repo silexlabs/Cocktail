@@ -8,7 +8,6 @@
 package cocktail.core.style.computer.boxComputers;
 
 import cocktail.core.style.AbstractCoreStyle;
-import cocktail.core.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.unit.UnitManager;

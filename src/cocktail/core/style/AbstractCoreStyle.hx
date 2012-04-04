@@ -7,7 +7,6 @@
 */
 package cocktail.core.style;
 
-import cocktail.core.CoreStyle;
 import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
@@ -29,7 +28,6 @@ import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
-import cocktail.core.ContainerCoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.positioner.AbsolutePositioner;
 import cocktail.core.style.positioner.BoxPositioner;
@@ -1279,7 +1277,7 @@ class AbstractCoreStyle
 		//if the htmlElement has a parent
 		if (firstPositionedAncestor != null)
 		{
-			var firstPositionedAncestorStyle:ContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
+			var firstPositionedAncestorStyle:AbstractContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
 			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
 		}
 		//if the HTMLElement has no parent, return the Window data

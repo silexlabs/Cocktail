@@ -8,7 +8,6 @@
 package cocktail.core.style.computer;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.CoreStyle;
 import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;

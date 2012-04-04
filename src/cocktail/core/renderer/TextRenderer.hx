@@ -8,8 +8,8 @@
 package cocktail.core.renderer;
 
 import cocktail.core.NativeElement;
-import cocktail.core.CoreStyle;
 import cocktail.core.dom.DOMData;
+import cocktail.core.style.AbstractCoreStyle;
 import haxe.Log;
 
 /**
@@ -34,7 +34,7 @@ class TextRenderer extends ElementRenderer
 	 * 
 	 * @param htmlElement the generated text
 	 */
-	public function new(style:CoreStyle, nativeElement:NativeElement, textToken:TextTokenValue) 
+	public function new(style:AbstractCoreStyle, nativeElement:NativeElement, textToken:TextTokenValue) 
 	{
 		_textToken = textToken;
 		
