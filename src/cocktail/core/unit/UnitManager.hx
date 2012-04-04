@@ -744,7 +744,7 @@ class UnitManager
 		return switch (parsed.unit)
 		{
 			case "in":
-				Length._in(Std.parseInt(parsed.value));	
+				Length.cssIn(Std.parseInt(parsed.value));	
 			case "cm":
 				Length.cm(Std.parseInt(parsed.value));	
 			case "em":
@@ -846,7 +846,7 @@ class UnitManager
 			case pt(value):
 				lengthValue = value * 1/0.75;	
 				
-			case _in(value):
+			case cssIn(value):
 				lengthValue = value * (72 * (1/0.75));
 				
 			case pc(value):
@@ -2467,7 +2467,7 @@ class UnitManager
 			case cm(centimetersValue):
 				cssLength = Std.string(centimetersValue) + "cm";
 				
-			case _in(inchesValue):
+			case cssIn(inchesValue):
 				cssLength = Std.string(inchesValue) + "in";
 				
 			case em(emValue	):
