@@ -36,14 +36,15 @@ class SwippableListViewStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function setListStyle(domElement:DOMElement):Void
+	public static function setListsContainerStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.absolute;
+		//domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.position = PositionStyleValue.staticStyle;
 		
 		domElement.style.marginLeft = MarginStyleValue.length(px(0));
 		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(Constants.LIST_TOP));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
 		domElement.style.marginBottom = MarginStyleValue.length(px(0));
 		
 		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
@@ -61,14 +62,31 @@ class SwippableListViewStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function setContainerStyle(domElement:DOMElement):Void
+	public static function setSwippableListStyle(domElement:DOMElement):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.position = PositionStyleValue.absolute;
 		
+		//domElement.style.display = DisplayStyleValue.block;
+		//domElement.style.position = PositionStyleValue.staticStyle;
+		
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(Constants.LIST_TOP));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+
 		domElement.style.width = DimensionStyleValue.percent(100);
+		//domElement.style.width = DimensionStyleValue.autoValue;
+		//domElement.style.width = DimensionStyleValue.length(px(80));
 		domElement.style.height = DimensionStyleValue.percent(100);
-		
+
+		domElement.style.overflow = { x:OverflowStyleValue.scroll, y:OverflowStyleValue.hidden };
+		//domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+
 	}
 	
 }

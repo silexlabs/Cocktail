@@ -2,6 +2,7 @@ package org.intermedia.view;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.textElement.TextElement;
+import haxe.Firebug;
 
 // hxtml
 import hxtml2.HTMLPageData;
@@ -145,10 +146,10 @@ class DetailView extends ViewBase
 			this.nativeElement.appendChild(htmlPageData.htmlDom);
 		}catch(msg : String){
 			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
-			trace("Error, parsing XML tag \n"+msg);
+			Firebug.trace("Error, parsing XML tag \n"+msg);
 		} catch( unknown : Dynamic ) {
 			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+Std.string(unknown));
-			trace("Error, parsing XML tag \n"+Std.string(unknown));
+			Firebug.trace("Error, parsing XML tag \n"+Std.string(unknown));
 		}
 	}
 	

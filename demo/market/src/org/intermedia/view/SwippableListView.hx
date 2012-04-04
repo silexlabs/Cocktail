@@ -1,5 +1,7 @@
 package org.intermedia.view;
 
+import cocktail.classInstance.ClassInstance;
+import cocktail.domElement.ContainerDOMElement;
 import cocktail.viewport.Viewport;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.ListViewBase;
@@ -29,6 +31,9 @@ class SwippableListView extends ListViewBase
 	// number of lists taken in account for the homapage items
 	static inline var LIST_QTY:Int = 2;
 	static inline var HOMEPAGE_ITEMS:Int = HOMEPAGE_ITEM_PER_LIST * LIST_QTY;
+	
+	// the container of the swippable lists
+	private var _listsContainer:ContainerDOMElement;
 	
 	// a ref to each of the list views which can be swiped
 	//private var _listViews:Array<ViewBase>;
@@ -62,16 +67,6 @@ class SwippableListView extends ListViewBase
 	
 	private var _homePageDataSet:Bool;
 	
-	// X offset used to scroll list left and right
-	/*private var _xOffset:Int;
-	private var _xOffsetStart:Int;
-	private var _xInitial:Int;
-	
-	// Y offset used to scroll list left and right
-	private var _yOffset:Int;
-	private var _yOffsetStart:Int;
-	private var _yInitialPosition:Int;*/
-	
 	// view port
 	private var _viewport:Viewport;
 	private var _viewportWidth:Int;
@@ -87,12 +82,6 @@ class SwippableListView extends ListViewBase
 		_offsetStart = { x:0, y:0 };
 		_initialPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
-		//_xOffset = 0;
-		//_xOffsetStart = 0;
-		//_xInitial = 0;
-		//_yOffset = 0;
-		//_yOffsetStart = 0;
-		//_yInitial = 0;
 		_viewport = new Viewport();
 		_viewportWidth = _viewport.width;
 		_viewportHeight = _viewport.height;
@@ -101,8 +90,13 @@ class SwippableListView extends ListViewBase
 		_homePageData = new Array<Dynamic>();
 		_homePageDataSet = false;
 		
+		_listsContainer = new ContainerDOMElement();
+		this.addChild(_listsContainer);
+		
 		// set style
-		SwippableListViewStyle.setListStyle(this);
+		//SwippableListViewStyle.setListStyle(this);
+		SwippableListViewStyle.setSwippableListStyle(this);
+		SwippableListViewStyle.setListsContainerStyle(_listsContainer);
 		// set onMouseDown callback
 		//onMouseDown = onDownCallback2;
 		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
@@ -194,7 +188,8 @@ class SwippableListView extends ListViewBase
 			listView.onDataRequest = onDataRequestCallback;
 			listView.onListItemSelected = onListItemSelectedCallback;
 			//listView.style.display = DisplayStyleValue.none;
-			this.addChild(listView);
+			//this.addChild(listView);
+			_listsContainer.addChild(listView);
 
 		}
 		
@@ -205,8 +200,8 @@ class SwippableListView extends ListViewBase
 		_index = 1;
 		// set current list to list1
 		_currentListView = cast _listViews[_index];
-		//this.parent.nativeElement.scrollLeft = 0;
-		//this.parent.nativeElement.scrollLeft = _viewportWidth;
+		//this.nativeElement.scrollLeft = 0;
+		//this.nativeElement.scrollLeft = _viewportWidth;
 		//this.nativeElement.scrollLeft = _viewportWidth;
 		//this.x = -_viewportWidth;
 		
@@ -263,13 +258,16 @@ class SwippableListView extends ListViewBase
 		}
 		
 		// if home page data is not set yet and _homePageData elements quantity is equal to HOMEPAGE_ITEMS,
-		// build home page and attach lists to swippable view
+		// build home page, attach lists to swippable view, scroll to list1 and remove loading screen
 		if (!_homePageDataSet && _homePageData.length == HOMEPAGE_ITEMS)
 		{
 			// build home page with its data
 			list1.buildHomePage(_homePageData);
 			// set _homePageDataSet flag to true
 			_homePageDataSet = true;
+			
+			scrollToCurrentList();
+			
 			
 			// add all lists to the view
 			/*for (listView in _listViews)
@@ -279,7 +277,7 @@ class SwippableListView extends ListViewBase
 				//listView.style.display = DisplayStyleValue.inlineBlock;
 			}*/
 			
-			//displayLoading = false;
+			displayLoading = false;
 
 		}
 		
@@ -311,7 +309,7 @@ class SwippableListView extends ListViewBase
 		// launch horizontal tween
 		horizontalReleaseTween();
 
-		return v;	
+		return v;
 	}
 	
 	/**
@@ -363,12 +361,12 @@ class SwippableListView extends ListViewBase
 		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
 		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
 		
-		//trace(event.pageX + ", " + event.pageY);
 		_initialPosition.x = event.pageX;
 		_initialPosition.y = event.pageY;
-		_offsetStart.x = this.parent.nativeElement.scrollLeft;
+		_offsetStart.x = this.nativeElement.scrollLeft;
 		_direction = Direction.notYetSet;
 
+		//trace(event.pageX + ", " + event.pageY + ", " + _offsetStart.x);
 		
 	}
 
@@ -425,10 +423,11 @@ class SwippableListView extends ListViewBase
 			#end
 		}*/
 		
-		//_currentListView.onListItemSelected = null;
+		_currentListView.onListItemSelected = null;
 		//trace(event.pageX - _initialPosition.x);
-		this.parent.nativeElement.scrollLeft -= Std.int(event.pageX - _initialPosition.x);
-
+		this.nativeElement.scrollLeft = _offsetStart.x - Std.int(event.pageX - _initialPosition.x);
+		//trace(this.nativeElement.scrollLeft);
+		
 		_offset.x = Std.int(event.pageX - _initialPosition.x);
 		_offset.y = Std.int(event.pageY - _initialPosition.y);
 		
@@ -469,7 +468,7 @@ class SwippableListView extends ListViewBase
 		// if direction is vertical
 		else if (_direction == Direction.vertical)
 		{
-			this.parent.nativeElement.scrollLeft = _offsetStart.x;
+			this.nativeElement.scrollLeft = _offsetStart.x;
 		}
 
 	}
@@ -494,8 +493,8 @@ class SwippableListView extends ListViewBase
 		{
 			event.preventDefault();
 		}
-		//onUpCallback2(this.parent.nativeElement.scrollLeft);
-		var x = this.parent.nativeElement.scrollLeft;
+		//onUpCallback2(this.nativeElement.scrollLeft);
+		var x = this.nativeElement.scrollLeft;
 		
 		
 		if (_direction == Direction.horizontal)
@@ -516,17 +515,17 @@ class SwippableListView extends ListViewBase
 			var w = _viewportWidth / 2;
 			if (x < w)
 			{
-				//this.parent.nativeElement.scrollLeft = 0;
+				//this.nativeElement.scrollLeft = 0;
 				index = 0;
 			}
 			else if (x < 3 * w)
 			{
-				//this.parent.nativeElement.scrollLeft = _viewportWidth;
+				//this.nativeElement.scrollLeft = _viewportWidth;
 				index = 1;
 			}
 			else 
 			{
-				//this.parent.nativeElement.scrollLeft = 2 * _viewportWidth;
+				//this.nativeElement.scrollLeft = 2 * _viewportWidth;
 				index = 2;
 			}
 			//trace(_index);
@@ -598,7 +597,7 @@ class SwippableListView extends ListViewBase
 	 */
 	public function scrollToCurrentList():Void
 	{
-		this.parent.nativeElement.scrollLeft = _currentListView.x;
+		this.nativeElement.scrollLeft = _currentListView.x;
 	}
 	
 	/**
@@ -611,10 +610,10 @@ class SwippableListView extends ListViewBase
 		//trace( x + ", " + y + ", " + _offsetStart.x + ", " + _offset.x + ", " + _viewportWidth + ", " + this.x + ", " + -_currentListView.x);
 
 		// create the tween
-		//trace("horizontalReleaseTween from " + this.parent.nativeElement.scrollLeft + " to " + _currentListView.x);
+		//trace("horizontalReleaseTween from " + this.nativeElement.scrollLeft + " to " + _currentListView.x);
         //var tween = new Tween( this.nativeElement.scrollLeft, -_currentListView.x, 600, Quint.easeOut );
-		//trace("scrollLeft: " + this.parent.nativeElement.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
-        var tween = new Tween( this.parent.nativeElement.scrollLeft, _currentListView.x, 600, Quint.easeOut );
+		//haxe.Firebug.trace("index: " + _index + " - scrollLeft: " + this.nativeElement.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
+        var tween = new Tween( this.nativeElement.scrollLeft, _currentListView.x, 600, Quint.easeOut );
 		tween.setTweenHandlers( horizontalTweenMove, horizontalTweenEnd );
         // launch the tween
         tween.start();
@@ -628,7 +627,7 @@ class SwippableListView extends ListViewBase
     private function horizontalTweenMove( e : Float )
     {
 		//this.nativeElement.scrollLeft = Std.int(e);
-		this.parent.nativeElement.scrollLeft = Std.int(e);
+		this.nativeElement.scrollLeft = Std.int(e);
     }
 
 	/**
@@ -690,6 +689,15 @@ class SwippableListView extends ListViewBase
 	{
 		
 	}
+	
+	/**
+	 * remove list scroll callback behaviour
+	 * @param	event
+	 */
+	override private function onScrollCallback(event:ScrollEventData):Void
+	{
+	}
+
 	
 // Touch event workaround	
 #if js
