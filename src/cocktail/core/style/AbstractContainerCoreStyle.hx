@@ -39,7 +39,7 @@ import cocktail.core.dom.DOMData;
 import haxe.Timer;
 
 #if (flash9 || nme)
-import cocktail.port.flash_player.CoreStyle;
+import cocktail.core.style.AbstractCoreStyle;
 
 #elseif js
 import cocktail.port.browser.CoreStyle;
