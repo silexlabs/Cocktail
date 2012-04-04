@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
 import cocktail.core.HTMLElement;
 import cocktail.core.dom.Node;
@@ -470,10 +471,13 @@ class AbstractContainerCoreStyle extends CoreStyle
 	 */
 	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
 	{
-		var textRenderer:TextRenderer;
-		textRenderer = createTextRenderer(text, textFragmentData.textToken);
-			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-			textFragmentData.textRenderer = textRenderer;
+		var fontManager:FontManager = new FontManager();
+		var nativeTextElement:NativeElement = fontManager.createNativeTextElement(text, _computedStyle);
+		
+		var textRenderer:TextRenderer = new TextRenderer(this, nativeTextElement, textFragmentData.textToken);
+	
+		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+		textFragmentData.textRenderer = textRenderer;
 			
 		//TODO : reusing a textRenderer creates an infinite loop
 		/**if (textFragmentData.textRenderer == null)
@@ -488,24 +492,6 @@ class AbstractContainerCoreStyle extends CoreStyle
 		}*/
 		
 		return textRenderer;
-	}
-	
-	/**
-	 * Create a TextRenderer from a string of text and
-	 * add it to the ContainerHTMLElement
-	 */
-	private function createTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
-	{
-		return  doCreateTextRenderer(text, textToken);
-	}
-	
-	/**
-	 * Actually create the TextFragmentHTMLElement using runtime
-	 * specific API. Overriden by each runtime
-	 */
-	private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
-	{
-		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
