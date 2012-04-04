@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.adapter;
 
+import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -107,13 +108,13 @@ class AbstractStyle
 	 * A ref to the CoreStyle instance wrapped 
 	 * by this Style adapter
 	 */
-	private var _coreStyle:CoreStyle;
+	private var _coreStyle:AbstractCoreStyle;
 	
 	/**
 	 * class constructor. Store the ref to 
 	 * the CoreStyle
 	 */
-	public function new(coreStyle:CoreStyle) 
+	public function new(coreStyle:AbstractCoreStyle) 
 	{
 		_coreStyle = coreStyle;
 	}

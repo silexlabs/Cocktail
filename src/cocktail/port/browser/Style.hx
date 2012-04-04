@@ -1,4 +1,5 @@
 package cocktail.port.browser;
+import cocktail.core.style.AbstractContainerCoreStyle;
 import cocktail.core.style.adapter.AbstractStyle;
 
 /**
@@ -9,7 +10,7 @@ import cocktail.core.style.adapter.AbstractStyle;
 class Style extends AbstractStyle
 {
 
-	public function new(coreStyle:CoreStyle) 
+	public function new(coreStyle:AbstractContainerCoreStyle) 
 	{
 		super(coreStyle);
 	}

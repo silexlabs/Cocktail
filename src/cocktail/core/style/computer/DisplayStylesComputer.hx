@@ -7,7 +7,6 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.CoreStyle;
 import cocktail.core.style.AbstractCoreStyle;
 import cocktail.core.style.StyleData;
 

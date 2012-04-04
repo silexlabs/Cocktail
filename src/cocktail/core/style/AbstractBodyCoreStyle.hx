@@ -19,12 +19,6 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import haxe.Log;
 
-#if (flash9 || nme)
-import cocktail.core.style.AbstractContainerCoreStyle;
-
-#elseif js
-import cocktail.core.style.AbstractContainerCoreStyle;
-#end
 
 /**
  * This is the style implementation for BodyHTMLElement.
@@ -33,7 +27,7 @@ import cocktail.core.style.AbstractContainerCoreStyle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractBodyCoreStyle extends ContainerCoreStyle
+class AbstractBodyCoreStyle extends AbstractContainerCoreStyle
 {
 		
 	/**

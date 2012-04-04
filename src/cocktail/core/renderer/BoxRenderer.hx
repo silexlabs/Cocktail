@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
-import cocktail.core.CoreStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import haxe.Log;
 
 /**
@@ -30,7 +30,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(style:CoreStyle) 
+	public function new(style:AbstractCoreStyle) 
 	{
 		super(style);
 		init();

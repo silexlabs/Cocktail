@@ -16,13 +16,13 @@ import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
-import cocktail.core.CoreStyle;
 import cocktail.core.Style;
+import cocktail.core.style.AbstractContainerCoreStyle;
+import cocktail.core.style.AbstractCoreStyle;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
-import cocktail.core.ContainerCoreStyle;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
@@ -264,8 +264,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * 
 	 * TODO : update doc for this all around
 	 */
-	private var _coreStyle:CoreStyle;
-	public var coreStyle(get_coreStyle, never):CoreStyle;
+	private var _coreStyle:AbstractCoreStyle;
+	public var coreStyle(get_coreStyle, never):AbstractCoreStyle;
 	
 	/**
 	 * This is the style object exposed by the public API.
@@ -347,7 +347,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new ContainerCoreStyle(cast(this));
+		this._coreStyle = new AbstractContainerCoreStyle(cast(this));
 	}
 	
 	/**
@@ -356,7 +356,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(_coreStyle);
+		_style = new Style(cast(_coreStyle));
 	}
 	
 	/**
@@ -893,7 +893,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// STYLE GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_coreStyle():CoreStyle
+	private function get_coreStyle():AbstractCoreStyle
 	{
 		return this._coreStyle;
 	}

@@ -38,13 +38,6 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.dom.DOMData;
 import haxe.Timer;
 
-#if (flash9 || nme)
-import cocktail.core.style.AbstractCoreStyle;
-
-#elseif js
-import cocktail.port.browser.CoreStyle;
-#end
-
 import haxe.Log;
 
 /**
@@ -56,7 +49,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractContainerCoreStyle extends CoreStyle
+class AbstractContainerCoreStyle extends AbstractCoreStyle
 {
 	/**
 	 * class constructor.
