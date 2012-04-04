@@ -12739,6 +12739,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 		var listView = _g1[_g];
 		++_g;
 		listView.onDataRequest = this.onDataRequestCallback.$bind(this);
+		listView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this.addChild(listView);
 	}
 	this.setDisplayLoading(true);
@@ -12827,10 +12828,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		var x = this.getParent().getNativeElement().scrollLeft;
 		if(this._direction == org.intermedia.view.Direction.horizontal) {
 			var w = this._viewportWidth / 2;
-			if(x < w) this._index = 0; else if(x < 3 * w) this._index = 1; else this._index = 2;
-			this._currentListView = this._listViews[this._index];
-			this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-			this.horizontalReleaseTween();
+			if(x < w) this.setIndex(0); else if(x < 3 * w) this.setIndex(1); else this.setIndex(2);
 		} else this.verticalReleaseTween();
 		this._direction = org.intermedia.view.Direction.notYetSet;
 	}

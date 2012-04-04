@@ -192,6 +192,7 @@ class SwippableListView extends ListViewBase
 		for (listView in _listViews)
 		{
 			listView.onDataRequest = onDataRequestCallback;
+			listView.onListItemSelected = onListItemSelectedCallback;
 			//listView.style.display = DisplayStyleValue.none;
 			this.addChild(listView);
 
@@ -516,20 +517,20 @@ class SwippableListView extends ListViewBase
 			if (x < w)
 			{
 				//this.parent.nativeElement.scrollLeft = 0;
-				_index = 0;
+				index = 0;
 			}
 			else if (x < 3 * w)
 			{
 				//this.parent.nativeElement.scrollLeft = _viewportWidth;
-				_index = 1;
+				index = 1;
 			}
 			else 
 			{
 				//this.parent.nativeElement.scrollLeft = 2 * _viewportWidth;
-				_index = 2;
+				index = 2;
 			}
 			//trace(_index);
-			_currentListView = cast _listViews[_index];
+			//_currentListView = cast _listViews[_index];
 		
 			// if the mouse movement is from left to right
 			// and if _xOffset is bigger than half the width of the viewport,
@@ -558,12 +559,12 @@ class SwippableListView extends ListViewBase
 			}*/
 			
 			// set listItemSelected callback on current list
-			_currentListView.onListItemSelected = onListItemSelectedCallback;
+			//_currentListView.onListItemSelected = onListItemSelectedCallback;
 			//_currentListView.onListScrolled = onScrolledCallback;
 			//_currentListView.onDataRequest = onDataRequestCallback;
 
 			// tween the swippable view in the correct position
-			horizontalReleaseTween();
+			//horizontalReleaseTween();
 		
 			// js workaround to scroll up
 			/*#if js
