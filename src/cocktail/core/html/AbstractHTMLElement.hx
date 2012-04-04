@@ -318,7 +318,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	private function initNativeElement():Void
 	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.custom(_tagName));
+		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.semantic(_tagName));
 	}
 	
 	/**

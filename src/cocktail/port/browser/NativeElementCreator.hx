@@ -40,33 +40,23 @@ class NativeElementCreator extends AbstractNativeElementCreator
 		
 		switch (nativeElementType)
 		{
-			case image:
+			case img:
 				nativeElement = Lib.document.createElement("img");
-			
-			case text:
-				nativeElement = Lib.document.createElement("div");
 				
-			case neutral:
-				nativeElement = Lib.document.createElement("div");
-				
-			case graphic:
+			case canvas:
 				nativeElement = Lib.document.createElement("canvas");
 				
-			case custom(name):
+			case semantic(name):
 				nativeElement = Lib.document.createElement(name);
 				
-			case library:
+			case script:
 				nativeElement = Lib.document.createElement("script");
 				
-			case skin:
-				nativeElement = Lib.document.createElement("div");
-				
-			case link:
+			case anchor:
 				nativeElement = Lib.document.createElement("a");
 				
-			case textInput:
+			case input:
 				nativeElement = Lib.document.createElement("input");
-				untyped nativeElement.type = "text";
 		}
 		
 		return nativeElement;

@@ -29,7 +29,7 @@ class AbstractImageLoader extends MediaLoader
 	 */
 	public function new()
 	{
-		var nativeElement:NativeElement = NativeElementManager.createNativeElement(image);
+		var nativeElement:NativeElement = NativeElementManager.createNativeElement(img);
 		super(nativeElement);
 	}
 }

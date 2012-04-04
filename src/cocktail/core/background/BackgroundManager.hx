@@ -133,7 +133,7 @@ class BackgroundManager
 			//the background color which use the same property as the last background image
 			if (i == style.backgroundImage.length - 1)
 			{
-				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, style.backgroundPosition[i],
 				style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
 
@@ -182,7 +182,7 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
-		var backgroundImageNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+		var backgroundImageNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 		
 		var imageLoader:ImageLoader = new ImageLoader();
 		
@@ -325,7 +325,7 @@ class BackgroundManager
 			backgroundClip, backgroundRepeat, backgroundImage);
 							
 
-			var gradientNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.graphic);
+			var gradientNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 		
 			var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(gradientNativeElement,
 			backgroundBox );
