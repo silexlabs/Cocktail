@@ -59,7 +59,6 @@ class ListViewBase extends ViewBase
 	 */
 	override private function updateView():Void
 	{
-		//trace(" ListViewBase updateView");
 		for (index in Reflect.fields(_data))
 		{
 			// build cell
@@ -89,7 +88,6 @@ class ListViewBase extends ViewBase
 			this.addChild(_listBottomLoader);
 		}
 		
-		//trace("list " + id + "viewport width: " + new Viewport().width + " - viewport height: " + new Viewport().height + " - Scroll height: " + this.nativeElement.scrollHeight);
 		
 		// if list is not attached to body
 		//if(this.parent.parent != null)
@@ -99,7 +97,6 @@ class ListViewBase extends ViewBase
 			/*if (this.nativeElement.scrollHeight < new Viewport().height)
 			{
 				// request more data
-				trace("request more data");
 				onDataRequestCallback(id);
 			}*/
 		//}

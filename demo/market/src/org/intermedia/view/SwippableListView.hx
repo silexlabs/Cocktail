@@ -3,6 +3,7 @@ package org.intermedia.view;
 import cocktail.classInstance.ClassInstance;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.viewport.Viewport;
+import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.ListViewBase;
 import org.intermedia.model.Feeds;
@@ -48,7 +49,7 @@ class SwippableListView extends ListViewBase
 	
 	// current list view index
 	private var _index:Int;
-	public var index(null,setIndex):Int;
+	public var index(getIndex,setIndex):Int;
 	
 	// X offset used to scroll list left and right
 	private var _offset:Coordinate;
@@ -224,7 +225,6 @@ class SwippableListView extends ListViewBase
 	 */
 	override private function setData(v:Dynamic):Dynamic
 	{
-		//trace(v.id);
 		_data = v;
 		
 		// set the data on the correct list, depending on the list id
@@ -290,6 +290,17 @@ class SwippableListView extends ListViewBase
 	}
 	
 	/**
+	 * index getter
+	 * 
+	 * @param	v
+	 * @return
+	 */
+	private function getIndex():Int
+	{
+		return _index;
+	}
+	
+	/**
 	 * index setter: animate the swippable view from the current position to the list corresponding to the new index
 	 * 
 	 * @param	v
@@ -335,10 +346,9 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	//private function onDownCallback2(mouseEvent:MouseEventData):Void
-	//private function onDownCallback2(x:Float,y:Float):Void
 	private function onDownCallback2(event:Dynamic):Void
 	{
+		//trace("onDownCallback2");
 		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
 		/*_viewport.onResize = null;
 		
@@ -363,25 +373,25 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	//private function onMoveCallback2(mouseEvent:MouseEventData):Void
-	//private function onMoveCallback2(x:Float,y:Float):Void
-	//private function onMoveCallback2(x:Float,y:Float,event:Dynamic):Void
 	private function onMoveCallback2(event:Dynamic):Void
 	{
-		_currentListView.onListItemSelected = null;
-		//trace(event.pageX - _initialPosition.x);
-		this.nativeElement.scrollLeft = _offsetStart.x - Std.int(event.pageX - _initialPosition.x);
-		//trace(this.nativeElement.scrollLeft);
+		//trace("onMoveCallback2");
+		//trace(_direction);
 		
 		_offset.x = Std.int(event.pageX - _initialPosition.x);
 		_offset.y = Std.int(event.pageY - _initialPosition.y);
 		
+		//_currentListView.onListItemSelected = null;
+		this.nativeElement.scrollLeft = _offsetStart.x - _offset.x;
+		
 		//trace(_direction + " - " + _offset.x + "," + _offset.y );
 		// done to avoid top rebound effect - to be done also on bottom rebound one
-		if (_currentListView.nativeElement.scrollTop <= 0 && _offset.y > 0)
+		/*if (_currentListView.nativeElement.scrollTop <= 0 && _offset.y > 0)
 		{
 			event.preventDefault();
-		}
+		}*/
+		
+		//trace(_direction + " - " + _offset.x);
 		
 		// if direction is not set
 		if (_direction == Direction.notYetSet)
@@ -389,6 +399,7 @@ class SwippableListView extends ListViewBase
 			// compute absolute values as movement _offset can be positive or negative
 			var absX:Float = Math.abs(_offset.x);
 			var absY:Float = Math.abs(_offset.y);
+			//trace(absX + ", " + absY);
 				
 			// as first move event can be dispatched with both x and y values bigger than DIRECTION_PIXEL_MINIMUM,
 			// take the biggest as a reference
@@ -424,25 +435,20 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	//private function onUpCallback2(mouseEvent:MouseEventData):Void
-	//private function onUpCallback2(x:Int):Void
 	private function onUpCallback2(event:Dynamic):Void
 	{
+		//trace("onUpCallback2");
 		//trace("onUpCallback2: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
 
 		//trace(_direction);
 		if (_direction == Direction.horizontal)
 		{
 			event.preventDefault();
-		}
-		//onUpCallback2(this.nativeElement.scrollLeft);
-		var x = this.nativeElement.scrollLeft;
-		
-		
-		if (_direction == Direction.horizontal)
-		{
-			// go to list which user has scrolled to
 			
+			//onUpCallback2(this.nativeElement.scrollLeft);
+			/*var x = this.nativeElement.scrollLeft;
+
+			// go to list which user has scrolled to
 			var w = _viewportWidth / 2;
 			if (x < w)
 			{
@@ -458,14 +464,37 @@ class SwippableListView extends ListViewBase
 			{
 				//this.nativeElement.scrollLeft = 2 * _viewportWidth;
 				index = 2;
+			}*/
+			
+			// if movement was negative and more that half of the size of the screen
+			if (_offset.x < -_viewportWidth / 2)
+			{
+				// if the current list is not the last one, increment index using setter
+				if (index < _listViews.length - 1)
+					index++;
 			}
+			// if movement was positive and less that half of the size of the screen
+			else if (_offset.x > _viewportWidth / 2)
+			{
+				// if the current list is not the first one, decrement index using setter
+				if (index > 0)
+					index--;
+			}
+			// else come back on the current list
+			else
+			{
+				index = index;
+			}
+			//trace(index);
+			
+			
 			// js workaround to scroll up
 			/*#if js
 			js.Lib.window.scrollTo(0, 0);
 			//js.Lib.window.scrollTo(0,null);
 			#end*/
 		}
-		else
+		else if (_direction == Direction.vertical)
 		{
 			verticalReleaseTween();
 		}
@@ -538,9 +567,7 @@ class SwippableListView extends ListViewBase
 	{
 		//trace("releaseTween");
 		//trace("releaseTween: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
-		//trace( x + ", " + y + ", " + _offsetStart.x + ", " + _offset.x + ", " + _viewportWidth + ", " + this.x + ", " + -_currentListView.x);
 		
-		//trace(_currentListView.nativeElement.scrollTop);
 		var verticalTweenEnd:Int = 0;
 		// if scrolling direction is down
 		if (_offset.y > 0 )

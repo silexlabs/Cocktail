@@ -57,6 +57,8 @@ class DetailStyle
 		
 		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		
+		//domElement.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
 	}
 
 	/**

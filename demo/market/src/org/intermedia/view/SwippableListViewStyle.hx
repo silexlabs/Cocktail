@@ -36,32 +36,6 @@ class SwippableListViewStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function setListsContainerStyle(domElement:DOMElement):Void
-	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		//domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.position = PositionStyleValue.staticStyle;
-		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
-		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.width = DimensionStyleValue.percent(300);
-		domElement.style.height = DimensionStyleValue.percent(100);
-	}
-	
-	
-	/**
-	 * Defines default Style
-	 * 
-	 * @param	domElement
-	 */
 	public static function setSwippableListStyle(domElement:DOMElement):Void
 	{
 		domElement.style.display = DisplayStyleValue.inlineBlock;
@@ -82,5 +56,31 @@ class SwippableListViewStyle
 		domElement.style.overflow = { x:OverflowStyleValue.scroll, y:OverflowStyleValue.hidden };
 
 	}
+	
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function setListsContainerStyle(domElement:DOMElement):Void
+	{
+		domElement.style.display = DisplayStyleValue.inlineBlock;
+		//domElement.style.position = PositionStyleValue.absolute;
+		domElement.style.position = PositionStyleValue.staticStyle;
+		
+		domElement.style.marginLeft = MarginStyleValue.length(px(0));
+		domElement.style.marginRight = MarginStyleValue.length(px(0));
+		domElement.style.marginTop = MarginStyleValue.length(px(0));
+		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		
+		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+		
+		//domElement.style.width = DimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(300);
+		domElement.style.height = DimensionStyleValue.percent(100);
+	}
+	
 	
 }

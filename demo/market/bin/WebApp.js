@@ -12152,6 +12152,7 @@ org.intermedia.view.CroppedImage.prototype = $extend(cocktailCore.domElement.js.
 		this._image.load(imageUrl);
 	}
 	,onImageLoadSuccess: function(image) {
+		image.getStyle().setOpacity(cocktail.style.OpacityStyleValue.number(0));
 		this.addChild(org.intermedia.view.ImageUtils.cropImage(image,this._maskSize));
 		haxe.Timer.delay(this.fadeIn.$bind(this),Std.random(1000));
 	}
@@ -12857,6 +12858,9 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		if(this._homePageDataSet) this.list1.setData(this._list1Data);
 		return this._data;
 	}
+	,getIndex: function() {
+		return this._index;
+	}
 	,setIndex: function(v) {
 		this._currentListView.onListItemSelected = null;
 		this._index = v;
@@ -12872,11 +12876,9 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._direction = org.intermedia.view.Direction.notYetSet;
 	}
 	,onMoveCallback2: function(event) {
-		this._currentListView.onListItemSelected = null;
-		this.getNativeElement().scrollLeft = this._offsetStart.x - (event.pageX - this._initialPosition.x | 0);
 		this._offset.x = event.pageX - this._initialPosition.x | 0;
 		this._offset.y = event.pageY - this._initialPosition.y | 0;
-		if(this._currentListView.getNativeElement().scrollTop <= 0 && this._offset.y > 0) event.preventDefault();
+		this.getNativeElement().scrollLeft = this._offsetStart.x - this._offset.x;
 		if(this._direction == org.intermedia.view.Direction.notYetSet) {
 			var absX = Math.abs(this._offset.x);
 			var absY = Math.abs(this._offset.y);
@@ -12887,12 +12889,22 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault(); else if(this._direction == org.intermedia.view.Direction.vertical) this.getNativeElement().scrollLeft = this._offsetStart.x;
 	}
 	,onUpCallback2: function(event) {
-		if(this._direction == org.intermedia.view.Direction.horizontal) event.preventDefault();
-		var x = this.getNativeElement().scrollLeft;
 		if(this._direction == org.intermedia.view.Direction.horizontal) {
-			var w = this._viewportWidth / 2;
-			if(x < w) this.setIndex(0); else if(x < 3 * w) this.setIndex(1); else this.setIndex(2);
-		} else this.verticalReleaseTween();
+			event.preventDefault();
+			if(this._offset.x < -this._viewportWidth / 2) {
+				if(this.getIndex() < this._listViews.length - 1) {
+					var _g = this, _g1 = _g.getIndex();
+					_g.setIndex(_g1 + 1);
+					_g1;
+				}
+			} else if(this._offset.x > this._viewportWidth / 2) {
+				if(this.getIndex() > 0) {
+					var _g = this, _g1 = _g.getIndex();
+					_g.setIndex(_g1 - 1);
+					_g1;
+				}
+			} else this.setIndex(this.getIndex());
+		} else if(this._direction == org.intermedia.view.Direction.vertical) this.verticalReleaseTween();
 		this._direction = org.intermedia.view.Direction.notYetSet;
 	}
 	,scrollToCurrentList: function() {
@@ -12945,7 +12957,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		document.addEventListener("touchcancel",this.touchHandler.$bind(this),true);
 	}
 	,__class__: org.intermedia.view.SwippableListView
-	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex"})
+	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
 });
 org.intermedia.view.Direction = $hxClasses["org.intermedia.view.Direction"] = { __ename__ : ["org","intermedia","view","Direction"], __constructs__ : ["horizontal","vertical","notYetSet"] }
 org.intermedia.view.Direction.horizontal = ["horizontal",0];
@@ -12959,19 +12971,6 @@ org.intermedia.view.Direction.notYetSet.toString = $estr;
 org.intermedia.view.Direction.notYetSet.__enum__ = org.intermedia.view.Direction;
 org.intermedia.view.SwippableListViewStyle = $hxClasses["org.intermedia.view.SwippableListViewStyle"] = function() { }
 org.intermedia.view.SwippableListViewStyle.__name__ = ["org","intermedia","view","SwippableListViewStyle"];
-org.intermedia.view.SwippableListViewStyle.setListsContainerStyle = function(domElement) {
-	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
-	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
-	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
-	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(300));
-	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
-}
 org.intermedia.view.SwippableListViewStyle.setSwippableListStyle = function(domElement) {
 	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
 	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.absolute);
@@ -12985,6 +12984,19 @@ org.intermedia.view.SwippableListViewStyle.setSwippableListStyle = function(domE
 	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
 	domElement.getStyle().setOverflow({ x : cocktail.style.OverflowStyleValue.scroll, y : cocktail.style.OverflowStyleValue.hidden});
+}
+org.intermedia.view.SwippableListViewStyle.setListsContainerStyle = function(domElement) {
+	domElement.getStyle().setDisplay(cocktail.style.DisplayStyleValue.inlineBlock);
+	domElement.getStyle().setPosition(cocktail.style.PositionStyleValue.staticStyle);
+	domElement.getStyle().setMarginLeft(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginRight(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginTop(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setMarginBottom(cocktail.style.MarginStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingLeft(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingRight(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setPaddingTop(cocktail.style.PaddingStyleValue.length(cocktail.unit.LengthValue.px(0)));
+	domElement.getStyle().setWidth(cocktail.style.DimensionStyleValue.percent(300));
+	domElement.getStyle().setHeight(cocktail.style.DimensionStyleValue.percent(100));
 }
 org.intermedia.view.SwippableListViewStyle.prototype = {
 	__class__: org.intermedia.view.SwippableListViewStyle
@@ -13035,8 +13047,6 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._menu.displayListBottomLoader = false;
 	this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}]);
 	this._body.addChild(this._menu);
-	this._header.setIsVisible(false);
-	this._menu.setIsVisible(false);
 	this._swippableListView = new org.intermedia.view.SwippableListView();
 	this._currentView = this._swippableListView;
 	this._body.addChild(this._swippableListView);
@@ -13092,7 +13102,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,onStartLoading: function() {
 	}
 	,onLoadingError: function(error) {
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 223, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 229, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("Market");
@@ -13310,4 +13320,3 @@ org.intermedia.view.SwippableListView.HOMEPAGE_ITEMS = 6;
 org.intermedia.view.ViewManager.HEADER_HOME_TITLE = "Market";
 org.intermedia.view.ViewManager.HEADER_DETAIL_TITLE = "Infos";
 org.intermedia.Application.main()
-//@ sourceMappingURL=WebApp.js.map

@@ -7,12 +7,9 @@
 
 package org.intermedia.view;
 
-// DOM
 import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.viewport.Viewport;
-
-// Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 import org.intermedia.model.ApplicationModel;
