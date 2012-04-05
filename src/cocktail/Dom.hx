@@ -34,7 +34,7 @@ typedef Anchor = cocktail.core.HTMLAnchorElement;
 typedef HTMLAnchorElement = cocktail.core.HTMLAnchorElement;
 typedef HTMLImageElement = cocktail.core.HTMLImageElement;
 typedef HTMLElement = cocktail.core.HTMLElement;
-typedef HTMLDocument = cocktail.core.html.HTMLDocument;
+typedef HTMLDocument = cocktail.core.HTMLDocument;
 
 /**
  * EVENT
