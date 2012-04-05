@@ -7,12 +7,6 @@
 */
 package cocktail.core.nativeElement;
 
-/**
- * This file contain structs and enums representing NativeElement data.
- * A native element is an abstraction of a native DOM element such as a 
- * div in HTML or a Sprite in Flash
- */
-
  /**
   * Lists the different type of 
   * native element which can be created.
@@ -32,13 +26,13 @@ package cocktail.core.nativeElement;
 	 img;
 	 
 	 /**
-	  * Class library such as a script
+	  * used to load library like a script
 	  * tag in HTML
 	  */
 	 script;
 	 
 	 /**
-	  * http link type such as an <a> tag in
+	  * http link type such as an anchor tag in
 	  * HTML
 	  */
 	 anchor;

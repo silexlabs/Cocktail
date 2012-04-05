@@ -11,11 +11,9 @@ import cocktail.core.NativeElement;
 import cocktail.core.nativeElement.NativeElementData;
 
 /**
- * This is a base class for the path manager. 
- * It retrieves and return the root of the DOM, 
- * sush as the body tag in HTML
- * 
- * TODO : update all the doc
+ * This is the base class for runtime
+ * specific implementation of
+ * the NativeElementManager
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -39,7 +37,7 @@ class AbstractNativeElementManagerImpl
 	
 	/**
 	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
-	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (img, canvas...)
 	 */
 	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{

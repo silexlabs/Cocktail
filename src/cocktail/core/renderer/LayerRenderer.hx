@@ -64,43 +64,45 @@ class LayerRenderer
 		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.coreStyle.isInlineLevel() == false
 		|| _rootRenderer.coreStyle.display == inlineBlock)
 		{
-				var childLayers:Array<NativeElement> = renderChildLayer();
+			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
+			
+			for (i in 0...rootRendererBackground.length)
+			{
+				nativeElements.push(rootRendererBackground[i]);
+			}
+			
+			var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
+				
+			for (i in 0...childrenBlockContainerBackground.length)
+			{
+				nativeElements.push(childrenBlockContainerBackground[i]);
+			}
+			
+			var inFlowChildren:Array<NativeElement> = renderInFlowChildren();
+			
+			for (i in 0...inFlowChildren.length)
+			{
+				nativeElements.push(inFlowChildren[i]);
+			}
+			
+		
+			var childLayers:Array<NativeElement> = renderChildLayer();
 
-				for (i in 0...childLayers.length)
-				{
-					nativeElements.push(childLayers[i]);
-				}
-				
-				var inFlowChildren:Array<NativeElement> = renderInFlowChildren();
-				
-				for (i in 0...inFlowChildren.length)
-				{
-					nativeElements.push(inFlowChildren[i]);
-				}
-			
-				
-				var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
-					
-				for (i in 0...childrenBlockContainerBackground.length)
-				{
-					nativeElements.push(childrenBlockContainerBackground[i]);
-				}
-			
-				#if (flash9 || nme)
-				for (i in 0...nativeElements.length)
-				{
-					nativeElements[i].x += _rootRenderer.bounds.x;
-					nativeElements[i].y += _rootRenderer.bounds.y; 
-					
-				}
-				#end
+			for (i in 0...childLayers.length)
+			{
+				nativeElements.push(childLayers[i]);
+			}
 	
-				var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
+			#if (flash9 || nme)
+			for (i in 0...nativeElements.length)
+			{
+				nativeElements[i].x += _rootRenderer.bounds.x;
+				nativeElements[i].y += _rootRenderer.bounds.y; 
 				
-				for (i in 0...rootRendererBackground.length)
-				{
-					nativeElements.push(rootRendererBackground[i]);
-				}
+			}
+			#end
+	
+
 			
 			//TODO : retrieve and render floated elements	
 			//renderChildrenNonPositionedFloats();
@@ -109,13 +111,21 @@ class LayerRenderer
 		else
 		{
 			
-			nativeElements = _rootRenderer.render();
 			
 			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
+			
 			for (i in 0...rootRendererBackground.length)
 			{
 				nativeElements.push(rootRendererBackground[i]);
 			}
+			
+			var rootRendererElements = _rootRenderer.render();
+			
+			for (i in 0...rootRendererElements.length)
+			{
+				nativeElements.push(rootRendererElements[i]);
+			}
+			
 			
 		}
 		
