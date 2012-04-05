@@ -7,20 +7,22 @@
 
 package org.intermedia.view;
 
+import js.Lib;
+import js.Dom;
 // DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
+/*import cocktail.node.DOMElement;
+import cocktail.node.HtmlDom;
+import cocktail.node.HtmlDom;
+import cocktail.node.GraphicDOMElement;
 import cocktail.viewport.Viewport;
 
 // Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+import cocktail.NativeElementManager;
+import cocktail.NativeElementData;
 
 // Style
 import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import cocktail.unit.UnitData;*/
 import org.intermedia.view.Constants;
 
 /**
@@ -34,59 +36,63 @@ class ListViewStyle
 	/**
 	 * Defines default Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setListStyle(domElement:DOMElement,listTop:Int):Void
+	public static function setListStyle(node:HtmlDom,listTop:Int):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		node.style.display = "inline-block";
+		node.style.position = "static";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingLeft = PaddingStyleValue.percent(0);
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		//node.style.paddingLeft = "0px";
+		node.style.paddingLeft = "0%";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		//domElement.style.width = DimensionStyleValue.percent(33);
-		domElement.style.width = DimensionStyleValue.length(px(new Viewport().width));
-		//domElement.style.height = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px( new Viewport().height));
-		//domElement.style.height = DimensionStyleValue.length(px( new Viewport().height - Constants.LIST_TOP ));
-		//domElement.style.height = DimensionStyleValue.autoValue;
+		//node.style.width = "100%";
+		//node.style.width = DimensionStyleValue.percent(33);
+		node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		//node.style.height = "100%";
+		node.style.height = Std.string(Lib.window.innerHeight) + "px";
+		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
+		//node.style.height = "auto";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(listTop));
-		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		//node.style.top = Std.string(listTop));
+		node.style.top = Std.string(listTop) + "px";
+		node.style.bottom = "0px";
 		
-		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		node.style.verticalAlign = "top";
+		//node.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "auto";
 	}
 	
 	/**
 	 * loader animation style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function loader(domElement:DOMElement)
+	public static function loader(node:HtmlDom)
 	{
 		var verticalMargin:Int = 20;
 		
-		var viewport:Viewport = new Viewport();
-		var viewportHeight:Int = viewport.height;
+		//var viewport:Viewport = new Viewport();
+		//var viewportHeight:Int = viewport.height;
+		var viewportHeight:Int = Lib.window.innerHeight;
 		
-		domElement.style.display = DisplayStyleValue.block;
+		node.style.display = "block";
 		
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
-		domElement.style.marginTop = MarginStyleValue.length(px(verticalMargin));
-		domElement.style.marginBottom = MarginStyleValue.length(px(verticalMargin));
+		node.style.marginLeft = "auto";
+		node.style.marginRight = "auto";
+		node.style.marginTop = Std.string(verticalMargin) + "px";
+		node.style.marginBottom = Std.string(verticalMargin) + "px";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(viewportHeight));
+		node.style.top = Std.string(Lib.window.innerHeight) + "px";
 	}
 	
 }

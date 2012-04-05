@@ -1,18 +1,13 @@
 package org.intermedia.view;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktail.nativeElement.NativeElement;
-import cocktail.viewport.Viewport;
 import haxe.Firebug;
 import haxe.Timer;
+import js.Lib;
+import js.Dom;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
-import org.intermedia.view.SwippableListView;
+//import org.intermedia.view.SwippableListView;
 import org.intermedia.model.Feeds;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
 
 /**
  * In charge of instantiating the views, listening to the application model changes and communicating with the controller.
@@ -24,11 +19,10 @@ class ViewManager
 {
 
 	// bodyDOMElement
-	private var _body:BodyDOMElement;
+	private var _body:Body;
 	
 	//Reference to the header of the application, which is always displayed
 	private var _header:HeaderView;
-	//private var _header:ContainerDOMElement;
 	
 	static inline var HEADER_HOME_TITLE:String = "Market";
 	static inline var HEADER_DETAIL_TITLE:String = "Infos";
@@ -42,12 +36,9 @@ class ViewManager
 	//Ref to the view displaying full article
 	private var _detailView:DetailView;
 	
-	// loading view
-	//private var _loadingView:LoadingView;
-	
 	//Ref to the view displayed when there is a loading error
 	//private var _errorView:ErrorView;
-	//private var _errorView:ContainerDOMElement;
+	//private var _errorView:HtmlDom;
 	
 	//listen to model change on it
 	private var _applicationModel:ApplicationModel;
@@ -71,20 +62,30 @@ class ViewManager
 		_applicationController = applicationController;
 		
 		// Instantiate body headerView, loadingView, swippableView
-		_detailView = new DetailView();
-		_currentView = new ViewBase();
-		_body = new BodyDOMElement();
+		//_detailView = new DetailView();
+		//_currentView = new ViewBase();
+		_body = Lib.document.body;
+		//_body = new BodyDOMElement();
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
 		_header.data = HEADER_HOME_TITLE;
-		_header.onBackButtonClick = onHeaderBackButtonPressed;
-		_body.addChild(_header);
+		//_header.onBackButtonClick = onHeaderBackButtonPressed;
+		//_body.appendChild(_header);
+		_body.appendChild(_header.node);
+		
+		// simple haxe js test
+		/*var text:HtmlDom = Lib.document.createTextNode("hello de LU");
+		_body.appendChild(text);
+		//var image:Image = untyped __js__("new Image()");
+		var image:Image = cast Lib.document.createElement("img");
+		image.src = "assets/loading.gif";
+		_body.appendChild(image);*/
 		
 		// init menu
 		_menu = new MenuListViewText();
 		_menu.displayListBottomLoader = false;
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
-		_body.addChild(_menu);
+		_body.appendChild(_menu.node);
 		
 		//_header.isVisible = false;
 		//_menu.isVisible = false;
@@ -94,7 +95,7 @@ class ViewManager
 		// set current view on swippable view
 		_currentView = _swippableListView;
 		// attach swippable view to body
-		_body.addChild(_swippableListView);
+		_body.appendChild(_swippableListView.node);
 		
 		// call init()
 		init();
@@ -119,13 +120,13 @@ class ViewManager
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		_swippableListView.onHorizontalTweenEnd = updateZIndexes;
 		// set callback when the bottom of the scrollbar is reached
-		//_swippableListView.onListScrolled = function () { _applicationController.loadCellData(CELL_QTY); };
-		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.loadCellData(feed); };
-		//_swippableListView.onListScrolled = _applicationController.loadCellData;
+		//_swippableListView.onListScrolled = function () { _applicationController.srcCellData(CELL_QTY); };
+		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.srcCellData(feed); };
+		//_swippableListView.onListScrolled = _applicationController.srcCellData;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
-		//_applicationController.loadCellData(CELL_QTY);
-		//_applicationController.loadCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
+		//_applicationController.srcCellData(CELL_QTY);
+		//_applicationController.srcCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
 		_applicationController.loadCellData(Feeds.FEED_1.url);
 		_applicationController.loadCellData(Feeds.FEED_2.url);
 		_applicationController.loadCellData(Feeds.FEED_3.url);
@@ -147,8 +148,8 @@ class ViewManager
 	private function onListItemSelectedCallback(cellData:CellData):Void
 	{
 		// remove swippableListView and menu and add empty detail view
-		_body.removeChild(_swippableListView);
-		_body.removeChild(_menu);
+		_body.removeChild(_swippableListView.node);
+		_body.removeChild(_menu.node);
 		//_swippableListView.style.display = DisplayStyleValue.none;
 		//_swippableListView.isVisible = false;
 
@@ -157,7 +158,7 @@ class ViewManager
 		//_menu.style.display = DisplayStyleValue.none;
 		
 		_detailView = new DetailView();
-		_body.addChild(_detailView);
+		_body.appendChild(_detailView.node);
 
 		// set current view to detail view
 		_currentView = _detailView;
@@ -242,16 +243,16 @@ class ViewManager
 		_header.displayBackButton = false;
 		
 		// remove detail view and add swippableListView
-		_body.removeChild(_detailView);
-		_body.addChild(_menu);
-		_body.addChild(_swippableListView);
+		_body.removeChild(_detailView.node);
+		_body.appendChild(_menu.node);
+		_body.appendChild(_swippableListView.node);
 		_swippableListView.scrollToCurrentList();
-		//_swippableListView.style.display = DisplayStyleValue.inlineBlock;
+		//_swippableListView.style.display = "inline-block";
 		//_swippableListView.isVisible = true;
 		
 		// to be used once switching to cocktail js version
 		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
-		//_menu.style.display = DisplayStyleValue.block;
+		//_menu.style.display = "block";
 
 		
 		// update zIndex using a workaround
@@ -277,11 +278,11 @@ class ViewManager
 	 * updates zIndex to the maximum value.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	private function setZIndexToMax(dom:DOMElement):Void
+	private function setZIndexToMax(view:ViewBase):Void
 	{
 		// remove and add dom so it has the higher zIndex
-		_body.removeChild(dom);
-		_body.addChild(dom);
+		_body.removeChild(view.node);
+		_body.appendChild(view.node);
 	}
 	
 }

@@ -7,11 +7,8 @@
 
 package org.intermedia.view;
 
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.viewport.Viewport;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.model.ApplicationModel;
 
 
@@ -31,46 +28,46 @@ class CellThumbStyle
 	/**
 	 * Defines cell Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 * @return	thumbNail mask size, here cell size
 	 */
-	//public static function setCellStyle(domElement:DOMElement, ?cellPerLine:Int=1, ?thumbWidthPercent:Int=100):Size
-	public static function setCellStyle(domElement:DOMElement, ?cellPerLine:Int=1):Size
+	//public static function setCellStyle(node:HtmlDom, ?cellPerLine:Int=1, ?thumbWidthPercent:Int=100):Size
+	public static function setCellStyle(node:HtmlDom, ?cellPerLine:Int=1):Size
 	{
 		// use default style
-		CellStyle.setCellStyle(domElement, cellPerLine);
+		CellStyle.setCellStyle(node, cellPerLine);
 		
-		//domElement.style.display = DisplayStyleValue.inlineBlock;
-		//domElement.style.position = PositionStyleValue.staticStyle;
+		//node.style.display = "inline-block";
+		//node.style.position = "static";
 		//
-		//domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		//domElement.style.marginRight = MarginStyleValue.length(px(0));
-		//domElement.style.marginTop = MarginStyleValue.length(px(0));
-		//domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		//node.style.marginLeft = "0px";
+		//node.style.marginRight = "0px";
+		//node.style.marginTop = "0px";
+		//node.style.marginBottom = "0px";
 		//
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		//domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
-		//domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		//node.style.paddingLeft = "0px";
+		//node.style.paddingRight = "0px";
+		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE);
+		//node.style.paddingBottom = "0px";
 		
-		//domElement.style.verticalAlign = VerticalAlignStyleValue.top;
+		//node.style.verticalAlign = "top";
 
 		// compute cell width in percentage depending on cellPerLine value
 		//var cellWidthPercent:Int = CellStyle.computeWidthPercentage(cellPerLine);
-		//domElement.style.width = DimensionStyleValue.percent(cellWidthPercent);
+		//node.style.width = DimensionStyleValue.percent(cellWidthPercent);
 		
 		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine);
 		
-		domElement.style.height = DimensionStyleValue.length(px(cellSize.height));
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(CELL_MAX_HEIGHT));
+		node.style.height = Std.string(cellSize.height);
+		//node.style.maxHeight = ConstrainedStd.string(CELL_MAX_HEIGHT));
 
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		node.style.overflow = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(domElement);
+		CellStyle.addBorder(node);
 		
 		return cellSize;
 	}
@@ -79,34 +76,34 @@ class CellThumbStyle
 	/**
 	 * Defines cell image Style
 	 * 
-	 * @param	domElement
+	 * @param	image
 	 */
-	public static function setThumbnailStyle(domElement:ImageDOMElement,maskSize:Size):Void
+	public static function setThumbnailStyle(image:Image,maskSize:Size):Void
 	{
 		//var imageMaxWidth:Int = 200;
 		
-		domElement.style.display = DisplayStyleValue.inlineStyle;
+		image.style.display = "inline";
 		
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.opacity = OpacityStyleValue.number(0);
+		image.style.verticalAlign = "middle";
+		untyped { image.style.opacity = 0; };
 		
-		//zoomImage(domElement, maskSize);
-		ImageUtils.cropImage(domElement, maskSize);
+		//zoomImage(node, maskSize);
+		ImageUtils.cropImage(image, maskSize);
 		
 	}
 	
 	/**
 	 * Automatically resizes and offsets the image so it adapts to the cell size
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 * @param	maskSize
 	 */
-	/*public static function zoomImage(domElement:ImageDOMElement, maskSize:Size):Void
+	/*public static function zoomImage(node:HtmlDom, maskSize:Size):Void
 	{
 		
 		var imageRatio:Float = 0;
-		if (domElement.intrinsicHeight != 0)
-			imageRatio = domElement.intrinsicWidth / domElement.intrinsicHeight;
+		if (node.intrinsicHeight != 0)
+			imageRatio = node.intrinsicWidth / node.intrinsicHeight;
 			
 		var resizedImageSize:Size = { width:0, height:0 };
 
@@ -118,10 +115,10 @@ class CellThumbStyle
 			resizedImageSize.width = Std.int(resizedImageSize.height * imageRatio);
 	
 			// resize image
-			domElement.style.height = DimensionStyleValue.length(px(resizedImageSize.height));
+			node.style.height = Std.string(resizedImageSize.height));
 			
 			// offsets image
-			domElement.style.marginLeft = MarginStyleValue.length(px(-Math.abs((maskSize.width-resizedImageSize.width))/2));
+			node.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2));
 		}
 		// else, set image width to cell width
 		else
@@ -131,10 +128,10 @@ class CellThumbStyle
 			resizedImageSize.height = Std.int(resizedImageSize.width / imageRatio);
 			
 			// resize image
-			domElement.style.width = DimensionStyleValue.length(px(resizedImageSize.width));
+			node.style.width = Std.string(resizedImageSize.width));
 			
 			// offsets image
-			domElement.style.marginTop = MarginStyleValue.length(px(-Math.abs((maskSize.height-resizedImageSize.height))/2));
+			node.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2));
 		}
 				
 	}*/

@@ -7,19 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 
 
 /**
@@ -35,76 +24,72 @@ class CellTextStyle
 	/**
 	 * Defines cell Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setCellStyle(domElement:ContainerDOMElement):Void
+	public static function setCellStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.relative;
+		node.style.display = "block";
+		node.style.position = "relative";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
+		node.style.paddingBottom = "0px";
 		
 		// apply border
-		CellStyle.addBorder(domElement);
-		domElement.nativeElement.style.borderStyle = "none none solid none";
+		CellStyle.addBorder(node);
+		node.style.borderStyle = "none none solid none";
 	}
 	
 	/**
 	 * Defines cell text Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setCellTextStyle(domElement:DOMElement):Void
+	public static function setCellTextStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineStyle;
-		domElement.style.position = PositionStyleValue.relative;
+		node.style.display = "inline";
+		node.style.position = "relative";
 
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(8));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "8px";
+		node.style.paddingRight = "0px";
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(15));
-		domElement.style.lineHeight = LineHeightStyleValue.normal;
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Helvetica'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-		domElement.style.fontVariant = FontVariantStyleValue.normal;
-		domElement.style.textTransform = TextTransformStyleValue.none;
-		domElement.style.letterSpacing = LetterSpacingStyleValue.normal;
-		domElement.style.wordSpacing = WordSpacingStyleValue.normal;
-		domElement.style.textIndent = TextIndentStyleValue.length(px(0));
-		domElement.style.whiteSpace = WhiteSpaceStyleValue.normal;
-		domElement.style.textAlign = TextAlignStyleValue.left;
+		node.style.fontSize = "15px";
+		node.style.lineHeight = "normal";
+		node.style.fontWeight = "bold";
+		node.style.fontStyle = "normal";
+		node.style.fontFamily = 'Arial, sans-serif';
+		node.style.fontVariant = "normal";
+		node.style.textTransform = "none";
+		node.style.letterSpacing = "normal";
+		node.style.wordSpacing = "normal";
+		node.style.textIndent = "0px";
+		node.style.whiteSpace = "normal";
+		node.style.textAlign = "left";
 		
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		node.style.verticalAlign = "middle";
 		
-		domElement.style.color = ColorValue.hex('#666666');
+		node.style.color = '#666666';
 	}
 	
 	/**
 	 * Defines cell line Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setCellLineStyle(domElement:DOMElement):Void
+	public static function setCellLineStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.relative;
+		node.style.display = "block";
+		node.style.position = "relative";
 
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(1));
-		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));
+		node.style.width = "100%";
+		node.style.height = Std.string(1) + "px";
+		node.style.marginTop = Std.string(CELL_VERTICAL_SPACE) + "px";
 	}
 	
 }

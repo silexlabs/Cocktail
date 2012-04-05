@@ -1,12 +1,12 @@
 package hxtml2;
 
 /*
-//import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+//import cocktail.node.BodyDOMElement;
+import cocktail.node.HtmlDom;
+import cocktail.node.HtmlDom;
+import cocktail.node.DOMElement;
+import cocktail.NativeElementManager;
+import cocktail.NativeElementData;
 */
 
 import js.Dom;

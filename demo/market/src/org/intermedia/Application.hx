@@ -1,13 +1,15 @@
 package org.intermedia;
 
-import cocktail.domElement.ImageDOMElement;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.textElement.TextElement;
+//import core.HTMLImageElement;
+//import cocktail.textElement.TextElement; => dom.Text
+//import cocktail.node.BodyDOMElement;
+//import cocktail.node.HtmlDom;
+//import cocktail.textElement.TextElement;
 // Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+//import cocktail.style.StyleData; => cocktail.core.style.StyleData
+//import cocktail.unit.UnitData; => 
+
+//import cocktail.Cocktail;
 
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.controller.ApplicationController;
@@ -33,33 +35,33 @@ class Application
 	{
 		// only for nme compilation tests
 		/*var body:BodyDOMElement = new BodyDOMElement();
-		body.style.width = DimensionStyleValue.percent(100);
-		body.style.height = DimensionStyleValue.percent(100);
+		body.style.width = "100%";
+		body.style.height = "100%";
 		
-		var textContainer:ContainerDOMElement = new ContainerDOMElement();
-		body.addChild(textContainer);
-		textContainer.style.position = PositionStyleValue.absolute;
-		textContainer.style.left = PositionOffsetStyleValue.length(px(200));
-		textContainer.style.top = PositionOffsetStyleValue.length(px(80));
-		textContainer.style.width = DimensionStyleValue.percent(100);
-		textContainer.style.height = DimensionStyleValue.percent(100);
+		var textContainer:HtmlDom = Lib.document.createElement("div");
+		body.appendChild(textContainer);
+		textContainer.style.position = "absolute";
+		textContainer.style.left = Std.string(200));
+		textContainer.style.top = Std.string(80));
+		textContainer.style.width = "100%";
+		textContainer.style.height = "100%";
 		//HeaderStyle.setHeaderTextStyle(textContainer);
-		var textElement:TextElement = new TextElement("ola !");
-		textContainer.addText(textElement);
+		var textElement:HtmlDom = Lib.document.createTextNode("ola !");
+		textContainer.appendChild(textElement);
 		
-		var image:ImageDOMElement = new ImageDOMElement();
-		body.addChild(image);
-		image.style.position = PositionStyleValue.absolute;
-		image.style.left = PositionOffsetStyleValue.length(px(100));
-		image.style.top = PositionOffsetStyleValue.length(px(100));
-		image.style.width = DimensionStyleValue.length(px(320));
-		image.style.height = DimensionStyleValue.length(px(180));
-		image.load("assets/200-156_purple.png");*/
+		var image:HtmlDom = Lib.document.createElement("div");
+		body.appendChild(image);
+		image.style.position = "absolute";
+		image.style.left = Std.string(100));
+		image.style.top = Std.string(100));
+		image.style.width = Std.string(320));
+		image.style.height = Std.string(180));
+		image.src("assets/200-156_purple.png");*/
 		
 		
 		// instantiate model
 		var applicationModel:ApplicationModel = new ApplicationModel();
-		//applicationModel.loadCellData(5);
+		//applicationModel.srcCellData(5);
 		
 		// instantiate controller
 		var applicationController:ApplicationController = new ApplicationController(applicationModel);

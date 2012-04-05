@@ -7,12 +7,9 @@
 
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.model.ApplicationModel;
-import cocktail.viewport.Viewport;
 
 /**
  * This class defines a cropped image, i.e. an image cropped by a containerDOM used as a mask
@@ -39,14 +36,14 @@ class ImageUtils
 		if (cellPerLine != 0)
 		{
 			//maskWidthPercent = Std.int(thumbWidthPercent / cellPerLine);
-			maskPixelSize.width = Std.int(new Viewport().width * thumbWidthPercent / (cellPerLine * 100));
-			//maskPixelSize.width = Std.int(new Viewport().width / cellPerLine );
+			maskPixelSize.width = Std.int(Lib.window.innerWidth * thumbWidthPercent / (cellPerLine * 100));
+			//maskPixelSize.width = Std.int(Lib.window.innerWidth / cellPerLine );
 		}
 		else
 		{
 			//maskWidthPercent = thumbWidthPercent;
-			maskPixelSize.width = Std.int(new Viewport().width * thumbWidthPercent / 100);
-			//maskPixelSize.width = Std.int(new Viewport().width);
+			maskPixelSize.width = Std.int(Lib.window.innerWidth * thumbWidthPercent / 100);
+			//maskPixelSize.width = Std.int(Lib.window.innerWidth);
 		}
 		
 		// compute height depending on the width
@@ -60,27 +57,27 @@ class ImageUtils
 	/**
 	 * Automatically crops an image so it fits in the mask size
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 * @param	maskSize
 	 */
-	public static function cropImage(image:ImageDOMElement, maskSize:Size):ContainerDOMElement
+	public static function cropImage(image:Image, maskSize:Size):HtmlDom
 	{
 		// create and set mask image container
-		var mask:ContainerDOMElement = new ContainerDOMElement();
-		mask.style.width = DimensionStyleValue.length(px(maskSize.width));
-		mask.style.height = DimensionStyleValue.length(px(maskSize.height));
+		var mask:HtmlDom = Lib.document.createElement("div");
+		mask.style.width = Std.string(maskSize.width);
+		mask.style.height = Std.string(maskSize.height);
 		
 		// apply mask style so it can crop the image
-		mask.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
-		mask.style.display = DisplayStyleValue.inlineBlock;
+		mask.style.overflow = "hidden";
+		mask.style.display = "inline-block";
 
 		// mask ratio
 		var maskRatio:Float = maskSize.width / maskSize.height;
 		
 		// image ratio
 		var imageRatio:Float = 0;
-		if (image.intrinsicHeight != 0)
-			imageRatio = image.intrinsicWidth / image.intrinsicHeight;
+		//if (image.style.intrinsicHeight != 0)
+			//imageRatio = image.intrinsicWidth / image.intrinsicHeight;
 			
 		var resizedImageSize:Size = { width:0, height:0 };
 
@@ -92,10 +89,10 @@ class ImageUtils
 			resizedImageSize.width = Std.int(resizedImageSize.height * imageRatio);
 	
 			// resize image
-			image.style.height = DimensionStyleValue.length(px(resizedImageSize.height));
+			image.style.height = Std.string(resizedImageSize.height);
 			
 			// offsets image
-			image.style.marginLeft = MarginStyleValue.length(px(-Math.abs((maskSize.width-resizedImageSize.width))/2));
+			image.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2);
 		}
 		// else, set image width to cell width
 		else
@@ -105,14 +102,14 @@ class ImageUtils
 			resizedImageSize.height = Std.int(resizedImageSize.width / imageRatio);
 			
 			// resize image
-			image.style.width = DimensionStyleValue.length(px(resizedImageSize.width));
+			image.style.width = Std.string(resizedImageSize.width);
 			
 			// offsets image
-			image.style.marginTop = MarginStyleValue.length(px(-Math.abs((maskSize.height-resizedImageSize.height))/2));
+			image.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2);
 		}
 		
 		// attach image to mask
-		mask.addChild(image);
+		mask.appendChild(image);
 		
 		return mask;
 	}

@@ -7,13 +7,11 @@
 
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
+import js.Lib;
+import js.Dom;
 import org.intermedia.model.ApplicationModel;
 import haxe.Timer;
 import feffects.Tween;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
 
 
 /**
@@ -22,18 +20,20 @@ import cocktail.unit.UnitData;
  * @author Raphael Harmel
  */
 
-class CroppedImage extends ContainerDOMElement
+class CroppedImage
 {
+	public var node:HtmlDom;
+	
 	// image to crop
-	private var _image:ImageDOMElement;
+	private var _image:Image;
 	
 	// maskSize
 	private var _maskSize:Size;
 	
 	public function new(imageUrl:String, maskSize:Size)
 	{
-		super();
-		_image = new ImageDOMElement();
+		//super();
+		_image = cast Lib.document.createElement("img");
 		_maskSize = maskSize;
 		loadThumb(imageUrl);
 	}
@@ -44,26 +44,27 @@ class CroppedImage extends ContainerDOMElement
 	private function loadThumb(imageUrl:String):Void
 	{
 		// load image
-		_image.onLoad = onImageLoadSuccess;
-		_image.load(imageUrl);
+		_image.onload = onImageLoadSuccess;
+		_image.src = imageUrl;
 	}
 	
 	/**
 	 * image load success callback
 	 */
-	private function onImageLoadSuccess(image:ImageDOMElement):Void
+	//private function onImageLoadSuccess(image:Image):Void
+	private function onImageLoadSuccess(event:Event):Void
 	{
 		// set image style. It is needed to do it here as we need to access to the intrisic size of the image,
 		// which we can access only when the image has been loaded
 		//listStyle.cellThumbnail(cellImage,screenResolutionSize);
 		//_cellStyle.thumbnail(_cellImage, _thumbMask);
 		// add image to cell
-		//this.addChild(_cellImage);
+		//node.appendChild(_cellImage);
 
 		// apply image start style so it is invisible (for fade-in)
-		image.style.opacity = OpacityStyleValue.number(0);
+		untyped { _image.style.opacity = 0; };
 		
-		this.addChild(ImageUtils.cropImage(image,_maskSize));
+		node.appendChild(ImageUtils.cropImage(_image,_maskSize));
 		
 		// display thumb using a random effect
 		Timer.delay(fadeIn,Std.random(1000));
@@ -87,7 +88,7 @@ class CroppedImage extends ContainerDOMElement
 	 */
     function tweenOpacity( e : Float )
     {
-        _image.style.opacity = OpacityStyleValue.number(e);
+        untyped { _image.style.opacity = e;};
     }
 
     function tweenEnd(e : Float )

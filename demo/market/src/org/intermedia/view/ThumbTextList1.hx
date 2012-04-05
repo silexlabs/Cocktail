@@ -7,7 +7,7 @@
 
 package org.intermedia.view;
 
-import cocktail.mouse.MouseData;
+//import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -25,7 +25,7 @@ class ThumbTextList1 extends ListViewBase
 	{
 		_cellsPerLine = cellPerLine;
 		super();
-		ListViewStyle.setListStyle(this, Constants.LIST_TOP);
+		ListViewStyle.setListStyle(node, Constants.LIST_TOP);
 	}
 	
 	/**

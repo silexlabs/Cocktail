@@ -6,6 +6,8 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
+//import cocktail.Cocktail;
+
 class ApplicationModel
 {
 
@@ -69,8 +71,8 @@ class ApplicationModel
 		}
 		
 		// Calls load() on the DataLoader with the right number of cell to load
-		//_dataLoader.loadCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
-		//_dataLoader.loadCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
+		//_dataLoader.srcCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
+		//_dataLoader.srcCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 		_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	

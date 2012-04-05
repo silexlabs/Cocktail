@@ -1,12 +1,7 @@
 package org.intermedia.view;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.DOMElement;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-import cocktail.domElement.ImageDOMElement;
-import org.intermedia.view.HeaderStyle;
-import cocktail.mouse.MouseData;
+
+import js.Lib;
+import js.Dom;
 
 /**
  * Display application title and a back button when in detail view to go back to list view.
@@ -15,8 +10,11 @@ import cocktail.mouse.MouseData;
  */
 
 class HeaderView extends ViewBase
+//class HeaderView
 {
 
+	//public var dom:HtmlDom;
+	
 	// Called when the back button is clicked
 	public var onBackButtonClick:Void->Void;
 	
@@ -25,17 +23,20 @@ class HeaderView extends ViewBase
 	public var displayBackButton(getDisplayBackButton, setDisplayBackButton):Bool;
 	
 	// text container, to be built in the constructor
-	private var _titleContainer:ContainerDOMElement;
+	//private var _titleContainer:HtmlDom;
+	private var _titleContainer:HtmlDom;
 	
-	private var _titleTextElement:TextElement;
+	//private var _titleTextElement:HtmlDom;
+	private var _titleTextElement:HtmlDom;
 	
 	// back button container, to be built in the constructor, and attached/detached depending on displayBackButton value
-	private var _backButtonContainer:ContainerDOMElement;
+	//private var _backButtonContainer:HtmlDom;
+	private var _backButtonContainer:HtmlDom;
 
 	public function new()
 	{
 		super();
-
+		
 		// init attributes
 		_data = "";
 		_backButtonContainer = buildBackButtonView();
@@ -62,14 +63,16 @@ class HeaderView extends ViewBase
 		// if back button has to be displayed, attach it to this
 		if (_displayBackButton)
 		{
-			this.addChild(_backButtonContainer);
+			//node.appendChild(_backButtonContainer);
+			node.appendChild(_backButtonContainer);
 		}
 		// if it has to be hidden, first check if back button is already attached to this, and then remove it
 		else
 		{
-			if(_backButtonContainer.parent != null)
+			if(_backButtonContainer.parentNode != null)
 			{
-				this.removeChild(_backButtonContainer);
+				//this.removeChild(_backButtonContainer);
+				node.removeChild(_backButtonContainer);
 			}
 		}
 		return _displayBackButton;
@@ -81,14 +84,15 @@ class HeaderView extends ViewBase
 	override private function buildView():Void
 	{
 		// set header style
-		HeaderStyle.setHeaderStyle(this);
+		HeaderStyle.setHeaderStyle(node);
 		
 		// build title
-		_titleTextElement = new TextElement(_data);
-		_titleContainer = new ContainerDOMElement();
-		_titleContainer.addText(_titleTextElement);
+		_titleTextElement = Lib.document.createTextNode(_data);
+		//_titleTextElement = Lib.document.createTextNode("Yo");
+		_titleContainer = Lib.document.createElement("div");
+		_titleContainer.appendChild(_titleTextElement);
 		HeaderStyle.setHeaderTextStyle(_titleContainer);
-		this.addChild(_titleContainer);
+		node.appendChild(_titleContainer);
 	}
 	
 	/**
@@ -97,41 +101,41 @@ class HeaderView extends ViewBase
 	 */
 	override private function updateView():Void
 	{
-		//trace(_data);
-		_titleContainer.removeText(_titleTextElement);
-		_titleTextElement = new TextElement(_data);
-		_titleContainer.addText(_titleTextElement);
+		_titleContainer.removeChild(_titleTextElement);
+		_titleTextElement = Lib.document.createTextNode(_data);
+		_titleContainer.appendChild(_titleTextElement);
 	}
 
 	/**
 	 * build back button view
 	 * @return
 	 */
-	private function buildBackButtonView():ContainerDOMElement
+	private function buildBackButtonView():HtmlDom
 	{
 		// Back button
-		var backButtonContainer:ContainerDOMElement = new ContainerDOMElement();
+		var backButtonContainer:HtmlDom = Lib.document.createElement("div");
 		HeaderStyle.setBackButtonStyle(backButtonContainer);
 		
 		// arrow images
-		var backButtonArrowLeft:ImageDOMElement = new ImageDOMElement();
+		var backButtonArrowLeft:Image = cast Lib.document.createElement("img");
 		HeaderStyle.setBackButtonImageStyle(backButtonArrowLeft);
-		backButtonArrowLeft.load('assets/blackButtonLeft.png');
-		backButtonContainer.addChild(backButtonArrowLeft);
-		var backButtonArrowRight:ImageDOMElement = new ImageDOMElement();
+		backButtonArrowLeft.src = 'assets/blackButtonLeft.png';
+		backButtonContainer.appendChild(backButtonArrowLeft);
+		var backButtonArrowRight:Image = cast Lib.document.createElement("img");
 		HeaderStyle.setBackButtonImageStyle(backButtonArrowRight);
-		backButtonArrowRight.load('assets/blackButtonRight.png');
-		backButtonContainer.addChild(backButtonArrowRight);
+		backButtonArrowRight.src = 'assets/blackButtonRight.png';
+		backButtonContainer.appendChild(backButtonArrowRight);
 		
 		// text
-		var backButtonTextContainer:ContainerDOMElement = new ContainerDOMElement();
+		var backButtonTextContainer:HtmlDom = Lib.document.createElement("div");
 		HeaderStyle.setBackButtonTextStyle(backButtonTextContainer);
-		var backButtonText:TextElement = new TextElement('Back');
-		backButtonTextContainer.addText(backButtonText);
-		backButtonContainer.addChild(backButtonTextContainer);
+		var backButtonText:HtmlDom = Lib.document.createTextNode('Back');
+		backButtonTextContainer.appendChild(backButtonText);
+		backButtonContainer.appendChild(backButtonTextContainer);
 		
 		// set callback
-		backButtonContainer.onMouseUp = function (mouseEvent:MouseEventData) { onBackButtonClickCallback(); };
+		//backButtonContainer.onMouseUp = function (mouseEvent:MouseEventData) { onBackButtonClickCallback(); };
+		backButtonContainer.onmouseup = function (event:Event) { onBackButtonClickCallback(); };
 		
 		return backButtonContainer;
 	}

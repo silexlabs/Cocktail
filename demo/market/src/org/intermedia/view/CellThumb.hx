@@ -1,16 +1,17 @@
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.style.StyleData;
-import haxe.Timer;
-import org.intermedia.model.ApplicationModel;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.ImageDOMElement;
+//import cocktail.Cocktail;
+//import cocktail.node.HtmlDom;
+//import cocktail.style.StyleData;
+//import cocktail.textElement.TextElement;
+//import cocktail.node.HtmlDom;
 
 //import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
+import org.intermedia.model.ApplicationModel;
 
+import haxe.Timer;
 import feffects.Tween;
 
 
@@ -29,7 +30,7 @@ class CellThumb extends CellBase
 	private var _thumbMask:Size;
 	
 	// cell thumb image
-	//private var _cellImage:ImageDOMElement;
+	//private var _cellImage:HtmlDom;
 
 	/**
 	 * constructor
@@ -74,7 +75,7 @@ class CellThumb extends CellBase
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
 			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
-			this.addChild(croppedImage);
+			node.appendChild(croppedImage.node);
 		}
 	}
 

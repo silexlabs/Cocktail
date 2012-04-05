@@ -6,13 +6,9 @@ package org.intermedia.view;
  * @author Raphael Harmel
  */
 
-import cocktail.domElement.ImageDOMElement;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.Constants;
-import cocktail.mouse.MouseData;
 import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 
@@ -49,75 +45,75 @@ class HomePage extends ViewBase
 		var cell0 = new CellThumb(1,cell0Style);
 		cell0.data = _data[0];
 		// set mouseUp callback
-		cell0.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell0.data); };
-		this.addChild(cell0);
+		cell0.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell0.data); };
+		node.appendChild(cell0.node);
 
 		var cell1 = new CellThumb(2,cell0Style);
 		cell1.data = _data[1];
 		// set mouseUp callback
-		cell1.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell1.data); };
-		this.addChild(cell1);
+		cell1.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell1.data); };
+		node.appendChild(cell1.node);
 
 		var cell2 = new CellThumb(2,cell0Style);
 		cell2.data = _data[2];
 		// set mouseUp callback
-		cell2.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell2.data); };
-		this.addChild(cell2);
+		cell2.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell2.data); };
+		node.appendChild(cell2.node);
 
 		//var cell3 = new CellThumbText1(2);
 		var cell3 = new CellThumb(2,cell0Style);
 		cell3.data = _data[3];
 		//trace(cell3.data);
 		// set mouseUp callback
-		cell3.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell3.data); };
-		this.addChild(cell3);
+		cell3.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell3.data); };
+		node.appendChild(cell3.node);
 
 		//var cell4 = new CellThumbText1(2);
 		var cell4 = new CellThumb(2,cell0Style);
 		cell4.data = _data[4];
 		// set mouseUp callback
-		cell4.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell4.data); };
-		this.addChild(cell4);
+		cell4.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell4.data); };
+		node.appendChild(cell4.node);
 		
 		/*var cell5 = new CellThumbText1(2);
 		cell5.data = _data[5];
 		// set mouseUp callback
 		cell5.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell5.data); };
-		this.addChild(cell5);
+		node.appendChild(cell5);
 		
 		var cell6 = new CellThumb(2,cell0Style);
 		cell6.data = _data[6];
 		// set mouseUp callback
 		cell6.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell6.data); };
-		this.addChild(cell6);
+		node.appendChild(cell6);
 
 		var cell7 = new CellThumbText1(2);
 		cell7.data = _data[7];
 		// set mouseUp callback
 		cell7.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell7.data); };
-		this.addChild(cell7);
+		node.appendChild(cell7);
 		
 		var cell8 = new CellThumb(2,cell0Style);
 		cell8.data = _data[8];
 		// set mouseUp callback
 		cell8.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell8.data); };
-		this.addChild(cell8);*/
+		node.appendChild(cell8);*/
 
 	}
 	
 	/**
 	 *  load thumb image
 	 */
-	private function loadThumb(url:String):ImageDOMElement
+	private function loadThumb(url:String):HtmlDom
 	{
 		// THUMBNAIL
-		var image = new ImageDOMElement();
+		var image:Image = cast Lib.document.createElement("img");
 		// set image style
-		image.style.verticalAlign = middle;
+		image.style.verticalAlign = "middle";
 		// add image
-		this.addChild(image);
+		node.appendChild(image);
 		// load image
-		image.load(url);
+		image.src = url;
 		
 		return image;
 	}

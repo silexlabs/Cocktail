@@ -15,7 +15,6 @@ class CellBase extends ViewBase
 	// cell style
 	private var _cellStyle:Dynamic;
 	
-	//public function new() 
 	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
 	{
 		super();
@@ -25,7 +24,7 @@ class CellBase extends ViewBase
 		else initCellStyle();
 		
 		// apply cell style
-		_cellStyle.cell(this,cellPerLine);
+		_cellStyle.cell(node,cellPerLine);
 	}
 	
 	/**

@@ -7,20 +7,7 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.viewport.Viewport;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Dom;
 import org.intermedia.view.Constants;
 
 /**
@@ -34,33 +21,36 @@ class MenuListViewStyle
 	/**
 	 * Defines default Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setListStyle(domElement:DOMElement):Void
+	public static function setListStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.fixed;
-		domElement.style.display = DisplayStyleValue.block;
+		node.style.position = "fixed";
+		node.style.display = "block";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
-		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(Constants.MENU_HEIGHT));
+		node.style.minWidth = "100%";
+		node.style.width = "100%";
+		node.style.height = Std.string(Constants.MENU_HEIGHT) + "px";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
-		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
+		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
+		node.style.bottom = "auto";
 		
-		domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
+		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
+		node.style.backgroundImage = 'url("assets/headerBlue.png")';
 
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		//node.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "auto";
 		
 	}
 	

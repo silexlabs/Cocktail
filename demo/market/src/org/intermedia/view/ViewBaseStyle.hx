@@ -8,19 +8,19 @@
 package org.intermedia.view;
 
 // DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.viewport.Viewport;
+//import cocktail.node.DOMElement;
+//import cocktail.node.HtmlDom;
+//import cocktail.node.HtmlDom;
+//import cocktail.node.GraphicDOMElement;
+//import cocktail.viewport.Viewport;
 
 // Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+//import cocktail.NativeElementManager;
+//import cocktail.NativeElementData;
 
 // Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+//import cocktail.style.StyleData;
+//import cocktail.unit.UnitData;
 import org.intermedia.view.Constants;
 
 /**
@@ -34,26 +34,26 @@ class ViewBaseStyle
 	/**
 	 * Defines default Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setDefaultStyle(domElement:DOMElement):Void
+	public static function setDefaultStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineStyle;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		node.style.display = "inline";
+		node.style.position = "static";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		//domElement.style.marginTop = MarginStyleValue.length(px(Constants.HEADER_HEIGHT));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		//node.style.marginTop = Std.string(Constants.HEADER_HEIGHT));
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
+		node.style.width = "100%";
+		node.style.height = "100%";
 	}
 	
 }

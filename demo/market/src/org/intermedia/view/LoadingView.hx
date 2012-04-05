@@ -1,12 +1,8 @@
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.style.StyleData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.model.ApplicationModel;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.ImageDOMElement;
-
-import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
 
 
@@ -16,14 +12,18 @@ import org.intermedia.view.StyleModel;
  * @author Raphael Harmel
  */
 
-class LoadingView extends ContainerDOMElement
+class LoadingView
 {
+	public var node:HtmlDom;
+	
 	private var _viewStyle:Dynamic;
 	
 	public function new() 
 	{
-		super();
-		LoadingViewStyle.setLoadingStyle(this);
+		//super();
+		node = Lib.document.createElement("div");
+		
+		LoadingViewStyle.setLoadingStyle(node);
 		loadThumb();
 	}
 	
@@ -33,14 +33,14 @@ class LoadingView extends ContainerDOMElement
 	private function loadThumb():Void
 	{
 		// THUMBNAIL
-		var image = new ImageDOMElement();
+		var image:Image = cast Lib.document.createElement("img");
 		// set image style
 		LoadingViewStyle.setThumbnailStyle(image);
 		// add image
-		this.addChild(image);
+		node.appendChild(image);
 		// load image
-		image.load("assets/loading.gif");
-		//image.load("assets/loading2.gif");
+		image.src = "assets/loading.gif";
+		//image.src("assets/loading2.gif");
 	}
 	
 }

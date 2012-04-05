@@ -1,11 +1,13 @@
 package org.intermedia.view;
 
+import js.Lib;
+
 /**
  * ...
  * @author Raphael Harmel
  */
 
-import cocktail.viewport.Viewport;
+//import cocktail.viewport.Viewport;
 
 enum ScreenResolutionSize
 {
@@ -30,10 +32,14 @@ class ScreenResolution
 		//normal screens are at least 470dp x 320dp
 		//small screens are at least 426dp x 320dp
 		
-		var viewport:Viewport = new Viewport();
+		//var viewport:Viewport = new Viewport();
 		
-		if (viewport.width < 400) size = small;
-		else if (viewport.width < 600) size = normal;
+		//if (viewport.width < 400) size = small;
+		//else if (viewport.width < 600) size = normal;
+		//else size = large;
+		
+		if (Lib.window.innerWidth < 400) size = small;
+		else if (Lib.window.innerWidth < 600) size = normal;
 		else size = large;
 	}
 }

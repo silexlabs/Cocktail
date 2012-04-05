@@ -1,6 +1,7 @@
 package org.intermedia.model;
 
-import org.intermedia.model.XmlLoader;
+//import cocktail.Cocktail;
+//import org.intermedia.model.XmlLoader;
 import org.intermedia.model.ApplicationModel;
 
 /**

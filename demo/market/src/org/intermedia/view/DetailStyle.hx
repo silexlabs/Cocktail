@@ -7,19 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.Constants;
 import org.intermedia.view.ScreenResolution;
 
@@ -35,117 +24,113 @@ class DetailStyle
 	/**
 	 * Defines default Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setDefault(domElement:DOMElement):Void
+	public static function setDefault(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.absolute;
+		node.style.display = "block";
+		node.style.position = "absolute";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.autoValue;
+		node.style.width = "100%";
+		node.style.height = "auto";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(Constants.HEADER_HEIGHT));
-		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		node.style.top = Std.string(Constants.HEADER_HEIGHT);
+		node.style.bottom = "0px";
 		
-		//domElement.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
+		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
 	}
 
 	/**
 	 * Defines thumblist Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setThumbnail(domElement:DOMElement):Void
+	public static function setThumbnail(node:HtmlDom):Void
 	{
 		var imageMaxWidth:Int = 250;
 		
-		domElement.style.display = DisplayStyleValue.block;
+		node.style.display = "block";
 		
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-			domElement.style.width = DimensionStyleValue.percent(80);	
+			node.style.maxWidth = Std.string(imageMaxWidth) + "px";
+			node.style.maxHeight = "50%";
+			node.style.width = "80%";	
 		
 	}
 	
 	/**
 	 * Defines text Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setText(domElement:DOMElement):Void
+	public static function setText(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.color = ColorValue.hex('#202020');
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Arial'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
+		node.style.display = "block";
+		node.style.color = '#202020';
+		node.style.fontFamily = 'Arial, sans-serif';
 	}
 
 	/**
 	 * Defines cell title Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setTitle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setTitle(domElement:DOMElement):Void
+	public static function setTitle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
+	//public static function setTitle(node:HtmlDom):Void
 	{
-		setText(domElement);
+		setText(node);
 		
 		var fontSize:Int = 14;
 		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
 		else  fontSize = 18;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontWeight = "bold";
 	}
 
 	/**
 	 * Defines cell comment Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setAuthor(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setAuthor(domElement:DOMElement):Void
+	public static function setAuthor(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
+	//public static function setAuthor(node:HtmlDom):Void
 	{
-		setText(domElement);
+		setText(node);
 
 		var fontSize:Int = 10;
 		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
 		else  fontSize = 12;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.normal;
+		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontWeight = "normal";
 	}
 
 	/**
 	 * Defines cell description Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setDescription(domElement:DOMElement):Void
+	public static function setDescription(node:HtmlDom):Void
 	{
-		setText(domElement);
+		setText(node);
 
-		domElement.style.marginTop = MarginStyleValue.length(px(10));
-		domElement.style.marginBottom = MarginStyleValue.length(px(10));
+		node.style.marginTop = Std.string(10);
+		node.style.marginBottom = Std.string(10);
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
-		//domElement.style.fontWeight = FontWeightStyleValue.bold;
+		node.style.fontSize = "14px";
+		//node.style.fontWeight = "bold";
 	}
 	
 }

@@ -13,10 +13,11 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+//import cocktail.Cocktail;
+//import cocktail.node.HtmlDom;
+//import cocktail.node.HtmlDom;
+//import cocktail.NativeElementManager;
+//import cocktail.NativeElementData;
 
 import org.intermedia.model.ApplicationModel;
 
