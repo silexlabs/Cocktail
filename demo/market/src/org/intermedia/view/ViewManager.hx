@@ -1,17 +1,18 @@
 package org.intermedia.view;
 
-//import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.domElement.DOMElement;
 import cocktail.nativeElement.NativeElement;
 import cocktail.viewport.Viewport;
+import haxe.Firebug;
 import haxe.Timer;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.SwippableListView;
 import org.intermedia.model.Feeds;
-//import cocktail.domElement.DOMElementData;
+import cocktail.style.StyleData;
+import cocktail.unit.UnitData;
 
 /**
  * In charge of instantiating the views, listening to the application model changes and communicating with the controller.
@@ -85,8 +86,8 @@ class ViewManager
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		_body.addChild(_menu);
 		
-		_header.isVisible = false;
-		_menu.isVisible = false;
+		//_header.isVisible = false;
+		//_menu.isVisible = false;
 		
 		// init swippable view
 		_swippableListView = new SwippableListView();
@@ -137,8 +138,6 @@ class ViewManager
 	 */
 	private function onMenuItemSelectedCallback(cellData:CellData):Void
 	{
-		//trace(cellData.title + " clicked");
-		//trace(cellData.id + " clicked");
 		_swippableListView.index = cellData.id;
 	}
 	
@@ -150,6 +149,13 @@ class ViewManager
 		// remove swippableListView and menu and add empty detail view
 		_body.removeChild(_swippableListView);
 		_body.removeChild(_menu);
+		//_swippableListView.style.display = DisplayStyleValue.none;
+		//_swippableListView.isVisible = false;
+
+		// to be used once switching to cocktail js version
+		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
+		//_menu.style.display = DisplayStyleValue.none;
+		
 		_detailView = new DetailView();
 		_body.addChild(_detailView);
 
@@ -220,7 +226,7 @@ class ViewManager
 	 */
 	public function onLoadingError(error:Dynamic):Void
 	{
-		trace("Load error: " + Std.string(error));
+		Firebug.trace("Load error: " + Std.string(error));
 	}
 	
 	/**
@@ -240,6 +246,13 @@ class ViewManager
 		_body.addChild(_menu);
 		_body.addChild(_swippableListView);
 		_swippableListView.scrollToCurrentList();
+		//_swippableListView.style.display = DisplayStyleValue.inlineBlock;
+		//_swippableListView.isVisible = true;
+		
+		// to be used once switching to cocktail js version
+		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
+		//_menu.style.display = DisplayStyleValue.block;
+
 		
 		// update zIndex using a workaround
 		//updateZIndexes();

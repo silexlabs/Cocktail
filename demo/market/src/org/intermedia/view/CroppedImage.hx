@@ -7,16 +7,11 @@
 
 package org.intermedia.view;
 
-// DOM
 import cocktail.domElement.ContainerDOMElement;
-//import cocktail.domElement.DOMElement;
 import cocktail.domElement.ImageDOMElement;
-//import cocktail.viewport.Viewport;
 import org.intermedia.model.ApplicationModel;
 import haxe.Timer;
 import feffects.Tween;
-
-// Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
@@ -48,7 +43,6 @@ class CroppedImage extends ContainerDOMElement
 	 */
 	private function loadThumb(imageUrl:String):Void
 	{
-		//_image = new ImageDOMElement();
 		// load image
 		_image.onLoad = onImageLoadSuccess;
 		_image.load(imageUrl);
@@ -65,6 +59,10 @@ class CroppedImage extends ContainerDOMElement
 		//_cellStyle.thumbnail(_cellImage, _thumbMask);
 		// add image to cell
 		//this.addChild(_cellImage);
+
+		// apply image start style so it is invisible (for fade-in)
+		image.style.opacity = OpacityStyleValue.number(0);
+		
 		this.addChild(ImageUtils.cropImage(image,_maskSize));
 		
 		// display thumb using a random effect
@@ -79,7 +77,6 @@ class CroppedImage extends ContainerDOMElement
 		// create the tween
         var tween = new Tween( 0, 1, 400 );
 		tween.setTweenHandlers( tweenOpacity, tweenEnd );
-		//tween.setTweenHandlers( tweenOpacity, null );
         // launch the tween
         tween.start();
 	}

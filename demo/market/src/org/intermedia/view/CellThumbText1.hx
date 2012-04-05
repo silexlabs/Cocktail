@@ -79,7 +79,6 @@ class CellThumbText1 extends CellBase
 		// image part
 		/*if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			trace(_data.thumbUrl);
 			var cellImage:ImageDOMElement = new ImageDOMElement();
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);

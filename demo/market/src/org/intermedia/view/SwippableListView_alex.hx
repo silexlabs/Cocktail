@@ -487,8 +487,7 @@ _direction = Direction.notYetSet;
 					{
 						event.preventDefault(); //trace("event.preventDefault");
 					}
-//		trace("XXXXXXXXXXXXX "+event.type + " - "+event.pageX+", "+event.pageY + " - "+ this.parent.nativeElement.scrollLeft+", "+this.parent.nativeElement.scrollTop);
-_direction = Direction.notYetSet;
+					_direction = Direction.notYetSet;
 				default: return;
 			}
 			//}

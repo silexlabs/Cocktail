@@ -70,7 +70,7 @@ class ImageUtils
 		mask.style.width = DimensionStyleValue.length(px(maskSize.width));
 		mask.style.height = DimensionStyleValue.length(px(maskSize.height));
 		
-		// aply mask style so it can crop the image
+		// apply mask style so it can crop the image
 		mask.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
 		mask.style.display = DisplayStyleValue.inlineBlock;
 

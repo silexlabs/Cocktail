@@ -170,7 +170,7 @@ To Do Alex 30/03/2012
 -aligner les cells sur la ligne => quantité de texte réduite: OK ?
 -Loading screen au début => bug cocktail qui override les valeurs du zindex: mis en standby car réglé dans la version js
 -crop thumbs des thumblist & thumbtext list: utiliser des masques html => deniers ajustements à faire
--swippable view scroll non fonctionnel sur android & Firefox
+-swippable view scroll non fonctionnel sur android & Firefox => OK
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles

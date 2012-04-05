@@ -212,7 +212,6 @@ class ThumbTextListRssStandard
 		else
 		{
 			imgUrlStartIndex = htmlString.indexOf("<p>http://");
-			//trace(htmlString);
 			if ( imgUrlStartIndex != -1)
 			{
 				// get img node content
@@ -227,7 +226,6 @@ class ThumbTextListRssStandard
 				var imgUrlEndIndex:Int = imgUrl.indexOf("</p>");
 				imgUrl = imgUrl.substr(0, imgUrlEndIndex);
 				
-				//trace(imgUrl);
 				return imgUrl;
 			}
 		}
