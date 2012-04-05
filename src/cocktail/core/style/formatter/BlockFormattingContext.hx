@@ -47,7 +47,7 @@ class BlockFormattingContext extends FormattingContext
 		var currentAddedSiblingsHeight:Int = 0;
 		
 		//_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
-		concatenatedX += elementRenderer.coreStyle.computedStyle.marginLeft;
+		concatenatedX += elementRenderer.coreStyle.computedStyle.marginLeft +  elementRenderer.coreStyle.computedStyle.paddingLeft;
 		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
@@ -75,6 +75,7 @@ class BlockFormattingContext extends FormattingContext
 				if (child.establishesNewFormattingContext() == false)
 				{
 					doFormat2(child, concatenatedX);
+					//concatenatedX -= child.coreStyle.computedStyle.marginLeft +  child.coreStyle.computedStyle.paddingLeft;
 				}
 			}
 		
@@ -83,7 +84,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 			
-			var x:Float = _formattingContextData.x + concatenatedX + child.coreStyle.computedStyle.marginLeft;
+			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
 			var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
 			var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;

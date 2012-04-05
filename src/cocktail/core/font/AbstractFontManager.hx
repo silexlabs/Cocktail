@@ -131,6 +131,8 @@ class AbstractFontManager
 	 * element for the provided text string
 	 * and the styles that were computed for
 	 * this text
+	 * 
+	 * TODO : maybe should be on TextRenderer instead ?
 	 */
 	public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
 	{
