@@ -42,6 +42,7 @@ import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.Window;
+import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
 

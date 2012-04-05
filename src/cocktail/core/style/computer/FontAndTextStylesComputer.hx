@@ -11,6 +11,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.font.FontData;
 import haxe.Log;
 
 /**
