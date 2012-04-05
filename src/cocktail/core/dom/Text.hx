@@ -56,6 +56,7 @@ class Text extends CharacterData
 	 * created when the text is rendered
 	 * 
 	 * TODO : should be on text renderer instead
+	 * Text should create its own TextRenderer ?
 	 */
 	private var _textFragments:Array<TextFragmentData>;
 	

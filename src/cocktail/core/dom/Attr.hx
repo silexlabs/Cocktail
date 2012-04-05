@@ -121,7 +121,6 @@ class Attr extends Node
 		return _name;
 	}
 	
-	//TODO : check if indeed suposed to return empty string
 	private function get_value():String 
 	{
 		if (_value == null)
