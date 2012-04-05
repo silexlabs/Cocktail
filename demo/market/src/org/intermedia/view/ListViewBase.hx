@@ -1,10 +1,13 @@
 package org.intermedia.view;
 
-import cocktail.classInstance.ClassInstance;
-import cocktail.domElement.DOMElementData;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.mouse.MouseData;
-import cocktail.viewport.Viewport;
+import js.Lib;
+import js.Dom;
+import js.Scroll;
+//import cocktail.classInstance.ClassInstance;
+//import cocktail.node.DOMElementData;
+//import cocktail.node.HtmlDom;
+//import cocktail.mouse.MouseData;
+//import cocktail.viewport.Viewport;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -36,7 +39,7 @@ class ListViewBase extends ViewBase
 	public var id:String;
 	
 	// list bottom loader
-	private var _listBottomLoader:ImageDOMElement;
+	private var _listBottomLoader:Image;
 
 	public function new()
 	{
@@ -45,11 +48,12 @@ class ListViewBase extends ViewBase
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
-		_listBottomLoader = new ImageDOMElement();
+		_listBottomLoader = cast Lib.document.createElement("img");
 		ListViewStyle.loader(_listBottomLoader);
-		_listBottomLoader.load("assets/loading.gif");
+		_listBottomLoader.src = "assets/loading.gif";
 		
-		this.onScroll = onScrollCallback;
+		//node.onScroll = onScrollCallback;
+		node.onscroll = onScrollCallback;
 		
 	}
 	
@@ -68,33 +72,34 @@ class ListViewBase extends ViewBase
 			cell.data = Reflect.field(_data, index);
 			
 			// set mouseUp callback
-			cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
+			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
+			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
 			_cells.push(cell);
 
 			// add cell to list
-			this.addChild(cell);
+			node.appendChild(cell.node);
 		}
 		
 		// if loader is attached to to list container, detach it
-		if (_listBottomLoader.parent != null)
+		if (_listBottomLoader.parentNode != null)
 		{
-			this.removeChild(_listBottomLoader);
+			node.removeChild(_listBottomLoader);
 		}
 		// add loader at the bottom of the screen if there is still data to load
 		if(displayListBottomLoader == true)
 		{
-			this.addChild(_listBottomLoader);
+			node.appendChild(_listBottomLoader);
 		}
 		
 		
 		// if list is not attached to body
-		//if(this.parent.parent != null)
+		//if(this.parentNode.parentNode != null)
 		//{
 			// if list content height is not filling the totality of the screen's height
-			//if (this.nativeElement.scrollHeight < new Viewport().height && this.nativeElement.scrollHeight != 0)
-			/*if (this.nativeElement.scrollHeight < new Viewport().height)
+			//if (node.scrollHeight < Lib.window.innerHeight && node.scrollHeight != 0)
+			/*if (node.scrollHeight < Lib.window.innerHeight)
 			{
 				// request more data
 				onDataRequestCallback(id);
@@ -130,32 +135,17 @@ class ListViewBase extends ViewBase
 	 * list scroll callback
 	 * @param	event
 	 */
-	override private function onScrollCallback(event:ScrollEventData):Void
+	//override private function onScrollCallback(event:ScrollEventData):Void
+	private function onScrollCallback(event:Event):Void
 	{
 		// if the bottom of the list is reached via scrolling
-		if (event.scrollTop >= event.scrollHeight - new Viewport().height)
+		//if (event.scrollTop >= event.scrollHeight - Lib.window.innerHeight)
+		if (node.scrollTop >= node.scrollHeight - Lib.window.innerHeight)
 		{
 			// call callback
-			//onScrolledCallback(id);
 			onDataRequestCallback(id);
 		}
 	}
-	
-	/**
-	 * list fully scrolled callback
-	 * @param	event
-	 */
-	/*private function onScrolledCallback(id:String):Void
-	{
-		// call callback
-		if (onListScrolled != null)
-		{
-			onListScrolled(id);
-		}
-		
-		// request more data
-		onDataRequestCallback(id);
-	}*/
 	
 	/**
 	 * load more data request callback

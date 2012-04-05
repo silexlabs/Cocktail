@@ -7,7 +7,6 @@
 
 package org.intermedia.view;
 
-import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -22,7 +21,7 @@ class ListViewText extends ListViewBase
 	public function new() 
 	{
 		super();
-		ListViewStyle.setListStyle(this,Constants.LIST_TOP);
+		ListViewStyle.setListStyle(node,Constants.LIST_TOP);
 	}
 	
 	/**

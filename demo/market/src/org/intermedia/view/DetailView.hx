@@ -1,7 +1,7 @@
 package org.intermedia.view;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.textElement.TextElement;
+
+import js.Lib;
+import js.Dom;
 import haxe.Firebug;
 
 // hxtml
@@ -17,38 +17,38 @@ import hxtml2.HTMLParser;
 class DetailView extends ViewBase
 {
 	// title container
-	private var _titleContainer:ContainerDOMElement;
+	private var _titleContainer:HtmlDom;
 	
 	// title text Element
-	private var _titleElement:TextElement;
+	private var _titleElement:HtmlDom;
 	
 	// author container
-	private var _authorContainer:ContainerDOMElement;
+	private var _authorContainer:HtmlDom;
 	
 	// title text Element
-	private var _authorElement:TextElement;
+	private var _authorElement:HtmlDom;
 	
 	// thumbnail image
-	private var _thumbnail:ImageDOMElement;
+	private var _thumbnail:Image;
 	
 	// description container
-	private var _descriptionContainer:ContainerDOMElement;
+	private var _descriptionContainer:HtmlDom;
 	
 	// description text Element
-	private var _descriptionElement:TextElement;
+	private var _descriptionElement:HtmlDom;
 	
 	// content container
-	private var _contentContainer:ContainerDOMElement;
+	private var _contentContainer:HtmlDom;
 	
 	// content text Element
-	private var _contentElement:TextElement;
+	private var _contentElement:HtmlDom;
 	
 	public function new() 
 	{
-		_titleElement = new TextElement("");
-		_authorElement = new TextElement("");
-		_descriptionElement = new TextElement("");
-		_contentElement = new TextElement("");
+		_titleElement = Lib.document.createTextNode("");
+		_authorElement = Lib.document.createTextNode("");
+		_descriptionElement = Lib.document.createTextNode("");
+		_contentElement = Lib.document.createTextNode("");
 		
 		super();
 	}
@@ -59,36 +59,36 @@ class DetailView extends ViewBase
 	 */
 	override private function buildView():Void
 	{
-		DetailStyle.setDefault(this);
+		DetailStyle.setDefault(node);
 
 		// add title
-		_titleContainer = new ContainerDOMElement();
+		_titleContainer = Lib.document.createElement("div");
 		DetailStyle.setTitle(_titleContainer);
-		_titleContainer.addText(_titleElement);
-		this.addChild(_titleContainer);
+		_titleContainer.appendChild(_titleElement);
+		node.appendChild(_titleContainer);
 		
 		// add author
-		_authorContainer = new ContainerDOMElement();
+		_authorContainer = Lib.document.createElement("div");
 		DetailStyle.setAuthor(_authorContainer);
-		_authorContainer.addText(_authorElement);
-		this.addChild(_authorContainer);
+		_authorContainer.appendChild(_authorElement);
+		node.appendChild(_authorContainer);
 		
 		// add thumbnail
-		_thumbnail = new ImageDOMElement();
+		_thumbnail = cast Lib.document.createElement("img");
 		DetailStyle.setThumbnail(_thumbnail);
-		this.addChild(_thumbnail);
+		node.appendChild(_thumbnail);
 		
 		// add description
-		_descriptionContainer = new ContainerDOMElement();
+		_descriptionContainer = Lib.document.createElement("div");
 		DetailStyle.setDescription(_descriptionContainer);
-		_descriptionContainer.addText(_descriptionElement);
-		this.addChild(_descriptionContainer);
+		_descriptionContainer.appendChild(_descriptionElement);
+		node.appendChild(_descriptionContainer);
 		
 		// add content
-		_contentContainer = new ContainerDOMElement();
+		_contentContainer = Lib.document.createElement("div");
 		DetailStyle.setDescription(_contentContainer);
-		_contentContainer.addText(_contentElement);
-		this.addChild(_contentContainer);
+		_contentContainer.appendChild(_contentElement);
+		node.appendChild(_contentContainer);
 		
 	}
 	
@@ -99,37 +99,39 @@ class DetailView extends ViewBase
 	override private function updateView():Void
 	{
 		// update title
-		_titleContainer.removeText(_titleElement);
-		_titleElement.text = _data.title;
-		_titleContainer.addText(_titleElement);
+		_titleContainer.removeChild(_titleElement);
+		//_titleElement.text = _data.title;
+		_titleElement = Lib.document.createTextNode(_data.title);
+		_titleContainer.appendChild(_titleElement);
 		
 		// update author
-		_authorContainer.removeText(_authorElement);
-		_authorElement.text = _data.author;
-		_authorContainer.addText(_authorElement);
+		_authorContainer.removeChild(_authorElement);
+		//_authorElement.text = _data.author;
+		_authorElement = Lib.document.createTextNode(_data.author);
+		_authorContainer.appendChild(_authorElement);
 		
 		// detach thumbnail from detail view
-		if (_thumbnail.parent != null)
+		if (_thumbnail.parentNode != null)
 		{
-			this.removeChild(_thumbnail);
+			node.removeChild(_thumbnail);
 		}
 		// update thumbnail if data exists. check is done here to avoid having a "?" if not thumb is existing
 		if(_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			_thumbnail.load(_data.thumbUrl);
-			this.addChild(_thumbnail);
+			_thumbnail.src = _data.thumbUrl;
+			node.appendChild(_thumbnail);
 		}
-			//_thumbnail.load(_data.thumbUrl);
+			//_thumbnail.src(_data.thumbUrl);
 		
 		// update description
-		/*_descriptionContainer.removeText(_descriptionElement);
+		/*_descriptionContainer.removeChild(_descriptionElement);
 		_descriptionElement.text = _data.description + "\n";
-		_descriptionContainer.addText(_descriptionElement);
+		_descriptionContainer.appendChild(_descriptionElement);
 		
 		// update content
-		_contentContainer.removeText(_contentElement);
+		_contentContainer.removeChild(_contentElement);
 		_contentElement.text = _data.content;
-		_contentContainer.addText(_contentElement);*/
+		_contentContainer.appendChild(_contentElement);*/
 		
 		//html2DOM(_data.description);
 		html2DOM(_data.content);
@@ -143,7 +145,7 @@ class DetailView extends ViewBase
 			var htmlPageData:HTMLPageData = null;
 			htmlPageData = (new HTMLParser()).parse(xml.firstElement());
 			// add the parsed data to the detail view
-			this.nativeElement.appendChild(htmlPageData.htmlDom);
+			node.appendChild(htmlPageData.htmlDom);
 		}catch(msg : String){
 			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
 			Firebug.trace("Error, parsing XML tag \n"+msg);

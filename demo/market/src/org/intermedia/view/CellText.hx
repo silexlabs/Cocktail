@@ -1,9 +1,8 @@
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
+import js.Lib;
+import js.Dom;
 import org.intermedia.model.ApplicationModel;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.ImageDOMElement;
 
 /**
  * Base class for list cell. Each ListView has its own cell class inherited from this one.
@@ -17,7 +16,7 @@ class CellText extends CellBase
 	public function new() 
 	{
 		super();
-		CellTextStyle.setCellStyle(this);
+		CellTextStyle.setCellStyle(node);
 	}
 	
 	/**
@@ -28,21 +27,21 @@ class CellText extends CellBase
 		var cellData:CellData = _data;
 		
 		// add text
-		var cellTextContainer:ContainerDOMElement = new ContainerDOMElement();
+		var cellTextContainer:HtmlDom = Lib.document.createElement("div");
 		if (cellData.title != "" && cellData.title != null)
 		{
-			var textElement:TextElement = new TextElement(cellData.title);
-			cellTextContainer.addText(textElement);
+			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
+			cellTextContainer.appendChild(textElement);
 			CellTextStyle.setCellTextStyle(cellTextContainer);
-			this.addChild(cellTextContainer);
+			node.appendChild(cellTextContainer);
 		}
 			
 		// add separation line
-		/*var line:ImageDOMElement = new ImageDOMElement();
+		/*var line:HtmlDom = Lib.document.createElement("div");
 		// set image style
 		CellTextStyle.setCellLineStyle(line);
-		this.addChild(line);
-		line.load("assets/greyPixel.png");*/
+		node.appendChild(line);
+		line.src("assets/greyPixel.png");*/
 
 	}
 

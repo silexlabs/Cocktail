@@ -7,16 +7,7 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Dom;
 import org.intermedia.view.Constants;
 
 /**
@@ -30,27 +21,26 @@ class HeaderStyle
 	/**
 	 * Defines header Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setHeaderStyle(domElement:DOMElement):Void
+	public static function setHeaderStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.fixed;
-		domElement.style.display = DisplayStyleValue.block;
+		node.style.position = "fixed";
+		node.style.display = "block";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
-		domElement.style.left = PositionOffsetStyleValue.length(px(0));
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		node.style.top = "0px";
+		node.style.bottom = "auto";
+		node.style.left = "0px";
+		node.style.top = "0px";
 		
-		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(Constants.HEADER_HEIGHT));
+		node.style.minWidth = "100%";
+		node.style.width = "100%";
+		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
 		
-		//domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url( new URLData("assets/header.jpg")))];
-		domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
+		node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		
 		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
-		/*domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
+		/*node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
 		colorStops:[{color:ColorValue.rgba(0, 255, 0,0.7), stop:GradientStopValue.percent(0)}, {color:ColorValue.rgba(255, 0, 0,0.3), stop:GradientStopValue.percent(100)} ]} )))];*/
 	}
 
@@ -58,99 +48,91 @@ class HeaderStyle
 	 * Defines header static Style
 	 * done as a workaround to have a layout using a minimum of absolute values
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setHeaderStaticStyle(domElement:DOMElement):Void
+	public static function setHeaderStaticStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.staticStyle;
-		domElement.style.display = DisplayStyleValue.block;
+		node.style.position = "static";
+		node.style.display = "block";
 
-		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(Constants.HEADER_HEIGHT));
+		node.style.minWidth = "100%";
+		node.style.width = "100%";
+		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
 		
 	}
 
 	/**
 	 * Defines header title text Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setHeaderTextStyle(domElement:DOMElement):Void
+	public static function setHeaderTextStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.color = ColorValue.hex('#454545');
+		node.style.position = "absolute";
 
-		domElement.style.fontSize = FontSizeStyleValue.length(px(20));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('HelveticaNeue'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		node.style.color = '#454545';
+		node.style.fontSize = "20px";
+		node.style.fontWeight = "bold";
+		node.style.fontStyle = "normal";
+		node.style.fontFamily = 'Arial, sans-serif';
 
-		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
-		
-		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(100);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		node.style.textAlign = "center";
+		node.style.paddingTop = "8px";
+	
+		node.style.minWidth = "100%";
+		node.style.top = "0px";
+		node.style.width = "100%";
+		node.style.height = "100%";
+		node.style.verticalAlign = "middle";
 	}
 
 	/**
 	 * Defines back button Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setBackButtonStyle(domElement:DOMElement):Void
+	public static function setBackButtonStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.paddingTop = PaddingStyleValue.length(px(6));
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(10));
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		node.style.position = "absolute";
+		node.style.paddingTop = "6px";
+		node.style.paddingLeft = "10px";
+		node.style.top = "0px";
 	}
 
 	/**
 	 * Defines back button text Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setBackButtonTextStyle(domElement:DOMElement):Void
+	public static function setBackButtonTextStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.color = ColorValue.hex('#EEEEEE');
+		node.style.position = "absolute";
+		node.style.color = '#EEEEEE';
 
-		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
-		domElement.style.lineHeight = LineHeightStyleValue.normal;
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.fontStyle = FontStyleStyleValue.normal;
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Arial'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		node.style.fontSize = "14px";
+		node.style.lineHeight = "normal";
+		node.style.fontWeight = "bold";
+		node.style.fontStyle = "normal";
+		node.style.fontFamily = 'Arial, sans-serif';
+		node.style.textAlign = "center";
 
-		domElement.style.paddingTop = PaddingStyleValue.length(px(12));
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(30));
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.left = PositionOffsetStyleValue.length(px(0));
+		node.style.paddingTop = "12px";
+		node.style.paddingLeft = "30px";
+		node.style.top = "0px";
+		node.style.left = "0px";
 	}
 
 	/**
 	 * Defines back button image Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setBackButtonImageStyle(domElement:DOMElement):Void
+	public static function setBackButtonImageStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineStyle;
-		domElement.style.position = PositionStyleValue.relative;
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.left = PositionOffsetStyleValue.length(px(0));
+		node.style.display = "inline";
+		node.style.position = "relative";
+		node.style.top = "0px";
+		node.style.left = "0px";
 	}
 	
 }

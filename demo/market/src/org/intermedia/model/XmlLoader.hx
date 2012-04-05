@@ -13,7 +13,9 @@
 
 package org.intermedia.model;
 
-import cocktail.resource.ResourceLoaderManager;
+////import cocktail.Cocktail;
+//import cocktail.resource.ResourceLoaderManager;
+import haxe.Http;
 import org.intermedia.model.ApplicationModel;
 
 class XmlLoader
@@ -63,7 +65,10 @@ class XmlLoader
 		
 		// try to load the xml feed using a Silex labs proxy
 		try {
-			ResourceLoaderManager.loadString( fullUrl, function (xml:String) { onXmlLoaded(listId, xml); }, onXmlError);
+			//ResourceLoaderManager.loadString( fullUrl, function (xml:String) { onXmlLoaded(listId, xml); }, onXmlError);
+			var httpRequest:Http = new Http(fullUrl);
+			httpRequest.onData = function (xml:String) { onXmlLoaded(listId, xml); };
+			httpRequest.onError = onXmlError;
 		}
 		// catch the error if any
 		catch (error:Dynamic)

@@ -1,12 +1,10 @@
 package org.intermedia.view;
 
-import cocktail.domElement.ContainerDOMElement;
-import org.intermedia.model.ApplicationModel;
-import cocktail.textElement.TextElement;
-import cocktail.domElement.ImageDOMElement;
-
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
+import org.intermedia.model.ApplicationModel;
 
 /**
  * Base class for list cell. Each ListView has its own cell class inherited from this one.
@@ -41,7 +39,7 @@ class CellThumbText1 extends CellBase
 		//_thumb = new CellThumb(cellPerLine);
 		//_thumb = new CellThumb(cellPerLine,_cellStyle);
 		//CellStyle.removeBorder(_thumb);
-		//this.addChild(_thumb);
+		//node.appendChild(_thumb);
 		_thumbMask = ImageUtils.computeMaskSize(cellPerLine,CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT);
 	}
 
@@ -79,14 +77,14 @@ class CellThumbText1 extends CellBase
 		// image part
 		/*if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			var cellImage:HtmlDom = Lib.document.createElement("div");
 			// set image style
 			//listStyle.cellThumbnail(cellImage,screenResolutionSize);
 			_cellStyle.thumbnail(cellImage);
 			// add image
-			this.addChild(cellImage);
+			node.appendChild(cellImage);
 			// load image
-			cellImage.load(_data.thumbUrl);
+			cellImage.src(_data.thumbUrl);
 		}*/
 		
 		// load thumb image
@@ -94,7 +92,7 @@ class CellThumbText1 extends CellBase
 		{
 			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
 			//var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, {width:50, height:50});
-			this.addChild(croppedImage);
+			node.appendChild(croppedImage.node);
 		}
 
 		
@@ -102,10 +100,10 @@ class CellThumbText1 extends CellBase
 		// TEXT
 		
 		// add text block
-		var cellTextBlockContainer:ContainerDOMElement = new ContainerDOMElement();
+		var cellTextBlockContainer:HtmlDom = Lib.document.createElement("div");
 		_cellStyle.textBlock(cellTextBlockContainer);
 		//listStyle.cellTextBlock(cellTextBlockContainer);
-		this.addChild(cellTextBlockContainer);
+		node.appendChild(cellTextBlockContainer);
 		
 		// add title
 		if (_data.title != "" && _data.title != null)
@@ -113,34 +111,34 @@ class CellThumbText1 extends CellBase
 			var text:String = _data.title;
 			if (text.length > TITLE_LENGTH)
 				text = text.substr(0, TITLE_LENGTH) + "...";
-			var textElement:TextElement = new TextElement(text);
-			var cellTitleContainer:ContainerDOMElement = new ContainerDOMElement();
-			cellTitleContainer.addText(textElement);
+			var textElement:HtmlDom = Lib.document.createTextNode(text);
+			var cellTitleContainer:HtmlDom = Lib.document.createElement("div");
+			cellTitleContainer.appendChild(textElement);
 			_cellStyle.title(cellTitleContainer);
 			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellTitleContainer);
+			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
 		// add author
 		/*if (_data.author != "" && _data.author != null)
 		{
-			var cellAuthorContainer:ContainerDOMElement = new ContainerDOMElement();
-			var textElement:TextElement = new TextElement(_data.author);
-			cellAuthorContainer.addText(textElement);
+			var cellAuthorContainer:HtmlDom = Lib.document.createElement("div");
+			var textElement:HtmlDom = Lib.document.createTextNode(_data.author);
+			cellAuthorContainer.appendChild(textElement);
 			_cellStyle.author(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellAuthorContainer);
+			cellTextBlockContainer.appendChild(cellAuthorContainer);
 		}*/
 		
 		
 		// LINE
 		
 		// add separation line
-		/*var line:ImageDOMElement = new ImageDOMElement();
+		/*var line:HtmlDom = Lib.document.createElement("div");
 		// set image style
 		_cellStyle.line(line);
-		this.addChild(line);
-		line.load("assets/greyPixel.png");*/
+		node.appendChild(line);
+		line.src("assets/greyPixel.png");*/
 
 	}
 

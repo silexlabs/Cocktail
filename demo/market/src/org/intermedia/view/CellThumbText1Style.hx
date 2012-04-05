@@ -7,19 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.ScreenResolution;
 import org.intermedia.model.ApplicationModel;
 
@@ -39,50 +28,50 @@ class CellThumbText1Style
 	/**
 	 * Defines cell Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 * @param	?cellPerLine
 	 * @return	thumb mask size
 	 */
-	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Size
+	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Size
 	{
-		/*domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		/*node.style.display = "inline-block";
+		node.style.position = "static";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(CELL_VERTICAL_SPACE));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE));
+		node.style.paddingBottom = "0px";
 		
 		// compute cell width depending on cellPerLine value
 		var cellPercentWidth:Int = 0;
 		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
 		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
 		else cellPercentWidth = 100;
-		domElement.style.width = DimensionStyleValue.percent(cellPercentWidth);
-		//domElement.style.height = DimensionStyleValue.length(px(70));
-		//domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };*/
+		node.style.width = DimensionStyleValue.percent(cellPercentWidth);
+		//node.style.height = Std.string(70));
+		//node.style.overflow = "hidden";*/
 		
-		CellStyle.setCellStyle(domElement,cellPerLine);
+		CellStyle.setCellStyle(node,cellPerLine);
 		
 		// apply border
-		//CellStyle.addBorder(domElement);
+		//CellStyle.addBorder(node);
 		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
 		
-		domElement.style.height = DimensionStyleValue.length(px(cellSize.height));
-		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.length(px(CELL_MAX_HEIGHT));
+		node.style.height = Std.string(cellSize.height) + "px";
+		//node.style.maxHeight = ConstrainedStd.string(CELL_MAX_HEIGHT));
 
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		node.style.overflow = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(domElement);
+		CellStyle.addBorder(node);
 		
 		return cellSize;
 
@@ -91,72 +80,68 @@ class CellThumbText1Style
 	/**
 	 * Defines cell image Style
 	 * 
-	 * @param	domElement
+	 * @param	image
 	 */
-	public static function setThumbnailStyle(domElement:ImageDOMElement,maskSize:Size):Void
+	public static function setThumbnailStyle(image:Image,maskSize:Size):Void
 	{
 		/*var imageMaxWidth:Int = 200;
 		
-		//setCellStyle(domElement);
+		//setCellStyle(node);
 		
-		domElement.style.display = DisplayStyleValue.inlineStyle;
+		node.style.display = "inline";
 		
-		//domElement.style.paddingLeft = PaddingStyleValue.percent(0);
-		//domElement.style.paddingRight = PaddingStyleValue.percent(0);
-		//domElement.style.paddingLeft = PaddingStyleValue.length(px(5));
-		//domElement.style.paddingRight = PaddingStyleValue.length(px(5));
+		//node.style.paddingLeft = "0%";
+		//node.style.paddingRight = "0%";
+		//node.style.paddingLeft = Std.string(5));
+		//node.style.paddingRight = Std.string(5));
 
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		node.style.verticalAlign = "middle";
 
-		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-		domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		domElement.style.width = DimensionStyleValue.percent(CELL_THUMB_WIDTH_PERCENT);	
+		node.style.maxWidth = ConstrainedStd.string(imageMaxWidth));
+		node.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
+		node.style.width = DimensionStyleValue.percent(CELL_THUMB_WIDTH_PERCENT);	
 
-		domElement.style.opacity = OpacityStyleValue.number(0);*/
+		node.style.opacity = OpacityStyleValue.number(0);*/
 		
-		CellThumbStyle.setThumbnailStyle(domElement,maskSize);
+		CellThumbStyle.setThumbnailStyle(image,maskSize);
 	}
 		
 	/**
 	 * Defines cell text block Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setTextBlockStyle(domElement:DOMElement):Void
+	public static function setTextBlockStyle(node:HtmlDom):Void
 	{
-		//setCellStyle(domElement);
+		//setCellStyle(node);
 		
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.marginLeft = MarginStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
-		domElement.style.width = DimensionStyleValue.percent(CELL_TEXT_WIDTH_PERCENT);
+		node.style.display = "inline-block";
+		node.style.marginLeft = "2%";
+		node.style.verticalAlign = "top";
+		node.style.width = Std.string(CELL_TEXT_WIDTH_PERCENT) + "%";
 		
 	}
 
 	/**
 	 * Defines cell text Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	private static function setTextStyle(domElement:DOMElement):Void
+	private static function setTextStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.color = ColorValue.hex('#202020');
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('Arial'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
+		node.style.display = "block";
+		node.style.color = '#202020';
+		node.style.fontFamily = 'Arial, sans-serif';
 	}
 
 	/**
 	 * Defines cell title Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setTitleStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function setTitleStyle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
-		setTextStyle(domElement);
+		setTextStyle(node);
 		
 		if (screenResolutionSize == null)
 			screenResolutionSize = ScreenResolutionSize.small;
@@ -166,41 +151,41 @@ class CellThumbText1Style
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
 		else  fontSize = 18;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		//domElement.style.fontWeight = FontWeightStyleValue.bold;
+		node.style.fontSize = Std.string(fontSize) + "px";
+		//node.style.fontWeight = "bold";
 	}
 
 	/**
 	 * Defines cell comment Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setAuthorStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function setAuthorStyle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
-		setTextStyle(domElement);
+		setTextStyle(node);
 
 		var fontSize:Int = 10;
 		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
 		else  fontSize = 12;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.normal;
+		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontWeight = "normal";
 	}
 	
 	/**
 	 * Defines cell line Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setLineStyle(domElement:DOMElement):Void
+	public static function setLineStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.relative;
+		node.style.display = "block";
+		node.style.position = "relative";
 
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(1));
-		domElement.style.marginTop = MarginStyleValue.length(px(CELL_VERTICAL_SPACE));	
+		node.style.width = "100%";
+		node.style.height = "1px";
+		node.style.marginTop = Std.string(CELL_VERTICAL_SPACE) + "px";	
 	}
 	
 }

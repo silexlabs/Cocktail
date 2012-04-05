@@ -7,13 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-
+import js.Lib;
+import js.Dom;
 
 /**
  * This class defines the styles used by the CellThumb
@@ -24,37 +19,35 @@ import cocktail.unit.UnitData;
 class CellStyle
 {
 	
-	//static inline var CELL_RATIO:Float = 16/9;
-
 	/**
 	 * Defines cell Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 * @return	thumbNail mask size, here cell size
 	 */
-	public static function setCellStyle(domElement:DOMElement,?cellPerLine:Int=1):Void
+	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.position = PositionStyleValue.staticStyle;
+		node.style.display = "inline-block";
+		node.style.position = "static";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
 		// compute cell width in percentage depending on cellPerLine value
 		var cellWidthPercent:Int = computeWidthPercentage(cellPerLine);
-		domElement.style.width = DimensionStyleValue.percent(cellWidthPercent);
-		//domElement.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
+		node.style.width = Std.string(cellWidthPercent) + "%";
+		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
-		domElement.style.verticalAlign = VerticalAlignStyleValue.top;
+		node.style.verticalAlign = "top";
 
-		//domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		//node.style.overflow = "hidden";
 	}
 	
 	public static function computeWidthPercentage(cellPerLine):Int
@@ -70,17 +63,17 @@ class CellStyle
 		return cellWidthPercent;
 	}
 	
-	public static function addBorder(domElement:DOMElement):Void
+	public static function addBorder(node:HtmlDom):Void
 	{
 		// add border
-		domElement.nativeElement.style.borderWidth = Constants.CELL_BORDER_WIDTH;
-		domElement.nativeElement.style.borderColor = Constants.CELL_BORDER_COLOR;
-		domElement.nativeElement.style.borderStyle = "solid";
+		node.style.borderWidth = Constants.CELL_BORDER_WIDTH;
+		node.style.borderColor = Constants.CELL_BORDER_COLOR;
+		node.style.borderStyle = "solid";
 	}
 	
-	public static function removeBorder(domElement:DOMElement):Void
+	public static function removeBorder(node:HtmlDom):Void
 	{
-		domElement.nativeElement.style.borderStyle = "none";
+		node.style.borderStyle = "none";
 	}
 	
 }

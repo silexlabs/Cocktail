@@ -7,9 +7,9 @@
 
 package org.intermedia.view;
 
-import cocktail.mouse.MouseData;
+//import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
-import cocktail.domElement.ImageDOMElement;
+//import cocktail.node.HtmlDom;
 
 /**
  * This class defines a thumb & text cell
@@ -38,7 +38,7 @@ class ThumbTextList1Bis extends ThumbTextList1
 		// add home page data at the top of the list
 		var homePage:HomePage = new HomePage(homePageData);
 		homePage.onListItemSelected = onListItemSelectedCallback;
-		this.addChild(homePage);
+		node.appendChild(homePage.node);
 	}
 	
 

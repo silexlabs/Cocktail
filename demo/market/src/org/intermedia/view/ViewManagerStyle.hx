@@ -7,20 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.viewport.Viewport;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.Constants;
 
 /**
@@ -34,24 +22,24 @@ class ViewManagerStyle
 	/**
 	 * Defines default Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setBodyStyle(domElement:DOMElement):Void
+	public static function setBodyStyle(node:HtmlDom):Void
 	{
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
 		
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.percent(130);
+		node.style.width = "100%";
+		node.style.height = "130%";
 		
-		domElement.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.hidden };
+		node.style.overflow = "hidden";
 	}
 	
 }

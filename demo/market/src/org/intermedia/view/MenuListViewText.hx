@@ -7,7 +7,7 @@
 
 package org.intermedia.view;
 
-import cocktail.mouse.MouseData;
+//import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -22,7 +22,7 @@ class MenuListViewText extends ListViewBase
 	public function new() 
 	{
 		super();
-		MenuListViewStyle.setListStyle(this);
+		MenuListViewStyle.setListStyle(node);
 	}
 	
 	/**

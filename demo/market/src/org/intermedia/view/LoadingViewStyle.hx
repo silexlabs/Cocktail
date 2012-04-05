@@ -7,20 +7,8 @@
 
 package org.intermedia.view;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.viewport.Viewport;
-
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.ScreenResolution;
 
 
@@ -37,44 +25,45 @@ class LoadingViewStyle
 	/**
 	 * Defines cell Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setLoadingStyle(domElement:DOMElement):Void
+	public static function setLoadingStyle(node:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.absolute;
+		node.style.display = "block";
+		node.style.position = "absolute";
 		
-		//domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.width = DimensionStyleValue.length(px(new Viewport().width));
-		//domElement.style.height = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(new Viewport().height));
+		//node.style.width = "100%";
+		node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		//node.style.height = "100%";
+		node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		node.style.textAlign = "center";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(0));
-		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		node.style.top = "0px";
+		node.style.bottom = "0px";
 		
-		//domElement.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
-		domElement.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
+		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
+		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
+		node.style.color = '#FFFFFF';
 		
-		domElement.nativeElement.style.zIndex = 1000;
+		node.style.zIndex = 1000;
 	}
 	
 	/**
 	 * Defines cell image Style
 	 * 
-	 * @param	domElement
+	 * @param	node
 	 */
-	public static function setThumbnailStyle(domElement:DOMElement):Void
+	public static function setThumbnailStyle(node:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.relative;
+		node.style.position = "relative";
 		
-		domElement.style.marginTop = MarginStyleValue.autoValue;
-		domElement.style.marginBottom = MarginStyleValue.autoValue;
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
+		node.style.marginTop = "auto";
+		node.style.marginBottom = "auto";
+		node.style.marginLeft = "auto";
+		node.style.marginRight = "auto";
 		
-		domElement.style.top = PositionOffsetStyleValue.percent(45);
+		node.style.top = "45%";
 		
 	}
 	

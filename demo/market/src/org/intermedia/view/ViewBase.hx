@@ -1,5 +1,9 @@
 package org.intermedia.view;
-import cocktail.domElement.ContainerDOMElement;
+
+import js.Lib;
+import js.Dom;
+//import core.HTMLElement;
+//import cocktail.node.HtmlDom;
 
 /**
  * Base class for views
@@ -7,10 +11,10 @@ import cocktail.domElement.ContainerDOMElement;
  * @author Raphael Harmel
  */
 
-//class ViewBase
-class ViewBase extends ContainerDOMElement
+class ViewBase
 {
-
+	public var node:HtmlDom;
+	
 	//get/set the data of the view. Dynamically cast by each inheriting view
 	private var _data:Dynamic;
 	public var data(getData, setData):Dynamic;
@@ -20,9 +24,10 @@ class ViewBase extends ContainerDOMElement
 	
 	private var _loadingView:LoadingView;
 
-	public function new() 
+	public function new()
 	{
-		super();
+		//super();
+		node = Lib.document.createElement("div");
 		
 		// set the display attributes of the loading wheel to true
 		displayLoading = false;
@@ -67,8 +72,8 @@ class ViewBase extends ContainerDOMElement
 			if (_loadingView == null)
 				_loadingView = new LoadingView();
 			// if the loading view is not attached to this, display it
-			if (_loadingView.parent == null)
-				this.addChild(_loadingView);
+			if (_loadingView.node.parentNode == null)
+				node.appendChild(_loadingView.node);
 		}
 		// else, hide it
 		else
@@ -76,8 +81,8 @@ class ViewBase extends ContainerDOMElement
 			// if _loadingView view exists
 			if (_loadingView != null)
 				// if the loading view is attached to this, un-attach it
-				if (_loadingView.parent != null)
-					this.removeChild(_loadingView);
+				if (_loadingView.node.parentNode != null)
+					node.removeChild(_loadingView.node);
 		}
 		return v;
 	}
