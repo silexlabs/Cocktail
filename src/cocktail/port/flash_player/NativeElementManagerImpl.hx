@@ -18,13 +18,10 @@ import cocktail.core.NativeElement;
  * This is the flash AVM2 implementation of the native element
  * manager
  * 
- * TODO : update all the doc
- * 
  * @author Yannick DOMINGUEZ
  */
 class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 {
-
 	/**
 	 * class constructor
 	 */

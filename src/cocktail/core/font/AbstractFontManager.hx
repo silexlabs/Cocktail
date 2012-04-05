@@ -16,6 +16,9 @@ import cocktail.core.style.StyleData;
 
 /**
  * This class is the manager for system and embedded fonts. Use it to load new fonts, or to check if a system font is supported, etc.
+ * 
+ * It also is used to create native text elements using runtime specific font API's
+ * 
  * It is a base class, which is extended for each target.
  * @author lexa
  */
@@ -42,39 +45,6 @@ class AbstractFontManager
 			_loadedFonts = new Array();
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Public methods, fonts loading
-	//////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * Start loading a font
-	 * @param	url the url of the font to load
-	 * @param	name the name of the font to load. 
-	 * This is an equivalent of font-family in HTML, and an equivalent of the export name in Flash. 
-	 * This is the name you want to put in the css class to apply the style to some text.
-	 * @param	successCallback the callback which must be called once the file is successfully done loading
-	 * @param	errorCallback the callback which must be called if there was an error during loading
-	 */
-	public function loadFont(url : String, name : String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
-	{
-		// check if the font is allready loading
-		var fontLoader : FontLoader;
-		var idx : Int;
-
-		for (idx in 0..._fontLoaderArray.length)
-		{
-			if (_fontLoaderArray[idx].fontData.url == url && _fontLoaderArray[idx].fontData.name == name)
-			{
-				_fontLoaderArray[idx].addCallback(successCallback, errorCallback);
-				return ;
-			}
-		}
-		// create the font loader 
-		fontLoader = new FontLoader();
-		fontLoader.addCallback(_onFontLoadingSuccess, _onFontLoadingError);
-		fontLoader.addCallback(successCallback, errorCallback);
-		fontLoader.load(url, name);
-		_fontLoaderArray.push(fontLoader);
-	}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public virtual methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +86,10 @@ class AbstractFontManager
 		return false;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Public virtual methods, font rendering and measure
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Returns metrics for a given
 	 * font and font size
@@ -140,11 +114,14 @@ class AbstractFontManager
 		return null;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private methods, font rendering and measure
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Transform a text letters into uppercase, lowercase
 	 * or capitalise them (only the first letter of each word
-	 * is transformed to uppercase), based on the textTransform
-	 * style of this container HTMLElement
+	 * is transformed to uppercase)
 	 */
 	private function applyTextTransform(text:String, textTransform:TextTransform):String
 	{
@@ -166,8 +143,8 @@ class AbstractFontManager
 	}
 	
 	/**
-	 * Capitalise a text (turn each first letter
-	 * of a word to uppercase)
+	 * Capitalise a text (turn each word's first letter
+	 * to uppercase)
 	 * 
 	 * TODO : doesn't work
 	 */
@@ -191,6 +168,40 @@ class AbstractFontManager
 			}
 		}
 		return capitalizedText;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Public methods, fonts loading
+	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Start loading a font
+	 * @param	url the url of the font to load
+	 * @param	name the name of the font to load. 
+	 * This is an equivalent of font-family in HTML, and an equivalent of the export name in Flash. 
+	 * This is the name you want to put in the css class to apply the style to some text.
+	 * @param	successCallback the callback which must be called once the file is successfully done loading
+	 * @param	errorCallback the callback which must be called if there was an error during loading
+	 */
+	public function loadFont(url : String, name : String, successCallback : FontData->Void = null, errorCallback : FontData->String->Void = null):Void
+	{
+		// check if the font is allready loading
+		var fontLoader : FontLoader;
+		var idx : Int;
+
+		for (idx in 0..._fontLoaderArray.length)
+		{
+			if (_fontLoaderArray[idx].fontData.url == url && _fontLoaderArray[idx].fontData.name == name)
+			{
+				_fontLoaderArray[idx].addCallback(successCallback, errorCallback);
+				return ;
+			}
+		}
+		// create the font loader 
+		fontLoader = new FontLoader();
+		fontLoader.addCallback(_onFontLoadingSuccess, _onFontLoadingError);
+		fontLoader.addCallback(successCallback, errorCallback);
+		fontLoader.load(url, name);
+		_fontLoaderArray.push(fontLoader);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
