@@ -36,6 +36,7 @@ import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.dom.DOMData;
+import cocktail.core.font.FontData;
 import haxe.Timer;
 
 import haxe.Log;

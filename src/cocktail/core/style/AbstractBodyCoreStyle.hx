@@ -17,6 +17,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.font.FontData;
 import haxe.Log;
 
 
