@@ -15,7 +15,9 @@ import utest.Runner;
 import utest.ui.Report;
 import cocktail.Lib;
 import cocktail.core.unit.UnitManager;
-import cocktail.Cocktail;
+import cocktail.core.unit.UnitData;
+import cocktail.core.style.StyleData;
+import cocktail.Dom;
 
 /**
  * Units tests for UnitManager
@@ -26,20 +28,23 @@ class UnitManagerTests
 	var container : HTMLElement;
 	var text : Text;
 		
-	public static function main() {
+	public static function main() 
+	{
         var runner = new Runner();
         runner.addCase(new UnitManagerTests());
         Report.create(runner);
         runner.run();
     }
         
-    public function new(){
+    public function new()
+	{
         container = new HTMLElement("div");
 		text = Lib.document.createTextNode("Hello Cocktail !");
 		container.appendChild(text);
 		Lib.document.body.appendChild(container);
 	}
-    public function testUnits() {
+    public function testConversionToEnums() 
+	{
 /*
 		Assert.equals("http://test.com", UnitManager.string2URLData('url("http://test.com")'));
 		Assert.equals("http://test.com", UnitManager.string2URLData('url( "http://test.com" )'));
@@ -55,10 +60,15 @@ class UnitManagerTests
 		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px,2pt,3px,4%", ","));
 		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px, 2pt, 3px, 4%", ","));
 		Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px,2pt ,   3px , 4%", ","));
-/**/
+/*
+		var res = UnitManager.string2Array('"Times New Roman",Georgia,Serif');
+		Assert.same(["Times New Roman","Georgia","Serif"], res);
+*/		
+		
 		Assert.isTrue(true);
 	}
-    public function testBoxStyleEnum() {
+    public function testBoxStyleEnum() 
+	{
 		// "px" tests 
 		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100px"));		
 		Assert.same(Margin.length(Length.px(100)), UnitManager.boxStyleEnum(Margin, "100 px"));
@@ -74,7 +84,30 @@ class UnitManagerTests
 		// "auto"
 		Assert.same(Margin.cssAuto, UnitManager.boxStyleEnum(Margin, "auto"));
 	}
-   public function testColor() {
+	public function testBackground() 
+	{
+		Assert.same([BackgroundImage.image(ImageValue.url("./abc.gif")), BackgroundImage.image(ImageValue.url("./def.jpg"))], UnitManager.backgroundImageEnum("url (./abc.gif),  url(./def.jpg)"));
+		var res = UnitManager.backgroundImageEnum("url(./abc.gif), url(./def.jpg)");
+		Assert.same(BackgroundImage.image(ImageValue.url("./abc.gif")), res[0]);
+		Assert.same(BackgroundImage.image(ImageValue.url("./def.jpg")), res[1]);
+		
+		var res = UnitManager.backgroundImageEnum("url (./abc.gif),  url(./def.jpg)");
+		Assert.same(BackgroundImage.image(ImageValue.url("./abc.gif")), res[0]);
+		Assert.same(BackgroundImage.image(ImageValue.url("./def.jpg")), res[1]);
+		
+		var res = UnitManager.backgroundImageEnum('url("./abc.gif"),url  (./def.jpg)');
+		Assert.same(BackgroundImage.image(ImageValue.url("./abc.gif")), res[0]);
+		Assert.same(BackgroundImage.image(ImageValue.url("./def.jpg")), res[1]);
+	}
+   public function testFont() 
+   {
+		Assert.same(["Times New Roman","Georgia","Serif"], UnitManager.fontFamilyEnum('"Times New Roman",Georgia,Serif'));
+		Assert.same(["Times New Roman","Georgia","Serif"], UnitManager.fontFamilyEnum('Times New Roman, "Georgia" , Serif'));
+		Assert.same(["Times New Roman","Georgia","Serif"], UnitManager.fontFamilyEnum('"Times New Roman" ,Georgia , Serif'));
+		Assert.same(["Times New Roman","Georgia","Serif"], UnitManager.fontFamilyEnum(' "Times New Roman" ,  Georgia,Serif'));
+   }
+   public function testColor() 
+   {
 		// keywords and transparent
 		Assert.same(Color.keyword(ColorKeyword.yellow), UnitManager.colorEnum("yellow"));
 		Assert.same(Color.transparent, UnitManager.colorEnum("transparent"));
@@ -98,17 +131,19 @@ class UnitManagerTests
 		Assert.same(Color.hex("89AB"), UnitManager.colorEnum("#89AB"));
 		Assert.same(Color.hex("AB"), UnitManager.colorEnum("#AB"));
 	}
-    public function testSetterGetter() {
-		// "px" tests 
+    public function testSetterGetter() 
+	{
 		container.style.marginLeft = "100px";
 		Assert.same(Margin.length(Length.px(100)), container.coreStyle.marginLeft);
-
-		// "%" tests
 		container.style.marginLeft = "100%";
 		Assert.same(Margin.percent((100)), container.coreStyle.marginLeft);
-
-		// "auto"
 		container.style.marginLeft = "auto";
 		Assert.same(Margin.cssAuto, container.coreStyle.marginLeft);
+
+		container.style.backgroundImage = ' url(./abc.gif), url("./def.jpg") ';
+		Assert.same([BackgroundImage.image(ImageValue.url("./abc.gif")),BackgroundImage.image(ImageValue.url("./def.jpg"))], container.coreStyle.backgroundImage);
+		
+		container.style.fontFamily = '"Times New Roman",Georgia, Serif';
+		Assert.same(["Times New Roman","Georgia","Serif"], container.coreStyle.fontFamily);
 	}
 }

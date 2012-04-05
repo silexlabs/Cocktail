@@ -497,10 +497,26 @@ class UnitManager
 		return  wordSpacing;
 	}
 	
-	//TODO
+	/**
+	 * convert a string into a typed enum
+	 * TODO: ImageValue.imageList and ImageValue.gradient
+	 * @example converts 'url("./abc.gif"),url  (./def.jpg)' into [BackgroundImage.image(ImageValue.url("./abc.gif")),BackgroundImage.image(ImageValue.url("./def.jpg"))] 
+	 */
 	static public function backgroundImageEnum(string:String):Array<BackgroundImage>
 	{
-		return [];
+		if (string == "none") 
+			return [BackgroundImage.none];
+
+		var array:Array<String> = string2VList(string, ",");
+		var arrayBgImg:Array<BackgroundImage> = [];
+		for (val in array)
+		{
+			if (val == "none") 
+				arrayBgImg.push(BackgroundImage.none);
+			else
+				arrayBgImg.push(BackgroundImage.image(ImageValue.url(string2URLData(val))));
+		}
+		return arrayBgImg;
 	}
 	
 	//TODO
@@ -533,12 +549,14 @@ class UnitManager
 		return [];
 	}
 	
-	//TODO
+	/**
+	 * convert a string into a typed enum
+	 * @example	converts "Times New Roman",Georgia,Serif into ["Times New Roman","Georgia","Serif"]
+	 */
 	static public function fontFamilyEnum(string:String):Array<String>
 	{
-		return [];
+		return string2Array(string);
 	}
-	
 	
 	static public function letterSpacingEnum(string:String):LetterSpacing
 	{
@@ -678,6 +696,7 @@ class UnitManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * function used internally to convert an rgba value to a 4 digit object of type VCol
+	 * 
 	 */
 	static private function string2RGBA(string:String):VCol
 	{
@@ -772,6 +791,7 @@ class UnitManager
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
+	 * @example	Assert.equals("http://test.com", UnitManager.string2URLData('url("http://test.com")'));
 	 */
 	static private function string2URLData(string:String):URLData
 	{
@@ -788,6 +808,8 @@ class UnitManager
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
+	 * @example	Assert.same(["1px","2pt", "3px", "4%"], UnitManager.string2VList("1px 2pt 3px 4%"));
+	 * @example	"Times New Roman",Georgia,Serif into ["Times New Roman","Georgia","Serif"]
 	 */
 	static private function string2VList(string:String, sep:String = " "):Array<String>
 	{
@@ -806,6 +828,19 @@ class UnitManager
 		// split
 		var array:Array<String> = string.split(sep);
 		return array;
+	}
+	/**
+	 * @example	converts "Times New Roman", Georgia,Serif into ["Times New Roman","Georgia","Serif"]
+	 */
+	static private function string2Array(string:String):Array<String>
+	{
+		// build an array of values
+		var r : EReg = ~/[ "]*[,"][ "]*/g;
+		// split where elements are separated by , or ", or ," or ","
+		var res = r.split(string);
+		// remove the 1st element which may be empty because of a "
+		if (res[0] == "") res.shift();
+		return res;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
