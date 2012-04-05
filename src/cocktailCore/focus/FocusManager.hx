@@ -7,17 +7,16 @@
 */
 package cocktailCore.focus;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.DOMElement;
-import cocktailCore.keyboard.Keyboard;
-import cocktail.keyboard.KeyboardData;
-import cocktail.mouse.MouseData;
-import cocktailCore.domElement.DOMElementData;
+import core.html.HTMLBodyElement;
+import core.HTMLElement;
+import core.Keyboard;
+import core.keyboard.KeyboardData;
+import core.mouse.MouseData;
+import core.dom.DOMData;
 import haxe.Log;
 
 //import the right runtime implementations
-#if (flash9 || cpp || nme)
+#if (flash9 || nme)
 import cocktailCore.focus.as3.FocusManagerImpl;
 
 #elseif js
@@ -29,9 +28,9 @@ class FocusManagerImpl extends cocktailCore.focus.abstract.AbstractFocusManagerI
 #end
 
 /**
- * The Focus Manager determine which DOMElement in the 
+ * The Focus Manager determine which HTMLElement in the 
  * DOM has focus, meaning that it will receive keyboard
- * events. Focus can be given by clicking on a DOMElement
+ * events. Focus can be given by clicking on a HTMLElement
  * which can receive the focus or by using the TAB key on
  * the keyboard
  * 
@@ -48,14 +47,14 @@ class FocusManager
 	private static var _instance:FocusManager;
 	
 	/**
-	 * get/set the bodyDOMElement at the top of the DOM
+	 * get/set the bodyHTMLElement at the top of the DOM
 	 */
-	public var bodyDOMElement(getBodyDOMElement, setBodyDOMElement):BodyDOMElement;
+	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
 	
 	/**
-	 * get/set the currently active (focused) DOMElement
+	 * get/set the currently active (focused) HTMLElement
 	 */
-	public var activeDOMElement(getActiveDOMElement, setActiveDOMElement):DOMElement;
+	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
 	
 	/**
 	 * an instance of the actual implementation of the
@@ -91,7 +90,7 @@ class FocusManager
 	
 	/**
 	 * Invalidate the focus manager order of 
-	 * DOMElement to focus when using the TAB
+	 * HTMLElement to focus when using the TAB
 	 * key
 	 */
 	public function invalidate():Void
@@ -104,23 +103,23 @@ class FocusManager
 	// forward to the focus manager implementation
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setActiveDOMElement(value:DOMElement):DOMElement
+	private function setActiveElement(value:HTMLElement):HTMLElement
 	{
-		return _focusManagerImpl.activeDOMElement = value;
+		return _focusManagerImpl.activeElement = value;
 	}
 	
-	private function getActiveDOMElement():DOMElement
+	private function getActiveElement():HTMLElement
 	{
-		return _focusManagerImpl.activeDOMElement;
+		return _focusManagerImpl.activeElement;
 	}
 	
-	private function setBodyDOMElement(value:BodyDOMElement):BodyDOMElement
+	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
 	{
-		return _focusManagerImpl.bodyDOMElement = value;
+		return _focusManagerImpl.bodyElement = value;
 	}
 	
-	private function getBodyDOMElement():BodyDOMElement
+	private function getBodyElement():HTMLBodyElement
 	{
-		return _focusManagerImpl.bodyDOMElement;
+		return _focusManagerImpl.bodyElement;
 	}
 }
