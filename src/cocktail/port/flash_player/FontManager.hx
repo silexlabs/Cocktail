@@ -36,6 +36,8 @@ import haxe.remoting.FlashJsConnection;
  * create an embedded font with flex sdk
  * > http://rodneypillay.wordpress.com/2010/05/18/fontswf-utility-in-flex-sdk-4/
  * 
+ * It also create flash TextLine object using the flash text engine introduced in Flash Player 10
+ * 
  * @author lexa
  */
 class FontManager extends AbstractFontManager
@@ -43,8 +45,6 @@ class FontManager extends AbstractFontManager
 	/**
 	 * used to hold a runtime specific default
 	 * font name for serif font
-	 * 
-	 * TODO : update doc
 	 */
 	private static inline var SERIF_GENERIC_FONT_NAME:String = "serif";
 	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
@@ -64,12 +64,16 @@ class FontManager extends AbstractFontManager
 	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	/**
-	 * The constructor is private as this class is meant to be accessed through static public method.
+	 * class constructor
 	 */
-	override public function new() 
+	public function new() 
 	{
 		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden public virtual methods
+	//////////////////////////////////////////////////////////////////////////////////////////
 	/** 
 	 * Returns a list of fonts which have been loaded.
 	 */
@@ -106,10 +110,13 @@ class FontManager extends AbstractFontManager
 		return resultArray;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden public virtual methods, font rendering and measure
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Returns a font metrics data object created using font metrics
-	 * provided by the flash text engine. The font metrics are 
-	 * processed using the styles of the HTMLElement. The
+	 * provided by the flash text engine. The
 	 * font metrics are provided for a given font at a given size
 	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
@@ -130,9 +137,10 @@ class FontManager extends AbstractFontManager
 		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
 		
-		//get the x height (the height of a lower-case "x")
+		//get the x height (roughly the height of a lower-case "x")
 		var xHeight:Int = getXHeight(elementFormat.clone());
 	
+		//get the width of a space character
 		var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
 		
 		var fontMetrics:FontMetricsData = {
@@ -148,6 +156,60 @@ class FontManager extends AbstractFontManager
 		
 		return fontMetrics;
 	}
+	
+	/**
+	 * Overriden to create flash text lines. Uses the flash text engine introduced
+	 * in flash player 10
+	 */
+	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	{
+		//a TextBlock is a factory for flash TextLines
+		var textBlock:TextBlock = new TextBlock();
+		
+		//get a flash TextElement, used as the model for a flash textBlock
+		textBlock.content = getNativeTextElement(text, computedStyle);
+		
+		//create a native flash text line
+		//set the width of the line to create to an 
+		//'infinite' value (10000) because in Cocktail
+		//text is rendered word by word whereas the
+		//standard way of using the flash text engine
+		//is to create line by line. Creating text content
+		//word by word allow for more control and allows some
+		//use case that wouldn't be possible otherwise such
+		//as setting the word spacing.
+		//Setting an infinite value for the line width assures that
+		//all the text content, which is only 1 word as the text is parsed
+		//beforehand, will be created.
+		//
+		//The 'fitSomething' parameters is also set to true,
+		//otherwise, when creating only a space character, no
+		//flash text line would be created
+		//
+		//TODO : this method shouldn't be called for text charachter
+		var text:TextLine = textBlock.createTextLine(null, 10000, 0.0, true);
+		
+		//help free memory
+		textBlock.releaseLineCreationData();
+		
+		//In the flash text engine,
+		//create lines are linked to the 
+		//textBlock that created them, it
+		//is useful to recreate text lines
+		//efficiently
+		//It is of no use in Cocktail
+		//so we break the bond to free memory
+		if (textBlock.firstLine != null)
+		{	
+			textBlock.releaseLines(textBlock.firstLine, textBlock.lastLine );
+		}
+		
+		return text;
+	}	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private methods, font rendering and measure
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * return the x height of the font which is equal to 
@@ -178,59 +240,12 @@ class FontManager extends AbstractFontManager
 	}
 	
 	/**
-	 * Overriden to create flash text lines. Uses the flash text engine introduced
-	 * in flash player 10
-	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
-	{
-		var textBlock:TextBlock = new TextBlock();
-		
-		//get a flash TextElement used as the model for a flash textBlock
-		textBlock.content = getNativeTextElement(text, computedStyle);
-		
-		//create a native flash text line
-		//set the width of the line to create to an 
-		//'infinite' value (10000) because in Cocktail
-		//text is rendered word by word whereas the
-		//standard way of using the flash text engine
-		//is to create line by line. Creating text content
-		//word by word allow for more control and allows some
-		//use case that wouldn't be possible otherwise such
-		//as setting the word spacing.
-		//Setting an infinite value for the line width assures that
-		//all the text content (only 1 word) will be created.
-		//
-		//The 'fitSomething' parameters is alos set to true
-		//otherwise, when creating only a space charcter, no
-		//flash text line would be created
-		var text:TextLine = textBlock.createTextLine(null, 10000, 0.0, true);
-		
-		//help free memory
-		textBlock.releaseLineCreationData();
-		
-		//In the flash text engine,
-		//create lines are linked to the 
-		//textBlock that created them, it
-		//is useful to recreate text lines
-		//efficiently
-		//It is of no use in Cocktail
-		//so we break the bond to free memory
-		if (textBlock.firstLine != null)
-		{	
-			textBlock.releaseLines(textBlock.firstLine, textBlock.lastLine );
-		}
-		
-		return text;
-	}	
-	
-	/**
 	 * Takes a String of text and create a flash TextElement
 	 * from it which is used as a model by a flash textBlock
 	 * to create flash textLines. The TextElement contains
 	 * both a string of text and the display properties
-	 * to apply to it when rendered. The styles of the
-	 * ContainerHTMLElement will be converted to work
-	 * with the flash TextElement
+	 * to apply to it when rendered. A computedStyle
+	 * is provided to render the text
 	 */
 	private function getNativeTextElement(text:String, computedStyle:ComputedStyleData):TextElement
 	{
@@ -241,7 +256,7 @@ class FontManager extends AbstractFontManager
 		var textElement:TextElement = new TextElement(transformedText);
 		
 		//create a flash element format object and set its
-		//attribute to match the styles defined in this ContainerHTMLElement
+		//attribute to match the styles defined in the computedStyle reference
 		var elementFormat:ElementFormat = new ElementFormat();
 		
 		//set font size
@@ -263,7 +278,6 @@ class FontManager extends AbstractFontManager
 		//space between each letter
 		elementFormat.trackingRight = computedStyle.letterSpacing;
 		
-		
 		//set the element format as the text element
 		//element format
 		textElement.elementFormat = elementFormat;
@@ -271,15 +285,11 @@ class FontManager extends AbstractFontManager
 		return textElement;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE STATIC HELPER METHODS
-	////////////////////////////////
-	
 	/**
 	 * Return a flash FontPosture object from
-	 * the fontStyle style of the ContainerHTMLElement
+	 * a FontStyle
 	 */
-	private static function getNativeFontPosture(fontStyle:FontStyle):FontPosture
+	private function getNativeFontPosture(fontStyle:FontStyle):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
@@ -297,9 +307,9 @@ class FontManager extends AbstractFontManager
 	
 	/**
 	 * Return a flash TypographicCase object from
-	 * the font variant style of the ContainerHTMLElement
+	 * a FontVariant
 	 */
-	private static function getNativeFontVariant(fontVariant:FontVariant):TypographicCase
+	private function getNativeFontVariant(fontVariant:FontVariant):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		
@@ -319,16 +329,12 @@ class FontManager extends AbstractFontManager
 	 * Takes the array containing every font to apply to the
 	 * text (ordered by priority, the first available font being
 	 * used) and return a comma separated list containing the ordered
-	 * font names.
-	 * @param	value an array which may contain any combination of generic
-	 * font family name and font family name
-	 * 
-	 * TODO : update doc
+	 * font names
 	 * 
 	 * @return a comma separated list of font, generally ordered from most
 	 * specific to most generic, e.g "Universe,Arial,_sans"
 	 */
-	private static function getNativeFontFamily(value:Array<String>):String
+	private function getNativeFontFamily(value:Array<String>):String
 	{
 		var fontFamily:String = "";
 		
@@ -361,7 +367,7 @@ class FontManager extends AbstractFontManager
 	
 	/**
 	 * Return a flash FontWeight object from
-	 * the font weight style of the HTMLElement
+	 * a FontWeight
 	 */
 	private function getNativeFontWeight(fontWeight:FontWeight):flash.text.engine.FontWeight
 	{
@@ -390,135 +396,4 @@ class FontManager extends AbstractFontManager
 		
 		return nativeFontWeight;
 	}
-	
-	
-	//TODO : implement in nme
-	
-	#if nme
-	override private function getFontMetrics():FontMetricsData
-	{
-
-		//create the font metrics object only if null,
-		//else it is already cached
-		if (_fontMetrics == null)
-		{
-			var textField:TextField = new TextField();
-			textField.autoSize = TextFieldAutoSize.LEFT;
-			
-			var textFormat:TextFormat = new TextFormat();
-			textFormat.size = _computedStyle.fontSize;
-			textFormat.font = getNativeFontFamily(this._fontFamily);
-			
-			textField.setTextFormat(textFormat);
-			
-			textField.text = "x";
-			
-			var ascent:Float =  textField.textHeight / 2;
-			Log.trace(ascent);
-			textField.text = ",";
-			
-			var descent:Float = textField.textHeight / 2;
-			
-			textField.text = "x";
-			
-			var xHeight:Int = Math.round(textField.textHeight);
-		
-			textField.text = "M";
-			var spaceWidth:Int = Math.round(textField.textWidth);
-			
-			
-			_fontMetrics = {
-				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(ascent),
-				descent:Math.round(descent),
-				xHeight:xHeight,
-				spaceWidth:spaceWidth,
-				superscriptOffset:1,
-				subscriptOffset:1,
-				underlineOffset:1
-			};
-		}
-		
-		return _fontMetrics;
-		
-	}
-	
-	/**
-	 * redefined as in nme only one font is supported
-	 */
-	private function getNativeFontFamily(value:Array<String>):String
-	{
-		var fontFamily:String = "";
-		
-		var fontName:String = value[0];
-		
-		switch (fontName)
-		{
-			case SERIF_GENERIC_FONT_NAME:
-				fontName = SERIF_FLASH_FONT_NAME;
-				
-			case SANS_SERIF_GENERIC_FONT_NAME:
-				fontName = SANS_SERIF_FLASH_FONT_NAME;
-				
-			case MONOSPACE_GENERIC_FONT_NAME:
-				fontName = MONOSPACE_FLASH_FONT_NAME;
-		}
-		
-		return fontName;
-	}
-	
-		
-	override private function doCreateTextRenderer(text:String, textToken:TextTokenValue):TextRenderer
-	{
-		
-		text = applyTextTransform(text, _computedStyle.textTransform);
-		
-		var textField:flash.text.TextField = new flash.text.TextField();
-		textField.text = text;
-		textField.selectable = false;
-		textField.autoSize = TextFieldAutoSize.LEFT;
-		textField.setTextFormat(getTextFormat());
-		
-		var textRenderer:TextRenderer = new TextRenderer(this, textField, textToken);
-
-		//wrap the flash text line in a TextRenderer
-		return textRenderer;
-		
-
-	}	
-	
-	private function getTextFormat():TextFormat
-	{
-		
-		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily);
-		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
-		textFormat.size = _computedStyle.fontSize;
-		
-		var bold:Bool;
-		
-		switch (_computedStyle.fontWeight)
-		{
-			case lighter, FontWeight.normal,
-			css100, css200, css300, css400:
-				bold = false;
-				
-			case FontWeight.bold, bolder, css500, css600,
-			css700, css800, css900:
-				bold = true;
-		}
-		
-		textFormat.bold = bold;
-		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
-		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
-		
-		textFormat.color = _computedStyle.color.color;
-		return textFormat;
-		
-	}
-	
-	#end
-	
 }
