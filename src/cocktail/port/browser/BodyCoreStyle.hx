@@ -11,6 +11,7 @@ import cocktail.core.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.style.AbstractBodyCoreStyle;
 import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 
 /**
  * This is the JavaScript implementation of the BodyStyle

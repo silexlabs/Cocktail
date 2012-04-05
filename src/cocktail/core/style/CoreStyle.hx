@@ -528,8 +528,7 @@ class CoreStyle
 				_whiteSpace = WhiteSpace.pre;
 				_fontFamily = ["monospace"];
 				
-			case "code" : 
-				//TODO : add constant for generic fonts
+			case "code" :
 				_fontFamily = ["monospace"];
 				
 			case "i", "cite", "em", "var" :
@@ -858,22 +857,6 @@ class CoreStyle
 			}
 		}
 	}
-	
-	/**
-	 * When a style invalidating the text is called
-	 * (font size, font weight...), the font metrics
-	 * structure must be reseted so that it is re-created
-	 * with updating values on next layout
-	 * 
-	 * TODO : no more text cache system, need to re-implement, should
-	 * be in TextRenderer
-	 */
-	public function invalidateText():Void
-	{
-		_fontMetrics = null;
-		invalidate();
-	}
-	
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC COMPUTING METHODS
@@ -1314,14 +1297,9 @@ class CoreStyle
 	
 	private function getFontMetricsData():FontMetricsData
 	{
-		//only query for font metrics if it isn't
-		//already cached
-		if (_fontMetrics == null)
-		{
-			var fontManager:FontManager = new FontManager();
-			_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(_computedStyle.fontFamily), _computedStyle.fontSize);
-		}
-		
+		var fontManager:FontManager = new FontManager();
+		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(_computedStyle.fontFamily), _computedStyle.fontSize);
+	
 		return _fontMetrics;
 	}
 	
@@ -1480,43 +1458,43 @@ class CoreStyle
 	
 	private function setFontSize(value:FontSize):FontSize
 	{
-		invalidateText();
+		invalidate();
 		return _fontSize = value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
-		invalidateText();
+		invalidate();
 		return _fontWeight = value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
-		invalidateText();
+		invalidate();
 		return _fontStyle = value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
-		invalidateText();
+		invalidate();
 		return _fontFamily = value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
-		invalidateText();
+		invalidate();
 		return _fontVariant = value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
-		invalidateText();
+		invalidate();
 		return _textTransform = value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
-		invalidateText();
+		invalidate();
 		return _letterSpacing = value;
 	}
 	
@@ -1534,7 +1512,7 @@ class CoreStyle
 	
 	private function setColor(value:Color):Color
 	{
-		invalidateText();
+		invalidate();
 		return _color = value;
 	}
 	
