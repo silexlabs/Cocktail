@@ -9,17 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.event.Event;
 import cocktail.core.nativeElement.NativeElementManager;
-
-
-#if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-import cocktail.port.flash_player.BodyCoreStyle;
-
-#elseif js
-import cocktail.port.browser.HTMLElement;
-import cocktail.core.style.AbstractBodyCoreStyle;
-
-#end
+import cocktail.core.style.BodyCoreStyle;
 
 /**
  * The HTML document body. This element is always present
