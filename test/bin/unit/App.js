@@ -4029,7 +4029,7 @@ cocktail.core.style.formatter.BlockFormattingContext.prototype.doFormat = functi
 }
 cocktail.core.style.formatter.BlockFormattingContext.prototype.doFormat2 = function(elementRenderer,concatenatedX) {
 	var currentAddedSiblingsHeight = 0;
-	concatenatedX += elementRenderer.getCoreStyle().getComputedStyle().marginLeft;
+	concatenatedX += elementRenderer.getCoreStyle().getComputedStyle().marginLeft + elementRenderer.getCoreStyle().getComputedStyle().paddingLeft;
 	var _g1 = 0, _g = elementRenderer.get_childNodes().length;
 	while(_g1 < _g) {
 		var i = _g1++;
@@ -4045,7 +4045,7 @@ cocktail.core.style.formatter.BlockFormattingContext.prototype.doFormat2 = funct
 			if(child.establishesNewFormattingContext() == false) this.doFormat2(child,concatenatedX);
 		}
 		var marginBottom = this.getCollapsedMarginBottom(child);
-		var x = this._formattingContextData.x + concatenatedX + child.getCoreStyle().getComputedStyle().marginLeft;
+		var x = concatenatedX + child.getCoreStyle().getComputedStyle().marginLeft;
 		var y = this._formattingContextData.y + marginTop + elementRenderer.getCoreStyle().getComputedStyle().paddingTop;
 		var computedStyle = child.getCoreStyle().getComputedStyle();
 		var width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -4592,31 +4592,6 @@ cocktail.core.dom.Text = function(p) {
 cocktail.core.dom.Text.__name__ = ["cocktail","core","dom","Text"];
 cocktail.core.dom.Text.__super__ = cocktail.core.dom.CharacterData;
 for(var k in cocktail.core.dom.CharacterData.prototype ) cocktail.core.dom.Text.prototype[k] = cocktail.core.dom.CharacterData.prototype[k];
-cocktail.core.dom.Text.applyTextTransform = function(text,textTransform) {
-	switch( (textTransform)[1] ) {
-	case 1:
-		text = text.toUpperCase();
-		break;
-	case 2:
-		text = text.toLowerCase();
-		break;
-	case 0:
-		text = cocktail.core.dom.Text.capitalizeText(text);
-		break;
-	case 3:
-		break;
-	}
-	return text;
-}
-cocktail.core.dom.Text.capitalizeText = function(text) {
-	var capitalizedText = text.charAt(0);
-	var _g1 = 1, _g = text.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		if(text.charAt(i - 1) == " ") capitalizedText += text.charAt(i).toUpperCase(); else capitalizedText += text.charAt(i);
-	}
-	return capitalizedText;
-}
 cocktail.core.dom.Text.doGetTextFragments = function(text) {
 	var textFragments = new Array();
 	var textFragment = "";
@@ -6030,13 +6005,38 @@ cocktail.core.font.AbstractFontManager.prototype.createNativeTextElement = funct
 	throw "Virtual method should be implemented in sub class";
 	return null;
 }
+cocktail.core.font.AbstractFontManager.prototype.applyTextTransform = function(text,textTransform) {
+	switch( (textTransform)[1] ) {
+	case 1:
+		text = text.toUpperCase();
+		break;
+	case 2:
+		text = text.toLowerCase();
+		break;
+	case 0:
+		text = this.capitalizeText(text);
+		break;
+	case 3:
+		break;
+	}
+	return text;
+}
+cocktail.core.font.AbstractFontManager.prototype.capitalizeText = function(text) {
+	var capitalizedText = text.charAt(0);
+	var _g1 = 1, _g = text.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(text.charAt(i - 1) == " ") capitalizedText += text.charAt(i).toUpperCase(); else capitalizedText += text.charAt(i);
+	}
+	return capitalizedText;
+}
 cocktail.core.font.AbstractFontManager.prototype._onFontLoadingSuccess = function(fontData) {
 	cocktail.core.font.AbstractFontManager._loadedFonts.push(fontData);
-	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 156, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 212, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
 }
 cocktail.core.font.AbstractFontManager.prototype._onFontLoadingError = function(fontData,errorStr) {
-	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 165, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
-	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 171, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
+	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 221, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 227, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
 }
 cocktail.core.font.AbstractFontManager.prototype._removeFontLoader = function(fontData) {
 	var fontLoader;
@@ -8607,7 +8607,6 @@ cocktail.core.html.HTMLCanvasElement = function(p) {
 	this._intrinsicHeight = 150;
 	this._intrinsicWidth = 300;
 	this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
-	this._drawingManager = new cocktail.port.browser.DrawingManager(this._nativeElement,this._intrinsicHeight,this._intrinsicWidth);
 }
 cocktail.core.html.HTMLCanvasElement.__name__ = ["cocktail","core","html","HTMLCanvasElement"];
 cocktail.core.html.HTMLCanvasElement.__super__ = cocktail.core.html.EmbeddedElement;
@@ -8617,7 +8616,10 @@ cocktail.core.html.HTMLCanvasElement.prototype.initEmbeddedAsset = function() {
 	this._embeddedAsset = this._nativeElement;
 }
 cocktail.core.html.HTMLCanvasElement.prototype.getContext = function(contextID) {
-	return this._drawingManager;
+	if(contextID == "2d") {
+		if(this._drawingManager == null) this._drawingManager = new cocktail.port.browser.DrawingManager(this._nativeElement,this._intrinsicHeight,this._intrinsicWidth);
+		return this._drawingManager;
+	} else return null;
 }
 cocktail.core.html.HTMLCanvasElement.prototype.set_width = function(value) {
 	this._drawingManager.setWidth(value);
@@ -13747,6 +13749,7 @@ cocktail.core.resource.XMLHTTPRequest.READY_STATE_DONE = 4;
 cocktail.core.html.HTMLCanvasElement.CANVAS_INTRINSIC_HEIGHT = 150;
 cocktail.core.html.HTMLCanvasElement.CANVAS_INTRINSIC_WIDTH = 300;
 cocktail.core.html.HTMLCanvasElement.HTML_CANVAS_TAG_NAME = "canvas";
+cocktail.core.html.HTMLCanvasElement.CANVAS_2D_CONTEXT = "2d";
 utest.TestHandler.POLLING_TIME = 10;
 cocktail.port.browser.DrawingManager.CAPS_STYLE_VALUE_NONE = "butt";
 cocktail.port.browser.DrawingManager.CAPS_STYLE_VALUE_ROUND = "round";
