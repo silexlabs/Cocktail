@@ -7,7 +7,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.BodyCoreStyle;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
@@ -18,6 +17,7 @@ import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
 import cocktail.core.NativeElement;
+import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
 import haxe.Timer;
 
