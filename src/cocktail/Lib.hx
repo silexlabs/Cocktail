@@ -7,7 +7,7 @@
 */
 package cocktail;
 
-import cocktail.core.html.HTMLDocument;
+import cocktail.core.HTMLDocument;
 import cocktail.core.Window;
 
 /**
