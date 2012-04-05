@@ -5,51 +5,36 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package core.nativeElement;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
+import core.nativeElement.NativeElementData;
+import core.NativeElement;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is a base class for the native element
+ * creator implementation. It creates a native element
+ * and returns a reference to it
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class AbstractNativeElementCreator
 {
+
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super();
-	}
-	
-	/**
-	 * don't listen to keyboard, as it is managed by the browser
-	 */
-	override private function initKeyboardListeners():Void
-	{
 		
 	}
 	
 	/**
-	 * only store the value
+	 * Instantiate a native element and returns a reference to it. Implemented in inheriting classes
+	 * @param	nativeElementType the type of element to create (graphic, text...)
 	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
+	public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
+		return null;
 	}
 	
 }

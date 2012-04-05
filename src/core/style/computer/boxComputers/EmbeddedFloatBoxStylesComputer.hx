@@ -5,20 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
-
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
+package core.style.computer.boxComputers;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is the box computer for floated embedded htmlElement,
+ * such as a floated ImagdHTMLElement. It behaves the same
+ * as the box computer for inline embedded htmlElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class EmbeddedFloatBoxStylesComputer extends EmbeddedInlineBoxStylesComputer
 {
 	/**
 	 * class constructor
@@ -26,30 +22,6 @@ class FocusManagerImpl extends AbstractFocusManagerImpl
 	public function new() 
 	{
 		super();
-	}
-	
-	/**
-	 * don't listen to keyboard, as it is managed by the browser
-	 */
-	override private function initKeyboardListeners():Void
-	{
-		
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
 	}
 	
 }

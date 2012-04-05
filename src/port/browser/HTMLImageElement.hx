@@ -5,23 +5,19 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package port.browser;
+import core.html.AbstractHTMLImageElement;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is the browser implementatio of the HTMLImageElement
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class HTMLImageElement extends AbstractHTMLImageElement
 {
 	/**
-	 * class constructor
+	 * class constructor.
 	 */
 	public function new() 
 	{
@@ -29,27 +25,12 @@ class FocusManagerImpl extends AbstractFocusManagerImpl
 	}
 	
 	/**
-	 * don't listen to keyboard, as it is managed by the browser
+	 * In the browser runtime, the nativeElement is the
+	 * same as the embeddedAsset, they correspond to
+	 * an HTML img tag
 	 */
-	override private function initKeyboardListeners():Void
+	override private function initNativeElement():Void
 	{
-		
+		_nativeElement = _embeddedAsset;
 	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
-	}
-	
 }

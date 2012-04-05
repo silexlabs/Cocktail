@@ -5,20 +5,21 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
+package core.style.computer.boxComputers;
 
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
-import core.HTMLElement;
+import core.style.AbstractStyle;
+import core.style.StyleData;
+import core.unit.UnitManager;
+import haxe.Log;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * This is the box computer for inline embedded HTMLElement,
+ * such as for instance an ImageHTMLElement inserted in a
+ * text
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 {
 	/**
 	 * class constructor
@@ -29,27 +30,11 @@ class FocusManagerImpl extends AbstractFocusManagerImpl
 	}
 	
 	/**
-	 * don't listen to keyboard, as it is managed by the browser
+	 * for inline embedded HTMLElement, auto margins compute to 0
 	 */
-	override private function initKeyboardListeners():Void
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
 	{
-		
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _activeElement = value;
-	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
+		return 0;
 	}
 	
 }

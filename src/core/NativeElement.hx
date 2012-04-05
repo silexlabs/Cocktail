@@ -5,23 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Set the right runtime specific NativeElement at compile-time
  */
 #if flash9
-typedef NativeInstance =  Dynamic;
+typedef NativeElement =  flash.display.DisplayObjectContainer;
+
+#elseif nme
+typedef NativeElement =  Dynamic;
 
 #elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
+import js.Dom;
+typedef NativeElement =  js.HtmlDom;
 
 #elseif doc
-typedef NativeInstance = Dynamic;
+typedef NativeElement = Dynamic;
 
-#else
-	#error
 #end

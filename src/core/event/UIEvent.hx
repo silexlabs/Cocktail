@@ -5,51 +5,41 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktailCore.focus.js;
-
-import cocktailCore.focus.abstract.AbstractFocusManagerImpl;
-import core.html.HTMLBodyElement;
+package core.event;
 import core.HTMLElement;
 
 /**
- * This is the JavaScript implementation of the 
- * focus manager. Prevents the default behaviour
- * as the focus in JS relies on the browser
+ * The UIEvent interface provides specific contextual information
+ * associated with User Interface events.
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManagerImpl extends AbstractFocusManagerImpl
+class UIEvent extends Event
 {
 	/**
-	 * class constructor
-	 */
-	public function new() 
+	 * Specifies some detail information about the Event,
+	 * depending on the type of event.
+	 */ 
+	private var _detail:Float;
+	public var detail(get_detail, set_detail):Float;
+	
+	public function new(type:String, target:HTMLElement, detail:Float) 
 	{
-		super();
+		_detail = detail;
+		super(type, target);
 	}
 	
-	/**
-	 * don't listen to keyboard, as it is managed by the browser
-	 */
-	override private function initKeyboardListeners():Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_detail():Float 
 	{
-		
+		return _detail;
 	}
 	
-	/**
-	 * only store the value
-	 */
-	override private function setActiveElement(value:HTMLElement):HTMLElement
+	private function set_detail(value:Float):Float 
 	{
-		return _activeElement = value;
+		return _detail = value;
 	}
-	
-	/**
-	 * only store the value
-	 */
-	override private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _bodyElement = value;
-	}
-	
 }

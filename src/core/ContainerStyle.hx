@@ -5,23 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Set the right runtime specific ContainerStyle at compile-time
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
+#if (flash9 || nme)
+typedef ContainerStyle =  port.flash_player.ContainerStyle;
 
 #elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
+typedef ContainerStyle =  core.style.AbstractContainerStyle;
 
 #elseif doc
-typedef NativeInstance = Dynamic;
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class ContainerStyle extends core.style.abstract.AbstractContainerStyle { }
 
-#else
-	#error
 #end

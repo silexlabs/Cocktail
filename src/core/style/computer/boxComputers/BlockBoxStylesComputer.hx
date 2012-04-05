@@ -5,23 +5,26 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core.style.computer.boxComputers;
+
+import core.style.StyleData;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * This is the box computer implementation for a
+ * non-embedded block level element.
+ * 
+ * This is the default implementation on boxStylesComputer
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
-
-#elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
-
-#elseif doc
-typedef NativeInstance = Dynamic;
-
-#else
-	#error
-#end
+class BlockBoxStylesComputer extends BoxStylesComputer
+{
+	/**
+	 * class constructor
+	 */
+	public function new()
+	{
+		super();
+	}
+	
+}

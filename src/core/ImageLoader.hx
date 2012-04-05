@@ -5,23 +5,15 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Set the right runtime specific ImageLoader at compile-time
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
+#if (flash9 || nme)
+typedef ImageLoader = core.resource.AbstractImageLoader;
 
 #elseif js
-typedef NativeInstance =  Dynamic;
+typedef ImageLoader = core.resource.AbstractImageLoader;
 
-#elseif php
-typedef NativeInstance =  Dynamic;
-
-#elseif doc
-typedef NativeInstance = Dynamic;
-
-#else
-	#error
 #end

@@ -5,23 +5,22 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core.drawing;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Set the right runtime specific drawing manager at compile-time
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
+#if (flash9 || nme)
+typedef DrawingManager =  port.flash_player.DrawingManager;
 
 #elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
+typedef DrawingManager =  port.browser.DrawingManager;
 
 #elseif doc
-typedef NativeInstance = Dynamic;
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class DrawingManager extends core.drawing.AbstractDrawingManager{}
 
-#else
-	#error
 #end

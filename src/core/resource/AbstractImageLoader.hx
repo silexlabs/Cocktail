@@ -5,23 +5,31 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.nativeInstance;
+package core.resource;
+
+import core.MediaLoader;
+import core.NativeElement;
+import core.nativeElement.NativeElementManager;
+import core.nativeElement.NativeElementData;
+import haxe.Http;
+import haxe.Log;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * This class is in charge of loading a picture. When multiple
+ * pictures are loaded with the same instance, the picture is 
+ * replaced
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
-
-#elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
-
-#elseif doc
-typedef NativeInstance = Dynamic;
-
-#else
-	#error
-#end
+class AbstractImageLoader extends MediaLoader
+{
+	/**
+	 * class constructor. Instantiate
+	 * the right nativeElement to load a picture
+	 */
+	public function new()
+	{
+		var nativeElement:NativeElement = NativeElementManager.createNativeElement(image);
+		super(nativeElement);
+	}
+}
