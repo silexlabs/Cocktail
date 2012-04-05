@@ -10,7 +10,6 @@ package cocktail.core.focus;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.HTMLElement;
 import cocktail.core.Keyboard;
-import cocktail.core.keyboard.KeyboardData;
 import cocktail.core.mouse.MouseData;
 import cocktail.core.dom.DOMData;
 import haxe.Log;

@@ -11,7 +11,6 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.HTMLElement;
 import haxe.Log;
 import cocktail.core.NativeElement;
-import cocktail.core.keyboard.KeyboardData;
 
 /**
  * This package is made to offer a simple API for keyboard interactions.

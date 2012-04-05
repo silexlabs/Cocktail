@@ -12,7 +12,6 @@ import cocktail.core.event.KeyboardEvent;
 import flash.Lib;
 import haxe.Log;
 import cocktail.core.keyboard.AbstractKeyboard;
-import cocktail.core.keyboard.KeyboardData;
 
 /**
  * This is the flash AVM2 implementation of the keyboard abstraction.
