@@ -16,8 +16,7 @@ import cocktail.core.NativeElement;
 
 /**
  * This is the flash AVM2 implementation of the native element
- * creator. It instantiate a native flash display object 
- * and returns it as a NativeElement
+ * manager
  * 
  * TODO : update all the doc
  * 
@@ -44,7 +43,7 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 	
 	/**
 	 * Instantiate a native flash display object based on the requested type and returns a reference to it.
-	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (img, canvas...)
 	 */
 	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
@@ -52,7 +51,8 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 		
 		switch (nativeElementType)
 		{
-			//for image, library and skin, the expected type is a Flash loader
+			//for image, library, the expected type is a Flash loader as they will be
+			//used to load extenal resources
 			case img, script:
 				nativeElement = new Loader();
 				

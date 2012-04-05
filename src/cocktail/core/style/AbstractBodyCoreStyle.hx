@@ -104,7 +104,6 @@ class AbstractBodyCoreStyle extends ContainerCoreStyle
 	public function render(nativeElement:NativeElement):Void
 	{
 		_nativeElements = _elementRenderer.layerRenderer.render();
-		_nativeElements.reverse();
 		attachNativeElements(_nativeElements);
 	}
 	

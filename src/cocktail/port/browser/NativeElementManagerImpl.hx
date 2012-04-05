@@ -14,8 +14,7 @@ import cocktail.core.NativeElement;
 
 /**
  * This is the Javascript implementation of the native element
- * creator. It instantiate a native HTML element 
- * and returns it as a NativeElement
+ * manager
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -31,7 +30,7 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 	}
 	
 	/**
-	 * Returns a reference to the Flash Stage
+	 * Returns a reference to the HTML Body
 	 */
 	override public function getRoot():NativeElement
 	{
@@ -41,7 +40,7 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 	
 	/**
 	 * Instantiate a native HTML Element based on the requested type and returns a reference to it.
-	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (img, canvas...)
 	 */
 	override public function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{

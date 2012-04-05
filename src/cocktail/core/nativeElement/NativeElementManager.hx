@@ -15,24 +15,18 @@ import cocktail.core.NativeElementManagerImpl;
 /**
  * this class abstract and manages the interaction with a
  * native DOM element (e.g a DisplayObject in flash, an HTML element in JS...). Native elements are wrapped in 
- * NativeElement class instance.
+ * NativeElement typedef.
  * 
  * It abstracts the creation of new native element by mimicking
  * the HTML way of creating new element.
- * 
- * This class proxies method call to runtime specific implementations
- * 
- * TODO : redo all the package's doc
  * 
  * @author Yannick DOMINGUEZ
  */
 class NativeElementManager 
 {
-	//TODO : redo all doc
-	
 	/**
-	 * A reference to the runtime specific implementation of the class
-	 * instantiating the new native elements
+	 * A reference to the runtime specific implementation of
+	 * the NativeElementManager
 	 */
 	static private var _nativeElementManagerImpl:NativeElementManagerImpl;
 	
@@ -51,7 +45,6 @@ class NativeElementManager
 	 */
 	public static function getRoot():NativeElement
 	{
-		//instantiate the path manager if first use
 		if (_nativeElementManagerImpl == null)
 		{
 			init();
@@ -61,11 +54,11 @@ class NativeElementManager
 	
 	/**
 	 * Instantiate a native element and returns a reference to it
-	 * @param	nativeElementType the type of element to create (graphic, text...)
+	 * @param	nativeElementType the type of element to create (img, canvas...)
 	 */
 	public static function createNativeElement(nativeElementType:NativeElementTypeValue):NativeElement
 	{
-		//instantiate the path manager if first use
+		//init if first use
 		if (_nativeElementManagerImpl == null)
 		{
 			init();
@@ -73,6 +66,10 @@ class NativeElementManager
 		return _nativeElementManagerImpl.createNativeElement(nativeElementType);
 	}
 	
+	/**
+	 * called the first time a static method is called,
+	 * instantiate implementation class
+	 */
 	private static function init():Void
 	{
 		_nativeElementManagerImpl = new NativeElementManagerImpl();
