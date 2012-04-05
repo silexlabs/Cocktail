@@ -1,0 +1,4 @@
+-js test/bin/unit/App.js
+-main UnitManagerTests
+-cp src
+-cp test/src/unit
