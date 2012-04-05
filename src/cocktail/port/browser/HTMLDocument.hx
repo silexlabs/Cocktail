@@ -33,14 +33,7 @@ class HTMLDocument extends AbstractHTMLDocument
 		super();
 	}
 	
-		//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as in JS, the browser takes care of the layout
-	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	override private function layoutAndRender():Void
 	{	
 		
 	}
