@@ -87,7 +87,7 @@ class BoxRenderer extends ElementRenderer
 			nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
-			backgrounds.unshift(nativeElement);
+			backgrounds.push(nativeElement);
 			
 		}
 		#end

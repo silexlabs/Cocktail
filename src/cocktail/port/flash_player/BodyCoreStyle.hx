@@ -29,20 +29,6 @@ class BodyCoreStyle extends AbstractBodyCoreStyle
 		super(htmlElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	// The body attach/detach its children from the flash Stage
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 
-	override private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		Lib.current.addChild(nativeElement);
-	}
-	
-	override private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		Lib.current.removeChild(nativeElement);
-	}
 	
 }

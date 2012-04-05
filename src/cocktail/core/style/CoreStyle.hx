@@ -604,26 +604,6 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The main layout method. When called, the HTMLElement's styles (width, height, margins, paddings...)
-	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
-	 * to the layout.
-	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
-	 * this HTMLElement must be laid out
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' style other than 'static'. When positioning an absolutely positioned HTMLElement (a HTMLElement with a 'position' style
-	 * of 'absolute'), it it used as origin.
-	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
-	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
-	 * @param containingHTMLElementFontMetricsData contains font metrics of the parent HTMLElement, used for instance
-	 * to layout children in an inline formatting context
-	 */
-	public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{
-		//abstract
-	}
-	
-	/**
 	 * This method is in charge of placing "in-flow" HTMLElements (HTMLElement with a 'position' style of 'static' or 'relative') into
 	 * its parent flow and "positioned" HTMLElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
 	 * ancestor.
@@ -745,19 +725,7 @@ class CoreStyle
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set a timer to trigger a layout of the HTMLElement asynchronously. this method is used by the invalidation
-	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
-	 * values are set instead of happening for every change.
-	 */
-	private function scheduleLayout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
-	{
-		var layoutDelegate:ContainingHTMLElementData->LastPositionedHTMLElementData->ContainingHTMLElementData->FontMetricsData->Void = layout;
-		
-		Timer.delay(function () { 
-			layoutDelegate(containingHTMLElementData, lastPositionedHTMLElementData, viewportData, null);
-		}, 1);
-	}
+
 	
 	/**
 	 * Flow all the children of a HTMLElement if it has any

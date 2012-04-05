@@ -90,7 +90,7 @@ class LayerRenderer
 
 			for (i in 0...childLayers.length)
 			{
-				nativeElements.push(childLayers[i]);
+			//	nativeElements.push(childLayers[i]);
 			}
 	
 			#if (flash9 || nme)
@@ -310,11 +310,6 @@ class LayerRenderer
 				nativeElements = inFlowChildren[i].render();
 			}
 			
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
-			
 			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
 			{
 				
@@ -325,6 +320,13 @@ class LayerRenderer
 					ret.push(bg[j]);
 				}
 			}
+			
+			for (j in 0...nativeElements.length)
+			{
+				ret.push(nativeElements[j]);
+			}
+			
+			
 		}
 		
 		return ret;
