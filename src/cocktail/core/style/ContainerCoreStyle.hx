@@ -89,19 +89,6 @@ class ContainerCoreStyle extends CoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * This method is overriden to start a recursive layout when called on a ContainerHTMLElement. The ContainerHTMLElement
-	 * will be measured and placed as well as all of its children.
-	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{		
-		flow(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, null, null, null);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

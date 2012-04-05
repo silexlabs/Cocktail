@@ -17,6 +17,7 @@ import cocktail.core.HTMLElement;
 import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
+import cocktail.core.NativeElement;
 import cocktail.core.Window;
 
 /**
@@ -31,5 +32,21 @@ class HTMLDocument extends AbstractHTMLDocument
 	public function new() 
 	{
 		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	// The body attach/detach its children from the flash Stage
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	override private function attachNativeElement(nativeElement:NativeElement):Void
+	{
+		flash.Lib.current.addChild(nativeElement);
+	}
+	
+	override private function detachNativeElement(nativeElement:NativeElement):Void
+	{
+		flash.Lib.current.removeChild(nativeElement);
 	}
 }

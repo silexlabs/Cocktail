@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.HTMLDocument;
 import cocktail.core.NativeElement;
 import cocktail.core.HTMLElement;
 import cocktail.core.style.formatter.BlockFormattingContext;
@@ -30,14 +31,6 @@ import haxe.Log;
  */
 class AbstractBodyCoreStyle extends ContainerCoreStyle
 {
-		
-	/**
-	 * keep references to each of the nativeElements which
-	 * are attached to this styled HTMLElement. Those
-	 * can be background images, colors, nativeElements
-	 * of other HTMLElements...
-	 */
-	private var _nativeElements:Array<NativeElement>;
 	
 	/**
 	 * class constructor
@@ -46,8 +39,6 @@ class AbstractBodyCoreStyle extends ContainerCoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		super(htmlElement);
-		
-		this._nativeElements = new Array<NativeElement>();
 		
 		//the BodyDOMElelement is set to valid by default
 		//to allow triggering the first layout when a children
@@ -71,86 +62,8 @@ class AbstractBodyCoreStyle extends ContainerCoreStyle
 		if (this._isDirty == false || immediate == true)
 		{
 			this._isDirty = true;
-			var windowData:ContainingHTMLElementData = getWindowData();
-		
-			//the first positioned parent of the body is always the viewport					
-			var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
-				children: new Array<PositionedHTMLElementData>(),
-				data:windowData
-			}
-			
-			//either schedule an asynchronous layout, or layout immediately
-			if (immediate == false)
-			{
-				scheduleLayout(windowData, lastPositionedHTMLElementData, windowData);
-			}
-			else
-			{
-				layout(windowData, lastPositionedHTMLElementData, windowData, null);
-			}
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * and attach the resulting nativeElement (background,
-	 * border, embedded asset...) to the provided
-	 * nativeElement
-	 */ 
-	public function render(nativeElement:NativeElement):Void
-	{
-		_nativeElements = _elementRenderer.layerRenderer.render();
-		attachNativeElements(_nativeElements);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	// TODO : should be on a Document object
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Attach a NativeElement to the
-	 * styled HTMLElement using runtime specific API
-	 */ 
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Remove a NativeElement from the
-	 * styled HTMLElement using runtime specific API
-	 */
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * styled HTMLElement using runtime specific API
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * styled HTMLElement using runtime specific API
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
+			var htmlDocument:HTMLDocument = cast(_htmlElement.ownerDocument);
+			htmlDocument.invalidate(immediate);
 		}
 	}
 	
@@ -174,17 +87,31 @@ class AbstractBodyCoreStyle extends ContainerCoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The BodyHTMLElement starts the rendering of the rendering tree
+	 * The main layout method. When called, the HTMLElement's styles (width, height, margins, paddings...)
+	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
+	 * to the layout.
 	 * 
-	 * TODO : should instead be on a Document class
+	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
+	 * this HTMLElement must be laid out
+	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
+	 * it has a 'position' style other than 'static'. When positioning an absolutely positioned HTMLElement (a HTMLElement with a 'position' style
+	 * of 'absolute'), it it used as origin.
+	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
+	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
+	 * @param containingHTMLElementFontMetricsData contains font metrics of the parent HTMLElement, used for instance
+	 * to layout children in an inline formatting context
 	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{	
-		//first detach all previously added children
-		detachNativeElements(_nativeElements);
+	public function layout():Void
+	{
+		var windowData:ContainingHTMLElementData = getWindowData();
 		
-		super.layout(containingHTMLElementData, lastPositionedHTMLElementData, viewportData, containingHTMLElementFontMetricsData);
-		render(_htmlElement.nativeElement);
+		//the first positioned parent of the body is always the viewport					
+		var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
+			children: new Array<PositionedHTMLElementData>(),
+			data:windowData
+		}
+		
+		flow(windowData, windowData, lastPositionedHTMLElementData, null, null, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

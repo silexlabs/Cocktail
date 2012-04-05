@@ -29,28 +29,5 @@ class BodyCoreStyle extends AbstractBodyCoreStyle
 		super(htmlElement);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as the browser deals with the rendering in JS
-	 */
-	override public function render(nativeElement:NativeElement):Void
-	{
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as in JS, the browser takes care of the layout
-	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{	
-		
-	}
-	
+
 }

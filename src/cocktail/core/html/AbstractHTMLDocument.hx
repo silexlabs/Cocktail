@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.BodyCoreStyle;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
@@ -16,7 +17,9 @@ import cocktail.core.HTMLElement;
 import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
+import cocktail.core.NativeElement;
 import cocktail.core.Window;
+import haxe.Timer;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -41,6 +44,8 @@ class AbstractHTMLDocument extends Document
 	
 	private static inline var HTML_HTML_TAG_NAME:String = "html";
 	
+	private static inline var HTML_BODY_TAG_NAME:String = "body";
+	
 	/**
 	 * The element that contains the content for the document.
 	 */
@@ -53,6 +58,8 @@ class AbstractHTMLDocument extends Document
 	 */
 	private var _window:Window;
 	
+	private var _nativeElements:Array<NativeElement>;
+	
 	/**
 	 * class constructor
 	 */
@@ -60,10 +67,12 @@ class AbstractHTMLDocument extends Document
 	{
 		super();
 		
-		_body = new HTMLBodyElement();
+		_body = createElement(HTML_BODY_TAG_NAME);
 		
 		_documentElement = new HTMLHtmlElement();
 		_documentElement.appendChild(_body);
+		
+		_nativeElements = new Array<NativeElement>();
 		
 		//TODO : should not be singleton
 		FocusManager.getInstance().bodyElement = cast(_body);
@@ -103,6 +112,9 @@ class AbstractHTMLDocument extends Document
 			case HTML_HTML_TAG_NAME:
 				element = new HTMLHtmlElement(); 
 				
+			case HTML_BODY_TAG_NAME:
+				element = new HTMLBodyElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
@@ -110,6 +122,28 @@ class AbstractHTMLDocument extends Document
 		element.ownerDocument = this;
 		
 		return element;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The BodyHTMLElement doesn't have a parent, so when invalidated,
+	 * it always schedule a layout using the window dimensions as
+	 * its containing HTMLElement dimensions
+	 */
+	public function invalidate(immediate:Bool = false):Void
+	{
+		//either schedule an asynchronous layout, or layout immediately
+		if (immediate == false)
+		{
+			scheduleLayoutAndRender();
+		}
+		else
+		{
+			layout();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +157,97 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		_body.coreStyle.invalidate();
+		scheduleLayoutAndRender();
+	}
+	
+	private function layoutAndRender():Void
+	{
+		layout();
+		render();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function layout():Void
+	{
+		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
+		bodyCoreStyle.layout();
+	}
+	
+	/**
+	 * Start the rendering of the rendering tree
+	 * and attach the resulting nativeElement (background,
+	 * border, embedded asset...) to the provided
+	 * nativeElement
+	 */ 
+	public function render():Void
+	{
+		detachNativeElements(_nativeElements);
+		_nativeElements = _body.coreStyle.elementRenderer.layerRenderer.render();
+		attachNativeElements(_nativeElements);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	// TODO : should be on a Document object
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a NativeElement to the
+	 * styled HTMLElement using runtime specific API
+	 */ 
+	private function attachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Remove a NativeElement from the
+	 * styled HTMLElement using runtime specific API
+	 */
+	private function detachNativeElement(nativeElement:NativeElement):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Attach an array of NativeElement to the
+	 * styled HTMLElement using runtime specific API
+	 */
+	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			attachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Remove an array of NativeElement from the
+	 * styled HTMLElement using runtime specific API
+	 */
+	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
+	{
+		for (i in 0...nativeElements.length)
+		{
+			detachNativeElement(nativeElements[i]);
+		}
+	}
+	
+	/**
+	 * Set a timer to trigger a layout of the HTMLElement asynchronously. this method is used by the invalidation
+	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
+	 * values are set instead of happening for every change.
+	 */
+	private function scheduleLayoutAndRender():Void
+	{
+		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
+		
+		Timer.delay(function () { 
+			layoutAndRenderDelegate();
+		}, 1);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -56,7 +56,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		
 		//TODO : implement properly hit area for flash_player
-		
 		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 		
 		nativeElement.x = 0;
@@ -67,9 +66,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		nativeElement.graphics.beginFill(0xFF0000, 0.0);
 		nativeElement.graphics.drawRect(_bounds.x,_bounds.y, _bounds.width,_bounds.height);
 		nativeElement.graphics.endFill();
-		
-		ret.push(nativeElement);
-		
+
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
@@ -78,6 +75,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
+		
+	
+		
+		ret.push(nativeElement);
+		
 		
 		#end
 		
