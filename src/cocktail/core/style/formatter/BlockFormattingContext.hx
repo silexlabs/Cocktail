@@ -84,7 +84,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		
 			
-			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
+			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
 			var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
 			var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
