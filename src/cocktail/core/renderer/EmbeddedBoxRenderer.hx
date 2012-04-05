@@ -47,34 +47,39 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 		
+		
+	
+		
 		#if (flash9 || nme)
 		
+	
+		
+		
 		//TODO : implement properly hit area for flash_player
+		
 		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 		
+		nativeElement.x = 0;
+		nativeElement.y = 0;
+		
 		nativeElement.graphics.clear();
-		nativeElement.graphics.beginFill(0x00FF00, 0.0);
-		nativeElement.graphics.drawRect(_bounds.x +_coreStyle.computedStyle.paddingLeft,
-		_bounds.y + _coreStyle.computedStyle.paddingTop, _bounds.width, _bounds.height);
+		
+		nativeElement.graphics.beginFill(0xFF0000, 0.0);
+		nativeElement.graphics.drawRect(_bounds.x,_bounds.y, _bounds.width,_bounds.height);
 		nativeElement.graphics.endFill();
 		
-		//nativeElement.x = _style.computedStyle.marginLeft;
-		
 		ret.push(nativeElement);
-		#end
 		
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
-		#if (flash9 || nme)
-		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _coreStyle.computedStyle.paddingLeft ;
+		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _coreStyle.computedStyle.paddingLeft;
 		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _coreStyle.computedStyle.paddingTop;
 
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
+		
 		#end
-		
-		
 		
 		
 		//TODO : apply transformations, opacity and visibility
@@ -82,6 +87,26 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
 		
 		return ret;
+	}
+	
+		/**
+	 * Render and position the background color and
+	 * image of the element using runtime specific
+	 * API and return an array of NativeElement from
+	 * it
+	 */
+	override public function renderBackground():Array<NativeElement>
+	{
+		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
+		
+		for (i in 0...backgrounds.length)
+		{
+			#if (flash9 || nme)
+			backgrounds[i].x = _bounds.x;
+			backgrounds[i].y = _bounds.y;
+			#end
+		}
+		return backgrounds;
 	}
 	
 	//TODO : re-implement + add an ImageRenderer

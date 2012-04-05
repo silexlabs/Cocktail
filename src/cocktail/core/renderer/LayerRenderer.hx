@@ -338,7 +338,7 @@ class LayerRenderer
 			{
 				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
 				{
-					if (blockBoxRenderer.lineBoxes[i][j].isPositioned() == false)
+					if (blockBoxRenderer.lineBoxes[i][j].isPositioned() == false && blockBoxRenderer.lineBoxes[i][j].isDisplayed() == true)
 					{
 						ret.push(blockBoxRenderer.lineBoxes[i][j]);
 					}
@@ -352,27 +352,31 @@ class LayerRenderer
 			{
 				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 				
-				if (child.layerRenderer == this)
+				if (child.isDisplayed() == true)
 				{
-					if (child.isPositioned() == false)
+					if (child.layerRenderer == this)
 					{
-						ret.push(child);
-						if (child.canHaveChildren() == true)
+						if (child.isPositioned() == false)
 						{
-							var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
-							for (j in 0...childElementRenderer.length)
+							ret.push(child);
+							if (child.canHaveChildren() == true)
 							{
-								if (child.establishesNewFormattingContext() == true)
+								var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
+								for (j in 0...childElementRenderer.length)
 								{
-									childElementRenderer[j].bounds.x += child.bounds.x;
-									childElementRenderer[j].bounds.y += child.bounds.y;
+									if (child.establishesNewFormattingContext() == true)
+									{
+										childElementRenderer[j].bounds.x += child.bounds.x;
+										childElementRenderer[j].bounds.y += child.bounds.y;
+									}
+								
+									ret.push(childElementRenderer[j]);
 								}
-							
-								ret.push(childElementRenderer[j]);
 							}
 						}
 					}
 				}
+
 			}
 		}
 		

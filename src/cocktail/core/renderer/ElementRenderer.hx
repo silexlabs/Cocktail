@@ -162,6 +162,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isDisplayed():Bool
+	{
+		return _coreStyle.isDisplayed();
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
