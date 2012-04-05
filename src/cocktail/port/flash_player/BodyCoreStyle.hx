@@ -45,6 +45,8 @@ class BodyCoreStyle extends AbstractBodyCoreStyle
 		//TODO : this check is only neccessary as long
 		//as nativeElement are added to stage for hit test.
 		//To be removed once hit test is implemented on layerRenderer
+		//TODO : should also remove each HTMLElement's nativeElements else
+		//they stay on the display list
 		if (Lib.current.contains(nativeElement))
 		{
 			Lib.current.removeChild(nativeElement);

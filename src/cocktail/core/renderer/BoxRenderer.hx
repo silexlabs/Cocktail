@@ -76,22 +76,21 @@ class BoxRenderer extends ElementRenderer
 			
 			//TODO : implement properly hit area for flash_player
 			var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
-			
+		
 			nativeElement.x = 0;
 			nativeElement.y = 0;
 			
 			nativeElement.graphics.clear();
+			
+			
 			nativeElement.graphics.beginFill(0x00FF00, 0.0);
-			nativeElement.graphics.drawRect(_bounds.x,
-			_bounds.y, _bounds.width, _bounds.height);
+			nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
-			//nativeElement.x = _style.computedStyle.marginLeft;
-			
-			backgrounds.push(nativeElement);
+			backgrounds.unshift(nativeElement);
 			
 		}
-	#end
+		#end
 		
 	
 		return backgrounds;

@@ -655,7 +655,7 @@ class CoreStyle
 		
 		//do nothing if the HTMLElement must not be displayed, i.e, added
 		//to the display list
-		if (isNotDisplayed() == true)
+		if (isDisplayed() == false)
 		{
 			return;
 		}
@@ -1255,9 +1255,9 @@ class CoreStyle
 	 * Determine wether the HTMLElement is added
 	 * to the document
 	 */
-	private function isNotDisplayed():Bool
+	public function isDisplayed():Bool
 	{
-		return this._computedStyle.display == Display.none;
+		return this._computedStyle.display != Display.none;
 	}
 	
 	/**
