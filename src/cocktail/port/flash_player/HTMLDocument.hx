@@ -21,7 +21,9 @@ import cocktail.core.NativeElement;
 import cocktail.core.Window;
 
 /**
- *
+ * This is the flash player implementation of
+ * the HTMLDocument
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLDocument extends AbstractHTMLDocument
@@ -36,9 +38,8 @@ class HTMLDocument extends AbstractHTMLDocument
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
-	// The body attach/detach its children from the flash Stage
+	// attach/detach the rendered native elements to/from the flash Stage
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
 
 	override private function attachNativeElement(nativeElement:NativeElement):Void
 	{
