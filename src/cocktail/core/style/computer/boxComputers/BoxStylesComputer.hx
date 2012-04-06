@@ -520,7 +520,7 @@ class BoxStylesComputer
 			//auto margins take the remaining place left after
 			//paddings, other margin and dimension are set
 			case cssAuto:	
-				computedMargin = getComputedAutoMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
+				computedMargin = getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
 		}
 		
 		return computedMargin;
@@ -553,6 +553,7 @@ class BoxStylesComputer
 				//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 				default:
 					var opositeComputedMargin = getComputedMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
+					
 					computedMargin = containingHTMLElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
 			}
 		}
