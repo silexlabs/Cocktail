@@ -66,7 +66,7 @@ class CellThumbText1Style
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
 		
 		node.style.height = Std.string(cellSize.height) + "px";
-		//node.style.maxHeight = ConstrainedStd.string(CELL_MAX_HEIGHT));
+		//node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
 
 		node.style.overflow = "hidden";
 		

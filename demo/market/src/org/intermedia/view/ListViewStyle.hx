@@ -9,20 +9,6 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-// DOM
-/*import cocktail.node.DOMElement;
-import cocktail.node.HtmlDom;
-import cocktail.node.HtmlDom;
-import cocktail.node.GraphicDOMElement;
-import cocktail.viewport.Viewport;
-
-// Native Elements
-import cocktail.NativeElementManager;
-import cocktail.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;*/
 import org.intermedia.view.Constants;
 
 /**
@@ -38,7 +24,7 @@ class ListViewStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setListStyle(node:HtmlDom,listTop:Int):Void
+	public static function setListStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
 		node.style.position = "static";
@@ -46,28 +32,23 @@ class ListViewStyle
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
 		node.style.marginTop = "0px";
+		//node.style.marginTop = Std.string(Constants.LIST_TOP) + "px";
 		node.style.marginBottom = "0px";
-		
-		//node.style.paddingLeft = "0px";
-		node.style.paddingLeft = "0%";
+		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
 		node.style.paddingTop = "0px";
 		node.style.paddingBottom = "0px";
 		
-		//node.style.width = "100%";
-		//node.style.width = DimensionStyleValue.percent(33);
 		node.style.width = Std.string(Lib.window.innerWidth) + "px";
 		//node.style.height = "100%";
 		node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
 		//node.style.height = "auto";
 		
-		//node.style.top = Std.string(listTop));
-		node.style.top = Std.string(listTop) + "px";
+		node.style.top = "0px";
 		node.style.bottom = "0px";
 		
 		node.style.verticalAlign = "top";
-		//node.style.overflow = { x:OverflowStyleValue.hidden, y:OverflowStyleValue.autoValue };
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "auto";
 	}
@@ -79,20 +60,17 @@ class ListViewStyle
 	 */
 	public static function loader(node:HtmlDom)
 	{
-		var verticalMargin:Int = 20;
-		
-		//var viewport:Viewport = new Viewport();
-		//var viewportHeight:Int = viewport.height;
-		var viewportHeight:Int = Lib.window.innerHeight;
+		var VERTICAL_MARGIN:Int = 20;
 		
 		node.style.display = "block";
 		
 		node.style.marginLeft = "auto";
 		node.style.marginRight = "auto";
-		node.style.marginTop = Std.string(verticalMargin) + "px";
-		node.style.marginBottom = Std.string(verticalMargin) + "px";
+		node.style.marginTop = Std.string(VERTICAL_MARGIN) + "px";
+		node.style.marginBottom = Std.string(VERTICAL_MARGIN) + "px";
 		
 		node.style.top = Std.string(Lib.window.innerHeight) + "px";
+		node.style.zIndex = 1000;
 	}
 	
 }

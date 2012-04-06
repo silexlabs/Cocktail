@@ -44,7 +44,7 @@ class DetailStyle
 		node.style.width = "100%";
 		node.style.height = "auto";
 		
-		node.style.top = Std.string(Constants.HEADER_HEIGHT);
+		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.bottom = "0px";
 		
 		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
@@ -126,8 +126,8 @@ class DetailStyle
 	{
 		setText(node);
 
-		node.style.marginTop = Std.string(10);
-		node.style.marginBottom = Std.string(10);
+		node.style.marginTop = Std.string(10) + "px";
+		node.style.marginBottom = Std.string(10) + "px";
 		
 		node.style.fontSize = "14px";
 		//node.style.fontWeight = "bold";

@@ -50,7 +50,7 @@ class CellThumbStyle2
 		
 		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
-		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE));
+		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
 		node.style.paddingBottom = "0px";
 		
 		// compute cell width depending on cellPerLine value
@@ -58,8 +58,8 @@ class CellThumbStyle2
 		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
 		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
 		else cellPercentWidth = 100;
-		node.style.width = DimensionStyleValue.percent(cellPercentWidth);
-		node.style.height = Std.string(70));
+		node.style.width = Std.string(cellPercentWidth) + "%";
+		node.style.height = Std.string(70)) + "%";
 		node.style.overflow = "hidden";
 	}
 	

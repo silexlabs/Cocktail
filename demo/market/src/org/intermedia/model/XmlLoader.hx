@@ -69,6 +69,7 @@ class XmlLoader
 			var httpRequest:Http = new Http(fullUrl);
 			httpRequest.onData = function (xml:String) { onXmlLoaded(listId, xml); };
 			httpRequest.onError = onXmlError;
+			httpRequest.request(false);
 		}
 		// catch the error if any
 		catch (error:Dynamic)
