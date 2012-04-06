@@ -1753,6 +1753,7 @@ class CoreStyle
 	
 	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
+		invalidate();
 		return _backgroundColor = value;
 	}
 	
@@ -1763,6 +1764,7 @@ class CoreStyle
 	
 	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
+		invalidate();
 		return _backgroundImage = value;
 	}
 	
@@ -1773,6 +1775,7 @@ class CoreStyle
 	
 	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
+		invalidate();
 		return _backgroundRepeat = value;
 	}
 	
@@ -1783,6 +1786,7 @@ class CoreStyle
 	
 	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
+		invalidate();
 		return _backgroundSize = value;
 	}
 	
@@ -1793,6 +1797,7 @@ class CoreStyle
 	
 	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
+		invalidate();
 		return _backgroundClip = value;
 	}
 	
@@ -1803,6 +1808,7 @@ class CoreStyle
 	
 	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
+		invalidate();
 		return _backgroundPosition = value;
 	}
 	
@@ -1813,6 +1819,7 @@ class CoreStyle
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
+		invalidate();
 		return _backgroundOrigin = value;
 	}
 	
