@@ -202,7 +202,6 @@ class AbstractHTMLDocument extends Document
 	 * key down event to the currently active
 	 * HTMLElement
 	 * 
-	 * TODO : must be on HTMLDocument
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
