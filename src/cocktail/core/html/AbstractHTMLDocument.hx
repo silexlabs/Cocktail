@@ -7,7 +7,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.focus.FocusManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
 import cocktail.core.event.Event;
@@ -80,7 +79,7 @@ class AbstractHTMLDocument extends Document
 		_nativeElements = new Array<NativeElement>();
 		
 		//TODO : should not be singleton
-		FocusManager.getInstance().bodyElement = cast(_body);
+		//FocusManager.getInstance().bodyElement = cast(_body);
 		
 		//listen to the Window resizes
 		_window = new Window();

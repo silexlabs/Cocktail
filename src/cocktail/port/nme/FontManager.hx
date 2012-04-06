@@ -20,7 +20,7 @@ import cocktail.core.style.StyleData;
 
 
 /**
- * TODO : doc + make it work
+ * TODO : doc 
  * 
  * @author lexa
  */

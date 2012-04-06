@@ -120,18 +120,14 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * is set, it is used to determine focus order when the
 	 * user press the TAB key. If it is not set, the document
 	 * order is used to establish focus order and the HTMLElement
-	 * is only focused if it is intrinsivally focusable, like for
+	 * is only focused if it is intrinsically focusable, like for
 	 * instance an HTMLInputElement
+	 * 
+	 * TODO : should be stored in the attributes hash instead,
+	 * no need for class attribute
 	 */
 	private var _tabIndex:Null<Int>;
 	public var tabIndex(get_tabIndex, set_tabIndex):Null<Int>;
-	
-	/**
-	 * Return wheter this HTMLElement is intrinsically
-	 * focusable. For instance, html input or anchor elements
-	 * are intrinsically focusable
-	 */
-	public var isDefaultFocusable(get_isDefaultFocusable, never):Bool;
 	
 	/**
 	 * callback called when the HTMLElement receives 
@@ -184,7 +180,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	/**
 	 * An abstract reference to the native element wrapped by this HTMLElement.
-	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite,
+	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite
 	 */
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
@@ -276,7 +272,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	/**
 	 * This is the style object exposed by the public API.
-	 * It is used to set and get CSS styles with strings
+	 * It is used to set and get CSS styles with strings, like
+	 * when using JavaScript in the browser,
 	 * and is in charge of converting them to typed object
 	 * which it sets on coreStyle
 	 */
@@ -639,6 +636,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * Gives keyboard focus to the HTMLElement
 	 * The focus manager determines if the HTMLElement can
 	 * actually receive focus
+	 * 
+	 * TODO : should instead call ownerDocument.activeElement
 	 */
 	public function focus():Void
 	{
@@ -660,15 +659,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	public function blur():Void
 	{
 		//FocusManager.getInstance().activeElement = null;
-	}
-	
-	/**
-	 * default HTMLElement are not focusable unless their
-	 * tabIndex attribute is not null
-	 */
-	private function get_isDefaultFocusable():Bool
-	{
-		return false;
 	}
 	
 	private function set_onFocus(value:Event->Void):Event->Void
@@ -695,6 +685,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * when set, invalidate the focus manager
 	 * tab list, as this HTMLElement may appear
 	 * at another index of the tab list
+	 * 
+	 * TODO : should call ownerDocument.invalidateTabList ?
 	 */
 	private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
@@ -783,6 +775,9 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * map
 	 * @return the id as a String or an empty
 	 * String if it was not set 
+	 * 
+	 * TODO : maybe for getter should return null
+	 * if not defined ?
 	 */
 	private function get_id():String
 	{
@@ -835,7 +830,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * return the first positioned ancestor of the HTMLElement
 	 * 
 	 * @return an HTMLElement or null if this HTMLElement is not yet
-	 * added to the DOM
+	 * added to the DOM or is the HTMLBodyElement
 	 */
 	private function get_offsetParent():HTMLElement
 	{
