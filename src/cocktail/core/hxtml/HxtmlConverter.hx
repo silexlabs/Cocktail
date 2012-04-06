@@ -48,7 +48,6 @@ class HxtmlConverter
 	}
 	public static function setAttribute(element:Node, a : String, v : String ):Void
 	{
-		trace("setAttribute "+a+", "+v);
 		cast(element, HtmlDom).setAttribute(a, v);
 	}
 }
@@ -61,11 +60,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function new(){}
 	
 	public function setDisplay(element:Node, value:String):Void{
-		trace("display "+value);
 		cast(element, HtmlDom).style.display = value;
 	}
 	public function setPosition (element:Node, value:String):Void{
-		trace("position "+value);
 		cast(element, HtmlDom).style.position = value;
 	}
 /*	public function setCssFloat(element:Node, value:String):Void{
@@ -88,44 +85,36 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HtmlDom).style.transform = value;
 	}
 */	public function setMarginLeft (element:Node, value:Int, unit:String):Void{
-		trace("setMarginLeft "+value+unit);
 		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value + unit;
 	}
 	public function setMarginTop (element:Node, value:Int, unit:String):Void{
-		trace("setMarginTop "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value + unit;
 	}
 	public function setMarginRight (element:Node, value:Int, unit:String):Void{
-		trace("setMarginRight "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginRight = value + unit;
 	}
 	public function setMarginBottom (element:Node, value:Int, unit:String):Void{
-		trace("setMarginBottom "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value + unit;
 	}
 
 	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{
-		trace("setPaddingLeft "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingLeft = value + unit;
 	}
 	public function setPaddingTop (element:Node, value:Int, unit:String):Void{
-		trace("setPaddingTop "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingTop = value + unit;
 	}
 	public function setPaddingRight (element:Node, value:Int, unit:String):Void{
-		trace("setPaddingRight "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingRight = value + unit;
 	}
 	public function setPaddingBottom (element:Node, value:Int, unit:String):Void{
-		trace("setPaddingBottom "+value+unit);
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingBottom = value + unit;
 	}

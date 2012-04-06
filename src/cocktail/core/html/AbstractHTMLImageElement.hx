@@ -7,6 +7,8 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.dom.Attr;
+import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
@@ -31,6 +33,11 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * the html tag name of an image
 	 */
 	private static inline var HTML_IMAGE_TAG_NAME:String = "img";
+	
+	/**
+	 * The name of the src attribute for the HTMLImageElement
+	 */
+	private static inline var HTML_IMAGE_SRC_ATTRIBUTE:String = "src";
 	
 	//////////////////////
 	// CALLBACKS
@@ -66,6 +73,9 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	/**
 	 * set/get the URL of the loaded picture.
 	 * 
+	 * store it and retrieve it from the attributes map,
+	 * and start the loading of the picture when set
+	 * 
 	 * TODO : get/set from attributes map ? + override setAttribute
 	 * to call src setter ? or use Reflection ?
 	 * should not be _src attribute anymore
@@ -73,7 +83,6 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * to the attributes, then get/set src, set its value. Or 
 	 * _src is of type Attr ?
 	 */
-	private var _src:String;
 	public var src(get_src, set_src):String;
 	
 	/**
@@ -105,6 +114,22 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setAttribute(name:String, value:String):Void
+	{
+		if (name == HTML_IMAGE_SRC_ATTRIBUTE)
+		{
+			src = value;
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LOADING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -113,9 +138,16 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
-		_src = value;
+		var srcAttr:Node = _attributes.getNamedItem(HTML_IMAGE_SRC_ATTRIBUTE);
+		if (srcAttr == null)
+		{
+			srcAttr = new Attr(HTML_IMAGE_SRC_ATTRIBUTE);
+			_attributes.setNamedItem(srcAttr);
+		}
+		srcAttr.nodeValue = value;
+		
 		_imageLoader.load([value], onLoadComplete, onLoadError);
-		return _src;
+		return value;
 	}
 	
 	/**
@@ -163,7 +195,7 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	
 	private function get_src():String
 	{
-		return _src;
+		return getAttribute(HTML_IMAGE_SRC_ATTRIBUTE);
 	}
 	
 	private function get_naturalHeight():Int
