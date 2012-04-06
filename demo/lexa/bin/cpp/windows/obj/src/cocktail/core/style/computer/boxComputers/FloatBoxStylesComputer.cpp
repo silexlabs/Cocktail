@@ -1,7 +1,7 @@
 #include <hxcpp.h>
 
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_computer_boxComputers_BoxStylesComputer
 #include <cocktail/core/style/computer/boxComputers/BoxStylesComputer.h>
@@ -41,7 +41,7 @@ Dynamic FloatBoxStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-int FloatBoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int FloatBoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("FloatBoxStylesComputer_obj::getComputedAutoWidth")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/FloatBoxStylesComputer.hx",35)
 	return (int)0;

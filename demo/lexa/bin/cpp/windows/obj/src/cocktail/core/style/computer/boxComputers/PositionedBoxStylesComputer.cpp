@@ -3,8 +3,8 @@
 #ifndef INCLUDED_hxMath
 #include <hxMath.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Margin
 #include <cocktail/core/style/Margin.h>
@@ -47,7 +47,7 @@ Dynamic PositionedBoxStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-int PositionedBoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
+int PositionedBoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
 	HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::shrinkToFit")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",42)
 	int shrinkedWidth;
@@ -96,7 +96,7 @@ int PositionedBoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::Abstr
 
 HX_DEFINE_DYNAMIC_FUNC3(PositionedBoxStylesComputer_obj,shrinkToFit,return )
 
-int PositionedBoxStylesComputer_obj::applyContentHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int childrenHeight){
+int PositionedBoxStylesComputer_obj::applyContentHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int childrenHeight){
 	HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::applyContentHeight")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",89)
 	int height;
@@ -120,7 +120,7 @@ int PositionedBoxStylesComputer_obj::applyContentHeight( ::cocktail::core::style
 
 HX_DEFINE_DYNAMIC_FUNC3(PositionedBoxStylesComputer_obj,applyContentHeight,return )
 
-Void PositionedBoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void PositionedBoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::measurePositionOffsets")
 	}
@@ -130,7 +130,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,measurePositionOffsets,(void))
 
-Void PositionedBoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void PositionedBoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::measureAutoWidth")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",132)
@@ -173,7 +173,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,measureAutoWidth,(void))
 
-Void PositionedBoxStylesComputer_obj::measureWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void PositionedBoxStylesComputer_obj::measureWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::measureWidth")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",179)
@@ -281,7 +281,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,measureWidth,(void))
 
-Void PositionedBoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void PositionedBoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::measureAutoHeight")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",284)
@@ -338,7 +338,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,measureAutoHeight,(void))
 
-Void PositionedBoxStylesComputer_obj::measureHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void PositionedBoxStylesComputer_obj::measureHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::measureHeight")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",339)
@@ -446,7 +446,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,measureHeight,(void))
 
-int PositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int PositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::getComputedStaticLeft")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",446)
 	return style->getComputedStyle()->__Field(HX_CSTRING("marginLeft"));
@@ -455,7 +455,7 @@ int PositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::core::st
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,getComputedStaticLeft,return )
 
-int PositionedBoxStylesComputer_obj::getComputedStaticTop( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int PositionedBoxStylesComputer_obj::getComputedStaticTop( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::getComputedStaticTop")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",455)
 	return style->getComputedStyle()->__Field(HX_CSTRING("marginTop"));
@@ -464,7 +464,7 @@ int PositionedBoxStylesComputer_obj::getComputedStaticTop( ::cocktail::core::sty
 
 HX_DEFINE_DYNAMIC_FUNC2(PositionedBoxStylesComputer_obj,getComputedStaticTop,return )
 
-int PositionedBoxStylesComputer_obj::doShrinkToFit( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
+int PositionedBoxStylesComputer_obj::doShrinkToFit( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
 	HX_SOURCE_PUSH("PositionedBoxStylesComputer_obj::doShrinkToFit")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.hx",463)
 	return minimumWidth;

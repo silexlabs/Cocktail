@@ -43,11 +43,11 @@ namespace flash_player{
 Void Keyboard_obj::__construct(::cocktail::port::flash_player::HTMLElement htmlElement)
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",31)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",30)
 	super::__construct(htmlElement);
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",34)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",33)
 	this->_keyDownEvent = ::nme::events::KeyboardEvent_obj::KEY_DOWN;
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",35)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",34)
 	this->_keyUpEvent = ::nme::events::KeyboardEvent_obj::KEY_UP;
 }
 ;
@@ -70,11 +70,11 @@ Dynamic Keyboard_obj::__Create(hx::DynamicArray inArgs)
 Void Keyboard_obj::updateListeners( ::String keyboardEvent,Dynamic nativeCallback,Dynamic htmlElementCallback){
 {
 		HX_SOURCE_PUSH("Keyboard_obj::updateListeners")
-		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",49)
+		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",48)
 		this->_htmlElement->get_nativeElement()->__Field(HX_CSTRING("removeEventListener"))(keyboardEvent,nativeCallback);
-		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",51)
+		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",50)
 		if (((htmlElementCallback != null()))){
-			HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",52)
+			HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",51)
 			this->_htmlElement->get_nativeElement()->__Field(HX_CSTRING("addEventListener"))(keyboardEvent,nativeCallback);
 		}
 	}
@@ -86,29 +86,29 @@ HX_DEFINE_DYNAMIC_FUNC3(Keyboard_obj,updateListeners,(void))
 
 ::cocktail::core::event::KeyboardEvent Keyboard_obj::getKeyData( Dynamic event){
 	HX_SOURCE_PUSH("Keyboard_obj::getKeyData")
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",65)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",64)
 	::nme::events::KeyboardEvent typedEvent = event;
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",67)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",66)
 	::String eventType;
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",69)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",68)
 	::String _switch_1 = (typedEvent->nmeGetType());
 	if (  ( _switch_1==::nme::events::KeyboardEvent_obj::KEY_DOWN)){
-		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",71)
+		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",70)
 		eventType = HX_CSTRING("keydown");
 	}
 	else if (  ( _switch_1==::nme::events::KeyboardEvent_obj::KEY_UP)){
-		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",74)
+		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",73)
 		eventType = HX_CSTRING("keyup");
 	}
 	else  {
-		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",77)
+		HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",76)
 		eventType = typedEvent->nmeGetType();
 	}
 ;
 ;
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",81)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",80)
 	::cocktail::core::event::KeyboardEvent keyboardEvent = ::cocktail::core::event::KeyboardEvent_obj::__new(eventType,this->_htmlElement,0.0,typedEvent->charCode,typedEvent->keyCode,typedEvent->ctrlKey,typedEvent->shiftKey,typedEvent->altKey);
-	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",85)
+	HX_SOURCE_POS("../../src/cocktail/port/flash_player/Keyboard.hx",84)
 	return keyboardEvent;
 }
 

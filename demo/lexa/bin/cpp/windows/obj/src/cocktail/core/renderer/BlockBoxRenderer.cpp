@@ -1,16 +1,7 @@
 #include <hxcpp.h>
 
-#ifndef INCLUDED_cocktail_core_dom_Element
-#include <cocktail/core/dom/Element.h>
-#endif
 #ifndef INCLUDED_cocktail_core_dom_Node
 #include <cocktail/core/dom/Node.h>
-#endif
-#ifndef INCLUDED_cocktail_core_event_IEventTarget
-#include <cocktail/core/event/IEventTarget.h>
-#endif
-#ifndef INCLUDED_cocktail_core_html_AbstractHTMLElement
-#include <cocktail/core/html/AbstractHTMLElement.h>
 #endif
 #ifndef INCLUDED_cocktail_core_renderer_BlockBoxRenderer
 #include <cocktail/core/renderer/BlockBoxRenderer.h>
@@ -24,44 +15,14 @@
 #ifndef INCLUDED_cocktail_core_renderer_FlowBoxRenderer
 #include <cocktail/core/renderer/FlowBoxRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
-#include <cocktail/port/flash_player/HTMLElement.h>
-#endif
-#ifndef INCLUDED_nme_display_DisplayObject
-#include <nme/display/DisplayObject.h>
-#endif
-#ifndef INCLUDED_nme_display_DisplayObjectContainer
-#include <nme/display/DisplayObjectContainer.h>
-#endif
-#ifndef INCLUDED_nme_display_Graphics
-#include <nme/display/Graphics.h>
-#endif
-#ifndef INCLUDED_nme_display_IBitmapDrawable
-#include <nme/display/IBitmapDrawable.h>
-#endif
-#ifndef INCLUDED_nme_display_InteractiveObject
-#include <nme/display/InteractiveObject.h>
-#endif
-#ifndef INCLUDED_nme_display_Sprite
-#include <nme/display/Sprite.h>
-#endif
-#ifndef INCLUDED_nme_events_EventDispatcher
-#include <nme/events/EventDispatcher.h>
-#endif
-#ifndef INCLUDED_nme_events_IEventDispatcher
-#include <nme/events/IEventDispatcher.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void BlockBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void BlockBoxRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",26)
@@ -74,7 +35,7 @@ Void BlockBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle
 BlockBoxRenderer_obj::~BlockBoxRenderer_obj() { }
 
 Dynamic BlockBoxRenderer_obj::__CreateEmpty() { return  new BlockBoxRenderer_obj; }
-hx::ObjectPtr< BlockBoxRenderer_obj > BlockBoxRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< BlockBoxRenderer_obj > BlockBoxRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< BlockBoxRenderer_obj > result = new BlockBoxRenderer_obj();
 	result->__construct(style);
 	return result;}
@@ -146,34 +107,9 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC0(BlockBoxRenderer_obj,removeLineBoxes,(void))
 
-Dynamic BlockBoxRenderer_obj::render( ){
-	HX_SOURCE_PUSH("BlockBoxRenderer_obj::render")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",70)
-	Dynamic ret = Dynamic( Array_obj<Dynamic>::__new());
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",75)
-	::nme::display::Sprite nativeElement = this->_coreStyle->get_htmlElement()->get_nativeElement();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",77)
-	nativeElement->nmeGetGraphics()->clear();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",78)
-	nativeElement->nmeGetGraphics()->beginFill((int)16711680,0.0);
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",79)
-	nativeElement->nmeGetGraphics()->drawRect(this->_bounds->__Field(HX_CSTRING("x")),this->_bounds->__Field(HX_CSTRING("y")),this->_bounds->__Field(HX_CSTRING("width")),this->_bounds->__Field(HX_CSTRING("height")));
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",80)
-	nativeElement->nmeGetGraphics()->endFill();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",82)
-	nativeElement->nmeSetX(this->_coreStyle->getComputedStyle()->__Field(HX_CSTRING("marginLeft")));
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",84)
-	ret->__Field(HX_CSTRING("push"))(nativeElement);
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",86)
-	return ret;
-}
-
-
-HX_DEFINE_DYNAMIC_FUNC0(BlockBoxRenderer_obj,render,return )
-
 Array< Array< ::cocktail::core::renderer::ElementRenderer > > BlockBoxRenderer_obj::getLineBoxes( ){
 	HX_SOURCE_PUSH("BlockBoxRenderer_obj::getLineBoxes")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",95)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/BlockBoxRenderer.hx",70)
 	return this->_lineBoxes;
 }
 
@@ -197,9 +133,6 @@ void BlockBoxRenderer_obj::__Mark(HX_MARK_PARAMS)
 Dynamic BlockBoxRenderer_obj::__Field(const ::String &inName)
 {
 	switch(inName.length) {
-	case 6:
-		if (HX_FIELD_EQ(inName,"render") ) { return render_dyn(); }
-		break;
 	case 7:
 		if (HX_FIELD_EQ(inName,"dispose") ) { return dispose_dyn(); }
 		break;
@@ -247,7 +180,6 @@ static ::String sMemberFields[] = {
 	HX_CSTRING("dispose"),
 	HX_CSTRING("addLineBox"),
 	HX_CSTRING("removeLineBoxes"),
-	HX_CSTRING("render"),
 	HX_CSTRING("getLineBoxes"),
 	String(null()) };
 

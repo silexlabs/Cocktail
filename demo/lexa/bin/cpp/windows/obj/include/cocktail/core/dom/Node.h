@@ -5,6 +5,7 @@
 #include <hxcpp.h>
 #endif
 
+HX_DECLARE_CLASS3(cocktail,core,dom,Document)
 HX_DECLARE_CLASS3(cocktail,core,dom,NamedNodeMap)
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 namespace cocktail{
@@ -44,6 +45,8 @@ class Node_obj : public hx::Object{
 		::cocktail::core::dom::Node previousSibling; /* REM */ 
 		::cocktail::core::dom::NamedNodeMap _attributes; /* REM */ 
 		::cocktail::core::dom::NamedNodeMap attributes; /* REM */ 
+		::cocktail::core::dom::Document _ownerDocument; /* REM */ 
+		::cocktail::core::dom::Document ownerDocument; /* REM */ 
 		virtual ::cocktail::core::dom::Node removeChild( ::cocktail::core::dom::Node oldChild);
 		Dynamic removeChild_dyn();
 
@@ -103,6 +106,12 @@ class Node_obj : public hx::Object{
 
 		virtual ::cocktail::core::dom::NamedNodeMap get_attributes( );
 		Dynamic get_attributes_dyn();
+
+		virtual ::cocktail::core::dom::Document get_ownerDocument( );
+		Dynamic get_ownerDocument_dyn();
+
+		virtual ::cocktail::core::dom::Document set_ownerDocument( ::cocktail::core::dom::Document value);
+		Dynamic set_ownerDocument_dyn();
 
 		static int ELEMENT_NODE; /* REM */ 
 		static int ATTRIBUTE_NODE; /* REM */ 

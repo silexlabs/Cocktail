@@ -40,7 +40,7 @@ namespace dom{
 Void Document_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",41)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",39)
 	super::__construct();
 }
 ;
@@ -62,8 +62,10 @@ Dynamic Document_obj::__Create(hx::DynamicArray inArgs)
 
 ::cocktail::port::flash_player::HTMLElement Document_obj::createElement( ::String tagName){
 	HX_SOURCE_PUSH("Document_obj::createElement")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",67)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",66)
 	::cocktail::port::flash_player::HTMLElement element = ::cocktail::port::flash_player::HTMLElement_obj::__new(tagName);
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",67)
+	element->set_ownerDocument(hx::ObjectPtr<OBJ_>(this));
 	HX_SOURCE_POS("../../src/cocktail/core/dom/Document.hx",68)
 	return element;
 }

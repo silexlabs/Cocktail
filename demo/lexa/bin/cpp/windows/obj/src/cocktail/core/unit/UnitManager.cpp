@@ -814,8 +814,38 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,wordSpacingEnum,return )
 
 Array< ::cocktail::core::style::BackgroundImage > UnitManager_obj::backgroundImageEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundImageEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",502)
-	return Array_obj< ::cocktail::core::style::BackgroundImage >::__new();
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",507)
+	if (((string == HX_CSTRING("none")))){
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",508)
+		return Array_obj< ::cocktail::core::style::BackgroundImage >::__new().Add(::cocktail::core::style::BackgroundImage_obj::none_dyn());
+	}
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",510)
+	Array< ::String > array = ::cocktail::core::unit::UnitManager_obj::string2VList(string,HX_CSTRING(","));
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",511)
+	Array< ::cocktail::core::style::BackgroundImage > arrayBgImg = Array_obj< ::cocktail::core::style::BackgroundImage >::__new();
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",512)
+	{
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",512)
+		int _g = (int)0;
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",512)
+		while(((_g < array->length))){
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",512)
+			::String val = array->__get(_g);
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",512)
+			++(_g);
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",514)
+			if (((val == HX_CSTRING("none")))){
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",515)
+				arrayBgImg->push(::cocktail::core::style::BackgroundImage_obj::none_dyn());
+			}
+			else{
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",517)
+				arrayBgImg->push(::cocktail::core::style::BackgroundImage_obj::image(::cocktail::core::unit::ImageValue_obj::url(::cocktail::core::unit::UnitManager_obj::string2URLData(val))));
+			}
+		}
+	}
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",519)
+	return arrayBgImg;
 }
 
 
@@ -823,7 +853,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundImageEnum,return )
 
 Dynamic UnitManager_obj::backgroundRepeatEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundRepeatEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",508)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",524)
 	return Dynamic( Array_obj<Dynamic>::__new());
 }
 
@@ -832,7 +862,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundRepeatEnum,return )
 
 Array< ::cocktail::core::style::BackgroundOrigin > UnitManager_obj::backgroundOriginEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundOriginEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",514)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",530)
 	return Array_obj< ::cocktail::core::style::BackgroundOrigin >::__new();
 }
 
@@ -841,7 +871,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundOriginEnum,return )
 
 Array< ::cocktail::core::style::BackgroundSize > UnitManager_obj::backgroundSizeEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundSizeEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",520)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",536)
 	return Array_obj< ::cocktail::core::style::BackgroundSize >::__new();
 }
 
@@ -850,7 +880,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundSizeEnum,return )
 
 Dynamic UnitManager_obj::backgroundPositionEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundPositionEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",526)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",542)
 	return Dynamic( Array_obj<Dynamic>::__new());
 }
 
@@ -859,7 +889,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundPositionEnum,return )
 
 Array< ::cocktail::core::style::BackgroundClip > UnitManager_obj::backgroundClipEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::backgroundClipEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",532)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",548)
 	return Array_obj< ::cocktail::core::style::BackgroundClip >::__new();
 }
 
@@ -868,8 +898,8 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,backgroundClipEnum,return )
 
 Array< ::String > UnitManager_obj::fontFamilyEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::fontFamilyEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",538)
-	return Array_obj< ::String >::__new();
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",557)
+	return ::cocktail::core::unit::UnitManager_obj::string2Array(string);
 }
 
 
@@ -877,28 +907,28 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,fontFamilyEnum,return )
 
 ::cocktail::core::style::LetterSpacing UnitManager_obj::letterSpacingEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::letterSpacingEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",545)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",563)
 	if (((string == HX_CSTRING("normal")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",546)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",564)
 		return ::cocktail::core::style::LetterSpacing_obj::normal_dyn();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",548)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",566)
 	Dynamic parsed = ::cocktail::core::unit::UnitManager_obj::string2VUnit(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",550)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",568)
 	::cocktail::core::style::LetterSpacing letterSpacing;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",552)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",570)
 	::String _switch_18 = (parsed->__Field(HX_CSTRING("unit")));
 	if (  ( _switch_18==HX_CSTRING("%"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",554)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",572)
 		letterSpacing = null();
 	}
 	else  {
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",557)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",575)
 		letterSpacing = ::cocktail::core::style::LetterSpacing_obj::length(::cocktail::core::unit::UnitManager_obj::string2Length(parsed));
 	}
 ;
 ;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",561)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",579)
 	return letterSpacing;
 }
 
@@ -907,28 +937,28 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,letterSpacingEnum,return )
 
 ::cocktail::core::style::LineHeight UnitManager_obj::lineHeightEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::lineHeightEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",567)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",585)
 	if (((string == HX_CSTRING("normal")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",568)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",586)
 		return ::cocktail::core::style::LineHeight_obj::normal_dyn();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",571)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",589)
 	Dynamic parsed = ::cocktail::core::unit::UnitManager_obj::string2VUnit(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",573)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",591)
 	::cocktail::core::style::LineHeight lineHeight;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",575)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",593)
 	::String _switch_19 = (parsed->__Field(HX_CSTRING("unit")));
 	if (  ( _switch_19==HX_CSTRING("%"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",577)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",595)
 		lineHeight = ::cocktail::core::style::LineHeight_obj::percentage(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 	}
 	else  {
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",580)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",598)
 		lineHeight = ::cocktail::core::style::LineHeight_obj::length(::cocktail::core::unit::UnitManager_obj::string2Length(parsed));
 	}
 ;
 ;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",584)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",602)
 	return lineHeight;
 }
 
@@ -937,23 +967,23 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,lineHeightEnum,return )
 
 ::cocktail::core::style::TextIndent UnitManager_obj::textIndentEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::textIndentEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",589)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",607)
 	Dynamic parsed = ::cocktail::core::unit::UnitManager_obj::string2VUnit(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",591)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",609)
 	::cocktail::core::style::TextIndent textIndent;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",593)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",611)
 	::String _switch_20 = (parsed->__Field(HX_CSTRING("unit")));
 	if (  ( _switch_20==HX_CSTRING("%"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",595)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",613)
 		textIndent = ::cocktail::core::style::TextIndent_obj::percentage(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 	}
 	else  {
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",598)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",616)
 		textIndent = ::cocktail::core::style::TextIndent_obj::length(::cocktail::core::unit::UnitManager_obj::string2Length(parsed));
 	}
 ;
 ;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",602)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",620)
 	return textIndent;
 }
 
@@ -962,31 +992,31 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,textIndentEnum,return )
 
 ::cocktail::core::style::CSSFloat UnitManager_obj::cssFloatEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::cssFloatEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",608)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",626)
 	::String parsed = ::cocktail::core::unit::UnitManager_obj::trim(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",610)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",628)
 	::cocktail::core::style::CSSFloat cssFloat;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",612)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",630)
 	::String _switch_21 = (parsed);
 	if (  ( _switch_21==HX_CSTRING("left"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",614)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",632)
 		cssFloat = ::cocktail::core::style::CSSFloat_obj::left_dyn();
 	}
 	else if (  ( _switch_21==HX_CSTRING("right"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",617)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",635)
 		cssFloat = ::cocktail::core::style::CSSFloat_obj::right_dyn();
 	}
 	else if (  ( _switch_21==HX_CSTRING("none"))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",620)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",638)
 		cssFloat = ::cocktail::core::style::CSSFloat_obj::none_dyn();
 	}
 	else  {
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",623)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",641)
 		cssFloat = null();
 	}
 ;
 ;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",628)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",646)
 	return cssFloat;
 }
 
@@ -995,112 +1025,112 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,cssFloatEnum,return )
 
 ::cocktail::core::unit::CSSColor UnitManager_obj::colorEnum( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::colorEnum")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",637)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",655)
 	string = ::cocktail::core::unit::UnitManager_obj::trim(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",639)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",657)
 	if ((::StringTools_obj::startsWith(string,HX_CSTRING("#")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",640)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",658)
 		return ::cocktail::core::unit::CSSColor_obj::hex(string.substr((int)1,null()));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",642)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",660)
 	if ((::StringTools_obj::startsWith(string,HX_CSTRING("rgba")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",643)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",661)
 		Dynamic vcol = ::cocktail::core::unit::UnitManager_obj::string2RGBA(string);
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",644)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",662)
 		return ::cocktail::core::unit::CSSColor_obj::rgba(vcol->__Field(HX_CSTRING("r")),vcol->__Field(HX_CSTRING("g")),vcol->__Field(HX_CSTRING("b")),vcol->__Field(HX_CSTRING("a")));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",647)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",665)
 	if ((::StringTools_obj::startsWith(string,HX_CSTRING("rgb")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",648)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",666)
 		Dynamic vcol = ::cocktail::core::unit::UnitManager_obj::string2RGB(string);
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",649)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",667)
 		return ::cocktail::core::unit::CSSColor_obj::rgb(vcol->__Field(HX_CSTRING("r")),vcol->__Field(HX_CSTRING("g")),vcol->__Field(HX_CSTRING("b")));
 	}
 	struct _Function_1_1{
 		inline static ::cocktail::core::unit::CSSColor Block( ::String &string){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",652)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",670)
 			::String _switch_22 = (string);
 			if (  ( _switch_22==HX_CSTRING("transparent"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",654)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",672)
 				return ::cocktail::core::unit::CSSColor_obj::transparent_dyn();
 			}
 			else if (  ( _switch_22==HX_CSTRING("aqua"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",655)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",673)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::aqua_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("black"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",656)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",674)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::black_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("blue"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",657)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",675)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::blue_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("fuchsia"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",658)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",676)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::fuchsia_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("gray"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",659)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",677)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::gray_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("green"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",660)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",678)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::green_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("lime"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",661)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",679)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::lime_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("maroon"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",662)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",680)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::maroon_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("navy"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",663)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",681)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::navy_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("olive"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",664)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",682)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::olive_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("orange"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",665)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",683)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::orange_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("purple"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",666)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",684)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::purple_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("red"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",667)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",685)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::red_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("silver"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",668)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",686)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::silver_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("teal"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",669)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",687)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::teal_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("white"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",670)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",688)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::white_dyn());
 			}
 			else if (  ( _switch_22==HX_CSTRING("yellow"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",671)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",689)
 				return ::cocktail::core::unit::CSSColor_obj::keyword(::cocktail::core::unit::ColorKeyword_obj::yellow_dyn());
 			}
 			else  {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",672)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",690)
 				return hx::Throw (((HX_CSTRING("unknown color \"") + string) + HX_CSTRING("\"")));
 			}
 ;
 ;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",652)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",670)
 	return _Function_1_1::Block(string);
 }
 
@@ -1109,13 +1139,13 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,colorEnum,return )
 
 Dynamic UnitManager_obj::string2RGBA( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::string2RGBA")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",685)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",704)
 	string = string.substr((int)5,(string.length - (int)6));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",687)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",706)
 	Array< ::String > rgba = string.split(HX_CSTRING(","));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",689)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",708)
 	while(((rgba->length < (int)4))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",690)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",709)
 		rgba->push(HX_CSTRING("0"));
 	}
 	struct _Function_1_1{
@@ -1128,7 +1158,7 @@ Dynamic UnitManager_obj::string2RGBA( ::String string){
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",692)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",711)
 	return _Function_1_1::Block(rgba);
 }
 
@@ -1137,13 +1167,13 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,string2RGBA,return )
 
 Dynamic UnitManager_obj::string2RGB( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::string2RGB")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",705)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",724)
 	string = string.substr((int)4,(string.length - (int)5));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",707)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",726)
 	Array< ::String > rgba = string.split(HX_CSTRING(","));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",709)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",728)
 	while(((rgba->length < (int)3))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",710)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",729)
 		rgba->push(HX_CSTRING("0"));
 	}
 	struct _Function_1_1{
@@ -1156,7 +1186,7 @@ Dynamic UnitManager_obj::string2RGB( ::String string){
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",712)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",731)
 	return _Function_1_1::Block(rgba);
 }
 
@@ -1165,7 +1195,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,string2RGB,return )
 
 ::String UnitManager_obj::trim( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::trim")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",723)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",742)
 	return ::StringTools_obj::ltrim(::StringTools_obj::rtrim(string));
 }
 
@@ -1174,9 +1204,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,trim,return )
 
 Dynamic UnitManager_obj::string2VUnit( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::string2VUnit")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",731)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",750)
 	::EReg r = ::EReg_obj::__new(HX_CSTRING("([0-9]*)(.*)"),HX_CSTRING(""));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",732)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",751)
 	r->match(string);
 	struct _Function_1_1{
 		inline static Dynamic Block( ::EReg &r){
@@ -1186,7 +1216,7 @@ Dynamic UnitManager_obj::string2VUnit( ::String string){
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",734)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",753)
 	return _Function_1_1::Block(r);
 }
 
@@ -1197,55 +1227,55 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,string2VUnit,return )
 	HX_SOURCE_PUSH("UnitManager_obj::string2Length")
 	struct _Function_1_1{
 		inline static ::cocktail::core::unit::Length Block( Dynamic &parsed){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",744)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",763)
 			::String _switch_23 = (parsed->__Field(HX_CSTRING("unit")));
 			if (  ( _switch_23==HX_CSTRING("in"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",746)
-				return ::cocktail::core::unit::Length_obj::_in(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",765)
+				return ::cocktail::core::unit::Length_obj::cssIn(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("cm"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",748)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",767)
 				return ::cocktail::core::unit::Length_obj::cm(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("em"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",750)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",769)
 				return ::cocktail::core::unit::Length_obj::em(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("ex"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",752)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",771)
 				return ::cocktail::core::unit::Length_obj::ex(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("mm"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",754)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",773)
 				return ::cocktail::core::unit::Length_obj::mm(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("pc"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",756)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",775)
 				return ::cocktail::core::unit::Length_obj::pc(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("pt"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",758)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",777)
 				return ::cocktail::core::unit::Length_obj::pt(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING("px"))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",760)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",779)
 				return ::cocktail::core::unit::Length_obj::px(::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value"))));
 			}
 			else if (  ( _switch_23==HX_CSTRING(""))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",764)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",783)
 				int v = ::Std_obj::parseInt(parsed->__Field(HX_CSTRING("value")));
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",765)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",784)
 				return (  (((v == (int)0))) ? ::cocktail::core::unit::Length(::cocktail::core::unit::Length_obj::px(v)) : ::cocktail::core::unit::Length(hx::Throw (((HX_CSTRING("Bad unit \"") + parsed->__Field(HX_CSTRING("unit"))) + HX_CSTRING("\"")))) );
 			}
 			else  {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",769)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",788)
 				return hx::Throw (((HX_CSTRING("Bad unit \"") + parsed->__Field(HX_CSTRING("unit"))) + HX_CSTRING("\"")));
 			}
 ;
 ;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",743)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",762)
 	return _Function_1_1::Block(parsed);
 }
 
@@ -1254,21 +1284,21 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,string2Length,return )
 
 ::String UnitManager_obj::string2URLData( ::String string){
 	HX_SOURCE_PUSH("UnitManager_obj::string2URLData")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",779)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",799)
 	string = ::cocktail::core::unit::UnitManager_obj::trim(string);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",781)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",801)
 	string = ::cocktail::core::unit::UnitManager_obj::trim(string.substr((int)4,(string.length - (int)5)));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",783)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",803)
 	if ((::StringTools_obj::startsWith(string,HX_CSTRING("\"")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",784)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",804)
 		string = string.substr((int)1,null());
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",785)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",805)
 	if ((::StringTools_obj::endsWith(string,HX_CSTRING("\"")))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",786)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",806)
 		string = string.substr((int)0,(string.length - (int)1));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",787)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",807)
 	return string;
 }
 
@@ -1279,20 +1309,20 @@ Array< ::String > UnitManager_obj::string2VList( ::String string,Dynamic __o_sep
 ::String sep = __o_sep.Default(HX_CSTRING(" "));
 	HX_SOURCE_PUSH("UnitManager_obj::string2VList");
 {
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",794)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",816)
 		if (((sep == HX_CSTRING(" ")))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",795)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",817)
 			string = ::EReg_obj::__new(HX_CSTRING("[ ]{2,}"),HX_CSTRING("g"))->replace(string,HX_CSTRING(" "));
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",800)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",822)
 			string = ::StringTools_obj::replace(string,HX_CSTRING(" "),HX_CSTRING(""));
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",805)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",827)
 		string = ::cocktail::core::unit::UnitManager_obj::trim(string);
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",807)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",829)
 		Array< ::String > array = string.split(sep);
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",808)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",830)
 		return array;
 	}
 }
@@ -1300,18 +1330,36 @@ Array< ::String > UnitManager_obj::string2VList( ::String string,Dynamic __o_sep
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC2(UnitManager_obj,string2VList,return )
 
+Array< ::String > UnitManager_obj::string2Array( ::String string){
+	HX_SOURCE_PUSH("UnitManager_obj::string2Array")
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",838)
+	::EReg r = ::EReg_obj::__new(HX_CSTRING("[ \"]*[,\"][ \"]*"),HX_CSTRING("g"));
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",840)
+	Array< ::String > res = r->split(string);
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",842)
+	if (((res->__get((int)0) == HX_CSTRING("")))){
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",842)
+		res->shift();
+	}
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",843)
+	return res;
+}
+
+
+STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,string2Array,return )
+
 int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,double emReference,double exReference){
 	HX_SOURCE_PUSH("UnitManager_obj::getPixelFromLength")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",833)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",868)
 	double lengthValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",835)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",870)
 	{
 ::cocktail::core::unit::Length _switch_24 = (length);
 		switch((_switch_24)->GetIndex()){
 			case 0: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",837)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",872)
 					lengthValue = value;
 				}
 			}
@@ -1319,7 +1367,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 2: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",840)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",875)
 					lengthValue = (double((value * ((double(((int)72 * ((double((int)1) / double(0.75))))) / double(2.54))))) / double((int)10));
 				}
 			}
@@ -1327,7 +1375,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 1: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",843)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",878)
 					lengthValue = (value * ((double(((int)72 * ((double((int)1) / double(0.75))))) / double(2.54))));
 				}
 			}
@@ -1335,7 +1383,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 3: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",846)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",881)
 					lengthValue = (double(value) / double(0.75));
 				}
 			}
@@ -1343,7 +1391,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 5: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",849)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",884)
 					lengthValue = (value * (((int)72 * ((double((int)1) / double(0.75))))));
 				}
 			}
@@ -1351,7 +1399,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 4: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",852)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",887)
 					lengthValue = (value * (((int)12 * ((double((int)1) / double(0.75))))));
 				}
 			}
@@ -1359,7 +1407,7 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 6: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",855)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",890)
 					lengthValue = (emReference * value);
 				}
 			}
@@ -1367,14 +1415,14 @@ int UnitManager_obj::getPixelFromLength( ::cocktail::core::unit::Length length,d
 			case 7: {
 				double value = _switch_24->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",858)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",893)
 					lengthValue = (exReference * value);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",862)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",897)
 	return ::Math_obj::round(lengthValue);
 }
 
@@ -1383,52 +1431,52 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC3(UnitManager_obj,getPixelFromLength,return )
 
 double UnitManager_obj::getFontSizeFromAbsoluteSizeValue( ::cocktail::core::unit::FontSizeAbsoluteSize absoluteSize){
 	HX_SOURCE_PUSH("UnitManager_obj::getFontSizeFromAbsoluteSizeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",871)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",906)
 	double fontSize;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",873)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",908)
 	int mediumFontSize = (int)16;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",875)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",910)
 	{
 ::cocktail::core::unit::FontSizeAbsoluteSize _switch_25 = (absoluteSize);
 		switch((_switch_25)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",877)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",912)
 				fontSize = (int)9;
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",880)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",915)
 				fontSize = (int)10;
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",883)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",918)
 				fontSize = (int)13;
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",886)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",921)
 				fontSize = (int)16;
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",889)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",924)
 				fontSize = (int)18;
 			}
 			;break;
 			case 5: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",892)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",927)
 				fontSize = (int)24;
 			}
 			;break;
 			case 6: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",895)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",930)
 				fontSize = (int)32;
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",899)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",934)
 	return fontSize;
 }
 
@@ -1437,25 +1485,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getFontSizeFromAbsoluteSizeValue,
 
 double UnitManager_obj::getFontSizeFromRelativeSizeValue( ::cocktail::core::unit::FontSizeRelativeSize relativeSize,double parentFontSize){
 	HX_SOURCE_PUSH("UnitManager_obj::getFontSizeFromRelativeSizeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",908)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",943)
 	double fontSize;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",910)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",945)
 	{
 ::cocktail::core::unit::FontSizeRelativeSize _switch_26 = (relativeSize);
 		switch((_switch_26)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",912)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",947)
 				fontSize = ::cocktail::core::unit::UnitManager_obj::getLargerFontSize(parentFontSize);
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",915)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",950)
 				fontSize = ::cocktail::core::unit::UnitManager_obj::getSmallerFontSize(parentFontSize);
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",919)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",954)
 	return fontSize;
 }
 
@@ -1464,7 +1512,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC2(UnitManager_obj,getFontSizeFromRelativeSizeValue,
 
 double UnitManager_obj::getPixelFromPercent( int percent,int reference){
 	HX_SOURCE_PUSH("UnitManager_obj::getPixelFromPercent")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",929)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",964)
 	return (reference * ((percent * 0.01)));
 }
 
@@ -1473,7 +1521,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC2(UnitManager_obj,getPixelFromPercent,return )
 
 double UnitManager_obj::getPercentFromPixel( int pixel,int reference){
 	HX_SOURCE_PUSH("UnitManager_obj::getPercentFromPixel")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",940)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",975)
 	return ((double(reference) / double(pixel)) * (int)100);
 }
 
@@ -1482,11 +1530,11 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC2(UnitManager_obj,getPercentFromPixel,return )
 
 Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSColor value){
 	HX_SOURCE_PUSH("UnitManager_obj::getColorDataFromCSSColor")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",949)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",984)
 	int colorValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",950)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",985)
 	double alphaValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",952)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",987)
 	{
 ::cocktail::core::unit::CSSColor _switch_27 = (value);
 		switch((_switch_27)->GetIndex()){
@@ -1495,13 +1543,13 @@ Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSCo
 				int green = _switch_27->__Param(1);
 				int red = _switch_27->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",955)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",990)
 					colorValue = red;
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",956)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",991)
 					colorValue = (((int(colorValue) << int((int)8))) + green);
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",957)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",992)
 					colorValue = (((int(colorValue) << int((int)8))) + blue);
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",958)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",993)
 					alphaValue = 1.0;
 				}
 			}
@@ -1512,13 +1560,13 @@ Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSCo
 				int green = _switch_27->__Param(1);
 				int red = _switch_27->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",961)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",996)
 					colorValue = red;
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",962)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",997)
 					colorValue = (((int(colorValue) << int((int)8))) + green);
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",963)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",998)
 					colorValue = (((int(colorValue) << int((int)8))) + blue);
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",964)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",999)
 					alphaValue = alpha;
 				}
 			}
@@ -1526,9 +1574,9 @@ Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSCo
 			case 2: {
 				::String value1 = _switch_27->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",967)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1002)
 					colorValue = ::Std_obj::parseInt(::StringTools_obj::replace(value1,HX_CSTRING("#"),HX_CSTRING("0x")));
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",968)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1003)
 					alphaValue = 1.0;
 				}
 			}
@@ -1536,17 +1584,17 @@ Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSCo
 			case 3: {
 				::cocktail::core::unit::ColorKeyword value1 = _switch_27->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",971)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1006)
 					colorValue = ::cocktail::core::unit::UnitManager_obj::getColorDataFromColorKeyword(value1)->__Field(HX_CSTRING("color"));
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",972)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1007)
 					alphaValue = 1.0;
 				}
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",975)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1010)
 				colorValue = (int)16777215;
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",976)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1011)
 				alphaValue = 0.0;
 			}
 			;break;
@@ -1560,9 +1608,9 @@ Dynamic UnitManager_obj::getColorDataFromCSSColor( ::cocktail::core::unit::CSSCo
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",979)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1014)
 	Dynamic colorData = _Function_1_1::Block(colorValue,alphaValue);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",984)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1019)
 	return colorData;
 }
 
@@ -1571,16 +1619,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getColorDataFromCSSColor,return )
 
 double UnitManager_obj::getRadFromAngle( ::cocktail::core::unit::Angle value){
 	HX_SOURCE_PUSH("UnitManager_obj::getRadFromAngle")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",992)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1027)
 	double angle;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",994)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1029)
 	{
 ::cocktail::core::unit::Angle _switch_28 = (value);
 		switch((_switch_28)->GetIndex()){
 			case 0: {
 				double value1 = _switch_28->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",996)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1031)
 					angle = (value1 * ((double(::Math_obj::PI) / double((int)180))));
 				}
 			}
@@ -1588,7 +1636,7 @@ double UnitManager_obj::getRadFromAngle( ::cocktail::core::unit::Angle value){
 			case 2: {
 				double value1 = _switch_28->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",999)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1034)
 					angle = value1;
 				}
 			}
@@ -1596,7 +1644,7 @@ double UnitManager_obj::getRadFromAngle( ::cocktail::core::unit::Angle value){
 			case 3: {
 				double value1 = _switch_28->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1002)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1037)
 					angle = ((value1 * (int)360) * ((double(::Math_obj::PI) / double((int)180))));
 				}
 			}
@@ -1604,14 +1652,14 @@ double UnitManager_obj::getRadFromAngle( ::cocktail::core::unit::Angle value){
 			case 1: {
 				double value1 = _switch_28->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1005)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1040)
 					angle = (value1 * ((double(::Math_obj::PI) / double((int)200))));
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1009)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1044)
 	return angle;
 }
 
@@ -1620,16 +1668,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getRadFromAngle,return )
 
 double UnitManager_obj::getDegreeFromAngle( ::cocktail::core::unit::Angle value){
 	HX_SOURCE_PUSH("UnitManager_obj::getDegreeFromAngle")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1017)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1052)
 	double angle;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1019)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1054)
 	{
 ::cocktail::core::unit::Angle _switch_29 = (value);
 		switch((_switch_29)->GetIndex()){
 			case 0: {
 				double value1 = _switch_29->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1021)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1056)
 					angle = value1;
 				}
 			}
@@ -1637,7 +1685,7 @@ double UnitManager_obj::getDegreeFromAngle( ::cocktail::core::unit::Angle value)
 			case 2: {
 				double value1 = _switch_29->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1024)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1059)
 					angle = (value1 * ((double((int)180) / double(::Math_obj::PI))));
 				}
 			}
@@ -1645,7 +1693,7 @@ double UnitManager_obj::getDegreeFromAngle( ::cocktail::core::unit::Angle value)
 			case 3: {
 				double value1 = _switch_29->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1027)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1062)
 					angle = (value1 * (int)360);
 				}
 			}
@@ -1653,14 +1701,14 @@ double UnitManager_obj::getDegreeFromAngle( ::cocktail::core::unit::Angle value)
 			case 1: {
 				double value1 = _switch_29->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1030)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1065)
 					angle = (value1 * 0.9);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1034)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1069)
 	return angle;
 }
 
@@ -1669,100 +1717,100 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getDegreeFromAngle,return )
 
 Dynamic UnitManager_obj::getColorDataFromColorKeyword( ::cocktail::core::unit::ColorKeyword value){
 	HX_SOURCE_PUSH("UnitManager_obj::getColorDataFromColorKeyword")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1046)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1081)
 	::String hexColor;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1048)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1083)
 	{
 ::cocktail::core::unit::ColorKeyword _switch_30 = (value);
 		switch((_switch_30)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1050)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1085)
 				hexColor = HX_CSTRING("#00FFFF");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1053)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1088)
 				hexColor = HX_CSTRING("#000000");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1056)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1091)
 				hexColor = HX_CSTRING("#0000FF");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1059)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1094)
 				hexColor = HX_CSTRING("#FF00FF");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1062)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1097)
 				hexColor = HX_CSTRING("#808080");
 			}
 			;break;
 			case 5: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1065)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1100)
 				hexColor = HX_CSTRING("#008000");
 			}
 			;break;
 			case 6: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1068)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1103)
 				hexColor = HX_CSTRING("#00FF00");
 			}
 			;break;
 			case 7: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1071)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1106)
 				hexColor = HX_CSTRING("#800000");
 			}
 			;break;
 			case 8: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1074)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1109)
 				hexColor = HX_CSTRING("#000080");
 			}
 			;break;
 			case 9: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1077)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1112)
 				hexColor = HX_CSTRING("#808000");
 			}
 			;break;
 			case 10: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1080)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1115)
 				hexColor = HX_CSTRING("#FFA500");
 			}
 			;break;
 			case 11: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1083)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1118)
 				hexColor = HX_CSTRING("#800080");
 			}
 			;break;
 			case 12: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1086)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1121)
 				hexColor = HX_CSTRING("#FF0000");
 			}
 			;break;
 			case 13: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1089)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1124)
 				hexColor = HX_CSTRING("#C0C0C0");
 			}
 			;break;
 			case 14: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1092)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1127)
 				hexColor = HX_CSTRING("#008080");
 			}
 			;break;
 			case 15: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1095)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1130)
 				hexColor = HX_CSTRING("#FFFFFF");
 			}
 			;break;
 			case 16: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1098)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1133)
 				hexColor = HX_CSTRING("#FFFF00");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1103)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1138)
 	return ::cocktail::core::unit::UnitManager_obj::getColorDataFromCSSColor(::cocktail::core::unit::CSSColor_obj::hex(hexColor));
 }
 
@@ -1771,29 +1819,29 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getColorDataFromColorKeyword,retu
 
 double UnitManager_obj::getLargerFontSize( double parentFontSize){
 	HX_SOURCE_PUSH("UnitManager_obj::getLargerFontSize")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1112)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1147)
 	Array< int > fontSizeTable = Array_obj< int >::__new().Add((int)9).Add((int)10).Add((int)13).Add((int)16).Add((int)18).Add((int)24).Add((int)32);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1113)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1148)
 	double fontSize = fontSizeTable->__get((fontSizeTable->length - (int)1));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1115)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1150)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1115)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1150)
 		int _g1 = (int)0;
 		int _g = fontSizeTable->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1115)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1150)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1115)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1150)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1117)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1152)
 			if (((fontSizeTable->__get(i) > parentFontSize))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1119)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1154)
 				fontSize = fontSizeTable->__get(i);
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1120)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1155)
 				break;
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1124)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1159)
 	return fontSize;
 }
 
@@ -1802,25 +1850,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getLargerFontSize,return )
 
 double UnitManager_obj::getSmallerFontSize( double parentFontSize){
 	HX_SOURCE_PUSH("UnitManager_obj::getSmallerFontSize")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1134)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1169)
 	Array< int > fontSizeTable = Array_obj< int >::__new().Add((int)9).Add((int)10).Add((int)13).Add((int)16).Add((int)18).Add((int)24).Add((int)32);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1135)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1170)
 	double fontSize = fontSizeTable->__get((int)0);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1137)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1172)
 	int i = (fontSizeTable->length - (int)1);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1139)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1174)
 	while(((i > (int)0))){
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1141)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1176)
 		if (((fontSizeTable->__get(i) < parentFontSize))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1144)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1179)
 			fontSize = fontSizeTable->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1146)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1181)
 			break;
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1149)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1184)
 		(i)--;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1152)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1187)
 	return fontSize;
 }
 
@@ -1829,35 +1877,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getSmallerFontSize,return )
 
 ::String UnitManager_obj::getCSSDisplay( ::cocktail::core::style::Display value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSDisplay")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1168)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1203)
 	::String cssDisplayValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1170)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1205)
 	{
 ::cocktail::core::style::Display _switch_31 = (value);
 		switch((_switch_31)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1172)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1207)
 				cssDisplayValue = HX_CSTRING("block");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1175)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1210)
 				cssDisplayValue = HX_CSTRING("inline");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1178)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1213)
 				cssDisplayValue = HX_CSTRING("inline-block");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1181)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1216)
 				cssDisplayValue = HX_CSTRING("none");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1185)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1220)
 	return cssDisplayValue;
 }
 
@@ -1866,30 +1914,30 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSDisplay,return )
 
 ::String UnitManager_obj::getCSSFloatAsString( ::cocktail::core::style::CSSFloat value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFloatAsString")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1193)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1228)
 	::String cssCSSFloat;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1195)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1230)
 	{
 ::cocktail::core::style::CSSFloat _switch_32 = (value);
 		switch((_switch_32)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1197)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1232)
 				cssCSSFloat = HX_CSTRING("left");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1200)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1235)
 				cssCSSFloat = HX_CSTRING("right");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1203)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1238)
 				cssCSSFloat = HX_CSTRING("none");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1207)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1242)
 	return cssCSSFloat;
 }
 
@@ -1898,35 +1946,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFloatAsString,return )
 
 ::String UnitManager_obj::getCSSClear( ::cocktail::core::style::Clear value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSClear")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1215)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1250)
 	::String cssClearValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1217)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1252)
 	{
 ::cocktail::core::style::Clear _switch_33 = (value);
 		switch((_switch_33)->GetIndex()){
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1219)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1254)
 				cssClearValue = HX_CSTRING("left");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1222)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1257)
 				cssClearValue = HX_CSTRING("right");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1225)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1260)
 				cssClearValue = HX_CSTRING("both");
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1228)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1263)
 				cssClearValue = HX_CSTRING("none");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1232)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1267)
 	return cssClearValue;
 }
 
@@ -1935,35 +1983,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSClear,return )
 
 ::String UnitManager_obj::getCSSPosition( ::cocktail::core::style::Position value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSPosition")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1240)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1275)
 	::String cssPositionValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1242)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1277)
 	{
 ::cocktail::core::style::Position _switch_34 = (value);
 		switch((_switch_34)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1244)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1279)
 				cssPositionValue = HX_CSTRING("static");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1247)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1282)
 				cssPositionValue = HX_CSTRING("relative");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1250)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1285)
 				cssPositionValue = HX_CSTRING("absolute");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1253)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1288)
 				cssPositionValue = HX_CSTRING("fixed");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1257)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1292)
 	return cssPositionValue;
 }
 
@@ -1972,35 +2020,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPosition,return )
 
 ::String UnitManager_obj::getCSSOverflow( ::cocktail::core::style::Overflow value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSOverflow")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1269)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1304)
 	::String cssOverflowValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1271)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1306)
 	{
 ::cocktail::core::style::Overflow _switch_35 = (value);
 		switch((_switch_35)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1273)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1308)
 				cssOverflowValue = HX_CSTRING("visible");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1276)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1311)
 				cssOverflowValue = HX_CSTRING("hidden");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1279)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1314)
 				cssOverflowValue = HX_CSTRING("scroll");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1282)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1317)
 				cssOverflowValue = HX_CSTRING("auto");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1286)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1321)
 	return cssOverflowValue;
 }
 
@@ -2009,11 +2057,11 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSOverflow,return )
 
 ::String UnitManager_obj::getCSSOpacity( double value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSOpacity")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1294)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1329)
 	::String cssOpacityValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1295)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1330)
 	cssOpacityValue = ::Std_obj::string(value);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1297)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1332)
 	return cssOpacityValue;
 }
 
@@ -2022,25 +2070,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSOpacity,return )
 
 ::String UnitManager_obj::getCSSVisibility( ::cocktail::core::style::Visibility value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSVisibility")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1305)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1340)
 	::String cssVisibilityValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1307)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1342)
 	{
 ::cocktail::core::style::Visibility _switch_36 = (value);
 		switch((_switch_36)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1309)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1344)
 				cssVisibilityValue = HX_CSTRING("visible");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1312)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1347)
 				cssVisibilityValue = HX_CSTRING("hidden");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1316)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1351)
 	return cssVisibilityValue;
 }
 
@@ -2049,36 +2097,36 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSVisibility,return )
 
 ::String UnitManager_obj::getCSSTransform( ::cocktail::core::style::Transform value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTransform")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1324)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1359)
 	::String cssTransformValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1326)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1361)
 	{
 ::cocktail::core::style::Transform _switch_37 = (value);
 		switch((_switch_37)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1328)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1363)
 				cssTransformValue = HX_CSTRING("none");
 			}
 			;break;
 			case 1: {
 				Array< ::cocktail::core::style::TransformFunction > value1 = _switch_37->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1332)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1367)
 					cssTransformValue = HX_CSTRING("");
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1333)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1368)
 					{
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1333)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1368)
 						int _g1 = (int)0;
 						int _g = value1->length;
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1333)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1368)
 						while(((_g1 < _g))){
-							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1333)
+							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1368)
 							int i = (_g1)++;
-							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1335)
+							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1370)
 							hx::AddEq(cssTransformValue,::cocktail::core::unit::UnitManager_obj::getCSSTransformFunction(value1->__get(i)));
-							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1336)
+							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1371)
 							if (((i < (value1->length - (int)1)))){
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1337)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1372)
 								hx::AddEq(cssTransformValue,HX_CSTRING(" "));
 							}
 						}
@@ -2088,7 +2136,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSVisibility,return )
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1343)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1378)
 	return cssTransformValue;
 }
 
@@ -2097,16 +2145,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 
 ::String UnitManager_obj::getCSSTransformFunction( ::cocktail::core::style::TransformFunction transformFunction){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTransformFunction")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1352)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1387)
 	::String cssTransformFunction;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1354)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1389)
 	{
 ::cocktail::core::style::TransformFunction _switch_38 = (transformFunction);
 		switch((_switch_38)->GetIndex()){
 			case 0: {
 				Dynamic value = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1356)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1391)
 					cssTransformFunction = ((((((((((((HX_CSTRING("matrix(") + value->__Field(HX_CSTRING("a"))) + HX_CSTRING(",")) + value->__Field(HX_CSTRING("b"))) + HX_CSTRING(",")) + value->__Field(HX_CSTRING("c"))) + HX_CSTRING(",")) + value->__Field(HX_CSTRING("d"))) + HX_CSTRING(",")) + value->__Field(HX_CSTRING("e"))) + HX_CSTRING(",")) + value->__Field(HX_CSTRING("f"))) + HX_CSTRING(")"));
 				}
 			}
@@ -2114,7 +2162,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 7: {
 				::cocktail::core::unit::Angle angle = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1359)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1394)
 					cssTransformFunction = ((HX_CSTRING("rotate(") + ::cocktail::core::unit::UnitManager_obj::getCSSAngle(angle)) + HX_CSTRING(")"));
 				}
 			}
@@ -2123,7 +2171,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 				double sy = _switch_38->__Param(1);
 				double sx = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1362)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1397)
 					cssTransformFunction = ((((HX_CSTRING("scale(") + sx) + HX_CSTRING(",")) + sy) + HX_CSTRING(")"));
 				}
 			}
@@ -2131,7 +2179,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 5: {
 				double sx = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1365)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1400)
 					cssTransformFunction = ((HX_CSTRING("scaleX(") + sx) + HX_CSTRING(")"));
 				}
 			}
@@ -2139,7 +2187,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 6: {
 				double sy = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1368)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1403)
 					cssTransformFunction = ((HX_CSTRING("scaleY(") + sy) + HX_CSTRING(")"));
 				}
 			}
@@ -2148,7 +2196,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 				::cocktail::core::unit::Angle skewY = _switch_38->__Param(1);
 				::cocktail::core::unit::Angle skewX = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1371)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1406)
 					cssTransformFunction = ((((HX_CSTRING("skew(") + ::cocktail::core::unit::UnitManager_obj::getCSSAngle(skewX)) + HX_CSTRING(",")) + ::cocktail::core::unit::UnitManager_obj::getCSSAngle(skewY)) + HX_CSTRING(")"));
 				}
 			}
@@ -2156,7 +2204,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 8: {
 				::cocktail::core::unit::Angle skewX = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1374)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1409)
 					cssTransformFunction = ((HX_CSTRING("skewX(") + ::cocktail::core::unit::UnitManager_obj::getCSSAngle(skewX)) + HX_CSTRING(")"));
 				}
 			}
@@ -2164,7 +2212,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 9: {
 				::cocktail::core::unit::Angle skewY = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1377)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1412)
 					cssTransformFunction = ((HX_CSTRING("skewY(") + ::cocktail::core::unit::UnitManager_obj::getCSSAngle(skewY)) + HX_CSTRING(")"));
 				}
 			}
@@ -2173,7 +2221,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 				::cocktail::core::style::Translation ty = _switch_38->__Param(1);
 				::cocktail::core::style::Translation tx = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1380)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1415)
 					cssTransformFunction = ((((HX_CSTRING("translate(") + ::cocktail::core::unit::UnitManager_obj::getCSSTranslation(tx)) + HX_CSTRING(",")) + ::cocktail::core::unit::UnitManager_obj::getCSSTranslation(ty)) + HX_CSTRING(")"));
 				}
 			}
@@ -2181,7 +2229,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 2: {
 				::cocktail::core::style::Translation tx = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1383)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1418)
 					cssTransformFunction = ((HX_CSTRING("translateX(") + ::cocktail::core::unit::UnitManager_obj::getCSSTranslation(tx)) + HX_CSTRING(")"));
 				}
 			}
@@ -2189,14 +2237,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransform,return )
 			case 3: {
 				::cocktail::core::style::Translation ty = _switch_38->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1386)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1421)
 					cssTransformFunction = ((HX_CSTRING("translateY(") + ::cocktail::core::unit::UnitManager_obj::getCSSTranslation(ty)) + HX_CSTRING(")"));
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1390)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1425)
 	return cssTransformFunction;
 }
 
@@ -2205,16 +2253,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransformFunction,return )
 
 ::String UnitManager_obj::getCSSTranslation( ::cocktail::core::style::Translation translation){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTranslation")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1399)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1434)
 	::String cssTranslation;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1401)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1436)
 	{
 ::cocktail::core::style::Translation _switch_39 = (translation);
 		switch((_switch_39)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value = _switch_39->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1403)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1438)
 					cssTranslation = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value);
 				}
 			}
@@ -2222,14 +2270,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransformFunction,return )
 			case 1: {
 				int value = _switch_39->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1406)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1441)
 					cssTranslation = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1410)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1445)
 	return cssTranslation;
 }
 
@@ -2238,16 +2286,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTranslation,return )
 
 ::String UnitManager_obj::getCSSTransformOrigin( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTransformOrigin")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1418)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1453)
 	::String cssTransformOriginValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1421)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1456)
 	{
 ::cocktail::core::style::TransformOriginX _switch_40 = (value->__Field(HX_CSTRING("x")));
 		switch((_switch_40)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_40->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1423)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1458)
 					cssTransformOriginValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
@@ -2255,38 +2303,38 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTranslation,return )
 			case 1: {
 				int value1 = _switch_40->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1426)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1461)
 					cssTransformOriginValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1429)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1464)
 				cssTransformOriginValue = HX_CSTRING("left");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1432)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1467)
 				cssTransformOriginValue = HX_CSTRING("center");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1435)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1470)
 				cssTransformOriginValue = HX_CSTRING("right");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1440)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1475)
 	hx::AddEq(cssTransformOriginValue,HX_CSTRING(" "));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1443)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1478)
 	{
 ::cocktail::core::style::TransformOriginY _switch_41 = (value->__Field(HX_CSTRING("y")));
 		switch((_switch_41)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_41->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1445)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1480)
 					hx::AddEq(cssTransformOriginValue,::cocktail::core::unit::UnitManager_obj::getCSSLength(value1));
 				}
 			}
@@ -2294,29 +2342,29 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTranslation,return )
 			case 1: {
 				int value1 = _switch_41->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1448)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1483)
 					hx::AddEq(cssTransformOriginValue,::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1));
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1451)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1486)
 				hx::AddEq(cssTransformOriginValue,HX_CSTRING("top"));
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1454)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1489)
 				hx::AddEq(cssTransformOriginValue,HX_CSTRING("center"));
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1457)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1492)
 				hx::AddEq(cssTransformOriginValue,HX_CSTRING("bottom"));
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1461)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1496)
 	return cssTransformOriginValue;
 }
 
@@ -2325,16 +2373,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransformOrigin,return )
 
 ::String UnitManager_obj::getCSSMargin( ::cocktail::core::style::Margin value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSMargin")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1473)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1508)
 	::String cssMarginValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1475)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1510)
 	{
 ::cocktail::core::style::Margin _switch_42 = (value);
 		switch((_switch_42)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_42->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1477)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1512)
 					cssMarginValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2342,19 +2390,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTransformOrigin,return )
 			case 1: {
 				int percentValue = _switch_42->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1480)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1515)
 					cssMarginValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percentValue);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1483)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1518)
 				cssMarginValue = HX_CSTRING("auto");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1487)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1522)
 	return cssMarginValue;
 }
 
@@ -2363,16 +2411,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSMargin,return )
 
 ::String UnitManager_obj::getCSSPadding( ::cocktail::core::style::Padding value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSPadding")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1495)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1530)
 	::String cssPaddingValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1497)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1532)
 	{
 ::cocktail::core::style::Padding _switch_43 = (value);
 		switch((_switch_43)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_43->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1499)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1534)
 					cssPaddingValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2380,14 +2428,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSMargin,return )
 			case 1: {
 				int percentValue = _switch_43->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1502)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1537)
 					cssPaddingValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percentValue);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1506)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1541)
 	return cssPaddingValue;
 }
 
@@ -2396,16 +2444,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPadding,return )
 
 ::String UnitManager_obj::getCSSDimension( ::cocktail::core::style::Dimension value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSDimension")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1514)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1549)
 	::String cssDimensionValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1516)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1551)
 	{
 ::cocktail::core::style::Dimension _switch_44 = (value);
 		switch((_switch_44)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_44->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1518)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1553)
 					cssDimensionValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2413,19 +2461,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPadding,return )
 			case 1: {
 				int percentValue = _switch_44->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1521)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1556)
 					cssDimensionValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percentValue);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1524)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1559)
 				cssDimensionValue = HX_CSTRING("auto");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1528)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1563)
 	return cssDimensionValue;
 }
 
@@ -2434,16 +2482,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSDimension,return )
 
 ::String UnitManager_obj::getCSSPositionOffset( ::cocktail::core::style::PositionOffset value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSPositionOffset")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1536)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1571)
 	::String cssPositionOffsetValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1538)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1573)
 	{
 ::cocktail::core::style::PositionOffset _switch_45 = (value);
 		switch((_switch_45)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_45->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1540)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1575)
 					cssPositionOffsetValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2451,19 +2499,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSDimension,return )
 			case 1: {
 				int percentValue = _switch_45->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1544)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1579)
 					cssPositionOffsetValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percentValue);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1547)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1582)
 				cssPositionOffsetValue = HX_CSTRING("auto");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1551)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1586)
 	return cssPositionOffsetValue;
 }
 
@@ -2472,16 +2520,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPositionOffset,return )
 
 ::String UnitManager_obj::getCSSConstrainedDimension( ::cocktail::core::style::ConstrainedDimension value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSConstrainedDimension")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1559)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1594)
 	::String cssConstrainedValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1561)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1596)
 	{
 ::cocktail::core::style::ConstrainedDimension _switch_46 = (value);
 		switch((_switch_46)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_46->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1563)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1598)
 					cssConstrainedValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2489,19 +2537,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPositionOffset,return )
 			case 1: {
 				int percentValue = _switch_46->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1566)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1601)
 					cssConstrainedValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percentValue);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1569)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1604)
 				cssConstrainedValue = HX_CSTRING("none");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1573)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1608)
 	return cssConstrainedValue;
 }
 
@@ -2510,56 +2558,56 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSConstrainedDimension,return
 
 ::String UnitManager_obj::getCSSVerticalAlign( ::cocktail::core::style::VerticalAlign value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSVerticalAlign")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1582)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1617)
 	::String cssVerticalAlignValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1584)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1619)
 	{
 ::cocktail::core::style::VerticalAlign _switch_47 = (value);
 		switch((_switch_47)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1586)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1621)
 				cssVerticalAlignValue = HX_CSTRING("baseline");
 			}
 			;break;
 			case 5: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1589)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1624)
 				cssVerticalAlignValue = HX_CSTRING("middle");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1592)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1627)
 				cssVerticalAlignValue = HX_CSTRING("sub");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1595)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1630)
 				cssVerticalAlignValue = HX_CSTRING("super");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1598)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1633)
 				cssVerticalAlignValue = HX_CSTRING("text-top");
 			}
 			;break;
 			case 7: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1601)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1636)
 				cssVerticalAlignValue = HX_CSTRING("text-bottom");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1604)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1639)
 				cssVerticalAlignValue = HX_CSTRING("top");
 			}
 			;break;
 			case 6: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1607)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1642)
 				cssVerticalAlignValue = HX_CSTRING("bottom");
 			}
 			;break;
 			case 8: {
 				int value1 = _switch_47->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1610)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1645)
 					cssVerticalAlignValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
@@ -2567,14 +2615,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSConstrainedDimension,return
 			case 9: {
 				::cocktail::core::unit::Length value1 = _switch_47->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1613)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1648)
 					cssVerticalAlignValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1617)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1652)
 	return cssVerticalAlignValue;
 }
 
@@ -2583,29 +2631,29 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSVerticalAlign,return )
 
 ::String UnitManager_obj::getCSSLineHeight( ::cocktail::core::style::LineHeight value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSLineHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1626)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1661)
 	::String cssLineHeightValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1628)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1663)
 	{
 ::cocktail::core::style::LineHeight _switch_48 = (value);
 		switch((_switch_48)->GetIndex()){
 			case 2: {
 				::cocktail::core::unit::Length unit = _switch_48->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1630)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1665)
 					cssLineHeightValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1633)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1668)
 				cssLineHeightValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 3: {
 				int value1 = _switch_48->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1636)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1671)
 					cssLineHeightValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
@@ -2613,14 +2661,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSVerticalAlign,return )
 			case 1: {
 				double value1 = _switch_48->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1639)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1674)
 					cssLineHeightValue = ::Std_obj::string(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1643)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1678)
 	return cssLineHeightValue;
 }
 
@@ -2629,16 +2677,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLineHeight,return )
 
 ::String UnitManager_obj::getCSSFontSize( ::cocktail::core::style::FontSize value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFontSize")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1656)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1691)
 	::String cssFontSizeValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1658)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1693)
 	{
 ::cocktail::core::style::FontSize _switch_49 = (value);
 		switch((_switch_49)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length unit = _switch_49->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1660)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1695)
 					cssFontSizeValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
@@ -2646,7 +2694,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLineHeight,return )
 			case 1: {
 				int percent = _switch_49->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1663)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1698)
 					cssFontSizeValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(percent);
 				}
 			}
@@ -2654,42 +2702,42 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLineHeight,return )
 			case 2: {
 				::cocktail::core::unit::FontSizeAbsoluteSize value1 = _switch_49->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1666)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1701)
 					{
 ::cocktail::core::unit::FontSizeAbsoluteSize _switch_50 = (value1);
 						switch((_switch_50)->GetIndex()){
 							case 0: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1669)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1704)
 								cssFontSizeValue = HX_CSTRING("xx-small");
 							}
 							;break;
 							case 1: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1672)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1707)
 								cssFontSizeValue = HX_CSTRING("x-small");
 							}
 							;break;
 							case 2: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1675)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1710)
 								cssFontSizeValue = HX_CSTRING("small");
 							}
 							;break;
 							case 3: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1678)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1713)
 								cssFontSizeValue = HX_CSTRING("medium");
 							}
 							;break;
 							case 4: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1681)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1716)
 								cssFontSizeValue = HX_CSTRING("large");
 							}
 							;break;
 							case 5: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1684)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1719)
 								cssFontSizeValue = HX_CSTRING("x-large");
 							}
 							;break;
 							case 6: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1687)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1722)
 								cssFontSizeValue = HX_CSTRING("xx-large");
 							}
 							;break;
@@ -2701,17 +2749,17 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLineHeight,return )
 			case 3: {
 				::cocktail::core::unit::FontSizeRelativeSize value1 = _switch_49->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1691)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1726)
 					{
 ::cocktail::core::unit::FontSizeRelativeSize _switch_51 = (value1);
 						switch((_switch_51)->GetIndex()){
 							case 0: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1694)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1729)
 								cssFontSizeValue = HX_CSTRING("larger");
 							}
 							;break;
 							case 1: {
-								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1697)
+								HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1732)
 								cssFontSizeValue = HX_CSTRING("smaller");
 							}
 							;break;
@@ -2722,7 +2770,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLineHeight,return )
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1702)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1737)
 	return cssFontSizeValue;
 }
 
@@ -2731,80 +2779,80 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFontSize,return )
 
 ::String UnitManager_obj::getCSSFontWeight( ::cocktail::core::style::FontWeight value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFontWeight")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1710)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1745)
 	::String cssFontWeightValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1712)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1747)
 	{
 ::cocktail::core::style::FontWeight _switch_52 = (value);
 		switch((_switch_52)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1714)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1749)
 				cssFontWeightValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1717)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1752)
 				cssFontWeightValue = HX_CSTRING("bold");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1720)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1755)
 				cssFontWeightValue = HX_CSTRING("bolder");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1723)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1758)
 				cssFontWeightValue = HX_CSTRING("lighter");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1726)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1761)
 				cssFontWeightValue = HX_CSTRING("100");
 			}
 			;break;
 			case 5: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1729)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1764)
 				cssFontWeightValue = HX_CSTRING("200");
 			}
 			;break;
 			case 6: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1732)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1767)
 				cssFontWeightValue = HX_CSTRING("300");
 			}
 			;break;
 			case 7: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1735)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1770)
 				cssFontWeightValue = HX_CSTRING("400");
 			}
 			;break;
 			case 8: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1738)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1773)
 				cssFontWeightValue = HX_CSTRING("500");
 			}
 			;break;
 			case 9: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1741)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1776)
 				cssFontWeightValue = HX_CSTRING("600");
 			}
 			;break;
 			case 10: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1744)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1779)
 				cssFontWeightValue = HX_CSTRING("700");
 			}
 			;break;
 			case 11: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1747)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1782)
 				cssFontWeightValue = HX_CSTRING("800");
 			}
 			;break;
 			case 12: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1750)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1785)
 				cssFontWeightValue = HX_CSTRING("900");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1754)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1789)
 	return cssFontWeightValue;
 }
 
@@ -2813,25 +2861,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFontWeight,return )
 
 ::String UnitManager_obj::getCSSFontStyle( ::cocktail::core::style::FontStyle value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFontStyle")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1762)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1797)
 	::String cssFontStyleValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1764)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1799)
 	{
 ::cocktail::core::style::FontStyle _switch_53 = (value);
 		switch((_switch_53)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1766)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1801)
 				cssFontStyleValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1769)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1804)
 				cssFontStyleValue = HX_CSTRING("italic");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1773)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1808)
 	return cssFontStyleValue;
 }
 
@@ -2840,25 +2888,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFontStyle,return )
 
 ::String UnitManager_obj::getCSSFontVariant( ::cocktail::core::style::FontVariant value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFontVariant")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1781)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1816)
 	::String cssFontVariantValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1783)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1818)
 	{
 ::cocktail::core::style::FontVariant _switch_54 = (value);
 		switch((_switch_54)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1785)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1820)
 				cssFontVariantValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1788)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1823)
 				cssFontVariantValue = HX_CSTRING("small-caps");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1792)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1827)
 	return cssFontVariantValue;
 }
 
@@ -2867,34 +2915,34 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFontVariant,return )
 
 ::String UnitManager_obj::getCSSFontFamily( Array< ::String > value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSFontFamily")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1800)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1835)
 	::String cssFontFamilyValue = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1802)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1837)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1802)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1837)
 		int _g1 = (int)0;
 		int _g = value->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1802)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1837)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1802)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1837)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1804)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1839)
 			::String fontName = value->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1807)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1842)
 			if (((fontName.indexOf(HX_CSTRING(" "),null()) != (int)-1))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1808)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1843)
 				fontName = ((HX_CSTRING("'") + fontName) + HX_CSTRING("'"));
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1812)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1847)
 			hx::AddEq(cssFontFamilyValue,fontName);
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1814)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1849)
 			if (((i < (value->length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1815)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1850)
 				hx::AddEq(cssFontFamilyValue,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1820)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1855)
 	return cssFontFamilyValue;
 }
 
@@ -2903,35 +2951,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSFontFamily,return )
 
 ::String UnitManager_obj::getCSSTextAlign( ::cocktail::core::style::TextAlign value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTextAlign")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1832)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1867)
 	::String cssTextAlignValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1834)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1869)
 	{
 ::cocktail::core::style::TextAlign _switch_55 = (value);
 		switch((_switch_55)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1836)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1871)
 				cssTextAlignValue = HX_CSTRING("left");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1839)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1874)
 				cssTextAlignValue = HX_CSTRING("right");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1842)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1877)
 				cssTextAlignValue = HX_CSTRING("center");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1845)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1880)
 				cssTextAlignValue = HX_CSTRING("justify");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1849)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1884)
 	return cssTextAlignValue;
 }
 
@@ -2940,40 +2988,40 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTextAlign,return )
 
 ::String UnitManager_obj::getCSSWhiteSpace( ::cocktail::core::style::WhiteSpace value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSWhiteSpace")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1857)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1892)
 	::String cssWhiteSpaceValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1859)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1894)
 	{
 ::cocktail::core::style::WhiteSpace _switch_56 = (value);
 		switch((_switch_56)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1861)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1896)
 				cssWhiteSpaceValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1864)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1899)
 				cssWhiteSpaceValue = HX_CSTRING("pre");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1867)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1902)
 				cssWhiteSpaceValue = HX_CSTRING("nowrap");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1870)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1905)
 				cssWhiteSpaceValue = HX_CSTRING("pre-wrap");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1873)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1908)
 				cssWhiteSpaceValue = HX_CSTRING("pre-line");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1877)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1912)
 	return cssWhiteSpaceValue;
 }
 
@@ -2982,35 +3030,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSWhiteSpace,return )
 
 ::String UnitManager_obj::getCSSTextTransform( ::cocktail::core::style::TextTransform value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTextTransform")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1885)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1920)
 	::String cssTextTransformValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1887)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1922)
 	{
 ::cocktail::core::style::TextTransform _switch_57 = (value);
 		switch((_switch_57)->GetIndex()){
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1889)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1924)
 				cssTextTransformValue = HX_CSTRING("none");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1892)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1927)
 				cssTextTransformValue = HX_CSTRING("uppercase");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1895)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1930)
 				cssTextTransformValue = HX_CSTRING("lowercase");
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1898)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1933)
 				cssTextTransformValue = HX_CSTRING("capitalize");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1902)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1937)
 	return cssTextTransformValue;
 }
 
@@ -3019,16 +3067,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTextTransform,return )
 
 ::String UnitManager_obj::getCSSTextIndent( ::cocktail::core::style::TextIndent value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSTextIndent")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1910)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1945)
 	::String cssTextIndentValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1912)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1947)
 	{
 ::cocktail::core::style::TextIndent _switch_58 = (value);
 		switch((_switch_58)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_58->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1914)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1949)
 					cssTextIndentValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
@@ -3036,14 +3084,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTextTransform,return )
 			case 1: {
 				int value1 = _switch_58->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1917)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1952)
 					cssTextIndentValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1921)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1956)
 	return cssTextIndentValue;
 }
 
@@ -3052,28 +3100,28 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSTextIndent,return )
 
 ::String UnitManager_obj::getCSSLetterSpacing( ::cocktail::core::style::LetterSpacing value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSLetterSpacing")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1929)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1964)
 	::String cssLetterSpacingValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1931)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1966)
 	{
 ::cocktail::core::style::LetterSpacing _switch_59 = (value);
 		switch((_switch_59)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1933)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1968)
 				cssLetterSpacingValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
 				::cocktail::core::unit::Length unit = _switch_59->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1936)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1971)
 					cssLetterSpacingValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1940)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1975)
 	return cssLetterSpacingValue;
 }
 
@@ -3082,28 +3130,28 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLetterSpacing,return )
 
 ::String UnitManager_obj::getCSSWordSpacing( ::cocktail::core::style::WordSpacing value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSWordSpacing")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1948)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1983)
 	::String cssWordSpacingValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1950)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1985)
 	{
 ::cocktail::core::style::WordSpacing _switch_60 = (value);
 		switch((_switch_60)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1952)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1987)
 				cssWordSpacingValue = HX_CSTRING("normal");
 			}
 			;break;
 			case 1: {
 				::cocktail::core::unit::Length unit = _switch_60->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1955)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1990)
 					cssWordSpacingValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(unit);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1959)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1994)
 	return cssWordSpacingValue;
 }
 
@@ -3112,11 +3160,11 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSWordSpacing,return )
 
 ::String UnitManager_obj::getCSSBackgroundColor( ::cocktail::core::unit::CSSColor value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundColor")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1973)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2008)
 	::String cssBackgroundColor;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1974)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2009)
 	cssBackgroundColor = ::cocktail::core::unit::UnitManager_obj::getCSSColor(value);
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1976)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2011)
 	return cssBackgroundColor;
 }
 
@@ -3125,46 +3173,46 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundColor,return )
 
 ::String UnitManager_obj::getCSSBackgroundOrigin( Array< ::cocktail::core::style::BackgroundOrigin > value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundOrigin")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1984)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2019)
 	::String cssBackgroundOrigin = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1986)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2021)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1986)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2021)
 		int _g1 = (int)0;
 		int _g = value->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1986)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2021)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1986)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2021)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1988)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2023)
 			{
 ::cocktail::core::style::BackgroundOrigin _switch_61 = (value->__get(i));
 				switch((_switch_61)->GetIndex()){
 					case 0: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1990)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2025)
 						hx::AddEq(cssBackgroundOrigin,HX_CSTRING("border-box"));
 					}
 					;break;
 					case 2: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1993)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2028)
 						hx::AddEq(cssBackgroundOrigin,HX_CSTRING("content-box"));
 					}
 					;break;
 					case 1: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",1996)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2031)
 						hx::AddEq(cssBackgroundOrigin,HX_CSTRING("padding-box"));
 					}
 					;break;
 				}
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2000)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2035)
 			if (((i < (value->length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2001)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2036)
 				hx::AddEq(cssBackgroundOrigin,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2006)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2041)
 	return cssBackgroundOrigin;
 }
 
@@ -3173,46 +3221,46 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundOrigin,return )
 
 ::String UnitManager_obj::getCSSBackgroundClip( Array< ::cocktail::core::style::BackgroundClip > value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundClip")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2014)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2049)
 	::String cssBackgroundClip = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2016)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2051)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2016)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2051)
 		int _g1 = (int)0;
 		int _g = value->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2016)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2051)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2016)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2051)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2018)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2053)
 			{
 ::cocktail::core::style::BackgroundClip _switch_62 = (value->__get(i));
 				switch((_switch_62)->GetIndex()){
 					case 0: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2020)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2055)
 						hx::AddEq(cssBackgroundClip,HX_CSTRING("border-box"));
 					}
 					;break;
 					case 2: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2023)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2058)
 						hx::AddEq(cssBackgroundClip,HX_CSTRING("content-box"));
 					}
 					;break;
 					case 1: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2026)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2061)
 						hx::AddEq(cssBackgroundClip,HX_CSTRING("padding-box"));
 					}
 					;break;
 				}
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2030)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2065)
 			if (((i < (value->length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2031)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2066)
 				hx::AddEq(cssBackgroundClip,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2036)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2071)
 	return cssBackgroundClip;
 }
 
@@ -3221,44 +3269,44 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundClip,return )
 
 ::String UnitManager_obj::getCSSBackgroundImage( Array< ::cocktail::core::style::BackgroundImage > value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundImage")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2044)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2079)
 	::String cssBackgroundImage = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2046)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2081)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2046)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2081)
 		int _g1 = (int)0;
 		int _g = value->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2046)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2081)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2046)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2081)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2048)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2083)
 			{
 ::cocktail::core::style::BackgroundImage _switch_63 = (value->__get(i));
 				switch((_switch_63)->GetIndex()){
 					case 0: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2050)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2085)
 						hx::AddEq(cssBackgroundImage,HX_CSTRING("none"));
 					}
 					;break;
 					case 1: {
 						::cocktail::core::unit::ImageValue value1 = _switch_63->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2053)
+							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2088)
 							hx::AddEq(cssBackgroundImage,::cocktail::core::unit::UnitManager_obj::getCSSImageValue(value1));
 						}
 					}
 					;break;
 				}
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2057)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2092)
 			if (((i < (value->length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2058)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2093)
 				hx::AddEq(cssBackgroundImage,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2064)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2099)
 	return cssBackgroundImage;
 }
 
@@ -3267,49 +3315,49 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundImage,return )
 
 ::String UnitManager_obj::getCSSBackgroundSize( Array< ::cocktail::core::style::BackgroundSize > value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundSize")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2072)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2107)
 	::String cssBackgroundSize = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2074)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2109)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2074)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2109)
 		int _g1 = (int)0;
 		int _g = value->length;
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2074)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2109)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2074)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2109)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2076)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2111)
 			{
 ::cocktail::core::style::BackgroundSize _switch_64 = (value->__get(i));
 				switch((_switch_64)->GetIndex()){
 					case 0: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2078)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2113)
 						hx::AddEq(cssBackgroundSize,HX_CSTRING("contain"));
 					}
 					;break;
 					case 1: {
-						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2081)
+						HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2116)
 						hx::AddEq(cssBackgroundSize,HX_CSTRING("cover"));
 					}
 					;break;
 					case 2: {
 						Dynamic value1 = _switch_64->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2084)
+							HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2119)
 							hx::AddEq(cssBackgroundSize,::cocktail::core::unit::UnitManager_obj::getCSSBackgroundSizeDimensions(value1));
 						}
 					}
 					;break;
 				}
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2088)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2123)
 			if (((i < (value->length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2089)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2124)
 				hx::AddEq(cssBackgroundSize,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2094)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2129)
 	return cssBackgroundSize;
 }
 
@@ -3318,9 +3366,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundSize,return )
 
 ::String UnitManager_obj::getCSSBackgroundSizeDimensions( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundSizeDimensions")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2099)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2134)
 	::String cssBackgroundSizeDimensions = ((::cocktail::core::unit::UnitManager_obj::getCSSBackgroundSizeDimension(value->__Field(HX_CSTRING("x"))) + HX_CSTRING(" ")) + ::cocktail::core::unit::UnitManager_obj::getCSSBackgroundSizeDimension(value->__Field(HX_CSTRING("y"))));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2100)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2135)
 	return cssBackgroundSizeDimensions;
 }
 
@@ -3329,16 +3377,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundSizeDimensions,re
 
 ::String UnitManager_obj::getCSSBackgroundSizeDimension( ::cocktail::core::style::BackgroundSizeDimension value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundSizeDimension")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2105)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2140)
 	::String cssBackgroundSizeDimension;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2107)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2142)
 	{
 ::cocktail::core::style::BackgroundSizeDimension _switch_65 = (value);
 		switch((_switch_65)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_65->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2109)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2144)
 					cssBackgroundSizeDimension = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
@@ -3346,19 +3394,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundSizeDimensions,re
 			case 1: {
 				int value1 = _switch_65->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2112)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2147)
 					cssBackgroundSizeDimension = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2115)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2150)
 				cssBackgroundSizeDimension = HX_CSTRING("auto");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2119)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2154)
 	return cssBackgroundSizeDimension;
 }
 
@@ -3367,27 +3415,27 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundSizeDimension,ret
 
 ::String UnitManager_obj::getCSSBackgroundPosition( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundPosition")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2127)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2162)
 	::String cssBackgroundPositionData = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2129)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2164)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2129)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2164)
 		int _g1 = (int)0;
 		int _g = value->__Field(HX_CSTRING("length"));
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2129)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2164)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2129)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2164)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2131)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2166)
 			hx::AddEq(cssBackgroundPositionData,((::cocktail::core::unit::UnitManager_obj::getCSSBackgroundPositionX(value->__GetItem(i)->__Field(HX_CSTRING("x"))) + HX_CSTRING(" ")) + ::cocktail::core::unit::UnitManager_obj::getCSSBackgroundPositionY(value->__GetItem(i)->__Field(HX_CSTRING("y")))));
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2133)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2168)
 			if (((i < (value->__Field(HX_CSTRING("length")) - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2134)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2169)
 				hx::AddEq(cssBackgroundPositionData,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2139)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2174)
 	return cssBackgroundPositionData;
 }
 
@@ -3396,16 +3444,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundPosition,return )
 
 ::String UnitManager_obj::getCSSBackgroundPositionX( ::cocktail::core::style::BackgroundPositionX value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundPositionX")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2144)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2179)
 	::String cssBackgroundPositionX;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2146)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2181)
 	{
 ::cocktail::core::style::BackgroundPositionX _switch_66 = (value);
 		switch((_switch_66)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_66->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2148)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2183)
 					cssBackgroundPositionX = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
@@ -3413,29 +3461,29 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundPosition,return )
 			case 1: {
 				int value1 = _switch_66->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2151)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2186)
 					cssBackgroundPositionX = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2154)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2189)
 				cssBackgroundPositionX = HX_CSTRING("center");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2157)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2192)
 				cssBackgroundPositionX = HX_CSTRING("left");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2160)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2195)
 				cssBackgroundPositionX = HX_CSTRING("right");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2164)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2199)
 	return cssBackgroundPositionX;
 }
 
@@ -3444,16 +3492,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundPositionX,return 
 
 ::String UnitManager_obj::getCSSBackgroundPositionY( ::cocktail::core::style::BackgroundPositionY value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundPositionY")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2169)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2204)
 	::String cssBackgroundPositionY;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2171)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2206)
 	{
 ::cocktail::core::style::BackgroundPositionY _switch_67 = (value);
 		switch((_switch_67)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_67->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2173)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2208)
 					cssBackgroundPositionY = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
@@ -3461,29 +3509,29 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundPositionX,return 
 			case 1: {
 				int value1 = _switch_67->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2176)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2211)
 					cssBackgroundPositionY = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2179)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2214)
 				cssBackgroundPositionY = HX_CSTRING("bottom");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2182)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2217)
 				cssBackgroundPositionY = HX_CSTRING("top");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2185)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2220)
 				cssBackgroundPositionY = HX_CSTRING("center");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2189)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2224)
 	return cssBackgroundPositionY;
 }
 
@@ -3492,27 +3540,27 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundPositionY,return 
 
 ::String UnitManager_obj::getCSSBackgroundRepeat( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundRepeat")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2197)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2232)
 	::String cssBackgroundRepeat = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2199)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2234)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2199)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2234)
 		int _g1 = (int)0;
 		int _g = value->__Field(HX_CSTRING("length"));
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2199)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2234)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2199)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2234)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2201)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2236)
 			hx::AddEq(cssBackgroundRepeat,((::cocktail::core::unit::UnitManager_obj::getCSSBackgroundRepeatValue(value->__GetItem(i)->__Field(HX_CSTRING("x"))) + HX_CSTRING(" ")) + ::cocktail::core::unit::UnitManager_obj::getCSSBackgroundRepeatValue(value->__GetItem(i)->__Field(HX_CSTRING("y")))));
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2203)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2238)
 			if (((i < (value->__Field(HX_CSTRING("length")) - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2204)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2239)
 				hx::AddEq(cssBackgroundRepeat,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2209)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2244)
 	return cssBackgroundRepeat;
 }
 
@@ -3521,35 +3569,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundRepeat,return )
 
 ::String UnitManager_obj::getCSSBackgroundRepeatValue( ::cocktail::core::style::BackgroundRepeatValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSBackgroundRepeatValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2214)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2249)
 	::String cssBackgroundRepeatValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2216)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2251)
 	{
 ::cocktail::core::style::BackgroundRepeatValue _switch_68 = (value);
 		switch((_switch_68)->GetIndex()){
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2218)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2253)
 				cssBackgroundRepeatValue = HX_CSTRING("no-repeat");
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2221)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2256)
 				cssBackgroundRepeatValue = HX_CSTRING("repeat");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2224)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2259)
 				cssBackgroundRepeatValue = HX_CSTRING("round");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2227)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2262)
 				cssBackgroundRepeatValue = HX_CSTRING("space");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2231)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2266)
 	return cssBackgroundRepeatValue;
 }
 
@@ -3558,35 +3606,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSBackgroundRepeatValue,retur
 
 ::String UnitManager_obj::getCSSCursor( ::cocktail::core::style::Cursor value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSCursor")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2243)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2278)
 	::String cssCursorValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2245)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2280)
 	{
 ::cocktail::core::style::Cursor _switch_69 = (value);
 		switch((_switch_69)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2247)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2282)
 				cssCursorValue = HX_CSTRING("auto");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2250)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2285)
 				cssCursorValue = HX_CSTRING("crosshair");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2253)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2288)
 				cssCursorValue = HX_CSTRING("default");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2256)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2291)
 				cssCursorValue = HX_CSTRING("pointer");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2260)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2295)
 	return cssCursorValue;
 }
 
@@ -3595,16 +3643,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCursor,return )
 
 ::String UnitManager_obj::getCSSImageValue( ::cocktail::core::unit::ImageValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSImageValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2271)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2306)
 	::String cssImageValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2273)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2308)
 	{
 ::cocktail::core::unit::ImageValue _switch_70 = (value);
 		switch((_switch_70)->GetIndex()){
 			case 0: {
 				::String value1 = _switch_70->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2275)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2310)
 					cssImageValue = ((HX_CSTRING("url(\"") + value1) + HX_CSTRING("\")"));
 				}
 			}
@@ -3612,7 +3660,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCursor,return )
 			case 1: {
 				Dynamic value1 = _switch_70->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2278)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2313)
 					cssImageValue = ((HX_CSTRING("image(") + ::cocktail::core::unit::UnitManager_obj::getCSSImageList(value1)) + HX_CSTRING(")"));
 				}
 			}
@@ -3620,14 +3668,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCursor,return )
 			case 2: {
 				::cocktail::core::unit::GradientValue value1 = _switch_70->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2281)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2316)
 					cssImageValue = ::cocktail::core::unit::UnitManager_obj::getCSSGradientValue(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2285)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2320)
 	return cssImageValue;
 }
 
@@ -3636,31 +3684,31 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSImageValue,return )
 
 ::String UnitManager_obj::getCSSImageList( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSImageList")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2290)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2325)
 	::String cssImageList = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2292)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2327)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2292)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2327)
 		int _g1 = (int)0;
 		int _g = value->__Field(HX_CSTRING("urls"))->__Field(HX_CSTRING("length"));
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2292)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2327)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2292)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2327)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2294)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2329)
 			hx::AddEq(cssImageList,((HX_CSTRING("\"") + value->__Field(HX_CSTRING("urls"))->__GetItem(i)) + HX_CSTRING("\"")));
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2296)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2331)
 			if (((i < (value->__Field(HX_CSTRING("urls"))->__Field(HX_CSTRING("length")) - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2297)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2332)
 				hx::AddEq(cssImageList,HX_CSTRING(","));
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2301)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2336)
 				hx::AddEq(cssImageList,(HX_CSTRING(",") + ::cocktail::core::unit::UnitManager_obj::getCSSColor(value->__Field(HX_CSTRING("fallbackColor")))));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2306)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2341)
 	return cssImageList;
 }
 
@@ -3669,23 +3717,23 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSImageList,return )
 
 ::String UnitManager_obj::getCSSGradientValue( ::cocktail::core::unit::GradientValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSGradientValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2311)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2346)
 	::String cssGradientValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2313)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2348)
 	{
 ::cocktail::core::unit::GradientValue _switch_71 = (value);
 		switch((_switch_71)->GetIndex()){
 			case 0: {
 				Dynamic value1 = _switch_71->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2315)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2350)
 					cssGradientValue = ((HX_CSTRING("linear-gradient(") + ::cocktail::core::unit::UnitManager_obj::getCSSLinearGradientValue(value1)) + HX_CSTRING(")"));
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2319)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2354)
 	return cssGradientValue;
 }
 
@@ -3694,9 +3742,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSGradientValue,return )
 
 ::String UnitManager_obj::getCSSLinearGradientValue( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSLinearGradientValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2324)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2359)
 	::String cssLinearGradientValue = ((::cocktail::core::unit::UnitManager_obj::getCSSGradientAngle(value->__Field(HX_CSTRING("angle"))) + HX_CSTRING(",")) + ::cocktail::core::unit::UnitManager_obj::getCSSColorStopsValue(value->__Field(HX_CSTRING("colorStops"))));
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2325)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2360)
 	return cssLinearGradientValue;
 }
 
@@ -3705,27 +3753,27 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLinearGradientValue,return 
 
 ::String UnitManager_obj::getCSSColorStopsValue( Dynamic value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSColorStopsValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2330)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2365)
 	::String cssColorStopsData = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2332)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2367)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2332)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2367)
 		int _g1 = (int)0;
 		int _g = value->__Field(HX_CSTRING("length"));
-		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2332)
+		HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2367)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2332)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2367)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2334)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2369)
 			hx::AddEq(cssColorStopsData,((::cocktail::core::unit::UnitManager_obj::getCSSColor(value->__GetItem(i)->__Field(HX_CSTRING("color"))) + HX_CSTRING(" ")) + ::cocktail::core::unit::UnitManager_obj::getCSSColorStopValue(value->__GetItem(i)->__Field(HX_CSTRING("stop")))));
-			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2336)
+			HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2371)
 			if (((i < (value->__Field(HX_CSTRING("length")) - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2337)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2372)
 				hx::AddEq(cssColorStopsData,HX_CSTRING(","));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2342)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2377)
 	return cssColorStopsData;
 }
 
@@ -3734,16 +3782,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColorStopsValue,return )
 
 ::String UnitManager_obj::getCSSColorStopValue( ::cocktail::core::unit::GradientStopValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSColorStopValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2347)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2382)
 	::String cssColorStopValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2349)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2384)
 	{
 ::cocktail::core::unit::GradientStopValue _switch_72 = (value);
 		switch((_switch_72)->GetIndex()){
 			case 1: {
 				int value1 = _switch_72->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2351)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2386)
 					cssColorStopValue = ::cocktail::core::unit::UnitManager_obj::getCSSPercentValue(value1);
 				}
 			}
@@ -3751,14 +3799,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColorStopsValue,return )
 			case 0: {
 				::cocktail::core::unit::Length value1 = _switch_72->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2354)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2389)
 					cssColorStopValue = ::cocktail::core::unit::UnitManager_obj::getCSSLength(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2358)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2393)
 	return cssColorStopValue;
 }
 
@@ -3767,16 +3815,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColorStopValue,return )
 
 ::String UnitManager_obj::getCSSGradientAngle( ::cocktail::core::unit::GradientAngle value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSGradientAngle")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2363)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2398)
 	::String cssGradientAngle;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2365)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2400)
 	{
 ::cocktail::core::unit::GradientAngle _switch_73 = (value);
 		switch((_switch_73)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Angle value1 = _switch_73->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2367)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2402)
 					cssGradientAngle = ::cocktail::core::unit::UnitManager_obj::getCSSAngle(value1);
 				}
 			}
@@ -3784,7 +3832,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColorStopValue,return )
 			case 2: {
 				::cocktail::core::unit::GradientCornerValue value1 = _switch_73->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2370)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2405)
 					cssGradientAngle = ::cocktail::core::unit::UnitManager_obj::getCSSCornerValue(value1);
 				}
 			}
@@ -3792,14 +3840,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColorStopValue,return )
 			case 1: {
 				::cocktail::core::unit::GradientSideValue value1 = _switch_73->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2373)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2408)
 					cssGradientAngle = ::cocktail::core::unit::UnitManager_obj::getCSSSideValue(value1);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2377)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2412)
 	return cssGradientAngle;
 }
 
@@ -3808,35 +3856,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSGradientAngle,return )
 
 ::String UnitManager_obj::getCSSSideValue( ::cocktail::core::unit::GradientSideValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSSideValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2382)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2417)
 	::String cssSideValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2384)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2419)
 	{
 ::cocktail::core::unit::GradientSideValue _switch_74 = (value);
 		switch((_switch_74)->GetIndex()){
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2386)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2421)
 				cssSideValue = HX_CSTRING("bottom");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2389)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2424)
 				cssSideValue = HX_CSTRING("left");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2392)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2427)
 				cssSideValue = HX_CSTRING("right");
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2395)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2430)
 				cssSideValue = HX_CSTRING("top");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2399)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2434)
 	return cssSideValue;
 }
 
@@ -3845,35 +3893,35 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSSideValue,return )
 
 ::String UnitManager_obj::getCSSCornerValue( ::cocktail::core::unit::GradientCornerValue value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSCornerValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2404)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2439)
 	::String cssCornerValue;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2406)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2441)
 	{
 ::cocktail::core::unit::GradientCornerValue _switch_75 = (value);
 		switch((_switch_75)->GetIndex()){
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2408)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2443)
 				cssCornerValue = HX_CSTRING("left bottom");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2411)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2446)
 				cssCornerValue = HX_CSTRING("right bottom");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2414)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2449)
 				cssCornerValue = HX_CSTRING("left top");
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2417)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2452)
 				cssCornerValue = HX_CSTRING("right top");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2421)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2456)
 	return cssCornerValue;
 }
 
@@ -3882,16 +3930,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCornerValue,return )
 
 ::String UnitManager_obj::getCSSColor( ::cocktail::core::unit::CSSColor value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSColor")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2426)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2461)
 	::String cssColor;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2428)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2463)
 	{
 ::cocktail::core::unit::CSSColor _switch_76 = (value);
 		switch((_switch_76)->GetIndex()){
 			case 2: {
 				::String value1 = _switch_76->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2430)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2465)
 					cssColor = value1;
 				}
 			}
@@ -3901,7 +3949,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCornerValue,return )
 				int green = _switch_76->__Param(1);
 				int red = _switch_76->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2433)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2468)
 					cssColor = ((((((HX_CSTRING("rgb(") + red) + HX_CSTRING(",")) + green) + HX_CSTRING(",")) + blue) + HX_CSTRING(")"));
 				}
 			}
@@ -3912,7 +3960,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCornerValue,return )
 				int green = _switch_76->__Param(1);
 				int red = _switch_76->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2436)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2471)
 					cssColor = ((((((((HX_CSTRING("rgba(") + red) + HX_CSTRING(",")) + green) + HX_CSTRING(",")) + blue) + HX_CSTRING(",")) + alpha) + HX_CSTRING(")"));
 				}
 			}
@@ -3920,19 +3968,19 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSCornerValue,return )
 			case 3: {
 				::cocktail::core::unit::ColorKeyword value1 = _switch_76->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2439)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2474)
 					cssColor = ::cocktail::core::unit::UnitManager_obj::getColorFromKeyword(value1);
 				}
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2442)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2477)
 				cssColor = HX_CSTRING("transparent");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2446)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2481)
 	return cssColor;
 }
 
@@ -3941,16 +3989,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 
 ::String UnitManager_obj::getCSSLength( ::cocktail::core::unit::Length lengthValue){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSLength")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2451)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2486)
 	::String cssLength;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2453)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2488)
 	{
 ::cocktail::core::unit::Length _switch_77 = (lengthValue);
 		switch((_switch_77)->GetIndex()){
 			case 0: {
 				double pixelValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2455)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2490)
 					cssLength = (::Std_obj::string(pixelValue) + HX_CSTRING("px"));
 				}
 			}
@@ -3958,7 +4006,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 3: {
 				double pointValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2458)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2493)
 					cssLength = (::Std_obj::string(pointValue) + HX_CSTRING("pt"));
 				}
 			}
@@ -3966,7 +4014,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 2: {
 				double milimetersValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2461)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2496)
 					cssLength = (::Std_obj::string(milimetersValue) + HX_CSTRING("mm"));
 				}
 			}
@@ -3974,7 +4022,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 4: {
 				double picasValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2464)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2499)
 					cssLength = (::Std_obj::string(picasValue) + HX_CSTRING("pc"));
 				}
 			}
@@ -3982,7 +4030,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 1: {
 				double centimetersValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2467)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2502)
 					cssLength = (::Std_obj::string(centimetersValue) + HX_CSTRING("cm"));
 				}
 			}
@@ -3990,7 +4038,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 5: {
 				double inchesValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2470)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2505)
 					cssLength = (::Std_obj::string(inchesValue) + HX_CSTRING("in"));
 				}
 			}
@@ -3998,7 +4046,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 6: {
 				double emValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2473)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2508)
 					cssLength = (::Std_obj::string(emValue) + HX_CSTRING("em"));
 				}
 			}
@@ -4006,14 +4054,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSColor,return )
 			case 7: {
 				double exValue = _switch_77->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2476)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2511)
 					cssLength = (::Std_obj::string(exValue) + HX_CSTRING("ex"));
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2480)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2515)
 	return cssLength;
 }
 
@@ -4022,7 +4070,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSLength,return )
 
 ::String UnitManager_obj::getCSSPercentValue( int value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSPercentValue")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2484)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2519)
 	return (::Std_obj::string(value) + HX_CSTRING("%"));
 }
 
@@ -4031,16 +4079,16 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPercentValue,return )
 
 ::String UnitManager_obj::getCSSAngle( ::cocktail::core::unit::Angle value){
 	HX_SOURCE_PUSH("UnitManager_obj::getCSSAngle")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2490)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2525)
 	::String cssAngle;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2492)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2527)
 	{
 ::cocktail::core::unit::Angle _switch_78 = (value);
 		switch((_switch_78)->GetIndex()){
 			case 0: {
 				double value1 = _switch_78->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2494)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2529)
 					cssAngle = (::Std_obj::string(value1) + HX_CSTRING("deg"));
 				}
 			}
@@ -4048,7 +4096,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPercentValue,return )
 			case 2: {
 				double value1 = _switch_78->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2497)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2532)
 					cssAngle = (::Std_obj::string(value1) + HX_CSTRING("rad"));
 				}
 			}
@@ -4056,7 +4104,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPercentValue,return )
 			case 1: {
 				double value1 = _switch_78->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2500)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2535)
 					cssAngle = (::Std_obj::string(value1) + HX_CSTRING("grad"));
 				}
 			}
@@ -4064,14 +4112,14 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSPercentValue,return )
 			case 3: {
 				double value1 = _switch_78->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2503)
+					HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2538)
 					cssAngle = (::Std_obj::string(value1) + HX_CSTRING("turn"));
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2507)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2542)
 	return cssAngle;
 }
 
@@ -4080,100 +4128,100 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(UnitManager_obj,getCSSAngle,return )
 
 ::String UnitManager_obj::getColorFromKeyword( ::cocktail::core::unit::ColorKeyword value){
 	HX_SOURCE_PUSH("UnitManager_obj::getColorFromKeyword")
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2512)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2547)
 	::String cssColor;
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2514)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2549)
 	{
 ::cocktail::core::unit::ColorKeyword _switch_79 = (value);
 		switch((_switch_79)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2516)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2551)
 				cssColor = HX_CSTRING("aqua");
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2519)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2554)
 				cssColor = HX_CSTRING("black");
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2522)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2557)
 				cssColor = HX_CSTRING("blue");
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2525)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2560)
 				cssColor = HX_CSTRING("fuchsia");
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2528)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2563)
 				cssColor = HX_CSTRING("gray");
 			}
 			;break;
 			case 5: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2531)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2566)
 				cssColor = HX_CSTRING("green");
 			}
 			;break;
 			case 6: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2534)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2569)
 				cssColor = HX_CSTRING("lime");
 			}
 			;break;
 			case 7: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2537)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2572)
 				cssColor = HX_CSTRING("maroon");
 			}
 			;break;
 			case 8: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2540)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2575)
 				cssColor = HX_CSTRING("navy");
 			}
 			;break;
 			case 9: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2543)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2578)
 				cssColor = HX_CSTRING("olive");
 			}
 			;break;
 			case 10: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2546)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2581)
 				cssColor = HX_CSTRING("orange");
 			}
 			;break;
 			case 11: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2549)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2584)
 				cssColor = HX_CSTRING("purple");
 			}
 			;break;
 			case 12: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2552)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2587)
 				cssColor = HX_CSTRING("red");
 			}
 			;break;
 			case 13: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2555)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2590)
 				cssColor = HX_CSTRING("silver");
 			}
 			;break;
 			case 14: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2558)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2593)
 				cssColor = HX_CSTRING("teal");
 			}
 			;break;
 			case 15: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2561)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2596)
 				cssColor = HX_CSTRING("white");
 			}
 			;break;
 			case 16: {
-				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2564)
+				HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2599)
 				cssColor = HX_CSTRING("yellow");
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2568)
+	HX_SOURCE_POS("../../src/cocktail/core/unit/UnitManager.hx",2603)
 	return cssColor;
 }
 
@@ -4219,6 +4267,7 @@ Dynamic UnitManager_obj::__Field(const ::String &inName)
 		if (HX_FIELD_EQ(inName,"cssFloatEnum") ) { return cssFloatEnum_dyn(); }
 		if (HX_FIELD_EQ(inName,"string2VUnit") ) { return string2VUnit_dyn(); }
 		if (HX_FIELD_EQ(inName,"string2VList") ) { return string2VList_dyn(); }
+		if (HX_FIELD_EQ(inName,"string2Array") ) { return string2Array_dyn(); }
 		if (HX_FIELD_EQ(inName,"getCSSMargin") ) { return getCSSMargin_dyn(); }
 		if (HX_FIELD_EQ(inName,"getCSSCursor") ) { return getCSSCursor_dyn(); }
 		if (HX_FIELD_EQ(inName,"getCSSLength") ) { return getCSSLength_dyn(); }
@@ -4393,6 +4442,7 @@ static ::String sStaticFields[] = {
 	HX_CSTRING("string2Length"),
 	HX_CSTRING("string2URLData"),
 	HX_CSTRING("string2VList"),
+	HX_CSTRING("string2Array"),
 	HX_CSTRING("getPixelFromLength"),
 	HX_CSTRING("getFontSizeFromAbsoluteSizeValue"),
 	HX_CSTRING("getFontSizeFromRelativeSizeValue"),

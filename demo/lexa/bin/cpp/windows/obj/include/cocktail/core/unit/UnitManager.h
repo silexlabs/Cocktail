@@ -182,6 +182,9 @@ class UnitManager_obj : public hx::Object{
 		static Array< ::String > string2VList( ::String string,Dynamic sep);
 		static Dynamic string2VList_dyn();
 
+		static Array< ::String > string2Array( ::String string);
+		static Dynamic string2Array_dyn();
+
 		static int getPixelFromLength( ::cocktail::core::unit::Length length,double emReference,double exReference);
 		static Dynamic getPixelFromLength_dyn();
 

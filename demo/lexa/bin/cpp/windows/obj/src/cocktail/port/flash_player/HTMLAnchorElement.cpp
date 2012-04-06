@@ -1,8 +1,5 @@
 #include <hxcpp.h>
 
-#ifndef INCLUDED_cocktail_core_dom_AnchorTarget
-#include <cocktail/core/dom/AnchorTarget.h>
-#endif
 #ifndef INCLUDED_cocktail_core_dom_Element
 #include <cocktail/core/dom/Element.h>
 #endif
@@ -63,7 +60,7 @@ Void HTMLAnchorElement_obj::openDocument( ){
 		HX_SOURCE_POS("../../src/cocktail/port/flash_player/HTMLAnchorElement.hx",33)
 		if (((this->_href != null()))){
 			HX_SOURCE_POS("../../src/cocktail/port/flash_player/HTMLAnchorElement.hx",35)
-			::nme::Lib_obj::getURL(::nme::net::URLRequest_obj::__new(this->_href),this->getTargetAsString(this->_target));
+			::nme::Lib_obj::getURL(::nme::net::URLRequest_obj::__new(this->_href),this->_target);
 		}
 	}
 return null();

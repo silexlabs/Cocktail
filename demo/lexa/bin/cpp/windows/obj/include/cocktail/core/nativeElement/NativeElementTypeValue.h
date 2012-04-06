@@ -24,24 +24,18 @@ class NativeElementTypeValue_obj : public hx::EnumBase_obj
 		::String GetEnumName( ) const { return HX_CSTRING("cocktail.core.nativeElement.NativeElementTypeValue"); }
 		::String __ToString() const { return HX_CSTRING("NativeElementTypeValue.") + tag; }
 
-		static ::cocktail::core::nativeElement::NativeElementTypeValue custom(::String name);
-		static Dynamic custom_dyn();
-		static ::cocktail::core::nativeElement::NativeElementTypeValue graphic;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue graphic_dyn() { return graphic; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue image;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue image_dyn() { return image; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue library;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue library_dyn() { return library; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue link;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue link_dyn() { return link; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue neutral;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue neutral_dyn() { return neutral; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue skin;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue skin_dyn() { return skin; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue text;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue text_dyn() { return text; }
-		static ::cocktail::core::nativeElement::NativeElementTypeValue textInput;
-		static inline ::cocktail::core::nativeElement::NativeElementTypeValue textInput_dyn() { return textInput; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue anchor;
+		static inline ::cocktail::core::nativeElement::NativeElementTypeValue anchor_dyn() { return anchor; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue canvas;
+		static inline ::cocktail::core::nativeElement::NativeElementTypeValue canvas_dyn() { return canvas; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue img;
+		static inline ::cocktail::core::nativeElement::NativeElementTypeValue img_dyn() { return img; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue input;
+		static inline ::cocktail::core::nativeElement::NativeElementTypeValue input_dyn() { return input; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue script;
+		static inline ::cocktail::core::nativeElement::NativeElementTypeValue script_dyn() { return script; }
+		static ::cocktail::core::nativeElement::NativeElementTypeValue semantic(::String name);
+		static Dynamic semantic_dyn();
 };
 
 } // end namespace cocktail

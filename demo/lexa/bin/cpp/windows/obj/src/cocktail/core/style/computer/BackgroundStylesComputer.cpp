@@ -3,9 +3,6 @@
 #ifndef INCLUDED_hxMath
 #include <hxMath.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
 #ifndef INCLUDED_cocktail_core_style_BackgroundClip
 #include <cocktail/core/style/BackgroundClip.h>
 #endif
@@ -26,6 +23,9 @@
 #endif
 #ifndef INCLUDED_cocktail_core_style_BackgroundSizeDimension
 #include <cocktail/core/style/BackgroundSizeDimension.h>
+#endif
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_computer_BackgroundStylesComputer
 #include <cocktail/core/style/computer/BackgroundStylesComputer.h>
@@ -65,7 +65,7 @@ Dynamic BackgroundStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-Void BackgroundStylesComputer_obj::compute( ::cocktail::core::style::AbstractCoreStyle style){
+Void BackgroundStylesComputer_obj::compute( ::cocktail::core::style::CoreStyle style){
 {
 		HX_SOURCE_PUSH("BackgroundStylesComputer_obj::compute")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/BackgroundStylesComputer.hx",63)
@@ -89,7 +89,7 @@ return null();
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC1(BackgroundStylesComputer_obj,compute,(void))
 
-Dynamic BackgroundStylesComputer_obj::computeIndividualBackground( ::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic intrinsicWidth,Dynamic intrinsicHeight,Dynamic intrinsicRatio,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Dynamic BackgroundStylesComputer_obj::computeIndividualBackground( ::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic intrinsicWidth,Dynamic intrinsicHeight,Dynamic intrinsicRatio,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 	HX_SOURCE_PUSH("BackgroundStylesComputer_obj::computeIndividualBackground")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/BackgroundStylesComputer.hx",112)
 	Dynamic backgroundPositioningArea = ::cocktail::core::style::computer::BackgroundStylesComputer_obj::getBackgroundPositioningArea(style,backgroundOrigin,backgroundBox);
@@ -120,7 +120,7 @@ Dynamic BackgroundStylesComputer_obj::computeIndividualBackground( ::cocktail::c
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC11(BackgroundStylesComputer_obj,computeIndividualBackground,return )
 
-Dynamic BackgroundStylesComputer_obj::getComputedBackgroundColor( ::cocktail::core::style::AbstractCoreStyle style){
+Dynamic BackgroundStylesComputer_obj::getComputedBackgroundColor( ::cocktail::core::style::CoreStyle style){
 	HX_SOURCE_PUSH("BackgroundStylesComputer_obj::getComputedBackgroundColor")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/BackgroundStylesComputer.hx",149)
 	Dynamic computedColor;
@@ -399,7 +399,7 @@ int BackgroundStylesComputer_obj::getBackgroundSizeStyleDimensionData( ::cocktai
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC9(BackgroundStylesComputer_obj,getBackgroundSizeStyleDimensionData,return )
 
-Dynamic BackgroundStylesComputer_obj::getBackgroundPositioningArea( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::style::BackgroundOrigin backgroundOrigin,Dynamic backgroundBox){
+Dynamic BackgroundStylesComputer_obj::getBackgroundPositioningArea( ::cocktail::core::style::CoreStyle style,::cocktail::core::style::BackgroundOrigin backgroundOrigin,Dynamic backgroundBox){
 	HX_SOURCE_PUSH("BackgroundStylesComputer_obj::getBackgroundPositioningArea")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/BackgroundStylesComputer.hx",397)
 	Dynamic backgroundPositioningArea;
@@ -469,7 +469,7 @@ Dynamic BackgroundStylesComputer_obj::getBackgroundPositioningArea( ::cocktail::
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC3(BackgroundStylesComputer_obj,getBackgroundPositioningArea,return )
 
-Dynamic BackgroundStylesComputer_obj::getBackgroundPaintingArea( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundBox){
+Dynamic BackgroundStylesComputer_obj::getBackgroundPaintingArea( ::cocktail::core::style::CoreStyle style,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundBox){
 	HX_SOURCE_PUSH("BackgroundStylesComputer_obj::getBackgroundPaintingArea")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/BackgroundStylesComputer.hx",455)
 	Dynamic backgroundPaintingArea;

@@ -3,9 +3,6 @@
 #ifndef INCLUDED_cocktail_Lib
 #include <cocktail/Lib.h>
 #endif
-#ifndef INCLUDED_cocktail_core_dom_CharacterData
-#include <cocktail/core/dom/CharacterData.h>
-#endif
 #ifndef INCLUDED_cocktail_core_dom_Document
 #include <cocktail/core/dom/Document.h>
 #endif
@@ -15,32 +12,32 @@
 #ifndef INCLUDED_cocktail_core_dom_Node
 #include <cocktail/core/dom/Node.h>
 #endif
-#ifndef INCLUDED_cocktail_core_dom_Text
-#include <cocktail/core/dom/Text.h>
+#ifndef INCLUDED_cocktail_core_event_Event
+#include <cocktail/core/event/Event.h>
 #endif
 #ifndef INCLUDED_cocktail_core_event_IEventTarget
 #include <cocktail/core/event/IEventTarget.h>
 #endif
+#ifndef INCLUDED_cocktail_core_event_MouseEvent
+#include <cocktail/core/event/MouseEvent.h>
+#endif
+#ifndef INCLUDED_cocktail_core_event_UIEvent
+#include <cocktail/core/event/UIEvent.h>
+#endif
+#ifndef INCLUDED_cocktail_core_html_AbstractHTMLDocument
+#include <cocktail/core/html/AbstractHTMLDocument.h>
+#endif
 #ifndef INCLUDED_cocktail_core_html_AbstractHTMLElement
 #include <cocktail/core/html/AbstractHTMLElement.h>
 #endif
-#ifndef INCLUDED_cocktail_core_html_AbstractHTMLImageElement
-#include <cocktail/core/html/AbstractHTMLImageElement.h>
+#ifndef INCLUDED_cocktail_core_style_adapter_AbstractStyle
+#include <cocktail/core/style/adapter/AbstractStyle.h>
 #endif
-#ifndef INCLUDED_cocktail_core_html_EmbeddedElement
-#include <cocktail/core/html/EmbeddedElement.h>
-#endif
-#ifndef INCLUDED_cocktail_core_html_HTMLDocument
-#include <cocktail/core/html/HTMLDocument.h>
-#endif
-#ifndef INCLUDED_cocktail_core_style_adapter_Style
-#include <cocktail/core/style/adapter/Style.h>
+#ifndef INCLUDED_cocktail_port_flash_player_HTMLDocument
+#include <cocktail/port/flash_player/HTMLDocument.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_Text
-#include <cocktail/port/flash_player/Text.h>
 #endif
 #ifndef INCLUDED_org_lexa_demo_Lexa
 #include <org/lexa/demo/Lexa.h>
@@ -73,46 +70,23 @@ Dynamic Lexa_obj::__Create(hx::DynamicArray inArgs)
 Void Lexa_obj::prezCocktail( ){
 {
 		HX_SOURCE_PUSH("Lexa_obj::prezCocktail")
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",34)
-		::cocktail::port::flash_player::HTMLElement title = ::cocktail::Lib_obj::get_document()->createElement(HX_CSTRING("h1"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",35)
-		title->appendChild(::cocktail::Lib_obj::get_document()->createTextNode(HX_CSTRING("Hello Cocktail")));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",36)
-		::cocktail::Lib_obj::get_document()->get_body()->appendChild(title);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",39)
-		::cocktail::port::flash_player::HTMLElement paragraph = ::cocktail::Lib_obj::get_document()->createElement(HX_CSTRING("p"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",40)
-		paragraph->appendChild(::cocktail::Lib_obj::get_document()->createTextNode(HX_CSTRING("Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe.")));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",41)
-		::cocktail::Lib_obj::get_document()->get_body()->appendChild(paragraph);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",44)
-		title->get_style()->set_wordSpacing(HX_CSTRING("10px"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",45)
-		title->get_style()->set_color(HX_CSTRING("orange"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",46)
-		title->get_style()->set_fontFamily(HX_CSTRING("arial"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",49)
-		::cocktail::core::html::AbstractHTMLImageElement img = ::cocktail::Lib_obj::get_document()->createElement(HX_CSTRING("img"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",50)
-		img->set_src(HX_CSTRING("cocktail.jpg"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",51)
-		paragraph->appendChild(img);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",54)
-		::cocktail::port::flash_player::HTMLElement site = ::cocktail::Lib_obj::get_document()->createElement(HX_CSTRING("div"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",55)
-		site->appendChild(title);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",56)
-		site->appendChild(paragraph);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",58)
-		site->get_style()->set_width(HX_CSTRING("50%"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",59)
-		site->get_style()->set_marginLeft(site->get_style()->set_marginRight(HX_CSTRING("auto")));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",61)
-		::cocktail::Lib_obj::get_document()->get_body()->appendChild(site);
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",64)
-		site->get_style()->set_backgroundColor(HX_CSTRING("rgba(255,255,255,0.5)"));
-		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",65)
-		::cocktail::Lib_obj::get_document()->get_body()->get_style()->set_backgroundImage(HX_CSTRING("url(bg.png)"));
+		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",69)
+		::cocktail::Lib_obj::get_document()->get_body()->set_innerHTML(HX_CSTRING("<div style=\"width: 50%; margin-right: auto; margin-left: auto; background-color: rgba(255, 255, 255, 0.5);\"><h1 style=\"word-spacing: 10px; color: orange; font-family: arial;\">Hello Cocktail</h1><p>Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe.<img id=\"pic\" src=\"cocktail.jpg\" /></p></div>"));
+		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",71)
+		::cocktail::port::flash_player::HTMLElement pic = ::cocktail::Lib_obj::get_document()->getElementById(HX_CSTRING("pic"));
+
+		HX_BEGIN_LOCAL_FUNC_S0(hx::LocalFunc,_Function_1_1)
+		Void run(::cocktail::core::event::MouseEvent e){
+{
+				HX_SOURCE_POS("org/lexa/demo/Lexa.hx",72)
+				::cocktail::Lib_obj::get_document()->get_body()->get_style()->set_backgroundImage(HX_CSTRING("url(bg.png)"));
+			}
+			return null();
+		}
+		HX_END_LOCAL_FUNC1((void))
+
+		HX_SOURCE_POS("org/lexa/demo/Lexa.hx",72)
+		pic->set_onClick( Dynamic(new _Function_1_1()));
 	}
 return null();
 }

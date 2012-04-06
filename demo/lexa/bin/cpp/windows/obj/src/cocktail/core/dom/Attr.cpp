@@ -123,12 +123,12 @@ HX_DEFINE_DYNAMIC_FUNC0(Attr_obj,get_name,return )
 
 ::String Attr_obj::get_value( ){
 	HX_SOURCE_PUSH("Attr_obj::get_value")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",127)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",126)
 	if (((this->_value == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",128)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",127)
 		return HX_CSTRING("");
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",131)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",130)
 	return this->_value;
 }
 
@@ -137,9 +137,9 @@ HX_DEFINE_DYNAMIC_FUNC0(Attr_obj,get_value,return )
 
 ::String Attr_obj::set_value( ::String value){
 	HX_SOURCE_PUSH("Attr_obj::set_value")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",136)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",135)
 	this->_specified = true;
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",137)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",136)
 	return this->_value = value;
 }
 
@@ -148,7 +148,7 @@ HX_DEFINE_DYNAMIC_FUNC1(Attr_obj,set_value,return )
 
 bool Attr_obj::get_specified( ){
 	HX_SOURCE_PUSH("Attr_obj::get_specified")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",141)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Attr.hx",140)
 	return this->_specified;
 }
 

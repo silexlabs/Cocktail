@@ -7,7 +7,6 @@
 
 #include <cocktail/core/dom/Element.h>
 #include <cocktail/core/event/IEventTarget.h>
-HX_DECLARE_CLASS3(cocktail,core,dom,Attr)
 HX_DECLARE_CLASS3(cocktail,core,dom,Element)
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,event,Event)
@@ -18,9 +17,8 @@ HX_DECLARE_CLASS3(cocktail,core,event,UIEvent)
 HX_DECLARE_CLASS3(cocktail,core,html,AbstractHTMLElement)
 HX_DECLARE_CLASS3(cocktail,core,keyboard,AbstractKeyboard)
 HX_DECLARE_CLASS3(cocktail,core,mouse,AbstractMouse)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
-HX_DECLARE_CLASS4(cocktail,core,style,adapter,Style)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,CoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
+HX_DECLARE_CLASS4(cocktail,core,style,adapter,AbstractStyle)
 HX_DECLARE_CLASS3(cocktail,port,flash_player,HTMLElement)
 HX_DECLARE_CLASS3(cocktail,port,flash_player,Keyboard)
 HX_DECLARE_CLASS3(cocktail,port,flash_player,Mouse)
@@ -54,60 +52,60 @@ class AbstractHTMLElement_obj : public ::cocktail::core::dom::Element_obj{
 		::cocktail::port::flash_player::Mouse _mouse; /* REM */ 
 		Dynamic _onClick; /* REM */ 
 	Dynamic &_onClick_dyn() { return _onClick;}
-		Dynamic onClick; /* REM */ 
-	Dynamic &onClick_dyn() { return onClick;}
+		Dynamic onclick; /* REM */ 
+	Dynamic &onclick_dyn() { return onclick;}
 		Dynamic _onMouseDown; /* REM */ 
 	Dynamic &_onMouseDown_dyn() { return _onMouseDown;}
-		Dynamic onMouseDown; /* REM */ 
-	Dynamic &onMouseDown_dyn() { return onMouseDown;}
+		Dynamic onmousedown; /* REM */ 
+	Dynamic &onmousedown_dyn() { return onmousedown;}
 		Dynamic _onMouseUp; /* REM */ 
 	Dynamic &_onMouseUp_dyn() { return _onMouseUp;}
-		Dynamic onMouseUp; /* REM */ 
-	Dynamic &onMouseUp_dyn() { return onMouseUp;}
+		Dynamic onmouseup; /* REM */ 
+	Dynamic &onmouseup_dyn() { return onmouseup;}
 		Dynamic _onMouseOver; /* REM */ 
 	Dynamic &_onMouseOver_dyn() { return _onMouseOver;}
-		Dynamic onMouseOver; /* REM */ 
-	Dynamic &onMouseOver_dyn() { return onMouseOver;}
+		Dynamic onmouseover; /* REM */ 
+	Dynamic &onmouseover_dyn() { return onmouseover;}
 		Dynamic _onMouseOut; /* REM */ 
 	Dynamic &_onMouseOut_dyn() { return _onMouseOut;}
-		Dynamic onMouseOut; /* REM */ 
-	Dynamic &onMouseOut_dyn() { return onMouseOut;}
+		Dynamic onmouseout; /* REM */ 
+	Dynamic &onmouseout_dyn() { return onmouseout;}
 		Dynamic _onMouseMove; /* REM */ 
 	Dynamic &_onMouseMove_dyn() { return _onMouseMove;}
-		Dynamic onMouseMove; /* REM */ 
-	Dynamic &onMouseMove_dyn() { return onMouseMove;}
+		Dynamic onmousemove; /* REM */ 
+	Dynamic &onmousemove_dyn() { return onmousemove;}
 		::cocktail::port::flash_player::Keyboard _keyboard; /* REM */ 
 		Dynamic _onKeyDown; /* REM */ 
 	Dynamic &_onKeyDown_dyn() { return _onKeyDown;}
-		Dynamic onKeyDown; /* REM */ 
-	Dynamic &onKeyDown_dyn() { return onKeyDown;}
+		Dynamic onkeydown; /* REM */ 
+	Dynamic &onkeydown_dyn() { return onkeydown;}
 		Dynamic _onKeyUp; /* REM */ 
 	Dynamic &_onKeyUp_dyn() { return _onKeyUp;}
-		Dynamic onKeyUp; /* REM */ 
-	Dynamic &onKeyUp_dyn() { return onKeyUp;}
+		Dynamic onkeyup; /* REM */ 
+	Dynamic &onkeyup_dyn() { return onkeyup;}
 		Dynamic _tabIndex; /* REM */ 
 		Dynamic tabIndex; /* REM */ 
 		bool isDefaultFocusable; /* REM */ 
 		Dynamic _onFocus; /* REM */ 
 	Dynamic &_onFocus_dyn() { return _onFocus;}
-		Dynamic onFocus; /* REM */ 
-	Dynamic &onFocus_dyn() { return onFocus;}
+		Dynamic onfocus; /* REM */ 
+	Dynamic &onfocus_dyn() { return onfocus;}
 		Dynamic _onBlur; /* REM */ 
 	Dynamic &_onBlur_dyn() { return _onBlur;}
-		Dynamic onBlur; /* REM */ 
-	Dynamic &onBlur_dyn() { return onBlur;}
+		Dynamic onblur; /* REM */ 
+	Dynamic &onblur_dyn() { return onblur;}
 		Dynamic _onScroll; /* REM */ 
 	Dynamic &_onScroll_dyn() { return _onScroll;}
-		Dynamic onScroll; /* REM */ 
-	Dynamic &onScroll_dyn() { return onScroll;}
+		Dynamic onscroll; /* REM */ 
+	Dynamic &onscroll_dyn() { return onscroll;}
 		int scrollTop; /* REM */ 
 		int scrollLeft; /* REM */ 
 		int scrollHeight; /* REM */ 
 		int scrollWidth; /* REM */ 
 		Dynamic _nativeElement; /* REM */ 
 		Dynamic nativeElement; /* REM */ 
-		::cocktail::core::dom::Attr _id; /* REM */ 
 		::String id; /* REM */ 
+		::String innerHTML; /* REM */ 
 		::cocktail::port::flash_player::HTMLElement offsetParent; /* REM */ 
 		int offsetWidth; /* REM */ 
 		int offsetHeight; /* REM */ 
@@ -117,10 +115,10 @@ class AbstractHTMLElement_obj : public ::cocktail::core::dom::Element_obj{
 		int clientHeight; /* REM */ 
 		int clientLeft; /* REM */ 
 		int clientTop; /* REM */ 
-		::cocktail::port::flash_player::CoreStyle _coreStyle; /* REM */ 
-		::cocktail::port::flash_player::CoreStyle coreStyle; /* REM */ 
-		::cocktail::core::style::adapter::Style _style; /* REM */ 
-		::cocktail::core::style::adapter::Style style; /* REM */ 
+		::cocktail::core::style::CoreStyle _coreStyle; /* REM */ 
+		::cocktail::core::style::CoreStyle coreStyle; /* REM */ 
+		::cocktail::core::style::adapter::AbstractStyle _style; /* REM */ 
+		::cocktail::core::style::adapter::AbstractStyle style; /* REM */ 
 		virtual Void init( );
 		Dynamic init_dyn();
 
@@ -283,6 +281,12 @@ class AbstractHTMLElement_obj : public ::cocktail::core::dom::Element_obj{
 		virtual ::String set_id( ::String value);
 		Dynamic set_id_dyn();
 
+		virtual ::String set_innerHTML( ::String value);
+		Dynamic set_innerHTML_dyn();
+
+		virtual ::String get_innerHTML( );
+		Dynamic get_innerHTML_dyn();
+
 		virtual ::cocktail::port::flash_player::HTMLElement get_offsetParent( );
 		Dynamic get_offsetParent_dyn();
 
@@ -310,10 +314,10 @@ class AbstractHTMLElement_obj : public ::cocktail::core::dom::Element_obj{
 		virtual int get_clientLeft( );
 		Dynamic get_clientLeft_dyn();
 
-		virtual ::cocktail::port::flash_player::CoreStyle get_coreStyle( );
+		virtual ::cocktail::core::style::CoreStyle get_coreStyle( );
 		Dynamic get_coreStyle_dyn();
 
-		virtual ::cocktail::core::style::adapter::Style get_style( );
+		virtual ::cocktail::core::style::adapter::AbstractStyle get_style( );
 		Dynamic get_style_dyn();
 
 		static ::String HTML_ID_ATTRIBUTE; /* REM */ 

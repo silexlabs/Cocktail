@@ -6,7 +6,7 @@
 #endif
 
 HX_DECLARE_CLASS3(cocktail,core,geom,Matrix)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,Translation)
 HX_DECLARE_CLASS4(cocktail,core,style,computer,VisualEffectStylesComputer)
 namespace cocktail{
@@ -34,19 +34,19 @@ class VisualEffectStylesComputer_obj : public hx::Object{
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("VisualEffectStylesComputer"); }
 
-		static Void compute( ::cocktail::core::style::AbstractCoreStyle style);
+		static Void compute( ::cocktail::core::style::CoreStyle style);
 		static Dynamic compute_dyn();
 
-		static bool getComputedVisibility( ::cocktail::core::style::AbstractCoreStyle style);
+		static bool getComputedVisibility( ::cocktail::core::style::CoreStyle style);
 		static Dynamic getComputedVisibility_dyn();
 
-		static Dynamic getComputedTransformOrigin( ::cocktail::core::style::AbstractCoreStyle style);
+		static Dynamic getComputedTransformOrigin( ::cocktail::core::style::CoreStyle style);
 		static Dynamic getComputedTransformOrigin_dyn();
 
-		static ::cocktail::core::geom::Matrix getComputedTransform( ::cocktail::core::style::AbstractCoreStyle style);
+		static ::cocktail::core::geom::Matrix getComputedTransform( ::cocktail::core::style::CoreStyle style);
 		static Dynamic getComputedTransform_dyn();
 
-		static double getComputedTranslation( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::style::Translation translation,int percentReference);
+		static double getComputedTranslation( ::cocktail::core::style::CoreStyle style,::cocktail::core::style::Translation translation,int percentReference);
 		static Dynamic getComputedTranslation_dyn();
 
 };

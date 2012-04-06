@@ -18,8 +18,8 @@
 #ifndef INCLUDED_cocktail_core_renderer_FlowBoxRenderer
 #include <cocktail/core/renderer/FlowBoxRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_floats_FloatsManager
 #include <cocktail/core/style/floats/FloatsManager.h>
@@ -29,9 +29,6 @@
 #endif
 #ifndef INCLUDED_cocktail_core_style_formatter_FormattingContext
 #include <cocktail/core/style/formatter/FormattingContext.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
@@ -79,7 +76,7 @@ Void BlockFormattingContext_obj::doFormat2( ::cocktail::core::renderer::ElementR
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",47)
 		int currentAddedSiblingsHeight = (int)0;
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",50)
-		hx::AddEq(concatenatedX,elementRenderer->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginLeft")));
+		hx::AddEq(concatenatedX,(elementRenderer->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginLeft")) + elementRenderer->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingLeft"))));
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",52)
 		{
 			HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",52)
@@ -114,17 +111,17 @@ Void BlockFormattingContext_obj::doFormat2( ::cocktail::core::renderer::ElementR
 						this->doFormat2(child,concatenatedX);
 					}
 				}
-				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",82)
+				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",83)
 				int marginBottom = this->getCollapsedMarginBottom(child);
-				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",86)
-				double x = ((this->_formattingContextData->__Field(HX_CSTRING("x")) + concatenatedX) + child->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginLeft")));
 				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",87)
-				double y = ((this->_formattingContextData->__Field(HX_CSTRING("y")) + marginTop) + elementRenderer->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingTop")));
+				double x = (concatenatedX + child->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginLeft")));
 				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",88)
-				Dynamic computedStyle = child->getCoreStyle()->getComputedStyle();
+				double y = ((this->_formattingContextData->__Field(HX_CSTRING("y")) + marginTop) + elementRenderer->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingTop")));
 				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",89)
-				double width = ((computedStyle->__Field(HX_CSTRING("width")) + computedStyle->__Field(HX_CSTRING("paddingLeft"))) + computedStyle->__Field(HX_CSTRING("paddingRight")));
+				Dynamic computedStyle = child->getCoreStyle()->getComputedStyle();
 				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",90)
+				double width = ((computedStyle->__Field(HX_CSTRING("width")) + computedStyle->__Field(HX_CSTRING("paddingLeft"))) + computedStyle->__Field(HX_CSTRING("paddingRight")));
+				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",91)
 				double height = ((computedStyle->__Field(HX_CSTRING("height")) + computedStyle->__Field(HX_CSTRING("paddingTop"))) + computedStyle->__Field(HX_CSTRING("paddingBottom")));
 				struct _Function_3_1{
 					inline static Dynamic Block( double &y,double &width,double &x,double &height){
@@ -136,15 +133,15 @@ Void BlockFormattingContext_obj::doFormat2( ::cocktail::core::renderer::ElementR
 						return __result;
 					}
 				};
-				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",92)
+				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",93)
 				child->setBounds(_Function_3_1::Block(y,width,x,height));
-				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",99)
-				hx::AddEq(this->_formattingContextData->__FieldRef(HX_CSTRING("y")),((::Math_obj::round(child->getBounds()->__Field(HX_CSTRING("height"))) + marginTop) + marginBottom));
 				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",100)
+				hx::AddEq(this->_formattingContextData->__FieldRef(HX_CSTRING("y")),((::Math_obj::round(child->getBounds()->__Field(HX_CSTRING("height"))) + marginTop) + marginBottom));
+				HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",101)
 				hx::AddEq(currentAddedSiblingsHeight,((::Math_obj::round(child->getBounds()->__Field(HX_CSTRING("height"))) + marginTop) + marginBottom));
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",104)
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",105)
 		hx::SubEq(this->_formattingContextData->__FieldRef(HX_CSTRING("y")),currentAddedSiblingsHeight);
 	}
 return null();
@@ -155,23 +152,23 @@ HX_DEFINE_DYNAMIC_FUNC2(BlockFormattingContext_obj,doFormat2,(void))
 
 int BlockFormattingContext_obj::getCollapsedMarginBottom( ::cocktail::core::renderer::ElementRenderer child){
 	HX_SOURCE_PUSH("BlockFormattingContext_obj::getCollapsedMarginBottom")
-	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",109)
+	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",110)
 	int marginBottom = child->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginBottom"));
-	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",111)
+	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",112)
 	if (((child->get_nextSibling() != null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",113)
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",114)
 		::cocktail::core::renderer::ElementRenderer nextSibling = child->get_nextSibling();
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",115)
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",116)
 		if (((nextSibling->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginTop")) > marginBottom))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",116)
+			HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",117)
 			marginBottom = (int)0;
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",120)
+			HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",121)
 			hx::SubEq(marginBottom,nextSibling->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("marginTop")));
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",125)
+	HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",126)
 	return marginBottom;
 }
 
@@ -181,17 +178,17 @@ HX_DEFINE_DYNAMIC_FUNC1(BlockFormattingContext_obj,getCollapsedMarginBottom,retu
 Void BlockFormattingContext_obj::insertFloat( ::cocktail::core::renderer::ElementRenderer element){
 {
 		HX_SOURCE_PUSH("BlockFormattingContext_obj::insertFloat")
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",134)
-		::cocktail::core::renderer::FlowBoxRenderer parent = element->get_parentNode();
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",135)
+		::cocktail::core::renderer::FlowBoxRenderer parent = element->get_parentNode();
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",136)
 		Dynamic floatData = this->_floatsManager->computeFloatData(element,this->_formattingContextData,::Math_obj::round(parent->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("width"))));
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",137)
-		double x = (floatData->__Field(HX_CSTRING("x")) + parent->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingLeft")));
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",138)
-		double y = (floatData->__Field(HX_CSTRING("y")) + parent->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingTop")));
+		double x = (floatData->__Field(HX_CSTRING("x")) + parent->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingLeft")));
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",139)
-		double width = floatData->__Field(HX_CSTRING("width"));
+		double y = (floatData->__Field(HX_CSTRING("y")) + parent->getCoreStyle()->getComputedStyle()->__Field(HX_CSTRING("paddingTop")));
 		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",140)
+		double width = floatData->__Field(HX_CSTRING("width"));
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",141)
 		double height = floatData->__Field(HX_CSTRING("height"));
 		struct _Function_1_1{
 			inline static Dynamic Block( double &y,double &width,double &x,double &height){
@@ -203,7 +200,7 @@ Void BlockFormattingContext_obj::insertFloat( ::cocktail::core::renderer::Elemen
 				return __result;
 			}
 		};
-		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",142)
+		HX_SOURCE_POS("../../src/cocktail/core/style/formatter/BlockFormattingContext.hx",143)
 		element->setBounds(_Function_1_1::Block(y,width,x,height));
 	}
 return null();

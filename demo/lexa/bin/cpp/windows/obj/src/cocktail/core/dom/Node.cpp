@@ -1,5 +1,8 @@
 #include <hxcpp.h>
 
+#ifndef INCLUDED_cocktail_core_dom_Document
+#include <cocktail/core/dom/Document.h>
+#endif
 #ifndef INCLUDED_cocktail_core_dom_NamedNodeMap
 #include <cocktail/core/dom/NamedNodeMap.h>
 #endif
@@ -13,7 +16,7 @@ namespace dom{
 Void Node_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",160)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",169)
 	this->_childNodes = Array_obj< ::cocktail::core::dom::Node >::__new();
 }
 ;
@@ -35,29 +38,29 @@ Dynamic Node_obj::__Create(hx::DynamicArray inArgs)
 
 ::cocktail::core::dom::Node Node_obj::removeChild( ::cocktail::core::dom::Node oldChild){
 	HX_SOURCE_PUSH("Node_obj::removeChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",177)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",186)
 	oldChild->set_parentNode(null());
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",179)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",188)
 	Array< ::cocktail::core::dom::Node > newChildNodes = Array_obj< ::cocktail::core::dom::Node >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",180)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",189)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",180)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",189)
 		int _g1 = (int)0;
 		int _g = this->_childNodes->length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",180)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",189)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",180)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",189)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",182)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",191)
 			if (((this->_childNodes->__get(i) != oldChild))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",183)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",192)
 				newChildNodes->push(this->_childNodes->__get(i));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",187)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",196)
 	this->_childNodes = newChildNodes;
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",189)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",198)
 	return oldChild;
 }
 
@@ -66,13 +69,13 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,removeChild,return )
 
 ::cocktail::core::dom::Node Node_obj::appendChild( ::cocktail::core::dom::Node newChild){
 	HX_SOURCE_PUSH("Node_obj::appendChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",204)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",213)
 	this->removeFromParentIfNecessary(newChild);
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",206)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",215)
 	newChild->set_parentNode(hx::ObjectPtr<OBJ_>(this));
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",207)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",216)
 	this->_childNodes->push(newChild);
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",209)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",218)
 	return newChild;
 }
 
@@ -81,38 +84,38 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,appendChild,return )
 
 ::cocktail::core::dom::Node Node_obj::insertBefore( ::cocktail::core::dom::Node newChild,::cocktail::core::dom::Node refChild){
 	HX_SOURCE_PUSH("Node_obj::insertBefore")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",226)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",235)
 	if (((refChild == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",227)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",236)
 		this->appendChild(newChild);
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",232)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",241)
 		this->removeFromParentIfNecessary(newChild);
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",234)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",243)
 		Array< ::cocktail::core::dom::Node > newChildNodes = Array_obj< ::cocktail::core::dom::Node >::__new();
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",236)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",245)
 		{
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",236)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",245)
 			int _g1 = (int)0;
 			int _g = this->_childNodes->length;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",236)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",245)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",236)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",245)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",238)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",247)
 				if (((this->_childNodes->__get(i) == refChild))){
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",239)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",248)
 					newChildNodes->push(newChild);
 				}
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",242)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",251)
 				newChildNodes->push(this->_childNodes->__get(i));
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",245)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",254)
 		this->_childNodes = newChildNodes;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",248)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",257)
 	return newChild;
 }
 
@@ -121,31 +124,31 @@ HX_DEFINE_DYNAMIC_FUNC2(Node_obj,insertBefore,return )
 
 ::cocktail::core::dom::Node Node_obj::replaceChild( ::cocktail::core::dom::Node newChild,::cocktail::core::dom::Node oldChild){
 	HX_SOURCE_PUSH("Node_obj::replaceChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",264)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",273)
 	Array< ::cocktail::core::dom::Node > newChildNodes = Array_obj< ::cocktail::core::dom::Node >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",266)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",275)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",266)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",275)
 		int _g1 = (int)0;
 		int _g = this->_childNodes->length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",266)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",275)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",266)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",275)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",268)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",277)
 			if (((this->_childNodes->__get(i) == oldChild))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",269)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",278)
 				newChildNodes->push(newChild);
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",273)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",282)
 				newChildNodes->push(this->_childNodes->__get(i));
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",278)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",287)
 	this->_childNodes = newChildNodes;
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",280)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",289)
 	return oldChild;
 }
 
@@ -154,7 +157,7 @@ HX_DEFINE_DYNAMIC_FUNC2(Node_obj,replaceChild,return )
 
 bool Node_obj::isSameNode( ::cocktail::core::dom::Node other){
 	HX_SOURCE_PUSH("Node_obj::isSameNode")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",297)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",306)
 	return (other == hx::ObjectPtr<OBJ_>(this));
 }
 
@@ -163,7 +166,7 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,isSameNode,return )
 
 bool Node_obj::hasChildNodes( ){
 	HX_SOURCE_PUSH("Node_obj::hasChildNodes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",305)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",314)
 	return (this->_childNodes->length > (int)0);
 }
 
@@ -172,7 +175,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,hasChildNodes,return )
 
 bool Node_obj::hasAttributes( ){
 	HX_SOURCE_PUSH("Node_obj::hasAttributes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",314)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",323)
 	return false;
 }
 
@@ -182,11 +185,11 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,hasAttributes,return )
 Void Node_obj::removeFromParentIfNecessary( ::cocktail::core::dom::Node newChild){
 {
 		HX_SOURCE_PUSH("Node_obj::removeFromParentIfNecessary")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",327)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",336)
 		if (((newChild->get_parentNode() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",330)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",339)
 			::cocktail::core::dom::Node parentNode = newChild->get_parentNode();
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",331)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",340)
 			parentNode->removeChild(newChild);
 		}
 	}
@@ -198,13 +201,13 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,removeFromParentIfNecessary,(void))
 
 ::cocktail::core::dom::Node Node_obj::get_firstChild( ){
 	HX_SOURCE_PUSH("Node_obj::get_firstChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",340)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",349)
 	if (((this->hasChildNodes() == true))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",342)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",351)
 		return this->_childNodes->__get((int)0);
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",346)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",355)
 		return null();
 	}
 }
@@ -214,13 +217,13 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_firstChild,return )
 
 ::cocktail::core::dom::Node Node_obj::get_lastChild( ){
 	HX_SOURCE_PUSH("Node_obj::get_lastChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",352)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",361)
 	if (((this->hasChildNodes() == true))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",354)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",363)
 		return this->_childNodes->__get((this->_childNodes->length - (int)1));
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",358)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",367)
 		return null();
 	}
 }
@@ -230,30 +233,30 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_lastChild,return )
 
 ::cocktail::core::dom::Node Node_obj::get_nextSibling( ){
 	HX_SOURCE_PUSH("Node_obj::get_nextSibling")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",367)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",376)
 	if (((this->_parentNode == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",368)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",377)
 		return null();
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",372)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",381)
 		if (((this->_parentNode->get_lastChild() != hx::ObjectPtr<OBJ_>(this)))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",376)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",385)
 			int _g1 = (int)0;
 			int _g = this->_parentNode->get_childNodes()->length;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",376)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",385)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",376)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",385)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",378)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",387)
 				if (((this->isSameNode(this->_parentNode->get_childNodes()->__get(i)) == true))){
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",379)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",388)
 					return this->_parentNode->get_childNodes()->__get((i + (int)1));
 				}
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",387)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",396)
 	return null();
 }
 
@@ -262,30 +265,30 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_nextSibling,return )
 
 ::cocktail::core::dom::Node Node_obj::get_previousSibling( ){
 	HX_SOURCE_PUSH("Node_obj::get_previousSibling")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",395)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",404)
 	if (((this->_parentNode == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",396)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",405)
 		return null();
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",399)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",408)
 		if (((this->_parentNode->get_firstChild() != hx::ObjectPtr<OBJ_>(this)))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",401)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",410)
 			int _g1 = (int)0;
 			int _g = this->_parentNode->get_childNodes()->length;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",401)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",410)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",401)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",410)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",403)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",412)
 				if (((this->isSameNode(this->_parentNode->get_childNodes()->__get(i)) == true))){
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",404)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",413)
 					return this->_parentNode->get_childNodes()->__get((i - (int)1));
 				}
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",410)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",419)
 	return null();
 }
 
@@ -294,7 +297,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_previousSibling,return )
 
 int Node_obj::get_nodeType( ){
 	HX_SOURCE_PUSH("Node_obj::get_nodeType")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",414)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",423)
 	return (int)-1;
 }
 
@@ -303,7 +306,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_nodeType,return )
 
 ::cocktail::core::dom::Node Node_obj::get_parentNode( ){
 	HX_SOURCE_PUSH("Node_obj::get_parentNode")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",419)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",428)
 	return this->_parentNode;
 }
 
@@ -312,7 +315,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_parentNode,return )
 
 ::cocktail::core::dom::Node Node_obj::set_parentNode( ::cocktail::core::dom::Node value){
 	HX_SOURCE_PUSH("Node_obj::set_parentNode")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",424)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",433)
 	return this->_parentNode = value;
 }
 
@@ -321,7 +324,7 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,set_parentNode,return )
 
 Array< ::cocktail::core::dom::Node > Node_obj::get_childNodes( ){
 	HX_SOURCE_PUSH("Node_obj::get_childNodes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",429)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",438)
 	return this->_childNodes;
 }
 
@@ -330,7 +333,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_childNodes,return )
 
 ::String Node_obj::get_nodeValue( ){
 	HX_SOURCE_PUSH("Node_obj::get_nodeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",434)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",443)
 	return null();
 }
 
@@ -339,7 +342,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_nodeValue,return )
 
 ::String Node_obj::set_nodeValue( ::String value){
 	HX_SOURCE_PUSH("Node_obj::set_nodeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",439)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",448)
 	return value;
 }
 
@@ -348,7 +351,7 @@ HX_DEFINE_DYNAMIC_FUNC1(Node_obj,set_nodeValue,return )
 
 ::String Node_obj::get_nodeName( ){
 	HX_SOURCE_PUSH("Node_obj::get_nodeName")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",444)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",453)
 	return null();
 }
 
@@ -357,12 +360,30 @@ HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_nodeName,return )
 
 ::cocktail::core::dom::NamedNodeMap Node_obj::get_attributes( ){
 	HX_SOURCE_PUSH("Node_obj::get_attributes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",449)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",458)
 	return null();
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_attributes,return )
+
+::cocktail::core::dom::Document Node_obj::get_ownerDocument( ){
+	HX_SOURCE_PUSH("Node_obj::get_ownerDocument")
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",463)
+	return this->_ownerDocument;
+}
+
+
+HX_DEFINE_DYNAMIC_FUNC0(Node_obj,get_ownerDocument,return )
+
+::cocktail::core::dom::Document Node_obj::set_ownerDocument( ::cocktail::core::dom::Document value){
+	HX_SOURCE_PUSH("Node_obj::set_ownerDocument")
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Node.hx",468)
+	return this->_ownerDocument = value;
+}
+
+
+HX_DEFINE_DYNAMIC_FUNC1(Node_obj,set_ownerDocument,return )
 
 int Node_obj::ELEMENT_NODE;
 
@@ -409,6 +430,8 @@ void Node_obj::__Mark(HX_MARK_PARAMS)
 	HX_MARK_MEMBER_NAME(previousSibling,"previousSibling");
 	HX_MARK_MEMBER_NAME(_attributes,"_attributes");
 	HX_MARK_MEMBER_NAME(attributes,"attributes");
+	HX_MARK_MEMBER_NAME(_ownerDocument,"_ownerDocument");
+	HX_MARK_MEMBER_NAME(ownerDocument,"ownerDocument");
 	HX_MARK_END_CLASS();
 }
 
@@ -451,6 +474,7 @@ Dynamic Node_obj::__Field(const ::String &inName)
 	case 13:
 		if (HX_FIELD_EQ(inName,"DOCUMENT_NODE") ) { return DOCUMENT_NODE; }
 		if (HX_FIELD_EQ(inName,"NOTATION_NODE") ) { return NOTATION_NODE; }
+		if (HX_FIELD_EQ(inName,"ownerDocument") ) { return get_ownerDocument(); }
 		if (HX_FIELD_EQ(inName,"hasChildNodes") ) { return hasChildNodes_dyn(); }
 		if (HX_FIELD_EQ(inName,"hasAttributes") ) { return hasAttributes_dyn(); }
 		if (HX_FIELD_EQ(inName,"get_lastChild") ) { return get_lastChild_dyn(); }
@@ -459,6 +483,7 @@ Dynamic Node_obj::__Field(const ::String &inName)
 		break;
 	case 14:
 		if (HX_FIELD_EQ(inName,"ATTRIBUTE_NODE") ) { return ATTRIBUTE_NODE; }
+		if (HX_FIELD_EQ(inName,"_ownerDocument") ) { return _ownerDocument; }
 		if (HX_FIELD_EQ(inName,"get_firstChild") ) { return get_firstChild_dyn(); }
 		if (HX_FIELD_EQ(inName,"get_parentNode") ) { return get_parentNode_dyn(); }
 		if (HX_FIELD_EQ(inName,"set_parentNode") ) { return set_parentNode_dyn(); }
@@ -468,6 +493,10 @@ Dynamic Node_obj::__Field(const ::String &inName)
 	case 15:
 		if (HX_FIELD_EQ(inName,"previousSibling") ) { return get_previousSibling(); }
 		if (HX_FIELD_EQ(inName,"get_nextSibling") ) { return get_nextSibling_dyn(); }
+		break;
+	case 17:
+		if (HX_FIELD_EQ(inName,"get_ownerDocument") ) { return get_ownerDocument_dyn(); }
+		if (HX_FIELD_EQ(inName,"set_ownerDocument") ) { return set_ownerDocument_dyn(); }
 		break;
 	case 18:
 		if (HX_FIELD_EQ(inName,"CDATA_SECTION_NODE") ) { return CDATA_SECTION_NODE; }
@@ -521,9 +550,11 @@ Dynamic Node_obj::__SetField(const ::String &inName,const Dynamic &inValue)
 	case 13:
 		if (HX_FIELD_EQ(inName,"DOCUMENT_NODE") ) { DOCUMENT_NODE=inValue.Cast< int >(); return inValue; }
 		if (HX_FIELD_EQ(inName,"NOTATION_NODE") ) { NOTATION_NODE=inValue.Cast< int >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"ownerDocument") ) { return set_ownerDocument(inValue); }
 		break;
 	case 14:
 		if (HX_FIELD_EQ(inName,"ATTRIBUTE_NODE") ) { ATTRIBUTE_NODE=inValue.Cast< int >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"_ownerDocument") ) { _ownerDocument=inValue.Cast< ::cocktail::core::dom::Document >(); return inValue; }
 		break;
 	case 15:
 		if (HX_FIELD_EQ(inName,"previousSibling") ) { previousSibling=inValue.Cast< ::cocktail::core::dom::Node >(); return inValue; }
@@ -559,6 +590,8 @@ void Node_obj::__GetFields(Array< ::String> &outFields)
 	outFields->push(HX_CSTRING("previousSibling"));
 	outFields->push(HX_CSTRING("_attributes"));
 	outFields->push(HX_CSTRING("attributes"));
+	outFields->push(HX_CSTRING("_ownerDocument"));
+	outFields->push(HX_CSTRING("ownerDocument"));
 	super::__GetFields(outFields);
 };
 
@@ -591,6 +624,8 @@ static ::String sMemberFields[] = {
 	HX_CSTRING("previousSibling"),
 	HX_CSTRING("_attributes"),
 	HX_CSTRING("attributes"),
+	HX_CSTRING("_ownerDocument"),
+	HX_CSTRING("ownerDocument"),
 	HX_CSTRING("removeChild"),
 	HX_CSTRING("appendChild"),
 	HX_CSTRING("insertBefore"),
@@ -611,6 +646,8 @@ static ::String sMemberFields[] = {
 	HX_CSTRING("set_nodeValue"),
 	HX_CSTRING("get_nodeName"),
 	HX_CSTRING("get_attributes"),
+	HX_CSTRING("get_ownerDocument"),
+	HX_CSTRING("set_ownerDocument"),
 	String(null()) };
 
 static void sMarkStatics(HX_MARK_PARAMS) {

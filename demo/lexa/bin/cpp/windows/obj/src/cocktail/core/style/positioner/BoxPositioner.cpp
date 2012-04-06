@@ -18,17 +18,14 @@
 #ifndef INCLUDED_cocktail_core_renderer_ElementRenderer
 #include <cocktail/core/renderer/ElementRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_PositionOffset
 #include <cocktail/core/style/PositionOffset.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_positioner_BoxPositioner
 #include <cocktail/core/style/positioner/BoxPositioner.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>

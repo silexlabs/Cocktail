@@ -10,8 +10,7 @@ HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,dom,TextTokenValue)
 HX_DECLARE_CLASS3(cocktail,core,renderer,ElementRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,TextRenderer)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,CoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 namespace cocktail{
 namespace core{
 namespace renderer{
@@ -22,10 +21,10 @@ class TextRenderer_obj : public ::cocktail::core::renderer::ElementRenderer_obj{
 		typedef ::cocktail::core::renderer::ElementRenderer_obj super;
 		typedef TextRenderer_obj OBJ_;
 		TextRenderer_obj();
-		Void __construct(::cocktail::port::flash_player::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken);
+		Void __construct(::cocktail::core::style::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken);
 
 	public:
-		static hx::ObjectPtr< TextRenderer_obj > __new(::cocktail::port::flash_player::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken);
+		static hx::ObjectPtr< TextRenderer_obj > __new(::cocktail::core::style::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken);
 		static Dynamic __CreateEmpty();
 		static Dynamic __Create(hx::DynamicArray inArgs);
 		~TextRenderer_obj();

@@ -11,11 +11,11 @@ HX_DECLARE_CLASS3(cocktail,core,drawing,AbstractDrawingManager)
 HX_DECLARE_CLASS3(cocktail,core,resource,AbstractImageLoader)
 HX_DECLARE_CLASS3(cocktail,core,resource,AbstractMediaLoader)
 HX_DECLARE_CLASS3(cocktail,core,resource,AbstractResourceLoader)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,BackgroundClip)
 HX_DECLARE_CLASS3(cocktail,core,style,BackgroundImage)
 HX_DECLARE_CLASS3(cocktail,core,style,BackgroundOrigin)
 HX_DECLARE_CLASS3(cocktail,core,style,BackgroundSize)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,unit,CSSColor)
 HX_DECLARE_CLASS3(cocktail,core,unit,GradientValue)
 HX_DECLARE_CLASS3(cocktail,port,flash_player,DrawingManager)
@@ -48,22 +48,22 @@ class BackgroundManager_obj : public hx::Object{
 		virtual Void dispose( );
 		Dynamic dispose_dyn();
 
-		virtual Dynamic render( Dynamic backgroundBox,::cocktail::core::style::AbstractCoreStyle style);
+		virtual Dynamic render( Dynamic backgroundBox,::cocktail::core::style::CoreStyle style);
 		Dynamic render_dyn();
 
-		virtual Dynamic drawBackgroundImage( Dynamic imageDeclaration,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
+		virtual Dynamic drawBackgroundImage( Dynamic imageDeclaration,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
 		Dynamic drawBackgroundImage_dyn();
 
-		virtual Void onBackgroundImageLoaded( Dynamic backgroundImageNativeElement,Dynamic loadedBackgroundImage,::cocktail::core::resource::AbstractImageLoader imageLoader,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
+		virtual Void onBackgroundImageLoaded( Dynamic backgroundImageNativeElement,Dynamic loadedBackgroundImage,::cocktail::core::resource::AbstractImageLoader imageLoader,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
 		Dynamic onBackgroundImageLoaded_dyn();
 
-		virtual Void onBackgroundImageLoadError( ::String error,::cocktail::core::unit::CSSColor backgroundColor,Dynamic backgroundImageNativeElement,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
+		virtual Void onBackgroundImageLoadError( ::String error,::cocktail::core::unit::CSSColor backgroundColor,Dynamic backgroundImageNativeElement,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
 		Dynamic onBackgroundImageLoadError_dyn();
 
-		virtual Void drawBackgroundColor( ::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundColor,Dynamic backgroundColorNativeElement,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
+		virtual Void drawBackgroundColor( ::cocktail::core::style::CoreStyle style,Dynamic backgroundColor,Dynamic backgroundColorNativeElement,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
 		Dynamic drawBackgroundColor_dyn();
 
-		virtual Dynamic drawBackgroundGradient( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::unit::GradientValue gradientValue,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
+		virtual Dynamic drawBackgroundGradient( ::cocktail::core::style::CoreStyle style,::cocktail::core::unit::GradientValue gradientValue,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage);
 		Dynamic drawBackgroundGradient_dyn();
 
 		virtual Dynamic getBackgroundPaintingBox( Dynamic computedBackgroundBox);

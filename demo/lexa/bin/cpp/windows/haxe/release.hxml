@@ -1,6 +1,7 @@
 -main ApplicationMain 
 -D nme_install_tool
 -cp ../../src
+-cp ../../lib
 -lib nme
 -D desktop
 -cp bin/cpp/windows/haxe

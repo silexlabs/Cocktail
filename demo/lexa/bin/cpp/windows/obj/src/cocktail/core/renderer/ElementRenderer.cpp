@@ -9,17 +9,14 @@
 #ifndef INCLUDED_cocktail_core_renderer_LayerRenderer
 #include <cocktail/core/renderer/LayerRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void ElementRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void ElementRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",69)
@@ -46,7 +43,7 @@ Void ElementRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle 
 ElementRenderer_obj::~ElementRenderer_obj() { }
 
 Dynamic ElementRenderer_obj::__CreateEmpty() { return  new ElementRenderer_obj; }
-hx::ObjectPtr< ElementRenderer_obj > ElementRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< ElementRenderer_obj > ElementRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< ElementRenderer_obj > result = new ElementRenderer_obj();
 	result->__construct(style);
 	return result;}
@@ -180,9 +177,18 @@ bool ElementRenderer_obj::isInitialContainer( ){
 
 HX_DEFINE_DYNAMIC_FUNC0(ElementRenderer_obj,isInitialContainer,return )
 
+bool ElementRenderer_obj::isDisplayed( ){
+	HX_SOURCE_PUSH("ElementRenderer_obj::isDisplayed")
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",166)
+	return this->_coreStyle->isDisplayed();
+}
+
+
+HX_DEFINE_DYNAMIC_FUNC0(ElementRenderer_obj,isDisplayed,return )
+
 ::cocktail::core::renderer::LayerRenderer ElementRenderer_obj::setLayerRenderer( ::cocktail::core::renderer::LayerRenderer value){
 	HX_SOURCE_PUSH("ElementRenderer_obj::setLayerRenderer")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",170)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",175)
 	return this->_layerRenderer = value;
 }
 
@@ -191,16 +197,16 @@ HX_DEFINE_DYNAMIC_FUNC1(ElementRenderer_obj,setLayerRenderer,return )
 
 ::cocktail::core::renderer::LayerRenderer ElementRenderer_obj::getLayerRenderer( ){
 	HX_SOURCE_PUSH("ElementRenderer_obj::getLayerRenderer")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",175)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",180)
 	return this->_layerRenderer;
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC0(ElementRenderer_obj,getLayerRenderer,return )
 
-::cocktail::port::flash_player::CoreStyle ElementRenderer_obj::getCoreStyle( ){
+::cocktail::core::style::CoreStyle ElementRenderer_obj::getCoreStyle( ){
 	HX_SOURCE_PUSH("ElementRenderer_obj::getCoreStyle")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",180)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",185)
 	return this->_coreStyle;
 }
 
@@ -209,7 +215,7 @@ HX_DEFINE_DYNAMIC_FUNC0(ElementRenderer_obj,getCoreStyle,return )
 
 Dynamic ElementRenderer_obj::getBounds( ){
 	HX_SOURCE_PUSH("ElementRenderer_obj::getBounds")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",185)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",190)
 	return this->_bounds;
 }
 
@@ -218,7 +224,7 @@ HX_DEFINE_DYNAMIC_FUNC0(ElementRenderer_obj,getBounds,return )
 
 Dynamic ElementRenderer_obj::setBounds( Dynamic value){
 	HX_SOURCE_PUSH("ElementRenderer_obj::setBounds")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",190)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/ElementRenderer.hx",195)
 	return this->_bounds = value;
 }
 
@@ -270,6 +276,9 @@ Dynamic ElementRenderer_obj::__Field(const ::String &inName)
 		if (HX_FIELD_EQ(inName,"isEmbedded") ) { return isEmbedded_dyn(); }
 		if (HX_FIELD_EQ(inName,"isLineFeed") ) { return isLineFeed_dyn(); }
 		break;
+	case 11:
+		if (HX_FIELD_EQ(inName,"isDisplayed") ) { return isDisplayed_dyn(); }
+		break;
 	case 12:
 		if (HX_FIELD_EQ(inName,"isPositioned") ) { return isPositioned_dyn(); }
 		if (HX_FIELD_EQ(inName,"getCoreStyle") ) { return getCoreStyle_dyn(); }
@@ -307,10 +316,10 @@ Dynamic ElementRenderer_obj::__SetField(const ::String &inName,const Dynamic &in
 		if (HX_FIELD_EQ(inName,"_bounds") ) { _bounds=inValue.Cast< Dynamic >(); return inValue; }
 		break;
 	case 9:
-		if (HX_FIELD_EQ(inName,"coreStyle") ) { coreStyle=inValue.Cast< ::cocktail::port::flash_player::CoreStyle >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"coreStyle") ) { coreStyle=inValue.Cast< ::cocktail::core::style::CoreStyle >(); return inValue; }
 		break;
 	case 10:
-		if (HX_FIELD_EQ(inName,"_coreStyle") ) { _coreStyle=inValue.Cast< ::cocktail::port::flash_player::CoreStyle >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"_coreStyle") ) { _coreStyle=inValue.Cast< ::cocktail::core::style::CoreStyle >(); return inValue; }
 		break;
 	case 13:
 		if (HX_FIELD_EQ(inName,"layerRenderer") ) { return setLayerRenderer(inValue); }
@@ -355,6 +364,7 @@ static ::String sMemberFields[] = {
 	HX_CSTRING("isLineFeed"),
 	HX_CSTRING("isTab"),
 	HX_CSTRING("isInitialContainer"),
+	HX_CSTRING("isDisplayed"),
 	HX_CSTRING("setLayerRenderer"),
 	HX_CSTRING("getLayerRenderer"),
 	HX_CSTRING("getCoreStyle"),

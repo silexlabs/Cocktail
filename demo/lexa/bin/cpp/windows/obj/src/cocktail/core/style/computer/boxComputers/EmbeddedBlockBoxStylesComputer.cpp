@@ -18,8 +18,8 @@
 #ifndef INCLUDED_cocktail_core_html_EmbeddedElement
 #include <cocktail/core/html/EmbeddedElement.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Dimension
 #include <cocktail/core/style/Dimension.h>
@@ -65,7 +65,7 @@ Dynamic EmbeddedBlockBoxStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-Void EmbeddedBlockBoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void EmbeddedBlockBoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("EmbeddedBlockBoxStylesComputer_obj::measureAutoWidth")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.hx",43)
@@ -81,7 +81,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedBlockBoxStylesComputer_obj,measureAutoWidth,(void))
 
-int EmbeddedBlockBoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int EmbeddedBlockBoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("EmbeddedBlockBoxStylesComputer_obj::getComputedAutoWidth")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.hx",58)
 	int ret = (int)0;
@@ -147,7 +147,7 @@ int EmbeddedBlockBoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedBlockBoxStylesComputer_obj,getComputedAutoWidth,return )
 
-int EmbeddedBlockBoxStylesComputer_obj::getComputedAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int EmbeddedBlockBoxStylesComputer_obj::getComputedAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("EmbeddedBlockBoxStylesComputer_obj::getComputedAutoHeight")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.hx",135)
 	int ret = (int)0;

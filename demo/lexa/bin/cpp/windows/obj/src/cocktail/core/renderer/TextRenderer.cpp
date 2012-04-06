@@ -15,11 +15,8 @@
 #ifndef INCLUDED_cocktail_core_renderer_TextRenderer
 #include <cocktail/core/renderer/TextRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_nme_Lib
 #include <nme/Lib.h>
@@ -58,7 +55,7 @@ namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void TextRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken)
+Void TextRenderer_obj::__construct(::cocktail::core::style::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/TextRenderer.hx",39)
@@ -79,7 +76,7 @@ Void TextRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle sty
 TextRenderer_obj::~TextRenderer_obj() { }
 
 Dynamic TextRenderer_obj::__CreateEmpty() { return  new TextRenderer_obj; }
-hx::ObjectPtr< TextRenderer_obj > TextRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken)
+hx::ObjectPtr< TextRenderer_obj > TextRenderer_obj::__new(::cocktail::core::style::CoreStyle style,Dynamic nativeElement,::cocktail::core::dom::TextTokenValue textToken)
 {  hx::ObjectPtr< TextRenderer_obj > result = new TextRenderer_obj();
 	result->__construct(style,nativeElement,textToken);
 	return result;}

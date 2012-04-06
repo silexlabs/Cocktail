@@ -3,8 +3,8 @@
 #ifndef INCLUDED_hxMath
 #include <hxMath.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Margin
 #include <cocktail/core/style/Margin.h>
@@ -50,7 +50,7 @@ Dynamic EmbeddedPositionedBoxStylesComputer_obj::__Create(hx::DynamicArray inArg
 	result->__construct();
 	return result;}
 
-Void EmbeddedPositionedBoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void EmbeddedPositionedBoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("EmbeddedPositionedBoxStylesComputer_obj::measurePositionOffsets")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.hx",38)
@@ -64,7 +64,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedPositionedBoxStylesComputer_obj,measurePositionOffsets,(void))
 
-Void EmbeddedPositionedBoxStylesComputer_obj::measureHorizontalPositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void EmbeddedPositionedBoxStylesComputer_obj::measureHorizontalPositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("EmbeddedPositionedBoxStylesComputer_obj::measureHorizontalPositionOffsets")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.hx",48)
@@ -156,7 +156,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedPositionedBoxStylesComputer_obj,measureHorizontalPositionOffsets,(void))
 
-Void EmbeddedPositionedBoxStylesComputer_obj::measureVerticalPositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void EmbeddedPositionedBoxStylesComputer_obj::measureVerticalPositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("EmbeddedPositionedBoxStylesComputer_obj::measureVerticalPositionOffsets")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.hx",129)
@@ -252,7 +252,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedPositionedBoxStylesComputer_obj,measureVerticalPositionOffsets,(void))
 
-int EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticLeft")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.hx",203)
 	return style->getComputedStyle()->__Field(HX_CSTRING("marginLeft"));
@@ -261,7 +261,7 @@ int EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticLeft( ::cocktail::
 
 HX_DEFINE_DYNAMIC_FUNC2(EmbeddedPositionedBoxStylesComputer_obj,getComputedStaticLeft,return )
 
-int EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticTop( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticTop( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("EmbeddedPositionedBoxStylesComputer_obj::getComputedStaticTop")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.hx",212)
 	return style->getComputedStyle()->__Field(HX_CSTRING("marginTop"));

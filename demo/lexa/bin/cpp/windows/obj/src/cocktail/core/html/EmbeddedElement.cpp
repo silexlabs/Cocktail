@@ -15,14 +15,8 @@
 #ifndef INCLUDED_cocktail_core_html_EmbeddedElement
 #include <cocktail/core/html/EmbeddedElement.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_core_style_AbstractEmbeddedCoreStyle
-#include <cocktail/core/style/AbstractEmbeddedCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
@@ -82,7 +76,7 @@ Void EmbeddedElement_obj::initCoreStyle( ){
 {
 		HX_SOURCE_PUSH("EmbeddedElement_obj::initCoreStyle")
 		HX_SOURCE_POS("../../src/cocktail/core/html/EmbeddedElement.hx",99)
-		this->_coreStyle = ::cocktail::core::style::AbstractEmbeddedCoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
+		this->_coreStyle = ::cocktail::core::style::CoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
 	}
 return null();
 }

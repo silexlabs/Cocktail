@@ -1,7 +1,13 @@
 #include <hxcpp.h>
 
+#ifndef INCLUDED_cocktail_core_dom_Attr
+#include <cocktail/core/dom/Attr.h>
+#endif
 #ifndef INCLUDED_cocktail_core_dom_Element
 #include <cocktail/core/dom/Element.h>
+#endif
+#ifndef INCLUDED_cocktail_core_dom_NamedNodeMap
+#include <cocktail/core/dom/NamedNodeMap.h>
 #endif
 #ifndef INCLUDED_cocktail_core_dom_Node
 #include <cocktail/core/dom/Node.h>
@@ -30,11 +36,8 @@
 #ifndef INCLUDED_cocktail_core_resource_AbstractResourceLoader
 #include <cocktail/core/resource/AbstractResourceLoader.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
@@ -49,9 +52,9 @@ namespace html{
 Void AbstractHTMLImageElement_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",96)
-	this->_imageLoader = ::cocktail::core::resource::AbstractImageLoader_obj::__new();
 	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",97)
+	this->_imageLoader = ::cocktail::core::resource::AbstractImageLoader_obj::__new();
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",98)
 	super::__construct(HX_CSTRING("img"));
 }
 ;
@@ -74,7 +77,7 @@ Dynamic AbstractHTMLImageElement_obj::__Create(hx::DynamicArray inArgs)
 Void AbstractHTMLImageElement_obj::initEmbeddedAsset( ){
 {
 		HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::initEmbeddedAsset")
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",104)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",105)
 		this->_embeddedAsset = this->_imageLoader->getNativeElement();
 	}
 return null();
@@ -83,14 +86,42 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC0(AbstractHTMLImageElement_obj,initEmbeddedAsset,(void))
 
+Void AbstractHTMLImageElement_obj::setAttribute( ::String name,::String value){
+{
+		HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::setAttribute")
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",114)
+		if (((name == HX_CSTRING("src")))){
+			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",116)
+			this->set_src(value);
+		}
+		else{
+			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",120)
+			this->super::setAttribute(name,value);
+		}
+	}
+return null();
+}
+
+
+HX_DEFINE_DYNAMIC_FUNC2(AbstractHTMLImageElement_obj,setAttribute,(void))
+
 ::String AbstractHTMLImageElement_obj::set_src( ::String value){
 	HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::set_src")
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",117)
-	this->_src = value;
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",118)
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",134)
+	::cocktail::core::dom::Node srcAttr = this->_attributes->getNamedItem(HX_CSTRING("src"));
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",135)
+	if (((srcAttr == null()))){
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",137)
+		srcAttr = ::cocktail::core::dom::Attr_obj::__new(HX_CSTRING("src"));
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",138)
+		this->_attributes->setNamedItem(srcAttr);
+	}
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",140)
+	srcAttr->set_nodeValue(value);
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",142)
 	this->_imageLoader->load(Array_obj< ::String >::__new().Add(value),this->onLoadComplete_dyn(),this->onLoadError_dyn());
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",119)
-	return this->_src;
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",143)
+	return value;
 }
 
 
@@ -99,19 +130,19 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractHTMLImageElement_obj,set_src,return )
 Void AbstractHTMLImageElement_obj::onLoadComplete( Dynamic image){
 {
 		HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::onLoadComplete")
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",133)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",157)
 		this->_intrinsicHeight = this->_imageLoader->getIntrinsicHeight();
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",134)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",158)
 		this->_intrinsicWidth = this->_imageLoader->getIntrinsicWidth();
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",135)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",159)
 		this->_intrinsicRatio = (double(this->_intrinsicHeight) / double(this->_intrinsicWidth));
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",137)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",161)
 		this->_coreStyle->invalidate(null());
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",140)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",164)
 		if (((this->onLoad_dyn() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",142)
+			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",166)
 			::cocktail::core::event::Event loadEvent = ::cocktail::core::event::Event_obj::__new(HX_CSTRING("load"),hx::ObjectPtr<OBJ_>(this));
-			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",143)
+			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",167)
 			this->onLoad(loadEvent);
 		}
 	}
@@ -124,9 +155,9 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractHTMLImageElement_obj,onLoadComplete,(void))
 Void AbstractHTMLImageElement_obj::onLoadError( ::String message){
 {
 		HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::onLoadError")
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",154)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",178)
 		if (((this->onError_dyn() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",156)
+			HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",180)
 			this->onError(::cocktail::core::event::Event_obj::__new(HX_CSTRING("error"),hx::ObjectPtr<OBJ_>(this)));
 		}
 	}
@@ -138,8 +169,8 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractHTMLImageElement_obj,onLoadError,(void))
 
 ::String AbstractHTMLImageElement_obj::get_src( ){
 	HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::get_src")
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",166)
-	return this->_src;
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",190)
+	return this->getAttribute(HX_CSTRING("src"));
 }
 
 
@@ -147,12 +178,12 @@ HX_DEFINE_DYNAMIC_FUNC0(AbstractHTMLImageElement_obj,get_src,return )
 
 int AbstractHTMLImageElement_obj::get_naturalHeight( ){
 	HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::get_naturalHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",172)
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",196)
 	if (((this->_intrinsicHeight == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",173)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",197)
 		return (int)0;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",176)
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",200)
 	return this->_intrinsicHeight;
 }
 
@@ -161,12 +192,12 @@ HX_DEFINE_DYNAMIC_FUNC0(AbstractHTMLImageElement_obj,get_naturalHeight,return )
 
 int AbstractHTMLImageElement_obj::get_naturalWidth( ){
 	HX_SOURCE_PUSH("AbstractHTMLImageElement_obj::get_naturalWidth")
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",181)
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",205)
 	if (((this->_intrinsicWidth == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",182)
+		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",206)
 		return (int)0;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",185)
+	HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLImageElement.hx",209)
 	return this->_intrinsicWidth;
 }
 
@@ -174,6 +205,8 @@ int AbstractHTMLImageElement_obj::get_naturalWidth( ){
 HX_DEFINE_DYNAMIC_FUNC0(AbstractHTMLImageElement_obj,get_naturalWidth,return )
 
 ::String AbstractHTMLImageElement_obj::HTML_IMAGE_TAG_NAME;
+
+::String AbstractHTMLImageElement_obj::HTML_IMAGE_SRC_ATTRIBUTE;
 
 
 AbstractHTMLImageElement_obj::AbstractHTMLImageElement_obj()
@@ -187,7 +220,6 @@ void AbstractHTMLImageElement_obj::__Mark(HX_MARK_PARAMS)
 	HX_MARK_MEMBER_NAME(onError,"onError");
 	HX_MARK_MEMBER_NAME(naturalWidth,"naturalWidth");
 	HX_MARK_MEMBER_NAME(naturalHeight,"naturalHeight");
-	HX_MARK_MEMBER_NAME(_src,"_src");
 	HX_MARK_MEMBER_NAME(src,"src");
 	HX_MARK_MEMBER_NAME(_imageLoader,"_imageLoader");
 	super::__Mark(HX_MARK_ARG);
@@ -199,9 +231,6 @@ Dynamic AbstractHTMLImageElement_obj::__Field(const ::String &inName)
 	switch(inName.length) {
 	case 3:
 		if (HX_FIELD_EQ(inName,"src") ) { return get_src(); }
-		break;
-	case 4:
-		if (HX_FIELD_EQ(inName,"_src") ) { return _src; }
 		break;
 	case 6:
 		if (HX_FIELD_EQ(inName,"onLoad") ) { return onLoad; }
@@ -217,6 +246,7 @@ Dynamic AbstractHTMLImageElement_obj::__Field(const ::String &inName)
 	case 12:
 		if (HX_FIELD_EQ(inName,"naturalWidth") ) { return get_naturalWidth(); }
 		if (HX_FIELD_EQ(inName,"_imageLoader") ) { return _imageLoader; }
+		if (HX_FIELD_EQ(inName,"setAttribute") ) { return setAttribute_dyn(); }
 		break;
 	case 13:
 		if (HX_FIELD_EQ(inName,"naturalHeight") ) { return get_naturalHeight(); }
@@ -233,6 +263,9 @@ Dynamic AbstractHTMLImageElement_obj::__Field(const ::String &inName)
 		break;
 	case 19:
 		if (HX_FIELD_EQ(inName,"HTML_IMAGE_TAG_NAME") ) { return HTML_IMAGE_TAG_NAME; }
+		break;
+	case 24:
+		if (HX_FIELD_EQ(inName,"HTML_IMAGE_SRC_ATTRIBUTE") ) { return HTML_IMAGE_SRC_ATTRIBUTE; }
 	}
 	return super::__Field(inName);
 }
@@ -242,9 +275,6 @@ Dynamic AbstractHTMLImageElement_obj::__SetField(const ::String &inName,const Dy
 	switch(inName.length) {
 	case 3:
 		if (HX_FIELD_EQ(inName,"src") ) { return set_src(inValue); }
-		break;
-	case 4:
-		if (HX_FIELD_EQ(inName,"_src") ) { _src=inValue.Cast< ::String >(); return inValue; }
 		break;
 	case 6:
 		if (HX_FIELD_EQ(inName,"onLoad") ) { onLoad=inValue.Cast< Dynamic >(); return inValue; }
@@ -261,6 +291,9 @@ Dynamic AbstractHTMLImageElement_obj::__SetField(const ::String &inName,const Dy
 		break;
 	case 19:
 		if (HX_FIELD_EQ(inName,"HTML_IMAGE_TAG_NAME") ) { HTML_IMAGE_TAG_NAME=inValue.Cast< ::String >(); return inValue; }
+		break;
+	case 24:
+		if (HX_FIELD_EQ(inName,"HTML_IMAGE_SRC_ATTRIBUTE") ) { HTML_IMAGE_SRC_ATTRIBUTE=inValue.Cast< ::String >(); return inValue; }
 	}
 	return super::__SetField(inName,inValue);
 }
@@ -269,7 +302,6 @@ void AbstractHTMLImageElement_obj::__GetFields(Array< ::String> &outFields)
 {
 	outFields->push(HX_CSTRING("naturalWidth"));
 	outFields->push(HX_CSTRING("naturalHeight"));
-	outFields->push(HX_CSTRING("_src"));
 	outFields->push(HX_CSTRING("src"));
 	outFields->push(HX_CSTRING("_imageLoader"));
 	super::__GetFields(outFields);
@@ -277,6 +309,7 @@ void AbstractHTMLImageElement_obj::__GetFields(Array< ::String> &outFields)
 
 static ::String sStaticFields[] = {
 	HX_CSTRING("HTML_IMAGE_TAG_NAME"),
+	HX_CSTRING("HTML_IMAGE_SRC_ATTRIBUTE"),
 	String(null()) };
 
 static ::String sMemberFields[] = {
@@ -284,10 +317,10 @@ static ::String sMemberFields[] = {
 	HX_CSTRING("onError"),
 	HX_CSTRING("naturalWidth"),
 	HX_CSTRING("naturalHeight"),
-	HX_CSTRING("_src"),
 	HX_CSTRING("src"),
 	HX_CSTRING("_imageLoader"),
 	HX_CSTRING("initEmbeddedAsset"),
+	HX_CSTRING("setAttribute"),
 	HX_CSTRING("set_src"),
 	HX_CSTRING("onLoadComplete"),
 	HX_CSTRING("onLoadError"),
@@ -298,6 +331,7 @@ static ::String sMemberFields[] = {
 
 static void sMarkStatics(HX_MARK_PARAMS) {
 	HX_MARK_MEMBER_NAME(AbstractHTMLImageElement_obj::HTML_IMAGE_TAG_NAME,"HTML_IMAGE_TAG_NAME");
+	HX_MARK_MEMBER_NAME(AbstractHTMLImageElement_obj::HTML_IMAGE_SRC_ATTRIBUTE,"HTML_IMAGE_SRC_ATTRIBUTE");
 };
 
 Class AbstractHTMLImageElement_obj::__mClass;
@@ -312,6 +346,7 @@ void AbstractHTMLImageElement_obj::__register()
 void AbstractHTMLImageElement_obj::__boot()
 {
 	hx::Static(HTML_IMAGE_TAG_NAME) = HX_CSTRING("img");
+	hx::Static(HTML_IMAGE_SRC_ATTRIBUTE) = HX_CSTRING("src");
 }
 
 } // end namespace cocktail

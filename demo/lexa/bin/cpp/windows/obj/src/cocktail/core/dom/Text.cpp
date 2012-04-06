@@ -21,9 +21,6 @@
 #ifndef INCLUDED_cocktail_core_renderer_TextRenderer
 #include <cocktail/core/renderer/TextRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_TextTransform
-#include <cocktail/core/style/TextTransform.h>
-#endif
 namespace cocktail{
 namespace core{
 namespace dom{
@@ -31,9 +28,9 @@ namespace dom{
 Void Text_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",68)
-	super::__construct();
 	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",69)
+	super::__construct();
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",70)
 	this->_textFragments = Dynamic( Array_obj<Dynamic>::__new() );
 }
 ;
@@ -56,14 +53,14 @@ Dynamic Text_obj::__Create(hx::DynamicArray inArgs)
 Void Text_obj::reset( ){
 {
 		HX_SOURCE_PUSH("Text_obj::reset")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",84)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",85)
 		int _g1 = (int)0;
 		int _g = this->_textFragments->__Field(HX_CSTRING("length"));
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",84)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",85)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",84)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",85)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",86)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",87)
 			this->_textFragments->__GetItem(i)->__FieldRef(HX_CSTRING("textRenderer")) = null();
 		}
 	}
@@ -75,12 +72,12 @@ HX_DEFINE_DYNAMIC_FUNC0(Text_obj,reset,(void))
 
 Dynamic Text_obj::getTextFragments( ::String text){
 	HX_SOURCE_PUSH("Text_obj::getTextFragments")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",98)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",99)
 	if (((this->_textFragments->__Field(HX_CSTRING("length")) == (int)0))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",99)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",100)
 		this->_textFragments = ::cocktail::core::dom::Text_obj::doGetTextFragments(text);
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",103)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",104)
 	return this->_textFragments;
 }
 
@@ -89,7 +86,7 @@ HX_DEFINE_DYNAMIC_FUNC1(Text_obj,getTextFragments,return )
 
 Dynamic Text_obj::get_nativeElement( ){
 	HX_SOURCE_PUSH("Text_obj::get_nativeElement")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",277)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",221)
 	return this->_nativeElement;
 }
 
@@ -98,7 +95,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Text_obj,get_nativeElement,return )
 
 ::String Text_obj::get_nodeValue( ){
 	HX_SOURCE_PUSH("Text_obj::get_nodeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",282)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",226)
 	return this->_data;
 }
 
@@ -107,153 +104,89 @@ HX_DEFINE_DYNAMIC_FUNC0(Text_obj,get_nodeValue,return )
 
 ::String Text_obj::set_nodeValue( ::String value){
 	HX_SOURCE_PUSH("Text_obj::set_nodeValue")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",287)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",231)
 	return this->set_data(value);
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC1(Text_obj,set_nodeValue,return )
 
-::String Text_obj::applyTextTransform( ::String text,::cocktail::core::style::TextTransform textTransform){
-	HX_SOURCE_PUSH("Text_obj::applyTextTransform")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",118)
-	{
-::cocktail::core::style::TextTransform _switch_1 = (textTransform);
-		switch((_switch_1)->GetIndex()){
-			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",120)
-				text = text.toUpperCase();
-			}
-			;break;
-			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",123)
-				text = text.toLowerCase();
-			}
-			;break;
-			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",126)
-				text = ::cocktail::core::dom::Text_obj::capitalizeText(text);
-			}
-			;break;
-			case 3: {
-			}
-			;break;
-		}
-	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",132)
-	return text;
-}
-
-
-STATIC_HX_DEFINE_DYNAMIC_FUNC2(Text_obj,applyTextTransform,return )
-
-::String Text_obj::capitalizeText( ::String text){
-	HX_SOURCE_PUSH("Text_obj::capitalizeText")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",143)
-	::String capitalizedText = text.charAt((int)0);
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",149)
-	{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",149)
-		int _g1 = (int)1;
-		int _g = text.length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",149)
-		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",149)
-			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",151)
-			if (((text.charAt((i - (int)1)) == HX_CSTRING(" ")))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",152)
-				hx::AddEq(capitalizedText,text.charAt(i).toUpperCase());
-			}
-			else{
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",156)
-				hx::AddEq(capitalizedText,text.charAt(i));
-			}
-		}
-	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",160)
-	return capitalizedText;
-}
-
-
-STATIC_HX_DEFINE_DYNAMIC_FUNC1(Text_obj,capitalizeText,return )
-
 Dynamic Text_obj::doGetTextFragments( ::String text){
 	HX_SOURCE_PUSH("Text_obj::doGetTextFragments")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",178)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",122)
 	Dynamic textFragments = Dynamic( Array_obj<Dynamic>::__new() );
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",181)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",125)
 	::String textFragment = HX_CSTRING("");
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",183)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",127)
 	int i = (int)0;
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",186)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",130)
 	while(((i < text.length))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",189)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",133)
 		if (((text.charAt(i) == HX_CSTRING("\\")))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",190)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",134)
 			if (((i < (text.length - (int)1)))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",192)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",136)
 				if (((text.charAt((i + (int)1)) == HX_CSTRING("n")))){
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",196)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",140)
 					if (((textFragment != null()))){
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",199)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",143)
 						textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::word(textFragment)));
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",200)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",144)
 						textFragment = null();
 					}
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",203)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",147)
 					textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::lineFeed_dyn()));
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",204)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",148)
 					(i)++;
 				}
 				else{
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",207)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",151)
 					if (((text.charAt((i + (int)1)) == HX_CSTRING("t")))){
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",209)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",153)
 						if (((textFragment != null()))){
-							HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",212)
+							HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",156)
 							textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::word(textFragment)));
-							HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",213)
+							HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",157)
 							textFragment = null();
 						}
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",216)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",160)
 						textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::tab_dyn()));
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",217)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",161)
 						(i)++;
 					}
 				}
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",223)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",167)
 		if (((::StringTools_obj::isSpace(text,i) == true))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",228)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",172)
 			if (((textFragment != null()))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",231)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",175)
 				textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::word(textFragment)));
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",232)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",176)
 				textFragment = null();
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",236)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",180)
 			textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::space_dyn()));
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",243)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",187)
 			if (((textFragment == null()))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",244)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",188)
 				textFragment = HX_CSTRING("");
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",247)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",191)
 			hx::AddEq(textFragment,text.charAt(i));
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",250)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",194)
 		(i)++;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",255)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",199)
 	if (((textFragment != null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",256)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",200)
 		textFragments->__Field(HX_CSTRING("push"))(::cocktail::core::dom::Text_obj::insertTextToken(::cocktail::core::dom::TextTokenValue_obj::word(textFragment)));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",260)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",204)
 	return textFragments;
 }
 
@@ -270,7 +203,7 @@ Dynamic Text_obj::insertTextToken( ::cocktail::core::dom::TextTokenValue textTok
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",268)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Text.hx",212)
 	return _Function_1_1::Block(textToken);
 }
 
@@ -304,7 +237,6 @@ Dynamic Text_obj::__Field(const ::String &inName)
 		if (HX_FIELD_EQ(inName,"set_nodeValue") ) { return set_nodeValue_dyn(); }
 		break;
 	case 14:
-		if (HX_FIELD_EQ(inName,"capitalizeText") ) { return capitalizeText_dyn(); }
 		if (HX_FIELD_EQ(inName,"_nativeElement") ) { return _nativeElement; }
 		if (HX_FIELD_EQ(inName,"_textFragments") ) { return _textFragments; }
 		break;
@@ -318,7 +250,6 @@ Dynamic Text_obj::__Field(const ::String &inName)
 		if (HX_FIELD_EQ(inName,"get_nativeElement") ) { return get_nativeElement_dyn(); }
 		break;
 	case 18:
-		if (HX_FIELD_EQ(inName,"applyTextTransform") ) { return applyTextTransform_dyn(); }
 		if (HX_FIELD_EQ(inName,"doGetTextFragments") ) { return doGetTextFragments_dyn(); }
 	}
 	return super::__Field(inName);
@@ -346,8 +277,6 @@ void Text_obj::__GetFields(Array< ::String> &outFields)
 };
 
 static ::String sStaticFields[] = {
-	HX_CSTRING("applyTextTransform"),
-	HX_CSTRING("capitalizeText"),
 	HX_CSTRING("doGetTextFragments"),
 	HX_CSTRING("insertTextToken"),
 	String(null()) };

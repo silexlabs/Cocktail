@@ -26,7 +26,7 @@ Void AbstractImageLoader_obj::__construct()
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/resource/AbstractImageLoader.hx",32)
-	Dynamic nativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::image_dyn());
+	Dynamic nativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::img_dyn());
 	HX_SOURCE_POS("../../src/cocktail/core/resource/AbstractImageLoader.hx",33)
 	super::__construct(nativeElement);
 }

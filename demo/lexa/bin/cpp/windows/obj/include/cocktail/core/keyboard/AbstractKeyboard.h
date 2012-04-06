@@ -13,7 +13,6 @@ HX_DECLARE_CLASS3(cocktail,core,event,KeyboardEvent)
 HX_DECLARE_CLASS3(cocktail,core,event,UIEvent)
 HX_DECLARE_CLASS3(cocktail,core,html,AbstractHTMLElement)
 HX_DECLARE_CLASS3(cocktail,core,keyboard,AbstractKeyboard)
-HX_DECLARE_CLASS3(cocktail,core,keyboard,KeyboardKeyValue)
 HX_DECLARE_CLASS3(cocktail,port,flash_player,HTMLElement)
 namespace cocktail{
 namespace core{
@@ -74,12 +73,6 @@ class AbstractKeyboard_obj : public hx::Object{
 		virtual ::cocktail::core::event::KeyboardEvent getKeyData( Dynamic event);
 		Dynamic getKeyData_dyn();
 
-		virtual ::cocktail::core::keyboard::KeyboardKeyValue getKeyValue( int keyCode);
-		Dynamic getKeyValue_dyn();
-
-		static int TAB; /* REM */ 
-		static int ENTER; /* REM */ 
-		static int SPACE; /* REM */ 
 };
 
 } // end namespace cocktail

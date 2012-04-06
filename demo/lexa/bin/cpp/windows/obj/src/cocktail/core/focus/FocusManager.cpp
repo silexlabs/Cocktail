@@ -31,7 +31,7 @@ namespace focus{
 Void FocusManager_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",60)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",59)
 	this->_focusManagerImpl = ::cocktail::core::focus::AbstractFocusManagerImpl_obj::__new();
 }
 ;
@@ -54,7 +54,7 @@ Dynamic FocusManager_obj::__Create(hx::DynamicArray inArgs)
 Void FocusManager_obj::invalidate( ){
 {
 		HX_SOURCE_PUSH("FocusManager_obj::invalidate")
-		HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",86)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",85)
 		this->_focusManagerImpl->invalidate();
 	}
 return null();
@@ -65,7 +65,7 @@ HX_DEFINE_DYNAMIC_FUNC0(FocusManager_obj,invalidate,(void))
 
 ::cocktail::port::flash_player::HTMLElement FocusManager_obj::setActiveElement( ::cocktail::port::flash_player::HTMLElement value){
 	HX_SOURCE_PUSH("FocusManager_obj::setActiveElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",96)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",95)
 	return this->_focusManagerImpl->setActiveElement(value);
 }
 
@@ -74,7 +74,7 @@ HX_DEFINE_DYNAMIC_FUNC1(FocusManager_obj,setActiveElement,return )
 
 ::cocktail::port::flash_player::HTMLElement FocusManager_obj::getActiveElement( ){
 	HX_SOURCE_PUSH("FocusManager_obj::getActiveElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",101)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",100)
 	return this->_focusManagerImpl->getActiveElement();
 }
 
@@ -83,7 +83,7 @@ HX_DEFINE_DYNAMIC_FUNC0(FocusManager_obj,getActiveElement,return )
 
 ::cocktail::core::html::HTMLBodyElement FocusManager_obj::setBodyElement( ::cocktail::core::html::HTMLBodyElement value){
 	HX_SOURCE_PUSH("FocusManager_obj::setBodyElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",106)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",105)
 	return this->_focusManagerImpl->setBodyElement(value);
 }
 
@@ -92,7 +92,7 @@ HX_DEFINE_DYNAMIC_FUNC1(FocusManager_obj,setBodyElement,return )
 
 ::cocktail::core::html::HTMLBodyElement FocusManager_obj::getBodyElement( ){
 	HX_SOURCE_PUSH("FocusManager_obj::getBodyElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",111)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",110)
 	return this->_focusManagerImpl->getBodyElement();
 }
 
@@ -103,12 +103,12 @@ HX_DEFINE_DYNAMIC_FUNC0(FocusManager_obj,getBodyElement,return )
 
 ::cocktail::core::focus::FocusManager FocusManager_obj::getInstance( ){
 	HX_SOURCE_PUSH("FocusManager_obj::getInstance")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",69)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",68)
 	if (((::cocktail::core::focus::FocusManager_obj::_instance == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",70)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",69)
 		::cocktail::core::focus::FocusManager_obj::_instance = ::cocktail::core::focus::FocusManager_obj::__new();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",73)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/FocusManager.hx",72)
 	return ::cocktail::core::focus::FocusManager_obj::_instance;
 }
 

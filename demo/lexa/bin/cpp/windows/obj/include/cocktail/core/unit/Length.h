@@ -24,10 +24,10 @@ class Length_obj : public hx::EnumBase_obj
 		::String GetEnumName( ) const { return HX_CSTRING("cocktail.core.unit.Length"); }
 		::String __ToString() const { return HX_CSTRING("Length.") + tag; }
 
-		static ::cocktail::core::unit::Length _in(double value);
-		static Dynamic _in_dyn();
 		static ::cocktail::core::unit::Length cm(double value);
 		static Dynamic cm_dyn();
+		static ::cocktail::core::unit::Length cssIn(double value);
+		static Dynamic cssIn_dyn();
 		static ::cocktail::core::unit::Length em(double value);
 		static Dynamic em_dyn();
 		static ::cocktail::core::unit::Length ex(double value);

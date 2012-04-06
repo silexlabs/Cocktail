@@ -9,8 +9,7 @@
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,renderer,ElementRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,LayerRenderer)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,CoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 namespace cocktail{
 namespace core{
 namespace renderer{
@@ -21,10 +20,10 @@ class ElementRenderer_obj : public ::cocktail::core::dom::Node_obj{
 		typedef ::cocktail::core::dom::Node_obj super;
 		typedef ElementRenderer_obj OBJ_;
 		ElementRenderer_obj();
-		Void __construct(::cocktail::port::flash_player::CoreStyle style);
+		Void __construct(::cocktail::core::style::CoreStyle style);
 
 	public:
-		static hx::ObjectPtr< ElementRenderer_obj > __new(::cocktail::port::flash_player::CoreStyle style);
+		static hx::ObjectPtr< ElementRenderer_obj > __new(::cocktail::core::style::CoreStyle style);
 		static Dynamic __CreateEmpty();
 		static Dynamic __Create(hx::DynamicArray inArgs);
 		~ElementRenderer_obj();
@@ -37,8 +36,8 @@ class ElementRenderer_obj : public ::cocktail::core::dom::Node_obj{
 
 		Dynamic _bounds; /* REM */ 
 		Dynamic bounds; /* REM */ 
-		::cocktail::port::flash_player::CoreStyle _coreStyle; /* REM */ 
-		::cocktail::port::flash_player::CoreStyle coreStyle; /* REM */ 
+		::cocktail::core::style::CoreStyle _coreStyle; /* REM */ 
+		::cocktail::core::style::CoreStyle coreStyle; /* REM */ 
 		::cocktail::core::renderer::LayerRenderer _layerRenderer; /* REM */ 
 		::cocktail::core::renderer::LayerRenderer layerRenderer; /* REM */ 
 		virtual Dynamic render( );
@@ -80,13 +79,16 @@ class ElementRenderer_obj : public ::cocktail::core::dom::Node_obj{
 		virtual bool isInitialContainer( );
 		Dynamic isInitialContainer_dyn();
 
+		virtual bool isDisplayed( );
+		Dynamic isDisplayed_dyn();
+
 		virtual ::cocktail::core::renderer::LayerRenderer setLayerRenderer( ::cocktail::core::renderer::LayerRenderer value);
 		Dynamic setLayerRenderer_dyn();
 
 		virtual ::cocktail::core::renderer::LayerRenderer getLayerRenderer( );
 		Dynamic getLayerRenderer_dyn();
 
-		virtual ::cocktail::port::flash_player::CoreStyle getCoreStyle( );
+		virtual ::cocktail::core::style::CoreStyle getCoreStyle( );
 		Dynamic getCoreStyle_dyn();
 
 		virtual Dynamic getBounds( );

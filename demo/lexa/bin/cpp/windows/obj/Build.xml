@@ -7,11 +7,10 @@
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/floats/FloatsManager.h"/>
    <depend name="include/cocktail/core/style/formatter/BlockFormattingContext.h"/>
    <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
   </file>
   <file name="src/cocktail/core/mouse/NativeOSMouseCursorValue.cpp">
    <depend name="include/cocktail/core/mouse/NativeOSMouseCursorValue.h"/>
@@ -30,6 +29,15 @@
   <file name="src/cocktail/port/flash_player/MouseCursor.cpp">
    <depend name="include/cocktail/core/mouse/AbstractMouseCursor.h"/>
    <depend name="include/cocktail/port/flash_player/MouseCursor.h"/>
+  </file>
+  <file name="src/hxtml/Browser.cpp">
+   <depend name="include/EReg.h"/>
+   <depend name="include/Hash.h"/>
+   <depend name="include/Xml.h"/>
+   <depend name="include/XmlType.h"/>
+   <depend name="include/hxtml/Browser.h"/>
+   <depend name="include/hxtml/CssParser.h"/>
+   <depend name="include/hxtml/IStyleProxy.h"/>
   </file>
   <file name="src/haxe/Timer.cpp">
    <depend name="include/haxe/Timer.h"/>
@@ -75,9 +83,6 @@
   <file name="src/cocktail/core/dom/TextTokenValue.cpp">
    <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
   </file>
-  <file name="src/cocktail/core/dom/AnchorTarget.cpp">
-   <depend name="include/cocktail/core/dom/AnchorTarget.h"/>
-  </file>
   <file name="src/nme/Lib.cpp">
    <depend name="include/Std.h"/>
    <depend name="include/haxe/Timer.h"/>
@@ -100,12 +105,10 @@
    <depend name="include/nme/display/IGraphicsData.h"/>
   </file>
   <file name="src/cocktail/core/nativeElement/NativeElementManager.cpp">
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementCreator.h"/>
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementPathManager.h"/>
+   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementManagerImpl.h"/>
    <depend name="include/cocktail/core/nativeElement/NativeElementManager.h"/>
    <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
-   <depend name="include/cocktail/port/flash_player/NativeElementCreator.h"/>
-   <depend name="include/cocktail/port/flash_player/NativeElementPathManager.h"/>
+   <depend name="include/cocktail/port/flash_player/NativeElementManagerImpl.h"/>
   </file>
   <file name="src/cpp/zip/Compress.cpp">
    <depend name="include/Std.h"/>
@@ -133,30 +136,6 @@
   <file name="src/nme/filters/BitmapFilter.cpp">
    <depend name="include/nme/filters/BitmapFilter.h"/>
   </file>
-  <file name="src/cocktail/core/html/HTMLDocument.cpp">
-   <depend name="include/cocktail/core/dom/Document.h"/>
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/Event.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/focus/FocusManager.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLAnchorElement.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLHtmlElement.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLImageElement.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLInputElement.h"/>
-   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
-   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
-   <depend name="include/cocktail/core/html/HTMLCanvasElement.h"/>
-   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/window/AbstractWindow.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLAnchorElement.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLInputElement.h"/>
-   <depend name="include/cocktail/port/flash_player/Window.h"/>
-  </file>
   <file name="src/nme/display/GradientType.cpp">
    <depend name="include/nme/display/GradientType.h"/>
   </file>
@@ -171,9 +150,6 @@
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/BytesBuffer.h"/>
    <depend name="include/haxe/io/Error.h"/>
-  </file>
-  <file name="src/cocktail/core/keyboard/KeyboardKeyValue.cpp">
-   <depend name="include/cocktail/core/keyboard/KeyboardKeyValue.h"/>
   </file>
   <file name="src/cocktail/core/resource/XMLHTTPRequest.cpp">
    <depend name="include/cocktail/core/event/Event.h"/>
@@ -229,51 +205,15 @@
    <depend name="include/cocktail/core/unit/Length.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/PositionOffset.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.h"/>
   </file>
-  <file name="src/cocktail/port/flash_player/NativeElementPathManager.cpp">
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementPathManager.h"/>
-   <depend name="include/cocktail/port/flash_player/NativeElementPathManager.h"/>
-   <depend name="include/nme/Lib.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/DisplayObjectContainer.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/display/MovieClip.h"/>
-   <depend name="include/nme/display/Sprite.h"/>
-   <depend name="include/nme/display/Stage.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
-  </file>
   <file name="src/nme/events/ProgressEvent.cpp">
    <depend name="include/nme/events/Event.h"/>
    <depend name="include/nme/events/ProgressEvent.h"/>
-  </file>
-  <file name="src/cocktail/port/flash_player/BodyCoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractBodyCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/BodyCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/nme/Lib.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/DisplayObjectContainer.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/display/MovieClip.h"/>
-   <depend name="include/nme/display/Sprite.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
   </file>
   <file name="src/Reflect.cpp">
    <depend name="include/Reflect.h"/>
@@ -371,20 +311,14 @@
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/TextAlign.h"/>
    <depend name="include/cocktail/core/style/VerticalAlign.h"/>
    <depend name="include/cocktail/core/style/WhiteSpace.h"/>
    <depend name="include/cocktail/core/style/floats/FloatsManager.h"/>
    <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
    <depend name="include/cocktail/core/style/formatter/InlineFormattingContext.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-  </file>
-  <file name="src/Type.cpp">
-   <depend name="include/Reflect.h"/>
-   <depend name="include/Type.h"/>
-   <depend name="include/ValueType.h"/>
   </file>
   <file name="src/ValueType.cpp">
    <depend name="include/ValueType.h"/>
@@ -431,19 +365,18 @@
   </file>
   <file name="src/org/lexa/demo/Lexa.cpp">
    <depend name="include/cocktail/Lib.h"/>
-   <depend name="include/cocktail/core/dom/CharacterData.h"/>
    <depend name="include/cocktail/core/dom/Document.h"/>
    <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLImageElement.h"/>
-   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
-   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
-   <depend name="include/cocktail/core/style/adapter/Style.h"/>
+   <depend name="include/cocktail/core/style/adapter/AbstractStyle.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLDocument.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/Text.h"/>
    <depend name="include/org/lexa/demo/Lexa.h"/>
   </file>
   <file name="src/nme/display/InterpolationMethod.cpp">
@@ -513,7 +446,9 @@
    <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
   </file>
   <file name="src/cocktail/core/html/AbstractHTMLImageElement.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
    <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/Event.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
@@ -523,13 +458,14 @@
    <depend name="include/cocktail/core/resource/AbstractImageLoader.h"/>
    <depend name="include/cocktail/core/resource/AbstractMediaLoader.h"/>
    <depend name="include/cocktail/core/resource/AbstractResourceLoader.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
    <depend name="include/cocktail/port/flash_player/MediaLoader.h"/>
   </file>
+  <file name="src/cocktail/core/font/FontType.cpp">
+   <depend name="include/cocktail/core/font/FontType.h"/>
+  </file>
   <file name="src/cocktail/port/flash_player/HTMLAnchorElement.cpp">
-   <depend name="include/cocktail/core/dom/AnchorTarget.h"/>
    <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
@@ -541,7 +477,6 @@
    <depend name="include/nme/net/URLRequest.h"/>
   </file>
   <file name="src/cocktail/core/html/AbstractHTMLAnchorElement.cpp">
-   <depend name="include/cocktail/core/dom/AnchorTarget.h"/>
    <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/Event.h"/>
@@ -583,26 +518,6 @@
    <depend name="include/haxe/io/Eof.h"/>
    <depend name="include/haxe/io/Output.h"/>
   </file>
-  <file name="src/cocktail/core/style/AbstractBodyCoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractBodyCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/formatter/BlockFormattingContext.h"/>
-   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-  </file>
   <file name="src/nme/media/SoundChannel.cpp">
    <depend name="include/nme/Loader.h"/>
    <depend name="include/nme/events/Event.h"/>
@@ -622,6 +537,7 @@
    <depend name="include/haxe/io/Output.h"/>
   </file>
   <file name="src/cocktail/core/renderer/EmbeddedBoxRenderer.cpp">
+   <depend name="include/cocktail/core/background/BackgroundManager.h"/>
    <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
@@ -630,8 +546,7 @@
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
    <depend name="include/nme/display/DisplayObject.h"/>
    <depend name="include/nme/display/DisplayObjectContainer.h"/>
@@ -794,6 +709,22 @@
   <file name="src/nme/net/URLRequestMethod.cpp">
    <depend name="include/nme/net/URLRequestMethod.h"/>
   </file>
+  <file name="src/cocktail/port/flash_player/NativeElementManagerImpl.cpp">
+   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementManagerImpl.h"/>
+   <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
+   <depend name="include/cocktail/port/flash_player/NativeElementManagerImpl.h"/>
+   <depend name="include/nme/Lib.h"/>
+   <depend name="include/nme/display/DisplayObject.h"/>
+   <depend name="include/nme/display/DisplayObjectContainer.h"/>
+   <depend name="include/nme/display/IBitmapDrawable.h"/>
+   <depend name="include/nme/display/InteractiveObject.h"/>
+   <depend name="include/nme/display/Loader.h"/>
+   <depend name="include/nme/display/MovieClip.h"/>
+   <depend name="include/nme/display/Sprite.h"/>
+   <depend name="include/nme/display/Stage.h"/>
+   <depend name="include/nme/events/EventDispatcher.h"/>
+   <depend name="include/nme/events/IEventDispatcher.h"/>
+  </file>
   <file name="src/nme/media/SoundTransform.cpp">
    <depend name="include/nme/media/SoundTransform.h"/>
   </file>
@@ -807,22 +738,9 @@
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
-  <file name="src/cocktail/core/dom/Document.cpp">
-   <depend name="include/cocktail/core/dom/Attr.h"/>
-   <depend name="include/cocktail/core/dom/CharacterData.h"/>
-   <depend name="include/cocktail/core/dom/Document.h"/>
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/dom/Text.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/Text.h"/>
-  </file>
   <file name="src/cocktail/core/style/computer/VisualEffectStylesComputer.cpp">
    <depend name="include/cocktail/core/geom/Matrix.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Overflow.h"/>
    <depend name="include/cocktail/core/style/Transform.h"/>
    <depend name="include/cocktail/core/style/TransformFunction.h"/>
@@ -847,6 +765,21 @@
    <depend name="include/cocktail/core/html/AbstractHTMLHtmlElement.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
+  <file name="src/hxtml/CssParser.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/hxtml/CssParser.h"/>
+   <depend name="include/hxtml/IStyleProxy.h"/>
+   <depend name="include/hxtml/Token.h"/>
+   <depend name="include/hxtml/Value.h"/>
+  </file>
+  <file name="src/hxtml/Value.cpp">
+   <depend name="include/hxtml/Value.h"/>
+  </file>
+  <file name="src/hxtml/Token.cpp">
+   <depend name="include/hxtml/Token.h"/>
+  </file>
   <file name="src/ApplicationMain.cpp">
    <depend name="include/ApplicationMain.h"/>
    <depend name="include/nme/Lib.h"/>
@@ -860,8 +793,7 @@
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
   </file>
   <file name="src/cocktail/core/unit/UnitManager.cpp">
    <depend name="include/EReg.h"/>
@@ -919,6 +851,22 @@
    <depend name="include/cocktail/core/unit/Length.h"/>
    <depend name="include/cocktail/core/unit/UnitManager.h"/>
   </file>
+  <file name="src/Xml.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/Xml.h"/>
+   <depend name="include/XmlType.h"/>
+   <depend name="include/cpp/Lib.h"/>
+  </file>
+  <file name="src/Type.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/ValueType.h"/>
+  </file>
+  <file name="src/XmlType.cpp">
+   <depend name="include/XmlType.h"/>
+  </file>
   <file name="src/cocktail/core/event/KeyboardEvent.cpp">
    <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
@@ -959,9 +907,7 @@
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLInputElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractEmbeddedCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/nme/events/FocusEvent.cpp">
@@ -977,7 +923,7 @@
    <depend name="include/nme/events/EventPhase.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/PositionOffset.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
@@ -994,6 +940,41 @@
    <depend name="include/nme/geom/Rectangle.h"/>
    <depend name="include/nme/geom/Transform.h"/>
   </file>
+  <file name="src/cocktail/core/style/adapter/AbstractStyle.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/style/BackgroundClip.h"/>
+   <depend name="include/cocktail/core/style/BackgroundImage.h"/>
+   <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
+   <depend name="include/cocktail/core/style/BackgroundSize.h"/>
+   <depend name="include/cocktail/core/style/CSSFloat.h"/>
+   <depend name="include/cocktail/core/style/Clear.h"/>
+   <depend name="include/cocktail/core/style/ConstrainedDimension.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/Cursor.h"/>
+   <depend name="include/cocktail/core/style/Dimension.h"/>
+   <depend name="include/cocktail/core/style/Display.h"/>
+   <depend name="include/cocktail/core/style/FontSize.h"/>
+   <depend name="include/cocktail/core/style/FontStyle.h"/>
+   <depend name="include/cocktail/core/style/FontVariant.h"/>
+   <depend name="include/cocktail/core/style/FontWeight.h"/>
+   <depend name="include/cocktail/core/style/LetterSpacing.h"/>
+   <depend name="include/cocktail/core/style/LineHeight.h"/>
+   <depend name="include/cocktail/core/style/Margin.h"/>
+   <depend name="include/cocktail/core/style/Overflow.h"/>
+   <depend name="include/cocktail/core/style/Padding.h"/>
+   <depend name="include/cocktail/core/style/Position.h"/>
+   <depend name="include/cocktail/core/style/PositionOffset.h"/>
+   <depend name="include/cocktail/core/style/TextAlign.h"/>
+   <depend name="include/cocktail/core/style/TextIndent.h"/>
+   <depend name="include/cocktail/core/style/TextTransform.h"/>
+   <depend name="include/cocktail/core/style/VerticalAlign.h"/>
+   <depend name="include/cocktail/core/style/Visibility.h"/>
+   <depend name="include/cocktail/core/style/WhiteSpace.h"/>
+   <depend name="include/cocktail/core/style/WordSpacing.h"/>
+   <depend name="include/cocktail/core/style/adapter/AbstractStyle.h"/>
+   <depend name="include/cocktail/core/unit/CSSColor.h"/>
+   <depend name="include/cocktail/core/unit/UnitManager.h"/>
+  </file>
   <file name="src/nme/events/Listener.cpp">
    <depend name="include/Reflect.h"/>
    <depend name="include/nme/events/Event.h"/>
@@ -1001,6 +982,16 @@
   </file>
   <file name="src/IntIter.cpp">
    <depend name="include/IntIter.h"/>
+  </file>
+  <file name="src/cocktail/port/flash_player/FontLoader.cpp">
+   <depend name="include/cocktail/core/font/AbstractFontLoader.h"/>
+   <depend name="include/cocktail/core/font/FontType.h"/>
+   <depend name="include/cocktail/port/flash_player/FontLoader.h"/>
+   <depend name="include/haxe/Log.h"/>
+  </file>
+  <file name="src/cocktail/core/font/AbstractFontLoader.cpp">
+   <depend name="include/cocktail/core/font/AbstractFontLoader.h"/>
+   <depend name="include/cocktail/core/font/FontType.h"/>
   </file>
   <file name="src/nme/display/BlendMode.cpp">
    <depend name="include/nme/display/BlendMode.h"/>
@@ -1014,20 +1005,19 @@
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/positioner/BoxPositioner.h"/>
    <depend name="include/cocktail/core/style/positioner/RelativePositioner.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/FloatBoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/FloatBoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
@@ -1101,45 +1091,8 @@
   <file name="src/nme/net/URLLoaderDataFormat.cpp">
    <depend name="include/nme/net/URLLoaderDataFormat.h"/>
   </file>
-  <file name="src/cocktail/port/flash_player/ContainerCoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/CharacterData.h"/>
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/dom/Text.h"/>
-   <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/FontStyle.h"/>
-   <depend name="include/cocktail/core/style/FontWeight.h"/>
-   <depend name="include/cocktail/core/style/TextTransform.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
-   <depend name="include/nme/text/TextField.h"/>
-   <depend name="include/nme/text/TextFieldAutoSize.h"/>
-   <depend name="include/nme/text/TextFormat.h"/>
-  </file>
   <file name="src/haxe/io/Eof.cpp">
    <depend name="include/haxe/io/Eof.h"/>
-  </file>
-  <file name="src/cocktail/core/style/AbstractEmbeddedCoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractEmbeddedCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/haxe/io/Error.cpp">
    <depend name="include/haxe/io/Error.h"/>
@@ -1150,11 +1103,10 @@
   <file name="src/cocktail/core/style/floats/FloatsManager.cpp">
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/CSSFloat.h"/>
    <depend name="include/cocktail/core/style/Clear.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/floats/FloatsManager.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
   </file>
   <file name="src/cpp/FileSystem.cpp">
    <depend name="include/Date.h"/>
@@ -1240,12 +1192,9 @@
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
    <depend name="include/cocktail/core/nativeElement/NativeElementManager.h"/>
-   <depend name="include/cocktail/core/style/AbstractBodyCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/BodyCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/BodyCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/cpp/Sys.cpp">
@@ -1274,8 +1223,7 @@
    <depend name="include/cocktail/core/dom/Text.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
    <depend name="include/cocktail/port/flash_player/Text.h"/>
   </file>
@@ -1287,7 +1235,6 @@
    <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
-   <depend name="include/cocktail/core/style/TextTransform.h"/>
   </file>
   <file name="src/StringTools.cpp">
    <depend name="include/StringTools.h"/>
@@ -1303,17 +1250,48 @@
    <depend name="include/nme/events/IEventDispatcher.h"/>
    <depend name="include/nme/geom/Matrix.h"/>
   </file>
+  <file name="src/cocktail/core/hxtml/StyleProxy.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/hxtml/StyleProxy.h"/>
+   <depend name="include/cocktail/core/style/adapter/AbstractStyle.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/hxtml/IStyleProxy.h"/>
+  </file>
+  <file name="src/hxtml/IStyleProxy.cpp">
+   <depend name="include/hxtml/IStyleProxy.h"/>
+  </file>
+  <file name="src/cocktail/core/hxtml/HxtmlConverter.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/hxtml/HxtmlConverter.h"/>
+   <depend name="include/cocktail/core/hxtml/StyleProxy.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLDocument.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/Text.h"/>
+   <depend name="include/hxtml/Browser.h"/>
+   <depend name="include/hxtml/IStyleProxy.h"/>
+  </file>
   <file name="src/cocktail/core/style/formatter/FormattingContext.cpp">
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/Clear.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/floats/FloatsManager.h"/>
    <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
   </file>
   <file name="src/nme/net/URLRequest.cpp">
    <depend name="include/Std.h"/>
@@ -1351,6 +1329,10 @@
    <depend name="include/haxe/io/Error.h"/>
    <depend name="include/haxe/io/Input.h"/>
   </file>
+  <file name="src/cocktail/core/nativeElement/AbstractNativeElementManagerImpl.cpp">
+   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementManagerImpl.h"/>
+   <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
+  </file>
   <file name="src/haxe/io/BytesOutput.cpp">
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/BytesBuffer.h"/>
@@ -1379,7 +1361,7 @@
    <depend name="include/nme/display/PixelSnapping.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.h"/>
@@ -1407,11 +1389,7 @@
    <depend name="include/cocktail/core/event/UIEvent.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/keyboard/AbstractKeyboard.h"/>
-   <depend name="include/cocktail/core/keyboard/KeyboardKeyValue.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-  </file>
-  <file name="src/cocktail/core/nativeElement/AbstractNativeElementPathManager.cpp">
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementPathManager.h"/>
   </file>
   <file name="src/nme/errors/ArgumentError.cpp">
    <depend name="include/nme/errors/ArgumentError.h"/>
@@ -1419,6 +1397,135 @@
   </file>
   <file name="src/nme/errors/Error.cpp">
    <depend name="include/nme/errors/Error.h"/>
+  </file>
+  <file name="src/cocktail/core/style/BodyCoreStyle.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/style/BodyCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/formatter/BlockFormattingContext.h"/>
+   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLDocument.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/style/ContainerCoreStyle.cpp">
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManager.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/Dimension.h"/>
+   <depend name="include/cocktail/core/style/Display.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/BlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/FloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/formatter/BlockFormattingContext.h"/>
+   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
+   <depend name="include/cocktail/core/style/formatter/InlineFormattingContext.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/Text.h"/>
+   <depend name="include/cocktail/port/nme/FontManager.h"/>
+  </file>
+  <file name="src/cocktail/core/style/CoreStyle.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManager.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/style/BackgroundClip.h"/>
+   <depend name="include/cocktail/core/style/BackgroundImage.h"/>
+   <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
+   <depend name="include/cocktail/core/style/BackgroundPositionX.h"/>
+   <depend name="include/cocktail/core/style/BackgroundPositionY.h"/>
+   <depend name="include/cocktail/core/style/BackgroundRepeatValue.h"/>
+   <depend name="include/cocktail/core/style/BackgroundSize.h"/>
+   <depend name="include/cocktail/core/style/BackgroundSizeDimension.h"/>
+   <depend name="include/cocktail/core/style/CSSFloat.h"/>
+   <depend name="include/cocktail/core/style/Clear.h"/>
+   <depend name="include/cocktail/core/style/ConstrainedDimension.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/Cursor.h"/>
+   <depend name="include/cocktail/core/style/Dimension.h"/>
+   <depend name="include/cocktail/core/style/Display.h"/>
+   <depend name="include/cocktail/core/style/FontSize.h"/>
+   <depend name="include/cocktail/core/style/FontStyle.h"/>
+   <depend name="include/cocktail/core/style/FontVariant.h"/>
+   <depend name="include/cocktail/core/style/FontWeight.h"/>
+   <depend name="include/cocktail/core/style/LetterSpacing.h"/>
+   <depend name="include/cocktail/core/style/LineHeight.h"/>
+   <depend name="include/cocktail/core/style/Margin.h"/>
+   <depend name="include/cocktail/core/style/Overflow.h"/>
+   <depend name="include/cocktail/core/style/Padding.h"/>
+   <depend name="include/cocktail/core/style/Position.h"/>
+   <depend name="include/cocktail/core/style/PositionOffset.h"/>
+   <depend name="include/cocktail/core/style/TextAlign.h"/>
+   <depend name="include/cocktail/core/style/TextIndent.h"/>
+   <depend name="include/cocktail/core/style/TextTransform.h"/>
+   <depend name="include/cocktail/core/style/Transform.h"/>
+   <depend name="include/cocktail/core/style/TransformOriginX.h"/>
+   <depend name="include/cocktail/core/style/TransformOriginY.h"/>
+   <depend name="include/cocktail/core/style/VerticalAlign.h"/>
+   <depend name="include/cocktail/core/style/Visibility.h"/>
+   <depend name="include/cocktail/core/style/WhiteSpace.h"/>
+   <depend name="include/cocktail/core/style/WordSpacing.h"/>
+   <depend name="include/cocktail/core/style/computer/BackgroundStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/DisplayStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/FontAndTextStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/VisualEffectStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedFloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
+   <depend name="include/cocktail/core/style/positioner/AbsolutePositioner.h"/>
+   <depend name="include/cocktail/core/style/positioner/BoxPositioner.h"/>
+   <depend name="include/cocktail/core/style/positioner/FixedPositioner.h"/>
+   <depend name="include/cocktail/core/style/positioner/RelativePositioner.h"/>
+   <depend name="include/cocktail/core/unit/CSSColor.h"/>
+   <depend name="include/cocktail/core/unit/ColorKeyword.h"/>
+   <depend name="include/cocktail/core/unit/FontSizeAbsoluteSize.h"/>
+   <depend name="include/cocktail/core/unit/Length.h"/>
+   <depend name="include/cocktail/core/unit/UnitManager.h"/>
+   <depend name="include/cocktail/core/window/AbstractWindow.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/Window.h"/>
+   <depend name="include/cocktail/port/nme/FontManager.h"/>
   </file>
   <file name="src/cocktail/core/html/HTMLCanvasElement.cpp">
    <depend name="include/cocktail/core/dom/Element.h"/>
@@ -1445,6 +1552,62 @@
   <file name="src/nme/utils/Endian.cpp">
    <depend name="include/nme/utils/Endian.h"/>
   </file>
+  <file name="src/cocktail/port/flash_player/HTMLDocument.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLDocument.h"/>
+   <depend name="include/nme/Lib.h"/>
+   <depend name="include/nme/display/DisplayObject.h"/>
+   <depend name="include/nme/display/DisplayObjectContainer.h"/>
+   <depend name="include/nme/display/IBitmapDrawable.h"/>
+   <depend name="include/nme/display/InteractiveObject.h"/>
+   <depend name="include/nme/display/MovieClip.h"/>
+   <depend name="include/nme/display/Sprite.h"/>
+   <depend name="include/nme/events/EventDispatcher.h"/>
+   <depend name="include/nme/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/cocktail/core/html/AbstractHTMLDocument.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/focus/FocusManager.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLAnchorElement.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLHtmlElement.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLImageElement.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLInputElement.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLCanvasElement.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/style/BodyCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/window/AbstractWindow.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLAnchorElement.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLInputElement.h"/>
+   <depend name="include/cocktail/port/flash_player/Window.h"/>
+   <depend name="include/haxe/Timer.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Document.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/IEventTarget.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
+   <depend name="include/cocktail/port/flash_player/Text.h"/>
+  </file>
   <file name="src/cocktail/core/style/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.cpp">
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
@@ -1463,7 +1626,7 @@
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Dimension.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
@@ -1492,10 +1655,9 @@
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/PositionOffset.h"/>
    <depend name="include/cocktail/core/style/positioner/BoxPositioner.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/cpp/io/FileOutput.cpp">
@@ -1598,30 +1760,12 @@
   <file name="src/nme/display/LineScaleMode.cpp">
    <depend name="include/nme/display/LineScaleMode.h"/>
   </file>
-  <file name="src/cocktail/port/flash_player/NativeElementCreator.cpp">
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementCreator.h"/>
-   <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
-   <depend name="include/cocktail/port/flash_player/NativeElementCreator.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/DisplayObjectContainer.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/display/Loader.h"/>
-   <depend name="include/nme/display/Sprite.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
-  </file>
-  <file name="src/cocktail/core/nativeElement/AbstractNativeElementCreator.cpp">
-   <depend name="include/cocktail/core/nativeElement/AbstractNativeElementCreator.h"/>
-   <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
-  </file>
   <file name="src/cocktail/core/renderer/TextRenderer.cpp">
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/nme/Lib.h"/>
    <depend name="include/nme/display/DisplayObject.h"/>
    <depend name="include/nme/display/DisplayObjectContainer.h"/>
@@ -1642,8 +1786,8 @@
    <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/ConstrainedDimension.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Dimension.h"/>
    <depend name="include/cocktail/core/style/Margin.h"/>
    <depend name="include/cocktail/core/style/Padding.h"/>
@@ -1657,134 +1801,10 @@
    <depend name="include/cocktail/core/dom/Document.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/AbstractHTMLDocument.h"/>
    <depend name="include/cocktail/core/window/AbstractWindow.h"/>
+   <depend name="include/cocktail/port/flash_player/HTMLDocument.h"/>
    <depend name="include/cocktail/port/flash_player/Window.h"/>
-  </file>
-  <file name="src/cocktail/core/style/AbstractContainerCoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/CharacterData.h"/>
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/dom/Text.h"/>
-   <depend name="include/cocktail/core/dom/TextTokenValue.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/Dimension.h"/>
-   <depend name="include/cocktail/core/style/Display.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/BlockBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/FloatBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/formatter/BlockFormattingContext.h"/>
-   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
-   <depend name="include/cocktail/core/style/formatter/InlineFormattingContext.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/Text.h"/>
-  </file>
-  <file name="src/cocktail/port/flash_player/CoreStyle.cpp">
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/haxe/Log.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
-   <depend name="include/nme/text/TextField.h"/>
-   <depend name="include/nme/text/TextFieldAutoSize.h"/>
-   <depend name="include/nme/text/TextFormat.h"/>
-  </file>
-  <file name="src/cocktail/core/style/AbstractCoreStyle.cpp">
-   <depend name="include/cocktail/Lib.h"/>
-   <depend name="include/cocktail/core/dom/Element.h"/>
-   <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/geom/Matrix.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
-   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/BackgroundClip.h"/>
-   <depend name="include/cocktail/core/style/BackgroundImage.h"/>
-   <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
-   <depend name="include/cocktail/core/style/BackgroundPositionX.h"/>
-   <depend name="include/cocktail/core/style/BackgroundPositionY.h"/>
-   <depend name="include/cocktail/core/style/BackgroundRepeatValue.h"/>
-   <depend name="include/cocktail/core/style/BackgroundSize.h"/>
-   <depend name="include/cocktail/core/style/BackgroundSizeDimension.h"/>
-   <depend name="include/cocktail/core/style/CSSFloat.h"/>
-   <depend name="include/cocktail/core/style/Clear.h"/>
-   <depend name="include/cocktail/core/style/ConstrainedDimension.h"/>
-   <depend name="include/cocktail/core/style/Cursor.h"/>
-   <depend name="include/cocktail/core/style/Dimension.h"/>
-   <depend name="include/cocktail/core/style/Display.h"/>
-   <depend name="include/cocktail/core/style/FontSize.h"/>
-   <depend name="include/cocktail/core/style/FontStyle.h"/>
-   <depend name="include/cocktail/core/style/FontVariant.h"/>
-   <depend name="include/cocktail/core/style/FontWeight.h"/>
-   <depend name="include/cocktail/core/style/LetterSpacing.h"/>
-   <depend name="include/cocktail/core/style/LineHeight.h"/>
-   <depend name="include/cocktail/core/style/Margin.h"/>
-   <depend name="include/cocktail/core/style/Overflow.h"/>
-   <depend name="include/cocktail/core/style/Padding.h"/>
-   <depend name="include/cocktail/core/style/Position.h"/>
-   <depend name="include/cocktail/core/style/PositionOffset.h"/>
-   <depend name="include/cocktail/core/style/TextAlign.h"/>
-   <depend name="include/cocktail/core/style/TextIndent.h"/>
-   <depend name="include/cocktail/core/style/TextTransform.h"/>
-   <depend name="include/cocktail/core/style/Transform.h"/>
-   <depend name="include/cocktail/core/style/TransformOriginX.h"/>
-   <depend name="include/cocktail/core/style/TransformOriginY.h"/>
-   <depend name="include/cocktail/core/style/VerticalAlign.h"/>
-   <depend name="include/cocktail/core/style/Visibility.h"/>
-   <depend name="include/cocktail/core/style/WhiteSpace.h"/>
-   <depend name="include/cocktail/core/style/WordSpacing.h"/>
-   <depend name="include/cocktail/core/style/computer/BackgroundStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/DisplayStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/FontAndTextStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/VisualEffectStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/BoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedFloatBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.h"/>
-   <depend name="include/cocktail/core/style/formatter/FormattingContext.h"/>
-   <depend name="include/cocktail/core/style/positioner/AbsolutePositioner.h"/>
-   <depend name="include/cocktail/core/style/positioner/BoxPositioner.h"/>
-   <depend name="include/cocktail/core/style/positioner/FixedPositioner.h"/>
-   <depend name="include/cocktail/core/style/positioner/RelativePositioner.h"/>
-   <depend name="include/cocktail/core/unit/CSSColor.h"/>
-   <depend name="include/cocktail/core/unit/ColorKeyword.h"/>
-   <depend name="include/cocktail/core/unit/FontSizeAbsoluteSize.h"/>
-   <depend name="include/cocktail/core/unit/Length.h"/>
-   <depend name="include/cocktail/core/window/AbstractWindow.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/cocktail/port/flash_player/Window.h"/>
-   <depend name="include/haxe/Timer.h"/>
   </file>
   <file name="src/cocktail/core/background/InitialBlockBackgroundManager.cpp">
    <depend name="include/cocktail/Lib.h"/>
@@ -1803,11 +1823,11 @@
    <depend name="include/cocktail/core/resource/AbstractImageLoader.h"/>
    <depend name="include/cocktail/core/resource/AbstractMediaLoader.h"/>
    <depend name="include/cocktail/core/resource/AbstractResourceLoader.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/BackgroundClip.h"/>
    <depend name="include/cocktail/core/style/BackgroundImage.h"/>
    <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
    <depend name="include/cocktail/core/style/BackgroundSize.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/computer/BackgroundStylesComputer.h"/>
    <depend name="include/cocktail/core/unit/CSSColor.h"/>
    <depend name="include/cocktail/core/unit/GradientValue.h"/>
@@ -1872,9 +1892,8 @@
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Display.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
   </file>
   <file name="src/nme/events/IOErrorEvent.cpp">
    <depend name="include/nme/events/ErrorEvent.h"/>
@@ -1908,9 +1927,7 @@
    <depend name="include/cocktail/core/event/IEventTarget.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractEmbeddedCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
   </file>
   <file name="src/cocktail/port/flash_player/HTMLElement.cpp">
@@ -1930,15 +1947,14 @@
    <depend name="include/cocktail/core/event/MouseEvent.h"/>
    <depend name="include/cocktail/core/event/UIEvent.h"/>
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
+   <depend name="include/cocktail/core/hxtml/HxtmlConverter.h"/>
    <depend name="include/cocktail/core/keyboard/AbstractKeyboard.h"/>
    <depend name="include/cocktail/core/mouse/AbstractMouse.h"/>
    <depend name="include/cocktail/core/nativeElement/NativeElementManager.h"/>
    <depend name="include/cocktail/core/nativeElement/NativeElementTypeValue.h"/>
-   <depend name="include/cocktail/core/style/AbstractContainerCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/adapter/Style.h"/>
-   <depend name="include/cocktail/port/flash_player/ContainerCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/ContainerCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/adapter/AbstractStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
    <depend name="include/cocktail/port/flash_player/Keyboard.h"/>
    <depend name="include/cocktail/port/flash_player/Mouse.h"/>
@@ -2036,9 +2052,9 @@
    <depend name="include/nme/events/IEventDispatcher.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/DisplayStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/CSSFloat.h"/>
    <depend name="include/cocktail/core/style/Clear.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/Display.h"/>
    <depend name="include/cocktail/core/style/Position.h"/>
    <depend name="include/cocktail/core/style/computer/DisplayStylesComputer.h"/>
@@ -2048,6 +2064,29 @@
   </file>
   <file name="src/nme/display/CapsStyle.cpp">
    <depend name="include/nme/display/CapsStyle.h"/>
+  </file>
+  <file name="src/cocktail/port/nme/FontManager.cpp">
+   <depend name="include/cocktail/core/font/AbstractFontManager.h"/>
+   <depend name="include/cocktail/core/style/FontStyle.h"/>
+   <depend name="include/cocktail/core/style/FontWeight.h"/>
+   <depend name="include/cocktail/core/style/TextTransform.h"/>
+   <depend name="include/cocktail/port/nme/FontManager.h"/>
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/nme/display/DisplayObject.h"/>
+   <depend name="include/nme/display/IBitmapDrawable.h"/>
+   <depend name="include/nme/display/InteractiveObject.h"/>
+   <depend name="include/nme/events/EventDispatcher.h"/>
+   <depend name="include/nme/events/IEventDispatcher.h"/>
+   <depend name="include/nme/text/TextField.h"/>
+   <depend name="include/nme/text/TextFieldAutoSize.h"/>
+   <depend name="include/nme/text/TextFormat.h"/>
+  </file>
+  <file name="src/cocktail/core/font/AbstractFontManager.cpp">
+   <depend name="include/cocktail/core/font/AbstractFontLoader.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManager.h"/>
+   <depend name="include/cocktail/core/style/TextTransform.h"/>
+   <depend name="include/cocktail/port/flash_player/FontLoader.h"/>
+   <depend name="include/haxe/Log.h"/>
   </file>
   <file name="src/cpp/zip/Flush.cpp">
    <depend name="include/cpp/zip/Flush.h"/>
@@ -2063,39 +2102,24 @@
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/window/AbstractWindow.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/Window.h"/>
   </file>
   <file name="src/cocktail/core/renderer/BlockBoxRenderer.cpp">
-   <depend name="include/cocktail/core/dom/Element.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
-   <depend name="include/cocktail/core/event/IEventTarget.h"/>
-   <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
-   <depend name="include/nme/display/DisplayObject.h"/>
-   <depend name="include/nme/display/DisplayObjectContainer.h"/>
-   <depend name="include/nme/display/Graphics.h"/>
-   <depend name="include/nme/display/IBitmapDrawable.h"/>
-   <depend name="include/nme/display/InteractiveObject.h"/>
-   <depend name="include/nme/display/Sprite.h"/>
-   <depend name="include/nme/events/EventDispatcher.h"/>
-   <depend name="include/nme/events/IEventDispatcher.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
   </file>
   <file name="src/cocktail/core/renderer/FlowBoxRenderer.cpp">
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
   </file>
   <file name="src/cocktail/core/renderer/BoxRenderer.cpp">
    <depend name="include/cocktail/core/background/BackgroundManager.h"/>
@@ -2105,8 +2129,7 @@
    <depend name="include/cocktail/core/html/AbstractHTMLElement.h"/>
    <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/port/flash_player/HTMLElement.h"/>
    <depend name="include/nme/display/DisplayObject.h"/>
    <depend name="include/nme/display/DisplayObjectContainer.h"/>
@@ -2121,10 +2144,10 @@
    <depend name="include/cocktail/core/dom/Node.h"/>
    <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
    <depend name="include/cocktail/core/renderer/LayerRenderer.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
   </file>
   <file name="src/cocktail/core/dom/Node.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
    <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
    <depend name="include/cocktail/core/dom/Node.h"/>
   </file>
@@ -2149,7 +2172,7 @@
    <depend name="include/nme/display/StageQuality.h"/>
   </file>
   <file name="src/cocktail/core/style/computer/FontAndTextStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/FontSize.h"/>
    <depend name="include/cocktail/core/style/FontStyle.h"/>
    <depend name="include/cocktail/core/style/FontVariant.h"/>
@@ -2177,44 +2200,7 @@
   <file name="src/nme/display/StageDisplayState.cpp">
    <depend name="include/nme/display/StageDisplayState.h"/>
   </file>
-  <file name="src/cocktail/core/style/adapter/Style.cpp">
-   <depend name="include/Std.h"/>
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
-   <depend name="include/cocktail/core/style/BackgroundClip.h"/>
-   <depend name="include/cocktail/core/style/BackgroundImage.h"/>
-   <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
-   <depend name="include/cocktail/core/style/BackgroundSize.h"/>
-   <depend name="include/cocktail/core/style/CSSFloat.h"/>
-   <depend name="include/cocktail/core/style/Clear.h"/>
-   <depend name="include/cocktail/core/style/ConstrainedDimension.h"/>
-   <depend name="include/cocktail/core/style/Cursor.h"/>
-   <depend name="include/cocktail/core/style/Dimension.h"/>
-   <depend name="include/cocktail/core/style/Display.h"/>
-   <depend name="include/cocktail/core/style/FontSize.h"/>
-   <depend name="include/cocktail/core/style/FontStyle.h"/>
-   <depend name="include/cocktail/core/style/FontVariant.h"/>
-   <depend name="include/cocktail/core/style/FontWeight.h"/>
-   <depend name="include/cocktail/core/style/LetterSpacing.h"/>
-   <depend name="include/cocktail/core/style/LineHeight.h"/>
-   <depend name="include/cocktail/core/style/Margin.h"/>
-   <depend name="include/cocktail/core/style/Overflow.h"/>
-   <depend name="include/cocktail/core/style/Padding.h"/>
-   <depend name="include/cocktail/core/style/Position.h"/>
-   <depend name="include/cocktail/core/style/PositionOffset.h"/>
-   <depend name="include/cocktail/core/style/TextAlign.h"/>
-   <depend name="include/cocktail/core/style/TextIndent.h"/>
-   <depend name="include/cocktail/core/style/TextTransform.h"/>
-   <depend name="include/cocktail/core/style/VerticalAlign.h"/>
-   <depend name="include/cocktail/core/style/Visibility.h"/>
-   <depend name="include/cocktail/core/style/WhiteSpace.h"/>
-   <depend name="include/cocktail/core/style/WordSpacing.h"/>
-   <depend name="include/cocktail/core/style/adapter/Style.h"/>
-   <depend name="include/cocktail/core/unit/CSSColor.h"/>
-   <depend name="include/cocktail/core/unit/UnitManager.h"/>
-   <depend name="include/cocktail/port/flash_player/CoreStyle.h"/>
-  </file>
   <file name="src/cocktail/core/style/computer/BackgroundStylesComputer.cpp">
-   <depend name="include/cocktail/core/style/AbstractCoreStyle.h"/>
    <depend name="include/cocktail/core/style/BackgroundClip.h"/>
    <depend name="include/cocktail/core/style/BackgroundImage.h"/>
    <depend name="include/cocktail/core/style/BackgroundOrigin.h"/>
@@ -2222,6 +2208,7 @@
    <depend name="include/cocktail/core/style/BackgroundPositionY.h"/>
    <depend name="include/cocktail/core/style/BackgroundSize.h"/>
    <depend name="include/cocktail/core/style/BackgroundSizeDimension.h"/>
+   <depend name="include/cocktail/core/style/CoreStyle.h"/>
    <depend name="include/cocktail/core/style/computer/BackgroundStylesComputer.h"/>
    <depend name="include/cocktail/core/unit/CSSColor.h"/>
    <depend name="include/cocktail/core/unit/Length.h"/>

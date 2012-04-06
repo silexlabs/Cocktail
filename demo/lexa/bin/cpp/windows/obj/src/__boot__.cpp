@@ -4,6 +4,7 @@
 #include <cocktail/core/mouse/NativeOSMouseCursorValue.h>
 #include <cocktail/core/mouse/MouseCursorValue.h>
 #include <cocktail/port/flash_player/MouseCursor.h>
+#include <hxtml/Browser.h>
 #include <haxe/Timer.h>
 #include <nme/display/TouchInfo.h>
 #include <cocktail/core/dom/JointStyleValue.h>
@@ -12,19 +13,16 @@
 #include <cocktail/core/dom/LineStyleValue.h>
 #include <cocktail/core/dom/FillStyleValue.h>
 #include <cocktail/core/dom/TextTokenValue.h>
-#include <cocktail/core/dom/AnchorTarget.h>
 #include <nme/Lib.h>
 #include <nme/display/IGraphicsData.h>
 #include <cocktail/core/nativeElement/NativeElementManager.h>
 #include <cpp/zip/Compress.h>
 #include <nme/display/Graphics.h>
 #include <nme/filters/BitmapFilter.h>
-#include <cocktail/core/html/HTMLDocument.h>
 #include <nme/display/GradientType.h>
 #include <StringBuf.h>
 #include <nme/errors/EOFError.h>
 #include <haxe/io/BytesBuffer.h>
-#include <cocktail/core/keyboard/KeyboardKeyValue.h>
 #include <cocktail/core/resource/XMLHTTPRequest.h>
 #include <nme/net/URLVariables.h>
 #include <cocktail/core/unit/Angle.h>
@@ -40,9 +38,7 @@
 #include <cocktail/core/unit/FontSizeAbsoluteSize.h>
 #include <cocktail/core/unit/Length.h>
 #include <cocktail/core/style/computer/boxComputers/PositionedBoxStylesComputer.h>
-#include <cocktail/port/flash_player/NativeElementPathManager.h>
 #include <nme/events/ProgressEvent.h>
-#include <cocktail/port/flash_player/BodyCoreStyle.h>
 #include <Reflect.h>
 #include <cpp/net/SocketOutput.h>
 #include <nme/text/TextFormat.h>
@@ -50,7 +46,6 @@
 #include <cocktail/port/flash_player/DrawingManager.h>
 #include <cocktail/core/focus/AbstractFocusManagerImpl.h>
 #include <cocktail/core/style/formatter/InlineFormattingContext.h>
-#include <Type.h>
 #include <ValueType.h>
 #include <nme/display/Tilesheet.h>
 #include <Date.h>
@@ -67,13 +62,13 @@
 #include <nme/events/JoystickEvent.h>
 #include <cocktail/core/style/computer/boxComputers/EmbeddedFloatBoxStylesComputer.h>
 #include <cocktail/core/html/AbstractHTMLImageElement.h>
+#include <cocktail/core/font/FontType.h>
 #include <cocktail/port/flash_player/HTMLAnchorElement.h>
 #include <cocktail/core/html/AbstractHTMLAnchorElement.h>
 #include <cocktail/core/style/positioner/AbsolutePositioner.h>
 #include <cocktail/core/dom/Attr.h>
 #include <cpp/io/_Process/Stdout.h>
 #include <cpp/io/_Process/Stdin.h>
-#include <cocktail/core/style/AbstractBodyCoreStyle.h>
 #include <nme/media/SoundChannel.h>
 #include <cpp/net/Socket.h>
 #include <cocktail/core/renderer/EmbeddedBoxRenderer.h>
@@ -119,15 +114,21 @@
 #include <nme/geom/Rectangle.h>
 #include <nme/VectorHelper.h>
 #include <nme/net/URLRequestMethod.h>
+#include <cocktail/port/flash_player/NativeElementManagerImpl.h>
 #include <nme/media/SoundTransform.h>
 #include <cocktail/core/event/MouseEvent.h>
-#include <cocktail/core/dom/Document.h>
 #include <cocktail/core/style/computer/VisualEffectStylesComputer.h>
 #include <cocktail/core/dom/NamedNodeMap.h>
 #include <cocktail/core/html/AbstractHTMLHtmlElement.h>
+#include <hxtml/CssParser.h>
+#include <hxtml/Value.h>
+#include <hxtml/Token.h>
 #include <ApplicationMain.h>
 #include <cocktail/core/renderer/InlineBoxRenderer.h>
 #include <cocktail/core/unit/UnitManager.h>
+#include <Xml.h>
+#include <Type.h>
+#include <XmlType.h>
 #include <cocktail/core/event/KeyboardEvent.h>
 #include <cpp/io/File.h>
 #include <cpp/io/FileSeek.h>
@@ -138,8 +139,11 @@
 #include <nme/events/EventPhase.h>
 #include <cocktail/core/style/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.h>
 #include <nme/geom/Transform.h>
+#include <cocktail/core/style/adapter/AbstractStyle.h>
 #include <nme/events/Listener.h>
 #include <IntIter.h>
+#include <cocktail/port/flash_player/FontLoader.h>
+#include <cocktail/core/font/AbstractFontLoader.h>
 #include <nme/display/BlendMode.h>
 #include <nme/events/KeyboardEvent.h>
 #include <cocktail/core/style/positioner/RelativePositioner.h>
@@ -155,9 +159,7 @@
 #include <cpp/net/SocketInput.h>
 #include <nme/utils/WeakRef.h>
 #include <nme/net/URLLoaderDataFormat.h>
-#include <cocktail/port/flash_player/ContainerCoreStyle.h>
 #include <haxe/io/Eof.h>
-#include <cocktail/core/style/AbstractEmbeddedCoreStyle.h>
 #include <haxe/io/Error.h>
 #include <nme/text/TextFieldAutoSize.h>
 #include <cocktail/core/style/floats/FloatsManager.h>
@@ -178,12 +180,16 @@
 #include <cocktail/core/dom/Text.h>
 #include <StringTools.h>
 #include <nme/display/Bitmap.h>
+#include <cocktail/core/hxtml/StyleProxy.h>
+#include <hxtml/IStyleProxy.h>
+#include <cocktail/core/hxtml/HxtmlConverter.h>
 #include <cocktail/core/style/formatter/FormattingContext.h>
 #include <nme/net/URLRequest.h>
 #include <nme/utils/IDataInput.h>
 #include <haxe/io/Bytes.h>
 #include <cpp/io/FileInput.h>
 #include <haxe/io/Input.h>
+#include <cocktail/core/nativeElement/AbstractNativeElementManagerImpl.h>
 #include <haxe/io/BytesOutput.h>
 #include <nme/display/JointStyle.h>
 #include <nme/display/BitmapData.h>
@@ -191,13 +197,18 @@
 #include <cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.h>
 #include <cocktail/port/flash_player/Keyboard.h>
 #include <cocktail/core/keyboard/AbstractKeyboard.h>
-#include <cocktail/core/nativeElement/AbstractNativeElementPathManager.h>
 #include <nme/errors/ArgumentError.h>
 #include <nme/errors/Error.h>
+#include <cocktail/core/style/BodyCoreStyle.h>
+#include <cocktail/core/style/ContainerCoreStyle.h>
+#include <cocktail/core/style/CoreStyle.h>
 #include <cocktail/core/html/HTMLCanvasElement.h>
 #include <EReg.h>
 #include <Hash.h>
 #include <nme/utils/Endian.h>
+#include <cocktail/port/flash_player/HTMLDocument.h>
+#include <cocktail/core/html/AbstractHTMLDocument.h>
+#include <cocktail/core/dom/Document.h>
 #include <cocktail/core/style/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.h>
 #include <cocktail/core/style/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h>
 #include <cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h>
@@ -213,16 +224,11 @@
 #include <nme/events/TouchEvent.h>
 #include <nme/events/MouseEvent.h>
 #include <nme/display/LineScaleMode.h>
-#include <cocktail/port/flash_player/NativeElementCreator.h>
-#include <cocktail/core/nativeElement/AbstractNativeElementCreator.h>
 #include <cocktail/core/renderer/TextRenderer.h>
 #include <Std.h>
 #include <cocktail/core/style/computer/boxComputers/BlockBoxStylesComputer.h>
 #include <cocktail/core/style/computer/boxComputers/BoxStylesComputer.h>
 #include <cocktail/Lib.h>
-#include <cocktail/core/style/AbstractContainerCoreStyle.h>
-#include <cocktail/port/flash_player/CoreStyle.h>
-#include <cocktail/core/style/AbstractCoreStyle.h>
 #include <cocktail/core/background/InitialBlockBackgroundManager.h>
 #include <cocktail/core/background/BackgroundManager.h>
 #include <nme/geom/Point.h>
@@ -254,6 +260,8 @@
 #include <cocktail/core/style/computer/DisplayStylesComputer.h>
 #include <nme/text/TextFieldType.h>
 #include <nme/display/CapsStyle.h>
+#include <cocktail/port/nme/FontManager.h>
+#include <cocktail/core/font/AbstractFontManager.h>
 #include <cpp/zip/Flush.h>
 #include <cocktail/core/renderer/InitialBlockRenderer.h>
 #include <cocktail/core/renderer/BlockBoxRenderer.h>
@@ -268,7 +276,6 @@
 #include <cocktail/core/style/computer/FontAndTextStylesComputer.h>
 #include <IntHash.h>
 #include <nme/display/StageDisplayState.h>
-#include <cocktail/core/style/adapter/Style.h>
 #include <cocktail/core/style/computer/BackgroundStylesComputer.h>
 
 void __boot_all()
@@ -278,6 +285,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::mouse::NativeOSMouseCursorValue_obj::__register();
 ::cocktail::core::mouse::MouseCursorValue_obj::__register();
 ::cocktail::port::flash_player::MouseCursor_obj::__register();
+::hxtml::Browser_obj::__register();
 ::haxe::Timer_obj::__register();
 ::nme::display::TouchInfo_obj::__register();
 ::cocktail::core::dom::JointStyleValue_obj::__register();
@@ -286,19 +294,16 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::dom::LineStyleValue_obj::__register();
 ::cocktail::core::dom::FillStyleValue_obj::__register();
 ::cocktail::core::dom::TextTokenValue_obj::__register();
-::cocktail::core::dom::AnchorTarget_obj::__register();
 ::nme::Lib_obj::__register();
 ::nme::display::IGraphicsData_obj::__register();
 ::cocktail::core::nativeElement::NativeElementManager_obj::__register();
 ::cpp::zip::Compress_obj::__register();
 ::nme::display::Graphics_obj::__register();
 ::nme::filters::BitmapFilter_obj::__register();
-::cocktail::core::html::HTMLDocument_obj::__register();
 ::nme::display::GradientType_obj::__register();
 ::StringBuf_obj::__register();
 ::nme::errors::EOFError_obj::__register();
 ::haxe::io::BytesBuffer_obj::__register();
-::cocktail::core::keyboard::KeyboardKeyValue_obj::__register();
 ::cocktail::core::resource::XMLHTTPRequest_obj::__register();
 ::nme::net::URLVariables_obj::__register();
 ::cocktail::core::unit::Angle_obj::__register();
@@ -314,9 +319,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::unit::FontSizeAbsoluteSize_obj::__register();
 ::cocktail::core::unit::Length_obj::__register();
 ::cocktail::core::style::computer::boxComputers::PositionedBoxStylesComputer_obj::__register();
-::cocktail::port::flash_player::NativeElementPathManager_obj::__register();
 ::nme::events::ProgressEvent_obj::__register();
-::cocktail::port::flash_player::BodyCoreStyle_obj::__register();
 ::Reflect_obj::__register();
 ::cpp::net::SocketOutput_obj::__register();
 ::nme::text::TextFormat_obj::__register();
@@ -324,7 +327,6 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::port::flash_player::DrawingManager_obj::__register();
 ::cocktail::core::focus::AbstractFocusManagerImpl_obj::__register();
 ::cocktail::core::style::formatter::InlineFormattingContext_obj::__register();
-::Type_obj::__register();
 ::ValueType_obj::__register();
 ::nme::display::Tilesheet_obj::__register();
 ::Date_obj::__register();
@@ -341,13 +343,13 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::events::JoystickEvent_obj::__register();
 ::cocktail::core::style::computer::boxComputers::EmbeddedFloatBoxStylesComputer_obj::__register();
 ::cocktail::core::html::AbstractHTMLImageElement_obj::__register();
+::cocktail::core::font::FontType_obj::__register();
 ::cocktail::port::flash_player::HTMLAnchorElement_obj::__register();
 ::cocktail::core::html::AbstractHTMLAnchorElement_obj::__register();
 ::cocktail::core::style::positioner::AbsolutePositioner_obj::__register();
 ::cocktail::core::dom::Attr_obj::__register();
 ::cpp::io::_Process::Stdout_obj::__register();
 ::cpp::io::_Process::Stdin_obj::__register();
-::cocktail::core::style::AbstractBodyCoreStyle_obj::__register();
 ::nme::media::SoundChannel_obj::__register();
 ::cpp::net::Socket_obj::__register();
 ::cocktail::core::renderer::EmbeddedBoxRenderer_obj::__register();
@@ -393,15 +395,21 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::geom::Rectangle_obj::__register();
 ::nme::VectorHelper_obj::__register();
 ::nme::net::URLRequestMethod_obj::__register();
+::cocktail::port::flash_player::NativeElementManagerImpl_obj::__register();
 ::nme::media::SoundTransform_obj::__register();
 ::cocktail::core::event::MouseEvent_obj::__register();
-::cocktail::core::dom::Document_obj::__register();
 ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::__register();
 ::cocktail::core::dom::NamedNodeMap_obj::__register();
 ::cocktail::core::html::AbstractHTMLHtmlElement_obj::__register();
+::hxtml::CssParser_obj::__register();
+::hxtml::Value_obj::__register();
+::hxtml::Token_obj::__register();
 ::ApplicationMain_obj::__register();
 ::cocktail::core::renderer::InlineBoxRenderer_obj::__register();
 ::cocktail::core::unit::UnitManager_obj::__register();
+::Xml_obj::__register();
+::Type_obj::__register();
+::XmlType_obj::__register();
 ::cocktail::core::event::KeyboardEvent_obj::__register();
 ::cpp::io::File_obj::__register();
 ::cpp::io::FileSeek_obj::__register();
@@ -412,8 +420,11 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::events::EventPhase_obj::__register();
 ::cocktail::core::style::computer::boxComputers::EmbeddedPositionedBoxStylesComputer_obj::__register();
 ::nme::geom::Transform_obj::__register();
+::cocktail::core::style::adapter::AbstractStyle_obj::__register();
 ::nme::events::Listener_obj::__register();
 ::IntIter_obj::__register();
+::cocktail::port::flash_player::FontLoader_obj::__register();
+::cocktail::core::font::AbstractFontLoader_obj::__register();
 ::nme::display::BlendMode_obj::__register();
 ::nme::events::KeyboardEvent_obj::__register();
 ::cocktail::core::style::positioner::RelativePositioner_obj::__register();
@@ -429,9 +440,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cpp::net::SocketInput_obj::__register();
 ::nme::utils::WeakRef_obj::__register();
 ::nme::net::URLLoaderDataFormat_obj::__register();
-::cocktail::port::flash_player::ContainerCoreStyle_obj::__register();
 ::haxe::io::Eof_obj::__register();
-::cocktail::core::style::AbstractEmbeddedCoreStyle_obj::__register();
 ::haxe::io::Error_obj::__register();
 ::nme::text::TextFieldAutoSize_obj::__register();
 ::cocktail::core::style::floats::FloatsManager_obj::__register();
@@ -452,12 +461,16 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::dom::Text_obj::__register();
 ::StringTools_obj::__register();
 ::nme::display::Bitmap_obj::__register();
+::cocktail::core::hxtml::StyleProxy_obj::__register();
+::hxtml::IStyleProxy_obj::__register();
+::cocktail::core::hxtml::HxtmlConverter_obj::__register();
 ::cocktail::core::style::formatter::FormattingContext_obj::__register();
 ::nme::net::URLRequest_obj::__register();
 ::nme::utils::IDataInput_obj::__register();
 ::haxe::io::Bytes_obj::__register();
 ::cpp::io::FileInput_obj::__register();
 ::haxe::io::Input_obj::__register();
+::cocktail::core::nativeElement::AbstractNativeElementManagerImpl_obj::__register();
 ::haxe::io::BytesOutput_obj::__register();
 ::nme::display::JointStyle_obj::__register();
 ::nme::display::BitmapData_obj::__register();
@@ -465,13 +478,18 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::computer::boxComputers::InLineBoxStylesComputer_obj::__register();
 ::cocktail::port::flash_player::Keyboard_obj::__register();
 ::cocktail::core::keyboard::AbstractKeyboard_obj::__register();
-::cocktail::core::nativeElement::AbstractNativeElementPathManager_obj::__register();
 ::nme::errors::ArgumentError_obj::__register();
 ::nme::errors::Error_obj::__register();
+::cocktail::core::style::BodyCoreStyle_obj::__register();
+::cocktail::core::style::ContainerCoreStyle_obj::__register();
+::cocktail::core::style::CoreStyle_obj::__register();
 ::cocktail::core::html::HTMLCanvasElement_obj::__register();
 ::EReg_obj::__register();
 ::Hash_obj::__register();
 ::nme::utils::Endian_obj::__register();
+::cocktail::port::flash_player::HTMLDocument_obj::__register();
+::cocktail::core::html::AbstractHTMLDocument_obj::__register();
+::cocktail::core::dom::Document_obj::__register();
 ::cocktail::core::style::computer::boxComputers::EmbeddedInlineBlockBoxStylesComputer_obj::__register();
 ::cocktail::core::style::computer::boxComputers::EmbeddedInlineBoxStylesComputer_obj::__register();
 ::cocktail::core::style::computer::boxComputers::EmbeddedBlockBoxStylesComputer_obj::__register();
@@ -487,16 +505,11 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::events::TouchEvent_obj::__register();
 ::nme::events::MouseEvent_obj::__register();
 ::nme::display::LineScaleMode_obj::__register();
-::cocktail::port::flash_player::NativeElementCreator_obj::__register();
-::cocktail::core::nativeElement::AbstractNativeElementCreator_obj::__register();
 ::cocktail::core::renderer::TextRenderer_obj::__register();
 ::Std_obj::__register();
 ::cocktail::core::style::computer::boxComputers::BlockBoxStylesComputer_obj::__register();
 ::cocktail::core::style::computer::boxComputers::BoxStylesComputer_obj::__register();
 ::cocktail::Lib_obj::__register();
-::cocktail::core::style::AbstractContainerCoreStyle_obj::__register();
-::cocktail::port::flash_player::CoreStyle_obj::__register();
-::cocktail::core::style::AbstractCoreStyle_obj::__register();
 ::cocktail::core::background::InitialBlockBackgroundManager_obj::__register();
 ::cocktail::core::background::BackgroundManager_obj::__register();
 ::nme::geom::Point_obj::__register();
@@ -528,6 +541,8 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::computer::DisplayStylesComputer_obj::__register();
 ::nme::text::TextFieldType_obj::__register();
 ::nme::display::CapsStyle_obj::__register();
+::cocktail::port::nme::FontManager_obj::__register();
+::cocktail::core::font::AbstractFontManager_obj::__register();
 ::cpp::zip::Flush_obj::__register();
 ::cocktail::core::renderer::InitialBlockRenderer_obj::__register();
 ::cocktail::core::renderer::BlockBoxRenderer_obj::__register();
@@ -542,9 +557,9 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::computer::FontAndTextStylesComputer_obj::__register();
 ::IntHash_obj::__register();
 ::nme::display::StageDisplayState_obj::__register();
-::cocktail::core::style::adapter::Style_obj::__register();
 ::cocktail::core::style::computer::BackgroundStylesComputer_obj::__register();
 ::nme::utils::ByteArray_obj::__init__();
+::Xml_obj::__init__();
 ::cpp::net::Host_obj::__init__();
 ::cpp::rtti::FieldNumericIntegerLookup_obj::__boot();
 ::cpp::zip::Flush_obj::__boot();
@@ -560,6 +575,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cpp::zip::Uncompress_obj::__boot();
 ::cpp::io::FileSeek_obj::__boot();
 ::cpp::io::File_obj::__boot();
+::Xml_obj::__boot();
 ::cpp::net::Socket_obj::__boot();
 ::cpp::io::_Process::Stdin_obj::__boot();
 ::cpp::io::_Process::Stdout_obj::__boot();
@@ -568,7 +584,6 @@ hx::RegisterResources( hx::GetResources() );
 ::cpp::net::SocketOutput_obj::__boot();
 ::cpp::zip::Compress_obj::__boot();
 ::cocktail::core::style::computer::BackgroundStylesComputer_obj::__boot();
-::cocktail::core::style::adapter::Style_obj::__boot();
 ::nme::display::StageDisplayState_obj::__boot();
 ::IntHash_obj::__boot();
 ::cocktail::core::style::computer::FontAndTextStylesComputer_obj::__boot();
@@ -581,6 +596,8 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::renderer::FlowBoxRenderer_obj::__boot();
 ::cocktail::core::renderer::BlockBoxRenderer_obj::__boot();
 ::cocktail::core::renderer::InitialBlockRenderer_obj::__boot();
+::cocktail::core::font::AbstractFontManager_obj::__boot();
+::cocktail::port::nme::FontManager_obj::__boot();
 ::nme::display::CapsStyle_obj::__boot();
 ::nme::text::TextFieldType_obj::__boot();
 ::cocktail::core::style::computer::DisplayStylesComputer_obj::__boot();
@@ -610,16 +627,11 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::geom::Point_obj::__boot();
 ::cocktail::core::background::BackgroundManager_obj::__boot();
 ::cocktail::core::background::InitialBlockBackgroundManager_obj::__boot();
-::cocktail::core::style::AbstractCoreStyle_obj::__boot();
-::cocktail::port::flash_player::CoreStyle_obj::__boot();
-::cocktail::core::style::AbstractContainerCoreStyle_obj::__boot();
 ::cocktail::Lib_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::BoxStylesComputer_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::BlockBoxStylesComputer_obj::__boot();
 ::Std_obj::__boot();
 ::cocktail::core::renderer::TextRenderer_obj::__boot();
-::cocktail::core::nativeElement::AbstractNativeElementCreator_obj::__boot();
-::cocktail::port::flash_player::NativeElementCreator_obj::__boot();
 ::nme::display::LineScaleMode_obj::__boot();
 ::nme::events::MouseEvent_obj::__boot();
 ::nme::events::TouchEvent_obj::__boot();
@@ -634,12 +646,17 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::computer::boxComputers::EmbeddedBlockBoxStylesComputer_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::EmbeddedInlineBoxStylesComputer_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::EmbeddedInlineBlockBoxStylesComputer_obj::__boot();
+::cocktail::core::dom::Document_obj::__boot();
+::cocktail::core::html::AbstractHTMLDocument_obj::__boot();
+::cocktail::port::flash_player::HTMLDocument_obj::__boot();
 ::nme::utils::Endian_obj::__boot();
 ::Hash_obj::__boot();
 ::cocktail::core::html::HTMLCanvasElement_obj::__boot();
+::cocktail::core::style::CoreStyle_obj::__boot();
+::cocktail::core::style::ContainerCoreStyle_obj::__boot();
+::cocktail::core::style::BodyCoreStyle_obj::__boot();
 ::nme::errors::Error_obj::__boot();
 ::nme::errors::ArgumentError_obj::__boot();
-::cocktail::core::nativeElement::AbstractNativeElementPathManager_obj::__boot();
 ::cocktail::core::keyboard::AbstractKeyboard_obj::__boot();
 ::cocktail::port::flash_player::Keyboard_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::InLineBoxStylesComputer_obj::__boot();
@@ -647,11 +664,15 @@ hx::RegisterResources( hx::GetResources() );
 ::nme::display::BitmapData_obj::__boot();
 ::nme::display::JointStyle_obj::__boot();
 ::haxe::io::BytesOutput_obj::__boot();
+::cocktail::core::nativeElement::AbstractNativeElementManagerImpl_obj::__boot();
 ::haxe::io::Input_obj::__boot();
 ::haxe::io::Bytes_obj::__boot();
 ::nme::utils::IDataInput_obj::__boot();
 ::nme::net::URLRequest_obj::__boot();
 ::cocktail::core::style::formatter::FormattingContext_obj::__boot();
+::cocktail::core::hxtml::HxtmlConverter_obj::__boot();
+::hxtml::IStyleProxy_obj::__boot();
+::cocktail::core::hxtml::StyleProxy_obj::__boot();
 ::nme::display::Bitmap_obj::__boot();
 ::StringTools_obj::__boot();
 ::cocktail::core::dom::Text_obj::__boot();
@@ -669,9 +690,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::floats::FloatsManager_obj::__boot();
 ::nme::text::TextFieldAutoSize_obj::__boot();
 ::haxe::io::Error_obj::__boot();
-::cocktail::core::style::AbstractEmbeddedCoreStyle_obj::__boot();
 ::haxe::io::Eof_obj::__boot();
-::cocktail::port::flash_player::ContainerCoreStyle_obj::__boot();
 ::nme::net::URLLoaderDataFormat_obj::__boot();
 ::nme::utils::WeakRef_obj::__boot();
 ::nme::display::Sprite_obj::__boot();
@@ -685,8 +704,11 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::positioner::RelativePositioner_obj::__boot();
 ::nme::events::KeyboardEvent_obj::__boot();
 ::nme::display::BlendMode_obj::__boot();
+::cocktail::core::font::AbstractFontLoader_obj::__boot();
+::cocktail::port::flash_player::FontLoader_obj::__boot();
 ::IntIter_obj::__boot();
 ::nme::events::Listener_obj::__boot();
+::cocktail::core::style::adapter::AbstractStyle_obj::__boot();
 ::nme::geom::Transform_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::EmbeddedPositionedBoxStylesComputer_obj::__boot();
 ::nme::events::EventPhase_obj::__boot();
@@ -695,15 +717,20 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::port::flash_player::HTMLInputElement_obj::__boot();
 ::nme::display::StageScaleMode_obj::__boot();
 ::cocktail::core::event::KeyboardEvent_obj::__boot();
+::XmlType_obj::__boot();
+::Type_obj::__boot();
 ::cocktail::core::unit::UnitManager_obj::__boot();
 ::cocktail::core::renderer::InlineBoxRenderer_obj::__boot();
 ::ApplicationMain_obj::__boot();
+::hxtml::Token_obj::__boot();
+::hxtml::Value_obj::__boot();
+::hxtml::CssParser_obj::__boot();
 ::cocktail::core::html::AbstractHTMLHtmlElement_obj::__boot();
 ::cocktail::core::dom::NamedNodeMap_obj::__boot();
 ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::__boot();
-::cocktail::core::dom::Document_obj::__boot();
 ::cocktail::core::event::MouseEvent_obj::__boot();
 ::nme::media::SoundTransform_obj::__boot();
+::cocktail::port::flash_player::NativeElementManagerImpl_obj::__boot();
 ::nme::net::URLRequestMethod_obj::__boot();
 ::nme::VectorHelper_obj::__boot();
 ::nme::geom::Rectangle_obj::__boot();
@@ -748,11 +775,11 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::style::Cursor_obj::__boot();
 ::cocktail::core::renderer::EmbeddedBoxRenderer_obj::__boot();
 ::nme::media::SoundChannel_obj::__boot();
-::cocktail::core::style::AbstractBodyCoreStyle_obj::__boot();
 ::cocktail::core::dom::Attr_obj::__boot();
 ::cocktail::core::style::positioner::AbsolutePositioner_obj::__boot();
 ::cocktail::core::html::AbstractHTMLAnchorElement_obj::__boot();
 ::cocktail::port::flash_player::HTMLAnchorElement_obj::__boot();
+::cocktail::core::font::FontType_obj::__boot();
 ::cocktail::core::html::AbstractHTMLImageElement_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::EmbeddedFloatBoxStylesComputer_obj::__boot();
 ::nme::events::JoystickEvent_obj::__boot();
@@ -767,16 +794,13 @@ hx::RegisterResources( hx::GetResources() );
 ::Date_obj::__boot();
 ::nme::display::Tilesheet_obj::__boot();
 ::ValueType_obj::__boot();
-::Type_obj::__boot();
 ::cocktail::core::style::formatter::InlineFormattingContext_obj::__boot();
 ::cocktail::core::focus::AbstractFocusManagerImpl_obj::__boot();
 ::cocktail::port::flash_player::DrawingManager_obj::__boot();
 ::cocktail::core::background::BackgroundDrawingManager_obj::__boot();
 ::nme::text::TextFormat_obj::__boot();
 ::Reflect_obj::__boot();
-::cocktail::port::flash_player::BodyCoreStyle_obj::__boot();
 ::nme::events::ProgressEvent_obj::__boot();
-::cocktail::port::flash_player::NativeElementPathManager_obj::__boot();
 ::cocktail::core::style::computer::boxComputers::PositionedBoxStylesComputer_obj::__boot();
 ::cocktail::core::unit::Length_obj::__boot();
 ::cocktail::core::unit::FontSizeAbsoluteSize_obj::__boot();
@@ -792,18 +816,15 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::unit::Angle_obj::__boot();
 ::nme::net::URLVariables_obj::__boot();
 ::cocktail::core::resource::XMLHTTPRequest_obj::__boot();
-::cocktail::core::keyboard::KeyboardKeyValue_obj::__boot();
 ::haxe::io::BytesBuffer_obj::__boot();
 ::nme::errors::EOFError_obj::__boot();
 ::StringBuf_obj::__boot();
 ::nme::display::GradientType_obj::__boot();
-::cocktail::core::html::HTMLDocument_obj::__boot();
 ::nme::filters::BitmapFilter_obj::__boot();
 ::nme::display::Graphics_obj::__boot();
 ::cocktail::core::nativeElement::NativeElementManager_obj::__boot();
 ::nme::display::IGraphicsData_obj::__boot();
 ::nme::Lib_obj::__boot();
-::cocktail::core::dom::AnchorTarget_obj::__boot();
 ::cocktail::core::dom::TextTokenValue_obj::__boot();
 ::cocktail::core::dom::FillStyleValue_obj::__boot();
 ::cocktail::core::dom::LineStyleValue_obj::__boot();
@@ -812,6 +833,7 @@ hx::RegisterResources( hx::GetResources() );
 ::cocktail::core::dom::JointStyleValue_obj::__boot();
 ::nme::display::TouchInfo_obj::__boot();
 ::haxe::Timer_obj::__boot();
+::hxtml::Browser_obj::__boot();
 ::cocktail::port::flash_player::MouseCursor_obj::__boot();
 ::cocktail::core::mouse::MouseCursorValue_obj::__boot();
 ::cocktail::core::mouse::NativeOSMouseCursorValue_obj::__boot();

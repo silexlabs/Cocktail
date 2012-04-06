@@ -12,11 +12,14 @@
 #ifndef INCLUDED_cocktail_core_event_IEventTarget
 #include <cocktail/core/event/IEventTarget.h>
 #endif
-#ifndef INCLUDED_cocktail_core_html_HTMLDocument
-#include <cocktail/core/html/HTMLDocument.h>
+#ifndef INCLUDED_cocktail_core_html_AbstractHTMLDocument
+#include <cocktail/core/html/AbstractHTMLDocument.h>
 #endif
 #ifndef INCLUDED_cocktail_core_window_AbstractWindow
 #include <cocktail/core/window/AbstractWindow.h>
+#endif
+#ifndef INCLUDED_cocktail_port_flash_player_HTMLDocument
+#include <cocktail/port/flash_player/HTMLDocument.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_Window
 #include <cocktail/port/flash_player/Window.h>
@@ -44,9 +47,9 @@ Dynamic Lib_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-::cocktail::core::html::HTMLDocument Lib_obj::_document;
+::cocktail::port::flash_player::HTMLDocument Lib_obj::_document;
 
-::cocktail::core::html::HTMLDocument Lib_obj::document;
+::cocktail::port::flash_player::HTMLDocument Lib_obj::document;
 
 ::cocktail::port::flash_player::Window Lib_obj::_window;
 
@@ -56,7 +59,7 @@ Void Lib_obj::init( ){
 {
 		HX_SOURCE_PUSH("Lib_obj::init")
 		HX_SOURCE_POS("../../src/cocktail/Lib.hx",52)
-		::cocktail::Lib_obj::_document = ::cocktail::core::html::HTMLDocument_obj::__new();
+		::cocktail::Lib_obj::_document = ::cocktail::port::flash_player::HTMLDocument_obj::__new();
 		HX_SOURCE_POS("../../src/cocktail/Lib.hx",53)
 		::cocktail::Lib_obj::_window = ::cocktail::port::flash_player::Window_obj::__new(::cocktail::Lib_obj::_document);
 	}
@@ -66,7 +69,7 @@ return null();
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC0(Lib_obj,init,(void))
 
-::cocktail::core::html::HTMLDocument Lib_obj::get_document( ){
+::cocktail::port::flash_player::HTMLDocument Lib_obj::get_document( ){
 	HX_SOURCE_PUSH("Lib_obj::get_document")
 	HX_SOURCE_POS("../../src/cocktail/Lib.hx",62)
 	if (((::cocktail::Lib_obj::_document == null()))){
@@ -142,10 +145,10 @@ Dynamic Lib_obj::__SetField(const ::String &inName,const Dynamic &inValue)
 		if (HX_FIELD_EQ(inName,"_window") ) { _window=inValue.Cast< ::cocktail::port::flash_player::Window >(); return inValue; }
 		break;
 	case 8:
-		if (HX_FIELD_EQ(inName,"document") ) { document=inValue.Cast< ::cocktail::core::html::HTMLDocument >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"document") ) { document=inValue.Cast< ::cocktail::port::flash_player::HTMLDocument >(); return inValue; }
 		break;
 	case 9:
-		if (HX_FIELD_EQ(inName,"_document") ) { _document=inValue.Cast< ::cocktail::core::html::HTMLDocument >(); return inValue; }
+		if (HX_FIELD_EQ(inName,"_document") ) { _document=inValue.Cast< ::cocktail::port::flash_player::HTMLDocument >(); return inValue; }
 	}
 	return super::__SetField(inName,inValue);
 }
