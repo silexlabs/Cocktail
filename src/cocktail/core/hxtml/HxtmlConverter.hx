@@ -211,6 +211,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setBgColorNum (element:Node, value:Int):Void{
 		cast(element, HtmlDom).style.backgroundColor = "#" + Std.string(value);
 	}
+	public function setBgColorRGBA (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.backgroundColor = "rgba("+value+")";
+	}
 	public function setBgColorKey (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.backgroundColor = value;
 	}
