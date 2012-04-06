@@ -120,6 +120,9 @@ class Element extends Node
 	 * build the appropriate subtree,
 	 * and use setAttributeNode to assign it as the value of an attribute.
 	 * 
+	 * TODO : should be overriden in JS to also set the attribute on the 
+	 * nativeElement
+	 * 
 	 * @param	name The name of the attribute to create or alter.
 	 * @param	value Value to set in string form.
 	 */
