@@ -12,6 +12,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.IEventTarget;
 import cocktail.core.HTMLElement;
+import cocktail.core.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
@@ -193,8 +194,10 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	/**
 	 * This attribute assigns a name to an element. 
 	 * This name must be unique in a document.
+	 * 
+	 * get/set the id attribute from the attributes
+	 * map
 	 */
-	private var _id:Attr;
 	public var id(get_id, set_id):String;
 	
 	/////////////////////////////////
@@ -360,13 +363,14 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	}
 	
 	/**
-	 * instantiate the Id attribute
-	 * of the HTML element
+	 * Define the id attribute in the
+	 * attribute maps, but it has no
+	 * value yet
 	 */
 	private function initId():Void
 	{
-		_id = new Attr(HTML_ID_ATTRIBUTE);
-		setIdAttributeNode(_id, true);
+		var id:Attr = new Attr(HTML_ID_ATTRIBUTE);
+		setIdAttributeNode(id, true);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +395,21 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		super.removeChild(oldChild);
 		_coreStyle.invalidate();
 		return oldChild;
+	}
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	private function set_innerHTML(value:String):String
+	{
+		for (i in 0..._childNodes.length)
+		{
+			removeChild(_childNodes[i]);
+		}
+		appendChild(HxtmlConverter.getNode(value));
+		return value;
+	}
+	
+	private function get_innerHTML():String
+	{
+		return '';
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -770,14 +789,24 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return this._nativeElement;
 	}
 	
+	/**
+	 * Retrieve the id value from the attributes
+	 * map
+	 * @return the id as a String or an empty
+	 * String if it was not set 
+	 */
 	private function get_id():String
 	{
-		return _id.value;
+		return getAttribute(HTML_ID_ATTRIBUTE);
 	}
 	
+	/**
+	 * update the id value on the attributes map
+	 */
 	private function set_id(value:String):String
 	{
-		return _id.value = value;
+		setAttribute(HTML_ID_ATTRIBUTE, value);
+		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
