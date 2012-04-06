@@ -37,6 +37,9 @@ class HeaderStyle
 		node.style.width = "100%";
 		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
 		
+		// set to the forehead
+		node.style.zIndex = 1000;
+		
 		node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		
 		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant

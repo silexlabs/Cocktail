@@ -45,6 +45,8 @@ class ListViewBase extends ViewBase
 	{
 		super();
 		
+		ListViewStyle.setListStyle(node);
+		
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		

@@ -69,7 +69,7 @@ class ViewManager
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
 		_header.data = HEADER_HOME_TITLE;
-		//_header.onBackButtonClick = onHeaderBackButtonPressed;
+		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		//_body.appendChild(_header);
 		_body.appendChild(_header.node);
 		
@@ -118,7 +118,7 @@ class ViewManager
 		// set list item selelected callback
 		_menu.onListItemSelected = onMenuItemSelectedCallback;
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
-		_swippableListView.onHorizontalTweenEnd = updateZIndexes;
+		//_swippableListView.onHorizontalTweenEnd = updateZIndexes;
 		// set callback when the bottom of the scrollbar is reached
 		//_swippableListView.onListScrolled = function () { _applicationController.srcCellData(CELL_QTY); };
 		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.srcCellData(feed); };
@@ -185,8 +185,8 @@ class ViewManager
 		
 		// update header zIndex using a workaround so it always visible
 		//updateZIndexes();
-		setZIndexToMax(_menu);
-		setZIndexToMax(_header);
+		//setZIndexToMax(_menu);
+		//setZIndexToMax(_header);
 		
 		// remove loading view from swippable view
 		//_swippableListView.displayLoading = false;
@@ -208,7 +208,7 @@ class ViewManager
 		
 		// update header zIndex using a workaround
 		//updateZIndexes();
-		setZIndexToMax(_header);
+		//setZIndexToMax(_header);
 		
 		// hide loader
 		_detailView.displayLoading = false;
@@ -257,8 +257,8 @@ class ViewManager
 		
 		// update zIndex using a workaround
 		//updateZIndexes();
-		setZIndexToMax(_menu);
-		setZIndexToMax(_header);
+		//setZIndexToMax(_menu);
+		//setZIndexToMax(_header);
 
 		// set current view on swippable view
 		_currentView = _swippableListView;
@@ -268,7 +268,7 @@ class ViewManager
 	 * updates header and menu zIndex to the maximum value.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	private function updateZIndexes():Void
+	/*private function updateZIndexes():Void
 	{
 		setZIndexToMax(_menu);
 		setZIndexToMax(_header);
@@ -278,11 +278,11 @@ class ViewManager
 	 * updates zIndex to the maximum value.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	private function setZIndexToMax(view:ViewBase):Void
+	/*private function setZIndexToMax(view:ViewBase):Void
 	{
 		// remove and add dom so it has the higher zIndex
 		_body.removeChild(view.node);
 		_body.appendChild(view.node);
-	}
+	}*/
 	
 }

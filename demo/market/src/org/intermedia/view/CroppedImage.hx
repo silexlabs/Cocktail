@@ -22,6 +22,7 @@ import feffects.Tween;
 
 class CroppedImage
 {
+	// node which corresponds to the image mask
 	public var node:HtmlDom;
 	
 	// image to crop
@@ -32,7 +33,14 @@ class CroppedImage
 	
 	public function new(imageUrl:String, maskSize:Size)
 	{
-		//super();
+		// create and initialise node
+		node = Lib.document.createElement("div");
+		node.style.width = Std.string(maskSize.width) + "px";
+		node.style.height = Std.string(maskSize.height) + "px";
+		// apply mask style so it can crop the image
+		node.style.overflow = "hidden";
+		node.style.display = "inline-block";
+
 		_image = cast Lib.document.createElement("img");
 		_maskSize = maskSize;
 		loadThumb(imageUrl);

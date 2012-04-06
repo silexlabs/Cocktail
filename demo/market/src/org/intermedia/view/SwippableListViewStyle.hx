@@ -31,7 +31,7 @@ class SwippableListViewStyle
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
-		node.style.marginTop = Std.string(Constants.LIST_TOP);
+		node.style.marginTop = Std.string(Constants.LIST_TOP) + "px";
 		node.style.marginBottom = "0px";
 		
 		node.style.paddingLeft = "0px";
@@ -41,8 +41,7 @@ class SwippableListViewStyle
 		node.style.width = "100%";
 		node.style.height = "100%";
 
-		//node.style.overflow = { x:OverflowStyleValue.scroll, y:OverflowStyleValue.hidden };
-		node.style.overflowX = "scroll";
+		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 
 	}
@@ -67,7 +66,6 @@ class SwippableListViewStyle
 		node.style.paddingRight = "0px";
 		node.style.paddingTop = "0px";
 		
-		//node.style.width = "100%";
 		node.style.width = "300%";
 		node.style.height = "100%";
 	}

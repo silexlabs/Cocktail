@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
@@ -60,24 +61,17 @@ class ImageUtils
 	 * @param	node
 	 * @param	maskSize
 	 */
-	public static function cropImage(image:Image, maskSize:Size):HtmlDom
+	//public static function cropImage(image:Image, maskSize:Size):HtmlDom
+	public static function cropImage(image:Image, maskSize:Size):Image
 	{
-		// create and set mask image container
-		var mask:HtmlDom = Lib.document.createElement("div");
-		mask.style.width = Std.string(maskSize.width);
-		mask.style.height = Std.string(maskSize.height);
-		
-		// apply mask style so it can crop the image
-		mask.style.overflow = "hidden";
-		mask.style.display = "inline-block";
-
-		// mask ratio
+		// compute mask ratio
 		var maskRatio:Float = maskSize.width / maskSize.height;
 		
 		// image ratio
 		var imageRatio:Float = 0;
-		//if (image.style.intrinsicHeight != 0)
-			//imageRatio = image.intrinsicWidth / image.intrinsicHeight;
+		if ((untyped { image.naturalHeight; }) != 0)
+			imageRatio = (untyped { image.naturalWidth / image.naturalHeight; } );
+		//Firebug.trace((untyped { image.naturalWidth; }) + "-" + (untyped { image.naturalHeight; }) + "-" + imageRatio );
 			
 		var resizedImageSize:Size = { width:0, height:0 };
 
@@ -89,10 +83,10 @@ class ImageUtils
 			resizedImageSize.width = Std.int(resizedImageSize.height * imageRatio);
 	
 			// resize image
-			image.style.height = Std.string(resizedImageSize.height);
+			image.style.height = Std.string(resizedImageSize.height) + "px";
 			
 			// offsets image
-			image.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2);
+			image.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2) + "px";
 		}
 		// else, set image width to cell width
 		else
@@ -102,16 +96,14 @@ class ImageUtils
 			resizedImageSize.height = Std.int(resizedImageSize.width / imageRatio);
 			
 			// resize image
-			image.style.width = Std.string(resizedImageSize.width);
+			image.style.width = Std.string(resizedImageSize.width) + "px";
 			
 			// offsets image
-			image.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2);
+			image.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2) + "px";
 		}
 		
-		// attach image to mask
-		mask.appendChild(image);
-		
-		return mask;
+		//return image;
+		return image;
 	}
 	
 }

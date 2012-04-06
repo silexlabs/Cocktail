@@ -41,8 +41,14 @@ class CellStyle
 		node.style.paddingBottom = "0px";
 		
 		// compute cell width in percentage depending on cellPerLine value
-		var cellWidthPercent:Int = computeWidthPercentage(cellPerLine);
-		node.style.width = Std.string(cellWidthPercent) + "%";
+		//var cellWidthPercent:Int = computeWidthPercentage(cellPerLine);
+		//node.style.width = Std.string(cellWidthPercent) + "%";
+		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
+		
+		// compute cell width in pixels depending on cellPerLine value
+		// 2 pixels are removed so that adding borders does not mess up layout
+		var cellWidthPixels:Int = computeWidthPixels(cellPerLine);
+		node.style.width = Std.string(cellWidthPixels - 2) + "px";
 		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
 		node.style.verticalAlign = "top";
@@ -61,6 +67,19 @@ class CellStyle
 		}
 		
 		return cellWidthPercent;
+	}
+	
+	public static function computeWidthPixels(cellPerLine):Int
+	{
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPixels:Int = Lib.window.innerWidth;
+		
+		if (cellPerLine != 0)
+		{
+			cellWidthPixels = Std.int( cellWidthPixels / cellPerLine);
+		}
+		
+		return cellWidthPixels;
 	}
 	
 	public static function addBorder(node:HtmlDom):Void

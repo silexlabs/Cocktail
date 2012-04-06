@@ -61,8 +61,8 @@ class CellThumbStyle
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine);
 		
-		node.style.height = Std.string(cellSize.height);
-		//node.style.maxHeight = ConstrainedStd.string(CELL_MAX_HEIGHT));
+		node.style.height = Std.string(cellSize.height) + "px";
+		node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
 
 		node.style.overflow = "hidden";
 		

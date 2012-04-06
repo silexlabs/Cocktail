@@ -21,7 +21,6 @@ class ListViewText extends ListViewBase
 	public function new() 
 	{
 		super();
-		ListViewStyle.setListStyle(node,Constants.LIST_TOP);
 	}
 	
 	/**
