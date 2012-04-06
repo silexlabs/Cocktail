@@ -28,8 +28,6 @@ import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
 
-
-
 /**
  * All HTML element interfaces derive from this class.
  * Elements that only expose the HTML core attributes are represented 
