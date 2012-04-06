@@ -84,70 +84,82 @@ class CssParser<DisplayObjectType> {
 			// call the margin setter
 			switch( vUnits.length ) {
 			case 1:
-				s.setMarginTop(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginRight(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginBottom(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginLeft(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginTopNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginRightNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginBottomNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginLeftNum(d, vUnits[0].value, vUnits[0].unit);
 				return true;
 			case 2:
-				s.setMarginTop(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginRight(d, vUnits[1].value, vUnits[1].unit);
-				s.setMarginBottom(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginLeft(d, vUnits[1].value, vUnits[1].unit);
+				s.setMarginTopNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginRightNum(d, vUnits[1].value, vUnits[1].unit);
+				s.setMarginBottomNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginLeftNum(d, vUnits[1].value, vUnits[1].unit);
 				return true;
 			case 3:
-				s.setMarginTop(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginRight(d, vUnits[1].value, vUnits[1].unit);
-				s.setMarginBottom(d, vUnits[2].value, vUnits[2].unit);
-				s.setMarginLeft(d, vUnits[1].value, vUnits[1].unit);
+				s.setMarginTopNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginRightNum(d, vUnits[1].value, vUnits[1].unit);
+				s.setMarginBottomNum(d, vUnits[2].value, vUnits[2].unit);
+				s.setMarginLeftNum(d, vUnits[1].value, vUnits[1].unit);
 				return true;
 			case 4:
-				s.setMarginTop(d, vUnits[0].value, vUnits[0].unit);
-				s.setMarginRight(d, vUnits[1].value, vUnits[1].unit);
-				s.setMarginBottom(d, vUnits[2].value, vUnits[2].unit);
-				s.setMarginLeft(d, vUnits[3].value, vUnits[3].unit);
+				s.setMarginTopNum(d, vUnits[0].value, vUnits[0].unit);
+				s.setMarginRightNum(d, vUnits[1].value, vUnits[1].unit);
+				s.setMarginBottomNum(d, vUnits[2].value, vUnits[2].unit);
+				s.setMarginLeftNum(d, vUnits[3].value, vUnits[3].unit);
 				return true;
 			}
 		case "margin-left":
-			switch (v) {
-				case VUnit(_):
-					var i:Null<ValueObject> = getValueObject(v);
-					if( i != null ) { s.setMarginLeft(d, i.value, i.unit);}
-				case VIdent(a):
-					s.setMarginLeftIdent(d, a);
-				default:
-			};
-			return true; 
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setMarginLeftKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setMarginLeftNum(d, l.value, l.unit);
+				return true;
+			}
 		case "margin-right":
-			switch (v) {
-				case VUnit(_):
-					var i:Null<ValueObject> = getValueObject(v);
-					if( i != null ) { s.setMarginRight(d, i.value, i.unit);}
-				case VIdent(a):
-					s.setMarginRightIdent(d, a);
-				default:
-			};
-			return true;
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setMarginRightKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setMarginRightNum(d, l.value, l.unit);
+				return true;
+			}
 		case "margin-top":
-			switch (v) {
-				case VUnit(_):
-					var i:Null<ValueObject> = getValueObject(v);
-					if( i != null ) { s.setMarginTop(d, i.value, i.unit);}
-				case VIdent(a):
-					s.setMarginTopIdent(d, a);
-				default:
-			};
-			return true;
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setMarginTopKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setMarginTopNum(d, l.value, l.unit);
+				return true;
+			}
 		case "margin-bottom":
-			switch (v) {
-				case VUnit(_):
-					var i:Null<ValueObject> = getValueObject(v);
-					if( i != null ) { s.setMarginBottom(d, i.value, i.unit);}
-				case VIdent(a):
-					s.setMarginBottomIdent(d, a);
-				default:
-			};
-			return true;
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setMarginBottomKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setMarginBottomNum(d, l.value, l.unit);
+				return true;
+			}
 		case "padding":
 			// when the value is not in an array, build a 1 element array
 			var vl:Array<Value> = switch( v ) {
@@ -361,6 +373,34 @@ class CssParser<DisplayObjectType> {
 				s.setLineHeightNum(d, l.value, l.unit);
 				return true;
 			}
+			
+		case "word-spacing":
+			//case label (normal)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setWordSpacingKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setWordSpacingNum(d, l.value, l.unit);
+				return true;
+			}
+			
+		case "letter-spacing":
+			//case label (normal)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setLetterSpacingKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setLetterSpacingNum(d, l.value, l.unit);
+				return true;
+			}	
 //---------------------
 		case "top":
 			// case label (e.g. auto)

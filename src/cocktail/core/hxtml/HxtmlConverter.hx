@@ -84,38 +84,38 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTransform (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.transform = value;
 	}
-*/	public function setMarginLeft (element:Node, value:Int, unit:String):Void{
+*/	public function setMarginLeftNum (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value + unit;
 	}
-	public function setMarginLeftIdent (element:Node, value:String):Void{
+	public function setMarginLeftKey (element:Node, value:String):Void{
 		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value;
 	}
-	public function setMarginTop (element:Node, value:Int, unit:String):Void{
+	public function setMarginTopNum (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value + unit;
 	}
-	public function setMarginTopIdent (element:Node, value:String):Void{
+	public function setMarginTopKey (element:Node, value:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value;
 	}
-	public function setMarginRight (element:Node, value:Int, unit:String):Void{
+	public function setMarginRightNum (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginRight = value + unit;
 	}
-	public function setMarginRightIdent (element:Node, value:String):Void{
+	public function setMarginRightKey (element:Node, value:String):Void{
 		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginRight = value;
 	}
-	public function setMarginBottom (element:Node, value:Int, unit:String):Void{
+	public function setMarginBottomNum (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value + unit;
 	}
-	public function setMarginBottomIdent (element:Node, value:String):Void{
+	public function setMarginBottomKey (element:Node, value:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value;
 	}
@@ -288,13 +288,19 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTextTransform (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.textTransform = value;
 	}
-/*	public function setLetterSpacing (element:Node, value:Int, unit:String):Void{
+	public function setLetterSpacingNum (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.letterSpacing = value+unit;
 	}
-	public function setWordSpacing (element:Node, value:Int, unit:String):Void{
+	public function setLetterSpacingKey (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.letterSpacing = value;
+	}
+	public function setWordSpacingNum (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.wordSpacing = value+unit;
 	}
-	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
+	public function setWordSpacingKey (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.wordSpacing = value;
+	}
+/*	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.whiteSpace = value+unit;
 	}
 	public function setTextAlign (element:Node, value:Int, unit:String):Void{

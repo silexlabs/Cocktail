@@ -9,14 +9,16 @@ interface IStyleProxy<DisplayObjectType>
 	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
 	public function setTransformOriginKey (element:DisplayObjectType, value:String):Void;
 	public function setTransform (element:DisplayObjectType, value:String):Void;
-*/	public function setMarginLeft (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setMarginLeftIdent (element:DisplayObjectType, value:String):Void;
-	public function setMarginTop (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setMarginTopIdent (element:DisplayObjectType, value:String):Void;
-	public function setMarginRight (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setMarginRightIdent (element:DisplayObjectType, value:String):Void;
-	public function setMarginBottom (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setMarginBottomIdent (element:DisplayObjectType, value:String):Void;
+	
+	//TODO : rename setMarginLeftLength ? Add setMarginLeftPercent ?
+*/	public function setMarginLeftNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginLeftKey (element:DisplayObjectType, value:String):Void;
+	public function setMarginTopNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginTopKey (element:DisplayObjectType, value:String):Void;
+	public function setMarginRightNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginRightKey (element:DisplayObjectType, value:String):Void;
+	public function setMarginBottomNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginBottomKey (element:DisplayObjectType, value:String):Void;
 	public function setPaddingLeft (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setPaddingTop (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setPaddingRight (element:DisplayObjectType, value:Int, unit:String):Void;
@@ -73,9 +75,11 @@ interface IStyleProxy<DisplayObjectType>
 	public function setLineHeightNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setLineHeightKey (element:DisplayObjectType, value:String):Void;
 	public function setTextTransform (element:DisplayObjectType, value:String):Void;
-/*	public function setLetterSpacing (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setWordSpacing (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setWhiteSpace (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setLetterSpacingNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setLetterSpacingKey (element:DisplayObjectType, value:String):Void;
+	public function setWordSpacingNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setWordSpacingKey (element:DisplayObjectType, value:String):Void;
+/*	public function setWhiteSpace (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setTextAlign (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setVerticalAlign (element:DisplayObjectType, value:Int, unit:String):Void;
