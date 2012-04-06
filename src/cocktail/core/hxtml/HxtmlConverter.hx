@@ -261,9 +261,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setFontStyle (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.fontStyle = value;
 	}
-	public function setFontFamily (element:Node, value:Array<String>):Void{
+	public function setFontFamily (element:Node, value:Array<String>):Void {
 		if (value.length > 0) 
-			cast(element, HtmlDom).style.fontFamily = "url(" + value.join("), url(");
+			cast(element, HtmlDom).style.fontFamily = value.join(",");
 		else
 			cast(element, HtmlDom).style.fontFamily = "";
 	}
