@@ -48,28 +48,33 @@ class AbstractHTMLDocument extends Document
 	
 	/**
 	 * The element that contains the content for the document.
+	 * 
+	 * The body is the root of the visual content in HTML
 	 */
 	private var _body:HTMLElement;
 	public var body(get_body, never):HTMLElement;
 	
 	/**
-	 * A reference to the Window used to listen for
+	 * A reference to the Window, used to listen for
 	 * resize events
 	 */
 	private var _window:Window;
 	
+	/**
+	 * The NativeElements created when rendering
+	 * this Document. They are runtime specific
+	 */
 	private var _nativeElements:Array<NativeElement>;
 	
 	/**
-	 * class constructor
+	 * class constructor. Init class attributes
 	 */
 	public function new() 
 	{
 		super();
 		
 		_body = createElement(HTML_BODY_TAG_NAME);
-		
-		_documentElement = new HTMLHtmlElement();
+		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
 		
 		_nativeElements = new Array<NativeElement>();
@@ -80,7 +85,6 @@ class AbstractHTMLDocument extends Document
 		//listen to the Window resizes
 		_window = new Window();
 		_window.onResize = onWindowResize;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -129,47 +133,48 @@ class AbstractHTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The BodyHTMLElement doesn't have a parent, so when invalidated,
-	 * it always schedule a layout using the window dimensions as
-	 * its containing HTMLElement dimensions
+	 * The Document is invalidated for instance when the
+	 * DOM changes after adding/removing a child or when
+	 * a style changes.
+	 * When this happen, the Document needs to be layout
+	 * and rendered again
+	 * 
+	 * @param immediate define wether the layout must be synchronous
+	 * or asynchronous
 	 */
 	public function invalidate(immediate:Bool = false):Void
 	{
-		//either schedule an asynchronous layout, or layout immediately
+		//either schedule an asynchronous layout and rendering, or layout
+		//and render immediately
 		if (immediate == false)
 		{
 			scheduleLayoutAndRender();
 		}
 		else
 		{
-			layout();
+			layoutAndRender();
 		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHOD
+	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the view port is resized, insvalidate
-	 * this BodyHTMLElement to lay it out with
-	 * the new Window dimensions
+	 * As the name implies,
+	 * layout the DOM, then render it
 	 */
-	private function onWindowResize(event:Event):Void
-	{
-		scheduleLayoutAndRender();
-	}
-	
 	private function layoutAndRender():Void
 	{
 		layout();
 		render();
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
+	/**
+	 * start the layout, starting on the Body
+	 * element which is the root of the visual
+	 * elements in an HTML Document
+	 */
 	private function layout():Void
 	{
 		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
@@ -178,24 +183,25 @@ class AbstractHTMLDocument extends Document
 	
 	/**
 	 * Start the rendering of the rendering tree
-	 * and attach the resulting nativeElement (background,
-	 * border, embedded asset...) to the provided
-	 * nativeElement
+	 * built during layout
+	 * and attach the resulting nativeElements (background,
+	 * border, embedded asset...) to the display root
+	 * of the runtime (for instance the Stage in Flash)
 	 */ 
-	public function render():Void
+	private function render():Void
 	{
+		//first all the previous native elements
+		//are detached
 		detachNativeElements(_nativeElements);
+		
+		//start the rendering at the root layer renderer
 		_nativeElements = _body.coreStyle.elementRenderer.layerRenderer.render();
 		attachNativeElements(_nativeElements);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Attach a NativeElement to the
-	 * styled HTMLElement using runtime specific API
+	 * display root. Runtime specific
 	 */ 
 	private function attachNativeElement(nativeElement:NativeElement):Void
 	{
@@ -204,7 +210,7 @@ class AbstractHTMLDocument extends Document
 	
 	/**
 	 * Remove a NativeElement from the
-	 * styled HTMLElement using runtime specific API
+	 * display root. Runtime specific.
 	 */
 	private function detachNativeElement(nativeElement:NativeElement):Void
 	{
@@ -213,7 +219,7 @@ class AbstractHTMLDocument extends Document
 	
 	/**
 	 * Attach an array of NativeElement to the
-	 * styled HTMLElement using runtime specific API
+	 * display root
 	 */
 	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
 	{
@@ -225,7 +231,7 @@ class AbstractHTMLDocument extends Document
 	
 	/**
 	 * Remove an array of NativeElement from the
-	 * styled HTMLElement using runtime specific API
+	 * display root
 	 */
 	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
 	{
@@ -236,17 +242,32 @@ class AbstractHTMLDocument extends Document
 	}
 	
 	/**
-	 * Set a timer to trigger a layout of the HTMLElement asynchronously. this method is used by the invalidation
-	 * mechanism. Setting a timer to execute the layout ensure that the layout only happen once when a series of style
-	 * values are set instead of happening for every change.
+	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
+	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
+	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
 	 */
 	private function scheduleLayoutAndRender():Void
 	{
 		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
 		
+		//calling the methods 1 millisecond later is enough to ensure
+		//that first all synchronous code is executed
 		Timer.delay(function () { 
 			layoutAndRenderDelegate();
 		}, 1);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the Window is resized, schedule
+	 * a layout and rendering
+	 */
+	private function onWindowResize(event:Event):Void
+	{
+		scheduleLayoutAndRender();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

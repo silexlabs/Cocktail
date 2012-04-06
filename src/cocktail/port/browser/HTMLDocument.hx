@@ -20,7 +20,8 @@ import cocktail.core.HTMLInputElement;
 import cocktail.core.Window;
 
 /**
- *
+ * This is the browser implementation of the HTML Document
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLDocument extends AbstractHTMLDocument
@@ -33,6 +34,10 @@ class HTMLDocument extends AbstractHTMLDocument
 		super();
 	}
 	
+	/**
+	 * Overiden as in the browser, the browser is in 
+	 * charge of the layout and rendering
+	 */
 	override private function layoutAndRender():Void
 	{	
 		
