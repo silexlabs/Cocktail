@@ -12,7 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.core;
 
 
-#if flash9
+#if (flash9 || nme)
 typedef FontLoader = cocktail.port.flash_player.FontLoader;
 #elseif js
 typedef FontLoader = cocktail.port.browser.FontLoader;
