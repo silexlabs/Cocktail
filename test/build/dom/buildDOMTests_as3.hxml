@@ -3,4 +3,4 @@
 -main dom.DOMTests
 -lib utest
 -swf ../../bin/dom/DOMTestAs3.swf
--swf-version 10.1
+-swf-version 10.2

@@ -11,9 +11,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package classInstance;
 
 
-import haxe.Log;
-import cocktail.nativeInstance.NativeInstanceManager;
-import cocktail.classInstance.ClassInstance;
+import cocktail.core.nativeInstance.NativeInstanceManager;
+import cocktail.core.ClassInstance;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
