@@ -126,6 +126,7 @@ class Browser<DisplayObjectType> {
 			switch( a ) {
 			case "id":
 				register(v, d);
+				setAttribute (d, a, v);
 			case "style":
 				new CssParser<DisplayObjectType>().parse(v, d, styleProxy);
 			case "class":
