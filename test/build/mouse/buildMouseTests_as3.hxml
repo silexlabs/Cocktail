@@ -2,5 +2,5 @@
 -cp ../../src/
 -main mouse.MouseTests
 -swf9 ../../bin/mouse/mouseTestAs3.swf
--swf-version 10.1
+-swf-version 10.2
 -lib utest
