@@ -1,7 +1,9 @@
-package ;
+package cocktail.core.hxtml;
+
+import cocktail.core.dom.Node;
 import hxtml.Browser;
-import cokctail.Lib;
-import cokctail.Dom;
+import cocktail.Lib;
+import cocktail.Dom;
 
 /**
  * This class shows an implementation of an HTML renderer in Flash
@@ -12,7 +14,7 @@ class HxtmlConverter
 	/**
 	 * entry point for our test application
 	 */
-	static function getNode(htmlString:String) 
+	static public function getNode(htmlString:String):Node 
 	{
 		// create an instance of our class to manage css styles
 		var s = new StyleProxy();
