@@ -10,11 +10,14 @@ package cocktail.core.html;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
 import cocktail.core.event.Event;
+import cocktail.core.event.KeyboardEvent;
+import cocktail.core.focus.FocusManager;
 import cocktail.core.HTMLAnchorElement;
 import cocktail.core.HTMLElement;
 import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
+import cocktail.core.Keyboard;
 import cocktail.core.NativeElement;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
@@ -66,6 +69,26 @@ class AbstractHTMLDocument extends Document
 	private var _nativeElements:Array<NativeElement>;
 	
 	/**
+	 *	The activeElement set/get the element
+	 * in the document that is focused.
+	 * If no element in the Document is focused, this returns the body element. 
+	 */
+	private var _activeElement:HTMLElement;
+	public var activeElement(get_activeElement, set_activeElement):HTMLElement;
+	
+	/**
+	 * An instance of the FocusManager, managing the focus
+	 * for this Document
+	 */
+	private var _focusManager:FocusManager;
+	
+	/**
+	 * An instance of the cross-platform keyboard class, used to listen
+	 * to key down and up event
+	 */
+	private var _keyboard:Keyboard;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -78,12 +101,24 @@ class AbstractHTMLDocument extends Document
 		
 		_nativeElements = new Array<NativeElement>();
 		
-		//TODO : should not be singleton
-		//FocusManager.getInstance().bodyElement = cast(_body);
+		_focusManager = new FocusManager();
 		
 		//listen to the Window resizes
 		_window = new Window();
 		_window.onResize = onWindowResize;
+		
+		initKeyboardListeners();
+	}
+	
+	/**
+	 * init keyboard listeners
+	 */
+	private function initKeyboardListeners():Void
+	{
+		//listens for event on the root of the runtime
+		//var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
+		//keyboard.onKeyDown = onKeyDown;
+		//keyboard.onKeyUp = onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +189,76 @@ class AbstractHTMLDocument extends Document
 			layoutAndRender();
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When a key is pressed, detect if a tab
+	 * focus or a simulated click must happen.
+	 * 
+	 * If it is any other key, redirect the 
+	 * key down event to the currently active
+	 * HTMLElement
+	 * 
+	 * TODO : must be on HTMLDocument
+	 */
+	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
+	{
+		//TODO : re-implement
+		/**
+		switch (keyboardEvent.key)
+		{
+			case AbstractKeyboard.TAB:
+				doTabFocus(keyEventData.shiftKey);
+				
+			case AbstractKeyboard.ENTER, AbstractKeyboard.SPACE:
+				simulateMouseClick(keyEventData);
+				
+			default:
+				if (activeHTMLElement.onKeyDown != null)
+				{
+					activeHTMLElement.onKeyDown(keyEventData);
+				}
+		}*/
+	}
+	
+	/**
+	 * When a key up event happens, redirect to the
+	 * currently active HTMLElement
+	 */
+	private function onKeyUp(keyEventData:KeyboardEvent):Void
+	{
+		if (activeElement.onkeyup != null)
+		{
+			activeElement.onkeyup(keyEventData);
+		}
+	}
+	
+	/**
+	 * When a simulated mouse click must happen on the 
+	 * active HTMLElement, create all the necessary
+	 * element such as a fake mouse position, and
+	 * cal the active HTMLElement's mouse down callback
+	 * if it exists
+	 * 
+	 * TODO : should go on document and use the click() method
+	 */
+	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
+	{
+		/**
+		if (activeElement.onmousedown != null)
+		{
+			//TODO : replace mouse click event + add right coordinate
+			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, _activeElement, 0.0,
+			0.0, 0.0, 0.0, 0.0, false, false, false);
+			
+			activeElement.onmousedown(mouseEvent);
+		}
+	*/
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
@@ -276,5 +381,58 @@ class AbstractHTMLDocument extends Document
 	private function get_body():HTMLElement 
 	{
 		return _body;
+	}
+	
+	/**
+	 * When a new activeHTMLElement is set, call 
+	 * the focus out (blur) method on the previous
+	 * one and then call the focus in on the 
+	 * new one
+	 */
+	private function set_activeElement(value:HTMLElement):HTMLElement
+	{			
+		//if the activeHTMLElement is set to null, it defaults
+		//to the BodyHTMLElement
+		if (value == null)
+		{
+			value = _body;
+		}
+		
+		//do nothing if the new activeHTMLElement is the same
+		//as the current one
+		if (value != activeElement)
+		{
+			//else for call blur on the current active element
+			if (activeElement.onblur != null)
+			{
+				activeElement.onblur(new Event(Event.BLUR, activeElement));
+			}
+			
+			//then store the new one and call Focus on it
+			_activeElement = value;
+			if (_activeElement.onfocus != null)
+			{
+				_activeElement.onfocus(new Event(Event.FOCUS, _activeElement));
+			}
+		}
+		
+		return _activeElement;
+	}
+	
+	/**
+	 * If there is no currently focused elements,
+	 * return the body
+	 */
+	private function get_activeElement():HTMLElement
+	{
+		if (_activeElement == null)
+		{
+			return _body;
+		}
+		else
+		{
+			return _activeElement;
+		}
+		
 	}
 }

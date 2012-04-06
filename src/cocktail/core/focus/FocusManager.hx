@@ -7,6 +7,7 @@
 */
 package cocktail.core.focus;
 
+import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.HTMLElement;
@@ -30,22 +31,6 @@ import cocktail.core.dom.DOMData;
 class FocusManager
 {
 	/**
-	 * set/get the reference to the BodyHTMLElement use as 
-	 * starting point when traversing the DOM looking 
-	 * for focusable HTMLElements
-	 */
-	private var _bodyElement:HTMLBodyElement;
-	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
-	
-	/**
-	 * set/get the currently focused HTMLElement
-	 * 
-	 * TODO : move to Document
-	 */
-	private var _activeElement:HTMLElement;
-	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
-	
-	/**
 	 * Holds a list of all the focusable
 	 * HTMLElements in the DOM, ordered in the
 	 * right focus order
@@ -58,30 +43,12 @@ class FocusManager
 	 */
 	private var _tabListIndex:Int;
 	
-	/////////////////////////////////
-	// CONSTRUTOR & INIT
-	/////////////////////////////////
-	
 	/**
-	 * class constructor. Starts listening to global
-	 * keyboard events
+	 * class constructor.
 	 */
 	public function new() 
 	{
-		initKeyboardListeners();
-	}
-	
-	/**
-	 * init keyboard listeners
-	 */
-	private function initKeyboardListeners():Void
-	{
-		//TODO : should be initialised with Document or Body
 		
-		//listens for event on the root of the runtime
-	//	var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
-	//	keyboard.onKeyDown = onKeyDown;
-	//	keyboard.onKeyUp = onKeyUp;
 	}
 	
 	/////////////////////////////////
@@ -102,47 +69,7 @@ class FocusManager
 	/////////////////////////////////
 	
 	/**
-	 * When a key is pressed, detect if a tab
-	 * focus or a simulated click must happen.
-	 * 
-	 * If it is any other key, redirect the 
-	 * key down event to the currently active
-	 * HTMLElement
-	 */
-	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
-	{
-		//TODO : re-implement
-		/**
-		switch (keyboardEvent.key)
-		{
-			case AbstractKeyboard.TAB:
-				doTabFocus(keyEventData.shiftKey);
-				
-			case AbstractKeyboard.ENTER, AbstractKeyboard.SPACE:
-				simulateMouseClick(keyEventData);
-				
-			default:
-				if (activeHTMLElement.onKeyDown != null)
-				{
-					activeHTMLElement.onKeyDown(keyEventData);
-				}
-		}*/
-	}
-	
-	/**
-	 * When a key up event happens, redirect to the
-	 * currently active HTMLElement
-	 */
-	private function onKeyUp(keyEventData:KeyboardEvent):Void
-	{
-		if (_activeElement.onkeyup != null)
-		{
-			_activeElement.onkeyup(keyEventData);
-		}
-	}
-	
-	/**
-	 * When TAB is pressed, determine the next
+	 * determine the next
 	 * HTMLElement in the _tabList array which
 	 * must be focused
 	 * 
@@ -150,20 +77,20 @@ class FocusManager
 	 * focus the previous focusable HTMLElement in
 	 * the _tabList array
 	 */
-	private function doTabFocus(reverse:Bool):Void
+	public function getNextFocusedElement(reverse:Bool, rootElement:HTMLElement, activeElement:HTMLElement):HTMLElement
 	{
 		//build the tab list if it the first
 		//tab focus or if it was invalidated
 		if (_tabList == null)
 		{
-			_tabList = buildTabList(_bodyElement);
+			_tabList = buildTabList(rootElement);
 		}
 		
 		//search the next valid index for the tab list
 		//by incrementing or decrementing the tab list index.
 		//As the tab focus loop, the tab list index might be reseted
 		//or set to the last element
-		if (activeElement != _bodyElement)
+		if (activeElement != rootElement)
 		{
 			if (reverse == false)
 			{
@@ -204,7 +131,7 @@ class FocusManager
 		}
 		
 		//set the activeHTMLElement with the found tab list index
-		activeElement = _tabList[_tabListIndex];
+		return _tabList[_tabListIndex];
 	}
 	
 	/**
@@ -216,7 +143,7 @@ class FocusManager
 	 * focusable HTMLElement with a tabIndex of 0, ordered in DOM order starting from
 	 * the BodyHTMLElement
 	 */
-	private function buildTabList(htmlElement:HTMLElement):Array<HTMLElement>
+	private function buildTabList(rootElement:HTMLElement):Array<HTMLElement>
 	{
 		//each time the list is rebuild, the tab list index is
 		//reseted so that the first item of the list is selected when
@@ -230,7 +157,7 @@ class FocusManager
 		var indexedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
 		//build the list
-		doBuildTabList(htmlElement, orderedTabList, indexedTabList);
+		doBuildTabList(rootElement, orderedTabList, indexedTabList);
 		
 		//concatenate the 2 arrays
 		for (i in 0...orderedTabList.length)
@@ -248,25 +175,22 @@ class FocusManager
 	 */
 	private function doBuildTabList(htmlElement:HTMLElement, orderedTabList:Array<HTMLElement>, indexedTabList:Array<HTMLElement>):Void
 	{
-		//TODO : re implement
-		
-		/**
 		//loop in all children
 		for (i in 0...htmlElement.childNodes.length)
 		{
-			if (htmlElement.childNodes[i].nodeType == NodeType.ELEMENT_NODE)
+			if (htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
-				var child:HTMLElement = htmlElement.childNodes[i];
+				var child:HTMLElement = cast(htmlElement.childNodes[i]);
 				
-				//if the child is also a ContainerHTMLElement, call the doBuildTabList
+				//if the child also has children, call the doBuildTabList
 				//recursively
-				if (Std.is(child, ContainerHTMLElement) == true)
+				if (child.hasChildNodes() == true)
 				{
-					var containerChild:ContainerHTMLElement = cast(child);
-					doBuildTabList(containerChild, orderedTabList, indexedTabList);
+					doBuildTabList(child, orderedTabList, indexedTabList);
 				}
+				
 				//check if the child can be focused
-				if (child.tabEnabled == true)
+				if (canReceiveFocus(child) == true)
 				{
 					//if it can and has a 0 tabIndex, push it
 					//the DOM order array
@@ -311,94 +235,24 @@ class FocusManager
 				}
 			}
 		}
-		*/
+		
 	}
 	
-	/**
-	 * When a simulated mouse click must happen on the 
-	 * active HTMLElement, create all the necessary
-	 * element such as a fake mouse position, and
-	 * cal the active HTMLElement's mouse down callback
-	 * if it exists
-	 */
-	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
+	private function canReceiveFocus(htmlElement:HTMLElement):Bool
 	{
-		if (activeElement.onmousedown != null)
+		var canReceiveFocus:Bool = false;
+		if (htmlElement.isDefaultFocusable() == true)
 		{
-			//TODO : replace mouse click event + add right coordinate
-			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, _activeElement, 0.0,
-			0.0, 0.0, 0.0, 0.0, false, false, false);
-			
-			activeElement.onmousedown(mouseEvent);
+			canReceiveFocus = true;
 		}
-	
-	}
-	
-	/////////////////////////////////
-	// SETTERS/GETTERS
-	/////////////////////////////////
-	
-	/**
-	 * When a new activeHTMLElement is set, call 
-	 * the focus out (blur) method on the previous
-	 * one and then call the focus in on the 
-	 * new one
-	 */
-	private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		//only call if there is a previous activeHTMLElement
-		if (_activeElement != null)
+		else if (htmlElement.tabIndex != null)
 		{
-			if (_activeElement.onblur != null)
+			if (htmlElement.tabIndex > 0)
 			{
-				_activeElement.onblur(new Event(Event.BLUR, _activeElement));
+				canReceiveFocus = true;
 			}
 		}
-		
-		//if the activeHTMLElement is set to null, it defaults
-		//to the BodyHTMLElement
-		if (value == null)
-		{
-			value = _bodyElement;
-		}
-		
-		//do nothing if the new avctiveHTMLElement is the same
-		//as the current one
-		if (value != _activeElement)
-		{
-			_activeElement = value;
-			if (_activeElement.onfocus != null)
-			{
-				_activeElement.onfocus(new Event(Event.FOCUS, _activeElement));
-			}
-		}
-		
-		return _activeElement;
-	}
-	
-	private function getActiveElement():HTMLElement
-	{
-		return _activeElement;
-	}
-	
-	/**
-	 * when the bodyDOMelement is defined for the FocusManager,
-	 * reset the activeHTMLElement and the tab list
-	 */
-	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		_bodyElement = value;
-		activeElement = null;
-		
-		invalidate();
-
-		
-		return _bodyElement;
-	}
-	
-	private function getBodyElement():HTMLBodyElement
-	{
-		return _bodyElement;
+		return canReceiveFocus;
 	}
 	
 }

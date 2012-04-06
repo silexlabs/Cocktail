@@ -633,6 +633,15 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Return wether this HTMLElement can intrinsically recieve
+	 * focus, this is the case for instance for HTMLInputElement
+	 */
+	public function isDefaultFocusable():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * Gives keyboard focus to the HTMLElement
 	 * The focus manager determines if the HTMLElement can
 	 * actually receive focus
