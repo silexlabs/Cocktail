@@ -800,7 +800,13 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return value;
 	}
 	
-	
+	/**
+	 * Remove all the currently added child nodes,
+	 * deserialise the passed HTML string and attach
+	 * the resulting child nodes
+	 * 
+	 * @param	value an HTML String 
+	 */
 	private function set_innerHTML(value:String):String
 	{
 		for (i in 0..._childNodes.length)
@@ -811,6 +817,12 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return value;
 	}
 	
+	/**
+	 * Serialise the descendant nodes of this HTMLElement
+	 * and return the result as an HTML String
+	 * 
+	 * TODO : implement
+	 */
 	private function get_innerHTML():String
 	{
 		return '';

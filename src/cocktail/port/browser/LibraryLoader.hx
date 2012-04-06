@@ -49,6 +49,7 @@ class LibraryLoader extends AbstractLibraryLoader
 		_nativeElement.setAttribute("language", "JavaScript");
 
 		// Now add this new element to the head tag
+		//TODO : should not be automatically attached
 		Lib.document.getElementsByTagName("head")[0].appendChild(_nativeElement);
 		
 		//start the script loading

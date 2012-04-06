@@ -89,17 +89,35 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value + unit;
 	}
+	public function setMarginLeftIdent (element:Node, value:String):Void{
+		// TODO: take unit into account
+//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
+		cast(element, HtmlDom).style.marginLeft = value;
+	}
 	public function setMarginTop (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value + unit;
+	}
+	public function setMarginTopIdent (element:Node, value:String):Void{
+		// TODO: take unit into account
+		cast(element, HtmlDom).style.marginTop = value;
 	}
 	public function setMarginRight (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginRight = value + unit;
 	}
+	public function setMarginRightIdent (element:Node, value:String):Void{
+		// TODO: take unit into account
+//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
+		cast(element, HtmlDom).style.marginRight = value;
+	}
 	public function setMarginBottom (element:Node, value:Int, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value + unit;
+	}
+	public function setMarginBottomIdent (element:Node, value:String):Void{
+		// TODO: take unit into account
+		cast(element, HtmlDom).style.marginBottom = value;
 	}
 
 	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{

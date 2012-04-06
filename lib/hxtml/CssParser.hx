@@ -109,17 +109,45 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "margin-left":
-			var i:Null<ValueObject> = getValueObject(v);
-			if( i != null ) { s.setMarginLeft(d, i.value, i.unit); return true; }
+			switch (v) {
+				case VUnit(_):
+					var i:Null<ValueObject> = getValueObject(v);
+					if( i != null ) { s.setMarginLeft(d, i.value, i.unit);}
+				case VIdent(a):
+					s.setMarginLeftIdent(d, a);
+				default:
+			};
+			return true; 
 		case "margin-right":
-			var i:Null<ValueObject> = getValueObject(v);
-			if( i != null ) { s.setMarginRight(d, i.value, i.unit); return true; }
+			switch (v) {
+				case VUnit(_):
+					var i:Null<ValueObject> = getValueObject(v);
+					if( i != null ) { s.setMarginRight(d, i.value, i.unit);}
+				case VIdent(a):
+					s.setMarginRightIdent(d, a);
+				default:
+			};
+			return true;
 		case "margin-top":
-			var i:Null<ValueObject> = getValueObject(v);
-			if( i != null ) { s.setMarginTop(d, i.value, i.unit); return true; }
+			switch (v) {
+				case VUnit(_):
+					var i:Null<ValueObject> = getValueObject(v);
+					if( i != null ) { s.setMarginTop(d, i.value, i.unit);}
+				case VIdent(a):
+					s.setMarginTopIdent(d, a);
+				default:
+			};
+			return true;
 		case "margin-bottom":
-			var i:Null<ValueObject> = getValueObject(v);
-			if( i != null ) { s.setMarginBottom(d, i.value, i.unit); return true; }
+			switch (v) {
+				case VUnit(_):
+					var i:Null<ValueObject> = getValueObject(v);
+					if( i != null ) { s.setMarginBottom(d, i.value, i.unit);}
+				case VIdent(a):
+					s.setMarginBottomIdent(d, a);
+				default:
+			};
+			return true;
 		case "padding":
 			// when the value is not in an array, build a 1 element array
 			var vl:Array<Value> = switch( v ) {

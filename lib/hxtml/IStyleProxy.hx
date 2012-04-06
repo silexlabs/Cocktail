@@ -10,9 +10,13 @@ interface IStyleProxy<DisplayObjectType>
 	public function setTransformOriginKey (element:DisplayObjectType, value:String):Void;
 	public function setTransform (element:DisplayObjectType, value:String):Void;
 */	public function setMarginLeft (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginLeftIdent (element:DisplayObjectType, value:String):Void;
 	public function setMarginTop (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginTopIdent (element:DisplayObjectType, value:String):Void;
 	public function setMarginRight (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginRightIdent (element:DisplayObjectType, value:String):Void;
 	public function setMarginBottom (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginBottomIdent (element:DisplayObjectType, value:String):Void;
 	public function setPaddingLeft (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setPaddingTop (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setPaddingRight (element:DisplayObjectType, value:Int, unit:String):Void;
