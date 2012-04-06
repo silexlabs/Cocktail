@@ -27,7 +27,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractFocusManager
+class FocusManager
 {
 	/**
 	 * set/get the reference to the BodyHTMLElement use as 
