@@ -209,11 +209,13 @@ class AbstractHTMLDocument extends Document
 		/**
 		switch (keyboardEvent.key)
 		{
+			//TODO : should send an event which can be prevented before doing TAB focus
 			case AbstractKeyboard.TAB:
 				doTabFocus(keyEventData.shiftKey);
-				
+			
+			//TODO : should send an event which can be prevented before simulate click ?
 			case AbstractKeyboard.ENTER, AbstractKeyboard.SPACE:
-				simulateMouseClick(keyEventData);
+				activeElement.click();
 				
 			default:
 				if (activeHTMLElement.onKeyDown != null)
@@ -234,31 +236,7 @@ class AbstractHTMLDocument extends Document
 			activeElement.onkeyup(keyEventData);
 		}
 	}
-	
-	/**
-	 * When a simulated mouse click must happen on the 
-	 * active HTMLElement, create all the necessary
-	 * element such as a fake mouse position, and
-	 * cal the active HTMLElement's mouse down callback
-	 * if it exists
-	 * 
-	 * TODO : should go on document and use the click() method
-	 */
-	private function simulateMouseClick(keyEventData:KeyboardEvent):Void
-	{
-		/**
-		if (activeElement.onmousedown != null)
-		{
-			//TODO : replace mouse click event + add right coordinate
-			var mouseEvent:MouseEvent = new MouseEvent(MouseEvent.MOUSE_DOWN, _activeElement, 0.0,
-			0.0, 0.0, 0.0, 0.0, false, false, false);
-			
-			activeElement.onmousedown(mouseEvent);
-		}
-	*/
-	}
-	
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
