@@ -26,6 +26,7 @@ enum Value {
 	VIdent( i : String );
 	VString( s : String );
 	VUnit( v : Float, unit : String );
+	VRGBA( v:String);
 	VFloat( v : Float );
 	VInt( v : Int );
 	VHex( v : String );
@@ -230,6 +231,9 @@ class CssParser<DisplayObjectType> {
 			case VHex(v):
 				var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
 				s.setBgColorNum(d, val);
+				return true;
+			case VRGBA(v):
+				s.setBgColorRGBA(d, v);
 				return true;
 			case VIdent(i): 
 				s.setBgColorKey(d, i);
@@ -828,7 +832,10 @@ class CssParser<DisplayObjectType> {
 			case VIdent(i):
 				switch( i ) {
 				case "url":
-					readValueNext(VUrl(readUrl()));
+					readValueNext(VUrl(readUrl()));	
+					
+				case "rgba":
+					readValueNext(VRGBA(readRGBA()));
 				default:
 					push(t);
 					v;
@@ -927,6 +934,22 @@ class CssParser<DisplayObjectType> {
 				break;
 			c0 = next();
 			if( c0 == ")".code ) break;
+		}
+		return StringTools.trim(css.substr(start, pos - start - 1));
+	}
+	
+	function readRGBA() {
+		
+		var c = next();
+		while (isSpace(c) )
+			c = next();
+			
+		var start = pos - 1;
+		while( true ) {
+			if( StringTools.isEOF(c) )
+				break;
+			c = next();
+			if( c == ")".code ) break;
 		}
 		return StringTools.trim(css.substr(start, pos - start - 1));
 	}
