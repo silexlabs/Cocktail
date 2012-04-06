@@ -270,7 +270,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTextTransform (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.textTransform = value;
 	}
-	public function setLetterSpacing (element:Node, value:Int, unit:String):Void{
+/*	public function setLetterSpacing (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.letterSpacing = value+unit;
 	}
 	public function setWordSpacing (element:Node, value:Int, unit:String):Void{
@@ -303,7 +303,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setCursor (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.cursor = value+unit;
 	}
-
+*/
 }
 /**
  * Implementation of a IStyleProxy

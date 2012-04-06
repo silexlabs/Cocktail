@@ -117,6 +117,16 @@ class HTMLElement extends AbstractHTMLElement
 		return oldChild;
 	}
 	
+	/**
+	 * overriden to also update the atttribute of the
+	 * native HTML element
+	 */
+	override public function setAttribute(name:String, value:String):Void
+	{
+		super.setAttribute(name, value);
+		_nativeElement.setAttribute(name, value);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN POSITIONING SETTERS/GETTERS
 	// Return the native offset width and height of the HTML element

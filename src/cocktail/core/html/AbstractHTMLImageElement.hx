@@ -75,13 +75,6 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * 
 	 * store it and retrieve it from the attributes map,
 	 * and start the loading of the picture when set
-	 * 
-	 * TODO : get/set from attributes map ? + override setAttribute
-	 * to call src setter ? or use Reflection ?
-	 * should not be _src attribute anymore
-	 * Or, add an _srcAttr class attribute and attach it 
-	 * to the attributes, then get/set src, set its value. Or 
-	 * _src is of type Attr ?
 	 */
 	public var src(get_src, set_src):String;
 	

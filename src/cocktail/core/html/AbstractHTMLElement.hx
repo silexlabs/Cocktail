@@ -200,6 +200,12 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 */
 	public var id(get_id, set_id):String;
 	
+	/**
+	 * sets or gets the HTML
+	 * syntax describing the element's descendants.
+	 */
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
 	/////////////////////////////////
 	// COORDS attributes
 	////////////////////////////////
@@ -395,21 +401,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		super.removeChild(oldChild);
 		_coreStyle.invalidate();
 		return oldChild;
-	}
-	public var innerHTML(get_innerHTML, set_innerHTML):String;
-	private function set_innerHTML(value:String):String
-	{
-		for (i in 0..._childNodes.length)
-		{
-			removeChild(_childNodes[i]);
-		}
-		appendChild(HxtmlConverter.getNode(value));
-		return value;
-	}
-	
-	private function get_innerHTML():String
-	{
-		return '';
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -807,6 +798,22 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	{
 		setAttribute(HTML_ID_ATTRIBUTE, value);
 		return value;
+	}
+	
+	
+	private function set_innerHTML(value:String):String
+	{
+		for (i in 0..._childNodes.length)
+		{
+			removeChild(_childNodes[i]);
+		}
+		appendChild(HxtmlConverter.getNode(value));
+		return value;
+	}
+	
+	private function get_innerHTML():String
+	{
+		return '';
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
