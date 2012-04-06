@@ -399,9 +399,27 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE SETTER/GETTER
+	// MOUSE SETTER/GETTER AND METHOD
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Simulates a mouse click on an element.
+	 * 
+	 * The screen and client coordinate of the 
+	 * generated MouseEvent are 0 and modifier
+	 * key (Shift, control...) correspond
+	 * to the current modifier key state
+	 * 
+	 * TODO : get current modifier key state
+	 */
+	public function click():Void
+	{
+		if (_onClick != null)
+		{
+			onClickCallback(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
+		}
+	}
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
