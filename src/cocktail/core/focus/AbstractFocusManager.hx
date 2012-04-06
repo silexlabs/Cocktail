@@ -19,15 +19,15 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.dom.DOMData;
 
 /**
- * The abstract implementation of the focus
- * manager. Listens for TAB and ENTER/SPACE
- * event on keyboard to either switch the 
- * focused HTMLElement or trigger a simulated
- * click event on it
+ * The Focus Manager determine which HTMLElement in the 
+ * Document has focus, meaning that it will receive keyboard
+ * events. Focus can be given by clicking on a HTMLElement
+ * which can receive the focus, by using the TAB key on
+ * the keyboard or it can be set programatically
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractFocusManagerImpl 
+class AbstractFocusManager
 {
 	/**
 	 * set/get the reference to the BodyHTMLElement use as 
