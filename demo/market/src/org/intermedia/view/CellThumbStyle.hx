@@ -47,7 +47,7 @@ class CellThumbStyle
 		//
 		//node.style.paddingLeft = "0px";
 		//node.style.paddingRight = "0px";
-		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE);
+		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
 		//node.style.paddingBottom = "0px";
 		
 		//node.style.verticalAlign = "top";

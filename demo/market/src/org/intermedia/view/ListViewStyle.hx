@@ -40,6 +40,8 @@ class ListViewStyle
 		node.style.paddingBottom = "0px";
 		
 		node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		//node.style.width = Std.string(node.clientWidth) + "px";
+		//node.style.width = "auto";
 		//node.style.height = "100%";
 		node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));

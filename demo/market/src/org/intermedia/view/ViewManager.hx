@@ -87,8 +87,8 @@ class ViewManager
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		_body.appendChild(_menu.node);
 		
-		//_header.isVisible = false;
-		//_menu.isVisible = false;
+		//_header.node.style.visibility = "hidden";
+		//_menu.node.style.visibility = "hidden";
 		
 		// init swippable view
 		_swippableListView = new SwippableListView();
