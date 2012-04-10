@@ -189,6 +189,21 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * TODO : doc
+	 */
+	override private function isDefaultFocusable():Bool
+	{
+		if (href != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
 	 * Open the linked document using
 	 * runtime specific API. Overriden
 	 * by runtime as needed

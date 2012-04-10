@@ -101,7 +101,7 @@ class AbstractHTMLInputElement extends HTMLElement
 	{
 		_coreStyle = new CoreStyle(this);
 	}
-	
+
 	
 	/////////////////////////////////
 	// CHANGE SETTER/GETTER

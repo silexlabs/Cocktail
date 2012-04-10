@@ -20,11 +20,10 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.dom.DOMData;
 
 /**
- * The Focus Manager determine which HTMLElement in the 
- * Document has focus, meaning that it will receive keyboard
- * events. Focus can be given by clicking on a HTMLElement
- * which can receive the focus, by using the TAB key on
- * the keyboard or it can be set programatically
+ * The Focus Manager determine which HTMLElements in 
+ * the Document can receive focus and manage
+ * sequential focus navigation which is triggered
+ * in most cases by pressing the TAB key on a keyboard
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -32,16 +31,10 @@ class FocusManager
 {
 	/**
 	 * Holds a list of all the focusable
-	 * HTMLElements in the DOM, ordered in the
+	 * HTMLElements in the Document, ordered in the
 	 * right focus order
 	 */
 	private var _tabList:Array<HTMLElement>;
-	
-	/**
-	 * The index of the currently active HTMLElement
-	 * in the tabList
-	 */
-	private var _tabListIndex:Int;
 	
 	/**
 	 * class constructor.
@@ -61,7 +54,7 @@ class FocusManager
 	 */
 	public function invalidate():Void
 	{
-		_tabList == null;
+		_tabList = null;
 	}
 	
 	/////////////////////////////////
@@ -73,9 +66,13 @@ class FocusManager
 	 * HTMLElement in the _tabList array which
 	 * must be focused
 	 * 
-	 * @param	reverse when Shift is also pressed,
+	 * @param	reverse if true,
 	 * focus the previous focusable HTMLElement in
 	 * the _tabList array
+	 * @param rootElement the root element of the Document, 
+	 * in an HTMLDocument, it is the HTMLBodyElement
+	 * @param activeElement the element which currently
+	 * has focus
 	 */
 	public function getNextFocusedElement(reverse:Bool, rootElement:HTMLElement, activeElement:HTMLElement):HTMLElement
 	{
@@ -86,52 +83,77 @@ class FocusManager
 			_tabList = buildTabList(rootElement);
 		}
 		
-		//search the next valid index for the tab list
-		//by incrementing or decrementing the tab list index.
-		//As the tab focus loop, the tab list index might be reseted
-		//or set to the last element
-		if (activeElement != rootElement)
-		{
-			if (reverse == false)
-			{
-				if (_tabListIndex == _tabList.length - 1)
-				{
-					_tabListIndex = 0;
-				}
-				else
-				{
-					_tabListIndex++;
-				}
-			}
-			else
-			{
-				if (_tabListIndex == 0)
-				{
-					_tabListIndex = _tabList.length - 1;
-				}
-				else
-				{
-					_tabListIndex--;
-				}
-			}
-		}
+		//will hold the index of the currently focused
+		//element and will be incremented/decremented to 
+		//match the index of the next focused element
+		var tabListIndex:Int;
+		
 		//if the currently activeHTMLElement is the body, it means
 		//no HTMLElement is actually focused and there is no need
 		//to increment/decrement
-		else
+		if (activeElement == rootElement)
 		{
+			//init the index to 0 or the index of the last focusable
+			//element if the focus is in reverse order
 			if (reverse == false)
 			{
-				_tabListIndex = 0;
+				tabListIndex = 0;
 			}
 			else
 			{
-				_tabListIndex = _tabList.length - 1;
+				tabListIndex = _tabList.length - 1;
+			}
+		}
+		//if any other element than the body has currently the focus
+		else
+		{
+			//retrive the index of the activeElement
+			tabListIndex = getElementTabListIndex(activeElement);
+			
+			//then increment or decrement its index to find the index of 
+			//the next focusable element
+			if (reverse == false)
+			{
+				tabListIndex++;
+			}
+			else
+			{
+				tabListIndex--;
 			}
 		}
 		
-		//set the activeHTMLElement with the found tab list index
-		return _tabList[_tabListIndex];
+		//if the incremented tab list index is greater than the 
+		//elements in the tab list, it means a full loop has been done
+		//and the focus is set back to the first focusable element in the list
+		if (tabListIndex == _tabList.length)
+		{
+			tabListIndex = 0;
+		}
+		//same for the decremented tab list index
+		else if (tabListIndex == -1)
+		{
+			tabListIndex = _tabList.length - 1;
+		}
+		
+		//return the element add the new tab list index
+		return _tabList[tabListIndex];
+	}
+	
+	/**
+	 * Return the index of an element in the 
+	 * tabList array
+	 */
+	private function getElementTabListIndex(element:HTMLElement):Int
+	{
+		for (i in 0..._tabList.length)
+		{
+			if (_tabList[i] == element)
+			{
+				return i;
+			}
+		}
+		//TODO : throw exception ?
+		return -1;
 	}
 	
 	/**
@@ -139,17 +161,12 @@ class FocusManager
 	 * HTMLElements in the DOM.
 	 * 
 	 * The list is first composed of all the focusable HTMLElement with a tabIndex
-	 * superior to 0, ordered form smaller to bigger then the list contains all the
+	 * superior to 0, ordered form smaller to bigger, then the list contains all the
 	 * focusable HTMLElement with a tabIndex of 0, ordered in DOM order starting from
-	 * the BodyHTMLElement
+	 * the HTMLBodyElement
 	 */
 	private function buildTabList(rootElement:HTMLElement):Array<HTMLElement>
-	{
-		//each time the list is rebuild, the tab list index is
-		//reseted so that the first item of the list is selected when
-		//the user press tab
-		_tabListIndex = 0;
-		
+	{		
 		//contains the HTMLElement with a 0 tabIndex
 		var orderedTabList:Array<HTMLElement> = new Array<HTMLElement>();
 		
@@ -178,6 +195,7 @@ class FocusManager
 		//loop in all children
 		for (i in 0...htmlElement.childNodes.length)
 		{
+			//only element node can be focused
 			if (htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				var child:HTMLElement = cast(htmlElement.childNodes[i]);
@@ -190,11 +208,12 @@ class FocusManager
 				}
 				
 				//check if the child can be focused
-				if (canReceiveFocus(child) == true)
+				if (child.isFocusable() == true)
 				{
-					//if it can and has a 0 tabIndex, push it
+					//if it can and has a 0 tabIndex or no defined tabIndex, push it
 					//the DOM order array
-					if (child.tabIndex == 0)
+					//TODO : should tabIndex be null Int ?
+					if (child.tabIndex == 0 || child.tabIndex == null)
 					{
 						orderedTabList.push(child);
 					}
@@ -203,7 +222,7 @@ class FocusManager
 					{
 						//find where to insert it in the 
 						//indexed HTMLElement array which is
-						//ordered starting from the DOMelement
+						//ordered starting from the HTMLElement
 						//with the smallest tabIndex to the
 						//biggest
 						if (indexedTabList.length == 0)
@@ -222,7 +241,7 @@ class FocusManager
 								}
 							}
 							//push to the end of the array if it has a biggest
-							//tabIndex than all the other DOMelements in the
+							//tabIndex than all the other HTMLElements in the
 							//array
 							if (foundSpotFlag == false)
 							{
@@ -230,29 +249,8 @@ class FocusManager
 							}
 						}
 					}
-					//note : HTMLElements which are tabEnabled but with a negative
-					//tabIndex can't be selected with tab focus
 				}
 			}
 		}
-		
 	}
-	
-	private function canReceiveFocus(htmlElement:HTMLElement):Bool
-	{
-		var canReceiveFocus:Bool = false;
-		if (htmlElement.isDefaultFocusable() == true)
-		{
-			canReceiveFocus = true;
-		}
-		else if (htmlElement.tabIndex != null)
-		{
-			if (htmlElement.tabIndex > 0)
-			{
-				canReceiveFocus = true;
-			}
-		}
-		return canReceiveFocus;
-	}
-	
 }
