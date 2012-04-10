@@ -7,7 +7,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.HTMLElement;
 #if (flash9 || nme)
 import cocktail.port.flash_player.HTMLElement;
 

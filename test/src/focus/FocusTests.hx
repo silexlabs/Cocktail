@@ -7,99 +7,61 @@
 */
 package focus;
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.LinkDOMElement;
-import cocktail.textElement.TextElement;
-import cocktailCore.focus.FocusManager;
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import cocktail.core.focus.FocusManager;
+import cocktail.Dom;
+import cocktail.Lib;
+
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
-import haxe.Log;
-
 
 class FocusTests 
 {
 	
 	public static function main()
 	{
-		/**var runner = new Runner();
+		var runner = new Runner();
 		runner.addCase(new FocusTests());
 		Report.create(runner);
-		runner.run();*/
+		runner.run();
 		new FocusTests();
 	}
 	
 	public function new() 
 	{
-		testFocus();
+	
 	}
 	
 	public function testFocus()
 	{
-		var bodyDOMElement:BodyDOMElement = new BodyDOMElement();
+		var link:Anchor = cast(Lib.document.createElement("a"));
+		link.href = "fakeUrl.html";
 		
+		Lib.document.body.appendChild(link);
 		
-		var link1 = getLink("link 1");
-		var link2 = getLink("link 2");
-		var link3 = getLink("link 3");
-		
-		var focusableContainer = getFocusableContainer();
-		focusableContainer.tabIndex = 40;
-		
-		var link4 = getLink("link 4");
-		var link5 = getLink("link 5");
-		link1.tabIndex = 50;
-		
-		link3.tabIndex = 25;
-		
-		bodyDOMElement.addChild(link1);
-		bodyDOMElement.addChild(link2);
-		bodyDOMElement.addChild(focusableContainer);
-		
-		focusableContainer.addChild(link3);
-		focusableContainer.addChild(link4);
-		
-		
-	}
+		var fm = new FocusManager();
 	
-	private function getLink(text:String):LinkDOMElement
-	{
-		var linkDOMElement:LinkDOMElement = new LinkDOMElement();
-		linkDOMElement.href = "#";
-		linkDOMElement.addText(new TextElement(text));
-		linkDOMElement.style.display = DisplayStyleValue.block;
+		var nextFocusedElement = fm.getNextFocusedElement(false, Lib.document.body, Lib.document.body);
+		Assert.equals(nextFocusedElement, link);
 		
-		linkDOMElement.onFocusIn = function() {
-			linkDOMElement.style.color = ColorValue.keyword(ColorKeywordValue.red);
-		}
-		linkDOMElement.onFocusOut = function() {
-			linkDOMElement.style.color = ColorValue.keyword(ColorKeywordValue.black);
-		}
-		linkDOMElement.onMouseDown = function(e) {
-			linkDOMElement.style.color = ColorValue.keyword(ColorKeywordValue.green);
-		}
+		nextFocusedElement = fm.getNextFocusedElement(false, Lib.document.body, link);
+		Assert.equals(nextFocusedElement, link);
 		
-		return linkDOMElement;
-	}
-	
-	private function getFocusableContainer():ContainerDOMElement
-	{
-		var containerDOMElement:ContainerDOMElement = new ContainerDOMElement();
-		containerDOMElement.tabEnabled = true;
+		var div = Lib.document.createElement("div");
+		div.tabIndex = 50;
 		
-		containerDOMElement.style.display = DisplayStyleValue.block;
+		Lib.document.body.appendChild(div);
 		
-		containerDOMElement.onFocusIn = function() {
-			containerDOMElement.style.opacity = OpacityStyleValue.number(0.5);
-		}
-		containerDOMElement.onFocusOut = function() {
-			containerDOMElement.style.opacity = OpacityStyleValue.number(1.0);
-		}
+		fm.invalidate();
 		
-		return containerDOMElement;
+		nextFocusedElement = fm.getNextFocusedElement(false, Lib.document.body, link);
+		Assert.equals(nextFocusedElement, div);
+		
+		nextFocusedElement = fm.getNextFocusedElement(false, Lib.document.body, div);
+		Assert.equals(nextFocusedElement, link);
+		
+		nextFocusedElement = fm.getNextFocusedElement(true, Lib.document.body, link);
+		Assert.equals(nextFocusedElement, div);
 		
 	}
 }

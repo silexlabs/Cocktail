@@ -11,6 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.IEventTarget;
+import cocktail.core.HTMLDocument;
 import cocktail.core.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
@@ -650,11 +651,35 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// FOCUS SETTER/GETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	public function isFocusable():Bool
+	{
+		//TODO : manage case where it isn't displayed
+		if (parentNode == null)
+		{
+			
+			return false;
+		}
+		else if (isDefaultFocusable() == true)
+		{
+			return true;
+		}
+		else if (tabIndex != null)
+		{
+			if (tabIndex > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Return wether this HTMLElement can intrinsically recieve
 	 * focus, this is the case for instance for HTMLInputElement
+	 * 
+	 * TODO : should be true for anchor but only if href is defined
 	 */
-	public function isDefaultFocusable():Bool
+	private function isDefaultFocusable():Bool
 	{
 		return false;
 	}
@@ -663,29 +688,27 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * Gives keyboard focus to the HTMLElement
 	 * The focus manager determines if the HTMLElement can
 	 * actually receive focus
-	 * 
-	 * TODO : should instead call ownerDocument.activeElement
 	 */
 	public function focus():Void
 	{
-		//FocusManager.getInstance().activeElement = cast(this);
+		if (isFocusable() == true)
+		{
+			var htmlDocument:HTMLDocument = cast(ownerDocument);
+			htmlDocument.activeElement = cast(this);
+		}
 	}
 	
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
 	 * 
-	 * TODO : check if it actually work
 	 * TODO : check if focus must be set on Document if
 	 * this element currently doesn't have focus
-	 * TODO : should call focus on Document or Document.body
-	 * instead of setting activeElement to null. Should
-	 * Document have a focus() method ? Should it inherit
-	 * form HTMLElement or share common interface ?
 	 */
 	public function blur():Void
 	{
-		//FocusManager.getInstance().activeElement = null;
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.body.focus();
 	}
 	
 	private function set_onFocus(value:Event->Void):Event->Void

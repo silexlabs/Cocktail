@@ -18,7 +18,9 @@ import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
 import cocktail.core.Keyboard;
+import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.NativeElement;
+import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
 import haxe.Timer;
@@ -47,6 +49,16 @@ class AbstractHTMLDocument extends Document
 	private static inline var HTML_HTML_TAG_NAME:String = "html";
 	
 	private static inline var HTML_BODY_TAG_NAME:String = "body";
+	
+	/**
+	 * key code listened to by the Document
+	 */
+	
+	private static inline var TAB_KEY_CODE:Int = 9;
+	
+	private static inline var ENTER_KEY_CODE:Int = 13;
+	
+	private static inline var SPACE_KEY_CODE:Int = 32;
 	
 	/**
 	 * The element that contains the content for the document.
@@ -102,6 +114,7 @@ class AbstractHTMLDocument extends Document
 		_nativeElements = new Array<NativeElement>();
 		
 		_focusManager = new FocusManager();
+		_activeElement = _body;
 		
 		//listen to the Window resizes
 		_window = new Window();
@@ -116,9 +129,9 @@ class AbstractHTMLDocument extends Document
 	private function initKeyboardListeners():Void
 	{
 		//listens for event on the root of the runtime
-		//var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
-		//keyboard.onKeyDown = onKeyDown;
-		//keyboard.onKeyUp = onKeyUp;
+		var keyboard:Keyboard = new Keyboard(_body);
+		keyboard.onKeyDown = onKeyDown;
+		keyboard.onKeyUp = onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -201,28 +214,24 @@ class AbstractHTMLDocument extends Document
 	 * If it is any other key, redirect the 
 	 * key down event to the currently active
 	 * HTMLElement
-	 * 
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
-		//TODO : re-implement
-		/**
 		switch (keyboardEvent.key)
 		{
-			//TODO : should send an event which can be prevented before doing TAB focus
-			case AbstractKeyboard.TAB:
-				doTabFocus(keyEventData.shiftKey);
-			
-			//TODO : should send an event which can be prevented before simulate click ?
-			case AbstractKeyboard.ENTER, AbstractKeyboard.SPACE:
+			//TODO : the focus event should be preventable
+			case TAB_KEY_CODE:
+				activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
+	
+			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				activeElement.click();
 				
 			default:
-				if (activeHTMLElement.onKeyDown != null)
+				if (activeElement.onkeydown != null)
 				{
-					activeHTMLElement.onKeyDown(keyEventData);
+					activeElement.onkeydown(keyboardEvent);
 				}
-		}*/
+		}
 	}
 	
 	/**
@@ -361,18 +370,17 @@ class AbstractHTMLDocument extends Document
 	}
 	
 	/**
-	 * When a new activeHTMLElement is set, call 
+	 * When a new activeElement is set, call 
 	 * the focus out (blur) method on the previous
 	 * one and then call the focus in on the 
 	 * new one
 	 */
 	private function set_activeElement(value:HTMLElement):HTMLElement
 	{			
-		//if the activeHTMLElement is set to null, it defaults
-		//to the BodyHTMLElement
+		//if the activeHTMLElement is set to null, do nothing
 		if (value == null)
 		{
-			value = _body;
+			return _activeElement;
 		}
 		
 		//do nothing if the new activeHTMLElement is the same
@@ -396,20 +404,9 @@ class AbstractHTMLDocument extends Document
 		return _activeElement;
 	}
 	
-	/**
-	 * If there is no currently focused elements,
-	 * return the body
-	 */
+
 	private function get_activeElement():HTMLElement
 	{
-		if (_activeElement == null)
-		{
-			return _body;
-		}
-		else
-		{
-			return _activeElement;
-		}
-		
+		return _activeElement;
 	}
 }
