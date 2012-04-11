@@ -47,6 +47,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : add mouse double click
+	
 	/**
 	 * An instance of the cross-platform mouse class, used to listen
 	 * to native mouse events
@@ -651,18 +653,28 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	// FOCUS SETTER/GETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Determine wether the htmlElement can receive
+	 * focus
+	 */
 	public function isFocusable():Bool
 	{
-		//TODO : manage case where it isn't displayed
+		//if it isn't attached to the DOM,
+		//it can't be focused
 		if (parentNode == null)
 		{
-			
 			return false;
 		}
+		
+		//it can be focused if it is inherently
+		//focusable
 		else if (isDefaultFocusable() == true)
 		{
 			return true;
 		}
+		
+		//else, an element with a tab index 
+		//superior to 0 can receive focus
 		else if (tabIndex != null)
 		{
 			if (tabIndex > 0)
@@ -676,8 +688,6 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	/**
 	 * Return wether this HTMLElement can intrinsically recieve
 	 * focus, this is the case for instance for HTMLInputElement
-	 * 
-	 * TODO : should be true for anchor but only if href is defined
 	 */
 	private function isDefaultFocusable():Bool
 	{

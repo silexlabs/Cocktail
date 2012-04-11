@@ -8,10 +8,8 @@ package cocktail.core.dom;
  * Objects contained in an object implementing NamedNodeMap may
  * also be accessed by an ordinal index, but this is simply to allow
  * convenient enumeration of the contents of a NamedNodeMap,
- * and does not imply that the DOM specifies an order to these Nodes. 
- * 
- * TODO : implement NodeList or map it to Array ?
- * 
+ * and does not imply that the DOM specifies an order to these Nodes.
+ *  
  * @author Yannick DOMINGUEZ
  */
 class NamedNodeMap 

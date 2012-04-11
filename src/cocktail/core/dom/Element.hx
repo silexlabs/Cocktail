@@ -260,7 +260,6 @@ class Element extends Node
 	 * Returns a NodeList of all descendant
 	 * Elements with a given tag name, in document order.
 	 * 
-	 * TODO : implement NodeList ?
 	 * TODO : override in HTMLElement to make it case-insensitive
 	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.

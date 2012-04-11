@@ -189,7 +189,8 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO : doc
+	 * An anchor is inherently focusable if its
+	 * href is defined
 	 */
 	override private function isDefaultFocusable():Bool
 	{

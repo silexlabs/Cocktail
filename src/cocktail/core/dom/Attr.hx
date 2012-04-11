@@ -13,8 +13,6 @@ class Attr extends Node
 	 * Returns the name of this attribute.
 	 * If Node.localName is different from null,
 	 * this attribute is a qualified name.
-	 * 
-	 * TODO : implement localName
 	 */
 	private var _name:String;
 	public var name(get_name, null):String;
