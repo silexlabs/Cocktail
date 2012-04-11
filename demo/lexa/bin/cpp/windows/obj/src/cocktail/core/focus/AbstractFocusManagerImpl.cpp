@@ -40,7 +40,7 @@ namespace focus{
 Void AbstractFocusManagerImpl_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",71)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",70)
 	this->initKeyboardListeners();
 }
 ;
@@ -73,7 +73,7 @@ HX_DEFINE_DYNAMIC_FUNC0(AbstractFocusManagerImpl_obj,initKeyboardListeners,(void
 Void AbstractFocusManagerImpl_obj::invalidate( ){
 {
 		HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::invalidate")
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",97)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",96)
 		(this->_tabList == null());
 	}
 return null();
@@ -95,9 +95,9 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,onKeyDown,(void))
 Void AbstractFocusManagerImpl_obj::onKeyUp( ::cocktail::core::event::KeyboardEvent keyEventData){
 {
 		HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::onKeyUp")
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",138)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",137)
 		if (((this->_activeElement->get_onKeyUp() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",140)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",139)
 			this->_activeElement->get_onKeyUp()(keyEventData).Cast< Void >();
 		}
 	}
@@ -110,49 +110,49 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,onKeyUp,(void))
 Void AbstractFocusManagerImpl_obj::doTabFocus( bool reverse){
 {
 		HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::doTabFocus")
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",158)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",157)
 		if (((this->_tabList == null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",159)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",158)
 			this->_tabList = this->buildTabList(this->_bodyElement);
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",167)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",166)
 		if (((this->getActiveElement() != this->_bodyElement))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",168)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",167)
 			if (((reverse == false))){
-				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",170)
+				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",169)
 				if (((this->_tabListIndex == (this->_tabList->length - (int)1)))){
-					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",172)
+					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",171)
 					this->_tabListIndex = (int)0;
 				}
 				else{
-					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",176)
+					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",175)
 					(this->_tabListIndex)++;
 				}
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",181)
+				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",180)
 				if (((this->_tabListIndex == (int)0))){
-					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",183)
+					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",182)
 					this->_tabListIndex = (this->_tabList->length - (int)1);
 				}
 				else{
-					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",187)
+					HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",186)
 					(this->_tabListIndex)--;
 				}
 			}
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",196)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",195)
 			if (((reverse == false))){
-				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",198)
+				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",197)
 				this->_tabListIndex = (int)0;
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",202)
+				HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",201)
 				this->_tabListIndex = (this->_tabList->length - (int)1);
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",208)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",207)
 		this->setActiveElement(this->_tabList->__get(this->_tabListIndex));
 	}
 return null();
@@ -163,28 +163,28 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,doTabFocus,(void))
 
 Array< ::cocktail::port::flash_player::HTMLElement > AbstractFocusManagerImpl_obj::buildTabList( ::cocktail::port::flash_player::HTMLElement htmlElement){
 	HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::buildTabList")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",225)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",224)
 	this->_tabListIndex = (int)0;
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",228)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",227)
 	Array< ::cocktail::port::flash_player::HTMLElement > orderedTabList = Array_obj< ::cocktail::port::flash_player::HTMLElement >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",231)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",230)
 	Array< ::cocktail::port::flash_player::HTMLElement > indexedTabList = Array_obj< ::cocktail::port::flash_player::HTMLElement >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",234)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",233)
 	this->doBuildTabList(htmlElement,orderedTabList,indexedTabList);
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",237)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",236)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",237)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",236)
 		int _g1 = (int)0;
 		int _g = orderedTabList->length;
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",237)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",236)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",237)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",236)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",239)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",238)
 			indexedTabList->push(orderedTabList->__get(i));
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",242)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",241)
 	return indexedTabList;
 }
 
@@ -204,11 +204,11 @@ HX_DEFINE_DYNAMIC_FUNC3(AbstractFocusManagerImpl_obj,doBuildTabList,(void))
 Void AbstractFocusManagerImpl_obj::simulateMouseClick( ::cocktail::core::event::KeyboardEvent keyEventData){
 {
 		HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::simulateMouseClick")
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",326)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",325)
 		if (((this->getActiveElement()->get_onMouseDown() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",330)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",329)
 			::cocktail::core::event::MouseEvent mouseEvent = ::cocktail::core::event::MouseEvent_obj::__new(HX_CSTRING("mousedown"),this->_activeElement,0.0,0.0,0.0,0.0,0.0,false,false,false);
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",333)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",332)
 			this->getActiveElement()->get_onMouseDown()(mouseEvent).Cast< Void >();
 		}
 	}
@@ -220,30 +220,30 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,simulateMouseClick,(void))
 
 ::cocktail::port::flash_player::HTMLElement AbstractFocusManagerImpl_obj::setActiveElement( ::cocktail::port::flash_player::HTMLElement value){
 	HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::setActiveElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",351)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",350)
 	if (((this->_activeElement != null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",352)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",351)
 		if (((this->_activeElement->get_onBlur() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",354)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",353)
 			this->_activeElement->get_onBlur()(::cocktail::core::event::Event_obj::__new(HX_CSTRING("blur"),this->_activeElement)).Cast< Void >();
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",361)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",360)
 	if (((value == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",362)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",361)
 		value = this->_bodyElement;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",368)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",367)
 	if (((value != this->_activeElement))){
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",370)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",369)
 		this->_activeElement = value;
-		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",371)
+		HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",370)
 		if (((this->_activeElement->get_onFocus() != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",372)
+			HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",371)
 			this->_activeElement->get_onFocus()(::cocktail::core::event::Event_obj::__new(HX_CSTRING("focus"),this->_activeElement)).Cast< Void >();
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",377)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",376)
 	return this->_activeElement;
 }
 
@@ -252,7 +252,7 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,setActiveElement,return )
 
 ::cocktail::port::flash_player::HTMLElement AbstractFocusManagerImpl_obj::getActiveElement( ){
 	HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::getActiveElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",381)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",380)
 	return this->_activeElement;
 }
 
@@ -261,13 +261,13 @@ HX_DEFINE_DYNAMIC_FUNC0(AbstractFocusManagerImpl_obj,getActiveElement,return )
 
 ::cocktail::core::html::HTMLBodyElement AbstractFocusManagerImpl_obj::setBodyElement( ::cocktail::core::html::HTMLBodyElement value){
 	HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::setBodyElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",391)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",390)
 	this->_bodyElement = value;
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",392)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",391)
 	this->setActiveElement(null());
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",394)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",393)
 	this->invalidate();
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",397)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",396)
 	return this->_bodyElement;
 }
 
@@ -276,7 +276,7 @@ HX_DEFINE_DYNAMIC_FUNC1(AbstractFocusManagerImpl_obj,setBodyElement,return )
 
 ::cocktail::core::html::HTMLBodyElement AbstractFocusManagerImpl_obj::getBodyElement( ){
 	HX_SOURCE_PUSH("AbstractFocusManagerImpl_obj::getBodyElement")
-	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",401)
+	HX_SOURCE_POS("../../src/cocktail/core/focus/AbstractFocusManagerImpl.hx",400)
 	return this->_bodyElement;
 }
 

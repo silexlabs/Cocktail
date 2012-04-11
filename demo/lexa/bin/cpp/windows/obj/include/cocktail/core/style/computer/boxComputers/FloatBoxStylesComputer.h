@@ -6,7 +6,7 @@
 #endif
 
 #include <cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.h>
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,BoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,FloatBoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,InlineBlockBoxStylesComputer)
@@ -36,7 +36,7 @@ class FloatBoxStylesComputer_obj : public ::cocktail::core::style::computer::box
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("FloatBoxStylesComputer"); }
 
-		virtual int getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedAutoWidth_dyn();
 
 };

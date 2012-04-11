@@ -64,18 +64,18 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,getAttribute,return )
 Void Element_obj::setAttribute( ::String name,::String value){
 {
 		HX_SOURCE_PUSH("Element_obj::setAttribute")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",128)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",131)
 		::cocktail::core::dom::Attr attribute = this->_attributes->getNamedItem(name);
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",129)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",132)
 		if (((attribute == null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",131)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",134)
 			attribute = ::cocktail::core::dom::Attr_obj::__new(name);
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",132)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",135)
 			this->_attributes->setNamedItem(attribute);
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",133)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",136)
 			attribute->set_ownerElement(hx::ObjectPtr<OBJ_>(this));
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",136)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",139)
 		attribute->set_value(value);
 	}
 return null();
@@ -86,14 +86,14 @@ HX_DEFINE_DYNAMIC_FUNC2(Element_obj,setAttribute,(void))
 
 ::cocktail::core::dom::Attr Element_obj::getAttributeNode( ::String name){
 	HX_SOURCE_PUSH("Element_obj::getAttributeNode")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",149)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",152)
 	::cocktail::core::dom::Node attribute = this->_attributes->getNamedItem(name);
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",151)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",154)
 	if (((attribute != null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",152)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",155)
 		return attribute;
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",156)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",159)
 	return null();
 }
 
@@ -102,9 +102,9 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,getAttributeNode,return )
 
 ::cocktail::core::dom::Attr Element_obj::setAttributeNode( ::cocktail::core::dom::Attr newAttr){
 	HX_SOURCE_PUSH("Element_obj::setAttributeNode")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",171)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",174)
 	newAttr->set_ownerElement(hx::ObjectPtr<OBJ_>(this));
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",172)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",175)
 	return this->_attributes->setNamedItem(newAttr);
 }
 
@@ -114,11 +114,11 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,setAttributeNode,return )
 Void Element_obj::removeAttribute( ::String name){
 {
 		HX_SOURCE_PUSH("Element_obj::removeAttribute")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",187)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",190)
 		::cocktail::core::dom::Attr removedAttribute = this->_attributes->removeNamedItem(name);
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",189)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",192)
 		if (((removedAttribute != null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",190)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",193)
 			removedAttribute->set_ownerElement(null());
 		}
 	}
@@ -131,18 +131,18 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,removeAttribute,(void))
 Void Element_obj::setIdAttribute( ::String name,bool isId){
 {
 		HX_SOURCE_PUSH("Element_obj::setIdAttribute")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",212)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",215)
 		::cocktail::core::dom::Attr idAttribute = this->_attributes->getNamedItem(name);
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",213)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",216)
 		if (((idAttribute == null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",215)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",218)
 			idAttribute = ::cocktail::core::dom::Attr_obj::__new(name);
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",216)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",219)
 			this->_attributes->setNamedItem(idAttribute);
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",217)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",220)
 			idAttribute->set_ownerElement(hx::ObjectPtr<OBJ_>(this));
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",220)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",223)
 		idAttribute->set_isId(isId);
 	}
 return null();
@@ -154,9 +154,9 @@ HX_DEFINE_DYNAMIC_FUNC2(Element_obj,setIdAttribute,(void))
 Void Element_obj::setIdAttributeNode( ::cocktail::core::dom::Attr idAttr,bool isId){
 {
 		HX_SOURCE_PUSH("Element_obj::setIdAttributeNode")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",239)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",242)
 		idAttr->set_isId(isId);
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",240)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",243)
 		this->_attributes->setNamedItem(idAttr);
 	}
 return null();
@@ -167,7 +167,7 @@ HX_DEFINE_DYNAMIC_FUNC2(Element_obj,setIdAttributeNode,(void))
 
 bool Element_obj::hasAttribute( ::String name){
 	HX_SOURCE_PUSH("Element_obj::hasAttribute")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",252)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",255)
 	return (this->_attributes->getNamedItem(name) != null());
 }
 
@@ -176,11 +176,11 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,hasAttribute,return )
 
 Array< ::cocktail::core::dom::Node > Element_obj::getElementsByTagName( ::String tagName){
 	HX_SOURCE_PUSH("Element_obj::getElementsByTagName")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",268)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",271)
 	Array< ::cocktail::core::dom::Node > elements = Array_obj< ::cocktail::core::dom::Node >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",269)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",272)
 	this->doGetElementsByTagName(hx::ObjectPtr<OBJ_>(this),tagName,elements);
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",270)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",273)
 	return elements;
 }
 
@@ -190,30 +190,30 @@ HX_DEFINE_DYNAMIC_FUNC1(Element_obj,getElementsByTagName,return )
 Void Element_obj::doGetElementsByTagName( ::cocktail::core::dom::Node node,::String tagName,Array< ::cocktail::core::dom::Node > elements){
 {
 		HX_SOURCE_PUSH("Element_obj::doGetElementsByTagName")
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",282)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",285)
 		if (((node->hasChildNodes() == true))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",285)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",288)
 			int _g1 = (int)0;
 			int _g = node->get_childNodes()->length;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",285)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",288)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",285)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",288)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",287)
-				::cocktail::core::dom::Node childNode = node->get_childNodes()->__get(i);
 				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",290)
+				::cocktail::core::dom::Node childNode = node->get_childNodes()->__get(i);
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",293)
 				if (((childNode->get_nodeName() == tagName))){
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",291)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",294)
 					elements->push(childNode);
 				}
 				else{
-					HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",295)
+					HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",298)
 					if (((bool((tagName == HX_CSTRING("*"))) && bool((childNode->get_nodeType() == (int)1))))){
-						HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",296)
+						HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",299)
 						elements->push(childNode);
 					}
 				}
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",300)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",303)
 				this->doGetElementsByTagName(childNode,tagName,elements);
 			}
 		}
@@ -226,7 +226,7 @@ HX_DEFINE_DYNAMIC_FUNC3(Element_obj,doGetElementsByTagName,(void))
 
 bool Element_obj::hasAttributes( ){
 	HX_SOURCE_PUSH("Element_obj::hasAttributes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",310)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",313)
 	return (this->_attributes->get_length() > (int)0);
 }
 
@@ -235,7 +235,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,hasAttributes,return )
 
 ::String Element_obj::get_nodeName( ){
 	HX_SOURCE_PUSH("Element_obj::get_nodeName")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",321)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",324)
 	return this->_tagName;
 }
 
@@ -244,7 +244,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_nodeName,return )
 
 int Element_obj::get_nodeType( ){
 	HX_SOURCE_PUSH("Element_obj::get_nodeType")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",326)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",329)
 	return (int)1;
 }
 
@@ -253,7 +253,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_nodeType,return )
 
 ::cocktail::core::dom::NamedNodeMap Element_obj::get_attributes( ){
 	HX_SOURCE_PUSH("Element_obj::get_attributes")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",331)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",334)
 	return this->_attributes;
 }
 
@@ -262,32 +262,32 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_attributes,return )
 
 ::cocktail::core::dom::Element Element_obj::get_firstElementChild( ){
 	HX_SOURCE_PUSH("Element_obj::get_firstElementChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",341)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",344)
 	if (((this->hasChildNodes() == false))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",342)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",345)
 		return null();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",346)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",349)
 	if (((this->get_firstChild()->get_nodeType() == (int)1))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",347)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",350)
 		return this->get_firstChild();
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",352)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",355)
 		int _g1 = (int)0;
 		int _g = this->_childNodes->length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",352)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",355)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",352)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",355)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",354)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",357)
 			if (((this->_childNodes->__get(i)->get_nodeType() == (int)1))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",355)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",358)
 				return this->_childNodes->__get(i);
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",361)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",364)
 	return null();
 }
 
@@ -296,31 +296,31 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_firstElementChild,return )
 
 ::cocktail::core::dom::Element Element_obj::get_lastElementChild( ){
 	HX_SOURCE_PUSH("Element_obj::get_lastElementChild")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",366)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",369)
 	if (((this->hasChildNodes() == false))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",367)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",370)
 		return null();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",371)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",374)
 	if (((this->get_lastChild()->get_nodeType() == (int)1))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",372)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",375)
 		return this->get_lastChild();
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",377)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",380)
 		int _g = this->_childNodes->length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",377)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",380)
 		while(((_g < (int)0))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",377)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",380)
 			int i = (_g)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",379)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",382)
 			if (((this->_childNodes->__get(i)->get_nodeType() == (int)1))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",380)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",383)
 				return this->_childNodes->__get(i);
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",386)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",389)
 	return null();
 }
 
@@ -329,24 +329,24 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_lastElementChild,return )
 
 ::cocktail::core::dom::Element Element_obj::get_nextElementSibling( ){
 	HX_SOURCE_PUSH("Element_obj::get_nextElementSibling")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",391)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",394)
 	if (((this->get_nextSibling() == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",392)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",395)
 		return null();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",396)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",399)
 	::cocktail::core::dom::Node nextElementSibling = this->get_nextSibling();
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",398)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",401)
 	while(((nextElementSibling->get_nodeType() != (int)1))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",400)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",403)
 		nextElementSibling = nextElementSibling->get_nextSibling();
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",402)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",405)
 		if (((nextElementSibling == null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",403)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",406)
 			return null();
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",408)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",411)
 	return nextElementSibling;
 }
 
@@ -355,24 +355,24 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_nextElementSibling,return )
 
 ::cocktail::core::dom::Element Element_obj::get_previousElementSibling( ){
 	HX_SOURCE_PUSH("Element_obj::get_previousElementSibling")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",413)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",416)
 	if (((this->get_previousSibling() == null()))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",414)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",417)
 		return null();
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",418)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",421)
 	::cocktail::core::dom::Node previousElementSibling = this->get_previousSibling();
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",420)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",423)
 	while(((previousElementSibling->get_nodeType() != (int)1))){
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",422)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",425)
 		previousElementSibling = previousElementSibling->get_previousSibling();
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",424)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",427)
 		if (((previousElementSibling == null()))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",425)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",428)
 			return null();
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",430)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",433)
 	return previousElementSibling;
 }
 
@@ -381,25 +381,25 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_previousElementSibling,return )
 
 int Element_obj::get_childElementCount( ){
 	HX_SOURCE_PUSH("Element_obj::get_childElementCount")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",435)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",438)
 	int childElementCount = (int)0;
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",437)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",440)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",437)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",440)
 		int _g1 = (int)0;
 		int _g = this->_childNodes->length;
-		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",437)
+		HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",440)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",437)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",440)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",439)
+			HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",442)
 			if (((this->_childNodes->__get(i)->get_nodeType() == (int)1))){
-				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",440)
+				HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",443)
 				(childElementCount)++;
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",445)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",448)
 	return childElementCount;
 }
 
@@ -408,7 +408,7 @@ HX_DEFINE_DYNAMIC_FUNC0(Element_obj,get_childElementCount,return )
 
 ::String Element_obj::get_tagName( ){
 	HX_SOURCE_PUSH("Element_obj::get_tagName")
-	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",453)
+	HX_SOURCE_POS("../../src/cocktail/core/dom/Element.hx",456)
 	return this->_tagName;
 }
 

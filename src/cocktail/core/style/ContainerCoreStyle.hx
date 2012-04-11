@@ -199,11 +199,6 @@ class ContainerCoreStyle extends CoreStyle
 	
 	/**
 	 * Actually flow all the children of the ContainerHTMLElement
-	 * 
-	 * TODO : re-add the code to insert offset before and after children ? ->
-	 * don't need anymore if inline formatting context becomes tree like
-	 * block formatting context
-	 * 
 	 */
 	private function doFlowChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{

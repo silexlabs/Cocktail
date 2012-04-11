@@ -120,9 +120,6 @@ class Element extends Node
 	 * build the appropriate subtree,
 	 * and use setAttributeNode to assign it as the value of an attribute.
 	 * 
-	 * TODO : should be overriden in JS to also set the attribute on the 
-	 * nativeElement
-	 * 
 	 * @param	name The name of the attribute to create or alter.
 	 * @param	value Value to set in string form.
 	 */
@@ -259,9 +256,6 @@ class Element extends Node
 	/**
 	 * Returns a NodeList of all descendant
 	 * Elements with a given tag name, in document order.
-	 * 
-	 * TODO : implement NodeList ?
-	 * TODO : override in HTMLElement to make it case-insensitive
 	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * @return	A list of matching Element nodes.

@@ -1,7 +1,7 @@
 #include <hxcpp.h>
 
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Margin
 #include <cocktail/core/style/Margin.h>
@@ -41,7 +41,7 @@ Dynamic InLineBoxStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-Void InLineBoxStylesComputer_obj::measureVerticalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void InLineBoxStylesComputer_obj::measureVerticalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("InLineBoxStylesComputer_obj::measureVerticalPaddings")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.hx",36)
@@ -55,7 +55,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(InLineBoxStylesComputer_obj,measureVerticalPaddings,(void))
 
-Void InLineBoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void InLineBoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("InLineBoxStylesComputer_obj::measureAutoHeight")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.hx",47)
@@ -71,7 +71,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(InLineBoxStylesComputer_obj,measureAutoHeight,(void))
 
-Void InLineBoxStylesComputer_obj::measureHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void InLineBoxStylesComputer_obj::measureHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("InLineBoxStylesComputer_obj::measureHeight")
 		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.hx",62)
@@ -96,7 +96,7 @@ int InLineBoxStylesComputer_obj::getComputedAutoMargin( ::cocktail::core::style:
 
 HX_DEFINE_DYNAMIC_FUNC9(InLineBoxStylesComputer_obj,getComputedAutoMargin,return )
 
-int InLineBoxStylesComputer_obj::getComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int InLineBoxStylesComputer_obj::getComputedWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("InLineBoxStylesComputer_obj::getComputedWidth")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.hx",81)
 	return (int)0;
@@ -105,7 +105,7 @@ int InLineBoxStylesComputer_obj::getComputedWidth( ::cocktail::core::style::Abst
 
 HX_DEFINE_DYNAMIC_FUNC2(InLineBoxStylesComputer_obj,getComputedWidth,return )
 
-int InLineBoxStylesComputer_obj::getComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int InLineBoxStylesComputer_obj::getComputedHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("InLineBoxStylesComputer_obj::getComputedHeight")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InLineBoxStylesComputer.hx",89)
 	return (int)0;

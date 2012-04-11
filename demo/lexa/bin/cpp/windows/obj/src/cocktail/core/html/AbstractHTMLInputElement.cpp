@@ -15,14 +15,8 @@
 #ifndef INCLUDED_cocktail_core_html_AbstractHTMLInputElement
 #include <cocktail/core/html/AbstractHTMLInputElement.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_core_style_AbstractEmbeddedCoreStyle
-#include <cocktail/core/style/AbstractEmbeddedCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
@@ -74,7 +68,7 @@ Void AbstractHTMLInputElement_obj::initCoreStyle( ){
 {
 		HX_SOURCE_PUSH("AbstractHTMLInputElement_obj::initCoreStyle")
 		HX_SOURCE_POS("../../src/cocktail/core/html/AbstractHTMLInputElement.hx",101)
-		this->_coreStyle = ::cocktail::core::style::AbstractEmbeddedCoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
+		this->_coreStyle = ::cocktail::core::style::CoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
 	}
 return null();
 }
@@ -180,7 +174,7 @@ void AbstractHTMLInputElement_obj::__Mark(HX_MARK_PARAMS)
 {
 	HX_MARK_BEGIN_CLASS(AbstractHTMLInputElement);
 	HX_MARK_MEMBER_NAME(_onChange,"_onChange");
-	HX_MARK_MEMBER_NAME(onChange,"onChange");
+	HX_MARK_MEMBER_NAME(onchange,"onchange");
 	HX_MARK_MEMBER_NAME(_disabled,"_disabled");
 	HX_MARK_MEMBER_NAME(disabled,"disabled");
 	HX_MARK_MEMBER_NAME(_maxLength,"_maxLength");
@@ -204,7 +198,7 @@ Dynamic AbstractHTMLInputElement_obj::__Field(const ::String &inName)
 		if (HX_FIELD_EQ(inName,"_value") ) { return _value; }
 		break;
 	case 8:
-		if (HX_FIELD_EQ(inName,"onChange") ) { return get_onChange(); }
+		if (HX_FIELD_EQ(inName,"onchange") ) { return get_onChange(); }
 		if (HX_FIELD_EQ(inName,"disabled") ) { return get_disabled(); }
 		break;
 	case 9:
@@ -247,7 +241,7 @@ Dynamic AbstractHTMLInputElement_obj::__SetField(const ::String &inName,const Dy
 		if (HX_FIELD_EQ(inName,"_value") ) { _value=inValue.Cast< ::String >(); return inValue; }
 		break;
 	case 8:
-		if (HX_FIELD_EQ(inName,"onChange") ) { return set_onChange(inValue); }
+		if (HX_FIELD_EQ(inName,"onchange") ) { return set_onChange(inValue); }
 		if (HX_FIELD_EQ(inName,"disabled") ) { return set_disabled(inValue); }
 		break;
 	case 9:
@@ -281,7 +275,7 @@ static ::String sStaticFields[] = {
 
 static ::String sMemberFields[] = {
 	HX_CSTRING("_onChange"),
-	HX_CSTRING("onChange"),
+	HX_CSTRING("onchange"),
 	HX_CSTRING("_disabled"),
 	HX_CSTRING("disabled"),
 	HX_CSTRING("_maxLength"),

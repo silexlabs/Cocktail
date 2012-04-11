@@ -12,17 +12,14 @@
 #ifndef INCLUDED_cocktail_core_renderer_FlowBoxRenderer
 #include <cocktail/core/renderer/FlowBoxRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void FlowBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void FlowBoxRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/FlowBoxRenderer.hx",30)
@@ -35,7 +32,7 @@ Void FlowBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle 
 FlowBoxRenderer_obj::~FlowBoxRenderer_obj() { }
 
 Dynamic FlowBoxRenderer_obj::__CreateEmpty() { return  new FlowBoxRenderer_obj; }
-hx::ObjectPtr< FlowBoxRenderer_obj > FlowBoxRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< FlowBoxRenderer_obj > FlowBoxRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< FlowBoxRenderer_obj > result = new FlowBoxRenderer_obj();
 	result->__construct(style);
 	return result;}

@@ -6,8 +6,8 @@
 #ifndef INCLUDED_cocktail_core_geom_Matrix
 #include <cocktail/core/geom/Matrix.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Overflow
 #include <cocktail/core/style/Overflow.h>
@@ -68,22 +68,22 @@ Dynamic VisualEffectStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-Void VisualEffectStylesComputer_obj::compute( ::cocktail::core::style::AbstractCoreStyle style){
+Void VisualEffectStylesComputer_obj::compute( ::cocktail::core::style::CoreStyle style){
 {
 		HX_SOURCE_PUSH("VisualEffectStylesComputer_obj::compute")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",49)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",48)
 		Dynamic computedStyle = style->getComputedStyle();
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",52)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",51)
 		computedStyle->__FieldRef(HX_CSTRING("opacity")) = style->getOpacity();
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",55)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",54)
 		computedStyle->__FieldRef(HX_CSTRING("visibility")) = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedVisibility(style);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",58)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",57)
 		computedStyle->__FieldRef(HX_CSTRING("overflowX")) = style->getOverflowX();
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",59)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",58)
 		computedStyle->__FieldRef(HX_CSTRING("overflowY")) = style->getOverflowY();
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",62)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",61)
 		computedStyle->__FieldRef(HX_CSTRING("transformOrigin")) = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTransformOrigin(style);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",65)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",64)
 		computedStyle->__FieldRef(HX_CSTRING("transform")) = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTransform(style);
 	}
 return null();
@@ -92,47 +92,47 @@ return null();
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,compute,(void))
 
-bool VisualEffectStylesComputer_obj::getComputedVisibility( ::cocktail::core::style::AbstractCoreStyle style){
+bool VisualEffectStylesComputer_obj::getComputedVisibility( ::cocktail::core::style::CoreStyle style){
 	HX_SOURCE_PUSH("VisualEffectStylesComputer_obj::getComputedVisibility")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",77)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",76)
 	bool visibility;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",79)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",78)
 	{
 ::cocktail::core::style::Visibility _switch_1 = (style->getVisibility());
 		switch((_switch_1)->GetIndex()){
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",81)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",80)
 				visibility = true;
 			}
 			;break;
 			case 1: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",84)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",83)
 				visibility = false;
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",88)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",87)
 	return visibility;
 }
 
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedVisibility,return )
 
-Dynamic VisualEffectStylesComputer_obj::getComputedTransformOrigin( ::cocktail::core::style::AbstractCoreStyle style){
+Dynamic VisualEffectStylesComputer_obj::getComputedTransformOrigin( ::cocktail::core::style::CoreStyle style){
 	HX_SOURCE_PUSH("VisualEffectStylesComputer_obj::getComputedTransformOrigin")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",97)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",96)
 	double x;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",98)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",97)
 	double y;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",101)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",100)
 	{
 ::cocktail::core::style::TransformOriginX _switch_2 = (style->getTransformOrigin()->__Field(HX_CSTRING("x")));
 		switch((_switch_2)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value = _switch_2->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",103)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",102)
 					x = ::cocktail::core::unit::UnitManager_obj::getPixelFromLength(value,style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 				}
 			}
@@ -140,36 +140,36 @@ Dynamic VisualEffectStylesComputer_obj::getComputedTransformOrigin( ::cocktail::
 			case 1: {
 				int value = _switch_2->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",106)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",105)
 					x = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent(value,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",109)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",108)
 				x = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)0,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",112)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",111)
 				x = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)50,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",115)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",114)
 				x = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)100,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",120)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",119)
 	{
 ::cocktail::core::style::TransformOriginY _switch_3 = (style->getTransformOrigin()->__Field(HX_CSTRING("y")));
 		switch((_switch_3)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value = _switch_3->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",122)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",121)
 					y = ::cocktail::core::unit::UnitManager_obj::getPixelFromLength(value,style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 				}
 			}
@@ -177,23 +177,23 @@ Dynamic VisualEffectStylesComputer_obj::getComputedTransformOrigin( ::cocktail::
 			case 1: {
 				int value = _switch_3->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",125)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",124)
 					y = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent(value,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",128)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",127)
 				y = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)0,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
 			case 3: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",131)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",130)
 				y = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)50,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
 			case 4: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",134)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",133)
 				y = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent((int)100,style->getComputedStyle()->__Field(HX_CSTRING("width")));
 			}
 			;break;
@@ -207,61 +207,61 @@ Dynamic VisualEffectStylesComputer_obj::getComputedTransformOrigin( ::cocktail::
 			return __result;
 		}
 	};
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",139)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",138)
 	Dynamic transformOriginPoint = _Function_1_1::Block(x,y);
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",144)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",143)
 	return transformOriginPoint;
 }
 
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransformOrigin,return )
 
-::cocktail::core::geom::Matrix VisualEffectStylesComputer_obj::getComputedTransform( ::cocktail::core::style::AbstractCoreStyle style){
+::cocktail::core::geom::Matrix VisualEffectStylesComputer_obj::getComputedTransform( ::cocktail::core::style::CoreStyle style){
 	HX_SOURCE_PUSH("VisualEffectStylesComputer_obj::getComputedTransform")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",153)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",152)
 	Array< ::cocktail::core::style::TransformFunction > transformFunctions;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",154)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",153)
 	Dynamic transformOrigin = style->getComputedStyle()->__Field(HX_CSTRING("transformOrigin"));
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",157)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",156)
 	::cocktail::core::geom::Matrix matrix = ::cocktail::core::geom::Matrix_obj::__new(null());
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",160)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",159)
 	{
 ::cocktail::core::style::Transform _switch_4 = (style->getTransform());
 		switch((_switch_4)->GetIndex()){
 			case 1: {
 				Array< ::cocktail::core::style::TransformFunction > value = _switch_4->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",162)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",161)
 					transformFunctions = value;
 				}
 			}
 			;break;
 			case 0: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",165)
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",164)
 				transformFunctions = Array_obj< ::cocktail::core::style::TransformFunction >::__new();
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",170)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",169)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",170)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",169)
 		int _g1 = (int)0;
 		int _g = transformFunctions->length;
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",170)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",169)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",170)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",169)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",172)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",171)
 			::cocktail::core::style::TransformFunction transformFunction = transformFunctions->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",174)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",173)
 			{
 ::cocktail::core::style::TransformFunction _switch_5 = (transformFunction);
 				switch((_switch_5)->GetIndex()){
 					case 0: {
 						Dynamic data = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",177)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",176)
 							matrix->concatenate(::cocktail::core::geom::Matrix_obj::__new(data));
 						}
 					}
@@ -269,9 +269,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 7: {
 						::cocktail::core::unit::Angle value = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",182)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",181)
 							double angle = ::Math_obj::round(::cocktail::core::unit::UnitManager_obj::getRadFromAngle(value));
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",183)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",182)
 							matrix->rotate(angle,transformOrigin);
 						}
 					}
@@ -280,7 +280,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 						double sys = _switch_5->__Param(1);
 						double sx = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",186)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",185)
 							matrix->scale(sx,sys,transformOrigin);
 						}
 					}
@@ -288,7 +288,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 5: {
 						double sx = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",190)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",189)
 							matrix->scale(sx,(int)1,transformOrigin);
 						}
 					}
@@ -296,7 +296,7 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 6: {
 						double sy = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",194)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",193)
 							matrix->scale((int)1,sy,transformOrigin);
 						}
 					}
@@ -305,11 +305,11 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 						::cocktail::core::unit::Angle angleY = _switch_5->__Param(1);
 						::cocktail::core::unit::Angle angleX = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",199)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",198)
 							double skewX = ::cocktail::core::unit::UnitManager_obj::getRadFromAngle(angleX);
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",200)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",199)
 							double skewY = ::cocktail::core::unit::UnitManager_obj::getRadFromAngle(angleY);
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",201)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",200)
 							matrix->skew(skewX,skewY,transformOrigin);
 						}
 					}
@@ -317,9 +317,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 8: {
 						::cocktail::core::unit::Angle angleX = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",205)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",204)
 							double skewX = ::cocktail::core::unit::UnitManager_obj::getRadFromAngle(angleX);
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",206)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",205)
 							matrix->skew(skewX,(int)1,transformOrigin);
 						}
 					}
@@ -327,9 +327,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 9: {
 						::cocktail::core::unit::Angle angleY = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",210)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",209)
 							double skewY = ::cocktail::core::unit::UnitManager_obj::getRadFromAngle(angleY);
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",211)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",210)
 							matrix->skew((int)1,skewY,transformOrigin);
 						}
 					}
@@ -338,11 +338,11 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 						::cocktail::core::style::Translation ty = _switch_5->__Param(1);
 						::cocktail::core::style::Translation tx = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",215)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",214)
 							double translationX = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTranslation(style,tx,style->getComputedStyle()->__Field(HX_CSTRING("width")));
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",216)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",215)
 							double translationY = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTranslation(style,ty,style->getComputedStyle()->__Field(HX_CSTRING("height")));
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",217)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",216)
 							matrix->translate(translationX,translationY);
 						}
 					}
@@ -350,9 +350,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 2: {
 						::cocktail::core::style::Translation tx = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",221)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",220)
 							double translationX = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTranslation(style,tx,style->getComputedStyle()->__Field(HX_CSTRING("width")));
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",222)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",221)
 							matrix->translate(translationX,0.0);
 						}
 					}
@@ -360,9 +360,9 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 					case 3: {
 						::cocktail::core::style::Translation ty = _switch_5->__Param(0);
 {
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",226)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",225)
 							double translationY = ::cocktail::core::style::computer::VisualEffectStylesComputer_obj::getComputedTranslation(style,ty,style->getComputedStyle()->__Field(HX_CSTRING("height")));
-							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",227)
+							HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",226)
 							matrix->translate(0.0,translationY);
 						}
 					}
@@ -371,25 +371,25 @@ STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransfo
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",231)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",230)
 	return matrix;
 }
 
 
 STATIC_HX_DEFINE_DYNAMIC_FUNC1(VisualEffectStylesComputer_obj,getComputedTransform,return )
 
-double VisualEffectStylesComputer_obj::getComputedTranslation( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::style::Translation translation,int percentReference){
+double VisualEffectStylesComputer_obj::getComputedTranslation( ::cocktail::core::style::CoreStyle style,::cocktail::core::style::Translation translation,int percentReference){
 	HX_SOURCE_PUSH("VisualEffectStylesComputer_obj::getComputedTranslation")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",239)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",238)
 	double computedTranslation;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",241)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",240)
 	{
 ::cocktail::core::style::Translation _switch_6 = (translation);
 		switch((_switch_6)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value = _switch_6->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",243)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",242)
 					computedTranslation = ::cocktail::core::unit::UnitManager_obj::getPixelFromLength(value,style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 				}
 			}
@@ -397,14 +397,14 @@ double VisualEffectStylesComputer_obj::getComputedTranslation( ::cocktail::core:
 			case 1: {
 				int value = _switch_6->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",246)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",245)
 					computedTranslation = ::cocktail::core::unit::UnitManager_obj::getPixelFromPercent(value,percentReference);
 				}
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",250)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/VisualEffectStylesComputer.hx",249)
 	return computedTranslation;
 }
 

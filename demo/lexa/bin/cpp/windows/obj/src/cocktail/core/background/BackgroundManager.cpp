@@ -24,9 +24,6 @@
 #ifndef INCLUDED_cocktail_core_resource_AbstractResourceLoader
 #include <cocktail/core/resource/AbstractResourceLoader.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
 #ifndef INCLUDED_cocktail_core_style_BackgroundClip
 #include <cocktail/core/style/BackgroundClip.h>
 #endif
@@ -38,6 +35,9 @@
 #endif
 #ifndef INCLUDED_cocktail_core_style_BackgroundSize
 #include <cocktail/core/style/BackgroundSize.h>
+#endif
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_computer_BackgroundStylesComputer
 #include <cocktail/core/style/computer/BackgroundStylesComputer.h>
@@ -99,7 +99,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC0(BackgroundManager_obj,dispose,(void))
 
-Dynamic BackgroundManager_obj::render( Dynamic backgroundBox,::cocktail::core::style::AbstractCoreStyle style){
+Dynamic BackgroundManager_obj::render( Dynamic backgroundBox,::cocktail::core::style::CoreStyle style){
 	HX_SOURCE_PUSH("BackgroundManager_obj::render")
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",73)
 	Dynamic nativeElements = Dynamic( Array_obj<Dynamic>::__new() );
@@ -181,7 +181,7 @@ Dynamic BackgroundManager_obj::render( Dynamic backgroundBox,::cocktail::core::s
 			HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",134)
 			if (((i == (style->getBackgroundImage()->length - (int)1)))){
 				HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",136)
-				Dynamic backgroundColorNativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::graphic_dyn());
+				Dynamic backgroundColorNativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::canvas_dyn());
 				HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",137)
 				this->drawBackgroundColor(style,style->getComputedStyle()->__Field(HX_CSTRING("backgroundColor")),backgroundColorNativeElement,backgroundBox,style->getBackgroundPosition()->__GetItem(i),style->getBackgroundSize()->__get(i),style->getBackgroundOrigin()->__get(i),style->getBackgroundClip()->__get(i),style->getBackgroundRepeat()->__GetItem(i),style->getBackgroundImage()->__get(i));
 				HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",143)
@@ -198,7 +198,7 @@ Dynamic BackgroundManager_obj::render( Dynamic backgroundBox,::cocktail::core::s
 
 HX_DEFINE_DYNAMIC_FUNC2(BackgroundManager_obj,render,return )
 
-Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 	HX_SOURCE_PUSH("BackgroundManager_obj::drawBackgroundImage")
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",181)
 	Array< ::cocktail::core::style::BackgroundImage > backgroundImage1 = Array_obj< ::cocktail::core::style::BackgroundImage >::__new().Add(backgroundImage);
@@ -215,11 +215,11 @@ Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::c
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",181)
 	Dynamic backgroundBox1 = Dynamic( Array_obj<Dynamic>::__new().Add(backgroundBox));
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",181)
-	Array< ::cocktail::core::style::AbstractCoreStyle > style1 = Array_obj< ::cocktail::core::style::AbstractCoreStyle >::__new().Add(style);
+	Array< ::cocktail::core::style::CoreStyle > style1 = Array_obj< ::cocktail::core::style::CoreStyle >::__new().Add(style);
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",181)
 	Dynamic imageDeclaration1 = Dynamic( Array_obj<Dynamic>::__new().Add(imageDeclaration));
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",185)
-	Dynamic backgroundImageNativeElement = Dynamic( Array_obj<Dynamic>::__new().Add(::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::graphic_dyn())));
+	Dynamic backgroundImageNativeElement = Dynamic( Array_obj<Dynamic>::__new().Add(::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::canvas_dyn())));
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",187)
 	Array< ::cocktail::core::resource::AbstractImageLoader > imageLoader = Array_obj< ::cocktail::core::resource::AbstractImageLoader >::__new().Add(::cocktail::core::resource::AbstractImageLoader_obj::__new());
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",190)
@@ -227,7 +227,7 @@ Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::c
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",194)
 	Dynamic onBackgroundImageLoadErrorDelegate = Dynamic( Array_obj<Dynamic>::__new().Add(this->onBackgroundImageLoadError_dyn()));
 
-	HX_BEGIN_LOCAL_FUNC_S11(hx::LocalFunc,_Function_1_1,Array< ::cocktail::core::style::BackgroundSize >,backgroundSize1,Dynamic,backgroundPosition1,Dynamic,backgroundRepeat1,Array< ::cocktail::core::style::BackgroundImage >,backgroundImage1,Dynamic,backgroundBox1,Dynamic,backgroundImageNativeElement,Array< ::cocktail::core::resource::AbstractImageLoader >,imageLoader,Dynamic,onBackgroundImageLoadedDelegate,Array< ::cocktail::core::style::AbstractCoreStyle >,style1,Array< ::cocktail::core::style::BackgroundOrigin >,backgroundOrigin1,Array< ::cocktail::core::style::BackgroundClip >,backgroundClip1)
+	HX_BEGIN_LOCAL_FUNC_S11(hx::LocalFunc,_Function_1_1,Array< ::cocktail::core::style::BackgroundSize >,backgroundSize1,Dynamic,backgroundPosition1,Dynamic,backgroundRepeat1,Array< ::cocktail::core::style::BackgroundImage >,backgroundImage1,Dynamic,backgroundBox1,Dynamic,backgroundImageNativeElement,Array< ::cocktail::core::resource::AbstractImageLoader >,imageLoader,Dynamic,onBackgroundImageLoadedDelegate,Array< ::cocktail::core::style::CoreStyle >,style1,Array< ::cocktail::core::style::BackgroundOrigin >,backgroundOrigin1,Array< ::cocktail::core::style::BackgroundClip >,backgroundClip1)
 	Void run(Dynamic loadedImage){
 {
 			HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",200)
@@ -238,7 +238,7 @@ Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::c
 	HX_END_LOCAL_FUNC1((void))
 
 
-	HX_BEGIN_LOCAL_FUNC_S11(hx::LocalFunc,_Function_1_2,Array< ::cocktail::core::style::BackgroundSize >,backgroundSize1,Dynamic,backgroundPosition1,Dynamic,backgroundRepeat1,Dynamic,imageDeclaration1,Array< ::cocktail::core::style::BackgroundImage >,backgroundImage1,Dynamic,onBackgroundImageLoadErrorDelegate,Dynamic,backgroundBox1,Dynamic,backgroundImageNativeElement,Array< ::cocktail::core::style::AbstractCoreStyle >,style1,Array< ::cocktail::core::style::BackgroundOrigin >,backgroundOrigin1,Array< ::cocktail::core::style::BackgroundClip >,backgroundClip1)
+	HX_BEGIN_LOCAL_FUNC_S11(hx::LocalFunc,_Function_1_2,Array< ::cocktail::core::style::BackgroundSize >,backgroundSize1,Dynamic,backgroundPosition1,Dynamic,backgroundRepeat1,Dynamic,imageDeclaration1,Array< ::cocktail::core::style::BackgroundImage >,backgroundImage1,Dynamic,onBackgroundImageLoadErrorDelegate,Dynamic,backgroundBox1,Dynamic,backgroundImageNativeElement,Array< ::cocktail::core::style::CoreStyle >,style1,Array< ::cocktail::core::style::BackgroundOrigin >,backgroundOrigin1,Array< ::cocktail::core::style::BackgroundClip >,backgroundClip1)
 	Void run(::String error){
 {
 			HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",203)
@@ -257,7 +257,7 @@ Dynamic BackgroundManager_obj::drawBackgroundImage( Dynamic imageDeclaration,::c
 
 HX_DEFINE_DYNAMIC_FUNC9(BackgroundManager_obj,drawBackgroundImage,return )
 
-Void BackgroundManager_obj::onBackgroundImageLoaded( Dynamic backgroundImageNativeElement,Dynamic loadedBackgroundImage,::cocktail::core::resource::AbstractImageLoader imageLoader,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Void BackgroundManager_obj::onBackgroundImageLoaded( Dynamic backgroundImageNativeElement,Dynamic loadedBackgroundImage,::cocktail::core::resource::AbstractImageLoader imageLoader,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 {
 		HX_SOURCE_PUSH("BackgroundManager_obj::onBackgroundImageLoaded")
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",231)
@@ -275,7 +275,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC11(BackgroundManager_obj,onBackgroundImageLoaded,(void))
 
-Void BackgroundManager_obj::onBackgroundImageLoadError( ::String error,::cocktail::core::unit::CSSColor backgroundColor,Dynamic backgroundImageNativeElement,::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Void BackgroundManager_obj::onBackgroundImageLoadError( ::String error,::cocktail::core::unit::CSSColor backgroundColor,Dynamic backgroundImageNativeElement,::cocktail::core::style::CoreStyle style,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 {
 		HX_SOURCE_PUSH("BackgroundManager_obj::onBackgroundImageLoadError")
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",271)
@@ -287,7 +287,7 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC11(BackgroundManager_obj,onBackgroundImageLoadError,(void))
 
-Void BackgroundManager_obj::drawBackgroundColor( ::cocktail::core::style::AbstractCoreStyle style,Dynamic backgroundColor,Dynamic backgroundColorNativeElement,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Void BackgroundManager_obj::drawBackgroundColor( ::cocktail::core::style::CoreStyle style,Dynamic backgroundColor,Dynamic backgroundColorNativeElement,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 {
 		HX_SOURCE_PUSH("BackgroundManager_obj::drawBackgroundColor")
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",294)
@@ -305,12 +305,12 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC10(BackgroundManager_obj,drawBackgroundColor,(void))
 
-Dynamic BackgroundManager_obj::drawBackgroundGradient( ::cocktail::core::style::AbstractCoreStyle style,::cocktail::core::unit::GradientValue gradientValue,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
+Dynamic BackgroundManager_obj::drawBackgroundGradient( ::cocktail::core::style::CoreStyle style,::cocktail::core::unit::GradientValue gradientValue,Dynamic backgroundBox,Dynamic backgroundPosition,::cocktail::core::style::BackgroundSize backgroundSize,::cocktail::core::style::BackgroundOrigin backgroundOrigin,::cocktail::core::style::BackgroundClip backgroundClip,Dynamic backgroundRepeat,::cocktail::core::style::BackgroundImage backgroundImage){
 	HX_SOURCE_PUSH("BackgroundManager_obj::drawBackgroundGradient")
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",323)
 	Dynamic computedGradientStyles = ::cocktail::core::style::computer::BackgroundStylesComputer_obj::computeIndividualBackground(style,backgroundBox,null(),null(),null(),backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",328)
-	Dynamic gradientNativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::graphic_dyn());
+	Dynamic gradientNativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::canvas_dyn());
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",330)
 	::cocktail::core::background::BackgroundDrawingManager backgroundGradientDrawingManager = ::cocktail::core::background::BackgroundDrawingManager_obj::__new(gradientNativeElement,backgroundBox);
 	HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundManager.hx",332)

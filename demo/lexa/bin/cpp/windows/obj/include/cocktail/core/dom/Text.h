@@ -10,7 +10,6 @@ HX_DECLARE_CLASS3(cocktail,core,dom,CharacterData)
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,dom,Text)
 HX_DECLARE_CLASS3(cocktail,core,dom,TextTokenValue)
-HX_DECLARE_CLASS3(cocktail,core,style,TextTransform)
 namespace cocktail{
 namespace core{
 namespace dom{
@@ -52,12 +51,6 @@ class Text_obj : public ::cocktail::core::dom::CharacterData_obj{
 
 		virtual ::String set_nodeValue( ::String value);
 		Dynamic set_nodeValue_dyn();
-
-		static ::String applyTextTransform( ::String text,::cocktail::core::style::TextTransform textTransform);
-		static Dynamic applyTextTransform_dyn();
-
-		static ::String capitalizeText( ::String text);
-		static Dynamic capitalizeText_dyn();
 
 		static Dynamic doGetTextFragments( ::String text);
 		static Dynamic doGetTextFragments_dyn();

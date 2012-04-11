@@ -7,92 +7,71 @@ namespace cocktail{
 namespace core{
 namespace nativeElement{
 
-::cocktail::core::nativeElement::NativeElementTypeValue  NativeElementTypeValue_obj::custom(::String name)
-	{ return hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("custom"),8,hx::DynamicArray(0,1).Add(name)); }
+::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::anchor;
 
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::graphic;
+::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::canvas;
 
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::image;
+::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::img;
 
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::library;
+::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::input;
 
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::link;
+::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::script;
 
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::neutral;
-
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::skin;
-
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::text;
-
-::cocktail::core::nativeElement::NativeElementTypeValue NativeElementTypeValue_obj::textInput;
+::cocktail::core::nativeElement::NativeElementTypeValue  NativeElementTypeValue_obj::semantic(::String name)
+	{ return hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("semantic"),5,hx::DynamicArray(0,1).Add(name)); }
 
 HX_DEFINE_CREATE_ENUM(NativeElementTypeValue_obj)
 
 int NativeElementTypeValue_obj::__FindIndex(::String inName)
 {
-	if (inName==HX_CSTRING("custom")) return 8;
-	if (inName==HX_CSTRING("graphic")) return 1;
-	if (inName==HX_CSTRING("image")) return 3;
-	if (inName==HX_CSTRING("library")) return 4;
-	if (inName==HX_CSTRING("link")) return 6;
-	if (inName==HX_CSTRING("neutral")) return 0;
-	if (inName==HX_CSTRING("skin")) return 5;
-	if (inName==HX_CSTRING("text")) return 2;
-	if (inName==HX_CSTRING("textInput")) return 7;
+	if (inName==HX_CSTRING("anchor")) return 3;
+	if (inName==HX_CSTRING("canvas")) return 0;
+	if (inName==HX_CSTRING("img")) return 1;
+	if (inName==HX_CSTRING("input")) return 4;
+	if (inName==HX_CSTRING("script")) return 2;
+	if (inName==HX_CSTRING("semantic")) return 5;
 	return super::__FindIndex(inName);
 }
 
-STATIC_HX_DEFINE_DYNAMIC_FUNC1(NativeElementTypeValue_obj,custom,return)
+STATIC_HX_DEFINE_DYNAMIC_FUNC1(NativeElementTypeValue_obj,semantic,return)
 
 int NativeElementTypeValue_obj::__FindArgCount(::String inName)
 {
-	if (inName==HX_CSTRING("custom")) return 1;
-	if (inName==HX_CSTRING("graphic")) return 0;
-	if (inName==HX_CSTRING("image")) return 0;
-	if (inName==HX_CSTRING("library")) return 0;
-	if (inName==HX_CSTRING("link")) return 0;
-	if (inName==HX_CSTRING("neutral")) return 0;
-	if (inName==HX_CSTRING("skin")) return 0;
-	if (inName==HX_CSTRING("text")) return 0;
-	if (inName==HX_CSTRING("textInput")) return 0;
+	if (inName==HX_CSTRING("anchor")) return 0;
+	if (inName==HX_CSTRING("canvas")) return 0;
+	if (inName==HX_CSTRING("img")) return 0;
+	if (inName==HX_CSTRING("input")) return 0;
+	if (inName==HX_CSTRING("script")) return 0;
+	if (inName==HX_CSTRING("semantic")) return 1;
 	return super::__FindArgCount(inName);
 }
 
 Dynamic NativeElementTypeValue_obj::__Field(const ::String &inName)
 {
-	if (inName==HX_CSTRING("custom")) return custom_dyn();
-	if (inName==HX_CSTRING("graphic")) return graphic;
-	if (inName==HX_CSTRING("image")) return image;
-	if (inName==HX_CSTRING("library")) return library;
-	if (inName==HX_CSTRING("link")) return link;
-	if (inName==HX_CSTRING("neutral")) return neutral;
-	if (inName==HX_CSTRING("skin")) return skin;
-	if (inName==HX_CSTRING("text")) return text;
-	if (inName==HX_CSTRING("textInput")) return textInput;
+	if (inName==HX_CSTRING("anchor")) return anchor;
+	if (inName==HX_CSTRING("canvas")) return canvas;
+	if (inName==HX_CSTRING("img")) return img;
+	if (inName==HX_CSTRING("input")) return input;
+	if (inName==HX_CSTRING("script")) return script;
+	if (inName==HX_CSTRING("semantic")) return semantic_dyn();
 	return super::__Field(inName);
 }
 
 static ::String sStaticFields[] = {
-	HX_CSTRING("neutral"),
-	HX_CSTRING("graphic"),
-	HX_CSTRING("text"),
-	HX_CSTRING("image"),
-	HX_CSTRING("library"),
-	HX_CSTRING("skin"),
-	HX_CSTRING("link"),
-	HX_CSTRING("textInput"),
-	HX_CSTRING("custom"),
+	HX_CSTRING("canvas"),
+	HX_CSTRING("img"),
+	HX_CSTRING("script"),
+	HX_CSTRING("anchor"),
+	HX_CSTRING("input"),
+	HX_CSTRING("semantic"),
 	::String(null()) };
 
 static void sMarkStatics(HX_MARK_PARAMS) {
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::graphic,"graphic");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::image,"image");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::library,"library");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::link,"link");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::neutral,"neutral");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::skin,"skin");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::text,"text");
-	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::textInput,"textInput");
+	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::anchor,"anchor");
+	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::canvas,"canvas");
+	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::img,"img");
+	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::input,"input");
+	HX_MARK_MEMBER_NAME(NativeElementTypeValue_obj::script,"script");
 };
 
 static ::String sMemberFields[] = { ::String(null()) };
@@ -110,14 +89,11 @@ Static(__mClass) = hx::RegisterClass(HX_CSTRING("cocktail.core.nativeElement.Nat
 
 void NativeElementTypeValue_obj::__boot()
 {
-Static(graphic) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("graphic"),1);
-Static(image) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("image"),3);
-Static(library) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("library"),4);
-Static(link) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("link"),6);
-Static(neutral) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("neutral"),0);
-Static(skin) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("skin"),5);
-Static(text) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("text"),2);
-Static(textInput) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("textInput"),7);
+Static(anchor) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("anchor"),3);
+Static(canvas) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("canvas"),0);
+Static(img) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("img"),1);
+Static(input) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("input"),4);
+Static(script) = hx::CreateEnum< NativeElementTypeValue_obj >(HX_CSTRING("script"),2);
 }
 
 

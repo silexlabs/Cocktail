@@ -6,7 +6,7 @@
 #endif
 
 #include <cocktail/core/style/computer/boxComputers/BoxStylesComputer.h>
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,Margin)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,BoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,InLineBoxStylesComputer)
@@ -36,22 +36,22 @@ class InLineBoxStylesComputer_obj : public ::cocktail::core::style::computer::bo
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("InLineBoxStylesComputer"); }
 
-		virtual Void measureVerticalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureVerticalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureVerticalPaddings_dyn();
 
-		virtual Void measureAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureAutoHeight_dyn();
 
-		virtual Void measureHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureHeight_dyn();
 
 		virtual int getComputedAutoMargin( ::cocktail::core::style::Margin marginStyleValue,::cocktail::core::style::Margin opositeMargin,int containingHTMLElementDimension,int computedDimension,bool isDimensionAuto,int computedPaddingsDimension,double fontSize,double xHeight,bool isHorizontalMargin);
 		Dynamic getComputedAutoMargin_dyn();
 
-		virtual int getComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedWidth_dyn();
 
-		virtual int getComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedHeight_dyn();
 
 };

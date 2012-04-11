@@ -3,11 +3,11 @@
 #ifndef INCLUDED_hxMath
 #include <hxMath.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
 #ifndef INCLUDED_cocktail_core_style_ConstrainedDimension
 #include <cocktail/core/style/ConstrainedDimension.h>
+#endif
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Dimension
 #include <cocktail/core/style/Dimension.h>
@@ -57,20 +57,20 @@ Dynamic BoxStylesComputer_obj::__Create(hx::DynamicArray inArgs)
 	result->__construct();
 	return result;}
 
-Void BoxStylesComputer_obj::measure( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measure( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measure")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",63)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",62)
 		this->measureHorizontalPaddings(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",64)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",63)
 		this->measureVerticalPaddings(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",70)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",69)
 		this->measureDimensionsConstraints(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",74)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",73)
 		this->measureWidthAndHorizontalMargins(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",75)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",74)
 		this->measureHeightAndVerticalMargins(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",80)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",79)
 		this->measurePositionOffsets(style,containingHTMLElementData);
 	}
 return null();
@@ -79,34 +79,34 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measure,(void))
 
-int BoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
+int BoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::shrinkToFit")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",100)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",99)
 	return style->getComputedStyle()->__Field(HX_CSTRING("width"));
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC3(BoxStylesComputer_obj,shrinkToFit,return )
 
-int BoxStylesComputer_obj::applyContentHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic cotainingHTMLElementData,int childrenHeight){
+int BoxStylesComputer_obj::applyContentHeight( ::cocktail::core::style::CoreStyle style,Dynamic cotainingHTMLElementData,int childrenHeight){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::applyContentHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",113)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",112)
 	return childrenHeight;
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC3(BoxStylesComputer_obj,applyContentHeight,return )
 
-Void BoxStylesComputer_obj::measureDimensionsConstraints( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureDimensionsConstraints( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureDimensionsConstraints")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",131)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",130)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("maxHeight")) = this->getComputedConstrainedDimension(style->getMaxHeight(),containingHTMLElementData->__Field(HX_CSTRING("height")),containingHTMLElementData->__Field(HX_CSTRING("isHeightAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),null());
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",134)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",133)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("minHeight")) = this->getComputedConstrainedDimension(style->getMinHeight(),containingHTMLElementData->__Field(HX_CSTRING("height")),containingHTMLElementData->__Field(HX_CSTRING("isHeightAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),true);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",137)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",136)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("maxWidth")) = this->getComputedConstrainedDimension(style->getMaxWidth(),containingHTMLElementData->__Field(HX_CSTRING("width")),containingHTMLElementData->__Field(HX_CSTRING("isWidthAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),null());
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",140)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",139)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("minWidth")) = this->getComputedConstrainedDimension(style->getMinWidth(),containingHTMLElementData->__Field(HX_CSTRING("width")),containingHTMLElementData->__Field(HX_CSTRING("isWidthAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),true);
 	}
 return null();
@@ -115,16 +115,16 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureDimensionsConstraints,(void))
 
-Void BoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measurePositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measurePositionOffsets")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",151)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",150)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("left")) = this->getComputedPositionOffset(style->getLeft(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",154)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",153)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("right")) = this->getComputedPositionOffset(style->getRight(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",157)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",156)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("top")) = this->getComputedPositionOffset(style->getTop(),containingHTMLElementData->__Field(HX_CSTRING("height")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",160)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",159)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("bottom")) = this->getComputedPositionOffset(style->getBottom(),containingHTMLElementData->__Field(HX_CSTRING("height")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 	}
 return null();
@@ -133,12 +133,12 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measurePositionOffsets,(void))
 
-Void BoxStylesComputer_obj::measureVerticalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureVerticalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureVerticalPaddings")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",174)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",173)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("paddingTop")) = this->getComputedPadding(style->getPaddingTop(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",177)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",176)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("paddingBottom")) = this->getComputedPadding(style->getPaddingBottom(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 	}
 return null();
@@ -147,12 +147,12 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureVerticalPaddings,(void))
 
-Void BoxStylesComputer_obj::measureHorizontalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureHorizontalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureHorizontalPaddings")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",187)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",186)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("paddingLeft")) = this->getComputedPadding(style->getPaddingLeft(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",190)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",189)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("paddingRight")) = this->getComputedPadding(style->getPaddingRight(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 	}
 return null();
@@ -161,16 +161,16 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureHorizontalPaddings,(void))
 
-Void BoxStylesComputer_obj::measureWidthAndHorizontalMargins( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureWidthAndHorizontalMargins( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureWidthAndHorizontalMargins")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",201)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",200)
 		if (((style->getWidth() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",203)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",202)
 			this->measureAutoWidth(style,containingHTMLElementData);
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",207)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",206)
 			this->measureWidth(style,containingHTMLElementData);
 		}
 	}
@@ -180,16 +180,16 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureWidthAndHorizontalMargins,(void))
 
-Void BoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureAutoWidth")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",225)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",224)
 		this->setComputedWidth(style,(int)0);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",228)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",227)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginLeft")) = this->getComputedMarginLeft(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",230)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",229)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginRight")) = this->getComputedMarginRight(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",233)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",232)
 		this->setComputedWidth(style,this->getComputedAutoWidth(style,containingHTMLElementData));
 	}
 return null();
@@ -198,14 +198,14 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureAutoWidth,(void))
 
-Void BoxStylesComputer_obj::measureWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureWidth")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",245)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",244)
 		this->setComputedWidth(style,this->getComputedWidth(style,containingHTMLElementData));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",248)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",247)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginLeft")) = this->getComputedMarginLeft(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",250)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",249)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginRight")) = this->getComputedMarginRight(style,containingHTMLElementData);
 	}
 return null();
@@ -214,16 +214,16 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureWidth,(void))
 
-Void BoxStylesComputer_obj::measureHeightAndVerticalMargins( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureHeightAndVerticalMargins( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureHeightAndVerticalMargins")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",262)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",261)
 		if (((style->getHeight() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",268)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",267)
 			this->measureAutoHeight(style,containingHTMLElementData);
 		}
 		else{
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",272)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",271)
 			this->measureHeight(style,containingHTMLElementData);
 		}
 	}
@@ -233,14 +233,14 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureHeightAndVerticalMargins,(void))
 
-Void BoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureAutoHeight")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",291)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",290)
 		this->setComputedHeight(style,this->getComputedAutoHeight(style,containingHTMLElementData));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",294)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",293)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginTop")) = this->getComputedMarginTop(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",296)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",295)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginBottom")) = this->getComputedMarginBottom(style,containingHTMLElementData);
 	}
 return null();
@@ -249,14 +249,14 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureAutoHeight,(void))
 
-Void BoxStylesComputer_obj::measureHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+Void BoxStylesComputer_obj::measureHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::measureHeight")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",310)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",309)
 		this->setComputedHeight(style,this->getComputedHeight(style,containingHTMLElementData));
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",312)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",311)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginTop")) = this->getComputedMarginTop(style,containingHTMLElementData);
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",314)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",313)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("marginBottom")) = this->getComputedMarginBottom(style,containingHTMLElementData);
 	}
 return null();
@@ -265,58 +265,58 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,measureHeight,(void))
 
-int BoxStylesComputer_obj::constrainWidth( ::cocktail::core::style::AbstractCoreStyle style,int computedWidth){
+int BoxStylesComputer_obj::constrainWidth( ::cocktail::core::style::CoreStyle style,int computedWidth){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::constrainWidth")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",326)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",325)
 	Dynamic computedStyle = style->getComputedStyle();
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",332)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",331)
 	if (((style->getMaxWidth() != ::cocktail::core::style::ConstrainedDimension_obj::none_dyn()))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",333)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",332)
 		if (((computedWidth > computedStyle->__Field(HX_CSTRING("maxWidth"))))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",335)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",334)
 			computedWidth = computedStyle->__Field(HX_CSTRING("maxWidth"));
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",341)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",340)
 	if (((computedWidth < computedStyle->__Field(HX_CSTRING("minWidth"))))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",342)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",341)
 		computedWidth = computedStyle->__Field(HX_CSTRING("minWidth"));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",346)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",345)
 	return computedWidth;
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,constrainWidth,return )
 
-int BoxStylesComputer_obj::constrainHeight( ::cocktail::core::style::AbstractCoreStyle style,int computedHeight){
+int BoxStylesComputer_obj::constrainHeight( ::cocktail::core::style::CoreStyle style,int computedHeight){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::constrainHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",354)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",353)
 	Dynamic computedStyle = style->getComputedStyle();
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",357)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",356)
 	if (((style->getMaxHeight() != ::cocktail::core::style::ConstrainedDimension_obj::none_dyn()))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",358)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",357)
 		if (((computedHeight > computedStyle->__Field(HX_CSTRING("maxHeight"))))){
-			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",360)
+			HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",359)
 			computedHeight = computedStyle->__Field(HX_CSTRING("maxHeight"));
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",366)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",365)
 	if (((computedHeight < computedStyle->__Field(HX_CSTRING("minHeight"))))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",367)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",366)
 		computedHeight = computedStyle->__Field(HX_CSTRING("minHeight"));
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",371)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",370)
 	return computedHeight;
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,constrainHeight,return )
 
-Void BoxStylesComputer_obj::setComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,int computedHeight){
+Void BoxStylesComputer_obj::setComputedHeight( ::cocktail::core::style::CoreStyle style,int computedHeight){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::setComputedHeight")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",379)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",378)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("height")) = this->constrainHeight(style,computedHeight);
 	}
 return null();
@@ -325,10 +325,10 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,setComputedHeight,(void))
 
-Void BoxStylesComputer_obj::setComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,int computedWidth){
+Void BoxStylesComputer_obj::setComputedWidth( ::cocktail::core::style::CoreStyle style,int computedWidth){
 {
 		HX_SOURCE_PUSH("BoxStylesComputer_obj::setComputedWidth")
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",388)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",387)
 		style->getComputedStyle()->__FieldRef(HX_CSTRING("width")) = this->constrainWidth(style,computedWidth);
 	}
 return null();
@@ -337,72 +337,72 @@ return null();
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,setComputedWidth,(void))
 
-int BoxStylesComputer_obj::getComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedWidth")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",405)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",404)
 	return this->getComputedDimension(style->getWidth(),containingHTMLElementData->__Field(HX_CSTRING("width")),containingHTMLElementData->__Field(HX_CSTRING("isWidthAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedWidth,return )
 
-int BoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedAutoWidth")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",415)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",414)
 	return ((((containingHTMLElementData->__Field(HX_CSTRING("width")) - style->getComputedStyle()->__Field(HX_CSTRING("paddingLeft"))) - style->getComputedStyle()->__Field(HX_CSTRING("paddingRight"))) - style->getComputedStyle()->__Field(HX_CSTRING("marginLeft"))) - style->getComputedStyle()->__Field(HX_CSTRING("marginRight")));
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedAutoWidth,return )
 
-int BoxStylesComputer_obj::getComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",427)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",426)
 	return this->getComputedDimension(style->getHeight(),containingHTMLElementData->__Field(HX_CSTRING("height")),containingHTMLElementData->__Field(HX_CSTRING("isHeightAuto")),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")));
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedHeight,return )
 
-int BoxStylesComputer_obj::getComputedAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedAutoHeight")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",437)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",436)
 	return (int)0;
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedAutoHeight,return )
 
-int BoxStylesComputer_obj::getComputedMarginLeft( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedMarginLeft( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedMarginLeft")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",448)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",447)
 	return this->getComputedMargin(style->getMarginLeft(),style->getMarginRight(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getComputedStyle()->__Field(HX_CSTRING("width")),(style->getWidth() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()),(style->getComputedStyle()->__Field(HX_CSTRING("paddingRight")) + style->getComputedStyle()->__Field(HX_CSTRING("paddingLeft"))),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),true);
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedMarginLeft,return )
 
-int BoxStylesComputer_obj::getComputedMarginRight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedMarginRight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedMarginRight")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",456)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",455)
 	return this->getComputedMargin(style->getMarginRight(),style->getMarginLeft(),containingHTMLElementData->__Field(HX_CSTRING("width")),style->getComputedStyle()->__Field(HX_CSTRING("width")),(style->getWidth() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()),(style->getComputedStyle()->__Field(HX_CSTRING("paddingRight")) + style->getComputedStyle()->__Field(HX_CSTRING("paddingLeft"))),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),true);
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedMarginRight,return )
 
-int BoxStylesComputer_obj::getComputedMarginTop( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedMarginTop( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedMarginTop")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",464)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",463)
 	return this->getComputedMargin(style->getMarginTop(),style->getMarginBottom(),containingHTMLElementData->__Field(HX_CSTRING("height")),style->getComputedStyle()->__Field(HX_CSTRING("height")),(style->getHeight() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()),(style->getComputedStyle()->__Field(HX_CSTRING("paddingTop")) + style->getComputedStyle()->__Field(HX_CSTRING("paddingBottom"))),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),false);
 }
 
 
 HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedMarginTop,return )
 
-int BoxStylesComputer_obj::getComputedMarginBottom( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData){
+int BoxStylesComputer_obj::getComputedMarginBottom( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedMarginBottom")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",472)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",471)
 	return this->getComputedMargin(style->getMarginBottom(),style->getMarginTop(),containingHTMLElementData->__Field(HX_CSTRING("height")),style->getComputedStyle()->__Field(HX_CSTRING("height")),(style->getHeight() == ::cocktail::core::style::Dimension_obj::cssAuto_dyn()),(style->getComputedStyle()->__Field(HX_CSTRING("paddingTop")) + style->getComputedStyle()->__Field(HX_CSTRING("paddingBottom"))),style->getFontMetricsData()->__Field(HX_CSTRING("fontSize")),style->getFontMetricsData()->__Field(HX_CSTRING("xHeight")),false);
 }
 
@@ -411,16 +411,16 @@ HX_DEFINE_DYNAMIC_FUNC2(BoxStylesComputer_obj,getComputedMarginBottom,return )
 
 int BoxStylesComputer_obj::getComputedMargin( ::cocktail::core::style::Margin marginStyleValue,::cocktail::core::style::Margin opositeMargin,int containingHTMLElementDimension,int computedDimension,bool isDimensionAuto,int computedPaddingsDimension,double fontSize,double xHeight,bool isHorizontalMargin){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedMargin")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",498)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",497)
 	int computedMargin;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",501)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",500)
 	{
 ::cocktail::core::style::Margin _switch_1 = (marginStyleValue);
 		switch((_switch_1)->GetIndex()){
 			case 0: {
 				::cocktail::core::unit::Length value = _switch_1->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",505)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",504)
 					computedMargin = ::cocktail::core::unit::UnitManager_obj::getPixelFromLength(value,fontSize,xHeight);
 				}
 			}
@@ -428,26 +428,26 @@ int BoxStylesComputer_obj::getComputedMargin( ::cocktail::core::style::Margin ma
 			case 1: {
 				int value = _switch_1->__Param(0);
 {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",509)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",508)
 					if (((isDimensionAuto == true))){
-						HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",513)
+						HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",512)
 						computedMargin = (int)0;
 					}
 					else{
-						HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",517)
+						HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",516)
 						computedMargin = ::Math_obj::round(::cocktail::core::unit::UnitManager_obj::getPixelFromPercent(value,containingHTMLElementDimension));
 					}
 				}
 			}
 			;break;
 			case 2: {
-				HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",523)
-				computedMargin = this->getComputedAutoMargin(opositeMargin,marginStyleValue,containingHTMLElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
+				HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",522)
+				computedMargin = this->getComputedAutoMargin(marginStyleValue,opositeMargin,containingHTMLElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 			}
 			;break;
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",527)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",526)
 	return computedMargin;
 }
 
@@ -456,25 +456,25 @@ HX_DEFINE_DYNAMIC_FUNC9(BoxStylesComputer_obj,getComputedMargin,return )
 
 int BoxStylesComputer_obj::getComputedAutoMargin( ::cocktail::core::style::Margin marginStyleValue,::cocktail::core::style::Margin opositeMargin,int containingHTMLElementDimension,int computedDimension,bool isDimensionAuto,int computedPaddingsDimension,double fontSize,double xHeight,bool isHorizontalMargin){
 	HX_SOURCE_PUSH("BoxStylesComputer_obj::getComputedAutoMargin")
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",535)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",534)
 	int computedMargin;
-	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",540)
+	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",539)
 	if (((bool((isHorizontalMargin == false)) || bool((isDimensionAuto == true))))){
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",541)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",540)
 		computedMargin = (int)0;
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",546)
+		HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",545)
 		{
 ::cocktail::core::style::Margin _switch_2 = (opositeMargin);
 			switch((_switch_2)->GetIndex()){
 				case 2: {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",551)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",550)
 					computedMargin = ::Math_obj::round((double((((containingHTMLElementDimension - computedDimension) - computedPaddingsDimension))) / double((int)2)));
 				}
 				;break;
 				default: {
-					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",556)
+					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",555)
 					int opositeComputedMargin = this->getComputedMargin(opositeMargin,marginStyleValue,containingHTMLElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 					HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/BoxStylesComputer.hx",557)
 					computedMargin = (((containingHTMLElementDimension - computedDimension) - computedPaddingsDimension) - opositeComputedMargin);

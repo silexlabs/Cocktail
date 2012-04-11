@@ -15,17 +15,14 @@
 #ifndef INCLUDED_cocktail_core_renderer_InlineBoxRenderer
 #include <cocktail/core/renderer/InlineBoxRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void InlineBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void InlineBoxRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/InlineBoxRenderer.hx",16)
@@ -38,7 +35,7 @@ Void InlineBoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyl
 InlineBoxRenderer_obj::~InlineBoxRenderer_obj() { }
 
 Dynamic InlineBoxRenderer_obj::__CreateEmpty() { return  new InlineBoxRenderer_obj; }
-hx::ObjectPtr< InlineBoxRenderer_obj > InlineBoxRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< InlineBoxRenderer_obj > InlineBoxRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< InlineBoxRenderer_obj > result = new InlineBoxRenderer_obj();
 	result->__construct(style);
 	return result;}

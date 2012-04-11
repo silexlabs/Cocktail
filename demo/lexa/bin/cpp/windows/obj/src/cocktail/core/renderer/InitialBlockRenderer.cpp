@@ -30,14 +30,11 @@
 #ifndef INCLUDED_cocktail_core_renderer_InitialBlockRenderer
 #include <cocktail/core/renderer/InitialBlockRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_window_AbstractWindow
 #include <cocktail/core/window/AbstractWindow.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_Window
 #include <cocktail/port/flash_player/Window.h>
@@ -46,7 +43,7 @@ namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void InitialBlockRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void InitialBlockRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/InitialBlockRenderer.hx",30)
@@ -67,7 +64,7 @@ Void InitialBlockRenderer_obj::__construct(::cocktail::port::flash_player::CoreS
 InitialBlockRenderer_obj::~InitialBlockRenderer_obj() { }
 
 Dynamic InitialBlockRenderer_obj::__CreateEmpty() { return  new InitialBlockRenderer_obj; }
-hx::ObjectPtr< InitialBlockRenderer_obj > InitialBlockRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< InitialBlockRenderer_obj > InitialBlockRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< InitialBlockRenderer_obj > result = new InitialBlockRenderer_obj();
 	result->__construct(style);
 	return result;}

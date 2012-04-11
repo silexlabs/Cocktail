@@ -10,8 +10,7 @@ HX_DECLARE_CLASS3(cocktail,core,background,BackgroundManager)
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,renderer,BoxRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,ElementRenderer)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,CoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 namespace cocktail{
 namespace core{
 namespace renderer{
@@ -22,10 +21,10 @@ class BoxRenderer_obj : public ::cocktail::core::renderer::ElementRenderer_obj{
 		typedef ::cocktail::core::renderer::ElementRenderer_obj super;
 		typedef BoxRenderer_obj OBJ_;
 		BoxRenderer_obj();
-		Void __construct(::cocktail::port::flash_player::CoreStyle style);
+		Void __construct(::cocktail::core::style::CoreStyle style);
 
 	public:
-		static hx::ObjectPtr< BoxRenderer_obj > __new(::cocktail::port::flash_player::CoreStyle style);
+		static hx::ObjectPtr< BoxRenderer_obj > __new(::cocktail::core::style::CoreStyle style);
 		static Dynamic __CreateEmpty();
 		static Dynamic __Create(hx::DynamicArray inArgs);
 		~BoxRenderer_obj();

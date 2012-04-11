@@ -239,7 +239,7 @@ Void BackgroundDrawingManager_obj::drawBackgroundGradient( ::cocktail::core::uni
 {
 		HX_SOURCE_PUSH("BackgroundDrawingManager_obj::drawBackgroundGradient")
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundDrawingManager.hx",183)
-		::cocktail::port::flash_player::DrawingManager gradientSurface = ::cocktail::port::flash_player::DrawingManager_obj::__new(::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::graphic_dyn()),computedBackgroundSize->__Field(HX_CSTRING("width")),computedBackgroundSize->__Field(HX_CSTRING("height")));
+		::cocktail::port::flash_player::DrawingManager gradientSurface = ::cocktail::port::flash_player::DrawingManager_obj::__new(::cocktail::core::nativeElement::NativeElementManager_obj::createNativeElement(::cocktail::core::nativeElement::NativeElementTypeValue_obj::canvas_dyn()),computedBackgroundSize->__Field(HX_CSTRING("width")),computedBackgroundSize->__Field(HX_CSTRING("height")));
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundDrawingManager.hx",185)
 		::cocktail::core::dom::FillStyleValue fillStyle;
 		HX_SOURCE_POS("../../src/cocktail/core/background/BackgroundDrawingManager.hx",186)

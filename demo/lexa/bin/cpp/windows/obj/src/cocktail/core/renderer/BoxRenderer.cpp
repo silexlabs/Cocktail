@@ -21,11 +21,8 @@
 #ifndef INCLUDED_cocktail_core_renderer_ElementRenderer
 #include <cocktail/core/renderer/ElementRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
@@ -58,7 +55,7 @@ namespace cocktail{
 namespace core{
 namespace renderer{
 
-Void BoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle style)
+Void BoxRenderer_obj::__construct(::cocktail::core::style::CoreStyle style)
 {
 {
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",35)
@@ -73,7 +70,7 @@ Void BoxRenderer_obj::__construct(::cocktail::port::flash_player::CoreStyle styl
 BoxRenderer_obj::~BoxRenderer_obj() { }
 
 Dynamic BoxRenderer_obj::__CreateEmpty() { return  new BoxRenderer_obj; }
-hx::ObjectPtr< BoxRenderer_obj > BoxRenderer_obj::__new(::cocktail::port::flash_player::CoreStyle style)
+hx::ObjectPtr< BoxRenderer_obj > BoxRenderer_obj::__new(::cocktail::core::style::CoreStyle style)
 {  hx::ObjectPtr< BoxRenderer_obj > result = new BoxRenderer_obj();
 	result->__construct(style);
 	return result;}
@@ -132,20 +129,24 @@ Dynamic BoxRenderer_obj::renderBackground( ){
 	}
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",74)
 	if (((this->isInitialContainer() == false))){
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",77)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",78)
 		::nme::display::Sprite nativeElement = this->_coreStyle->get_htmlElement()->get_nativeElement();
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",79)
-		nativeElement->nmeGetGraphics()->clear();
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",80)
-		nativeElement->nmeGetGraphics()->beginFill((int)65280,0.0);
+		nativeElement->nmeSetX((int)0);
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",81)
-		nativeElement->nmeGetGraphics()->drawRect((this->_bounds->__Field(HX_CSTRING("x")) + this->_coreStyle->getComputedStyle()->__Field(HX_CSTRING("paddingLeft"))),(this->_bounds->__Field(HX_CSTRING("y")) + this->_coreStyle->getComputedStyle()->__Field(HX_CSTRING("paddingTop"))),this->_bounds->__Field(HX_CSTRING("width")),this->_bounds->__Field(HX_CSTRING("height")));
+		nativeElement->nmeSetY((int)0);
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",83)
+		nativeElement->nmeGetGraphics()->clear();
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",89)
+		nativeElement->nmeGetGraphics()->beginFill((int)16711680,0.01);
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",91)
+		nativeElement->nmeGetGraphics()->drawRect(this->_bounds->__Field(HX_CSTRING("x")),this->_bounds->__Field(HX_CSTRING("y")),this->_bounds->__Field(HX_CSTRING("width")),this->_bounds->__Field(HX_CSTRING("height")));
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",92)
 		nativeElement->nmeGetGraphics()->endFill();
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",87)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",94)
 		backgrounds->__Field(HX_CSTRING("push"))(nativeElement);
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",93)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/BoxRenderer.hx",100)
 	return backgrounds;
 }
 

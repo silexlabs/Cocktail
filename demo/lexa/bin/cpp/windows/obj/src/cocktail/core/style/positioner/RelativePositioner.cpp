@@ -12,17 +12,14 @@
 #ifndef INCLUDED_cocktail_core_html_AbstractHTMLElement
 #include <cocktail/core/html/AbstractHTMLElement.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_positioner_BoxPositioner
 #include <cocktail/core/style/positioner/BoxPositioner.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_positioner_RelativePositioner
 #include <cocktail/core/style/positioner/RelativePositioner.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>

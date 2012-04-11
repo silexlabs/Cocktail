@@ -12,8 +12,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.core;
 
 
-#if flash9 
+#if flash9
 typedef FontManager = cocktail.port.flash_player.FontManager;
+#elseif nme
+typedef FontManager = cocktail.port.nme.FontManager;
 #elseif js
 typedef FontManager = cocktail.port.browser.FontManager;
 #end	

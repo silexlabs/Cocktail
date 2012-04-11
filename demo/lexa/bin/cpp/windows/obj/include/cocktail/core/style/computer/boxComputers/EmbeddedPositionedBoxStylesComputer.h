@@ -6,7 +6,7 @@
 #endif
 
 #include <cocktail/core/style/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h>
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,BoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,EmbeddedBlockBoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,EmbeddedPositionedBoxStylesComputer)
@@ -36,19 +36,19 @@ class EmbeddedPositionedBoxStylesComputer_obj : public ::cocktail::core::style::
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("EmbeddedPositionedBoxStylesComputer"); }
 
-		virtual Void measurePositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measurePositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measurePositionOffsets_dyn();
 
-		virtual Void measureHorizontalPositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureHorizontalPositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureHorizontalPositionOffsets_dyn();
 
-		virtual Void measureVerticalPositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureVerticalPositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureVerticalPositionOffsets_dyn();
 
-		virtual int getComputedStaticLeft( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedStaticLeft( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedStaticLeft_dyn();
 
-		virtual int getComputedStaticTop( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedStaticTop( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedStaticTop_dyn();
 
 };

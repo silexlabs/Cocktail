@@ -18,23 +18,14 @@
 #ifndef INCLUDED_cocktail_core_nativeElement_NativeElementManager
 #include <cocktail/core/nativeElement/NativeElementManager.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractBodyCoreStyle
-#include <cocktail/core/style/AbstractBodyCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_BodyCoreStyle
+#include <cocktail/core/style/BodyCoreStyle.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractContainerCoreStyle
-#include <cocktail/core/style/AbstractContainerCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_ContainerCoreStyle
+#include <cocktail/core/style/ContainerCoreStyle.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_BodyCoreStyle
-#include <cocktail/port/flash_player/BodyCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_ContainerCoreStyle
-#include <cocktail/port/flash_player/ContainerCoreStyle.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>
@@ -46,7 +37,7 @@ namespace html{
 Void HTMLBodyElement_obj::__construct()
 {
 {
-	HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",44)
+	HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",34)
 	super::__construct(HX_CSTRING("body"));
 }
 ;
@@ -69,7 +60,7 @@ Dynamic HTMLBodyElement_obj::__Create(hx::DynamicArray inArgs)
 Void HTMLBodyElement_obj::initNativeElement( ){
 {
 		HX_SOURCE_PUSH("HTMLBodyElement_obj::initNativeElement")
-		HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",52)
+		HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",42)
 		this->_nativeElement = ::cocktail::core::nativeElement::NativeElementManager_obj::getRoot();
 	}
 return null();
@@ -81,8 +72,8 @@ HX_DEFINE_DYNAMIC_FUNC0(HTMLBodyElement_obj,initNativeElement,(void))
 Void HTMLBodyElement_obj::initCoreStyle( ){
 {
 		HX_SOURCE_PUSH("HTMLBodyElement_obj::initCoreStyle")
-		HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",61)
-		this->_coreStyle = ::cocktail::port::flash_player::BodyCoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
+		HX_SOURCE_POS("../../src/cocktail/core/html/HTMLBodyElement.hx",51)
+		this->_coreStyle = ::cocktail::core::style::BodyCoreStyle_obj::__new(hx::ObjectPtr<OBJ_>(this));
 	}
 return null();
 }

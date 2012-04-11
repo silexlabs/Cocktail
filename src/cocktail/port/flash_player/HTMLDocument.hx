@@ -7,18 +7,8 @@
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.focus.FocusManager;
-import cocktail.core.dom.Document;
-import cocktail.core.dom.Element;
-import cocktail.core.event.Event;
 import cocktail.core.html.AbstractHTMLDocument;
-import cocktail.core.HTMLAnchorElement;
-import cocktail.core.HTMLElement;
-import cocktail.core.HTMLHtmlElement;
-import cocktail.core.HTMLImageElement;
-import cocktail.core.HTMLInputElement;
 import cocktail.core.NativeElement;
-import cocktail.core.Window;
 
 /**
  * This is the flash player implementation of

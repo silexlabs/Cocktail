@@ -48,11 +48,13 @@ class AbstractHTMLImageElement_obj : public ::cocktail::core::html::EmbeddedElem
 	Dynamic &onError_dyn() { return onError;}
 		int naturalWidth; /* REM */ 
 		int naturalHeight; /* REM */ 
-		::String _src; /* REM */ 
 		::String src; /* REM */ 
 		::cocktail::core::resource::AbstractImageLoader _imageLoader; /* REM */ 
 		virtual Void initEmbeddedAsset( );
 		Dynamic initEmbeddedAsset_dyn();
+
+		virtual Void setAttribute( ::String name,::String value);
+		Dynamic setAttribute_dyn();
 
 		virtual ::String set_src( ::String value);
 		Dynamic set_src_dyn();
@@ -73,6 +75,7 @@ class AbstractHTMLImageElement_obj : public ::cocktail::core::html::EmbeddedElem
 		Dynamic get_naturalWidth_dyn();
 
 		static ::String HTML_IMAGE_TAG_NAME; /* REM */ 
+		static ::String HTML_IMAGE_SRC_ATTRIBUTE; /* REM */ 
 };
 
 } // end namespace cocktail

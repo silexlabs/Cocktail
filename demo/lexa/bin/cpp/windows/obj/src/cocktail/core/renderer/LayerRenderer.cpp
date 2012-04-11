@@ -21,14 +21,11 @@
 #ifndef INCLUDED_cocktail_core_renderer_LayerRenderer
 #include <cocktail/core/renderer/LayerRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Display
 #include <cocktail/core/style/Display.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{
@@ -76,101 +73,112 @@ Dynamic LayerRenderer_obj::render( ){
 	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",64)
 	if (((bool((bool((this->_rootRenderer->canHaveChildren() == true)) && bool((this->_rootRenderer->getCoreStyle()->isInlineLevel() == false)))) || bool((this->_rootRenderer->getCoreStyle()->getDisplay() == ::cocktail::core::style::Display_obj::inlineBlock_dyn()))))){
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",67)
-		Dynamic childLayers = this->renderChildLayer();
+		Dynamic rootRendererBackground = this->_rootRenderer->renderBackground();
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",69)
 		{
 			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",69)
 			int _g1 = (int)0;
-			int _g = childLayers->__Field(HX_CSTRING("length"));
+			int _g = rootRendererBackground->__Field(HX_CSTRING("length"));
 			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",69)
 			while(((_g1 < _g))){
 				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",69)
 				int i = (_g1)++;
 				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",71)
-				nativeElements->__Field(HX_CSTRING("push"))(childLayers->__GetItem(i));
+				nativeElements->__Field(HX_CSTRING("push"))(rootRendererBackground->__GetItem(i));
 			}
 		}
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",74)
-		Dynamic inFlowChildren = this->renderInFlowChildren();
+		Dynamic childrenBlockContainerBackground = this->renderChildrenBlockContainerBackground();
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",76)
 		{
 			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",76)
 			int _g1 = (int)0;
-			int _g = inFlowChildren->__Field(HX_CSTRING("length"));
+			int _g = childrenBlockContainerBackground->__Field(HX_CSTRING("length"));
 			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",76)
 			while(((_g1 < _g))){
 				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",76)
 				int i = (_g1)++;
 				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",78)
-				nativeElements->__Field(HX_CSTRING("push"))(inFlowChildren->__GetItem(i));
-			}
-		}
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",82)
-		Dynamic childrenBlockContainerBackground = this->renderChildrenBlockContainerBackground();
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",84)
-		{
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",84)
-			int _g1 = (int)0;
-			int _g = childrenBlockContainerBackground->__Field(HX_CSTRING("length"));
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",84)
-			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",84)
-				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",86)
 				nativeElements->__Field(HX_CSTRING("push"))(childrenBlockContainerBackground->__GetItem(i));
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",90)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",81)
+		Dynamic inFlowChildren = this->renderInFlowChildren();
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",83)
 		{
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",90)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",83)
 			int _g1 = (int)0;
-			int _g = nativeElements->__Field(HX_CSTRING("length"));
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",90)
+			int _g = inFlowChildren->__Field(HX_CSTRING("length"));
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",83)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",90)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",83)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",92)
-				hx::AddEq(nativeElements->__GetItem(i)->__FieldRef(HX_CSTRING("x")),this->_rootRenderer->getBounds()->__Field(HX_CSTRING("x")));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",93)
-				hx::AddEq(nativeElements->__GetItem(i)->__FieldRef(HX_CSTRING("y")),this->_rootRenderer->getBounds()->__Field(HX_CSTRING("y")));
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",85)
+				nativeElements->__Field(HX_CSTRING("push"))(inFlowChildren->__GetItem(i));
 			}
 		}
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",98)
-		Dynamic rootRendererBackground = this->_rootRenderer->renderBackground();
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",100)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",89)
+		Dynamic childLayers = this->renderChildLayer();
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",91)
 		{
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",100)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",91)
 			int _g1 = (int)0;
-			int _g = rootRendererBackground->__Field(HX_CSTRING("length"));
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",100)
+			int _g = childLayers->__Field(HX_CSTRING("length"));
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",91)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",100)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",92)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",102)
-				nativeElements->__Field(HX_CSTRING("push"))(rootRendererBackground->__GetItem(i));
+			}
+		}
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",97)
+		{
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",97)
+			int _g1 = (int)0;
+			int _g = nativeElements->__Field(HX_CSTRING("length"));
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",97)
+			while(((_g1 < _g))){
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",97)
+				int i = (_g1)++;
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",99)
+				hx::AddEq(nativeElements->__GetItem(i)->__FieldRef(HX_CSTRING("x")),this->_rootRenderer->getBounds()->__Field(HX_CSTRING("x")));
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",100)
+				hx::AddEq(nativeElements->__GetItem(i)->__FieldRef(HX_CSTRING("y")),this->_rootRenderer->getBounds()->__Field(HX_CSTRING("y")));
 			}
 		}
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",112)
-		nativeElements = this->_rootRenderer->render();
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",114)
-		Dynamic rootRendererBackground = this->_rootRenderer->renderBackground();
 		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",115)
+		Dynamic rootRendererBackground = this->_rootRenderer->renderBackground();
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",117)
 		{
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",115)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",117)
 			int _g1 = (int)0;
 			int _g = rootRendererBackground->__Field(HX_CSTRING("length"));
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",115)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",117)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",115)
-				int i = (_g1)++;
 				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",117)
+				int i = (_g1)++;
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",119)
 				nativeElements->__Field(HX_CSTRING("push"))(rootRendererBackground->__GetItem(i));
 			}
 		}
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",122)
+		Dynamic rootRendererElements = this->_rootRenderer->render();
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",124)
+		{
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",124)
+			int _g1 = (int)0;
+			int _g = rootRendererElements->__Field(HX_CSTRING("length"));
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",124)
+			while(((_g1 < _g))){
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",124)
+				int i = (_g1)++;
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",126)
+				nativeElements->__Field(HX_CSTRING("push"))(rootRendererElements->__GetItem(i));
+			}
+		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",123)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",133)
 	return nativeElements;
 }
 
@@ -179,37 +187,37 @@ HX_DEFINE_DYNAMIC_FUNC0(LayerRenderer_obj,render,return )
 
 Dynamic LayerRenderer_obj::renderChildrenBlockContainerBackground( ){
 	HX_SOURCE_PUSH("LayerRenderer_obj::renderChildrenBlockContainerBackground")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",136)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",146)
 	Array< ::cocktail::core::renderer::ElementRenderer > childrenBlockContainer = this->getBlockContainerChildren(this->_rootRenderer);
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",138)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",148)
 	Dynamic ret = Dynamic( Array_obj<Dynamic>::__new() );
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",140)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",150)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",140)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",150)
 		int _g1 = (int)0;
 		int _g = childrenBlockContainer->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",140)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",150)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",140)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",150)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",143)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",153)
 			Dynamic nativeElements = childrenBlockContainer->__get(i)->renderBackground();
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",145)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",155)
 			{
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",145)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",155)
 				int _g3 = (int)0;
 				int _g2 = nativeElements->__Field(HX_CSTRING("length"));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",145)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",155)
 				while(((_g3 < _g2))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",145)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",155)
 					int j = (_g3)++;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",147)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",157)
 					ret->__Field(HX_CSTRING("push"))(nativeElements->__GetItem(j));
 				}
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",151)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",161)
 	return ret;
 }
 
@@ -218,45 +226,45 @@ HX_DEFINE_DYNAMIC_FUNC0(LayerRenderer_obj,renderChildrenBlockContainerBackground
 
 Array< ::cocktail::core::renderer::ElementRenderer > LayerRenderer_obj::getBlockContainerChildren( ::cocktail::core::renderer::FlowBoxRenderer rootRenderer){
 	HX_SOURCE_PUSH("LayerRenderer_obj::getBlockContainerChildren")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",163)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",173)
 	Array< ::cocktail::core::renderer::ElementRenderer > ret = Array_obj< ::cocktail::core::renderer::ElementRenderer >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",165)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",175)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",165)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",175)
 		int _g1 = (int)0;
 		int _g = rootRenderer->get_childNodes()->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",165)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",175)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",165)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",175)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",167)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",177)
 			::cocktail::core::renderer::ElementRenderer child = rootRenderer->get_childNodes()->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",169)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",179)
 			if (((child->getLayerRenderer() == hx::ObjectPtr<OBJ_>(this)))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",170)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",180)
 				if (((child->canHaveChildren() == true))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",173)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",183)
 					Array< ::cocktail::core::renderer::ElementRenderer > childElementRenderer = this->getBlockContainerChildren(child);
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",174)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",184)
 					{
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",174)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",184)
 						int _g3 = (int)0;
 						int _g2 = childElementRenderer->length;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",174)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",184)
 						while(((_g3 < _g2))){
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",174)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",184)
 							int j = (_g3)++;
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",176)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",186)
 							ret->push(childElementRenderer->__get(j));
 						}
 					}
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",178)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",188)
 					ret->push(child);
 				}
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",182)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",192)
 	return ret;
 }
 
@@ -265,39 +273,39 @@ HX_DEFINE_DYNAMIC_FUNC1(LayerRenderer_obj,getBlockContainerChildren,return )
 
 Dynamic LayerRenderer_obj::renderChildLayer( ){
 	HX_SOURCE_PUSH("LayerRenderer_obj::renderChildLayer")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",191)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",201)
 	Array< ::cocktail::core::renderer::LayerRenderer > childLayers = this->getChildLayers(this->_rootRenderer,hx::ObjectPtr<OBJ_>(this));
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",194)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",204)
 	childLayers->reverse();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",196)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",206)
 	Dynamic ret = Dynamic( Array_obj<Dynamic>::__new() );
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",198)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",208)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",198)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",208)
 		int _g1 = (int)0;
 		int _g = childLayers->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",198)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",208)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",198)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",208)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",200)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",210)
 			Dynamic nativeElements = childLayers->__get(i)->render();
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",201)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",211)
 			{
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",201)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",211)
 				int _g3 = (int)0;
 				int _g2 = nativeElements->__Field(HX_CSTRING("length"));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",201)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",211)
 				while(((_g3 < _g2))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",201)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",211)
 					int j = (_g3)++;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",203)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",213)
 					ret->__Field(HX_CSTRING("push"))(nativeElements->__GetItem(j));
 				}
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",207)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",217)
 	return ret;
 }
 
@@ -306,47 +314,47 @@ HX_DEFINE_DYNAMIC_FUNC0(LayerRenderer_obj,renderChildLayer,return )
 
 Array< ::cocktail::core::renderer::LayerRenderer > LayerRenderer_obj::getChildLayers( ::cocktail::core::renderer::FlowBoxRenderer rootRenderer,::cocktail::core::renderer::LayerRenderer referenceLayer){
 	HX_SOURCE_PUSH("LayerRenderer_obj::getChildLayers")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",216)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",226)
 	Array< ::cocktail::core::renderer::LayerRenderer > childLayers = Array_obj< ::cocktail::core::renderer::LayerRenderer >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",219)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",229)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",219)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",229)
 		int _g1 = (int)0;
 		int _g = rootRenderer->get_childNodes()->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",219)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",229)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",219)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",229)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",221)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",231)
 			::cocktail::core::renderer::ElementRenderer child = rootRenderer->get_childNodes()->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",224)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",234)
 			if (((child->getLayerRenderer() == referenceLayer))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",225)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",235)
 				if (((bool((child->canHaveChildren() == true)) && bool((child->getCoreStyle()->getDisplay() != ::cocktail::core::style::Display_obj::inlineBlock_dyn()))))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",229)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",239)
 					Array< ::cocktail::core::renderer::LayerRenderer > childElementRenderer = this->getChildLayers(child,referenceLayer);
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",230)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",240)
 					{
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",230)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",240)
 						int _g3 = (int)0;
 						int _g2 = childElementRenderer->length;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",230)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",240)
 						while(((_g3 < _g2))){
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",230)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",240)
 							int j = (_g3)++;
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",232)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",242)
 							childLayers->push(childElementRenderer->__get(j));
 						}
 					}
 				}
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",238)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",248)
 				childLayers->push(child->getLayerRenderer());
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",243)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",253)
 	return childLayers;
 }
 
@@ -355,82 +363,82 @@ HX_DEFINE_DYNAMIC_FUNC2(LayerRenderer_obj,getChildLayers,return )
 
 Dynamic LayerRenderer_obj::renderInFlowChildren( ){
 	HX_SOURCE_PUSH("LayerRenderer_obj::renderInFlowChildren")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",253)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",263)
 	Array< ::cocktail::core::renderer::ElementRenderer > inFlowChildren = this->getInFlowChildren(this->_rootRenderer);
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",255)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",265)
 	Dynamic ret = Dynamic( Array_obj<Dynamic>::__new() );
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",257)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
 	{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",257)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
 		int _g1 = (int)0;
 		int _g = inFlowChildren->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",257)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",257)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",259)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",269)
 			Dynamic nativeElements = Dynamic( Array_obj<Dynamic>::__new());
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",260)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",270)
 			if (((inFlowChildren->__get(i)->getCoreStyle()->getDisplay() == ::cocktail::core::style::Display_obj::inlineBlock_dyn()))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",265)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",275)
 				Array< ::cocktail::core::renderer::LayerRenderer > d = this->getChildLayers(inFlowChildren->__get(i),hx::ObjectPtr<OBJ_>(this));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",277)
 				{
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",277)
 					int _g3 = (int)0;
 					int _g2 = d->length;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",277)
 					while(((_g3 < _g2))){
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",267)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",277)
 						int l = (_g3)++;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",269)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",279)
 						Dynamic ne = d->__get(l)->render();
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",270)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",280)
 						{
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",270)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",280)
 							int _g5 = (int)0;
 							int _g4 = ne->__Field(HX_CSTRING("length"));
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",270)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",280)
 							while(((_g5 < _g4))){
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",270)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",280)
 								int m = (_g5)++;
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",273)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",283)
 								hx::AddEq(ne->__GetItem(m)->__FieldRef(HX_CSTRING("x")),inFlowChildren->__get(i)->getBounds()->__Field(HX_CSTRING("x")));
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",274)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",284)
 								hx::AddEq(ne->__GetItem(m)->__FieldRef(HX_CSTRING("y")),inFlowChildren->__get(i)->getBounds()->__Field(HX_CSTRING("y")));
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",277)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",287)
 								nativeElements->__Field(HX_CSTRING("push"))(ne->__GetItem(m));
 							}
 						}
 					}
 				}
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",282)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",292)
 				Array< ::cocktail::core::renderer::ElementRenderer > childElementRenderer = this->getInFlowChildren(inFlowChildren->__get(i));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",283)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",293)
 				{
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",283)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",293)
 					int _g3 = (int)0;
 					int _g2 = childElementRenderer->length;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",283)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",293)
 					while(((_g3 < _g2))){
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",283)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",293)
 						int l = (_g3)++;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",285)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",295)
 						hx::AddEq(childElementRenderer->__get(l)->getBounds()->__FieldRef(HX_CSTRING("x")),inFlowChildren->__get(i)->getBounds()->__Field(HX_CSTRING("x")));
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",286)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",296)
 						hx::AddEq(childElementRenderer->__get(l)->getBounds()->__FieldRef(HX_CSTRING("y")),inFlowChildren->__get(i)->getBounds()->__Field(HX_CSTRING("y")));
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",288)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",298)
 						Dynamic el = childElementRenderer->__get(l)->render();
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",290)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",300)
 						{
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",290)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",300)
 							int _g5 = (int)0;
 							int _g4 = el->__Field(HX_CSTRING("length"));
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",290)
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",300)
 							while(((_g5 < _g4))){
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",290)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",300)
 								int k = (_g5)++;
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",292)
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",302)
 								nativeElements->__Field(HX_CSTRING("push"))(el->__GetItem(k));
 							}
 						}
@@ -438,43 +446,43 @@ Dynamic LayerRenderer_obj::renderInFlowChildren( ){
 				}
 			}
 			else{
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",299)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",309)
 				nativeElements = inFlowChildren->__get(i)->render();
 			}
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",303)
-			{
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",303)
-				int _g3 = (int)0;
-				int _g2 = nativeElements->__Field(HX_CSTRING("length"));
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",303)
-				while(((_g3 < _g2))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",303)
-					int j = (_g3)++;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",305)
-					ret->__Field(HX_CSTRING("push"))(nativeElements->__GetItem(j));
-				}
-			}
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",308)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",313)
 			if (((bool((inFlowChildren->__get(i)->canHaveChildren() == false)) && bool((inFlowChildren->__get(i)->isText() == false))))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",311)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",316)
 				Dynamic bg = inFlowChildren->__get(i)->renderBackground();
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",313)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",318)
 				{
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",313)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",318)
 					int _g3 = (int)0;
 					int _g2 = bg->__Field(HX_CSTRING("length"));
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",313)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",318)
 					while(((_g3 < _g2))){
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",313)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",318)
 						int j = (_g3)++;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",315)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",320)
 						ret->__Field(HX_CSTRING("push"))(bg->__GetItem(j));
 					}
 				}
 			}
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",324)
+			{
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",324)
+				int _g3 = (int)0;
+				int _g2 = nativeElements->__Field(HX_CSTRING("length"));
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",324)
+				while(((_g3 < _g2))){
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",324)
+					int j = (_g3)++;
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",326)
+					ret->__Field(HX_CSTRING("push"))(nativeElements->__GetItem(j));
+				}
+			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",320)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",332)
 	return ret;
 }
 
@@ -483,33 +491,33 @@ HX_DEFINE_DYNAMIC_FUNC0(LayerRenderer_obj,renderInFlowChildren,return )
 
 Array< ::cocktail::core::renderer::ElementRenderer > LayerRenderer_obj::getInFlowChildren( ::cocktail::core::renderer::FlowBoxRenderer rootRenderer){
 	HX_SOURCE_PUSH("LayerRenderer_obj::getInFlowChildren")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",330)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",342)
 	Array< ::cocktail::core::renderer::ElementRenderer > ret = Array_obj< ::cocktail::core::renderer::ElementRenderer >::__new();
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",332)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",344)
 	if (((bool((rootRenderer->establishesNewFormattingContext() == true)) && bool((rootRenderer->getCoreStyle()->childrenInline() == true))))){
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",335)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",347)
 		::cocktail::core::renderer::BlockBoxRenderer blockBoxRenderer = rootRenderer;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",337)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",349)
 		{
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",337)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",349)
 			int _g1 = (int)0;
 			int _g = blockBoxRenderer->getLineBoxes()->length;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",337)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",349)
 			while(((_g1 < _g))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",337)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",349)
 				int i = (_g1)++;
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",339)
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
 				{
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",339)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
 					int _g3 = (int)0;
 					int _g2 = blockBoxRenderer->getLineBoxes()->__get(i)->length;
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",339)
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
 					while(((_g3 < _g2))){
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",339)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
 						int j = (_g3)++;
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",341)
-						if (((blockBoxRenderer->getLineBoxes()->__get(i)->__get(j)->isPositioned() == false))){
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",342)
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",353)
+						if (((bool((blockBoxRenderer->getLineBoxes()->__get(i)->__get(j)->isPositioned() == false)) && bool((blockBoxRenderer->getLineBoxes()->__get(i)->__get(j)->isDisplayed() == true))))){
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",354)
 							ret->push(blockBoxRenderer->getLineBoxes()->__get(i)->__get(j));
 						}
 					}
@@ -518,43 +526,46 @@ Array< ::cocktail::core::renderer::ElementRenderer > LayerRenderer_obj::getInFlo
 		}
 	}
 	else{
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
 		int _g1 = (int)0;
 		int _g = rootRenderer->get_childNodes()->length;
-		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
+		HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
 		while(((_g1 < _g))){
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",351)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
 			int i = (_g1)++;
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",353)
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",365)
 			::cocktail::core::renderer::ElementRenderer child = rootRenderer->get_childNodes()->__get(i);
-			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",355)
-			if (((child->getLayerRenderer() == hx::ObjectPtr<OBJ_>(this)))){
-				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",356)
-				if (((child->isPositioned() == false))){
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",359)
-					ret->push(child);
-					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",360)
-					if (((child->canHaveChildren() == true))){
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",362)
-						Array< ::cocktail::core::renderer::ElementRenderer > childElementRenderer = this->getInFlowChildren(child);
-						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
-						{
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
-							int _g3 = (int)0;
-							int _g2 = childElementRenderer->length;
-							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
-							while(((_g3 < _g2))){
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",363)
-								int j = (_g3)++;
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",365)
-								if (((child->establishesNewFormattingContext() == true))){
-									HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",367)
-									hx::AddEq(childElementRenderer->__get(j)->getBounds()->__FieldRef(HX_CSTRING("x")),child->getBounds()->__Field(HX_CSTRING("x")));
-									HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",368)
-									hx::AddEq(childElementRenderer->__get(j)->getBounds()->__FieldRef(HX_CSTRING("y")),child->getBounds()->__Field(HX_CSTRING("y")));
+			HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",367)
+			if (((child->isDisplayed() == true))){
+				HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",368)
+				if (((child->getLayerRenderer() == hx::ObjectPtr<OBJ_>(this)))){
+					HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",370)
+					if (((child->isPositioned() == false))){
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",373)
+						ret->push(child);
+						HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",374)
+						if (((child->canHaveChildren() == true))){
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",376)
+							Array< ::cocktail::core::renderer::ElementRenderer > childElementRenderer = this->getInFlowChildren(child);
+							HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",377)
+							{
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",377)
+								int _g3 = (int)0;
+								int _g2 = childElementRenderer->length;
+								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",377)
+								while(((_g3 < _g2))){
+									HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",377)
+									int j = (_g3)++;
+									HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",379)
+									if (((child->establishesNewFormattingContext() == true))){
+										HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",381)
+										hx::AddEq(childElementRenderer->__get(j)->getBounds()->__FieldRef(HX_CSTRING("x")),child->getBounds()->__Field(HX_CSTRING("x")));
+										HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",382)
+										hx::AddEq(childElementRenderer->__get(j)->getBounds()->__FieldRef(HX_CSTRING("y")),child->getBounds()->__Field(HX_CSTRING("y")));
+									}
+									HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",385)
+									ret->push(childElementRenderer->__get(j));
 								}
-								HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",371)
-								ret->push(childElementRenderer->__get(j));
 							}
 						}
 					}
@@ -562,7 +573,7 @@ Array< ::cocktail::core::renderer::ElementRenderer > LayerRenderer_obj::getInFlo
 			}
 		}
 	}
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",379)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",395)
 	return ret;
 }
 
@@ -581,9 +592,9 @@ HX_DEFINE_DYNAMIC_FUNC1(LayerRenderer_obj,setNativeMatrix,(void))
 
 ::cocktail::core::geom::Matrix LayerRenderer_obj::getConcatenatedMatrix( ::cocktail::core::geom::Matrix matrix){
 	HX_SOURCE_PUSH("LayerRenderer_obj::getConcatenatedMatrix")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",419)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",435)
 	::cocktail::core::geom::Matrix currentMatrix = ::cocktail::core::geom::Matrix_obj::__new(null());
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",428)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",444)
 	return currentMatrix;
 }
 
@@ -592,9 +603,9 @@ HX_DEFINE_DYNAMIC_FUNC1(LayerRenderer_obj,getConcatenatedMatrix,return )
 
 ::cocktail::core::geom::Matrix LayerRenderer_obj::getConcatenatedMatrix2( ::cocktail::core::geom::Matrix matrix){
 	HX_SOURCE_PUSH("LayerRenderer_obj::getConcatenatedMatrix2")
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",441)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",457)
 	::cocktail::core::geom::Matrix currentMatrix = ::cocktail::core::geom::Matrix_obj::__new(null());
-	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",444)
+	HX_SOURCE_POS("../../src/cocktail/core/renderer/LayerRenderer.hx",460)
 	return currentMatrix;
 }
 

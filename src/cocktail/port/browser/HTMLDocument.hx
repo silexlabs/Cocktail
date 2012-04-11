@@ -7,17 +7,7 @@
 */
 package cocktail.port.browser;
 
-import cocktail.core.focus.FocusManager;
-import cocktail.core.dom.Document;
-import cocktail.core.dom.Element;
-import cocktail.core.event.Event;
 import cocktail.core.html.AbstractHTMLDocument;
-import cocktail.core.HTMLAnchorElement;
-import cocktail.core.HTMLElement;
-import cocktail.core.HTMLHtmlElement;
-import cocktail.core.HTMLImageElement;
-import cocktail.core.HTMLInputElement;
-import cocktail.core.Window;
 
 /**
  * This is the browser implementation of the HTML Document

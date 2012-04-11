@@ -18,20 +18,17 @@
 #ifndef INCLUDED_cocktail_core_renderer_FlowBoxRenderer
 #include <cocktail/core/renderer/FlowBoxRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
-#endif
 #ifndef INCLUDED_cocktail_core_style_Clear
 #include <cocktail/core/style/Clear.h>
+#endif
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_floats_FloatsManager
 #include <cocktail/core/style/floats/FloatsManager.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_formatter_FormattingContext
 #include <cocktail/core/style/formatter/FormattingContext.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 namespace cocktail{
 namespace core{

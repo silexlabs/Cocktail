@@ -55,6 +55,7 @@ class HTMLCanvasElement_obj : public ::cocktail::core::html::EmbeddedElement_obj
 		static int CANVAS_INTRINSIC_HEIGHT; /* REM */ 
 		static int CANVAS_INTRINSIC_WIDTH; /* REM */ 
 		static ::String HTML_CANVAS_TAG_NAME; /* REM */ 
+		static ::String CANVAS_2D_CONTEXT; /* REM */ 
 };
 
 } // end namespace cocktail

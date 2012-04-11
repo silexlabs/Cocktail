@@ -38,8 +38,8 @@ class AbstractHTMLInputElement_obj : public ::cocktail::port::flash_player::HTML
 
 		Dynamic _onChange; /* REM */ 
 	Dynamic &_onChange_dyn() { return _onChange;}
-		Dynamic onChange; /* REM */ 
-	Dynamic &onChange_dyn() { return onChange;}
+		Dynamic onchange; /* REM */ 
+	Dynamic &onchange_dyn() { return onchange;}
 		bool _disabled; /* REM */ 
 		bool disabled; /* REM */ 
 		int _maxLength; /* REM */ 

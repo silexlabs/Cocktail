@@ -6,7 +6,6 @@
 #endif
 
 #include <cocktail/port/flash_player/HTMLElement.h>
-HX_DECLARE_CLASS3(cocktail,core,dom,AnchorTarget)
 HX_DECLARE_CLASS3(cocktail,core,dom,Element)
 HX_DECLARE_CLASS3(cocktail,core,dom,Node)
 HX_DECLARE_CLASS3(cocktail,core,event,Event)
@@ -42,8 +41,8 @@ class AbstractHTMLAnchorElement_obj : public ::cocktail::port::flash_player::HTM
 
 		::String _href; /* REM */ 
 		::String href; /* REM */ 
-		::cocktail::core::dom::AnchorTarget _target; /* REM */ 
-		::cocktail::core::dom::AnchorTarget target; /* REM */ 
+		::String _target; /* REM */ 
+		::String target; /* REM */ 
 		virtual Void initNativeElement( );
 		Dynamic initNativeElement_dyn();
 
@@ -74,21 +73,22 @@ class AbstractHTMLAnchorElement_obj : public ::cocktail::port::flash_player::HTM
 		virtual Void hidePointerCursor( );
 		Dynamic hidePointerCursor_dyn();
 
-		virtual ::String getTargetAsString( ::cocktail::core::dom::AnchorTarget value);
-		Dynamic getTargetAsString_dyn();
-
 		virtual ::String set_href( ::String value);
 		Dynamic set_href_dyn();
 
 		virtual ::String get_href( );
 		Dynamic get_href_dyn();
 
-		virtual ::cocktail::core::dom::AnchorTarget set_target( ::cocktail::core::dom::AnchorTarget value);
+		virtual ::String set_target( ::String value);
 		Dynamic set_target_dyn();
 
-		virtual ::cocktail::core::dom::AnchorTarget get_target( );
+		virtual ::String get_target( );
 		Dynamic get_target_dyn();
 
+		static ::String TARGET_BLANK; /* REM */ 
+		static ::String TARGET_SELF; /* REM */ 
+		static ::String TARGET_PARENT; /* REM */ 
+		static ::String TARGET_TOP; /* REM */ 
 		static ::String HTML_ANCHOR_TAG_NAME; /* REM */ 
 };
 

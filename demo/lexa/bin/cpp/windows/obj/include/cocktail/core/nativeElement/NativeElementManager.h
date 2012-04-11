@@ -5,12 +5,10 @@
 #include <hxcpp.h>
 #endif
 
-HX_DECLARE_CLASS3(cocktail,core,nativeElement,AbstractNativeElementCreator)
-HX_DECLARE_CLASS3(cocktail,core,nativeElement,AbstractNativeElementPathManager)
+HX_DECLARE_CLASS3(cocktail,core,nativeElement,AbstractNativeElementManagerImpl)
 HX_DECLARE_CLASS3(cocktail,core,nativeElement,NativeElementManager)
 HX_DECLARE_CLASS3(cocktail,core,nativeElement,NativeElementTypeValue)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,NativeElementCreator)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,NativeElementPathManager)
+HX_DECLARE_CLASS3(cocktail,port,flash_player,NativeElementManagerImpl)
 namespace cocktail{
 namespace core{
 namespace nativeElement{
@@ -35,13 +33,15 @@ class NativeElementManager_obj : public hx::Object{
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("NativeElementManager"); }
 
-		static ::cocktail::port::flash_player::NativeElementCreator _nativeElementCreator; /* REM */ 
-		static ::cocktail::port::flash_player::NativeElementPathManager _nativeElementPathManager; /* REM */ 
+		static ::cocktail::port::flash_player::NativeElementManagerImpl _nativeElementManagerImpl; /* REM */ 
 		static Dynamic getRoot( );
 		static Dynamic getRoot_dyn();
 
 		static Dynamic createNativeElement( ::cocktail::core::nativeElement::NativeElementTypeValue nativeElementType);
 		static Dynamic createNativeElement_dyn();
+
+		static Void init( );
+		static Dynamic init_dyn();
 
 };
 

@@ -12,8 +12,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package org.lexa.demo;
 
-import js.Lib;
-import js.Dom;
+import cocktail.Lib;
+import cocktail.Dom;
 
 class Lexa 
 {
@@ -30,6 +30,7 @@ class Lexa
 	
 	function prezCocktail()
 	{
+		/**
 		//HTML DOM & JavaScript
 		var title = Lib.document.createElement("h1");
 		title.appendChild(Lib.document.createTextNode("Hello Cocktail"));
@@ -63,5 +64,14 @@ class Lexa
 		//CSS backgrounds
 		site.style.backgroundColor = "rgba(255,255,255,0.5)";
 		Lib.document.body.style.backgroundImage = "url(bg.png)";
+		*/
+		//HxTML
+		Lib.document.body.innerHTML = '<div style="width: 50%; margin-right: auto; margin-left: auto; background-color: rgba(255, 255, 255, 0.5);"><h1 style="word-spacing: 10px; color: orange; font-family: arial;">Hello Cocktail</h1><p>Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe.<img id="pic" src="cocktail.jpg" /></p></div>';
+
+		var pic:HtmlDom = cast(Lib.document.getElementById("pic"));
+		pic.onclick = function(e) {
+			Lib.document.body.style.backgroundImage = "url(bg.png)";
+		}
+		
 	}
 }

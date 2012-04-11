@@ -1,7 +1,7 @@
 #include <hxcpp.h>
 
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_Margin
 #include <cocktail/core/style/Margin.h>
@@ -50,7 +50,7 @@ int InlineBlockBoxStylesComputer_obj::getComputedAutoMargin( ::cocktail::core::s
 
 HX_DEFINE_DYNAMIC_FUNC9(InlineBlockBoxStylesComputer_obj,getComputedAutoMargin,return )
 
-int InlineBlockBoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
+int InlineBlockBoxStylesComputer_obj::shrinkToFit( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int minimumWidth){
 	HX_SOURCE_PUSH("InlineBlockBoxStylesComputer_obj::shrinkToFit")
 	HX_SOURCE_POS("../../src/cocktail/core/style/computer/boxComputers/InlineBlockBoxStylesComputer.hx",47)
 	int shrinkedWidth;

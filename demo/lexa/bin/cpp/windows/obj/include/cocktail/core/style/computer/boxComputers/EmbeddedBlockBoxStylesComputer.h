@@ -6,7 +6,7 @@
 #endif
 
 #include <cocktail/core/style/computer/boxComputers/BoxStylesComputer.h>
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,Margin)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,BoxStylesComputer)
 HX_DECLARE_CLASS5(cocktail,core,style,computer,boxComputers,EmbeddedBlockBoxStylesComputer)
@@ -36,13 +36,13 @@ class EmbeddedBlockBoxStylesComputer_obj : public ::cocktail::core::style::compu
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("EmbeddedBlockBoxStylesComputer"); }
 
-		virtual Void measureAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureAutoWidth_dyn();
 
-		virtual int getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedAutoWidth_dyn();
 
-		virtual int getComputedAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedAutoHeight_dyn();
 
 		virtual int getComputedAutoMargin( ::cocktail::core::style::Margin marginStyleValue,::cocktail::core::style::Margin opositeMargin,int containingHTMLElementDimension,int computedDimension,bool isDimensionAuto,int computedPaddingsDimension,double fontSize,double xHeight,bool isHorizontalMargin);

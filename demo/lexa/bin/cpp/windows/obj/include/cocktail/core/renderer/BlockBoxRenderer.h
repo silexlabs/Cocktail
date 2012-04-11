@@ -11,8 +11,7 @@ HX_DECLARE_CLASS3(cocktail,core,renderer,BlockBoxRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,BoxRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,ElementRenderer)
 HX_DECLARE_CLASS3(cocktail,core,renderer,FlowBoxRenderer)
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
-HX_DECLARE_CLASS3(cocktail,port,flash_player,CoreStyle)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 namespace cocktail{
 namespace core{
 namespace renderer{
@@ -23,10 +22,10 @@ class BlockBoxRenderer_obj : public ::cocktail::core::renderer::FlowBoxRenderer_
 		typedef ::cocktail::core::renderer::FlowBoxRenderer_obj super;
 		typedef BlockBoxRenderer_obj OBJ_;
 		BlockBoxRenderer_obj();
-		Void __construct(::cocktail::port::flash_player::CoreStyle style);
+		Void __construct(::cocktail::core::style::CoreStyle style);
 
 	public:
-		static hx::ObjectPtr< BlockBoxRenderer_obj > __new(::cocktail::port::flash_player::CoreStyle style);
+		static hx::ObjectPtr< BlockBoxRenderer_obj > __new(::cocktail::core::style::CoreStyle style);
 		static Dynamic __CreateEmpty();
 		static Dynamic __Create(hx::DynamicArray inArgs);
 		~BlockBoxRenderer_obj();
@@ -47,9 +46,6 @@ class BlockBoxRenderer_obj : public ::cocktail::core::renderer::FlowBoxRenderer_
 
 		virtual Void removeLineBoxes( );
 		Dynamic removeLineBoxes_dyn();
-
-		virtual Dynamic render( );
-		Dynamic render_dyn();
 
 		virtual Array< Array< ::cocktail::core::renderer::ElementRenderer > > getLineBoxes( );
 		Dynamic getLineBoxes_dyn();

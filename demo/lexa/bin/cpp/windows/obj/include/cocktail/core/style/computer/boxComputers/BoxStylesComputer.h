@@ -5,8 +5,8 @@
 #include <hxcpp.h>
 #endif
 
-HX_DECLARE_CLASS3(cocktail,core,style,AbstractCoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,ConstrainedDimension)
+HX_DECLARE_CLASS3(cocktail,core,style,CoreStyle)
 HX_DECLARE_CLASS3(cocktail,core,style,Dimension)
 HX_DECLARE_CLASS3(cocktail,core,style,Margin)
 HX_DECLARE_CLASS3(cocktail,core,style,Padding)
@@ -38,79 +38,79 @@ class BoxStylesComputer_obj : public hx::Object{
 		void __Mark(HX_MARK_PARAMS);
 		::String __ToString() const { return HX_CSTRING("BoxStylesComputer"); }
 
-		virtual Void measure( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measure( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measure_dyn();
 
-		virtual int shrinkToFit( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData,int minimumWidth);
+		virtual int shrinkToFit( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData,int minimumWidth);
 		Dynamic shrinkToFit_dyn();
 
-		virtual int applyContentHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic cotainingHTMLElementData,int childrenHeight);
+		virtual int applyContentHeight( ::cocktail::core::style::CoreStyle style,Dynamic cotainingHTMLElementData,int childrenHeight);
 		Dynamic applyContentHeight_dyn();
 
-		virtual Void measureDimensionsConstraints( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureDimensionsConstraints( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureDimensionsConstraints_dyn();
 
-		virtual Void measurePositionOffsets( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measurePositionOffsets( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measurePositionOffsets_dyn();
 
-		virtual Void measureVerticalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureVerticalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureVerticalPaddings_dyn();
 
-		virtual Void measureHorizontalPaddings( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureHorizontalPaddings( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureHorizontalPaddings_dyn();
 
-		virtual Void measureWidthAndHorizontalMargins( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureWidthAndHorizontalMargins( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureWidthAndHorizontalMargins_dyn();
 
-		virtual Void measureAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureAutoWidth_dyn();
 
-		virtual Void measureWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureWidth_dyn();
 
-		virtual Void measureHeightAndVerticalMargins( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureHeightAndVerticalMargins( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureHeightAndVerticalMargins_dyn();
 
-		virtual Void measureAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureAutoHeight_dyn();
 
-		virtual Void measureHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual Void measureHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic measureHeight_dyn();
 
-		virtual int constrainWidth( ::cocktail::core::style::AbstractCoreStyle style,int computedWidth);
+		virtual int constrainWidth( ::cocktail::core::style::CoreStyle style,int computedWidth);
 		Dynamic constrainWidth_dyn();
 
-		virtual int constrainHeight( ::cocktail::core::style::AbstractCoreStyle style,int computedHeight);
+		virtual int constrainHeight( ::cocktail::core::style::CoreStyle style,int computedHeight);
 		Dynamic constrainHeight_dyn();
 
-		virtual Void setComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,int computedHeight);
+		virtual Void setComputedHeight( ::cocktail::core::style::CoreStyle style,int computedHeight);
 		Dynamic setComputedHeight_dyn();
 
-		virtual Void setComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,int computedWidth);
+		virtual Void setComputedWidth( ::cocktail::core::style::CoreStyle style,int computedWidth);
 		Dynamic setComputedWidth_dyn();
 
-		virtual int getComputedWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedWidth_dyn();
 
-		virtual int getComputedAutoWidth( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedAutoWidth( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedAutoWidth_dyn();
 
-		virtual int getComputedHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedHeight_dyn();
 
-		virtual int getComputedAutoHeight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedAutoHeight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedAutoHeight_dyn();
 
-		virtual int getComputedMarginLeft( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedMarginLeft( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedMarginLeft_dyn();
 
-		virtual int getComputedMarginRight( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedMarginRight( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedMarginRight_dyn();
 
-		virtual int getComputedMarginTop( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedMarginTop( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedMarginTop_dyn();
 
-		virtual int getComputedMarginBottom( ::cocktail::core::style::AbstractCoreStyle style,Dynamic containingHTMLElementData);
+		virtual int getComputedMarginBottom( ::cocktail::core::style::CoreStyle style,Dynamic containingHTMLElementData);
 		Dynamic getComputedMarginBottom_dyn();
 
 		virtual int getComputedMargin( ::cocktail::core::style::Margin marginStyleValue,::cocktail::core::style::Margin opositeMargin,int containingHTMLElementDimension,int computedDimension,bool isDimensionAuto,int computedPaddingsDimension,double fontSize,double xHeight,bool isHorizontalMargin);

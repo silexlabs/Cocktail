@@ -33,8 +33,8 @@
 #ifndef INCLUDED_cocktail_core_renderer_LayerRenderer
 #include <cocktail/core/renderer/LayerRenderer.h>
 #endif
-#ifndef INCLUDED_cocktail_core_style_AbstractCoreStyle
-#include <cocktail/core/style/AbstractCoreStyle.h>
+#ifndef INCLUDED_cocktail_core_style_CoreStyle
+#include <cocktail/core/style/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_core_style_TextAlign
 #include <cocktail/core/style/TextAlign.h>
@@ -53,9 +53,6 @@
 #endif
 #ifndef INCLUDED_cocktail_core_style_formatter_InlineFormattingContext
 #include <cocktail/core/style/formatter/InlineFormattingContext.h>
-#endif
-#ifndef INCLUDED_cocktail_port_flash_player_CoreStyle
-#include <cocktail/port/flash_player/CoreStyle.h>
 #endif
 #ifndef INCLUDED_cocktail_port_flash_player_HTMLElement
 #include <cocktail/port/flash_player/HTMLElement.h>

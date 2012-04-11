@@ -62,8 +62,12 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		nativeElement.y = 0;
 		
 		nativeElement.graphics.clear();
-		
+		#if flash9
 		nativeElement.graphics.beginFill(0xFF0000, 0.0);
+		//bug in nme, no click event for transparent rect
+		#elseif nme
+		nativeElement.graphics.beginFill(0xFF0000, 0.01);
+		#end
 		nativeElement.graphics.drawRect(_bounds.x,_bounds.y, _bounds.width,_bounds.height);
 		nativeElement.graphics.endFill();
 
