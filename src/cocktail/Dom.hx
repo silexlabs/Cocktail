@@ -30,6 +30,7 @@ typedef NamedNodeMap = cocktail.core.dom.NamedNodeMap;
 typedef Image = cocktail.core.HTMLImageElement;
 typedef HtmlDom = cocktail.core.HTMLElement;
 typedef Anchor = cocktail.core.HTMLAnchorElement;
+typedef Body = cocktail.core.html.HTMLBodyElement;
 
 typedef HTMLAnchorElement = cocktail.core.HTMLAnchorElement;
 typedef HTMLImageElement = cocktail.core.HTMLImageElement;
