@@ -42,9 +42,6 @@ class Keyboard extends AbstractKeyboard
 	 * Actually remove and set listeners on the nativeElement.
 	 * The listener is always removed and if the htmlElement
 	 * callback is not null a new listener is set
-	 * 
-	 * TODO : should only listen for Stage keyboard event in flash as
-	 * focus is abstracted
 	 */
 	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
 	{

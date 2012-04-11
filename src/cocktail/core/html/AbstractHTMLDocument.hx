@@ -208,28 +208,32 @@ class AbstractHTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When a key is pressed, detect if a tab
+	 * When a key is pressed, redirect it to
+	 * the active element and detect if a tab
 	 * focus or a simulated click must happen.
-	 * 
-	 * If it is any other key, redirect the 
-	 * key down event to the currently active
-	 * HTMLElement
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
+		if (activeElement.onkeydown != null)
+		{
+			activeElement.onkeydown(keyboardEvent);
+		}
+		
 		switch (keyboardEvent.key)
 		{
-			//TODO : the focus event should be preventable
 			case TAB_KEY_CODE:
-				activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
+				//only do sequantial navigation if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
+				{
+					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
+				}
+				
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
-				activeElement.click();
-				
-			default:
-				if (activeElement.onkeydown != null)
+				//only simulate click if default was not prevented
+				if (keyboardEvent.defaultPrevented == false)
 				{
-					activeElement.onkeydown(keyboardEvent);
+					activeElement.click();
 				}
 		}
 	}
@@ -387,13 +391,13 @@ class AbstractHTMLDocument extends Document
 		//as the current one
 		if (value != activeElement)
 		{
-			//else for call blur on the current active element
+			//else call the blur callback on the element
 			if (activeElement.onblur != null)
 			{
 				activeElement.onblur(new Event(Event.BLUR, activeElement));
 			}
 			
-			//then store the new one and call Focus on it
+			//then store the new one and call the focus callback on it
 			_activeElement = value;
 			if (_activeElement.onfocus != null)
 			{
