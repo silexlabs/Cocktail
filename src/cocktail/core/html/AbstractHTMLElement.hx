@@ -401,6 +401,15 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return oldChild;
 	}
 	
+	/**
+	 * Overriden to make the tag name case-insensitive in an
+	 * HTML document
+	 */
+	override public function getElementsByTagName(tagName:String):Array<Node>
+	{
+		return super.getElementsByTagName(tagName.toLowerCase());
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE SETTER/GETTER AND METHOD
 	// Proxies setting/getting properties from the mouse listener instance
@@ -741,16 +750,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return _onBlur;
 	}
 	
-	/**
-	 * when set, invalidate the focus manager
-	 * tab list, as this HTMLElement may appear
-	 * at another index of the tab list
-	 * 
-	 * TODO : should call ownerDocument.invalidateTabList ?
-	 */
 	private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
-		//FocusManager.getInstance().invalidate();
 		return _tabIndex = value;
 	}
 	
