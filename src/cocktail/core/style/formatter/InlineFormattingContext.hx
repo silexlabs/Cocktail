@@ -32,6 +32,9 @@ import haxe.Log;
  * the inline formatting context and the y position using
  * the vertical align property
  * 
+ * TODO : re-implement to use parse element in formatting context
+ * as a tree, like in block formatting context
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InlineFormattingContext extends FormattingContext

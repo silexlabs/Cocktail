@@ -10,28 +10,42 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.port.nme;
 
 import cocktail.core.NativeElement;
-import flash.text.engine.ElementFormat;
-import flash.text.engine.FontDescription;
-import flash.text.engine.FontPosture;
-import flash.text.engine.TextBlock;
-import flash.text.engine.TextElement;
-import flash.text.engine.TextLine;
-import flash.text.engine.TypographicCase;
-import flash.text.Font;
+import flash.text.TextField;
+import flash.text.TextFormat;
 import haxe.Log;
 import cocktail.core.font.AbstractFontManager;
 import cocktail.core.font.FontData;
+import flash.text.TextFieldAutoSize;
 import cocktail.core.style.StyleData;
-import haxe.remoting.FlashJsConnection;
-
 
 /**
- * TODO : doc + make it work
+ * This is the nme port for the FontManager
  * 
- * @author lexa
+ * @author Yannick DOMINGUEZ
  */
 class FontManager extends AbstractFontManager
 {
+	/**
+	 * used to hold a runtime specific default
+	 * font name for serif font
+	 */
+	private static inline var SERIF_GENERIC_FONT_NAME:String = "serif";
+	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
+	
+	/**
+	 * used to hold a runtime specific default
+	 * font name for sans-serif font
+	 */
+	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans";
+	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
+	
+	/**
+	 * used to hold a runtime specific default
+	 * font name for monospace font (like courier)
+	 */
+	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "typewriter";
+	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
+	
 	/**
 	 * class constructor
 	 */
@@ -44,70 +58,65 @@ class FontManager extends AbstractFontManager
 	// Overriden public virtual methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Return font metrics for a given font
+	 * at a given size using a Flash text field
+	 * to measure it
+	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
 	{
 
-		//create the font metrics object only if null,
-		//else it is already cached
-		if (_fontMetrics == null)
-		{
-			var textField:TextField = new TextField();
-			textField.autoSize = TextFieldAutoSize.LEFT;
-			
-			var textFormat:TextFormat = new TextFormat();
-			textFormat.size = _computedStyle.fontSize;
-			//only one font is supported in nme
-			textFormat.font = getNativeFontFamily(this._fontFamily[0]);
-			
-			textField.setTextFormat(textFormat);
-			
-			textField.text = "x";
-			
-			var ascent:Float =  textField.textHeight / 2;
-			Log.trace(ascent);
-			textField.text = ",";
-			
-			var descent:Float = textField.textHeight / 2;
-			
-			textField.text = "x";
-			
-			var xHeight:Int = Math.round(textField.textHeight);
+		var textField:TextField = new TextField();
+		textField.autoSize = TextFieldAutoSize.LEFT;
 		
-			textField.text = "M";
-			var spaceWidth:Int = Math.round(textField.textWidth);
-			
-			
-			_fontMetrics = {
-				fontSize:_computedStyle.fontSize,
-				ascent:Math.round(ascent),
-				descent:Math.round(descent),
-				xHeight:xHeight,
-				spaceWidth:spaceWidth,
-				superscriptOffset:1,
-				subscriptOffset:1,
-				underlineOffset:1
-			};
-		}
+		var textFormat:TextFormat = new TextFormat();
+		textFormat.size = fontSize;
+		textFormat.font = fontFamily;
 		
-		return _fontMetrics;
+		textField.setTextFormat(textFormat);
 		
+		textField.text = "x";
+		
+		var ascent:Float =  textField.textHeight / 2;
+		Log.trace(ascent);
+		textField.text = ",";
+		
+		var descent:Float = textField.textHeight / 2;
+		
+		textField.text = "x";
+		
+		var xHeight:Int = Math.round(textField.textHeight);
+	
+		textField.text = "M";
+		var spaceWidth:Int = Math.round(textField.textWidth);
+		
+		var fontMetrics:FontMetricsData = {
+			fontSize:fontSize,
+			ascent:Math.round(ascent),
+			descent:Math.round(descent),
+			xHeight:xHeight,
+			spaceWidth:spaceWidth,
+			superscriptOffset:1,
+			subscriptOffset:1,
+			underlineOffset:1
+		};
+		
+		return fontMetrics;
 	}
 	
+	/**
+	 * Create and return a flash text field
+	 */
 	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
 	{
-		
-		text = applyTextTransform(text, _computedStyle.textTransform);
-		
+		text = applyTextTransform(text, computedStyle.textTransform);
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
 		textField.selectable = false;
 		textField.autoSize = TextFieldAutoSize.LEFT;
-		textField.setTextFormat(getTextFormat());
-		
-		var textRenderer:TextRenderer = new TextRenderer(this, textField, textToken);
+		textField.setTextFormat(getTextFormat(computedStyle));
 
-		//wrap the flash text line in a TextRenderer
-		return textRenderer;
+		return textField;
 		
 
 	}	
@@ -116,18 +125,62 @@ class FontManager extends AbstractFontManager
 	// Private methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getTextFormat():TextFormat
+	/**
+	 * Takes the array containing every font to apply to the
+	 * text (ordered by priority, the first available font being
+	 * used) and return a comma separated list containing the ordered
+	 * font names
+	 * 
+	 * @return a comma separated list of font, generally ordered from most
+	 * specific to most generic, e.g "Universe,Arial,_sans"
+	 */
+	private function getNativeFontFamily(value:Array<String>):String
+	{
+		var fontFamily:String = "";
+		
+		for (i in 0...value.length)
+		{
+			var fontName:String = value[i];
+			
+			switch (fontName)
+			{
+				case SERIF_GENERIC_FONT_NAME:
+					fontName = SERIF_FLASH_FONT_NAME;
+					
+				case SANS_SERIF_GENERIC_FONT_NAME:
+					fontName = SANS_SERIF_FLASH_FONT_NAME;
+					
+				case MONOSPACE_GENERIC_FONT_NAME:
+					fontName = MONOSPACE_FLASH_FONT_NAME;
+			}
+			
+			fontFamily += fontName;
+			
+			if (i < value.length - 1)
+			{
+				fontFamily += ",";
+			}
+		}
+		
+		return fontFamily;
+	}
+	
+	/**
+	 * Return a flash TextFormat object, to be
+	 * used on the created Text Field
+	 */
+	private function getTextFormat(computedStyle:ComputedStyleData):TextFormat
 	{
 		
 		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(_computedStyle.fontFamily[0]);
+		textFormat.font = getNativeFontFamily(computedStyle.fontFamily);
 		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
-		textFormat.size = _computedStyle.fontSize;
+		textFormat.letterSpacing = computedStyle.letterSpacing;
+		textFormat.size = computedStyle.fontSize;
 		
 		var bold:Bool;
 		
-		switch (_computedStyle.fontWeight)
+		switch (computedStyle.fontWeight)
 		{
 			case lighter, FontWeight.normal,
 			css100, css200, css300, css400:
@@ -139,14 +192,11 @@ class FontManager extends AbstractFontManager
 		}
 		
 		textFormat.bold = bold;
-		textFormat.italic = _computedStyle.fontStyle == FontStyle.italic;
+		textFormat.italic = computedStyle.fontStyle == FontStyle.italic;
 		
-		textFormat.letterSpacing = _computedStyle.letterSpacing;
+		textFormat.letterSpacing = computedStyle.letterSpacing;
 		
-		textFormat.color = _computedStyle.color.color;
+		textFormat.color = computedStyle.color.color;
 		return textFormat;
-		
 	}
-	
-	
 }

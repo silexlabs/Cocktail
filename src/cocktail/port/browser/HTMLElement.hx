@@ -257,6 +257,7 @@ class HTMLElement extends AbstractHTMLElement
 	 */
 	override public function focus():Void
 	{
+		super.focus();
 		_nativeElement.focus();
 	}
 	
@@ -265,6 +266,7 @@ class HTMLElement extends AbstractHTMLElement
 	 */
 	override public function blur():Void
 	{
+		super.blur();
 		_nativeElement.blur();
 	}
 	

@@ -7,107 +7,230 @@
 */
 package cocktail.core.focus;
 
+import cocktail.core.dom.Node;
+import cocktail.core.event.Event;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.HTMLElement;
+import cocktail.core.event.MouseEvent;
 import cocktail.core.Keyboard;
 import cocktail.core.mouse.MouseData;
 import cocktail.core.dom.DOMData;
-import haxe.Log;
-import cocktail.core.FocusManagerImpl;
+import cocktail.core.nativeElement.NativeElementManager;
+import cocktail.core.event.KeyboardEvent;
+import cocktail.core.dom.DOMData;
 
 /**
- * The Focus Manager determine which HTMLElement in the 
- * DOM has focus, meaning that it will receive keyboard
- * events. Focus can be given by clicking on a HTMLElement
- * which can receive the focus or by using the TAB key on
- * the keyboard
- * 
- * This class is a singleton forwarding method to
- * actual implementation, differing for each runtime
+ * The Focus Manager determine which HTMLElements in 
+ * the Document can receive focus and manage
+ * sequential focus navigation which is triggered
+ * in most cases by pressing the TAB key on a keyboard
  * 
  * @author Yannick DOMINGUEZ
  */
-class FocusManager 
-{
+class FocusManager
+{	
 	/**
-	 * The singleton instance
+	 * class constructor.
 	 */
-	private static var _instance:FocusManager;
-	
-	/**
-	 * get/set the bodyHTMLElement at the top of the DOM
-	 */
-	public var bodyElement(getBodyElement, setBodyElement):HTMLBodyElement;
-	
-	/**
-	 * get/set the currently active (focused) HTMLElement
-	 */
-	public var activeElement(getActiveElement, setActiveElement):HTMLElement;
-	
-	/**
-	 * an instance of the actual implementation of the
-	 * focus manager
-	 */
-	private var _focusManagerImpl:FocusManagerImpl;
-	
-	/**
-	 * class constructor. Instantiate the focus
-	 * manager implementation. Private as it is
-	 * a Singleton
-	 */
-	private function new() 
+	public function new() 
 	{
-		_focusManagerImpl = new FocusManagerImpl();
+		
 	}
 	
+	/////////////////////////////////
+	// PUBLIC METHODS
+	/////////////////////////////////
+	
 	/**
-	 * Singleton initialisation method
+	 * determine the next
+	 * HTMLElement in the tabList array which
+	 * must be focused
+	 * 
+	 * @param	reverse if true,
+	 * focus the previous focusable HTMLElement in
+	 * the tabList array
+	 * @param rootElement the root element of the Document, 
+	 * in an HTMLDocument, it is the HTMLBodyElement
+	 * @param activeElement the element which currently
+	 * has focus
 	 */
-	public static function getInstance():FocusManager
+	public function getNextFocusedElement(reverse:Bool, rootElement:HTMLElement, activeElement:HTMLElement):HTMLElement
 	{
-		if (_instance == null)
+		//build the list of focusable elements
+		var tabList:Array<HTMLElement> = buildTabList(rootElement);
+		
+		//will hold the index of the currently focused
+		//element and will be incremented/decremented to 
+		//match the index of the next focused element
+		var tabListIndex:Int;
+		
+		//if the currently activeHTMLElement is the body, it means
+		//no HTMLElement is actually focused and there is no need
+		//to increment/decrement
+		if (activeElement == rootElement)
 		{
-			_instance = new FocusManager();
+			//init the index to 0 or the index of the last focusable
+			//element if the focus is in reverse order
+			if (reverse == false)
+			{
+				tabListIndex = 0;
+			}
+			else
+			{
+				tabListIndex = tabList.length - 1;
+			}
 		}
-		return _instance;
+		//if any other element than the body has currently the focus
+		else
+		{
+			//retrive the index of the activeElement
+			tabListIndex = getElementTabListIndex(activeElement, tabList);
+			
+			//then increment or decrement its index to find the index of 
+			//the next focusable element
+			if (reverse == false)
+			{
+				tabListIndex++;
+			}
+			else
+			{
+				tabListIndex--;
+			}
+		}
+		
+		//if the incremented tab list index is greater than the 
+		//elements in the tab list, it means a full loop has been done
+		//and the focus is set back to the first focusable element in the list
+		if (tabListIndex == tabList.length)
+		{
+			tabListIndex = 0;
+		}
+		//same for the decremented tab list index
+		else if (tabListIndex == -1)
+		{
+			tabListIndex = tabList.length - 1;
+		}
+		
+		//return the element add the new tab list index
+		return tabList[tabListIndex];
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////
+	// PRIVATE METHODS
+	/////////////////////////////////
 	
 	/**
-	 * Invalidate the focus manager order of 
-	 * HTMLElement to focus when using the TAB
-	 * key
+	 * Return the index of an element in the 
+	 * tabList array
 	 */
-	public function invalidate():Void
+	private function getElementTabListIndex(element:HTMLElement, tabList:Array<HTMLElement>):Int
 	{
-		_focusManagerImpl.invalidate();
+		for (i in 0...tabList.length)
+		{
+			if (tabList[i] == element)
+			{
+				return i;
+			}
+		}
+		//TODO : throw exception ?
+		return -1;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	// forward to the focus manager implementation
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setActiveElement(value:HTMLElement):HTMLElement
-	{
-		return _focusManagerImpl.activeElement = value;
+	/**
+	 * Traverse all the DOM once to build a flat list of all the focusable
+	 * HTMLElements in the DOM.
+	 * 
+	 * The list is first composed of all the focusable HTMLElement with a tabIndex
+	 * superior to 0, ordered form smaller to bigger, then the list contains all the
+	 * focusable HTMLElement with a tabIndex of 0, ordered in DOM order starting from
+	 * the HTMLBodyElement
+	 */
+	private function buildTabList(rootElement:HTMLElement):Array<HTMLElement>
+	{		
+		//contains the HTMLElement with a 0 tabIndex
+		var orderedTabList:Array<HTMLElement> = new Array<HTMLElement>();
+		
+		//contains the HTMLElement with a tabIndex > 0
+		var indexedTabList:Array<HTMLElement> = new Array<HTMLElement>();
+		
+		//build the list
+		doBuildTabList(rootElement, orderedTabList, indexedTabList);
+		
+		//concatenate the 2 arrays
+		for (i in 0...orderedTabList.length)
+		{
+			indexedTabList.push(orderedTabList[i]);
+		}
+		
+		return indexedTabList;
 	}
 	
-	private function getActiveElement():HTMLElement
+	/**
+	 * Recursive method traversing all the DOM and filling
+	 * the reference to the arrays which must contain
+	 * the ordered focusable HTMLElements
+	 */
+	private function doBuildTabList(htmlElement:HTMLElement, orderedTabList:Array<HTMLElement>, indexedTabList:Array<HTMLElement>):Void
 	{
-		return _focusManagerImpl.activeElement;
-	}
-	
-	private function setBodyElement(value:HTMLBodyElement):HTMLBodyElement
-	{
-		return _focusManagerImpl.bodyElement = value;
-	}
-	
-	private function getBodyElement():HTMLBodyElement
-	{
-		return _focusManagerImpl.bodyElement;
+		//loop in all children
+		for (i in 0...htmlElement.childNodes.length)
+		{
+			//only element node can be focused
+			if (htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
+			{
+				var child:HTMLElement = cast(htmlElement.childNodes[i]);
+				
+				//if the child also has children, call the doBuildTabList
+				//recursively
+				if (child.hasChildNodes() == true)
+				{
+					doBuildTabList(child, orderedTabList, indexedTabList);
+				}
+				
+				//check if the child can be focused
+				if (child.isFocusable() == true)
+				{
+					//if it can and has a 0 tabIndex or no defined tabIndex, push it
+					//the DOM order array
+					//TODO : should tabIndex be null Int ?
+					if (child.tabIndex == 0 || child.tabIndex == null)
+					{
+						orderedTabList.push(child);
+					}
+					//else if it has a defined tabIndex
+					else if (child.tabIndex > 0)
+					{
+						//find where to insert it in the 
+						//indexed HTMLElement array which is
+						//ordered starting from the HTMLElement
+						//with the smallest tabIndex to the
+						//biggest
+						if (indexedTabList.length == 0)
+						{
+							indexedTabList.push(child);
+						}
+						else
+						{
+							var foundSpotFlag:Bool = false;
+							for (j in 0...indexedTabList.length)
+							{
+								if (child.tabIndex < indexedTabList[j].tabIndex)
+								{
+									indexedTabList.insert(j, child);
+									foundSpotFlag = true;
+								}
+							}
+							//push to the end of the array if it has a biggest
+							//tabIndex than all the other HTMLElements in the
+							//array
+							if (foundSpotFlag == false)
+							{
+								indexedTabList.push(child);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

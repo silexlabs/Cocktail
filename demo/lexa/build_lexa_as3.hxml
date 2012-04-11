@@ -1,4 +1,5 @@
 -cp ../../src/
+-cp ../../lib/
 -main org.lexa.demo.Lexa
 -swf lexa.swf
 -swf-version 10.2

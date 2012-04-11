@@ -11,6 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.IEventTarget;
+import cocktail.core.HTMLDocument;
 import cocktail.core.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
@@ -27,8 +28,6 @@ import cocktail.core.Mouse;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
-
-
 
 /**
  * All HTML element interfaces derive from this class.
@@ -47,6 +46,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : add mouse double click
 	
 	/**
 	 * An instance of the cross-platform mouse class, used to listen
@@ -122,18 +123,14 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * is set, it is used to determine focus order when the
 	 * user press the TAB key. If it is not set, the document
 	 * order is used to establish focus order and the HTMLElement
-	 * is only focused if it is intrinsivally focusable, like for
+	 * is only focused if it is intrinsically focusable, like for
 	 * instance an HTMLInputElement
+	 * 
+	 * TODO : should be stored in the attributes hash instead,
+	 * no need for class attribute
 	 */
 	private var _tabIndex:Null<Int>;
 	public var tabIndex(get_tabIndex, set_tabIndex):Null<Int>;
-	
-	/**
-	 * Return wheter this HTMLElement is intrinsically
-	 * focusable. For instance, html input or anchor elements
-	 * are intrinsically focusable
-	 */
-	public var isDefaultFocusable(get_isDefaultFocusable, never):Bool;
 	
 	/**
 	 * callback called when the HTMLElement receives 
@@ -186,7 +183,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	/**
 	 * An abstract reference to the native element wrapped by this HTMLElement.
-	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite,
+	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite
 	 */
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
@@ -278,7 +275,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	
 	/**
 	 * This is the style object exposed by the public API.
-	 * It is used to set and get CSS styles with strings
+	 * It is used to set and get CSS styles with strings, like
+	 * when using JavaScript in the browser,
 	 * and is in charge of converting them to typed object
 	 * which it sets on coreStyle
 	 */
@@ -403,10 +401,37 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return oldChild;
 	}
 	
+	/**
+	 * Overriden to make the tag name case-insensitive in an
+	 * HTML document
+	 */
+	override public function getElementsByTagName(tagName:String):Array<Node>
+	{
+		return super.getElementsByTagName(tagName.toLowerCase());
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE SETTER/GETTER
+	// MOUSE SETTER/GETTER AND METHOD
 	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Simulates a mouse click on an element.
+	 * 
+	 * The screen and client coordinate of the 
+	 * generated MouseEvent are 0 and modifier
+	 * key (Shift, control...) correspond
+	 * to the current modifier key state
+	 * 
+	 * TODO : get current modifier key state
+	 */
+	public function click():Void
+	{
+		if (_onClick != null)
+		{
+			onClickCallback(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
+		}
+	}
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
@@ -638,39 +663,71 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Determine wether the htmlElement can receive
+	 * focus
+	 */
+	public function isFocusable():Bool
+	{
+		//if it isn't attached to the DOM,
+		//it can't be focused
+		if (parentNode == null)
+		{
+			return false;
+		}
+		
+		//it can be focused if it is inherently
+		//focusable
+		else if (isDefaultFocusable() == true)
+		{
+			return true;
+		}
+		
+		//else, an element with a tab index 
+		//superior to 0 can receive focus
+		else if (tabIndex != null)
+		{
+			if (tabIndex > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Return wether this HTMLElement can intrinsically recieve
+	 * focus, this is the case for instance for HTMLInputElement
+	 */
+	private function isDefaultFocusable():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * Gives keyboard focus to the HTMLElement
 	 * The focus manager determines if the HTMLElement can
 	 * actually receive focus
 	 */
 	public function focus():Void
 	{
-		//FocusManager.getInstance().activeElement = cast(this);
+		if (isFocusable() == true)
+		{
+			var htmlDocument:HTMLDocument = cast(ownerDocument);
+			htmlDocument.activeElement = cast(this);
+		}
 	}
 	
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
 	 * 
-	 * TODO : check if it actually work
 	 * TODO : check if focus must be set on Document if
 	 * this element currently doesn't have focus
-	 * TODO : should call focus on Document or Document.body
-	 * instead of setting activeElement to null. Should
-	 * Document have a focus() method ? Should it inherit
-	 * form HTMLElement or share common interface ?
 	 */
 	public function blur():Void
 	{
-		//FocusManager.getInstance().activeElement = null;
-	}
-	
-	/**
-	 * default HTMLElement are not focusable unless their
-	 * tabIndex attribute is not null
-	 */
-	private function get_isDefaultFocusable():Bool
-	{
-		return false;
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.body.focus();
 	}
 	
 	private function set_onFocus(value:Event->Void):Event->Void
@@ -693,14 +750,8 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 		return _onBlur;
 	}
 	
-	/**
-	 * when set, invalidate the focus manager
-	 * tab list, as this HTMLElement may appear
-	 * at another index of the tab list
-	 */
 	private function set_tabIndex(value:Null<Int>):Null<Int>
 	{
-		//FocusManager.getInstance().invalidate();
 		return _tabIndex = value;
 	}
 	
@@ -785,6 +836,9 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * map
 	 * @return the id as a String or an empty
 	 * String if it was not set 
+	 * 
+	 * TODO : maybe for getter should return null
+	 * if not defined ?
 	 */
 	private function get_id():String
 	{
@@ -837,7 +891,7 @@ class AbstractHTMLElement extends Element, implements IEventTarget
 	 * return the first positioned ancestor of the HTMLElement
 	 * 
 	 * @return an HTMLElement or null if this HTMLElement is not yet
-	 * added to the DOM
+	 * added to the DOM or is the HTMLBodyElement
 	 */
 	private function get_offsetParent():HTMLElement
 	{
