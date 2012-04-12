@@ -65,8 +65,8 @@ class AbstractHTMLDocument extends Document
 	 * 
 	 * The body is the root of the visual content in HTML
 	 */
-	private var _body:HTMLElement;
-	public var body(get_body, never):HTMLElement;
+	private var _body:HTMLBodyElement;
+	public var body(get_body, never):HTMLBodyElement;
 	
 	/**
 	 * A reference to the Window, used to listen for
@@ -107,7 +107,7 @@ class AbstractHTMLDocument extends Document
 	{
 		super();
 		
-		_body = createElement(HTML_BODY_TAG_NAME);
+		_body = cast(createElement(HTML_BODY_TAG_NAME));
 		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
 		
@@ -368,7 +368,7 @@ class AbstractHTMLDocument extends Document
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_body():HTMLElement 
+	private function get_body():HTMLBodyElement 
 	{
 		return _body;
 	}
