@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef Mouse =  cocktail.port.flash_player.Mouse;
 
-#elseif js
-typedef Mouse =  cocktail.port.browser.Mouse;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

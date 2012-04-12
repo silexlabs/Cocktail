@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef HTMLAnchorElement =  cocktail.port.flash_player.HTMLAnchorElement;
 
-#elseif js
-typedef HTMLAnchorElement =  cocktail.port.browser.HTMLAnchorElement;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef Style =  cocktail.core.style.adapter.AbstractStyle;
 
-#elseif js
-typedef Style =  cocktail.port.browser.Style;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
