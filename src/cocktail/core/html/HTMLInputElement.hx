@@ -14,7 +14,7 @@ import cocktail.core.style.CoreStyle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLInputElement extends HTMLElement
+class HTMLInputElement extends HTMLElement
 {
 
 	/**
