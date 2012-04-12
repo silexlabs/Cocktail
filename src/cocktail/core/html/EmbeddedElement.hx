@@ -109,7 +109,6 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
-		//TODO : should throw DOMException
 		return newChild;
 	}
 	
@@ -119,7 +118,6 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		//TODO : should throw DOMException
 		return oldChild;
 	}
 
@@ -147,8 +145,6 @@ class EmbeddedElement extends HTMLElement
 		return _intrinsicRatio;
 	}
 	
-	//TODO : override in JS to set attribute on native element
-	// or use generic set_attribute method on JS HTMLElement ?
 	private function set_width(value:Int):Int
 	{
 		return _width = value;

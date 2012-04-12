@@ -33,4 +33,29 @@ class HTMLImageElement extends AbstractHTMLImageElement
 	{
 		_nativeElement = _embeddedAsset;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function setWidth(value:Int):Int
+	{
+		super.setWidth(value);
+		
+		//set the width attribute on the native img
+		untyped _nativeElement.width = value;
+		
+		return _width = value;
+	}
+	
+
+	override private function setHeight(value:Int):Int
+	{
+		super.setHeight(value);
+		
+		//set the height attribute on the native img
+		untyped _nativeElement.height = value;
+		
+		return _height = value;
+	}
 }
