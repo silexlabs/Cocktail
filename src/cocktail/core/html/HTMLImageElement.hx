@@ -27,7 +27,7 @@ import cocktail.core.html.EmbeddedElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLImageElement extends EmbeddedElement
+class HTMLImageElement extends EmbeddedElement
 {
 	/**
 	 * the html tag name of an image

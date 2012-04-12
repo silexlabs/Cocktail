@@ -15,7 +15,7 @@ import cocktail.core.focus.FocusManager;
 import cocktail.core.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.HTMLInputElement;
 import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;

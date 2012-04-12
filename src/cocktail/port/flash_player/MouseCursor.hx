@@ -15,7 +15,7 @@ import flash.ui.Mouse;
 
 #end
 import flash.Vector;
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.mouse.AbstractMouseCursor;
 import cocktail.core.geom.GeomData;
 import cocktail.core.mouse.MouseData;

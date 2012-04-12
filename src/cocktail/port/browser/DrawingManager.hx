@@ -7,7 +7,7 @@
 */
 package cocktail.port.browser;
 
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 

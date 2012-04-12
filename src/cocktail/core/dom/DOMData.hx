@@ -8,7 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.html.HTMLElement;
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;
 
