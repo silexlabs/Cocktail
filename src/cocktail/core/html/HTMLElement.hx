@@ -18,7 +18,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
-import cocktail.core.Style;
+import cocktail.core.style.adapter.Style;
 import cocktail.core.style.ContainerCoreStyle;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;

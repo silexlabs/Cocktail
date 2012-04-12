@@ -28,6 +28,8 @@ class HTMLAnchorElement extends AbstractHTMLAnchorElement
 	
 	/**
 	 * Open linked document using flash API if needed
+	 * 
+	 * TODO : use window.open instead
 	 */
 	override private function openDocument():Void
 	{
