@@ -7,14 +7,6 @@
 */
 package cocktail.core.html;
 
-#if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-
-#elseif js
-import cocktail.port.browser.HTMLElement;
-
-#end
-
 /**
  * Root of an HTML document
  * 

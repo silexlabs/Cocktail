@@ -13,7 +13,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.HTMLAnchorElement;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.HTMLHtmlElement;
 import cocktail.core.HTMLImageElement;
 import cocktail.core.HTMLInputElement;

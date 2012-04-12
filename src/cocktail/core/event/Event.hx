@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.event;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The Event interface is used to provide contextual information

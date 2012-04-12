@@ -7,7 +7,7 @@
 */
 package cocktail.core.mouse;
 
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.event.MouseEvent;
 

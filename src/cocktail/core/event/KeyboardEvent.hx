@@ -1,5 +1,5 @@
 package cocktail.core.event;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The KeyboardEvent interface provides specific contextual information associated with
