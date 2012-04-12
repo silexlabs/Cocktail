@@ -9,7 +9,7 @@ package cocktail.port.browser;
 
 import haxe.Log;
 import js.Lib;
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.mouse.AbstractMouseCursor;
 import cocktail.core.geom.GeomData;
 import cocktail.core.mouse.MouseData;
