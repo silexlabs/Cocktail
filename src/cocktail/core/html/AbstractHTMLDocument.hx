@@ -169,7 +169,7 @@ class AbstractHTMLDocument extends Document
 			default:
 				element = new HTMLElement(tagName);
 		}
-		trace(element);
+		
 		element.ownerDocument = this;
 		
 		return element;
@@ -199,7 +199,6 @@ class AbstractHTMLDocument extends Document
 		}
 		else
 		{
-			trace("invalidate");
 			layoutAndRender();
 		}
 	}
