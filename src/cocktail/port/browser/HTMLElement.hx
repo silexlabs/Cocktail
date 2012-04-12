@@ -97,7 +97,6 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		super.insertBefore(newChild, refChild);
 		
-		//TODO : test
 		untyped _nativeElement.insertBefore(newChild.nativeElement, refChild.nativeElement);
 		
 		return newChild;
@@ -111,7 +110,6 @@ class HTMLElement extends AbstractHTMLElement
 	{
 		super.replaceChild(newChild, oldChild);
 		
-		//TODO : test
 		untyped _nativeElement.replaceChild(newChild.nativeElement, refChild.nativeElement);
 		
 		return oldChild;
