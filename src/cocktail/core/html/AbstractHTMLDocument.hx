@@ -16,7 +16,7 @@ import cocktail.core.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
-import cocktail.core.HTMLInputElement;
+import cocktail.core.html.HTMLInputElement;
 import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.NativeElement;
