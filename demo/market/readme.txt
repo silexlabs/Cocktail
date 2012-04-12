@@ -172,6 +172,21 @@ To Do Alex 30/03/2012
 -crop thumbs des thumblist & thumbtext list: utiliser des masques html => deniers ajustements à faire => OK
 -swippable view scroll non fonctionnel sur android & Firefox
 
+To do Alex pre fine tuning:
+-loading screen n'apparait pas en mode offline
+-scroll sous android
+=> tests alex
+-resize
+-passer le scroll en utilisant le x/y
+-menu
+-couleurs textes
+-images header
+-taille & couleurs border
+-retour à la ligne liste text
+=> Pol
+-affiner le scroll si tremblement
+relase scroll vertical
+
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield

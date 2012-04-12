@@ -44,6 +44,7 @@ class ListViewStyle
 		//node.style.width = "auto";
 		//node.style.height = "100%";
 		node.style.height = Std.string(Lib.window.innerHeight) + "px";
+		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
 		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
 		//node.style.height = "auto";
 		
@@ -53,6 +54,7 @@ class ListViewStyle
 		node.style.verticalAlign = "top";
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "auto";
+		//node.style.overflowY = "hidden";
 	}
 	
 	/**

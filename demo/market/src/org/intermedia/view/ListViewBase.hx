@@ -2,7 +2,7 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-import js.Scroll;
+//import js.Scroll;
 //import cocktail.classInstance.ClassInstance;
 //import cocktail.node.DOMElementData;
 //import cocktail.node.HtmlDom;

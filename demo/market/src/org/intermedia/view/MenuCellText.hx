@@ -13,10 +13,12 @@ import org.intermedia.model.ApplicationModel;
 class MenuCellText extends CellBase
 {
 
-	public function new() 
+	//public function new() 
+	public function new(cellStyle:HtmlDom->Void) 
 	{
 		super();
-		MenuCellTextStyle.setCellStyle(node);
+		//MenuCellTextStyle.setCellStyle(node);
+		cellStyle(node);
 	}
 	
 	/**

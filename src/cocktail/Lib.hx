@@ -7,8 +7,8 @@
 */
 package cocktail;
 
-import core.html.HTMLDocument;
-import core.Window;
+import cocktail.core.HTMLDocument;
+import cocktail.core.Window;
 
 /**
  * Entry point of the Cocktail library
@@ -63,6 +63,7 @@ class Lib
 		{
 			init();
 		}
+		
 		return _document;
 	}
 	

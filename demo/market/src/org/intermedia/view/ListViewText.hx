@@ -21,6 +21,7 @@ class ListViewText extends ListViewBase
 	public function new() 
 	{
 		super();
+		
 	}
 	
 	/**

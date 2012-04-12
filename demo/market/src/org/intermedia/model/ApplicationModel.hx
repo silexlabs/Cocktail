@@ -45,7 +45,7 @@ class ApplicationModel
 	public function new() 
 	{
 		// init online switch
-		_online = true;
+		_online = false;
 		
 		// initialise private attributes
 		_loadedCellsData = new Array<CellData>();
