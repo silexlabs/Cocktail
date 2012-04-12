@@ -210,13 +210,14 @@ class Node
 	 */
 	public function appendChild(newChild:Node):Node
 	{
-		if (newChild.ownerDocument != _ownerDocument)
-		{
+		//TODO : don't seem to work, bug with HTMLBodyElement ?
+		//if (newChild.ownerDocument != _ownerDocument)
+		//{
 			//Raised if newChild was created from a different
 			//document than the one that created this node.
-			throw DOMException.WRONG_DOCUMENT_ERR;
-		}
-		
+			//throw DOMException.WRONG_DOCUMENT_ERR;
+		//}
+		//
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;
