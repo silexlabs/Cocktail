@@ -69,7 +69,8 @@ class SwippableListView extends ListViewBase
 	public function new()
 	{
 		super();
-		
+		// display loading
+		displayLoading = true;
 		
 		// init attributes
 		_offset = { x:0, y:0 };
@@ -187,8 +188,6 @@ class SwippableListView extends ListViewBase
 
 		}
 		
-		displayLoading = true;
-		
 		// set index
 		//_index = 1;
 		_index = 1;
@@ -206,9 +205,7 @@ class SwippableListView extends ListViewBase
 		//_currentListView.onDataRequest = onDataRequestCallback;
 		
 		// js touch events handling
-		#if js
 		initTouchEvents();
-		#end
 	}
 	
 	/**
@@ -352,15 +349,20 @@ class SwippableListView extends ListViewBase
 		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
 		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
 		
+		// initialise initial touch positions
 		_initialPosition.x = event.touches[0].pageX;
 		_initialPosition.y = event.touches[0].pageY;
+		// set x offset start to swippableView left scroll
 		_offsetStart.x = node.scrollLeft;
+		// set y offset start to _currentListView top scroll
+		_offsetStart.y = _currentListView.node.scrollTop;
+		// reset _direction
 		_direction = Direction.notYetSet;
 
 		//trace(event.touches[0].pageX + ", " + event.touches[0].pageY + ", " + _offsetStart.x);
 		//trace(event.pageX + ", " + event.pageY + ", " + _offsetStart.x);
 		//trace(node.scrollWidth + "," + node.scrollHeight + "," + node.scrollLeft + "," + node.scrollTop );		
-		trace(node.scrollLeft + "," + node.scrollTop );		
+		//trace(node.scrollLeft + "," + node.scrollTop );		
 		//trace(_listsContainer.scrollWidth + "," + _listsContainer.scrollHeight + "," + _listsContainer.scrollLeft + "," + _listsContainer.scrollTop );		
 	}
 
@@ -375,11 +377,11 @@ class SwippableListView extends ListViewBase
 		//trace("onMoveCallback2");
 		//trace(_direction);
 		
+		// compute x & y offset
 		_offset.x = Std.int(event.touches[0].pageX - _initialPosition.x);
 		_offset.y = Std.int(event.touches[0].pageY - _initialPosition.y);
 		
 		//_currentListView.onListItemSelected = null;
-		node.scrollLeft = _offsetStart.x - _offset.x;
 		
 		//trace(_direction + " - " + _offset.x + "," + _offset.y );
 		// done to avoid top rebound effect - to be done also on bottom rebound one
@@ -416,12 +418,21 @@ class SwippableListView extends ListViewBase
 		// if direction is horizontal
 		if (_direction == Direction.horizontal)
 		{
+			// prevent default scroll behaviour
 			event.preventDefault();
+			// scroll to correct left position
+			node.scrollLeft = _offsetStart.x - _offset.x;
 		}
 		// if direction is vertical
 		else if (_direction == Direction.vertical)
 		{
-			node.scrollLeft = _offsetStart.x;
+			// block left scroll position
+			//node.scrollLeft = _offsetStart.x;
+			// prevent default scroll behaviour
+			event.preventDefault();
+			// scroll to correct top position
+			//node.scrollTop = _offsetStart.y - _offset.y;
+			_currentListView.node.scrollTop = _offsetStart.y - _offset.y;
 		}
 
 	}
@@ -622,7 +633,6 @@ class SwippableListView extends ListViewBase
 
 	
 // Touch event workaround	
-#if js
 
 	function touchHandler(event:Dynamic):Void
 	{
@@ -642,8 +652,10 @@ class SwippableListView extends ListViewBase
 		}
 	}
 
+
 	function initTouchEvents() 
 	{
+		#if js
 		untyped
 		{
 		document.addEventListener("touchstart", touchHandler, true);
@@ -651,10 +663,8 @@ class SwippableListView extends ListViewBase
 		document.addEventListener("touchend", touchHandler, true);
 		document.addEventListener("touchcancel", touchHandler, true);
 		}
-		
+		#end
 	}
-
-#end
 	
 }
 

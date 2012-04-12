@@ -16,73 +16,72 @@ package keyboard;
  * Units tests for keyboard events
  * @author Yannick DOMINGUEZ
  */
-
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import haxe.Log;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.resource.ResourceLoaderManager;
+import cocktail.core.HTMLElement;
+import cocktail.core.Keyboard;
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
-import cocktail.keyboard.KeyboardData;
-import cocktail.domElement.DOMElementData;
-import cocktail.domElement.GraphicDOMElement;
 
 
 class KeyboardTests 
 {
-	private static var rootDOMElement:BodyDOMElement;
-	
 	public static function main()
 	{
-		
-		rootDOMElement = new BodyDOMElement();
-		
-		new KeyboardTests();
-		
+		var runner = new Runner();
+		runner.addCase(new KeyboardTests());
+		Report.create(runner);
+		runner.run();
 	}
 	
 	public function new() 
 	{
-		testKeyboard();
+		
 	}
 	
 	public function testKeyboard()
 	{
-		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement();
+		var html = new HTMLElement("div");
+		var k = new Keyboard(html);
 		
-		graphicDOMElement.width  = 100;
-		graphicDOMElement.height = 100;
-		graphicDOMElement.x = 0;
-		graphicDOMElement.y = 0;
+		//key down
 		
-		graphicDOMElement.beginFill(monochrome( { color:0xFF0000, alpha:100 } ));
+		var down = false;
 		
-		graphicDOMElement.drawRect(0, 0, 100, 100);
-		graphicDOMElement.endFill();
+		k.onKeyDown = function(e) {
+			down = true;
+		}
 		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.KeyboardEvent(flash.events.KeyboardEvent.KEY_DOWN));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("KeyboardEvent");
+		e.initEvent("keydown", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
 		
-		rootDOMElement.addChild(graphicDOMElement);
+		Assert.isTrue(down);
 		
-		rootDOMElement.onKeyDown = onKeyDown;
-		rootDOMElement.onKeyUp = onKeyUp;
+		//key up
+		
+		var up = false;
+		
+		k.onKeyUp = function(e) {
+			up = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.KeyboardEvent(flash.events.KeyboardEvent.KEY_UP));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("KeyboardEvent");
+		e.initEvent("keyup", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(up);
 		
 		
 	}
 
-	
-	private function onKeyDown(key:KeyEventData):Void
-	{
-		Log.trace(key);
-	}
-	
-	private function onKeyUp(key:KeyEventData):Void
-	{
-		Log.trace(key);
-	}
 	
 }

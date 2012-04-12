@@ -20,6 +20,7 @@ import js.Dom;
 class MenuCellTextStyle
 {
 	static inline var CELL_VERTICAL_SPACE:Int = 5;
+	static inline var CELL_HORIZONTAL_PADDING:Int = 5;
 	
 	/**
 	 * Defines cell Style
@@ -44,11 +45,48 @@ class MenuCellTextStyle
 		node.style.width = "33%";
 		node.style.minWidth = "33%";
 
-		node.style.textAlign = "center";
-
 		// remove border
 		node.style.borderStyle = "none";
+	}
+	
+	/**
+	 * Defines cell Style
+	 * 
+	 * @param	node
+	 */
+	public static function setLeftCellStyle(node:HtmlDom):Void
+	{
+		setCellStyle(node);
 
+		node.style.textAlign = "left";
+		node.style.left = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+	}
+	
+	/**
+	 * Defines cell Style
+	 * 
+	 * @param	node
+	 */
+	public static function setMiddleCellStyle(node:HtmlDom):Void
+	{
+		setCellStyle(node);
+
+		node.style.textAlign = "center";
+		node.style.marginLeft = "auto";
+		node.style.marginRight = "auto";
+	}
+	
+	/**
+	 * Defines cell Style
+	 * 
+	 * @param	node
+	 */
+	public static function setRightCellStyle(node:HtmlDom):Void
+	{
+		setCellStyle(node);
+
+		node.style.textAlign = "right";
+		node.style.right = Std.string(CELL_HORIZONTAL_PADDING) + "px";
 	}
 	
 	/**
@@ -61,8 +99,8 @@ class MenuCellTextStyle
 		node.style.display = "inline";
 		node.style.position = "relative";
 
-		node.style.paddingLeft = "8px";
-		node.style.paddingRight = "0px";
+		node.style.paddingRight = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+		node.style.paddingLeft = Std.string(CELL_HORIZONTAL_PADDING) + "px";
 		
 		node.style.fontSize = "16px";
 		node.style.lineHeight = "normal";

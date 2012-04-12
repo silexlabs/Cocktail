@@ -1,12 +1,16 @@
 package org.intermedia.view;
 
+import cocktail.core.dom.Node;
+import cocktail.core.hxtml.HxtmlConverter;
 import js.Lib;
 import js.Dom;
 import haxe.Firebug;
 
 // hxtml
-import hxtml2.HTMLPageData;
-import hxtml2.HTMLParser;
+//import hxtml2.HTMLPageData;
+//import hxtml2.HTMLParser;
+import cocktail.Lib;
+
 
 /**
  * Display the detail of an RSS feed entry (title, picture, content...)
@@ -111,7 +115,7 @@ class DetailView extends ViewBase
 		_authorContainer.appendChild(_authorElement);
 		
 		// detach thumbnail from detail view
-		if (_thumbnail.parentNode != null)
+		/*if (_thumbnail.parentNode != null)
 		{
 			node.removeChild(_thumbnail);
 		}
@@ -120,7 +124,7 @@ class DetailView extends ViewBase
 		{
 			_thumbnail.src = _data.thumbUrl;
 			node.appendChild(_thumbnail);
-		}
+		}*/
 			//_thumbnail.src(_data.thumbUrl);
 		
 		// update description
@@ -134,25 +138,8 @@ class DetailView extends ViewBase
 		_contentContainer.appendChild(_contentElement);*/
 		
 		//html2DOM(_data.description);
-		html2DOM(_data.content);
-	}
-	
-	private function html2DOM(htmlString:String):Void
-	{
-		try
-		{
-			var xml:Xml = Xml.parse(htmlString);
-			var htmlPageData:HTMLPageData = null;
-			htmlPageData = (new HTMLParser()).parse(xml.firstElement());
-			// add the parsed data to the detail view
-			node.appendChild(htmlPageData.htmlDom);
-		}catch(msg : String){
-			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+msg);
-			Firebug.trace("Error, parsing XML tag \n"+msg);
-		} catch( unknown : Dynamic ) {
-			//trace("Error, parsing XML tag "+xml.firstElement()+"\n"+Std.string(unknown));
-			Firebug.trace("Error, parsing XML tag \n"+Std.string(unknown));
-		}
+		//html2Node(_data.content);
+		node.innerHTML += _data.content;
 	}
 	
 }

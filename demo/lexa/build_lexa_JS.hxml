@@ -1,3 +1,4 @@
 -js lexa.js
 -cp ../../src/
+-cp ../../lib/
 -main org.lexa.demo.Lexa

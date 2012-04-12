@@ -20,6 +20,7 @@ class ViewManager
 
 	// bodyDOMElement
 	private var _body:Body;
+	//private var _body:HtmlDom;
 	
 	//Reference to the header of the application, which is always displayed
 	private var _header:HeaderView;

@@ -48,7 +48,7 @@ class CellStyle
 		// compute cell width in pixels depending on cellPerLine value
 		// 2 pixels are removed so that adding borders does not mess up layout
 		var cellWidthPixels:Int = computeWidthPixels(cellPerLine);
-		node.style.width = Std.string(cellWidthPixels - 2) + "px";
+		node.style.width = Std.string(cellWidthPixels - (2 * Constants.CELL_BORDER_WIDTH)) + "px";
 		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
 		node.style.verticalAlign = "top";
@@ -56,6 +56,12 @@ class CellStyle
 		//node.style.overflow = "hidden";
 	}
 	
+	/**
+	 * computes cell width percentage
+	 * 
+	 * @param	cellPerLine
+	 * @return
+	 */
 	public static function computeWidthPercentage(cellPerLine):Int
 	{
 		// compute cell width in percentage depending on cellPerLine value
@@ -69,6 +75,12 @@ class CellStyle
 		return cellWidthPercent;
 	}
 	
+	/**
+	 * Computes cell width in pixel
+	 * 
+	 * @param	cellPerLine
+	 * @return
+	 */
 	public static function computeWidthPixels(cellPerLine):Int
 	{
 		// compute cell width in percentage depending on cellPerLine value
@@ -82,14 +94,24 @@ class CellStyle
 		return cellWidthPixels;
 	}
 	
+	/**
+	 * Adds a border to the node, using CCS styles
+	 * 
+	 * @param	node
+	 */
 	public static function addBorder(node:HtmlDom):Void
 	{
 		// add border
-		node.style.borderWidth = Constants.CELL_BORDER_WIDTH;
+		node.style.borderWidth = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
 		node.style.borderColor = Constants.CELL_BORDER_COLOR;
 		node.style.borderStyle = "solid";
 	}
 	
+	/**
+	 * Removes a border to the node, using CCS styles
+	 * 
+	 * @param	node
+	 */
 	public static function removeBorder(node:HtmlDom):Void
 	{
 		node.style.borderStyle = "none";
