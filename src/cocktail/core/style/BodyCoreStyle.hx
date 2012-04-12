@@ -9,7 +9,7 @@ package cocktail.core.style;
 
 import cocktail.core.HTMLDocument;
 import cocktail.core.NativeElement;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;

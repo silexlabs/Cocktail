@@ -38,9 +38,9 @@ class HTMLImageElement extends AbstractHTMLImageElement
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function setWidth(value:Int):Int
+	override private function set_width(value:Int):Int
 	{
-		super.setWidth(value);
+		super.set_width(value);
 		
 		//set the width attribute on the native img
 		untyped _nativeElement.width = value;
@@ -49,9 +49,9 @@ class HTMLImageElement extends AbstractHTMLImageElement
 	}
 	
 
-	override private function setHeight(value:Int):Int
+	override private function set_height(value:Int):Int
 	{
-		super.setHeight(value);
+		super.set_height(value);
 		
 		//set the height attribute on the native img
 		untyped _nativeElement.height = value;

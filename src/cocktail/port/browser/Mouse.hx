@@ -8,6 +8,7 @@
 package cocktail.port.browser;
 
 import cocktail.core.event.MouseEvent;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.mouse.AbstractMouse;
 import cocktail.core.NativeElement;
 

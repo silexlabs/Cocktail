@@ -7,7 +7,7 @@
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.dom.DOMData;
 import haxe.Log;
