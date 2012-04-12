@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef Keyboard =  cocktail.port.flash_player.Keyboard;
 
-#elseif js
-typedef Keyboard =  cocktail.port.browser.Keyboard;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

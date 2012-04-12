@@ -13,7 +13,4 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef NativeElementManagerImpl = cocktail.port.flash_player.NativeElementManagerImpl;
 
-#elseif js
-typedef NativeElementManagerImpl = cocktail.port.browser.NativeElementManagerImpl;
-
 #end

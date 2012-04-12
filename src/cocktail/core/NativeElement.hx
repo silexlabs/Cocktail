@@ -16,10 +16,6 @@ typedef NativeElement =  flash.display.DisplayObjectContainer;
 #elseif nme
 typedef NativeElement =  Dynamic;
 
-#elseif js
-import js.Dom;
-typedef NativeElement =  js.HtmlDom;
-
 #elseif doc
 typedef NativeElement = Dynamic;
 
