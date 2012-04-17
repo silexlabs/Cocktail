@@ -106,66 +106,6 @@ class SwippableListView extends ListViewBase
 		list0.id = Feeds.FEED_1.url;
 		_listViews.push(list0);
 		
-		// Home page data
-		/*_homePageData = 
-		[
-			{
-				id:130523,
-				thumbUrl:"assets/400-156.png",
-				title:"incredible plugin",
-				author:"vador"
-			},
-			{
-				id:130523,
-				thumbUrl:"assets/200-156_red.png",
-				title:"incredible plugin",
-				author:"vador"
-			},
-			{
-				id:130523,
-				thumbUrl:"assets/200-156_purple.png",
-				title:"incredible plugin",
-				author:"vador"
-			},
-			{
-				id:130523,
-				thumbUrl:"assets/200-156_purple.png",
-				title:"incredible plugin",
-				author:"vador"
-			},
-			{
-				id:130523,
-				title:"incredible plugin",
-				author:"itzel",
-				thumbUrl:"assets/200-156_red.png"
-			},
-			{
-				id:130523,
-				title:"incredible theme",
-				author:"raph",
-				thumbUrl:"assets/200-156_red.png"
-			},
-			{
-				id:130523,
-				title:"incredible plugin",
-				author:"itzel",
-				thumbUrl:"assets/200-156_red.png"
-			},
-			{
-				id:130523,
-				title:"incredible theme",
-				author:"raph",
-				thumbUrl:"assets/200-156_red.png"
-			},
-			{
-				id:130523,
-				title:"incredible plugin",
-				author:"itzel",
-				thumbUrl:"assets/200-156_red.png"
-			}
-		];*/
-		
-		
 		//var list1:ListViewBase = new ThumbTextList1Bis(3);Filters component
 		//list1 = new ThumbTextList1Bis(2, homePageData);
 		list1 = new ThumbTextList1Bis(2);
@@ -329,6 +269,14 @@ class SwippableListView extends ListViewBase
 	}
 	
 	/**
+	 * scroll the swippable view to the current list
+	 */
+	public function scrollToCurrentList():Void
+	{
+		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0,-2));
+	}
+	
+	/**
 	 * on rezize callback
 	 */
 	private function onResizeCallback(event:Event):Void
@@ -337,7 +285,7 @@ class SwippableListView extends ListViewBase
 		_viewportWidth = Lib.window.innerWidth;
 		_viewportHeight = Lib.window.innerHeight;
 
-		// reset lists posistion
+		// reset lists position
 		positionLists();
 		
 		// scroll to current list
@@ -429,25 +377,46 @@ class SwippableListView extends ListViewBase
 		// if direction is horizontal
 		if (_direction == Direction.horizontal)
 		{
-			// prevent default scroll behaviour
-			event.preventDefault();
-			// scroll to correct left position
-			node.scrollLeft = _offsetStart.x - _offset.x;
+			onHorizontalMove(event);
 		}
 		// if direction is vertical
 		else if (_direction == Direction.vertical)
 		{
-			// block left scroll position
-			//node.scrollLeft = _offsetStart.x;
-			// prevent default scroll behaviour
-			event.preventDefault();
-			// scroll to correct top position
-			//node.scrollTop = _offsetStart.y - _offset.y;
-			_currentListView.node.scrollTop = _offsetStart.y - _offset.y;
+			onVerticalMove(event);
 		}
 
 	}
 	
+	/**
+	 * Horizontal move handler
+	 * 
+	 * @param	event
+	 */
+	private function onHorizontalMove(event:Dynamic):Void
+	{
+		// prevent default scroll behaviour
+		event.preventDefault();
+		// scroll to correct left position
+		node.scrollLeft = _offsetStart.x - _offset.x;
+	}
+
+	/**
+	 * Vertical move handler
+	 * 
+	 * @param	event
+	 */
+	private function onVerticalMove(event:Dynamic):Void
+	{
+		// block left scroll position
+		//node.scrollLeft = _offsetStart.x;
+		// prevent default scroll behaviour
+		event.preventDefault();
+		// scroll to correct top position
+		//node.scrollTop = _offsetStart.y - _offset.y;
+		_currentListView.node.scrollTop = _offsetStart.y - _offset.y;
+	}
+
+		
 	/**
 	 * A way to override onMouseUpCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
 	 * unset onMouseMove & onMouseUp callbacks
@@ -462,54 +431,7 @@ class SwippableListView extends ListViewBase
 		//trace(_direction);
 		if (_direction == Direction.horizontal)
 		{
-			event.preventDefault();
-			
-			//onUpCallback(node.scrollLeft);
-			/*var x = node.scrollLeft;
-
-			// go to list which user has scrolled to
-			var w = _viewportWidth / 2;
-			if (x < w)
-			{
-				//node.scrollLeft = 0;
-				index = 0;
-			}
-			else if (x < 3 * w)
-			{
-				//node.scrollLeft = _viewportWidth;
-				index = 1;
-			}
-			else 
-			{
-				//node.scrollLeft = 2 * _viewportWidth;
-				index = 2;
-			}*/
-			
-			// if movement was negative and more that half of the size of the screen
-			if (_offset.x < -_viewportWidth / 2)
-			{
-				// if the current list is not the last one, increment index using setter
-				if (index < _listViews.length - 1)
-					index++;
-			}
-			// if movement was positive and less that half of the size of the screen
-			else if (_offset.x > _viewportWidth / 2)
-			{
-				// if the current list is not the first one, decrement index using setter
-				if (index > 0)
-					index--;
-			}
-			// else come back on the current list
-			else
-			{
-				index = index;
-			}
-			
-			// js workaround to scroll up
-			/*#if js
-			js.Lib.window.scrollTo(0, 0);
-			//js.Lib.window.scrollTo(0,null);
-			#end*/
+			onHorizontalUp(event);
 		}
 		else if (_direction == Direction.vertical)
 		{
@@ -520,10 +442,6 @@ class SwippableListView extends ListViewBase
 		//onMouseMove = null;
 		//onMouseUp = null;
 		
-		// reset direction
-		//_direction = Direction.notYetSet;
-
-
 		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
 		//_viewport.onResize = onResizeCallback;
 		
@@ -533,13 +451,42 @@ class SwippableListView extends ListViewBase
 	}
 	
 	/**
-	 * scroll the swippable view to the current list
+	 * horizontal up handler
+	 * 
+	 * @param	event
 	 */
-	public function scrollToCurrentList():Void
+	private function onHorizontalUp(event:Dynamic):Void
 	{
-		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0,-2));
+		event.preventDefault();
+		
+		// if movement was negative and more that half of the size of the screen
+		if (_offset.x < -_viewportWidth / 2)
+		{
+			// if the current list is not the last one, increment index using setter
+			if (index < _listViews.length - 1)
+				index++;
+		}
+		// if movement was positive and less that half of the size of the screen
+		else if (_offset.x > _viewportWidth / 2)
+		{
+			// if the current list is not the first one, decrement index using setter
+			if (index > 0)
+				index--;
+		}
+		// else come back on the current list
+		else
+		{
+			index = index;
+		}
+		
+		// js workaround to scroll up
+		/*#if js
+		js.Lib.window.scrollTo(0, 0);
+		//js.Lib.window.scrollTo(0,null);
+		#end*/
 	}
-	
+
+		
 	/**
 	 * swipe animation when touch is released
 	 */
