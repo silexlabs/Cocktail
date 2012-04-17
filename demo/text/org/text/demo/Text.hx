@@ -97,26 +97,6 @@ class Text
 		flash.Lib.current.scaleY += e.delta / 10;	
 	}
 	
-	private function getTextContainer(x:Float, y:Float, width:Float, height:Float)
-	{
-		var container = Lib.document.createElement("div");
-		container.appendChild(Lib.document.createTextNode("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mauris leo, consectetur eget mollis eu, interdum quis massa. Etiam urna nibh, mattis nec congue nec, porta eu ligula. Curabitur massa mi, rutrum at bibendum vel, condimentum et tellus. Cras quis volutpat odio. Praesent pellentesque pulvinar metus sit amet vehicula. Aenean mi orci, cursus a rutrum id, venenatis non lacus. Nulla luctus erat ut massa varius sagittis a non neque. Aliquam pellentesque dolor a turpis mollis in sagittis ante aliquam. In fringilla neque et eros mollis interdum. Suspendisse potenti.Maecenas tincidunt ultricies leo, consequat dignissim velit faucibus sed. Nam placerat lacus mattis quam imperdiet eu blandit felis rhoncus. Cras interdum commodo nisi, sit amet ullamcorper dui cursus vitae. Aenean metus sapien, hendrerit in consequat nec, tempor et dui. Quisque ac velit nec magna convallis aliquet. Pellentesque dolor velit, malesuada ut ullamcorper sed, fermentum sed lacus. Praesent nec nunc elit, quis consequat risus. Cras tristique nulla sit amet lorem posuere a tristique metus blandit. Praesent eu libero id elit euismod volutpat at non magna. Nam a leo at justo consectetur eleifend. In vel libero libero. Suspendisse potenti. Nunc commodo, sem eget tempus bibendum, lorem nisi facilisis purus, id consequat urna quam a dolor. Nunc ac posuere felis. Quisque eleifend lectus a dui malesuada vel ullamcorper magna scelerisque.Vivamus varius vestibulum ligula, id bibendum eros varius nec. Aliquam posuere viverra diam a fringilla. Aenean a urna sit amet sem rhoncus congue et nec neque. Donec sollicitudin orci imperdiet ligula condimentum et vehicula libero mollis. Nullam vel congue sapien. Etiam vel est ut nibh tempor fringilla vel a metus. Curabitur elit orci, rhoncus quis rhoncus laoreet, dignissim nec lorem. Suspendisse mattis ipsum vitae leo ultrices posuere. Donec vehicula neque nec dui dictum tempus. In porta rutrum pharetra. "));
-	
-		container.style.position = "absolute";
-		
-		container.style.textAlign = "justify";
-		
-		container.style.fontSize = "50px";
-		
-		container.style.width = Std.string(width) + "px";
-		container.style.height = Std.string(height) + "px";
-		
-		container.style.left = Std.string(x) +  "px";
-		container.style.top = Std.string(y) + "px";
-		
-		return container;
-	}
-	
 	private var _stageX:Float;
 	private var _stageY:Float;
 	
