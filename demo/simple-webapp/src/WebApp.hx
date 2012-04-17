@@ -34,6 +34,11 @@ class WebApp
 	 */
 	public function new() 
 	{
+		// done to force no scale in flash mode, useful for air projection
+		#if flash
+		flash.Lib.current.stage.scaleMode = NO_SCALE;
+		#end
+		
 		_body = new BodyDOMElement();
 		WebAppStyle.getBodyStyle(_body);
 		drawInterface();
@@ -49,7 +54,7 @@ class WebApp
 		
 		// initialize container
 		_mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(_mainContainer);
+		WebAppStyle.getMainContainerStyle(_mainContainer);
 		
 		// attach main container to document root
 		_body.addChild(_mainContainer);

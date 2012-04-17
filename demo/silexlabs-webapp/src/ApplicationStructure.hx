@@ -37,6 +37,9 @@ import components.lists.AppListStyle;
 // Navigation
 import Navigation;
 
+import cocktail.keyboard.KeyboardData;
+
+
 /**
  * Handles all applications pages
  * 
@@ -55,28 +58,55 @@ class ApplicationStructure
 	// the home page
 	//private var _homePage:ContainerDOMElement;
 	
-	// the template page
-	private var _themesPage:ContainerDOMElement;
+	// footer
+	private var _footer:ContainerDOMElement;
 	
-	// the plugins page
-	private var _pluginsPage:ContainerDOMElement;
+	// page 1
+	private var _page1:ContainerDOMElement;
 	
-	// the blog page
-	private var _blogPage:ContainerDOMElement;
+	// page 2
+	private var _page2:ContainerDOMElement;
 	
+	// page 3
+	private var _page3:ContainerDOMElement;
+	
+	// page 4
+	private var _page4:ContainerDOMElement;
+	
+	// page 5
+	private var _page5:ContainerDOMElement;
+	
+	// quantity of rss items to return
+	//static inline var ITEM_QUANTITY:Int = 5;
+	
+	// page 1 title
+	static inline var PAGE1_TITLE:String = "Silex Labs";
+
+	// page 2 title
+	static inline var PAGE2_TITLE:String = "amfPHP";
+
+	// page 3 title
+	static inline var PAGE3_TITLE:String = "Silex";
+
+	// page 4 title
+	static inline var PAGE4_TITLE:String = "Themes";
+
+	// page 5 title
+	static inline var PAGE5_TITLE:String = "Plugins";
 
 	public function new() 
 	{
 		pagesContainer = Utils.getContainer();
 		
+		//_footer = createFooterMenu();
+		//pagesContainer.addChild(_footer);
+		
 		// create all pages
 		createAllPages();
 		
 		// instanciate navigation class with pagesContainer and homePage
-		//navigation = new Navigation(pagesContainer,_pluginsPage);
+		//navigation = new Navigation(pagesContainer,_page2);
 		
-		//var footer:ContainerDOMElement = createFooterMenu();
-		//pagesContainer.addChild(footer);
 	}
 	
 	/**
@@ -86,58 +116,111 @@ class ApplicationStructure
 	{
 		// create pages
 		
-		// plugins Page
-		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=10");
-		pluginsRss.onLoad = onPluginsRssLoad;
+		// Silex Labs BLog Page
+		//var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=5318&format=rss2");
+		pluginsRss.onLoad = onPage1RssLoad;
 		
-		// themes Page
-		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=10");
-		themesRss.onLoad = onThemesRssLoad;
+		// AmfPHP Blog Page
+		//var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=1&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=358&format=rss2");
+		blogRss.onLoad = onPage2RssLoad;
 		
-		// themes Page
-		var blogRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=1&format=rss2&posts_per_page=10");
-		blogRss.onLoad = onBlogRssLoad;
+		// Silex Blog Page
+		//var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=642&format=rss2");
+		themesRss.onLoad = onPage3RssLoad;
+		
+		// Silex Themes Page
+		//var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=646&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var themesRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
+		themesRss.onLoad = onPage4RssLoad;
+		
+		// Silex plugins Page
+		//var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_in_category/?cat=657&format=rss2&posts_per_page=" + ITEM_QUANTITY);
+		var pluginsRss:XmlLoader = new XmlLoader("http://www.silexlabs.org/feed/ep_posts_small/?cat=657&format=rss2");
+		pluginsRss.onLoad = onPage5RssLoad;
 		
 	}
 	
 	/**
-	 * Callback when plugins rss has been loaded
+	 * Callback when page 1 rss has been loaded
 	 * 
 	 * @param	rss
 	 */
-	private function onPluginsRssLoad(rss:Xml):Void
+	private function onPage1RssLoad(rss:Xml):Void
 	{
 		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
-		//_pluginsPage = createThemePage(cells);
-		_pluginsPage = createHeaderListPage("Plugins", cells);
+		_page2 = createHeaderListPage(PAGE1_TITLE, cells);
 		
 		// instanciate navigation class with pagesContainer and start page
-		navigation = new Navigation(pagesContainer,_pluginsPage);
+		navigation = new Navigation(pagesContainer,_page2);
 	}
 	
 	/**
-	 * Callback when themes rss has been loaded
+	 * Callback when page 2 rss has been loaded
 	 * 
 	 * @param	rss
 	 */
-	private function onThemesRssLoad(rss:Xml):Void
+	private function onPage2RssLoad(rss:Xml):Void
 	{
 		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
-		_themesPage = createHeaderListPage("Themes", cells);
+		_page1 = createHeaderListPage(PAGE2_TITLE, cells);
 	}
 	
 	/**
-	 * Callback when blog rss has been loaded
+	 * Callback when page 3 rss has been loaded
 	 * 
 	 * @param	rss
 	 */
-	private function onBlogRssLoad(rss:Xml):Void
+	private function onPage3RssLoad(rss:Xml):Void
 	{
 		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
-		_blogPage = createHeaderListPage("Blog", cells);
+		_page3 = createHeaderListPage(PAGE3_TITLE, cells);
+	}
+	
+	/**
+	 * Callback when page 4 rss has been loaded
+	 * 
+	 * @param	rss
+	 */
+	private function onPage4RssLoad(rss:Xml):Void
+	{
+		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
+		_page4 = createHeaderListPage(PAGE4_TITLE, cells);
+	}
+	
+	/**
+	 * Callback when page 1 rss has been loaded
+	 * 
+	 * @param	rss
+	 */
+	private function onPage5RssLoad(rss:Xml):Void
+	{
+		var cells:Array<CellModel> = ThumbTextList1Rss.rss2Cells(rss);
+		_page5 = createHeaderListPage(PAGE5_TITLE, cells);
 		
-		var footer:ContainerDOMElement = createFooterMenu();
-		pagesContainer.addChild(footer);
+		_footer = createFooterMenu();
+		pagesContainer.addChild(_footer);
+		//pagesContainer.onKeyDown = onKeyDownPages;
+		
+		// workaround for browsers not supporting well css "fixed" position
+		#if js
+
+		function resetFooterStyle(event) {
+			// footer is removed and added again as a workaround
+			pagesContainer.removeChild(_footer);
+			pagesContainer.addChild(_footer);
+		};
+		
+		js.Lib.window.onscroll = resetFooterStyle;
+		js.Lib.window.onresize = resetFooterStyle;
+		
+		// this part is done only for keyboard event part
+		resetFooterStyle(null);
+		js.Lib.document.onkeydown = onKeyDownPages;
+		#end
+
 	}
 	
 	/**
@@ -163,8 +246,8 @@ class ApplicationStructure
 		//list.onChange = navigation.onChangeListCallback;
 		
 		// build hierarchy
-		page.addChild(header);
 		page.addChild(list);
+		page.addChild(header);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;
@@ -224,7 +307,7 @@ class ApplicationStructure
 		// create footer
 		var container:ContainerDOMElement = Utils.getContainer();
 		// apply page style
-		WebAppStyle.getHeaderStyle(container);
+		WebAppStyle.getFooterStyle(container);
 		
 		// Tile image
 		var tile:ImageDOMElement = new ImageDOMElement();
@@ -237,19 +320,41 @@ class ApplicationStructure
 		// Menu items
 		/*var menuList:AppList = createAppList(
 			[
-				{content:{icon:"images/menu1.png",title:"Plugins"}, action:"goToPage", actionTarget:_pluginsPage},
-				{content:{icon:"images/menu2.png",title:"Themes"}, action:"goToPage", actionTarget:_themesPage},
-				{content:{icon:"images/menu3.png",title:"Blog"}, action:"goToPage", actionTarget:_blogPage}
+				{content:{icon:"images/menu1.png",title:PAGE1_TITLE}, action:"goToPage", actionTarget:_page2},
+				{content:{icon:"images/menu2.png",title:PAGE2_TITLE}, action:"goToPage", actionTarget:_page1},
+				{content:{icon:"images/menu3.png",title:PAGE3_TITLE}, action:"goToPage", actionTarget:_page3}
 			]);*/
 		var cells:Array<CellModel> = new Array<CellModel>();
-		cells.push({content:{icon:"images/menu1.png",title:"Plugins"}, action:"goToPage", actionTarget:_pluginsPage});
-		cells.push({content:{icon:"images/menu2.png",title:"Themes"}, action:"goToPage", actionTarget:_themesPage});
-		cells.push({content:{icon:"images/menu3.png",title:"Blog"}, action:"goToPage", actionTarget:_blogPage});
+		//var cell1:CellModel = {content:{}, action:"", actionTarget:null}
+		//cell1.content = { icon:"images/menu1.png", title:PAGE1_TITLE };
+		//cell1.action = "goToPage";
+		//cell1.actionTarget = _page2;
+		//cells.push(cell1);
+		cells.push({content:{icon:"images/menu3.png",title:PAGE1_TITLE}, action:"goToPage", actionTarget:_page2});
+		//var cell2:CellModel = {content:{}, action:"", actionTarget:null}
+		//cell2.content = { icon:"images/menu2.png", title:PAGE2_TITLE };
+		//cell2.action = "goToPage";
+		//cell2.actionTarget = _page1;
+		//cells.push(cell2);
+		cells.push({content:{icon:"images/menu3.png",title:PAGE2_TITLE}, action:"goToPage", actionTarget:_page1});
+		//var cell3:CellModel = {content:{}, action:"", actionTarget:null}
+		//cell3.content = { icon:"images/menu3.png", title:PAGE3_TITLE };
+		//cell3.action = "goToPage";
+		//cell3.actionTarget = _page3;
+		//cells.push(cell3);
+		cells.push({content:{icon:"images/menu3.png",title:PAGE3_TITLE}, action:"goToPage", actionTarget:_page3});
+		cells.push({content:{icon:"images/menu2.png",title:PAGE4_TITLE}, action:"goToPage", actionTarget:_page4});
+		cells.push({content:{icon:"images/menu1.png",title:PAGE5_TITLE}, action:"goToPage", actionTarget:_page5});
+
+		
 		var menuList:AppList = createAppList(cells);
 		
 		// list onChange callback
 		menuList.onChange = onChangeListCallback;
 		//menuList.onChange = onChangeMenuListCallback;
+
+		// list keyboard down callback
+		//menuList.onKeyDown = onMenuKeyDown;
 		
 		container.addChild(menuList);
 		
@@ -275,6 +380,7 @@ class ApplicationStructure
 			cell:ThumbTextList1Style.getCellStyle,
 			cellInfoBlock:ThumbTextList1Style.getCellInfoBlockStyle,
 			cellNumber:ThumbTextList1Style.getCellNumberStyle,
+			cellInfoBlockLine:ThumbTextList1Style.getCellInfoBlockLineStyle,
 			cellInfoBlockImage:ThumbTextList1Style.getCellInfoBlockImageStyle,
 			cellCommentCount:ThumbTextList1Style.getCellCommentCountStyle,
 			cellThumbnail:ThumbTextList1Style.getCellThumbnailStyle,
@@ -342,6 +448,21 @@ class ApplicationStructure
 	public function onChangeListCallback(cell:CellModel)
 	{
 		navigation.onChangeListCallback(cell);
+	}
+	
+	/**
+	 * Called when a key is pressed
+	 */
+	//private function onKeyDownPages(key:KeyEventData):Void
+	private function onKeyDownPages(key:Dynamic):Void
+	{
+		//trace("onKeyDownPages: " + key.keyCode);
+		/*if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT || key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		{*/
+			// dispatch menu list item change
+			// TODO: remove hardcoding
+			_footer.children[1].child.onListKeyDown(key);
+		/*}*/
 	}
 	
 }

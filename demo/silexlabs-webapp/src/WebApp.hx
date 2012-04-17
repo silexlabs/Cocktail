@@ -37,6 +37,8 @@ import components.lists.ListBaseUtils;
 // Utils
 import Utils;
 
+import cocktail.keyboard.KeyboardData;
+
 
 class WebApp 
 {
@@ -53,7 +55,7 @@ class WebApp
 	/**
 	 * Contructor
 	 */
-	public function new() 
+	public function new()
 	{
 		_body = new BodyDOMElement();
 		WebAppStyle.getBodyStyle(_body);
@@ -70,9 +72,26 @@ class WebApp
 		
 		// initialize container
 		_mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(_mainContainer);
+		//WebAppStyle.getDefaultStyle(_mainContainer);
+		WebAppStyle.getMainContainerStyle(_mainContainer);
 		
 		// attach main container to document root
 		_body.addChild(_mainContainer);
+
+		//_body.onKeyDown = onKeyDownBody;
+		//_body.onKeyDown = _mainContainer.children[0].child.children[1].onListKeyDown;
+		
 	}
+	
+	/*private function onKeyDownBody(key:KeyEventData):Void
+	{
+		trace("onKeyDownBody: " + key.value);
+		//trace(key.value);
+		if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT || key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		{
+			// dispatch menu list item change
+			_mainContainer.children[0].child.children[1].onListKeyDown(key);
+		}
+	}*/
+
 }

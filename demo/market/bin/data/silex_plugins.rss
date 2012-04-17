@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Creative communities &#187; Plugins</title>
+	<atom:link href="http://www.silexlabs.org/feed/ep_posts_small/?cat=657&#038;format=rss2" rel="self" type="application/rss+xml" />
+	<link>http://www.silexlabs.org</link>
+	<description>Communities platform powered by Silex Labs, dedicated to the creation, support and communication of open source projects</description>
+
+	<lastBuildDate>Thu, 01 Mar 2012 13:48:49 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>http://wordpress.org/?v=3.2.1</generator>
+		<item>
+
+		<title>ZincDesktop plugin, your Silex publications on the desktop
+		
+				
+					
+						Name : ZincDesktop plugin, your Silex publications on the desktop
+						Size : 6.94 Ko
+						File : ZinkDesktop-v1.0.0beta2.zip
+					
+					
+						Version : 1.0.0beta2
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/81290/exchange/exchange-silex/plugins/zincdesktop-plugin-your-silex-publications-on-the-desktop/</link>
+		<comments>http://www.silexlabs.org/81290/exchange/exchange-silex/plugins/zincdesktop-plugin-your-silex-publications-on-the-desktop/#comments</comments>
+		<pubDate>Thu, 16 Jun 2011 10:16:02 +0000</pubDate>
+		<dc:creator>lexa</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=81290</guid>
+		<description><![CDATA[Description Functionalities provided by this plugin your site with a transparent background on the user desktop no installation, just a native application which launches from the hard drive mac and windows compatible, 1 Silex publication gives 2 pixel perfect versions Applications we have already produced an installer to install programs, install drivers, call system scripts, [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/81290/exchange/exchange-silex/plugins/zincdesktop-plugin-your-silex-publications-on-the-desktop/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>0</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/06/silex-portable-app-example.jpg]]></element></post_images>	</item>
+		<item>
+
+		<title>Flickr frame plugin
+		
+				
+					
+						Name : Flickr frame plugin
+						Size : 298.34 Ko
+						File : flickrFrame.zip
+					
+					
+						Version : V1
+						Compatibility : v1.6.0, v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/74178/exchange/exchange-silex/plugins/flickr-frame-plugin/</link>
+		<comments>http://www.silexlabs.org/74178/exchange/exchange-silex/plugins/flickr-frame-plugin/#comments</comments>
+		<pubDate>Thu, 09 Jun 2011 09:40:31 +0000</pubDate>
+		<dc:creator>camille</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=74178</guid>
+		<description><![CDATA[DESCRIPTION This plugin display the flickr gallery slideshow in your silex website, just enter an URL in the permalink text field.]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/74178/exchange/exchange-silex/plugins/flickr-frame-plugin/feed/</wfw:commentRss>
+		<slash:comments>3</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>3</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/06/flickr-logo.jpg]]></element></post_images>	</item>
+		<item>
+
+		<title>Filters component
+		
+				
+					
+						Name : Filters component
+						Size : 622.66 Ko
+						File : pluginfilters.zip
+					
+					
+						Version : v1.2
+						Compatibility : v1.6.0, v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/1797/exchange/exchange-silex/plugins/filters/</link>
+		<comments>http://www.silexlabs.org/1797/exchange/exchange-silex/plugins/filters/#comments</comments>
+		<pubDate>Wed, 08 Jun 2011 08:00:48 +0000</pubDate>
+		<dc:creator>koala</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=1797</guid>
+		<description><![CDATA[Sources filters component – sources DESCRIPTION The OOFilter component allow you to apply dynamically Flash’s filter to any component of a Silex publication. V1.2 : traduction and specific panel added USE To use this component in Silex, when logged, opens the library and browse to the folder where you put the component then add it [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/1797/exchange/exchange-silex/plugins/filters/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>0</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/01/plugin5.png]]></element></post_images>	</item>
+		<item>
+
+		<title>Simple Gallery
+		
+				
+					
+						Name : Simple Gallery
+						Size : 365.62 Ko
+						File : simpleGallery.zip
+					
+					
+						Version : beta1
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/64997/exchange/exchange-silex/plugins/simple-gallery/</link>
+		<comments>http://www.silexlabs.org/64997/exchange/exchange-silex/plugins/simple-gallery/#comments</comments>
+		<pubDate>Tue, 31 May 2011 22:02:32 +0000</pubDate>
+		<dc:creator>yannick</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=64997</guid>
+		<description><![CDATA[This component is a simple picture gallery, just drop it in your site and input the urls of your gallery’s pictures. Authors : Camille GERARD HIRNE, Yannick DOMINGUEZ 2 galleries This plugin adds 2 components : the gallery and the autoplay gallery. They are both the same component with different configuration. The autoplay gallery will [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/64997/exchange/exchange-silex/plugins/simple-gallery/feed/</wfw:commentRss>
+		<slash:comments>2</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>2</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/06/simpleGallery_panel-300x139.png]]></element></post_images>	</item>
+		<item>
+
+		<title>Google maps plugin
+		
+				
+					
+						Name : Google maps plugin
+						Size : 235.28 Ko
+						File : googleMapsFrame.zip
+					
+					
+						Version : V1
+						Compatibility : v1.6.0, v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/2619/exchange/exchange-silex/plugins/google-maps-plugin/</link>
+		<comments>http://www.silexlabs.org/2619/exchange/exchange-silex/plugins/google-maps-plugin/#comments</comments>
+		<pubDate>Fri, 20 May 2011 09:45:59 +0000</pubDate>
+		<dc:creator>camille</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=2619</guid>
+		<description><![CDATA[This plugin display a google maps in your Silex website. You just have to copy the permalink of your maps (the “LINK” in the top right corner of google maps and past it in the plugin specific field. You can create a custom map with this tutorial]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/2619/exchange/exchange-silex/plugins/google-maps-plugin/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>0</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/02/plugin5.png]]></element></post_images>	</item>
+		<item>
+
+		<title>Video Subtitle Player (SRT Player)
+		
+				
+					
+						Name : Video Subtitle Player (SRT Player)
+						Size : 335 Ko
+						File : plugin.zip
+					
+					
+						Version : 1.0
+						Compatibility : v1.6.0, v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/49730/exchange/exchange-silex/plugins/video-subtitle-player/</link>
+		<comments>http://www.silexlabs.org/49730/exchange/exchange-silex/plugins/video-subtitle-player/#comments</comments>
+		<pubDate>Tue, 17 May 2011 15:38:58 +0000</pubDate>
+		<dc:creator>codam</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=49730</guid>
+		<description><![CDATA[Description This plugin adds a video player component supporting .srt subtitle files. There are several remote skins provided with this player. Here is the default skin: Installation To install this plugin on a silex server, use the manager’s plugin installer (exchange platform), or copy the snapshot plugin folder in the silex_server/plugins folder. Server activation (for [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/49730/exchange/exchange-silex/plugins/video-subtitle-player/feed/</wfw:commentRss>
+		<slash:comments>5</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>5</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/05/plugin1.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/05/SRTPlayerPreviewHQ.png]]></element></post_images>	</item>
+		<item>
+
+		<title>Pixlr plugin for Silex – web design in the cloud
+		
+				
+					
+						Name : Pixlr plugin for Silex – web design in the cloud
+						Size : 37 Ko
+						File : pixlr.zip
+					
+					
+						Version : 1.0
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/29769/exchange/exchange-silex/plugins/pixlr-plugin-for-silex-edit-your-images-in-the-browser/</link>
+		<comments>http://www.silexlabs.org/29769/exchange/exchange-silex/plugins/pixlr-plugin-for-silex-edit-your-images-in-the-browser/#comments</comments>
+		<pubDate>Wed, 27 Apr 2011 22:04:09 +0000</pubDate>
+		<dc:creator>lexa</dc:creator>
+				<category><![CDATA[Plugins]]></category>
+
+		<category><![CDATA[plugin]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=29769</guid>
+		<description><![CDATA[The Pixlr plugin for Silex, makes it possible to edit your website’s images directly from the browser. It uses Pixlr free online service, without registration. You will not have to leave your browser anymore to make Silex websites. Pixlr opens in a new window and let you edit the images of your Silex library. It [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/29769/exchange/exchange-silex/plugins/pixlr-plugin-for-silex-edit-your-images-in-the-browser/feed/</wfw:commentRss>
+		<slash:comments>2</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>2</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/plugin2.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/pixler-screenshot2bis-300x242.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/pixler-screenshot1bis-300x245.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/pixler-screenshot.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/pixler-screenshot3.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/pixler-screenshot4.png]]></element></post_images>	</item>
+
+		<item>
+		<title>Ultralign 
+		
+				
+					
+						Name : Ultralign 
+						Size : 145.21 Ko
+						File : Ultralign.zip
+					
+					
+						Version : beta1.3
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/24022/exchange/exchange-silex/plugins/ultralign/</link>
+		<comments>http://www.silexlabs.org/24022/exchange/exchange-silex/plugins/ultralign/#comments</comments>
+		<pubDate>Wed, 20 Apr 2011 08:29:23 +0000</pubDate>
+		<dc:creator>yannick</dc:creator>
+
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=24022</guid>
+		<description><![CDATA[This component align components to the stage borders, scene borders or to the component position. Installation To use this component, you must first install it on your silex server and then activate it for your publication or for the entire server. Properties Anchor Point The point to align the components to. Might be one of [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/24022/exchange/exchange-silex/plugins/ultralign/feed/</wfw:commentRss>
+		<slash:comments>2</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>2</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/plugin1.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/2_components_to_align.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/absolut_positioning.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/horizontal-positioning.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/vertical_positioning.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/scene_top_left.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/scene_top_right.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/scene_bottom_left.png]]></element><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/scene_bottom_right.png]]></element></post_images>	</item>
+
+		<item>
+		<title>DownloadButton plugin
+		
+				
+					
+						Name : DownloadButton plugin
+						Size : 202.74 Ko
+						File : downloadButton.zip
+					
+					
+						Version : 1.2
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/15217/exchange/exchange-silex/plugins/downloadbutton-plugin/</link>
+		<comments>http://www.silexlabs.org/15217/exchange/exchange-silex/plugins/downloadbutton-plugin/#comments</comments>
+		<pubDate>Tue, 05 Apr 2011 15:59:06 +0000</pubDate>
+		<dc:creator>Benjamin</dc:creator>
+
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=15217</guid>
+		<description><![CDATA[DownloadButton Plugin Description This plugin adds the DownloadButton component to your SILEX Server. This button can be added to download a PDF file that was imported with PDF2SWF or it can also be forced to download any other file. Properties: fileURL: The fileURL property allows you to set the file to download. This file can [...]]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/15217/exchange/exchange-silex/plugins/downloadbutton-plugin/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>0</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/04/plugin.png]]></element></post_images>	</item>
+
+		<item>
+		<title>Youtube Player Plugin
+		
+				
+					
+						Name : Youtube Player Plugin
+						Size : 184.42 Ko
+						File : youtubeFrame.zip
+					
+					
+						Version : V1.1
+						Compatibility : v1.6.1
+						Download
+					
+					
+						Project : Silex
+						Use : 
+					
+				
+		
+			</title>
+		<link>http://www.silexlabs.org/2609/exchange/exchange-silex/plugins/youtube-player-plugin/</link>
+		<comments>http://www.silexlabs.org/2609/exchange/exchange-silex/plugins/youtube-player-plugin/#comments</comments>
+		<pubDate>Mon, 28 Feb 2011 10:00:14 +0000</pubDate>
+		<dc:creator>camille</dc:creator>
+
+				<category><![CDATA[Plugins]]></category>
+
+		<guid isPermaLink="false">http://www.silexlabs.org/?p=2609</guid>
+		<description><![CDATA[The youtube player plugin lets you embed a YouTube video player on your silex website. Parameters : Add the youtube video permalink High Definition Loop video Show Title information Auto Play Show controls Auto Hide controls V1.1 : panel editor added]]></description>
+		<wfw:commentRss>http://www.silexlabs.org/2609/exchange/exchange-silex/plugins/youtube-player-plugin/feed/</wfw:commentRss>
+		<slash:comments>3</slash:comments>
+	<post_thumbnail></post_thumbnail><comment_count>3</comment_count><post_images><element><![CDATA[http://www.silexlabs.org/wp-content/uploads/2011/02/youtubeplugin.png]]></element></post_images>	</item>
+
+	</channel>
+</rss>

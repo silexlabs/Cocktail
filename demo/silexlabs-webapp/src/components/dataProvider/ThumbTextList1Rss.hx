@@ -29,10 +29,8 @@ class ThumbTextList1Rss
 	 * @param	rss
 	 * @return
 	 */
-	//public static function rss2Cells(rss:Xml):ListModel
 	public static function rss2Cells(rss:Xml):Array<CellModel>
 	{
-		//var cells:ListModel = ListBaseUtils.createListModel();
 		var cells:Array<CellModel> = new Array<CellModel>();
 
 		// set channel node
@@ -70,32 +68,44 @@ class ThumbTextList1Rss
 					}
 					
 					// if node is a title
-					if (itemParam.nodeName == "post_title")
+					if (itemParam.nodeName == "title")
 					{
-						cellContent.title = itemParam.firstChild().nodeValue;
+						var title:String = itemParam.firstChild().nodeValue;
+						// remove all characters after "Name" string, used to clean themes and plugins title
+						var index:Int = title.indexOf("Name");
+						if (index != -1)
+						{
+							title = title.substr(0, index);
+						}
+						// Samsung TV display bug workaround
+						// clean white spaces at the end of the title, needed for silex plugins & themes rss feeds, otherwise square characters are displayed
+						title = StringTools.rtrim(title);
+						
+						cellContent.title = title;
 					}
 					
 					// if node is a author info
-					if (itemParam.nodeName == "post_author")
+					if (itemParam.nodeName == "dc:creator")
 					{
-						for (authorInfo in itemParam.elements())
+						/*for (authorInfo in itemParam.elements())
 						{
 							if (authorInfo.nodeName == "nickname")
 							{
 								cellContent.comment = cellContent.comment  + "by " + authorInfo.firstChild().nodeValue + " ";
 							}
-						}
+						}*/
+						cellContent.comment = cellContent.comment  + "by " + itemParam.firstChild().nodeValue + " ";
 					}
 					
 					// if node is a date
-					if (itemParam.nodeName == "post_date_gmt")
+					if (itemParam.nodeName == "pubDate")
 					{
 						// create text
-						cellContent.comment = cellContent.comment + itemParam.firstChild().nodeValue.substr(0,10) + " ";
+						cellContent.comment = cellContent.comment + "on " + itemParam.firstChild().nodeValue.substr(0,16) + " ";
 					}
 					
 					// if node is a post content - removed as can contain html
-					if (itemParam.nodeName == "post_excerpt")
+					if (itemParam.nodeName == "description")
 					{
 						// create text
 						var text:String = itemParam.firstChild().nodeValue;
@@ -107,7 +117,7 @@ class ThumbTextList1Rss
 						}
 						text = StringTools.ltrim(text);
 						// shorten description
-						text = text.substr(0, 95) + "...";
+						//text = text.substr(0, 95) + "...";
 						cellContent.description = text;
 					}
 					
@@ -120,9 +130,7 @@ class ThumbTextList1Rss
 					// if node is the link to be opened
 					if (itemParam.nodeName == "guid")
 					{
-						//cellContent.action = "openUrl";
-						//cellContent.actionTarget = itemParam.firstChild().nodeValue;
-						cell.action = "openUrl";
+						cell.action = "goToUrl";
 						cell.actionTarget = itemParam.firstChild().nodeValue;
 					}
 				}
