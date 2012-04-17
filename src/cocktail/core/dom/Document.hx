@@ -7,7 +7,7 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.Text;
 import cocktail.core.dom.DOMData;
 

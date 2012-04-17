@@ -13,7 +13,4 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef Text = cocktail.port.flash_player.Text;
 
-#elseif js
-typedef Text =  cocktail.port.browser.Text;
-
 #end

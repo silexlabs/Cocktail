@@ -13,10 +13,10 @@ import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.HTMLAnchorElement;
-import cocktail.core.HTMLElement;
-import cocktail.core.HTMLHtmlElement;
-import cocktail.core.HTMLImageElement;
-import cocktail.core.HTMLInputElement;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.html.HTMLHtmlElement;
+import cocktail.core.html.HTMLImageElement;
+import cocktail.core.html.HTMLInputElement;
 import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.NativeElement;
@@ -65,8 +65,8 @@ class AbstractHTMLDocument extends Document
 	 * 
 	 * The body is the root of the visual content in HTML
 	 */
-	private var _body:HTMLElement;
-	public var body(get_body, never):HTMLElement;
+	private var _body:HTMLBodyElement;
+	public var body(get_body, never):HTMLBodyElement;
 	
 	/**
 	 * A reference to the Window, used to listen for
@@ -107,7 +107,7 @@ class AbstractHTMLDocument extends Document
 	{
 		super();
 		
-		_body = createElement(HTML_BODY_TAG_NAME);
+		_body = cast(createElement(HTML_BODY_TAG_NAME));
 		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
 		
@@ -368,7 +368,7 @@ class AbstractHTMLDocument extends Document
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_body():HTMLElement 
+	private function get_body():HTMLBodyElement 
 	{
 		return _body;
 	}

@@ -13,7 +13,4 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef ImageLoader = cocktail.core.resource.AbstractImageLoader;
 
-#elseif js
-typedef ImageLoader = cocktail.core.resource.AbstractImageLoader;
-
 #end

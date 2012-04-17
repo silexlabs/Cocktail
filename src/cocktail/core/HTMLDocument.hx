@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef HTMLDocument =  cocktail.port.flash_player.HTMLDocument;
 
-#elseif js
-typedef HTMLDocument =  cocktail.port.browser.HTMLDocument;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented

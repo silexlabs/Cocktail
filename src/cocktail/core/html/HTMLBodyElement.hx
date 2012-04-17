@@ -11,18 +11,9 @@ import cocktail.core.event.Event;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.style.BodyCoreStyle;
 
-#if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-#elseif js
-import cocktail.port.browser.HTMLElement;
-#end
-
 /**
  * The HTML document body. This element is always present
  * in the DOM API, even if the tags are not present in the source document.
- * 
- * TODO : override in JS to listen to keyboard on document. Or use ownerDocument
- * or add keydown, keyup callbacks on HTMLDocument
  * 
  * @author Yannick DOMINGUEZ
  */

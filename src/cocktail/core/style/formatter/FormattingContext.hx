@@ -7,7 +7,7 @@
 */
 package cocktail.core.style.formatter;
 
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;

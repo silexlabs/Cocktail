@@ -11,15 +11,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.NativeElement;
 
-
- #if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-
-#elseif js
-import cocktail.port.browser.HTMLElement;
-
-#end
-
 /**
  * This is a ase class for element which are repaced by an external
  * resource in the document, for instance an image element.
@@ -109,7 +100,6 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
-		//TODO : should throw DOMException
 		return newChild;
 	}
 	
@@ -119,7 +109,6 @@ class EmbeddedElement extends HTMLElement
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		//TODO : should throw DOMException
 		return oldChild;
 	}
 
@@ -147,8 +136,6 @@ class EmbeddedElement extends HTMLElement
 		return _intrinsicRatio;
 	}
 	
-	//TODO : override in JS to set attribute on native element
-	// or use generic set_attribute method on JS HTMLElement ?
 	private function set_width(value:Int):Int
 	{
 		return _width = value;

@@ -122,8 +122,8 @@ class MediaLoader extends AbstractMediaLoader
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		this._intrinsicHeight = Math.round(loader.content.height);
-		this._intrinsicWidth = Math.round(loader.content.width);
+		this._intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
+		this._intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	
