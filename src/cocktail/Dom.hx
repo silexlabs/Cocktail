@@ -33,6 +33,7 @@ typedef Image = cocktail.core.html.HTMLImageElement;
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
+typedef Style = cocktail.core.style.adapter.Style;
 
 typedef HTMLAnchorElement = cocktail.core.HTMLAnchorElement;
 typedef HTMLImageElement = cocktail.core.html.HTMLImageElement;
