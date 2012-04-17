@@ -9,7 +9,7 @@ package cocktail.core.style;
 
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.dom.Node;
 import cocktail.core.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.FloatBoxStylesComputer;

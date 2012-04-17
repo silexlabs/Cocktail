@@ -27,7 +27,7 @@ import cocktail.core.html.EmbeddedElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLImageElement extends EmbeddedElement
+class HTMLImageElement extends EmbeddedElement
 {
 	/**
 	 * the html tag name of an image
@@ -47,7 +47,7 @@ class AbstractHTMLImageElement extends EmbeddedElement
 	 * The callback called once a picture has been successfully
 	 * loaded
 	 */
-	public var onLoad:Event->Void;
+	public var onload:Event->Void;
 	
 	/**
 	 * The callback called when there was an error during loading
@@ -161,10 +161,10 @@ class AbstractHTMLImageElement extends EmbeddedElement
 		this._coreStyle.invalidate();
 		
 		//if provided, call the onload callback
-		if (onLoad != null)
+		if (onload != null)
 		{
 			var loadEvent:Event = new Event(Event.LOAD, this);
-			onLoad(loadEvent);
+			onload(loadEvent);
 		}
 	}
 	

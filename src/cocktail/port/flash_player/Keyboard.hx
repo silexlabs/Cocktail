@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.event.KeyboardEvent;
 import flash.Lib;

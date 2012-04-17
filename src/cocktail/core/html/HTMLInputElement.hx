@@ -9,20 +9,12 @@ package cocktail.core.html;
 
 import cocktail.core.style.CoreStyle;
 
-#if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-
-#elseif js
-import cocktail.port.browser.HTMLElement;
-
-#end
-
 /**
  * Form control.
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLInputElement extends HTMLElement
+class HTMLInputElement extends HTMLElement
 {
 
 	/**

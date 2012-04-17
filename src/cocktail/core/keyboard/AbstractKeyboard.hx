@@ -8,7 +8,7 @@
 package cocktail.core.keyboard;
 
 import cocktail.core.event.KeyboardEvent;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import haxe.Log;
 import cocktail.core.NativeElement;
 

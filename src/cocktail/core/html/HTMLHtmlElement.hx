@@ -5,23 +5,25 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core;
+package cocktail.core.html;
 
 /**
- * Set the right runtime specific NativeInstance at compile-time
+ * Root of an HTML document
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if flash9
-typedef NativeInstance =  Dynamic;
-
-#elseif js
-typedef NativeInstance =  Dynamic;
-
-#elseif php
-typedef NativeInstance =  Dynamic;
-
-#elseif doc
-typedef NativeInstance = Dynamic;
-
-#else
-	#error
-#end
+class HTMLHtmlElement extends HTMLElement
+{
+	/**
+	 * the html tag name for the html root element
+	 */
+	private static inline var HTML_HTML_TAG_NAME:String = "html";
+	
+	/**
+	 * class constructor
+	 */
+	public function new() 
+	{
+		super(HTML_HTML_TAG_NAME);
+	}
+}

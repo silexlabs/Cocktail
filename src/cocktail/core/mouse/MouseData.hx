@@ -7,7 +7,7 @@
 */
 package cocktail.core.mouse;
 
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.geom.GeomData;
 
 /**

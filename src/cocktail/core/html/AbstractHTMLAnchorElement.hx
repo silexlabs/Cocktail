@@ -15,15 +15,6 @@ import cocktail.core.dom.DOMData;
 import haxe.Log;
 import cocktail.core.mouse.MouseData;
 
-
-#if (flash9 || nme)
-import cocktail.port.flash_player.HTMLElement;
-
-#elseif js
-import cocktail.port.browser.HTMLElement;
-
-#end
-
 /**
  * The anchor element, used to link to an external document, or
  * to scroll to a position in the current document
