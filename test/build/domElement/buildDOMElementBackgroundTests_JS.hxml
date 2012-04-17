@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main domElement.DOMElementBackgroundTests
--lib utest
--js ../../bin/domElement/domElementBackgroundTestJS.js
