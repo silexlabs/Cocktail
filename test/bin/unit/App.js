@@ -1,808 +1,6 @@
 $estr = function() { return js.Boot.__string_rec(this,''); }
 if(typeof cocktail=='undefined') cocktail = {}
 if(!cocktail.core) cocktail.core = {}
-if(!cocktail.core.dom) cocktail.core.dom = {}
-cocktail.core.dom.Node = function(p) {
-	if( p === $_ ) return;
-	this._childNodes = new Array();
-}
-cocktail.core.dom.Node.__name__ = ["cocktail","core","dom","Node"];
-cocktail.core.dom.Node.prototype.nodeType = null;
-cocktail.core.dom.Node.prototype.nodeValue = null;
-cocktail.core.dom.Node.prototype.nodeName = null;
-cocktail.core.dom.Node.prototype._parentNode = null;
-cocktail.core.dom.Node.prototype.parentNode = null;
-cocktail.core.dom.Node.prototype._childNodes = null;
-cocktail.core.dom.Node.prototype.childNodes = null;
-cocktail.core.dom.Node.prototype.firstChild = null;
-cocktail.core.dom.Node.prototype.lastChild = null;
-cocktail.core.dom.Node.prototype.nextSibling = null;
-cocktail.core.dom.Node.prototype.previousSibling = null;
-cocktail.core.dom.Node.prototype._attributes = null;
-cocktail.core.dom.Node.prototype.attributes = null;
-cocktail.core.dom.Node.prototype._ownerDocument = null;
-cocktail.core.dom.Node.prototype.ownerDocument = null;
-cocktail.core.dom.Node.prototype.removeChild = function(oldChild) {
-	oldChild.set_parentNode(null);
-	var newChildNodes = new Array();
-	var _g1 = 0, _g = this._childNodes.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		if(this._childNodes[i] != oldChild) newChildNodes.push(this._childNodes[i]);
-	}
-	this._childNodes = newChildNodes;
-	return oldChild;
-}
-cocktail.core.dom.Node.prototype.appendChild = function(newChild) {
-	this.removeFromParentIfNecessary(newChild);
-	newChild.set_parentNode(this);
-	this._childNodes.push(newChild);
-	return newChild;
-}
-cocktail.core.dom.Node.prototype.insertBefore = function(newChild,refChild) {
-	if(refChild == null) this.appendChild(newChild); else {
-		this.removeFromParentIfNecessary(newChild);
-		var newChildNodes = new Array();
-		var _g1 = 0, _g = this._childNodes.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this._childNodes[i] == refChild) newChildNodes.push(newChild);
-			newChildNodes.push(this._childNodes[i]);
-		}
-		this._childNodes = newChildNodes;
-	}
-	return newChild;
-}
-cocktail.core.dom.Node.prototype.replaceChild = function(newChild,oldChild) {
-	var newChildNodes = new Array();
-	var _g1 = 0, _g = this._childNodes.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		if(this._childNodes[i] == oldChild) newChildNodes.push(newChild); else newChildNodes.push(this._childNodes[i]);
-	}
-	this._childNodes = newChildNodes;
-	return oldChild;
-}
-cocktail.core.dom.Node.prototype.isSameNode = function(other) {
-	return other == this;
-}
-cocktail.core.dom.Node.prototype.hasChildNodes = function() {
-	return this._childNodes.length > 0;
-}
-cocktail.core.dom.Node.prototype.hasAttributes = function() {
-	return false;
-}
-cocktail.core.dom.Node.prototype.removeFromParentIfNecessary = function(newChild) {
-	if(newChild.get_parentNode() != null) {
-		var parentNode = newChild.get_parentNode();
-		parentNode.removeChild(newChild);
-	}
-}
-cocktail.core.dom.Node.prototype.get_firstChild = function() {
-	if(this.hasChildNodes() == true) return this._childNodes[0]; else return null;
-}
-cocktail.core.dom.Node.prototype.get_lastChild = function() {
-	if(this.hasChildNodes() == true) return this._childNodes[this._childNodes.length - 1]; else return null;
-}
-cocktail.core.dom.Node.prototype.get_nextSibling = function() {
-	if(this._parentNode == null) return null; else if(this._parentNode.get_lastChild() != this) {
-		var _g1 = 0, _g = this._parentNode.get_childNodes().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this.isSameNode(this._parentNode.get_childNodes()[i]) == true) return this._parentNode.get_childNodes()[i + 1];
-		}
-	}
-	return null;
-}
-cocktail.core.dom.Node.prototype.get_previousSibling = function() {
-	if(this._parentNode == null) return null; else if(this._parentNode.get_firstChild() != this) {
-		var _g1 = 0, _g = this._parentNode.get_childNodes().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this.isSameNode(this._parentNode.get_childNodes()[i]) == true) return this._parentNode.get_childNodes()[i - 1];
-		}
-	}
-	return null;
-}
-cocktail.core.dom.Node.prototype.get_nodeType = function() {
-	return -1;
-}
-cocktail.core.dom.Node.prototype.get_parentNode = function() {
-	return this._parentNode;
-}
-cocktail.core.dom.Node.prototype.set_parentNode = function(value) {
-	return this._parentNode = value;
-}
-cocktail.core.dom.Node.prototype.get_childNodes = function() {
-	return this._childNodes;
-}
-cocktail.core.dom.Node.prototype.get_nodeValue = function() {
-	return null;
-}
-cocktail.core.dom.Node.prototype.set_nodeValue = function(value) {
-	return value;
-}
-cocktail.core.dom.Node.prototype.get_nodeName = function() {
-	return null;
-}
-cocktail.core.dom.Node.prototype.get_attributes = function() {
-	return null;
-}
-cocktail.core.dom.Node.prototype.get_ownerDocument = function() {
-	return this._ownerDocument;
-}
-cocktail.core.dom.Node.prototype.set_ownerDocument = function(value) {
-	return this._ownerDocument = value;
-}
-cocktail.core.dom.Node.prototype.__class__ = cocktail.core.dom.Node;
-cocktail.core.dom.Element = function(tagName) {
-	if( tagName === $_ ) return;
-	this._tagName = tagName;
-	this._attributes = new cocktail.core.dom.NamedNodeMap();
-	cocktail.core.dom.Node.call(this);
-}
-cocktail.core.dom.Element.__name__ = ["cocktail","core","dom","Element"];
-cocktail.core.dom.Element.__super__ = cocktail.core.dom.Node;
-for(var k in cocktail.core.dom.Node.prototype ) cocktail.core.dom.Element.prototype[k] = cocktail.core.dom.Node.prototype[k];
-cocktail.core.dom.Element.prototype._tagName = null;
-cocktail.core.dom.Element.prototype.tagName = null;
-cocktail.core.dom.Element.prototype.firstElementChild = null;
-cocktail.core.dom.Element.prototype.lastElementChild = null;
-cocktail.core.dom.Element.prototype.previousElementSibling = null;
-cocktail.core.dom.Element.prototype.nextElementSibling = null;
-cocktail.core.dom.Element.prototype.childElementCount = null;
-cocktail.core.dom.Element.prototype.getAttribute = function(name) {
-	var attribute = this.getAttributeNode(name);
-	if(attribute != null) return attribute.get_value(); else return null;
-}
-cocktail.core.dom.Element.prototype.setAttribute = function(name,value) {
-	var attribute = this._attributes.getNamedItem(name);
-	if(attribute == null) {
-		attribute = new cocktail.core.dom.Attr(name);
-		this._attributes.setNamedItem(attribute);
-		attribute.set_ownerElement(this);
-	}
-	attribute.set_value(value);
-}
-cocktail.core.dom.Element.prototype.getAttributeNode = function(name) {
-	var attribute = this._attributes.getNamedItem(name);
-	if(attribute != null) return attribute;
-	return null;
-}
-cocktail.core.dom.Element.prototype.setAttributeNode = function(newAttr) {
-	newAttr.set_ownerElement(this);
-	return this._attributes.setNamedItem(newAttr);
-}
-cocktail.core.dom.Element.prototype.removeAttribute = function(name) {
-	var removedAttribute = this._attributes.removeNamedItem(name);
-	if(removedAttribute != null) removedAttribute.set_ownerElement(null);
-}
-cocktail.core.dom.Element.prototype.setIdAttribute = function(name,isId) {
-	var idAttribute = this._attributes.getNamedItem(name);
-	if(idAttribute == null) {
-		idAttribute = new cocktail.core.dom.Attr(name);
-		this._attributes.setNamedItem(idAttribute);
-		idAttribute.set_ownerElement(this);
-	}
-	idAttribute.set_isId(isId);
-}
-cocktail.core.dom.Element.prototype.setIdAttributeNode = function(idAttr,isId) {
-	idAttr.set_isId(isId);
-	this._attributes.setNamedItem(idAttr);
-}
-cocktail.core.dom.Element.prototype.hasAttribute = function(name) {
-	return this._attributes.getNamedItem(name) != null;
-}
-cocktail.core.dom.Element.prototype.getElementsByTagName = function(tagName) {
-	var elements = new Array();
-	this.doGetElementsByTagName(this,tagName,elements);
-	return elements;
-}
-cocktail.core.dom.Element.prototype.doGetElementsByTagName = function(node,tagName,elements) {
-	if(node.hasChildNodes() == true) {
-		var _g1 = 0, _g = node.get_childNodes().length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var childNode = node.get_childNodes()[i];
-			if(childNode.get_nodeName() == tagName) elements.push(childNode); else if(tagName == "*" && childNode.get_nodeType() == 1) elements.push(childNode);
-			this.doGetElementsByTagName(childNode,tagName,elements);
-		}
-	}
-}
-cocktail.core.dom.Element.prototype.hasAttributes = function() {
-	return this._attributes.get_length() > 0;
-}
-cocktail.core.dom.Element.prototype.get_nodeName = function() {
-	return this._tagName;
-}
-cocktail.core.dom.Element.prototype.get_nodeType = function() {
-	return 1;
-}
-cocktail.core.dom.Element.prototype.get_attributes = function() {
-	return this._attributes;
-}
-cocktail.core.dom.Element.prototype.get_firstElementChild = function() {
-	if(this.hasChildNodes() == false) return null;
-	if(this.get_firstChild().get_nodeType() == 1) return this.get_firstChild(); else {
-		var _g1 = 0, _g = this._childNodes.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			if(this._childNodes[i].get_nodeType() == 1) return this._childNodes[i];
-		}
-	}
-	return null;
-}
-cocktail.core.dom.Element.prototype.get_lastElementChild = function() {
-	if(this.hasChildNodes() == false) return null;
-	if(this.get_lastChild().get_nodeType() == 1) return this.get_lastChild(); else {
-		var _g = this._childNodes.length;
-		while(_g < 0) {
-			var i = _g++;
-			if(this._childNodes[i].get_nodeType() == 1) return this._childNodes[i];
-		}
-	}
-	return null;
-}
-cocktail.core.dom.Element.prototype.get_nextElementSibling = function() {
-	if(this.get_nextSibling() == null) return null;
-	var nextElementSibling = this.get_nextSibling();
-	while(nextElementSibling.get_nodeType() != 1) {
-		nextElementSibling = nextElementSibling.get_nextSibling();
-		if(nextElementSibling == null) return null;
-	}
-	return nextElementSibling;
-}
-cocktail.core.dom.Element.prototype.get_previousElementSibling = function() {
-	if(this.get_previousSibling() == null) return null;
-	var previousElementSibling = this.get_previousSibling();
-	while(previousElementSibling.get_nodeType() != 1) {
-		previousElementSibling = previousElementSibling.get_previousSibling();
-		if(previousElementSibling == null) return null;
-	}
-	return previousElementSibling;
-}
-cocktail.core.dom.Element.prototype.get_childElementCount = function() {
-	var childElementCount = 0;
-	var _g1 = 0, _g = this._childNodes.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		if(this._childNodes[i].get_nodeType() == 1) childElementCount++;
-	}
-	return childElementCount;
-}
-cocktail.core.dom.Element.prototype.get_tagName = function() {
-	return this._tagName;
-}
-cocktail.core.dom.Element.prototype.__class__ = cocktail.core.dom.Element;
-if(!cocktail.core.event) cocktail.core.event = {}
-cocktail.core.event.IEventTarget = function() { }
-cocktail.core.event.IEventTarget.__name__ = ["cocktail","core","event","IEventTarget"];
-cocktail.core.event.IEventTarget.prototype.__class__ = cocktail.core.event.IEventTarget;
-if(!cocktail.core.html) cocktail.core.html = {}
-cocktail.core.html.AbstractHTMLElement = function(tagName) {
-	if( tagName === $_ ) return;
-	cocktail.core.dom.Element.call(this,tagName);
-	this.init();
-}
-cocktail.core.html.AbstractHTMLElement.__name__ = ["cocktail","core","html","AbstractHTMLElement"];
-cocktail.core.html.AbstractHTMLElement.__super__ = cocktail.core.dom.Element;
-for(var k in cocktail.core.dom.Element.prototype ) cocktail.core.html.AbstractHTMLElement.prototype[k] = cocktail.core.dom.Element.prototype[k];
-cocktail.core.html.AbstractHTMLElement.prototype._mouse = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onClick = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onclick = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onMouseDown = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onmousedown = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onMouseUp = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onmouseup = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onMouseOver = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onmouseover = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onMouseOut = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onmouseout = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onMouseMove = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onmousemove = null;
-cocktail.core.html.AbstractHTMLElement.prototype._keyboard = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onKeyDown = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onkeydown = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onKeyUp = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onkeyup = null;
-cocktail.core.html.AbstractHTMLElement.prototype._tabIndex = null;
-cocktail.core.html.AbstractHTMLElement.prototype.tabIndex = null;
-cocktail.core.html.AbstractHTMLElement.prototype.isDefaultFocusable = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onFocus = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onfocus = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onBlur = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onblur = null;
-cocktail.core.html.AbstractHTMLElement.prototype._onScroll = null;
-cocktail.core.html.AbstractHTMLElement.prototype.onscroll = null;
-cocktail.core.html.AbstractHTMLElement.prototype.scrollTop = null;
-cocktail.core.html.AbstractHTMLElement.prototype.scrollLeft = null;
-cocktail.core.html.AbstractHTMLElement.prototype.scrollHeight = null;
-cocktail.core.html.AbstractHTMLElement.prototype.scrollWidth = null;
-cocktail.core.html.AbstractHTMLElement.prototype._nativeElement = null;
-cocktail.core.html.AbstractHTMLElement.prototype.nativeElement = null;
-cocktail.core.html.AbstractHTMLElement.prototype._id = null;
-cocktail.core.html.AbstractHTMLElement.prototype.id = null;
-cocktail.core.html.AbstractHTMLElement.prototype.offsetParent = null;
-cocktail.core.html.AbstractHTMLElement.prototype.offsetWidth = null;
-cocktail.core.html.AbstractHTMLElement.prototype.offsetHeight = null;
-cocktail.core.html.AbstractHTMLElement.prototype.offsetLeft = null;
-cocktail.core.html.AbstractHTMLElement.prototype.offsetTop = null;
-cocktail.core.html.AbstractHTMLElement.prototype.clientWidth = null;
-cocktail.core.html.AbstractHTMLElement.prototype.clientHeight = null;
-cocktail.core.html.AbstractHTMLElement.prototype.clientLeft = null;
-cocktail.core.html.AbstractHTMLElement.prototype.clientTop = null;
-cocktail.core.html.AbstractHTMLElement.prototype._coreStyle = null;
-cocktail.core.html.AbstractHTMLElement.prototype.coreStyle = null;
-cocktail.core.html.AbstractHTMLElement.prototype._style = null;
-cocktail.core.html.AbstractHTMLElement.prototype.style = null;
-cocktail.core.html.AbstractHTMLElement.prototype.init = function() {
-	this.initNativeElement();
-	this.initMouse();
-	this.initKeyboard();
-	this.initCoreStyle();
-	this.initStyle();
-	this.initId();
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initNativeElement = function() {
-	this._nativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.semantic(this._tagName));
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initMouse = function() {
-	this._mouse = new cocktail.port.browser.Mouse(this);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initKeyboard = function() {
-	this._keyboard = new cocktail.port.browser.Keyboard(this);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initCoreStyle = function() {
-	this._coreStyle = new cocktail.core.style.ContainerCoreStyle(this);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initStyle = function() {
-	this._style = new cocktail.port.browser.Style(this._coreStyle);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.initId = function() {
-	this._id = new cocktail.core.dom.Attr("id");
-	this.setIdAttributeNode(this._id,true);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.appendChild = function(newChild) {
-	cocktail.core.dom.Element.prototype.appendChild.call(this,newChild);
-	this._coreStyle.invalidate();
-	return newChild;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.removeChild = function(oldChild) {
-	cocktail.core.dom.Element.prototype.removeChild.call(this,oldChild);
-	this._coreStyle.invalidate();
-	return oldChild;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onClick = function(value) {
-	this._onClick = value;
-	if(this._onClick == null) this._mouse.set_onClick(null); else this._mouse.set_onClick($closure(this,"onClickCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onClick = function() {
-	return this._onClick;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseDown = function(value) {
-	this._onMouseDown = value;
-	if(this._onMouseDown == null) this._mouse.setOnMouseDown(null); else this._mouse.setOnMouseDown($closure(this,"onMouseDownCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseDown = function() {
-	return this._onMouseDown;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseUp = function(value) {
-	this._onMouseUp = value;
-	if(this._onMouseUp == null) this._mouse.setOnMouseUp(null); else this._mouse.setOnMouseUp($closure(this,"onMouseUpCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseUp = function() {
-	return this._onMouseUp;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseOver = function(value) {
-	this._onMouseOver = value;
-	if(this._onMouseOver == null) this._mouse.setOnMouseOver(null); else this._mouse.setOnMouseOver($closure(this,"onMouseOverCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseOver = function() {
-	return this._onMouseOver;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseOut = function(value) {
-	this._onMouseOut = value;
-	if(this._onMouseOut == null) this._mouse.setOnMouseOut(null); else this._mouse.setOnMouseOut($closure(this,"onMouseOutCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseOut = function() {
-	return this._onMouseOut;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseMove = function(value) {
-	this._onMouseMove = value;
-	if(this._onMouseMove == null) this._mouse.setOnMouseMove(null); else this._mouse.setOnMouseMove($closure(this,"onMouseMoveCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseMove = function() {
-	return this._onMouseMove;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onClickCallback = function(mouseEvent) {
-	this._onClick(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onMouseDownCallback = function(mouseEvent) {
-	this._onMouseDown(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onMouseUpCallback = function(mouseEvent) {
-	this._onMouseUp(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onMouseMoveCallback = function(mouseEvent) {
-	this._onMouseMove(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onMouseOverCallback = function(mouseEvent) {
-	this._onMouseOver(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onMouseOutCallback = function(mouseEvent) {
-	this._onMouseOut(mouseEvent);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onKeyDown = function(value) {
-	this._onKeyDown = value;
-	if(this._onKeyDown == null) this._keyboard.setOnKeyDown(null); else this._keyboard.setOnKeyDown($closure(this,"onKeyDownCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onKeyDown = function() {
-	return this._keyboard.getOnKeyDown();
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onKeyUp = function(value) {
-	this._onKeyUp = value;
-	if(this._onKeyUp == null) this._keyboard.setOnKeyUp(null); else this._keyboard.setOnKeyUp($closure(this,"onKeyUpCallback"));
-	return value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onKeyUp = function() {
-	return this._keyboard.getOnKeyUp();
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onKeyDownCallback = function(keyEventData) {
-	this._onKeyDown(keyEventData);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onKeyUpCallback = function(keyEventData) {
-	this._onKeyUp(keyEventData);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.focus = function() {
-}
-cocktail.core.html.AbstractHTMLElement.prototype.blur = function() {
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_isDefaultFocusable = function() {
-	return false;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onFocus = function(value) {
-	return this._onFocus = value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onFocus = function() {
-	return this._onFocus;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onBlur = function(value) {
-	return this._onBlur = value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onBlur = function() {
-	return this._onBlur;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_tabIndex = function(value) {
-	return this._tabIndex = value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_tabIndex = function() {
-	return this._tabIndex;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_onScroll = function(value) {
-	return this._onScroll = value;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_onScroll = function() {
-	return this._onScroll;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.onScrollCallback = function(event) {
-	if(this._onScroll != null) this._onScroll(event);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_scrollHeight = function() {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_scrollWidth = function() {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_scrollLeft = function(value) {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_scrollLeft = function() {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_scrollTop = function(value) {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_scrollTop = function() {
-	return -1;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_nativeElement = function() {
-	return this._nativeElement;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_id = function() {
-	return this._id.get_value();
-}
-cocktail.core.html.AbstractHTMLElement.prototype.set_id = function(value) {
-	return this._id.set_value(value);
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_offsetParent = function() {
-	return this._coreStyle.getFirstPositionedAncestor();
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_offsetWidth = function() {
-	this._coreStyle.invalidate(true);
-	var computedStyle = this._coreStyle.getComputedStyle();
-	return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_offsetHeight = function() {
-	this._coreStyle.invalidate(true);
-	var computedStyle = this._coreStyle.getComputedStyle();
-	return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_offsetLeft = function() {
-	this._coreStyle.invalidate(true);
-	var firstPositionedAncestor = this.get_offsetParent();
-	var offsetLeft = 0;
-	if(firstPositionedAncestor != null) {
-		var parent = this.get_parentNode();
-		offsetLeft = parent.get_coreStyle().getComputedStyle().paddingLeft + parent.get_coreStyle().getComputedStyle().marginLeft;
-		while(parent != firstPositionedAncestor) {
-			offsetLeft += parent.get_coreStyle().getComputedStyle().paddingLeft + parent.get_coreStyle().getComputedStyle().marginLeft;
-			parent = parent.get_parentNode();
-		}
-	}
-	return offsetLeft;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_offsetTop = function() {
-	this._coreStyle.invalidate(true);
-	var firstPositionedAncestor = this.get_offsetParent();
-	var offsetTop = 0;
-	if(firstPositionedAncestor != null) {
-		var parent = this.get_parentNode();
-		offsetTop = parent.get_coreStyle().getComputedStyle().paddingTop + parent.get_coreStyle().getComputedStyle().marginTop;
-		while(parent != firstPositionedAncestor) {
-			offsetTop += parent.get_coreStyle().getComputedStyle().paddingTop + parent.get_coreStyle().getComputedStyle().marginTop;
-			parent = parent.get_parentNode();
-		}
-	}
-	return offsetTop;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_clientWidth = function() {
-	this._coreStyle.invalidate(true);
-	var computedStyle = this._coreStyle.getComputedStyle();
-	return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_clientHeight = function() {
-	this._coreStyle.invalidate(true);
-	var computedStyle = this._coreStyle.getComputedStyle();
-	return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_clientTop = function() {
-	this._coreStyle.invalidate(true);
-	return 0;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_clientLeft = function() {
-	this._coreStyle.invalidate(true);
-	return 0;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_coreStyle = function() {
-	return this._coreStyle;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.get_style = function() {
-	return this._style;
-}
-cocktail.core.html.AbstractHTMLElement.prototype.__class__ = cocktail.core.html.AbstractHTMLElement;
-cocktail.core.html.AbstractHTMLElement.__interfaces__ = [cocktail.core.event.IEventTarget];
-if(!cocktail.port) cocktail.port = {}
-if(!cocktail.port.browser) cocktail.port.browser = {}
-cocktail.port.browser.HTMLElement = function(tagName) {
-	if( tagName === $_ ) return;
-	cocktail.core.html.AbstractHTMLElement.call(this,tagName);
-}
-cocktail.port.browser.HTMLElement.__name__ = ["cocktail","port","browser","HTMLElement"];
-cocktail.port.browser.HTMLElement.__super__ = cocktail.core.html.AbstractHTMLElement;
-for(var k in cocktail.core.html.AbstractHTMLElement.prototype ) cocktail.port.browser.HTMLElement.prototype[k] = cocktail.core.html.AbstractHTMLElement.prototype[k];
-cocktail.port.browser.HTMLElement.prototype.removeChild = function(oldChild) {
-	cocktail.core.html.AbstractHTMLElement.prototype.removeChild.call(this,oldChild);
-	switch(oldChild.get_nodeType()) {
-	case 1:
-		var childHTMLElement = oldChild;
-		this._nativeElement.removeChild(childHTMLElement.get_nativeElement());
-		break;
-	case 3:
-		var childTextElement = oldChild;
-		this._nativeElement.removeChild(childTextElement.get_nativeElement());
-		break;
-	default:
-	}
-	return oldChild;
-}
-cocktail.port.browser.HTMLElement.prototype.appendChild = function(newChild) {
-	cocktail.core.html.AbstractHTMLElement.prototype.appendChild.call(this,newChild);
-	switch(newChild.get_nodeType()) {
-	case 1:
-		var childHTMLElement = newChild;
-		this._nativeElement.appendChild(childHTMLElement.get_nativeElement());
-		break;
-	case 3:
-		var childTextElement = newChild;
-		this._nativeElement.appendChild(childTextElement.get_nativeElement());
-		break;
-	default:
-	}
-	return newChild;
-}
-cocktail.port.browser.HTMLElement.prototype.insertBefore = function(newChild,refChild) {
-	cocktail.core.html.AbstractHTMLElement.prototype.insertBefore.call(this,newChild,refChild);
-	this._nativeElement.insertBefore(newChild.nativeElement,refChild.nativeElement);
-	return newChild;
-}
-cocktail.port.browser.HTMLElement.prototype.replaceChild = function(newChild,oldChild) {
-	cocktail.core.html.AbstractHTMLElement.prototype.replaceChild.call(this,newChild,oldChild);
-	this._nativeElement.replaceChild(newChild.nativeElement,refChild.nativeElement);
-	return oldChild;
-}
-cocktail.port.browser.HTMLElement.prototype.get_offsetWidth = function() {
-	return this._nativeElement.offsetWidth;
-}
-cocktail.port.browser.HTMLElement.prototype.get_offsetHeight = function() {
-	return this._nativeElement.offsetHeight;
-}
-cocktail.port.browser.HTMLElement.prototype.get_offsetLeft = function() {
-	return this._nativeElement.offsetLeft;
-}
-cocktail.port.browser.HTMLElement.prototype.get_offsetTop = function() {
-	return this._nativeElement.offsetTop;
-}
-cocktail.port.browser.HTMLElement.prototype.get_clientWidth = function() {
-	return this._nativeElement.clientWidth;
-}
-cocktail.port.browser.HTMLElement.prototype.get_clientHeight = function() {
-	return this._nativeElement.clientHeight;
-}
-cocktail.port.browser.HTMLElement.prototype.get_clientLeft = function() {
-	return this._nativeElement.clientLeft;
-}
-cocktail.port.browser.HTMLElement.prototype.get_clientTop = function() {
-	return this._nativeElement.clientTop;
-}
-cocktail.port.browser.HTMLElement.prototype.set_scrollTop = function(value) {
-	return this._nativeElement.scrollTop = value;
-}
-cocktail.port.browser.HTMLElement.prototype.get_scrollTop = function() {
-	return this._nativeElement.scrollTop;
-}
-cocktail.port.browser.HTMLElement.prototype.set_scrollLeft = function(value) {
-	return this._nativeElement.scrollLeft = value;
-}
-cocktail.port.browser.HTMLElement.prototype.get_scrollLeft = function() {
-	return this._nativeElement.scrollLeft;
-}
-cocktail.port.browser.HTMLElement.prototype.get_scrollWidth = function() {
-	return this._nativeElement.scrollWidth;
-}
-cocktail.port.browser.HTMLElement.prototype.get_scrollHeight = function() {
-	return this._nativeElement.scrollHeight;
-}
-cocktail.port.browser.HTMLElement.prototype.set_onFocus = function(value) {
-	if(value == null) this._nativeElement.removeEventListener("focus",$closure(this,"onNativeFocus")); else this._nativeElement.addEventListener("focus",$closure(this,"onNativeFocus"));
-	return this._onFocus = value;
-}
-cocktail.port.browser.HTMLElement.prototype.set_onBlur = function(value) {
-	if(value == null) this._nativeElement.removeEventListener("blur",$closure(this,"onNativeBlur")); else this._nativeElement.addEventListener("blur",$closure(this,"onNativeBlur"));
-	return this._onBlur = value;
-}
-cocktail.port.browser.HTMLElement.prototype.set_tabIndex = function(value) {
-	cocktail.core.html.AbstractHTMLElement.prototype.set_tabIndex.call(this,value);
-	this._nativeElement.tabIndex = value;
-	return this._tabIndex;
-}
-cocktail.port.browser.HTMLElement.prototype.focus = function() {
-	this._nativeElement.focus();
-}
-cocktail.port.browser.HTMLElement.prototype.blur = function() {
-	this._nativeElement.blur();
-}
-cocktail.port.browser.HTMLElement.prototype.onNativeFocus = function(event) {
-	if(this._onFocus != null) this._onFocus(new cocktail.core.event.Event("focus",this));
-}
-cocktail.port.browser.HTMLElement.prototype.onNativeBlur = function(event) {
-	if(this._onBlur != null) this._onBlur(new cocktail.core.event.Event("blur",this));
-}
-cocktail.port.browser.HTMLElement.prototype.set_onScroll = function(value) {
-	this._nativeElement.removeEventListener("scroll",$closure(this,"onNativeScroll"));
-	this._onScroll = value;
-	if(this._onScroll != null) this._nativeElement.addEventListener("scroll",$closure(this,"onNativeScroll"));
-	return value;
-}
-cocktail.port.browser.HTMLElement.prototype.onNativeScroll = function(event) {
-	this.onScrollCallback(new cocktail.core.event.Event("scroll",this));
-}
-cocktail.port.browser.HTMLElement.prototype.__class__ = cocktail.port.browser.HTMLElement;
-cocktail.core.html.AbstractHTMLAnchorElement = function(p) {
-	if( p === $_ ) return;
-	cocktail.port.browser.HTMLElement.call(this,"a");
-	this._target = "_self";
-}
-cocktail.core.html.AbstractHTMLAnchorElement.__name__ = ["cocktail","core","html","AbstractHTMLAnchorElement"];
-cocktail.core.html.AbstractHTMLAnchorElement.__super__ = cocktail.port.browser.HTMLElement;
-for(var k in cocktail.port.browser.HTMLElement.prototype ) cocktail.core.html.AbstractHTMLAnchorElement.prototype[k] = cocktail.port.browser.HTMLElement.prototype[k];
-cocktail.core.html.AbstractHTMLAnchorElement.prototype._href = null;
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.href = null;
-cocktail.core.html.AbstractHTMLAnchorElement.prototype._target = null;
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.target = null;
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.initNativeElement = function() {
-	this._nativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.anchor);
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseDown = function(value) {
-	this._onMouseDown = value;
-	this._mouse.setOnMouseDown($closure(this,"onMouseDownCallback"));
-	return this._onMouseDown;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseOver = function(value) {
-	this._onMouseOver = value;
-	this._mouse.setOnMouseOver($closure(this,"onMouseOverCallback"));
-	return this._onMouseOver;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseOut = function(value) {
-	this._onMouseOut = value;
-	this._mouse.setOnMouseOut($closure(this,"onMouseOutCallback"));
-	return this._onMouseOut;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseDownCallback = function(mouseEvent) {
-	if(this._onMouseDown != null) this._onMouseDown(mouseEvent);
-	if(mouseEvent.get_defaultPrevented() == false) this.openDocument();
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseOverCallback = function(mouseEvent) {
-	if(this._onMouseOver != null) this._onMouseOver(mouseEvent);
-	this.displayPointerCursor();
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseOutCallback = function(mouseEvent) {
-	if(this._onMouseOut != null) this._onMouseOut(mouseEvent);
-	this.hidePointerCursor();
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.openDocument = function() {
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.displayPointerCursor = function() {
-	cocktail.core.mouse.MouseCursorManager.setMouseCursor(cocktail.core.mouse.MouseCursorValue["native"](cocktail.core.mouse.NativeOSMouseCursorValue.pointer));
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.hidePointerCursor = function() {
-	cocktail.core.mouse.MouseCursorManager.setMouseCursor(cocktail.core.mouse.MouseCursorValue.cssAuto);
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_href = function(value) {
-	this._href = value;
-	this.set_onMouseDown(this._onMouseDown);
-	this.set_onMouseOver(this._onMouseOver);
-	this.set_onMouseOut(this._onMouseOut);
-	return value;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.get_href = function() {
-	return this._href;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_target = function(value) {
-	this._target = value;
-	this.set_onMouseDown(this._onMouseDown);
-	this.set_onMouseOver(this._onMouseOver);
-	this.set_onMouseOut(this._onMouseOut);
-	return value;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.get_target = function() {
-	return this._target;
-}
-cocktail.core.html.AbstractHTMLAnchorElement.prototype.__class__ = cocktail.core.html.AbstractHTMLAnchorElement;
-cocktail.port.browser.HTMLAnchorElement = function(p) {
-	if( p === $_ ) return;
-	cocktail.core.html.AbstractHTMLAnchorElement.call(this);
-}
-cocktail.port.browser.HTMLAnchorElement.__name__ = ["cocktail","port","browser","HTMLAnchorElement"];
-cocktail.port.browser.HTMLAnchorElement.__super__ = cocktail.core.html.AbstractHTMLAnchorElement;
-for(var k in cocktail.core.html.AbstractHTMLAnchorElement.prototype ) cocktail.port.browser.HTMLAnchorElement.prototype[k] = cocktail.core.html.AbstractHTMLAnchorElement.prototype[k];
-cocktail.port.browser.HTMLAnchorElement.prototype.set_href = function(value) {
-	this._nativeElement.href = value;
-	cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_href.call(this,value);
-	return value;
-}
-cocktail.port.browser.HTMLAnchorElement.prototype.set_target = function(value) {
-	this._nativeElement.target = value;
-	cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_target.call(this,value);
-	return value;
-}
-cocktail.port.browser.HTMLAnchorElement.prototype.__class__ = cocktail.port.browser.HTMLAnchorElement;
 if(!cocktail.core.style) cocktail.core.style = {}
 cocktail.core.style.CoreStyle = function(htmlElement) {
 	if( htmlElement === $_ ) return;
@@ -1081,11 +279,9 @@ cocktail.core.style.CoreStyle.prototype.getLayerRenderer = function(elementRende
 	if(this.isPositioned() == true) layerRenderer = new cocktail.core.renderer.LayerRenderer(elementRenderer); else layerRenderer = parentElementRenderer.getLayerRenderer();
 	return layerRenderer;
 }
-cocktail.core.style.CoreStyle.prototype.layout = function(containingHTMLElementData,lastPositionedHTMLElementData,viewportData,containingHTMLElementFontMetricsData) {
-}
 cocktail.core.style.CoreStyle.prototype.flow = function(containingHTMLElementData,viewportData,lastPositionedHTMLElementData,containingHTMLElementFontMetricsData,formattingContext,parentElementRenderer) {
 	if(this._elementRenderer != null && parentElementRenderer != null) parentElementRenderer.removeChild(this._elementRenderer);
-	if(this.isNotDisplayed() == true) return;
+	if(this.isDisplayed() == false) return;
 	this.initComputedStyles();
 	this.computeHTMLElementStyles(containingHTMLElementData,viewportData,lastPositionedHTMLElementData.data,containingHTMLElementFontMetricsData);
 	this._elementRenderer = this.createElementRenderer(parentElementRenderer);
@@ -1117,12 +313,6 @@ cocktail.core.style.CoreStyle.prototype.positionElement = function(lastPositione
 	this._elementRenderer.getBounds().height = this._computedStyle.height + this._computedStyle.paddingTop + this._computedStyle.paddingBottom;
 	return this._elementRenderer;
 }
-cocktail.core.style.CoreStyle.prototype.scheduleLayout = function(containingHTMLElementData,lastPositionedHTMLElementData,viewportData) {
-	var layoutDelegate = $closure(this,"layout");
-	haxe.Timer.delay(function() {
-		layoutDelegate(containingHTMLElementData,lastPositionedHTMLElementData,viewportData,null);
-	},1);
-}
 cocktail.core.style.CoreStyle.prototype.flowChildren = function(containingHTMLElementData,viewportData,lastPositionedHTMLElementData,containingHTMLElementFontMetricsData,formattingContext) {
 }
 cocktail.core.style.CoreStyle.prototype.insertHTMLElement = function(formattingContext,lastPositionedHTMLElementData,viewportData) {
@@ -1142,10 +332,6 @@ cocktail.core.style.CoreStyle.prototype.invalidate = function(immediate) {
 			parent.get_coreStyle().invalidate(immediate);
 		}
 	}
-}
-cocktail.core.style.CoreStyle.prototype.invalidateText = function() {
-	this._fontMetrics = null;
-	this.invalidate();
 }
 cocktail.core.style.CoreStyle.prototype.computeDisplayStyles = function() {
 	cocktail.core.style.computer.DisplayStylesComputer.compute(this);
@@ -1271,8 +457,8 @@ cocktail.core.style.CoreStyle.prototype.isClear = function() {
 	}
 	return ret;
 }
-cocktail.core.style.CoreStyle.prototype.isNotDisplayed = function() {
-	return this._computedStyle.display == cocktail.core.style.Display.none;
+cocktail.core.style.CoreStyle.prototype.isDisplayed = function() {
+	return this._computedStyle.display != cocktail.core.style.Display.none;
 }
 cocktail.core.style.CoreStyle.prototype.getFirstPositionedAncestorData = function() {
 	var firstPositionedAncestorData;
@@ -1291,10 +477,8 @@ cocktail.core.style.CoreStyle.prototype.getElementRenderer = function() {
 	return this._elementRenderer;
 }
 cocktail.core.style.CoreStyle.prototype.getFontMetricsData = function() {
-	if(this._fontMetrics == null) {
-		var fontManager = new cocktail.port.browser.FontManager();
-		this._fontMetrics = fontManager.getFontMetrics(cocktail.core.unit.UnitManager.getCSSFontFamily(this._computedStyle.fontFamily),this._computedStyle.fontSize);
-	}
+	var fontManager = new cocktail.port.browser.FontManager();
+	this._fontMetrics = fontManager.getFontMetrics(cocktail.core.unit.UnitManager.getCSSFontFamily(this._computedStyle.fontFamily),this._computedStyle.fontSize);
 	return this._fontMetrics;
 }
 cocktail.core.style.CoreStyle.prototype.getComputedStyle = function() {
@@ -1395,31 +579,31 @@ cocktail.core.style.CoreStyle.prototype.setClear = function(value) {
 	return this._clear = value;
 }
 cocktail.core.style.CoreStyle.prototype.setFontSize = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._fontSize = value;
 }
 cocktail.core.style.CoreStyle.prototype.setFontWeight = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._fontWeight = value;
 }
 cocktail.core.style.CoreStyle.prototype.setFontStyle = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._fontStyle = value;
 }
 cocktail.core.style.CoreStyle.prototype.setFontFamily = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._fontFamily = value;
 }
 cocktail.core.style.CoreStyle.prototype.setFontVariant = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._fontVariant = value;
 }
 cocktail.core.style.CoreStyle.prototype.setTextTransform = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._textTransform = value;
 }
 cocktail.core.style.CoreStyle.prototype.setLetterSpacing = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._letterSpacing = value;
 }
 cocktail.core.style.CoreStyle.prototype.setWordSpacing = function(value) {
@@ -1431,7 +615,7 @@ cocktail.core.style.CoreStyle.prototype.setLineHeight = function(value) {
 	return this._lineHeight = value;
 }
 cocktail.core.style.CoreStyle.prototype.setColor = function(value) {
-	this.invalidateText();
+	this.invalidate();
 	return this._color = value;
 }
 cocktail.core.style.CoreStyle.prototype.setVerticalAlign = function(value) {
@@ -1597,42 +781,49 @@ cocktail.core.style.CoreStyle.prototype.getTransformOrigin = function() {
 	return this._transformOrigin;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundColor = function(value) {
+	this.invalidate();
 	return this._backgroundColor = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundColor = function() {
 	return this._backgroundColor;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundImage = function(value) {
+	this.invalidate();
 	return this._backgroundImage = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundImage = function() {
 	return this._backgroundImage;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundRepeat = function(value) {
+	this.invalidate();
 	return this._backgroundRepeat = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundRepeat = function() {
 	return this._backgroundRepeat;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundSize = function(value) {
+	this.invalidate();
 	return this._backgroundSize = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundSize = function() {
 	return this._backgroundSize;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundClip = function(value) {
+	this.invalidate();
 	return this._backgroundClip = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundClip = function() {
 	return this._backgroundClip;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundPosition = function(value) {
+	this.invalidate();
 	return this._backgroundPosition = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundPosition = function() {
 	return this._backgroundPosition;
 }
 cocktail.core.style.CoreStyle.prototype.setBackgroundOrigin = function(value) {
+	this.invalidate();
 	return this._backgroundOrigin = value;
 }
 cocktail.core.style.CoreStyle.prototype.getBackgroundOrigin = function() {
@@ -1664,9 +855,6 @@ cocktail.core.style.ContainerCoreStyle.prototype.createElementRenderer = functio
 	elementRenderer.setLayerRenderer(this.getLayerRenderer(elementRenderer,parentElementRenderer));
 	parentElementRenderer.appendChild(elementRenderer);
 	return elementRenderer;
-}
-cocktail.core.style.ContainerCoreStyle.prototype.layout = function(containingHTMLElementData,lastPositionedHTMLElementData,viewportData,containingHTMLElementFontMetricsData) {
-	this.flow(containingHTMLElementData,viewportData,lastPositionedHTMLElementData,null,null,null);
 }
 cocktail.core.style.ContainerCoreStyle.prototype.flowChildren = function(containingHTMLElementData,viewportData,lastPositionedHTMLElementData,containingHTMLElementFontMetricsData,formattingContext) {
 	var _g1 = 0, _g = this._htmlElement.get_childNodes().length;
@@ -1879,6 +1067,848 @@ cocktail.core.style.ContainerCoreStyle.prototype.getComputedHeight = function() 
 	return this._computedStyle.height;
 }
 cocktail.core.style.ContainerCoreStyle.prototype.__class__ = cocktail.core.style.ContainerCoreStyle;
+if(!cocktail.core.dom) cocktail.core.dom = {}
+cocktail.core.dom.Node = function(p) {
+	if( p === $_ ) return;
+	this._childNodes = new Array();
+}
+cocktail.core.dom.Node.__name__ = ["cocktail","core","dom","Node"];
+cocktail.core.dom.Node.prototype.nodeType = null;
+cocktail.core.dom.Node.prototype.nodeValue = null;
+cocktail.core.dom.Node.prototype.nodeName = null;
+cocktail.core.dom.Node.prototype._parentNode = null;
+cocktail.core.dom.Node.prototype.parentNode = null;
+cocktail.core.dom.Node.prototype._childNodes = null;
+cocktail.core.dom.Node.prototype.childNodes = null;
+cocktail.core.dom.Node.prototype.firstChild = null;
+cocktail.core.dom.Node.prototype.lastChild = null;
+cocktail.core.dom.Node.prototype.nextSibling = null;
+cocktail.core.dom.Node.prototype.previousSibling = null;
+cocktail.core.dom.Node.prototype._attributes = null;
+cocktail.core.dom.Node.prototype.attributes = null;
+cocktail.core.dom.Node.prototype._ownerDocument = null;
+cocktail.core.dom.Node.prototype.ownerDocument = null;
+cocktail.core.dom.Node.prototype.removeChild = function(oldChild) {
+	oldChild.set_parentNode(null);
+	var newChildNodes = new Array();
+	var _g1 = 0, _g = this._childNodes.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(this._childNodes[i] != oldChild) newChildNodes.push(this._childNodes[i]);
+	}
+	this._childNodes = newChildNodes;
+	return oldChild;
+}
+cocktail.core.dom.Node.prototype.appendChild = function(newChild) {
+	this.removeFromParentIfNecessary(newChild);
+	newChild.set_parentNode(this);
+	this._childNodes.push(newChild);
+	return newChild;
+}
+cocktail.core.dom.Node.prototype.insertBefore = function(newChild,refChild) {
+	if(refChild == null) this.appendChild(newChild); else {
+		this.removeFromParentIfNecessary(newChild);
+		var newChildNodes = new Array();
+		var _g1 = 0, _g = this._childNodes.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this._childNodes[i] == refChild) newChildNodes.push(newChild);
+			newChildNodes.push(this._childNodes[i]);
+		}
+		this._childNodes = newChildNodes;
+	}
+	return newChild;
+}
+cocktail.core.dom.Node.prototype.replaceChild = function(newChild,oldChild) {
+	var newChildNodes = new Array();
+	var _g1 = 0, _g = this._childNodes.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(this._childNodes[i] == oldChild) newChildNodes.push(newChild); else newChildNodes.push(this._childNodes[i]);
+	}
+	this._childNodes = newChildNodes;
+	return oldChild;
+}
+cocktail.core.dom.Node.prototype.isSameNode = function(other) {
+	return other == this;
+}
+cocktail.core.dom.Node.prototype.hasChildNodes = function() {
+	return this._childNodes.length > 0;
+}
+cocktail.core.dom.Node.prototype.hasAttributes = function() {
+	return false;
+}
+cocktail.core.dom.Node.prototype.removeFromParentIfNecessary = function(newChild) {
+	if(newChild.get_parentNode() != null) {
+		var parentNode = newChild.get_parentNode();
+		parentNode.removeChild(newChild);
+	}
+}
+cocktail.core.dom.Node.prototype.get_firstChild = function() {
+	if(this.hasChildNodes() == true) return this._childNodes[0]; else return null;
+}
+cocktail.core.dom.Node.prototype.get_lastChild = function() {
+	if(this.hasChildNodes() == true) return this._childNodes[this._childNodes.length - 1]; else return null;
+}
+cocktail.core.dom.Node.prototype.get_nextSibling = function() {
+	if(this._parentNode == null) return null; else if(this._parentNode.get_lastChild() != this) {
+		var _g1 = 0, _g = this._parentNode.get_childNodes().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.isSameNode(this._parentNode.get_childNodes()[i]) == true) return this._parentNode.get_childNodes()[i + 1];
+		}
+	}
+	return null;
+}
+cocktail.core.dom.Node.prototype.get_previousSibling = function() {
+	if(this._parentNode == null) return null; else if(this._parentNode.get_firstChild() != this) {
+		var _g1 = 0, _g = this._parentNode.get_childNodes().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.isSameNode(this._parentNode.get_childNodes()[i]) == true) return this._parentNode.get_childNodes()[i - 1];
+		}
+	}
+	return null;
+}
+cocktail.core.dom.Node.prototype.get_nodeType = function() {
+	return -1;
+}
+cocktail.core.dom.Node.prototype.get_parentNode = function() {
+	return this._parentNode;
+}
+cocktail.core.dom.Node.prototype.set_parentNode = function(value) {
+	return this._parentNode = value;
+}
+cocktail.core.dom.Node.prototype.get_childNodes = function() {
+	return this._childNodes;
+}
+cocktail.core.dom.Node.prototype.get_nodeValue = function() {
+	return null;
+}
+cocktail.core.dom.Node.prototype.set_nodeValue = function(value) {
+	if(value != null) throw 7;
+	return value;
+}
+cocktail.core.dom.Node.prototype.get_nodeName = function() {
+	return null;
+}
+cocktail.core.dom.Node.prototype.get_attributes = function() {
+	return null;
+}
+cocktail.core.dom.Node.prototype.get_ownerDocument = function() {
+	return this._ownerDocument;
+}
+cocktail.core.dom.Node.prototype.set_ownerDocument = function(value) {
+	return this._ownerDocument = value;
+}
+cocktail.core.dom.Node.prototype.__class__ = cocktail.core.dom.Node;
+cocktail.core.dom.Element = function(tagName) {
+	if( tagName === $_ ) return;
+	this._tagName = tagName;
+	this._attributes = new cocktail.core.dom.NamedNodeMap();
+	cocktail.core.dom.Node.call(this);
+}
+cocktail.core.dom.Element.__name__ = ["cocktail","core","dom","Element"];
+cocktail.core.dom.Element.__super__ = cocktail.core.dom.Node;
+for(var k in cocktail.core.dom.Node.prototype ) cocktail.core.dom.Element.prototype[k] = cocktail.core.dom.Node.prototype[k];
+cocktail.core.dom.Element.prototype._tagName = null;
+cocktail.core.dom.Element.prototype.tagName = null;
+cocktail.core.dom.Element.prototype.firstElementChild = null;
+cocktail.core.dom.Element.prototype.lastElementChild = null;
+cocktail.core.dom.Element.prototype.previousElementSibling = null;
+cocktail.core.dom.Element.prototype.nextElementSibling = null;
+cocktail.core.dom.Element.prototype.childElementCount = null;
+cocktail.core.dom.Element.prototype.getAttribute = function(name) {
+	var attribute = this.getAttributeNode(name);
+	if(attribute != null) return attribute.get_value(); else return null;
+}
+cocktail.core.dom.Element.prototype.setAttribute = function(name,value) {
+	var attribute = this._attributes.getNamedItem(name);
+	if(attribute == null) {
+		attribute = new cocktail.core.dom.Attr(name);
+		this._attributes.setNamedItem(attribute);
+		attribute.set_ownerElement(this);
+	}
+	attribute.set_value(value);
+}
+cocktail.core.dom.Element.prototype.getAttributeNode = function(name) {
+	var attribute = this._attributes.getNamedItem(name);
+	if(attribute != null) return attribute;
+	return null;
+}
+cocktail.core.dom.Element.prototype.setAttributeNode = function(newAttr) {
+	newAttr.set_ownerElement(this);
+	return this._attributes.setNamedItem(newAttr);
+}
+cocktail.core.dom.Element.prototype.removeAttribute = function(name) {
+	var removedAttribute = this._attributes.removeNamedItem(name);
+	if(removedAttribute != null) removedAttribute.set_ownerElement(null);
+}
+cocktail.core.dom.Element.prototype.setIdAttribute = function(name,isId) {
+	var idAttribute = this._attributes.getNamedItem(name);
+	if(idAttribute == null) {
+		idAttribute = new cocktail.core.dom.Attr(name);
+		this._attributes.setNamedItem(idAttribute);
+		idAttribute.set_ownerElement(this);
+	}
+	idAttribute.set_isId(isId);
+}
+cocktail.core.dom.Element.prototype.setIdAttributeNode = function(idAttr,isId) {
+	idAttr.set_isId(isId);
+	this._attributes.setNamedItem(idAttr);
+}
+cocktail.core.dom.Element.prototype.hasAttribute = function(name) {
+	return this._attributes.getNamedItem(name) != null;
+}
+cocktail.core.dom.Element.prototype.getElementsByTagName = function(tagName) {
+	var elements = new Array();
+	this.doGetElementsByTagName(this,tagName,elements);
+	return elements;
+}
+cocktail.core.dom.Element.prototype.doGetElementsByTagName = function(node,tagName,elements) {
+	if(node.hasChildNodes() == true) {
+		var _g1 = 0, _g = node.get_childNodes().length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var childNode = node.get_childNodes()[i];
+			if(childNode.get_nodeName() == tagName) elements.push(childNode); else if(tagName == "*" && childNode.get_nodeType() == 1) elements.push(childNode);
+			this.doGetElementsByTagName(childNode,tagName,elements);
+		}
+	}
+}
+cocktail.core.dom.Element.prototype.hasAttributes = function() {
+	return this._attributes.get_length() > 0;
+}
+cocktail.core.dom.Element.prototype.get_nodeName = function() {
+	return this._tagName;
+}
+cocktail.core.dom.Element.prototype.get_nodeType = function() {
+	return 1;
+}
+cocktail.core.dom.Element.prototype.get_attributes = function() {
+	return this._attributes;
+}
+cocktail.core.dom.Element.prototype.get_firstElementChild = function() {
+	if(this.hasChildNodes() == false) return null;
+	if(this.get_firstChild().get_nodeType() == 1) return this.get_firstChild(); else {
+		var _g1 = 0, _g = this._childNodes.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this._childNodes[i].get_nodeType() == 1) return this._childNodes[i];
+		}
+	}
+	return null;
+}
+cocktail.core.dom.Element.prototype.get_lastElementChild = function() {
+	if(this.hasChildNodes() == false) return null;
+	if(this.get_lastChild().get_nodeType() == 1) return this.get_lastChild(); else {
+		var _g = this._childNodes.length;
+		while(_g < 0) {
+			var i = _g++;
+			if(this._childNodes[i].get_nodeType() == 1) return this._childNodes[i];
+		}
+	}
+	return null;
+}
+cocktail.core.dom.Element.prototype.get_nextElementSibling = function() {
+	if(this.get_nextSibling() == null) return null;
+	var nextElementSibling = this.get_nextSibling();
+	while(nextElementSibling.get_nodeType() != 1) {
+		nextElementSibling = nextElementSibling.get_nextSibling();
+		if(nextElementSibling == null) return null;
+	}
+	return nextElementSibling;
+}
+cocktail.core.dom.Element.prototype.get_previousElementSibling = function() {
+	if(this.get_previousSibling() == null) return null;
+	var previousElementSibling = this.get_previousSibling();
+	while(previousElementSibling.get_nodeType() != 1) {
+		previousElementSibling = previousElementSibling.get_previousSibling();
+		if(previousElementSibling == null) return null;
+	}
+	return previousElementSibling;
+}
+cocktail.core.dom.Element.prototype.get_childElementCount = function() {
+	var childElementCount = 0;
+	var _g1 = 0, _g = this._childNodes.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(this._childNodes[i].get_nodeType() == 1) childElementCount++;
+	}
+	return childElementCount;
+}
+cocktail.core.dom.Element.prototype.get_tagName = function() {
+	return this._tagName;
+}
+cocktail.core.dom.Element.prototype.__class__ = cocktail.core.dom.Element;
+if(!cocktail.core.event) cocktail.core.event = {}
+cocktail.core.event.IEventTarget = function() { }
+cocktail.core.event.IEventTarget.__name__ = ["cocktail","core","event","IEventTarget"];
+cocktail.core.event.IEventTarget.prototype.__class__ = cocktail.core.event.IEventTarget;
+if(!cocktail.core.html) cocktail.core.html = {}
+cocktail.core.html.AbstractHTMLElement = function(tagName) {
+	if( tagName === $_ ) return;
+	cocktail.core.dom.Element.call(this,tagName);
+	this.init();
+}
+cocktail.core.html.AbstractHTMLElement.__name__ = ["cocktail","core","html","AbstractHTMLElement"];
+cocktail.core.html.AbstractHTMLElement.__super__ = cocktail.core.dom.Element;
+for(var k in cocktail.core.dom.Element.prototype ) cocktail.core.html.AbstractHTMLElement.prototype[k] = cocktail.core.dom.Element.prototype[k];
+cocktail.core.html.AbstractHTMLElement.prototype._mouse = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onClick = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onclick = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onMouseDown = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onmousedown = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onMouseUp = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onmouseup = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onMouseOver = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onmouseover = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onMouseOut = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onmouseout = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onMouseMove = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onmousemove = null;
+cocktail.core.html.AbstractHTMLElement.prototype._keyboard = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onKeyDown = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onkeydown = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onKeyUp = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onkeyup = null;
+cocktail.core.html.AbstractHTMLElement.prototype._tabIndex = null;
+cocktail.core.html.AbstractHTMLElement.prototype.tabIndex = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onFocus = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onfocus = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onBlur = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onblur = null;
+cocktail.core.html.AbstractHTMLElement.prototype._onScroll = null;
+cocktail.core.html.AbstractHTMLElement.prototype.onscroll = null;
+cocktail.core.html.AbstractHTMLElement.prototype.scrollTop = null;
+cocktail.core.html.AbstractHTMLElement.prototype.scrollLeft = null;
+cocktail.core.html.AbstractHTMLElement.prototype.scrollHeight = null;
+cocktail.core.html.AbstractHTMLElement.prototype.scrollWidth = null;
+cocktail.core.html.AbstractHTMLElement.prototype._nativeElement = null;
+cocktail.core.html.AbstractHTMLElement.prototype.nativeElement = null;
+cocktail.core.html.AbstractHTMLElement.prototype.id = null;
+cocktail.core.html.AbstractHTMLElement.prototype.innerHTML = null;
+cocktail.core.html.AbstractHTMLElement.prototype.offsetParent = null;
+cocktail.core.html.AbstractHTMLElement.prototype.offsetWidth = null;
+cocktail.core.html.AbstractHTMLElement.prototype.offsetHeight = null;
+cocktail.core.html.AbstractHTMLElement.prototype.offsetLeft = null;
+cocktail.core.html.AbstractHTMLElement.prototype.offsetTop = null;
+cocktail.core.html.AbstractHTMLElement.prototype.clientWidth = null;
+cocktail.core.html.AbstractHTMLElement.prototype.clientHeight = null;
+cocktail.core.html.AbstractHTMLElement.prototype.clientLeft = null;
+cocktail.core.html.AbstractHTMLElement.prototype.clientTop = null;
+cocktail.core.html.AbstractHTMLElement.prototype._coreStyle = null;
+cocktail.core.html.AbstractHTMLElement.prototype.coreStyle = null;
+cocktail.core.html.AbstractHTMLElement.prototype._style = null;
+cocktail.core.html.AbstractHTMLElement.prototype.style = null;
+cocktail.core.html.AbstractHTMLElement.prototype.init = function() {
+	this.initNativeElement();
+	this.initMouse();
+	this.initKeyboard();
+	this.initCoreStyle();
+	this.initStyle();
+	this.initId();
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initNativeElement = function() {
+	this._nativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.semantic(this._tagName));
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initMouse = function() {
+	this._mouse = new cocktail.port.browser.Mouse(this);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initKeyboard = function() {
+	this._keyboard = new cocktail.port.browser.Keyboard(this);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initCoreStyle = function() {
+	this._coreStyle = new cocktail.core.style.ContainerCoreStyle(this);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initStyle = function() {
+	this._style = new cocktail.port.browser.Style(this._coreStyle);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.initId = function() {
+	var id = new cocktail.core.dom.Attr("id");
+	this.setIdAttributeNode(id,true);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.appendChild = function(newChild) {
+	cocktail.core.dom.Element.prototype.appendChild.call(this,newChild);
+	this._coreStyle.invalidate();
+	return newChild;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.removeChild = function(oldChild) {
+	cocktail.core.dom.Element.prototype.removeChild.call(this,oldChild);
+	this._coreStyle.invalidate();
+	return oldChild;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.getElementsByTagName = function(tagName) {
+	return cocktail.core.dom.Element.prototype.getElementsByTagName.call(this,tagName.toLowerCase());
+}
+cocktail.core.html.AbstractHTMLElement.prototype.click = function() {
+	if(this._onClick != null) this.onClickCallback(new cocktail.core.event.MouseEvent("click",this,0,0,0,0,0,false,false,false));
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onClick = function(value) {
+	this._onClick = value;
+	if(this._onClick == null) this._mouse.set_onClick(null); else this._mouse.set_onClick($closure(this,"onClickCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onClick = function() {
+	return this._onClick;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseDown = function(value) {
+	this._onMouseDown = value;
+	if(this._onMouseDown == null) this._mouse.setOnMouseDown(null); else this._mouse.setOnMouseDown($closure(this,"onMouseDownCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseDown = function() {
+	return this._onMouseDown;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseUp = function(value) {
+	this._onMouseUp = value;
+	if(this._onMouseUp == null) this._mouse.setOnMouseUp(null); else this._mouse.setOnMouseUp($closure(this,"onMouseUpCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseUp = function() {
+	return this._onMouseUp;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseOver = function(value) {
+	this._onMouseOver = value;
+	if(this._onMouseOver == null) this._mouse.setOnMouseOver(null); else this._mouse.setOnMouseOver($closure(this,"onMouseOverCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseOver = function() {
+	return this._onMouseOver;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseOut = function(value) {
+	this._onMouseOut = value;
+	if(this._onMouseOut == null) this._mouse.setOnMouseOut(null); else this._mouse.setOnMouseOut($closure(this,"onMouseOutCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseOut = function() {
+	return this._onMouseOut;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onMouseMove = function(value) {
+	this._onMouseMove = value;
+	if(this._onMouseMove == null) this._mouse.setOnMouseMove(null); else this._mouse.setOnMouseMove($closure(this,"onMouseMoveCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onMouseMove = function() {
+	return this._onMouseMove;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onClickCallback = function(mouseEvent) {
+	this._onClick(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onMouseDownCallback = function(mouseEvent) {
+	this._onMouseDown(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onMouseUpCallback = function(mouseEvent) {
+	this._onMouseUp(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onMouseMoveCallback = function(mouseEvent) {
+	this._onMouseMove(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onMouseOverCallback = function(mouseEvent) {
+	this._onMouseOver(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onMouseOutCallback = function(mouseEvent) {
+	this._onMouseOut(mouseEvent);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onKeyDown = function(value) {
+	this._onKeyDown = value;
+	if(this._onKeyDown == null) this._keyboard.setOnKeyDown(null); else this._keyboard.setOnKeyDown($closure(this,"onKeyDownCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onKeyDown = function() {
+	return this._keyboard.getOnKeyDown();
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onKeyUp = function(value) {
+	this._onKeyUp = value;
+	if(this._onKeyUp == null) this._keyboard.setOnKeyUp(null); else this._keyboard.setOnKeyUp($closure(this,"onKeyUpCallback"));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onKeyUp = function() {
+	return this._keyboard.getOnKeyUp();
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onKeyDownCallback = function(keyEventData) {
+	this._onKeyDown(keyEventData);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onKeyUpCallback = function(keyEventData) {
+	this._onKeyUp(keyEventData);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.isFocusable = function() {
+	if(this.get_parentNode() == null) return false; else if(this.isDefaultFocusable() == true) return true; else if(this.get_tabIndex() != null) {
+		if(this.get_tabIndex() > 0) return true;
+	}
+	return false;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.isDefaultFocusable = function() {
+	return false;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.focus = function() {
+	if(this.isFocusable() == true) {
+		var htmlDocument = this.get_ownerDocument();
+		htmlDocument.set_activeElement(this);
+	}
+}
+cocktail.core.html.AbstractHTMLElement.prototype.blur = function() {
+	var htmlDocument = this.get_ownerDocument();
+	htmlDocument.get_body().focus();
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onFocus = function(value) {
+	return this._onFocus = value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onFocus = function() {
+	return this._onFocus;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onBlur = function(value) {
+	return this._onBlur = value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onBlur = function() {
+	return this._onBlur;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_tabIndex = function(value) {
+	return this._tabIndex = value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_tabIndex = function() {
+	return this._tabIndex;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_onScroll = function(value) {
+	return this._onScroll = value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_onScroll = function() {
+	return this._onScroll;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.onScrollCallback = function(event) {
+	if(this._onScroll != null) this._onScroll(event);
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_scrollHeight = function() {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_scrollWidth = function() {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_scrollLeft = function(value) {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_scrollLeft = function() {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_scrollTop = function(value) {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_scrollTop = function() {
+	return -1;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_nativeElement = function() {
+	return this._nativeElement;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_id = function() {
+	return this.getAttribute("id");
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_id = function(value) {
+	this.setAttribute("id",value);
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.set_innerHTML = function(value) {
+	var _g1 = 0, _g = this._childNodes.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.removeChild(this._childNodes[i]);
+	}
+	this.appendChild(cocktail.core.hxtml.HxtmlConverter.getNode(value));
+	return value;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_innerHTML = function() {
+	return "";
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_offsetParent = function() {
+	return this._coreStyle.getFirstPositionedAncestor();
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_offsetWidth = function() {
+	this._coreStyle.invalidate(true);
+	var computedStyle = this._coreStyle.getComputedStyle();
+	return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_offsetHeight = function() {
+	this._coreStyle.invalidate(true);
+	var computedStyle = this._coreStyle.getComputedStyle();
+	return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_offsetLeft = function() {
+	this._coreStyle.invalidate(true);
+	var firstPositionedAncestor = this.get_offsetParent();
+	var offsetLeft = 0;
+	if(firstPositionedAncestor != null) {
+		var parent = this.get_parentNode();
+		offsetLeft = parent.get_coreStyle().getComputedStyle().paddingLeft + parent.get_coreStyle().getComputedStyle().marginLeft;
+		while(parent != firstPositionedAncestor) {
+			offsetLeft += parent.get_coreStyle().getComputedStyle().paddingLeft + parent.get_coreStyle().getComputedStyle().marginLeft;
+			parent = parent.get_parentNode();
+		}
+	}
+	return offsetLeft;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_offsetTop = function() {
+	this._coreStyle.invalidate(true);
+	var firstPositionedAncestor = this.get_offsetParent();
+	var offsetTop = 0;
+	if(firstPositionedAncestor != null) {
+		var parent = this.get_parentNode();
+		offsetTop = parent.get_coreStyle().getComputedStyle().paddingTop + parent.get_coreStyle().getComputedStyle().marginTop;
+		while(parent != firstPositionedAncestor) {
+			offsetTop += parent.get_coreStyle().getComputedStyle().paddingTop + parent.get_coreStyle().getComputedStyle().marginTop;
+			parent = parent.get_parentNode();
+		}
+	}
+	return offsetTop;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_clientWidth = function() {
+	this._coreStyle.invalidate(true);
+	var computedStyle = this._coreStyle.getComputedStyle();
+	return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_clientHeight = function() {
+	this._coreStyle.invalidate(true);
+	var computedStyle = this._coreStyle.getComputedStyle();
+	return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_clientTop = function() {
+	this._coreStyle.invalidate(true);
+	return 0;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_clientLeft = function() {
+	this._coreStyle.invalidate(true);
+	return 0;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_coreStyle = function() {
+	return this._coreStyle;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.get_style = function() {
+	return this._style;
+}
+cocktail.core.html.AbstractHTMLElement.prototype.__class__ = cocktail.core.html.AbstractHTMLElement;
+cocktail.core.html.AbstractHTMLElement.__interfaces__ = [cocktail.core.event.IEventTarget];
+if(!cocktail.port) cocktail.port = {}
+if(!cocktail.port.browser) cocktail.port.browser = {}
+cocktail.port.browser.HTMLElement = function(tagName) {
+	if( tagName === $_ ) return;
+	cocktail.core.html.AbstractHTMLElement.call(this,tagName);
+}
+cocktail.port.browser.HTMLElement.__name__ = ["cocktail","port","browser","HTMLElement"];
+cocktail.port.browser.HTMLElement.__super__ = cocktail.core.html.AbstractHTMLElement;
+for(var k in cocktail.core.html.AbstractHTMLElement.prototype ) cocktail.port.browser.HTMLElement.prototype[k] = cocktail.core.html.AbstractHTMLElement.prototype[k];
+cocktail.port.browser.HTMLElement.prototype.removeChild = function(oldChild) {
+	cocktail.core.html.AbstractHTMLElement.prototype.removeChild.call(this,oldChild);
+	switch(oldChild.get_nodeType()) {
+	case 1:
+		var childHTMLElement = oldChild;
+		this._nativeElement.removeChild(childHTMLElement.get_nativeElement());
+		break;
+	case 3:
+		var childTextElement = oldChild;
+		this._nativeElement.removeChild(childTextElement.get_nativeElement());
+		break;
+	default:
+	}
+	return oldChild;
+}
+cocktail.port.browser.HTMLElement.prototype.appendChild = function(newChild) {
+	cocktail.core.html.AbstractHTMLElement.prototype.appendChild.call(this,newChild);
+	switch(newChild.get_nodeType()) {
+	case 1:
+		var childHTMLElement = newChild;
+		this._nativeElement.appendChild(childHTMLElement.get_nativeElement());
+		break;
+	case 3:
+		var childTextElement = newChild;
+		this._nativeElement.appendChild(childTextElement.get_nativeElement());
+		break;
+	default:
+	}
+	return newChild;
+}
+cocktail.port.browser.HTMLElement.prototype.insertBefore = function(newChild,refChild) {
+	cocktail.core.html.AbstractHTMLElement.prototype.insertBefore.call(this,newChild,refChild);
+	this._nativeElement.insertBefore(newChild.nativeElement,refChild.nativeElement);
+	return newChild;
+}
+cocktail.port.browser.HTMLElement.prototype.replaceChild = function(newChild,oldChild) {
+	cocktail.core.html.AbstractHTMLElement.prototype.replaceChild.call(this,newChild,oldChild);
+	this._nativeElement.replaceChild(newChild.nativeElement,refChild.nativeElement);
+	return oldChild;
+}
+cocktail.port.browser.HTMLElement.prototype.setAttribute = function(name,value) {
+	cocktail.core.html.AbstractHTMLElement.prototype.setAttribute.call(this,name,value);
+	this._nativeElement.setAttribute(name,value);
+}
+cocktail.port.browser.HTMLElement.prototype.get_offsetWidth = function() {
+	return this._nativeElement.offsetWidth;
+}
+cocktail.port.browser.HTMLElement.prototype.get_offsetHeight = function() {
+	return this._nativeElement.offsetHeight;
+}
+cocktail.port.browser.HTMLElement.prototype.get_offsetLeft = function() {
+	return this._nativeElement.offsetLeft;
+}
+cocktail.port.browser.HTMLElement.prototype.get_offsetTop = function() {
+	return this._nativeElement.offsetTop;
+}
+cocktail.port.browser.HTMLElement.prototype.get_clientWidth = function() {
+	return this._nativeElement.clientWidth;
+}
+cocktail.port.browser.HTMLElement.prototype.get_clientHeight = function() {
+	return this._nativeElement.clientHeight;
+}
+cocktail.port.browser.HTMLElement.prototype.get_clientLeft = function() {
+	return this._nativeElement.clientLeft;
+}
+cocktail.port.browser.HTMLElement.prototype.get_clientTop = function() {
+	return this._nativeElement.clientTop;
+}
+cocktail.port.browser.HTMLElement.prototype.set_scrollTop = function(value) {
+	return this._nativeElement.scrollTop = value;
+}
+cocktail.port.browser.HTMLElement.prototype.get_scrollTop = function() {
+	return this._nativeElement.scrollTop;
+}
+cocktail.port.browser.HTMLElement.prototype.set_scrollLeft = function(value) {
+	return this._nativeElement.scrollLeft = value;
+}
+cocktail.port.browser.HTMLElement.prototype.get_scrollLeft = function() {
+	return this._nativeElement.scrollLeft;
+}
+cocktail.port.browser.HTMLElement.prototype.get_scrollWidth = function() {
+	return this._nativeElement.scrollWidth;
+}
+cocktail.port.browser.HTMLElement.prototype.get_scrollHeight = function() {
+	return this._nativeElement.scrollHeight;
+}
+cocktail.port.browser.HTMLElement.prototype.set_onFocus = function(value) {
+	if(value == null) this._nativeElement.removeEventListener("focus",$closure(this,"onNativeFocus")); else this._nativeElement.addEventListener("focus",$closure(this,"onNativeFocus"));
+	return this._onFocus = value;
+}
+cocktail.port.browser.HTMLElement.prototype.set_onBlur = function(value) {
+	if(value == null) this._nativeElement.removeEventListener("blur",$closure(this,"onNativeBlur")); else this._nativeElement.addEventListener("blur",$closure(this,"onNativeBlur"));
+	return this._onBlur = value;
+}
+cocktail.port.browser.HTMLElement.prototype.set_tabIndex = function(value) {
+	cocktail.core.html.AbstractHTMLElement.prototype.set_tabIndex.call(this,value);
+	this._nativeElement.tabIndex = value;
+	return this._tabIndex;
+}
+cocktail.port.browser.HTMLElement.prototype.focus = function() {
+	cocktail.core.html.AbstractHTMLElement.prototype.focus.call(this);
+	this._nativeElement.focus();
+}
+cocktail.port.browser.HTMLElement.prototype.blur = function() {
+	cocktail.core.html.AbstractHTMLElement.prototype.blur.call(this);
+	this._nativeElement.blur();
+}
+cocktail.port.browser.HTMLElement.prototype.onNativeFocus = function(event) {
+	if(this._onFocus != null) this._onFocus(new cocktail.core.event.Event("focus",this));
+}
+cocktail.port.browser.HTMLElement.prototype.onNativeBlur = function(event) {
+	if(this._onBlur != null) this._onBlur(new cocktail.core.event.Event("blur",this));
+}
+cocktail.port.browser.HTMLElement.prototype.set_onScroll = function(value) {
+	this._nativeElement.removeEventListener("scroll",$closure(this,"onNativeScroll"));
+	this._onScroll = value;
+	if(this._onScroll != null) this._nativeElement.addEventListener("scroll",$closure(this,"onNativeScroll"));
+	return value;
+}
+cocktail.port.browser.HTMLElement.prototype.onNativeScroll = function(event) {
+	this.onScrollCallback(new cocktail.core.event.Event("scroll",this));
+}
+cocktail.port.browser.HTMLElement.prototype.__class__ = cocktail.port.browser.HTMLElement;
+cocktail.core.html.AbstractHTMLAnchorElement = function(p) {
+	if( p === $_ ) return;
+	cocktail.port.browser.HTMLElement.call(this,"a");
+	this._target = "_self";
+}
+cocktail.core.html.AbstractHTMLAnchorElement.__name__ = ["cocktail","core","html","AbstractHTMLAnchorElement"];
+cocktail.core.html.AbstractHTMLAnchorElement.__super__ = cocktail.port.browser.HTMLElement;
+for(var k in cocktail.port.browser.HTMLElement.prototype ) cocktail.core.html.AbstractHTMLAnchorElement.prototype[k] = cocktail.port.browser.HTMLElement.prototype[k];
+cocktail.core.html.AbstractHTMLAnchorElement.prototype._href = null;
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.href = null;
+cocktail.core.html.AbstractHTMLAnchorElement.prototype._target = null;
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.target = null;
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.initNativeElement = function() {
+	this._nativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.anchor);
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseDown = function(value) {
+	this._onMouseDown = value;
+	this._mouse.setOnMouseDown($closure(this,"onMouseDownCallback"));
+	return this._onMouseDown;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseOver = function(value) {
+	this._onMouseOver = value;
+	this._mouse.setOnMouseOver($closure(this,"onMouseOverCallback"));
+	return this._onMouseOver;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_onMouseOut = function(value) {
+	this._onMouseOut = value;
+	this._mouse.setOnMouseOut($closure(this,"onMouseOutCallback"));
+	return this._onMouseOut;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseDownCallback = function(mouseEvent) {
+	if(this._onMouseDown != null) this._onMouseDown(mouseEvent);
+	if(mouseEvent.get_defaultPrevented() == false) this.openDocument();
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseOverCallback = function(mouseEvent) {
+	if(this._onMouseOver != null) this._onMouseOver(mouseEvent);
+	this.displayPointerCursor();
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.onMouseOutCallback = function(mouseEvent) {
+	if(this._onMouseOut != null) this._onMouseOut(mouseEvent);
+	this.hidePointerCursor();
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.isDefaultFocusable = function() {
+	if(this.get_href() != null) return true; else return false;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.openDocument = function() {
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.displayPointerCursor = function() {
+	cocktail.core.mouse.MouseCursorManager.setMouseCursor(cocktail.core.mouse.MouseCursorValue["native"](cocktail.core.mouse.NativeOSMouseCursorValue.pointer));
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.hidePointerCursor = function() {
+	cocktail.core.mouse.MouseCursorManager.setMouseCursor(cocktail.core.mouse.MouseCursorValue.cssAuto);
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_href = function(value) {
+	this._href = value;
+	this.set_onMouseDown(this._onMouseDown);
+	this.set_onMouseOver(this._onMouseOver);
+	this.set_onMouseOut(this._onMouseOut);
+	return value;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.get_href = function() {
+	return this._href;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_target = function(value) {
+	this._target = value;
+	this.set_onMouseDown(this._onMouseDown);
+	this.set_onMouseOver(this._onMouseOver);
+	this.set_onMouseOut(this._onMouseOut);
+	return value;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.get_target = function() {
+	return this._target;
+}
+cocktail.core.html.AbstractHTMLAnchorElement.prototype.__class__ = cocktail.core.html.AbstractHTMLAnchorElement;
+cocktail.port.browser.HTMLAnchorElement = function(p) {
+	if( p === $_ ) return;
+	cocktail.core.html.AbstractHTMLAnchorElement.call(this);
+}
+cocktail.port.browser.HTMLAnchorElement.__name__ = ["cocktail","port","browser","HTMLAnchorElement"];
+cocktail.port.browser.HTMLAnchorElement.__super__ = cocktail.core.html.AbstractHTMLAnchorElement;
+for(var k in cocktail.core.html.AbstractHTMLAnchorElement.prototype ) cocktail.port.browser.HTMLAnchorElement.prototype[k] = cocktail.core.html.AbstractHTMLAnchorElement.prototype[k];
+cocktail.port.browser.HTMLAnchorElement.prototype.set_href = function(value) {
+	this._nativeElement.href = value;
+	cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_href.call(this,value);
+	return value;
+}
+cocktail.port.browser.HTMLAnchorElement.prototype.set_target = function(value) {
+	this._nativeElement.target = value;
+	cocktail.core.html.AbstractHTMLAnchorElement.prototype.set_target.call(this,value);
+	return value;
+}
+cocktail.port.browser.HTMLAnchorElement.prototype.__class__ = cocktail.port.browser.HTMLAnchorElement;
 if(typeof utest=='undefined') utest = {}
 if(!utest.ui) utest.ui = {}
 if(!utest.ui.common) utest.ui.common = {}
@@ -2007,119 +2037,6 @@ cocktail.core.dom.Document.prototype.get_documentElement = function() {
 	return this._documentElement;
 }
 cocktail.core.dom.Document.prototype.__class__ = cocktail.core.dom.Document;
-if(!cocktail.core.background) cocktail.core.background = {}
-cocktail.core.background.BackgroundManager = function(p) {
-	if( p === $_ ) return;
-	this._backgroundDrawingManagers = new Array();
-}
-cocktail.core.background.BackgroundManager.__name__ = ["cocktail","core","background","BackgroundManager"];
-cocktail.core.background.BackgroundManager.prototype._backgroundDrawingManagers = null;
-cocktail.core.background.BackgroundManager.prototype.dispose = function() {
-	this._backgroundDrawingManagers = null;
-}
-cocktail.core.background.BackgroundManager.prototype.render = function(backgroundBox,style) {
-	var nativeElements = new Array();
-	if(backgroundBox.width <= 0 || backgroundBox.height <= 0) return nativeElements;
-	var _g1 = 0, _g = style.getBackgroundImage().length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		var $e = (style.getBackgroundImage()[i]);
-		switch( $e[1] ) {
-		case 0:
-			break;
-		case 1:
-			var value = $e[2];
-			var $e = (value);
-			switch( $e[1] ) {
-			case 0:
-				var value1 = $e[2];
-				var imageDeclaration = { urls : [value1], fallbackColor : cocktail.core.unit.CSSColor.transparent};
-				var imageNativeElement = this.drawBackgroundImage(imageDeclaration,style,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
-				nativeElements.push(imageNativeElement);
-				break;
-			case 1:
-				var value1 = $e[2];
-				var imageNativeElement = this.drawBackgroundImage(value1,style,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
-				nativeElements.push(imageNativeElement);
-				break;
-			case 2:
-				var value1 = $e[2];
-				var gradientNativeElement = this.drawBackgroundGradient(style,value1,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
-				nativeElements.push(gradientNativeElement);
-				break;
-			}
-			break;
-		}
-		if(i == style.getBackgroundImage().length - 1) {
-			var backgroundColorNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
-			this.drawBackgroundColor(style,style.getComputedStyle().backgroundColor,backgroundColorNativeElement,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
-			nativeElements.reverse();
-			nativeElements.unshift(backgroundColorNativeElement);
-		}
-	}
-	return nativeElements;
-}
-cocktail.core.background.BackgroundManager.prototype.drawBackgroundImage = function(imageDeclaration,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
-	var backgroundImageNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
-	var imageLoader = new cocktail.core.resource.AbstractImageLoader();
-	var onBackgroundImageLoadedDelegate = $closure(this,"onBackgroundImageLoaded");
-	var onBackgroundImageLoadErrorDelegate = $closure(this,"onBackgroundImageLoadError");
-	imageLoader.load(imageDeclaration.urls,function(loadedImage) {
-		onBackgroundImageLoadedDelegate(backgroundImageNativeElement,loadedImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-	},function(error) {
-		onBackgroundImageLoadErrorDelegate(error,imageDeclaration.fallbackColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-	});
-	return backgroundImageNativeElement;
-}
-cocktail.core.background.BackgroundManager.prototype.onBackgroundImageLoaded = function(backgroundImageNativeElement,loadedBackgroundImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
-	var computedGradientStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-	var backgroundImageDrawingManager = new cocktail.core.background.BackgroundDrawingManager(backgroundImageNativeElement,backgroundBox);
-	backgroundImageDrawingManager.drawBackgroundImage(loadedBackgroundImage,this.getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),this.getBackgroundPaintingBox(computedGradientStyles.backgroundClip),imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
-	this._backgroundDrawingManagers.push(backgroundImageDrawingManager);
-}
-cocktail.core.background.BackgroundManager.prototype.onBackgroundImageLoadError = function(error,backgroundColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
-	this.drawBackgroundColor(style,cocktail.core.unit.UnitManager.getColorDataFromCSSColor(backgroundColor),backgroundImageNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-}
-cocktail.core.background.BackgroundManager.prototype.drawBackgroundColor = function(style,backgroundColor,backgroundColorNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
-	var computedBackgroundStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-	var backgroundColorDrawingManager = new cocktail.core.background.BackgroundDrawingManager(backgroundColorNativeElement,backgroundBox);
-	backgroundColorDrawingManager.drawBackgroundColor(backgroundColor,this.getBackgroundPaintingBox(computedBackgroundStyles.backgroundClip));
-	this._backgroundDrawingManagers.push(backgroundColorDrawingManager);
-}
-cocktail.core.background.BackgroundManager.prototype.drawBackgroundGradient = function(style,gradientValue,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
-	var computedGradientStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
-	var gradientNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
-	var backgroundGradientDrawingManager = new cocktail.core.background.BackgroundDrawingManager(gradientNativeElement,backgroundBox);
-	backgroundGradientDrawingManager.drawBackgroundGradient(gradientValue,this.getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),this.getBackgroundPaintingBox(computedGradientStyles.backgroundClip),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
-	return gradientNativeElement;
-}
-cocktail.core.background.BackgroundManager.prototype.getBackgroundPaintingBox = function(computedBackgroundBox) {
-	return computedBackgroundBox;
-}
-cocktail.core.background.BackgroundManager.prototype.getBackgroundPositioningBox = function(computedPositioningBox) {
-	return computedPositioningBox;
-}
-cocktail.core.background.BackgroundManager.prototype.__class__ = cocktail.core.background.BackgroundManager;
-cocktail.core.background.InitialBlockBackgroundManager = function(p) {
-	if( p === $_ ) return;
-	cocktail.core.background.BackgroundManager.call(this);
-}
-cocktail.core.background.InitialBlockBackgroundManager.__name__ = ["cocktail","core","background","InitialBlockBackgroundManager"];
-cocktail.core.background.InitialBlockBackgroundManager.__super__ = cocktail.core.background.BackgroundManager;
-for(var k in cocktail.core.background.BackgroundManager.prototype ) cocktail.core.background.InitialBlockBackgroundManager.prototype[k] = cocktail.core.background.BackgroundManager.prototype[k];
-cocktail.core.background.InitialBlockBackgroundManager.prototype.getBackgroundPaintingBox = function(computedBackgroundBox) {
-	return this.getWindowRectangleData();
-}
-cocktail.core.background.InitialBlockBackgroundManager.prototype.getBackgroundPositioningBox = function(computedPositioningBox) {
-	return this.getWindowRectangleData();
-}
-cocktail.core.background.InitialBlockBackgroundManager.prototype.getWindowRectangleData = function() {
-	var windowWidth = cocktail.Lib.get_window().get_innerWidth();
-	var windowHeight = cocktail.Lib.get_window().get_innerHeight();
-	var window = { x : 0.0, y : 0.0, width : windowWidth, height : windowHeight};
-	return window;
-}
-cocktail.core.background.InitialBlockBackgroundManager.prototype.__class__ = cocktail.core.background.InitialBlockBackgroundManager;
 if(!cocktail.core.style.formatter) cocktail.core.style.formatter = {}
 cocktail.core.style.formatter.FormattingContext = function(formattingContextRoot) {
 	if( formattingContextRoot === $_ ) return;
@@ -2607,6 +2524,119 @@ cocktail.core.style.formatter.InlineFormattingContext.prototype.computeLineBoxHe
 	return Math.round(lineBoxHeight);
 }
 cocktail.core.style.formatter.InlineFormattingContext.prototype.__class__ = cocktail.core.style.formatter.InlineFormattingContext;
+if(!cocktail.core.background) cocktail.core.background = {}
+cocktail.core.background.BackgroundManager = function(p) {
+	if( p === $_ ) return;
+	this._backgroundDrawingManagers = new Array();
+}
+cocktail.core.background.BackgroundManager.__name__ = ["cocktail","core","background","BackgroundManager"];
+cocktail.core.background.BackgroundManager.prototype._backgroundDrawingManagers = null;
+cocktail.core.background.BackgroundManager.prototype.dispose = function() {
+	this._backgroundDrawingManagers = null;
+}
+cocktail.core.background.BackgroundManager.prototype.render = function(backgroundBox,style) {
+	var nativeElements = new Array();
+	if(backgroundBox.width <= 0 || backgroundBox.height <= 0) return nativeElements;
+	var _g1 = 0, _g = style.getBackgroundImage().length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var $e = (style.getBackgroundImage()[i]);
+		switch( $e[1] ) {
+		case 0:
+			break;
+		case 1:
+			var value = $e[2];
+			var $e = (value);
+			switch( $e[1] ) {
+			case 0:
+				var value1 = $e[2];
+				var imageDeclaration = { urls : [value1], fallbackColor : cocktail.core.unit.CSSColor.transparent};
+				var imageNativeElement = this.drawBackgroundImage(imageDeclaration,style,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
+				nativeElements.push(imageNativeElement);
+				break;
+			case 1:
+				var value1 = $e[2];
+				var imageNativeElement = this.drawBackgroundImage(value1,style,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
+				nativeElements.push(imageNativeElement);
+				break;
+			case 2:
+				var value1 = $e[2];
+				var gradientNativeElement = this.drawBackgroundGradient(style,value1,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
+				nativeElements.push(gradientNativeElement);
+				break;
+			}
+			break;
+		}
+		if(i == style.getBackgroundImage().length - 1) {
+			var backgroundColorNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
+			this.drawBackgroundColor(style,style.getComputedStyle().backgroundColor,backgroundColorNativeElement,backgroundBox,style.getBackgroundPosition()[i],style.getBackgroundSize()[i],style.getBackgroundOrigin()[i],style.getBackgroundClip()[i],style.getBackgroundRepeat()[i],style.getBackgroundImage()[i]);
+			nativeElements.reverse();
+			nativeElements.unshift(backgroundColorNativeElement);
+		}
+	}
+	return nativeElements;
+}
+cocktail.core.background.BackgroundManager.prototype.drawBackgroundImage = function(imageDeclaration,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+	var backgroundImageNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
+	var imageLoader = new cocktail.core.resource.AbstractImageLoader();
+	var onBackgroundImageLoadedDelegate = $closure(this,"onBackgroundImageLoaded");
+	var onBackgroundImageLoadErrorDelegate = $closure(this,"onBackgroundImageLoadError");
+	imageLoader.load(imageDeclaration.urls,function(loadedImage) {
+		onBackgroundImageLoadedDelegate(backgroundImageNativeElement,loadedImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	},function(error) {
+		onBackgroundImageLoadErrorDelegate(error,imageDeclaration.fallbackColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	});
+	return backgroundImageNativeElement;
+}
+cocktail.core.background.BackgroundManager.prototype.onBackgroundImageLoaded = function(backgroundImageNativeElement,loadedBackgroundImage,imageLoader,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+	var computedGradientStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	var backgroundImageDrawingManager = new cocktail.core.background.BackgroundDrawingManager(backgroundImageNativeElement,backgroundBox);
+	backgroundImageDrawingManager.drawBackgroundImage(loadedBackgroundImage,this.getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),this.getBackgroundPaintingBox(computedGradientStyles.backgroundClip),imageLoader.getIntrinsicWidth(),imageLoader.getIntrinsicHeight(),imageLoader.getIntrinsicRatio(),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
+	this._backgroundDrawingManagers.push(backgroundImageDrawingManager);
+}
+cocktail.core.background.BackgroundManager.prototype.onBackgroundImageLoadError = function(error,backgroundColor,backgroundImageNativeElement,style,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+	this.drawBackgroundColor(style,cocktail.core.unit.UnitManager.getColorDataFromCSSColor(backgroundColor),backgroundImageNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+}
+cocktail.core.background.BackgroundManager.prototype.drawBackgroundColor = function(style,backgroundColor,backgroundColorNativeElement,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+	var computedBackgroundStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	var backgroundColorDrawingManager = new cocktail.core.background.BackgroundDrawingManager(backgroundColorNativeElement,backgroundBox);
+	backgroundColorDrawingManager.drawBackgroundColor(backgroundColor,this.getBackgroundPaintingBox(computedBackgroundStyles.backgroundClip));
+	this._backgroundDrawingManagers.push(backgroundColorDrawingManager);
+}
+cocktail.core.background.BackgroundManager.prototype.drawBackgroundGradient = function(style,gradientValue,backgroundBox,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage) {
+	var computedGradientStyles = cocktail.core.style.computer.BackgroundStylesComputer.computeIndividualBackground(style,backgroundBox,null,null,null,backgroundPosition,backgroundSize,backgroundOrigin,backgroundClip,backgroundRepeat,backgroundImage);
+	var gradientNativeElement = cocktail.core.nativeElement.NativeElementManager.createNativeElement(cocktail.core.nativeElement.NativeElementTypeValue.canvas);
+	var backgroundGradientDrawingManager = new cocktail.core.background.BackgroundDrawingManager(gradientNativeElement,backgroundBox);
+	backgroundGradientDrawingManager.drawBackgroundGradient(gradientValue,this.getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),this.getBackgroundPaintingBox(computedGradientStyles.backgroundClip),computedGradientStyles.backgroundSize,computedGradientStyles.backgroundPosition,computedGradientStyles.backgroundRepeat);
+	return gradientNativeElement;
+}
+cocktail.core.background.BackgroundManager.prototype.getBackgroundPaintingBox = function(computedBackgroundBox) {
+	return computedBackgroundBox;
+}
+cocktail.core.background.BackgroundManager.prototype.getBackgroundPositioningBox = function(computedPositioningBox) {
+	return computedPositioningBox;
+}
+cocktail.core.background.BackgroundManager.prototype.__class__ = cocktail.core.background.BackgroundManager;
+cocktail.core.background.InitialBlockBackgroundManager = function(p) {
+	if( p === $_ ) return;
+	cocktail.core.background.BackgroundManager.call(this);
+}
+cocktail.core.background.InitialBlockBackgroundManager.__name__ = ["cocktail","core","background","InitialBlockBackgroundManager"];
+cocktail.core.background.InitialBlockBackgroundManager.__super__ = cocktail.core.background.BackgroundManager;
+for(var k in cocktail.core.background.BackgroundManager.prototype ) cocktail.core.background.InitialBlockBackgroundManager.prototype[k] = cocktail.core.background.BackgroundManager.prototype[k];
+cocktail.core.background.InitialBlockBackgroundManager.prototype.getBackgroundPaintingBox = function(computedBackgroundBox) {
+	return this.getWindowRectangleData();
+}
+cocktail.core.background.InitialBlockBackgroundManager.prototype.getBackgroundPositioningBox = function(computedPositioningBox) {
+	return this.getWindowRectangleData();
+}
+cocktail.core.background.InitialBlockBackgroundManager.prototype.getWindowRectangleData = function() {
+	var windowWidth = cocktail.Lib.get_window().get_innerWidth();
+	var windowHeight = cocktail.Lib.get_window().get_innerHeight();
+	var window = { x : 0.0, y : 0.0, width : windowWidth, height : windowHeight};
+	return window;
+}
+cocktail.core.background.InitialBlockBackgroundManager.prototype.__class__ = cocktail.core.background.InitialBlockBackgroundManager;
 if(!cocktail.core.nativeElement) cocktail.core.nativeElement = {}
 cocktail.core.nativeElement.AbstractNativeElementManagerImpl = function(p) {
 }
@@ -2780,7 +2810,7 @@ cocktail.core.style.computer.boxComputers.BoxStylesComputer.prototype.getCompute
 		if(isDimensionAuto == true) computedMargin = 0; else computedMargin = Math.round(cocktail.core.unit.UnitManager.getPixelFromPercent(value,containingHTMLElementDimension));
 		break;
 	case 2:
-		computedMargin = this.getComputedAutoMargin(opositeMargin,marginStyleValue,containingHTMLElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
+		computedMargin = this.getComputedAutoMargin(marginStyleValue,opositeMargin,containingHTMLElementDimension,computedDimension,isDimensionAuto,computedPaddingsDimension,fontSize,xHeight,isHorizontalMargin);
 		break;
 	}
 	return computedMargin;
@@ -3381,53 +3411,6 @@ List.prototype.map = function(f) {
 	return b;
 }
 List.prototype.__class__ = List;
-cocktail.core.html.HTMLDocument = function(p) {
-	if( p === $_ ) return;
-	cocktail.core.dom.Document.call(this);
-	this._body = new cocktail.core.html.HTMLBodyElement();
-	this._documentElement = new cocktail.port.browser.HTMLHtmlElement();
-	this._documentElement.appendChild(this._body);
-	cocktail.core.focus.FocusManager.getInstance().setBodyElement(this._body);
-	this._window = new cocktail.port.browser.Window();
-	this._window.set_onResize($closure(this,"onWindowResize"));
-}
-cocktail.core.html.HTMLDocument.__name__ = ["cocktail","core","html","HTMLDocument"];
-cocktail.core.html.HTMLDocument.__super__ = cocktail.core.dom.Document;
-for(var k in cocktail.core.dom.Document.prototype ) cocktail.core.html.HTMLDocument.prototype[k] = cocktail.core.dom.Document.prototype[k];
-cocktail.core.html.HTMLDocument.prototype._body = null;
-cocktail.core.html.HTMLDocument.prototype.body = null;
-cocktail.core.html.HTMLDocument.prototype._window = null;
-cocktail.core.html.HTMLDocument.prototype.createElement = function(tagName) {
-	var element;
-	switch(tagName.toLowerCase()) {
-	case "img":
-		element = new cocktail.port.browser.HTMLImageElement();
-		break;
-	case "canvas":
-		element = new cocktail.core.html.HTMLCanvasElement();
-		break;
-	case "input":
-		element = new cocktail.port.browser.HTMLInputElement();
-		break;
-	case "a":
-		element = new cocktail.port.browser.HTMLAnchorElement();
-		break;
-	case "html":
-		element = new cocktail.port.browser.HTMLHtmlElement();
-		break;
-	default:
-		element = new cocktail.port.browser.HTMLElement(tagName);
-	}
-	element.set_ownerDocument(this);
-	return element;
-}
-cocktail.core.html.HTMLDocument.prototype.onWindowResize = function(event) {
-	this._body.get_coreStyle().invalidate();
-}
-cocktail.core.html.HTMLDocument.prototype.get_body = function() {
-	return this._body;
-}
-cocktail.core.html.HTMLDocument.prototype.__class__ = cocktail.core.html.HTMLDocument;
 if(!utest._Dispatcher) utest._Dispatcher = {}
 utest._Dispatcher.EventException = { __ename__ : ["utest","_Dispatcher","EventException"], __constructs__ : ["StopPropagation"] }
 utest._Dispatcher.EventException.StopPropagation = ["StopPropagation",0];
@@ -3673,6 +3656,9 @@ cocktail.core.renderer.ElementRenderer.prototype.isTab = function() {
 cocktail.core.renderer.ElementRenderer.prototype.isInitialContainer = function() {
 	return false;
 }
+cocktail.core.renderer.ElementRenderer.prototype.isDisplayed = function() {
+	return this._coreStyle.isDisplayed();
+}
 cocktail.core.renderer.ElementRenderer.prototype.setLayerRenderer = function(value) {
 	return this._layerRenderer = value;
 }
@@ -3770,10 +3756,6 @@ cocktail.core.renderer.BlockBoxRenderer.prototype.addLineBox = function(lineBoxE
 cocktail.core.renderer.BlockBoxRenderer.prototype.removeLineBoxes = function() {
 	this._lineBoxes = new Array();
 }
-cocktail.core.renderer.BlockBoxRenderer.prototype.render = function() {
-	var ret = [];
-	return ret;
-}
 cocktail.core.renderer.BlockBoxRenderer.prototype.getLineBoxes = function() {
 	return this._lineBoxes;
 }
@@ -3804,7 +3786,7 @@ cocktail.core.html.EmbeddedElement.prototype.init = function() {
 cocktail.core.html.EmbeddedElement.prototype.initEmbeddedAsset = function() {
 }
 cocktail.core.html.EmbeddedElement.prototype.initCoreStyle = function() {
-	this._coreStyle = new cocktail.core.style.EmbeddedCoreStyle(this);
+	this._coreStyle = new cocktail.core.style.CoreStyle(this);
 }
 cocktail.core.html.EmbeddedElement.prototype.appendChild = function(newChild) {
 	return newChild;
@@ -3845,36 +3827,43 @@ cocktail.core.html.AbstractHTMLImageElement = function(p) {
 cocktail.core.html.AbstractHTMLImageElement.__name__ = ["cocktail","core","html","AbstractHTMLImageElement"];
 cocktail.core.html.AbstractHTMLImageElement.__super__ = cocktail.core.html.EmbeddedElement;
 for(var k in cocktail.core.html.EmbeddedElement.prototype ) cocktail.core.html.AbstractHTMLImageElement.prototype[k] = cocktail.core.html.EmbeddedElement.prototype[k];
-cocktail.core.html.AbstractHTMLImageElement.prototype.onLoad = null;
+cocktail.core.html.AbstractHTMLImageElement.prototype.onload = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype.onError = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype.naturalWidth = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype.naturalHeight = null;
-cocktail.core.html.AbstractHTMLImageElement.prototype._src = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype.src = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype._imageLoader = null;
 cocktail.core.html.AbstractHTMLImageElement.prototype.initEmbeddedAsset = function() {
 	this._embeddedAsset = this._imageLoader.getNativeElement();
 }
+cocktail.core.html.AbstractHTMLImageElement.prototype.setAttribute = function(name,value) {
+	if(name == "src") this.set_src(value); else cocktail.core.html.EmbeddedElement.prototype.setAttribute.call(this,name,value);
+}
 cocktail.core.html.AbstractHTMLImageElement.prototype.set_src = function(value) {
-	this._src = value;
+	var srcAttr = this._attributes.getNamedItem("src");
+	if(srcAttr == null) {
+		srcAttr = new cocktail.core.dom.Attr("src");
+		this._attributes.setNamedItem(srcAttr);
+	}
+	srcAttr.set_nodeValue(value);
 	this._imageLoader.load([value],$closure(this,"onLoadComplete"),$closure(this,"onLoadError"));
-	return this._src;
+	return value;
 }
 cocktail.core.html.AbstractHTMLImageElement.prototype.onLoadComplete = function(image) {
 	this._intrinsicHeight = this._imageLoader.getIntrinsicHeight();
 	this._intrinsicWidth = this._imageLoader.getIntrinsicWidth();
 	this._intrinsicRatio = this._intrinsicHeight / this._intrinsicWidth;
 	this._coreStyle.invalidate();
-	if(this.onLoad != null) {
+	if(this.onload != null) {
 		var loadEvent = new cocktail.core.event.Event("load",this);
-		this.onLoad(loadEvent);
+		this.onload(loadEvent);
 	}
 }
 cocktail.core.html.AbstractHTMLImageElement.prototype.onLoadError = function(message) {
 	if(this.onError != null) this.onError(new cocktail.core.event.Event("error",this));
 }
 cocktail.core.html.AbstractHTMLImageElement.prototype.get_src = function() {
-	return this._src;
+	return this.getAttribute("src");
 }
 cocktail.core.html.AbstractHTMLImageElement.prototype.get_naturalHeight = function() {
 	if(this._intrinsicHeight == null) return 0;
@@ -4367,6 +4356,68 @@ utest.ui.common.ReportTools.hasOutput = function(report,stats) {
 	return utest.ui.common.ReportTools.hasHeader(report,stats);
 }
 utest.ui.common.ReportTools.prototype.__class__ = utest.ui.common.ReportTools;
+if(!cocktail.core.focus) cocktail.core.focus = {}
+cocktail.core.focus.FocusManager = function(p) {
+}
+cocktail.core.focus.FocusManager.__name__ = ["cocktail","core","focus","FocusManager"];
+cocktail.core.focus.FocusManager.prototype.getNextFocusedElement = function(reverse,rootElement,activeElement) {
+	var tabList = this.buildTabList(rootElement);
+	var tabListIndex;
+	if(activeElement == rootElement) {
+		if(reverse == false) tabListIndex = 0; else tabListIndex = tabList.length - 1;
+	} else {
+		tabListIndex = this.getElementTabListIndex(activeElement,tabList);
+		if(reverse == false) tabListIndex++; else tabListIndex--;
+	}
+	if(tabListIndex == tabList.length) tabListIndex = 0; else if(tabListIndex == -1) tabListIndex = tabList.length - 1;
+	return tabList[tabListIndex];
+}
+cocktail.core.focus.FocusManager.prototype.getElementTabListIndex = function(element,tabList) {
+	var _g1 = 0, _g = tabList.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(tabList[i] == element) return i;
+	}
+	return -1;
+}
+cocktail.core.focus.FocusManager.prototype.buildTabList = function(rootElement) {
+	var orderedTabList = new Array();
+	var indexedTabList = new Array();
+	this.doBuildTabList(rootElement,orderedTabList,indexedTabList);
+	var _g1 = 0, _g = orderedTabList.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		indexedTabList.push(orderedTabList[i]);
+	}
+	return indexedTabList;
+}
+cocktail.core.focus.FocusManager.prototype.doBuildTabList = function(htmlElement,orderedTabList,indexedTabList) {
+	var _g1 = 0, _g = htmlElement.get_childNodes().length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		if(htmlElement.get_childNodes()[i].get_nodeType() == 1) {
+			var child = htmlElement.get_childNodes()[i];
+			if(child.hasChildNodes() == true) this.doBuildTabList(child,orderedTabList,indexedTabList);
+			if(child.isFocusable() == true) {
+				if(child.get_tabIndex() == 0 || child.get_tabIndex() == null) orderedTabList.push(child); else if(child.get_tabIndex() > 0) {
+					if(indexedTabList.length == 0) indexedTabList.push(child); else {
+						var foundSpotFlag = false;
+						var _g3 = 0, _g2 = indexedTabList.length;
+						while(_g3 < _g2) {
+							var j = _g3++;
+							if(child.get_tabIndex() < indexedTabList[j].get_tabIndex()) {
+								indexedTabList.insert(j,child);
+								foundSpotFlag = true;
+							}
+						}
+						if(foundSpotFlag == false) indexedTabList.push(child);
+					}
+				}
+			}
+		}
+	}
+}
+cocktail.core.focus.FocusManager.prototype.__class__ = cocktail.core.focus.FocusManager;
 if(typeof haxe=='undefined') haxe = {}
 if(!haxe.io) haxe.io = {}
 haxe.io.Bytes = function(length,b) {
@@ -4498,36 +4549,6 @@ haxe.io.Bytes.prototype.getData = function() {
 	return this.b;
 }
 haxe.io.Bytes.prototype.__class__ = haxe.io.Bytes;
-if(!cocktail.core.focus) cocktail.core.focus = {}
-cocktail.core.focus.FocusManager = function(p) {
-	if( p === $_ ) return;
-	this._focusManagerImpl = new cocktail.port.browser.FocusManagerImpl();
-}
-cocktail.core.focus.FocusManager.__name__ = ["cocktail","core","focus","FocusManager"];
-cocktail.core.focus.FocusManager._instance = null;
-cocktail.core.focus.FocusManager.getInstance = function() {
-	if(cocktail.core.focus.FocusManager._instance == null) cocktail.core.focus.FocusManager._instance = new cocktail.core.focus.FocusManager();
-	return cocktail.core.focus.FocusManager._instance;
-}
-cocktail.core.focus.FocusManager.prototype.bodyElement = null;
-cocktail.core.focus.FocusManager.prototype.activeElement = null;
-cocktail.core.focus.FocusManager.prototype._focusManagerImpl = null;
-cocktail.core.focus.FocusManager.prototype.invalidate = function() {
-	this._focusManagerImpl.invalidate();
-}
-cocktail.core.focus.FocusManager.prototype.setActiveElement = function(value) {
-	return this._focusManagerImpl.setActiveElement(value);
-}
-cocktail.core.focus.FocusManager.prototype.getActiveElement = function() {
-	return this._focusManagerImpl.getActiveElement();
-}
-cocktail.core.focus.FocusManager.prototype.setBodyElement = function(value) {
-	return this._focusManagerImpl.setBodyElement(value);
-}
-cocktail.core.focus.FocusManager.prototype.getBodyElement = function() {
-	return this._focusManagerImpl.getBodyElement();
-}
-cocktail.core.focus.FocusManager.prototype.__class__ = cocktail.core.focus.FocusManager;
 if(!cocktail.core.style.positioner) cocktail.core.style.positioner = {}
 cocktail.core.style.positioner.BoxPositioner = function(p) {
 }
@@ -4551,6 +4572,1715 @@ cocktail.core.style.positioner.BoxPositioner.prototype.getBottomOffset = functio
 	return containingHTMLElementHeight - htmlElement.get_coreStyle().getComputedStyle().height + htmlElement.get_coreStyle().getComputedStyle().paddingTop + htmlElement.get_coreStyle().getComputedStyle().paddingBottom - htmlElement.get_coreStyle().getComputedStyle().bottom;
 }
 cocktail.core.style.positioner.BoxPositioner.prototype.__class__ = cocktail.core.style.positioner.BoxPositioner;
+if(!cocktail.core.hxtml) cocktail.core.hxtml = {}
+cocktail.core.hxtml.HxtmlConverter = function() { }
+cocktail.core.hxtml.HxtmlConverter.__name__ = ["cocktail","core","hxtml","HxtmlConverter"];
+cocktail.core.hxtml.HxtmlConverter.getNode = function(htmlString) {
+	var s = new cocktail.core.hxtml.StyleProxy();
+	var browser;
+	browser = new hxtml.Browser($closure(cocktail.Lib.get_document(),"createElement"),$closure(cocktail.Lib.get_document(),"createTextNode"),cocktail.core.hxtml.HxtmlConverter.appendChild,cocktail.core.hxtml.HxtmlConverter.setAttribute,cocktail.core.hxtml.HxtmlConverter.invalidate,s);
+	try {
+		browser.setHtml(htmlString);
+	} catch( e ) {
+		if( js.Boot.__instanceof(e,String) ) {
+			throw "Error parsing HTML in HXTML";
+		} else throw(e);
+	}
+	return browser.domRoot;
+}
+cocktail.core.hxtml.HxtmlConverter.appendChild = function(parent,element) {
+	parent.appendChild(element);
+}
+cocktail.core.hxtml.HxtmlConverter.invalidate = function() {
+}
+cocktail.core.hxtml.HxtmlConverter.setAttribute = function(element,a,v) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).setAttribute(a,v);
+}
+cocktail.core.hxtml.HxtmlConverter.prototype.__class__ = cocktail.core.hxtml.HxtmlConverter;
+if(typeof hxtml=='undefined') hxtml = {}
+hxtml.IStyleProxy = function() { }
+hxtml.IStyleProxy.__name__ = ["hxtml","IStyleProxy"];
+hxtml.IStyleProxy.prototype.setDisplay = null;
+hxtml.IStyleProxy.prototype.setPosition = null;
+hxtml.IStyleProxy.prototype.setMarginLeftNum = null;
+hxtml.IStyleProxy.prototype.setMarginLeftKey = null;
+hxtml.IStyleProxy.prototype.setMarginTopNum = null;
+hxtml.IStyleProxy.prototype.setMarginTopKey = null;
+hxtml.IStyleProxy.prototype.setMarginRightNum = null;
+hxtml.IStyleProxy.prototype.setMarginRightKey = null;
+hxtml.IStyleProxy.prototype.setMarginBottomNum = null;
+hxtml.IStyleProxy.prototype.setMarginBottomKey = null;
+hxtml.IStyleProxy.prototype.setPaddingLeft = null;
+hxtml.IStyleProxy.prototype.setPaddingTop = null;
+hxtml.IStyleProxy.prototype.setPaddingRight = null;
+hxtml.IStyleProxy.prototype.setPaddingBottom = null;
+hxtml.IStyleProxy.prototype.setWidth = null;
+hxtml.IStyleProxy.prototype.setHeight = null;
+hxtml.IStyleProxy.prototype.setTop = null;
+hxtml.IStyleProxy.prototype.setLeft = null;
+hxtml.IStyleProxy.prototype.setBottom = null;
+hxtml.IStyleProxy.prototype.setRight = null;
+hxtml.IStyleProxy.prototype.setTopKey = null;
+hxtml.IStyleProxy.prototype.setLeftKey = null;
+hxtml.IStyleProxy.prototype.setBottomKey = null;
+hxtml.IStyleProxy.prototype.setRightKey = null;
+hxtml.IStyleProxy.prototype.setBgColorNum = null;
+hxtml.IStyleProxy.prototype.setBgColorRGBA = null;
+hxtml.IStyleProxy.prototype.setBgColorKey = null;
+hxtml.IStyleProxy.prototype.setBgImage = null;
+hxtml.IStyleProxy.prototype.setBgAttachment = null;
+hxtml.IStyleProxy.prototype.setBgRepeat = null;
+hxtml.IStyleProxy.prototype.setBgPosXKey = null;
+hxtml.IStyleProxy.prototype.setBgPosXNum = null;
+hxtml.IStyleProxy.prototype.setBgPosYKey = null;
+hxtml.IStyleProxy.prototype.setBgPosYNum = null;
+hxtml.IStyleProxy.prototype.setFontSizeNum = null;
+hxtml.IStyleProxy.prototype.setFontSizeKey = null;
+hxtml.IStyleProxy.prototype.setFontWeightKey = null;
+hxtml.IStyleProxy.prototype.setFontWeightNum = null;
+hxtml.IStyleProxy.prototype.setFontStyle = null;
+hxtml.IStyleProxy.prototype.setFontFamily = null;
+hxtml.IStyleProxy.prototype.setFontVariant = null;
+hxtml.IStyleProxy.prototype.setTextColorKey = null;
+hxtml.IStyleProxy.prototype.setTextColorNum = null;
+hxtml.IStyleProxy.prototype.setTextDecoration = null;
+hxtml.IStyleProxy.prototype.setLineHeightNum = null;
+hxtml.IStyleProxy.prototype.setLineHeightKey = null;
+hxtml.IStyleProxy.prototype.setTextTransform = null;
+hxtml.IStyleProxy.prototype.setLetterSpacingNum = null;
+hxtml.IStyleProxy.prototype.setLetterSpacingKey = null;
+hxtml.IStyleProxy.prototype.setWordSpacingNum = null;
+hxtml.IStyleProxy.prototype.setWordSpacingKey = null;
+hxtml.IStyleProxy.prototype.__class__ = hxtml.IStyleProxy;
+cocktail.core.hxtml.StyleProxy = function(p) {
+}
+cocktail.core.hxtml.StyleProxy.__name__ = ["cocktail","core","hxtml","StyleProxy"];
+cocktail.core.hxtml.StyleProxy.prototype.setDisplay = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_display(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setPosition = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_position(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginLeftNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginLeft(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginLeftKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginLeft(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginTopNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginTop(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginTopKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginTop(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginRightNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginRight(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginRightKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginRight(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginBottomNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginBottom(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setMarginBottomKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_marginBottom(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setPaddingLeft = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_paddingLeft(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setPaddingTop = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_paddingTop(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setPaddingRight = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_paddingRight(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setPaddingBottom = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_paddingBottom(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setWidth = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_width(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setHeight = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_height(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTop = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_top(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLeft = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_left(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBottom = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_bottom(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setRight = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_right(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTopKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_top(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLeftKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_left(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBottomKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_bottom(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setRightKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_right(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgColorNum = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundColor("#" + Std.string(value));
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgColorRGBA = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundColor("rgba(" + value + ")");
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgColorKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundColor(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgImage = function(element,value) {
+	if(value.length > 0) ((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundImage("\"" + value.join("\"")); else ((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundImage("");
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgAttachment = function(element,value) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgRepeat = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_backgroundRepeat(value.join(","));
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgPosXKey = function(element,value) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgPosYKey = function(element,value) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgPosYNum = function(element,value,unit) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setBgPosXNum = function(element,value,unit) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontSizeNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontSize(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontSizeKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontSize(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontWeightNum = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontWeight(Std.string(value));
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontWeightKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontWeight(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontStyle = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontStyle(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontFamily = function(element,value) {
+	if(value.length > 0) ((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontFamily(value.join(",")); else ((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontFamily("");
+}
+cocktail.core.hxtml.StyleProxy.prototype.setFontVariant = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_fontVariant(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTextColorKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_color(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTextColorNum = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_color("#" + Std.string(value));
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTextDecoration = function(element,value) {
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLineHeightKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_lineHeight(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLineHeightNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_lineHeight(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setTextTransform = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_textTransform(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLetterSpacingNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_letterSpacing(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setLetterSpacingKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_letterSpacing(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setWordSpacingNum = function(element,value,unit) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_wordSpacing(value + unit);
+}
+cocktail.core.hxtml.StyleProxy.prototype.setWordSpacingKey = function(element,value) {
+	((function($this) {
+		var $r;
+		var $t = element;
+		if(Std["is"]($t,cocktail.port.browser.HTMLElement)) $t; else throw "Class cast error";
+		$r = $t;
+		return $r;
+	}(this))).get_style().set_wordSpacing(value);
+}
+cocktail.core.hxtml.StyleProxy.prototype.__class__ = cocktail.core.hxtml.StyleProxy;
+cocktail.core.hxtml.StyleProxy.__interfaces__ = [hxtml.IStyleProxy];
+hxtml.Token = { __ename__ : ["hxtml","Token"], __constructs__ : ["TIdent","TString","TInt","TFloat","TDblDot","TSharp","TPOpen","TPClose","TExclam","TComma","TEof","TPercent","TSemicolon","TBrOpen","TBrClose","TDot","TSpaces","TSlash"] }
+hxtml.Token.TIdent = function(i) { var $x = ["TIdent",0,i]; $x.__enum__ = hxtml.Token; $x.toString = $estr; return $x; }
+hxtml.Token.TString = function(s) { var $x = ["TString",1,s]; $x.__enum__ = hxtml.Token; $x.toString = $estr; return $x; }
+hxtml.Token.TInt = function(i) { var $x = ["TInt",2,i]; $x.__enum__ = hxtml.Token; $x.toString = $estr; return $x; }
+hxtml.Token.TFloat = function(f) { var $x = ["TFloat",3,f]; $x.__enum__ = hxtml.Token; $x.toString = $estr; return $x; }
+hxtml.Token.TDblDot = ["TDblDot",4];
+hxtml.Token.TDblDot.toString = $estr;
+hxtml.Token.TDblDot.__enum__ = hxtml.Token;
+hxtml.Token.TSharp = ["TSharp",5];
+hxtml.Token.TSharp.toString = $estr;
+hxtml.Token.TSharp.__enum__ = hxtml.Token;
+hxtml.Token.TPOpen = ["TPOpen",6];
+hxtml.Token.TPOpen.toString = $estr;
+hxtml.Token.TPOpen.__enum__ = hxtml.Token;
+hxtml.Token.TPClose = ["TPClose",7];
+hxtml.Token.TPClose.toString = $estr;
+hxtml.Token.TPClose.__enum__ = hxtml.Token;
+hxtml.Token.TExclam = ["TExclam",8];
+hxtml.Token.TExclam.toString = $estr;
+hxtml.Token.TExclam.__enum__ = hxtml.Token;
+hxtml.Token.TComma = ["TComma",9];
+hxtml.Token.TComma.toString = $estr;
+hxtml.Token.TComma.__enum__ = hxtml.Token;
+hxtml.Token.TEof = ["TEof",10];
+hxtml.Token.TEof.toString = $estr;
+hxtml.Token.TEof.__enum__ = hxtml.Token;
+hxtml.Token.TPercent = ["TPercent",11];
+hxtml.Token.TPercent.toString = $estr;
+hxtml.Token.TPercent.__enum__ = hxtml.Token;
+hxtml.Token.TSemicolon = ["TSemicolon",12];
+hxtml.Token.TSemicolon.toString = $estr;
+hxtml.Token.TSemicolon.__enum__ = hxtml.Token;
+hxtml.Token.TBrOpen = ["TBrOpen",13];
+hxtml.Token.TBrOpen.toString = $estr;
+hxtml.Token.TBrOpen.__enum__ = hxtml.Token;
+hxtml.Token.TBrClose = ["TBrClose",14];
+hxtml.Token.TBrClose.toString = $estr;
+hxtml.Token.TBrClose.__enum__ = hxtml.Token;
+hxtml.Token.TDot = ["TDot",15];
+hxtml.Token.TDot.toString = $estr;
+hxtml.Token.TDot.__enum__ = hxtml.Token;
+hxtml.Token.TSpaces = ["TSpaces",16];
+hxtml.Token.TSpaces.toString = $estr;
+hxtml.Token.TSpaces.__enum__ = hxtml.Token;
+hxtml.Token.TSlash = ["TSlash",17];
+hxtml.Token.TSlash.toString = $estr;
+hxtml.Token.TSlash.__enum__ = hxtml.Token;
+hxtml.Value = { __ename__ : ["hxtml","Value"], __constructs__ : ["VIdent","VString","VUnit","VRGBA","VFloat","VInt","VHex","VList","VGroup","VUrl","VLabel","VSlash"] }
+hxtml.Value.VIdent = function(i) { var $x = ["VIdent",0,i]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VString = function(s) { var $x = ["VString",1,s]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VUnit = function(v,unit) { var $x = ["VUnit",2,v,unit]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VRGBA = function(v) { var $x = ["VRGBA",3,v]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VFloat = function(v) { var $x = ["VFloat",4,v]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VInt = function(v) { var $x = ["VInt",5,v]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VHex = function(v) { var $x = ["VHex",6,v]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VList = function(l) { var $x = ["VList",7,l]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VGroup = function(l) { var $x = ["VGroup",8,l]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VUrl = function(v) { var $x = ["VUrl",9,v]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VLabel = function(v,val) { var $x = ["VLabel",10,v,val]; $x.__enum__ = hxtml.Value; $x.toString = $estr; return $x; }
+hxtml.Value.VSlash = ["VSlash",11];
+hxtml.Value.VSlash.toString = $estr;
+hxtml.Value.VSlash.__enum__ = hxtml.Value;
+hxtml.CssParser = function(p) {
+}
+hxtml.CssParser.__name__ = ["hxtml","CssParser"];
+hxtml.CssParser.prototype.css = null;
+hxtml.CssParser.prototype.s = null;
+hxtml.CssParser.prototype.d = null;
+hxtml.CssParser.prototype.pos = null;
+hxtml.CssParser.prototype.spacesTokens = null;
+hxtml.CssParser.prototype.tokens = null;
+hxtml.CssParser.prototype.notImplemented = function() {
+}
+hxtml.CssParser.prototype.applyStyle = function(r,v,s) {
+	switch(r) {
+	case "margin":
+		var vl = (function($this) {
+			var $r;
+			var $e = (v);
+			switch( $e[1] ) {
+			case 8:
+				var l = $e[2];
+				$r = l;
+				break;
+			default:
+				$r = [v];
+			}
+			return $r;
+		}(this));
+		var vUnits = new Array();
+		var _g = 0;
+		while(_g < vl.length) {
+			var i = vl[_g];
+			++_g;
+			var vo = this.getValueObject(i);
+			if(vo != null) vUnits.push(vo);
+		}
+		switch(vUnits.length) {
+		case 1:
+			s.setMarginTopNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginRightNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginBottomNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginLeftNum(this.d,vUnits[0].value,vUnits[0].unit);
+			return true;
+		case 2:
+			s.setMarginTopNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginRightNum(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setMarginBottomNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginLeftNum(this.d,vUnits[1].value,vUnits[1].unit);
+			return true;
+		case 3:
+			s.setMarginTopNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginRightNum(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setMarginBottomNum(this.d,vUnits[2].value,vUnits[2].unit);
+			s.setMarginLeftNum(this.d,vUnits[1].value,vUnits[1].unit);
+			return true;
+		case 4:
+			s.setMarginTopNum(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setMarginRightNum(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setMarginBottomNum(this.d,vUnits[2].value,vUnits[2].unit);
+			s.setMarginLeftNum(this.d,vUnits[3].value,vUnits[3].unit);
+			return true;
+		}
+		break;
+	case "margin-left":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setMarginLeftKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setMarginLeftNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "margin-right":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setMarginRightKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setMarginRightNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "margin-top":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setMarginTopKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setMarginTopNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "margin-bottom":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setMarginBottomKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setMarginBottomNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "padding":
+		var vl = (function($this) {
+			var $r;
+			var $e = (v);
+			switch( $e[1] ) {
+			case 8:
+				var l = $e[2];
+				$r = l;
+				break;
+			default:
+				$r = [v];
+			}
+			return $r;
+		}(this));
+		var vUnits = new Array();
+		var _g = 0;
+		while(_g < vl.length) {
+			var i = vl[_g];
+			++_g;
+			var vo = this.getValueObject(i);
+			if(vo != null) vUnits.push(vo);
+		}
+		switch(vUnits.length) {
+		case 1:
+			s.setPaddingTop(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingRight(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingBottom(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingLeft(this.d,vUnits[0].value,vUnits[0].unit);
+			return true;
+		case 2:
+			s.setPaddingTop(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingRight(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setPaddingBottom(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingLeft(this.d,vUnits[1].value,vUnits[1].unit);
+			return true;
+		case 3:
+			s.setPaddingTop(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingRight(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setPaddingBottom(this.d,vUnits[2].value,vUnits[2].unit);
+			s.setPaddingLeft(this.d,vUnits[1].value,vUnits[1].unit);
+			return true;
+		case 4:
+			s.setPaddingTop(this.d,vUnits[0].value,vUnits[0].unit);
+			s.setPaddingRight(this.d,vUnits[1].value,vUnits[1].unit);
+			s.setPaddingBottom(this.d,vUnits[2].value,vUnits[2].unit);
+			s.setPaddingLeft(this.d,vUnits[3].value,vUnits[3].unit);
+			return true;
+		}
+		break;
+	case "padding-left":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setPaddingLeft(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "padding-right":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setPaddingRight(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "padding-top":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setPaddingTop(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "padding-bottom":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setPaddingBottom(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "width":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setWidth(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "height":
+		var i = this.getValueObject(v);
+		if(i != null) {
+			s.setHeight(this.d,i.value,i.unit);
+			return true;
+		}
+		break;
+	case "background-color":
+		var $e = (v);
+		switch( $e[1] ) {
+		case 6:
+			var v1 = $e[2];
+			var val = v1.length == 6?Std.parseInt("0x" + v1):v1.length == 3?Std.parseInt("0x" + v1.charAt(0) + v1.charAt(0) + v1.charAt(1) + v1.charAt(1) + v1.charAt(2) + v1.charAt(2)):null;
+			s.setBgColorNum(this.d,val);
+			return true;
+		case 3:
+			var v1 = $e[2];
+			s.setBgColorRGBA(this.d,v1);
+			return true;
+		case 0:
+			var i = $e[2];
+			s.setBgColorKey(this.d,i);
+			return true;
+		default:
+		}
+		break;
+	case "background-repeat":
+		s.setBgRepeat(this.d,[this.getIdent(v)]);
+		return true;
+	case "background-image":
+		var $e = (v);
+		switch( $e[1] ) {
+		case 9:
+			var url = $e[2];
+			s.setBgImage(this.d,[url]);
+			return true;
+		case 0:
+			var i = $e[2];
+			s.setBgImage(this.d,[i]);
+			return true;
+		default:
+		}
+		break;
+	case "background-attachment":
+		s.setBgAttachment(this.d,this.getIdent(v));
+		return true;
+	case "background-position":
+		s.setBgPosXNum(this.d,50,"%");
+		s.setBgPosYNum(this.d,50,"%");
+		return this.applyComposite(["-inner-bgpos-left","-inner-bgpos-top"],v,s);
+	case "-inner-bgpos-top":
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setBgPosYNum(this.d,l.value,l.unit);
+			return true;
+		}
+		s.setBgPosYKey(this.d,this.getIdent(v));
+		return true;
+	case "-inner-bgpos-left":
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setBgPosXNum(this.d,l.value,l.unit);
+			return true;
+		}
+		s.setBgPosXKey(this.d,this.getIdent(v));
+		return true;
+	case "background":
+		return this.applyComposite(["background-color","background-image","background-repeat","background-attachment","background-position"],v,s);
+	case "font-family":
+		var l = this.getList(v,$closure(this,"getFontName"));
+		if(l != null) {
+			s.setFontFamily(this.d,l);
+			return true;
+		}
+		break;
+	case "font-style":
+		s.setFontStyle(this.d,this.getIdent(v));
+		return true;
+	case "font-variant":
+		s.setFontVariant(this.d,this.getIdent(v));
+		return true;
+	case "font-weight":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setFontWeightKey(this.d,val);
+			return true;
+		}
+		var $e = (v);
+		switch( $e[1] ) {
+		case 5:
+			var i = $e[2];
+			s.setFontWeightNum(this.d,i);
+			return true;
+		default:
+		}
+		break;
+	case "font-size":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setFontSizeKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setFontSizeNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "font":
+		var vl = (function($this) {
+			var $r;
+			var $e = (v);
+			switch( $e[1] ) {
+			case 8:
+				var l = $e[2];
+				$r = l;
+				break;
+			default:
+				$r = [v];
+			}
+			return $r;
+		}(this));
+		var v1 = hxtml.Value.VGroup(vl);
+		this.applyComposite(["font-style","font-variant","font-weight"],v1,s);
+		this.applyComposite(["font-size"],v1,s);
+		if(vl.length > 0) {
+			switch( (vl[0])[1] ) {
+			case 11:
+				vl.shift();
+				break;
+			default:
+			}
+		}
+		this.applyComposite(["line-height"],v1,s);
+		this.applyComposite(["font-family"],v1,s);
+		if(vl.length == 0) return true;
+		break;
+	case "color":
+		var $e = (v);
+		switch( $e[1] ) {
+		case 6:
+			var v1 = $e[2];
+			var val = v1.length == 6?Std.parseInt("0x" + v1):v1.length == 3?Std.parseInt("0x" + v1.charAt(0) + v1.charAt(0) + v1.charAt(1) + v1.charAt(1) + v1.charAt(2) + v1.charAt(2)):null;
+			s.setTextColorNum(this.d,val);
+			return true;
+		case 0:
+			var i = $e[2];
+			s.setTextColorKey(this.d,i);
+			return true;
+		default:
+		}
+		break;
+	case "text-decoration":
+		var idents = this.getGroup(v,$closure(this,"getIdent"));
+		var _g = 0;
+		while(_g < idents.length) {
+			var i = idents[_g];
+			++_g;
+			s.setTextDecoration(this.d,i);
+		}
+		return true;
+	case "text-transform":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setTextTransform(this.d,val);
+			return true;
+		}
+		break;
+	case "line-height":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setLineHeightKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setLineHeightNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "word-spacing":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setWordSpacingKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setWordSpacingNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "letter-spacing":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setLetterSpacingKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setLetterSpacingNum(this.d,l.value,l.unit);
+			return true;
+		}
+		break;
+	case "top":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setTopKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setTop(this.d,l.value,l.unit);
+			return true;
+		}
+		return true;
+	case "left":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setLeftKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setLeft(this.d,l.value,l.unit);
+			return true;
+		}
+		return true;
+	case "right":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setRightKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setRight(this.d,l.value,l.unit);
+			return true;
+		}
+		return true;
+	case "bottom":
+		var val = this.getIdent(v);
+		if(val != null) {
+			s.setBottomKey(this.d,val);
+			return true;
+		}
+		var l = this.getValueObject(v);
+		if(l != null) {
+			s.setBottom(this.d,l.value,l.unit);
+			return true;
+		}
+		return true;
+	case "display":
+		s.setDisplay(this.d,this.getIdent(v));
+		return true;
+	case "position":
+		s.setPosition(this.d,this.getIdent(v));
+		return true;
+	default:
+		throw "Not implemented '" + r + "' = " + Std.string(v);
+	}
+	return false;
+}
+hxtml.CssParser.prototype.applyComposite = function(names,v,s) {
+	var vl = (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 8:
+			var l = $e[2];
+			$r = l;
+			break;
+		default:
+			$r = [v];
+		}
+		return $r;
+	}(this));
+	while(vl.length > 0) {
+		var found = false;
+		var _g = 0;
+		while(_g < names.length) {
+			var n = names[_g];
+			++_g;
+			var count = (function($this) {
+				var $r;
+				switch(n) {
+				case "background-position":
+					$r = 2;
+					break;
+				default:
+					$r = 1;
+				}
+				return $r;
+			}(this));
+			if(count > vl.length) count = vl.length;
+			while(count > 0) {
+				var v1 = count == 1?vl[0]:hxtml.Value.VGroup(vl.slice(0,count));
+				if(this.applyStyle(n,v1,s)) {
+					found = true;
+					names.remove(n);
+					var _g1 = 0;
+					while(_g1 < count) {
+						var i = _g1++;
+						vl.shift();
+					}
+					break;
+				}
+				count--;
+			}
+			if(found) break;
+		}
+		if(!found) return false;
+	}
+	return true;
+}
+hxtml.CssParser.prototype.getValueObject = function(i) {
+	return (function($this) {
+		var $r;
+		var $e = (i);
+		switch( $e[1] ) {
+		case 2:
+			var u = $e[3], v = $e[2];
+			$r = { value : v, unit : u};
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.getGroup = function(v,f) {
+	var $e = (v);
+	switch( $e[1] ) {
+	case 8:
+		var l = $e[2];
+		var a = [];
+		var _g = 0;
+		while(_g < l.length) {
+			var v1 = l[_g];
+			++_g;
+			var v2 = f(v1);
+			if(v2 == null) return null;
+			a.push(v2);
+		}
+		return a;
+	default:
+		var v1 = f(v);
+		return v1 == null?null:[v1];
+	}
+}
+hxtml.CssParser.prototype.getList = function(v,f) {
+	var $e = (v);
+	switch( $e[1] ) {
+	case 7:
+		var l = $e[2];
+		var a = [];
+		var _g = 0;
+		while(_g < l.length) {
+			var v1 = l[_g];
+			++_g;
+			var v2 = f(v1);
+			if(v2 == null) return null;
+			a.push(v2);
+		}
+		return a;
+	default:
+		var v1 = f(v);
+		return v1 == null?null:[v1];
+	}
+}
+hxtml.CssParser.prototype.getPix = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 2:
+			var u = $e[3], f = $e[2];
+			$r = (function($this) {
+				var $r;
+				switch(u) {
+				case "px":
+					$r = Std["int"](f);
+					break;
+				case "pt":
+					$r = Std["int"](f * 4 / 3);
+					break;
+				default:
+					$r = null;
+				}
+				return $r;
+			}($this));
+			break;
+		case 5:
+			var v1 = $e[2];
+			$r = v1;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.getIdent = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 0:
+			var v1 = $e[2];
+			$r = v1;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.getCol = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 6:
+			var v1 = $e[2];
+			$r = v1.length == 6?Std.parseInt("0x" + v1):v1.length == 3?Std.parseInt("0x" + v1.charAt(0) + v1.charAt(0) + v1.charAt(1) + v1.charAt(1) + v1.charAt(2) + v1.charAt(2)):null;
+			break;
+		case 0:
+			var i = $e[2];
+			$r = (function($this) {
+				var $r;
+				switch(i) {
+				case "black":
+					$r = 0;
+					break;
+				case "red":
+					$r = 16711680;
+					break;
+				case "lime":
+					$r = 65280;
+					break;
+				case "blue":
+					$r = 255;
+					break;
+				case "white":
+					$r = 16777215;
+					break;
+				case "aqua":
+					$r = 65535;
+					break;
+				case "fuchsia":
+					$r = 16711935;
+					break;
+				case "yellow":
+					$r = 16776960;
+					break;
+				case "maroon":
+					$r = 8388608;
+					break;
+				case "green":
+					$r = 32768;
+					break;
+				case "navy":
+					$r = 128;
+					break;
+				case "olive":
+					$r = 8421376;
+					break;
+				case "purple":
+					$r = 8388736;
+					break;
+				case "teal":
+					$r = 32896;
+					break;
+				case "silver":
+					$r = 12632256;
+					break;
+				case "gray":case "grey":
+					$r = 8421504;
+					break;
+				default:
+					$r = null;
+				}
+				return $r;
+			}($this));
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.getFontName = function(v) {
+	return (function($this) {
+		var $r;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 1:
+			var s = $e[2];
+			$r = s;
+			break;
+		case 8:
+			$r = (function($this) {
+				var $r;
+				var g = $this.getGroup(v,$closure($this,"getIdent"));
+				$r = g == null?null:g.join(" ");
+				return $r;
+			}($this));
+			break;
+		case 0:
+			var i = $e[2];
+			$r = i;
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.unexpected = function(t) {
+	throw "Unexpected " + Std.string(t);
+	return null;
+}
+hxtml.CssParser.prototype.expect = function(t) {
+	var tk = this.readToken();
+	if(tk != t) this.unexpected(tk);
+}
+hxtml.CssParser.prototype.push = function(t) {
+	this.tokens.push(t);
+}
+hxtml.CssParser.prototype.isToken = function(t) {
+	var tk = this.readToken();
+	if(tk == t) return true;
+	this.tokens.push(tk);
+	return false;
+}
+hxtml.CssParser.prototype.parse = function(css,d,s) {
+	this.css = css;
+	this.s = s;
+	this.d = d;
+	this.pos = 0;
+	this.tokens = [];
+	this.parseStyle(hxtml.Token.TEof);
+}
+hxtml.CssParser.prototype.parseStyle = function(eof) {
+	while(true) {
+		if(this.isToken(eof)) break;
+		var r = this.readIdent();
+		this.expect(hxtml.Token.TDblDot);
+		var v = this.readValue();
+		var s = this.s;
+		var $e = (v);
+		switch( $e[1] ) {
+		case 10:
+			var val = $e[3], label = $e[2];
+			if(label == "important") v = val;
+			break;
+		default:
+		}
+		if(!this.applyStyle(r,v,s)) throw "Invalid value " + Std.string(v) + " for css " + r;
+		if(this.isToken(eof)) break;
+		this.expect(hxtml.Token.TSemicolon);
+	}
+}
+hxtml.CssParser.prototype.readIdent = function() {
+	var t = this.readToken();
+	return (function($this) {
+		var $r;
+		var $e = (t);
+		switch( $e[1] ) {
+		case 0:
+			var i = $e[2];
+			$r = i;
+			break;
+		default:
+			$r = $this.unexpected(t);
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.readValue = function(opt) {
+	var t = this.readToken();
+	var v = (function($this) {
+		var $r;
+		var $e = (t);
+		switch( $e[1] ) {
+		case 5:
+			$r = hxtml.Value.VHex($this.readHex());
+			break;
+		case 0:
+			var i = $e[2];
+			$r = hxtml.Value.VIdent(i);
+			break;
+		case 1:
+			var s = $e[2];
+			$r = hxtml.Value.VString(s);
+			break;
+		case 2:
+			var i = $e[2];
+			$r = $this.readValueUnit(i,i);
+			break;
+		case 3:
+			var f = $e[2];
+			$r = $this.readValueUnit(f,null);
+			break;
+		case 17:
+			$r = hxtml.Value.VSlash;
+			break;
+		default:
+			$r = (function($this) {
+				var $r;
+				if(!opt) $this.unexpected(t);
+				$this.tokens.push(t);
+				$r = null;
+				return $r;
+			}($this));
+		}
+		return $r;
+	}(this));
+	if(v != null) v = this.readValueNext(v);
+	return v;
+}
+hxtml.CssParser.prototype.readHex = function() {
+	var start = this.pos;
+	while(true) {
+		var c = this.css.cca(this.pos++);
+		if(c >= 65 && c <= 70 || c >= 97 && c <= 102 || c >= 48 && c <= 57) continue;
+		this.pos--;
+		break;
+	}
+	return this.css.substr(start,this.pos - start);
+}
+hxtml.CssParser.prototype.readValueUnit = function(f,i) {
+	var t = this.readToken();
+	return (function($this) {
+		var $r;
+		var $e = (t);
+		switch( $e[1] ) {
+		case 0:
+			var i1 = $e[2];
+			$r = hxtml.Value.VUnit(f,i1);
+			break;
+		case 11:
+			$r = hxtml.Value.VUnit(f,"%");
+			break;
+		default:
+			$r = (function($this) {
+				var $r;
+				$this.tokens.push(t);
+				$r = i != null?hxtml.Value.VInt(i):hxtml.Value.VFloat(f);
+				return $r;
+			}($this));
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.readValueNext = function(v) {
+	var t = this.readToken();
+	return (function($this) {
+		var $r;
+		switch( (t)[1] ) {
+		case 6:
+			$r = (function($this) {
+				var $r;
+				var $e = (v);
+				switch( $e[1] ) {
+				case 0:
+					var i = $e[2];
+					$r = (function($this) {
+						var $r;
+						switch(i) {
+						case "url":
+							$r = $this.readValueNext(hxtml.Value.VUrl($this.readUrl()));
+							break;
+						case "rgba":
+							$r = $this.readValueNext(hxtml.Value.VRGBA($this.readRGBA()));
+							break;
+						default:
+							$r = (function($this) {
+								var $r;
+								$this.tokens.push(t);
+								$r = v;
+								return $r;
+							}($this));
+						}
+						return $r;
+					}($this));
+					break;
+				default:
+					$r = (function($this) {
+						var $r;
+						$this.tokens.push(t);
+						$r = v;
+						return $r;
+					}($this));
+				}
+				return $r;
+			}($this));
+			break;
+		case 8:
+			$r = (function($this) {
+				var $r;
+				var t1 = $this.readToken();
+				$r = (function($this) {
+					var $r;
+					var $e = (t1);
+					switch( $e[1] ) {
+					case 0:
+						var i = $e[2];
+						$r = hxtml.Value.VLabel(i,v);
+						break;
+					default:
+						$r = $this.unexpected(t1);
+					}
+					return $r;
+				}($this));
+				return $r;
+			}($this));
+			break;
+		case 9:
+			$r = $this.loopComma(v,$this.readValue());
+			break;
+		default:
+			$r = (function($this) {
+				var $r;
+				$this.tokens.push(t);
+				var v2 = $this.readValue(true);
+				$r = v2 == null?v:$this.loopNext(v,v2);
+				return $r;
+			}($this));
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.loopNext = function(v,v2) {
+	return (function($this) {
+		var $r;
+		var $e = (v2);
+		switch( $e[1] ) {
+		case 8:
+			var l = $e[2];
+			$r = (function($this) {
+				var $r;
+				l.unshift(v);
+				$r = v2;
+				return $r;
+			}($this));
+			break;
+		case 7:
+			var l = $e[2];
+			$r = (function($this) {
+				var $r;
+				l[0] = $this.loopNext(v,l[0]);
+				$r = v2;
+				return $r;
+			}($this));
+			break;
+		case 10:
+			var v21 = $e[3], lab = $e[2];
+			$r = hxtml.Value.VLabel(lab,$this.loopNext(v,v21));
+			break;
+		default:
+			$r = hxtml.Value.VGroup([v,v2]);
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.loopComma = function(v,v2) {
+	return (function($this) {
+		var $r;
+		var $e = (v2);
+		switch( $e[1] ) {
+		case 7:
+			var l = $e[2];
+			$r = (function($this) {
+				var $r;
+				l.unshift(v);
+				$r = v2;
+				return $r;
+			}($this));
+			break;
+		case 10:
+			var v21 = $e[3], lab = $e[2];
+			$r = hxtml.Value.VLabel(lab,$this.loopComma(v,v21));
+			break;
+		default:
+			$r = hxtml.Value.VList([v,v2]);
+		}
+		return $r;
+	}(this));
+}
+hxtml.CssParser.prototype.isSpace = function(c) {
+	return c == 32 || c == 10 || c == 13 || c == 9;
+}
+hxtml.CssParser.prototype.isIdentChar = function(c) {
+	return c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45;
+}
+hxtml.CssParser.prototype.isNum = function(c) {
+	return c >= 48 && c <= 57;
+}
+hxtml.CssParser.prototype.next = function() {
+	return this.css.cca(this.pos++);
+}
+hxtml.CssParser.prototype.readUrl = function() {
+	var c0 = this.css.cca(this.pos++);
+	while(c0 == 32 || c0 == 10 || c0 == 13 || c0 == 9) c0 = this.css.cca(this.pos++);
+	var quote = c0;
+	if(quote == 39 || quote == 34) {
+		this.pos--;
+		var $e = (this.readToken());
+		switch( $e[1] ) {
+		case 1:
+			var s = $e[2];
+			var c01 = this.css.cca(this.pos++);
+			while(c01 == 32 || c01 == 10 || c01 == 13 || c01 == 9) c01 = this.css.cca(this.pos++);
+			if(c01 != 41) throw "Invalid char " + String.fromCharCode(c01);
+			return s;
+		default:
+			throw "assert";
+		}
+	}
+	var start = this.pos - 1;
+	while(true) {
+		if(c0 != c0) break;
+		c0 = this.css.cca(this.pos++);
+		if(c0 == 41) break;
+	}
+	return StringTools.trim(this.css.substr(start,this.pos - start - 1));
+}
+hxtml.CssParser.prototype.readRGBA = function() {
+	var c = this.css.cca(this.pos++);
+	while(c == 32 || c == 10 || c == 13 || c == 9) c = this.css.cca(this.pos++);
+	var start = this.pos - 1;
+	while(true) {
+		if(c != c) break;
+		c = this.css.cca(this.pos++);
+		if(c == 41) break;
+	}
+	return StringTools.trim(this.css.substr(start,this.pos - start - 1));
+}
+hxtml.CssParser.prototype.readToken = function() {
+	var t = this.tokens.pop();
+	if(t != null) return t;
+	while(true) {
+		var c = this.css.cca(this.pos++);
+		if(c != c) return hxtml.Token.TEof;
+		if(c == 32 || c == 10 || c == 13 || c == 9) {
+			if(this.spacesTokens) {
+				while(this.isSpace(this.css.cca(this.pos++))) {
+				}
+				this.pos--;
+				return hxtml.Token.TSpaces;
+			}
+			continue;
+		}
+		if(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45) {
+			var pos = this.pos - 1;
+			do c = this.css.cca(this.pos++); while(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c == 45);
+			this.pos--;
+			return hxtml.Token.TIdent(this.css.substr(pos,this.pos - pos).toLowerCase());
+		}
+		if(c >= 48 && c <= 57) {
+			var i = 0;
+			do {
+				i = i * 10 + (c - 48);
+				c = this.css.cca(this.pos++);
+			} while(c >= 48 && c <= 57);
+			if(c == 46) {
+				var f = i;
+				var k = 0.1;
+				while(this.isNum(c = this.css.cca(this.pos++))) {
+					f += (c - 48) * k;
+					k *= 0.1;
+				}
+				this.pos--;
+				return hxtml.Token.TFloat(f);
+			}
+			this.pos--;
+			return hxtml.Token.TInt(i);
+		}
+		switch(c) {
+		case 58:
+			return hxtml.Token.TDblDot;
+		case 35:
+			return hxtml.Token.TSharp;
+		case 40:
+			return hxtml.Token.TPOpen;
+		case 41:
+			return hxtml.Token.TPClose;
+		case 33:
+			return hxtml.Token.TExclam;
+		case 37:
+			return hxtml.Token.TPercent;
+		case 59:
+			return hxtml.Token.TSemicolon;
+		case 46:
+			return hxtml.Token.TDot;
+		case 123:
+			return hxtml.Token.TBrOpen;
+		case 125:
+			return hxtml.Token.TBrClose;
+		case 44:
+			return hxtml.Token.TComma;
+		case 47:
+			if((c = this.css.cca(this.pos++)) != 42) {
+				this.pos--;
+				return hxtml.Token.TSlash;
+			}
+			while(true) {
+				while((c = this.css.cca(this.pos++)) != 42) if(c != c) throw "Unclosed comment";
+				c = this.css.cca(this.pos++);
+				if(c == 47) break;
+				if(c != c) throw "Unclosed comment";
+			}
+			return this.readToken();
+		case 39:case 34:
+			var pos = this.pos;
+			var k;
+			while((k = this.css.cca(this.pos++)) != c) {
+				if(k != k) throw "Unclosed string constant";
+				if(k == 92) {
+					throw "todo";
+					continue;
+				}
+			}
+			return hxtml.Token.TString(this.css.substr(pos,this.pos - pos - 1));
+		default:
+		}
+		this.pos--;
+		throw "Invalid char " + this.css.charAt(this.pos);
+	}
+	return null;
+}
+hxtml.CssParser.prototype.__class__ = hxtml.CssParser;
 cocktail.core.style.positioner.AbsolutePositioner = function(p) {
 	if( p === $_ ) return;
 	cocktail.core.style.positioner.BoxPositioner.call(this);
@@ -4671,96 +6401,6 @@ cocktail.port.browser.Text.prototype.set_data = function(value) {
 	return value;
 }
 cocktail.port.browser.Text.prototype.__class__ = cocktail.port.browser.Text;
-cocktail.core.focus.AbstractFocusManagerImpl = function(p) {
-	if( p === $_ ) return;
-	this.initKeyboardListeners();
-}
-cocktail.core.focus.AbstractFocusManagerImpl.__name__ = ["cocktail","core","focus","AbstractFocusManagerImpl"];
-cocktail.core.focus.AbstractFocusManagerImpl.prototype._bodyElement = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.bodyElement = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype._activeElement = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.activeElement = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype._tabList = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype._tabListIndex = null;
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.initKeyboardListeners = function() {
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.invalidate = function() {
-	this._tabList == null;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.onKeyDown = function(keyboardEvent) {
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.onKeyUp = function(keyEventData) {
-	if(this._activeElement.get_onKeyUp() != null) (this._activeElement.get_onKeyUp())(keyEventData);
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.doTabFocus = function(reverse) {
-	if(this._tabList == null) this._tabList = this.buildTabList(this._bodyElement);
-	if(this.getActiveElement() != this._bodyElement) {
-		if(reverse == false) {
-			if(this._tabListIndex == this._tabList.length - 1) this._tabListIndex = 0; else this._tabListIndex++;
-		} else if(this._tabListIndex == 0) this._tabListIndex = this._tabList.length - 1; else this._tabListIndex--;
-	} else if(reverse == false) this._tabListIndex = 0; else this._tabListIndex = this._tabList.length - 1;
-	this.setActiveElement(this._tabList[this._tabListIndex]);
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.buildTabList = function(htmlElement) {
-	this._tabListIndex = 0;
-	var orderedTabList = new Array();
-	var indexedTabList = new Array();
-	this.doBuildTabList(htmlElement,orderedTabList,indexedTabList);
-	var _g1 = 0, _g = orderedTabList.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		indexedTabList.push(orderedTabList[i]);
-	}
-	return indexedTabList;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.doBuildTabList = function(htmlElement,orderedTabList,indexedTabList) {
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.simulateMouseClick = function(keyEventData) {
-	if(this.getActiveElement().get_onMouseDown() != null) {
-		var mouseEvent = new cocktail.core.event.MouseEvent("mousedown",this._activeElement,0.0,0.0,0.0,0.0,0.0,false,false,false);
-		(this.getActiveElement().get_onMouseDown())(mouseEvent);
-	}
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.setActiveElement = function(value) {
-	if(this._activeElement != null) {
-		if(this._activeElement.get_onBlur() != null) (this._activeElement.get_onBlur())(new cocktail.core.event.Event("blur",this._activeElement));
-	}
-	if(value == null) value = this._bodyElement;
-	if(value != this._activeElement) {
-		this._activeElement = value;
-		if(this._activeElement.get_onFocus() != null) (this._activeElement.get_onFocus())(new cocktail.core.event.Event("focus",this._activeElement));
-	}
-	return this._activeElement;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.getActiveElement = function() {
-	return this._activeElement;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.setBodyElement = function(value) {
-	this._bodyElement = value;
-	this.setActiveElement(null);
-	this.invalidate();
-	return this._bodyElement;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.getBodyElement = function() {
-	return this._bodyElement;
-}
-cocktail.core.focus.AbstractFocusManagerImpl.prototype.__class__ = cocktail.core.focus.AbstractFocusManagerImpl;
-cocktail.port.browser.FocusManagerImpl = function(p) {
-	if( p === $_ ) return;
-	cocktail.core.focus.AbstractFocusManagerImpl.call(this);
-}
-cocktail.port.browser.FocusManagerImpl.__name__ = ["cocktail","port","browser","FocusManagerImpl"];
-cocktail.port.browser.FocusManagerImpl.__super__ = cocktail.core.focus.AbstractFocusManagerImpl;
-for(var k in cocktail.core.focus.AbstractFocusManagerImpl.prototype ) cocktail.port.browser.FocusManagerImpl.prototype[k] = cocktail.core.focus.AbstractFocusManagerImpl.prototype[k];
-cocktail.port.browser.FocusManagerImpl.prototype.initKeyboardListeners = function() {
-}
-cocktail.port.browser.FocusManagerImpl.prototype.setActiveElement = function(value) {
-	return this._activeElement = value;
-}
-cocktail.port.browser.FocusManagerImpl.prototype.setBodyElement = function(value) {
-	return this._bodyElement = value;
-}
-cocktail.port.browser.FocusManagerImpl.prototype.__class__ = cocktail.port.browser.FocusManagerImpl;
 utest.ui.Report = function() { }
 utest.ui.Report.__name__ = ["utest","ui","Report"];
 utest.ui.Report.create = function(runner,displaySuccessResults,headerDisplayMode) {
@@ -4783,17 +6423,11 @@ cocktail.core.renderer.LayerRenderer.prototype.dispose = function() {
 cocktail.core.renderer.LayerRenderer.prototype.render = function() {
 	var nativeElements = new Array();
 	if(this._rootRenderer.canHaveChildren() == true && this._rootRenderer.getCoreStyle().isInlineLevel() == false || this._rootRenderer.getCoreStyle().getDisplay() == cocktail.core.style.Display.inlineBlock) {
-		var childLayers = this.renderChildLayer();
-		var _g1 = 0, _g = childLayers.length;
+		var rootRendererBackground = this._rootRenderer.renderBackground();
+		var _g1 = 0, _g = rootRendererBackground.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			nativeElements.push(childLayers[i]);
-		}
-		var inFlowChildren = this.renderInFlowChildren();
-		var _g1 = 0, _g = inFlowChildren.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			nativeElements.push(inFlowChildren[i]);
+			nativeElements.push(rootRendererBackground[i]);
 		}
 		var childrenBlockContainerBackground = this.renderChildrenBlockContainerBackground();
 		var _g1 = 0, _g = childrenBlockContainerBackground.length;
@@ -4801,19 +6435,29 @@ cocktail.core.renderer.LayerRenderer.prototype.render = function() {
 			var i = _g1++;
 			nativeElements.push(childrenBlockContainerBackground[i]);
 		}
+		var inFlowChildren = this.renderInFlowChildren();
+		var _g1 = 0, _g = inFlowChildren.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			nativeElements.push(inFlowChildren[i]);
+		}
+		var childLayers = this.renderChildLayer();
+		var _g1 = 0, _g = childLayers.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+		}
+	} else {
 		var rootRendererBackground = this._rootRenderer.renderBackground();
 		var _g1 = 0, _g = rootRendererBackground.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			nativeElements.push(rootRendererBackground[i]);
 		}
-	} else {
-		nativeElements = this._rootRenderer.render();
-		var rootRendererBackground = this._rootRenderer.renderBackground();
-		var _g1 = 0, _g = rootRendererBackground.length;
+		var rootRendererElements = this._rootRenderer.render();
+		var _g1 = 0, _g = rootRendererElements.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			nativeElements.push(rootRendererBackground[i]);
+			nativeElements.push(rootRendererElements[i]);
 		}
 	}
 	return nativeElements;
@@ -4921,11 +6565,6 @@ cocktail.core.renderer.LayerRenderer.prototype.renderInFlowChildren = function()
 				}
 			}
 		} else nativeElements = inFlowChildren[i].render();
-		var _g3 = 0, _g2 = nativeElements.length;
-		while(_g3 < _g2) {
-			var j = _g3++;
-			ret.push(nativeElements[j]);
-		}
 		if(inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false) {
 			var bg = inFlowChildren[i].renderBackground();
 			var _g3 = 0, _g2 = bg.length;
@@ -4933,6 +6572,11 @@ cocktail.core.renderer.LayerRenderer.prototype.renderInFlowChildren = function()
 				var j = _g3++;
 				ret.push(bg[j]);
 			}
+		}
+		var _g3 = 0, _g2 = nativeElements.length;
+		while(_g3 < _g2) {
+			var j = _g3++;
+			ret.push(nativeElements[j]);
 		}
 	}
 	return ret;
@@ -4947,7 +6591,7 @@ cocktail.core.renderer.LayerRenderer.prototype.getInFlowChildren = function(root
 			var _g3 = 0, _g2 = blockBoxRenderer.getLineBoxes()[i].length;
 			while(_g3 < _g2) {
 				var j = _g3++;
-				if(blockBoxRenderer.getLineBoxes()[i][j].isPositioned() == false) ret.push(blockBoxRenderer.getLineBoxes()[i][j]);
+				if(blockBoxRenderer.getLineBoxes()[i][j].isPositioned() == false && blockBoxRenderer.getLineBoxes()[i][j].isDisplayed() == true) ret.push(blockBoxRenderer.getLineBoxes()[i][j]);
 			}
 		}
 	} else {
@@ -4955,19 +6599,21 @@ cocktail.core.renderer.LayerRenderer.prototype.getInFlowChildren = function(root
 		while(_g1 < _g) {
 			var i = _g1++;
 			var child = rootRenderer.get_childNodes()[i];
-			if(child.getLayerRenderer() == this) {
-				if(child.isPositioned() == false) {
-					ret.push(child);
-					if(child.canHaveChildren() == true) {
-						var childElementRenderer = this.getInFlowChildren(child);
-						var _g3 = 0, _g2 = childElementRenderer.length;
-						while(_g3 < _g2) {
-							var j = _g3++;
-							if(child.establishesNewFormattingContext() == true) {
-								childElementRenderer[j].getBounds().x += child.getBounds().x;
-								childElementRenderer[j].getBounds().y += child.getBounds().y;
+			if(child.isDisplayed() == true) {
+				if(child.getLayerRenderer() == this) {
+					if(child.isPositioned() == false) {
+						ret.push(child);
+						if(child.canHaveChildren() == true) {
+							var childElementRenderer = this.getInFlowChildren(child);
+							var _g3 = 0, _g2 = childElementRenderer.length;
+							while(_g3 < _g2) {
+								var j = _g3++;
+								if(child.establishesNewFormattingContext() == true) {
+									childElementRenderer[j].getBounds().x += child.getBounds().x;
+									childElementRenderer[j].getBounds().y += child.getBounds().y;
+								}
+								ret.push(childElementRenderer[j]);
 							}
-							ret.push(childElementRenderer[j]);
 						}
 					}
 				}
@@ -5956,23 +7602,6 @@ cocktail.core.font.AbstractFontManager = function(p) {
 cocktail.core.font.AbstractFontManager.__name__ = ["cocktail","core","font","AbstractFontManager"];
 cocktail.core.font.AbstractFontManager._loadedFonts = null;
 cocktail.core.font.AbstractFontManager._fontLoaderArray = null;
-cocktail.core.font.AbstractFontManager.prototype.loadFont = function(url,name,successCallback,errorCallback) {
-	var fontLoader;
-	var idx;
-	var _g1 = 0, _g = cocktail.core.font.AbstractFontManager._fontLoaderArray.length;
-	while(_g1 < _g) {
-		var idx1 = _g1++;
-		if(cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].fontData.url == url && cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].fontData.name == name) {
-			cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].addCallback(successCallback,errorCallback);
-			return;
-		}
-	}
-	fontLoader = new cocktail.port.browser.FontLoader();
-	fontLoader.addCallback($closure(this,"_onFontLoadingSuccess"),$closure(this,"_onFontLoadingError"));
-	fontLoader.addCallback(successCallback,errorCallback);
-	fontLoader.load(url,name);
-	cocktail.core.font.AbstractFontManager._fontLoaderArray.push(fontLoader);
-}
 cocktail.core.font.AbstractFontManager.prototype.getEmbeddedFonts = function() {
 	return cocktail.core.font.AbstractFontManager._loadedFonts;
 }
@@ -6030,13 +7659,30 @@ cocktail.core.font.AbstractFontManager.prototype.capitalizeText = function(text)
 	}
 	return capitalizedText;
 }
+cocktail.core.font.AbstractFontManager.prototype.loadFont = function(url,name,successCallback,errorCallback) {
+	var fontLoader;
+	var idx;
+	var _g1 = 0, _g = cocktail.core.font.AbstractFontManager._fontLoaderArray.length;
+	while(_g1 < _g) {
+		var idx1 = _g1++;
+		if(cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].fontData.url == url && cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].fontData.name == name) {
+			cocktail.core.font.AbstractFontManager._fontLoaderArray[idx1].addCallback(successCallback,errorCallback);
+			return;
+		}
+	}
+	fontLoader = new cocktail.port.browser.FontLoader();
+	fontLoader.addCallback($closure(this,"_onFontLoadingSuccess"),$closure(this,"_onFontLoadingError"));
+	fontLoader.addCallback(successCallback,errorCallback);
+	fontLoader.load(url,name);
+	cocktail.core.font.AbstractFontManager._fontLoaderArray.push(fontLoader);
+}
 cocktail.core.font.AbstractFontManager.prototype._onFontLoadingSuccess = function(fontData) {
 	cocktail.core.font.AbstractFontManager._loadedFonts.push(fontData);
-	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 212, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font was successfully loaded",{ fileName : "AbstractFontManager.hx", lineNumber : 223, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingSuccess"});
 }
 cocktail.core.font.AbstractFontManager.prototype._onFontLoadingError = function(fontData,errorStr) {
-	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 221, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
-	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 227, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
+	haxe.Log.trace("font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 232, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
+	if(this._removeFontLoader(fontData) == false) haxe.Log.trace("could not remove font loader from the list after the font loading has failed",{ fileName : "AbstractFontManager.hx", lineNumber : 238, className : "cocktail.core.font.AbstractFontManager", methodName : "_onFontLoadingError"});
 }
 cocktail.core.font.AbstractFontManager.prototype._removeFontLoader = function(fontData) {
 	var fontLoader;
@@ -6369,9 +8015,15 @@ cocktail.core.renderer.EmbeddedBoxRenderer.__super__ = cocktail.core.renderer.Bo
 for(var k in cocktail.core.renderer.BoxRenderer.prototype ) cocktail.core.renderer.EmbeddedBoxRenderer.prototype[k] = cocktail.core.renderer.BoxRenderer.prototype[k];
 cocktail.core.renderer.EmbeddedBoxRenderer.prototype.render = function() {
 	var ret = [];
-	var embeddedHTMLElement = this._coreStyle.get_htmlElement();
-	ret.push(embeddedHTMLElement.get_embeddedAsset());
 	return ret;
+}
+cocktail.core.renderer.EmbeddedBoxRenderer.prototype.renderBackground = function() {
+	var backgrounds = this._backgroundManager.render(this._bounds,this._coreStyle);
+	var _g1 = 0, _g = backgrounds.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+	}
+	return backgrounds;
 }
 cocktail.core.renderer.EmbeddedBoxRenderer.prototype.__class__ = cocktail.core.renderer.EmbeddedBoxRenderer;
 utest.ui.common.ClassResult = function(className,setupName,teardownName) {
@@ -6760,52 +8412,190 @@ UnitManagerTests.prototype.testBoxStyleEnum = function() {
 	utest.Assert.same(cocktail.core.style.Margin.percent(100),cocktail.core.unit.UnitManager.boxStyleEnum(cocktail.core.style.Margin,"100 % "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 82, className : "UnitManagerTests", methodName : "testBoxStyleEnum"});
 	utest.Assert.same(cocktail.core.style.Margin.cssAuto,cocktail.core.unit.UnitManager.boxStyleEnum(cocktail.core.style.Margin,"auto"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 85, className : "UnitManagerTests", methodName : "testBoxStyleEnum"});
 }
+UnitManagerTests.prototype.testConstrainedDimentions = function() {
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.length(cocktail.core.unit.Length.px(100)),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100px"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 90, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.length(cocktail.core.unit.Length.px(100)),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100 px"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 91, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.length(cocktail.core.unit.Length.px(100)),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100px "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 92, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.length(cocktail.core.unit.Length.px(100)),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100 px "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 93, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.percent(100),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100%"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 96, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.percent(100),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100 %"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 97, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.percent(100),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100% "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 98, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.percent(100),cocktail.core.unit.UnitManager.constrainedDimensionEnum("100 % "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 99, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.none,cocktail.core.unit.UnitManager.constrainedDimensionEnum("none"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 102, className : "UnitManagerTests", methodName : "testConstrainedDimentions"});
+}
+UnitManagerTests.prototype.testDisplay = function() {
+	utest.Assert.same(cocktail.core.style.Display.cssInline,cocktail.core.unit.UnitManager.displayEnum("inline"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 106, className : "UnitManagerTests", methodName : "testDisplay"});
+	utest.Assert.same(cocktail.core.style.Display.block,cocktail.core.unit.UnitManager.displayEnum("block"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 107, className : "UnitManagerTests", methodName : "testDisplay"});
+	utest.Assert.same(cocktail.core.style.Display.inlineBlock,cocktail.core.unit.UnitManager.displayEnum("inline-block"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 108, className : "UnitManagerTests", methodName : "testDisplay"});
+	utest.Assert.same(cocktail.core.style.Display.none,cocktail.core.unit.UnitManager.displayEnum("none"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 109, className : "UnitManagerTests", methodName : "testDisplay"});
+	utest.Assert.same(null,cocktail.core.unit.UnitManager.displayEnum(""),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 110, className : "UnitManagerTests", methodName : "testDisplay"});
+	utest.Assert.same(null,cocktail.core.unit.UnitManager.displayEnum("abcd"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 111, className : "UnitManagerTests", methodName : "testDisplay"});
+}
+UnitManagerTests.prototype.testOverflow = function() {
+	utest.Assert.same(cocktail.core.style.Overflow.visible,cocktail.core.unit.UnitManager.overflowEnum("visible"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 115, className : "UnitManagerTests", methodName : "testOverflow"});
+	utest.Assert.same(cocktail.core.style.Overflow.scroll,cocktail.core.unit.UnitManager.overflowEnum("scroll"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 116, className : "UnitManagerTests", methodName : "testOverflow"});
+	utest.Assert.same(cocktail.core.style.Overflow.cssAuto,cocktail.core.unit.UnitManager.overflowEnum("auto"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 117, className : "UnitManagerTests", methodName : "testOverflow"});
+	utest.Assert.same(cocktail.core.style.Overflow.hidden,cocktail.core.unit.UnitManager.overflowEnum("hidden"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 118, className : "UnitManagerTests", methodName : "testOverflow"});
+	utest.Assert.same(null,cocktail.core.unit.UnitManager.overflowEnum(""),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 119, className : "UnitManagerTests", methodName : "testOverflow"});
+	utest.Assert.same(null,cocktail.core.unit.UnitManager.overflowEnum("abcd"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 120, className : "UnitManagerTests", methodName : "testOverflow"});
+}
+UnitManagerTests.prototype.testVerticalAlign = function() {
+	utest.Assert.same(cocktail.core.style.VerticalAlign.baseline,cocktail.core.unit.UnitManager.verticalAlignEnum("baseline"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 124, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.bottom,cocktail.core.unit.UnitManager.verticalAlignEnum("bottom"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 125, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.cssSuper,cocktail.core.unit.UnitManager.verticalAlignEnum("super"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 126, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.middle,cocktail.core.unit.UnitManager.verticalAlignEnum("middle"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 127, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.top,cocktail.core.unit.UnitManager.verticalAlignEnum("top"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 128, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.textBottom,cocktail.core.unit.UnitManager.verticalAlignEnum("textBottom"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 129, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.textTop,cocktail.core.unit.UnitManager.verticalAlignEnum("textTop"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 130, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.sub,cocktail.core.unit.UnitManager.verticalAlignEnum("sub"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 131, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.percent(10),cocktail.core.unit.UnitManager.verticalAlignEnum("10%"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 132, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+	utest.Assert.same(cocktail.core.style.VerticalAlign.length(cocktail.core.unit.Length.px(10)),cocktail.core.unit.UnitManager.verticalAlignEnum("10px"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 133, className : "UnitManagerTests", methodName : "testVerticalAlign"});
+}
+UnitManagerTests.prototype.testClear = function() {
+	utest.Assert.same(cocktail.core.style.Clear.both,cocktail.core.unit.UnitManager.clearEnum("both"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 137, className : "UnitManagerTests", methodName : "testClear"});
+	utest.Assert.same(cocktail.core.style.Clear.left,cocktail.core.unit.UnitManager.clearEnum("left"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 138, className : "UnitManagerTests", methodName : "testClear"});
+	utest.Assert.same(cocktail.core.style.Clear.right,cocktail.core.unit.UnitManager.clearEnum("right"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 139, className : "UnitManagerTests", methodName : "testClear"});
+	utest.Assert.same(cocktail.core.style.Clear.none,cocktail.core.unit.UnitManager.clearEnum("none"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 140, className : "UnitManagerTests", methodName : "testClear"});
+}
+UnitManagerTests.prototype.testPosition = function() {
+	utest.Assert.same(cocktail.core.style.Position.cssStatic,cocktail.core.unit.UnitManager.positionEnum("static"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 144, className : "UnitManagerTests", methodName : "testPosition"});
+	utest.Assert.same(cocktail.core.style.Position.absolute,cocktail.core.unit.UnitManager.positionEnum("absolute"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 145, className : "UnitManagerTests", methodName : "testPosition"});
+	utest.Assert.same(cocktail.core.style.Position.relative,cocktail.core.unit.UnitManager.positionEnum("relative"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 146, className : "UnitManagerTests", methodName : "testPosition"});
+	utest.Assert.same(cocktail.core.style.Position.fixed,cocktail.core.unit.UnitManager.positionEnum("fixed"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 147, className : "UnitManagerTests", methodName : "testPosition"});
+}
+UnitManagerTests.prototype.testWhiteSoace = function() {
+	utest.Assert.same(cocktail.core.style.WhiteSpace.normal,cocktail.core.unit.UnitManager.whiteSpaceEnum("normal"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 151, className : "UnitManagerTests", methodName : "testWhiteSoace"});
+	utest.Assert.same(cocktail.core.style.WhiteSpace.nowrap,cocktail.core.unit.UnitManager.whiteSpaceEnum("nowrap"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 152, className : "UnitManagerTests", methodName : "testWhiteSoace"});
+	utest.Assert.same(cocktail.core.style.WhiteSpace.pre,cocktail.core.unit.UnitManager.whiteSpaceEnum("pre"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 153, className : "UnitManagerTests", methodName : "testWhiteSoace"});
+	utest.Assert.same(cocktail.core.style.WhiteSpace.preLine,cocktail.core.unit.UnitManager.whiteSpaceEnum("preLine"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 154, className : "UnitManagerTests", methodName : "testWhiteSoace"});
+	utest.Assert.same(cocktail.core.style.WhiteSpace.preWrap,cocktail.core.unit.UnitManager.whiteSpaceEnum("preWrap"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 155, className : "UnitManagerTests", methodName : "testWhiteSoace"});
+}
+UnitManagerTests.prototype.testTextAlign = function() {
+	utest.Assert.same(cocktail.core.style.TextAlign.left,cocktail.core.unit.UnitManager.textAlignEnum("left"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 159, className : "UnitManagerTests", methodName : "testTextAlign"});
+	utest.Assert.same(cocktail.core.style.TextAlign.right,cocktail.core.unit.UnitManager.textAlignEnum("right"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 160, className : "UnitManagerTests", methodName : "testTextAlign"});
+	utest.Assert.same(cocktail.core.style.TextAlign.center,cocktail.core.unit.UnitManager.textAlignEnum("center"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 161, className : "UnitManagerTests", methodName : "testTextAlign"});
+	utest.Assert.same(cocktail.core.style.TextAlign.justify,cocktail.core.unit.UnitManager.textAlignEnum("justify"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 162, className : "UnitManagerTests", methodName : "testTextAlign"});
+}
+UnitManagerTests.prototype.testFontWeight = function() {
+	utest.Assert.same(cocktail.core.style.FontWeight.bold,cocktail.core.unit.UnitManager.fontWeightEnum("bold"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 166, className : "UnitManagerTests", methodName : "testFontWeight"});
+	utest.Assert.same(cocktail.core.style.FontWeight.bolder,cocktail.core.unit.UnitManager.fontWeightEnum("bolder"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 167, className : "UnitManagerTests", methodName : "testFontWeight"});
+	utest.Assert.same(cocktail.core.style.FontWeight.normal,cocktail.core.unit.UnitManager.fontWeightEnum("normal"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 168, className : "UnitManagerTests", methodName : "testFontWeight"});
+	utest.Assert.same(cocktail.core.style.FontWeight.lighter,cocktail.core.unit.UnitManager.fontWeightEnum("lighter"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 169, className : "UnitManagerTests", methodName : "testFontWeight"});
+	utest.Assert.same(cocktail.core.style.FontWeight.css100,cocktail.core.unit.UnitManager.fontWeightEnum("100"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 170, className : "UnitManagerTests", methodName : "testFontWeight"});
+}
+UnitManagerTests.prototype.testFontStyle = function() {
+	utest.Assert.same(cocktail.core.style.FontStyle.italic,cocktail.core.unit.UnitManager.fontStyleEnum("italic"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 174, className : "UnitManagerTests", methodName : "testFontStyle"});
+	utest.Assert.same(cocktail.core.style.FontStyle.normal,cocktail.core.unit.UnitManager.fontStyleEnum("normal"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 175, className : "UnitManagerTests", methodName : "testFontStyle"});
+}
+UnitManagerTests.prototype.testFontVariant = function() {
+	utest.Assert.same(cocktail.core.style.FontVariant.normal,cocktail.core.unit.UnitManager.fontVariantEnum("normal"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 179, className : "UnitManagerTests", methodName : "testFontVariant"});
+	utest.Assert.same(cocktail.core.style.FontVariant.smallCaps,cocktail.core.unit.UnitManager.fontVariantEnum("small-caps"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 180, className : "UnitManagerTests", methodName : "testFontVariant"});
+}
+UnitManagerTests.prototype.testTextTransform = function() {
+	utest.Assert.same(cocktail.core.style.TextTransform.capitalize,cocktail.core.unit.UnitManager.textTransformEnum("capitalize"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 184, className : "UnitManagerTests", methodName : "testTextTransform"});
+	utest.Assert.same(cocktail.core.style.TextTransform.lowercase,cocktail.core.unit.UnitManager.textTransformEnum("lowercase"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 185, className : "UnitManagerTests", methodName : "testTextTransform"});
+	utest.Assert.same(cocktail.core.style.TextTransform.uppercase,cocktail.core.unit.UnitManager.textTransformEnum("uppercase"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 186, className : "UnitManagerTests", methodName : "testTextTransform"});
+	utest.Assert.same(cocktail.core.style.TextTransform.none,cocktail.core.unit.UnitManager.textTransformEnum("none"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 187, className : "UnitManagerTests", methodName : "testTextTransform"});
+}
+UnitManagerTests.prototype.testVisibility = function() {
+	utest.Assert.same(cocktail.core.style.Visibility.hidden,cocktail.core.unit.UnitManager.visibilityEnum("hidden"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 191, className : "UnitManagerTests", methodName : "testVisibility"});
+	utest.Assert.same(cocktail.core.style.Visibility.visible,cocktail.core.unit.UnitManager.visibilityEnum("visible"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 192, className : "UnitManagerTests", methodName : "testVisibility"});
+}
+UnitManagerTests.prototype.testCursor = function() {
+	utest.Assert.same(cocktail.core.style.Cursor.cssAuto,cocktail.core.unit.UnitManager.cursorEnum("auto"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 196, className : "UnitManagerTests", methodName : "testCursor"});
+	utest.Assert.same(cocktail.core.style.Cursor.crosshair,cocktail.core.unit.UnitManager.cursorEnum("crosshair"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 197, className : "UnitManagerTests", methodName : "testCursor"});
+	utest.Assert.same(cocktail.core.style.Cursor.pointer,cocktail.core.unit.UnitManager.cursorEnum("pointer"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 198, className : "UnitManagerTests", methodName : "testCursor"});
+	utest.Assert.same(cocktail.core.style.Cursor.cssDefault,cocktail.core.unit.UnitManager.cursorEnum("default"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 199, className : "UnitManagerTests", methodName : "testCursor"});
+}
 UnitManagerTests.prototype.testBackground = function() {
-	utest.Assert.same([cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg"))],cocktail.core.unit.UnitManager.backgroundImageEnum("url (./abc.gif),  url(./def.jpg)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 89, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same([cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg"))],cocktail.core.unit.UnitManager.backgroundImageEnum("url (./abc.gif),  url(./def.jpg)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 205, className : "UnitManagerTests", methodName : "testBackground"});
 	var res = cocktail.core.unit.UnitManager.backgroundImageEnum("url(./abc.gif), url(./def.jpg)");
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 91, className : "UnitManagerTests", methodName : "testBackground"});
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 92, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 207, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 208, className : "UnitManagerTests", methodName : "testBackground"});
 	var res1 = cocktail.core.unit.UnitManager.backgroundImageEnum("url (./abc.gif),  url(./def.jpg)");
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res1[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 95, className : "UnitManagerTests", methodName : "testBackground"});
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res1[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 96, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res1[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 211, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res1[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 212, className : "UnitManagerTests", methodName : "testBackground"});
 	var res2 = cocktail.core.unit.UnitManager.backgroundImageEnum("url(\"./abc.gif\"),url  (./def.jpg)");
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res2[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 99, className : "UnitManagerTests", methodName : "testBackground"});
-	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res2[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 100, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),res2[0],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 215, className : "UnitManagerTests", methodName : "testBackground"});
+	utest.Assert.same(cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg")),res2[1],null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 216, className : "UnitManagerTests", methodName : "testBackground"});
 }
 UnitManagerTests.prototype.testFont = function() {
-	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("\"Times New Roman\",Georgia,Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 104, className : "UnitManagerTests", methodName : "testFont"});
-	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("Times New Roman, \"Georgia\" , Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 105, className : "UnitManagerTests", methodName : "testFont"});
-	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("\"Times New Roman\" ,Georgia , Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 106, className : "UnitManagerTests", methodName : "testFont"});
-	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum(" \"Times New Roman\" ,  Georgia,Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 107, className : "UnitManagerTests", methodName : "testFont"});
+	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("\"Times New Roman\",Georgia,Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 220, className : "UnitManagerTests", methodName : "testFont"});
+	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("Times New Roman, \"Georgia\" , Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 221, className : "UnitManagerTests", methodName : "testFont"});
+	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum("\"Times New Roman\" ,Georgia , Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 222, className : "UnitManagerTests", methodName : "testFont"});
+	utest.Assert.same(["Times New Roman","Georgia","Serif"],cocktail.core.unit.UnitManager.fontFamilyEnum(" \"Times New Roman\" ,  Georgia,Serif"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 223, className : "UnitManagerTests", methodName : "testFont"});
 }
 UnitManagerTests.prototype.testColor = function() {
-	utest.Assert.same(cocktail.core.unit.CSSColor.keyword(cocktail.core.unit.ColorKeyword.yellow),cocktail.core.unit.UnitManager.colorEnum("yellow"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 112, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.transparent,cocktail.core.unit.UnitManager.colorEnum("transparent"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 113, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 116, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30,0.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 117, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30 ,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 118, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20, 30 ,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 119, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba( 10,20,30,.5) "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 120, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20,30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 123, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20 ,30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 124, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20, 30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 125, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb( 10,20,30) "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 126, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.hex("6789AB"),cocktail.core.unit.UnitManager.colorEnum("#6789AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 129, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.hex("789AB"),cocktail.core.unit.UnitManager.colorEnum("#789AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 130, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.hex("89AB"),cocktail.core.unit.UnitManager.colorEnum("#89AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 131, className : "UnitManagerTests", methodName : "testColor"});
-	utest.Assert.same(cocktail.core.unit.CSSColor.hex("AB"),cocktail.core.unit.UnitManager.colorEnum("#AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 132, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.keyword(cocktail.core.unit.ColorKeyword.yellow),cocktail.core.unit.UnitManager.colorEnum("yellow"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 228, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.transparent,cocktail.core.unit.UnitManager.colorEnum("transparent"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 229, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 232, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30,0.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 233, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20,30 ,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 234, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba(10,20, 30 ,.5)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 235, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgba(10,20,30,.5),cocktail.core.unit.UnitManager.colorEnum("rgba( 10,20,30,.5) "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 236, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20,30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 239, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20 ,30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 240, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb(10,20, 30)"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 241, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.rgb(10,20,30),cocktail.core.unit.UnitManager.colorEnum("rgb( 10,20,30) "),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 242, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.hex("6789AB"),cocktail.core.unit.UnitManager.colorEnum("#6789AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 245, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.hex("789AB"),cocktail.core.unit.UnitManager.colorEnum("#789AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 246, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.hex("89AB"),cocktail.core.unit.UnitManager.colorEnum("#89AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 247, className : "UnitManagerTests", methodName : "testColor"});
+	utest.Assert.same(cocktail.core.unit.CSSColor.hex("AB"),cocktail.core.unit.UnitManager.colorEnum("#AB"),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 248, className : "UnitManagerTests", methodName : "testColor"});
 }
 UnitManagerTests.prototype.testSetterGetter = function() {
+	cocktail.Lib.get_document().get_body().get_style().set_backgroundColor("#ABCDEF");
 	this.container.get_style().set_marginLeft("100px");
-	utest.Assert.same(cocktail.core.style.Margin.length(cocktail.core.unit.Length.px(100)),this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 137, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	utest.Assert.same(cocktail.core.style.Margin.length(cocktail.core.unit.Length.px(100)),this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 255, className : "UnitManagerTests", methodName : "testSetterGetter"});
 	this.container.get_style().set_marginLeft("100%");
-	utest.Assert.same(cocktail.core.style.Margin.percent(100),this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 139, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	utest.Assert.same(cocktail.core.style.Margin.percent(100),this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 257, className : "UnitManagerTests", methodName : "testSetterGetter"});
 	this.container.get_style().set_marginLeft("auto");
-	utest.Assert.same(cocktail.core.style.Margin.cssAuto,this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 141, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	utest.Assert.same(cocktail.core.style.Margin.cssAuto,this.container.get_coreStyle().getMarginLeft(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 259, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_minWidth("100%");
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.percent(100),this.container.get_coreStyle().getMinWidth(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 262, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_minWidth("none");
+	utest.Assert.same(cocktail.core.style.ConstrainedDimension.none,this.container.get_coreStyle().getMinWidth(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 264, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_display("inline-block");
+	utest.Assert.same(cocktail.core.style.Display.inlineBlock,this.container.get_coreStyle().getDisplay(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 267, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_display("");
+	utest.Assert.same(null,this.container.get_coreStyle().getDisplay(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 269, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_overflowX("hidden");
+	utest.Assert.same(cocktail.core.style.Overflow.hidden,this.container.get_coreStyle().getOverflowX(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 272, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_overflowX("");
+	utest.Assert.same(null,this.container.get_coreStyle().getOverflowX(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 274, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_verticalAlign("sub");
+	utest.Assert.same(cocktail.core.style.VerticalAlign.sub,this.container.get_coreStyle().getVerticalAlign(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 277, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_verticalAlign("10%");
+	utest.Assert.same(cocktail.core.style.VerticalAlign.percent(10),this.container.get_coreStyle().getVerticalAlign(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 279, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_verticalAlign("100px");
+	utest.Assert.same(cocktail.core.style.VerticalAlign.length(cocktail.core.unit.Length.px(100)),this.container.get_coreStyle().getVerticalAlign(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 281, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_clear("none");
+	utest.Assert.same(cocktail.core.style.Clear.none,this.container.get_coreStyle().getClear(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 284, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_position("fixed");
+	utest.Assert.same(cocktail.core.style.Position.fixed,this.container.get_coreStyle().getPosition(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 287, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_whiteSpace("preWrap");
+	utest.Assert.same(cocktail.core.style.WhiteSpace.preWrap,this.container.get_coreStyle().getWhiteSpace(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 290, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_textAlign("justify");
+	utest.Assert.same(cocktail.core.style.TextAlign.justify,this.container.get_coreStyle().getTextAlign(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 293, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_fontWeight("bold");
+	utest.Assert.same(cocktail.core.style.FontWeight.bold,this.container.get_coreStyle().getFontWeight(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 296, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_fontStyle("normal");
+	utest.Assert.same(cocktail.core.style.FontStyle.normal,this.container.get_coreStyle().getFontStyle(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 299, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_fontVariant("small-caps");
+	utest.Assert.same(cocktail.core.style.FontVariant.smallCaps,this.container.get_coreStyle().getFontVariant(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 302, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_textTransform("none");
+	utest.Assert.same(cocktail.core.style.TextTransform.none,this.container.get_coreStyle().getTextTransform(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 305, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_visibility("hidden");
+	utest.Assert.same(cocktail.core.style.Visibility.hidden,this.container.get_coreStyle().getVisibility(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 308, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_visibility("visible");
+	utest.Assert.same(cocktail.core.style.Visibility.visible,this.container.get_coreStyle().getVisibility(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 310, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_cursor("default");
+	utest.Assert.same(cocktail.core.style.Cursor.cssDefault,this.container.get_coreStyle().getCursor(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 313, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	this.container.get_style().set_cursor("crosshair");
+	utest.Assert.same(cocktail.core.style.Cursor.crosshair,this.container.get_coreStyle().getCursor(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 315, className : "UnitManagerTests", methodName : "testSetterGetter"});
 	this.container.get_style().set_backgroundImage(" url(./abc.gif), url(\"./def.jpg\") ");
-	utest.Assert.same([cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg"))],this.container.get_coreStyle().getBackgroundImage(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 144, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	utest.Assert.same([cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./abc.gif")),cocktail.core.style.BackgroundImage.image(cocktail.core.unit.ImageValue.url("./def.jpg"))],this.container.get_coreStyle().getBackgroundImage(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 318, className : "UnitManagerTests", methodName : "testSetterGetter"});
 	this.container.get_style().set_fontFamily("\"Times New Roman\",Georgia, Serif");
-	utest.Assert.same(["Times New Roman","Georgia","Serif"],this.container.get_coreStyle().getFontFamily(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 147, className : "UnitManagerTests", methodName : "testSetterGetter"});
+	utest.Assert.same(["Times New Roman","Georgia","Serif"],this.container.get_coreStyle().getFontFamily(),null,null,{ fileName : "UnitManagerTests.hx", lineNumber : 321, className : "UnitManagerTests", methodName : "testSetterGetter"});
 }
 UnitManagerTests.prototype.__class__ = UnitManagerTests;
 cocktail.core.html.AbstractHTMLInputElement = function(p) {
@@ -6829,7 +8619,7 @@ cocktail.core.html.AbstractHTMLInputElement.prototype.init = function() {
 	this._value = "";
 }
 cocktail.core.html.AbstractHTMLInputElement.prototype.initCoreStyle = function() {
-	this._coreStyle = new cocktail.core.style.EmbeddedCoreStyle(this);
+	this._coreStyle = new cocktail.core.style.CoreStyle(this);
 }
 cocktail.core.html.AbstractHTMLInputElement.prototype.set_onChange = function(value) {
 	return this._onChange = value;
@@ -7021,6 +8811,139 @@ Reflect.makeVarArgs = function(f) {
 	};
 }
 Reflect.prototype.__class__ = Reflect;
+cocktail.core.html.AbstractHTMLDocument = function(p) {
+	if( p === $_ ) return;
+	cocktail.core.dom.Document.call(this);
+	this._body = this.createElement("body");
+	this._documentElement = this.createElement("html");
+	this._documentElement.appendChild(this._body);
+	this._nativeElements = new Array();
+	this._focusManager = new cocktail.core.focus.FocusManager();
+	this._activeElement = this._body;
+	this._window = new cocktail.port.browser.Window();
+	this._window.set_onResize($closure(this,"onWindowResize"));
+	this.initKeyboardListeners();
+}
+cocktail.core.html.AbstractHTMLDocument.__name__ = ["cocktail","core","html","AbstractHTMLDocument"];
+cocktail.core.html.AbstractHTMLDocument.__super__ = cocktail.core.dom.Document;
+for(var k in cocktail.core.dom.Document.prototype ) cocktail.core.html.AbstractHTMLDocument.prototype[k] = cocktail.core.dom.Document.prototype[k];
+cocktail.core.html.AbstractHTMLDocument.prototype._body = null;
+cocktail.core.html.AbstractHTMLDocument.prototype.body = null;
+cocktail.core.html.AbstractHTMLDocument.prototype._window = null;
+cocktail.core.html.AbstractHTMLDocument.prototype._nativeElements = null;
+cocktail.core.html.AbstractHTMLDocument.prototype._activeElement = null;
+cocktail.core.html.AbstractHTMLDocument.prototype.activeElement = null;
+cocktail.core.html.AbstractHTMLDocument.prototype._focusManager = null;
+cocktail.core.html.AbstractHTMLDocument.prototype._keyboard = null;
+cocktail.core.html.AbstractHTMLDocument.prototype.initKeyboardListeners = function() {
+	var keyboard = new cocktail.port.browser.Keyboard(this._body);
+	keyboard.setOnKeyDown($closure(this,"onKeyDown"));
+	keyboard.setOnKeyUp($closure(this,"onKeyUp"));
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.createElement = function(tagName) {
+	var element;
+	switch(tagName.toLowerCase()) {
+	case "img":
+		element = new cocktail.port.browser.HTMLImageElement();
+		break;
+	case "canvas":
+		element = new cocktail.core.html.HTMLCanvasElement();
+		break;
+	case "input":
+		element = new cocktail.port.browser.HTMLInputElement();
+		break;
+	case "a":
+		element = new cocktail.port.browser.HTMLAnchorElement();
+		break;
+	case "html":
+		element = new cocktail.port.browser.HTMLHtmlElement();
+		break;
+	case "body":
+		element = new cocktail.core.html.HTMLBodyElement();
+		break;
+	default:
+		element = new cocktail.port.browser.HTMLElement(tagName);
+	}
+	element.set_ownerDocument(this);
+	return element;
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.invalidate = function(immediate) {
+	if(immediate == null) immediate = false;
+	if(immediate == false) this.scheduleLayoutAndRender(); else {
+		haxe.Log.trace("invalidate",{ fileName : "AbstractHTMLDocument.hx", lineNumber : 202, className : "cocktail.core.html.AbstractHTMLDocument", methodName : "invalidate"});
+		this.layoutAndRender();
+	}
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.onKeyDown = function(keyboardEvent) {
+	if(this.get_activeElement().get_onKeyDown() != null) (this.get_activeElement().get_onKeyDown())(keyboardEvent);
+	switch(keyboardEvent.get_key()) {
+	case 9:
+		if(keyboardEvent.get_defaultPrevented() == false) this.set_activeElement(this._focusManager.getNextFocusedElement(keyboardEvent.get_shiftKey() == true,this._body,this.get_activeElement()));
+		break;
+	case 13:case 32:
+		if(keyboardEvent.get_defaultPrevented() == false) this.get_activeElement().click();
+		break;
+	}
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.onKeyUp = function(keyEventData) {
+	if(this.get_activeElement().get_onKeyUp() != null) (this.get_activeElement().get_onKeyUp())(keyEventData);
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.layoutAndRender = function() {
+	this.layout();
+	this.render();
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.layout = function() {
+	var bodyCoreStyle = this._body.get_coreStyle();
+	bodyCoreStyle.layout();
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.render = function() {
+	this.detachNativeElements(this._nativeElements);
+	this._nativeElements = this._body.get_coreStyle().getElementRenderer().getLayerRenderer().render();
+	this.attachNativeElements(this._nativeElements);
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.attachNativeElement = function(nativeElement) {
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.detachNativeElement = function(nativeElement) {
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.attachNativeElements = function(nativeElements) {
+	var _g1 = 0, _g = nativeElements.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.attachNativeElement(nativeElements[i]);
+	}
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.detachNativeElements = function(nativeElements) {
+	var _g1 = 0, _g = nativeElements.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.detachNativeElement(nativeElements[i]);
+	}
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.scheduleLayoutAndRender = function() {
+	var layoutAndRenderDelegate = $closure(this,"layoutAndRender");
+	haxe.Timer.delay(function() {
+		layoutAndRenderDelegate();
+	},1);
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.onWindowResize = function(event) {
+	this.scheduleLayoutAndRender();
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.get_body = function() {
+	return this._body;
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.set_activeElement = function(value) {
+	if(value == null) return this._activeElement;
+	if(value != this.get_activeElement()) {
+		if(this.get_activeElement().get_onBlur() != null) (this.get_activeElement().get_onBlur())(new cocktail.core.event.Event("blur",this.get_activeElement()));
+		this._activeElement = value;
+		if(this._activeElement.get_onFocus() != null) (this._activeElement.get_onFocus())(new cocktail.core.event.Event("focus",this._activeElement));
+	}
+	return this._activeElement;
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.get_activeElement = function() {
+	return this._activeElement;
+}
+cocktail.core.html.AbstractHTMLDocument.prototype.__class__ = cocktail.core.html.AbstractHTMLDocument;
 if(!cocktail.core.window) cocktail.core.window = {}
 cocktail.core.window.AbstractWindow = function(document) {
 	if( document === $_ ) return;
@@ -7645,7 +9568,7 @@ cocktail.core.html.HTMLBodyElement.prototype.initNativeElement = function() {
 	this._nativeElement = cocktail.core.nativeElement.NativeElementManager.getRoot();
 }
 cocktail.core.html.HTMLBodyElement.prototype.initCoreStyle = function() {
-	this._coreStyle = new cocktail.port.browser.BodyCoreStyle(this);
+	this._coreStyle = new cocktail.core.style.BodyCoreStyle(this);
 }
 cocktail.core.html.HTMLBodyElement.prototype.__class__ = cocktail.core.html.HTMLBodyElement;
 cocktail.core.font.AbstractFontLoader = function(p) {
@@ -7689,94 +9612,6 @@ cocktail.core.font.AbstractFontLoader.prototype.cleanup = function() {
 	while(this._errorCallbackArray.length > 0) this._errorCallbackArray.pop();
 }
 cocktail.core.font.AbstractFontLoader.prototype.__class__ = cocktail.core.font.AbstractFontLoader;
-cocktail.core.style.AbstractBodyCoreStyle = function(htmlElement) {
-	if( htmlElement === $_ ) return;
-	cocktail.core.style.ContainerCoreStyle.call(this,htmlElement);
-	this._nativeElements = new Array();
-	this._isDirty = false;
-}
-cocktail.core.style.AbstractBodyCoreStyle.__name__ = ["cocktail","core","style","AbstractBodyCoreStyle"];
-cocktail.core.style.AbstractBodyCoreStyle.__super__ = cocktail.core.style.ContainerCoreStyle;
-for(var k in cocktail.core.style.ContainerCoreStyle.prototype ) cocktail.core.style.AbstractBodyCoreStyle.prototype[k] = cocktail.core.style.ContainerCoreStyle.prototype[k];
-cocktail.core.style.AbstractBodyCoreStyle.prototype._nativeElements = null;
-cocktail.core.style.AbstractBodyCoreStyle.prototype.invalidate = function(immediate) {
-	if(immediate == null) immediate = false;
-	if(this._isDirty == false || immediate == true) {
-		this._isDirty = true;
-		var windowData = this.getWindowData();
-		var lastPositionedHTMLElementData = { children : new Array(), data : windowData};
-		if(immediate == false) this.scheduleLayout(windowData,lastPositionedHTMLElementData,windowData); else this.layout(windowData,lastPositionedHTMLElementData,windowData,null);
-	}
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.render = function(nativeElement) {
-	this._nativeElements = this._elementRenderer.getLayerRenderer().render();
-	this._nativeElements.reverse();
-	this.attachNativeElements(this._nativeElements);
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.attachNativeElement = function(nativeElement) {
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.detachNativeElement = function(nativeElement) {
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.attachNativeElements = function(nativeElements) {
-	var _g1 = 0, _g = nativeElements.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		this.attachNativeElement(nativeElements[i]);
-	}
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.detachNativeElements = function(nativeElements) {
-	var _g1 = 0, _g = nativeElements.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		this.detachNativeElement(nativeElements[i]);
-	}
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.createElementRenderer = function(parentElementRenderer) {
-	var elementRenderer = new cocktail.core.renderer.InitialBlockRenderer(this);
-	elementRenderer.setLayerRenderer(new cocktail.core.renderer.LayerRenderer(elementRenderer));
-	return elementRenderer;
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.layout = function(containingHTMLElementData,lastPositionedHTMLElementData,viewportData,containingHTMLElementFontMetricsData) {
-	this.detachNativeElements(this._nativeElements);
-	cocktail.core.style.ContainerCoreStyle.prototype.layout.call(this,containingHTMLElementData,lastPositionedHTMLElementData,viewportData,containingHTMLElementFontMetricsData);
-	this.render(this._htmlElement.get_nativeElement());
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.insertHTMLElement = function(formattingContext,lastPositionedHTMLElementData,viewportData) {
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.positionAbsolutelyPositionedHTMLElementsIfNeeded = function(childLastPositionedHTMLElementData,viewportData) {
-	this.doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData,viewportData);
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.getPositionedHTMLElementData = function() {
-	return this.getWindowData();
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.isInlineLevel = function() {
-	return false;
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.isOffsetParent = function() {
-	return true;
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.getFirstPositionedAncestor = function() {
-	return null;
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.getformattingContext = function(previousformattingContext) {
-	return new cocktail.core.style.formatter.BlockFormattingContext(this._elementRenderer);
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.establishesNewFormattingContext = function() {
-	return true;
-}
-cocktail.core.style.AbstractBodyCoreStyle.prototype.__class__ = cocktail.core.style.AbstractBodyCoreStyle;
-cocktail.port.browser.BodyCoreStyle = function(htmlElement) {
-	if( htmlElement === $_ ) return;
-	cocktail.core.style.AbstractBodyCoreStyle.call(this,htmlElement);
-}
-cocktail.port.browser.BodyCoreStyle.__name__ = ["cocktail","port","browser","BodyCoreStyle"];
-cocktail.port.browser.BodyCoreStyle.__super__ = cocktail.core.style.AbstractBodyCoreStyle;
-for(var k in cocktail.core.style.AbstractBodyCoreStyle.prototype ) cocktail.port.browser.BodyCoreStyle.prototype[k] = cocktail.core.style.AbstractBodyCoreStyle.prototype[k];
-cocktail.port.browser.BodyCoreStyle.prototype.render = function(nativeElement) {
-}
-cocktail.port.browser.BodyCoreStyle.prototype.layout = function(containingHTMLElementData,lastPositionedHTMLElementData,viewportData,containingHTMLElementFontMetricsData) {
-}
-cocktail.port.browser.BodyCoreStyle.prototype.__class__ = cocktail.port.browser.BodyCoreStyle;
 if(!cocktail.core.style.floats) cocktail.core.style.floats = {}
 cocktail.core.style.floats.FloatsManager = function(p) {
 	if( p === $_ ) return;
@@ -8209,6 +10044,100 @@ cocktail.core.renderer.InlineBoxRenderer.prototype.render = function() {
 	return this.renderBackground();
 }
 cocktail.core.renderer.InlineBoxRenderer.prototype.__class__ = cocktail.core.renderer.InlineBoxRenderer;
+hxtml.Browser = function(createElement,createTextNode,appendChild,setAttribute,invalidate,styleProxy) {
+	if( createElement === $_ ) return;
+	this.createElement = createElement;
+	this.createTextNode = createTextNode;
+	this.appendChild = appendChild;
+	this.setAttribute = setAttribute;
+	this.invalidate = invalidate;
+	this.styleProxy = styleProxy;
+}
+hxtml.Browser.__name__ = ["hxtml","Browser"];
+hxtml.Browser.prototype.html = null;
+hxtml.Browser.prototype.domRoot = null;
+hxtml.Browser.prototype.ids = null;
+hxtml.Browser.prototype.invalid = null;
+hxtml.Browser.prototype.createElement = null;
+hxtml.Browser.prototype.createTextNode = null;
+hxtml.Browser.prototype.appendChild = null;
+hxtml.Browser.prototype.setAttribute = null;
+hxtml.Browser.prototype.invalidate = null;
+hxtml.Browser.prototype.styleProxy = null;
+hxtml.Browser.prototype.register = function(id,d) {
+	this.ids.set(id,d);
+}
+hxtml.Browser.prototype.setHtml = function(data) {
+	var x = Xml.parse(data).firstElement();
+	this.ids = new Hash();
+	this.domRoot = this.make(x);
+	this.refresh();
+}
+hxtml.Browser.prototype.refresh = function() {
+	this.invalid = false;
+	if(this.invalidate != null) this.invalidate();
+}
+hxtml.Browser.prototype.getById = function(id) {
+	return this.ids.get(id);
+}
+hxtml.Browser.prototype.make = function(x) {
+	switch(x.nodeType) {
+	case Xml.CData:
+		throw "assert";
+		break;
+	case Xml.PCData:case Xml.Comment:
+		return this.createTextNode(x.getNodeValue());
+	}
+	var d;
+	var name = x.getNodeName().toLowerCase();
+	d = this.createElement(name);
+	var allowSpaces = !(name == "head" || name == "link" || name == "meta" || name == "title" || name == "html");
+	var allowComments = name == "style";
+	var prev = null;
+	var $it0 = x.iterator();
+	while( $it0.hasNext() ) {
+		var c = $it0.next();
+		switch(c.nodeType) {
+		case Xml.PCData:
+			if(new EReg("^[ \n\r\t]*$","").match(c.getNodeValue())) {
+				if(!allowSpaces || prev == null) continue;
+			}
+			break;
+		case Xml.Comment:
+			if(!allowComments) continue;
+			break;
+		default:
+		}
+		prev = this.make(c);
+		this.appendChild(d,prev);
+	}
+	var $it1 = x.attributes();
+	while( $it1.hasNext() ) {
+		var a = $it1.next();
+		a = a.toLowerCase();
+		var v = x.get(a);
+		switch(a) {
+		case "id":
+			this.register(v,d);
+			this.setAttribute(d,a,v);
+			break;
+		case "style":
+			new hxtml.CssParser().parse(v,d,this.styleProxy);
+			break;
+		case "class":
+			throw "'class' attribute not implemented yet";
+			break;
+		default:
+			this.setAttribute(d,a,v);
+		}
+	}
+	return d;
+}
+hxtml.Browser.prototype.__class__ = hxtml.Browser;
+cocktail.core.dom.DOMException = function(p) {
+}
+cocktail.core.dom.DOMException.__name__ = ["cocktail","core","dom","DOMException"];
+cocktail.core.dom.DOMException.prototype.__class__ = cocktail.core.dom.DOMException;
 StringBuf = function(p) {
 	if( p === $_ ) return;
 	this.b = new Array();
@@ -8228,239 +10157,6 @@ StringBuf.prototype.toString = function() {
 }
 StringBuf.prototype.b = null;
 StringBuf.prototype.__class__ = StringBuf;
-if(!cocktail.core.keyboard) cocktail.core.keyboard = {}
-cocktail.core.keyboard.KeyboardKeyValue = { __ename__ : ["cocktail","core","keyboard","KeyboardKeyValue"], __constructs__ : ["unknown","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","backSpace","capsLock","control","del","down","end","escape","enter","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","home","insert","left","numpad0","numpad1","numpad2","numpad3","numpad4","numpad5","numpad6","numpad7","numpad8","numpad9","numpadAdd","numpadSpecial","numpadDecimal","numpadDivide","numpadEnter","numpadMultiply","numpadSubstract","pageDown","pageUp","right","shift","space","tab","up"] }
-cocktail.core.keyboard.KeyboardKeyValue.unknown = ["unknown",0];
-cocktail.core.keyboard.KeyboardKeyValue.unknown.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.unknown.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.a = ["a",1];
-cocktail.core.keyboard.KeyboardKeyValue.a.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.a.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.b = ["b",2];
-cocktail.core.keyboard.KeyboardKeyValue.b.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.b.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.c = ["c",3];
-cocktail.core.keyboard.KeyboardKeyValue.c.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.c.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.d = ["d",4];
-cocktail.core.keyboard.KeyboardKeyValue.d.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.d.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.e = ["e",5];
-cocktail.core.keyboard.KeyboardKeyValue.e.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.e.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.f = ["f",6];
-cocktail.core.keyboard.KeyboardKeyValue.f.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.f.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.g = ["g",7];
-cocktail.core.keyboard.KeyboardKeyValue.g.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.g.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.h = ["h",8];
-cocktail.core.keyboard.KeyboardKeyValue.h.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.h.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.i = ["i",9];
-cocktail.core.keyboard.KeyboardKeyValue.i.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.i.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.j = ["j",10];
-cocktail.core.keyboard.KeyboardKeyValue.j.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.j.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.k = ["k",11];
-cocktail.core.keyboard.KeyboardKeyValue.k.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.k.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.l = ["l",12];
-cocktail.core.keyboard.KeyboardKeyValue.l.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.l.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.m = ["m",13];
-cocktail.core.keyboard.KeyboardKeyValue.m.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.m.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.n = ["n",14];
-cocktail.core.keyboard.KeyboardKeyValue.n.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.n.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.o = ["o",15];
-cocktail.core.keyboard.KeyboardKeyValue.o.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.o.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.p = ["p",16];
-cocktail.core.keyboard.KeyboardKeyValue.p.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.p.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.q = ["q",17];
-cocktail.core.keyboard.KeyboardKeyValue.q.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.q.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.r = ["r",18];
-cocktail.core.keyboard.KeyboardKeyValue.r.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.r.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.s = ["s",19];
-cocktail.core.keyboard.KeyboardKeyValue.s.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.s.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.t = ["t",20];
-cocktail.core.keyboard.KeyboardKeyValue.t.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.t.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.u = ["u",21];
-cocktail.core.keyboard.KeyboardKeyValue.u.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.u.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.v = ["v",22];
-cocktail.core.keyboard.KeyboardKeyValue.v.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.v.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.w = ["w",23];
-cocktail.core.keyboard.KeyboardKeyValue.w.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.w.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.x = ["x",24];
-cocktail.core.keyboard.KeyboardKeyValue.x.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.x.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.y = ["y",25];
-cocktail.core.keyboard.KeyboardKeyValue.y.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.y.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.z = ["z",26];
-cocktail.core.keyboard.KeyboardKeyValue.z.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.z.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.backSpace = ["backSpace",27];
-cocktail.core.keyboard.KeyboardKeyValue.backSpace.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.backSpace.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.capsLock = ["capsLock",28];
-cocktail.core.keyboard.KeyboardKeyValue.capsLock.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.capsLock.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.control = ["control",29];
-cocktail.core.keyboard.KeyboardKeyValue.control.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.control.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.del = ["del",30];
-cocktail.core.keyboard.KeyboardKeyValue.del.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.del.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.down = ["down",31];
-cocktail.core.keyboard.KeyboardKeyValue.down.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.down.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.end = ["end",32];
-cocktail.core.keyboard.KeyboardKeyValue.end.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.end.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.escape = ["escape",33];
-cocktail.core.keyboard.KeyboardKeyValue.escape.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.escape.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.enter = ["enter",34];
-cocktail.core.keyboard.KeyboardKeyValue.enter.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.enter.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F1 = ["F1",35];
-cocktail.core.keyboard.KeyboardKeyValue.F1.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F1.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F2 = ["F2",36];
-cocktail.core.keyboard.KeyboardKeyValue.F2.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F2.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F3 = ["F3",37];
-cocktail.core.keyboard.KeyboardKeyValue.F3.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F3.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F4 = ["F4",38];
-cocktail.core.keyboard.KeyboardKeyValue.F4.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F4.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F5 = ["F5",39];
-cocktail.core.keyboard.KeyboardKeyValue.F5.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F5.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F6 = ["F6",40];
-cocktail.core.keyboard.KeyboardKeyValue.F6.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F6.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F7 = ["F7",41];
-cocktail.core.keyboard.KeyboardKeyValue.F7.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F7.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F8 = ["F8",42];
-cocktail.core.keyboard.KeyboardKeyValue.F8.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F8.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F9 = ["F9",43];
-cocktail.core.keyboard.KeyboardKeyValue.F9.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F9.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F10 = ["F10",44];
-cocktail.core.keyboard.KeyboardKeyValue.F10.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F10.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F11 = ["F11",45];
-cocktail.core.keyboard.KeyboardKeyValue.F11.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F11.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F12 = ["F12",46];
-cocktail.core.keyboard.KeyboardKeyValue.F12.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F12.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F13 = ["F13",47];
-cocktail.core.keyboard.KeyboardKeyValue.F13.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F13.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F14 = ["F14",48];
-cocktail.core.keyboard.KeyboardKeyValue.F14.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F14.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.F15 = ["F15",49];
-cocktail.core.keyboard.KeyboardKeyValue.F15.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.F15.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.home = ["home",50];
-cocktail.core.keyboard.KeyboardKeyValue.home.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.home.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.insert = ["insert",51];
-cocktail.core.keyboard.KeyboardKeyValue.insert.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.insert.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.left = ["left",52];
-cocktail.core.keyboard.KeyboardKeyValue.left.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.left.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad0 = ["numpad0",53];
-cocktail.core.keyboard.KeyboardKeyValue.numpad0.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad0.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad1 = ["numpad1",54];
-cocktail.core.keyboard.KeyboardKeyValue.numpad1.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad1.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad2 = ["numpad2",55];
-cocktail.core.keyboard.KeyboardKeyValue.numpad2.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad2.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad3 = ["numpad3",56];
-cocktail.core.keyboard.KeyboardKeyValue.numpad3.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad3.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad4 = ["numpad4",57];
-cocktail.core.keyboard.KeyboardKeyValue.numpad4.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad4.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad5 = ["numpad5",58];
-cocktail.core.keyboard.KeyboardKeyValue.numpad5.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad5.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad6 = ["numpad6",59];
-cocktail.core.keyboard.KeyboardKeyValue.numpad6.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad6.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad7 = ["numpad7",60];
-cocktail.core.keyboard.KeyboardKeyValue.numpad7.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad7.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad8 = ["numpad8",61];
-cocktail.core.keyboard.KeyboardKeyValue.numpad8.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad8.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpad9 = ["numpad9",62];
-cocktail.core.keyboard.KeyboardKeyValue.numpad9.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpad9.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadAdd = ["numpadAdd",63];
-cocktail.core.keyboard.KeyboardKeyValue.numpadAdd.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadAdd.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadSpecial = ["numpadSpecial",64];
-cocktail.core.keyboard.KeyboardKeyValue.numpadSpecial.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadSpecial.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadDecimal = ["numpadDecimal",65];
-cocktail.core.keyboard.KeyboardKeyValue.numpadDecimal.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadDecimal.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadDivide = ["numpadDivide",66];
-cocktail.core.keyboard.KeyboardKeyValue.numpadDivide.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadDivide.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadEnter = ["numpadEnter",67];
-cocktail.core.keyboard.KeyboardKeyValue.numpadEnter.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadEnter.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadMultiply = ["numpadMultiply",68];
-cocktail.core.keyboard.KeyboardKeyValue.numpadMultiply.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadMultiply.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.numpadSubstract = ["numpadSubstract",69];
-cocktail.core.keyboard.KeyboardKeyValue.numpadSubstract.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.numpadSubstract.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.pageDown = ["pageDown",70];
-cocktail.core.keyboard.KeyboardKeyValue.pageDown.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.pageDown.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.pageUp = ["pageUp",71];
-cocktail.core.keyboard.KeyboardKeyValue.pageUp.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.pageUp.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.right = ["right",72];
-cocktail.core.keyboard.KeyboardKeyValue.right.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.right.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.shift = ["shift",73];
-cocktail.core.keyboard.KeyboardKeyValue.shift.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.shift.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.space = ["space",74];
-cocktail.core.keyboard.KeyboardKeyValue.space.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.space.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.tab = ["tab",75];
-cocktail.core.keyboard.KeyboardKeyValue.tab.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.tab.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
-cocktail.core.keyboard.KeyboardKeyValue.up = ["up",76];
-cocktail.core.keyboard.KeyboardKeyValue.up.toString = $estr;
-cocktail.core.keyboard.KeyboardKeyValue.up.__enum__ = cocktail.core.keyboard.KeyboardKeyValue;
 haxe.Log = function() { }
 haxe.Log.__name__ = ["haxe","Log"];
 haxe.Log.trace = function(v,infos) {
@@ -8470,6 +10166,24 @@ haxe.Log.clear = function() {
 	js.Boot.__clear_trace();
 }
 haxe.Log.prototype.__class__ = haxe.Log;
+cocktail.core.renderer.InitialBlockRenderer = function(style) {
+	if( style === $_ ) return;
+	cocktail.core.renderer.BlockBoxRenderer.call(this,style);
+	var width = cocktail.Lib.get_window().get_innerWidth();
+	var height = cocktail.Lib.get_window().get_innerHeight();
+	this._bounds.width = width;
+	this._bounds.height = height;
+}
+cocktail.core.renderer.InitialBlockRenderer.__name__ = ["cocktail","core","renderer","InitialBlockRenderer"];
+cocktail.core.renderer.InitialBlockRenderer.__super__ = cocktail.core.renderer.BlockBoxRenderer;
+for(var k in cocktail.core.renderer.BlockBoxRenderer.prototype ) cocktail.core.renderer.InitialBlockRenderer.prototype[k] = cocktail.core.renderer.BlockBoxRenderer.prototype[k];
+cocktail.core.renderer.InitialBlockRenderer.prototype.isInitialContainer = function() {
+	return true;
+}
+cocktail.core.renderer.InitialBlockRenderer.prototype.init = function() {
+	this._backgroundManager = new cocktail.core.background.InitialBlockBackgroundManager();
+}
+cocktail.core.renderer.InitialBlockRenderer.prototype.__class__ = cocktail.core.renderer.InitialBlockRenderer;
 cocktail.core.mouse.AbstractMouseCursor = function(p) {
 	if( p === $_ ) return;
 	this._nativeMouseCursor = cocktail.core.mouse.MouseCursorValue.cssAuto;
@@ -8510,24 +10224,6 @@ cocktail.core.mouse.AbstractMouseCursor.prototype.setDefaultCursor = function() 
 cocktail.core.mouse.AbstractMouseCursor.prototype.setNativeOSCursor = function(value) {
 }
 cocktail.core.mouse.AbstractMouseCursor.prototype.__class__ = cocktail.core.mouse.AbstractMouseCursor;
-cocktail.core.renderer.InitialBlockRenderer = function(style) {
-	if( style === $_ ) return;
-	cocktail.core.renderer.BlockBoxRenderer.call(this,style);
-	var width = cocktail.Lib.get_window().get_innerWidth();
-	var height = cocktail.Lib.get_window().get_innerHeight();
-	this._bounds.width = width;
-	this._bounds.height = height;
-}
-cocktail.core.renderer.InitialBlockRenderer.__name__ = ["cocktail","core","renderer","InitialBlockRenderer"];
-cocktail.core.renderer.InitialBlockRenderer.__super__ = cocktail.core.renderer.BlockBoxRenderer;
-for(var k in cocktail.core.renderer.BlockBoxRenderer.prototype ) cocktail.core.renderer.InitialBlockRenderer.prototype[k] = cocktail.core.renderer.BlockBoxRenderer.prototype[k];
-cocktail.core.renderer.InitialBlockRenderer.prototype.isInitialContainer = function() {
-	return true;
-}
-cocktail.core.renderer.InitialBlockRenderer.prototype.init = function() {
-	this._backgroundManager = new cocktail.core.background.InitialBlockBackgroundManager();
-}
-cocktail.core.renderer.InitialBlockRenderer.prototype.__class__ = cocktail.core.renderer.InitialBlockRenderer;
 cocktail.port.browser.HTMLImageElement = function(p) {
 	if( p === $_ ) return;
 	cocktail.core.html.AbstractHTMLImageElement.call(this);
@@ -9064,14 +10760,56 @@ Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
 Std.prototype.__class__ = Std;
-cocktail.core.style.EmbeddedCoreStyle = function(htmlElement) {
+cocktail.core.style.BodyCoreStyle = function(htmlElement) {
 	if( htmlElement === $_ ) return;
-	cocktail.core.style.CoreStyle.call(this,htmlElement);
+	cocktail.core.style.ContainerCoreStyle.call(this,htmlElement);
+	this._isDirty = false;
 }
-cocktail.core.style.EmbeddedCoreStyle.__name__ = ["cocktail","core","style","EmbeddedCoreStyle"];
-cocktail.core.style.EmbeddedCoreStyle.__super__ = cocktail.core.style.CoreStyle;
-for(var k in cocktail.core.style.CoreStyle.prototype ) cocktail.core.style.EmbeddedCoreStyle.prototype[k] = cocktail.core.style.CoreStyle.prototype[k];
-cocktail.core.style.EmbeddedCoreStyle.prototype.__class__ = cocktail.core.style.EmbeddedCoreStyle;
+cocktail.core.style.BodyCoreStyle.__name__ = ["cocktail","core","style","BodyCoreStyle"];
+cocktail.core.style.BodyCoreStyle.__super__ = cocktail.core.style.ContainerCoreStyle;
+for(var k in cocktail.core.style.ContainerCoreStyle.prototype ) cocktail.core.style.BodyCoreStyle.prototype[k] = cocktail.core.style.ContainerCoreStyle.prototype[k];
+cocktail.core.style.BodyCoreStyle.prototype.invalidate = function(immediate) {
+	if(immediate == null) immediate = false;
+	if(this._isDirty == false || immediate == true) {
+		this._isDirty = true;
+		var htmlDocument = this._htmlElement.get_ownerDocument();
+		htmlDocument.invalidate(immediate);
+	}
+}
+cocktail.core.style.BodyCoreStyle.prototype.createElementRenderer = function(parentElementRenderer) {
+	var elementRenderer = new cocktail.core.renderer.InitialBlockRenderer(this);
+	elementRenderer.setLayerRenderer(new cocktail.core.renderer.LayerRenderer(elementRenderer));
+	return elementRenderer;
+}
+cocktail.core.style.BodyCoreStyle.prototype.layout = function() {
+	var windowData = this.getWindowData();
+	var lastPositionedHTMLElementData = { children : new Array(), data : windowData};
+	this.flow(windowData,windowData,lastPositionedHTMLElementData,null,null,null);
+}
+cocktail.core.style.BodyCoreStyle.prototype.insertHTMLElement = function(formattingContext,lastPositionedHTMLElementData,viewportData) {
+}
+cocktail.core.style.BodyCoreStyle.prototype.positionAbsolutelyPositionedHTMLElementsIfNeeded = function(childLastPositionedHTMLElementData,viewportData) {
+	this.doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData,viewportData);
+}
+cocktail.core.style.BodyCoreStyle.prototype.getPositionedHTMLElementData = function() {
+	return this.getWindowData();
+}
+cocktail.core.style.BodyCoreStyle.prototype.isInlineLevel = function() {
+	return false;
+}
+cocktail.core.style.BodyCoreStyle.prototype.isOffsetParent = function() {
+	return true;
+}
+cocktail.core.style.BodyCoreStyle.prototype.getFirstPositionedAncestor = function() {
+	return null;
+}
+cocktail.core.style.BodyCoreStyle.prototype.getformattingContext = function(previousformattingContext) {
+	return new cocktail.core.style.formatter.BlockFormattingContext(this._elementRenderer);
+}
+cocktail.core.style.BodyCoreStyle.prototype.establishesNewFormattingContext = function() {
+	return true;
+}
+cocktail.core.style.BodyCoreStyle.prototype.__class__ = cocktail.core.style.BodyCoreStyle;
 haxe.Timer = function(time_ms) {
 	if( time_ms === $_ ) return;
 	var arr = haxe_timers;
@@ -11474,6 +13212,16 @@ cocktail.core.nativeElement.NativeElementTypeValue.input = ["input",4];
 cocktail.core.nativeElement.NativeElementTypeValue.input.toString = $estr;
 cocktail.core.nativeElement.NativeElementTypeValue.input.__enum__ = cocktail.core.nativeElement.NativeElementTypeValue;
 cocktail.core.nativeElement.NativeElementTypeValue.semantic = function(name) { var $x = ["semantic",5,name]; $x.__enum__ = cocktail.core.nativeElement.NativeElementTypeValue; $x.toString = $estr; return $x; }
+cocktail.port.browser.HTMLDocument = function(p) {
+	if( p === $_ ) return;
+	cocktail.core.html.AbstractHTMLDocument.call(this);
+}
+cocktail.port.browser.HTMLDocument.__name__ = ["cocktail","port","browser","HTMLDocument"];
+cocktail.port.browser.HTMLDocument.__super__ = cocktail.core.html.AbstractHTMLDocument;
+for(var k in cocktail.core.html.AbstractHTMLDocument.prototype ) cocktail.port.browser.HTMLDocument.prototype[k] = cocktail.core.html.AbstractHTMLDocument.prototype[k];
+cocktail.port.browser.HTMLDocument.prototype.layoutAndRender = function() {
+}
+cocktail.port.browser.HTMLDocument.prototype.__class__ = cocktail.port.browser.HTMLDocument;
 cocktail.core.font.FontType = { __ename__ : ["cocktail","core","font","FontType"], __constructs__ : ["ttf","otf","eot","swf","system","unknown"] }
 cocktail.core.font.FontType.ttf = ["ttf",0];
 cocktail.core.font.FontType.ttf.toString = $estr;
@@ -11869,7 +13617,7 @@ cocktail.Lib.document = null;
 cocktail.Lib._window = null;
 cocktail.Lib.window = null;
 cocktail.Lib.init = function() {
-	cocktail.Lib._document = new cocktail.core.html.HTMLDocument();
+	cocktail.Lib._document = new cocktail.port.browser.HTMLDocument();
 	cocktail.Lib._window = new cocktail.port.browser.Window(cocktail.Lib._document);
 }
 cocktail.Lib.get_document = function() {
@@ -11921,6 +13669,7 @@ haxe.io.Error.OutsideBounds = ["OutsideBounds",2];
 haxe.io.Error.OutsideBounds.toString = $estr;
 haxe.io.Error.OutsideBounds.__enum__ = haxe.io.Error;
 haxe.io.Error.Custom = function(e) { var $x = ["Custom",3,e]; $x.__enum__ = haxe.io.Error; $x.toString = $estr; return $x; }
+if(!cocktail.core.keyboard) cocktail.core.keyboard = {}
 cocktail.core.keyboard.AbstractKeyboard = function(htmlElement) {
 	if( htmlElement === $_ ) return;
 	this._htmlElement = htmlElement;
@@ -11957,239 +13706,6 @@ cocktail.core.keyboard.AbstractKeyboard.prototype.updateListeners = function(key
 }
 cocktail.core.keyboard.AbstractKeyboard.prototype.getKeyData = function(event) {
 	return null;
-}
-cocktail.core.keyboard.AbstractKeyboard.prototype.getKeyValue = function(keyCode) {
-	var keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.unknown;
-	switch(keyCode) {
-	case 65:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.a;
-		break;
-	case 66:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.b;
-		break;
-	case 67:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.c;
-		break;
-	case 68:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.d;
-		break;
-	case 69:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.e;
-		break;
-	case 70:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.f;
-		break;
-	case 71:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.g;
-		break;
-	case 72:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.h;
-		break;
-	case 73:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.i;
-		break;
-	case 74:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.j;
-		break;
-	case 75:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.k;
-		break;
-	case 76:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.l;
-		break;
-	case 77:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.m;
-		break;
-	case 78:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.n;
-		break;
-	case 79:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.o;
-		break;
-	case 80:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.p;
-		break;
-	case 81:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.q;
-		break;
-	case 82:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.r;
-		break;
-	case 83:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.s;
-		break;
-	case 84:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.t;
-		break;
-	case 85:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.u;
-		break;
-	case 86:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.v;
-		break;
-	case 87:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.w;
-		break;
-	case 88:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.x;
-		break;
-	case 89:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.y;
-		break;
-	case 90:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.z;
-		break;
-	case 8:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.backSpace;
-		break;
-	case 20:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.capsLock;
-		break;
-	case 17:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.control;
-		break;
-	case 46:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.del;
-		break;
-	case 40:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.down;
-		break;
-	case 35:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.end;
-		break;
-	case 13:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.enter;
-		break;
-	case 27:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.escape;
-		break;
-	case 112:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F1;
-		break;
-	case 121:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F10;
-		break;
-	case 122:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F11;
-		break;
-	case 123:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F12;
-		break;
-	case 124:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F13;
-		break;
-	case 125:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F14;
-		break;
-	case 126:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F15;
-		break;
-	case 113:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F2;
-		break;
-	case 114:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F3;
-		break;
-	case 115:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F4;
-		break;
-	case 116:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F5;
-		break;
-	case 117:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F6;
-		break;
-	case 118:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F7;
-		break;
-	case 119:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F8;
-		break;
-	case 120:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.F9;
-		break;
-	case 36:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.home;
-		break;
-	case 45:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.insert;
-		break;
-	case 37:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.left;
-		break;
-	case 96:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad0;
-		break;
-	case 97:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad1;
-		break;
-	case 98:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad2;
-		break;
-	case 99:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad3;
-		break;
-	case 100:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad4;
-		break;
-	case 101:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad5;
-		break;
-	case 102:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad6;
-		break;
-	case 103:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad7;
-		break;
-	case 104:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad8;
-		break;
-	case 105:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpad9;
-		break;
-	case 107:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadAdd;
-		break;
-	case 108:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadEnter;
-		break;
-	case 110:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadDecimal;
-		break;
-	case 111:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadDivide;
-		break;
-	case 106:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadMultiply;
-		break;
-	case 109:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.numpadSubstract;
-		break;
-	case 34:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.pageDown;
-		break;
-	case 33:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.pageUp;
-		break;
-	case 39:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.right;
-		break;
-	case 16:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.shift;
-		break;
-	case 32:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.space;
-		break;
-	case 9:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.tab;
-		break;
-	case 38:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.up;
-		break;
-	default:
-		keyboardKeyValue = cocktail.core.keyboard.KeyboardKeyValue.unknown;
-	}
-	return keyboardKeyValue;
 }
 cocktail.core.keyboard.AbstractKeyboard.prototype.__class__ = cocktail.core.keyboard.AbstractKeyboard;
 cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer = function(p) {
@@ -13392,6 +14908,344 @@ EReg.prototype.customReplace = function(s,f) {
 	return buf.b.join("");
 }
 EReg.prototype.__class__ = EReg;
+Xml = function(p) {
+}
+Xml.__name__ = ["Xml"];
+Xml.Element = null;
+Xml.PCData = null;
+Xml.CData = null;
+Xml.Comment = null;
+Xml.DocType = null;
+Xml.Prolog = null;
+Xml.Document = null;
+Xml.parse = function(str) {
+	var rules = [Xml.enode,Xml.epcdata,Xml.eend,Xml.ecdata,Xml.edoctype,Xml.ecomment,Xml.eprolog];
+	var nrules = rules.length;
+	var current = Xml.createDocument();
+	var stack = new List();
+	while(str.length > 0) {
+		var i = 0;
+		try {
+			while(i < nrules) {
+				var r = rules[i];
+				if(r.match(str)) {
+					switch(i) {
+					case 0:
+						var x = Xml.createElement(r.matched(1));
+						current.addChild(x);
+						str = r.matchedRight();
+						while(Xml.eattribute.match(str)) {
+							x.set(Xml.eattribute.matched(1),Xml.eattribute.matched(3));
+							str = Xml.eattribute.matchedRight();
+						}
+						if(!Xml.eclose.match(str)) {
+							i = nrules;
+							throw "__break__";
+						}
+						if(Xml.eclose.matched(1) == ">") {
+							stack.push(current);
+							current = x;
+						}
+						str = Xml.eclose.matchedRight();
+						break;
+					case 1:
+						var x = Xml.createPCData(r.matched(0));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					case 2:
+						if(current._children != null && current._children.length == 0) {
+							var e = Xml.createPCData("");
+							current.addChild(e);
+						}
+						if(r.matched(1) != current._nodeName || stack.isEmpty()) {
+							i = nrules;
+							throw "__break__";
+						}
+						current = stack.pop();
+						str = r.matchedRight();
+						break;
+					case 3:
+						str = r.matchedRight();
+						if(!Xml.ecdata_end.match(str)) throw "End of CDATA section not found";
+						var x = Xml.createCData(Xml.ecdata_end.matchedLeft());
+						current.addChild(x);
+						str = Xml.ecdata_end.matchedRight();
+						break;
+					case 4:
+						var pos = 0;
+						var count = 0;
+						var old = str;
+						try {
+							while(true) {
+								if(!Xml.edoctype_elt.match(str)) throw "End of DOCTYPE section not found";
+								var p = Xml.edoctype_elt.matchedPos();
+								pos += p.pos + p.len;
+								str = Xml.edoctype_elt.matchedRight();
+								switch(Xml.edoctype_elt.matched(0)) {
+								case "[":
+									count++;
+									break;
+								case "]":
+									count--;
+									if(count < 0) throw "Invalid ] found in DOCTYPE declaration";
+									break;
+								default:
+									if(count == 0) throw "__break__";
+								}
+							}
+						} catch( e ) { if( e != "__break__" ) throw e; }
+						var x = Xml.createDocType(old.substr(10,pos - 11));
+						current.addChild(x);
+						break;
+					case 5:
+						if(!Xml.ecomment_end.match(str)) throw "Unclosed Comment";
+						var p = Xml.ecomment_end.matchedPos();
+						var x = Xml.createComment(str.substr(4,p.pos + p.len - 7));
+						current.addChild(x);
+						str = Xml.ecomment_end.matchedRight();
+						break;
+					case 6:
+						var prolog = r.matched(0);
+						var x = Xml.createProlog(prolog.substr(2,prolog.length - 4));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					}
+					throw "__break__";
+				}
+				i += 1;
+			}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+		if(i == nrules) {
+			if(str.length > 10) throw "Xml parse error : Unexpected " + str.substr(0,10) + "..."; else throw "Xml parse error : Unexpected " + str;
+		}
+	}
+	if(!stack.isEmpty()) throw "Xml parse error : Unclosed " + stack.last().getNodeName();
+	return current;
+}
+Xml.createElement = function(name) {
+	var r = new Xml();
+	r.nodeType = Xml.Element;
+	r._children = new Array();
+	r._attributes = new Hash();
+	r.setNodeName(name);
+	return r;
+}
+Xml.createPCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.PCData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.CData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createComment = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Comment;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocType = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.DocType;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createProlog = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Prolog;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocument = function() {
+	var r = new Xml();
+	r.nodeType = Xml.Document;
+	r._children = new Array();
+	return r;
+}
+Xml.prototype.nodeType = null;
+Xml.prototype.nodeName = null;
+Xml.prototype.nodeValue = null;
+Xml.prototype.parent = null;
+Xml.prototype._nodeName = null;
+Xml.prototype._nodeValue = null;
+Xml.prototype._attributes = null;
+Xml.prototype._children = null;
+Xml.prototype._parent = null;
+Xml.prototype.getNodeName = function() {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._nodeName;
+}
+Xml.prototype.setNodeName = function(n) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._nodeName = n;
+}
+Xml.prototype.getNodeValue = function() {
+	if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+	return this._nodeValue;
+}
+Xml.prototype.setNodeValue = function(v) {
+	if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+	return this._nodeValue = v;
+}
+Xml.prototype.getParent = function() {
+	return this._parent;
+}
+Xml.prototype.get = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.get(att);
+}
+Xml.prototype.set = function(att,value) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	this._attributes.set(att,value);
+}
+Xml.prototype.remove = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	this._attributes.remove(att);
+}
+Xml.prototype.exists = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.exists(att);
+}
+Xml.prototype.attributes = function() {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.keys();
+}
+Xml.prototype.iterator = function() {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		return this.cur < this.x.length;
+	}, next : function() {
+		return this.x[this.cur++];
+	}};
+}
+Xml.prototype.elements = function() {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			if(this.x[k].nodeType == Xml.Element) break;
+			k += 1;
+		}
+		this.cur = k;
+		return k < l;
+	}, next : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			k += 1;
+			if(n.nodeType == Xml.Element) {
+				this.cur = k;
+				return n;
+			}
+		}
+		return null;
+	}};
+}
+Xml.prototype.elementsNamed = function(name) {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			if(n.nodeType == Xml.Element && n._nodeName == name) break;
+			k++;
+		}
+		this.cur = k;
+		return k < l;
+	}, next : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			k++;
+			if(n.nodeType == Xml.Element && n._nodeName == name) {
+				this.cur = k;
+				return n;
+			}
+		}
+		return null;
+	}};
+}
+Xml.prototype.firstChild = function() {
+	if(this._children == null) throw "bad nodetype";
+	return this._children[0];
+}
+Xml.prototype.firstElement = function() {
+	if(this._children == null) throw "bad nodetype";
+	var cur = 0;
+	var l = this._children.length;
+	while(cur < l) {
+		var n = this._children[cur];
+		if(n.nodeType == Xml.Element) return n;
+		cur++;
+	}
+	return null;
+}
+Xml.prototype.addChild = function(x) {
+	if(this._children == null) throw "bad nodetype";
+	if(x._parent != null) x._parent._children.remove(x);
+	x._parent = this;
+	this._children.push(x);
+}
+Xml.prototype.removeChild = function(x) {
+	if(this._children == null) throw "bad nodetype";
+	var b = this._children.remove(x);
+	if(b) x._parent = null;
+	return b;
+}
+Xml.prototype.insertChild = function(x,pos) {
+	if(this._children == null) throw "bad nodetype";
+	if(x._parent != null) x._parent._children.remove(x);
+	x._parent = this;
+	this._children.insert(pos,x);
+}
+Xml.prototype.toString = function() {
+	if(this.nodeType == Xml.PCData) return this._nodeValue;
+	if(this.nodeType == Xml.CData) return "<![CDATA[" + this._nodeValue + "]]>";
+	if(this.nodeType == Xml.Comment) return "<!--" + this._nodeValue + "-->";
+	if(this.nodeType == Xml.DocType) return "<!DOCTYPE " + this._nodeValue + ">";
+	if(this.nodeType == Xml.Prolog) return "<?" + this._nodeValue + "?>";
+	var s = new StringBuf();
+	if(this.nodeType == Xml.Element) {
+		s.b[s.b.length] = "<" == null?"null":"<";
+		s.add(this._nodeName);
+		var $it0 = this._attributes.keys();
+		while( $it0.hasNext() ) {
+			var k = $it0.next();
+			s.b[s.b.length] = " " == null?"null":" ";
+			s.b[s.b.length] = k == null?"null":k;
+			s.b[s.b.length] = "=\"" == null?"null":"=\"";
+			s.add(this._attributes.get(k));
+			s.b[s.b.length] = "\"" == null?"null":"\"";
+		}
+		if(this._children.length == 0) {
+			s.b[s.b.length] = "/>" == null?"null":"/>";
+			return s.b.join("");
+		}
+		s.b[s.b.length] = ">" == null?"null":">";
+	}
+	var $it1 = this.iterator();
+	while( $it1.hasNext() ) {
+		var x = $it1.next();
+		s.add(x.toString());
+	}
+	if(this.nodeType == Xml.Element) {
+		s.b[s.b.length] = "</" == null?"null":"</";
+		s.add(this._nodeName);
+		s.b[s.b.length] = ">" == null?"null":">";
+	}
+	return s.b.join("");
+}
+Xml.prototype.__class__ = Xml;
 cocktail.core.unit.Length = { __ename__ : ["cocktail","core","unit","Length"], __constructs__ : ["px","cm","mm","pt","pc","cssIn","em","ex"] }
 cocktail.core.unit.Length.px = function(value) { var $x = ["px",0,value]; $x.__enum__ = cocktail.core.unit.Length; $x.toString = $estr; return $x; }
 cocktail.core.unit.Length.cm = function(value) { var $x = ["cm",1,value]; $x.__enum__ = cocktail.core.unit.Length; $x.toString = $estr; return $x; }
@@ -13690,6 +15544,15 @@ js["XMLHttpRequest"] = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject
 	Void = { __ename__ : ["Void"]};
 }
 if(typeof(haxe_timers) == "undefined") haxe_timers = [];
+{
+	Xml.Element = "element";
+	Xml.PCData = "pcdata";
+	Xml.CData = "cdata";
+	Xml.Comment = "comment";
+	Xml.DocType = "doctype";
+	Xml.Prolog = "prolog";
+	Xml.Document = "document";
+}
 cocktail.core.dom.Node.ELEMENT_NODE = 1;
 cocktail.core.dom.Node.ATTRIBUTE_NODE = 2;
 cocktail.core.dom.Node.TEXT_NODE = 3;
@@ -13709,11 +15572,6 @@ cocktail.core.html.AbstractHTMLAnchorElement.TARGET_SELF = "_self";
 cocktail.core.html.AbstractHTMLAnchorElement.TARGET_PARENT = "_parent";
 cocktail.core.html.AbstractHTMLAnchorElement.TARGET_TOP = "_top";
 cocktail.core.html.AbstractHTMLAnchorElement.HTML_ANCHOR_TAG_NAME = "a";
-cocktail.core.html.HTMLDocument.HTML_IMAGE_ELEMENT_TAG_NAME = "img";
-cocktail.core.html.HTMLDocument.HTML_CANVAS_ELEMENT_TAG_NAME = "canvas";
-cocktail.core.html.HTMLDocument.HTML_INPUT_ELEMENT_TAG_NAME = "input";
-cocktail.core.html.HTMLDocument.HTML_ANCHOR_ELEMENT_TAG_NAME = "a";
-cocktail.core.html.HTMLDocument.HTML_HTML_TAG_NAME = "html";
 cocktail.core.event.Event.SCROLL = "scroll";
 cocktail.core.event.Event.LOAD = "load";
 cocktail.core.event.Event.FOCUS = "focus";
@@ -13724,10 +15582,20 @@ cocktail.core.event.Event.RESIZE = "resize";
 cocktail.core.event.KeyboardEvent.KEY_DOWN = "keydown";
 cocktail.core.event.KeyboardEvent.KEY_UP = "keyup";
 cocktail.core.html.AbstractHTMLImageElement.HTML_IMAGE_TAG_NAME = "img";
+cocktail.core.html.AbstractHTMLImageElement.HTML_IMAGE_SRC_ATTRIBUTE = "src";
 cocktail.core.html.AbstractHTMLHtmlElement.HTML_HTML_TAG_NAME = "html";
 utest.ui.text.HtmlReport.platform = "javascript";
 js.Lib.onerror = null;
 cocktail.core.html.AbstractHTMLInputElement.HTML_INPUT_TAG_NAME = "input";
+cocktail.core.html.AbstractHTMLDocument.HTML_IMAGE_ELEMENT_TAG_NAME = "img";
+cocktail.core.html.AbstractHTMLDocument.HTML_CANVAS_ELEMENT_TAG_NAME = "canvas";
+cocktail.core.html.AbstractHTMLDocument.HTML_INPUT_ELEMENT_TAG_NAME = "input";
+cocktail.core.html.AbstractHTMLDocument.HTML_ANCHOR_ELEMENT_TAG_NAME = "a";
+cocktail.core.html.AbstractHTMLDocument.HTML_HTML_TAG_NAME = "html";
+cocktail.core.html.AbstractHTMLDocument.HTML_BODY_TAG_NAME = "body";
+cocktail.core.html.AbstractHTMLDocument.TAB_KEY_CODE = 9;
+cocktail.core.html.AbstractHTMLDocument.ENTER_KEY_CODE = 13;
+cocktail.core.html.AbstractHTMLDocument.SPACE_KEY_CODE = 32;
 cocktail.core.html.HTMLBodyElement.HTML_BODY_TAG_NAME = "body";
 cocktail.core.event.MouseEvent.CLICK = "click";
 cocktail.core.event.MouseEvent.MOUSE_UP = "mouseup";
@@ -13741,6 +15609,23 @@ cocktail.port.browser.Mouse.MOUSE_DOWN_EVENT = "mousedown";
 cocktail.port.browser.Mouse.MOUSE_OVER_EVENT = "mouseover";
 cocktail.port.browser.Mouse.MOUSE_OUT_EVENT = "mouseout";
 cocktail.port.browser.Mouse.MOUSE_MOVE_EVENT = "mousemove";
+cocktail.core.dom.DOMException.INDEX_SIZE_ERR = 1;
+cocktail.core.dom.DOMException.DOMSTRING_SIZE_ERR = 2;
+cocktail.core.dom.DOMException.HIERARCHY_REQUEST_ERR = 3;
+cocktail.core.dom.DOMException.WRONG_DOCUMENT_ERR = 4;
+cocktail.core.dom.DOMException.INVALID_CHARACTER_ERR = 5;
+cocktail.core.dom.DOMException.NO_DATA_ALLOWED_ERR = 6;
+cocktail.core.dom.DOMException.NO_MODIFICATION_ALLOWED_ERR = 7;
+cocktail.core.dom.DOMException.NOT_FOUND_ERR = 8;
+cocktail.core.dom.DOMException.NOT_SUPPORTED_ERR = 9;
+cocktail.core.dom.DOMException.INUSE_ATTRIBUTE_ERR = 10;
+cocktail.core.dom.DOMException.INVALID_STATE_ERR = 11;
+cocktail.core.dom.DOMException.SYNTAX_ERR = 12;
+cocktail.core.dom.DOMException.INVALID_MODIFICATION_ERR = 13;
+cocktail.core.dom.DOMException.NAMESPACE_ERR = 14;
+cocktail.core.dom.DOMException.INVALID_ACCESS_ERR = 15;
+cocktail.core.dom.DOMException.VALIDATION_ERR = 16;
+cocktail.core.dom.DOMException.TYPE_MISMATCH_ERR = 19;
 cocktail.core.resource.XMLHTTPRequest.READY_STATE_UNSENT = 0;
 cocktail.core.resource.XMLHTTPRequest.READY_STATE_OPENED = 1;
 cocktail.core.resource.XMLHTTPRequest.READY_STATE_HEADERS_RECEIVED = 2;
@@ -13759,13 +15644,22 @@ cocktail.port.browser.DrawingManager.JOINT_STYLE_VALUE_MITER = "miter";
 cocktail.port.browser.DrawingManager.JOINT_STYLE_VALUE_BEVEL = "bevel";
 cocktail.port.browser.DrawingManager.CANVAS_PATTERN_REPEAT = "repeat";
 cocktail.port.browser.DrawingManager.CANVAS_PATTERN_NO_REPEAT = "no-repeat";
-cocktail.core.keyboard.AbstractKeyboard.TAB = 9;
-cocktail.core.keyboard.AbstractKeyboard.ENTER = 13;
-cocktail.core.keyboard.AbstractKeyboard.SPACE = 32;
 cocktail.port.browser.Keyboard.KEY_DOWN_EVENT = "keydown";
 cocktail.port.browser.Keyboard.KEY_UP_EVENT = "keyup";
 cocktail.port.browser.MouseCursor.MOUSE_CURSOR_STYLE_NONE = "none";
 cocktail.port.browser.MouseCursor.MOUSE_CURSOR_STYLE_POINTER = "pointer";
 cocktail.port.browser.MouseCursor.MOUSE_CURSOR_STYLE_TEXT = "text";
 cocktail.port.browser.MouseCursor.MOUSE_CURSOR_STYLE_AUTO = "auto";
+Xml.enode = new EReg("^<([a-zA-Z0-9:_-]+)","");
+Xml.ecdata = new EReg("^<!\\[CDATA\\[","i");
+Xml.edoctype = new EReg("^<!DOCTYPE ","i");
+Xml.eend = new EReg("^</([a-zA-Z0-9:_-]+)>","");
+Xml.epcdata = new EReg("^[^<]+","");
+Xml.ecomment = new EReg("^<!--","");
+Xml.eprolog = new EReg("^<\\?[^\\?]+\\?>","");
+Xml.eattribute = new EReg("^\\s*([a-zA-Z0-9:_-]+)\\s*=\\s*([\"'])([^\\2]*?)\\2","");
+Xml.eclose = new EReg("^[ \r\n\t]*(>|(/>))","");
+Xml.ecdata_end = new EReg("\\]\\]>","");
+Xml.edoctype_elt = new EReg("[\\[|\\]>]","");
+Xml.ecomment_end = new EReg("-->","");
 UnitManagerTests.main()
