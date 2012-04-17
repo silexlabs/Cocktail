@@ -81,10 +81,7 @@ class Event
 	 * Calling this method for a non-cancelable event has no effect.
 	 * Once preventDefault has been called it will remain in effect throughout
 	 * the remainder of the event's propagation.
-	 * This method may be used during any stage of event flow. 
-	 * 
-	 * TODO : in JS, should call nativeElement's preventDefault. Store
-	 * nativeEvent ?
+	 * This method may be used during any stage of event flow.
 	 */
 	public function preventDefault():Void
 	{
