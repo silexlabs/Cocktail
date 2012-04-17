@@ -35,7 +35,7 @@ class UnitManager
 	/**
 	 * convert a string into a typed enum
 	 * works with Cocktail enums Dimension, Margin, Padding 
-	 * @example CSSParser.boxStyleEnum(Padding, "100 px ") returns Padding.length(Length.px(100))
+	 * @example UnitManager.boxStyleEnum(Padding, "100 px ") returns Padding.length(Length.px(100))
 	 */
 	static public function boxStyleEnum<EnumName>(enumType:Enum<EnumName>, string:String):EnumName{
 		if(string == "auto")
@@ -52,7 +52,10 @@ class UnitManager
 		}
 	}
 	
-	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.constrainedDimensionEnum("100 % ") returns ConstrainedDimension.percent((100))
+	 */
 	static public function constrainedDimensionEnum(string:String):ConstrainedDimension
 	{
 		if (string == "none")
@@ -73,6 +76,10 @@ class UnitManager
 		return  constrainedDimension;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.displayEnum("none") returns Display.none
+	 */
 	static public function displayEnum(string:String):Display
 	{
 		var parsed:String = trim(string);
@@ -101,6 +108,10 @@ class UnitManager
 		return  display;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.overflowEnum("hidden") returns Overflow.hidden
+	 */
 	static public function overflowEnum(string:String):Overflow
 	{
 		var parsed:String = trim(string);
@@ -129,6 +140,10 @@ class UnitManager
 		return  overflow;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.verticalAlignEnum("top") returns VerticalAlign.top
+	 */
 	static public function verticalAlignEnum(string:String):VerticalAlign
 	{
 		string = trim(string);
@@ -183,6 +198,10 @@ class UnitManager
 		return  verticalAlign;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.clearEnum("none") returns Clear.none
+	 */
 	static public function clearEnum(string:String):Clear
 	{
 		var parsed:String = trim(string);
@@ -211,6 +230,10 @@ class UnitManager
 		return  clear;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.positionEnum("fixed") returns Position.fixed
+	 */
 	static public function positionEnum(string:String):Position
 	{
 		var parsed:String = trim(string);
@@ -239,6 +262,10 @@ class UnitManager
 		return  position;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.whiteSpaceEnum("preWrap") returns WhiteSpace.preWrap
+	 */
 	static public function whiteSpaceEnum(string:String):WhiteSpace
 	{
 		var parsed:String = trim(string);
@@ -270,6 +297,10 @@ class UnitManager
 		return  whiteSpace;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.textAlignEnum("justify") returns TextAlign.justify
+	 */
 	static public function textAlignEnum(string:String):TextAlign
 	{
 		var parsed:String = trim(string);
@@ -298,6 +329,10 @@ class UnitManager
 		return  textAlign;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontWeightEnum("bold") returns FontWeight.bold
+	 */
 	static public function fontWeightEnum(string:String):FontWeight
 	{
 		var parsed:String = trim(string);
@@ -353,6 +388,10 @@ class UnitManager
 		return  fontWeight;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontStyleEnum("italic") returns FontStyle.italic
+	 */
 	static public function fontStyleEnum(string:String):FontStyle
 	{
 		var parsed:String = trim(string);
@@ -375,6 +414,10 @@ class UnitManager
 		return  fontStyle;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontVariantEnum("normal") returns FontVariant.normal
+	 */
 	static public function fontVariantEnum(string:String):FontVariant
 	{
 		var parsed:String = trim(string);
@@ -397,6 +440,10 @@ class UnitManager
 		return  fontVariant;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.textTransformEnum("none") returns TextTransform.none
+	 */
 	static public function textTransformEnum(string:String):TextTransform
 	{
 		var parsed:String = trim(string);
@@ -425,7 +472,10 @@ class UnitManager
 		return  textTransform;
 	}
 	
-	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.visibilityEnum("visible") returns Visibility.visible
+	 */
 	static public function visibilityEnum(string:String):Visibility
 	{
 		var parsed:String = trim(string);
@@ -448,6 +498,10 @@ class UnitManager
 		return  visibility;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.cursorEnum("default") returns Cursor.cssDefault
+	 */
 	static public function cursorEnum(string:String):Cursor
 	{
 		var parsed:String = trim(string);
@@ -648,7 +702,7 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed Color enum
-	 * @example CSSParser.colorEnum("yellow") returns Color.yellow
+	 * @example UnitManager.colorEnum("yellow") returns Color.yellow
 	 */
 	static public function colorEnum(string:String):CSSColor{
 		// clean up a bit
