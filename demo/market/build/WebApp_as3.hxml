@@ -1,6 +1,6 @@
 # build binary file
 -cp ../src
--cp ../../../src/
+#-cp ../../../src/
 -cp ../../../lib/
 -main org.intermedia.Application
 -lib feffects

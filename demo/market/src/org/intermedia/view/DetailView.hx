@@ -1,7 +1,5 @@
 package org.intermedia.view;
 
-import cocktail.core.dom.Node;
-import cocktail.core.hxtml.HxtmlConverter;
 import js.Lib;
 import js.Dom;
 import haxe.Firebug;
@@ -9,7 +7,7 @@ import haxe.Firebug;
 // hxtml
 //import hxtml2.HTMLPageData;
 //import hxtml2.HTMLParser;
-import cocktail.Lib;
+//import cocktail.Lib;
 
 
 /**
@@ -55,6 +53,8 @@ class DetailView extends ViewBase
 		_contentElement = Lib.document.createTextNode("");
 		
 		super();
+		
+		//addTouchEvents();
 	}
 	
 	/**
@@ -63,7 +63,7 @@ class DetailView extends ViewBase
 	 */
 	override private function buildView():Void
 	{
-		DetailStyle.setDefault(node);
+		DetailStyle.setDetailStyle(node);
 
 		// add title
 		_titleContainer = Lib.document.createElement("div");
@@ -141,5 +141,60 @@ class DetailView extends ViewBase
 		//html2Node(_data.content);
 		node.innerHTML += _data.content;
 	}
+
+
+// Touch event workaround	
+
+	function touchHandlerDetail(event:Dynamic):Void
+	{
+		//trace("touchHandlerDetail: " + event.type);
+		/*switch(event.type)
+		{
+			//case "touchstart": type = "mousedown";
+			//case "touchmove":  type="mousemove";        
+			//case "touchend":   type="mouseup";
+			//default: return;
+			case "touchstart":
+				onDownCallback2(event);
+			case "touchmove":
+				onMoveCallback2(event);
+			case "touchend":
+				onUpCallback2(event);
+			default: return;
+		}*/
+	}
+
+	/**
+	 * Adds touch events
+	 */
+	public function addTouchEvents() 
+	{
+		#if js
+		untyped
+		{
+		node.addEventListener("touchstart", touchHandlerDetail, false);
+		node.addEventListener("touchmove", touchHandlerDetail, false);
+		node.addEventListener("touchend", touchHandlerDetail, false);
+		node.addEventListener("touchcancel", touchHandlerDetail, false);
+		}
+		#end
+	}
 	
+	/**
+	 * Removes touch events
+	 */
+	/*public function unsetTouchEvents() 
+	{
+		#if js
+		untyped
+		{
+		node.removeEventListener("touchstart", touchHandlerDetail, true);
+		node.removeEventListener("touchmove", touchHandlerDetail, true);
+		node.removeEventListener("touchend", touchHandlerDetail, true);
+		node.removeEventListener("touchcancel", touchHandlerDetail, true);
+		}
+		#end
+	}*/
+	
+
 }
