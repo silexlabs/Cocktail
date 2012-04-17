@@ -13844,13 +13844,17 @@ org.intermedia.view.CellStyle.setCellStyle = function(node,cellPerLine) {
 	node.style.paddingRight = "0px";
 	node.style.paddingTop = "0px";
 	node.style.paddingBottom = "0px";
-	var cellWidthPixels = org.intermedia.view.CellStyle.computeWidthPixels(cellPerLine);
-	node.style.width = Std.string(cellWidthPixels - 2) + "px";
+	var cellWidthPercent = org.intermedia.view.CellStyle.computeWidthPercentage(cellPerLine);
+	node.style.width = Std.string(cellWidthPercent) + "%";
 	node.style.verticalAlign = "top";
+	node.style.backgroundColor = "#FFFFFF";
 }
 org.intermedia.view.CellStyle.computeWidthPercentage = function(cellPerLine) {
 	var cellWidthPercent = 100;
-	if(cellPerLine != 0) cellWidthPercent = 100 / cellPerLine | 0;
+	if(cellPerLine != 0) {
+		cellWidthPercent = 100 / cellPerLine;
+		cellWidthPercent -= 1;
+	}
 	return cellWidthPercent;
 }
 org.intermedia.view.CellStyle.computeWidthPixels = function(cellPerLine) {
@@ -14482,13 +14486,14 @@ org.intermedia.view.ListViewStyle.setListStyle = function(node) {
 	node.style.paddingRight = "0px";
 	node.style.paddingTop = "0px";
 	node.style.paddingBottom = "0px";
-	node.style.width = Std.string(js.Lib.window.innerWidth) + "px";
+	node.style.width = Std.string(100 / 3) + "%";
 	node.style.height = Std.string(js.Lib.window.innerHeight) + "px";
 	node.style.top = "0px";
 	node.style.bottom = "0px";
 	node.style.verticalAlign = "top";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
+	node.style.backgroundColor = "#CCCCCC";
 }
 org.intermedia.view.ListViewStyle.loader = function(node) {
 	var VERTICAL_MARGIN = 20;
@@ -14591,6 +14596,7 @@ org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	node.style.width = "33%";
 	node.style.minWidth = "33%";
 	node.style.borderStyle = "none";
+	node.style.backgroundColor = null;
 }
 org.intermedia.view.MenuCellTextStyle.setLeftCellStyle = function(node) {
 	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
@@ -15295,6 +15301,8 @@ org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 35;
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
 org.intermedia.view.Constants.LIST_TOP = 78;
+org.intermedia.view.Constants.LIST_BG_COLOR = "#CCCCCC";
+org.intermedia.view.Constants.CELL_BG_COLOR = "#FFFFFF";
 org.intermedia.view.Constants.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.Constants.CELL_BORDER_WIDTH = 1;
 org.intermedia.view.Constants.CELL_BORDER_COLOR = "#CCCCCC";

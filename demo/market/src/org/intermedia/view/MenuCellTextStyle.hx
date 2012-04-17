@@ -47,6 +47,8 @@ class MenuCellTextStyle
 
 		// remove border
 		node.style.borderStyle = "none";
+		node.style.backgroundColor = null;
+
 	}
 	
 	/**
