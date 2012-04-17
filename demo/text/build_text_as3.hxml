@@ -1,0 +1,6 @@
+-cp ../../src/
+-cp ../../lib/
+-main org.text.demo.Text
+-swf text.swf
+-swf-version 10.2
+--remap js:cocktail
