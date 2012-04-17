@@ -41,19 +41,21 @@ class CellStyle
 		node.style.paddingBottom = "0px";
 		
 		// compute cell width in percentage depending on cellPerLine value
-		//var cellWidthPercent:Int = computeWidthPercentage(cellPerLine);
-		//node.style.width = Std.string(cellWidthPercent) + "%";
+		var cellWidthPercent:Float = computeWidthPercentage(cellPerLine);
+		node.style.width = Std.string(cellWidthPercent) + "%";
 		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
 		// compute cell width in pixels depending on cellPerLine value
 		// 2 pixels are removed so that adding borders does not mess up layout
-		var cellWidthPixels:Int = computeWidthPixels(cellPerLine);
-		node.style.width = Std.string(cellWidthPixels - (2 * Constants.CELL_BORDER_WIDTH)) + "px";
+		//var cellWidthPixels:Int = computeWidthPixels(cellPerLine);
+		//node.style.width = Std.string(cellWidthPixels - (2 * Constants.CELL_BORDER_WIDTH)) + "px";
 		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
 		node.style.verticalAlign = "top";
 
 		//node.style.overflow = "hidden";
+		
+		node.style.backgroundColor = Constants.CELL_BG_COLOR;
 	}
 	
 	/**
@@ -62,14 +64,24 @@ class CellStyle
 	 * @param	cellPerLine
 	 * @return
 	 */
-	public static function computeWidthPercentage(cellPerLine):Int
+	public static function computeWidthPercentage(cellPerLine):Float
 	{
 		// compute cell width in percentage depending on cellPerLine value
-		var cellWidthPercent:Int = 100;
+		var cellWidthPercent:Float = 100;
 		
 		if (cellPerLine != 0)
 		{
-			cellWidthPercent = Std.int( 100 / cellPerLine);
+			/*if (cellPerLine == 1)
+			{
+				// workaround so lines with 1 cell is aligned to those with two cells
+				cellWidthPercent -= 2;
+			}
+			else
+			{*/
+				//cellWidthPercent = Std.int( 100 / cellPerLine);
+				cellWidthPercent = 100 / cellPerLine;
+				cellWidthPercent -= 1;
+			//}
 		}
 		
 		return cellWidthPercent;

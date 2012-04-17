@@ -176,6 +176,7 @@ To do Alex pre fine tuning:
 -loading screen n'apparait pas en mode offline
 -scroll sous android
 => tests alex
+-scroll detail view
 -resize
 -passer le scroll en utilisant le x/y
 -menu

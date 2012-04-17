@@ -53,7 +53,6 @@ class MenuListViewStyle
 
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "auto";
-		
 	}
 	
 }
