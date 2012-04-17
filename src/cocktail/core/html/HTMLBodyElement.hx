@@ -15,9 +15,6 @@ import cocktail.core.style.BodyCoreStyle;
  * The HTML document body. This element is always present
  * in the DOM API, even if the tags are not present in the source document.
  * 
- * TODO : override in JS to listen to keyboard on document. Or use ownerDocument
- * or add keydown, keyup callbacks on HTMLDocument
- * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLBodyElement extends HTMLElement
