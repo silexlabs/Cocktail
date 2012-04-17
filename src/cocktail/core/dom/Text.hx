@@ -7,7 +7,12 @@
 */
 package cocktail.core.dom;
 
+import cocktail.core.event.Event;
+import cocktail.core.event.KeyboardEvent;
+import cocktail.core.event.MouseEvent;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
+import cocktail.core.style.adapter.Style;
 
 import cocktail.core.dom.DOMData;
 import cocktail.core.style.StyleData;
@@ -41,14 +46,6 @@ import cocktail.core.style.StyleData;
  */
 class Text extends CharacterData
 {
-	/**
-	 * The native text element, for instance
-	 * in Flash it is just a String whereas in
-	 * Js it is an HTML text node object
-	 */
-	private var _nativeElement:NativeElement;
-	public var nativeElement(get_nativeElement, never):NativeElement;
-	
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
@@ -216,11 +213,6 @@ class Text extends CharacterData
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_nativeElement():NativeElement
-	{
-		return _nativeElement;
-	}
 	
 	override private function get_nodeValue():String 
 	{
