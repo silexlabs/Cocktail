@@ -148,6 +148,8 @@ class ViewManager
 	 */
 	private function onListItemSelectedCallback(cellData:CellData):Void
 	{
+		// remove swippable view touch events listener
+		//_swippableListView.unsetTouchEvents();
 		// remove swippableListView and menu and add empty detail view
 		_body.removeChild(_swippableListView.node);
 		_body.removeChild(_menu.node);
@@ -158,9 +160,13 @@ class ViewManager
 		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
 		//_menu.style.display = DisplayStyleValue.none;
 		
+		// create detail view and add it to the body
 		_detailView = new DetailView();
 		_body.appendChild(_detailView.node);
-
+		
+		// start listening to touch event on detail view
+		_detailView.addTouchEvents();
+		
 		// set current view to detail view
 		_currentView = _detailView;
 
@@ -263,6 +269,13 @@ class ViewManager
 
 		// set current view on swippable view
 		_currentView = _swippableListView;
+		
+		// remove detailview touch events listener
+		//_detailView.unsetTouchEvents();
+
+		// start listening to touch event on _swippableListView
+		_swippableListView.addTouchEvents();
+		
 	}
 	
 	/**

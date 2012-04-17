@@ -81,6 +81,8 @@ class SwippableListView extends ListViewBase
 		_viewportWidth = Lib.window.innerWidth;
 		_viewportHeight = Lib.window.innerHeight;
 		//_viewport.onResize = onResizeCallback;
+		Lib.window.onresize = onResizeCallback;
+		//Lib.window.onresize = function (event:Event) { positionLists(); };
 		
 		_homePageData = new Array<Dynamic>();
 		_homePageDataSet = false;
@@ -93,8 +95,8 @@ class SwippableListView extends ListViewBase
 		//SwippableListViewStyle.setListStyle(this);
 		SwippableListViewStyle.setSwippableListStyle(node);
 		// set onMouseDown callback
-		//onMouseDown = onDownCallback2;
-		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
+		//onMouseDown = onDownCallback;
+		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
 		
 		// set _listView array
 		_listViews = new Array<ListViewBase>();
@@ -170,12 +172,15 @@ class SwippableListView extends ListViewBase
 		//list1.buildHomePage(_homePageData);
 		list1.id = Feeds.FEED_2.url;
 		_listViews.push(list1);
-		list1.node.style.left = Std.string(_viewportWidth) + "px";
+		//list1.node.style.left = Std.string(_viewportWidth) + "px";
 		
 		list2 = new ThumbTextList1(2);
 		list2.id = Feeds.FEED_3.url;
 		_listViews.push(list2);
-		list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
+		//list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
+		
+		// position the lists to their correct left offset
+		positionLists();
 		
 		// add all lists to the view
 		for (listView in _listViews)
@@ -205,7 +210,17 @@ class SwippableListView extends ListViewBase
 		//_currentListView.onDataRequest = onDataRequestCallback;
 		
 		// js touch events handling
-		initTouchEvents();
+		addTouchEvents();
+	}
+	
+	/**
+	 * set lists left offset value (used for resizing)
+	 */
+	private function positionLists():Void
+	{
+		//Firebug.trace("positionLists");
+		list1.node.style.left = Std.string(1 * _viewportWidth) + "px";
+		list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
 	}
 	
 	/**
@@ -316,20 +331,21 @@ class SwippableListView extends ListViewBase
 	/**
 	 * on rezize callback
 	 */
-	/*private function onResizeCallback():Void
+	private function onResizeCallback(event:Event):Void
 	{
-		//trace("onResizeCallback");
+		// reset viewport values
+		_viewportWidth = Lib.window.innerWidth;
+		_viewportHeight = Lib.window.innerHeight;
+
+		// reset lists posistion
+		positionLists();
 		
-		// compute new width
-		_viewportWidth = _viewport.width;
-		
-		// update lists width
-		list0.x = -_viewportWidth;
-		list2.x = _viewportWidth;
+		// scroll to current list
+		scrollToCurrentList();
 		
 		// update swippable view position
-		this.x = -_currentListView.x;
-	}*/
+		//this.x = -_currentListView.x;
+	}
 	
 	/**
 	 * A way to override onMouseDownCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
@@ -337,17 +353,17 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	private function onDownCallback2(event:Dynamic):Void
+	private function onDownCallback(event:Dynamic):Void
 	{
-		//trace("onDownCallback2");
+		//trace("onDownCallback");
 		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
 		/*_viewport.onResize = null;
 		
 		// set onMouseMove & onMouseUp callbacks
-		//onMouseMove = onMoveCallback2;
-		//onMouseUp = onUpCallback2;
-		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
-		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback2(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
+		//onMouseMove = onMoveCallback;
+		//onMouseUp = onUpCallback;
+		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
+		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
 		
 		// initialise initial touch positions
 		_initialPosition.x = event.touches[0].pageX;
@@ -359,11 +375,6 @@ class SwippableListView extends ListViewBase
 		// reset _direction
 		_direction = Direction.notYetSet;
 
-		//trace(event.touches[0].pageX + ", " + event.touches[0].pageY + ", " + _offsetStart.x);
-		//trace(event.pageX + ", " + event.pageY + ", " + _offsetStart.x);
-		//trace(node.scrollWidth + "," + node.scrollHeight + "," + node.scrollLeft + "," + node.scrollTop );		
-		//trace(node.scrollLeft + "," + node.scrollTop );		
-		//trace(_listsContainer.scrollWidth + "," + _listsContainer.scrollHeight + "," + _listsContainer.scrollLeft + "," + _listsContainer.scrollTop );		
 	}
 
 	/**
@@ -372,9 +383,9 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	private function onMoveCallback2(event:Dynamic):Void
+	private function onMoveCallback(event:Dynamic):Void
 	{
-		//trace("onMoveCallback2");
+		//trace("onMoveCallback");
 		//trace(_direction);
 		
 		// compute x & y offset
@@ -443,17 +454,17 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	mouseEventData
 	 */
-	private function onUpCallback2(event:Dynamic):Void
+	private function onUpCallback(event:Dynamic):Void
 	{
-		//trace("onUpCallback2");
-		//trace("onUpCallback2: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
+		//trace("onUpCallback");
+		//trace("onUpCallback: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
 
 		//trace(_direction);
 		if (_direction == Direction.horizontal)
 		{
 			event.preventDefault();
 			
-			//onUpCallback2(node.scrollLeft);
+			//onUpCallback(node.scrollLeft);
 			/*var x = node.scrollLeft;
 
 			// go to list which user has scrolled to
@@ -493,8 +504,6 @@ class SwippableListView extends ListViewBase
 			{
 				index = index;
 			}
-			//trace(index);
-			
 			
 			// js workaround to scroll up
 			/*#if js
@@ -528,20 +537,7 @@ class SwippableListView extends ListViewBase
 	 */
 	public function scrollToCurrentList():Void
 	{
-		//trace(Lib.window.innerWidth);
-		//trace(node.style.width);
-		//trace(node.clientWidth);
-		//trace(node.scrollWidth);
-		//node.scrollLeft = Std.parseInt(_currentListView.node.style.left);
 		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0,-2));
-		//node.scrollLeft = 100;
-		//_listsContainer.scrollLeft = 100;
-		//trace(_currentListView.node.style.left);
-		//trace(_currentListView.node.style.left.substr(0,-2));
-		//trace(Std.parseInt(_currentListView.node.style.left.substr(0,-2)));
-		//trace(node);
-		//trace(node.scrollLeft);
-		//trace(_listsContainer.scrollLeft);
 	}
 	
 	/**
@@ -634,8 +630,9 @@ class SwippableListView extends ListViewBase
 	
 // Touch event workaround	
 
-	function touchHandler(event:Dynamic):Void
+	private function touchHandler(event:Dynamic):Void
 	{
+		//trace("touchHandler: " + event.type);
 		switch(event.type)
 		{
 			//case "touchstart": type = "mousedown";
@@ -643,28 +640,47 @@ class SwippableListView extends ListViewBase
 			//case "touchend":   type="mouseup";
 			//default: return;
 			case "touchstart":
-				onDownCallback2(event);
+				onDownCallback(event);
 			case "touchmove":
-				onMoveCallback2(event);
+				onMoveCallback(event);
 			case "touchend":
-				onUpCallback2(event);
+				onUpCallback(event);
 			default: return;
 		}
 	}
 
 
-	function initTouchEvents() 
+	/**
+	 * Adds touch events
+	 */
+	public function addTouchEvents():Void
 	{
 		#if js
 		untyped
 		{
-		document.addEventListener("touchstart", touchHandler, true);
-		document.addEventListener("touchmove", touchHandler, true);
-		document.addEventListener("touchend", touchHandler, true);
-		document.addEventListener("touchcancel", touchHandler, true);
+		node.addEventListener("touchstart", touchHandler, false);
+		node.addEventListener("touchmove", touchHandler, false);
+		node.addEventListener("touchend", touchHandler, false);
+		node.addEventListener("touchcancel", touchHandler, false);
 		}
 		#end
 	}
+	
+	/**
+	 * Removes touch events
+	 */
+	/*public function unsetTouchEvents():Void
+	{
+		#if js
+		untyped
+		{
+		node.removeEventListener("touchstart", touchHandler, true);
+		node.removeEventListener("touchmove", touchHandler, true);
+		node.removeEventListener("touchend", touchHandler, true);
+		node.removeEventListener("touchcancel", touchHandler, true);
+		}
+		#end
+	}*/
 	
 }
 

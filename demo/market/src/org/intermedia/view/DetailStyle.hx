@@ -26,9 +26,9 @@ class DetailStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setDefault(node:HtmlDom):Void
+	public static function setDetailStyle(node:HtmlDom):Void
 	{
-		node.style.display = "block";
+		node.style.display = "inline-block";
 		node.style.position = "absolute";
 		
 		node.style.marginLeft = "0px";
@@ -36,18 +36,26 @@ class DetailStyle
 		node.style.marginTop = "0px";
 		node.style.marginBottom = "0px";
 		
-		node.style.paddingLeft = "0px";
-		node.style.paddingRight = "0px";
-		node.style.paddingTop = "0px";
-		node.style.paddingBottom = "0px";
+		node.style.paddingLeft = "2%";
+		node.style.paddingRight = "2%";
+		node.style.paddingTop = "10px";
+		node.style.paddingBottom = "10px";
 		
-		node.style.width = "100%";
+		node.style.width = "96%";
 		node.style.height = "auto";
+		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
+		//node.style.height = "100px";
 		
 		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.bottom = "0px";
 		
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "scroll";
+		
+		
 		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
+		
+		
 	}
 
 	/**

@@ -174,10 +174,11 @@ To Do Alex 30/03/2012
 
 To do Alex pre fine tuning:
 -loading screen n'apparait pas en mode offline
--scroll sous android
+	=> il apparait bien comme prévu, mais disparait au moment de la construction du DOM. Pour le voir, aller sur l'appli à partir d'un autre site, mais non en faisant un refresh
+-scroll sous android => OK
 => tests alex
 -scroll detail view
--resize
+-resize => OK
 -passer le scroll en utilisant le x/y
 -menu
 -couleurs textes
