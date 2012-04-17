@@ -21,6 +21,7 @@ import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
+import cocktail.keyboard.KeyboardData;
 
 /**
  * This class defines an app cell
@@ -55,12 +56,26 @@ class AppList extends ListBase
 	}
 	
 	/**
+	 * Create the list DOM with provided data and style
+	 * 
+	 * @param	list
+	 * @param	listStyle
+	 */
+	override function createListDOM(list:ListModel, listStyle:Dynamic):Void
+	{
+		super.createListDOM(list, listStyle);
+		
+		//this.onKeyDown = onListKeyDown;
+	}
+	
+	/**
 	 * Create an array containing all the data of the cell
 	 * 
 	 * @return the array of data DOM to be added into the cell
 	 */
 	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
 	{
+		//trace("getCellData");
 		var cellContent:Array<DOMElement> = new Array<DOMElement>();
 		
 		// THUMBNAIL
@@ -95,12 +110,39 @@ class AppList extends ListBase
 	/**
 	 * Select the cell and add a selected image to it
 	 */
-	override private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	//override private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	override private function selectCell(cell:ContainerDOMElement):Void
 	{
-		super.selectCell(cell, listStyle);
+		//super.selectCell(cell, listStyle);
+		super.selectCell(cell);
 		
 		// add image
 		cell.addChild(_selectedMenuItemImage);
 	}
 	
+	/**
+	 * Cell keyboard down callback
+	 * 
+	 * @param	key
+	 */
+	//override function onListKeyDown(key:KeyEventData):Void
+	override function onListKeyDown(key:Dynamic):Void
+	{
+		//trace(key.value);
+		//if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT)
+		if (key.keyCode == "39")
+		//if (key.value == KeyboardKeyValue.VK_RIGHT)
+		{
+			//trace("right key pressed");
+			super.selectNextCell();
+		}
+		//else if (key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		else if (key.keyCode == "37")
+		//else if (key.value == KeyboardKeyValue.VK_LEFT)
+		{
+			//trace("left key pressed");
+			super.selectPreviousCell();
+		}
+	}
+
 }

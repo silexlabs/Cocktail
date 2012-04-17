@@ -27,6 +27,9 @@ import Constants;
 
 class WebAppStyle 
 {
+	// offset, needed for Panasonic TV
+	static inline var _offSet:Int = 40;
+	
 	/**
 	 * Defines default Style
 	 * 
@@ -63,12 +66,23 @@ class WebAppStyle
 	{
 		getDefaultStyle(domElement);
 		
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingRight = PaddingStyleValue.length(px(0));
+		//domElement.style.paddingTop = PaddingStyleValue.length(px(0));
 
-		domElement.style.position = PositionStyleValue.staticStyle;
+		//domElement.style.position = PositionStyleValue.staticStyle;
+		
+		// Panasonic TV workaround so that aplication is fully visible
+		//domElement.style.marginBottom = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginLeft = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginRight = MarginStyleValue.length(px(_offSet));
+		//domElement.style.marginTop = MarginStyleValue.length(px(_offSet));
+		
+		//domElement.style.top = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.bottom = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.left = PositionOffsetStyleValue.length(px(_offSet));
+		//domElement.style.right = PositionOffsetStyleValue.length(px(_offSet));
 	}
 	
 	/**
@@ -141,11 +155,14 @@ class WebAppStyle
 	 */
 	public static function getHeaderStyle(domElement:DOMElement):Void
 	{
-		domElement.style.position = PositionStyleValue.relative;
+		domElement.style.position = PositionStyleValue.fixed;
 		domElement.style.display = DisplayStyleValue.block;
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
+		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.left = PositionOffsetStyleValue.length(px(0));
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
+		//domElement.nativeElement.style.zIndex = 2;
 	}
 
 	/**
@@ -161,6 +178,7 @@ class WebAppStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.length(px(0));
 		domElement.style.bottom = PositionOffsetStyleValue.autoValue;
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 	}
@@ -179,6 +197,21 @@ class WebAppStyle
 		domElement.style.left = PositionOffsetStyleValue.length(px(15));
 		domElement.style.right = PositionOffsetStyleValue.autoValue;
 		domElement.style.width = DimensionStyleValue.length(px(44));
+	}
+
+	/**
+	 * Defines footer Style
+	 * 
+	 * @param	domElement
+	 */
+	public static function getFooterStyle(domElement:DOMElement):Void
+	{
+		domElement.style.position = PositionStyleValue.fixed;
+		domElement.style.display = DisplayStyleValue.block;
+		
+		domElement.style.left = PositionOffsetStyleValue.length(px(0));
+		domElement.style.top = PositionOffsetStyleValue.autoValue;
+		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
 	}
 
 	/**
@@ -208,6 +241,7 @@ class WebAppStyle
 		domElement.style.display = DisplayStyleValue.block;
 		domElement.style.top = PositionOffsetStyleValue.autoValue;
 		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
 	}
@@ -236,6 +270,7 @@ class WebAppStyle
 
 		domElement.style.paddingTop = PaddingStyleValue.length(px(8));
 		
+		domElement.style.minWidth = ConstrainedDimensionStyleValue.percent(100);
 		domElement.style.width = DimensionStyleValue.percent(100);
 		domElement.style.height = DimensionStyleValue.length(px(Constants.headerHeight));
 		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
