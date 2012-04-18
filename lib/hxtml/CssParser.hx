@@ -27,6 +27,7 @@ enum Value {
 	VString( s : String );
 	VUnit( v : Float, unit : String );
 	VRGBA( v:String);
+	VRGB(v:String);
 	VFloat( v : Float );
 	VInt( v : Int );
 	VHex( v : String );
@@ -235,6 +236,9 @@ class CssParser<DisplayObjectType> {
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
 				return true;
+			case VRGB(v):
+				s.setBgColorRGB(d, v);
+				return true;	
 			case VIdent(i): 
 				s.setBgColorKey(d, i);
 				return true;
@@ -836,6 +840,9 @@ class CssParser<DisplayObjectType> {
 					
 				case "rgba":
 					readValueNext(VRGBA(readRGBA()));
+					
+				case "rgb":
+					readValueNext(VRGB(readRGB()));
 				default:
 					push(t);
 					v;
@@ -939,6 +946,22 @@ class CssParser<DisplayObjectType> {
 	}
 	
 	function readRGBA() {
+		
+		var c = next();
+		while (isSpace(c) )
+			c = next();
+			
+		var start = pos - 1;
+		while( true ) {
+			if( StringTools.isEOF(c) )
+				break;
+			c = next();
+			if( c == ")".code ) break;
+		}
+		return StringTools.trim(css.substr(start, pos - start - 1));
+	}
+	
+	function readRGB() {
 		
 		var c = next();
 		while (isSpace(c) )

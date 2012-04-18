@@ -50,6 +50,7 @@ interface IStyleProxy<DisplayObjectType>
 	public function setRightKey (element:DisplayObjectType, value:String):Void;
 	public function setBgColorNum (element:DisplayObjectType, value:Int):Void;
 	public function setBgColorRGBA (element:DisplayObjectType, value:String):Void;
+	public function setBgColorRGB (element:DisplayObjectType, value:String):Void;
 	public function setBgColorKey (element:DisplayObjectType, value:String):Void;
 	public function setBgImage (element:DisplayObjectType, value:Array<String>):Void;
 	public function setBgAttachment (element:DisplayObjectType, value:String):Void;
