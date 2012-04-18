@@ -801,7 +801,7 @@ class UnitManager
 	 */
 	static private function string2VUnit(string:String):VUnit
 	{
-		var r : EReg = ~/^([0-9]+\.?[0-9]*)(.*)/;
+		var r : EReg = ~/^(-?[0-9]+\.?[0-9]*)(.*)/;
 		r.match(string);
 			//trace("return " + r.matched(1) + "+" + r.matched(2));
 		return {
