@@ -12,7 +12,7 @@ import feffects.easing.Quint;
  * @author Raphael Harmel
  */
 
-class Move2D
+class Scroll2D
 {
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
@@ -183,6 +183,11 @@ class Move2D
 		else if (_direction == Direction.vertical)
 		{
 			onVerticalMoveCallback(event);
+			// if horizontal tween 
+			if ( (_horizontalTween != null) )
+			{
+				_horizontalTween.resume();
+			}
 		}
 		
 	}
@@ -359,10 +364,15 @@ class Move2D
 	private function stopTweens():Void
 	{
 		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
-		/*if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
-			_horizontalTween.stop();*/
+		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
+		{
+			//_horizontalTween.stop();
+			_horizontalTween.pause();
+		}
 		if ( (_verticalTween != null) && _verticalTween.isPlaying)
+		{
 			_verticalTween.stop();
+		}
 	}
 	
 }

@@ -2,7 +2,7 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.Move2D;
+import org.intermedia.view.Scroll2D;
 import haxe.Firebug;
 
 // hxtml
@@ -47,7 +47,7 @@ class DetailView extends ViewBase
 	private var _contentElement:HtmlDom;
 	
 	// touch & mouse handler
-	private var _moveHandler:Move2D;
+	private var _moveHandler:Scroll2D;
 	
 	// initail scroll position
 	//private var _initialScrollPosition:Coordinate;
@@ -65,7 +65,7 @@ class DetailView extends ViewBase
 		//_initialScrollPosition = { x:0, y:0 };
 		
 		// initialise move handler
-		_moveHandler = new Move2D(ScrollType.vertical);
+		_moveHandler = new Scroll2D(ScrollType.vertical);
 		_moveHandler.onVerticalScroll = onVerticalMove;
 		
 	}

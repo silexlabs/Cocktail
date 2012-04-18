@@ -46,7 +46,7 @@ class MenuCellTextStyle
 		node.style.minWidth = "33%";
 
 		// remove border
-		node.style.borderStyle = "none";
+		CellStyle.removeBorder(node);
 		node.style.backgroundColor = null;
 
 	}

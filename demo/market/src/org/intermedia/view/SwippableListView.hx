@@ -5,7 +5,7 @@ import js.Dom;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.ListViewBase;
 import org.intermedia.model.Feeds;
-import org.intermedia.view.Move2D;
+import org.intermedia.view.Scroll2D;
 import haxe.Firebug;
 import feffects.Tween;
 import feffects.easing.Quart;
@@ -68,7 +68,7 @@ class SwippableListView extends ListViewBase
 	private var _viewportHeight:Int;
 	
 	// touch & mouse handler
-	private var _moveHandler:Move2D;
+	private var _moveHandler:Scroll2D;
 	
 	public function new()
 	{
@@ -155,7 +155,7 @@ class SwippableListView extends ListViewBase
 		//_currentListView.onDataRequest = onDataRequestCallback;
 		
 		// initialise move handler
-		_moveHandler = new Move2D(ScrollType.both);
+		_moveHandler = new Scroll2D(ScrollType.both);
 		_moveHandler.onHorizontalScroll = onHorizontalMove;
 		_moveHandler.onVerticalScroll = onVerticalMove;
 		_moveHandler.onHorizontalUp = onHorizontalUp;

@@ -1816,12 +1816,10 @@ org.intermedia.view.CellStyle.computeWidthPixels = function(cellPerLine) {
 	return cellWidthPixels;
 }
 org.intermedia.view.CellStyle.addBorder = function(node) {
-	node.style.borderWidth = Std.string(1) + "px";
-	node.style.borderColor = "#CCCCCC";
-	node.style.borderStyle = "solid";
+	node.style.margin = Std.string(1) + "px";
 }
 org.intermedia.view.CellStyle.removeBorder = function(node) {
-	node.style.borderStyle = "none";
+	node.style.margin = "0px";
 }
 org.intermedia.view.CellStyle.prototype = {
 	__class__: org.intermedia.view.CellStyle
@@ -1859,7 +1857,6 @@ org.intermedia.view.CellTextStyle.setCellStyle = function(node) {
 	node.style.paddingTop = Std.string(5) + "px";
 	node.style.paddingBottom = "0px";
 	org.intermedia.view.CellStyle.addBorder(node);
-	node.style.borderStyle = "none none solid none";
 }
 org.intermedia.view.CellTextStyle.setCellTextStyle = function(node) {
 	node.style.display = "inline";
@@ -2119,7 +2116,7 @@ org.intermedia.view.DetailView = $hxClasses["org.intermedia.view.DetailView"] = 
 	this._descriptionElement = js.Lib.document.createTextNode("");
 	this._contentElement = js.Lib.document.createTextNode("");
 	org.intermedia.view.ViewBase.call(this);
-	this._moveHandler = new org.intermedia.view.Move2D(org.intermedia.view.ScrollType.vertical);
+	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.vertical);
 	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
 };
 org.intermedia.view.DetailView.__name__ = ["org","intermedia","view","DetailView"];
@@ -2563,7 +2560,7 @@ org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	node.style.paddingBottom = "0px";
 	node.style.width = "33%";
 	node.style.minWidth = "33%";
-	node.style.borderStyle = "none";
+	org.intermedia.view.CellStyle.removeBorder(node);
 	node.style.backgroundColor = null;
 }
 org.intermedia.view.MenuCellTextStyle.setLeftCellStyle = function(node) {
@@ -2666,7 +2663,25 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	}
 	,__class__: org.intermedia.view.MenuListViewText
 });
-org.intermedia.view.Move2D = $hxClasses["org.intermedia.view.Move2D"] = function(scrollType) {
+org.intermedia.view.ScreenResolutionSize = $hxClasses["org.intermedia.view.ScreenResolutionSize"] = { __ename__ : ["org","intermedia","view","ScreenResolutionSize"], __constructs__ : ["small","normal","large"] }
+org.intermedia.view.ScreenResolutionSize.small = ["small",0];
+org.intermedia.view.ScreenResolutionSize.small.toString = $estr;
+org.intermedia.view.ScreenResolutionSize.small.__enum__ = org.intermedia.view.ScreenResolutionSize;
+org.intermedia.view.ScreenResolutionSize.normal = ["normal",1];
+org.intermedia.view.ScreenResolutionSize.normal.toString = $estr;
+org.intermedia.view.ScreenResolutionSize.normal.__enum__ = org.intermedia.view.ScreenResolutionSize;
+org.intermedia.view.ScreenResolutionSize.large = ["large",2];
+org.intermedia.view.ScreenResolutionSize.large.toString = $estr;
+org.intermedia.view.ScreenResolutionSize.large.__enum__ = org.intermedia.view.ScreenResolutionSize;
+org.intermedia.view.ScreenResolution = $hxClasses["org.intermedia.view.ScreenResolution"] = function() {
+	if(js.Lib.window.innerWidth < 400) this.size = org.intermedia.view.ScreenResolutionSize.small; else if(js.Lib.window.innerWidth < 600) this.size = org.intermedia.view.ScreenResolutionSize.normal; else this.size = org.intermedia.view.ScreenResolutionSize.large;
+};
+org.intermedia.view.ScreenResolution.__name__ = ["org","intermedia","view","ScreenResolution"];
+org.intermedia.view.ScreenResolution.prototype = {
+	size: null
+	,__class__: org.intermedia.view.ScreenResolution
+}
+org.intermedia.view.Scroll2D = $hxClasses["org.intermedia.view.Scroll2D"] = function(scrollType) {
 	this._scrollType = scrollType;
 	this._initialPosition = { x : 0, y : 0};
 	this._offset = { x : 0, y : 0};
@@ -2674,8 +2689,8 @@ org.intermedia.view.Move2D = $hxClasses["org.intermedia.view.Move2D"] = function
 	this.initialScrollPosition = { x : 0, y : 0};
 	this._direction = org.intermedia.view.Direction.notYetSet;
 };
-org.intermedia.view.Move2D.__name__ = ["org","intermedia","view","Move2D"];
-org.intermedia.view.Move2D.prototype = {
+org.intermedia.view.Scroll2D.__name__ = ["org","intermedia","view","Scroll2D"];
+org.intermedia.view.Scroll2D.prototype = {
 	_offset: null
 	,_initialPosition: null
 	,initialScrollPosition: null
@@ -2719,7 +2734,10 @@ org.intermedia.view.Move2D.prototype = {
 				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
 			}
 		}
-		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.onVerticalMoveCallback(event);
+		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) {
+			this.onVerticalMoveCallback(event);
+			if(this._horizontalTween != null) this._horizontalTween.resume();
+		}
 	}
 	,onHorizontalMoveCallback: function(event) {
 		event.preventDefault();
@@ -2762,9 +2780,10 @@ org.intermedia.view.Move2D.prototype = {
 	,onVerticalTweenEnd: function(e) {
 	}
 	,stopTweens: function() {
+		if(this._horizontalTween != null && this._horizontalTween.isPlaying) this._horizontalTween.pause();
 		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
 	}
-	,__class__: org.intermedia.view.Move2D
+	,__class__: org.intermedia.view.Scroll2D
 }
 org.intermedia.view.Direction = $hxClasses["org.intermedia.view.Direction"] = { __ename__ : ["org","intermedia","view","Direction"], __constructs__ : ["horizontal","vertical","notYetSet"] }
 org.intermedia.view.Direction.horizontal = ["horizontal",0];
@@ -2786,24 +2805,6 @@ org.intermedia.view.ScrollType.vertical.__enum__ = org.intermedia.view.ScrollTyp
 org.intermedia.view.ScrollType.both = ["both",2];
 org.intermedia.view.ScrollType.both.toString = $estr;
 org.intermedia.view.ScrollType.both.__enum__ = org.intermedia.view.ScrollType;
-org.intermedia.view.ScreenResolutionSize = $hxClasses["org.intermedia.view.ScreenResolutionSize"] = { __ename__ : ["org","intermedia","view","ScreenResolutionSize"], __constructs__ : ["small","normal","large"] }
-org.intermedia.view.ScreenResolutionSize.small = ["small",0];
-org.intermedia.view.ScreenResolutionSize.small.toString = $estr;
-org.intermedia.view.ScreenResolutionSize.small.__enum__ = org.intermedia.view.ScreenResolutionSize;
-org.intermedia.view.ScreenResolutionSize.normal = ["normal",1];
-org.intermedia.view.ScreenResolutionSize.normal.toString = $estr;
-org.intermedia.view.ScreenResolutionSize.normal.__enum__ = org.intermedia.view.ScreenResolutionSize;
-org.intermedia.view.ScreenResolutionSize.large = ["large",2];
-org.intermedia.view.ScreenResolutionSize.large.toString = $estr;
-org.intermedia.view.ScreenResolutionSize.large.__enum__ = org.intermedia.view.ScreenResolutionSize;
-org.intermedia.view.ScreenResolution = $hxClasses["org.intermedia.view.ScreenResolution"] = function() {
-	if(js.Lib.window.innerWidth < 400) this.size = org.intermedia.view.ScreenResolutionSize.small; else if(js.Lib.window.innerWidth < 600) this.size = org.intermedia.view.ScreenResolutionSize.normal; else this.size = org.intermedia.view.ScreenResolutionSize.large;
-};
-org.intermedia.view.ScreenResolution.__name__ = ["org","intermedia","view","ScreenResolution"];
-org.intermedia.view.ScreenResolution.prototype = {
-	size: null
-	,__class__: org.intermedia.view.ScreenResolution
-}
 org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.SwippableListView"] = function() {
 	org.intermedia.view.ListViewBase.call(this);
 	this.setDisplayLoading(true);
@@ -2842,7 +2843,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._index = 1;
 	this._currentListView = this._listViews[this._index];
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-	this._moveHandler = new org.intermedia.view.Move2D(org.intermedia.view.ScrollType.both);
+	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.both);
 	this._moveHandler.onHorizontalScroll = this.onHorizontalMove.$bind(this);
 	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
 	this._moveHandler.onHorizontalUp = this.onHorizontalUp.$bind(this);
@@ -3284,8 +3285,8 @@ org.intermedia.view.Constants.CELL_HEIGHT = 90;
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
-org.intermedia.view.Move2D.DIRECTION_PIXEL_MINIMUM = 5;
-org.intermedia.view.Move2D.VERTICAL_TWEEN_DELTA = 100;
+org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
+org.intermedia.view.Scroll2D.VERTICAL_TWEEN_DELTA = 100;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.VERTICAL_TWEEN_DELTA = 150;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;
