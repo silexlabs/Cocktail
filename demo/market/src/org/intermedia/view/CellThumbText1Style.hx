@@ -36,9 +36,6 @@ class CellThumbText1Style
 	{
 		CellStyle.setCellStyle(node,cellPerLine);
 		
-		// apply border
-		//CellStyle.addBorder(node);
-		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);

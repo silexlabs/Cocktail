@@ -43,7 +43,7 @@ class CellTextStyle
 		
 		// apply border
 		CellStyle.addBorder(node);
-		node.style.borderStyle = "none none solid none";
+		//node.style.borderStyle = "none none solid none";
 	}
 	
 	/**
