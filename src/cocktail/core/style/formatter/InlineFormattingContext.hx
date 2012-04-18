@@ -94,7 +94,7 @@ class InlineFormattingContext extends FormattingContext
 		_currentInlineBoxesData = null;
 	}
 	
-	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>,staticPositionedElement:ElementRenderer = null):Void
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxElements = new Array<ElementRenderer>();

@@ -150,6 +150,9 @@ class FormattingContext
 	 * would have had if it were in flow
 	 * 
 	 * TODO : static position is wrong in inline formatting context, buf with layOutLastLine ?
+	 * 
+	 * TODO : this is really messy, this should be re-written with the static element
+	 * passed to the layout method
 	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
@@ -163,7 +166,7 @@ class FormattingContext
 		
 		elementsToFormat.push(element);
 		
-		doFormat(elementsToFormat);
+		doFormat(elementsToFormat, element);
 		
 		var x:Float = element.bounds.x;
 		var y:Float = element.bounds.y;
@@ -291,7 +294,7 @@ class FormattingContext
 		
 	}
 	
-	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>, staticPositionedElement:ElementRenderer = null):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block

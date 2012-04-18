@@ -36,12 +36,12 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 	//TODO : should not be 2 methods
-	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>, staticPositionedElement:ElementRenderer = null):Void
 	{
-		doFormat2(_formattingContextRoot, 0);
+		doFormat2(_formattingContextRoot, 0, staticPositionedElement);
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int):Void
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, staticPositionedElement:ElementRenderer):Void
 	{
 		
 		var currentAddedSiblingsHeight:Int = 0;
@@ -55,7 +55,9 @@ class BlockFormattingContext extends FormattingContext
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			//only allow static or relative
-			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
+			//TODO : when static position element is found, should stop formatting as it is a formatting only done to format
+			//this particular children
+			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
 			{
 				var marginTop:Int = child.coreStyle.computedStyle.marginTop;
 				
@@ -76,7 +78,7 @@ class BlockFormattingContext extends FormattingContext
 				{
 					if (child.establishesNewFormattingContext() == false)
 					{
-						doFormat2(child, concatenatedX);
+						doFormat2(child, concatenatedX, staticPositionedElement);
 						//concatenatedX -= child.coreStyle.computedStyle.marginLeft +  child.coreStyle.computedStyle.paddingLeft;
 					}
 				}
