@@ -84,7 +84,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTransform (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.transform = value;
 	}
-*/	public function setMarginLeftNum (element:Node, value:Int, unit:String):Void{
+*/	public function setMarginLeftNum (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginLeft = value + unit;
@@ -94,7 +94,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginLeft = value;
 	}
-	public function setMarginTopNum (element:Node, value:Int, unit:String):Void{
+	public function setMarginTopNum (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginTop = value + unit;
 	}
@@ -102,7 +102,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginTop = value;
 	}
-	public function setMarginRightNum (element:Node, value:Int, unit:String):Void{
+	public function setMarginRightNum (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginRight = value + unit;
 	}
@@ -111,7 +111,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginRight = value;
 	}
-	public function setMarginBottomNum (element:Node, value:Int, unit:String):Void{
+	public function setMarginBottomNum (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginBottom = value + unit;
 	}
@@ -120,19 +120,19 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HTMLElement).style.marginBottom = value;
 	}
 
-	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{
+	public function setPaddingLeft (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingLeft = value + unit;
 	}
-	public function setPaddingTop (element:Node, value:Int, unit:String):Void{
+	public function setPaddingTop (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingTop = value + unit;
 	}
-	public function setPaddingRight (element:Node, value:Int, unit:String):Void{
+	public function setPaddingRight (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingRight = value + unit;
 	}
-	public function setPaddingBottom (element:Node, value:Int, unit:String):Void{
+	public function setPaddingBottom (element:Node, value:Float, unit:String):Void{
 		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingBottom = value + unit;
 	}
@@ -166,10 +166,11 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	public function setBorderBottomColor (element:Node, value:String):Void{
 	}
-*/	public function setWidth(element:Node, value:Int, unit:String):Void {
+*/	public function setWidth(element:Node, value:Float, unit:String):Void {
+
 		cast(element, HTMLElement).style.width = value+unit; 
 	}
-	public function setHeight (element:Node, value:Int, unit:String):Void{
+	public function setHeight (element:Node, value:Float, unit:String):Void {
 		cast(element, HTMLElement).style.height = value+unit; 
 	}
 /*	public function setMinWidth (element:Node, value:Int, unit:String):Void{
@@ -184,16 +185,16 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setMaxHeight (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.maxHeight = value+unit; 
 	}
-*/	public function setTop (element:Node, value:Int, unit:String):Void{
+*/	public function setTop (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.top = value+unit; 
 	}
-	public function setLeft (element:Node, value:Int, unit:String):Void{
+	public function setLeft (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.left = value+unit; 
 	}
-	public function setBottom (element:Node, value:Int, unit:String):Void{
+	public function setBottom (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.bottom = value+unit; 
 	}
-	public function setRight (element:Node, value:Int, unit:String):Void{
+	public function setRight (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.right = value+unit; 
 	}
 	public function setTopKey (element:Node, value:String):Void{

@@ -43,6 +43,7 @@ class UnitManager
 		
 		// split unit and value
 		var parsed:VUnit = string2VUnit(string);
+		
 		// convert into typed enum
 		return switch (parsed.unit){
 			case "%":
@@ -819,21 +820,21 @@ class UnitManager
 		return switch (parsed.unit)
 		{
 			case "in":
-				Length.cssIn(Std.parseInt(parsed.value));	
+				Length.cssIn(Std.parseFloat(parsed.value));
 			case "cm":
-				Length.cm(Std.parseInt(parsed.value));	
+				Length.cm(Std.parseFloat(parsed.value));	
 			case "em":
-				Length.em(Std.parseInt(parsed.value));	
+				Length.em(Std.parseFloat(parsed.value));	
 			case "ex":
-				Length.ex(Std.parseInt(parsed.value));	
+				Length.ex(Std.parseFloat(parsed.value));	
 			case "mm":
-				Length.mm(Std.parseInt(parsed.value));	
+				Length.mm(Std.parseFloat(parsed.value));	
 			case "pc":
-				Length.pc(Std.parseInt(parsed.value));	
+				Length.pc(Std.parseFloat(parsed.value));	
 			case "pt":
-				Length.pt(Std.parseInt(parsed.value));	
+				Length.pt(Std.parseFloat(parsed.value));	
 			case "px":
-				Length.px(Std.parseInt(parsed.value));
+				Length.px(Std.parseFloat(parsed.value));
 			case "":
 				// special case of "0" without unit
 				var v:Int = Std.parseInt(parsed.value);
@@ -938,7 +939,7 @@ class UnitManager
 				lengthValue = value * 1/0.75;	
 				
 			case cssIn(value):
-				lengthValue = value * (72 * (1/0.75));
+				lengthValue = value * (72 * (1 / 0.75));
 				
 			case pc(value):
 				lengthValue = value * (12 * (1 / 0.75));	

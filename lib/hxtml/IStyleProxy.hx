@@ -11,18 +11,18 @@ interface IStyleProxy<DisplayObjectType>
 	public function setTransform (element:DisplayObjectType, value:String):Void;
 	
 	//TODO : rename setMarginLeftLength ? Add setMarginLeftPercent ?
-*/	public function setMarginLeftNum (element:DisplayObjectType, value:Int, unit:String):Void;
+*/	public function setMarginLeftNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginLeftKey (element:DisplayObjectType, value:String):Void;
-	public function setMarginTopNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginTopNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginTopKey (element:DisplayObjectType, value:String):Void;
-	public function setMarginRightNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginRightNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginRightKey (element:DisplayObjectType, value:String):Void;
-	public function setMarginBottomNum (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setMarginBottomNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginBottomKey (element:DisplayObjectType, value:String):Void;
-	public function setPaddingLeft (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setPaddingTop (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setPaddingRight (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setPaddingBottom (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setPaddingLeft (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setPaddingTop (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setPaddingRight (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setPaddingBottom (element:DisplayObjectType, value:Float, unit:String):Void;
 
 /*	public function setBorderLeft (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setBorderTop (element:DisplayObjectType, value:Int, unit:String):Void;
@@ -34,16 +34,16 @@ interface IStyleProxy<DisplayObjectType>
 	public function setBorderRightColor (element:DisplayObjectType, value:String):Void;
 	public function setBorderBottomColor (element:DisplayObjectType, value:String):Void;
 */
-	public function setWidth (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setHeight (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setWidth (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setHeight (element:DisplayObjectType, value:Float, unit:String):Void;
 /*	public function setMinWidth (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMinHeight (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMaxWidth (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMaxHeight (element:DisplayObjectType, value:Int, unit:String):Void;
-*/	public function setTop (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setLeft (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setBottom (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setRight (element:DisplayObjectType, value:Int, unit:String):Void;
+*/	public function setTop (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setLeft (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setBottom (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setRight (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setTopKey (element:DisplayObjectType, value:String):Void;
 	public function setLeftKey (element:DisplayObjectType, value:String):Void;
 	public function setBottomKey (element:DisplayObjectType, value:String):Void;
