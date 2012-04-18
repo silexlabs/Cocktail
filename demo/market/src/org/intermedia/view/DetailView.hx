@@ -1,7 +1,5 @@
 package org.intermedia.view;
 
-import cocktail.core.dom.Node;
-import cocktail.core.hxtml.HxtmlConverter;
 import js.Lib;
 import js.Dom;
 import haxe.Firebug;
@@ -9,7 +7,6 @@ import haxe.Firebug;
 // hxtml
 //import hxtml2.HTMLPageData;
 //import hxtml2.HTMLParser;
-import cocktail.Lib;
 
 
 /**
