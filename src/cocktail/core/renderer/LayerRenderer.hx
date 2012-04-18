@@ -90,7 +90,7 @@ class LayerRenderer
 
 			for (i in 0...childLayers.length)
 			{
-			//	nativeElements.push(childLayers[i]);
+				nativeElements.push(childLayers[i]);
 			}
 	
 			#if (flash9 || nme)
