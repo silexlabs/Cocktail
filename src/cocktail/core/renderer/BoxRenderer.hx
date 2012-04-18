@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.StyleData;
 import haxe.Log;
 
 /**
@@ -69,6 +70,7 @@ class BoxRenderer extends ElementRenderer
 			backgrounds[i].x = _bounds.x;
 			backgrounds[i].y = _bounds.y;
 			#end
+		
 		}
 		
 		#if (flash9 || nme)
