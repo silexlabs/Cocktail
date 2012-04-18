@@ -1,5 +1,6 @@
 package hxtml;
 
+//TODO : add mmethod for property who can take a "0" length value, like width or height
 interface IStyleProxy<DisplayObjectType>
 {
 	public function setDisplay(element:DisplayObjectType, value:String):Void;
@@ -41,9 +42,13 @@ interface IStyleProxy<DisplayObjectType>
 	public function setMaxWidth (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMaxHeight (element:DisplayObjectType, value:Int, unit:String):Void;
 */	public function setTop (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setTopZero (element:DisplayObjectType):Void;
 	public function setLeft (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setLeftZero (element:DisplayObjectType):Void;
 	public function setBottom (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setBottomZero (element:DisplayObjectType):Void;
 	public function setRight (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setRightZero (element:DisplayObjectType):Void;
 	public function setTopKey (element:DisplayObjectType, value:String):Void;
 	public function setLeftKey (element:DisplayObjectType, value:String):Void;
 	public function setBottomKey (element:DisplayObjectType, value:String):Void;

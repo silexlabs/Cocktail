@@ -187,14 +187,26 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 */	public function setTop (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.top = value+unit; 
 	}
+	public function setTopZero (element:Node):Void{
+		cast(element, HTMLElement).style.top = "0"; 
+	}
 	public function setLeft (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.left = value+unit; 
+	}
+	public function setLeftZero (element:Node):Void{
+		cast(element, HTMLElement).style.left = "0"; 
 	}
 	public function setBottom (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.bottom = value+unit; 
 	}
+	public function setBottomZero (element:Node):Void{
+		cast(element, HTMLElement).style.bottom = "0"; 
+	}
 	public function setRight (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.right = value+unit; 
+	}
+	public function setRightZero (element:Node):Void{
+		cast(element, HTMLElement).style.right = "0"; 
 	}
 	public function setTopKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.top = value; 
