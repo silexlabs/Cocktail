@@ -1,5 +1,5 @@
--cp ../../../src/
--cp ../../../lib/
+-cp ../../../../src/
+-cp ../../../../lib/
 -main Test
 -swf as3.swf
 -swf-version 10.2
