@@ -753,10 +753,12 @@ class CoreStyle
 		//else the HTMLElement is positioned
 		else
 		{
+			//TODO : retrieving static position might not be alway necessary, let formatting context decide ?
 			
 			//retrieve the static position (the position of the HTMLElement
 			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
+			
 			//a relative HTMLElement is both inserted in the flow
 			//and positioned
 			//

@@ -92,22 +92,28 @@ class LayerRenderer
 			{
 				nativeElements.push(childLayers[i]);
 			}
-	
+			
 			#if (flash9 || nme)
-			for (i in 0...nativeElements.length)
+			
+			if (_rootRenderer.establishesNewFormattingContext() == true)
 			{
-				nativeElements[i].x += _rootRenderer.bounds.x;
-				nativeElements[i].y += _rootRenderer.bounds.y; 
+				for (i in 0...nativeElements.length)
+				{
+					nativeElements[i].x += _rootRenderer.bounds.x;
+					nativeElements[i].y += _rootRenderer.bounds.y; 
+					
+				}
 				
+				//TODO : hack to place back the background of the root layer renderer
+				//as it is already placed when the background is created
+				for (i in 0...rootRendererBackground.length)
+				{
+					rootRendererBackground[i].x -= _rootRenderer.bounds.x;
+					rootRendererBackground[i].y -= _rootRenderer.bounds.y; 
+				}
 			}
 			
-			//TODO : hack to place back the background of the root layer renderer
-			//as it is already placed when the background is created
-			for (i in 0...rootRendererBackground.length)
-			{
-				rootRendererBackground[i].x -= _rootRenderer.bounds.x;
-				rootRendererBackground[i].y -= _rootRenderer.bounds.y; 
-			}
+		
 			
 			#end
 	
