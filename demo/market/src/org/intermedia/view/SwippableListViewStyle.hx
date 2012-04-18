@@ -43,7 +43,8 @@ class SwippableListViewStyle
 		//node.style.width = "60%";
 		node.style.height = "100%";
 
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		//node.style.overflow = "scroll";
 		//node.style.overflowX = "hidden";
 		//node.style.overflowY = "scroll";

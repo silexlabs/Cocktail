@@ -64,7 +64,8 @@ class CellThumbStyle
 		node.style.height = Std.string(cellSize.height) + "px";
 		node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
 
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		
 		// apply border
 		CellStyle.addBorder(node);

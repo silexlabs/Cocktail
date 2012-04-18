@@ -46,7 +46,7 @@ class LoadingViewStyle
 		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
 		node.style.color = '#FFFFFF';
 		
-		node.style.zIndex = 1000;
+		//node.style.zIndex = 1000;
 	}
 	
 	/**

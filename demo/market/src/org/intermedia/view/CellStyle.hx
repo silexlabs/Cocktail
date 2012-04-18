@@ -114,9 +114,9 @@ class CellStyle
 	public static function addBorder(node:HtmlDom):Void
 	{
 		// add border
-		node.style.borderWidth = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
-		node.style.borderColor = Constants.CELL_BORDER_COLOR;
-		node.style.borderStyle = "solid";
+	//	node.style.borderWidth = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
+	//	node.style.borderColor = Constants.CELL_BORDER_COLOR;
+	//	node.style.borderStyle = "solid";
 	}
 	
 	/**
@@ -126,7 +126,7 @@ class CellStyle
 	 */
 	public static function removeBorder(node:HtmlDom):Void
 	{
-		node.style.borderStyle = "none";
+		//node.style.borderStyle = "none";
 	}
 	
 }
