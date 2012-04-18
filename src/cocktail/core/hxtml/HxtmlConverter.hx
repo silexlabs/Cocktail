@@ -26,11 +26,11 @@ class HxtmlConverter
 		browser = new Browser<Node>(Lib.document.createElement, Lib.document.createTextNode, appendChild, setAttribute, invalidate, s);
 		 
 		// parse the html data
-		try{
+	//	try{
 			browser.setHtml(htmlString);
-		}catch(e:String){ 
-			throw("Error parsing HTML in HXTML");
-		}
+		//}catch(e:String){ 
+			//throw("Error parsing HTML in HXTML");
+		//}
 		return browser.domRoot;
 	}
 	/**
@@ -65,8 +65,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setPosition (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.position = value;
 	}
-/*	public function setCssFloat(element:Node, value:String):Void{
-		trace("cssFloat "+value);
+	public function setCssFloat(element:Node, value:String):Void{
 		cast(element, HtmlDom).style.cssFloat = value;
 	}
 /*	public function setClear (element:Node, value:String):Void{
