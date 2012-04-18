@@ -707,16 +707,17 @@ class UnitManager
 	static public function colorEnum(string:String):CSSColor{
 		// clean up a bit
 		string = trim(string);
+		
 		// case of hex values, e.g. #FFFFFF
 		if (StringTools.startsWith(string, "#"))
-			return hex(string.substr(1));
+			return hex(string);
 		// case of rgba values, e.g. rgba(255, 255, 255, 1)
-		if (StringTools.startsWith(string, "rgba")){
+		if (StringTools.startsWith(string, "rgba")) {
 			var vcol:VCol = string2RGBA(string);
 			return rgba(vcol.r, vcol.g, vcol.b, vcol.a);
 		} 
 		// case of rgb values, e.g. rgb(255, 255, 255)
-		if (StringTools.startsWith(string, "rgb")){
+		if (StringTools.startsWith(string, "rgb")) {
 			var vcol:VCol = string2RGB(string);
 			return rgb(vcol.r, vcol.g, vcol.b);
 		}
@@ -781,6 +782,7 @@ class UnitManager
 		// insert "0"s if some channels are missing
 		while(rgba.length < 3)
 			rgba.push("0");
+			
 		// return a typed object
 		return {
 			r:Std.parseInt(trim(rgba[0])),
