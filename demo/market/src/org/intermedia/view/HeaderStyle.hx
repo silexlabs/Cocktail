@@ -38,7 +38,7 @@ class HeaderStyle
 		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
 		
 		// set to the forehead
-		node.style.zIndex = 1000;
+		//node.style.zIndex = 1000;
 		
 		node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		
