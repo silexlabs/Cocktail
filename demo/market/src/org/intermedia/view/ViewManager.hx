@@ -191,7 +191,7 @@ class ViewManager
 		_swippableListView.data = listData;
 		
 		// update header zIndex using a workaround so it always visible
-		//updateZIndexes();
+		updateZIndexes();
 		//setZIndexToMax(_menu);
 		//setZIndexToMax(_header);
 		
@@ -215,7 +215,7 @@ class ViewManager
 		
 		// update header zIndex using a workaround
 		//updateZIndexes();
-		//setZIndexToMax(_header);
+		setZIndexToMax(_header);
 		
 		// hide loader
 		_detailView.displayLoading = false;
@@ -263,7 +263,7 @@ class ViewManager
 
 		
 		// update zIndex using a workaround
-		//updateZIndexes();
+		updateZIndexes();
 		//setZIndexToMax(_menu);
 		//setZIndexToMax(_header);
 
@@ -282,7 +282,7 @@ class ViewManager
 	 * updates header and menu zIndex to the maximum value.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	/*private function updateZIndexes():Void
+	private function updateZIndexes():Void
 	{
 		setZIndexToMax(_menu);
 		setZIndexToMax(_header);
@@ -292,11 +292,11 @@ class ViewManager
 	 * updates zIndex to the maximum value.
 	 * Uses a workaround as zIndex is not implemented yet in Cocktail
 	 */
-	/*private function setZIndexToMax(view:ViewBase):Void
+	private function setZIndexToMax(view:ViewBase):Void
 	{
 		// remove and add dom so it has the higher zIndex
 		_body.removeChild(view.node);
 		_body.appendChild(view.node);
-	}*/
+	}
 	
 }

@@ -358,8 +358,9 @@ class Move2D
 	 */
 	private function stopTweens():Void
 	{
-		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
-			_horizontalTween.stop();
+		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
+		/*if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
+			_horizontalTween.stop();*/
 		if ( (_verticalTween != null) && _verticalTween.isPlaying)
 			_verticalTween.stop();
 	}

@@ -78,7 +78,7 @@ class ListViewStyle
 		node.style.marginBottom = Std.string(VERTICAL_MARGIN) + "px";
 		
 		node.style.top = Std.string(Lib.window.innerHeight) + "px";
-		node.style.zIndex = 1000;
+		//node.style.zIndex = 1000;
 	}
 	
 }

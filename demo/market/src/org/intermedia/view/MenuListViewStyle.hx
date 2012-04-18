@@ -46,7 +46,7 @@ class MenuListViewStyle
 		node.style.bottom = "auto";
 		
 		// set to the forehead
-		node.style.zIndex = 1000;
+		//node.style.zIndex = 1000;
 		
 		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
 		node.style.backgroundImage = 'url("assets/headerBlue.png")';
