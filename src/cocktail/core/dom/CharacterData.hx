@@ -17,7 +17,8 @@ import cocktail.core.html.HTMLElement;
  * 
  * IMPORTANT : this class isn't supposed to inherit from HTMLElement but from Node. However in Haxe/JS, 
  * text nodes also inherit from the HTMLDom classes when they shouldn't. This should be corrected when
- * the Haxe JS standard lib is updated
+ * the Haxe JS standard lib is updated.
+ * TODO : some fields like initStyle should be overriden to do nothing
  * 
  * @author Yannick DOMINGUEZ
  */
