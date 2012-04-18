@@ -60,7 +60,8 @@ class CellThumbStyle2
 		else cellPercentWidth = 100;
 		node.style.width = Std.string(cellPercentWidth) + "%";
 		node.style.height = Std.string(70)) + "%";
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 	}
 	
 	/**

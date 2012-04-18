@@ -37,25 +37,9 @@ class CellThumbStyle
 		// use default style
 		CellStyle.setCellStyle(node, cellPerLine);
 		
-		//node.style.display = "inline-block";
-		//node.style.position = "static";
-		//
-		//node.style.marginLeft = "0px";
-		//node.style.marginRight = "0px";
-		//node.style.marginTop = "0px";
-		//node.style.marginBottom = "0px";
-		//
-		//node.style.paddingLeft = "0px";
-		//node.style.paddingRight = "0px";
-		//node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
-		//node.style.paddingBottom = "0px";
-		
-		//node.style.verticalAlign = "top";
-
 		// compute cell width in percentage depending on cellPerLine value
 		//var cellWidthPercent:Int = CellStyle.computeWidthPercentage(cellPerLine);
 		//node.style.width = DimensionStyleValue.percent(cellWidthPercent);
-		
 		
 		// compute cell size in pixel depending on cellPerLine value
 		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
@@ -64,7 +48,8 @@ class CellThumbStyle
 		node.style.height = Std.string(cellSize.height) + "px";
 		node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
 
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		
 		// apply border
 		CellStyle.addBorder(node);

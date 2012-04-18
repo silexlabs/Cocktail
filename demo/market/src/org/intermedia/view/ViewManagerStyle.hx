@@ -39,7 +39,8 @@ class ViewManagerStyle
 		node.style.width = "100%";
 		node.style.height = "130%";
 		
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 	}
 	
 }
