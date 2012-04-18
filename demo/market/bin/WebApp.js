@@ -2190,7 +2190,6 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(node) {
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
 	node.style.height = Std.string(43) + "px";
-	node.style.zIndex = 1000;
 	node.style.backgroundImage = "url(assets/headerGrey.jpg)";
 }
 org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(node) {
@@ -2474,7 +2473,6 @@ org.intermedia.view.ListViewStyle.loader = function(node) {
 	node.style.marginTop = Std.string(VERTICAL_MARGIN) + "px";
 	node.style.marginBottom = Std.string(VERTICAL_MARGIN) + "px";
 	node.style.top = Std.string(js.Lib.window.innerHeight) + "px";
-	node.style.zIndex = 1000;
 }
 org.intermedia.view.ListViewStyle.prototype = {
 	__class__: org.intermedia.view.ListViewStyle
@@ -2519,7 +2517,6 @@ org.intermedia.view.LoadingViewStyle.setLoadingStyle = function(node) {
 	node.style.top = "0px";
 	node.style.bottom = "0px";
 	node.style.color = "#FFFFFF";
-	node.style.zIndex = 1000;
 }
 org.intermedia.view.LoadingViewStyle.setThumbnailStyle = function(node) {
 	node.style.position = "relative";
@@ -2625,7 +2622,6 @@ org.intermedia.view.MenuListViewStyle.setListStyle = function(node) {
 	node.style.height = Std.string(35) + "px";
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "auto";
-	node.style.zIndex = 1000;
 	node.style.backgroundImage = "url(\"assets/headerBlue.png\")";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
@@ -2766,7 +2762,6 @@ org.intermedia.view.Move2D.prototype = {
 	,onVerticalTweenEnd: function(e) {
 	}
 	,stopTweens: function() {
-		if(this._horizontalTween != null && this._horizontalTween.isPlaying) this._horizontalTween.stop();
 		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
 	}
 	,__class__: org.intermedia.view.Move2D
@@ -3082,11 +3077,13 @@ org.intermedia.view.ViewManager.prototype = {
 	,onCellDataLoaded: function(listData) {
 		if(listData.cells.length == 0) this._swippableListView.displayListBottomLoader = false;
 		this._swippableListView.setData(listData);
+		this.updateZIndexes();
 	}
 	,onDetailDataLoaded: function(detailData) {
 		this._detailView.setData(detailData);
 		this._header.setData("Infos");
 		this._header.setDisplayBackButton(true);
+		this.setZIndexToMax(this._header);
 		this._detailView.setDisplayLoading(false);
 	}
 	,onStartLoading: function() {
@@ -3101,8 +3098,17 @@ org.intermedia.view.ViewManager.prototype = {
 		this._body.appendChild(this._menu.node);
 		this._body.appendChild(this._swippableListView.node);
 		this._swippableListView.scrollToCurrentList();
+		this.updateZIndexes();
 		this._currentView = this._swippableListView;
 		this._swippableListView.addTouchEvents();
+	}
+	,updateZIndexes: function() {
+		this.setZIndexToMax(this._menu);
+		this.setZIndexToMax(this._header);
+	}
+	,setZIndexToMax: function(view) {
+		this._body.removeChild(view.node);
+		this._body.appendChild(view.node);
 	}
 	,__class__: org.intermedia.view.ViewManager
 }
