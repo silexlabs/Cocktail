@@ -576,12 +576,6 @@ class ContainerCoreStyle extends CoreStyle
 		{
 			height = Math.round(this._computedStyle.lineHeight);
 		}
-		//same if the ContainerHTMLElement establishes
-		//an inline formatting context
-		else if (establishesNewFormattingContext() == true && childrenInline() == true)
-		{
-			height = Math.round(this._computedStyle.lineHeight);
-		}
 		//else it either establishes a block formatting context or participate
 		//in one and its height is used
 		else
