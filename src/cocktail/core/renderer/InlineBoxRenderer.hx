@@ -17,9 +17,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		super(style);
 	}
 	
-	//TODO : should call renderBackground from LayerRenderer instead
-	//override public function render():Array<NativeElement>
-	//{
-		//return renderBackground();
-	//}
+	//TODO : should call renderBackground from LayerRenderer instead, here create z-index issues
+	override public function render():Array<NativeElement>
+	{
+		return renderBackground();
+	}
 }
