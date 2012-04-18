@@ -122,7 +122,7 @@ class BoxPositioner
 	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
 	{
 		return containingHTMLElementWidth - htmlElement.coreStyle.computedStyle.width +
-		htmlElement.coreStyle.computedStyle.paddingLeft + htmlElement.coreStyle.computedStyle.width  - htmlElement.coreStyle.computedStyle.right;
+		htmlElement.coreStyle.computedStyle.paddingLeft + htmlElement.coreStyle.computedStyle.paddingRight - htmlElement.coreStyle.computedStyle.right;
 	}
 	
 	/**
