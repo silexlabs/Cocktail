@@ -166,7 +166,6 @@ class LayerRenderer
 				ret.push(nativeElements[j]);
 			}
 		}
-		
 		return ret;
 	}
 	
@@ -189,12 +188,14 @@ class LayerRenderer
 			{
 				if (child.canHaveChildren() == true)
 				{
+					ret.push(cast(child));
+					
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(child));
+					
 					for (j in 0...childElementRenderer.length)
 					{
 						ret.push(childElementRenderer[j]);
 					}
-					ret.push(cast(child));
 				}
 			}
 		}

@@ -166,7 +166,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	public function setBorderBottomColor (element:Node, value:String):Void{
 	}
-*/	public function setWidth (element:Node, value:Int, unit:String):Void{
+*/	public function setWidth(element:Node, value:Int, unit:String):Void {
 		cast(element, HTMLElement).style.width = value+unit; 
 	}
 	public function setHeight (element:Node, value:Int, unit:String):Void{
