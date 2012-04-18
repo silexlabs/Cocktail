@@ -54,51 +54,53 @@ class BlockFormattingContext extends FormattingContext
 
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
-			
-			var marginTop:Int = child.coreStyle.computedStyle.marginTop;
-			
-			if (i == 0)
+			//only allow static or relative
+			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
 			{
-				if (child.firstChild != null)
+				var marginTop:Int = child.coreStyle.computedStyle.marginTop;
+				
+				if (i == 0)
 				{
-					var firstChild:ElementRenderer = cast(child.firstChild);
-					if (firstChild.coreStyle.computedStyle.marginTop > marginTop && child.coreStyle.computedStyle.paddingTop == 0)
+					if (child.firstChild != null)
 					{
-							marginTop = firstChild.coreStyle.computedStyle.marginTop;
+						var firstChild:ElementRenderer = cast(child.firstChild);
+						if (firstChild.coreStyle.computedStyle.marginTop > marginTop && child.coreStyle.computedStyle.paddingTop == 0)
+						{
+								marginTop = firstChild.coreStyle.computedStyle.marginTop;
+						}
 					}
+					
 				}
 				
-			}
-			
-			if (child.hasChildNodes() == true)
-			{
-				if (child.establishesNewFormattingContext() == false)
+				if (child.hasChildNodes() == true)
 				{
-					doFormat2(child, concatenatedX);
-					//concatenatedX -= child.coreStyle.computedStyle.marginLeft +  child.coreStyle.computedStyle.paddingLeft;
+					if (child.establishesNewFormattingContext() == false)
+					{
+						doFormat2(child, concatenatedX);
+						//concatenatedX -= child.coreStyle.computedStyle.marginLeft +  child.coreStyle.computedStyle.paddingLeft;
+					}
 				}
+			
+				
+				var marginBottom:Int = getCollapsedMarginBottom(child);
+			
+				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
+				var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
+				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
+				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+				
+				child.bounds = {
+					x:x, 
+					y:y,
+					width:width,
+					height:height
+				}
+				
+				_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
+				currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
 			}
-		
 			
-			var marginBottom:Int = getCollapsedMarginBottom(child);
-		
-		
-			
-			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
-			var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
-			var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
-			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-			
-			child.bounds = {
-				x:x, 
-				y:y,
-				width:width,
-				height:height
-			}
-			
-			_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
-			currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
 			
 		}
 		
