@@ -912,7 +912,6 @@ class InlineFormattingContext extends FormattingContext
 			
 			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y
 			+ _formattingContextRoot.coreStyle.computedStyle.paddingTop;
-			
 
 			
 			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
@@ -925,6 +924,7 @@ class InlineFormattingContext extends FormattingContext
 				switch (htmlElement.coreStyle.verticalAlign)
 				{
 					case top:
+						
 						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
 					
 					default:	
@@ -935,6 +935,8 @@ class InlineFormattingContext extends FormattingContext
 				
 				
 			}
+			
+			
 		}
 	
 		return Math.round(lineBoxHeight);

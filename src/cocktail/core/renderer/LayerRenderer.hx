@@ -164,7 +164,6 @@ class LayerRenderer
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
-			
 			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].renderBackground();
 			
 			for (j in 0...nativeElements.length)
@@ -192,7 +191,8 @@ class LayerRenderer
 			
 			if (child.layerRenderer == this)
 			{
-				if (child.canHaveChildren() == true)
+				//TODO : must add more condition, for instance, no float
+				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
 				{
 					ret.push(cast(child));
 					
@@ -285,9 +285,19 @@ class LayerRenderer
 			var nativeElements:Array<NativeElement> = [];
 			if (inFlowChildren[i].coreStyle.display == inlineBlock)
 			{
+				
+				
 				//TODO : add missing rendering bits
 				//TODO : manage the case where inline-block is a replaced element
 						
+				//TODO : messy, should be below
+					var bg = inFlowChildren[i].renderBackground();
+				
+					for (l in 0...bg.length)
+					{
+						nativeElements.push(bg[l]);
+					}
+					
 					var d = getChildLayers(cast(inFlowChildren[i]), this);
 					
 					for (l in 0...d.length)
@@ -329,6 +339,7 @@ class LayerRenderer
 			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
 			{
 				
+				
 				var bg = inFlowChildren[i].renderBackground();
 				
 				for (j in 0...bg.length)
@@ -360,7 +371,10 @@ class LayerRenderer
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
 			
+			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			
+
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
@@ -387,8 +401,13 @@ class LayerRenderer
 						if (child.isPositioned() == false)
 						{
 							ret.push(child);
+							
+
+							
 							if (child.canHaveChildren() == true)
-							{
+							{	
+	
+								
 								var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
 								for (j in 0...childElementRenderer.length)
 								{
