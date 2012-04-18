@@ -276,7 +276,6 @@ class ContainerCoreStyle extends CoreStyle
 			//position the HTMLElement's ElementRenderer which set its x and y bounds in the space of this ContainerHTMLElement's
 			//formatting context
 			positionedHTMLElementData.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
-
 			//absolutely positioned HTMLElement are positioned relative to the margin box
 			//of their parent and not the content box, so an offset need to be applied
 			//
