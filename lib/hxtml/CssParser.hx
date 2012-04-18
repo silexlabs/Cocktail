@@ -417,6 +417,14 @@ class CssParser<DisplayObjectType> {
 				s.setTopKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setTopZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -431,6 +439,14 @@ class CssParser<DisplayObjectType> {
 				s.setLeftKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setLeftZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -445,6 +461,14 @@ class CssParser<DisplayObjectType> {
 				s.setRightKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setRightZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -459,6 +483,14 @@ class CssParser<DisplayObjectType> {
 				s.setBottomKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setBottomZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -517,8 +549,17 @@ class CssParser<DisplayObjectType> {
 	// convert a Value (enum) to a ValueObject (typedef)
 	function getValueObject(i):Null<ValueObject>{
 		return switch( i ) {
-		case VUnit(v, u): {value:v, unit:u};
+		case VUnit(v, u): { value:v, unit:u };
 		default: null;
+		};
+	}
+	
+	//return wether value is an int with 0 value. Used
+	//for lengths
+	function isNullInt(v):Bool{
+		return switch(v) {
+			case VInt(v): return v == 0;
+			default: false;
 		};
 	}
 	function getGroup<T>( v : Value, f : Value -> Null<T> ) : Null<Array<T>> {
