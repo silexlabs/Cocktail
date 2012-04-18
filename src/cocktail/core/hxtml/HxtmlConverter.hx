@@ -202,7 +202,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setBottomZero (element:Node):Void{
 		cast(element, HTMLElement).style.bottom = "0"; 
 	}
-	public function setRight (element:Node, value:Float, unit:String):Void{
+	public function setRight (element:Node, value:Float, unit:String):Void {
 		cast(element, HTMLElement).style.right = value+unit; 
 	}
 	public function setRightZero (element:Node):Void{

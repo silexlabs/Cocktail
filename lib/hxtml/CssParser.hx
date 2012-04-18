@@ -411,6 +411,21 @@ class CssParser<DisplayObjectType> {
 			}	
 //---------------------
 		case "top":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setTop(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -433,6 +448,21 @@ class CssParser<DisplayObjectType> {
 			}
 			return true;
 		case "left":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setLeft(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -455,6 +485,20 @@ class CssParser<DisplayObjectType> {
 			}
 			return true;
 		case "right":
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setRight(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -476,7 +520,23 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			return true;
+			
 		case "bottom":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setBottom(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
