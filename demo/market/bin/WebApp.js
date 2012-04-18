@@ -1919,7 +1919,8 @@ org.intermedia.view.CellThumbStyle.setCellStyle = function(node,cellPerLine) {
 	var cellSize = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine);
 	node.style.height = Std.string(cellSize.height) + "px";
 	node.style.maxHeight = Std.string(150) + "px";
-	node.style.overflow = "hidden";
+	node.style.overflowX = "hidden";
+	node.style.overflowY = "hidden";
 	org.intermedia.view.CellStyle.addBorder(node);
 	return cellSize;
 }
@@ -1972,7 +1973,8 @@ org.intermedia.view.CellThumbText1Style.setCellStyle = function(node,cellPerLine
 	org.intermedia.view.CellStyle.setCellStyle(node,cellPerLine);
 	var cellSize = org.intermedia.view.ImageUtils.computeMaskSize(cellPerLine,35);
 	node.style.height = Std.string(cellSize.height) + "px";
-	node.style.overflow = "hidden";
+	node.style.overflowX = "hidden";
+	node.style.overflowY = "hidden";
 	org.intermedia.view.CellStyle.addBorder(node);
 	return cellSize;
 }
@@ -2023,7 +2025,8 @@ org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"
 	this.node = js.Lib.document.createElement("div");
 	this.node.style.width = Std.string(maskSize.width) + "px";
 	this.node.style.height = Std.string(maskSize.height) + "px";
-	this.node.style.overflow = "hidden";
+	this.node.style.overflowX = "hidden";
+	this.node.style.overflowY = "hidden";
 	this.node.style.display = "inline-block";
 	this._image = js.Lib.document.createElement("img");
 	this._maskSize = maskSize;
@@ -2116,6 +2119,8 @@ org.intermedia.view.DetailView = $hxClasses["org.intermedia.view.DetailView"] = 
 	this._descriptionElement = js.Lib.document.createTextNode("");
 	this._contentElement = js.Lib.document.createTextNode("");
 	org.intermedia.view.ViewBase.call(this);
+	this._moveHandler = new org.intermedia.view.Move2D(org.intermedia.view.ScrollType.vertical);
+	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
 };
 org.intermedia.view.DetailView.__name__ = ["org","intermedia","view","DetailView"];
 org.intermedia.view.DetailView.__super__ = org.intermedia.view.ViewBase;
@@ -2129,6 +2134,7 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 	,_descriptionElement: null
 	,_contentContainer: null
 	,_contentElement: null
+	,_moveHandler: null
 	,buildView: function() {
 		org.intermedia.view.DetailStyle.setDetailStyle(this.node);
 		this._titleContainer = js.Lib.document.createElement("div");
@@ -2139,9 +2145,6 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		org.intermedia.view.DetailStyle.setAuthor(this._authorContainer);
 		this._authorContainer.appendChild(this._authorElement);
 		this.node.appendChild(this._authorContainer);
-		this._thumbnail = js.Lib.document.createElement("img");
-		org.intermedia.view.DetailStyle.setThumbnail(this._thumbnail);
-		this.node.appendChild(this._thumbnail);
 		this._descriptionContainer = js.Lib.document.createElement("div");
 		org.intermedia.view.DetailStyle.setDescription(this._descriptionContainer);
 		this._descriptionContainer.appendChild(this._descriptionElement);
@@ -2160,13 +2163,18 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this._authorContainer.appendChild(this._authorElement);
 		this.node.innerHTML += this._data.content;
 	}
-	,touchHandlerDetail: function(event) {
+	,touchStart: function(event) {
+		this._moveHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this.node.scrollTop};
+		this._moveHandler.touchHandler(event);
 	}
 	,addTouchEvents: function() {
-		this.node.addEventListener("touchstart",this.touchHandlerDetail.$bind(this),false);
-		this.node.addEventListener("touchmove",this.touchHandlerDetail.$bind(this),false);
-		this.node.addEventListener("touchend",this.touchHandlerDetail.$bind(this),false);
-		this.node.addEventListener("touchcancel",this.touchHandlerDetail.$bind(this),false);
+		this.node.addEventListener("touchstart",this.touchStart.$bind(this),false);
+		this.node.addEventListener("touchmove",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchend",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchcancel",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+	}
+	,onVerticalMove: function(y) {
+		this.node.scrollTop = y;
 	}
 	,__class__: org.intermedia.view.DetailView
 });
@@ -2662,6 +2670,127 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	}
 	,__class__: org.intermedia.view.MenuListViewText
 });
+org.intermedia.view.Move2D = $hxClasses["org.intermedia.view.Move2D"] = function(scrollType) {
+	this._scrollType = scrollType;
+	this._initialPosition = { x : 0, y : 0};
+	this._offset = { x : 0, y : 0};
+	this._scrollPosition = { x : 0, y : 0};
+	this.initialScrollPosition = { x : 0, y : 0};
+	this._direction = org.intermedia.view.Direction.notYetSet;
+};
+org.intermedia.view.Move2D.__name__ = ["org","intermedia","view","Move2D"];
+org.intermedia.view.Move2D.prototype = {
+	_offset: null
+	,_initialPosition: null
+	,initialScrollPosition: null
+	,_scrollPosition: null
+	,_scrollType: null
+	,_direction: null
+	,onHorizontalScroll: null
+	,onVerticalScroll: null
+	,onHorizontalUp: null
+	,onHorizontalTweenEnd: null
+	,_horizontalTween: null
+	,_verticalTween: null
+	,touchHandler: function(event) {
+		switch(event.type) {
+		case "touchstart":
+			this.onDownCallback(event);
+			break;
+		case "touchmove":
+			this.onMoveCallback(event);
+			break;
+		case "touchend":
+			this.onUpCallback(event);
+			break;
+		default:
+			return;
+		}
+	}
+	,onDownCallback: function(event) {
+		this.stopTweens();
+		this._initialPosition.x = event.touches[0].pageX;
+		this._initialPosition.y = event.touches[0].pageY;
+		if(this._scrollType == org.intermedia.view.ScrollType.horizontal) this._direction = org.intermedia.view.Direction.horizontal; else if(this._scrollType == org.intermedia.view.ScrollType.vertical) this._direction = org.intermedia.view.Direction.vertical; else this._direction = org.intermedia.view.Direction.notYetSet;
+	}
+	,onMoveCallback: function(event) {
+		this._offset.x = event.touches[0].pageX - this._initialPosition.x | 0;
+		this._offset.y = event.touches[0].pageY - this._initialPosition.y | 0;
+		if(this._direction == org.intermedia.view.Direction.notYetSet) {
+			var absX = Math.abs(this._offset.x);
+			var absY = Math.abs(this._offset.y);
+			if(Math.max(absX,absY) >= 5) {
+				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
+			}
+		}
+		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.onVerticalMoveCallback(event);
+	}
+	,onHorizontalMoveCallback: function(event) {
+		event.preventDefault();
+		this._scrollPosition = { x : this.initialScrollPosition.x - this._offset.x, y : this.initialScrollPosition.x};
+		this.onHorizontalScrollCallback(this._scrollPosition.x);
+	}
+	,onVerticalMoveCallback: function(event) {
+		event.preventDefault();
+		this._scrollPosition = { x : this.initialScrollPosition.x, y : this.initialScrollPosition.y - this._offset.y};
+		this.onVerticalScrollCallback(this._scrollPosition.y);
+	}
+	,onUpCallback: function(event) {
+		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalUpCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.verticalReleaseTween();
+		this._direction = org.intermedia.view.Direction.notYetSet;
+	}
+	,onHorizontalUpCallback: function(event) {
+		if(this.onHorizontalUp != null) this.onHorizontalUp(event,this._offset.x);
+	}
+	,horizontalReleaseTween: function(xOrigin,xTarget) {
+		this._horizontalTween = new feffects.Tween(xOrigin,xTarget,600,feffects.easing.Quint.easeOut);
+		this._horizontalTween.setTweenHandlers(this.onHorizontalScrollCallback.$bind(this),this.horizontalTweenEnd.$bind(this));
+		this._horizontalTween.start();
+	}
+	,onHorizontalScrollCallback: function(e) {
+		if(this.onHorizontalScroll != null) this.onHorizontalScroll(e | 0);
+	}
+	,horizontalTweenEnd: function(e) {
+		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd();
+	}
+	,verticalReleaseTween: function() {
+		var verticalTweenEnd = 0;
+		if(this._offset.y > 0) verticalTweenEnd = this._scrollPosition.y - 100; else verticalTweenEnd = this._scrollPosition.y + 100;
+		this._verticalTween = new feffects.Tween(this._scrollPosition.y,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
+		this._verticalTween.setTweenHandlers(this.onVerticalScrollCallback.$bind(this),this.onVerticalTweenEnd.$bind(this));
+		this._verticalTween.start();
+	}
+	,onVerticalScrollCallback: function(e) {
+		if(this.onVerticalScroll != null) this.onVerticalScroll(e | 0);
+	}
+	,onVerticalTweenEnd: function(e) {
+	}
+	,stopTweens: function() {
+		if(this._horizontalTween != null && this._horizontalTween.isPlaying) this._horizontalTween.stop();
+		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
+	}
+	,__class__: org.intermedia.view.Move2D
+}
+org.intermedia.view.Direction = $hxClasses["org.intermedia.view.Direction"] = { __ename__ : ["org","intermedia","view","Direction"], __constructs__ : ["horizontal","vertical","notYetSet"] }
+org.intermedia.view.Direction.horizontal = ["horizontal",0];
+org.intermedia.view.Direction.horizontal.toString = $estr;
+org.intermedia.view.Direction.horizontal.__enum__ = org.intermedia.view.Direction;
+org.intermedia.view.Direction.vertical = ["vertical",1];
+org.intermedia.view.Direction.vertical.toString = $estr;
+org.intermedia.view.Direction.vertical.__enum__ = org.intermedia.view.Direction;
+org.intermedia.view.Direction.notYetSet = ["notYetSet",2];
+org.intermedia.view.Direction.notYetSet.toString = $estr;
+org.intermedia.view.Direction.notYetSet.__enum__ = org.intermedia.view.Direction;
+org.intermedia.view.ScrollType = $hxClasses["org.intermedia.view.ScrollType"] = { __ename__ : ["org","intermedia","view","ScrollType"], __constructs__ : ["horizontal","vertical","both"] }
+org.intermedia.view.ScrollType.horizontal = ["horizontal",0];
+org.intermedia.view.ScrollType.horizontal.toString = $estr;
+org.intermedia.view.ScrollType.horizontal.__enum__ = org.intermedia.view.ScrollType;
+org.intermedia.view.ScrollType.vertical = ["vertical",1];
+org.intermedia.view.ScrollType.vertical.toString = $estr;
+org.intermedia.view.ScrollType.vertical.__enum__ = org.intermedia.view.ScrollType;
+org.intermedia.view.ScrollType.both = ["both",2];
+org.intermedia.view.ScrollType.both.toString = $estr;
+org.intermedia.view.ScrollType.both.__enum__ = org.intermedia.view.ScrollType;
 org.intermedia.view.ScreenResolutionSize = $hxClasses["org.intermedia.view.ScreenResolutionSize"] = { __ename__ : ["org","intermedia","view","ScreenResolutionSize"], __constructs__ : ["small","normal","large"] }
 org.intermedia.view.ScreenResolutionSize.small = ["small",0];
 org.intermedia.view.ScreenResolutionSize.small.toString = $estr;
@@ -2718,6 +2847,10 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._index = 1;
 	this._currentListView = this._listViews[this._index];
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+	this._moveHandler = new org.intermedia.view.Move2D(org.intermedia.view.ScrollType.both);
+	this._moveHandler.onHorizontalScroll = this.onHorizontalMove.$bind(this);
+	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
+	this._moveHandler.onHorizontalUp = this.onHorizontalUp.$bind(this);
 	this.addTouchEvents();
 };
 org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","SwippableListView"];
@@ -2741,6 +2874,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,_homePageDataSet: null
 	,_viewportWidth: null
 	,_viewportHeight: null
+	,_moveHandler: null
 	,positionLists: function() {
 		this.list1.node.style.left = Std.string(this._viewportWidth) + "px";
 		this.list2.node.style.left = Std.string(2 * this._viewportWidth) + "px";
@@ -2781,7 +2915,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._index = v;
 		this._currentListView = this._listViews[v];
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this.horizontalReleaseTween();
+		this._moveHandler.horizontalReleaseTween(this.node.scrollLeft,Std.parseInt(this._currentListView.node.style.left));
 		return v;
 	}
 	,scrollToCurrentList: function() {
@@ -2793,46 +2927,21 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this.positionLists();
 		this.scrollToCurrentList();
 	}
-	,onDownCallback: function(event) {
-		this._initialPosition.x = event.touches[0].pageX;
-		this._initialPosition.y = event.touches[0].pageY;
-		this._offsetStart.x = this.node.scrollLeft;
-		this._offsetStart.y = this._currentListView.node.scrollTop;
-		this._direction = org.intermedia.view.Direction.notYetSet;
+	,onHorizontalMove: function(x) {
+		this.node.scrollLeft = x;
 	}
-	,onMoveCallback: function(event) {
-		this._offset.x = event.touches[0].pageX - this._initialPosition.x | 0;
-		this._offset.y = event.touches[0].pageY - this._initialPosition.y | 0;
-		if(this._direction == org.intermedia.view.Direction.notYetSet) {
-			var absX = Math.abs(this._offset.x);
-			var absY = Math.abs(this._offset.y);
-			if(Math.max(absX,absY) >= 5) {
-				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
-			}
-		}
-		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMove(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.onVerticalMove(event);
+	,onVerticalMove: function(y) {
+		this._currentListView.node.scrollTop = y;
 	}
-	,onHorizontalMove: function(event) {
+	,onHorizontalUp: function(event,XOffset) {
 		event.preventDefault();
-		this.node.scrollLeft = this._offsetStart.x - this._offset.x;
-	}
-	,onVerticalMove: function(event) {
-		event.preventDefault();
-		this._currentListView.node.scrollTop = this._offsetStart.y - this._offset.y;
-	}
-	,onUpCallback: function(event) {
-		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalUp(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.verticalReleaseTween();
-		this._direction = org.intermedia.view.Direction.notYetSet;
-	}
-	,onHorizontalUp: function(event) {
-		event.preventDefault();
-		if(this._offset.x < -this._viewportWidth / 2) {
+		if(XOffset < -this._viewportWidth / 2) {
 			if(this.getIndex() < this._listViews.length - 1) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 + 1);
 				_g1;
 			}
-		} else if(this._offset.x > this._viewportWidth / 2) {
+		} else if(XOffset > this._viewportWidth / 2) {
 			if(this.getIndex() > 0) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 - 1);
@@ -2840,65 +2949,21 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			}
 		} else this.setIndex(this.getIndex());
 	}
-	,horizontalReleaseTween: function() {
-		var tween = new feffects.Tween(this.node.scrollLeft,Std.parseInt(this._currentListView.node.style.left),600,feffects.easing.Quint.easeOut);
-		tween.setTweenHandlers(this.horizontalTweenMove.$bind(this),this.horizontalTweenEnd.$bind(this));
-		tween.start();
-	}
-	,horizontalTweenMove: function(e) {
-		this.node.scrollLeft = e | 0;
-	}
-	,horizontalTweenEnd: function(e) {
-		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd();
-	}
-	,verticalReleaseTween: function() {
-		var verticalTweenEnd = 0;
-		if(this._offset.y > 0) verticalTweenEnd = this._currentListView.node.scrollTop - 150; else verticalTweenEnd = this._currentListView.node.scrollTop + 150;
-		var tween = new feffects.Tween(this._currentListView.node.scrollTop,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
-		tween.setTweenHandlers(this.onVerticalTweenMove.$bind(this),this.onVerticalTweenEnd.$bind(this));
-		tween.start();
-	}
-	,onVerticalTweenMove: function(e) {
-		this._currentListView.node.scrollTop = e | 0;
-	}
-	,onVerticalTweenEnd: function(e) {
-	}
 	,onScrollCallback: function(event) {
 	}
-	,touchHandler: function(event) {
-		switch(event.type) {
-		case "touchstart":
-			this.onDownCallback(event);
-			break;
-		case "touchmove":
-			this.onMoveCallback(event);
-			break;
-		case "touchend":
-			this.onUpCallback(event);
-			break;
-		default:
-			return;
-		}
-	}
 	,addTouchEvents: function() {
-		this.node.addEventListener("touchstart",this.touchHandler.$bind(this),false);
-		this.node.addEventListener("touchmove",this.touchHandler.$bind(this),false);
-		this.node.addEventListener("touchend",this.touchHandler.$bind(this),false);
-		this.node.addEventListener("touchcancel",this.touchHandler.$bind(this),false);
+		this.node.addEventListener("touchstart",this.touchStart.$bind(this),false);
+		this.node.addEventListener("touchmove",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchend",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchcancel",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+	}
+	,touchStart: function(event) {
+		this._moveHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
+		this._moveHandler.touchHandler(event);
 	}
 	,__class__: org.intermedia.view.SwippableListView
 	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
 });
-org.intermedia.view.Direction = $hxClasses["org.intermedia.view.Direction"] = { __ename__ : ["org","intermedia","view","Direction"], __constructs__ : ["horizontal","vertical","notYetSet"] }
-org.intermedia.view.Direction.horizontal = ["horizontal",0];
-org.intermedia.view.Direction.horizontal.toString = $estr;
-org.intermedia.view.Direction.horizontal.__enum__ = org.intermedia.view.Direction;
-org.intermedia.view.Direction.vertical = ["vertical",1];
-org.intermedia.view.Direction.vertical.toString = $estr;
-org.intermedia.view.Direction.vertical.__enum__ = org.intermedia.view.Direction;
-org.intermedia.view.Direction.notYetSet = ["notYetSet",2];
-org.intermedia.view.Direction.notYetSet.toString = $estr;
-org.intermedia.view.Direction.notYetSet.__enum__ = org.intermedia.view.Direction;
 org.intermedia.view.SwippableListViewStyle = $hxClasses["org.intermedia.view.SwippableListViewStyle"] = function() { }
 org.intermedia.view.SwippableListViewStyle.__name__ = ["org","intermedia","view","SwippableListViewStyle"];
 org.intermedia.view.SwippableListViewStyle.setSwippableListStyle = function(node) {
@@ -2913,7 +2978,8 @@ org.intermedia.view.SwippableListViewStyle.setSwippableListStyle = function(node
 	node.style.paddingTop = "0px";
 	node.style.width = "100%";
 	node.style.height = "100%";
-	node.style.overflow = "hidden";
+	node.style.overflowX = "hidden";
+	node.style.overflowY = "hidden";
 }
 org.intermedia.view.SwippableListViewStyle.setListsContainerStyle = function(node) {
 	node.style.display = "inline-block";
@@ -3053,7 +3119,8 @@ org.intermedia.view.ViewManagerStyle.setBodyStyle = function(node) {
 	node.style.paddingBottom = "0px";
 	node.style.width = "100%";
 	node.style.height = "130%";
-	node.style.overflow = "hidden";
+	node.style.overflowX = "hidden";
+	node.style.overflowY = "hidden";
 }
 org.intermedia.view.ViewManagerStyle.prototype = {
 	__class__: org.intermedia.view.ViewManagerStyle
@@ -3211,6 +3278,8 @@ org.intermedia.view.Constants.CELL_HEIGHT = 90;
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
+org.intermedia.view.Move2D.DIRECTION_PIXEL_MINIMUM = 5;
+org.intermedia.view.Move2D.VERTICAL_TWEEN_DELTA = 100;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.VERTICAL_TWEEN_DELTA = 150;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;

@@ -53,7 +53,8 @@ class CellStyle
 		
 		node.style.verticalAlign = "top";
 
-		//node.style.overflow = "hidden";
+		//node.style.overflowX = "hidden";
+		//node.style.overflowY = "hidden";
 		
 		node.style.backgroundColor = Constants.CELL_BG_COLOR;
 	}

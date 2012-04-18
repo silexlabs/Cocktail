@@ -5,6 +5,7 @@ import js.Dom;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.view.ListViewBase;
 import org.intermedia.model.Feeds;
+import org.intermedia.view.Move2D;
 import haxe.Firebug;
 import feffects.Tween;
 import feffects.easing.Quart;
@@ -65,6 +66,9 @@ class SwippableListView extends ListViewBase
 	//private var _viewport:Viewport;
 	private var _viewportWidth:Int;
 	private var _viewportHeight:Int;
+	
+	// touch & mouse handler
+	private var _moveHandler:Move2D;
 	
 	public function new()
 	{
@@ -143,14 +147,22 @@ class SwippableListView extends ListViewBase
 		//node.scrollLeft = _viewportWidth;
 		//this.x = -_viewportWidth;
 		
+		//_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 		
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
 		//_currentListView.onListScrolled = onScrolledCallback;
 		//_currentListView.onDataRequest = onDataRequestCallback;
 		
+		// initialise move handler
+		_moveHandler = new Move2D(ScrollType.both);
+		_moveHandler.onHorizontalScroll = onHorizontalMove;
+		_moveHandler.onVerticalScroll = onVerticalMove;
+		_moveHandler.onHorizontalUp = onHorizontalUp;
+		
 		// js touch events handling
 		addTouchEvents();
+
 	}
 	
 	/**
@@ -262,8 +274,13 @@ class SwippableListView extends ListViewBase
 		_currentListView = cast _listViews[v];
 		// set current list item selected callback
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
+		
+		
+		//moveHandler.initialScrollPosition = { x:_currentListViewnode.scrollLeft, y:_currentListView.node.scrollTop };
+		
 		// launch horizontal tween
-		horizontalReleaseTween();
+		//horizontalReleaseTween();
+		_moveHandler.horizontalReleaseTween(node.scrollLeft, Std.parseInt(_currentListView.node.style.left));
 
 		return v;
 	}
@@ -296,178 +313,43 @@ class SwippableListView extends ListViewBase
 	}
 	
 	/**
-	 * A way to override onMouseDownCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
-	 * sets _xOffsetStart & _xInitial, and sets onMouseMove & onMouseUp callbacks
+	 * move swippable view on the horizontal axis
 	 * 
-	 * @param	mouseEventData
+	 * @param	e
 	 */
-	private function onDownCallback(event:Dynamic):Void
-	{
-		//trace("onDownCallback");
-		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
-		/*_viewport.onResize = null;
-		
-		// set onMouseMove & onMouseUp callbacks
-		//onMouseMove = onMoveCallback;
-		//onMouseUp = onUpCallback;
-		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
-		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
-		
-		// initialise initial touch positions
-		_initialPosition.x = event.touches[0].pageX;
-		_initialPosition.y = event.touches[0].pageY;
-		// set x offset start to swippableView left scroll
-		_offsetStart.x = node.scrollLeft;
-		// set y offset start to _currentListView top scroll
-		_offsetStart.y = _currentListView.node.scrollTop;
-		// reset _direction
-		_direction = Direction.notYetSet;
-
-	}
-
-	/**
-	 * A way to override onMouseMoveCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
-	 * computes offset & moves the swippable view according to the offset
-	 * 
-	 * @param	mouseEventData
-	 */
-	private function onMoveCallback(event:Dynamic):Void
-	{
-		//trace("onMoveCallback");
-		//trace(_direction);
-		
-		// compute x & y offset
-		_offset.x = Std.int(event.touches[0].pageX - _initialPosition.x);
-		_offset.y = Std.int(event.touches[0].pageY - _initialPosition.y);
-		
-		//_currentListView.onListItemSelected = null;
-		
-		//trace(_direction + " - " + _offset.x + "," + _offset.y );
-		// done to avoid top rebound effect - to be done also on bottom rebound one
-		/*if (_currentListView.scrollTop <= 0 && _offset.y > 0)
-		{
-			event.preventDefault();
-		}*/
-		
-		//trace(_direction + " - " + _offset.x);
-		
-		// if direction is not set
-		if (_direction == Direction.notYetSet)
-		{
-			// compute absolute values as movement _offset can be positive or negative
-			var absX:Float = Math.abs(_offset.x);
-			var absY:Float = Math.abs(_offset.y);
-			//trace(absX + ", " + absY);
-				
-			// as first move event can be dispatched with both x and y values bigger than DIRECTION_PIXEL_MINIMUM,
-			// take the biggest as a reference
-			if ( Math.max(absX, absY) >= DIRECTION_PIXEL_MINIMUM )
-			{
-				if (absX > absY)
-				{
-					_direction = Direction.horizontal;
-				}
-				else
-				{
-					_direction = Direction.vertical;
-				}
-			}
-		}
-		
-		// if direction is horizontal
-		if (_direction == Direction.horizontal)
-		{
-			onHorizontalMove(event);
-		}
-		// if direction is vertical
-		else if (_direction == Direction.vertical)
-		{
-			onVerticalMove(event);
-		}
-
-	}
+    private function onHorizontalMove( x : Int )
+    {
+		node.scrollLeft = x;
+    }
 	
 	/**
-	 * Horizontal move handler
+	 * move current list view on the vertical axis
 	 * 
-	 * @param	event
+	 * @param	e
 	 */
-	private function onHorizontalMove(event:Dynamic):Void
-	{
-		// prevent default scroll behaviour
-		event.preventDefault();
-		// scroll to correct left position
-		node.scrollLeft = _offsetStart.x - _offset.x;
-	}
-
-	/**
-	 * Vertical move handler
-	 * 
-	 * @param	event
-	 */
-	private function onVerticalMove(event:Dynamic):Void
-	{
-		// block left scroll position
-		//node.scrollLeft = _offsetStart.x;
-		// prevent default scroll behaviour
-		event.preventDefault();
-		// scroll to correct top position
-		//node.scrollTop = _offsetStart.y - _offset.y;
-		_currentListView.node.scrollTop = _offsetStart.y - _offset.y;
-	}
-
-		
-	/**
-	 * A way to override onMouseUpCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
-	 * unset onMouseMove & onMouseUp callbacks
-	 * 
-	 * @param	mouseEventData
-	 */
-	private function onUpCallback(event:Dynamic):Void
-	{
-		//trace("onUpCallback");
-		//trace("onUpCallback: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
-
-		//trace(_direction);
-		if (_direction == Direction.horizontal)
-		{
-			onHorizontalUp(event);
-		}
-		else if (_direction == Direction.vertical)
-		{
-			verticalReleaseTween();
-		}
-			
-		// unset onMouseMove & onMouseUp callbacks
-		//onMouseMove = null;
-		//onMouseUp = null;
-		
-		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
-		//_viewport.onResize = onResizeCallback;
-		
-		// reset direction
-		_direction = Direction.notYetSet;
-
-	}
+    private function onVerticalMove( y : Int )
+    {
+		_currentListView.node.scrollTop = y;
+    }
 	
 	/**
 	 * horizontal up handler
 	 * 
 	 * @param	event
 	 */
-	private function onHorizontalUp(event:Dynamic):Void
+	private function onHorizontalUp(event:Dynamic,XOffset:Int):Void
 	{
 		event.preventDefault();
 		
 		// if movement was negative and more that half of the size of the screen
-		if (_offset.x < -_viewportWidth / 2)
+		if (XOffset < -_viewportWidth / 2)
 		{
 			// if the current list is not the last one, increment index using setter
 			if (index < _listViews.length - 1)
 				index++;
 		}
 		// if movement was positive and less that half of the size of the screen
-		else if (_offset.x > _viewportWidth / 2)
+		else if (XOffset > _viewportWidth / 2)
 		{
 			// if the current list is not the first one, decrement index using setter
 			if (index > 0)
@@ -488,84 +370,6 @@ class SwippableListView extends ListViewBase
 
 		
 	/**
-	 * swipe animation when touch is released
-	 */
-	private function horizontalReleaseTween():Void
-	{
-		// create the tween
-		//haxe.Firebug.trace("index: " + _index + " - scrollLeft: " + node.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
-        var tween = new Tween( node.scrollLeft, Std.parseInt(_currentListView.node.style.left), 600, Quint.easeOut );
-		tween.setTweenHandlers( horizontalTweenMove, horizontalTweenEnd );
-        // launch the tween
-        tween.start();
-	}
-	
-	/**
-	 * move view on the x axis
-	 * 
-	 * @param	e
-	 */
-    private function horizontalTweenMove( e : Float )
-    {
-		//node.scrollLeft = Std.int(e);
-		node.scrollLeft = Std.int(e);
-    }
-
-	/**
-	 * Vertical tween callback
-	 * 
-	 * @param	e
-	 */
-    private function horizontalTweenEnd(e : Float )
-	{
-		if (onHorizontalTweenEnd != null)
-		{
-			onHorizontalTweenEnd();
-		}
-	}
-	
-	/**
-	 * swipe animation when touch is released
-	 */
-	private function verticalReleaseTween():Void
-	{
-		//trace("releaseTween");
-		//trace("releaseTween: " + "x:" + x + ", y:" + y + ", _offsetStart.x:" + _offsetStart.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
-		
-		var verticalTweenEnd:Int = 0;
-		// if scrolling direction is down
-		if (_offset.y > 0 )
-			verticalTweenEnd = _currentListView.node.scrollTop - VERTICAL_TWEEN_DELTA;
-		else
-			verticalTweenEnd = _currentListView.node.scrollTop + VERTICAL_TWEEN_DELTA;
-		// create the tween
-        var tween = new Tween( _currentListView.node.scrollTop, verticalTweenEnd, 600, Quint.easeOut );
-		tween.setTweenHandlers( onVerticalTweenMove, onVerticalTweenEnd );
-        // launch the tween
-        tween.start();
-	}
-	
-	/**
-	 * move view on the x axis
-	 * 
-	 * @param	e
-	 */
-    private function onVerticalTweenMove( e : Float )
-    {
-		_currentListView.node.scrollTop = Std.int(e);
-    }
-	
-	/**
-	 * Vertical tween callback
-	 * 
-	 * @param	e
-	 */
-	private function onVerticalTweenEnd(e : Float )
-	{
-		
-	}
-	
-	/**
 	 * remove list scroll callback behaviour
 	 * @param	event
 	 */
@@ -575,28 +379,6 @@ class SwippableListView extends ListViewBase
 	}
 
 	
-// Touch event workaround	
-
-	private function touchHandler(event:Dynamic):Void
-	{
-		//trace("touchHandler: " + event.type);
-		switch(event.type)
-		{
-			//case "touchstart": type = "mousedown";
-			//case "touchmove":  type="mousemove";        
-			//case "touchend":   type="mouseup";
-			//default: return;
-			case "touchstart":
-				onDownCallback(event);
-			case "touchmove":
-				onMoveCallback(event);
-			case "touchend":
-				onUpCallback(event);
-			default: return;
-		}
-	}
-
-
 	/**
 	 * Adds touch events
 	 */
@@ -605,10 +387,10 @@ class SwippableListView extends ListViewBase
 		#if js
 		untyped
 		{
-		node.addEventListener("touchstart", touchHandler, false);
-		node.addEventListener("touchmove", touchHandler, false);
-		node.addEventListener("touchend", touchHandler, false);
-		node.addEventListener("touchcancel", touchHandler, false);
+		node.addEventListener("touchstart",touchStart, false);
+		node.addEventListener("touchmove", _moveHandler.touchHandler, false);
+		node.addEventListener("touchend", _moveHandler.touchHandler, false);
+		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
 		}
 		#end
 	}
@@ -629,16 +411,16 @@ class SwippableListView extends ListViewBase
 		#end
 	}*/
 	
-}
+	/**
+	 * Touch start event handler
+	 * 
+	 * @param	event
+	 */
+	private function touchStart(event:Dynamic):Void
+	{
+		_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		_moveHandler.touchHandler(event);
+	}
 
-typedef Coordinate = {
-	var x:Int;
-	var y:Int;
-}
 
-enum Direction {
-	horizontal;
-	vertical;
-	notYetSet;
 }
-

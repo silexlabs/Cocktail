@@ -2,6 +2,7 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
+import org.intermedia.view.Move2D;
 import haxe.Firebug;
 
 // hxtml
@@ -45,6 +46,12 @@ class DetailView extends ViewBase
 	// content text Element
 	private var _contentElement:HtmlDom;
 	
+	// touch & mouse handler
+	private var _moveHandler:Move2D;
+	
+	// initail scroll position
+	//private var _initialScrollPosition:Coordinate;
+
 	public function new() 
 	{
 		_titleElement = Lib.document.createTextNode("");
@@ -55,6 +62,12 @@ class DetailView extends ViewBase
 		super();
 		
 		//addTouchEvents();
+		//_initialScrollPosition = { x:0, y:0 };
+		
+		// initialise move handler
+		_moveHandler = new Move2D(ScrollType.vertical);
+		_moveHandler.onVerticalScroll = onVerticalMove;
+		
 	}
 	
 	/**
@@ -78,9 +91,9 @@ class DetailView extends ViewBase
 		node.appendChild(_authorContainer);
 		
 		// add thumbnail
-		_thumbnail = cast Lib.document.createElement("img");
+		/*_thumbnail = cast Lib.document.createElement("img");
 		DetailStyle.setThumbnail(_thumbnail);
-		node.appendChild(_thumbnail);
+		node.appendChild(_thumbnail);*/
 		
 		// add description
 		_descriptionContainer = Lib.document.createElement("div");
@@ -143,39 +156,29 @@ class DetailView extends ViewBase
 	}
 
 
-// Touch event workaround	
-
-	function touchHandlerDetail(event:Dynamic):Void
+	/**
+	 * Touch start event handler
+	 * 
+	 * @param	event
+	 */
+	private function touchStart(event:Dynamic):Void
 	{
-		//trace("touchHandlerDetail: " + event.type);
-		/*switch(event.type)
-		{
-			//case "touchstart": type = "mousedown";
-			//case "touchmove":  type="mousemove";        
-			//case "touchend":   type="mouseup";
-			//default: return;
-			case "touchstart":
-				onDownCallback2(event);
-			case "touchmove":
-				onMoveCallback2(event);
-			case "touchend":
-				onUpCallback2(event);
-			default: return;
-		}*/
+		_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:node.scrollTop };
+		_moveHandler.touchHandler(event);
 	}
 
 	/**
 	 * Adds touch events
 	 */
-	public function addTouchEvents() 
+	public function addTouchEvents():Void
 	{
 		#if js
 		untyped
 		{
-		node.addEventListener("touchstart", touchHandlerDetail, false);
-		node.addEventListener("touchmove", touchHandlerDetail, false);
-		node.addEventListener("touchend", touchHandlerDetail, false);
-		node.addEventListener("touchcancel", touchHandlerDetail, false);
+		node.addEventListener("touchstart",touchStart, false);
+		node.addEventListener("touchmove", _moveHandler.touchHandler, false);
+		node.addEventListener("touchend", _moveHandler.touchHandler, false);
+		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
 		}
 		#end
 	}
@@ -195,6 +198,16 @@ class DetailView extends ViewBase
 		}
 		#end
 	}*/
+	
+	/**
+	 * move view on the vertical axis
+	 * 
+	 * @param	e
+	 */
+    private function onVerticalMove( y : Int )
+    {
+		node.scrollTop = y;
+    }
 	
 
 }

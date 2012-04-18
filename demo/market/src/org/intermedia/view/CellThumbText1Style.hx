@@ -34,28 +34,6 @@ class CellThumbText1Style
 	 */
 	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Size
 	{
-		/*node.style.display = "inline-block";
-		node.style.position = "static";
-		
-		node.style.marginLeft = "0px";
-		node.style.marginRight = "0px";
-		node.style.marginTop = "0px";
-		node.style.marginBottom = "0px";
-		
-		node.style.paddingLeft = "0px";
-		node.style.paddingRight = "0px";
-		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE)) + "px";
-		node.style.paddingBottom = "0px";
-		
-		// compute cell width depending on cellPerLine value
-		var cellPercentWidth:Int = 0;
-		//if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine) - 1;
-		if (cellPerLine != 0) cellPercentWidth = Std.int(100 / cellPerLine);
-		else cellPercentWidth = 100;
-		node.style.width = DimensionStyleValue.percent(cellPercentWidth);
-		//node.style.height = Std.string(70));
-		//node.style.overflow = "hidden";*/
-		
 		CellStyle.setCellStyle(node,cellPerLine);
 		
 		// apply border
@@ -68,7 +46,8 @@ class CellThumbText1Style
 		node.style.height = Std.string(cellSize.height) + "px";
 		//node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
 
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		
 		// apply border
 		CellStyle.addBorder(node);
@@ -84,25 +63,6 @@ class CellThumbText1Style
 	 */
 	public static function setThumbnailStyle(image:Image,maskSize:Size):Void
 	{
-		/*var imageMaxWidth:Int = 200;
-		
-		//setCellStyle(node);
-		
-		node.style.display = "inline";
-		
-		//node.style.paddingLeft = "0%";
-		//node.style.paddingRight = "0%";
-		//node.style.paddingLeft = Std.string(5));
-		//node.style.paddingRight = Std.string(5));
-
-		node.style.verticalAlign = "middle";
-
-		node.style.maxWidth = ConstrainedStd.string(imageMaxWidth));
-		node.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-		node.style.width = DimensionStyleValue.percent(CELL_THUMB_WIDTH_PERCENT);	
-
-		node.style.opacity = OpacityStyleValue.number(0);*/
-		
 		CellThumbStyle.setThumbnailStyle(image,maskSize);
 	}
 		

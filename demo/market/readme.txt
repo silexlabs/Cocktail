@@ -158,7 +158,8 @@ To Do
  => tweening
  => title shifts
 -menu bar for navigation
--cells on the same line should have the samed height
+-cells on the same line should have the samed height => OK
+-on resize, cropped images size do not change
 
 To Do Alex 30/03/2012
 -retirer les cells ne contenant pas de titre, de thumb ou de description / content => OK
@@ -170,17 +171,17 @@ To Do Alex 30/03/2012
 -aligner les cells sur la ligne => quantité de texte réduite: OK ?
 -Loading screen au début => bug cocktail qui override les valeurs du zindex: mis en standby car réglé dans la version js
 -crop thumbs des thumblist & thumbtext list: utiliser des masques html => deniers ajustements à faire => OK
--swippable view scroll non fonctionnel sur android & Firefox
+-swippable view scroll non fonctionnel sur android & Firefox => OK
 
 To do Alex pre fine tuning:
 -loading screen n'apparait pas en mode offline
 	=> il apparait bien comme prévu, mais disparait au moment de la construction du DOM. Pour le voir, aller sur l'appli à partir d'un autre site, mais non en faisant un refresh
 -scroll sous android => OK
 => tests alex
--scroll detail view
+-scroll detail view => OK
 -resize => OK
--passer le scroll en utilisant le x/y
--menu
+-passer le scroll en utilisant le x/y => abandonnné après discussion avec Alex car bientot supporté par cocktail
+-animation menu
 -couleurs textes
 -images header
 -taille & couleurs border

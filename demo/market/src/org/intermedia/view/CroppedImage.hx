@@ -37,8 +37,10 @@ class CroppedImage
 		node = Lib.document.createElement("div");
 		node.style.width = Std.string(maskSize.width) + "px";
 		node.style.height = Std.string(maskSize.height) + "px";
+		
 		// apply mask style so it can crop the image
-		node.style.overflow = "hidden";
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		node.style.display = "inline-block";
 
 		_image = cast Lib.document.createElement("img");
