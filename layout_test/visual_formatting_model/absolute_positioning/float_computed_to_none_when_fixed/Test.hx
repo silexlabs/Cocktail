@@ -14,11 +14,11 @@ package ;
 import js.Lib;
 
 /**
- * TODO : doesn't work because fixed is placed relative to its
- * nearest containing block instead of window
+ * TODO : doesnt work because of fixed
  */
 class Test 
 {
+	
 	public static function main()
 	{	
 		new Test();
@@ -26,11 +26,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p style="margin-top:1in;">Test passes if there is a box in the upper-left corner of the page.</p>';
-		test += '<div style="position:relative;">';
-		test += '<div style="top:3in; left:3in; height:1in; width:1in; position:absolute; ">';
-		test += '<div style="background-color:black; height:1in; width:1in; top:0; left:0; position:fixed;"></div>';
-		test += '</div></div></div>';
+		var test = '<div><p style="margin-top:1in">Test passes if there is a box in the upper-left corner of the page.</p>';
+		test += '<div style="position:relative; ">';
+		test += '<div style="background-color:black; left:0; top:0; float:right; position:fixed; height:1in; width:1in;"></div>';
+		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
 	}
