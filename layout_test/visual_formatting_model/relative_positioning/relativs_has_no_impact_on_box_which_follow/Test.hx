@@ -13,9 +13,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : don't work because of error in vertical align computation
- */
+
 class Test 
 {
 	public static function main()
@@ -25,10 +23,13 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the "Filler Text" below is all on the same line.</p>';
+		var test = '<div><p>Test passes if "Filler Text1" and "Filler Text3" are on the first line and "Filler Text2" is on the second line and the space has been reserved where "Filler Text2" would have been if it were on the first line.</p>';
 		test += '<div>';
-		test += 'Filler Text';
-		test += '<div style="display:inline-block; height:50px; width:150px;">Filler Text Filler Text</div>';
+		test += '<span>';
+		test += 'Filler Text1';
+		test += '<span style="position:relative; top:25px; left:0;"> Filler Text2 </span>';
+		test += 'Filler Text3';
+		test += '</span>';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;

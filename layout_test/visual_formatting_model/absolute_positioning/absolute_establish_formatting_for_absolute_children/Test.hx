@@ -23,7 +23,7 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if there is a box in the upper-left corner of the page.</p>';
+		var test = '<div><p>Test passes if the blue box is directly below the orange box.</p>';
 		test += '<div style="position:relative; width:2in; height:2in;">';
 		test += '<div style="background-color:orange; left:1in; position:absolute; height:1in; width:1in;">';
 		test += '<div style="background-color:blue; height:1in; width:1in; top:1in; position:relative;"></div>';

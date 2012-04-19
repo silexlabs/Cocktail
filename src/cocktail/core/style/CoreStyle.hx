@@ -746,7 +746,7 @@ class CoreStyle
 	private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
 		//insert in the flow
-		if (isPositioned() == false)
+		if (isPositioned() == false || isRelativePositioned() == true)
 		{
 			formattingContext.insertElement(_elementRenderer);
 		}
@@ -759,14 +759,6 @@ class CoreStyle
 			//if its position style were 'static')
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
 			
-			//a relative HTMLElement is both inserted in the flow
-			//and positioned
-			//
-			if (isRelativePositioned() == true)
-			{
-				formattingContext.insertElement(_elementRenderer);
-			}
-			
 			//insert as a positioned HTMLElement.
 			//an absolutely positioned HTMLElement is not positioned right away, it must
 			//wait for its first positioned ancestor to be laid out. The reason is that
@@ -774,9 +766,6 @@ class CoreStyle
 			//ancestor is not yet determined and so this HTMLElement can't be positioned
 			//using the bottom or right style yet. Once the first ancestor is laid out, it
 			//calls the positionElement method on all the stored positioned children
-			//
-			//relative positioned HTMLElement are also stored in that array
-			//
 			var positionedHTMLElementData:PositionedHTMLElementData = {
 				staticPosition:staticPosition,
 				coreStyle:this

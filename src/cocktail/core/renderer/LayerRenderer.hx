@@ -59,10 +59,9 @@ class LayerRenderer
 	public function render():Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-	
-		
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.coreStyle.isInlineLevel() == false
-		|| _rootRenderer.coreStyle.display == inlineBlock)
+
+		//TODO : can't remembed why i added the inlineBlock condition
+		if (_rootRenderer.canHaveChildren() == true || _rootRenderer.coreStyle.display == inlineBlock)
 		{
 			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
 			
@@ -110,6 +109,41 @@ class LayerRenderer
 				{
 					rootRendererBackground[i].x -= _rootRenderer.bounds.x;
 					rootRendererBackground[i].y -= _rootRenderer.bounds.y; 
+				}
+			}
+			//TODO : now relative positioning is only applied as render time offset instead of being computed
+			//beforehand
+			else if (_rootRenderer.coreStyle.isRelativePositioned() == true)
+			{
+				for (i in 0...nativeElements.length)
+				{
+					//for horizonal offset, if both left and right are not auto,
+					//left takes precedance so we try to apply left offset first
+					if (_rootRenderer.coreStyle.left != PositionOffset.cssAuto)
+					{
+						nativeElements[i].x += _rootRenderer.coreStyle.computedStyle.left;
+					}
+					//if no left offset is defined, then try to apply a right offset.
+					//Right offset takes the containing HTMLElement width minus the
+					//width of the positioned children as value for a 0 right offset
+					else if (_rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+					{
+						nativeElements[i].x -= _rootRenderer.coreStyle.computedStyle.right;
+					}
+					
+					//for vertical offset, the same rule as horizontal offsets apply
+					if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto)
+					{
+						
+						nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.top; 
+					}
+					else if (_rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+					{
+						nativeElements[i].y -= _rootRenderer.coreStyle.computedStyle.bottom; 
+					}
+					
+					
+					
 				}
 			}
 			
@@ -370,12 +404,8 @@ class LayerRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
-			
-			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
-			
-
-			
+		
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
 				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
