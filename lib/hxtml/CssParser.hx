@@ -215,6 +215,14 @@ class CssParser<DisplayObjectType> {
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) { s.setPaddingBottom(d, i.value, i.unit); return true; }
 		case "width":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setWidthZero(d);
+				return true;
+			}
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) {
 				s.setWidth(d, i.value, i.unit);

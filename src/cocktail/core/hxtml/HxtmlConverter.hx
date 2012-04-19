@@ -169,8 +169,16 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 
 		cast(element, HTMLElement).style.width = value+unit; 
 	}
+	public function setWidthZero(element:Node):Void {
+
+		cast(element, HTMLElement).style.width = "0"; 
+	}
 	public function setHeight (element:Node, value:Float, unit:String):Void {
 		cast(element, HTMLElement).style.height = value+unit; 
+	}
+	public function setHeightZero(element:Node):Void {
+
+		cast(element, HTMLElement).style.height = "0"; 
 	}
 /*	public function setMinWidth (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.minWidth = value+unit; 

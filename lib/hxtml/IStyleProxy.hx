@@ -36,7 +36,9 @@ interface IStyleProxy<DisplayObjectType>
 	public function setBorderBottomColor (element:DisplayObjectType, value:String):Void;
 */
 	public function setWidth (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setWidthZero (element:DisplayObjectType):Void;
 	public function setHeight (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setHeightZero (element:DisplayObjectType):Void;
 /*	public function setMinWidth (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMinHeight (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setMaxWidth (element:DisplayObjectType, value:Int, unit:String):Void;

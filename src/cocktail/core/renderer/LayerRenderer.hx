@@ -145,7 +145,7 @@ class LayerRenderer
 			}
 			
 			//apply margin of the root absolute container to every children
-			if (_rootRenderer.coreStyle.isPositioned() == true)
+			if (_rootRenderer.coreStyle.isPositioned() == true && _rootRenderer.coreStyle.isRelativePositioned() == false)
 			{
 				for (i in 0...nativeElements.length)
 				{
