@@ -13,7 +13,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-
+/**
+ * TODO : fail because background color is in front
+ * of text
+ */
 class Test 
 {
 	public static function main()

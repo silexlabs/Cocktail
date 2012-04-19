@@ -13,9 +13,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail all word are on top of each other
- */
+
 class Test 
 {
 	public static function main()
@@ -25,10 +23,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the "Filler Text" below is all on the same line.</p>';
-		test += '<div style="display:inline;">Filler Text</div>';
-		test += '<div style="display:inline;">Filler Text</div>';
-		test += '</div>';
+		var test = '<div><p>Test passes if there is no red visible on the page.</p>';
+		test += '<div style="display:inline-block; background-color:red; width:100px; height:100px;">';
+		test += '<div style="background-color:green; height:100%; width:100%; position:relative;"></div>';
+		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
 	}
