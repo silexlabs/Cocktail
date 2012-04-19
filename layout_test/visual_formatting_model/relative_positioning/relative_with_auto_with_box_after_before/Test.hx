@@ -26,11 +26,12 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p style="margin-top:1in;">Test passes if there is a box in the upper-left corner of the page.</p>';
-		test += '<div style="position:relative;">';
-		test += '<div style="top:3in; left:3in; height:1in; width:1in; position:absolute; ">';
-		test += '<div style="background-color:black; height:1in; width:1in; top:0; left:0; position:fixed;"></div>';
-		test += '</div></div></div>';
+		var test = '<div><p>Test passes if the "Filler Text" below is all on the same line.</p>';
+		test += '<div style="width:5in">';
+		test += 'Filler Text ';
+		test += '<span style="position:relative">Filler Text</span>';
+		test += ' Filler Text ';
+		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
 	}
