@@ -32,7 +32,6 @@ import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.positioner.AbsolutePositioner;
 import cocktail.core.style.positioner.BoxPositioner;
 import cocktail.core.style.positioner.FixedPositioner;
-import cocktail.core.style.positioner.RelativePositioner;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -695,12 +694,7 @@ class CoreStyle
 		var positioner:BoxPositioner;
 		
 		switch (this._htmlElement.coreStyle.computedStyle.position)
-		{
-			//positioned 'relative' HTMLElement
-			case relative:
-				positioner = new RelativePositioner();
-				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
-			
+		{	
 			//positioned 'fixed' HTMLElement, use the viewport
 			case fixed:
 				positioner = new FixedPositioner();
@@ -745,12 +739,13 @@ class CoreStyle
 	 */
 	private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
-		//insert in the flow
+		//insert in the flow, relative positioned element are also inserted in the flow, as
+		//their are first laid out in normal then their offset is applied at render time
 		if (isPositioned() == false || isRelativePositioned() == true)
 		{
 			formattingContext.insertElement(_elementRenderer);
 		}
-		//else the HTMLElement is positioned
+		//else the HTMLElement is absolutely positioned
 		else
 		{
 			//TODO : retrieving static position might not be alway necessary, let formatting context decide ?

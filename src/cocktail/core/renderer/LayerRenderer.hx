@@ -112,7 +112,8 @@ class LayerRenderer
 				}
 			}
 			//TODO : now relative positioning is only applied as render time offset instead of being computed
-			//beforehand
+			//beforehand.
+			//Test here if layer is fixed too ? In which case native elements are set to x, y of window
 			else if (_rootRenderer.coreStyle.isRelativePositioned() == true)
 			{
 				for (i in 0...nativeElements.length)

@@ -23,7 +23,6 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.positioner.AbsolutePositioner;
 import cocktail.core.style.positioner.BoxPositioner;
 import cocktail.core.style.positioner.FixedPositioner;
-import cocktail.core.style.positioner.RelativePositioner;
 import cocktail.core.style.StyleData;
 import cocktail.core.dom.DOMData;
 import cocktail.core.dom.DOMData;
