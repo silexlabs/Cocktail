@@ -177,7 +177,7 @@ class ContainerCoreStyle extends CoreStyle
 				childrenFormattingContext.format();
 			}
 			
-			this._computedStyle.height = applyContentHeightIfNeeded(containingHTMLElementData,childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
+			this._computedStyle.height = applyContentHeightIfNeeded(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
 		}
 		
 		//if this ContainerHTMLElement is positioned, it means that it is the first positioned ancestor
@@ -400,10 +400,16 @@ class ContainerCoreStyle extends CoreStyle
 	 * @param	containingHTMLElementData
 	 * @param	childrenHeight the total height of the children once laid out
 	 */
-	private function applyContentHeightIfNeeded(containingHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
+	private function applyContentHeightIfNeeded(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData, childrenHeight:Int):Int
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.applyContentHeight(this, containingHTMLElementData, childrenHeight);
+		
+		//get the right containing dimensions. For example,
+		//for a HTMLElement with a 'position' style of 'absolute',
+		//it is the last positioned HTMLElement
+		var containingBlockDimensions:ContainingHTMLElementData = getContainingHTMLElementData(containingHTMLElementData, viewportData, lastPositionedHTMLElementData );
+		
+		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

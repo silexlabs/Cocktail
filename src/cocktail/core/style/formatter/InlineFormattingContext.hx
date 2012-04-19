@@ -183,8 +183,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertText(element:ElementRenderer):Void
 	{
-		
-		trace(element.bounds);
+
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;	
 		

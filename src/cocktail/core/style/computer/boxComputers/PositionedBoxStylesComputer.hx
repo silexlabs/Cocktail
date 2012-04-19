@@ -326,7 +326,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingHTMLElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.top = containingHTMLElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
 		}
-		
+
 		//if top or bottom are auto, then the height will be computed once the layout
 		//of the HTMLElement children is done
 	}
