@@ -38,17 +38,15 @@ class BlockFormattingContext extends FormattingContext
 	//TODO : should not be 2 methods
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>, staticPositionedElement:ElementRenderer = null):Void
 	{
-		doFormat2(_formattingContextRoot, 0, staticPositionedElement);
+		doFormat2(_formattingContextRoot, 0, 0, staticPositionedElement);
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, staticPositionedElement:ElementRenderer):Void
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer):Void
 	{
-		
-		var currentAddedSiblingsHeight:Int = 0;
-		
-		//_formattingContextData.x += elementRenderer.style.computedStyle.marginLeft + elementRenderer.style.computedStyle.paddingLeft;
 		concatenatedX += elementRenderer.coreStyle.computedStyle.marginLeft +  elementRenderer.coreStyle.computedStyle.paddingLeft;
-		
+		//TODO : should try to collapse top margin here
+		concatenatedY += elementRenderer.coreStyle.computedStyle.marginTop +  elementRenderer.coreStyle.computedStyle.paddingTop;
+
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
@@ -59,6 +57,8 @@ class BlockFormattingContext extends FormattingContext
 			//this particular children
 			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
 			{
+				
+				//TODO : margin collapsing is messy
 				var marginTop:Int = child.coreStyle.computedStyle.marginTop;
 				
 				if (i == 0)
@@ -74,26 +74,23 @@ class BlockFormattingContext extends FormattingContext
 					
 				}
 				
+				var marginBottom:Int = getCollapsedMarginBottom(child);
+				/////////////////////////////TODO : margin collapsing is messy
+				
 				if (child.hasChildNodes() == true)
 				{
 					if (child.establishesNewFormattingContext() == false)
 					{
-						doFormat2(child, concatenatedX, staticPositionedElement);
-						//concatenatedX -= child.coreStyle.computedStyle.marginLeft +  child.coreStyle.computedStyle.paddingLeft;
+						doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement);
 					}
 				}
-			
-				
-				var marginBottom:Int = getCollapsedMarginBottom(child);
-			
-				
 				
 				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
-				var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
+				var y:Float = concatenatedY + child.coreStyle.computedStyle.marginTop;
 				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-				
+			
 
 				child.bounds = {
 					x:x, 
@@ -102,8 +99,7 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
-				_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
-				currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
+				concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 				
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width > _formattingContextData.maxWidth)
@@ -116,7 +112,6 @@ class BlockFormattingContext extends FormattingContext
 			
 		}
 		
-		_formattingContextData.y -= currentAddedSiblingsHeight;
 	}
 	
 	private function getCollapsedMarginBottom(child:ElementRenderer):Int
