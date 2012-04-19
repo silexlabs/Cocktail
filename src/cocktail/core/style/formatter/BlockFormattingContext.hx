@@ -101,6 +101,13 @@ class BlockFormattingContext extends FormattingContext
 				
 				_formattingContextData.y += Math.round(child.bounds.height) + marginTop + marginBottom;
 				currentAddedSiblingsHeight += Math.round(child.bounds.height) + marginTop + marginBottom;
+				
+				//find widest line for shrink-to-fit algorithm
+				if (child.bounds.x + child.bounds.width > _formattingContextData.maxWidth)
+				{
+					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width);
+				}
+				
 			}
 			
 			
