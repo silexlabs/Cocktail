@@ -135,16 +135,30 @@ class LayerRenderer
 					//for vertical offset, the same rule as horizontal offsets apply
 					if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto)
 					{
-						
 						nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.top; 
 					}
 					else if (_rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 					{
 						nativeElements[i].y -= _rootRenderer.coreStyle.computedStyle.bottom; 
 					}
+				}
+			}
+			
+			//apply margin of the root absolute container to every children
+			if (_rootRenderer.coreStyle.isPositioned() == true)
+			{
+				for (i in 0...nativeElements.length)
+				{
+					if (_rootRenderer.coreStyle.left != PositionOffset.cssAuto || _rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+					{
+						nativeElements[i].x += _rootRenderer.coreStyle.computedStyle.marginLeft;
+					}
 					
-					
-					
+					//for vertical offset, the same rule as horizontal offsets apply
+					if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto || _rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+					{
+						nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.marginTop;
+					}
 				}
 			}
 			

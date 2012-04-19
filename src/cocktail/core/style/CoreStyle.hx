@@ -752,7 +752,9 @@ class CoreStyle
 			
 			//retrieve the static position (the position of the HTMLElement
 			//if its position style were 'static')
+			//TODO : caliing this should only return static position but not modify bounds of elementRenderer
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
+			
 			
 			//insert as a positioned HTMLElement.
 			//an absolutely positioned HTMLElement is not positioned right away, it must
