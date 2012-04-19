@@ -86,12 +86,15 @@ class BlockFormattingContext extends FormattingContext
 				
 				var marginBottom:Int = getCollapsedMarginBottom(child);
 			
+				
+				
 				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
 				var y:Float = _formattingContextData.y + marginTop + elementRenderer.coreStyle.computedStyle.paddingTop ;
 				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 				
+
 				child.bounds = {
 					x:x, 
 					y:y,

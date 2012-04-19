@@ -95,7 +95,6 @@ class BoxPositioner
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (htmlElement.coreStyle.top != PositionOffset.cssAuto)
 		{
-			
 			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
 		}
 		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)

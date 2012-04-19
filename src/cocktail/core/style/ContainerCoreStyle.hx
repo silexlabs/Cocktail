@@ -273,7 +273,7 @@ class ContainerCoreStyle extends CoreStyle
 		for (i in 0...childLastPositionedHTMLElementData.children.length)
 		{
 			var positionedHTMLElementData:PositionedHTMLElementData = childLastPositionedHTMLElementData.children[i];
-			
+
 			//position the HTMLElement's ElementRenderer which set its x and y bounds in the space of this ContainerHTMLElement's
 			//formatting context
 			positionedHTMLElementData.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
