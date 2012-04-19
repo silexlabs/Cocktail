@@ -41,11 +41,14 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if the blue box is directly below the orange box.</p>";
-	test += "<div style=\"position:relative; width:2in; height:2in;\">";
-	test += "<div style=\"background-color:orange; left:1in; position:absolute; height:1in; width:1in;\">";
-	test += "<div style=\"background-color:blue; height:1in; width:1in; top:1in; position:relative;\"></div>";
-	test += "</div></div></div>";
+	var test = "<div><p>Test passes if \"Filler Text1\" and \"Filler Text3\" are on the first line and \"Filler Text2\" is on the second line and the space has been reserved where \"Filler Text2\" would have been if it were on the first line.</p>";
+	test += "<div>";
+	test += "<span>";
+	test += "Filler Text1";
+	test += "<span style=\"position:relative; top:25px; left:0;\"> Filler Text2 </span>";
+	test += "Filler Text3";
+	test += "</span>";
+	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
 }
 Test.__name__ = ["Test"];

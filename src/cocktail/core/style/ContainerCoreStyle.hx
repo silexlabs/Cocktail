@@ -277,11 +277,11 @@ class ContainerCoreStyle extends CoreStyle
 			//formatting context
 			positionedHTMLElementData.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
 			
-			//This container might establish a new formatting context, for instance if is absolute,
+			//This container might establish a new formatting context, for instance if it is absolute,
 			//in this case, the positioned children, whose bounds are defined relative to their nearest block
 			//box container, use the container as origin.
 			//Else, if this container does not establish a new formatting context, for instance if it is relative,
-			//it's bounds relative to its own first ancestor block box are added to it's positioned children, so that
+			//it's bounds which are relative to its own first ancestor block box are added to it's positioned children, so that
 			//their bounds are also defined in this ancestor block box space.
 			//It isn't applied if the positioned children use their static position as their bounds are already relative to their
 			//first ancestor block box
@@ -291,14 +291,12 @@ class ContainerCoreStyle extends CoreStyle
 				var childStyle:CoreStyle = positionedHTMLElementData.coreStyle;
 				if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
 				{
-						positionedHTMLElementData.coreStyle.elementRenderer.bounds.y += _elementRenderer.bounds.y;
+					positionedHTMLElementData.coreStyle.elementRenderer.bounds.y += _elementRenderer.bounds.y;
 				}
 				if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
 				{
 					positionedHTMLElementData.coreStyle.elementRenderer.bounds.x += _elementRenderer.bounds.x;
 				}
-				
-			
 			}
 		}
 	}
