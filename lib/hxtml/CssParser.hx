@@ -618,7 +618,7 @@ class CssParser<DisplayObjectType> {
 	//for lengths
 	function isNullInt(v):Bool{
 		return switch(v) {
-			case VInt(v): return v == 0;
+			case VInt(v): v == 0;
 			default: false;
 		};
 	}
