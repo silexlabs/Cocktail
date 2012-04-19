@@ -118,15 +118,13 @@ class Text extends CharacterData
 	{
 		var textFragments:Array<TextFragmentData> = new Array<TextFragmentData>();
 
-		
-		var textFragment:String = "";
+		var textFragment:String = null;
 		
 		var i:Int = 0;
 		
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
-			
 			if (text.charAt(i) == "\\")
 			{
 				if (i <text.length - 1)
@@ -197,7 +195,7 @@ class Text extends CharacterData
 		{
 			textFragments.push(insertTextToken(word(textFragment)));
 		}
-	
+
 		return textFragments;
 	}
 	
