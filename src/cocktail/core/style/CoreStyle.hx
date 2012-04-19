@@ -755,7 +755,6 @@ class CoreStyle
 			//TODO : caliing this should only return static position but not modify bounds of elementRenderer
 			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
 			
-			
 			//insert as a positioned HTMLElement.
 			//an absolutely positioned HTMLElement is not positioned right away, it must
 			//wait for its first positioned ancestor to be laid out. The reason is that

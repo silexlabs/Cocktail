@@ -103,8 +103,10 @@ class FormattingContext
 	private function initFormattingContextData():Void
 	{
 		_formattingContextData = {
-			x : 0,
-			y : 0,
+			//TODO : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
+			//use instead local var in recursive method, like for block formatting context
+			x : _formattingContextRoot.coreStyle.computedStyle.paddingLeft,
+			y : _formattingContextRoot.coreStyle.computedStyle.paddingTop,
 			maxHeight : 0,
 			maxWidth:0
 		};
