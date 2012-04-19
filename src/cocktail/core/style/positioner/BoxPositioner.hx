@@ -34,6 +34,13 @@ import haxe.Log;
  * This base class implements the behaviour of the 'absolute' 
  * position value
  * 
+ * 
+ * TODO : doc is obsolete now that relative positioning is render time offset.
+ * Shouldn't need 3 classes, method should go into ContainerCoreStyle.positionAbsolutely...
+ * It is useless to position fixed element before rendering time unless they use their
+ * static position. Maybe inheriting FixedPositioner should only do something for static
+ * fixed elements.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class BoxPositioner 

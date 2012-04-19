@@ -261,6 +261,8 @@ class ContainerCoreStyle extends CoreStyle
 	 * as its origin. This method is called once all the dimensions of ContainerHTMLElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
+	 * 
+	 * TODO : update doc 
 	 */
 	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
