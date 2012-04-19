@@ -1,7 +1,0 @@
-cpp
-desktop
-haxe_208
-nme
-nme_install_tool
-true
-C:\Motion-Twin\haxe\lib\hxcpp/2,08,3/

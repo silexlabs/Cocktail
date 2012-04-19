@@ -2,5 +2,6 @@
 -cp ../../lib/
 -main org.text.demo.Text
 -swf text.swf
+-swf-header 200:300:100:FFFFFF
 -swf-version 10.2
 --remap js:cocktail
