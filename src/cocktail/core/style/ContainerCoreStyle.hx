@@ -593,11 +593,13 @@ class ContainerCoreStyle extends CoreStyle
 		var height:Int;
 		
 		//if the ContainerHTMLElement
-		//is inline level, then its line height will
+		//is inline level and doesn't start a formatting context
+		//(for instance, it is not absolutely positioned or not an inline-block) 
+		//, then its line height will
 		//be used to lay out its children in lines
-		if (isInlineLevel() == true)
+		if (isInlineLevel() == true && establishesNewFormattingContext() == false)
 		{
-			height = Math.round(this._computedStyle.lineHeight);
+			height = Math.round(this._computedStyle.height);
 		}
 		//else it either establishes a block formatting context or participate
 		//in one and its height is used
