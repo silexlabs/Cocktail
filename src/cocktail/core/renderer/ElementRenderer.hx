@@ -142,21 +142,6 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function isSpace():Bool
-	{
-		return false;
-	}
-	
-	public function isLineFeed():Bool
-	{
-		return false;
-	}
-	
-	public function isTab():Bool
-	{
-		return false;
-	}
-	
 	public function isInitialContainer():Bool
 	{
 		return false;

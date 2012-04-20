@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.dom.Text;
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
 import cocktail.core.html.HTMLElement;
@@ -26,7 +27,6 @@ import cocktail.core.style.positioner.FixedPositioner;
 import cocktail.core.style.StyleData;
 import cocktail.core.dom.DOMData;
 import cocktail.core.dom.DOMData;
-import cocktail.core.Text;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.FlowBoxRenderer;
@@ -214,19 +214,13 @@ class ContainerCoreStyle extends CoreStyle
 				//if it is a ContainerHTMLElement
 				childHTMLElement.coreStyle.flow(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext, cast(_elementRenderer));
 			}
-			//else if it is a TextElement, call a method that will create as many TextFragmentHTMLElement
-			//as necessary to render the TextElement and insert them into the document
+			//else if it is a TextElement, call a method that will create a TextRenderer
+			//to render the text content of the text node
 			else 
 			{
 				var childrenText:Text = cast(_htmlElement.childNodes[i]);
-				var insertedText:Array<TextRenderer> = insertTextElement(childrenText, childrenFormattingContext, childrenContainingHTMLElementData);
-				
-				//add the created TextRenderer to the ContainerHTMLElement
-				//ElementRenderer
-				for (j in 0...insertedText.length)
-				{
-					flowBoxRenderer.appendChild(insertedText[j]);
-				}
+				var insertedText:TextRenderer = getTextRenderer(childrenText);
+				flowBoxRenderer.appendChild(insertedText);
 			}
 		}
 		
@@ -303,61 +297,6 @@ class ContainerCoreStyle extends CoreStyle
 	}
 	
 	/**
-	 * Insert a TextElement (a string of text without formatting) by creating as many TextFragmentHTMLElement as needed from it
-	 * and inserting them into the flow
-	 * @param	textElement the string of text used as content for the created text lines
-	 */
-	private function insertTextElement(textElement:Text, formattingContext:FormattingContext, containingHTMLElementData:ContainingHTMLElementData):Array<TextRenderer>
-	{
-		var rendereredText:Array<TextRenderer> = new Array<TextRenderer>();
-		
-		//get the text to display from the TextElement
-		var text:String = textElement.nodeValue;
-		
-		//split the text into an array of text token
-		var textFragments:Array<TextFragmentData> = textElement.getTextFragments(text);
-		
-		//loop through the text tokens
-		for (i in 0...textFragments.length)
-		{
-			var textRenderer:TextRenderer = createTextRendererFromTextFragment(textFragments[i]);
-			formattingContext.insertElement(textRenderer);
-			rendereredText.push(textRenderer);
-		}	
-		
-		return rendereredText;
-	}
-	
-	/**
-	 * Create and return a TextRenderer from a TextFragmentData
-	 */
-	private function createTextRendererFromTextFragment(textFragment:TextFragmentData):TextRenderer
-	{
-		//the text of the created TextRenderer
-		var text:String;
-		
-		switch(textFragment.textToken)
-		{
-			case word(value):
-				text = value;
-		
-			case space:
-				text = " ";
-				
-			//TODO : implement tab and line feed	
-			case tab:
-				text = "";
-				
-			case lineFeed:
-				text = "";
-		}
-		
-		var textRenderer:TextRenderer = getTextRenderer(textFragment, text);
-		
-		return textRenderer;
-	}
-	
-	/**
 	 * In certain cases, when the width of the ContainerHTMLElement is 'auto',
 	 * its computed value is 'shrink-to-fit' meaning that it will take either
 	 * the width of the widest line formed by its children or the width of its
@@ -412,6 +351,40 @@ class ContainerCoreStyle extends CoreStyle
 		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
 	}
 	
+		//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE TEXT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Take a TextFragmentData and a text, and create
+	 * a TextRenderer from it if it doesn't already
+	 * exists. If it does, return it
+	 */
+	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
+	{
+		var fontManager:FontManager = new FontManager();
+		var nativeTextElement:NativeElement = fontManager.createNativeTextElement(text, _computedStyle);
+		
+		var textRenderer:TextRenderer = new TextRenderer(this, nativeTextElement, textFragmentData.textToken);
+	
+		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+		textFragmentData.textRenderer = textRenderer;
+			
+		//TODO : reusing a textRenderer creates an infinite loop
+		/**if (textFragmentData.textRenderer == null)
+		{
+			textRenderer = createTextRenderer(text, textFragmentData.textToken);
+			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+			textFragmentData.textRenderer = textRenderer;
+		}
+		else
+		{
+			textRenderer = textFragmentData.textRenderer;
+		}*/
+		
+		return textRenderer;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE COMPUTING METHODS
 	// compute styles definition into usable values
@@ -459,41 +432,7 @@ class ContainerCoreStyle extends CoreStyle
 		
 		return boxComputer;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE TEXT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Take a TextFragmentData and a text, and create
-	 * a TextRenderer from it if it doesn't already
-	 * exists. If it does, return it
-	 */
-	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
-	{
-		var fontManager:FontManager = new FontManager();
-		var nativeTextElement:NativeElement = fontManager.createNativeTextElement(text, _computedStyle);
-		
-		var textRenderer:TextRenderer = new TextRenderer(this, nativeTextElement, textFragmentData.textToken);
-	
-		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-		textFragmentData.textRenderer = textRenderer;
-			
-		//TODO : reusing a textRenderer creates an infinite loop
-		/**if (textFragmentData.textRenderer == null)
-		{
-			textRenderer = createTextRenderer(text, textFragmentData.textToken);
-			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-			textFragmentData.textRenderer = textRenderer;
-		}
-		else
-		{
-			textRenderer = textFragmentData.textRenderer;
-		}*/
-		
-		return textRenderer;
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
