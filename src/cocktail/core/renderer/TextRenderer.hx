@@ -31,6 +31,9 @@ class TextRenderer extends ElementRenderer
 	 */
 	private var _textFragments:Array<TextFragmentData>;
 	
+	
+	private var _text:Text;
+	
 	/**
 	 * Class constructor.
 	 */
@@ -38,10 +41,27 @@ class TextRenderer extends ElementRenderer
 	{
 		super(style);
 		
+		_text = text;
+		
+		init();
+		
+		
+		
 		#if (flash9 || nme)
 		//_bounds.width = getOffsetWidth();
 		//_bounds.height = getOffsetHeight();
 		#end
+	}
+	
+	private function init():Void
+	{
+		_textFragments = doGetTextFragments(_text.nodeValue);
+		
+		for (i in 0..._textFragments.length)
+		{
+			
+		}
+		
 	}
 	
 	/////////////////////////////////
@@ -69,39 +89,6 @@ class TextRenderer extends ElementRenderer
 		return ret;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Remove a reference to every generated
-	 * TextRenderer. Used when the content
-	 * of the TextElement changes or when the style
-	 * of its ContainerHTMLElement changes
-	 */
-	public function reset():Void
-	{
-		for (i in 0..._textFragments.length)
-		{
-			_textFragments[i].textRenderer = null;
-		}
-	}
-	
-	/**
-	 * Takes a string of plain text and create an array of text
-	 * token from it
-	 */
-	public function getTextFragments(text:String):Array<TextFragmentData>
-	{
-		//create only the first time or each time
-		//the text content is changed
-		if (_textFragments.length == 0)
-		{	
-			_textFragments = doGetTextFragments(text);
-		}
-		
-		return _textFragments;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
@@ -217,7 +204,7 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Create and return a TextRenderer from a TextFragmentData
 	 */
-	private function createTextRendererFromTextFragment(textFragment:TextFragmentData):TextRenderer
+	private function createTextLineBoxFromTextFragment(textFragment:TextFragmentData):TextLineBox
 	{
 		//the text of the created TextRenderer
 		var text:String;
@@ -238,9 +225,9 @@ class TextRenderer extends ElementRenderer
 				text = "";
 		}
 		
-		var textRenderer:TextRenderer = getTextRenderer(textFragment, text);
+		var textLineBox:TextLineBox = new TextLineBox(this, text);
 		
-		return textRenderer;
+		return textLineBox;
 	}
 	
 	#if flash9
@@ -251,7 +238,7 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function getOffsetWidth():Int
 	{
-		
+		/**
 		//in this case the text fragment is a space, as the flash
 		//text engine doesn't account for the width of space
 		if (untyped _nativeElement.textWidth == 0)
@@ -265,7 +252,10 @@ class TextRenderer extends ElementRenderer
 		else
 		{
 			return untyped _nativeElement.textWidth ;
-		}				
+		}		
+		*/
+		
+		return 0;
 	}
 	
 	#elseif nme

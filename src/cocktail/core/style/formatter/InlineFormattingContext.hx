@@ -97,8 +97,6 @@ class InlineFormattingContext extends FormattingContext
 		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxes = new Array<LineBox>();
 		
-		_formattingContextRoot.removeLineBoxes();
-		
 		_currentInlineBoxesData = new Array<InlineBoxData>();
 	
 		
@@ -165,19 +163,9 @@ class InlineFormattingContext extends FormattingContext
 			//or an element displayed as an inline-block
 			else
 			{
-				//create all the line boxes of the element
-				var childLineBoxes:Array<LineBox> = new Array<LineBox>();
-				if (child.isText() == true)
-				{
-					//here, an array of text line box is created
-					childLineBoxes = createTextLineBoxes(child);
-				}
-				else
-				{
-					//here one line box is created for the embedded asset, or for the
-					//inline-block block container
-					childLineBoxes = createEmbeddedAssetLineBox(child);
-				}
+				//get all the line boxes of the element
+				var childLineBoxes:Array<LineBox> = child.lineBoxes;
+		
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
@@ -193,20 +181,6 @@ class InlineFormattingContext extends FormattingContext
 	private function createContainerLineBox(child:ElementRenderer):LineBox
 	{
 		return new LineBox(child);
-	}
-	
-	private function createTextLineBoxes(child:ElementRenderer):Array<LineBox>
-	{
-		var textLineBox:TextLineBox = new TextLineBox(child);
-		var lineBoxes:Array<LineBox> = new Array<LineBox>();
-		lineBoxes.push(textLineBox);
-		return lineBoxes;
-	}
-	
-		
-	private function createEmbeddedAssetLineBox(child:ElementRenderer):Array<LineBox>
-	{
-		return [new LineBox(child)];
 	}
 	
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
@@ -701,7 +675,6 @@ class InlineFormattingContext extends FormattingContext
 			
 			var lineBoxElements:Array<ElementRenderer> = new Array<ElementRenderer>();
 			
-			_formattingContextRoot.addLineBox(lineBoxElements);
 			
 			for (i in 0..._elementsInLineBox.length)
 			{

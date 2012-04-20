@@ -59,6 +59,9 @@ class ElementRenderer extends Node
 	private var _layerRenderer:LayerRenderer;
 	public var layerRenderer(getLayerRenderer, setLayerRenderer):LayerRenderer;
 	
+	private var _lineBoxes:Array<LineBox>;
+	public var lineBoxes(getLineBoxes, never):Array<LineBox>;
+	
 	/**
 	 * class constructor. init class attribute
 	 * @param	htmlElement the Style which created
@@ -155,6 +158,11 @@ class ElementRenderer extends Node
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function getLineBoxes():Array<LineBox>
+	{
+		return _lineBoxes;
+	}
 	
 	private function setLayerRenderer(value:LayerRenderer):LayerRenderer
 	{
