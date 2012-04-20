@@ -7,6 +7,9 @@ import haxe.Log;
  * TODO : disambiguate InlineBoxRenderer and InlineBox generated
  * by the InlineFormatting context
  * 
+ * InlineBox should be its type, with sub class for container, text fragment and
+ * embedded asset
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InlineBoxRenderer extends FlowBoxRenderer
