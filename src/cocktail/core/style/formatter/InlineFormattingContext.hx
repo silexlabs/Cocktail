@@ -117,7 +117,7 @@ class InlineFormattingContext extends FormattingContext
 		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
 		
 		//format the last line
-		formatLine(rootLineBoxes[rootLineBoxes.length - 1]);
+		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
@@ -176,8 +176,9 @@ class InlineFormattingContext extends FormattingContext
 		return lineBox;
 	}
 	
-	//TODO  : should instead be a method like elementRenderer.lineBoxes returning an array
-	//of line box
+	//TODO  : attach the created line box to its container ? this way,inline element
+	//have array of line box and block box has the tree ? For rendering, LayerRenderer use
+	//line box tree or rendering tree ?
 	private function createContainerLineBox(child:ElementRenderer):LineBox
 	{
 		return new LineBox(child);
@@ -188,6 +189,9 @@ class InlineFormattingContext extends FormattingContext
 		//loop in all the line boxes which must be added to the current line
 		for ( i in 0...lineBoxes.length)
 		{
+			//TODO : here, added width of all element should be computed and also 
+			//nb of spaces for horizontal align
+			
 			
 			//store the line box in the unbreakable line box array, which is
 			//a buffer preventing break between elements which are not supposed to
@@ -212,7 +216,7 @@ class InlineFormattingContext extends FormattingContext
 				//format the current line which is currently the last in the line array
 				//, now that all the line box in it are known
 				//each of the line box will be placed in x and y on this line
-				formatLine(rootLineBoxes[rootLineBoxes.length -1]);
+				formatLine(rootLineBoxes[rootLineBoxes.length -1], false);
 				
 				//create a new root for the next line, and add it to the line array
 				var rootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -254,9 +258,12 @@ class InlineFormattingContext extends FormattingContext
 		return lineBox;
 	}
 	
-	private function formatLine(rootLineBox:RootLineBox):Void
+	private function formatLine(rootLineBox:RootLineBox, isLastLine:Bool):Void
 	{
-		doFormatLine(rootLineBox);
+		//TODO : compute concatenated length and space numbers
+		alignLineBox2(rootLineBox, isLastLine, 100, 5);
+		
+		//doFormatLine(rootLineBox);
 	}
 	
 	private function doFormatLine(lineBox:LineBox):Void
@@ -269,6 +276,9 @@ class InlineFormattingContext extends FormattingContext
 			{
 				doFormatLine(child);
 			}
+			
+			trace(child);
+			trace(child.bounds);
 		}
 	}
 	
@@ -280,6 +290,154 @@ class InlineFormattingContext extends FormattingContext
 	{
 		return _formattingContextRoot.coreStyle.computedStyle.width - _formattingContextData.x - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
+	}
+	
+	/**
+	 * before a new line starts or before the inline
+	 * formarring context get destroyed, align all the
+	 * HTMLElements in the current line horizontally
+	 * @param	isLastLine wheter it is the last line which is laid out
+	 * @return returns the concantenated width of all the aligned DOMElelements.
+	 * Used to determine the max line width used for shrink-to-fit algorithm
+	 */
+	private function alignLineBox2(rootLineBox:RootLineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
+	{	
+		
+		//determine the remaining space in the line once all the width of the HTMLElements
+		//are substracted from the total available line width, and the x position where to 
+		//insert the first HTMLElement of the line, which might be influenced for instance
+		//by a float
+		var remainingSpace:Int;
+		var flowX:Int;
+		
+		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
+		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
+		
+		//take the float into accounts and the padding of the containing HTMLElement
+		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+		
+		//do align the HTMLElements, the text align style of the containing HTMLElement
+		//determining the alignement to apply
+		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
+		{
+			case left:
+				alignLeft2(flowX, rootLineBox);
+				
+			case right:
+				alignRight2(flowX, remainingSpace, rootLineBox);
+				
+			case center:
+				alignCenter2(flowX, remainingSpace, rootLineBox);
+				
+			case justify:	
+				//the last line of an inline formatting context
+				//is not justified to avoid stretching too much
+				//the space between HTMLElements if there are few of them
+				if (isLastLine == true)
+				{
+					alignLeft2(flowX, rootLineBox);
+				}
+				else
+				{
+					//when justified, the concatenated width of the HTMLElements
+					//must take all the containing HTMLElement width
+					//TODO : move to the place where concatenated length will be computed
+					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
+					
+					alignJustify2(flowX, remainingSpace, rootLineBox, spaceInLine);
+				}
+		}
+	}
+	
+	/**
+	 * align the HTMLElements starting from the left edge of the containing HTMLElement
+	 * @param	flowX the x position of the first HTMLElement
+	 */
+	private function alignLeft2(flowX:Int, lineBox:LineBox):Void
+	{
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			child.bounds.x = flowX;
+			flowX += Math.round(child.bounds.width);
+			
+			if (child.hasChildNodes() == true)
+			{
+				alignLeft2(flowX, child);
+			}
+		}
+	}
+	
+
+	/**
+	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
+	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
+	 * @param	remainingSpace the available width in the line box after all HTMLElements
+	 * have been laid out
+	 */
+	private function alignCenter2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox):Void
+	{
+		for (i in 0..._elementsInLineBox.length)
+		{
+			_elementsInLineBox[i].bounds.x = Math.round(remainingSpace / 2) + flowX;
+			flowX += Math.round(_elementsInLineBox[i].bounds.width);
+		}
+	}
+	
+	/**
+	 * align the HTMLElements starting from the right edge to the left edge of the
+	 * containing HTMLElement
+	 * @param	flowX the x position of the HTMLElement to left most of the line box
+	 * @param	remainingSpace the available width in the line box after all HTMLElements
+	 * have been laid out
+	 */
+	private function alignRight2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox):Void
+	{
+		for (i in 0..._elementsInLineBox.length)
+		{
+			_elementsInLineBox[i].bounds.x = flowX + remainingSpace;
+			flowX += Math.round(_elementsInLineBox[i].bounds.width);
+		}
+	}
+	
+	/**
+	 * Justify the HTMLElements in the line box by adjusting
+	 * the width of the space characters
+	 * @param	flowX
+	 * @param	remainingSpace
+	 */
+	private function alignJustify2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox, spaceInLine:Int):Void
+	{
+		//TODO :add isSpace on TextLineBox
+		/**
+		//determine how many space there are among the 
+		//HTMLElements of the line box
+		var spacesNumber:Int = 0;
+		for (i in 0..._elementsInLineBox.length)
+		{
+			if (_elementsInLineBox[i].isSpace() == true)
+			{
+				spacesNumber++;
+			}
+		}
+		
+		//justify all HTMLElements
+		for (i in 0..._elementsInLineBox.length)
+		{	
+			if (_elementsInLineBox[i].isSpace() == true)
+			{
+					var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
+					spacesNumber--;
+					remainingSpace -= spaceWidth;
+					flowX += spaceWidth;
+			}
+			
+			_elementsInLineBox[i].bounds.x = flowX ;
+			flowX += Math.round(_elementsInLineBox[i].bounds.width);
+			
+		}
+		*/
 	}
 	
 	
