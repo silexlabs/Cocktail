@@ -419,8 +419,10 @@ class LayerRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
+			//TODO : re-implement with new line boxes
+			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
-		
+			/**
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
 				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
@@ -431,6 +433,7 @@ class LayerRenderer
 					}
 				}
 			}
+			*/
 			
 		}
 		else

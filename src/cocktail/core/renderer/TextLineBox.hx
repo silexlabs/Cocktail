@@ -8,7 +8,7 @@ package cocktail.core.renderer;
 class TextLineBox extends LineBox
 {
 
-	public function new(elementRenderer:ElementRenderer) 
+	public function new(elementRenderer:ElementRenderer, text:String) 
 	{
 		super(elementRenderer);
 	}

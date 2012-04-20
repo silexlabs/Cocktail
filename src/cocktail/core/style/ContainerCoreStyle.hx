@@ -360,28 +360,10 @@ class ContainerCoreStyle extends CoreStyle
 	 * a TextRenderer from it if it doesn't already
 	 * exists. If it does, return it
 	 */
-	private function getTextRenderer(textFragmentData:TextFragmentData, text:String):TextRenderer
-	{
-		var fontManager:FontManager = new FontManager();
-		var nativeTextElement:NativeElement = fontManager.createNativeTextElement(text, _computedStyle);
-		
-		var textRenderer:TextRenderer = new TextRenderer(this, nativeTextElement, textFragmentData.textToken);
-	
+	private function getTextRenderer(text:Text):TextRenderer
+	{	
+		var textRenderer:TextRenderer = new TextRenderer(this, text);
 		textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-		textFragmentData.textRenderer = textRenderer;
-			
-		//TODO : reusing a textRenderer creates an infinite loop
-		/**if (textFragmentData.textRenderer == null)
-		{
-			textRenderer = createTextRenderer(text, textFragmentData.textToken);
-			textRenderer.layerRenderer = _elementRenderer.layerRenderer;
-			textFragmentData.textRenderer = textRenderer;
-		}
-		else
-		{
-			textRenderer = textFragmentData.textRenderer;
-		}*/
-		
 		return textRenderer;
 	}
 	
