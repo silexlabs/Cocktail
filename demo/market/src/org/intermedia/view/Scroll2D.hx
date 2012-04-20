@@ -36,8 +36,8 @@ class Scroll2D
 	// main movement direction
 	private var _direction:Direction;
 	
-	// horizontal move callback
-	public var onHorizontalScroll:Int->Void;
+	// horizontal move callback, sending new scroll position & offset
+	public var onHorizontalScroll:Int->Int->Void;
 	
 	// vertical move callback
 	public var onVerticalScroll:Int->Void;
@@ -102,8 +102,8 @@ class Scroll2D
 	 */
 	public function onDownCallback(event:Dynamic):Void
 	{
-		// stop all tweens
 		stopTweens();
+		// stop all tweens
 		
 		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
 		/*_viewport.onResize = null;
@@ -183,7 +183,7 @@ class Scroll2D
 		else if (_direction == Direction.vertical)
 		{
 			onVerticalMoveCallback(event);
-			// if horizontal tween 
+			// if horizontal tween has been initialised, resume it. Done to avoid horizontal scroll stopping between 2 lists
 			if ( (_horizontalTween != null) )
 			{
 				_horizontalTween.resume();
@@ -293,12 +293,12 @@ class Scroll2D
 		//node.scrollLeft = Std.int(e);
 		if (onHorizontalScroll != null)
 		{
-			onHorizontalScroll(Std.int(e));
+			onHorizontalScroll(Std.int(e),_offset.x);
 		}
     }
 
 	/**
-	 * Vertical tween callback
+	 * Horizontal tween callback
 	 * 
 	 * @param	e
 	 */

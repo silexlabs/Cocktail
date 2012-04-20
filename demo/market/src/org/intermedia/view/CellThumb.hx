@@ -11,7 +11,6 @@ import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.model.ApplicationModel;
 
-import haxe.Timer;
 import feffects.Tween;
 
 

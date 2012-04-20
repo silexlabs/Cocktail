@@ -2187,7 +2187,6 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(node) {
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
 	node.style.height = Std.string(43) + "px";
-	node.style.backgroundImage = "url(assets/headerGrey.jpg)";
 }
 org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(node) {
 	node.style.position = "static";
@@ -2526,9 +2525,9 @@ org.intermedia.view.LoadingViewStyle.setThumbnailStyle = function(node) {
 org.intermedia.view.LoadingViewStyle.prototype = {
 	__class__: org.intermedia.view.LoadingViewStyle
 }
-org.intermedia.view.MenuCellText = $hxClasses["org.intermedia.view.MenuCellText"] = function(cellStyle) {
+org.intermedia.view.MenuCellText = $hxClasses["org.intermedia.view.MenuCellText"] = function() {
 	org.intermedia.view.CellBase.call(this);
-	cellStyle(this.node);
+	org.intermedia.view.MenuCellTextStyle.setCellStyle(this.node);
 };
 org.intermedia.view.MenuCellText.__name__ = ["org","intermedia","view","MenuCellText"];
 org.intermedia.view.MenuCellText.__super__ = org.intermedia.view.CellBase;
@@ -2539,8 +2538,8 @@ org.intermedia.view.MenuCellText.prototype = $extend(org.intermedia.view.CellBas
 		if(cellData.title != "" && cellData.title != null) {
 			var textElement = js.Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
-			org.intermedia.view.MenuCellTextStyle.setCellTextStyle(cellTextContainer);
 			this.node.appendChild(cellTextContainer);
+			org.intermedia.view.MenuCellTextStyle.setCellTextStyle(cellTextContainer);
 		}
 	}
 	,__class__: org.intermedia.view.MenuCellText
@@ -2549,7 +2548,7 @@ org.intermedia.view.MenuCellTextStyle = $hxClasses["org.intermedia.view.MenuCell
 org.intermedia.view.MenuCellTextStyle.__name__ = ["org","intermedia","view","MenuCellTextStyle"];
 org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	node.style.display = "inline-block";
-	node.style.position = "static";
+	node.style.position = "absolute";
 	node.style.marginLeft = "0px";
 	node.style.marginRight = "0px";
 	node.style.marginTop = "0px";
@@ -2558,26 +2557,23 @@ org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	node.style.paddingRight = "0px";
 	node.style.paddingTop = Std.string(5) + "px";
 	node.style.paddingBottom = "0px";
-	node.style.width = "33%";
-	node.style.minWidth = "33%";
+	node.style.width = "auto";
 	org.intermedia.view.CellStyle.removeBorder(node);
 	node.style.backgroundColor = null;
 }
 org.intermedia.view.MenuCellTextStyle.setLeftCellStyle = function(node) {
 	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.textAlign = "left";
-	node.style.left = Std.string(5) + "px";
+	node.style.left = "0px";
 }
 org.intermedia.view.MenuCellTextStyle.setMiddleCellStyle = function(node) {
 	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.textAlign = "center";
 	node.style.marginLeft = "auto";
 	node.style.marginRight = "auto";
+	node.style.left = ((js.Lib.window.innerWidth - node.offsetWidth) / 2 | 0) + "px";
 }
 org.intermedia.view.MenuCellTextStyle.setRightCellStyle = function(node) {
 	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.textAlign = "right";
-	node.style.right = Std.string(5) + "px";
+	node.style.right = "0px";
 }
 org.intermedia.view.MenuCellTextStyle.setCellTextStyle = function(node) {
 	node.style.display = "inline";
@@ -2603,8 +2599,8 @@ org.intermedia.view.MenuCellTextStyle.prototype = {
 }
 org.intermedia.view.MenuListViewStyle = $hxClasses["org.intermedia.view.MenuListViewStyle"] = function() { }
 org.intermedia.view.MenuListViewStyle.__name__ = ["org","intermedia","view","MenuListViewStyle"];
-org.intermedia.view.MenuListViewStyle.setListStyle = function(node) {
-	node.style.position = "fixed";
+org.intermedia.view.MenuListViewStyle.setMenuStyle = function(node) {
+	node.style.position = "absolute";
 	node.style.display = "block";
 	node.style.marginLeft = "0px";
 	node.style.marginRight = "0px";
@@ -2619,9 +2615,24 @@ org.intermedia.view.MenuListViewStyle.setListStyle = function(node) {
 	node.style.height = Std.string(35) + "px";
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "auto";
-	node.style.backgroundImage = "url(\"assets/headerBlue.png\")";
+	node.style.backgroundColor = null;
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
+}
+org.intermedia.view.MenuListViewStyle.setListStyle = function(node) {
+	node.style.display = "inline-block";
+	node.style.position = "static";
+	node.style.marginLeft = "0px";
+	node.style.marginRight = "0px";
+	node.style.marginTop = "0px";
+	node.style.marginBottom = "0px";
+	node.style.paddingLeft = "0px";
+	node.style.paddingRight = "0px";
+	node.style.paddingTop = "0px";
+	node.style.paddingBottom = "0px";
+	node.style.width = "100%";
+	node.style.height = "100%";
+	node.style.backgroundColor = null;
 }
 org.intermedia.view.MenuListViewStyle.prototype = {
 	__class__: org.intermedia.view.MenuListViewStyle
@@ -2636,10 +2647,113 @@ org.intermedia.view.MenuListViewText.__super__ = org.intermedia.view.ListViewBas
 org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
 	_index: null
 	,index: null
+	,_menuItem0Width: null
+	,_menuItem1Width: null
+	,_menuItem2Width: null
+	,_menuItem0LeftPos: null
+	,_menuItem1LeftPos: null
+	,_menuItem2LeftPos: null
 	,getIndex: function() {
 		return this._index;
 	}
+	,setIndex: function(v) {
+		this._index = v;
+		var menuItem0LeftEnd = 0;
+		var menuItem1LeftEnd = 0;
+		var menuItem2LeftEnd = 0;
+		switch(this._index) {
+		case 0:
+			menuItem0LeftEnd = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
+			menuItem1LeftEnd = js.Lib.window.innerWidth - this._menuItem1Width;
+			menuItem2LeftEnd = js.Lib.window.innerWidth;
+			break;
+		case 1:
+			menuItem0LeftEnd = 0;
+			menuItem1LeftEnd = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
+			menuItem2LeftEnd = js.Lib.window.innerWidth - this._menuItem2Width;
+			break;
+		case 2:
+			menuItem0LeftEnd = -this._menuItem0Width;
+			menuItem1LeftEnd = 0;
+			menuItem2LeftEnd = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
+			break;
+		default:
+		}
+		var tween0 = new feffects.Tween(this._cells[0].node.offsetLeft,menuItem0LeftEnd,600,feffects.easing.Quint.easeOut);
+		tween0.setTweenHandlers(this.menuItem0Move.$bind(this),this.menuItemMoveEnd.$bind(this));
+		tween0.start();
+		var tween1 = new feffects.Tween(this._cells[1].node.offsetLeft,menuItem1LeftEnd,600,feffects.easing.Quint.easeOut);
+		tween1.setTweenHandlers(this.menuItem1Move.$bind(this),this.menuItemMoveEnd.$bind(this));
+		tween1.start();
+		var tween2 = new feffects.Tween(this._cells[2].node.offsetLeft,menuItem2LeftEnd,600,feffects.easing.Quint.easeOut);
+		tween2.setTweenHandlers(this.menuItem2Move.$bind(this),this.menuItemMoveEnd.$bind(this));
+		tween2.start();
+		haxe.Log.trace(menuItem0LeftEnd + "," + this._cells[0].node.offsetLeft,{ fileName : "MenuListViewText.hx", lineNumber : 130, className : "org.intermedia.view.MenuListViewText", methodName : "setIndex"});
+		return v;
+	}
+	,menuItem0Move: function(e) {
+		this._cells[0].node.style.left = (e | 0) + "px";
+	}
+	,menuItem1Move: function(e) {
+		this._cells[1].node.style.left = (e | 0) + "px";
+	}
+	,menuItem2Move: function(e) {
+		this._cells[2].node.style.left = (e | 0) + "px";
+	}
+	,menuItemMoveEnd: function(e) {
+	}
+	,computeMenuItemsWidth: function() {
+		this._menuItem0Width = this._cells[0].node.clientWidth;
+		this._menuItem1Width = this._cells[1].node.clientWidth;
+		this._menuItem2Width = this._cells[2].node.clientWidth;
+	}
+	,computeMenuItemsLeftPos: function() {
+		this._menuItem0LeftPos = this._cells[0].node.offsetLeft;
+		this._menuItem1LeftPos = this._cells[1].node.offsetLeft;
+		this._menuItem2LeftPos = this._cells[2].node.offsetLeft;
+	}
+	,updateView: function() {
+		var me = this;
+		this._index = 0;
+		var _g = 0, _g1 = Reflect.fields(this._data);
+		while(_g < _g1.length) {
+			var field = _g1[_g];
+			++_g;
+			var cell = [this.createCell()];
+			cell[0].setData(Reflect.field(this._data,field));
+			cell[0].node.onmouseup = (function(cell) {
+				return function(mouseEventData) {
+					me.onListItemSelectedCallback(cell[0].getData());
+				};
+			})(cell);
+			this._cells.push(cell[0]);
+			this.node.appendChild(cell[0].node);
+			var style = this.setCellsStyle();
+			style(cell[0].node);
+			switch(this._index) {
+			case 0:
+				cell[0].node.id = "menu_item0";
+				break;
+			case 1:
+				cell[0].node.id = "menu_item1";
+				break;
+			case 2:
+				cell[0].node.id = "menu_item2";
+				break;
+			default:
+			}
+			this._index++;
+		}
+		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
+		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
+		this.computeMenuItemsWidth();
+		this.computeMenuItemsLeftPos();
+	}
 	,createCell: function() {
+		var cell = new org.intermedia.view.MenuCellText();
+		return cell;
+	}
+	,setCellsStyle: function() {
 		var style = org.intermedia.view.MenuCellTextStyle.setCellStyle;
 		switch(this._index) {
 		case 0:
@@ -2653,15 +2767,23 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 			break;
 		default:
 		}
-		this._index++;
-		var cell = new org.intermedia.view.MenuCellText(style);
-		return cell;
+		return style;
 	}
 	,onListItemSelectedCallback: function(cellData) {
-		this.index = cellData.id;
+		this.setIndex(cellData.id);
 		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
 	}
+	,moveHorizontally: function(ratio) {
+		this.menuItem0Move(this._menuItem0LeftPos + (js.Lib.window.innerWidth - this._menuItem0Width) * ratio / 2);
+		this.menuItem1Move(this._menuItem1LeftPos + (js.Lib.window.innerWidth - this._menuItem1Width) * ratio / 2);
+		this.menuItem2Move(this._menuItem2LeftPos + (js.Lib.window.innerWidth - this._menuItem2Width) * ratio / 2);
+	}
+	,horizontalRelease: function(listIndex) {
+		this.setIndex(listIndex);
+		this.computeMenuItemsLeftPos();
+	}
 	,__class__: org.intermedia.view.MenuListViewText
+	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
 });
 org.intermedia.view.ScreenResolutionSize = $hxClasses["org.intermedia.view.ScreenResolutionSize"] = { __ename__ : ["org","intermedia","view","ScreenResolutionSize"], __constructs__ : ["small","normal","large"] }
 org.intermedia.view.ScreenResolutionSize.small = ["small",0];
@@ -2762,7 +2884,7 @@ org.intermedia.view.Scroll2D.prototype = {
 		this._horizontalTween.start();
 	}
 	,onHorizontalScrollCallback: function(e) {
-		if(this.onHorizontalScroll != null) this.onHorizontalScroll(e | 0);
+		if(this.onHorizontalScroll != null) this.onHorizontalScroll(e | 0,this._offset.x);
 	}
 	,horizontalTweenEnd: function(e) {
 		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd();
@@ -2805,6 +2927,45 @@ org.intermedia.view.ScrollType.vertical.__enum__ = org.intermedia.view.ScrollTyp
 org.intermedia.view.ScrollType.both = ["both",2];
 org.intermedia.view.ScrollType.both.toString = $estr;
 org.intermedia.view.ScrollType.both.__enum__ = org.intermedia.view.ScrollType;
+org.intermedia.view.ScrollableMenu = $hxClasses["org.intermedia.view.ScrollableMenu"] = function() {
+	org.intermedia.view.ListViewBase.call(this);
+	org.intermedia.view.MenuListViewStyle.setMenuStyle(this.node);
+	this._menu = new org.intermedia.view.MenuListViewText();
+	this._menu.displayListBottomLoader = false;
+	this.node.appendChild(this._menu.node);
+	this._menu.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+};
+org.intermedia.view.ScrollableMenu.__name__ = ["org","intermedia","view","ScrollableMenu"];
+org.intermedia.view.ScrollableMenu.__super__ = org.intermedia.view.ListViewBase;
+org.intermedia.view.ScrollableMenu.prototype = $extend(org.intermedia.view.ListViewBase.prototype,{
+	_menu: null
+	,_index: null
+	,index: null
+	,updateView: function() {
+		this._menu.setData(this._data);
+	}
+	,getIndex: function() {
+		return this._index;
+	}
+	,setIndex: function(v) {
+		this._index = v;
+		this._menu.setIndex(v);
+		return v;
+	}
+	,onListItemSelectedCallback: function(cellData) {
+		this.setIndex(cellData.id);
+		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
+	}
+	,horizontalMove: function(ratio) {
+		haxe.Firebug.trace(ratio,{ fileName : "ScrollableMenu.hx", lineNumber : 121, className : "org.intermedia.view.ScrollableMenu", methodName : "horizontalMove"});
+		this._menu.moveHorizontally(ratio);
+	}
+	,horizontalRelease: function(listIndex) {
+		this._menu.horizontalRelease(listIndex);
+	}
+	,__class__: org.intermedia.view.ScrollableMenu
+	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
+});
 org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.SwippableListView"] = function() {
 	org.intermedia.view.ListViewBase.call(this);
 	this.setDisplayLoading(true);
@@ -2844,9 +3005,9 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._currentListView = this._listViews[this._index];
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.both);
-	this._moveHandler.onHorizontalScroll = this.onHorizontalMove.$bind(this);
+	this._moveHandler.onHorizontalScroll = this.onHorizontalMoveCallback.$bind(this);
 	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
-	this._moveHandler.onHorizontalUp = this.onHorizontalUp.$bind(this);
+	this._moveHandler.onHorizontalUp = this.onHorizontalUpCallback.$bind(this);
 	this.addTouchEvents();
 };
 org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","SwippableListView"];
@@ -2865,12 +3026,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,_offsetStart: null
 	,_initialPosition: null
 	,_direction: null
-	,onHorizontalTweenEnd: null
 	,_homePageData: null
 	,_homePageDataSet: null
 	,_viewportWidth: null
 	,_viewportHeight: null
 	,_moveHandler: null
+	,onHorizontalMove: null
+	,onHorizontalUp: null
 	,positionLists: function() {
 		this.list1.node.style.left = Std.string(this._viewportWidth) + "px";
 		this.list2.node.style.left = Std.string(2 * this._viewportWidth) + "px";
@@ -2923,13 +3085,15 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this.positionLists();
 		this.scrollToCurrentList();
 	}
-	,onHorizontalMove: function(x) {
-		this.node.scrollLeft = x;
+	,onHorizontalMoveCallback: function(XScroll,XOffset) {
+		this.node.scrollLeft = XScroll;
+		var horizontalRatio = this.computeHorizontalRatio(XOffset);
+		if(this.onHorizontalMove != null && horizontalRatio != 0) this.onHorizontalMove(horizontalRatio);
 	}
 	,onVerticalMove: function(y) {
 		this._currentListView.node.scrollTop = y;
 	}
-	,onHorizontalUp: function(event,XOffset) {
+	,onHorizontalUpCallback: function(event,XOffset) {
 		event.preventDefault();
 		if(XOffset < -this._viewportWidth / 2) {
 			if(this.getIndex() < this._listViews.length - 1) {
@@ -2944,6 +3108,8 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 				_g1;
 			}
 		} else this.setIndex(this.getIndex());
+		var horizontalRatio = this.computeHorizontalRatio(XOffset);
+		if(this.onHorizontalUp != null) this.onHorizontalUp(this._index);
 	}
 	,onScrollCallback: function(event) {
 	}
@@ -2956,6 +3122,11 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,touchStart: function(event) {
 		this._moveHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
 		this._moveHandler.touchHandler(event);
+	}
+	,computeHorizontalRatio: function(XOffset) {
+		var ratio = 0;
+		if(this._viewportWidth != 0) ratio = XOffset / this._viewportWidth;
+		return ratio;
 	}
 	,__class__: org.intermedia.view.SwippableListView
 	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
@@ -3032,10 +3203,11 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._header.setData("Market");
 	this._header.onBackButtonClick = this.onHeaderBackButtonPressed.$bind(this);
 	this._body.appendChild(this._header.node);
-	this._menu = new org.intermedia.view.MenuListViewText();
+	this._menu = new org.intermedia.view.ScrollableMenu();
 	this._menu.displayListBottomLoader = false;
-	this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}]);
 	this._body.appendChild(this._menu.node);
+	this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}]);
+	org.intermedia.view.MenuCellTextStyle.setMiddleCellStyle(js.Lib.document.getElementById("menu_item1"));
 	this._swippableListView = new org.intermedia.view.SwippableListView();
 	this._currentView = this._swippableListView;
 	this._body.appendChild(this._swippableListView.node);
@@ -3059,6 +3231,8 @@ org.intermedia.view.ViewManager.prototype = {
 		this._menu.onListItemSelected = this.onMenuItemSelectedCallback.$bind(this);
 		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$_.loadCellData.$bind($_));
+		this._swippableListView.onHorizontalMove = ($_=this._menu,$_.horizontalMove.$bind($_));
+		this._swippableListView.onHorizontalUp = ($_=this._menu,$_.horizontalRelease.$bind($_));
 		this._applicationController.loadCellData({ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url);
 		this._applicationController.loadCellData({ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url);
 		this._applicationController.loadCellData({ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url);
@@ -3090,7 +3264,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,onStartLoading: function() {
 	}
 	,onLoadingError: function(error) {
-		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 237, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 254, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("Market");
