@@ -7,6 +7,9 @@
 */
 package cocktail.core.style.formatter;
 
+import cocktail.core.renderer.LineBox;
+import cocktail.core.renderer.RootLineBox;
+import cocktail.core.renderer.TextLineBox;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLElement;
@@ -52,22 +55,14 @@ class InlineFormattingContext extends FormattingContext
 	 * fit on the current line then a new line is created to hold them.
 	 * These array may for instance hold a sequence of space if the
 	 * whiteSpace style of the space are "pre"
+	 * 
+	 * TODO : update doc
 	 */
-	private var _unbreakableLineBoxElements:Array<ElementRenderer>;
+	private var _unbreakableLineBoxes:Array<LineBox>;
 	
-	/**
-	 * The total width of the element in the _unbreakableLineBoxElements
-	 * array used to check if they all fit in the current line or if a 
-	 * new line should be created
-	 */
 	private var _unbreakableWidth:Int;
 
-
-	
 	private var _currentInlineBoxesData:Array<InlineBoxData>;
-	
-
-	
 	
 	/**
 	 * class constructor. Init class attributes
@@ -75,8 +70,7 @@ class InlineFormattingContext extends FormattingContext
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		_elementsInLineBox = new Array<ElementRenderer>();
-		_unbreakableLineBoxElements = new Array<ElementRenderer>();
-		_unbreakableWidth = 0;
+		_unbreakableLineBoxes = new Array<LineBox>();
 		_currentInlineBoxesData = new Array<InlineBoxData>();
 		
 		super(formattingContextRoot);
@@ -89,16 +83,19 @@ class InlineFormattingContext extends FormattingContext
 	override public function dispose():Void
 	{
 		super.dispose();
-		_unbreakableLineBoxElements = null;
+		_unbreakableLineBoxes = null;
 		_elementsInLineBox = null;
 		_currentInlineBoxesData = null;
 	}
 	
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>,staticPositionedElement:ElementRenderer = null):Void
 	{
+		
+		startFormat(staticPositionedElement);
+		return;
+		
 		_elementsInLineBox = new Array<ElementRenderer>();
-		_unbreakableLineBoxElements = new Array<ElementRenderer>();
-		_unbreakableWidth = 0;
+		_unbreakableLineBoxes = new Array<LineBox>();
 		
 		_formattingContextRoot.removeLineBoxes();
 		
@@ -110,6 +107,196 @@ class InlineFormattingContext extends FormattingContext
 		insertBreakOpportunity(true, true);
 	}
 	
+	private function startFormat(staticPositionedElement:ElementRenderer):Void
+	{
+		var rootLineBoxes:Array<RootLineBox> = new Array<RootLineBox>();
+		
+		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
+		rootLineBoxes.push(initialRootLineBox);
+		
+		_unbreakableWidth = 0;
+		
+		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
+		
+		//format the last line
+		formatLine(rootLineBoxes[rootLineBoxes.length - 1]);
+	}
+	
+	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	{
+		//loop in all the child of the container
+		for (i in 0...elementRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			
+			
+			//here the child is an inline box renderer, which will create one line box for each
+			//line its children are in
+			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+			{
+				//create the first line box for this inline box renderer
+				var childLineBox:LineBox = createContainerLineBox(child);
+				
+				//attach the line box to its parent line box
+				lineBox.appendChild(childLineBox);
+
+				//store the inline box renderer, each time a new line is created
+				//by laying out a child of this inline box renderer, a new line box
+				//with a reference to this inline box renderer will be created, so that
+				//each line into which this inline box renderer is laid out can be
+ 				openedElementRenderers.push(child);
+				
+				//TODO : here add left margin to current unbreakable line
+				
+				//format all the children of the inline box renderer recursively
+				//a reference to the last added line box is returned, so that it can
+				//be used as a starting point when laying out the siblings of the 
+				//inline box renderer
+				lineBox = doFormat2(child, childLineBox, rootLineBoxes, openedElementRenderers);
+				
+				//now that all of the child of the inline box renderer as been laid out,
+				//remove the reference to this inline box renderer so that when a new line
+				//is created, no line box pointing to this inline box renderer is created
+				openedElementRenderers.pop();
+				
+				//TODO : here add right margin to current unbreakable line
+			}
+			//here the child can be either a text renderer, an embedded asset, like a picture
+			//or an element displayed as an inline-block
+			else
+			{
+				//create all the line boxes of the element
+				var childLineBoxes:Array<LineBox> = new Array<LineBox>();
+				if (child.isText() == true)
+				{
+					//here, an array of text line box is created
+					childLineBoxes = createTextLineBoxes(child);
+				}
+				else
+				{
+					//here one line box is created for the embedded asset, or for the
+					//inline-block block container
+					childLineBoxes = createEmbeddedAssetLineBox(child);
+				}
+				//insert the array of created line boxes into the current line. It might create as many
+				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
+				//point to lay out subsequent siblings and children
+				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+			}
+		}
+		
+		return lineBox;
+	}
+	
+	//TODO  : should instead be a method like elementRenderer.lineBoxes returning an array
+	//of line box
+	private function createContainerLineBox(child:ElementRenderer):LineBox
+	{
+		return new LineBox(child);
+	}
+	
+	private function createTextLineBoxes(child:ElementRenderer):Array<LineBox>
+	{
+		var textLineBox:TextLineBox = new TextLineBox(child);
+		var lineBoxes:Array<LineBox> = new Array<LineBox>();
+		lineBoxes.push(textLineBox);
+		return lineBoxes;
+	}
+	
+		
+	private function createEmbeddedAssetLineBox(child:ElementRenderer):Array<LineBox>
+	{
+		return [new LineBox(child)];
+	}
+	
+	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	{
+		//loop in all the line boxes which must be added to the current line
+		for ( i in 0...lineBoxes.length)
+		{
+			
+			//store the line box in the unbreakable line box array, which is
+			//a buffer preventing break between elements which are not supposed to
+			//be break into several lines, for instance a non-breaking space
+			_unbreakableLineBoxes.push(lineBoxes[i]);	
+			
+			//the width of the line box is added to the total width which can't be broken
+			_unbreakableWidth += Math.round(lineBoxes[i].bounds.width);
+				
+			//get the remaining available space on the current line
+			var remainingLineWidth:Int = getRemainingLineWidth();
+			
+			//TODO : break opportunity is not supposed to always happen
+
+			//if there isn't enough space to fit all the line box which can't be broken
+			if (remainingLineWidth - _unbreakableWidth < 0)
+			{
+				//TODO : should be padding left instead ?
+				//reset the global formatting context for the next line
+				_formattingContextData.x = 0;
+				
+				//format the current line which is currently the last in the line array
+				//, now that all the line box in it are known
+				//each of the line box will be placed in x and y on this line
+				formatLine(rootLineBoxes[rootLineBoxes.length -1]);
+				
+				//create a new root for the next line, and add it to the line array
+				var rootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
+				rootLineBoxes.push(rootLineBox);
+				
+				//set the line box which will be used to layout the following children
+				//as the new root line box
+				lineBox = rootLineBox;
+
+				//create new line boxes for all the inline box renderer which still have
+				//children to format, and add them to the new line
+				for (j in 0...openedElementRenderers.length)
+				{
+					//all line boxes are attached as child of the previous created line box
+					//and not as sibling to respect the hierarchy of the previous line
+					var childLineBox:LineBox = createContainerLineBox(openedElementRenderers[j]);
+					lineBox.appendChild(childLineBox);
+					lineBox = childLineBox;
+				}
+			}
+			
+			//now that a break opportunity can occur in the line, 
+			//push all the elements in the unbreakable line box
+			//in the current line
+			for (j in 0..._unbreakableLineBoxes.length)
+			{
+				lineBox.appendChild(_unbreakableLineBoxes[j]);
+			}
+			
+			//update position on current line where the next line boxes will be added
+			_formattingContextData.x += _unbreakableWidth;
+			
+			//reset unbreakable line box now that they were added to the line
+			_unbreakableLineBoxes = new Array<LineBox>();
+			_unbreakableWidth = 0;
+		}
+		
+		
+		return lineBox;
+	}
+	
+	private function formatLine(rootLineBox:RootLineBox):Void
+	{
+		doFormatLine(rootLineBox);
+	}
+	
+	private function doFormatLine(lineBox:LineBox):Void
+	{
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.hasChildNodes() == true)
+			{
+				doFormatLine(child);
+			}
+		}
+	}
 	
 	/**
 	 * Return the width remaining in the current line
@@ -140,6 +327,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertEmbeddedElement(element:ElementRenderer):Void
 	{
+		/**
 		insertBreakOpportunity(false);
 		
 		_unbreakableLineBoxElements.push(element);
@@ -148,7 +336,7 @@ class InlineFormattingContext extends FormattingContext
 		addWidth(Math.round(element.bounds.width));
 			
 		insertBreakOpportunity(false);
-		
+		*/
 	}
 	
 	/**
@@ -156,6 +344,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
 	{
+		/**
 		var computedStyle:ComputedStyleData = element.coreStyle.computedStyle;
 		
 		
@@ -170,12 +359,12 @@ class InlineFormattingContext extends FormattingContext
 		addWidth(Math.round(element.bounds.width));
 			
 		insertBreakOpportunity(false);
-		
+		*/
 	}
 
 	override private function insertContainerElement(element:ElementRenderer):Void
 	{
-		_unbreakableLineBoxElements.push(element);
+		//_unbreakableLineBoxElements.push(element);
 	}
 	
 	/**
@@ -183,11 +372,12 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertText(element:ElementRenderer):Void
 	{
-
+		/**
 		_unbreakableLineBoxElements.push(element);
 		_lastInsertedElement = element;	
 		
 		addWidth(Math.round(element.bounds.width));
+		*/
 	}
 	
 	/**
@@ -198,6 +388,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	override private function insertSpace(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
+		/**
 		//only insert space if allowed
 		//if (shouldInsertSpace(getElementWhiteSpace(element), isNextElementALineFeed) == true)
 	//	{
@@ -210,7 +401,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			insertBreakOpportunity(false);
 		//}
-		
+		*/
 	}
 	
 	/**
@@ -301,7 +492,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	isLastLine if the line is the last, it might be neccesaary
 	 * to flush the array of unbreakable elements
 	 */
-	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool = false):Void
+	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool):Void
 	{
 		var remainingLineWidth:Int = getRemainingLineWidth();
 		
@@ -312,34 +503,33 @@ class InlineFormattingContext extends FormattingContext
 			insertBreakOpportunity(false, false);
 		}
 		
+		var unbreakableWidth:Int = 0;
+		for (i in 0..._unbreakableLineBoxes.length)
+		{
+			unbreakableWidth += Math.round(_unbreakableLineBoxes[i].bounds.width);
+		}
+		
+		
 		//if there is not enough width left in the line to fit all the 
 		//unbreakable elements width, or if a line break is force, 
 		//start a new line
-		if ((remainingLineWidth - _unbreakableWidth < 0) || forced == true)
+		if ((remainingLineWidth - unbreakableWidth < 0) || forced == true)
 		{
-			startNewLine(_unbreakableWidth, isLastLine);
+			startNewLine(unbreakableWidth, isLastLine);
+			
 		}
 		
 		//push all the unbreakable element into the elements in line array.
 		//they can either be pushed into the current line or a new one
 		//if there wasn't enough width in the previous line to fit them
-		for (i in 0..._unbreakableLineBoxElements.length)
+		for (i in 0..._unbreakableLineBoxes.length)
 		{
-			_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
+			//_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
 		}
 		
-		_unbreakableLineBoxElements = new Array<ElementRenderer>();
-		_formattingContextData.x += _unbreakableWidth;
-	
-		_unbreakableWidth = 0;
-	}
-
-	/**
-	 * Increment the unbreakable width
-	 */
-	private function addWidth(width:Int):Void
-	{
-		_unbreakableWidth += width;
+		_unbreakableLineBoxes = new Array<LineBox>();
+		_formattingContextData.x += unbreakableWidth;
+		
 	}
 	
 	/**
@@ -499,6 +689,7 @@ class InlineFormattingContext extends FormattingContext
 		if (_elementsInLineBox.length > 0)
 		{
 			removeSpaces();
+			
 			var lineBoxHeight:Int = computeLineBoxHeight();
 		
 			var lineWidth:Int = alignLineBox(isLastLine);

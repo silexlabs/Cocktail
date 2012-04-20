@@ -25,6 +25,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function new(style:CoreStyle) 
 	{
 		super(style);
+		_lineBoxes = [];
 	}
 	
 	/////////////////////////////////
