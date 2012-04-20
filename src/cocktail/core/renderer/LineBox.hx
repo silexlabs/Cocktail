@@ -1,6 +1,7 @@
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
+import cocktail.core.NativeElement;
 
 /**
  * ...
@@ -15,6 +16,9 @@ class LineBox extends Node
 	private var _bounds:RectangleData;
 	public var bounds(get_bounds, set_bounds):RectangleData;
 	
+	private var _nativeElement:NativeElement;
+	public var nativeElement(get_nativeElement, never):NativeElement;
+	
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super();
@@ -25,6 +29,11 @@ class LineBox extends Node
 			height:0.0
 		}
 		_elementRenderer = elementRenderer;
+	}
+	
+	private function get_nativeElement():NativeElement
+	{
+		return _nativeElement;
 	}
 	
 	private function get_bounds():RectangleData
