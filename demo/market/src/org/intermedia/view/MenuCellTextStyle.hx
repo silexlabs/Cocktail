@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 
@@ -30,7 +31,8 @@ class MenuCellTextStyle
 	public static function setCellStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		node.style.position = "static";
+		//node.style.position = "static";
+		node.style.position = "absolute";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
@@ -42,8 +44,10 @@ class MenuCellTextStyle
 		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
 		node.style.paddingBottom = "0px";
 		
-		node.style.width = "33%";
-		node.style.minWidth = "33%";
+		//node.style.width = Std.string(100/3) + "%";
+		node.style.width = "auto";
+		//node.style.width = "100%";
+		//node.style.minWidth = "33%";
 
 		// remove border
 		CellStyle.removeBorder(node);
@@ -60,8 +64,9 @@ class MenuCellTextStyle
 	{
 		setCellStyle(node);
 
-		node.style.textAlign = "left";
-		node.style.left = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+		//node.style.textAlign = "left";
+		//node.style.left = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+		node.style.left = "0px";
 	}
 	
 	/**
@@ -73,9 +78,13 @@ class MenuCellTextStyle
 	{
 		setCellStyle(node);
 
-		node.style.textAlign = "center";
+		//node.style.textAlign = "center";
 		node.style.marginLeft = "auto";
 		node.style.marginRight = "auto";
+		node.style.left = Std.int((Lib.window.innerWidth - node.offsetWidth) / 2) + "px";
+		//node.style.left = Std.int((2*node.clientWidth) / 2) + "px";
+		
+		//Firebug.trace(node.offsetWidth + "," + node.clientWidth);
 	}
 	
 	/**
@@ -87,8 +96,9 @@ class MenuCellTextStyle
 	{
 		setCellStyle(node);
 
-		node.style.textAlign = "right";
-		node.style.right = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+		//node.style.textAlign = "right";
+		//node.style.right = Std.string(CELL_HORIZONTAL_PADDING) + "px";
+		node.style.right = "0px";
 	}
 	
 	/**

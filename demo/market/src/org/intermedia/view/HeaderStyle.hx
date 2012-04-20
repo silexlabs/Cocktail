@@ -40,7 +40,7 @@ class HeaderStyle
 		// set to the forehead
 		//node.style.zIndex = 1000;
 		
-		node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
+		//node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		
 		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
 		/*node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),

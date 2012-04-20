@@ -54,9 +54,6 @@ class SwippableListView extends ListViewBase
 	// main movement direction
 	private var _direction:Direction;
 	
-	// horizontal tween end
-	public var onHorizontalTweenEnd:Void->Void;
-	
 	// home page data
 	private var _homePageData:Array<Dynamic>;
 	
@@ -69,6 +66,15 @@ class SwippableListView extends ListViewBase
 	
 	// touch & mouse handler
 	private var _moveHandler:Scroll2D;
+	
+	// on horizontal move callback, used to send scroll offset to menu
+	public var onHorizontalMove:Float->Void;
+	
+	// horizontal tween end
+	//public var onHorizontalTweenEnd:Void->Void;
+	
+	// horizontal tween end
+	public var onHorizontalUp:Int->Void;
 	
 	public function new()
 	{
@@ -156,9 +162,10 @@ class SwippableListView extends ListViewBase
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.both);
-		_moveHandler.onHorizontalScroll = onHorizontalMove;
+		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
 		_moveHandler.onVerticalScroll = onVerticalMove;
-		_moveHandler.onHorizontalUp = onHorizontalUp;
+		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
+		//_moveHandler.onHorizontalTweenEnd = onHorizontalTweenEnd;
 		
 		// js touch events handling
 		addTouchEvents();
@@ -317,9 +324,19 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-    private function onHorizontalMove( x : Int )
+    private function onHorizontalMoveCallback( XScroll:Int, XOffset:Int )
     {
-		node.scrollLeft = x;
+		node.scrollLeft = XScroll;
+		
+		// compute horizontal ratio
+		var horizontalRatio:Float = computeHorizontalRatio(XOffset);
+		
+		// call onHorizontalMove callback
+		if (onHorizontalMove != null && horizontalRatio != 0)
+		{
+			onHorizontalMove(horizontalRatio);
+		}
+		
     }
 	
 	/**
@@ -337,7 +354,7 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	event
 	 */
-	private function onHorizontalUp(event:Dynamic,XOffset:Int):Void
+	private function onHorizontalUpCallback(event:Dynamic,XOffset:Int):Void
 	{
 		event.preventDefault();
 		
@@ -366,6 +383,20 @@ class SwippableListView extends ListViewBase
 		js.Lib.window.scrollTo(0, 0);
 		//js.Lib.window.scrollTo(0,null);
 		#end*/
+		
+		// compute horizontal ratio
+		var horizontalRatio:Float = computeHorizontalRatio(XOffset);
+		
+		// if onHorizontalUp callback is defined, call it
+		if (onHorizontalUp != null)
+		{
+			onHorizontalUp(_index);
+		}
+		// call onHorizontalMove callback
+		//if (onHorizontalMove != null)
+		//{
+			//onHorizontalMove(horizontalRatio);
+		//}
 	}
 
 		
@@ -422,5 +453,31 @@ class SwippableListView extends ListViewBase
 		_moveHandler.touchHandler(event);
 	}
 
+	/**
+	 * Horizontal tween callback
+	 * 
+	 * @param	e
+	 */
+    /*private function horizontalTweenEnd(e : Float )
+	{
+		if (onHorizontalTweenEnd != null)
+		{
+			onHorizontalTweenEnd();
+		}
+	}*/
+	
+	/**
+	 * Computes Horizontal ratio
+	 * 
+	 * @param	XOffset
+	 * @return
+	 */
+	private function computeHorizontalRatio(XOffset:Int):Float
+	{
+		var ratio:Float = 0;
+		if (_viewportWidth != 0)
+			ratio = XOffset / _viewportWidth;
+		return ratio;
 
+	}
 }

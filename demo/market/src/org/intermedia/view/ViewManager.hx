@@ -1,7 +1,6 @@
 package org.intermedia.view;
 
 import haxe.Firebug;
-import haxe.Timer;
 import js.Lib;
 import js.Dom;
 import org.intermedia.controller.ApplicationController;
@@ -29,7 +28,8 @@ class ViewManager
 	static inline var HEADER_DETAIL_TITLE:String = "Infos";
 	
 	// reference to the menu
-	private var _menu:MenuListViewText;
+	//private var _menu:MenuListViewText;
+	private var _menu:ScrollableMenu;
 	
 	//Ref to the container managing the swippable list view
 	private var _swippableListView:SwippableListView;
@@ -83,10 +83,14 @@ class ViewManager
 		_body.appendChild(image);*/
 		
 		// init menu
-		_menu = new MenuListViewText();
+		//_menu = new MenuListViewText();
+		_menu = new ScrollableMenu();
 		_menu.displayListBottomLoader = false;
-		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		_body.appendChild(_menu.node);
+		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
+		MenuCellTextStyle.setMiddleCellStyle(Lib.document.getElementById("menu_item1"));
+		//Firebug.trace(Lib.document.getElementById("menu_button0").offsetLeft);
+		//Firebug.trace(Lib.document.getElementById("menu_button2").offsetLeft);
 		
 		//_header.node.style.visibility = "hidden";
 		//_menu.node.style.visibility = "hidden";
@@ -119,12 +123,15 @@ class ViewManager
 		// set list item selelected callback
 		_menu.onListItemSelected = onMenuItemSelectedCallback;
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
+		//_swippableListView.onHorizontalTweenEnd = horizontalTweenEnd;
 		//_swippableListView.onHorizontalTweenEnd = updateZIndexes;
 		// set callback when the bottom of the scrollbar is reached
 		//_swippableListView.onListScrolled = function () { _applicationController.srcCellData(CELL_QTY); };
 		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.srcCellData(feed); };
 		//_swippableListView.onListScrolled = _applicationController.srcCellData;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
+		_swippableListView.onHorizontalMove = _menu.horizontalMove;
+		_swippableListView.onHorizontalUp = _menu.horizontalRelease;
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		//_applicationController.srcCellData(CELL_QTY);
 		//_applicationController.srcCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
@@ -142,6 +149,16 @@ class ViewManager
 	{
 		_swippableListView.index = cellData.id;
 	}
+	
+	/**
+	 * on menu item item clicked
+	 * 
+	 * @param	cellData
+	 */
+	/*private function horizontalTweenEnd():Void
+	{
+		
+	}*/
 	
 	/**
 	 * on list item selected callback

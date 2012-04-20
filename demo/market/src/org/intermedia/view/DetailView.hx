@@ -49,7 +49,7 @@ class DetailView extends ViewBase
 	// touch & mouse handler
 	private var _moveHandler:Scroll2D;
 	
-	// initail scroll position
+	// initial scroll position
 	//private var _initialScrollPosition:Coordinate;
 
 	public function new() 

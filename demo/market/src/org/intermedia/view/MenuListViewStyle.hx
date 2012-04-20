@@ -23,9 +23,10 @@ class MenuListViewStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setListStyle(node:HtmlDom):Void
+	public static function setMenuStyle(node:HtmlDom):Void
 	{
-		node.style.position = "fixed";
+		//node.style.position = "fixed";
+		node.style.position = "absolute";
 		node.style.display = "block";
 		
 		node.style.marginLeft = "0px";
@@ -48,11 +49,42 @@ class MenuListViewStyle
 		// set to the forehead
 		//node.style.zIndex = 1000;
 		
+		// unset background color
+		node.style.backgroundColor = null;
 		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
-		node.style.backgroundImage = 'url("assets/headerBlue.png")';
+		//node.style.backgroundImage = 'url("assets/headerBlue.png")';
 
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "auto";
+	}
+	
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	node
+	 */
+	public static function setListStyle(node:HtmlDom):Void
+	{
+		node.style.display = "inline-block";
+		//node.style.position = "absolute";
+		node.style.position = "static";
+		
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
+		
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
+		
+		node.style.width = "100%";
+		node.style.height = "100%";
+
+		// unset background color
+		node.style.backgroundColor = null;
+	
 	}
 	
 }

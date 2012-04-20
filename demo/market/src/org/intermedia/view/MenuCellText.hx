@@ -14,11 +14,12 @@ class MenuCellText extends CellBase
 {
 
 	//public function new() 
-	public function new(cellStyle:HtmlDom->Void) 
+	//public function new(?cellStyle:HtmlDom->Void) 
+	public function new() 
 	{
 		super();
-		//MenuCellTextStyle.setCellStyle(node);
-		cellStyle(node);
+		MenuCellTextStyle.setCellStyle(node);
+		//cellStyle(node);
 	}
 	
 	/**
@@ -34,10 +35,11 @@ class MenuCellText extends CellBase
 		{
 			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
-			MenuCellTextStyle.setCellTextStyle(cellTextContainer);
 			node.appendChild(cellTextContainer);
+			MenuCellTextStyle.setCellTextStyle(cellTextContainer);
 		}
 			
 	}
 
+	
 }
