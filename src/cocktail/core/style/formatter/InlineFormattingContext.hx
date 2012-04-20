@@ -101,8 +101,6 @@ class InlineFormattingContext extends FormattingContext
 	
 		
 		super.doFormat(elementsInFormattingContext);
-		
-		insertBreakOpportunity(true, true);
 	}
 	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
@@ -448,163 +446,6 @@ class InlineFormattingContext extends FormattingContext
 	
 	
 	//////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LINE MEASUREMENT METHODS
-	//////////////////////////////////////////////////////////////////
-	
-	
-	/**
-	 * Insert a HTMLElement and instroduce the corresponding break opportunities
-	 * 
-	 * TODO : move addWidth to insertElement ?
-	 */
-	override private function insertEmbeddedElement(element:ElementRenderer):Void
-	{
-		/**
-		insertBreakOpportunity(false);
-		
-		_unbreakableLineBoxElements.push(element);
-		_lastInsertedElement = element;
-			
-		addWidth(Math.round(element.bounds.width));
-			
-		insertBreakOpportunity(false);
-		*/
-	}
-	
-	/**
-	 * Insert a HTMLElement and instroduce the corresponding break opportunities
-	 */
-	override private function insertFormattingContextRootElement(element:ElementRenderer):Void
-	{
-		/**
-		var computedStyle:ComputedStyleData = element.coreStyle.computedStyle;
-		
-		
-		element.bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		element.bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		
-		insertBreakOpportunity(false);
-		
-		_unbreakableLineBoxElements.push(element);
-		_lastInsertedElement = element;
-			
-		addWidth(Math.round(element.bounds.width));
-			
-		insertBreakOpportunity(false);
-		*/
-	}
-
-	override private function insertContainerElement(element:ElementRenderer):Void
-	{
-		//_unbreakableLineBoxElements.push(element);
-	}
-	
-	/**
-	 * Insert a text
-	 */
-	override private function insertText(element:ElementRenderer):Void
-	{
-		/**
-		_unbreakableLineBoxElements.push(element);
-		_lastInsertedElement = element;	
-		
-		addWidth(Math.round(element.bounds.width));
-		*/
-	}
-	
-	/**
-	 * Insert a space charachter. The space might not be actually
-	 * inserted if for instance it must be collapsed because
-	 * space sequances are not allowed for the whiteSpace
-	 * value of the space
-	 */
-	override private function insertSpace(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		/**
-		//only insert space if allowed
-		//if (shouldInsertSpace(getElementWhiteSpace(element), isNextElementALineFeed) == true)
-	//	{
-			
-			_unbreakableLineBoxElements.push(element);
-			
-			_lastInsertedElement = element;	
-			
-			addWidth(Math.round(element.bounds.width));
-			
-			insertBreakOpportunity(false);
-		//}
-		*/
-	}
-	
-	/**
-	 * Insert a non-breakable offset which is used
-	 * for instance to render the textIndent on
-	 * the first line or the render the margin/padding/border
-	 * of an inline level inline container
-	 * 
-	 * @param	offset the width of the offset
-	 */
-	override private function insertHorizontalOffset(element:ElementRenderer):Void
-	{
-		/**
-		_unbreakableLineBoxElements.push( {
-		element:element,
-		x:0,
-		y:0,
-		width:getElementWidth(element),
-		height:getElementHeight(element)} );
-		
-		addWidth(getElementWidth(element));
-		*/
-	}
-	
-	/**
-	 * Insert a tab character. Like the space charachter it might not
-	 * actually be added or might also be converted to a space
-	 */
-	override private function insertTab(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		/**
-		var insertedElement:BoxElementValue;
-		var addedWidth:Int;
-		
-		//here the tab is converted to a space
-		if (shouldTabBeConvertedToSpace(getElementWhiteSpace(element)) == true)
-		{
-			insertedElement = BoxElementValue.space(getElementWhiteSpace(element), Math.round(getElementWidth(element) / 8), getElementParent(element));
-			addedWidth = Math.round(getElementWidth(element) / 8);
-		}
-		else
-		{
-			insertedElement = element;
-			addedWidth = getElementWidth(element);
-		}
-		_unbreakableLineBoxElements.push( {
-			element:insertedElement,
-			x:0,
-			y:0,
-			width:getElementWidth(element),
-			height:getElementHeight(element)} );
-			
-		addWidth(addedWidth);
-		*/
-	}
-	
-	/**
-	 * Might force a line break if line feed are allowed
-	 * for the whiteSpace value of the line feed
-	 */
-	override private function insertLineFeed(element:ElementRenderer):Void
-	{
-		/**
-		if (isLineFeedAllowed(getElementWhiteSpace(element)) == true)
-		{
-			insertBreakOpportunity(true);
-		}
-		*/
-	}
-	
-	//////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LINE MEASUREMENT METHODS
 	//////////////////////////////////////////////////////////////////
 	
@@ -613,56 +454,6 @@ class InlineFormattingContext extends FormattingContext
 	//////////////////////////////////////////////////////////////////
 	
 	
-	
-	/**
-	 * Inserting a break opportunity signals the the current line
-	 * might be broken and a new line started if there are too
-	 * many element to fit in the current line's width
-	 * 
-	 * @param	forced a break opportunity might be forced, for instance
-	 * with a line feed
-	 * @param	isLastLine if the line is the last, it might be neccesaary
-	 * to flush the array of unbreakable elements
-	 */
-	private function insertBreakOpportunity(forced:Bool, isLastLine:Bool):Void
-	{
-		var remainingLineWidth:Int = getRemainingLineWidth();
-		
-		//flush the array of unbreakable elements into the array of element
-		//in the line to be sure to not left out any element
-		if (isLastLine == true)
-		{
-			insertBreakOpportunity(false, false);
-		}
-		
-		var unbreakableWidth:Int = 0;
-		for (i in 0..._unbreakableLineBoxes.length)
-		{
-			unbreakableWidth += Math.round(_unbreakableLineBoxes[i].bounds.width);
-		}
-		
-		
-		//if there is not enough width left in the line to fit all the 
-		//unbreakable elements width, or if a line break is force, 
-		//start a new line
-		if ((remainingLineWidth - unbreakableWidth < 0) || forced == true)
-		{
-			startNewLine(unbreakableWidth, isLastLine);
-			
-		}
-		
-		//push all the unbreakable element into the elements in line array.
-		//they can either be pushed into the current line or a new one
-		//if there wasn't enough width in the previous line to fit them
-		for (i in 0..._unbreakableLineBoxes.length)
-		{
-			//_elementsInLineBox.push(_unbreakableLineBoxElements[i]);
-		}
-		
-		_unbreakableLineBoxes = new Array<LineBox>();
-		_formattingContextData.x += unbreakableWidth;
-		
-	}
 	
 	/**
 	 * Determine wether a tab should be converted to
@@ -824,13 +615,13 @@ class InlineFormattingContext extends FormattingContext
 			
 			var lineBoxHeight:Int = computeLineBoxHeight();
 		
-			var lineWidth:Int = alignLineBox(isLastLine);
-			
-			if (lineWidth > _formattingContextData.maxWidth)
-			{
-				_formattingContextData.maxWidth = lineWidth;
-			}
-			
+			//var lineWidth:Int = alignLineBox(isLastLine);
+			//
+			//if (lineWidth > _formattingContextData.maxWidth)
+			//{
+				//_formattingContextData.maxWidth = lineWidth;
+			//}
+			//
 			var lineBoxElements:Array<ElementRenderer> = new Array<ElementRenderer>();
 			
 			
@@ -969,162 +760,6 @@ class InlineFormattingContext extends FormattingContext
 				default:
 			}
 		}	
-		*/
-	}
-	
-	/////////////////////////////////
-	// PRIVATE HORIZONTAL ALIGNEMENT METHODS
-	/////////////////////////////////
-	
-	/**
-	 * before a new line starts or before the inline
-	 * formarring context get destroyed, align all the
-	 * HTMLElements in the current line horizontally
-	 * @param	isLastLine wheter it is the last line which is laid out
-	 * @return returns the concantenated width of all the aligned DOMElelements.
-	 * Used to determine the max line width used for shrink-to-fit algorithm
-	 */
-	private function alignLineBox(isLastLine:Bool):Int
-	{	
-		//determine the added offset width of
-		//all HTMLElements in the line box
-		var concatenatedLength:Int = 0;
-		for (i in 0..._elementsInLineBox.length)
-		{
-			concatenatedLength += Math.round(_elementsInLineBox[i].bounds.width);
-		}
-		
-		
-		//determine the remaining space in the line once all the width of the HTMLElements
-		//are substracted from the total avalable line width, and the x position where to 
-		//insert the first HTMLElement of the line, which might be influenced for instance
-		//by a float
-		var remainingSpace:Int;
-		var flowX:Int;
-		
-		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
-		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
-		
-		//take the float into accounts and the padding of the containing HTMLElement
-		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		
-		//do align the HTMLElements, the text align style of the containing HTMLElement
-		//determining the alignement to apply
-		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
-		{
-			case left:
-				alignLeft(flowX);
-				
-			case right:
-				alignRight(flowX, remainingSpace);
-				
-			case center:
-				alignCenter(flowX, remainingSpace);
-				
-			case justify:	
-				//the last line of an inline formatting context
-				//is not justified to avoid stretching too much
-				//the space between HTMLElements if there are few of them
-				if (isLastLine == true)
-				{
-					alignLeft(flowX);
-				}
-				else
-				{
-					//when justified, the concatenated width of the HTMLElements
-					//must take all the containing HTMLElement width
-					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
-					
-					alignJustify(flowX, remainingSpace);
-				}
-		}
-		
-		return concatenatedLength;
-	}
-	
-	/**
-	 * align the HTMLElements starting from the left edge of the containing HTMLElement
-	 * @param	flowX the x position of the first HTMLElement
-	 */
-	private function alignLeft(flowX:Int):Void
-	{
-		for (i in 0..._elementsInLineBox.length)
-		{
-			_elementsInLineBox[i].bounds.x = flowX;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		}
-	}
-	
-
-	/**
-	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
-	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
-	 * @param	remainingSpace the available width in the line box after all HTMLElements
-	 * have been laid out
-	 */
-	private function alignCenter(flowX:Int, remainingSpace:Int):Void
-	{
-		for (i in 0..._elementsInLineBox.length)
-		{
-			_elementsInLineBox[i].bounds.x = Math.round(remainingSpace / 2) + flowX;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		}
-	}
-	
-	/**
-	 * align the HTMLElements starting from the right edge to the left edge of the
-	 * containing HTMLElement
-	 * @param	flowX the x position of the HTMLElement to left most of the line box
-	 * @param	remainingSpace the available width in the line box after all HTMLElements
-	 * have been laid out
-	 */
-	private function alignRight(flowX:Int, remainingSpace:Int):Void
-	{
-		for (i in 0..._elementsInLineBox.length)
-		{
-			_elementsInLineBox[i].bounds.x = flowX + remainingSpace;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		}
-	}
-	
-	/**
-	 * Justify the HTMLElements in the line box by adjusting
-	 * the width of the space characters
-	 * @param	flowX
-	 * @param	remainingSpace
-	 */
-	private function alignJustify(flowX:Int, remainingSpace:Int):Void
-	{
-		//TODO :add isSpace on TextLineBox
-		
-		/**
-		//determine how many space there are among the 
-		//HTMLElements of the line box
-		var spacesNumber:Int = 0;
-		for (i in 0..._elementsInLineBox.length)
-		{
-			if (_elementsInLineBox[i].isSpace() == true)
-			{
-				spacesNumber++;
-			}
-		}
-		
-		//justify all HTMLElements
-		for (i in 0..._elementsInLineBox.length)
-		{	
-			if (_elementsInLineBox[i].isSpace() == true)
-			{
-					var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
-					spacesNumber--;
-					remainingSpace -= spaceWidth;
-					flowX += spaceWidth;
-			}
-			
-			_elementsInLineBox[i].bounds.x = flowX ;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-			
-		}
 		*/
 	}
 	
