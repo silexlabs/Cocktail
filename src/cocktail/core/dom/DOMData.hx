@@ -9,6 +9,7 @@ package cocktail.core.dom;
 
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
+import cocktail.core.renderer.TextLineBox;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;
 
@@ -61,7 +62,7 @@ enum TextTokenValue {
  */
 typedef TextFragmentData = {
 	var textToken:TextTokenValue;
-	var textRenderer:TextRenderer;
+	var textRenderer:TextLineBox;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -965,6 +965,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignJustify(flowX:Int, remainingSpace:Int):Void
 	{
+		//TODO :add isSpace on TextLineBox
+		
+		/**
 		//determine how many space there are among the 
 		//HTMLElements of the line box
 		var spacesNumber:Int = 0;
@@ -991,6 +994,7 @@ class InlineFormattingContext extends FormattingContext
 			flowX += Math.round(_elementsInLineBox[i].bounds.width);
 			
 		}
+		*/
 	}
 	
 	/////////////////////////////////

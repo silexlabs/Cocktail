@@ -311,40 +311,40 @@ class FormattingContext
 
 	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
 	{
-		if (element.isFloat() == true)
-		{
-			insertFloat(element);
-		}
-		else if (element.canHaveChildren() == true)
-		{
-			if (element.coreStyle.establishesNewFormattingContext() == true)
-			{
-				insertFormattingContextRootElement(element);
-			}
-			else
-			{
-				insertContainerElement(element);
-			}
-		}
-		else
-		{
-			if (element.isText() == true)
-			{
-				if (element.isSpace() == true)
-				{
-					insertSpace(element, isNextElementALineFeed);
-				}
-				else
-				{
-					insertText(element);
-				}
-				
-			}
-			else
-			{
-				insertEmbeddedElement(element);
-			}
-		}
+		//if (element.isFloat() == true)
+		//{
+			//insertFloat(element);
+		//}
+		//else if (element.canHaveChildren() == true)
+		//{
+			//if (element.coreStyle.establishesNewFormattingContext() == true)
+			//{
+				//insertFormattingContextRootElement(element);
+			//}
+			//else
+			//{
+				//insertContainerElement(element);
+			//}
+		//}
+		//else
+		//{
+			//if (element.isText() == true)
+			//{
+				//if (element.isSpace() == true)
+				//{
+					//insertSpace(element, isNextElementALineFeed);
+				//}
+				//else
+				//{
+					//insertText(element);
+				//}
+				//
+			//}
+			//else
+			//{
+				//insertEmbeddedElement(element);
+			//}
+		//}
 	}
 	
 	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
@@ -461,18 +461,18 @@ class FormattingContext
 	 */
 	private function isNextElementALineFeed(elementsInFormattingContext:Array<ElementRenderer>, currentIndex:Int):Bool
 	{
-		var isNextElementALineFeed:Bool;
-		
+		var isNextElementALineFeed:Bool = false;
+		//
 		//here the current element is the last in the array
-		if (currentIndex + 1 >= elementsInFormattingContext.length)
-		{
-			isNextElementALineFeed = false;
-		}
+		//if (currentIndex + 1 >= elementsInFormattingContext.length)
+		//{
+			//isNextElementALineFeed = false;
+		//}
 		//else check if the next element is indeed a line feed
-		else
-		{
-			isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
-		}
+		//else
+		//{
+			//isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
+		//}
 		
 		return isNextElementALineFeed;
 	}
