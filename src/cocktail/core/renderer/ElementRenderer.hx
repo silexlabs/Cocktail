@@ -77,6 +77,7 @@ class ElementRenderer extends Node
 			width:0.0,
 			height:0.0
 		}
+		_lineBoxes = new Array<LineBox>();
 	}
 	
 	/////////////////////////////////
