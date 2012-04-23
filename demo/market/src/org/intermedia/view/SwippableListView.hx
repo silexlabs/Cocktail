@@ -71,7 +71,7 @@ class SwippableListView extends ListViewBase
 	public var onHorizontalMove:Float->Void;
 	
 	// horizontal tween end
-	//public var onHorizontalTweenEnd:Void->Void;
+	public var onHorizontalTweenEnd:Void->Void;
 	
 	// horizontal tween end
 	public var onHorizontalUp:Int->Void;
@@ -162,10 +162,10 @@ class SwippableListView extends ListViewBase
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.both);
-		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
 		_moveHandler.onVerticalScroll = onVerticalMove;
+		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
 		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
-		//_moveHandler.onHorizontalTweenEnd = onHorizontalTweenEnd;
+		_moveHandler.onHorizontalTweenEnd = onHorizontalTweenEndCallback;
 		
 		// js touch events handling
 		addTouchEvents();
@@ -287,7 +287,8 @@ class SwippableListView extends ListViewBase
 		
 		// launch horizontal tween
 		//horizontalReleaseTween();
-		_moveHandler.horizontalReleaseTween(node.scrollLeft, Std.parseInt(_currentListView.node.style.left));
+		//_moveHandler.horizontalReleaseTween(node.scrollLeft, Std.parseInt(_currentListView.node.style.left));
+		_moveHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
 
 		return v;
 	}
@@ -322,7 +323,8 @@ class SwippableListView extends ListViewBase
 	/**
 	 * move swippable view on the horizontal axis
 	 * 
-	 * @param	e
+	 * @param	XScroll	new scroll position
+	 * @param	XOffset	scroll offset ( = initial touch position - end touch position )
 	 */
     private function onHorizontalMoveCallback( XScroll:Int, XOffset:Int )
     {
@@ -419,8 +421,8 @@ class SwippableListView extends ListViewBase
 		untyped
 		{
 		node.addEventListener("touchstart",touchStart, false);
-		node.addEventListener("touchmove", _moveHandler.touchHandler, false);
-		node.addEventListener("touchend", _moveHandler.touchHandler, false);
+		node.addEventListener("touchmove", touchMove, false);
+		node.addEventListener("touchend", touchEnd, false);
 		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
 		}
 		#end
@@ -454,17 +456,41 @@ class SwippableListView extends ListViewBase
 	}
 
 	/**
+	 * Touch move event handler
+	 * 
+	 * @param	event
+	 */
+	private function touchMove(event:Dynamic):Void
+	{
+		// unset currentListlist's ItemSelected callback 
+		_currentListView.onListItemSelected = null;
+		_moveHandler.touchHandler(event);
+	}
+
+	/**
+	 * Touch end event handler
+	 * 
+	 * @param	event
+	 */
+	private function touchEnd(event:Dynamic):Void
+	{
+		// set currentListlist's ItemSelected callback
+		_currentListView.onListItemSelected = onListItemSelectedCallback;
+		_moveHandler.touchHandler(event);
+	}
+
+	/**
 	 * Horizontal tween callback
 	 * 
 	 * @param	e
 	 */
-    /*private function horizontalTweenEnd(e : Float )
+    private function onHorizontalTweenEndCallback():Void
 	{
 		if (onHorizontalTweenEnd != null)
 		{
 			onHorizontalTweenEnd();
 		}
-	}*/
+	}
 	
 	/**
 	 * Computes Horizontal ratio

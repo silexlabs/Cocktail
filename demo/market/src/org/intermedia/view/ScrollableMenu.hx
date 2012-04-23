@@ -118,7 +118,7 @@ class ScrollableMenu extends ListViewBase
 	//public function horizontalMove(XOffset:Int):Void
 	public function horizontalMove(ratio:Float):Void
 	{
-		Firebug.trace(ratio);
+		//Firebug.trace(ratio);
 		//_menu.menuItem0Move(Xoffset);
 		//_menu.menuItem1Move(Xoffset);
 		//_menu.menuItem2Move(Xoffset);
@@ -137,5 +137,14 @@ class ScrollableMenu extends ListViewBase
 		_menu.horizontalRelease(listIndex);
 	}
 	
-
+	/**
+	 * Horizontal tween callback
+	 * 
+	 * @param	e
+	 */
+    public function horizontalTweenEnd():Void
+	{
+		_menu.horizontalTweenEnd();
+	}
+	
 }

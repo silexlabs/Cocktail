@@ -85,6 +85,8 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
+		//trace("setIndex: " + v);
+		
 		_index = v;
 		
 		// depending on the index value, set each menu item left end position
@@ -108,27 +110,32 @@ class MenuListViewText extends ListViewBase
 			default:
 		}
 
+		//trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
+		//trace("setIndex: " + v + " - " + _cells[0].node.offsetLeft + "," + menuItem0LeftEnd);
+		
 		// menu item 0 tween
 		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, menuItem0LeftEnd, 600, Quint.easeOut );
 		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
 		// launch the tween
-		tween0.start();
+		//tween0.start();
 
 		// menu item 1 tween
 		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, menuItem1LeftEnd, 600, Quint.easeOut );
 		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
 		// launch the tween
-		tween1.start();
+		//tween1.start();
 
 		// menu item 0 tween
 		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, menuItem2LeftEnd, 600, Quint.easeOut );
 		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
 		// launch the tween
-		tween2.start();
+		//tween2.start();
 
 		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft + "," + menuItem1LeftEnd + "," + _cells[1].node.offsetLeft + "," + menuItem2LeftEnd + "," + _cells[2].node.offsetLeft);
-		trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
+		//trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
 		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft);
+
+		//computeMenuItemsLeftPos();
 
 		return v;
 	}
@@ -171,7 +178,10 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function menuItemMoveEnd(e:Float):Void
 	{
-		computeMenuItemsLeftPos();
+		//trace(e);
+		//trace(_cells[0].node.style.left);
+		//trace(_cells[0].node.offsetLeft);
+		//computeMenuItemsLeftPos();
 	}
 	
 	/**
@@ -325,7 +335,9 @@ class MenuListViewText extends ListViewBase
 	//public function moveHorizontally(XOffset:Int):Void
 	public function moveHorizontally(ratio:Float):Void
 	{
-		//trace(XOffset);
+		//trace("moveHorizontally");
+		//trace("ratio: " + Std.int(ratio*100));
+		//trace(ratio);
 		//menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * XOffset / Lib.window.innerWidth));
 		//menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * XOffset / Lib.window.innerWidth));
 		//menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * XOffset / Lib.window.innerWidth));
@@ -346,8 +358,17 @@ class MenuListViewText extends ListViewBase
 		//computeMenuItemsLeftPos();
 		
 		//trace(listIndex);
-		index = listIndex;
+		//index = listIndex;
 		
 	}
 	
+	/**
+	 * Horizontal tween
+	 * 
+	 * @param	e
+	 */
+    public function horizontalTweenEnd():Void
+	{
+		computeMenuItemsLeftPos();
+	}
 }

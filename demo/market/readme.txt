@@ -183,12 +183,12 @@ To do Alex pre fine tuning:
 -passer le scroll en utilisant le x/y => abandonnné après discussion avec Alex car bientot supporté par cocktail
 -animation menu
 -couleurs textes
--images header
--taille & couleurs border
--retour à la ligne liste text
+-images header => OK
+-taille & couleurs border => OK
+-retour à la ligne liste text => OK
 => Pol
 -affiner le scroll si tremblement
-relase scroll vertical
+-relase scroll vertical => OK
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
