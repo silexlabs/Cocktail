@@ -25,9 +25,6 @@ class TextRenderer extends ElementRenderer
 	 * representing the kind of text contained (a word,
 	 * a space, a tab...) and the corresponding TextFragmentHTMLElement,
 	 * created when the text is rendered
-	 * 
-	 * TODO : should be on text renderer instead
-	 * Text should create its own TextRenderer ?
 	 */
 	private var _textFragments:Array<TextFragmentData>;
 	
@@ -106,8 +103,6 @@ class TextRenderer extends ElementRenderer
 	 * also has a null TextFragmentHTMLElement,
 	 * as it is only created once the text is laid
 	 * out
-	 * 
-	 * TODO : fix
 	 */
 	private static function doGetTextFragments(text:String):Array<TextFragmentData>
 	{
