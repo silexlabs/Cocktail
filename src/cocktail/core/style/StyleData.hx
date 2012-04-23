@@ -1358,8 +1358,3 @@ import cocktail.core.renderer.TextRenderer;
 		var width:Int;
 		var height:Int;
 	}
-	
-	typedef InlineBoxData = {
-		var element:InlineBoxRenderer;
-		var children:Array<ElementRenderer>;
-	}
