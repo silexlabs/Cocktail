@@ -127,7 +127,8 @@ class MenuListViewText extends ListViewBase
 		tween2.start();
 
 		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft + "," + menuItem1LeftEnd + "," + _cells[1].node.offsetLeft + "," + menuItem2LeftEnd + "," + _cells[2].node.offsetLeft);
-		trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft);
+		trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
+		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft);
 
 		return v;
 	}
@@ -170,7 +171,7 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function menuItemMoveEnd(e:Float):Void
 	{
-		
+		computeMenuItemsLeftPos();
 	}
 	
 	/**
@@ -341,12 +342,12 @@ class MenuListViewText extends ListViewBase
 	//public function horizontalRelease(ratio:Float):Void
 	public function horizontalRelease(listIndex:Int):Void
 	{
+		// reset position attributes
+		//computeMenuItemsLeftPos();
+		
 		//trace(listIndex);
 		index = listIndex;
 		
-		// reset position attributes
-		computeMenuItemsLeftPos();
 	}
 	
-
 }
