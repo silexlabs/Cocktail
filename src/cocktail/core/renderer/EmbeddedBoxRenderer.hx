@@ -120,7 +120,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	///**
 	 //* apply a bilinear filtering to the loaded picture
 	 //* 
-	 //* TODO : should be applied during rendering
 	 //*/
 	//private function smoothPicture():Void
 	//{

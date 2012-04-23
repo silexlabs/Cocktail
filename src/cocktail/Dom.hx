@@ -28,8 +28,6 @@ typedef NamedNodeMap = cocktail.core.dom.NamedNodeMap;
 
 //HaxeJs types
 typedef Image = cocktail.core.html.HTMLImageElement;
-//TODO : in HaXe/JS can be either text node or element node, implement
-//as interface in Cocktail ?
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
