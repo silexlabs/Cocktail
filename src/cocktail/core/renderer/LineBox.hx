@@ -1,4 +1,5 @@
 package cocktail.core.renderer;
+import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.NativeElement;
@@ -27,6 +28,14 @@ class LineBox extends Node
 	
 	public var verticalAlign(get_verticalAlign, never):Float;
 	
+	private var _leftOffset:Int;
+	public var leftOffset(get_leftOffset, set_leftOffset):Int;
+	
+	private var _rightOffset:Int;
+	public var rightOffset(get_rightOffset, set_rightOffset):Int;
+	
+	private var	_backgroundManager:BackgroundManager;
+	
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super();
@@ -41,6 +50,28 @@ class LineBox extends Node
 		_leadedAscent = 0;
 		_leadedDescent = 0;
 		
+		_backgroundManager = new BackgroundManager();
+		
+	}
+	
+	public function get_rightOffset():Int
+	{
+		return _rightOffset;
+	}
+	
+	public function get_leftOffset():Int
+	{
+		return _leftOffset;
+	}
+	
+	public function set_leftOffset(value:Int):Int
+	{
+		return _leftOffset = value;
+	}
+	
+	public function set_rightOffset(value:Int):Int
+	{
+		return _rightOffset = value;
 	}
 	
 	public function isSpace():Bool
@@ -50,7 +81,16 @@ class LineBox extends Node
 	
 	public function render():Array<NativeElement>
 	{
-		return [];
+		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _elementRenderer.coreStyle);
+		
+		for (i in 0...backgrounds.length)
+		{
+			#if (flash9 || nme)
+			backgrounds[i].x = _bounds.x;
+			backgrounds[i].y = _bounds.y;
+			#end
+		}
+		return backgrounds;
 	}
 	
 	private function get_nativeElement():NativeElement

@@ -35,9 +35,6 @@ import haxe.Log;
  * the inline formatting context and the y position using
  * the vertical align property
  * 
- * TODO : re-implement to use parse element in formatting context
- * as a tree, like in block formatting context
- * 
  * @author Yannick DOMINGUEZ
  */
 class InlineFormattingContext extends FormattingContext
@@ -119,6 +116,10 @@ class InlineFormattingContext extends FormattingContext
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
+				childLineBox.leftOffset = child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
+				//TODO : here add left margin to current unbreakable line
+				_unbreakableWidth += child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
+				
 				//attach the line box to its parent line box
 				lineBox.appendChild(childLineBox);
 
@@ -128,7 +129,7 @@ class InlineFormattingContext extends FormattingContext
 				//each line into which this inline box renderer is laid out can be
  				openedElementRenderers.push(child);
 				
-				//TODO : here add left margin to current unbreakable line
+			
 				
 				//format all the children of the inline box renderer recursively
 				//a reference to the last added line box is returned, so that it can
@@ -136,12 +137,15 @@ class InlineFormattingContext extends FormattingContext
 				//inline box renderer
 				lineBox = doFormat2(child, childLineBox, rootLineBoxes, openedElementRenderers);
 				
+				//TODO : here, set bounds for each generated line boxes
+				
 				//now that all of the child of the inline box renderer as been laid out,
 				//remove the reference to this inline box renderer so that when a new line
 				//is created, no line box pointing to this inline box renderer is created
 				openedElementRenderers.pop();
 				
 				//TODO : here add right margin to current unbreakable line
+				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
 			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
 			//or an element displayed as an inline-block
@@ -160,6 +164,73 @@ class InlineFormattingContext extends FormattingContext
 		return lineBox;
 	}
 	
+	private function getLineBoxBounds(lineBox:LineBox):RectangleData
+	{
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			var childBounds:RectangleData;
+			if (child.hasChildNodes() == true)
+			{
+				childBounds = child.bounds;
+			}
+			else
+			{
+				childBounds = child.bounds;
+			}
+			
+			if (childBounds.x < left)
+			{
+				left = childBounds.x;
+			}
+			if (childBounds.y < top)
+			{
+				top = childBounds.y - child.leadedAscent;
+			}
+			if (childBounds.x + childBounds.width > right)
+			{
+				right = childBounds.x + childBounds.width;
+			}
+			if (childBounds.y + childBounds.height  > bottom)
+			{
+				bottom = childBounds.y + childBounds.height - child.leadedAscent;
+			}
+			
+			left -= child.leftOffset;
+			right -= lineBox.rightOffset;
+		}
+			
+		
+		
+		
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+		
+		//need to implement better fix,
+		//sould not be negative
+		if (bounds.width < 0)
+		{
+			bounds.width = 0;
+		}
+		if (bounds.height < 0)
+		{
+			bounds.height = 0;
+		}
+		
+		return bounds;
+	}
+	
 	//TODO  : attach the created line box to its container ? this way,inline element
 	//have array of line box and block box has the tree ? For rendering, LayerRenderer use
 	//line box tree or rendering tree ?
@@ -173,10 +244,6 @@ class InlineFormattingContext extends FormattingContext
 		//loop in all the line boxes which must be added to the current line
 		for ( i in 0...lineBoxes.length)
 		{
-			//TODO : here, added width of all element should be computed and also 
-			//nb of spaces for horizontal align
-			
-			
 			//store the line box in the unbreakable line box array, which is
 			//a buffer preventing break between elements which are not supposed to
 			//be break into several lines, for instance a non-breaking space
@@ -247,22 +314,27 @@ class InlineFormattingContext extends FormattingContext
 		//TODO : should be done when computing child in the line
 		removeSpaces();
 		
-		//TODO : compute concatenated length and space numbers
 		alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
+
+		setLineBoxesBounds(rootLineBox);
 		
 		_formattingContextData.y += lineBoxHeight;
-				
-		//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
-		/**
-		if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
+	
+	}
+	
+	private function setLineBoxesBounds(lineBox:LineBox):Void
+	{
+		for (i in 0...lineBox.childNodes.length)
 		{
-			_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.hasChildNodes() == true)
+			{
+				setLineBoxesBounds(child);
+				child.bounds = getLineBoxBounds(child);
+			}
 		}
-		
-
-		_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		*/
 	}
 	
 	private function getConcatenatedWidth(lineBox:LineBox):Int
@@ -380,8 +452,10 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLeft(flowX:Int, lineBox:LineBox):Void
 	{
+		flowX += lineBox.leftOffset;
 		for (i in 0...lineBox.childNodes.length)
 		{
+			
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			child.bounds.x = flowX;
 			flowX += Math.round(child.bounds.width);
@@ -391,6 +465,7 @@ class InlineFormattingContext extends FormattingContext
 				alignLeft(flowX, child);
 			}
 		}
+		flowX += lineBox.rightOffset;
 	}
 	
 
