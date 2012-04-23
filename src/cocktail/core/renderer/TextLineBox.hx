@@ -62,6 +62,9 @@ class TextLineBox extends LineBox
 	 * When rendering, return the generated native
 	 * text element, and set the bounds of the
 	 * text line box on it
+	 * 
+	 * TODO : should also render text decoration, or should
+	 * be on TextRenderer ?
 	 */
 	override public function render():Array<NativeElement>
 	{
