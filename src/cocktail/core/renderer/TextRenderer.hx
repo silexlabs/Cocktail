@@ -56,6 +56,7 @@ class TextRenderer extends ElementRenderer
 		{
 			lineBoxes.push(createTextLineBoxFromTextFragment(_textFragments[i]));
 		}
+	
 		
 	}
 	
@@ -66,11 +67,21 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Renders the text using runtime specific API and return
 	 * the text NativeElement
+	 * 
+	 * TODO : should not be used anymore, as render is called on line boxes
+	 * for text
 	 */
 	override public function render():Array<NativeElement>
 	{
+		var ret:Array<NativeElement> = [];
 		
-		var ret:Array<NativeElement> = [];/**
+		for (i in 0...lineBoxes.length)
+		{
+			ret.push(lineBoxes[i].nativeElement);
+			
+		}
+		
+		/**
 		#if flash9
 		_nativeElement.x = _bounds.x;
 		_nativeElement.y = _bounds.y;
