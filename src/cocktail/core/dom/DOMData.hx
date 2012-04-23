@@ -27,8 +27,10 @@ import cocktail.core.unit.UnitData;
  * Lists all the different consituant
  * of a plain text, including 
  * controls characters
+ * 
+ * TODO : should be moved to renderer package
  */
-enum TextTokenValue {
+enum TextToken {
 	
 	/**
 	 * a word, surrounded by

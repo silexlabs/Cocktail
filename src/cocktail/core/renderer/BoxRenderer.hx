@@ -56,7 +56,7 @@ class BoxRenderer extends ElementRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function renderBackground():Array<NativeElement>
+	override public function render():Array<NativeElement>
 	{
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		

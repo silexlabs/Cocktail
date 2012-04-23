@@ -28,7 +28,7 @@ class TextRenderer extends ElementRenderer
 	 * a space, a tab...). For each, a Text Line Box
 	 * is created
 	 */
-	private var _textTokens:Array<TextTokenValue>;
+	private var _textTokens:Array<TextToken>;
 	
 	/**
 	 * The unedited source text
@@ -68,9 +68,9 @@ class TextRenderer extends ElementRenderer
 	 * Actually convert a text into an array
 	 * of text token.
 	 */
-	private static function doGetTextTokens(text:String):Array<TextTokenValue>
+	private static function doGetTextTokens(text:String):Array<TextToken>
 	{
-		var textTokens:Array<TextTokenValue> = new Array<TextTokenValue>();
+		var textTokens:Array<TextToken> = new Array<TextToken>();
 
 		var textToken:String = null;
 		
@@ -106,7 +106,7 @@ class TextRenderer extends ElementRenderer
 							textToken = null;
 						}
 						//then push a tab
-						textTokens.push(TextTokenValue.tab);
+						textTokens.push(TextToken.tab);
 						i++;
 					}
 				}
@@ -126,7 +126,7 @@ class TextRenderer extends ElementRenderer
 				}
 				
 				//push the space in the returned array
-				textTokens.push(TextTokenValue.space);
+				textTokens.push(TextToken.space);
 			}
 			//else the charachter belongs to a word
 			//and is added to the word which is being
@@ -160,7 +160,7 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextTokenValue):TextLineBox
+	private function createTextLineBoxFromTextToken(textToken:TextToken):TextLineBox
 	{
 		//the text of the created text line box
 		var text:String;
