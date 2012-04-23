@@ -65,17 +65,9 @@ class FormattingContext
 	private var _elementsInFormattingContext:Array<ElementRenderer>;
 	
 	/**
-	 * a reference to the last inserted element renderer during 
-	 * a formatting
-	 */
-	private var _lastInsertedElement:ElementRenderer;
-	
-	/**
 	 * get the width of the largest line in the formatting context
 	 */
 	public var maxWidth(getMaxWidth, never):Int;
-	
-	private var _layOutLastLine:Bool;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
@@ -119,7 +111,6 @@ class FormattingContext
 	{
 		_elementsInFormattingContext = null;
 		_formattingContextData = null;
-		_lastInsertedElement = null;
 		
 		_floatsManager.dispose();
 		_floatsManager = null;
@@ -143,7 +134,6 @@ class FormattingContext
 	 */
 	public function format():Void
 	{	
-		_layOutLastLine = true;
 		doFormat(_elementsInFormattingContext);
 	}
 	
@@ -158,7 +148,6 @@ class FormattingContext
 	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		_layOutLastLine = true;
 		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
 		for (i in 0..._elementsInFormattingContext.length)
@@ -202,7 +191,7 @@ class FormattingContext
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-		private function getBounds(elements:Array<ElementRenderer>):RectangleData
+	private function getBounds(elements:Array<ElementRenderer>):RectangleData
 	{
 
 		var bounds:RectangleData;
@@ -301,51 +290,8 @@ class FormattingContext
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		initFormattingContextData();
-		
-		//format all the box element in order
-		for (i in 0...elementsInFormattingContext.length)
-		{
-			doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
-		}
 	}
 
-	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		//if (element.isFloat() == true)
-		//{
-			//insertFloat(element);
-		//}
-		//else if (element.canHaveChildren() == true)
-		//{
-			//if (element.coreStyle.establishesNewFormattingContext() == true)
-			//{
-				//insertFormattingContextRootElement(element);
-			//}
-			//else
-			//{
-				//insertContainerElement(element);
-			//}
-		//}
-		//else
-		//{
-			//if (element.isText() == true)
-			//{
-				//if (element.isSpace() == true)
-				//{
-					//insertSpace(element, isNextElementALineFeed);
-				//}
-				//else
-				//{
-					//insertText(element);
-				//}
-				//
-			//}
-			//else
-			//{
-				//insertEmbeddedElement(element);
-			//}
-		//}
-	}
 	
 	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
@@ -360,72 +306,6 @@ class FormattingContext
 		}
 
 		return elementRenderers;
-	}
-	
-	private function insertEmbeddedElement(element:ElementRenderer):Void
-	{ 
-		//abstract
-	}
-	
-
-	private function insertFormattingContextRootElement(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	private function insertContainerElement(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-
-	/**
-	 * Insert a text. overriden by sub-classes
-	 */
-	private function insertText(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a space. overriden by sub-classes
-	 */
-	private function insertSpace(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		//abstract	
-	}
-	
-	/**
-	 * Insert an horizontal offset. overriden by sub-classes
-	 */
-	private function insertHorizontalOffset(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a tab. overriden by sub-classes
-	 */
-	private function insertTab(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a linefeed. overriden by sub-classes
-	 */
-	private function insertLineFeed(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a floated HTMLElement. overriden by sub-classes
-	 * 
-	 * TODO : re-implement floats
-	 */
-	private function insertFloat(element:ElementRenderer):Void
-	{
-		//abstract
 	}
 
 	/////////////////////////////////

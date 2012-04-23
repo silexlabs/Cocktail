@@ -138,7 +138,7 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * Insert a floated HTMLElement. overriden by sub-classes
 	 * 
-	 */
+	 
 	override private function insertFloat(element:ElementRenderer):Void
 	{
 		var parent:FlowBoxRenderer = cast( element.parentNode);
@@ -156,5 +156,5 @@ class BlockFormattingContext extends FormattingContext
 			height:height
 		}
 	}
-	
+	*/
 }
