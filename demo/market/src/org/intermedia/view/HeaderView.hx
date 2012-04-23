@@ -29,6 +29,12 @@ class HeaderView extends ViewBase
 	//private var _titleTextElement:HtmlDom;
 	private var _titleTextElement:HtmlDom;
 	
+	//private var _titleTextElement:HtmlDom;
+	static inline var IMAGE_URL:String = "assets/rss-icon.png";
+	
+	//private var _titleTextElement:HtmlDom;
+	private var _image:Image;
+	
 	// back button container, to be built in the constructor, and attached/detached depending on displayBackButton value
 	//private var _backButtonContainer:HtmlDom;
 	private var _backButtonContainer:HtmlDom;
@@ -60,19 +66,21 @@ class HeaderView extends ViewBase
 	{
 		_displayBackButton = v;
 		
-		// if back button has to be displayed, attach it to this
+		// if back button has to be displayed, remove thumb image, and attach backbutton to this
 		if (_displayBackButton)
 		{
+			node.removeChild(_image);
 			//node.appendChild(_backButtonContainer);
 			node.appendChild(_backButtonContainer);
 		}
-		// if it has to be hidden, first check if back button is already attached to this, and then remove it
+		// if it has to be hidden, first check if back button is already attached to this, and then remove it and then add thumb
 		else
 		{
 			if(_backButtonContainer.parentNode != null)
 			{
 				//this.removeChild(_backButtonContainer);
 				node.removeChild(_backButtonContainer);
+				node.appendChild(_image);
 			}
 		}
 		return _displayBackButton;
@@ -86,7 +94,13 @@ class HeaderView extends ViewBase
 		// set header style
 		HeaderStyle.setHeaderStyle(node);
 		
-		// build title
+		// build thumbnail and attach it
+		_image = cast Lib.document.createElement("img");
+		HeaderStyle.setThumbImageStyle(_image);
+		_image.src = IMAGE_URL;
+		node.appendChild(_image);
+		
+		// build title and attach it
 		_titleTextElement = Lib.document.createTextNode(_data);
 		//_titleTextElement = Lib.document.createTextNode("Yo");
 		_titleContainer = Lib.document.createElement("div");

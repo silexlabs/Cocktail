@@ -24,9 +24,6 @@ class ViewManager
 	//Reference to the header of the application, which is always displayed
 	private var _header:HeaderView;
 	
-	static inline var HEADER_HOME_TITLE:String = "Market";
-	static inline var HEADER_DETAIL_TITLE:String = "Infos";
-	
 	// reference to the menu
 	//private var _menu:MenuListViewText;
 	private var _menu:ScrollableMenu;
@@ -69,7 +66,7 @@ class ViewManager
 		//_body = new BodyDOMElement();
 		ViewManagerStyle.setBodyStyle(_body);
 		_header = new HeaderView();
-		_header.data = HEADER_HOME_TITLE;
+		_header.data = Constants.HEADER_HOME_TITLE;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
 		//_body.appendChild(_header);
 		_body.appendChild(_header.node);
@@ -132,6 +129,7 @@ class ViewManager
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		_swippableListView.onHorizontalMove = _menu.horizontalMove;
 		_swippableListView.onHorizontalUp = _menu.horizontalRelease;
+		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		//_applicationController.srcCellData(CELL_QTY);
 		//_applicationController.srcCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
@@ -226,7 +224,7 @@ class ViewManager
 		// update detail view data
 		_detailView.data = detailData;
 		// update header title
-		_header.data = HEADER_DETAIL_TITLE;
+		_header.data = Constants.HEADER_DETAIL_TITLE;
 		// display header back button
 		_header.displayBackButton = true;
 		
@@ -262,7 +260,7 @@ class ViewManager
 		//_applicationController.goBackToListView();
 
 		// update header title
-		_header.data = HEADER_HOME_TITLE;
+		_header.data = Constants.HEADER_HOME_TITLE;
 		// hide header back button
 		_header.displayBackButton = false;
 		
@@ -315,5 +313,7 @@ class ViewManager
 		_body.removeChild(view.node);
 		_body.appendChild(view.node);
 	}
+	
+
 	
 }

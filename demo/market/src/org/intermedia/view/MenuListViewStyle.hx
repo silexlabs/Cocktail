@@ -53,6 +53,7 @@ class MenuListViewStyle
 		node.style.backgroundColor = null;
 		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
 		//node.style.backgroundImage = 'url("assets/headerBlue.png")';
+		node.style.backgroundImage = 'url(' + Constants.MENU_BG_IMAGE_URL + ')';
 
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "auto";

@@ -271,6 +271,9 @@ class Scroll2D
 		
 	/**
 	 * swipe animation when touch is released
+	 * 
+	 * @param	xOrigin
+	 * @param	xTarget
 	 */
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
@@ -291,6 +294,12 @@ class Scroll2D
     {
 		//node.scrollLeft = Std.int(e);
 		//node.scrollLeft = Std.int(e);
+		//_offset.x = Std.int(e);
+		//_offset.x = initialScrollPosition.x - Std.int(e);
+
+		// compute horizontal ratio
+		var horizontalRatio:Float = computeHorizontalRatio(_offset.x);
+
 		if (onHorizontalScroll != null)
 		{
 			onHorizontalScroll(Std.int(e),_offset.x);
@@ -373,6 +382,22 @@ class Scroll2D
 		{
 			_verticalTween.stop();
 		}
+	}
+
+	
+	/**
+	 * Computes Horizontal ratio
+	 * 
+	 * @param	XOffset
+	 * @return
+	 */
+	private function computeHorizontalRatio(XOffset:Int):Float
+	{
+		var ratio:Float = 0;
+		if (Lib.window.innerWidth != 0)
+			ratio = XOffset / Lib.window.innerWidth;
+		return ratio;
+
 	}
 	
 }

@@ -41,6 +41,7 @@ class HeaderStyle
 		//node.style.zIndex = 1000;
 		
 		//node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
+		node.style.backgroundImage = 'url(' + Constants.HEADER_BG_IMAGE_URL + ')';
 		
 		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
 		/*node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
@@ -136,6 +137,25 @@ class HeaderStyle
 		node.style.position = "relative";
 		node.style.top = "0px";
 		node.style.left = "0px";
+	}
+	
+	/**
+	 * Defines back button image Style
+	 * 
+	 * @param	node
+	 */
+	public static function setThumbImageStyle(node:HtmlDom):Void
+	{
+		var THUMB_MARGIN:Int = 5;
+		
+		node.style.display = "inline";
+		node.style.position = "relative";
+		node.style.top = Std.string(THUMB_MARGIN) + "px";
+		node.style.left = Std.string(2*THUMB_MARGIN) + "px";
+		node.style.width = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
+		node.style.height = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
+		
+		
 	}
 	
 }
