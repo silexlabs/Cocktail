@@ -78,7 +78,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxes = null;
 	}
 	
-	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>,staticPositionedElement:ElementRenderer = null):Void
+	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		_unbreakableLineBoxes = new Array<LineBox>();
 		startFormat(staticPositionedElement);
@@ -86,7 +86,7 @@ class InlineFormattingContext extends FormattingContext
 		
 	
 		
-		super.doFormat(elementsInFormattingContext);
+		super.doFormat(staticPositionedElement);
 	}
 	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void

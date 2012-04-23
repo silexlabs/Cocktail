@@ -59,12 +59,6 @@ class FormattingContext
 	private var _formattingContextData:FormattingContextData;
 	
 	/**
-	 * Holds a reference to each of the ElementRenderer formatted by this
-	 * formatting context.
-	 */
-	private var _elementsInFormattingContext:Array<ElementRenderer>;
-	
-	/**
 	 * get the width of the largest line in the formatting context
 	 */
 	public var maxWidth(getMaxWidth, never):Int;
@@ -85,7 +79,6 @@ class FormattingContext
 		//formatting context
 		_floatsManager = new FloatsManager();
 		initFormattingContextData();
-		_elementsInFormattingContext = new Array<ElementRenderer>();
 	}
 	
 	/**
@@ -109,7 +102,6 @@ class FormattingContext
 	 */
 	public function dispose():Void
 	{
-		_elementsInFormattingContext = null;
 		_formattingContextData = null;
 		
 		_floatsManager.dispose();
@@ -122,19 +114,11 @@ class FormattingContext
 	/////////////////////////////////
 	
 	/**
-	 * inert an ElementRenderer in the formatting context
-	 */
-	public function insertElement(element:ElementRenderer):Void
-	{
-		_elementsInFormattingContext.push(element);
-	}
-
-	/**
 	 * starts a formatting
 	 */
 	public function format():Void
 	{	
-		doFormat(_elementsInFormattingContext);
+		doFormat();
 	}
 	
 	/**
@@ -148,16 +132,7 @@ class FormattingContext
 	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0..._elementsInFormattingContext.length)
-		{
-			elementsToFormat.push(_elementsInFormattingContext[i]);
-		}
-		
-		elementsToFormat.push(element);
-		
-		doFormat(elementsToFormat, element);
+		doFormat(element);
 		
 		var x:Float = element.bounds.x;
 		var y:Float = element.bounds.y;
@@ -285,25 +260,27 @@ class FormattingContext
 		
 	}
 	
-	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>, staticPositionedElement:ElementRenderer = null):Void
+	private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		initFormattingContextData();
 	}
 
-	
+	/**
+	 * TODO : return child of element ?
+	 */
 	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
 		var elementRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0..._elementsInFormattingContext.length)
-		{
-			if (_elementsInFormattingContext[i].parentNode == elementRenderer)
-			{
-				elementRenderers.push(_elementsInFormattingContext[i]);
-			}
-		}
+		//for (i in 0..._elementsInFormattingContext.length)
+		//{
+			//if (_elementsInFormattingContext[i].parentNode == elementRenderer)
+			//{
+				//elementRenderers.push(_elementsInFormattingContext[i]);
+			//}
+		//}
 
 		return elementRenderers;
 	}

@@ -36,7 +36,7 @@ class BlockFormattingContext extends FormattingContext
 	}
 	
 	//TODO : should not be 2 methods
-	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>, staticPositionedElement:ElementRenderer = null):Void
+	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		doFormat2(_formattingContextRoot, 0, 0, staticPositionedElement);
 	}

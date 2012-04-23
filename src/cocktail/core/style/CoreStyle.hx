@@ -741,9 +741,11 @@ class CoreStyle
 	{
 		//insert in the flow, relative positioned element are also inserted in the flow, as
 		//their are first laid out in normal then their offset is applied at render time
+		//
+		//TODO : no need to insert anymore, just have a method for positioned element ?
 		if (isPositioned() == false || isRelativePositioned() == true)
 		{
-			formattingContext.insertElement(_elementRenderer);
+			//formattingContext.insertElement(_elementRenderer);
 		}
 		//else the HTMLElement is absolutely positioned
 		else
