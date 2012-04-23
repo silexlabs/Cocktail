@@ -14,6 +14,8 @@ import cocktail.core.NativeElement;
  * This is the flash player implementation of
  * the HTMLDocument
  * 
+ * TODO : for NME, set the stage as no scale
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLDocument extends AbstractHTMLDocument

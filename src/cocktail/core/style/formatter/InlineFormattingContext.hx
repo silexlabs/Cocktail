@@ -116,9 +116,11 @@ class InlineFormattingContext extends FormattingContext
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
+				//the first line box created by an inline box renderer has a left margin and padding
 				childLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
 				childLineBox.paddingLeft = child.coreStyle.computedStyle.paddingLeft;
-				//TODO : here add left margin to current unbreakable line
+				//the left margin and padding is added to the unbreakable width as the next line box in the line 
+				//can't be separated from this margin and padding
 				_unbreakableWidth += child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
 				
 				//attach the line box to its parent line box
@@ -130,23 +132,20 @@ class InlineFormattingContext extends FormattingContext
 				//each line into which this inline box renderer is laid out can be
  				openedElementRenderers.push(child);
 				
-			
-				
 				//format all the children of the inline box renderer recursively
 				//a reference to the last added line box is returned, so that it can
 				//be used as a starting point when laying out the siblings of the 
 				//inline box renderer
 				lineBox = doFormat2(child, childLineBox, rootLineBoxes, openedElementRenderers);
 				
-				//TODO : here, set bounds for each generated line boxes
-				
 				//now that all of the child of the inline box renderer as been laid out,
 				//remove the reference to this inline box renderer so that when a new line
 				//is created, no line box pointing to this inline box renderer is created
 				openedElementRenderers.pop();
 				
-					
-				//TODO : here add right margin to current unbreakable line
+				//The right margin and padding is added to the last generated line box of the current inline
+				//box renderer
+				//
 				//TODO : check if it works for multiple line child
 				child.lineBoxes[child.lineBoxes.length - 1].marginRight = child.coreStyle.computedStyle.marginRight;
 				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
@@ -156,7 +155,8 @@ class InlineFormattingContext extends FormattingContext
 			//or an element displayed as an inline-block
 			else
 			{
-				//get all the line boxes of the element
+				//get all the line boxes of the element, for instance, for a TextRenderer it will be an array
+				//of TextLineBox
 				var childLineBoxes:Array<LineBox> = child.lineBoxes;
 		
 				//insert the array of created line boxes into the current line. It might create as many
@@ -165,31 +165,33 @@ class InlineFormattingContext extends FormattingContext
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 		}
-		
 		return lineBox;
 	}
 	
+	/**
+	 * Compute the bounds of a line box in the space
+	 * of the containing block establishing this formatting context
+	 * 
+	 * This method is only called for the line box which can have child
+	 * line boxes.
+	 * 
+	 * @param	lineBox the line box whose bounds must be found
+	 */
 	private function getLineBoxBounds(lineBox:LineBox):RectangleData
 	{
-		var bounds:RectangleData;
-		
 		var left:Float = 50000;
 		var top:Float = 50000;
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 		
+		//loop in all the children of the line box
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			var childBounds:RectangleData;
-			if (child.hasChildNodes() == true)
-			{
-				childBounds = child.bounds;
-			}
-			else
-			{
-				childBounds = child.bounds;
-			}
+			
+			//get the bounds of the child. If the child itself can have
+			//children, its bounds would have beenalready computed
+			var childBounds:RectangleData = child.bounds;
 			
 			if (childBounds.x < left)
 			{
@@ -208,19 +210,21 @@ class InlineFormattingContext extends FormattingContext
 				bottom = childBounds.y + childBounds.height - child.leadedAscent;
 			}
 			
+			//add the left and right margin of the child to the bounds
 			left -= child.marginLeft;
 			right += child.marginRight;
 		}
 		
+		//add the left and right paddings of the line box to it's bounds
 		left -= lineBox.paddingLeft;
 		right += lineBox.paddingRight;
 			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
+		var bounds:RectangleData = {
+			x:left,
+			y:top,
+			width : right - left,
+			height :  bottom - top,
+		};
 		
 		//need to implement better fix,
 		//sould not be negative
@@ -236,9 +240,10 @@ class InlineFormattingContext extends FormattingContext
 		return bounds;
 	}
 	
-	//TODO  : attach the created line box to its container ? this way,inline element
-	//have array of line box and block box has the tree ? For rendering, LayerRenderer use
-	//line box tree or rendering tree ?
+	/**
+	 * Create a new line box for an inline box renderer. One line box
+	 * is created for each line the inline box renderer is in
+	 */
 	private function createContainerLineBox(child:ElementRenderer):LineBox
 	{
 		var lineBox:LineBox = new LineBox(child);
@@ -247,6 +252,10 @@ class InlineFormattingContext extends FormattingContext
 		return lineBox;
 	}
 	
+	/**
+	 * Insert an array of line boxes into the current line. If the line boxes
+	 * can't all fit in the line, as many new line as necessary are created
+	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the line boxes which must be added to the current line
@@ -269,12 +278,13 @@ class InlineFormattingContext extends FormattingContext
 			if (remainingLineWidth - _unbreakableWidth < 0)
 			{
 				//TODO : should be padding left instead ?
+				//
 				//reset the global formatting context for the next line
 				_formattingContextData.x = 0;
 				
 				//format the current line which is currently the last in the line array
 				//, now that all the line box in it are known
-				//each of the line box will be placed in x and y on this line
+				//each of the line boxes will be placed in x and y on this line
 				formatLine(rootLineBoxes[rootLineBoxes.length -1], false);
 				
 				//create a new root for the next line, and add it to the line array
@@ -313,24 +323,41 @@ class InlineFormattingContext extends FormattingContext
 			_unbreakableWidth = 0;
 		}
 		
-		
 		return lineBox;
 	}
 	
+	/**
+	 * Srtart the formatting of a line, starting from the root line box of
+	 * the line
+	 * @param	rootLineBox the top of the tree of line box of this line
+	 * @param	isLastLine wheter this line is the last one of this
+	 * formatting context
+	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
 		//TODO : should be done when computing child in the line
 		removeSpaces();
 		
+		//format line boxes horizontally
 		alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
+		
+		//format line boxes vertically
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
 
+		//set the bounds of all the container line boxes in the line, now
+		//that all line boxes are laid out
 		setLineBoxesBounds(rootLineBox);
 		
+		//update the y of the formatting context so that the next line will start
+		//below this one
 		_formattingContextData.y += lineBoxHeight;
 	
 	}
 	
+	/**
+	 * Set the bounds of the container line boxes using the position
+	 * and dimension of thei child line boxes
+	 */
 	private function setLineBoxesBounds(lineBox:LineBox):Void
 	{
 		for (i in 0...lineBox.childNodes.length)
@@ -345,6 +372,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	/**
+	 * Compute the added width of all the line box in the line
+	 */
 	private function getConcatenatedWidth(lineBox:LineBox):Int
 	{
 		var concatenatedWidth:Int = 0;
@@ -364,6 +394,10 @@ class InlineFormattingContext extends FormattingContext
 		return concatenatedWidth;
 	}
 	
+	/**
+	 * Compute the number of space character found in the current
+	 * line. This is used when the text is justified
+	 */
 	private function getSpacesNumber(lineBox:LineBox):Int
 	{
 		var spacesNumber:Int = 0;
@@ -404,6 +438,8 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	isLastLine wheter it is the last line which is laid out
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
+	 * 
+	 * TODO : update doc
 	 */
 	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
 	{	
@@ -756,8 +792,9 @@ class InlineFormattingContext extends FormattingContext
 	 * of the highest ascent and descent of its
 	 * HTMLElement above the baseline
 	 * 
-	 * TODO : finish implementation of verticalAlign + duplicated
-	 * code
+	 * TODO : finish implementation of verticalAlign
+	 * 
+	 * TODO : update doc
 	 */
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
