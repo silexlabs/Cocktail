@@ -46,9 +46,7 @@ class BoxRenderer extends ElementRenderer
 	override public function dispose():Void
 	{
 		super.dispose();
-		
 		_backgroundManager.dispose();
-		
 		_backgroundManager = null;
 	}
 	

@@ -56,15 +56,6 @@ enum TextTokenValue {
 	lineFeed;
 }
 
-/**
- * Holds a text token and its visual
- * representation (a TextRenderer)
- */
-typedef TextFragmentData = {
-	var textToken:TextTokenValue;
-	var textRenderer:TextLineBox;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic HTMLElement structures and enums
 //////////////////////////////////////////////////////////////////////////////////////////

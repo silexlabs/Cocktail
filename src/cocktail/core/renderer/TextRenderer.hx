@@ -14,7 +14,9 @@ import cocktail.core.style.CoreStyle;
 import haxe.Log;
 
 /**
- * Renders a text
+ * Renders a run of text by creating as many text line box
+ * as necessary for each word/space. Also in charge of separating
+ * the source text into an array of word, space, tab...
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -23,12 +25,14 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
-	 * a space, a tab...) and the corresponding TextFragmentHTMLElement,
-	 * created when the text is rendered
+	 * a space, a tab...). For each, a Text Line Box
+	 * is created
 	 */
-	private var _textFragments:Array<TextFragmentData>;
+	private var _textTokens:Array<TextTokenValue>;
 	
-	
+	/**
+	 * The unedited source text
+	 */
 	private var _text:Text;
 	
 	/**
@@ -37,61 +41,24 @@ class TextRenderer extends ElementRenderer
 	public function new(style:CoreStyle, text:Text) 
 	{
 		super(style);
-		
 		_text = text;
-		
 		init();
-		
-		
 	}
-	
-	private function init():Void
-	{
-		_textFragments = doGetTextFragments(_text.nodeValue);
-		
-		for (i in 0..._textFragments.length)
-		{
-			lineBoxes.push(createTextLineBoxFromTextFragment(_textFragments[i]));
-		}
-	
-		
-	}
-	
-	/////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	////////////////////////////////
 	
 	/**
-	 * Renders the text using runtime specific API and return
-	 * the text NativeElement
-	 * 
-	 * TODO : should not be used anymore, as render is called on line boxes
-	 * for text
+	 * Separate the source text in an array of text token
+	 * and create a text line box for each one
 	 */
-	override public function render():Array<NativeElement>
+	private function init():Void
 	{
-		var ret:Array<NativeElement> = [];
+		_textTokens = doGetTextTokens(_text.nodeValue);
 		
-		for (i in 0...lineBoxes.length)
+		for (i in 0..._textTokens.length)
 		{
-			ret.push(lineBoxes[i].nativeElement);
-			
+			//create and store the line boxes
+			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
 		}
-		
-		/**
-		#if flash9
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y;
-		#elseif nme
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
-		#end
-		
-		ret.push(_nativeElement);
-		*/
-		return ret;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
@@ -99,16 +66,13 @@ class TextRenderer extends ElementRenderer
 	
 	/**
 	 * Actually convert a text into an array
-	 * of text token. Each item of the array
-	 * also has a null TextFragmentHTMLElement,
-	 * as it is only created once the text is laid
-	 * out
+	 * of text token.
 	 */
-	private static function doGetTextFragments(text:String):Array<TextFragmentData>
+	private static function doGetTextTokens(text:String):Array<TextTokenValue>
 	{
-		var textFragments:Array<TextFragmentData> = new Array<TextFragmentData>();
+		var textTokens:Array<TextTokenValue> = new Array<TextTokenValue>();
 
-		var textFragment:String = null;
+		var textToken:String = null;
 		
 		var i:Int = 0;
 		
@@ -122,27 +86,27 @@ class TextRenderer extends ElementRenderer
 					//if a line feed is found
 					if (text.charAt(i + 1) == "n")
 					{
-						if (textFragment != null)
+						if (textToken != null)
 						{
 							//push the current word into the returned array
-							textFragments.push(insertTextToken(word(textFragment)));
-							textFragment = null;
+							textTokens.push(word(textToken));
+							textToken = null;
 						}
 						//then push a line feed
-						textFragments.push(insertTextToken(lineFeed));
+						textTokens.push(lineFeed);
 						i++;
 					}
 					//if a tab is found
 					else if (text.charAt(i + 1) == "t")
 					{
-						if (textFragment != null)
+						if (textToken != null)
 						{
 							//push the word into the returned array
-							textFragments.push(insertTextToken(word(textFragment)));
-							textFragment = null;
+							textTokens.push(word(textToken));
+							textToken = null;
 						}
 						//then push a tab
-						textFragments.push(insertTextToken(TextTokenValue.tab));
+						textTokens.push(TextTokenValue.tab);
 						i++;
 					}
 				}
@@ -154,26 +118,26 @@ class TextRenderer extends ElementRenderer
 				
 				//If a word was being formed by concatenating
 				//characters
-				if (textFragment != null)
+				if (textToken != null)
 				{
 					//push the word into the returned array
-					textFragments.push(insertTextToken(word(textFragment)));
-					textFragment = null;
+					textTokens.push(word(textToken));
+					textToken = null;
 				}
 				
 				//push the space in the returned array
-				textFragments.push(insertTextToken(TextTokenValue.space));
+				textTokens.push(TextTokenValue.space);
 			}
 			//else the charachter belongs to a word
 			//and is added to the word which is being
 			//concatenated
 			else
 			{
-				if (textFragment == null)
+				if (textToken == null)
 				{
-					textFragment = "";
+					textToken = "";
 				}
-				textFragment += text.charAt(i);
+				textToken += text.charAt(i);
 			}
 			
 			i++;
@@ -181,21 +145,12 @@ class TextRenderer extends ElementRenderer
 		
 		//push the remaining word if text doesn't end with a space
 		//or control character
-		if (textFragment != null)
+		if (textToken != null)
 		{
-			textFragments.push(insertTextToken(word(textFragment)));
+			textTokens.push(word(textToken));
 		}
 
-		return textFragments;
-	}
-	
-	/**
-	 * Utils method wrapping a textToken into a textFragmentData
-	 * with a null textFragmentHTMLElement
-	 */
-	private static function insertTextToken(textToken:TextTokenValue):TextFragmentData
-	{
-		return { textToken:textToken, textRenderer:null };
+		return textTokens;
 	}
 	
 	/////////////////////////////////
@@ -203,14 +158,14 @@ class TextRenderer extends ElementRenderer
 	////////////////////////////////
 	
 	/**
-	 * Create and return a TextRenderer from a TextFragmentData
+	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextFragment(textFragment:TextFragmentData):TextLineBox
+	private function createTextLineBoxFromTextToken(textToken:TextTokenValue):TextLineBox
 	{
-		//the text of the created TextRenderer
+		//the text of the created text line box
 		var text:String;
 		
-		switch(textFragment.textToken)
+		switch(textToken)
 		{
 			case word(value):
 				text = value;
@@ -231,7 +186,6 @@ class TextRenderer extends ElementRenderer
 		return textLineBox;
 	}
 
-	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	////////////////////////////////
