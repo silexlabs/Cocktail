@@ -45,8 +45,11 @@ class Scroll2D
 	// horizontal Up Callback
 	public var onHorizontalUp:Dynamic->Int->Void;
 	
+	// horizontal tween
+	public var onHorizontalTween:Int->Void;
+	
 	// horizontal tween end
-	public var onHorizontalTweenEnd:Void->Void;
+	//public var onHorizontalTweenEnd:Void->Void;
 	
 	// horizontal tween
 	private var _horizontalTween:Tween;
@@ -105,9 +108,6 @@ class Scroll2D
 		stopTweens();
 		// stop all tweens
 		
-		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
-		/*_viewport.onResize = null;
-		
 		// set onMouseMove & onMouseUp callbacks
 		//onMouseMove = onMoveCallback;
 		//onMouseUp = onUpCallback;
@@ -149,8 +149,6 @@ class Scroll2D
 		//{
 			//event.preventDefault();
 		//}
-		
-		//trace(_direction + " - " + _offset.x);
 		
 		// if direction is not set
 		if (_direction == Direction.notYetSet)
@@ -215,6 +213,7 @@ class Scroll2D
 	{
 		// block left scroll position
 		//node.scrollLeft = initialScrollPosition.x;
+		
 		// prevent default scroll behaviour
 		event.preventDefault();
 		
@@ -246,9 +245,6 @@ class Scroll2D
 		//onMouseMove = null;
 		//onMouseUp = null;
 		
-		// done as a workaround for this bug: https://github.com/silexlabs/Cocktail/issues/139
-		//_viewport.onResize = onResizeCallback;
-		
 		// reset direction
 		_direction = Direction.notYetSet;
 
@@ -278,9 +274,8 @@ class Scroll2D
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
 		// create the tween
-		//haxe.Firebug.trace("index: " + _index + " - scrollLeft: " + node.scrollLeft + " - " + "_currentListView.x:" + _currentListView.x);
         _horizontalTween = new Tween( xOrigin, xTarget, 600, Quint.easeOut );
-		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
+		_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
         // launch the tween
         _horizontalTween.start();
 	}
@@ -292,17 +287,22 @@ class Scroll2D
 	 */
     private function onHorizontalScrollCallback( e : Float )
     {
-		//node.scrollLeft = Std.int(e);
-		//node.scrollLeft = Std.int(e);
-		//_offset.x = Std.int(e);
-		//_offset.x = initialScrollPosition.x - Std.int(e);
-
-		// compute horizontal ratio
-		var horizontalRatio:Float = computeHorizontalRatio(_offset.x);
-
 		if (onHorizontalScroll != null)
 		{
 			onHorizontalScroll(Std.int(e),_offset.x);
+		}
+    }
+
+	/**
+	 * move view on the x axis
+	 * 
+	 * @param	e
+	 */
+    private function onHorizontalTweenCallback( e : Float )
+    {
+		if (onHorizontalTween != null)
+		{
+			onHorizontalTween(Std.int(e));
 		}
     }
 
@@ -313,10 +313,10 @@ class Scroll2D
 	 */
     private function horizontalTweenEnd(e : Float )
 	{
-		if (onHorizontalTweenEnd != null)
+		/*if (onHorizontalTweenEnd != null)
 		{
 			onHorizontalTweenEnd();
-		}
+		}*/
 	}
 	
 	/**
@@ -324,19 +324,13 @@ class Scroll2D
 	 */
 	private function verticalReleaseTween():Void
 	{
-		//trace("releaseTween");
-		//trace("releaseTween: " + "x:" + x + ", y:" + y + ", initialScrollPosition.x:" + initialScrollPosition.x + ", _offset.x:" + _offset.x + ", _viewportWidth:" + _viewportWidth + ", this.x:" + this.x + ", -_currentListView.x:" + -_currentListView.x);
-		
 		var verticalTweenEnd:Int = 0;
 		// if scrolling direction is down
 		if (_offset.y > 0 )
-			//verticalTweenEnd = _currentListView.node.scrollTop - VERTICAL_TWEEN_DELTA;
 			verticalTweenEnd = _scrollPosition.y - VERTICAL_TWEEN_DELTA;
 		else
-			//verticalTweenEnd = _currentListView.node.scrollTop + VERTICAL_TWEEN_DELTA;
 			verticalTweenEnd = _scrollPosition.y + VERTICAL_TWEEN_DELTA;
 		// create the tween
-        //var tween = new Tween( _currentListView.node.scrollTop, verticalTweenEnd, 600, Quint.easeOut );
         _verticalTween = new Tween( _scrollPosition.y, verticalTweenEnd, 600, Quint.easeOut );
 		_verticalTween.setTweenHandlers( onVerticalScrollCallback, onVerticalTweenEnd );
         // launch the tween
@@ -350,7 +344,6 @@ class Scroll2D
 	 */
     private function onVerticalScrollCallback( e : Float )
     {
-		//_currentListView.node.scrollTop = Std.int(e);
 		if (onVerticalScroll != null)
 		{
 			onVerticalScroll(Std.int(e));
@@ -375,7 +368,6 @@ class Scroll2D
 		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
 		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
 		{
-			//_horizontalTween.stop();
 			_horizontalTween.pause();
 		}
 		if ( (_verticalTween != null) && _verticalTween.isPlaying)
@@ -384,21 +376,6 @@ class Scroll2D
 		}
 	}
 
-	
-	/**
-	 * Computes Horizontal ratio
-	 * 
-	 * @param	XOffset
-	 * @return
-	 */
-	private function computeHorizontalRatio(XOffset:Int):Float
-	{
-		var ratio:Float = 0;
-		if (Lib.window.innerWidth != 0)
-			ratio = XOffset / Lib.window.innerWidth;
-		return ratio;
-
-	}
 	
 }
 

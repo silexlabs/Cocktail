@@ -28,12 +28,6 @@ class MenuListViewText extends ListViewBase
 	public var index(getIndex,setIndex):Int;
 	//public var index:Int;
 	
-	// node used for the scrolling
-	//private var _scrollNode:HtmlDom;
-	
-	// touch & mouse handler
-	//private var _moveHandler:Scroll2D;
-	
 	// menu item 0 width
 	private var _menuItem0Width:Int;
 	
@@ -52,18 +46,24 @@ class MenuListViewText extends ListViewBase
 	// menu item 2 left position
 	private var _menuItem2LeftPos:Int;
 	
+	// menu item left position target
+	private var _menuItem0LeftTarget:Int;
+	private var _menuItem1LeftTarget:Int;
+	private var _menuItem2LeftTarget:Int;
+
+	
 	public function new() 
 	{
 		_index = 0;
 		
 		super();
-		MenuListViewStyle.setListStyle(node);
-
-		// initialise move handler
-		//_moveHandler = new Scroll2D(ScrollType.horizontal);
-		//_moveHandler.onHorizontalScroll = onHorizontalMove;
-		//_moveHandler.onHorizontalUp = onHorizontalUp;
+		//MenuListViewStyle.setListStyle(node);
+		MenuListViewStyle.setMenuStyle(node);
 		
+		displayListBottomLoader = false;
+		
+		// onresize callback
+		//Lib.window.onresize = onResizeCallback;
 	}
 	
 	/**
@@ -85,59 +85,58 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
-		//trace("setIndex: " + v);
-		
 		_index = v;
 		
+		// Compute menu items left target
+		computeMenuItemLeftTarget();
+		
+		// menu item 0 tween
+		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, 600, Quint.easeOut );
+		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
+		// launch the tween
+		tween0.start();
+
+		// menu item 1 tween
+		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, 600, Quint.easeOut );
+		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
+		// launch the tween
+		tween1.start();
+
+		// menu item 0 tween
+		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, 600, Quint.easeOut );
+		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
+		// launch the tween
+		tween2.start();
+
+		return v;
+	}
+	
+	/**
+	 * Compute menu items left target
+	 */
+	private function computeMenuItemLeftTarget():Void
+	{
 		// depending on the index value, set each menu item left end position
-		var menuItem0LeftEnd:Int = 0;
-		var menuItem1LeftEnd:Int = 0;
-		var menuItem2LeftEnd:Int = 0;
 		switch(_index)
 		{
 			case 0:
-				menuItem0LeftEnd = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				menuItem1LeftEnd = Lib.window.innerWidth - _menuItem1Width;
-				menuItem2LeftEnd = Lib.window.innerWidth;
+				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
+				_menuItem2LeftTarget = Lib.window.innerWidth;
 			case 1:
-				menuItem0LeftEnd = 0;
-				menuItem1LeftEnd = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				menuItem2LeftEnd = Lib.window.innerWidth - _menuItem2Width;
+				_menuItem0LeftTarget = 0;
+				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
 			case 2:
-				menuItem0LeftEnd = -_menuItem0Width;
-				menuItem1LeftEnd = 0;
-				menuItem2LeftEnd = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+				_menuItem0LeftTarget = -_menuItem0Width;
+				_menuItem1LeftTarget = 0;
+				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
 			default:
+				_menuItem0LeftTarget = 0;
+				_menuItem1LeftTarget = 0;
+				_menuItem2LeftTarget = 0;
 		}
 
-		//trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
-		//trace("setIndex: " + v + " - " + _cells[0].node.offsetLeft + "," + menuItem0LeftEnd);
-		
-		// menu item 0 tween
-		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, menuItem0LeftEnd, 600, Quint.easeOut );
-		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
-		// launch the tween
-		//tween0.start();
-
-		// menu item 1 tween
-		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, menuItem1LeftEnd, 600, Quint.easeOut );
-		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
-		// launch the tween
-		//tween1.start();
-
-		// menu item 0 tween
-		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, menuItem2LeftEnd, 600, Quint.easeOut );
-		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
-		// launch the tween
-		//tween2.start();
-
-		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft + "," + menuItem1LeftEnd + "," + _cells[1].node.offsetLeft + "," + menuItem2LeftEnd + "," + _cells[2].node.offsetLeft);
-		//trace( _cells[0].node.offsetLeft + "," + _cells[1].node.offsetLeft + "," + _cells[2].node.offsetLeft);
-		//trace(menuItem0LeftEnd + "," + _cells[0].node.offsetLeft);
-
-		//computeMenuItemsLeftPos();
-
-		return v;
 	}
 	
 	/**
@@ -178,10 +177,8 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function menuItemMoveEnd(e:Float):Void
 	{
-		//trace(e);
-		//trace(_cells[0].node.style.left);
-		//trace(_cells[0].node.offsetLeft);
-		//computeMenuItemsLeftPos();
+		// reset position attributes
+		computeMenuItemsLeftPos();
 	}
 	
 	/**
@@ -192,9 +189,6 @@ class MenuListViewText extends ListViewBase
 		_menuItem0Width = _cells[0].node.clientWidth;
 		_menuItem1Width = _cells[1].node.clientWidth;
 		_menuItem2Width = _cells[2].node.clientWidth;
-		//Firebug.trace(_menuItem0Width);
-		//Firebug.trace(_menuItem1Width);
-		//Firebug.trace(_menuItem2Width);
 	}
 	
 	/**
@@ -205,9 +199,6 @@ class MenuListViewText extends ListViewBase
 		_menuItem0LeftPos = _cells[0].node.offsetLeft;
 		_menuItem1LeftPos = _cells[1].node.offsetLeft;
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
-		//Firebug.trace(_menuItem0LeftPos);
-		//Firebug.trace(_menuItem1LeftPos);
-		//Firebug.trace(_menuItem2LeftPos);
 	}
 	
 	
@@ -226,7 +217,6 @@ class MenuListViewText extends ListViewBase
 			cell.data = Reflect.field(_data, field);
 			
 			// set mouseUp callback
-			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
 			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
@@ -257,6 +247,9 @@ class MenuListViewText extends ListViewBase
 			_index++;
 			
 		}
+		// set index to its initial value 
+		_index = 1;
+
 		
 		// if loader is attached to to list container, detach it
 		if (_listBottomLoader.parentNode != null)
@@ -269,7 +262,9 @@ class MenuListViewText extends ListViewBase
 			node.appendChild(_listBottomLoader);
 		}
 		
+		// reset width attributes
 		computeMenuItemsWidth();
+		// reset position attributes
 		computeMenuItemsLeftPos();
 	}	
 
@@ -316,59 +311,48 @@ class MenuListViewText extends ListViewBase
 	}
 
 	/**
-	 * move swippable view on the horizontal axis
-	 * 
-	 * @param	e
-	 */
-    /*private function onHorizontalMove( x : Int )
-    {
-		node.scrollLeft = x;
-		//node.style.left = x + "px";
-    }*/
-
-	
-	/**
 	 * move horizontally menu items
 	 * 
 	 * @param	Xoffset
 	 */
-	//public function moveHorizontally(XOffset:Int):Void
 	public function moveHorizontally(ratio:Float):Void
 	{
-		//trace("moveHorizontally");
-		//trace("ratio: " + Std.int(ratio*100));
-		//trace(ratio);
-		//menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * XOffset / Lib.window.innerWidth));
-		//menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * XOffset / Lib.window.innerWidth));
-		//menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * XOffset / Lib.window.innerWidth));
 		menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
 		menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
 		menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
 	}
 	
 	/**
-	 * move horizontally menu items
+	 * swippable view horizontal up callback
 	 * 
 	 * @param	Xoffset
 	 */
-	//public function horizontalRelease(ratio:Float):Void
-	public function horizontalRelease(listIndex:Int):Void
+	public function horizontalUp(listIndex:Int):Void
 	{
-		// reset position attributes
-		//computeMenuItemsLeftPos();
-		
-		//trace(listIndex);
-		//index = listIndex;
-		
+		// set index value to launch setter
+		index = listIndex;	
 	}
 	
 	/**
-	 * Horizontal tween
+	 * swippable view horizontal tween end callback
 	 * 
 	 * @param	e
 	 */
-    public function horizontalTweenEnd():Void
+    /*public function horizontalTweenEnd():Void
 	{
-		computeMenuItemsLeftPos();
+	}*/
+	
+	/**
+	 * on rezize callback
+	 */
+	public function onResizeCallback(event:Event):Void
+	{
+		// reset lists position
+		computeMenuItemLeftTarget();
+		menuItem0Move(_menuItem0LeftTarget);
+		menuItem1Move(_menuItem1LeftTarget);
+		menuItem2Move(_menuItem2LeftTarget);
 	}
+	
+
 }
