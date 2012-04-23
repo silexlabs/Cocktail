@@ -28,11 +28,17 @@ class LineBox extends Node
 	
 	public var verticalAlign(get_verticalAlign, never):Float;
 	
-	private var _leftOffset:Int;
-	public var leftOffset(get_leftOffset, set_leftOffset):Int;
+	private var _marginLeft:Int;
+	public var marginLeft(get_marginLeft, set_marginLeft):Int;
 	
-	private var _rightOffset:Int;
-	public var rightOffset(get_rightOffset, set_rightOffset):Int;
+	private var _marginRight:Int;
+	public var marginRight(get_marginRight, set_marginRight):Int;
+	
+	private var _paddingLeft:Int;
+	public var paddingLeft(get_paddingLeft, set_paddingLeft):Int;
+	
+	private var _paddingRight:Int;
+	public var paddingRight(get_paddingRight, set_paddingRight):Int;
 	
 	private var	_backgroundManager:BackgroundManager;
 	
@@ -54,24 +60,44 @@ class LineBox extends Node
 		
 	}
 	
-	public function get_rightOffset():Int
+	private function get_paddingRight():Int 
 	{
-		return _rightOffset;
+		return _paddingRight;
 	}
 	
-	public function get_leftOffset():Int
+	private function set_paddingRight(value:Int):Int 
 	{
-		return _leftOffset;
+		return _paddingRight = value;
 	}
 	
-	public function set_leftOffset(value:Int):Int
+	private function get_paddingLeft():Int 
 	{
-		return _leftOffset = value;
+		return _paddingLeft;
 	}
 	
-	public function set_rightOffset(value:Int):Int
+	private function set_paddingLeft(value:Int):Int 
 	{
-		return _rightOffset = value;
+		return _paddingLeft = value;
+	}
+	
+	public function get_marginRight():Int
+	{
+		return _marginRight;
+	}
+	
+	public function get_marginLeft():Int
+	{
+		return _marginLeft;
+	}
+	
+	public function set_marginLeft(value:Int):Int
+	{
+		return _marginLeft = value;
+	}
+	
+	public function set_marginRight(value:Int):Int
+	{
+		return _marginRight = value;
 	}
 	
 	public function isSpace():Bool

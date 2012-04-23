@@ -116,7 +116,8 @@ class InlineFormattingContext extends FormattingContext
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
-				childLineBox.leftOffset = child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
+				childLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
+				childLineBox.paddingLeft = child.coreStyle.computedStyle.paddingLeft;
 				//TODO : here add left margin to current unbreakable line
 				_unbreakableWidth += child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
 				
@@ -144,7 +145,11 @@ class InlineFormattingContext extends FormattingContext
 				//is created, no line box pointing to this inline box renderer is created
 				openedElementRenderers.pop();
 				
+					
 				//TODO : here add right margin to current unbreakable line
+				//TODO : check if it works for multiple line child
+				child.lineBoxes[child.lineBoxes.length - 1].marginRight = child.coreStyle.computedStyle.marginRight;
+				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
 				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
 			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
@@ -203,13 +208,13 @@ class InlineFormattingContext extends FormattingContext
 				bottom = childBounds.y + childBounds.height - child.leadedAscent;
 			}
 			
-			left -= child.leftOffset;
-			right -= lineBox.rightOffset;
+			left -= child.marginLeft;
+			right += child.marginRight;
 		}
+		
+		left -= lineBox.paddingLeft;
+		right += lineBox.paddingRight;
 			
-		
-		
-		
 		bounds = {
 					x:left,
 					y:top,
@@ -236,7 +241,10 @@ class InlineFormattingContext extends FormattingContext
 	//line box tree or rendering tree ?
 	private function createContainerLineBox(child:ElementRenderer):LineBox
 	{
-		return new LineBox(child);
+		var lineBox:LineBox = new LineBox(child);
+		//TODO : should be reseted at the start of a layout + messy to have cross reference
+		child.lineBoxes.push(lineBox);
+		return lineBox;
 	}
 	
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
@@ -452,7 +460,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLeft(flowX:Int, lineBox:LineBox):Void
 	{
-		flowX += lineBox.leftOffset;
+		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			
@@ -465,7 +473,7 @@ class InlineFormattingContext extends FormattingContext
 				alignLeft(flowX, child);
 			}
 		}
-		flowX += lineBox.rightOffset;
+		flowX += lineBox.marginRight + lineBox.paddingRight;
 	}
 	
 
