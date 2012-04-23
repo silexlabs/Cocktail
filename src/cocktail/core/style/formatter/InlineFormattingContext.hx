@@ -80,11 +80,12 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
+		super.doFormat(staticPositionedElement);
+		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		startFormat(staticPositionedElement);
-		return;
 		
-		super.doFormat(staticPositionedElement);
+		
 	}
 	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
@@ -247,7 +248,7 @@ class InlineFormattingContext extends FormattingContext
 		removeSpaces();
 		
 		//TODO : compute concatenated length and space numbers
-		alignLineBox2(rootLineBox, isLastLine, 100, 5);
+		alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
 		
 		_formattingContextData.y += lineBoxHeight;
@@ -262,6 +263,48 @@ class InlineFormattingContext extends FormattingContext
 
 		_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 		*/
+	}
+	
+	private function getConcatenatedWidth(lineBox:LineBox):Int
+	{
+		var concatenatedWidth:Int = 0;
+		
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.hasChildNodes() == true)
+			{
+				concatenatedWidth += getConcatenatedWidth(child);
+			}
+			
+			concatenatedWidth += Math.round(child.bounds.width);
+		}
+		
+		return concatenatedWidth;
+	}
+	
+	private function getSpacesNumber(lineBox:LineBox):Int
+	{
+		var spacesNumber:Int = 0;
+		
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.hasChildNodes() == true)
+			{
+				spacesNumber += getSpacesNumber(child);
+			}
+			
+			if (child.isSpace() == true)
+			{
+				spacesNumber++;
+			}
+		}
+		
+		return spacesNumber;
+		
 	}
 	
 	/**
@@ -282,7 +325,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
 	 */
-	private function alignLineBox2(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
+	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
 	{	
 		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total available line width, and the x position where to 
@@ -303,13 +346,13 @@ class InlineFormattingContext extends FormattingContext
 		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
 		{
 			case left:
-				alignLeft2(flowX, rootLineBox);
+				alignLeft(flowX, rootLineBox);
 				
 			case right:
-				alignRight2(flowX, remainingSpace, rootLineBox);
+				alignRight(flowX, remainingSpace, rootLineBox);
 				
 			case center:
-				alignCenter2(flowX, remainingSpace, rootLineBox);
+				alignCenter(flowX, remainingSpace, rootLineBox);
 				
 			case justify:	
 				//the last line of an inline formatting context
@@ -317,7 +360,7 @@ class InlineFormattingContext extends FormattingContext
 				//the space between HTMLElements if there are few of them
 				if (isLastLine == true)
 				{
-					alignLeft2(flowX, rootLineBox);
+					alignLeft(flowX, rootLineBox);
 				}
 				else
 				{
@@ -326,7 +369,7 @@ class InlineFormattingContext extends FormattingContext
 					//TODO : move to the place where concatenated length will be computed
 					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
 					
-					alignJustify2(flowX, remainingSpace, rootLineBox, spaceInLine);
+					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);
 				}
 		}
 	}
@@ -335,7 +378,7 @@ class InlineFormattingContext extends FormattingContext
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
 	 * @param	flowX the x position of the first HTMLElement
 	 */
-	private function alignLeft2(flowX:Int, lineBox:LineBox):Void
+	private function alignLeft(flowX:Int, lineBox:LineBox):Void
 	{
 		for (i in 0...lineBox.childNodes.length)
 		{
@@ -345,7 +388,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignLeft2(flowX, child);
+				alignLeft(flowX, child);
 			}
 		}
 	}
@@ -357,13 +400,19 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignCenter2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
+	private function alignCenter(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
 	{
-		//for (i in 0..._elementsInLineBox.length)
-		//{
-			//_elementsInLineBox[i].bounds.x = Math.round(remainingSpace / 2) + flowX;
-			//flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		//}
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			child.bounds.x = Math.round(remainingSpace / 2) + flowX;
+			flowX += Math.round(child.bounds.width);
+			
+			if (child.hasChildNodes() == true)
+			{
+				alignCenter(flowX, remainingSpace, child);
+			}
+		}
 	}
 	
 	/**
@@ -373,13 +422,19 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
+	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
 	{
-		//for (i in 0..._elementsInLineBox.length)
-		//{
-			//_elementsInLineBox[i].bounds.x = flowX + remainingSpace;
-			//flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		//}
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			child.bounds.x =  flowX + remainingSpace;
+			flowX += Math.round(child.bounds.width);
+			
+			if (child.hasChildNodes() == true)
+			{
+				alignRight(flowX, remainingSpace, child);
+			}
+		}
 	}
 	
 	/**
@@ -388,37 +443,29 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	flowX
 	 * @param	remainingSpace
 	 */
-	private function alignJustify2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox, spaceInLine:Int):Void
+	private function alignJustify(flowX:Int, remainingSpace:Int, lineBox:LineBox, spacesInLine:Int):Void
 	{
-		//TODO :add isSpace on TextLineBox
-		/**
-		//determine how many space there are among the 
-		//HTMLElements of the line box
-		var spacesNumber:Int = 0;
-		for (i in 0..._elementsInLineBox.length)
+		for (i in 0...lineBox.childNodes.length)
 		{
-			if (_elementsInLineBox[i].isSpace() == true)
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.isSpace() == true)
 			{
-				spacesNumber++;
-			}
-		}
-		
-		//justify all HTMLElements
-		for (i in 0..._elementsInLineBox.length)
-		{	
-			if (_elementsInLineBox[i].isSpace() == true)
-			{
-					var spaceWidth:Int = Math.round( (remainingSpace / spacesNumber));
-					spacesNumber--;
-					remainingSpace -= spaceWidth;
-					flowX += spaceWidth;
+				var spaceWidth:Int = Math.round( (remainingSpace / spacesInLine));
+				//TODO : should return nb of spaces as this is passed by value ?
+				spacesInLine--;
+				remainingSpace -= spaceWidth;
+				flowX += spaceWidth;
 			}
 			
-			_elementsInLineBox[i].bounds.x = flowX ;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
+			child.bounds.x =  flowX;
+			flowX += Math.round(child.bounds.width);
 			
+			if (child.hasChildNodes() == true)
+			{
+				alignJustify(flowX, remainingSpace, child, spacesInLine);
+			}
 		}
-		*/
 	}
 	
 	
@@ -637,132 +684,6 @@ class InlineFormattingContext extends FormattingContext
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.leadedAscent + rootLineBox.leadedDescent;
 
-		
-		/**
-		//init the ascent and descent of the line box
-		var lineBoxAscent:Float = 0;
-		var lineBoxDescent:Float = 0;
-	}
-		
-		//loop in all HTMLElement in the line box to find
-		//the highest ascent and descent among them
-		//TODO : should be done when computing child in the line
-		for (i in 0..._elementsInLineBox.length)
-		{
-			//TODO : shouldn't need an html element here, only style
-			var htmlElement:HTMLElement = _elementsInLineBox[i].coreStyle.htmlElement;
-			
-			var htmlElementAscent:Int;
-			var htmlElementDescent:Int;
-			
-			//the computed vertical align is the offset of the DOMElemenet relative
-			//to the baseline
-			var htmlElementVerticalAlign:Float = htmlElement.coreStyle.computedStyle.verticalAlign;
-			
-			//for embedded or inlineBlock elements, which have no baseline, the height above
-			//the baseline is the offset height and they have no descent
-			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
-			_elementsInLineBox[i].establishesNewFormattingContext() == true)
-			{
-				htmlElementAscent = htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
-				+ _elementsInLineBox[i].coreStyle.computedStyle.marginTop + _elementsInLineBox[i].coreStyle.computedStyle.marginBottom;
-				
-				htmlElementDescent = 0;
-				
-				switch (htmlElement.coreStyle.verticalAlign)
-				{
-					case top:
-						htmlElementAscent = Math.round(lineBoxAscent);
-						htmlElementDescent = Math.round(htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
-				 - lineBoxAscent);
-						
-					default:	
-						
-				}
-			}
-			//else retrieve the ascent and descent and apply leading to it
-			else
-			{
-				htmlElementAscent = htmlElement.coreStyle.fontMetrics.ascent;
-				htmlElementDescent = htmlElement.coreStyle.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = htmlElement.coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
-		
-				//apply leading to the ascent and descent
-				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
-				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
-			}
-			
-			//if the ascent or descent is superior to the current maximum
-			//ascent or descent, it becomes the line box ascent/descent
-			if (htmlElementAscent - htmlElementVerticalAlign > lineBoxAscent)
-			{
-				lineBoxAscent = htmlElementAscent - htmlElementVerticalAlign;
-			}
-			
-			if (htmlElementDescent + htmlElementVerticalAlign > lineBoxDescent)
-			{
-				lineBoxDescent = htmlElementDescent + htmlElementVerticalAlign;
-			}
-		
-		}
-		
-		
-		
-		//compute the line box height
-		var lineBoxHeight:Float = rootLineBox.ascent + rootLineBox.descent;
-		
-		//for each HTMLElement, place it vertically using the line box ascent and vertical align
-		for (i in 0..._elementsInLineBox.length)
-		{
-			
-			var htmlElement:HTMLElement = _elementsInLineBox[i].coreStyle.htmlElement;
-			
-			var verticalAlign:Float;
-			switch (htmlElement.coreStyle.verticalAlign)
-			{
-				case top:
-					verticalAlign = 0;
-					
-					
-				case bottom:
-					verticalAlign = 0;
-					
-				default:
-					verticalAlign = htmlElement.coreStyle.computedStyle.verticalAlign;
-			}
-			
-			_elementsInLineBox[i].bounds.y = Math.round(lineBoxAscent) + Math.round(verticalAlign) + _formattingContextData.y;
-
-			
-			//if the element is embedded or an inlineBlock, removes its offset height from its vertical position
-			//so that its bottom margin touches the baseline
-			
-			if (_elementsInLineBox[i].isEmbedded() == true && _elementsInLineBox[i].isText() == false ||
-			_elementsInLineBox[i].establishesNewFormattingContext() == true)
-			{	
-				
-				switch (htmlElement.coreStyle.verticalAlign)
-				{
-					case top:
-						
-						_elementsInLineBox[i].bounds.y = _formattingContextData.y;
-					
-					default:	
-						_elementsInLineBox[i].bounds.y -= htmlElement.coreStyle.computedStyle.height +  htmlElement.coreStyle.computedStyle.paddingTop + htmlElement.coreStyle.computedStyle.paddingBottom
-				 + _elementsInLineBox[i].coreStyle.computedStyle.marginTop + _elementsInLineBox[i].coreStyle.computedStyle.marginBottom;
-					
-				}
-				
-				
-			}
-			
-			
-		}
-	
-		*/
 		return Math.round(lineBoxHeight);
 	}
 	
@@ -773,7 +694,7 @@ class InlineFormattingContext extends FormattingContext
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			if (child.hasChildNodes() == true)
 			{
-				setRootLineBoxMetrics(lineBox, rootLineBox);
+				setRootLineBoxMetrics(child, rootLineBox);
 			}
 			
 			var leadedAscent:Float = child.leadedAscent;
@@ -801,7 +722,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY);
 			}
-			
+
 			child.bounds.y = lineBoxAscent + formattingContextY + child.verticalAlign;
 		}
 	}
