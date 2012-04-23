@@ -60,7 +60,7 @@ class ElementRenderer extends Node
 	public var layerRenderer(getLayerRenderer, setLayerRenderer):LayerRenderer;
 	
 	private var _lineBoxes:Array<LineBox>;
-	public var lineBoxes(getLineBoxes, never):Array<LineBox>;
+	public var lineBoxes(getLineBoxes, setLineBoxes):Array<LineBox>;
 	
 	/**
 	 * class constructor. init class attribute
@@ -163,6 +163,11 @@ class ElementRenderer extends Node
 	private function getLineBoxes():Array<LineBox>
 	{
 		return _lineBoxes;
+	}
+	
+	private function setLineBoxes(value:Array<LineBox>):Array<LineBox>
+	{
+		return _lineBoxes = value;
 	}
 	
 	private function setLayerRenderer(value:LayerRenderer):LayerRenderer

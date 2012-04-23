@@ -61,6 +61,7 @@ class LayerRenderer
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 
 		//TODO : can't remembed why i added the inlineBlock condition
+		//TODO : should not do that if root element is inline level
 		if (_rootRenderer.canHaveChildren() == true || _rootRenderer.coreStyle.display == inlineBlock)
 		{
 			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
@@ -70,6 +71,8 @@ class LayerRenderer
 				nativeElements.push(rootRendererBackground[i]);
 			}
 			
+			//TODO here : child with negative z-index
+			
 			var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
 				
 			for (i in 0...childrenBlockContainerBackground.length)
@@ -77,13 +80,21 @@ class LayerRenderer
 				nativeElements.push(childrenBlockContainerBackground[i]);
 			}
 			
+			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes();
+			
+			for (i in 0...lineBoxesChildren.length)
+			{
+				nativeElements.push(lineBoxesChildren[i]);
+			}
+			
+			/**
 			var inFlowChildren:Array<NativeElement> = renderInFlowChildren();
 			
 			for (i in 0...inFlowChildren.length)
 			{
 				nativeElements.push(inFlowChildren[i]);
 			}
-			
+			*/
 		
 			var childLayers:Array<NativeElement> = renderChildLayer();
 
@@ -323,16 +334,16 @@ class LayerRenderer
 	 * this LayerRenderer and return an array of NativeElement
 	 * from it
 	 */
-	private function renderInFlowChildren():Array<NativeElement>
+	private function renderLineBoxes():Array<NativeElement>
 	{
-		var inFlowChildren:Array<ElementRenderer> = getInFlowChildren(cast(_rootRenderer));
+		var lineBoxes:Array<LineBox> = getLineBoxes(cast(_rootRenderer));
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		for (i in 0...inFlowChildren.length)
+		for (i in 0...lineBoxes.length)
 		{
 			var nativeElements:Array<NativeElement> = [];
-			if (inFlowChildren[i].coreStyle.display == inlineBlock)
+			/**if (inFlowChildren[i].coreStyle.display == inlineBlock)
 			{
 				
 				
@@ -383,8 +394,11 @@ class LayerRenderer
 			else
 			{
 				nativeElements = inFlowChildren[i].render();
-			}
+			}*/
 			
+			nativeElements = lineBoxes[i].render();
+			
+			/**
 			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
 			{
 				
@@ -395,7 +409,7 @@ class LayerRenderer
 				{
 					ret.push(bg[j]);
 				}
-			}
+			}*/
 			
 			for (j in 0...nativeElements.length)
 			{
@@ -408,33 +422,37 @@ class LayerRenderer
 		return ret;
 	}
 	
+	
 	/**
 	 * Return all the in flow children of this LayerRenderer by traversing
 	 * recursively the rendering tree
 	 */
-	private function getInFlowChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getLineBoxes(rootRenderer:FlowBoxRenderer):Array<LineBox>
 	{
 		
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var ret:Array<LineBox> = new Array<LineBox>();
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
 			//TODO : re-implement with new line boxes
 			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
-			/**
+			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
-				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
+				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
+				for (j in 0...lineBoxes.length)
 				{
-					if (blockBoxRenderer.lineBoxes[i][j].isPositioned() == false && blockBoxRenderer.lineBoxes[i][j].isDisplayed() == true)
-					{
-						ret.push(blockBoxRenderer.lineBoxes[i][j]);
-					}
+					ret.push(lineBoxes[j]);
 				}
+				//for (j in 0...blockBoxRenderer.lineBoxes[i].childNodes.length)
+				//{
+					//if (blockBoxRenderer.lineBoxes[i].childNodes[j].isPositioned() == false && blockBoxRenderer.lineBoxes[i].childNodes[j].isDisplayed() == true)
+					//{
+						//ret.push(blockBoxRenderer.lineBoxes[i].childNodes[j]);
+					//}
+				//}
 			}
-			*/
-			
 		}
 		else
 		{
@@ -448,24 +466,20 @@ class LayerRenderer
 					{
 						if (child.isPositioned() == false)
 						{
-							ret.push(child);
-							
-
+							//ret.push(child);
 							
 							if (child.canHaveChildren() == true)
 							{	
-	
-								
-								var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
-								for (j in 0...childElementRenderer.length)
+								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
+								for (j in 0...childLineBoxes.length)
 								{
 									if (child.establishesNewFormattingContext() == true)
 									{
-										childElementRenderer[j].bounds.x += child.bounds.x;
-										childElementRenderer[j].bounds.y += child.bounds.y;
+										childLineBoxes[j].bounds.x += child.bounds.x;
+										childLineBoxes[j].bounds.y += child.bounds.y;
 									}
 								
-									ret.push(childElementRenderer[j]);
+									ret.push(childLineBoxes[j]);
 								}
 							}
 						}
@@ -477,6 +491,28 @@ class LayerRenderer
 		
 		return ret;
 	}
+	
+	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		for (i in 0...rootLineBox.childNodes.length)
+		{
+			ret.push(cast(rootLineBox.childNodes[i]));
+			
+			if (rootLineBox.childNodes[i].hasChildNodes() == true)
+			{
+				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
+				for (j in 0...childLineBoxes.length)
+				{
+					ret.push(childLineBoxes[j]);
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
 	
 	//TODO : implement layer renderer transformation
 	

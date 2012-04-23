@@ -105,7 +105,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
 	{
-		var rootLineBoxes:Array<RootLineBox> = new Array<RootLineBox>();
+		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);
@@ -116,9 +116,11 @@ class InlineFormattingContext extends FormattingContext
 		
 		//format the last line
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
+		
+		_formattingContextRoot.lineBoxes = rootLineBoxes;
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
 		for (i in 0...elementRenderer.childNodes.length)
@@ -182,7 +184,7 @@ class InlineFormattingContext extends FormattingContext
 		return new LineBox(child);
 	}
 	
-	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<RootLineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the line boxes which must be added to the current line
 		for ( i in 0...lineBoxes.length)
@@ -256,7 +258,7 @@ class InlineFormattingContext extends FormattingContext
 		return lineBox;
 	}
 	
-	private function formatLine(rootLineBox:RootLineBox, isLastLine:Bool):Void
+	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
 		//TODO : compute concatenated length and space numbers
 		alignLineBox2(rootLineBox, isLastLine, 100, 5);
@@ -298,7 +300,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @return returns the concantenated width of all the aligned DOMElelements.
 	 * Used to determine the max line width used for shrink-to-fit algorithm
 	 */
-	private function alignLineBox2(rootLineBox:RootLineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
+	private function alignLineBox2(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
 	{	
 		
 		//determine the remaining space in the line once all the width of the HTMLElements
@@ -374,7 +376,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignCenter2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox):Void
+	private function alignCenter2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
 	{
 		for (i in 0..._elementsInLineBox.length)
 		{
@@ -390,7 +392,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox):Void
+	private function alignRight2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
 	{
 		for (i in 0..._elementsInLineBox.length)
 		{
@@ -405,7 +407,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	flowX
 	 * @param	remainingSpace
 	 */
-	private function alignJustify2(flowX:Int, remainingSpace:Int, rootLineBox:RootLineBox, spaceInLine:Int):Void
+	private function alignJustify2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox, spaceInLine:Int):Void
 	{
 		//TODO :add isSpace on TextLineBox
 		/**

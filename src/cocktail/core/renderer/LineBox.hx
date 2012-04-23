@@ -31,6 +31,11 @@ class LineBox extends Node
 		_elementRenderer = elementRenderer;
 	}
 	
+	public function render():Array<NativeElement>
+	{
+		return [];
+	}
+	
 	private function get_nativeElement():NativeElement
 	{
 		return _nativeElement;

@@ -1,5 +1,6 @@
 package cocktail.core.renderer;
 import cocktail.core.FontManager;
+import cocktail.core.NativeElement;
 
 /**
  * ...
@@ -20,6 +21,19 @@ class TextLineBox extends LineBox
 		_bounds.height = getOffsetHeight();
 		#end
 		
+	}
+	
+	override public function render():Array<NativeElement>
+	{
+		#if flash9
+		_nativeElement.x = _bounds.x;
+		_nativeElement.y = _bounds.y;
+		#elseif nme
+		_nativeElement.x = _bounds.x;
+		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
+		#end
+		
+		return [_nativeElement];
 	}
 	
 	
