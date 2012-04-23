@@ -37,7 +37,41 @@ class TextLineBox extends LineBox
 	}
 	
 	
+	override private function get_leadedAscent():Float 
+	{
+		var ascent:Float = _elementRenderer.coreStyle.fontMetrics.ascent;
+		var descent:Float = _elementRenderer.coreStyle.fontMetrics.descent;	
+	
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
+
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = Math.round((ascent + leading / 2));
+		var leadedDescent:Float = Math.round((descent + leading / 2));
+		
+		return leadedAscent;
+	}
+	
+	override private function get_leadedDescent():Float 
+	{
+		var ascent:Float = _elementRenderer.coreStyle.fontMetrics.ascent;
+		var descent:Float = _elementRenderer.coreStyle.fontMetrics.descent;	
+	
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
+
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = Math.round((ascent + leading / 2));
+		var leadedDescent:Float = Math.round((descent + leading / 2));
+		
+		return leadedDescent;
+	}
+	
 	#if flash9
+	
+	
 	
 	/**
 	 * The offset width for a text fragment is the width of its

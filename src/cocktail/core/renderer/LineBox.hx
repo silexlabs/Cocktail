@@ -19,6 +19,14 @@ class LineBox extends Node
 	private var _nativeElement:NativeElement;
 	public var nativeElement(get_nativeElement, never):NativeElement;
 	
+	private var _leadedAscent:Float;
+	public var leadedAscent(get_leadedAscent, set_leadedAscent):Float;
+	
+	private var _leadedDescent:Float;
+	public var leadedDescent(get_leadedDescent, set_leadedDescent):Float;
+	
+	public var verticalAlign(get_verticalAlign, never):Float;
+	
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super();
@@ -29,6 +37,10 @@ class LineBox extends Node
 			height:0.0
 		}
 		_elementRenderer = elementRenderer;
+		
+		_leadedAscent = 0;
+		_leadedDescent = 0;
+		
 	}
 	
 	public function render():Array<NativeElement>
@@ -49,5 +61,30 @@ class LineBox extends Node
 	private function set_bounds(value:RectangleData):RectangleData
 	{
 		return _bounds = value;
+	}
+	
+	private function get_leadedAscent():Float 
+	{
+		return _leadedAscent;
+	}
+	
+	private function get_verticalAlign():Float
+	{
+		return _elementRenderer.coreStyle.computedStyle.verticalAlign;
+	}
+	
+	private function set_leadedAscent(value:Float):Float 
+	{
+		return _leadedAscent = value;
+	}
+	
+	private function get_leadedDescent():Float 
+	{
+		return _leadedDescent;
+	}
+	
+	private function set_leadedDescent(value:Float):Float 
+	{
+		return _leadedDescent = value;
 	}
 }

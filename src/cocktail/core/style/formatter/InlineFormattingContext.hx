@@ -84,8 +84,6 @@ class InlineFormattingContext extends FormattingContext
 		startFormat(staticPositionedElement);
 		return;
 		
-	
-		
 		super.doFormat(staticPositionedElement);
 	}
 	
@@ -112,7 +110,6 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
 			
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
@@ -251,12 +248,12 @@ class InlineFormattingContext extends FormattingContext
 		
 		//TODO : compute concatenated length and space numbers
 		alignLineBox2(rootLineBox, isLastLine, 100, 5);
-		var lineBoxHeight:Int = computeLineBoxHeight();
+		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
 		
 		_formattingContextData.y += lineBoxHeight;
 				
 		//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
-		
+		/**
 		if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
 		{
 			_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
@@ -264,6 +261,7 @@ class InlineFormattingContext extends FormattingContext
 		
 
 		_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+		*/
 	}
 	
 	/**
@@ -631,12 +629,21 @@ class InlineFormattingContext extends FormattingContext
 	 * TODO : finish implementation of verticalAlign + duplicated
 	 * code
 	 */
-	private function computeLineBoxHeight():Int
+	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
+		setRootLineBoxMetrics(rootLineBox, rootLineBox);
+		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y);
+		
+		//compute the line box height
+		var lineBoxHeight:Float = rootLineBox.leadedAscent + rootLineBox.leadedDescent;
+
+		
+		/**
 		//init the ascent and descent of the line box
 		var lineBoxAscent:Float = 0;
 		var lineBoxDescent:Float = 0;
-		/**
+	}
+		
 		//loop in all HTMLElement in the line box to find
 		//the highest ascent and descent among them
 		//TODO : should be done when computing child in the line
@@ -702,8 +709,10 @@ class InlineFormattingContext extends FormattingContext
 		
 		}
 		
+		
+		
 		//compute the line box height
-		var lineBoxHeight:Float = lineBoxAscent + lineBoxDescent;
+		var lineBoxHeight:Float = rootLineBox.ascent + rootLineBox.descent;
 		
 		//for each HTMLElement, place it vertically using the line box ascent and vertical align
 		for (i in 0..._elementsInLineBox.length)
@@ -752,9 +761,49 @@ class InlineFormattingContext extends FormattingContext
 			
 			
 		}
-	*/
-		return 0;
-		//return Math.round(lineBoxHeight);
+	
+		*/
+		return Math.round(lineBoxHeight);
+	}
+	
+	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox):Void
+	{
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			if (child.hasChildNodes() == true)
+			{
+				setRootLineBoxMetrics(lineBox, rootLineBox);
+			}
+			
+			var leadedAscent:Float = child.leadedAscent;
+			var leadedDescent:Float = child.leadedDescent;
+			var verticalAlign:Float = child.verticalAlign;
+			if (leadedAscent - verticalAlign > rootLineBox.leadedAscent)
+			{
+				rootLineBox.leadedAscent = leadedAscent - verticalAlign;
+			}
+			
+			if (leadedDescent + verticalAlign > rootLineBox.leadedDescent)
+			{
+				rootLineBox.leadedDescent = leadedDescent + verticalAlign;
+			}
+		}
+	}
+	
+	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Int):Void
+	{
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			if (child.hasChildNodes() == true)
+			{
+				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY);
+			}
+			
+			child.bounds.y = lineBoxAscent + formattingContextY + child.verticalAlign;
+		}
 	}
 	
 }

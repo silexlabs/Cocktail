@@ -103,7 +103,6 @@ class FormattingContext
 	public function dispose():Void
 	{
 		_formattingContextData = null;
-		
 		_floatsManager.dispose();
 		_floatsManager = null;
 		_formattingContextRoot = null;
