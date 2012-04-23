@@ -81,8 +81,8 @@ class AbstractHTMLDocument extends Document
 	private var _nativeElements:Array<NativeElement>;
 	
 	/**
-	 *	The activeElement set/get the element
-	 * in the document that is focused.
+	 *The activeElement set/get the element
+	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
 	private var _activeElement:HTMLElement;

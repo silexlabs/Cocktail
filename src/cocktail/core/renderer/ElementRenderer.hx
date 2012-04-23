@@ -109,18 +109,6 @@ class ElementRenderer extends Node
 		return [];
 	}
 	
-	/**
-	 * Render the background of the element using runtime specific
-	 * API and return an array of NativeElement from it
-	 * 
-	 * TODO : no need for a separate background method ? For instance block
-	 * render their background and border
-	 */
-	public function renderBackground():Array<NativeElement>
-	{
-		return [];
-	}
-	
 	public function dispose():Void
 	{
 		
@@ -133,6 +121,8 @@ class ElementRenderer extends Node
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
+	// TODO : shouldn't have to repeat this
+	// from CoreStyle
 	////////////////////////////////
 	
 	public function establishesNewFormattingContext():Bool
@@ -153,6 +143,11 @@ class ElementRenderer extends Node
 	public function isPositioned():Bool
 	{
 		return _coreStyle.isPositioned();
+	}
+	
+	public function isInlineLevel():Bool
+	{
+		return _coreStyle.isInlineLevel();
 	}
 	
 	public function isEmbedded():Bool

@@ -15,7 +15,7 @@ import haxe.Log;
 
 /**
  * Base class for embedded element
- * such as a picture
+ * such as a picture. Those elements
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -41,8 +41,15 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
+		var ret:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
-		var ret:Array<NativeElement> = [];
+		for (i in 0...ret.length)
+		{
+			#if (flash9 || nme)
+			ret[i].x = _bounds.x;
+			ret[i].y = _bounds.y;
+			#end
+		}
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
@@ -95,25 +102,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		return ret;
 	}
 	
-		/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
-	 */
-	override public function renderBackground():Array<NativeElement>
-	{
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
-		
-		for (i in 0...backgrounds.length)
-		{
-			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
-			#end
-		}
-		return backgrounds;
-	}
+	
 	
 	//TODO : re-implement + add an ImageRenderer
 	//
