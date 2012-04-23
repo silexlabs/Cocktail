@@ -96,6 +96,9 @@ class ElementRenderer extends Node
 	/**
 	 * Render the background of the element using runtime specific
 	 * API and return an array of NativeElement from it
+	 * 
+	 * TODO : no need for a separate background method ? For instance block
+	 * render their background and border
 	 */
 	public function renderBackground():Array<NativeElement>
 	{

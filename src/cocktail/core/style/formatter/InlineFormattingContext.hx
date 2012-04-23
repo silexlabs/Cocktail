@@ -43,12 +43,7 @@ import haxe.Log;
 class InlineFormattingContext extends FormattingContext
 {
 
-	/**
-	 * The HTMLElements in the current line. This array
-	 * is reseted each time a new line starts
-	 */
-	private var _elementsInLineBox:Array<ElementRenderer>;
-	
+
 	/**
 	 * Stores the currently unbreakable elements in the current line.
 	 * Those element can' be broken on multiple lines, if they don't all
@@ -61,17 +56,14 @@ class InlineFormattingContext extends FormattingContext
 	private var _unbreakableLineBoxes:Array<LineBox>;
 	
 	private var _unbreakableWidth:Int;
-
-	private var _currentInlineBoxesData:Array<InlineBoxData>;
 	
 	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
-		_elementsInLineBox = new Array<ElementRenderer>();
 		_unbreakableLineBoxes = new Array<LineBox>();
-		_currentInlineBoxesData = new Array<InlineBoxData>();
+		_unbreakableWidth = 0;
 		
 		super(formattingContextRoot);
 		
@@ -84,20 +76,14 @@ class InlineFormattingContext extends FormattingContext
 	{
 		super.dispose();
 		_unbreakableLineBoxes = null;
-		_elementsInLineBox = null;
-		_currentInlineBoxesData = null;
 	}
 	
 	override private function doFormat(elementsInFormattingContext:Array<ElementRenderer>,staticPositionedElement:ElementRenderer = null):Void
 	{
-		
+		_unbreakableLineBoxes = new Array<LineBox>();
 		startFormat(staticPositionedElement);
 		return;
 		
-		_elementsInLineBox = new Array<ElementRenderer>();
-		_unbreakableLineBoxes = new Array<LineBox>();
-		
-		_currentInlineBoxesData = new Array<InlineBoxData>();
 	
 		
 		super.doFormat(elementsInFormattingContext);
@@ -260,26 +246,24 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
+		//TODO : should be done when computing child in the line
+		removeSpaces();
+		
 		//TODO : compute concatenated length and space numbers
 		alignLineBox2(rootLineBox, isLastLine, 100, 5);
+		var lineBoxHeight:Int = computeLineBoxHeight();
 		
-		//doFormatLine(rootLineBox);
-	}
-	
-	private function doFormatLine(lineBox:LineBox):Void
-	{
-		for (i in 0...lineBox.childNodes.length)
+		_formattingContextData.y += lineBoxHeight;
+				
+		//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
+		
+		if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
-			
-			if (child.hasChildNodes() == true)
-			{
-				doFormatLine(child);
-			}
-			
-			trace(child);
-			trace(child.bounds);
+			_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
 		}
+		
+
+		_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 	}
 	
 	/**
@@ -302,7 +286,6 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLineBox2(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
 	{	
-		
 		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total available line width, and the x position where to 
 		//insert the first HTMLElement of the line, which might be influenced for instance
@@ -378,11 +361,11 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignCenter2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
 	{
-		for (i in 0..._elementsInLineBox.length)
-		{
-			_elementsInLineBox[i].bounds.x = Math.round(remainingSpace / 2) + flowX;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		}
+		//for (i in 0..._elementsInLineBox.length)
+		//{
+			//_elementsInLineBox[i].bounds.x = Math.round(remainingSpace / 2) + flowX;
+			//flowX += Math.round(_elementsInLineBox[i].bounds.width);
+		//}
 	}
 	
 	/**
@@ -394,11 +377,11 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignRight2(flowX:Int, remainingSpace:Int, rootLineBox:LineBox):Void
 	{
-		for (i in 0..._elementsInLineBox.length)
-		{
-			_elementsInLineBox[i].bounds.x = flowX + remainingSpace;
-			flowX += Math.round(_elementsInLineBox[i].bounds.width);
-		}
+		//for (i in 0..._elementsInLineBox.length)
+		//{
+			//_elementsInLineBox[i].bounds.x = flowX + remainingSpace;
+			//flowX += Math.round(_elementsInLineBox[i].bounds.width);
+		//}
 	}
 	
 	/**
@@ -524,7 +507,7 @@ class InlineFormattingContext extends FormattingContext
 			
 		if (shouldInsertSpace == true)
 		{
-			shouldInsertSpace != isCollapsed(_lastInsertedElement, whiteSpace);
+			//shouldInsertSpace != isCollapsed(_lastInsertedElement, whiteSpace);
 		}
 		
 		
@@ -580,139 +563,6 @@ class InlineFormattingContext extends FormattingContext
 	// of each element in the line
 //////////////////////////////////////////////////////////////////
 
-	/////////////////////////////////
-	// OVERRIDEN PRIVATE METHOD
-	/////////////////////////////////
-
-	private function getParentInlineBoxesData(parent:InlineBoxRenderer):InlineBoxData
-	{
-		var inlineBoxData:InlineBoxData = {
-				element:parent,
-				children:[]
-		};
-		
-		var flagFound:Bool = false;
-		for (i in 0..._currentInlineBoxesData.length)
-		{
-			if (_currentInlineBoxesData[i].element == parent)
-			{
-				inlineBoxData = _currentInlineBoxesData[i];
-				flagFound = true;
-			}
-		}
-		
-		if (flagFound == false)
-		{
-			_currentInlineBoxesData.push(inlineBoxData);
-		}
-		
-		return inlineBoxData;
-	}
-	
-	private function startNewLine(elementWidth:Int, isLastLine:Bool):Void
-	{
-		if (_elementsInLineBox.length > 0)
-		{
-			removeSpaces();
-			
-			var lineBoxHeight:Int = computeLineBoxHeight();
-		
-			//var lineWidth:Int = alignLineBox(isLastLine);
-			//
-			//if (lineWidth > _formattingContextData.maxWidth)
-			//{
-				//_formattingContextData.maxWidth = lineWidth;
-			//}
-			//
-			var lineBoxElements:Array<ElementRenderer> = new Array<ElementRenderer>();
-			
-			
-			for (i in 0..._elementsInLineBox.length)
-			{
-				if (_elementsInLineBox[i].parentNode != _formattingContextRoot.coreStyle.elementRenderer)
-				{
-				
-					getParentInlineBoxesData(cast(_elementsInLineBox[i].parentNode)).children.push(_elementsInLineBox[i]);
-				}
-				else
-				{
-					lineBoxElements.push(_elementsInLineBox[i]);
-				}
-			}
-			
-			for (i in 0..._currentInlineBoxesData.length)
-			{		
-				for (j in 0..._currentInlineBoxesData[i].children.length)
-				{
-				
-					lineBoxElements.push(_currentInlineBoxesData[i].children[j]);
-				}
-				
-				
-			}
-			
-			var inlineBoxes:Array<InlineBoxRenderer> = new Array<InlineBoxRenderer>();
-			
-			for (i in 0..._currentInlineBoxesData.length)
-			{		
-			
-				var inlineBoxRenderer:InlineBoxRenderer = new InlineBoxRenderer(_currentInlineBoxesData[i].element.coreStyle);
-				inlineBoxRenderer.layerRenderer = _currentInlineBoxesData[i].element.layerRenderer;
-				inlineBoxRenderer.bounds = getBounds(_currentInlineBoxesData[i].children);
-				inlineBoxes.push(inlineBoxRenderer);
-			}
-			
-			//TODO : awkward + line box are in wrong z-order (the last one should be on top of
-			//the other, correct here or in LayerRenderer ?
-			
-			inlineBoxes.reverse();
-			
-			for (i in 0...inlineBoxes.length)
-			{
-				lineBoxElements.push(inlineBoxes[i]);
-			}
-			
-		
-			
-			_currentInlineBoxesData = new Array<InlineBoxData>();
-			_elementsInLineBox = new Array<ElementRenderer>();
-			
-		
-			if (isLastLine == false)
-			{
-				_formattingContextData.y += lineBoxHeight;
-				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
-				
-				if (_formattingContextData.y  + lineBoxHeight > _formattingContextData.maxHeight)
-				{
-					_formattingContextData.maxHeight = _formattingContextData.y + lineBoxHeight;
-				}
-				
-
-				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-			}
-			//TODO : layoutlastline should be false when called from getStaticPosition
-			else if (_layOutLastLine == true)
-			{
-				_formattingContextData.y += lineBoxHeight;
-				
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData, elementWidth, _formattingContextRoot.coreStyle.computedStyle.width);
-				
-				
-				if (_formattingContextData.y  > _formattingContextData.maxHeight)
-				{
-					_formattingContextData.maxHeight = _formattingContextData.y ;
-				}
-
-				_formattingContextData.x =  _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-			}
-			//
-			
-		}
-	}
-	
-	
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
@@ -786,9 +636,10 @@ class InlineFormattingContext extends FormattingContext
 		//init the ascent and descent of the line box
 		var lineBoxAscent:Float = 0;
 		var lineBoxDescent:Float = 0;
-		
+		/**
 		//loop in all HTMLElement in the line box to find
 		//the highest ascent and descent among them
+		//TODO : should be done when computing child in the line
 		for (i in 0..._elementsInLineBox.length)
 		{
 			//TODO : shouldn't need an html element here, only style
@@ -901,8 +752,9 @@ class InlineFormattingContext extends FormattingContext
 			
 			
 		}
-	
-		return Math.round(lineBoxHeight);
+	*/
+		return 0;
+		//return Math.round(lineBoxHeight);
 	}
 	
 }
