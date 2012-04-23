@@ -181,13 +181,16 @@ To do Alex pre fine tuning:
 -scroll detail view => OK
 -resize => OK
 -passer le scroll en utilisant le x/y => abandonnné après discussion avec Alex car bientot supporté par cocktail
--animation menu
+-animation menu => OK, revoir le code avec alex ?
 -couleurs textes
 -images header => OK
 -taille & couleurs border => OK
 -retour à la ligne liste text => OK
+-thumbs:
+  => redimensionnement au resize
+  => padding
 => Pol
--affiner le scroll si tremblement
+-affiner le scroll si tremblement => OK
 -relase scroll vertical => OK
 
 Cocktail remarks:

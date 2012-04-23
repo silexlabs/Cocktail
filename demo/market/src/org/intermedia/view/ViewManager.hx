@@ -25,8 +25,8 @@ class ViewManager
 	private var _header:HeaderView;
 	
 	// reference to the menu
-	//private var _menu:MenuListViewText;
-	private var _menu:ScrollableMenu;
+	private var _menu:MenuListViewText;
+	//private var _menu:ScrollableMenu;
 	
 	//Ref to the container managing the swippable list view
 	private var _swippableListView:SwippableListView;
@@ -55,22 +55,6 @@ class ViewManager
 	 */
 	public function new(applicationModel:ApplicationModel, applicationController:ApplicationController)
 	{
-		// Store ref to application model and controller
-		_applicationModel = applicationModel;
-		_applicationController = applicationController;
-		
-		// Instantiate body headerView, loadingView, swippableView
-		//_detailView = new DetailView();
-		//_currentView = new ViewBase();
-		_body = Lib.document.body;
-		//_body = new BodyDOMElement();
-		ViewManagerStyle.setBodyStyle(_body);
-		_header = new HeaderView();
-		_header.data = Constants.HEADER_HOME_TITLE;
-		_header.onBackButtonClick = onHeaderBackButtonPressed;
-		//_body.appendChild(_header);
-		_body.appendChild(_header.node);
-		
 		// simple haxe js test
 		/*var text:HtmlDom = Lib.document.createTextNode("hello de LU");
 		_body.appendChild(text);
@@ -79,18 +63,26 @@ class ViewManager
 		image.src = "assets/loading.gif";
 		_body.appendChild(image);*/
 		
+		// Store ref to application model and controller
+		_applicationModel = applicationModel;
+		_applicationController = applicationController;
+		
+		// Instantiate body, headerView, loadingView, swippableView
+		_body = Lib.document.body;
+		ViewManagerStyle.setBodyStyle(_body);
+		
+		_header = new HeaderView();
+		_header.data = Constants.HEADER_HOME_TITLE;
+		_header.onBackButtonClick = onHeaderBackButtonPressed;
+		_body.appendChild(_header.node);
+		
 		// init menu
-		//_menu = new MenuListViewText();
-		_menu = new ScrollableMenu();
+		_menu = new MenuListViewText();
+		//_menu = new ScrollableMenu();
 		_menu.displayListBottomLoader = false;
 		_body.appendChild(_menu.node);
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		MenuCellTextStyle.setMiddleCellStyle(Lib.document.getElementById("menu_item1"));
-		//Firebug.trace(Lib.document.getElementById("menu_button0").offsetLeft);
-		//Firebug.trace(Lib.document.getElementById("menu_button2").offsetLeft);
-		
-		//_header.node.style.visibility = "hidden";
-		//_menu.node.style.visibility = "hidden";
 		
 		// init swippable view
 		_swippableListView = new SwippableListView();
@@ -99,8 +91,14 @@ class ViewManager
 		// attach swippable view to body
 		_body.appendChild(_swippableListView.node);
 		
+		// onresize callback
+		Lib.window.onresize = onResizeCallback;
+
 		// call init()
 		init();
+		
+		//_header.node.style.visibility = "hidden";
+		//_menu.node.style.visibility = "hidden";
 	}
 	
 	/**
@@ -117,25 +115,21 @@ class ViewManager
 		
 		
 		// Sets callback on the view to be notified of user actions.
-		// set list item selelected callback
+		// set menu item selelected callback
 		_menu.onListItemSelected = onMenuItemSelectedCallback;
+		
+		// set swippableView callbacks
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
-		//_swippableListView.onHorizontalTweenEnd = horizontalTweenEnd;
-		//_swippableListView.onHorizontalTweenEnd = updateZIndexes;
-		// set callback when the bottom of the scrollbar is reached
-		//_swippableListView.onListScrolled = function () { _applicationController.srcCellData(CELL_QTY); };
-		//_swippableListView.onListScrolled = function (feed:String) { _applicationController.srcCellData(feed); };
-		//_swippableListView.onListScrolled = _applicationController.srcCellData;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
-		_swippableListView.onHorizontalMove = _menu.horizontalMove;
-		_swippableListView.onHorizontalUp = _menu.horizontalRelease;
-		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
+		_swippableListView.onHorizontalMove = _menu.moveHorizontally;
+		_swippableListView.onHorizontalUp = _menu.horizontalUp;
+		//_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
+		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
-		//_applicationController.srcCellData(CELL_QTY);
-		//_applicationController.srcCellData("http://www.silexlabs.org/feed/ep_posts_small/?cat=646&format=rss2");
 		_applicationController.loadCellData(Feeds.FEED_1.url);
 		_applicationController.loadCellData(Feeds.FEED_2.url);
 		_applicationController.loadCellData(Feeds.FEED_3.url);
+		
 	}
 	
 	/**
@@ -149,16 +143,6 @@ class ViewManager
 	}
 	
 	/**
-	 * on menu item item clicked
-	 * 
-	 * @param	cellData
-	 */
-	/*private function horizontalTweenEnd():Void
-	{
-		
-	}*/
-	
-	/**
 	 * on list item selected callback
 	 */
 	private function onListItemSelectedCallback(cellData:CellData):Void
@@ -168,8 +152,6 @@ class ViewManager
 		// remove swippableListView and menu and add empty detail view
 		_body.removeChild(_swippableListView.node);
 		_body.removeChild(_menu.node);
-		//_swippableListView.style.display = DisplayStyleValue.none;
-		//_swippableListView.isVisible = false;
 
 		// to be used once switching to cocktail js version
 		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
@@ -314,6 +296,15 @@ class ViewManager
 		_body.appendChild(view.node);
 	}
 	
+	/**
+	 * on rezize callback
+	 */
+	private function onResizeCallback(event:Event):Void
+	{
+		// launch needed callbacks
+		_menu.onResizeCallback(event);
+		_swippableListView.onResizeCallback(event);
+	}
 
 	
 }

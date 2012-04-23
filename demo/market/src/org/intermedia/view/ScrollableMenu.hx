@@ -21,9 +21,6 @@ class ScrollableMenu extends ListViewBase
 	private var _index:Int;
 	public var index(getIndex,setIndex):Int;
 
-	// touch & mouse handler
-	//private var _moveHandler:Scroll2D;
-	
 	public function new() 
 	{
 		super();
@@ -33,15 +30,9 @@ class ScrollableMenu extends ListViewBase
 		_menu = new MenuListViewText();
 		_menu.displayListBottomLoader = false;
 		node.appendChild(_menu.node);
-		//_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
+
 		// set list item selelected callback
-		_menu.onListItemSelected = onListItemSelectedCallback;
-		
-		// initialise move handler
-		//_moveHandler = new Scroll2D(ScrollType.horizontal);
-		//_moveHandler.onHorizontalScroll = onHorizontalMove;
-		//_moveHandler.onHorizontalUp = onHorizontalUp;
-		
+		_menu.onListItemSelected = onListItemSelectedCallback;	
 	}
 	
 	/**
@@ -49,13 +40,7 @@ class ScrollableMenu extends ListViewBase
 	 */
 	override private function updateView():Void
 	{
-		//super.updateView();
 		_menu.data = _data;
-		
-		// computes menu items width, as cannot be done until dom structure is computed
-		//_menu.computeMenuItemsWidth();
-		//_menu.computeMenuItemsLeftPos();
-		
 	}
 	
 	/**
@@ -77,28 +62,11 @@ class ScrollableMenu extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
-		//Firebug.trace(v);
 		_index = v;
 		_menu.index = v;
 		
-		//_moveHandler.horizontalReleaseTween(node.scrollLeft, Std.parseInt(_currentListView.node.style.left));
-		//_moveHandler.horizontalReleaseTween(node.scrollLeft, 100);
-		
 		return v;
 	}
-
-	/**
-	 * move swippable view on the horizontal axis
-	 * 
-	 * @param	e
-	 */
-    /*private function onHorizontalMove( XScroll:Int, XOffset:Int )
-    {
-		//Firebug.trace(x);
-		//node.scrollLeft = x;
-		//_menu.node.scrollLeft = x;
-		//node.style.left = x + "px";
-    }*/
 
 	/**
 	 * onListItemSelected callback
@@ -115,13 +83,8 @@ class ScrollableMenu extends ListViewBase
 	 * 
 	 * @param	Xoffset
 	 */
-	//public function horizontalMove(XOffset:Int):Void
-	public function horizontalMove(ratio:Float):Void
+	public function moveHorizontally(ratio:Float):Void
 	{
-		//Firebug.trace(ratio);
-		//_menu.menuItem0Move(Xoffset);
-		//_menu.menuItem1Move(Xoffset);
-		//_menu.menuItem2Move(Xoffset);
 		_menu.moveHorizontally(ratio);
 	}
 	
@@ -131,10 +94,9 @@ class ScrollableMenu extends ListViewBase
 	 * 
 	 * @param	Xoffset
 	 */
-	//public function horizontalRelease(ratio:Float):Void
-	public function horizontalRelease(listIndex:Int):Void
+	public function horizontalUp(listIndex:Int):Void
 	{
-		_menu.horizontalRelease(listIndex);
+		_menu.horizontalUp(listIndex);
 	}
 	
 	/**
@@ -142,9 +104,9 @@ class ScrollableMenu extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-    public function horizontalTweenEnd():Void
+    /*public function horizontalTweenEnd():Void
 	{
 		_menu.horizontalTweenEnd();
-	}
+	}*/
 	
 }

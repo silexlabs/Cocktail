@@ -21,9 +21,9 @@ class SwippableListView extends ListViewBase
 {
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
-	static inline var VERTICAL_TWEEN_DELTA:Int = 150;
 	static inline var HOMEPAGE_ITEM_PER_LIST:Int = 3;
-	// number of lists taken in account for the homapage items
+	
+	// number of lists taken in account for the homepage items
 	static inline var LIST_QTY:Int = 2;
 	static inline var HOMEPAGE_ITEMS:Int = HOMEPAGE_ITEM_PER_LIST * LIST_QTY;
 	
@@ -31,7 +31,6 @@ class SwippableListView extends ListViewBase
 	private var _listsContainer:HtmlDom;
 	
 	// a ref to each of the list views which can be swiped
-	//private var _listViews:Array<ViewBase>;
 	private var _listViews:Array<ListViewBase>;
 	
 	private var list0:ListViewText;
@@ -87,12 +86,9 @@ class SwippableListView extends ListViewBase
 		_offsetStart = { x:0, y:0 };
 		_initialPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
-		//_viewport = new Viewport();
 		_viewportWidth = Lib.window.innerWidth;
 		_viewportHeight = Lib.window.innerHeight;
-		//_viewport.onResize = onResizeCallback;
-		Lib.window.onresize = onResizeCallback;
-		//Lib.window.onresize = function (event:Event) { positionLists(); };
+		//Lib.window.onresize = onResizeCallback;
 		
 		_homePageData = new Array<Dynamic>();
 		_homePageDataSet = false;
@@ -102,8 +98,8 @@ class SwippableListView extends ListViewBase
 		node.appendChild(_listsContainer);
 		
 		// set style
-		//SwippableListViewStyle.setListStyle(this);
 		SwippableListViewStyle.setSwippableListStyle(node);
+
 		// set onMouseDown callback
 		//onMouseDown = onDownCallback;
 		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
@@ -116,18 +112,13 @@ class SwippableListView extends ListViewBase
 		list0.id = Feeds.FEED_1.url;
 		_listViews.push(list0);
 		
-		//var list1:ListViewBase = new ThumbTextList1Bis(3);Filters component
-		//list1 = new ThumbTextList1Bis(2, homePageData);
 		list1 = new ThumbTextList1Bis(2);
-		//list1.buildHomePage(_homePageData);
 		list1.id = Feeds.FEED_2.url;
 		_listViews.push(list1);
-		//list1.node.style.left = Std.string(_viewportWidth) + "px";
 		
 		list2 = new ThumbTextList1(2);
 		list2.id = Feeds.FEED_3.url;
 		_listViews.push(list2);
-		//list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
 		
 		// position the lists to their correct left offset
 		positionLists();
@@ -137,35 +128,24 @@ class SwippableListView extends ListViewBase
 		{
 			listView.onDataRequest = onDataRequestCallback;
 			listView.onListItemSelected = onListItemSelectedCallback;
-			//listView.style.display = DisplayStyleValue.none;
-			//node.appendChild(listView);
 			_listsContainer.appendChild(listView.node);
 
 		}
 		
 		// set index
-		//_index = 1;
 		_index = 1;
 		// set current list to list1
 		_currentListView = cast _listViews[_index];
-		//node.scrollLeft = 0;
-		//node.scrollLeft = _viewportWidth;
-		//node.scrollLeft = _viewportWidth;
-		//this.x = -_viewportWidth;
-		
-		//_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 		
 		// set listItemSelected callback on current list
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
-		//_currentListView.onListScrolled = onScrolledCallback;
-		//_currentListView.onDataRequest = onDataRequestCallback;
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.both);
 		_moveHandler.onVerticalScroll = onVerticalMove;
 		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
 		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
-		_moveHandler.onHorizontalTweenEnd = onHorizontalTweenEndCallback;
+		_moveHandler.onHorizontalTween = onHorizontalTweenCallback;
 		
 		// js touch events handling
 		addTouchEvents();
@@ -177,7 +157,6 @@ class SwippableListView extends ListViewBase
 	 */
 	private function positionLists():Void
 	{
-		//Firebug.trace("positionLists");
 		list1.node.style.left = Std.string(1 * _viewportWidth) + "px";
 		list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
 	}
@@ -195,7 +174,6 @@ class SwippableListView extends ListViewBase
 		// set the data on the correct list, depending on the list id
 		for (list in _listViews)
 		{
-			//if (v.id == list.id)
 			if (v.id == list.id && v.id != list1.id)
 			{
 				// if _homePageData is not fully filled, continue to fill it
@@ -231,15 +209,6 @@ class SwippableListView extends ListViewBase
 			_homePageDataSet = true;
 			
 			scrollToCurrentList();
-			
-			
-			// add all lists to the view
-			/*for (listView in _listViews)
-			{
-				//listView.onDataRequest = onDataRequestCallback;
-				//node.appendChild(listView);
-				//listView.style.display = "inline-block";
-			}*/
 			
 			displayLoading = false;
 
@@ -282,12 +251,7 @@ class SwippableListView extends ListViewBase
 		// set current list item selected callback
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
 		
-		
-		//moveHandler.initialScrollPosition = { x:_currentListViewnode.scrollLeft, y:_currentListView.node.scrollTop };
-		
 		// launch horizontal tween
-		//horizontalReleaseTween();
-		//_moveHandler.horizontalReleaseTween(node.scrollLeft, Std.parseInt(_currentListView.node.style.left));
 		_moveHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
 
 		return v;
@@ -304,7 +268,7 @@ class SwippableListView extends ListViewBase
 	/**
 	 * on rezize callback
 	 */
-	private function onResizeCallback(event:Event):Void
+	public function onResizeCallback(event:Event):Void
 	{
 		// reset viewport values
 		_viewportWidth = Lib.window.innerWidth;
@@ -315,9 +279,6 @@ class SwippableListView extends ListViewBase
 		
 		// scroll to current list
 		scrollToCurrentList();
-		
-		// update swippable view position
-		//this.x = -_currentListView.x;
 	}
 	
 	/**
@@ -328,10 +289,10 @@ class SwippableListView extends ListViewBase
 	 */
     private function onHorizontalMoveCallback( XScroll:Int, XOffset:Int )
     {
-		node.scrollLeft = XScroll;
-		
 		// compute horizontal ratio
 		var horizontalRatio:Float = computeHorizontalRatio(XOffset);
+		
+		node.scrollLeft = XScroll;
 		
 		// call onHorizontalMove callback
 		if (onHorizontalMove != null && horizontalRatio != 0)
@@ -340,6 +301,16 @@ class SwippableListView extends ListViewBase
 		}
 		
     }
+	
+	/**
+	 * Horizontal tween callback
+	 * 
+	 * @param	XScroll	new scroll position
+	 */
+    private function onHorizontalTweenCallback(XScroll:Int):Void
+	{
+		node.scrollLeft = XScroll;
+	}
 	
 	/**
 	 * move current list view on the vertical axis
@@ -394,11 +365,6 @@ class SwippableListView extends ListViewBase
 		{
 			onHorizontalUp(_index);
 		}
-		// call onHorizontalMove callback
-		//if (onHorizontalMove != null)
-		//{
-			//onHorizontalMove(horizontalRatio);
-		//}
 	}
 
 		
@@ -406,12 +372,10 @@ class SwippableListView extends ListViewBase
 	 * remove list scroll callback behaviour
 	 * @param	event
 	 */
-	//override private function onScrollCallback(event:ScrollEventData):Void
 	override private function onScrollCallback(event:Event):Void
 	{
 	}
 
-	
 	/**
 	 * Adds touch events
 	 */
@@ -427,22 +391,6 @@ class SwippableListView extends ListViewBase
 		}
 		#end
 	}
-	
-	/**
-	 * Removes touch events
-	 */
-	/*public function unsetTouchEvents():Void
-	{
-		#if js
-		untyped
-		{
-		node.removeEventListener("touchstart", touchHandler, true);
-		node.removeEventListener("touchmove", touchHandler, true);
-		node.removeEventListener("touchend", touchHandler, true);
-		node.removeEventListener("touchcancel", touchHandler, true);
-		}
-		#end
-	}*/
 	
 	/**
 	 * Touch start event handler
@@ -479,19 +427,6 @@ class SwippableListView extends ListViewBase
 		_moveHandler.touchHandler(event);
 	}
 
-	/**
-	 * Horizontal tween callback
-	 * 
-	 * @param	e
-	 */
-    private function onHorizontalTweenEndCallback():Void
-	{
-		if (onHorizontalTweenEnd != null)
-		{
-			onHorizontalTweenEnd();
-		}
-	}
-	
 	/**
 	 * Computes Horizontal ratio
 	 * 

@@ -5,12 +5,6 @@ import js.Dom;
 import org.intermedia.view.Scroll2D;
 import haxe.Firebug;
 
-// hxtml
-//import hxtml2.HTMLPageData;
-//import hxtml2.HTMLParser;
-//import cocktail.Lib;
-
-
 /**
  * Display the detail of an RSS feed entry (title, picture, content...)
  * 
@@ -182,22 +176,6 @@ class DetailView extends ViewBase
 		}
 		#end
 	}
-	
-	/**
-	 * Removes touch events
-	 */
-	/*public function unsetTouchEvents() 
-	{
-		#if js
-		untyped
-		{
-		node.removeEventListener("touchstart", touchHandlerDetail, true);
-		node.removeEventListener("touchmove", touchHandlerDetail, true);
-		node.removeEventListener("touchend", touchHandlerDetail, true);
-		node.removeEventListener("touchcancel", touchHandlerDetail, true);
-		}
-		#end
-	}*/
 	
 	/**
 	 * move view on the vertical axis
