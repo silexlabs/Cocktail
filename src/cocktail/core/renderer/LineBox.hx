@@ -43,6 +43,11 @@ class LineBox extends Node
 		
 	}
 	
+	public function isSpace():Bool
+	{
+		return false;
+	}
+	
 	public function render():Array<NativeElement>
 	{
 		return [];

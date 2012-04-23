@@ -10,9 +10,13 @@ import cocktail.core.NativeElement;
 class TextLineBox extends LineBox
 {
 
+	private var _text:String;
+	
 	public function new(elementRenderer:ElementRenderer, text:String) 
 	{
 		super(elementRenderer);
+		
+		_text = text;
 		
 		_nativeElement = new FontManager().createNativeTextElement(text, elementRenderer.coreStyle.computedStyle);
 		
@@ -21,6 +25,11 @@ class TextLineBox extends LineBox
 		_bounds.height = getOffsetHeight();
 		#end
 		
+	}
+	
+	override public function isSpace():Bool
+	{
+		return _text == " ";
 	}
 	
 	override public function render():Array<NativeElement>
