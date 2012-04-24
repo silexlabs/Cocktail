@@ -63,6 +63,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		
 		//TODO : implement properly hit area for flash_player
+		
+		//TODO : as first step, we might create a nativeElement to receive mouse /touch event
+		//and set its callback to call the HTMLElement's onmousover, onmousedown...
 		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 		
 		nativeElement.x = 0;
