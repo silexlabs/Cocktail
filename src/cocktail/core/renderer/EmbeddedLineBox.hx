@@ -1,4 +1,5 @@
 package cocktail.core.renderer;
+import cocktail.core.NativeElement;
 
 /**
  * ...
@@ -19,5 +20,11 @@ class EmbeddedLineBox extends LineBox
 	override private function get_leadedAscent():Float 
 	{
 		return _bounds.height;
+	}
+	
+	override public function render():Array<NativeElement>
+	{
+		_elementRenderer.bounds = _bounds;
+		return _elementRenderer.render();
 	}
 }

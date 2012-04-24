@@ -102,7 +102,6 @@ class UnitManager
 				display = Display.none;
 				
 			default:
-				//TODO : throw exception ?
 				display = null;
 		}
 		
@@ -134,7 +133,6 @@ class UnitManager
 				overflow = Overflow.hidden;
 				
 			default:
-				//TODO : throw exception ?
 				overflow = null;
 		}
 		
@@ -193,7 +191,6 @@ class UnitManager
 				verticalAlign = VerticalAlign.sub;		
 				
 			default:
-				//TODO : throw exception ?
 				verticalAlign = null;
 		}
 		
@@ -239,7 +236,6 @@ class UnitManager
 				clear = Clear.none;
 				
 			default:
-				//TODO : throw exception ?
 				clear = null;
 		}
 		
@@ -271,7 +267,6 @@ class UnitManager
 				position = Position.fixed;
 				
 			default:
-				//TODO : throw exception ?
 				position = null;
 		}
 		
@@ -306,7 +301,6 @@ class UnitManager
 				whiteSpace = WhiteSpace.preWrap;	
 				
 			default:
-				//TODO : throw exception ?
 				whiteSpace = null;
 		}
 		
@@ -338,7 +332,6 @@ class UnitManager
 				textAlign = TextAlign.justify;
 				
 			default:
-				//TODO : throw exception ?
 				textAlign = null;
 		}
 		
@@ -397,7 +390,6 @@ class UnitManager
 				fontWeight = FontWeight.css900;		
 				
 			default:
-				//TODO : throw exception ?
 				fontWeight = null;
 		}
 		
@@ -423,7 +415,6 @@ class UnitManager
 				fontStyle = FontStyle.normal;
 				
 			default:
-				//TODO : throw exception ?
 				fontStyle = null;
 		}
 		
@@ -449,7 +440,6 @@ class UnitManager
 				fontVariant = FontVariant.smallCaps;
 				
 			default:
-				//TODO : throw exception ?
 				fontVariant = null;
 		}
 		
@@ -481,7 +471,6 @@ class UnitManager
 				textTransform = TextTransform.none;
 				
 			default:
-				//TODO : throw exception ?
 				textTransform = null;
 		}
 		
@@ -507,7 +496,6 @@ class UnitManager
 				visibility = Visibility.visible;
 				
 			default:
-				//TODO : throw exception ?
 				visibility = null;
 		}
 		
@@ -539,7 +527,6 @@ class UnitManager
 				cursor = Cursor.cssDefault;		
 				
 			default:
-				//TODO : throw exception ?
 				cursor = null;
 		}
 		
@@ -709,7 +696,6 @@ class UnitManager
 				cssFloat = CSSFloat.none;
 				
 			default:
-				//TODO : throw exception ?
 				cssFloat = null;
 		}
 		

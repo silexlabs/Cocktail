@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.FontManager;
 import cocktail.core.HTMLDocument;
 import cocktail.core.NativeElement;
 import cocktail.core.html.HTMLElement;
@@ -111,7 +112,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 			data:windowData
 		}
 		
-		flow(windowData, windowData, lastPositionedHTMLElementData, null, null, null);
+		flow(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

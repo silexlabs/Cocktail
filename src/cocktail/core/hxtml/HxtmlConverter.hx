@@ -84,76 +84,53 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HtmlDom).style.transform = value;
 	}
 */	public function setMarginLeftNum (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginLeft = value + unit;
 	}
 	public function setMarginLeftKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginLeft = value;
 	}
 	public function setMarginTopNum (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginTop = value + unit;
 	}
 	public function setMarginTopKey (element:Node, value:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginTop = value;
 	}
 	public function setMarginRightNum (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginRight = value + unit;
 	}
 	public function setMarginRightKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HTMLElement).style.marginRight = value;
 	}
 	public function setMarginBottomNum (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginBottom = value + unit;
 	}
 	public function setMarginBottomKey (element:Node, value:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.marginBottom = value;
 	}
 
 	public function setPaddingLeft (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingLeft = value + unit;
 	}
 	public function setPaddingTop (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingTop = value + unit;
 	}
 	public function setPaddingRight (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingRight = value + unit;
 	}
 	public function setPaddingBottom (element:Node, value:Float, unit:String):Void{
-		// TODO: take unit into account
 		cast(element, HTMLElement).style.paddingBottom = value + unit;
 	}
 /*
 	public function setBorderLeft (element:Node, value:Int, unit:String):Void{
-		trace("setBorderLeft "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderLeft = Std.string(value) + unit;
 	}
 	public function setBorderTop (element:Node, value:Int, unit:String):Void{
-		trace("setBorderTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderTop = value + unit;
 	}
 	public function setBorderRight (element:Node, value:Int, unit:String):Void{
-		trace("setBorderRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderRight = value + unit;
 	}
 	public function setBorderBottom (element:Node, value:Int, unit:String):Void{
-		trace("setBorderBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderBottom = value + unit;
 	}
 
@@ -373,65 +350,53 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function new(){}
 	public function setMarginLeft (element:Node, value:Int, unit:String):Void{
 		trace("setMarginLeft "+value+unit);
-		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value + unit;
 	}
 	public function setMarginTop (element:Node, value:Int, unit:String):Void{
 		trace("setMarginTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value + unit;
 	}
 	public function setMarginRight (element:Node, value:Int, unit:String):Void{
 		trace("setMarginRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginRight = value + unit;
 	}
 	public function setMarginBottom (element:Node, value:Int, unit:String):Void{
 		trace("setMarginBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value + unit;
 	}
 
 	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingLeft "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingLeft = value + unit;
 	}
 	public function setPaddingTop (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingTop = value + unit;
 	}
 	public function setPaddingRight (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingRight = value + unit;
 	}
 	public function setPaddingBottom (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingBottom = value + unit;
 	}
 
 	public function setBorderLeft (element:Node, value:Int, unit:String):Void{
 		trace("setBorderLeft "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderLeft = Std.string(value) + unit;
 	}
 	public function setBorderTop (element:Node, value:Int, unit:String):Void{
 		trace("setBorderTop "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderTop = value + unit;
 	}
 	public function setBorderRight (element:Node, value:Int, unit:String):Void{
 		trace("setBorderRight "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderRight = value + unit;
 	}
 	public function setBorderBottom (element:Node, value:Int, unit:String):Void{
 		trace("setBorderBottom "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderBottom = value + unit;
 	}
 
@@ -476,7 +441,6 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	
 	public function setBgColorKeyword (element:Node, value:String):Void{
-		// TODO: handle transparent case
 	}
 	public function setBgColorNum (element:Node, value:Int):Void{
 		cast(element, HtmlDom).style.backgroundColor = Std.string(value); 
