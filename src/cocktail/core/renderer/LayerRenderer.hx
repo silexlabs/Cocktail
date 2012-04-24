@@ -57,17 +57,22 @@ class LayerRenderer
 	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render():Array<NativeElement>
+	public function render(rootRenderer:ElementRenderer = null):Array<NativeElement>
 	{
+		if (rootRenderer == null)
+		{
+			rootRenderer = _rootRenderer;
+		}
+		
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.isInlineLevel() == false || 
-		_rootRenderer.establishesNewFormattingContext() == true)
+		if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == false || 
+		rootRenderer.establishesNewFormattingContext() == true)
 		{
 			//render the ElementRenderer which created this layer
-			var rootRendererElements:Array<NativeElement> = _rootRenderer.render();
+			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			
 			for (i in 0...rootRendererElements.length)
 			{
@@ -77,7 +82,7 @@ class LayerRenderer
 			//TODO here : render children with negative z-index
 			
 			//render all the block container children belonging to this layer
-			var blockContainerChildren:Array<NativeElement> = renderBlockContainerChildren();	
+			var blockContainerChildren:Array<NativeElement> = renderBlockContainerChildren(rootRenderer);	
 				
 			for (i in 0...blockContainerChildren.length)
 			{
@@ -89,7 +94,7 @@ class LayerRenderer
 			//TODO here : render block-level replaced elements
 			
 			//render all the line boxes belonging to this layer
-			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes();
+			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes(rootRenderer);
 			
 			for (i in 0...lineBoxesChildren.length)
 			{
@@ -97,7 +102,7 @@ class LayerRenderer
 			}
 			
 			//render all the child layers with a z-index of 0
-			var childLayers:Array<NativeElement> = renderChildLayer();
+			var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
 
 			for (i in 0...childLayers.length)
 			{
@@ -109,29 +114,29 @@ class LayerRenderer
 			//if the root renderer establishes a new formatting context, then
 			//its bounds must be added to all of its children to transform
 			//them to the space of this layer
-			if (_rootRenderer.establishesNewFormattingContext() == true)
+			if (rootRenderer.establishesNewFormattingContext() == true)
 			{
 				for (i in 0...nativeElements.length)
 				{
-					nativeElements[i].x += _rootRenderer.bounds.x;
-					nativeElements[i].y += _rootRenderer.bounds.y;
+					nativeElements[i].x += rootRenderer.bounds.x;
+					nativeElements[i].y += rootRenderer.bounds.y;
 				}
 				
 				//TODO : hack to place back the background of the root layer renderer
 				//as it is already placed when the background is created.
 				for (i in 0...rootRendererElements.length)
 				{
-					rootRendererElements[i].x -= _rootRenderer.bounds.x;
-					rootRendererElements[i].y -= _rootRenderer.bounds.y; 
+					rootRendererElements[i].x -= rootRenderer.bounds.x;
+					rootRendererElements[i].y -= rootRenderer.bounds.y; 
 				}
 			}
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
-		else if (_rootRenderer.canHaveChildren() == true && _rootRenderer.isInlineLevel() == true)
+		else if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == true)
 		{
 			//TODO
-			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer();
+			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
 			for (i in 0...lineBoxesChildren.length)
 			{
 				nativeElements.push(lineBoxesChildren[i]);
@@ -143,7 +148,7 @@ class LayerRenderer
 		{
 			//render the replaced element, render its background and asset
 			
-			var rootRendererElements:Array<NativeElement> = _rootRenderer.render();
+			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			for (i in 0...rootRendererElements.length)
 			{
 				nativeElements.push(rootRendererElements[i]);
@@ -155,21 +160,21 @@ class LayerRenderer
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
 		//its children
-		if (_rootRenderer.coreStyle.isRelativePositioned() == true)
+		if (rootRenderer.coreStyle.isRelativePositioned() == true)
 		{
 			for (i in 0...nativeElements.length)
 			{
 				
 				//first try to apply the left offset of the root renderer if it is
 				//not auto
-				if (_rootRenderer.coreStyle.left != PositionOffset.cssAuto)
+				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
 				{
-					nativeElements[i].x += _rootRenderer.coreStyle.computedStyle.left;
+					nativeElements[i].x += rootRenderer.coreStyle.computedStyle.left;
 				}
 				//else the right offset,
-				else if (_rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+				else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
-					nativeElements[i].x -= _rootRenderer.coreStyle.computedStyle.right;
+					nativeElements[i].x -= rootRenderer.coreStyle.computedStyle.right;
 				}
 				
 				//if both left and right offset is auto, then the root renderer uses its static
@@ -177,34 +182,34 @@ class LayerRenderer
 				//to its children
 			
 				//same for vertical offset
-				if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto)
+				if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
 				{
-					nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.top; 
+					nativeElements[i].y += rootRenderer.coreStyle.computedStyle.top; 
 				}
-				else if (_rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
-					nativeElements[i].y -= _rootRenderer.coreStyle.computedStyle.bottom; 
+					nativeElements[i].y -= rootRenderer.coreStyle.computedStyle.bottom; 
 				}
 			}
 		}
 		
 		//if the root renderer is absolutely positioned, then an offset might be applied
 		//to its all its children
-		else if (_rootRenderer.coreStyle.isPositioned() == true && _rootRenderer.coreStyle.isRelativePositioned() == false)
+		else if (rootRenderer.coreStyle.isPositioned() == true && rootRenderer.coreStyle.isRelativePositioned() == false)
 		{
 			for (i in 0...nativeElements.length)
 			{
 				//if the left or right style is defined on the root renderer, then it doesn"t use its static position
 				//in this direction, and an offset must be applied to all the children
-				if (_rootRenderer.coreStyle.left != PositionOffset.cssAuto || _rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto || rootRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
-					nativeElements[i].x += _rootRenderer.coreStyle.computedStyle.marginLeft;
+					nativeElements[i].x += rootRenderer.coreStyle.computedStyle.marginLeft;
 				}
 				
 				//for vertical offset, the same rule as horizontal offsets apply
-				if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto || _rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				if (rootRenderer.coreStyle.top != PositionOffset.cssAuto || rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
-					nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.marginTop;
+					nativeElements[i].y += rootRenderer.coreStyle.computedStyle.marginTop;
 				}
 			}
 		}
@@ -222,9 +227,9 @@ class LayerRenderer
 	/**
 	 * Render all the block container children of the layer
 	 */
-	private function renderBlockContainerChildren():Array<NativeElement>
+	private function renderBlockContainerChildren(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(_rootRenderer));
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
@@ -278,9 +283,9 @@ class LayerRenderer
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer():Array<NativeElement>
+	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
 		
 		//TODO : shouldn't have to do that
 		childLayers.reverse();
@@ -316,7 +321,7 @@ class LayerRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
+				if (child.canHaveChildren() == true)
 				{
 					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
 					
@@ -342,13 +347,13 @@ class LayerRenderer
 		return childLayers;
 	}
 	
-	private function renderInlineBoxRenderer():Array<NativeElement>
+	private function renderInlineBoxRenderer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		for (i in 0..._rootRenderer.lineBoxes.length)
+		for (i in 0...rootRenderer.lineBoxes.length)
 		{
-			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_rootRenderer.lineBoxes[i]);
+			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(rootRenderer.lineBoxes[i]);
 			
 			for (j in 0...childLineBoxes.length)
 			{
@@ -358,8 +363,8 @@ class LayerRenderer
 					for (k in 0...lineBoxNativeElements.length)
 					{
 						#if (flash9 || nme)
-						lineBoxNativeElements[k].x += _rootRenderer.bounds.x;
-						lineBoxNativeElements[k].y += _rootRenderer.bounds.y;
+						lineBoxNativeElements[k].x += rootRenderer.bounds.x;
+						lineBoxNativeElements[k].y += rootRenderer.bounds.y;
 						#end
 						
 						ret.push(lineBoxNativeElements[k]);
@@ -377,22 +382,30 @@ class LayerRenderer
 	 * this LayerRenderer and return an array of NativeElement
 	 * from it
 	 */
-	private function renderLineBoxes():Array<NativeElement>
+	private function renderLineBoxes(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var lineBoxes:Array<LineBox> = getLineBoxes(cast(_rootRenderer));
+		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...lineBoxes.length)
 		{
 			var nativeElements:Array<NativeElement> = [];
-			
-			nativeElements = lineBoxes[i].render();
+			if (lineBoxes[i].establishesNewFormattingContext() == false)
+			{
+				nativeElements = lineBoxes[i].render();
+			}
+			else
+			{
+				lineBoxes[i].elementRenderer.bounds = lineBoxes[i].bounds;
+				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer);
+			}
 			
 			for (j in 0...nativeElements.length)
 			{
 				ret.push(nativeElements[j]);
 			}
+	
 		}
 		
 		return ret;

@@ -39,6 +39,7 @@ class LineBox extends Node
 	 * line box
 	 */
 	private var _elementRenderer:ElementRenderer;
+	public var elementRenderer(get_elementRenderer, never):ElementRenderer;
 	
 	/**
 	 * A reference to the LayerRenderer which will render this line box.
@@ -163,9 +164,19 @@ class LineBox extends Node
 		return false;
 	}
 	
+	public function establishesNewFormattingContext():Bool
+	{
+		return _elementRenderer.establishesNewFormattingContext();
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_elementRenderer():ElementRenderer
+	{
+		return _elementRenderer;
+	}
 	
 	private function get_layerRenderer():LayerRenderer
 	{
