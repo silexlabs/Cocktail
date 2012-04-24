@@ -131,33 +131,23 @@ class FormattingContext
 	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
-		
 		doFormat(element);
-		
 		var x:Float = element.bounds.x;
 		var y:Float = element.bounds.y;
-		
 		return {x:x, y:y};
 	}
 	
 	/**
-	 * Return the added height of the children of an ElementRenderer
-	 * in this formatting context. Used by ElementRenderer with 
-	 * an auto height to determine its height
-	 * 
-	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
-	 * 
-	 * TODO : no longer need getChildElementRenderers, use childNodes ?
+	 * TODO : obsolete, CoreStyle should retrieve bounds from ElementRenderer
+	 * instead
 	 */
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
 		var height:Int = 0;
 		
-		//get bounds of all the children of the element in the formatting context root space
-		var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
-		height = Math.round(getBounds(elementRenderers).height);
-		
-		
+		var childBounds:Array<RectangleData> = getChildElementBounds(elementRenderer);
+		height = Math.round(getChildrenBounds(childBounds).height);
+	
 		return height;
 	}
 
@@ -166,7 +156,10 @@ class FormattingContext
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-	private function getBounds(elements:Array<ElementRenderer>):RectangleData
+	/**
+	 * TODO : duplicated on ElementRenderer
+	 */
+	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
 
 		var bounds:RectangleData;
@@ -177,64 +170,23 @@ class FormattingContext
 		var bottom:Float = -50000;
 		
 		
-		for (i in 0...elements.length)
+		for (i in 0...childrenBounds.length)
 		{
-			if (elements[i].bounds.x < left)
+			if (childrenBounds[i].x < left)
 			{
-				left = elements[i].bounds.x;
+				left = childrenBounds[i].x;
 			}
-			if (elements[i].bounds.y < top)
+			if (childrenBounds[i].y < top)
 			{
-				if (elements[i].isText() == false)
-				{
-					top = elements[i].bounds.y;
-				}
-				else
-				{
-					
-					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
-					var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
-		
-				//apply leading to the ascent and descent
-				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
-				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
-					
-					top = elements[i].bounds.y - htmlElementAscent;
-				}
-				
+				top = childrenBounds[i].y;
 			}
-			if (elements[i].bounds.x + elements[i].bounds.width > right)
+			if (childrenBounds[i].x + childrenBounds[i].width > right)
 			{
-				right = elements[i].bounds.x + elements[i].bounds.width;
+				right = childrenBounds[i].x + childrenBounds[i].width;
 			}
-			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
+			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
 			{
-				if (elements[i].isText() == false)
-				{
-					bottom = elements[i].bounds.y + elements[i].bounds.height;
-				}
-				else
-				{
-					
-					
-					
-					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
-				var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
-		
-				//apply leading to the ascent and descent
-				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
-				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
-					
-					bottom = elements[i].bounds.y - htmlElementAscent + elements[i].bounds.height;
-				}
+				bottom = childrenBounds[i].y + childrenBounds[i].height;
 			}
 		}
 			
@@ -270,19 +222,17 @@ class FormattingContext
 	/**
 	 * TODO : return child of element ?
 	 */
-	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getChildElementBounds(elementRenderer:FlowBoxRenderer):Array<RectangleData>
 	{
-		var elementRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var childBounds:Array<RectangleData> = new Array<RectangleData>();
 		
-		//for (i in 0..._elementsInFormattingContext.length)
-		//{
-			//if (_elementsInFormattingContext[i].parentNode == elementRenderer)
-			//{
-				//elementRenderers.push(_elementsInFormattingContext[i]);
-			//}
-		//}
+		for (i in 0...elementRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			childBounds.push(child.bounds);
+		}
 
-		return elementRenderers;
+		return childBounds;
 	}
 
 	/////////////////////////////////
