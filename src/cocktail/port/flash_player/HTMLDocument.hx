@@ -9,12 +9,12 @@ package cocktail.port.flash_player;
 
 import cocktail.core.html.AbstractHTMLDocument;
 import cocktail.core.NativeElement;
+import flash.display.StageScaleMode;
+import flash.Lib;
 
 /**
  * This is the flash player implementation of
  * the HTMLDocument
- * 
- * TODO : for NME, set the stage as no scale
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -26,6 +26,10 @@ class HTMLDocument extends AbstractHTMLDocument
 	public function new() 
 	{
 		super();
+		
+		//in Flash, the Stage is always defined as no scale as the transformations
+		//will be managed by Cocktail
+		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

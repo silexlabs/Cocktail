@@ -14,7 +14,8 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because of float support
+ * TODO : doesn't work because inline block is not wrapped in container block, 
+ * works without the "p" element
  */
 class Test 
 {
@@ -25,11 +26,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the orange box is to the left of the blue box and both boxes are above the yellow box.</p>';
+		//should add black border
+		var test = '<div><p>Test passes if the blue box is in the upper-left corner of the black box and there is no red visible on the page.</p>';
 		test += '<div>';
-		test += '<span style="background-color:blue; width:1in;">Inline box</span>';
-		test += '<div style="background-color:orange; float:left; width:0.5in;" id="div1">Float</div>';
-		test += '<div style="background-color:yellow" id="div2">Block box</div>';
+		test += '<div style="background-color:red; display:inline-block; color:blue; font-size:1in; margin-left:auto; margin-right:auto;">X</div>';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;

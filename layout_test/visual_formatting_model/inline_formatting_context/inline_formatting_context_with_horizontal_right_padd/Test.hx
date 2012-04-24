@@ -14,7 +14,8 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because of float support
+ * TODO : fail because of inline div not wrapped in anonymous block.
+ * Works when removing the "p" element
  */
 class Test 
 {
@@ -25,11 +26,9 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the orange box is to the left of the blue box and both boxes are above the yellow box.</p>';
-		test += '<div>';
-		test += '<span style="background-color:blue; width:1in;">Inline box</span>';
-		test += '<div style="background-color:orange; float:left; width:0.5in;" id="div1">Float</div>';
-		test += '<div style="background-color:yellow" id="div2">Block box</div>';
+		var test = '<div>';
+		test += '<div style="background-color:black; padding-right:100px; display:inline; line-height:1em;">';
+		test += '<div style="background-color:orange; display:inline; line-height:1em;">Filler Text </div>';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
