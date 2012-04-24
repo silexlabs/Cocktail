@@ -92,6 +92,8 @@ class BlockFormattingContext extends FormattingContext
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 			
 
+			
+				
 				child.bounds = {
 					x:x, 
 					y:y,

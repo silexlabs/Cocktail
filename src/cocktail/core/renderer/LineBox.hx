@@ -41,6 +41,12 @@ class LineBox extends Node
 	private var _elementRenderer:ElementRenderer;
 	
 	/**
+	 * A reference to the LayerRenderer which will render this line box.
+	 * It is retrieved from the ElementRenderer
+	 */
+	public var layerRenderer(get_layerRenderer, never):LayerRenderer;
+	
+	/**
 	 * the bounds of the line box, in the space of its containing
 	 * block (the block which started the inline formatting context)
 	 */
@@ -160,6 +166,11 @@ class LineBox extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_layerRenderer():LayerRenderer
+	{
+		return _elementRenderer.layerRenderer;
+	}
 	
 	private function get_paddingRight():Int 
 	{

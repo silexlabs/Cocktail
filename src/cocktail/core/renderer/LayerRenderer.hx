@@ -34,6 +34,7 @@ class LayerRenderer
 	 * created the LayerRenderer
 	 */
 	private var _rootRenderer:ElementRenderer;
+	public var rootRenderer(get_rootRenderer, never):ElementRenderer;
 
 	/**
 	 * class constructor
@@ -117,7 +118,7 @@ class LayerRenderer
 				}
 				
 				//TODO : hack to place back the background of the root layer renderer
-				//as it is already placed when the background is created
+				//as it is already placed when the background is created.
 				for (i in 0...rootRendererElements.length)
 				{
 					rootRendererElements[i].x -= _rootRenderer.bounds.x;
@@ -130,6 +131,11 @@ class LayerRenderer
 		else if (_rootRenderer.canHaveChildren() == true && _rootRenderer.isInlineLevel() == true)
 		{
 			//TODO
+			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer();
+			for (i in 0...lineBoxesChildren.length)
+			{
+				nativeElements.push(lineBoxesChildren[i]);
+			}
 		}
 		
 		//here the root renderer is a replaced element
@@ -151,9 +157,6 @@ class LayerRenderer
 		//its children
 		if (_rootRenderer.coreStyle.isRelativePositioned() == true)
 		{
-				trace(_rootRenderer.coreStyle.computedStyle.top);
-				trace(nativeElements.length);
-				trace(_rootRenderer.childNodes);
 			for (i in 0...nativeElements.length)
 			{
 				
@@ -176,7 +179,6 @@ class LayerRenderer
 				//same for vertical offset
 				if (_rootRenderer.coreStyle.top != PositionOffset.cssAuto)
 				{
-					
 					nativeElements[i].y += _rootRenderer.coreStyle.computedStyle.top; 
 				}
 				else if (_rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
@@ -317,8 +319,15 @@ class LayerRenderer
 				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
 				{
 					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
+					
 					for (j in 0...childElementRenderer.length)
 					{
+						if (child.establishesNewFormattingContext() == true)
+						{
+							childElementRenderer[j].rootRenderer.bounds.x += child.bounds.x;
+							childElementRenderer[j].rootRenderer.bounds.y += child.bounds.y;
+						}
+						
 						childLayers.push(childElementRenderer[j]);
 					}
 				}
@@ -331,6 +340,36 @@ class LayerRenderer
 		}
 		
 		return childLayers;
+	}
+	
+	private function renderInlineBoxRenderer():Array<NativeElement>
+	{
+		var ret:Array<NativeElement> = new Array<NativeElement>();
+		
+		for (i in 0..._rootRenderer.lineBoxes.length)
+		{
+			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_rootRenderer.lineBoxes[i]);
+			
+			for (j in 0...childLineBoxes.length)
+			{
+				if (childLineBoxes[j].layerRenderer == this)
+				{
+					var lineBoxNativeElements:Array<NativeElement> = childLineBoxes[j].render();
+					for (k in 0...lineBoxNativeElements.length)
+					{
+						#if (flash9 || nme)
+						lineBoxNativeElements[k].x += _rootRenderer.bounds.x;
+						lineBoxNativeElements[k].y += _rootRenderer.bounds.y;
+						#end
+						
+						ret.push(lineBoxNativeElements[k]);
+					}
+				}
+				
+			}
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -354,8 +393,6 @@ class LayerRenderer
 			{
 				ret.push(nativeElements[j]);
 			}
-			
-			
 		}
 		
 		return ret;
@@ -368,13 +405,10 @@ class LayerRenderer
 	 */
 	private function getLineBoxes(rootRenderer:FlowBoxRenderer):Array<LineBox>
 	{
-		
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
-			//TODO : re-implement with new line boxes
-			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
@@ -382,7 +416,10 @@ class LayerRenderer
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
 				for (j in 0...lineBoxes.length)
 				{
-					ret.push(lineBoxes[j]);
+					if (lineBoxes[j].layerRenderer == this)
+					{
+						ret.push(lineBoxes[j]);
+					}
 				}
 			}
 		}
@@ -397,9 +434,7 @@ class LayerRenderer
 					if (child.layerRenderer == this)
 					{
 						if (child.isPositioned() == false)
-						{
-							//ret.push(child);
-							
+						{	
 							if (child.canHaveChildren() == true)
 							{	
 								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
@@ -509,6 +544,11 @@ class LayerRenderer
 		//currentMatrix.concatenate(matrix);
 		//currentMatrix.translate(this._nativeX, this._nativeY);
 		return currentMatrix;
+	}
+	
+	private function get_rootRenderer():ElementRenderer
+	{
+		return _rootRenderer;
 	}
 	
 }
