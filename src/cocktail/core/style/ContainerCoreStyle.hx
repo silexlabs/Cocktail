@@ -270,11 +270,11 @@ class ContainerCoreStyle extends CoreStyle
 		//position each stored children
 		for (i in 0...childLastPositionedHTMLElementData.children.length)
 		{
-			var positionedHTMLElementData:PositionedHTMLElementData = childLastPositionedHTMLElementData.children[i];
+			var positionedHTMLElementData:PositionedElementData = childLastPositionedHTMLElementData.children[i];
 
 			//position the child HTMLElement's ElementRenderer which set its x and y bounds in the space of this HTMLElement's
 			//formatting context
-			positionedHTMLElementData.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition );
+			positionElement(positionedHTMLElementData.element, childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition);
 			
 			//This container might establish a new formatting context, for instance if it is absolute,
 			//in this case, the positioned children, whose bounds are defined relative to their nearest block
@@ -287,18 +287,51 @@ class ContainerCoreStyle extends CoreStyle
 			if (establishesNewFormattingContext() == false)
 			{
 				//TODO : this bit should go into BoxPositioner
-				var childStyle:CoreStyle = positionedHTMLElementData.coreStyle;
+				var childStyle:CoreStyle = positionedHTMLElementData.element.coreStyle;
+				
 				if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
 				{
-					positionedHTMLElementData.coreStyle.elementRenderer.bounds.y += _elementRenderer.bounds.y;
+					positionedHTMLElementData.element.bounds.y += _elementRenderer.bounds.y;
 				}
 				if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
 				{
-					positionedHTMLElementData.coreStyle.elementRenderer.bounds.x += _elementRenderer.bounds.x;
+					positionedHTMLElementData.element.bounds.x += _elementRenderer.bounds.x;
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Place a positioned HTMLElement (a HTMLElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
+	 * flow, the last positioned HTMLElement or the viewport of the document, then apply an offset defined by the 'top',
+	 * 'left', 'bottom' and 'right' computed styles values
+	 * 
+	 * @param lastPositionedHTMLElementData
+	 * @param viewportData
+	 * @param staticPosition the x,y position that the HTMLElement would have had if it were 'in-flow'
+	 */
+	private function positionElement(element:ElementRenderer, lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):Void
+	{
+		//instantiate the right positioner
+		//class based on the value of the 'position' style
+		var positioner:BoxPositioner;
+		
+		switch (element.coreStyle.computedStyle.position)
+		{	
+			//positioned 'fixed' HTMLElement, use the viewport
+			case fixed:
+				positioner = new FixedPositioner();
+				element = positioner.position(element, viewportData, staticPosition);
+				
+			//positioned 'absolute' HTMLElement	
+			case absolute:
+				positioner = new AbsolutePositioner();
+				element = positioner.position(element, lastPositionedHTMLElementData, staticPosition);
+				
+			default:
+		}		
+	}
+	
 	
 	/**
 	 * In certain cases, when the width of the HTMLElement is 'auto',
@@ -637,7 +670,7 @@ class ContainerCoreStyle extends CoreStyle
 		{
 			childLastPositionedHTMLElementData = {
 				data: getContainerHTMLElementData(),
-				children: new Array<PositionedHTMLElementData>()
+				children: new Array<PositionedElementData>()
 			}
 		}
 		else

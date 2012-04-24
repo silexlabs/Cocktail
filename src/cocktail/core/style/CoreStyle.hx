@@ -71,6 +71,8 @@ import haxe.Timer;
  * 
  * This class implements the default behaviour of an embedded HTMLElement
  * 
+ * TODO : update doc
+ * 
  * @author Yannick DOMINGUEZ
  */
 class CoreStyle 
@@ -678,46 +680,8 @@ class CoreStyle
 			insertAbsolutelyPositionedHTMLElement(formattingContext, lastPositionedHTMLElementData);
 		}
 		
-		
 		//The HTMLElement has been laid out and is now valid
 		this._isDirty = false;
-	}
-	
-	/**
-	 * Place a positioned HTMLElement (a HTMLElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
-	 * flow, the last positioned HTMLElement or the viewport of the document, then apply an offset defined by the 'top',
-	 * 'left', 'bottom' and 'right' computed styles values
-	 * 
-	 * @param lastPositionedHTMLElementData
-	 * @param viewportData
-	 * @param staticPosition the x,y position that the HTMLElement would have had if it were 'in-flow'
-	 */
-	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
-	{
-		//instantiate the right positioner
-		//class based on the value of the 'position' style
-		var positioner:BoxPositioner;
-		
-		switch (this._htmlElement.coreStyle.computedStyle.position)
-		{	
-			//positioned 'fixed' HTMLElement, use the viewport
-			case fixed:
-				positioner = new FixedPositioner();
-				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
-				
-			//positioned 'absolute' HTMLElement	
-			case absolute:
-				positioner = new AbsolutePositioner();
-				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
-				
-			default:
-		}
-		
-		//update the bounds of the ElementRenderer
-		_elementRenderer.bounds.width = _computedStyle.width + _computedStyle.paddingLeft + _computedStyle.paddingRight;
-		_elementRenderer.bounds.height = _computedStyle.height + _computedStyle.paddingTop + _computedStyle.paddingBottom;
-		
-		return _elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -750,10 +714,10 @@ class CoreStyle
 		//if the positioned ancestor height is 'auto', the height of the positioned
 		//ancestor is not yet determined and so this HTMLElement can't be positioned
 		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//calls the positionElement method on all the stored positioned children
-		var positionedHTMLElementData:PositionedHTMLElementData = {
+		//position all the stored positioned children
+		var positionedHTMLElementData:PositionedElementData = {
 			staticPosition:staticPosition,
-			coreStyle:this
+			element:_elementRenderer
 		}
 		
 		//store the HTMLElement to be positioned later
