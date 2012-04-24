@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.formatter;
 
+import cocktail.core.renderer.EmbeddedLineBox;
 import cocktail.core.renderer.LineBox;
 import cocktail.core.renderer.RootLineBox;
 import cocktail.core.renderer.TextLineBox;
@@ -154,6 +155,20 @@ class InlineFormattingContext extends FormattingContext
 				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
 				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
 			}
+			//here the child is displayed as an inline-block as it starts a new formatting context
+			//it generates only one line box from the perspective of this inline formatting
+			//context
+			else if (child.establishesNewFormattingContext() == true)
+			{
+				//TODO : where should those value be set ?
+				child.bounds.width = child.coreStyle.computedStyle.width;
+				child.bounds.height = child.coreStyle.computedStyle.height;
+				
+				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
+				
+				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
 			//or an element displayed as an inline-block
 			else
@@ -161,7 +176,7 @@ class InlineFormattingContext extends FormattingContext
 				//get all the line boxes of the element, for instance, for a TextRenderer it will be an array
 				//of TextLineBox
 				var childLineBoxes:Array<LineBox> = child.lineBoxes;
-				
+
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
@@ -258,6 +273,8 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Insert an array of line boxes into the current line. If the line boxes
 	 * can't all fit in the line, as many new line as necessary are created
+	 * 
+	 * TODO : call for each lin box instead of an array of line boxes ?
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
