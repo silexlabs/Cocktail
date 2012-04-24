@@ -58,11 +58,6 @@ class SwippableListView extends ListViewBase
 	
 	private var _homePageDataSet:Bool;
 	
-	// view port
-	//private var _viewport:Viewport;
-	private var _viewportWidth:Int;
-	private var _viewportHeight:Int;
-	
 	// touch & mouse handler
 	private var _moveHandler:Scroll2D;
 	
@@ -86,9 +81,6 @@ class SwippableListView extends ListViewBase
 		_offsetStart = { x:0, y:0 };
 		_initialPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
-		_viewportWidth = Lib.window.innerWidth;
-		_viewportHeight = Lib.window.innerHeight;
-		//Lib.window.onresize = onResizeCallback;
 		
 		_homePageData = new Array<Dynamic>();
 		_homePageDataSet = false;
@@ -157,8 +149,9 @@ class SwippableListView extends ListViewBase
 	 */
 	private function positionLists():Void
 	{
-		list1.node.style.left = Std.string(1 * _viewportWidth) + "px";
-		list2.node.style.left = Std.string(2 * _viewportWidth) + "px";
+		// position lists to their correct left position
+		list1.node.style.left = Std.string(1 * Lib.window.innerWidth) + "px";
+		list2.node.style.left = Std.string(2 * Lib.window.innerWidth) + "px";
 	}
 	
 	/**
@@ -270,10 +263,6 @@ class SwippableListView extends ListViewBase
 	 */
 	public function onResizeCallback(event:Event):Void
 	{
-		// reset viewport values
-		_viewportWidth = Lib.window.innerWidth;
-		_viewportHeight = Lib.window.innerHeight;
-
 		// reset lists position
 		positionLists();
 		
@@ -338,14 +327,14 @@ class SwippableListView extends ListViewBase
 		event.preventDefault();
 		
 		// if movement was negative and more that half of the size of the screen
-		if (XOffset < -_viewportWidth / 2)
+		if (XOffset < -Lib.window.innerHeight / 2)
 		{
 			// if the current list is not the last one, increment index using setter
 			if (index < _listViews.length - 1)
 				index++;
 		}
 		// if movement was positive and less that half of the size of the screen
-		else if (XOffset > _viewportWidth / 2)
+		else if (XOffset > Lib.window.innerHeight / 2)
 		{
 			// if the current list is not the first one, decrement index using setter
 			if (index > 0)
@@ -442,8 +431,8 @@ class SwippableListView extends ListViewBase
 	private function computeHorizontalRatio(XOffset:Int):Float
 	{
 		var ratio:Float = 0;
-		if (_viewportWidth != 0)
-			ratio = XOffset / _viewportWidth;
+		if (Lib.window.innerHeight != 0)
+			ratio = XOffset / Lib.window.innerHeight;
 		return ratio;
 
 	}

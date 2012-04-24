@@ -19,7 +19,7 @@ import js.Dom;
 
 class CellTextStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = 5;
+	static inline var CELL_VERTICAL_SPACE:Int = 4;
 	static inline var CELL_HORIZONTAL_SPACE:Int = 2;
 	
 	/**
@@ -40,7 +40,7 @@ class CellTextStyle
 		node.style.paddingLeft = Std.string(CELL_HORIZONTAL_SPACE) + "%";
 		node.style.paddingRight = Std.string(CELL_HORIZONTAL_SPACE) + "%";
 		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
-		node.style.paddingBottom = "0px";
+		node.style.paddingBottom = Std.string(CELL_VERTICAL_SPACE) + "px";
 		
 		node.style.width = Std.string(100 - 2*CELL_HORIZONTAL_SPACE) + "%";
 		

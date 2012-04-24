@@ -104,7 +104,7 @@ class ImageUtils
 			image.style.marginLeft = "0px";
 		}
 		
-		//return image;
+		// return image;
 		return image;
 	}
 	
