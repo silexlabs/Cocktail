@@ -395,6 +395,7 @@ class Style
 	
 	private function set_fontSize(value:String):String
 	{
+		_coreStyle.fontSize = UnitManager.fontSizeEnum(value);
 		return value;
 	}
 	
