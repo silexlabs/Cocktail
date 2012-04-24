@@ -327,6 +327,8 @@ class LayerRenderer
 					
 					for (j in 0...childElementRenderer.length)
 					{
+						//TODO : hack to apply offset from containing block for child layers, should
+						//be improved
 						if (child.establishesNewFormattingContext() == true)
 						{
 							childElementRenderer[j].rootRenderer.bounds.x += child.bounds.x;

@@ -12,6 +12,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.dom.DOMData;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
+import cocktail.core.geom.GeomData;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -189,7 +190,7 @@ class TextRenderer extends ElementRenderer
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	////////////////////////////////
-	
+
 	override public function isFloat():Bool
 	{
 		return false;
@@ -205,6 +206,17 @@ class TextRenderer extends ElementRenderer
 		return true;
 	}
 	
+	
+	override private function getBounds():RectangleData
+	{
+		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		for (i in 0..._lineBoxes.length)
+		{
+			textLineBoxesBounds.push(_lineBoxes[i].bounds);
+		}
+		
+		return getChildrenBounds(textLineBoxesBounds);
+	}
 	
 	
 }

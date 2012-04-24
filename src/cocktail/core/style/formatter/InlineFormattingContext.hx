@@ -84,6 +84,22 @@ class InlineFormattingContext extends FormattingContext
 		
 	}
 	
+	/**
+	 * When the element requesting its static position in an inline formatting
+	 * context, return the bound of its first line box, as the element is an
+	 * absolute element which generate only one line box
+	 * 
+	 * TODO : messy should the elementRenderer process its bounds whenever its 
+	 * line boxes are set ?
+	 */
+	override public function getStaticPosition(element:ElementRenderer):PointData
+	{
+		doFormat(element);
+		var x:Float = element.lineBoxes[0].bounds.x;
+		var y:Float = element.lineBoxes[0].bounds.y;
+		return {x:x, y:y};
+	}
+	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
 	{
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
@@ -165,6 +181,7 @@ class InlineFormattingContext extends FormattingContext
 				child.bounds.height = child.coreStyle.computedStyle.height;
 				
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				child.lineBoxes.push(embeddedLineBox);
 				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
@@ -217,7 +234,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y < top)
 			{
-				top = childBounds.y;
+				top = childBounds.y - child.leadedAscent;
 			}
 			if (childBounds.x + childBounds.width > right)
 			{
@@ -225,7 +242,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childBounds.y + childBounds.height;
+				bottom = childBounds.y + childBounds.height - child.leadedAscent;
 			}
 			
 			//add the left and right margin of the child to the bounds
