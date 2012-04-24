@@ -15,6 +15,7 @@ package org.intermedia.view;
 
 class Constants
 {
+	
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
@@ -32,11 +33,16 @@ class Constants
 	public static inline var LIST_BG_COLOR:String = "#CCCCCC";
 	
 	// set cells constants
-	public static inline var CELL_BG_COLOR:String = "#FFFFFF";
+	public static inline var CELL_REFRESH_STYLE_DELAY:Int = 600;
+	public static inline var CELL_BG_COLOR:String = "#FEFEFE";
 	public static inline var CELL_VERTICAL_SPACE:Int = 2;
 	public static inline var CELL_BORDER_WIDTH:Int = 1;
 	public static inline var CELL_BORDER_COLOR:String = "#CCCCCC";
 	//public static inline var CELL_RATIO:Float = 16/9;
-	public static inline var CELL_HEIGHT:Float = 90;
+	public static inline var CELL_HEIGHT:Int = 90;
+	public static inline var CELL_MAX_HEIGHT:Int = 150;
+	public static inline var CELL_MIN_WIDTH:Int = 150;
 
+	// set cells constants
+	public static inline var CELL_THUMB_APPARITION_DELAY:Int = 1500;
 }

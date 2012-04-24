@@ -20,10 +20,6 @@ import org.intermedia.model.ApplicationModel;
 
 class CellThumbStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
-	static inline var CELL_RATIO:Float = 16/9;
-	static inline var CELL_MAX_HEIGHT:Float = 150;
-	static inline var CELL_HEIGHT:Float = 100;
 	
 	/**
 	 * Defines cell Style
@@ -31,29 +27,19 @@ class CellThumbStyle
 	 * @param	node
 	 * @return	thumbNail mask size, here cell size
 	 */
-	//public static function setCellStyle(node:HtmlDom, ?cellPerLine:Int=1, ?thumbWidthPercent:Int=100):Size
-	public static function setCellStyle(node:HtmlDom, ?cellPerLine:Int=1):Size
+	public static function setCellStyle(node:HtmlDom, ?cellPerLine:Int=1):Void
 	{
 		// use default style
 		CellStyle.setCellStyle(node, cellPerLine);
 		
-		// compute cell width in percentage depending on cellPerLine value
-		//var cellWidthPercent:Int = CellStyle.computeWidthPercentage(cellPerLine);
-		//node.style.width = DimensionStyleValue.percent(cellWidthPercent);
-		
-		// compute cell size in pixel depending on cellPerLine value
-		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine);
-		
-		node.style.height = Std.string(cellSize.height) + "px";
-		node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
+		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
+		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 		
 		// apply border
 		CellStyle.addBorder(node);
-		
-		return cellSize;
 	}
 	
 	
@@ -62,7 +48,7 @@ class CellThumbStyle
 	 * 
 	 * @param	mask
 	 */
-	/*public static function setThumbnailMaskStyle(node:HtmlDom):Void
+	public static function setThumbnailMaskStyle(node:HtmlDom):Void
 	{
 		node.style.width = Std.string(100) + "%";
 		node.style.height = Std.string(100) + "%";
@@ -71,6 +57,7 @@ class CellThumbStyle
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 		node.style.display = "inline-block";
+		untyped { node.style.borderRadius = "10px"; };
 	}
 	
 	/**

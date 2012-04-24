@@ -22,40 +22,6 @@ class ImageUtils
 {
 
 	/**
-	 * computes the thumb mask size
-	 * 
-	 * @param	?cellPerLine				number of cells per line
-	 * @param	?thumbWidthPercent = 100	thumb percentage of the cell
-	 * @return
-	 */
-	public static function computeMaskSize(cellPerLine:Int, ?thumbWidthPercent:Int=100):Size
-	{
-		var maskPixelSize:Size = { width:0, height:0 };
-		
-		// compute cell width depending on cellPerLine value
-		//var maskWidthPercent:Int = 100;
-		if (cellPerLine != 0)
-		{
-			//maskWidthPercent = Std.int(thumbWidthPercent / cellPerLine);
-			maskPixelSize.width = Std.int(Lib.window.innerWidth * thumbWidthPercent / (cellPerLine * 100));
-			//maskPixelSize.width = Std.int(Lib.window.innerWidth / cellPerLine );
-		}
-		else
-		{
-			//maskWidthPercent = thumbWidthPercent;
-			maskPixelSize.width = Std.int(Lib.window.innerWidth * thumbWidthPercent / 100);
-			//maskPixelSize.width = Std.int(Lib.window.innerWidth);
-		}
-		
-		// compute height depending on the width
-		//maskPixelSize.height = Std.int(maskPixelSize.width / CELL_RATIO);
-		maskPixelSize.height = Constants.CELL_HEIGHT;
-
-		return maskPixelSize;
-		
-	}
-	
-	/**
 	 * Automatically crops an image so it fits in the mask size
 	 * 
 	 * @param	node

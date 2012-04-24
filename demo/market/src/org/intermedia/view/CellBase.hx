@@ -39,12 +39,7 @@ class CellBase extends ViewBase
 	{
 		// init style model
 		_cellStyle = {
-			cell:CellStyle.setCellStyle,
-			thumbnail:null,
-			textBlock:null,
-			title:null,
-			author:null,
-			line:null
+			cell:CellStyle.setCellStyle
 		}
 	}
 	

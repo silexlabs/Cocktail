@@ -21,7 +21,6 @@ import org.intermedia.model.ApplicationModel;
 
 class CellThumbText1Style
 {
-	static inline var CELL_VERTICAL_SPACE:Int = Constants.CELL_VERTICAL_SPACE;
 	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
 	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
 	
@@ -32,15 +31,12 @@ class CellThumbText1Style
 	 * @param	?cellPerLine
 	 * @return	thumb mask size
 	 */
-	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Size
+	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Void
 	{
 		CellStyle.setCellStyle(node,cellPerLine);
 		
-		// compute cell size in pixel depending on cellPerLine value
-		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
-		
-		node.style.height = Std.string(cellSize.height) + "px";
-		//node.style.maxHeight = Std.string(CELL_MAX_HEIGHT) + "px";
+		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
+		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
@@ -48,8 +44,23 @@ class CellThumbText1Style
 		// apply border
 		CellStyle.addBorder(node);
 		
-		return cellSize;
-
+	}
+	
+	/**
+	 * Defines image mask Style
+	 * 
+	 * @param	mask
+	 */
+	public static function setThumbnailMaskStyle(node:HtmlDom):Void
+	{
+		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
+		node.style.height = Std.string(100) + "%";
+		
+		// apply mask style so it can crop the image
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
+		node.style.display = "inline-block";
+		untyped { node.style.borderRadius = "10px"; };
 	}
 	
 	/**
@@ -141,7 +152,7 @@ class CellThumbText1Style
 
 		node.style.width = "100%";
 		node.style.height = "1px";
-		node.style.marginTop = Std.string(CELL_VERTICAL_SPACE) + "px";	
+		node.style.marginTop = Std.string(Constants.CELL_VERTICAL_SPACE) + "px";	
 	}
 	
 }
