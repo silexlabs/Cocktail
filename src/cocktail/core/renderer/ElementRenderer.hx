@@ -109,16 +109,6 @@ class ElementRenderer extends Node
 		return [];
 	}
 	
-	public function dispose():Void
-	{
-		
-		_bounds = null;
-		_coreStyle = null;
-		//TODO : cause null runtime error
-		//_layerRenderer.dispose();
-		_layerRenderer = null;
-	}
-	
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
 

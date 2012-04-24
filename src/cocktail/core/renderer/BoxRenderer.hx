@@ -43,12 +43,6 @@ class BoxRenderer extends ElementRenderer
 		_backgroundManager = new BackgroundManager();
 	}
 	
-	override public function dispose():Void
-	{
-		super.dispose();
-		_backgroundManager.dispose();
-		_backgroundManager = null;
-	}
 	
 	/**
 	 * Render and position the background color and

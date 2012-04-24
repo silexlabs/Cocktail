@@ -67,13 +67,6 @@ class InlineFormattingContext extends FormattingContext
 		//insertElement(BoxElementValue.offset(_containingHTMLElement.style.computedStyle.textIndent, _containingHTMLElement));
 	}
 	
-	
-	override public function dispose():Void
-	{
-		super.dispose();
-		_unbreakableLineBoxes = null;
-	}
-	
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		super.doFormat(staticPositionedElement);

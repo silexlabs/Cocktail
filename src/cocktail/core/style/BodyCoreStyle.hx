@@ -22,9 +22,8 @@ import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.font.FontData;
 import haxe.Log;
 
-
 /**
- * This is the style implementation for BodyHTMLElement.
+ * This is the style implementation for HTMLBodyElement.
  * It inherits from ContainerStyle and implement behaviours
  * specific to the root of the runtime where appropriate
  * 
@@ -41,7 +40,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 	{
 		super(htmlElement);
 		
-		//the BodyDOMElelement is set to valid by default
+		//the HTMLBodyElement is set to valid by default
 		//to allow triggering the first layout when a children
 		//will be added to it
 		_isDirty = false;
@@ -52,7 +51,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The BodyHTMLElement doesn't have a parent, so when invalidated,
+	 * The HTMLBodyElement doesn't have a parent, so when invalidated,
 	 * it always schedule a layout using the window dimensions as
 	 * its containing HTMLElement dimensions
 	 */
@@ -92,6 +91,8 @@ class BodyCoreStyle extends ContainerCoreStyle
 	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
 	 * to the layout.
 	 * 
+	 * TODO : update doc
+	 * 
 	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
 	 * this HTMLElement must be laid out
 	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
@@ -102,7 +103,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 	 * @param containingHTMLElementFontMetricsData contains font metrics of the parent HTMLElement, used for instance
 	 * to layout children in an inline formatting context
 	 */
-	public function layout():Void
+	public function startLayout():Void
 	{
 		var windowData:ContainingHTMLElementData = getWindowData();
 		
@@ -112,7 +113,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 			data:windowData
 		}
 		
-		flow(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
+		layout(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -120,17 +121,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * A BodyHTMLElement is never inserted into its parent flow as it is
-	 * always located at the origin of the viewport, it is automatically
-	 * inserted
-	 */
-	override private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
-	{
-		
-	}
-	
-	/**
-	 * overriden as the BodyHTMLElement, being at the top of the hierarchy, always position its positioned
+	 * overriden as the HTMLBodyElement, being at the top of the hierarchy, always position its positioned
 	 * children
 	 */
 	override private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
@@ -151,7 +142,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 	}
 	
 	/**
-	 * The BodyHTMLElement is always a block container
+	 * The HTMLBodyElement is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{
@@ -179,13 +170,13 @@ class BodyCoreStyle extends ContainerCoreStyle
 	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
-	override private function getformattingContext(previousformattingContext:FormattingContext = null):FormattingContext
+	override private function getFormattingContext(previousformattingContext:FormattingContext = null):FormattingContext
 	{
 		return new BlockFormattingContext(cast(this._elementRenderer));
 	}
 	
 	/**
-	 * a bodyHTMLElement always establishes a block formatting context
+	 * The HTMLBodyElement always establishes a block formatting context
 	 * for its children
 	 */
 	override public function establishesNewFormattingContext():Bool

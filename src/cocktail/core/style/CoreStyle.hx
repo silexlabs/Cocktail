@@ -625,7 +625,7 @@ class CoreStyle
 	 * formattingContext to be placed in the document flow
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
-	public function flow(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{		
 		if (_elementRenderer != null && parentElementRenderer != null)
 		{
@@ -651,8 +651,8 @@ class CoreStyle
 		//the HTMLElement creates its own ElementRenderer
 		_elementRenderer = createElementRenderer(parentElementRenderer);
 		
-		//flow all the children of the HTMLElement if it has any
-		flowChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
+		//layout all the children of the HTMLElement if it has any
+		layoutChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the htmlElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -671,8 +671,13 @@ class CoreStyle
 		//during the rendering
 		computeBackgroundStyles();
 		
-		//insert the HTMLElement in its parent's formatting context based on its positioning scheme
-		insertHTMLElement(formattingContext, lastPositionedHTMLElementData, viewportData);
+		//insert the HTMLElement in the absolutely positioned array if it is itsel absolutely positioned
+		//so that it can be positioned by its first positioned ancestor
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			insertAbsolutelyPositionedHTMLElement(formattingContext, lastPositionedHTMLElementData);
+		}
+		
 		
 		//The HTMLElement has been laid out and is now valid
 		this._isDirty = false;
@@ -719,59 +724,40 @@ class CoreStyle
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
-	
 	/**
-	 * Flow all the children of a HTMLElement if it has any
+	 * Layout all the children of a HTMLElement if it has any
 	 */
-	private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		
 	}
 	
 	/**
-	 * Insert the HTMLElement in the document, in or out of the flow.
-	 * 
-	 * @param	formattingContext the formatting context into which the HTMLElement insert itself if it
-	 * is 'in flow'
-	 * @param	lastPositionedHTMLElementData
-	 * @param	viewportData
+	 * Insert the HTMLElement in the array of absolutely positioned elements
 	 */
-	private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function insertAbsolutelyPositionedHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
 	{
-		//insert in the flow, relative positioned element are also inserted in the flow, as
-		//their are first laid out in normal then their offset is applied at render time
-		//
-		//TODO : no need to insert anymore, just have a method for positioned element ?
-		if (isPositioned() == false || isRelativePositioned() == true)
-		{
-			//formattingContext.insertElement(_elementRenderer);
+		//TODO : retrieving static position might not be alway necessary, let formatting context decide ?
+		
+		//retrieve the static position (the position of the HTMLElement
+		//if its position style were 'static')
+		//TODO : caliing this should only return static position but not modify bounds of elementRenderer
+		var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
+		
+		//store as a positioned HTMLElement.
+		//an absolutely positioned HTMLElement is not positioned right away, it must
+		//wait for its first positioned ancestor to be laid out. The reason is that
+		//if the positioned ancestor height is 'auto', the height of the positioned
+		//ancestor is not yet determined and so this HTMLElement can't be positioned
+		//using the bottom or right style yet. Once the first ancestor is laid out, it
+		//calls the positionElement method on all the stored positioned children
+		var positionedHTMLElementData:PositionedHTMLElementData = {
+			staticPosition:staticPosition,
+			coreStyle:this
 		}
-		//else the HTMLElement is absolutely positioned
-		else
-		{
-			//TODO : retrieving static position might not be alway necessary, let formatting context decide ?
-			
-			//retrieve the static position (the position of the HTMLElement
-			//if its position style were 'static')
-			//TODO : caliing this should only return static position but not modify bounds of elementRenderer
-			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			
-			//insert as a positioned HTMLElement.
-			//an absolutely positioned HTMLElement is not positioned right away, it must
-			//wait for its first positioned ancestor to be laid out. The reason is that
-			//if the positioned ancestor height is 'auto', the height of the positioned
-			//ancestor is not yet determined and so this HTMLElement can't be positioned
-			//using the bottom or right style yet. Once the first ancestor is laid out, it
-			//calls the positionElement method on all the stored positioned children
-			var positionedHTMLElementData:PositionedHTMLElementData = {
-				staticPosition:staticPosition,
-				coreStyle:this
-			}
-			
-			//store the HTMLElement to be positioned later
-			lastPositionedHTMLElementData.children.push(positionedHTMLElementData);
-		}
+		
+		//store the HTMLElement to be positioned later
+		lastPositionedHTMLElementData.children.push(positionedHTMLElementData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -272,7 +272,7 @@ class AbstractHTMLDocument extends Document
 	private function layout():Void
 	{
 		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
-		bodyCoreStyle.layout();
+		bodyCoreStyle.startLayout();
 	}
 	
 	/**

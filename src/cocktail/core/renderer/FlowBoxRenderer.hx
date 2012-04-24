@@ -32,22 +32,6 @@ class FlowBoxRenderer extends BoxRenderer
 	}
 	
 	/////////////////////////////////
-	// PUBLIC METHODS
-	////////////////////////////////
-	
-	override public function dispose():Void
-	{
-		super.dispose();
-		
-		for (i in 0..._childNodes.length)
-		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.dispose();
-		}
-		_childNodes = null;
-	}
-	
-	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	////////////////////////////////
 	
