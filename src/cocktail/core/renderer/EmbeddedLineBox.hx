@@ -16,4 +16,8 @@ class EmbeddedLineBox extends LineBox
 		_bounds.height = elementRenderer.bounds.height;
 	}
 	
+	override private function get_leadedAscent():Float 
+	{
+		return _bounds.height;
+	}
 }

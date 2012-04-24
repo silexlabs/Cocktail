@@ -823,7 +823,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.leadedAscent + rootLineBox.leadedDescent;
-
+		
 		return Math.round(lineBoxHeight);
 	}
 	
@@ -864,6 +864,12 @@ class InlineFormattingContext extends FormattingContext
 			}
 
 			child.bounds.y = lineBoxAscent + formattingContextY + child.verticalAlign;
+			
+			//TODO : used for embedded or inline block but implement better
+			if (child.establishesNewFormattingContext() == true)
+			{
+				child.bounds.y -= child.leadedAscent;
+			}
 		}
 	}
 	
