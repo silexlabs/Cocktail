@@ -232,12 +232,15 @@ class Scroll2D
 	 */
 	public function onUpCallback(event:Dynamic):Void
 	{
+		//event.preventDefault();
 		if (_direction == Direction.horizontal)
 		{
+			//event.preventDefault();
 			onHorizontalUpCallback(event);
 		}
 		else if (_direction == Direction.vertical)
 		{
+			//event.preventDefault();
 			verticalReleaseTween();
 		}
 			

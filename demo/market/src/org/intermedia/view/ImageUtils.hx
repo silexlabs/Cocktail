@@ -13,7 +13,7 @@ import js.Dom;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * This class defines a cropped image, i.e. an image cropped by a containerDOM used as a mask
+ * This class defines utilities methods for images
  * 
  * @author Raphael Harmel
  */
@@ -61,7 +61,6 @@ class ImageUtils
 	 * @param	node
 	 * @param	maskSize
 	 */
-	//public static function cropImage(image:Image, maskSize:Size):HtmlDom
 	public static function cropImage(image:Image, maskSize:Size):Image
 	{
 		// compute mask ratio
@@ -71,7 +70,6 @@ class ImageUtils
 		var imageRatio:Float = 0;
 		if ((untyped { image.naturalHeight; }) != 0)
 			imageRatio = (untyped { image.naturalWidth / image.naturalHeight; } );
-		//Firebug.trace((untyped { image.naturalWidth; }) + "-" + (untyped { image.naturalHeight; }) + "-" + imageRatio );
 			
 		var resizedImageSize:Size = { width:0, height:0 };
 
@@ -83,9 +81,11 @@ class ImageUtils
 			resizedImageSize.width = Std.int(resizedImageSize.height * imageRatio);
 	
 			// resize image
+			image.style.width = Std.string(resizedImageSize.width) + "px";
 			image.style.height = Std.string(resizedImageSize.height) + "px";
 			
 			// offsets image
+			image.style.marginTop = "0px";
 			image.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2) + "px";
 		}
 		// else, set image width to cell width
@@ -97,9 +97,11 @@ class ImageUtils
 			
 			// resize image
 			image.style.width = Std.string(resizedImageSize.width) + "px";
+			image.style.height = Std.string(resizedImageSize.height) + "px";
 			
 			// offsets image
-			image.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2) + "px";
+			image.style.marginTop = Std.string( -Math.abs((maskSize.height - resizedImageSize.height)) / 2) + "px";
+			image.style.marginLeft = "0px";
 		}
 		
 		//return image;

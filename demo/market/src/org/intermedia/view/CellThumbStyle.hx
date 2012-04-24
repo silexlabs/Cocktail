@@ -42,7 +42,6 @@ class CellThumbStyle
 		//node.style.width = DimensionStyleValue.percent(cellWidthPercent);
 		
 		// compute cell size in pixel depending on cellPerLine value
-		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine);
 		
 		node.style.height = Std.string(cellSize.height) + "px";
@@ -59,11 +58,27 @@ class CellThumbStyle
 	
 	
 	/**
+	 * Defines image mask Style
+	 * 
+	 * @param	mask
+	 */
+	/*public static function setThumbnailMaskStyle(node:HtmlDom):Void
+	{
+		node.style.width = Std.string(100) + "%";
+		node.style.height = Std.string(100) + "%";
+		
+		// apply mask style so it can crop the image
+		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
+		node.style.display = "inline-block";
+	}
+	
+	/**
 	 * Defines cell image Style
 	 * 
 	 * @param	image
 	 */
-	public static function setThumbnailStyle(image:Image,maskSize:Size):Void
+	/*public static function setThumbnailStyle(image:Image,maskSize:Size):Void
 	{
 		//var imageMaxWidth:Int = 200;
 		
@@ -75,7 +90,7 @@ class CellThumbStyle
 		//zoomImage(node, maskSize);
 		ImageUtils.cropImage(image, maskSize);
 		
-	}
+	}*/
 	
 	/**
 	 * Automatically resizes and offsets the image so it adapts to the cell size

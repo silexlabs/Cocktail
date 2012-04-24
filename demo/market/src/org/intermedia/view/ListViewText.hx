@@ -36,4 +36,13 @@ class ListViewText extends ListViewBase
 		return cell;
 	}
 	
+	/**
+	 * removes default refreshstyle behaviour
+	 */
+	override public function refreshStyles():Void
+	{
+	}
+
+
+	
 }

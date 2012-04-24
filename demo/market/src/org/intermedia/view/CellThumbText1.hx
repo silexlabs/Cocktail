@@ -1,5 +1,6 @@
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.view.CellThumbText1Style;
@@ -20,6 +21,12 @@ class CellThumbText1 extends CellBase
 	// thumb mask
 	private var _thumbMask:Size;
 	
+	// mask
+	private var _mask:HtmlDom;
+	
+	// cropping mask containing the image
+	private var _croppedImage:CroppedImage;
+
 	// cell style
 	//private var _cellStyle:CellThumbText1StyleModel;
 	
@@ -53,7 +60,7 @@ class CellThumbText1 extends CellBase
 			//cell:CellThumbText1Style.setCellStyle,
 			//thumbnail:CellThumbText1Style.setThumbnailStyle,
 			cell:CellThumbText1Style.setCellStyle,
-			thumbnail:CellThumbText1Style.setThumbnailStyle,
+			//thumbnail:CellThumbText1Style.setThumbnailStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
 			author:CellThumbText1Style.setAuthorStyle,
@@ -90,9 +97,10 @@ class CellThumbText1 extends CellBase
 		// load thumb image
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			//var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			_croppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
 			//var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, {width:50, height:50});
-			node.appendChild(croppedImage.node);
+			node.appendChild(_croppedImage.node);
 		}
 
 		
@@ -140,6 +148,12 @@ class CellThumbText1 extends CellBase
 		node.appendChild(line);
 		line.src("assets/greyPixel.png");*/
 
+	}
+	
+	override public function refreshStyles():Void 
+	{
+		_thumbMask = ImageUtils.computeMaskSize(_cellPerLine,CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT);
+		_croppedImage.resetStyle( _thumbMask );
 	}
 
 }
