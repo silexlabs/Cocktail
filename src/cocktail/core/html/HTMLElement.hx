@@ -787,7 +787,7 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
-	//TODO : implement
+	//TODO : implement scroll
 	private function get_scrollHeight():Int
 	{
 		return -1;

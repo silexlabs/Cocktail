@@ -46,17 +46,9 @@ class FontAndTextStylesComputer
 	public static function compute(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
-		
-		if (containingHTMLElementFontMetricsData != null)
-		{
-			//font size
-			computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
-		}
-		else
-		{
-			//TODO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
-			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
-		}
+
+		//font size
+		computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
 		
 		//line height
 		computedStyle.lineHeight = getComputedLineHeight(style);

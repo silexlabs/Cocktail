@@ -20,9 +20,6 @@ import haxe.Log;
  * an array of root line box which are the start of
  * each of the lines created by this block box.
  * 
- * TODO : is inline-block a block box ?
- * 
- * 
  * @author Yannick DOMINGUEZ
  */
 class BlockBoxRenderer extends FlowBoxRenderer

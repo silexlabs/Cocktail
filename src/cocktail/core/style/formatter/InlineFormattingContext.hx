@@ -186,6 +186,15 @@ class InlineFormattingContext extends FormattingContext
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
+			//TODO : messy, inlne block and embedded should not share classes
+			//TODO : Text should not be considered embed, isEmbedded should be removed
+			else if (child.isEmbedded() == true && child.isText() == false)
+			{
+				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				child.lineBoxes.push(embeddedLineBox);
+				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
+				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
 			//or an element displayed as an inline-block
 			else
@@ -891,7 +900,7 @@ class InlineFormattingContext extends FormattingContext
 			child.bounds.y = lineBoxAscent + formattingContextY + child.verticalAlign;
 			
 			//TODO : used for embedded or inline block but implement better
-			if (child.establishesNewFormattingContext() == true)
+			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isEmbedded() == true && child.elementRenderer.isText() == false))
 			{
 				child.bounds.y -= child.leadedAscent;
 			}
