@@ -55,18 +55,18 @@ class ListViewStyle
 		
 		node.style.verticalAlign = "top";
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "scroll";
-		//node.style.overflowY = "hidden";
+		//node.style.overflowY = "scroll";
+		node.style.overflowY = "auto";
 		
 		node.style.backgroundColor = Constants.LIST_BG_COLOR;
 	}
 	
 	/**
-	 * loader animation style
+	 * loader image style
 	 * 
 	 * @param	node
 	 */
-	public static function loader(node:HtmlDom)
+	public static function loaderImage(node:HtmlDom)
 	{
 		var VERTICAL_MARGIN:Int = 20;
 		

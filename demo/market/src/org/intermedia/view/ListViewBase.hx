@@ -2,12 +2,6 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-//import js.Scroll;
-//import cocktail.classInstance.ClassInstance;
-//import cocktail.node.DOMElementData;
-//import cocktail.node.HtmlDom;
-//import cocktail.mouse.MouseData;
-//import cocktail.viewport.Viewport;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -39,7 +33,8 @@ class ListViewBase extends ViewBase
 	public var id:String;
 	
 	// list bottom loader
-	private var _listBottomLoader:Image;
+	//private var _listBottomLoader:Image;
+	private var _listBottomLoader:HtmlDom;
 
 	public function new()
 	{
@@ -50,13 +45,24 @@ class ListViewBase extends ViewBase
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
-		_listBottomLoader = cast Lib.document.createElement("img");
-		ListViewStyle.loader(_listBottomLoader);
-		_listBottomLoader.src = "assets/loading.gif";
+		buildBottomLoader();
 		
 		//node.onScroll = onScrollCallback;
 		node.onscroll = onScrollCallback;
 		
+	}
+	
+	/**
+	 * Bottom loader builder
+	 */
+	private function buildBottomLoader():Void
+	{
+		var bottomLoaderImage:Image = cast Lib.document.createElement("img");
+		ListViewStyle.loaderImage(bottomLoaderImage);
+		bottomLoaderImage.src = "assets/loading.gif";
+		_listBottomLoader = Lib.document.createElement("div");
+		_listBottomLoader.appendChild(bottomLoaderImage);
+		CellStyle.setCellStyle(_listBottomLoader);
 	}
 	
 	
@@ -158,7 +164,6 @@ class ListViewBase extends ViewBase
 		// call callback
 		if (onDataRequest != null)
 		{
-			//haxe.Firebug.trace("onDataRequest called by " + id);
 			onDataRequest(id);
 		}
 	}

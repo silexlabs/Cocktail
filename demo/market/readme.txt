@@ -159,8 +159,8 @@ To Do
  => title shifts => OK
 -menu bar for navigation => OK
 -cells on the same line should have the samed height => OK
--on resize, cropped images size do not change
--hide navigation bar
+-on resize, cropped images size do not change => OK
+-hide navigation bar => OK
 
 To Do Alex 30/03/2012
 -retirer les cells ne contenant pas de titre, de thumb ou de description / content => OK

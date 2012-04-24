@@ -182,7 +182,8 @@ class MenuListViewText extends ListViewBase
 	}
 	
 	/**
-	 * Compute menu items width. It needs to be done once, as if an item is not visible in the viewport, its width is 0
+	 * Compute menu items width. It needs to be done at the beginning,
+	 * as if an item is not visible in the viewport, its width is 0
 	 */
 	public function computeMenuItemsWidth():Void
 	{

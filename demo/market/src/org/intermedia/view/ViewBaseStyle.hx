@@ -7,20 +7,6 @@
 
 package org.intermedia.view;
 
-// DOM
-//import cocktail.node.DOMElement;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.GraphicDOMElement;
-//import cocktail.viewport.Viewport;
-
-// Native Elements
-//import cocktail.NativeElementManager;
-//import cocktail.NativeElementData;
-
-// Style
-//import cocktail.style.StyleData;
-//import cocktail.unit.UnitData;
 import org.intermedia.view.Constants;
 
 /**
@@ -44,7 +30,6 @@ class ViewBaseStyle
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
 		node.style.marginTop = "0px";
-		//node.style.marginTop = Std.string(Constants.HEADER_HEIGHT));
 		node.style.marginBottom = "0px";
 		
 		node.style.paddingLeft = "0px";

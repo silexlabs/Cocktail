@@ -44,9 +44,7 @@ class CellThumb extends CellBase
 	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel, ?thumbWidthPercent:Int) 
 	{
 		super(cellPerLine);
-		//if (cellStyle != null) _cellStyle = cellStyle;
-		//else initCellStyle();
-		initCellStyle();
+
 		// apply cell style and gets the cell dimension, for image cropping
 		//_thumbMask = _cellStyle.cell(this, cellPerLine, thumbWidthPercent);
 		//_thumbMask = _cellStyle.cell(this, cellPerLine);

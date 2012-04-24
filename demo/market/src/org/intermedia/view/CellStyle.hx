@@ -77,12 +77,13 @@ class CellStyle
 				// workaround so lines with 1 cell is aligned to those with two cells
 				cellWidthPercent -= 2;
 			}
-			else
-			{*/
+			else*/
+			if (cellPerLine != 1)
+			{
 				//cellWidthPercent = Std.int( 100 / cellPerLine);
 				cellWidthPercent = 100 / cellPerLine;
-				cellWidthPercent -= 1;
-			//}
+				cellWidthPercent -= 0.95;
+			}
 		}
 		
 		return cellWidthPercent;

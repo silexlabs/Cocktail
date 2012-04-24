@@ -25,8 +25,8 @@ class MenuListViewStyle
 	 */
 	public static function setMenuStyle(node:HtmlDom):Void
 	{
-		//node.style.position = "fixed";
-		node.style.position = "absolute";
+		node.style.position = "fixed";
+		//node.style.position = "absolute";
 		node.style.display = "block";
 		
 		node.style.marginLeft = "0px";
@@ -49,10 +49,9 @@ class MenuListViewStyle
 		// set to the forehead
 		//node.style.zIndex = 1000;
 		
-		// unset background color
+		// unset background color to remove list default bahaviour
 		node.style.backgroundColor = null;
-		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerBlue.png"))];
-		//node.style.backgroundImage = 'url("assets/headerBlue.png")';
+		// add background image
 		node.style.backgroundImage = 'url(' + Constants.MENU_BG_IMAGE_URL + ')';
 
 		node.style.overflowX = "hidden";
