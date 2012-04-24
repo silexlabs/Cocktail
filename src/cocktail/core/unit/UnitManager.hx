@@ -143,6 +143,21 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed enum
+	 * 
+	 * TODO : only supports units for now
+	 */
+	static public function fontSizeEnum(string:String):FontSize
+	{
+		string = trim(string);
+		
+		// split unit and value
+		var parsed:VUnit = string2VUnit(string);
+		
+		return FontSize.length(string2Length(parsed));
+	}
+	
+	/**
+	 * convert a string into a typed enum
 	 * @example UnitManager.verticalAlignEnum("top") returns VerticalAlign.top
 	 */
 	static public function verticalAlignEnum(string:String):VerticalAlign

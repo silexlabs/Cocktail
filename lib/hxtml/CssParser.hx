@@ -216,6 +216,13 @@ class CssParser<DisplayObjectType> {
 			if( i != null ) { s.setPaddingBottom(d, i.value, i.unit); return true; }
 		case "width":
 			
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setWidthKey(d, val);
+				return true;
+			}
+			
 			//case 0
 			var i = isNullInt(v);
 			if (i){
@@ -229,6 +236,14 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "height":
+			
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setHeightKey(d, val);
+				return true;
+			}
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) {
 				s.setHeight(d, i.value, i.unit);
