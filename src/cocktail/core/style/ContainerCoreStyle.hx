@@ -146,8 +146,6 @@ class ContainerCoreStyle extends CoreStyle
 		//flow all children and store their laid out position in the created child ElementRenderers, relative to the ContainerHTMLElement
 		//which started the children formatting context
 		childrenFormattingContext = doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-	
-
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
@@ -202,6 +200,17 @@ class ContainerCoreStyle extends CoreStyle
 	private function doFlowChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{
 		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
+		
+		//first remove all the child that might have been added to the renderer
+		//if any, as this method can be called multiple, it prevents multiple
+		//text renderers to be generated for the same Text node
+		//
+		//TODO : should Text node have explicit reference to TextRenderer, like
+		//HTMLElement have reference to ElementRenderer through CoreStyle ?
+		for (i in 0...flowBoxRenderer.childNodes.length)
+		{
+			flowBoxRenderer.removeChild(flowBoxRenderer.childNodes[0]);
+		}
 		
 		//flow all children 
 		for (i in 0..._htmlElement.childNodes.length)
@@ -313,6 +322,7 @@ class ContainerCoreStyle extends CoreStyle
 	private function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{		
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		
 		var shrinkedWidth:Int = boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
 		
 		//if the computed width of the ContainerHTMLElement was shrinked, then
@@ -326,7 +336,7 @@ class ContainerCoreStyle extends CoreStyle
 			var childrenFormattingContext:FormattingContext = getformattingContext(formattingContext);
 			var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
 			var childLastPositionedHTMLElementData:LastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
-			childrenFormattingContext = doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, this.fontMetrics, childrenFormattingContext);
+			doFlowChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, this.fontMetrics, childrenFormattingContext);
 		}
 	}
 	
