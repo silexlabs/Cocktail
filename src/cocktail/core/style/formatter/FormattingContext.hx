@@ -131,6 +131,7 @@ class FormattingContext
 	 */
 	public function getStaticPosition(element:ElementRenderer):PointData
 	{
+		
 		doFormat(element);
 		
 		var x:Float = element.bounds.x;

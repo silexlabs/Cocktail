@@ -39,8 +39,6 @@ import haxe.Log;
  */
 class InlineFormattingContext extends FormattingContext
 {
-
-
 	/**
 	 * Stores the currently unbreakable elements in the current line.
 	 * Those element can' be broken on multiple lines, if they don't all
@@ -95,7 +93,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = 0;
 		
 		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
-		
+
 		//format the last line
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
 		
@@ -104,15 +102,20 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
+		
 		//loop in all the child of the container
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
+			
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
 			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
 			{
+				//remove all the previous line boxes before creating new ones
+				child.lineBoxes = new Array<LineBox>();
+				
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
@@ -158,7 +161,7 @@ class InlineFormattingContext extends FormattingContext
 				//get all the line boxes of the element, for instance, for a TextRenderer it will be an array
 				//of TextLineBox
 				var childLineBoxes:Array<LineBox> = child.lineBoxes;
-		
+				
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
@@ -199,7 +202,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y < top)
 			{
-				top = childBounds.y - child.leadedAscent;
+				top = childBounds.y;
 			}
 			if (childBounds.x + childBounds.width > right)
 			{
@@ -207,7 +210,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childBounds.y + childBounds.height - child.leadedAscent;
+				bottom = childBounds.y + childBounds.height;
 			}
 			
 			//add the left and right margin of the child to the bounds
