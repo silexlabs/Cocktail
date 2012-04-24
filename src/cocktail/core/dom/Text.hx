@@ -25,7 +25,7 @@ package cocktail.core.dom;
  * The Node.normalize() method merges any such adjacent Text objects into a
  * single node for each block of text.
  * 
- * TODO : implment normalize()
+ * TODO : implement normalize()
  * 
  * No lexical check is done on the content of a Text node and, depending
  * on its position in the document, some characters must be escaped 

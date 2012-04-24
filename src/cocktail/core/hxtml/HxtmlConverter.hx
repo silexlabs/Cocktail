@@ -173,12 +173,20 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 
 		cast(element, HTMLElement).style.width = "0"; 
 	}
+	public function setWidthKey(element:Node, value:String):Void {
+
+		cast(element, HTMLElement).style.width = value; 
+	}
 	public function setHeight (element:Node, value:Float, unit:String):Void {
 		cast(element, HTMLElement).style.height = value+unit; 
 	}
 	public function setHeightZero(element:Node):Void {
 
 		cast(element, HTMLElement).style.height = "0"; 
+	}
+	public function setHeightKey(element:Node, value:String):Void {
+
+		cast(element, HTMLElement).style.height = value; 
 	}
 /*	public function setMinWidth (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.minWidth = value+unit; 
@@ -273,7 +281,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HtmlDom).style.backgroundClip = value;
 	}
 */
-	public function setFontSizeNum (element:Node, value:Float, unit:String):Void{
+	public function setFontSizeNum (element:Node, value:Float, unit:String):Void {
 		cast(element, HTMLElement).style.fontSize = value+unit;
 	}
 	public function setFontSizeKey (element:Node, value:String):Void{

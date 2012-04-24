@@ -376,7 +376,13 @@ class InlineFormattingContext extends FormattingContext
 		removeSpaces();
 		
 		//format line boxes horizontally
-		alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
+		var lineBoxWidth:Int = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
+		
+		if (lineBoxWidth > _formattingContextData.maxWidth)
+		{
+			_formattingContextData.maxWidth = lineBoxWidth;
+		}
+				
 		
 		//format line boxes vertically
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
@@ -478,7 +484,7 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * TODO : update doc
 	 */
-	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Void
+	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Int
 	{	
 		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total available line width, and the x position where to 
@@ -525,6 +531,8 @@ class InlineFormattingContext extends FormattingContext
 					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);
 				}
 		}
+		
+		return concatenatedLength;
 	}
 	
 	/**

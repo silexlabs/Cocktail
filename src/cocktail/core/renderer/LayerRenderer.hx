@@ -400,6 +400,7 @@ class LayerRenderer
 			else
 			{
 				lineBoxes[i].elementRenderer.bounds = lineBoxes[i].bounds;
+				
 				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer);
 			}
 			
