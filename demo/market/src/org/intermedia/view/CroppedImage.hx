@@ -29,23 +29,20 @@ class CroppedImage
 	// image to crop
 	private var _image:Image;
 	
-	// maskSize
-	private var _maskSize:Size;
-	
-	public function new(imageUrl:String, maskSize:Size)
+	//public function new(imageUrl:String, ?maskSize:Size)
+	public function new(imageUrl:String)
 	{
 		// create and initialise node
 		node = Lib.document.createElement("div");
-		node.style.width = Std.string(maskSize.width) + "px";
-		node.style.height = Std.string(maskSize.height) + "px";
-		
+
 		// apply mask style so it can crop the image
-		node.style.overflowX = "hidden";
-		node.style.overflowY = "hidden";
-		node.style.display = "inline-block";
+		//node.style.overflowX = "hidden";
+		//node.style.overflowY = "hidden";
+		//node.style.display = "inline-block";
+		//untyped { node.style.borderRadius = "10px"; };
+		//CellStyle.addBorderCss(node);
 
 		_image = cast Lib.document.createElement("img");
-		_maskSize = maskSize;
 		loadThumb(imageUrl);
 	}
 	
@@ -62,23 +59,16 @@ class CroppedImage
 	/**
 	 * image load success callback
 	 */
-	//private function onImageLoadSuccess(image:Image):Void
 	private function onImageLoadSuccess(event:Event):Void
 	{
-		// set image style. It is needed to do it here as we need to access to the intrisic size of the image,
-		// which we can access only when the image has been loaded
-		//listStyle.cellThumbnail(cellImage,screenResolutionSize);
-		//_cellStyle.thumbnail(_cellImage, _thumbMask);
-		// add image to cell
-		//node.appendChild(_cellImage);
-
 		// apply image start style so it is invisible (for fade-in)
 		untyped { _image.style.opacity = 0; };
 		
-		node.appendChild(ImageUtils.cropImage(_image,_maskSize));
+		//node.appendChild(ImageUtils.cropImage(_image,_maskSize));
+		node.appendChild(_image);
 		
 		// display thumb using a random effect
-		Timer.delay(fadeIn,Std.random(1000));
+		Timer.delay(fadeIn,Std.random(Constants.CELL_THUMB_APPARITION_DELAY));
 	}
 	
 	/**
@@ -115,14 +105,13 @@ class CroppedImage
 	/**
 	 * Resets the style of mask & image, used when resizing
 	 */
-	public function resetStyle(maskSize:Size):Void
+	public function resetStyle():Void
 	{
-		_maskSize = maskSize;
-		node.style.width = Std.string(maskSize.width) + "px";
-		node.style.height = Std.string(maskSize.height) + "px";
+		// get maskSize in pixel
+		var maskSize:Size = { width:node.clientWidth, height:node.clientHeight };
 		
-		ImageUtils.cropImage(_image, _maskSize);
-		
+		// crop image based on the mask size in pixel
+		ImageUtils.cropImage(_image, maskSize);
 	}
 
 }

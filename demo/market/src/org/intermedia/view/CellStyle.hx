@@ -44,6 +44,7 @@ class CellStyle
 		var cellWidthPercent:Float = computeWidthPercentage(cellPerLine);
 		node.style.width = Std.string(cellWidthPercent) + "%";
 		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
+		//node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
 		
 		// compute cell width in pixels depending on cellPerLine value
 		// 2 pixels are removed so that adding borders does not mess up layout
@@ -115,16 +116,17 @@ class CellStyle
 	 */
 	public static function addBorder(node:HtmlDom):Void
 	{
-		// add border
-		//node.style.borderWidth = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
-		//node.style.borderColor = Constants.CELL_BORDER_COLOR;
-		//node.style.borderStyle = "solid";
-		
 		// add border using margin and background as not supported by cocktail yet
 		node.style.margin = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
-		//node.style.borderColor = Constants.CELL_BORDER_COLOR;
-		//node.style.borderStyle = "solid";
 	}
+	
+	/*public static function addBorderCss(node:HtmlDom):Void
+	{
+		// add border
+		node.style.borderWidth = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
+		node.style.borderColor = Constants.CELL_BORDER_COLOR;
+		node.style.borderStyle = "solid";
+	}*/
 	
 	/**
 	 * Removes a border to the node, using CCS styles
