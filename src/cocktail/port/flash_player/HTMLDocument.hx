@@ -44,12 +44,6 @@ class HTMLDocument extends AbstractHTMLDocument
 	
 	override private function detachNativeElement(nativeElement:NativeElement):Void
 	{
-		try {
-			flash.Lib.current.removeChild(nativeElement);
-		}
-		catch (e:Dynamic)
-		{
-			trace(nativeElement);
-		}
+		flash.Lib.current.removeChild(nativeElement);
 	}
 }

@@ -97,17 +97,6 @@ class FormattingContext
 		};
 	}
 	
-	/**
-	 * clean up class attributes
-	 */
-	public function dispose():Void
-	{
-		_formattingContextData = null;
-		_floatsManager.dispose();
-		_floatsManager = null;
-		_formattingContextRoot = null;
-	}
-
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////

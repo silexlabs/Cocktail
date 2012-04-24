@@ -52,11 +52,6 @@ class BackgroundManager
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function dispose():Void
-	{
-		_backgroundDrawingManagers = null;
-	}
-	
 	/**
 	 * Render the different layers of the background of a HTMLElement using the backgroundBox
 	 * dimensions for each layer, then return an array containing each of the rendered layer.

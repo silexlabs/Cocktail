@@ -47,11 +47,7 @@ class LayerRenderer
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////
-	
-	public function dispose():Void
-	{
-		_rootRenderer = null;
-	}
+
 	
 	/**
 	 * Render all the ElementRenderers belonging to this LayerRenderer
