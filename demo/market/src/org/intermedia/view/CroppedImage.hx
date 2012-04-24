@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
@@ -15,7 +16,7 @@ import feffects.Tween;
 
 
 /**
- * This class defines utilities methods for images
+ * This class defines a cropped image, i.e. an image cropped by a containerDOM used as a mask
  * 
  * @author Raphael Harmel
  */
@@ -96,13 +97,31 @@ class CroppedImage
 	 * opacity tweening
 	 * @param	e
 	 */
-    function tweenOpacity( e : Float )
+    private function tweenOpacity( e : Float )
     {
         untyped { _image.style.opacity = e;};
     }
 
-    function tweenEnd(e : Float )
+    /**
+     * opacity tweening end
+	 * 
+     * @param	e
+     */
+	function tweenEnd(e : Float )
 	{
+		
+	}
+	
+	/**
+	 * Resets the style of mask & image, used when resizing
+	 */
+	public function resetStyle(maskSize:Size):Void
+	{
+		_maskSize = maskSize;
+		node.style.width = Std.string(maskSize.width) + "px";
+		node.style.height = Std.string(maskSize.height) + "px";
+		
+		ImageUtils.cropImage(_image, _maskSize);
 		
 	}
 

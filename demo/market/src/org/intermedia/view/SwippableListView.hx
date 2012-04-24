@@ -279,6 +279,12 @@ class SwippableListView extends ListViewBase
 		
 		// scroll to current list
 		scrollToCurrentList();
+		
+		// reapply lists styles (mainly for image cropping
+		for (list in _listViews)
+		{
+			list.refreshStyles();
+		}
 	}
 	
 	/**

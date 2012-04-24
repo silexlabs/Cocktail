@@ -20,22 +20,25 @@ class HomePage extends ViewBase
 	//Called when an item is selected.
 	public var onListItemSelected:CellData->Void;
 	
+	// cells array
+	public var cells:Array<CellBase>;
+	
 	public function new(initData:Dynamic) 
 	{
 		_data = initData;
+		cells = new Array<CellBase>();
 		super();
-		//trace(initData);
 	}
 	
 	override private function buildView():Void
-	//override private function updateView():Void
 	{
 		// add custom cells to the homepage
 		
 		var cell0Style:CellStyleModel = {
 			//cell:CellThumbText1Style.setCellStyle,
 			cell:CellThumbStyle.setCellStyle,
-			thumbnail:CellThumbStyle.setThumbnailStyle,
+			//thumbnail:CellThumbStyle.setThumbnailStyle,
+			thumbnail:null,
 			textBlock:null,
 			title:null,
 			author:null,
@@ -47,18 +50,21 @@ class HomePage extends ViewBase
 		// set mouseUp callback
 		cell0.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell0.data); };
 		node.appendChild(cell0.node);
+		cells.push(cell0);
 
 		var cell1 = new CellThumb(2,cell0Style);
 		cell1.data = _data[1];
 		// set mouseUp callback
 		cell1.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell1.data); };
 		node.appendChild(cell1.node);
+		cells.push(cell1);
 
 		var cell2 = new CellThumb(2,cell0Style);
 		cell2.data = _data[2];
 		// set mouseUp callback
 		cell2.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell2.data); };
 		node.appendChild(cell2.node);
+		cells.push(cell2);
 
 		//var cell3 = new CellThumbText1(2);
 		var cell3 = new CellThumb(2,cell0Style);
@@ -67,6 +73,7 @@ class HomePage extends ViewBase
 		// set mouseUp callback
 		cell3.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell3.data); };
 		node.appendChild(cell3.node);
+		cells.push(cell3);
 
 		//var cell4 = new CellThumbText1(2);
 		var cell4 = new CellThumb(2,cell0Style);
@@ -74,6 +81,7 @@ class HomePage extends ViewBase
 		// set mouseUp callback
 		cell4.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell4.data); };
 		node.appendChild(cell4.node);
+		cells.push(cell4);
 		
 		/*var cell5 = new CellThumbText1(2);
 		cell5.data = _data[5];

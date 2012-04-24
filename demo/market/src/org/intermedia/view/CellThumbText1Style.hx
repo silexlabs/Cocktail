@@ -37,7 +37,6 @@ class CellThumbText1Style
 		CellStyle.setCellStyle(node,cellPerLine);
 		
 		// compute cell size in pixel depending on cellPerLine value
-		//var cellSize:Size = computeMaskSize(cellPerLine, thumbWidthPercent);
 		var cellSize:Size = ImageUtils.computeMaskSize(cellPerLine,CELL_THUMB_WIDTH_PERCENT);
 		
 		node.style.height = Std.string(cellSize.height) + "px";
@@ -58,10 +57,10 @@ class CellThumbText1Style
 	 * 
 	 * @param	image
 	 */
-	public static function setThumbnailStyle(image:Image,maskSize:Size):Void
+	/*public static function setThumbnailStyle(image:Image,maskSize:Size):Void
 	{
 		CellThumbStyle.setThumbnailStyle(image,maskSize);
-	}
+	}*/
 		
 	/**
 	 * Defines cell text block Style

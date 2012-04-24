@@ -1,12 +1,9 @@
 package org.intermedia.view;
 
-//import cocktail.Cocktail;
-//import cocktail.node.HtmlDom;
-//import cocktail.style.StyleData;
-//import cocktail.textElement.TextElement;
-//import cocktail.node.HtmlDom;
-
-//import org.intermedia.view.CellThumbText1Style;
+import haxe.Firebug;
+import haxe.Timer;
+import js.Lib;
+import js.Dom;
 import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.model.ApplicationModel;
@@ -28,8 +25,14 @@ class CellThumb extends CellBase
 	// thumb mask
 	private var _thumbMask:Size;
 	
+	// mask
+	private var _mask:HtmlDom;
+	
 	// cell thumb image
 	//private var _cellImage:HtmlDom;
+
+	// cropping mask containing the image
+	private var _croppedImage:CroppedImage;
 
 	/**
 	 * constructor
@@ -43,6 +46,7 @@ class CellThumb extends CellBase
 		super(cellPerLine);
 		//if (cellStyle != null) _cellStyle = cellStyle;
 		//else initCellStyle();
+		initCellStyle();
 		// apply cell style and gets the cell dimension, for image cropping
 		//_thumbMask = _cellStyle.cell(this, cellPerLine, thumbWidthPercent);
 		//_thumbMask = _cellStyle.cell(this, cellPerLine);
@@ -56,12 +60,9 @@ class CellThumb extends CellBase
 	{
 		// init style model
 		_cellStyle = {
-			cell:CellThumbStyle.setCellStyle,
-			thumbnail:CellThumbStyle.setThumbnailStyle,
-			textBlock:null,
-			title:null,
-			author:null,
-			line:null
+			cell:CellThumbStyle.setCellStyle/*,
+			thumbnailMask:CellThumbStyle.setThumbnailMaskStyle,
+			thumbnail:CellThumbStyle.setThumbnailStyle*/
 		}
 	}
 	
@@ -73,9 +74,25 @@ class CellThumb extends CellBase
 		// load thumb image
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
-			node.appendChild(croppedImage.node);
+			//var croppedImage:CroppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			_croppedImage = new CroppedImage(_data.thumbUrl, _thumbMask);
+			//var croppedImage:CroppedImage = new CroppedImage(node,_cellStyle);
+			//var croppedImage:CroppedImage = new CroppedImage(_cellStyle);
+			node.appendChild(_croppedImage.node);
+			
+			// create and initialise mask
+			//_mask = Lib.document.createElement("div");
+			//node.appendChild(_mask);
+			//_cellStyle.thumbnailMask(_mask);
+			//Firebug.trace(_mask.offsetWidth + "," + _mask.offsetHeight);
+			//Timer.delay(function () { layoutSet(croppedImage);}  , 1);
 		}
+	}
+	
+	override public function refreshStyles():Void
+	{
+		_thumbMask = ImageUtils.computeMaskSize(_cellPerLine);
+		_croppedImage.resetStyle( _thumbMask );
 	}
 
 }

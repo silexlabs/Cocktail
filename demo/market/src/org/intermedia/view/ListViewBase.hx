@@ -163,4 +163,16 @@ class ListViewBase extends ViewBase
 		}
 	}
 	
+	/**
+	 * Refresh list styles
+	 */
+	public function refreshStyles():Void
+	{
+		for (cell in _cells)
+		{
+			cell.refreshStyles();
+		}
+	}
+
+
 }

@@ -154,12 +154,13 @@ To Do
  => test with cocktail this.nativeElement.onResize
  => try with pure js js.Lib.body.onResize
 -when swipping:
- => when swipping fast horizontal then vertical, preventDefault is not applied
- => tweening
- => title shifts
--menu bar for navigation
+ => when swipping fast horizontal then vertical, preventDefault is not applied => OK
+ => tweening => OK
+ => title shifts => OK
+-menu bar for navigation => OK
 -cells on the same line should have the samed height => OK
 -on resize, cropped images size do not change
+-hide navigation bar
 
 To Do Alex 30/03/2012
 -retirer les cells ne contenant pas de titre, de thumb ou de description / content => OK
@@ -187,11 +188,13 @@ To do Alex pre fine tuning:
 -taille & couleurs border => OK
 -retour à la ligne liste text => OK
 -thumbs:
-  => redimensionnement au resize
-  => padding
+  => redimensionnement au resize => OK
+  => padding => OK
+
 => Pol
 -affiner le scroll si tremblement => OK
 -relase scroll vertical => OK
+-items de menu latéraux a mettre avec une police moins grande et a moitié, avec ombre visuelle
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
@@ -216,3 +219,5 @@ Issues:
 -when using -webkit-box-sizing:border-box; on iOS safari, the first time it does not work: and lines which should contain 2 cells are only containing one
 
 
+Haxe issues
+node.clonenode does not seems to copy all children hierachy

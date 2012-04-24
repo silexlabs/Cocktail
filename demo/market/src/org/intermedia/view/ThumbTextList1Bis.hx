@@ -8,6 +8,8 @@
 package org.intermedia.view;
 
 //import cocktail.mouse.MouseData;
+import haxe.Firebug;
+import js.Lib;
 import org.intermedia.model.ApplicationModel;
 //import cocktail.node.HtmlDom;
 
@@ -19,7 +21,8 @@ import org.intermedia.model.ApplicationModel;
 
 class ThumbTextList1Bis extends ThumbTextList1
 {
-	private var _homePageData:Array<Dynamic>;
+	//private var _homePageData:Array<Dynamic>;
+	private var _homePage:HomePage;
 	
 	//public function new(?cellPerLine:Int = 1, homePageData:Array<Dynamic>)
 	public function new(?cellPerLine:Int = 1)
@@ -30,16 +33,28 @@ class ThumbTextList1Bis extends ThumbTextList1
 	}
 
 	
-	//override private function buildView():Void
 	public function buildHomePage(homePageData:Array<Dynamic>):Void
-	//override private function updateView():Void
 	{
-		//trace(_homePageData);
 		// add home page data at the top of the list
 		var homePage:HomePage = new HomePage(homePageData);
 		homePage.onListItemSelected = onListItemSelectedCallback;
-		node.appendChild(homePage.node);
+		/*for (i in 0...homePage.node.childNodes.length)
+		{
+			// copy homepage children node to this.node. cloneNode Does not seem to work correctly here
+			//node.appendChild(homePage.node.childNodes[i].cloneNode(true));
+			// instead, children nodes are moves
+			node.appendChild(homePage.node.childNodes[0]);
+			
+		}*/
+		for (i in 0...homePage.cells.length)
+		{
+			// copy homepage children node to this.node. cloneNode Does not seem to work correctly here
+			//node.appendChild(homePage.node.childNodes[i].cloneNode(true));
+			// instead, children nodes are moves
+			_cells.push(homePage.cells[i]);
+			node.appendChild(_cells[i].node);
+		}
+
 	}
 	
-
 }
