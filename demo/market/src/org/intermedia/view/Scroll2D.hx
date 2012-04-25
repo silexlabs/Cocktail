@@ -200,7 +200,7 @@ class Scroll2D
 		// prevent default scroll behaviour
 		event.preventDefault();
 		// call horizontal scroll callback with correct x position
-		_scrollPosition = {x: initialScrollPosition.x - _offset.x, y: initialScrollPosition.x }
+		_scrollPosition = {x: initialScrollPosition.x - _offset.x, y: initialScrollPosition.y }
 		onHorizontalScrollCallback(_scrollPosition.x);
 	}
 
@@ -219,7 +219,8 @@ class Scroll2D
 		
 		// call vertical scroll callback with correct y position
 		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
-		onVerticalScrollCallback(_scrollPosition.y);
+		//onVerticalScrollCallback(_scrollPosition.y);
+		onVerticalScrollCallback(_offset.y);
 	}
 
 		
@@ -330,11 +331,13 @@ class Scroll2D
 		var verticalTweenEnd:Int = 0;
 		// if scrolling direction is down
 		if (_offset.y > 0 )
-			verticalTweenEnd = _scrollPosition.y - VERTICAL_TWEEN_DELTA;
+			//verticalTweenEnd = _scrollPosition.y - VERTICAL_TWEEN_DELTA;
+			verticalTweenEnd = _offset.y + VERTICAL_TWEEN_DELTA;
 		else
-			verticalTweenEnd = _scrollPosition.y + VERTICAL_TWEEN_DELTA;
+			//verticalTweenEnd = _scrollPosition.y + VERTICAL_TWEEN_DELTA;
+			verticalTweenEnd = _offset.y - VERTICAL_TWEEN_DELTA;
 		// create the tween
-        _verticalTween = new Tween( _scrollPosition.y, verticalTweenEnd, 600, Quint.easeOut );
+        _verticalTween = new Tween( _offset.y, verticalTweenEnd, 600, Quint.easeOut );
 		_verticalTween.setTweenHandlers( onVerticalScrollCallback, onVerticalTweenEnd );
         // launch the tween
         _verticalTween.start();

@@ -60,7 +60,7 @@ class CellThumbText1Style
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 		node.style.display = "inline-block";
-		untyped { node.style.borderRadius = "10px"; };
+		//untyped { node.style.borderRadius = "10px"; };
 	}
 	
 	/**

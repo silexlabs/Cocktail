@@ -60,7 +60,7 @@ class DetailView extends ViewBase
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.vertical);
-		_moveHandler.onVerticalScroll = onVerticalMove;
+		_moveHandler.onVerticalScroll = onVerticalScroll;
 		
 	}
 	
@@ -182,9 +182,9 @@ class DetailView extends ViewBase
 	 * 
 	 * @param	e
 	 */
-    private function onVerticalMove( y : Int )
+    private function onVerticalScroll( y : Int )
     {
-		node.scrollTop = y;
+		node.scrollTop = _moveHandler.initialScrollPosition.y - y;
     }
 	
 
