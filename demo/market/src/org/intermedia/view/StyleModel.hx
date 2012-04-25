@@ -9,6 +9,7 @@ package org.intermedia.view;
 typedef CellStyleModel =
 {
 	var cell:Dynamic;
+	var thumbnailMask:Dynamic;
 	var thumbnail:Dynamic;
 	var textBlock:Dynamic;
 	var title:Dynamic;

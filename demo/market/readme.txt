@@ -196,6 +196,37 @@ To do Alex pre fine tuning:
 -relase scroll vertical => OK
 -items de menu latéraux a mettre avec une police moins grande et a moitié, avec ombre visuelle
 
+
+Feedback market Pol & Alex 24/04/2012
+
+Scroll swippable view
+ => scroll horizontal a ameliorer (cf. Market)
+ => release scroll vertical basé sur l'acceleration
+
+Pol:
+ => tile header
+ => tile menu
+ => image header a revoir
+ => background cellules texte
+
+Menu:
+ => police à changer:
+      => donner le police à pol
+     => enlever le gras
+ => copier le menu d'android market
+     => déplacement
+     => menu latéraux
+       => position
+       => ombre
+ => couleur du bouton clické à retirer
+ => bug release menu
+
+
+Créer une Home page contenant les icônes de chaque flux rss
+ => un click sur,le Header ramène à la homepage
+
+
+
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield

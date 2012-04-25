@@ -16,7 +16,10 @@ import org.intermedia.model.ApplicationModel;
 class CellThumbText1 extends CellBase
 {
 	// cropping mask containing the image
-	private var _croppedImage:CroppedImage;
+	//private var _croppedImage:CroppedImage;
+
+	// blockThumb containing cropped image
+	private var _blockThumb:BlockThumb;
 
 	/**
 	 * constructor
@@ -59,13 +62,19 @@ class CellThumbText1 extends CellBase
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
 			// create cropped image
-			_croppedImage = new CroppedImage();
+			/*_croppedImage = new CroppedImage();
 			_croppedImage.onImageLoadSuccess = refreshStyles;
 			_croppedImage.loadThumb(_data.thumbUrl);
 			// apply style
 			_cellStyle.thumbnailMask(_croppedImage.node);
 			// attach it to hierarchy
-			node.appendChild(_croppedImage.node);
+			node.appendChild(_croppedImage.node);*/
+
+			// create blockThumb containing cropped thumb image
+			_blockThumb = new BlockThumb(_cellStyle);
+			_blockThumb.data = _data;
+			node.appendChild(_blockThumb.node);
+			
 		}
 
 		
@@ -122,7 +131,8 @@ class CellThumbText1 extends CellBase
 	override public function refreshStyles():Void 
 	{
 		// reset cropped image style
-		_croppedImage.resetStyle();
+		//_croppedImage.refreshStyles();
+		_blockThumb.refreshStyles();
 	}
 
 }
