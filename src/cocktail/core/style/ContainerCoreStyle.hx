@@ -288,15 +288,19 @@ class ContainerCoreStyle extends CoreStyle
 			{
 				//TODO : this bit should go into BoxPositioner
 				var childStyle:CoreStyle = positionedHTMLElementData.element.coreStyle;
+				if (childStyle.computedStyle.position != fixed)
+				{
+					if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
+					{
+						positionedHTMLElementData.element.positionedOrigin.y += _elementRenderer.bounds.y;
+					}
+					if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
+					{
+						positionedHTMLElementData.element.positionedOrigin.x += _elementRenderer.bounds.x;
+					}
+				}
 				
-				if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
-				{
-					positionedHTMLElementData.element.bounds.y += _elementRenderer.bounds.y;
-				}
-				if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
-				{
-					positionedHTMLElementData.element.bounds.x += _elementRenderer.bounds.x;
-				}
+			
 			}
 		}
 	}

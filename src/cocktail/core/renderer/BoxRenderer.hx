@@ -52,6 +52,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
+		//TODO : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
@@ -59,8 +60,8 @@ class BoxRenderer extends ElementRenderer
 			//TODO : cause bug in the placement of block box backgrounds as x and y are also
 			//applied in the LayerRenderer
 			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
+			backgrounds[i].x = _globalOrigin.x;
+			backgrounds[i].y = _globalOrigin.y;
 			#end
 		
 		}
@@ -84,7 +85,7 @@ class BoxRenderer extends ElementRenderer
 			#elseif nme
 			nativeElement.graphics.beginFill(0xFF0000, 0.01);
 			#end
-			nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
+			nativeElement.graphics.drawRect(_globalOrigin.x, _globalOrigin.y, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
 			backgrounds.push(nativeElement);

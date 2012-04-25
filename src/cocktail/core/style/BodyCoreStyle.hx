@@ -114,6 +114,31 @@ class BodyCoreStyle extends ContainerCoreStyle
 		}
 		
 		layout(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
+		setGlobalOrigins(_elementRenderer, 0.0, 0.0);
+	}
+	
+	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float):Void
+	{
+		if (elementRenderer.establishesNewFormattingContext() == true)
+		{
+			addedX += elementRenderer.bounds.x;
+			addedY += elementRenderer.bounds.y;
+		}
+		
+		for (i in 0...elementRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			
+			child.globalOrigin = {
+				x: addedX + child.bounds.x, 
+				y : addedY + child.bounds.y
+			}
+			
+			if (child.hasChildNodes() == true)
+			{
+				setGlobalOrigins(child, addedX, addedY);
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

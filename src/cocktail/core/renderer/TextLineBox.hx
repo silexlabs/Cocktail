@@ -69,8 +69,8 @@ class TextLineBox extends LineBox
 	override public function render():Array<NativeElement>
 	{
 		#if flash9
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y;
+		_nativeElement.x = _bounds.x + _elementRenderer.globalOrigin.x;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalOrigin.y;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
 		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
