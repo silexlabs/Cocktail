@@ -6,10 +6,6 @@ import js.Lib;
 import js.Dom;
 import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
-import org.intermedia.model.ApplicationModel;
-
-import feffects.Tween;
-
 
 /**
  * This class defines a CellThumb
@@ -19,21 +15,18 @@ import feffects.Tween;
 
 class CellThumb extends CellBase
 {
-	// mask
-	private var _mask:HtmlDom;
-	
 	// cropping mask containing the image
 	private var _croppedImage:CroppedImage;
 
 	/**
 	 * constructor
 	 * 
-	 * @param	?cellPerLine			number of cells per line
-	 * @param	?cellStyle				cell style
+	 * @param	?cellPerLine	number of cells per line
+	 * @param	?cellStyle		cell style
 	 */
 	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
 	{
-		super(cellPerLine);
+		super(cellPerLine,cellStyle);
 	}
 	
 	/**
@@ -58,13 +51,13 @@ class CellThumb extends CellBase
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
 			// create cropped image
-			_croppedImage = new CroppedImage(_data.thumbUrl);
+			_croppedImage = new CroppedImage();
+			_croppedImage.onImageLoadSuccess = refreshStyles;
+			_croppedImage.loadThumb(_data.thumbUrl);
 			// apply style
 			_cellStyle.thumbnailMask(_croppedImage.node);
 			// attach it to hierarchy
 			node.appendChild(_croppedImage.node);
-			
-			Timer.delay(refreshStyles, Constants.CELL_REFRESH_STYLE_DELAY);
 		}
 	}
 	

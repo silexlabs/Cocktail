@@ -4,24 +4,17 @@ import haxe.Firebug;
 import haxe.Timer;
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.CellThumbText1Style;
 import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Base class for list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for thumb text list cell. Each ListView has its own cell class inherited from this one.
  * 
  * @author Raphael Harmel
  */
 
-//class CellThumbText1 extends CellThumb
 class CellThumbText1 extends CellBase
 {
-	static inline var TITLE_LENGTH:Int = 40;
-	
-	// mask
-	private var _mask:HtmlDom;
-	
 	// cropping mask containing the image
 	private var _croppedImage:CroppedImage;
 
@@ -29,10 +22,11 @@ class CellThumbText1 extends CellBase
 	 * constructor
 	 * 
 	 * @param	?cellPerLine	number of cells per line
+	 * @param	?cellStyle		cell style
 	 */
 	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
 	{
-		super(cellPerLine);
+		super(cellPerLine,cellStyle);
 	}
 
 	/**
@@ -42,11 +36,8 @@ class CellThumbText1 extends CellBase
 	{
 		// init style model
 		_cellStyle = {
-			//cell:CellThumbText1Style.setCellStyle,
-			//thumbnail:CellThumbText1Style.setThumbnailStyle,
 			cell:CellThumbText1Style.setCellStyle,
 			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
-			//thumbnail:CellThumbText1Style.setThumbnailStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
 			author:CellThumbText1Style.setAuthorStyle,
@@ -68,7 +59,9 @@ class CellThumbText1 extends CellBase
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
 			// create cropped image
-			_croppedImage = new CroppedImage(_data.thumbUrl);
+			_croppedImage = new CroppedImage();
+			_croppedImage.onImageLoadSuccess = refreshStyles;
+			_croppedImage.loadThumb(_data.thumbUrl);
 			// apply style
 			_cellStyle.thumbnailMask(_croppedImage.node);
 			// attach it to hierarchy
@@ -81,20 +74,24 @@ class CellThumbText1 extends CellBase
 		// add text block
 		var cellTextBlockContainer:HtmlDom = Lib.document.createElement("div");
 		_cellStyle.textBlock(cellTextBlockContainer);
-		//listStyle.cellTextBlock(cellTextBlockContainer);
 		node.appendChild(cellTextBlockContainer);
 		
 		// add title
 		if (_data.title != "" && _data.title != null)
 		{
 			var text:String = _data.title;
-			if (text.length > TITLE_LENGTH)
-				text = text.substr(0, TITLE_LENGTH) + "...";
+			// shorten title
+			if (text.length > Constants.CELL_THUMB_TEXT_TITLE_LENGTH)
+			{
+				// shorten title to TITLE_LENGTH
+				text = text.substr(0, Constants.CELL_THUMB_TEXT_TITLE_LENGTH);
+				// then shorten it until the last space character and add "..." at the end
+				text = text.substr(0, text.lastIndexOf(" ")) + "...";
+			}
 			var textElement:HtmlDom = Lib.document.createTextNode(text);
 			var cellTitleContainer:HtmlDom = Lib.document.createElement("div");
 			cellTitleContainer.appendChild(textElement);
 			_cellStyle.title(cellTitleContainer);
-			//listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
 			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
@@ -119,7 +116,7 @@ class CellThumbText1 extends CellBase
 		node.appendChild(line);
 		line.src("assets/greyPixel.png");*/
 
-		Timer.delay(refreshStyles, Constants.CELL_REFRESH_STYLE_DELAY);
+		//Timer.delay(refreshStyles, Constants.CELL_STYLE_REFRESH_DELAY);
 	}
 	
 	override public function refreshStyles():Void 

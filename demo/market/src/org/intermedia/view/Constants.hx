@@ -28,12 +28,15 @@ class Constants
 	//public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
 	
+	// set swippable view constants
+	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.2;	
+	
 	// set lists constants
 	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;
 	public static inline var LIST_BG_COLOR:String = "#CCCCCC";
 	
 	// set cells constants
-	public static inline var CELL_REFRESH_STYLE_DELAY:Int = 600;
+	//public static inline var CELL_STYLE_REFRESH_DELAY:Int = 600;
 	public static inline var CELL_BG_COLOR:String = "#FEFEFE";
 	public static inline var CELL_VERTICAL_SPACE:Int = 2;
 	public static inline var CELL_BORDER_WIDTH:Int = 1;
@@ -43,6 +46,11 @@ class Constants
 	public static inline var CELL_MAX_HEIGHT:Int = 150;
 	public static inline var CELL_MIN_WIDTH:Int = 150;
 
-	// set cells constants
+	// set cells thumb constants
 	public static inline var CELL_THUMB_APPARITION_DELAY:Int = 1500;
+	
+	// set cells thumb text constants
+	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 50;
+	
+	
 }
