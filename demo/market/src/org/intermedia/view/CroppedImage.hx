@@ -21,10 +21,10 @@ import feffects.Tween;
  * @author Raphael Harmel
  */
 
-class CroppedImage
+class CroppedImage extends ViewBase
 {
 	// node which corresponds to the image mask
-	public var node:HtmlDom;
+	//public var node:HtmlDom;
 	
 	// image to crop
 	private var _image:Image;
@@ -32,11 +32,25 @@ class CroppedImage
 	// onImageLoadSuccess callback
 	public var onImageLoadSuccess:Void->Void;
 	
-	public function new()
+	public function new(style:Dynamic)
 	{
+		super();
+		_style = style;
 		// create and initialise node
 		node = Lib.document.createElement("div");
 	}
+	
+	/**
+	 * update view
+	 */
+	override private function updateView():Void
+	{
+		// apply style
+		_style.thumbnailMask(node);
+		// load thumb
+		loadThumb(_data.thumbUrl);
+	}
+	
 	
 	/**
 	 *  load thumb image
@@ -55,9 +69,12 @@ class CroppedImage
 	 */
 	private function onImageLoadSuccessCallback(event:Event):Void
 	{
+		// apply all styles
+		refreshStyles();
 		// apply image start style so it is invisible (for fade-in)
 		untyped { _image.style.opacity = 0; };
 		
+		// attach it to hierarchy once all styles are correctly set
 		node.appendChild(_image);
 		
 		// display thumb using a random effect

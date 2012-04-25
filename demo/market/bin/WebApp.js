@@ -1769,29 +1769,6 @@ org.intermedia.view.ViewBase.prototype = {
 	,__class__: org.intermedia.view.ViewBase
 	,__properties__: {set_displayLoading:"setDisplayLoading",set_data:"setData",get_data:"getData"}
 }
-org.intermedia.view.BlockThumb = $hxClasses["org.intermedia.view.BlockThumb"] = function(style) {
-	org.intermedia.view.ViewBase.call(this);
-	this._style = style;
-};
-org.intermedia.view.BlockThumb.__name__ = ["org","intermedia","view","BlockThumb"];
-org.intermedia.view.BlockThumb.__super__ = org.intermedia.view.ViewBase;
-org.intermedia.view.BlockThumb.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
-	_croppedImage: null
-	,updateView: function() {
-		this.createBlock();
-	}
-	,createBlock: function() {
-		this._croppedImage = new org.intermedia.view.CroppedImage();
-		this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
-		this._croppedImage.loadThumb(this._data.thumbUrl);
-		this._style.thumbnailMask(this._croppedImage.node);
-		this.node = this._croppedImage.node;
-	}
-	,refreshStyles: function() {
-		this._croppedImage.refreshStyles();
-	}
-	,__class__: org.intermedia.view.BlockThumb
-});
 org.intermedia.view.CellBase = $hxClasses["org.intermedia.view.CellBase"] = function(cellPerLine,cellStyle) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.ViewBase.call(this);
@@ -1926,19 +1903,19 @@ org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = fu
 org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
 org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_blockThumb: null
+	_croppedImage: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle};
 	}
 	,updateView: function() {
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._blockThumb = new org.intermedia.view.BlockThumb(this._cellStyle);
-			this._blockThumb.setData(this._data);
-			this.node.appendChild(this._blockThumb.node);
+			this._croppedImage = new org.intermedia.view.CroppedImage(this._cellStyle);
+			this._croppedImage.setData(this._data);
+			this.node.appendChild(this._croppedImage.node);
 		}
 	}
 	,refreshStyles: function() {
-		this._blockThumb.refreshStyles();
+		this._croppedImage.refreshStyles();
 	}
 	,__class__: org.intermedia.view.CellThumb
 });
@@ -1971,16 +1948,16 @@ org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbTe
 org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
 org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_blockThumb: null
+	_croppedImage: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 	}
 	,updateView: function() {
 		org.intermedia.view.CellBase.prototype.updateView.call(this);
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._blockThumb = new org.intermedia.view.BlockThumb(this._cellStyle);
-			this._blockThumb.setData(this._data);
-			this.node.appendChild(this._blockThumb.node);
+			this._croppedImage = new org.intermedia.view.CroppedImage(this._cellStyle);
+			this._croppedImage.setData(this._data);
+			this.node.appendChild(this._croppedImage.node);
 		}
 		var cellTextBlockContainer = js.Lib.document.createElement("div");
 		this._cellStyle.textBlock(cellTextBlockContainer);
@@ -1999,7 +1976,7 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellB
 		}
 	}
 	,refreshStyles: function() {
-		this._blockThumb.refreshStyles();
+		this._croppedImage.refreshStyles();
 	}
 	,__class__: org.intermedia.view.CellThumbText1
 });
@@ -2062,20 +2039,27 @@ org.intermedia.view.Constants.__name__ = ["org","intermedia","view","Constants"]
 org.intermedia.view.Constants.prototype = {
 	__class__: org.intermedia.view.Constants
 }
-org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"] = function() {
+org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"] = function(style) {
+	org.intermedia.view.ViewBase.call(this);
+	this._style = style;
 	this.node = js.Lib.document.createElement("div");
 };
 org.intermedia.view.CroppedImage.__name__ = ["org","intermedia","view","CroppedImage"];
-org.intermedia.view.CroppedImage.prototype = {
-	node: null
-	,_image: null
+org.intermedia.view.CroppedImage.__super__ = org.intermedia.view.ViewBase;
+org.intermedia.view.CroppedImage.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
+	_image: null
 	,onImageLoadSuccess: null
+	,updateView: function() {
+		this._style.thumbnailMask(this.node);
+		this.loadThumb(this._data.thumbUrl);
+	}
 	,loadThumb: function(imageUrl) {
 		this._image = js.Lib.document.createElement("img");
 		this._image.onload = this.onImageLoadSuccessCallback.$bind(this);
 		this._image.src = imageUrl;
 	}
 	,onImageLoadSuccessCallback: function(event) {
+		this.refreshStyles();
 		this._image.style.opacity = 0;
 		this.node.appendChild(this._image);
 		haxe.Timer.delay(this.fadeIn.$bind(this),Std.random(1500));
@@ -2096,7 +2080,7 @@ org.intermedia.view.CroppedImage.prototype = {
 		org.intermedia.view.ImageUtils.cropImage(this._image,maskSize);
 	}
 	,__class__: org.intermedia.view.CroppedImage
-}
+});
 org.intermedia.view.DetailStyle = $hxClasses["org.intermedia.view.DetailStyle"] = function() { }
 org.intermedia.view.DetailStyle.__name__ = ["org","intermedia","view","DetailStyle"];
 org.intermedia.view.DetailStyle.setDetailStyle = function(node) {
