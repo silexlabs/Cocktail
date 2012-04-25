@@ -14,8 +14,7 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because background color is in front
- * of text
+ * TODO : fail because background is not under text
  */
 class Test 
 {

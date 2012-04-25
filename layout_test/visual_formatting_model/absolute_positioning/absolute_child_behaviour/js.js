@@ -41,7 +41,7 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if the \"Filler Text\" overflows below the orange box and overlaps the bottom blue box.</p>";
+	var test = "<div>";
 	test += "<div style=\"position:relative;\">";
 	test += "<div style=\"background-color:orange; top:0.5in; position:absolute; height:1in; width:1in;\">";
 	test += " Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ";

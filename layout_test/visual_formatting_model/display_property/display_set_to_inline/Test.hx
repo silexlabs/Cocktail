@@ -14,7 +14,8 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail all word are on top of each other
+ * TODO : fail because inline not wrapped in anonymous block. Works
+ * without "p" element
  */
 class Test 
 {

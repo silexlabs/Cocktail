@@ -26,7 +26,7 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if there is a box on the left side of the "Filler Text".</p>';
+		var test = '<div>';
 		test += '<div style="background-color:black; display:inline; line-height:1em;">';
 		test += '<div style="background-color:white; margin-left:100px; display:inline; line-height:1em;">Filler Text </div>';
 		test += '</div></div>';

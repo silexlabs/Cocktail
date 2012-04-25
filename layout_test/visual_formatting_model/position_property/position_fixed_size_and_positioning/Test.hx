@@ -13,9 +13,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail, content not on the same lines
- */
 class Test 
 {
 	public static function main()
@@ -25,10 +22,9 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the "Filler Text" below is all on the same line.</p>';
-		test += '<div>';
-		test += 'Filler Text';
-		test += '<div style="display:inline-block; height:50px; width:150px;">Filler Text Filler Text</div>';
+		var test = '<div><p>Test passes if there is a large orange box that covers the bottom-right corner of the blue box and continues to the right side and the bottom of the page.</p>';
+		test += '<div style="position:relative; background-color:blue; height:2in; width:2in;">';
+		test += '<div style="background-color:orange; position:fixed; bottom:0; right:0; top:1in; left:1in;"></div>';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;

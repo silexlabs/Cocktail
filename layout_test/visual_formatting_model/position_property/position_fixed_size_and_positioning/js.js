@@ -41,9 +41,9 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div>";
-	test += "<div style=\"background-color:black; display:inline; line-height:1em;\">";
-	test += "<div style=\"background-color:white; margin-left:100px; display:inline; line-height:1em;\">Filler Text </div>";
+	var test = "<div><p>Test passes if there is a large orange box that covers the bottom-right corner of the blue box and continues to the right side and the bottom of the page.</p>";
+	test += "<div style=\"position:relative; background-color:blue; height:2in; width:2in;\">";
+	test += "<div style=\"background-color:orange; position:fixed; bottom:0; right:0; top:1in; left:1in;\"></div>";
 	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
 }

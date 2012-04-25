@@ -15,7 +15,9 @@ import js.Lib;
 
 /**
  * TODO : fail because of inline div not wrapped in anonymous block.
- * Works when removing the "p" element
+ * Works when removing the "p" element.
+ * 
+ * Also background no longer as body element margins
  */
 class Test 
 {
