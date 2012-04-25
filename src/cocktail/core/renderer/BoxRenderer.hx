@@ -64,8 +64,24 @@ class BoxRenderer extends ElementRenderer
 			
 			if (_coreStyle.position == fixed)
 			{
-				backgrounds[i].x = _positionedOrigin.x;
-				backgrounds[i].y = _positionedOrigin.y;
+				
+				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+				{
+					backgrounds[i].x = _globalOrigin.x + _bounds.x;
+				}
+				else
+				{
+					backgrounds[i].x = _positionedOrigin.x;
+				}
+				
+				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+				{
+					backgrounds[i].y = _globalOrigin.y + _bounds.y;
+				}
+				else
+				{
+					backgrounds[i].y = _positionedOrigin.y;
+				}
 			}
 			else if (_coreStyle.position == absolute)
 			{

@@ -123,14 +123,24 @@ class BodyCoreStyle extends ContainerCoreStyle
 	{
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
-			//elementRenderer.bounds.x += elementRenderer.coreStyle.computedStyle.marginLeft;
-			//elementRenderer.bounds.y += elementRenderer.coreStyle.computedStyle.marginTop;
-			
-			//elementRenderer.globalOrigin.x += elementRenderer.coreStyle.computedStyle.marginLeft;
-			//elementRenderer.globalOrigin.y += elementRenderer.coreStyle.computedStyle.marginTop;
-			
+			//TODO : should be either bounds or static position ?
+			//add a method to return the right origin ?
 			addedX += elementRenderer.bounds.x;
 			addedY += elementRenderer.bounds.y;
+			
+			if (elementRenderer.isPositioned() == true)
+			{
+				//TODO : don't do if uses static position
+				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+				{
+					addedX += elementRenderer.positionedOrigin.x;
+				}
+				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				{
+					addedY += elementRenderer.positionedOrigin.y;
+				}
+				
+			}
 			
 		}
 		
