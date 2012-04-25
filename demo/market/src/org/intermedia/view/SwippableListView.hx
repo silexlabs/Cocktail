@@ -134,7 +134,7 @@ class SwippableListView extends ListViewBase
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.both);
-		_moveHandler.onVerticalScroll = onVerticalMove;
+		_moveHandler.onVerticalScroll = onVerticalScroll;
 		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
 		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
 		_moveHandler.onHorizontalTween = onHorizontalTweenCallback;
@@ -312,9 +312,9 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-    private function onVerticalMove( y : Int )
+    private function onVerticalScroll( y : Int )
     {
-		_currentListView.node.scrollTop = y;
+		_currentListView.node.scrollTop = _moveHandler.initialScrollPosition.y - y;
     }
 	
 	/**

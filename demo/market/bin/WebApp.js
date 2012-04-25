@@ -1936,7 +1936,6 @@ org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle = function(node) {
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
 	node.style.display = "inline-block";
-	node.style.borderRadius = "10px";
 }
 org.intermedia.view.CellThumbStyle.prototype = {
 	__class__: org.intermedia.view.CellThumbStyle
@@ -1997,7 +1996,6 @@ org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
 	node.style.display = "inline-block";
-	node.style.borderRadius = "10px";
 }
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(node) {
 	node.style.display = "inline-block";
@@ -2143,7 +2141,7 @@ org.intermedia.view.DetailView = $hxClasses["org.intermedia.view.DetailView"] = 
 	this._contentElement = js.Lib.document.createTextNode("");
 	org.intermedia.view.ViewBase.call(this);
 	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.vertical);
-	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
+	this._moveHandler.onVerticalScroll = this.onVerticalScroll.$bind(this);
 };
 org.intermedia.view.DetailView.__name__ = ["org","intermedia","view","DetailView"];
 org.intermedia.view.DetailView.__super__ = org.intermedia.view.ViewBase;
@@ -2196,8 +2194,8 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this.node.addEventListener("touchend",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
 		this.node.addEventListener("touchcancel",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
 	}
-	,onVerticalMove: function(y) {
-		this.node.scrollTop = y;
+	,onVerticalScroll: function(y) {
+		this.node.scrollTop = this._moveHandler.initialScrollPosition.y - y;
 	}
 	,__class__: org.intermedia.view.DetailView
 });
@@ -2744,17 +2742,17 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		switch(this._index) {
 		case 0:
 			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
-			this._menuItem1LeftTarget = js.Lib.window.innerWidth - this._menuItem1Width / 2 | 0;
+			this._menuItem1LeftTarget = js.Lib.window.innerWidth - this._menuItem1Width;
 			this._menuItem2LeftTarget = js.Lib.window.innerWidth;
 			break;
 		case 1:
-			this._menuItem0LeftTarget = -this._menuItem2Width / 2 | 0;
+			this._menuItem0LeftTarget = 0;
 			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
-			this._menuItem2LeftTarget = js.Lib.window.innerWidth - this._menuItem2Width / 2 | 0;
+			this._menuItem2LeftTarget = js.Lib.window.innerWidth - this._menuItem2Width;
 			break;
 		case 2:
 			this._menuItem0LeftTarget = -this._menuItem0Width;
-			this._menuItem1LeftTarget = -this._menuItem1Width / 2 | 0;
+			this._menuItem1LeftTarget = 0;
 			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
 			break;
 		default:
@@ -2942,13 +2940,13 @@ org.intermedia.view.Scroll2D.prototype = {
 	}
 	,onHorizontalMoveCallback: function(event) {
 		event.preventDefault();
-		this._scrollPosition = { x : this.initialScrollPosition.x - this._offset.x, y : this.initialScrollPosition.x};
+		this._scrollPosition = { x : this.initialScrollPosition.x - this._offset.x, y : this.initialScrollPosition.y};
 		this.onHorizontalScrollCallback(this._scrollPosition.x);
 	}
 	,onVerticalMoveCallback: function(event) {
 		event.preventDefault();
 		this._scrollPosition = { x : this.initialScrollPosition.x, y : this.initialScrollPosition.y - this._offset.y};
-		this.onVerticalScrollCallback(this._scrollPosition.y);
+		this.onVerticalScrollCallback(this._offset.y);
 	}
 	,onUpCallback: function(event) {
 		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalUpCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.verticalReleaseTween();
@@ -2972,8 +2970,8 @@ org.intermedia.view.Scroll2D.prototype = {
 	}
 	,verticalReleaseTween: function() {
 		var verticalTweenEnd = 0;
-		if(this._offset.y > 0) verticalTweenEnd = this._scrollPosition.y - 100; else verticalTweenEnd = this._scrollPosition.y + 100;
-		this._verticalTween = new feffects.Tween(this._scrollPosition.y,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
+		if(this._offset.y > 0) verticalTweenEnd = this._offset.y + 100; else verticalTweenEnd = this._offset.y - 100;
+		this._verticalTween = new feffects.Tween(this._offset.y,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
 		this._verticalTween.setTweenHandlers(this.onVerticalScrollCallback.$bind(this),this.onVerticalTweenEnd.$bind(this));
 		this._verticalTween.start();
 	}
@@ -3044,7 +3042,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._currentListView = this._listViews[this._index];
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.both);
-	this._moveHandler.onVerticalScroll = this.onVerticalMove.$bind(this);
+	this._moveHandler.onVerticalScroll = this.onVerticalScroll.$bind(this);
 	this._moveHandler.onHorizontalScroll = this.onHorizontalMoveCallback.$bind(this);
 	this._moveHandler.onHorizontalUp = this.onHorizontalUpCallback.$bind(this);
 	this._moveHandler.onHorizontalTween = this.onHorizontalTweenCallback.$bind(this);
@@ -3136,8 +3134,8 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,onHorizontalTweenCallback: function(XScroll) {
 		this.node.scrollLeft = XScroll;
 	}
-	,onVerticalMove: function(y) {
-		this._currentListView.node.scrollTop = y;
+	,onVerticalScroll: function(y) {
+		this._currentListView.node.scrollTop = this._moveHandler.initialScrollPosition.y - y;
 	}
 	,onHorizontalUpCallback: function(event,XOffset) {
 		event.preventDefault();
