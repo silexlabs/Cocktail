@@ -60,8 +60,18 @@ class BoxRenderer extends ElementRenderer
 			//TODO : cause bug in the placement of block box backgrounds as x and y are also
 			//applied in the LayerRenderer
 			#if (flash9 || nme)
-			backgrounds[i].x = _globalOrigin.x;
-			backgrounds[i].y = _globalOrigin.y;
+			
+			if (_coreStyle.position == fixed)
+			{
+				backgrounds[i].x = _bounds.x;
+				backgrounds[i].y = _bounds.y;
+			}
+			else
+			{
+				backgrounds[i].x = _globalOrigin.x;
+				backgrounds[i].y = _globalOrigin.y;
+			}
+			
 			#end
 		
 		}
