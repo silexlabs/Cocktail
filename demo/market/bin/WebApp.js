@@ -1742,6 +1742,7 @@ org.intermedia.view.ViewBase.prototype = {
 	node: null
 	,_data: null
 	,data: null
+	,_style: null
 	,displayLoading: null
 	,_loadingView: null
 	,getData: function() {
@@ -1768,6 +1769,29 @@ org.intermedia.view.ViewBase.prototype = {
 	,__class__: org.intermedia.view.ViewBase
 	,__properties__: {set_displayLoading:"setDisplayLoading",set_data:"setData",get_data:"getData"}
 }
+org.intermedia.view.BlockThumb = $hxClasses["org.intermedia.view.BlockThumb"] = function(style) {
+	org.intermedia.view.ViewBase.call(this);
+	this._style = style;
+};
+org.intermedia.view.BlockThumb.__name__ = ["org","intermedia","view","BlockThumb"];
+org.intermedia.view.BlockThumb.__super__ = org.intermedia.view.ViewBase;
+org.intermedia.view.BlockThumb.prototype = $extend(org.intermedia.view.ViewBase.prototype,{
+	_croppedImage: null
+	,updateView: function() {
+		this.createBlock();
+	}
+	,createBlock: function() {
+		this._croppedImage = new org.intermedia.view.CroppedImage();
+		this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
+		this._croppedImage.loadThumb(this._data.thumbUrl);
+		this._style.thumbnailMask(this._croppedImage.node);
+		this.node = this._croppedImage.node;
+	}
+	,refreshStyles: function() {
+		this._croppedImage.refreshStyles();
+	}
+	,__class__: org.intermedia.view.BlockThumb
+});
 org.intermedia.view.CellBase = $hxClasses["org.intermedia.view.CellBase"] = function(cellPerLine,cellStyle) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.ViewBase.call(this);
@@ -1897,26 +1921,24 @@ org.intermedia.view.CellTextStyle.prototype = {
 }
 org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = function(cellPerLine,cellStyle) {
 	if(cellPerLine == null) cellPerLine = 1;
-	org.intermedia.view.CellBase.call(this,cellPerLine);
+	org.intermedia.view.CellBase.call(this,cellPerLine,cellStyle);
 };
 org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
 org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_croppedImage: null
+	_blockThumb: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle};
 	}
 	,updateView: function() {
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._croppedImage = new org.intermedia.view.CroppedImage();
-			this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
-			this._croppedImage.loadThumb(this._data.thumbUrl);
-			this._cellStyle.thumbnailMask(this._croppedImage.node);
-			this.node.appendChild(this._croppedImage.node);
+			this._blockThumb = new org.intermedia.view.BlockThumb(this._cellStyle);
+			this._blockThumb.setData(this._data);
+			this.node.appendChild(this._blockThumb.node);
 		}
 	}
 	,refreshStyles: function() {
-		this._croppedImage.resetStyle();
+		this._blockThumb.refreshStyles();
 	}
 	,__class__: org.intermedia.view.CellThumb
 });
@@ -1944,23 +1966,21 @@ org.intermedia.view.CellThumbStyle.prototype = {
 }
 org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbText1"] = function(cellPerLine,cellStyle) {
 	if(cellPerLine == null) cellPerLine = 1;
-	org.intermedia.view.CellBase.call(this,cellPerLine);
+	org.intermedia.view.CellBase.call(this,cellPerLine,cellStyle);
 };
 org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
 org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_croppedImage: null
+	_blockThumb: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 	}
 	,updateView: function() {
 		org.intermedia.view.CellBase.prototype.updateView.call(this);
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._croppedImage = new org.intermedia.view.CroppedImage();
-			this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
-			this._croppedImage.loadThumb(this._data.thumbUrl);
-			this._cellStyle.thumbnailMask(this._croppedImage.node);
-			this.node.appendChild(this._croppedImage.node);
+			this._blockThumb = new org.intermedia.view.BlockThumb(this._cellStyle);
+			this._blockThumb.setData(this._data);
+			this.node.appendChild(this._blockThumb.node);
 		}
 		var cellTextBlockContainer = js.Lib.document.createElement("div");
 		this._cellStyle.textBlock(cellTextBlockContainer);
@@ -1979,7 +1999,7 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellB
 		}
 	}
 	,refreshStyles: function() {
-		this._croppedImage.resetStyle();
+		this._blockThumb.refreshStyles();
 	}
 	,__class__: org.intermedia.view.CellThumbText1
 });
@@ -2071,7 +2091,7 @@ org.intermedia.view.CroppedImage.prototype = {
 	}
 	,tweenEnd: function(e) {
 	}
-	,resetStyle: function() {
+	,refreshStyles: function() {
 		var maskSize = { width : this.node.clientWidth, height : this.node.clientHeight};
 		org.intermedia.view.ImageUtils.cropImage(this._image,maskSize);
 	}

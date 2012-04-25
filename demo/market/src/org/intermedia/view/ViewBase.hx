@@ -19,6 +19,9 @@ class ViewBase
 	private var _data:Dynamic;
 	public var data(getData, setData):Dynamic;
 	
+	// style
+	private var _style:Dynamic;
+	
 	//activate / deactivate the display of the loader.
 	public var displayLoading(null, setDisplayLoading):Bool;
 	

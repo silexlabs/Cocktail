@@ -32,21 +32,10 @@ class CroppedImage
 	// onImageLoadSuccess callback
 	public var onImageLoadSuccess:Void->Void;
 	
-	//public function new(imageUrl:String, ?maskSize:Size)
-	//public function new(imageUrl:String)
 	public function new()
 	{
 		// create and initialise node
 		node = Lib.document.createElement("div");
-
-		// apply mask style so it can crop the image
-		//node.style.overflowX = "hidden";
-		//node.style.overflowY = "hidden";
-		//node.style.display = "inline-block";
-		//untyped { node.style.borderRadius = "10px"; };
-		//CellStyle.addBorderCss(node);
-
-		//loadThumb(imageUrl);
 	}
 	
 	/**
@@ -112,9 +101,9 @@ class CroppedImage
 	}
 	
 	/**
-	 * Resets the style of mask & image, used when resizing
+	 * Refreshes the style of mask & image, used when resizing
 	 */
-	public function resetStyle():Void
+	public function refreshStyles():Void
 	{
 		// get maskSize in pixel
 		var maskSize:Size = { width:node.clientWidth, height:node.clientHeight };
