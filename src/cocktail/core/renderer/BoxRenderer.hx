@@ -52,6 +52,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
+	
 		//TODO : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
@@ -63,13 +64,34 @@ class BoxRenderer extends ElementRenderer
 			
 			if (_coreStyle.position == fixed)
 			{
-				backgrounds[i].x = _bounds.x;
-				backgrounds[i].y = _bounds.y;
+				backgrounds[i].x = _positionedOrigin.x;
+				backgrounds[i].y = _positionedOrigin.y;
+			}
+			else if (_coreStyle.position == absolute)
+			{
+				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+				{
+					backgrounds[i].x = _globalOrigin.x + _bounds.x;
+				}
+				else
+				{
+					backgrounds[i].x = _globalOrigin.x + _positionedOrigin.x;
+				}
+				
+				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+				{
+					backgrounds[i].y = _globalOrigin.y + _bounds.y;
+				}
+				else
+				{
+					backgrounds[i].y = _positionedOrigin.y + _globalOrigin.y;
+				}
+				
 			}
 			else
 			{
-				backgrounds[i].x = _globalOrigin.x;
-				backgrounds[i].y = _globalOrigin.y;
+				backgrounds[i].x = _globalOrigin.x + _bounds.x;
+				backgrounds[i].y = _globalOrigin.y + _bounds.y;
 			}
 			
 			#end

@@ -114,15 +114,24 @@ class BodyCoreStyle extends ContainerCoreStyle
 		}
 		
 		layout(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
-		setGlobalOrigins(_elementRenderer, 0.0, 0.0);
+		setGlobalOrigins(_elementRenderer, _computedStyle.marginLeft, _computedStyle.marginTop);
 	}
 	
+	//TODO : there is still a problem with bbody margin. Should body child have the margins of the body
+	//in their bounds ?
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float):Void
 	{
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
+			//elementRenderer.bounds.x += elementRenderer.coreStyle.computedStyle.marginLeft;
+			//elementRenderer.bounds.y += elementRenderer.coreStyle.computedStyle.marginTop;
+			
+			//elementRenderer.globalOrigin.x += elementRenderer.coreStyle.computedStyle.marginLeft;
+			//elementRenderer.globalOrigin.y += elementRenderer.coreStyle.computedStyle.marginTop;
+			
 			addedX += elementRenderer.bounds.x;
 			addedY += elementRenderer.bounds.y;
+			
 		}
 		
 		for (i in 0...elementRenderer.childNodes.length)
@@ -130,9 +139,13 @@ class BodyCoreStyle extends ContainerCoreStyle
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			child.globalOrigin = {
-				x: addedX + child.bounds.x, 
-				y : addedY + child.bounds.y
+				x: addedX,
+				y : addedY
 			}
+			
+			//child.positionedOrigin.x += addedX;
+			//child.positionedOrigin.y += addedY;
+
 			
 			if (child.hasChildNodes() == true)
 			{

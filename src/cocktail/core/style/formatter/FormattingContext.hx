@@ -129,6 +129,10 @@ class FormattingContext
 	/**
 	 * TODO : obsolete, CoreStyle should retrieve bounds from ElementRenderer
 	 * instead
+	 * 
+	 * TODO : must add a special case if elementRenderer is block formatting
+	 * root, the height start from top margin to bottom margin + overflowing
+	 * float
 	 */
 	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
 	{
