@@ -675,6 +675,8 @@ class CoreStyle
 		
 		//insert the HTMLElement in the absolutely positioned array if it is itsel absolutely positioned
 		//so that it can be positioned by its first positioned ancestor
+		//
+		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			insertAbsolutelyPositionedHTMLElement(formattingContext, lastPositionedHTMLElementData);

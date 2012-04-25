@@ -14,13 +14,16 @@ package cocktail;
 /**
  * DOM
  */
-
+/**
+ * TODO : are those useful ?
+ * 
 typedef Element = cocktail.core.dom.Element;
 typedef Node = cocktail.core.dom.Node;
 typedef Text = cocktail.core.dom.Text;
 typedef Document = cocktail.core.dom.Document;
 typedef Attr = cocktail.core.dom.Attr;
 typedef NamedNodeMap = cocktail.core.dom.NamedNodeMap;
+*/
 
 /**
  * HTML

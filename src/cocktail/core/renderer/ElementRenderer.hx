@@ -51,7 +51,14 @@ class ElementRenderer extends Node
 	 * formatting context root
 	 */
 	private var _bounds:RectangleData;
-	public var bounds(getBounds, setBounds):RectangleData;
+	public var bounds(get_bounds, set_bounds):RectangleData;
+	
+	//TODO : maybe should be containing block bounds instead ?
+	private var _globalOrigin:PointData;
+	public var globalOrigin(get_globalOrigin, set_globalOrigin):PointData;
+	
+	private var _positionedOrigin:PointData;
+	public var positionedOrigin(get_positionedOrigin, set_positionedOrigin):PointData;
 	
 	/**
 	 * A reference to the Style which instantiated
@@ -87,12 +94,22 @@ class ElementRenderer extends Node
 	{
 		super();
 		_coreStyle = style;
+		
+		_positionedOrigin = {
+			x:0.0,
+			y:0.0
+		}
 		_bounds = {
 			x:0.0,
 			y:0.0,
-			width:0.0,
-			height:0.0
+			width : 0.0,
+			height: 0.0
 		}
+		_globalOrigin = {
+			x:0.0,
+			y:0.0
+		}
+		
 		_lineBoxes = new Array<LineBox>();
 	}
 	
@@ -242,14 +259,33 @@ class ElementRenderer extends Node
 		return _coreStyle;
 	}
 	
-	private function getBounds():RectangleData
+	private function get_bounds():RectangleData
 	{
 		return _bounds;
 	}
 	
-	private function setBounds(value:RectangleData):RectangleData
+	private function set_bounds(value:RectangleData):RectangleData
 	{
 		return _bounds = value;
 	}
 	
+	private function get_globalOrigin():PointData
+	{
+		return _globalOrigin;
+	}
+	
+	private function set_globalOrigin(value:PointData):PointData
+	{
+		return _globalOrigin = value;
+	}
+	
+	private function get_positionedOrigin():PointData
+	{
+		return _positionedOrigin;
+	}
+	
+	private function set_positionedOrigin(value:PointData):PointData
+	{
+		return _positionedOrigin = value;
+	}
 }

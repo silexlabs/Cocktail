@@ -114,16 +114,16 @@ class LayerRenderer
 			{
 				for (i in 0...nativeElements.length)
 				{
-					nativeElements[i].x += rootRenderer.bounds.x;
-					nativeElements[i].y += rootRenderer.bounds.y;
+					//nativeElements[i].x += rootRenderer.bounds.x;
+					//nativeElements[i].y += rootRenderer.bounds.y;
 				}
 				
 				//TODO : hack to place back the background of the root layer renderer
 				//as it is already placed when the background is created.
 				for (i in 0...rootRendererElements.length)
 				{
-					rootRendererElements[i].x -= rootRenderer.bounds.x;
-					rootRendererElements[i].y -= rootRenderer.bounds.y; 
+					//rootRendererElements[i].x -= rootRenderer.bounds.x;
+					//rootRendererElements[i].y -= rootRenderer.bounds.y; 
 				}
 			}
 		}
@@ -327,8 +327,8 @@ class LayerRenderer
 						//be improved
 						if (child.establishesNewFormattingContext() == true)
 						{
-							childElementRenderer[j].rootRenderer.bounds.x += child.bounds.x;
-							childElementRenderer[j].rootRenderer.bounds.y += child.bounds.y;
+							//childElementRenderer[j].rootRenderer.bounds.x += child.bounds.x;
+							//childElementRenderer[j].rootRenderer.bounds.y += child.bounds.y;
 						}
 						
 						childLayers.push(childElementRenderer[j]);
@@ -361,8 +361,8 @@ class LayerRenderer
 					for (k in 0...lineBoxNativeElements.length)
 					{
 						#if (flash9 || nme)
-						lineBoxNativeElements[k].x += rootRenderer.bounds.x;
-						lineBoxNativeElements[k].y += rootRenderer.bounds.y;
+						//lineBoxNativeElements[k].x += rootRenderer.bounds.x;
+						//lineBoxNativeElements[k].y += rootRenderer.bounds.y;
 						#end
 						
 						ret.push(lineBoxNativeElements[k]);
@@ -395,7 +395,7 @@ class LayerRenderer
 			}
 			else
 			{
-				lineBoxes[i].elementRenderer.bounds = lineBoxes[i].bounds;
+				//lineBoxes[i].elementRenderer.bounds = lineBoxes[i].bounds;
 				
 				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer);
 			}
@@ -454,8 +454,8 @@ class LayerRenderer
 								{
 									if (child.establishesNewFormattingContext() == true)
 									{
-										childLineBoxes[j].bounds.x += child.bounds.x;
-										childLineBoxes[j].bounds.y += child.bounds.y;
+										//childLineBoxes[j].bounds.x += child.bounds.x;
+										//childLineBoxes[j].bounds.y += child.bounds.y;
 									}
 								
 									ret.push(childLineBoxes[j]);

@@ -31,6 +31,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		super(style);
 		var computedStyle:ComputedStyleData = style.computedStyle;
+		
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -46,8 +47,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		for (i in 0...ret.length)
 		{
 			#if (flash9 || nme)
-			ret[i].x = _bounds.x;
-			ret[i].y = _bounds.y;
+			ret[i].x = _globalOrigin.x;
+			ret[i].y = _globalOrigin.y;
 			#end
 		}
 		
@@ -78,14 +79,14 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		#elseif nme
 		nativeElement.graphics.beginFill(0xFF0000, 0.01);
 		#end
-		nativeElement.graphics.drawRect(_bounds.x,_bounds.y, _bounds.width,_bounds.height);
+		nativeElement.graphics.drawRect(_globalOrigin.x,_globalOrigin.y, _bounds.width,_bounds.height);
 		nativeElement.graphics.endFill();
 
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
-		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _coreStyle.computedStyle.paddingLeft;
-		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _coreStyle.computedStyle.paddingTop;
+		embeddedHTMLElement.embeddedAsset.x = _globalOrigin.x + _coreStyle.computedStyle.paddingLeft;
+		embeddedHTMLElement.embeddedAsset.y = _globalOrigin.y + _coreStyle.computedStyle.paddingTop;
 
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
