@@ -200,7 +200,7 @@ To do Alex pre fine tuning:
 Feedback market Pol & Alex 24/04/2012
 
 Scroll swippable view
- => scroll horizontal a ameliorer (cf. Market)
+ => scroll horizontal a ameliorer (cf. Android Market)
  => release scroll vertical basé sur l'acceleration
 
 Pol:
@@ -211,7 +211,7 @@ Pol:
 
 Menu:
  => police à changer:
-      => donner le police à pol
+     => donner la police à pol
      => enlever le gras
  => copier le menu d'android market
      => déplacement

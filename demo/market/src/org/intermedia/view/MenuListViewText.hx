@@ -131,6 +131,19 @@ class MenuListViewText extends ListViewBase
 				_menuItem0LeftTarget = -_menuItem0Width;
 				_menuItem1LeftTarget = 0;
 				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+			// android market style
+			//case 0:
+				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				//_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - _menuItem1Width/2);
+				//_menuItem2LeftTarget = Lib.window.innerWidth;
+			//case 1:
+				//_menuItem0LeftTarget = Std.int(-_menuItem2Width/2);
+				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				//_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - _menuItem2Width/2);
+			//case 2:
+				//_menuItem0LeftTarget = -_menuItem0Width;
+				//_menuItem1LeftTarget = Std.int(-_menuItem1Width/2);
+				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
 			default:
 				_menuItem0LeftTarget = 0;
 				_menuItem1LeftTarget = 0;

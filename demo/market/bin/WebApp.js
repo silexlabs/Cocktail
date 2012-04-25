@@ -2648,7 +2648,6 @@ org.intermedia.view.MenuCellTextStyle.setCellTextStyle = function(node) {
 	node.style.paddingLeft = Std.string(5) + "px";
 	node.style.fontSize = "16px";
 	node.style.lineHeight = "normal";
-	node.style.fontWeight = "bold";
 	node.style.fontStyle = "normal";
 	node.style.fontFamily = "Arial, sans-serif";
 	node.style.fontVariant = "normal";
@@ -2745,17 +2744,17 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		switch(this._index) {
 		case 0:
 			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
-			this._menuItem1LeftTarget = js.Lib.window.innerWidth - this._menuItem1Width;
+			this._menuItem1LeftTarget = js.Lib.window.innerWidth - this._menuItem1Width / 2 | 0;
 			this._menuItem2LeftTarget = js.Lib.window.innerWidth;
 			break;
 		case 1:
-			this._menuItem0LeftTarget = 0;
+			this._menuItem0LeftTarget = -this._menuItem2Width / 2 | 0;
 			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
-			this._menuItem2LeftTarget = js.Lib.window.innerWidth - this._menuItem2Width;
+			this._menuItem2LeftTarget = js.Lib.window.innerWidth - this._menuItem2Width / 2 | 0;
 			break;
 		case 2:
 			this._menuItem0LeftTarget = -this._menuItem0Width;
-			this._menuItem1LeftTarget = 0;
+			this._menuItem1LeftTarget = -this._menuItem1Width / 2 | 0;
 			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
 			break;
 		default:

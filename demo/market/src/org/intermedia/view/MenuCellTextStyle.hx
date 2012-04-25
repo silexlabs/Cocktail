@@ -116,7 +116,7 @@ class MenuCellTextStyle
 		
 		node.style.fontSize = "16px";
 		node.style.lineHeight = "normal";
-		node.style.fontWeight = "bold";
+		//node.style.fontWeight = "bold";
 		node.style.fontStyle = "normal";
 		node.style.fontFamily = 'Arial, sans-serif';
 		node.style.fontVariant = "normal";
