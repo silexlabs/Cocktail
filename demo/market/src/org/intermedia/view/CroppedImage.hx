@@ -29,8 +29,12 @@ class CroppedImage
 	// image to crop
 	private var _image:Image;
 	
+	// onImageLoadSuccess callback
+	public var onImageLoadSuccess:Void->Void;
+	
 	//public function new(imageUrl:String, ?maskSize:Size)
-	public function new(imageUrl:String)
+	//public function new(imageUrl:String)
+	public function new()
 	{
 		// create and initialise node
 		node = Lib.document.createElement("div");
@@ -42,33 +46,38 @@ class CroppedImage
 		//untyped { node.style.borderRadius = "10px"; };
 		//CellStyle.addBorderCss(node);
 
-		_image = cast Lib.document.createElement("img");
-		loadThumb(imageUrl);
+		//loadThumb(imageUrl);
 	}
 	
 	/**
 	 *  load thumb image
 	 */
-	private function loadThumb(imageUrl:String):Void
+	public function loadThumb(imageUrl:String):Void
 	{
+		// create image
+		_image = cast Lib.document.createElement("img");
 		// load image
-		_image.onload = onImageLoadSuccess;
+		_image.onload = onImageLoadSuccessCallback;
 		_image.src = imageUrl;
 	}
 	
 	/**
 	 * image load success callback
 	 */
-	private function onImageLoadSuccess(event:Event):Void
+	private function onImageLoadSuccessCallback(event:Event):Void
 	{
 		// apply image start style so it is invisible (for fade-in)
 		untyped { _image.style.opacity = 0; };
 		
-		//node.appendChild(ImageUtils.cropImage(_image,_maskSize));
 		node.appendChild(_image);
 		
 		// display thumb using a random effect
-		Timer.delay(fadeIn,Std.random(Constants.CELL_THUMB_APPARITION_DELAY));
+		Timer.delay(fadeIn, Std.random(Constants.CELL_THUMB_APPARITION_DELAY));
+		
+		if (onImageLoadSuccess != null)
+		{
+			onImageLoadSuccess();
+		}
 	}
 	
 	/**

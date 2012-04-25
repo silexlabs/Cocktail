@@ -1902,17 +1902,17 @@ org.intermedia.view.CellThumb = $hxClasses["org.intermedia.view.CellThumb"] = fu
 org.intermedia.view.CellThumb.__name__ = ["org","intermedia","view","CellThumb"];
 org.intermedia.view.CellThumb.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumb.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_mask: null
-	,_croppedImage: null
+	_croppedImage: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle};
 	}
 	,updateView: function() {
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._croppedImage = new org.intermedia.view.CroppedImage(this._data.thumbUrl);
+			this._croppedImage = new org.intermedia.view.CroppedImage();
+			this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
+			this._croppedImage.loadThumb(this._data.thumbUrl);
 			this._cellStyle.thumbnailMask(this._croppedImage.node);
 			this.node.appendChild(this._croppedImage.node);
-			haxe.Timer.delay(this.refreshStyles.$bind(this),600);
 		}
 	}
 	,refreshStyles: function() {
@@ -1949,15 +1949,16 @@ org.intermedia.view.CellThumbText1 = $hxClasses["org.intermedia.view.CellThumbTe
 org.intermedia.view.CellThumbText1.__name__ = ["org","intermedia","view","CellThumbText1"];
 org.intermedia.view.CellThumbText1.__super__ = org.intermedia.view.CellBase;
 org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellBase.prototype,{
-	_mask: null
-	,_croppedImage: null
+	_croppedImage: null
 	,initCellStyle: function() {
 		this._cellStyle = { cell : org.intermedia.view.CellThumbText1Style.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
 	}
 	,updateView: function() {
 		org.intermedia.view.CellBase.prototype.updateView.call(this);
 		if(this._data.thumbUrl != "" && this._data.thumbUrl != null) {
-			this._croppedImage = new org.intermedia.view.CroppedImage(this._data.thumbUrl);
+			this._croppedImage = new org.intermedia.view.CroppedImage();
+			this._croppedImage.onImageLoadSuccess = this.refreshStyles.$bind(this);
+			this._croppedImage.loadThumb(this._data.thumbUrl);
 			this._cellStyle.thumbnailMask(this._croppedImage.node);
 			this.node.appendChild(this._croppedImage.node);
 		}
@@ -1966,14 +1967,16 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellB
 		this.node.appendChild(cellTextBlockContainer);
 		if(this._data.title != "" && this._data.title != null) {
 			var text = this._data.title;
-			if(text.length > 40) text = text.substr(0,40) + "...";
+			if(text.length > 50) {
+				text = text.substr(0,50);
+				text = text.substr(0,text.lastIndexOf(" ")) + "...";
+			}
 			var textElement = js.Lib.document.createTextNode(text);
 			var cellTitleContainer = js.Lib.document.createElement("div");
 			cellTitleContainer.appendChild(textElement);
 			this._cellStyle.title(cellTitleContainer);
 			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
-		haxe.Timer.delay(this.refreshStyles.$bind(this),600);
 	}
 	,refreshStyles: function() {
 		this._croppedImage.resetStyle();
@@ -2039,23 +2042,24 @@ org.intermedia.view.Constants.__name__ = ["org","intermedia","view","Constants"]
 org.intermedia.view.Constants.prototype = {
 	__class__: org.intermedia.view.Constants
 }
-org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"] = function(imageUrl) {
+org.intermedia.view.CroppedImage = $hxClasses["org.intermedia.view.CroppedImage"] = function() {
 	this.node = js.Lib.document.createElement("div");
-	this._image = js.Lib.document.createElement("img");
-	this.loadThumb(imageUrl);
 };
 org.intermedia.view.CroppedImage.__name__ = ["org","intermedia","view","CroppedImage"];
 org.intermedia.view.CroppedImage.prototype = {
 	node: null
 	,_image: null
+	,onImageLoadSuccess: null
 	,loadThumb: function(imageUrl) {
-		this._image.onload = this.onImageLoadSuccess.$bind(this);
+		this._image = js.Lib.document.createElement("img");
+		this._image.onload = this.onImageLoadSuccessCallback.$bind(this);
 		this._image.src = imageUrl;
 	}
-	,onImageLoadSuccess: function(event) {
+	,onImageLoadSuccessCallback: function(event) {
 		this._image.style.opacity = 0;
 		this.node.appendChild(this._image);
 		haxe.Timer.delay(this.fadeIn.$bind(this),Std.random(1500));
+		if(this.onImageLoadSuccess != null) this.onImageLoadSuccess();
 	}
 	,fadeIn: function() {
 		var tween = new feffects.Tween(0,1,400);
@@ -3134,13 +3138,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	}
 	,onHorizontalUpCallback: function(event,XOffset) {
 		event.preventDefault();
-		if(XOffset < -js.Lib.window.innerHeight / 2) {
+		if(XOffset < -js.Lib.window.innerHeight * 0.2) {
 			if(this.getIndex() < this._listViews.length - 1) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 + 1);
 				_g1;
 			}
-		} else if(XOffset > js.Lib.window.innerHeight / 2) {
+		} else if(XOffset > js.Lib.window.innerHeight * 0.2) {
 			if(this.getIndex() > 0) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 - 1);
@@ -3497,7 +3501,6 @@ org.intermedia.model.Feeds.FEED_2 = { id : 1, title : "SiliconSentier", url : "h
 org.intermedia.model.Feeds.FEED_3 = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"};
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 4;
 org.intermedia.view.CellTextStyle.CELL_HORIZONTAL_SPACE = 2;
-org.intermedia.view.CellThumbText1.TITLE_LENGTH = 40;
 org.intermedia.view.CellThumbText1Style.CELL_TEXT_WIDTH_PERCENT = 60;
 org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 35;
 org.intermedia.view.Constants.HEADER_HOME_TITLE = "French Tech";
@@ -3506,9 +3509,9 @@ org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "assets/headerGrey.jpg";
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
 org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "assets/headerBlue.png";
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
+org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.2;
 org.intermedia.view.Constants.LIST_TOP = 78;
 org.intermedia.view.Constants.LIST_BG_COLOR = "#CCCCCC";
-org.intermedia.view.Constants.CELL_REFRESH_STYLE_DELAY = 600;
 org.intermedia.view.Constants.CELL_BG_COLOR = "#FEFEFE";
 org.intermedia.view.Constants.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.Constants.CELL_BORDER_WIDTH = 1;
@@ -3517,6 +3520,7 @@ org.intermedia.view.Constants.CELL_HEIGHT = 90;
 org.intermedia.view.Constants.CELL_MAX_HEIGHT = 150;
 org.intermedia.view.Constants.CELL_MIN_WIDTH = 150;
 org.intermedia.view.Constants.CELL_THUMB_APPARITION_DELAY = 1500;
+org.intermedia.view.Constants.CELL_THUMB_TEXT_TITLE_LENGTH = 50;
 org.intermedia.view.HeaderView.IMAGE_URL = "assets/rss-icon.png";
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;

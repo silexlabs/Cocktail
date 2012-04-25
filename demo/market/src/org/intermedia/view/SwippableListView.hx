@@ -327,14 +327,16 @@ class SwippableListView extends ListViewBase
 		event.preventDefault();
 		
 		// if movement was negative and more that half of the size of the screen
-		if (XOffset < -Lib.window.innerHeight / 2)
+		//if (XOffset < -Lib.window.innerHeight / 2)
+		if (XOffset < -Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
 		{
 			// if the current list is not the last one, increment index using setter
 			if (index < _listViews.length - 1)
 				index++;
 		}
 		// if movement was positive and less that half of the size of the screen
-		else if (XOffset > Lib.window.innerHeight / 2)
+		//else if (XOffset > Lib.window.innerHeight / 2)
+		else if (XOffset > Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
 		{
 			// if the current list is not the first one, decrement index using setter
 			if (index > 0)
