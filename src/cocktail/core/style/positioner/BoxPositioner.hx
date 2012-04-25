@@ -77,35 +77,35 @@ class BoxPositioner
 		if (htmlElement.coreStyle.left != PositionOffset.cssAuto)
 		{
 			
-			elementRenderer.positionedOrigin.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing HTMLElement width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (htmlElement.coreStyle.right != PositionOffset.cssAuto)
 		{
-			elementRenderer.positionedOrigin.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
+			elementRenderer.bounds.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
 		}
 		//if both right and left are 'auto', then the HTMLElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
 		else
 		{
 			//TODO : static position is now localBounds for positioned elements ?s
-			//elementRenderer.bounds.x = Math.round(staticPosition.x);
+			elementRenderer.bounds.x = Math.round(staticPosition.x);
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (htmlElement.coreStyle.top != PositionOffset.cssAuto)
 		{
-			elementRenderer.positionedOrigin.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
 		}
 		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
 		{
-			elementRenderer.positionedOrigin.y = getBottomOffset(htmlElement, containingHTMLElementData.height, Math.round(staticPosition.y));
+			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingHTMLElementData.height, Math.round(staticPosition.y));
 		}
 		else
 		{
-			//elementRenderer.bounds.y = Math.round(staticPosition.y);
+			elementRenderer.bounds.y = Math.round(staticPosition.y);
 		}
 		
 		

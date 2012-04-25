@@ -292,11 +292,11 @@ class ContainerCoreStyle extends CoreStyle
 				{
 					if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.y += _elementRenderer.bounds.y;
+						positionedHTMLElementData.element.bounds.y += _elementRenderer.bounds.y;
 					}
 					if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.x += _elementRenderer.bounds.x;
+						positionedHTMLElementData.element.bounds.x += _elementRenderer.bounds.x;
 					}
 				}
 				

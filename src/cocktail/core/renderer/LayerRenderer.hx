@@ -151,7 +151,8 @@ class LayerRenderer
 			}
 		}
 		
-		//TODO : Test here if layer is fixed too ? In which case native elements are set to x, y of window
+		//TODO : will add wrong position for fixed elements, pass a relative offset to
+		//ElementRender.render, so that it can chose wether to apply the offset ?
 		//
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
@@ -160,7 +161,6 @@ class LayerRenderer
 		{
 			for (i in 0...nativeElements.length)
 			{
-				
 				//first try to apply the left offset of the root renderer if it is
 				//not auto
 				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
