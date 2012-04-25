@@ -106,26 +106,6 @@ class LayerRenderer
 			}
 			
 			#if (flash9 || nme)
-			
-			//if the root renderer establishes a new formatting context, then
-			//its bounds must be added to all of its children to transform
-			//them to the space of this layer
-			if (rootRenderer.establishesNewFormattingContext() == true)
-			{
-				for (i in 0...nativeElements.length)
-				{
-					//nativeElements[i].x += rootRenderer.bounds.x;
-					//nativeElements[i].y += rootRenderer.bounds.y;
-				}
-				
-				//TODO : hack to place back the background of the root layer renderer
-				//as it is already placed when the background is created.
-				for (i in 0...rootRendererElements.length)
-				{
-					//rootRendererElements[i].x -= rootRenderer.bounds.x;
-					//rootRendererElements[i].y -= rootRenderer.bounds.y; 
-				}
-			}
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
@@ -185,27 +165,6 @@ class LayerRenderer
 				else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
 					nativeElements[i].y -= rootRenderer.coreStyle.computedStyle.bottom; 
-				}
-			}
-		}
-		
-		//if the root renderer is absolutely positioned, then an offset might be applied
-		//to its all its children
-		else if (rootRenderer.coreStyle.isPositioned() == true && rootRenderer.coreStyle.isRelativePositioned() == false)
-		{
-			for (i in 0...nativeElements.length)
-			{
-				//if the left or right style is defined on the root renderer, then it doesn"t use its static position
-				//in this direction, and an offset must be applied to all the children
-				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto || rootRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					nativeElements[i].x += rootRenderer.coreStyle.computedStyle.marginLeft;
-				}
-				
-				//for vertical offset, the same rule as horizontal offsets apply
-				if (rootRenderer.coreStyle.top != PositionOffset.cssAuto || rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					nativeElements[i].y += rootRenderer.coreStyle.computedStyle.marginTop;
 				}
 			}
 		}
@@ -323,14 +282,6 @@ class LayerRenderer
 					
 					for (j in 0...childElementRenderer.length)
 					{
-						//TODO : hack to apply offset from containing block for child layers, should
-						//be improved
-						if (child.establishesNewFormattingContext() == true)
-						{
-							//childElementRenderer[j].rootRenderer.bounds.x += child.bounds.x;
-							//childElementRenderer[j].rootRenderer.bounds.y += child.bounds.y;
-						}
-						
 						childLayers.push(childElementRenderer[j]);
 					}
 				}
@@ -360,11 +311,6 @@ class LayerRenderer
 					var lineBoxNativeElements:Array<NativeElement> = childLineBoxes[j].render();
 					for (k in 0...lineBoxNativeElements.length)
 					{
-						#if (flash9 || nme)
-						//lineBoxNativeElements[k].x += rootRenderer.bounds.x;
-						//lineBoxNativeElements[k].y += rootRenderer.bounds.y;
-						#end
-						
 						ret.push(lineBoxNativeElements[k]);
 					}
 				}
@@ -394,9 +340,7 @@ class LayerRenderer
 				nativeElements = lineBoxes[i].render();
 			}
 			else
-			{
-				//lineBoxes[i].elementRenderer.bounds = lineBoxes[i].bounds;
-				
+			{	
 				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer);
 			}
 			
@@ -452,12 +396,6 @@ class LayerRenderer
 								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
 								for (j in 0...childLineBoxes.length)
 								{
-									if (child.establishesNewFormattingContext() == true)
-									{
-										//childLineBoxes[j].bounds.x += child.bounds.x;
-										//childLineBoxes[j].bounds.y += child.bounds.y;
-									}
-								
 									ret.push(childLineBoxes[j]);
 								}
 							}

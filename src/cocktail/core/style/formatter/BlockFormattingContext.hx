@@ -38,14 +38,15 @@ class BlockFormattingContext extends FormattingContext
 	//TODO : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
-		doFormat2(_formattingContextRoot, 0, 0, staticPositionedElement);
+		//remove margin of formatting context, as child must be placed relative to padding box
+		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement);
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer):Void
 	{
-		concatenatedX += elementRenderer.coreStyle.computedStyle.marginLeft +  elementRenderer.coreStyle.computedStyle.paddingLeft;
+		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 		//TODO : should try to collapse top margin here
-		concatenatedY += elementRenderer.coreStyle.computedStyle.marginTop +  elementRenderer.coreStyle.computedStyle.paddingTop;
+		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + elementRenderer.coreStyle.computedStyle.marginTop;
 
 		for (i in 0...elementRenderer.childNodes.length)
 		{
@@ -85,15 +86,13 @@ class BlockFormattingContext extends FormattingContext
 					}
 				}
 				
-				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft ;
+				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 				var y:Float = concatenatedY + child.coreStyle.computedStyle.marginTop;
 				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 			
 
-			
-				
 				child.bounds = {
 					x:x, 
 					y:y,
@@ -101,12 +100,18 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
+
 				concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 				
 				//find widest line for shrink-to-fit algorithm
-				if (child.bounds.x + child.bounds.width > _formattingContextData.maxWidth)
+				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 				{
-					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width);
+					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
+				}
+				
+				if (concatenatedY  > _formattingContextData.maxHeight)
+				{
+					_formattingContextData.maxHeight = concatenatedY;
 				}
 				
 			}

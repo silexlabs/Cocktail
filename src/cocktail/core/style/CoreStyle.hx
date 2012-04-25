@@ -699,6 +699,41 @@ class CoreStyle
 	}
 	
 	/**
+	 * Place a positioned HTMLElement (a HTMLElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
+	 * flow, the last positioned HTMLElement or the viewport of the document, then apply an offset defined by the 'top',
+	 * 'left', 'bottom' and 'right' computed styles values
+	 * 
+	 * TODO : tried to move it to ContainerCoreStyle but had problem has ElementRenderer
+	 * was passed by value instead of reference
+	 * 
+	 * @param lastPositionedHTMLElementData
+	 * @param viewportData
+	 * @param staticPosition the x,y position that the HTMLElement would have had if it were 'in-flow'
+	 */
+	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):Void
+	{
+		//instantiate the right positioner
+		//class based on the value of the 'position' style
+		var positioner:BoxPositioner;
+		
+		switch (_elementRenderer.coreStyle.computedStyle.position)
+		{	
+			//positioned 'fixed' HTMLElement, use the viewport
+			case fixed:
+				positioner = new FixedPositioner();
+				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
+				
+			//positioned 'absolute' HTMLElement	
+			case absolute:
+				positioner = new AbsolutePositioner();
+				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
+				
+			default:
+		}
+		
+	}
+	
+	/**
 	 * Insert the HTMLElement in the array of absolutely positioned elements
 	 */
 	private function insertAbsolutelyPositionedHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
@@ -708,6 +743,7 @@ class CoreStyle
 		//retrieve the static position (the position of the HTMLElement
 		//if its position style were 'static')
 		//TODO : caliing this should only return static position but not modify bounds of elementRenderer
+
 		var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
 		
 		//store as a positioned HTMLElement.

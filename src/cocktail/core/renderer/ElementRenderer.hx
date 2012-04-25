@@ -57,6 +57,9 @@ class ElementRenderer extends Node
 	private var _globalOrigin:PointData;
 	public var globalOrigin(get_globalOrigin, set_globalOrigin):PointData;
 	
+	private var _positionedOrigin:PointData;
+	public var positionedOrigin(get_positionedOrigin, set_positionedOrigin):PointData;
+	
 	/**
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
@@ -91,13 +94,19 @@ class ElementRenderer extends Node
 	{
 		super();
 		_coreStyle = style;
-		
+
 		_bounds = {
 			x:0.0,
 			y:0.0,
 			width : 0.0,
 			height: 0.0
 		}
+		
+		_positionedOrigin = {
+			x:0.0,
+			y:0.0
+		}
+		
 		_globalOrigin = {
 			x:0.0,
 			y:0.0
@@ -270,5 +279,15 @@ class ElementRenderer extends Node
 	private function set_globalOrigin(value:PointData):PointData
 	{
 		return _globalOrigin = value;
+	}
+	
+	private function get_positionedOrigin():PointData
+	{
+		return _positionedOrigin;
+	}
+	
+	private function set_positionedOrigin(value:PointData):PointData
+	{
+		return _positionedOrigin = value;
 	}
 }

@@ -76,36 +76,35 @@ class BoxPositioner
 		//left takes precedance so we try to apply left offset first
 		if (htmlElement.coreStyle.left != PositionOffset.cssAuto)
 		{
-			
-			elementRenderer.bounds.x = getLeftOffset(htmlElement, Math.round(staticPosition.x));
+			elementRenderer.positionedOrigin.x = getLeftOffset(htmlElement);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing HTMLElement width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (htmlElement.coreStyle.right != PositionOffset.cssAuto)
 		{
-			elementRenderer.bounds.x = getRightOffset(htmlElement, containingHTMLElementData.width, Math.round(staticPosition.x));
+			elementRenderer.positionedOrigin.x = getRightOffset(htmlElement, containingHTMLElementData.width);
 		}
 		//if both right and left are 'auto', then the HTMLElement is positioned to its
 		//'static position', the position it would have had in the flow if it were positioned as 'static'
 		else
 		{
 			//TODO : static position is now localBounds for positioned elements ?s
-			elementRenderer.bounds.x = Math.round(staticPosition.x);
+			//elementRenderer.positionedOrigin.x = Math.round(staticPosition.x);
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (htmlElement.coreStyle.top != PositionOffset.cssAuto)
 		{
-			elementRenderer.bounds.y = getTopOffset(htmlElement, Math.round(staticPosition.y));
+			elementRenderer.positionedOrigin.y = getTopOffset(htmlElement);
 		}
 		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
 		{
-			elementRenderer.bounds.y = getBottomOffset(htmlElement, containingHTMLElementData.height, Math.round(staticPosition.y));
+			elementRenderer.positionedOrigin.y = getBottomOffset(htmlElement, containingHTMLElementData.height);
 		}
 		else
 		{
-			elementRenderer.bounds.y = Math.round(staticPosition.y);
+			//elementRenderer.positionedOrigin.y = Math.round(staticPosition.y);
 		}
 		
 		
@@ -119,32 +118,33 @@ class BoxPositioner
 	/**
 	 * get the left offset to apply the ElementRenderer
 	 */
-	private function getLeftOffset(htmlElement:HTMLElement, staticPosition:Int):Int
+	private function getLeftOffset(htmlElement:HTMLElement):Int
 	{
-		return htmlElement.coreStyle.computedStyle.left;
+		return htmlElement.coreStyle.computedStyle.left + htmlElement.coreStyle.computedStyle.marginLeft;
 	}
 	
 	/**
 	 * get the right offset to apply the ElementRenderer
+	 * 
+	 * TODO : wrong must add padding (and margin ?)
 	 */
-	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int, staticPosition:Int):Int
+	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int):Int
 	{
-		return containingHTMLElementWidth - htmlElement.coreStyle.computedStyle.width +
-		htmlElement.coreStyle.computedStyle.paddingLeft + htmlElement.coreStyle.computedStyle.paddingRight - htmlElement.coreStyle.computedStyle.right;
+		return containingHTMLElementWidth - htmlElement.coreStyle.computedStyle.width;
 	}
 	
 	/**
 	 * get the top offset to apply the ElementRenderer
 	 */
-	private function getTopOffset(htmlElement:HTMLElement, staticPosition:Int):Int
+	private function getTopOffset(htmlElement:HTMLElement):Int
 	{
-		return htmlElement.coreStyle.computedStyle.top;
+		return htmlElement.coreStyle.computedStyle.top + htmlElement.coreStyle.computedStyle.marginTop;
 	}
 	
 	/**
 	 * get the bottom offset to apply the ElementRenderer
 	 */
-	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int, staticPosition:Int):Int
+	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int):Int
 	{
 		return containingHTMLElementHeight - htmlElement.coreStyle.computedStyle.height + htmlElement.coreStyle.computedStyle.paddingTop +
 		htmlElement.coreStyle.computedStyle.paddingBottom - htmlElement.coreStyle.computedStyle.bottom;
