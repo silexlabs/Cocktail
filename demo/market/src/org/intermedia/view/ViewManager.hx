@@ -82,7 +82,6 @@ class ViewManager
 		_menu.displayListBottomLoader = false;
 		_body.appendChild(_menu.node);
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
-		MenuCellTextStyle.setMiddleCellStyle(Lib.document.getElementById("menu_item1"));
 		
 		// init swippable view
 		_swippableListView = new SwippableListView();

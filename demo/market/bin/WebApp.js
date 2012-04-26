@@ -2625,20 +2625,6 @@ org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	org.intermedia.view.CellStyle.removeBorder(node);
 	node.style.backgroundColor = null;
 }
-org.intermedia.view.MenuCellTextStyle.setLeftCellStyle = function(node) {
-	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.left = "0px";
-}
-org.intermedia.view.MenuCellTextStyle.setMiddleCellStyle = function(node) {
-	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.marginLeft = "auto";
-	node.style.marginRight = "auto";
-	node.style.left = ((js.Lib.window.innerWidth - node.offsetWidth) / 2 | 0) + "px";
-}
-org.intermedia.view.MenuCellTextStyle.setRightCellStyle = function(node) {
-	org.intermedia.view.MenuCellTextStyle.setCellStyle(node);
-	node.style.right = "0px";
-}
 org.intermedia.view.MenuCellTextStyle.setCellTextStyle = function(node) {
 	node.style.display = "inline";
 	node.style.position = "relative";
@@ -2742,17 +2728,17 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		switch(this._index) {
 		case 0:
 			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
-			this._menuItem1LeftTarget = js.Lib.window.innerWidth - this._menuItem1Width;
-			this._menuItem2LeftTarget = js.Lib.window.innerWidth;
+			this._menuItem1LeftTarget = js.Lib.window.innerWidth - 30 | 0;
+			this._menuItem2LeftTarget = 3 * js.Lib.window.innerWidth / 2 | 0;
 			break;
 		case 1:
-			this._menuItem0LeftTarget = 0;
+			this._menuItem0LeftTarget = -(this._menuItem0Width - 30) | 0;
 			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
-			this._menuItem2LeftTarget = js.Lib.window.innerWidth - this._menuItem2Width;
+			this._menuItem2LeftTarget = js.Lib.window.innerWidth - 30 | 0;
 			break;
 		case 2:
-			this._menuItem0LeftTarget = -this._menuItem0Width;
-			this._menuItem1LeftTarget = 0;
+			this._menuItem0LeftTarget = -js.Lib.window.innerWidth / 2 | 0;
+			this._menuItem1LeftTarget = -(this._menuItem1Width - 30) | 0;
 			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
 			break;
 		default:
@@ -2777,6 +2763,7 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		this._menuItem0Width = this._cells[0].node.clientWidth;
 		this._menuItem1Width = this._cells[1].node.clientWidth;
 		this._menuItem2Width = this._cells[2].node.clientWidth;
+		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 207, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
 	}
 	,computeMenuItemsLeftPos: function() {
 		this._menuItem0LeftPos = this._cells[0].node.offsetLeft;
@@ -2785,7 +2772,6 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	}
 	,updateView: function() {
 		var me = this;
-		this._index = 0;
 		var _g = 0, _g1 = Reflect.fields(this._data);
 		while(_g < _g1.length) {
 			var field = _g1[_g];
@@ -2799,23 +2785,9 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 			})(cell);
 			this._cells.push(cell[0]);
 			this.node.appendChild(cell[0].node);
-			var style = this.setCellsStyle();
-			style(cell[0].node);
-			switch(this._index) {
-			case 0:
-				cell[0].node.id = "menu_item0";
-				break;
-			case 1:
-				cell[0].node.id = "menu_item1";
-				break;
-			case 2:
-				cell[0].node.id = "menu_item2";
-				break;
-			default:
-			}
-			this._index++;
 		}
-		this._index = 1;
+		this.computeMenuItemsWidth();
+		this.setIndex(1);
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
 		this.computeMenuItemsWidth();
@@ -2824,22 +2796,6 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,createCell: function() {
 		var cell = new org.intermedia.view.MenuCellText();
 		return cell;
-	}
-	,setCellsStyle: function() {
-		var style = org.intermedia.view.MenuCellTextStyle.setCellStyle;
-		switch(this._index) {
-		case 0:
-			style = org.intermedia.view.MenuCellTextStyle.setLeftCellStyle;
-			break;
-		case 1:
-			style = org.intermedia.view.MenuCellTextStyle.setMiddleCellStyle;
-			break;
-		case 2:
-			style = org.intermedia.view.MenuCellTextStyle.setRightCellStyle;
-			break;
-		default:
-		}
-		return style;
 	}
 	,onListItemSelectedCallback: function(cellData) {
 		this.setIndex(cellData.id);
@@ -3269,7 +3225,6 @@ org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] 
 	this._menu.displayListBottomLoader = false;
 	this._body.appendChild(this._menu.node);
 	this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}]);
-	org.intermedia.view.MenuCellTextStyle.setMiddleCellStyle(js.Lib.document.getElementById("menu_item1"));
 	this._swippableListView = new org.intermedia.view.SwippableListView();
 	this._currentView = this._swippableListView;
 	this._body.appendChild(this._swippableListView.node);
@@ -3328,7 +3283,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,onStartLoading: function() {
 	}
 	,onLoadingError: function(error) {
-		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 234, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 233, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("French Tech");
@@ -3517,6 +3472,7 @@ org.intermedia.view.Constants.HEADER_HEIGHT = 43;
 org.intermedia.view.Constants.HEADER_IMAGE_URL = "";
 org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "";
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
+org.intermedia.view.Constants.MENU_LATERAL_OFFSET = 30;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.2;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_TWEEN_DELAY = 150;
 org.intermedia.view.Constants.LIST_TOP = 78;
