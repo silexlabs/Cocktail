@@ -70,7 +70,7 @@ class TextLineBox extends LineBox
 	{
 		#if flash9
 		_nativeElement.x = _bounds.x + _elementRenderer.globalOrigin.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalOrigin.y;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalOrigin.y + leadedAscent / 2 - leadedDescent / 2;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
 		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
@@ -92,8 +92,8 @@ class TextLineBox extends LineBox
 		var leading:Float = _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
 
 		//apply leading to the ascent and descent
-		var leadedAscent:Float = Math.round((ascent + leading / 2));
-		var leadedDescent:Float = Math.round((descent + leading / 2));
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
 		
 		return leadedAscent;
 	}
@@ -108,8 +108,8 @@ class TextLineBox extends LineBox
 	
 		var leading:Float = _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
 
-		var leadedAscent:Float = Math.round((ascent + leading / 2));
-		var leadedDescent:Float = Math.round((descent + leading / 2));
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
 		
 		return leadedDescent;
 	}
@@ -121,7 +121,7 @@ class TextLineBox extends LineBox
 	/**
 	 * return the generated text width
 	 */
-	private function getTextWidth():Int
+	private function getTextWidth():Float
 	{
 		//here the text is a space character
 		if (isSpace() == true)
@@ -143,9 +143,9 @@ class TextLineBox extends LineBox
 	 * return the generated text height, which is
 	 * the addition of the leaded ascent and descent
 	 */
-	private function getTextHeight():Int
+	private function getTextHeight():Float
 	{
-		return Math.round(leadedAscent + leadedDescent);
+		return leadedAscent + leadedDescent;
 	}
 	
 	

@@ -141,7 +141,7 @@ class FontManager extends AbstractFontManager
 		var xHeight:Int = getXHeight(elementFormat.clone());
 	
 		//get the width of a space character
-		var spaceWidth:Int = getSpaceWidth(elementFormat.clone());
+		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
@@ -230,13 +230,13 @@ class FontManager extends AbstractFontManager
 	 * Return the width of a space character for the given font
 	 * at the given size
 	 */
-	private function getSpaceWidth(elementFormat:ElementFormat):Int
+	private function getSpaceWidth(elementFormat:ElementFormat):Float
 	{
 		var textBlock:TextBlock = new TextBlock();
 		
 		textBlock.content = new TextElement(" ", elementFormat);
 		
-		return Math.round(textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width);
+		return textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width;
 	}
 	
 	/**

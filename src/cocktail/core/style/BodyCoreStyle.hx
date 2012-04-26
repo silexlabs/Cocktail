@@ -112,6 +112,9 @@ class BodyCoreStyle extends ContainerCoreStyle
 	/**
 	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
 	 * traversing it recursively
+	 * 
+	 * TODO : should be on ElementRenderer instead ?
+	 * 
 	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
 	 * @param	addedX the added x position for the normal flow
 	 * @param	addedY the added y position for the norlam flow
@@ -142,13 +145,14 @@ class BodyCoreStyle extends ContainerCoreStyle
 				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
 					addedY += elementRenderer.positionedOrigin.y;
+
 				}
 				else
 				{
 					addedY += elementRenderer.bounds.y;
 				}
 			}
-			//if the element is not positioned, it always add
+			//if the element is not positioned or relatively positioned, it always add
 			//its bounds to the global x and y flow
 			else
 			{
@@ -162,8 +166,8 @@ class BodyCoreStyle extends ContainerCoreStyle
 		if (elementRenderer.isPositioned() == true)
 		{
 			//absolutely positioned elements either add their static position
-			//or their positioned either
-			if (elementRenderer.coreStyle.position != relative)
+			//or their positioned origin
+			if (elementRenderer.coreStyle.computedStyle.position != relative)
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
@@ -191,7 +195,6 @@ class BodyCoreStyle extends ContainerCoreStyle
 				addedPositionedX += elementRenderer.bounds.x;
 				addedPositionedY += elementRenderer.bounds.y;
 			}
-			
 		}
 		
 		//for its child of the element
