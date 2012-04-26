@@ -39,11 +39,6 @@ class BodyCoreStyle extends ContainerCoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		super(htmlElement);
-		
-		//the HTMLBodyElement is set to valid by default
-		//to allow triggering the first layout when a children
-		//will be added to it
-		_isDirty = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -59,9 +54,9 @@ class BodyCoreStyle extends ContainerCoreStyle
 	{
 		//don't call if the body has already scheduled a layout, unless
 		//an immediate layout is required
-		if (this._isDirty == false || immediate == true)
+		if (this._isLayingOut == false || immediate == true)
 		{
-			this._isDirty = true;
+			this._isLayingOut = true;
 			var htmlDocument:HTMLDocument = cast(_htmlElement.ownerDocument);
 			htmlDocument.invalidate(immediate);
 		}
@@ -117,7 +112,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 		setGlobalOrigins(_elementRenderer, _computedStyle.marginLeft, _computedStyle.marginTop);
 	}
 	
-	//TODO : there is still a problem with bbody margin. Should body child have the margins of the body
+	//TODO : there is still a problem with body margin. Should body child have the margins of the body
 	//in their bounds ?
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float):Void
 	{
