@@ -29,9 +29,6 @@ import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.positioner.AbsolutePositioner;
-import cocktail.core.style.positioner.BoxPositioner;
-import cocktail.core.style.positioner.FixedPositioner;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -712,25 +709,110 @@ class CoreStyle
 	 */
 	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):Void
 	{
-		//instantiate the right positioner
-		//class based on the value of the 'position' style
-		var positioner:BoxPositioner;
-		
 		switch (_elementRenderer.coreStyle.computedStyle.position)
 		{	
 			//positioned 'fixed' HTMLElement, use the viewport
 			case fixed:
-				positioner = new FixedPositioner();
-				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
+				_elementRenderer = doPositionElement(_elementRenderer, viewportData, staticPosition);
 				
 			//positioned 'absolute' HTMLElement	
 			case absolute:
-				positioner = new AbsolutePositioner();
-				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
+				_elementRenderer = doPositionElement(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
 				
 			default:
 		}
+	}
+	
+	/**
+	 * Main entry point, determine the position of the HTMLElement's ElementRenderer relative to its first positioned
+	 * ancestor
+	 * 
+	 * @param elementRenderer the ElementRenderer created by the HTMLElement
+	 * @param	containingHTMLElement the dimensions and positions of the HTMLElement used to position the 
+	 * target HTMLElement for absolutely positioned HTMLElements (its first positioned ancestor or the viewport)
+	 * @param staticPosition the position the ElementRenderer would have had in the flow if it weren't positioned. Used if
+	 * opposing position styles (left and right, top and bottom) both are set to 'auto'
+	 */
+	public function doPositionElement(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
+	{
+		var htmlElement:HTMLElement = elementRenderer.coreStyle.htmlElement;
 		
+		//for horizonal offset, if both left and right are not auto,
+		//left takes precedance so we try to apply left offset first
+		if (htmlElement.coreStyle.left != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.x = getLeftOffset(htmlElement);
+		}
+		//if no left offset is defined, then try to apply a right offset.
+		//Right offset takes the containing HTMLElement width minus the
+		//width of the positioned children as value for a 0 right offset
+		else if (htmlElement.coreStyle.right != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.x = getRightOffset(htmlElement, containingHTMLElementData.width);
+		}
+		//if both right and left are 'auto', then the HTMLElement is positioned to its
+		//'static position', the position it would have had in the flow if it were positioned as 'static'
+		else
+		{
+			//TODO : static position is now localBounds for positioned elements ?s
+			//elementRenderer.positionedOrigin.x = Math.round(staticPosition.x);
+		}
+		
+		//for vertical offset, the same rule as horizontal offsets apply
+		if (htmlElement.coreStyle.top != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.y = getTopOffset(htmlElement);
+		}
+		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.y = getBottomOffset(htmlElement, containingHTMLElementData.height);
+		}
+		else
+		{
+			//elementRenderer.positionedOrigin.y = Math.round(staticPosition.y);
+		}
+		
+		
+		return elementRenderer;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * get the left offset to apply the ElementRenderer
+	 */
+	private function getLeftOffset(htmlElement:HTMLElement):Int
+	{
+		return htmlElement.coreStyle.computedStyle.left + htmlElement.coreStyle.computedStyle.marginLeft;
+	}
+	
+	/**
+	 * get the right offset to apply the ElementRenderer
+	 * 
+	 * TODO : wrong must add padding (and margin ?)
+	 */
+	private function getRightOffset(htmlElement:HTMLElement, containingHTMLElementWidth:Int):Int
+	{
+		return containingHTMLElementWidth - htmlElement.coreStyle.computedStyle.width;
+	}
+	
+	/**
+	 * get the top offset to apply the ElementRenderer
+	 */
+	private function getTopOffset(htmlElement:HTMLElement):Int
+	{
+		return htmlElement.coreStyle.computedStyle.top + htmlElement.coreStyle.computedStyle.marginTop;
+	}
+	
+	/**
+	 * get the bottom offset to apply the ElementRenderer
+	 */
+	private function getBottomOffset(htmlElement:HTMLElement, containingHTMLElementHeight:Int):Int
+	{
+		return containingHTMLElementHeight - htmlElement.coreStyle.computedStyle.height + htmlElement.coreStyle.computedStyle.paddingTop +
+		htmlElement.coreStyle.computedStyle.paddingBottom - htmlElement.coreStyle.computedStyle.bottom;
 	}
 	
 	/**
