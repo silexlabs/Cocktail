@@ -253,8 +253,6 @@ class ContainerCoreStyle extends CoreStyle
 	 * as its origin. This method is called once all the dimensions of HTMLElement
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
-	 * 
-	 * TODO : update doc
 	 */
 	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
@@ -265,7 +263,6 @@ class ContainerCoreStyle extends CoreStyle
 		for (i in 0...childLastPositionedHTMLElementData.elements.length)
 		{
 			var element:ElementRenderer = childLastPositionedHTMLElementData.elements[i];
-
 			//position the child ElementRenderer which set its x and y positioned origin in the space of this HTMLElement's
 			//formatting context
 			element.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData);
@@ -279,7 +276,7 @@ class ContainerCoreStyle extends CoreStyle
 	 * container if the children overflows
 	 * 
 	 * If the width of this HTMLElement is indeed shrinked, all
-	 * its children are re-flowed
+	 * its children are laid out again
 	 * 
 	 * @param	containingHTMLElementData
 	 * @param	minimumWidth the width of the widest line of children laid out
@@ -404,26 +401,27 @@ class ContainerCoreStyle extends CoreStyle
 	 */
 	override public function establishesNewFormattingContext():Bool
 	{
-		var ret:Bool = false;
+		var establishesNewFormattingContext:Bool = false;
 		
-		//floats always establishes new context
+		//floats always establishes new formatting context
 		if (isFloat() == true)
 		{
-			ret = true;
+			establishesNewFormattingContext = true;
 		}
 		//positioned element which are not relative always establishes new context
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			ret = true;
+			establishesNewFormattingContext = true;
 		}
-		//element with an inline-block display style
-		//alwyas establishes a new context
 		else
 		{
 			switch (this._computedStyle.display)
 			{
+				//element with an inline-block display style
+				//always establishes a new context
 				case inlineBlock:
-				ret = true; 
+				establishesNewFormattingContext = true; 
+				
 				//a block HTMLElement may start a new inline
 				//formatting context if all its children are inline,
 				//else its children participate in the current block formatting
@@ -431,7 +429,7 @@ class ContainerCoreStyle extends CoreStyle
 				case block:
 					if (childrenInline() == true)
 					{
-						ret = true;
+						establishesNewFormattingContext = true;
 					}
 					
 				default:
@@ -441,7 +439,7 @@ class ContainerCoreStyle extends CoreStyle
 		//in the other cases such as an inline level inline container
 		//the current formatting context is used
 		
-		return ret;
+		return establishesNewFormattingContext;
 	}
 	
 	/**
