@@ -19,17 +19,20 @@ class Constants
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
-	public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
-	//public static inline var HEADER_BG_IMAGE_URL:String = "";
+	//public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
+	public static inline var HEADER_BG_IMAGE_URL:String = "";
 	public static inline var HEADER_HEIGHT:Int = 43;
+	//public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
+	public static inline var HEADER_IMAGE_URL:String = "";
 	
 	// set header constants
-	public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
-	//public static inline var MENU_BG_IMAGE_URL:String = "";
+	//public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
+	public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
 	
 	// set swippable view constants
 	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.2;	
+	public static inline var SWIP_HORIZONTAL_TWEEN_DELAY:Int = 150;	
 	
 	// set lists constants
 	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;

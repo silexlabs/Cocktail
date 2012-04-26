@@ -91,19 +91,19 @@ class MenuListViewText extends ListViewBase
 		computeMenuItemLeftTarget();
 		
 		// menu item 0 tween
-		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, 600, Quint.easeOut );
+		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
 		// launch the tween
 		tween0.start();
 
 		// menu item 1 tween
-		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, 600, Quint.easeOut );
+		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
 		// launch the tween
 		tween1.start();
 
 		// menu item 0 tween
-		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, 600, Quint.easeOut );
+		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
 		// launch the tween
 		tween2.start();
@@ -344,7 +344,7 @@ class MenuListViewText extends ListViewBase
 	public function horizontalUp(listIndex:Int):Void
 	{
 		// set index value to launch setter
-		index = listIndex;	
+		index = listIndex;
 	}
 	
 	/**
@@ -352,9 +352,11 @@ class MenuListViewText extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-    /*public function horizontalTweenEnd():Void
+    public function horizontalTweenEnd(ratio:Float):Void
 	{
-	}*/
+		//moveHorizontally(ratio);
+		computeMenuItemsLeftPos();
+	}
 	
 	/**
 	 * on rezize callback

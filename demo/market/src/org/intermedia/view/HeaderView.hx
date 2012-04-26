@@ -30,9 +30,6 @@ class HeaderView extends ViewBase
 	private var _titleTextElement:HtmlDom;
 	
 	//private var _titleTextElement:HtmlDom;
-	static inline var IMAGE_URL:String = "assets/rss-icon.png";
-	
-	//private var _titleTextElement:HtmlDom;
 	private var _image:Image;
 	
 	// back button container, to be built in the constructor, and attached/detached depending on displayBackButton value
@@ -97,7 +94,7 @@ class HeaderView extends ViewBase
 		// build thumbnail and attach it
 		_image = cast Lib.document.createElement("img");
 		HeaderStyle.setThumbImageStyle(_image);
-		_image.src = IMAGE_URL;
+		_image.src = Constants.HEADER_IMAGE_URL;
 		node.appendChild(_image);
 		
 		// build title and attach it
