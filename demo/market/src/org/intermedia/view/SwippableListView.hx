@@ -121,7 +121,6 @@ class SwippableListView extends ListViewBase
 			listView.onDataRequest = onDataRequestCallback;
 			listView.onListItemSelected = onListItemSelectedCallback;
 			_listsContainer.appendChild(listView.node);
-
 		}
 		
 		// set index
@@ -135,13 +134,12 @@ class SwippableListView extends ListViewBase
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.both);
 		_moveHandler.onVerticalScroll = onVerticalScroll;
-		_moveHandler.onHorizontalScroll = onHorizontalMoveCallback;
+		_moveHandler.onHorizontalScroll = onHorizontalScrollCallback;
 		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
 		_moveHandler.onHorizontalTween = onHorizontalTweenCallback;
 		
 		// js touch events handling
 		addTouchEvents();
-
 	}
 	
 	/**
@@ -204,7 +202,6 @@ class SwippableListView extends ListViewBase
 			scrollToCurrentList();
 			
 			displayLoading = false;
-
 		}
 		
 		// if homepage is set, add or update list1 data
@@ -245,7 +242,10 @@ class SwippableListView extends ListViewBase
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
 		
 		// launch horizontal tween
-		_moveHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
+		//_moveHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
+		_moveHandler.horizontalReleaseTween(node.scrollLeft - _moveHandler.initialScrollPosition.x, _currentListView.node.offsetLeft - _moveHandler.initialScrollPosition.x);
+		
+		//Firebug.trace(node.scrollLeft + ", " + _moveHandler.initialScrollPosition.x + ", " + _currentListView.node.offsetLeft);
 
 		return v;
 	}
@@ -282,19 +282,20 @@ class SwippableListView extends ListViewBase
 	 * @param	XScroll	new scroll position
 	 * @param	XOffset	scroll offset ( = initial touch position - end touch position )
 	 */
-    private function onHorizontalMoveCallback( XScroll:Int, XOffset:Int )
+    //private function onHorizontalScrollCallback( XScroll:Int, XOffset:Int )
+    private function onHorizontalScrollCallback( xOffset:Int )
     {
 		// compute horizontal ratio
-		var horizontalRatio:Float = computeHorizontalRatio(XOffset);
+		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
 		
-		node.scrollLeft = XScroll;
+		//node.scrollLeft = XScroll;
+		node.scrollLeft = _moveHandler.initialScrollPosition.x - xOffset;
 		
 		// call onHorizontalMove callback
 		if (onHorizontalMove != null && horizontalRatio != 0)
 		{
 			onHorizontalMove(horizontalRatio);
 		}
-		
     }
 	
 	/**
@@ -302,19 +303,22 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	XScroll	new scroll position
 	 */
-    private function onHorizontalTweenCallback(XScroll:Int):Void
+    //private function onHorizontalTweenCallback(xScroll:Int):Void
+    private function onHorizontalTweenCallback(xOffset:Int):Void
 	{
-		node.scrollLeft = XScroll;
+		//node.scrollLeft = xScroll;
+		node.scrollLeft = _moveHandler.initialScrollPosition.x - xOffset;
 	}
 	
 	/**
 	 * move current list view on the vertical axis
 	 * 
-	 * @param	e
+	 * @param	yOffset		the vertical scroll offset
 	 */
-    private function onVerticalScroll( y : Int )
+    //private function onVerticalScroll( y : Int )
+    private function onVerticalScroll( yOffset : Int )
     {
-		_currentListView.node.scrollTop = _moveHandler.initialScrollPosition.y - y;
+		_currentListView.node.scrollTop = _moveHandler.initialScrollPosition.y - yOffset;
     }
 	
 	/**
@@ -322,19 +326,19 @@ class SwippableListView extends ListViewBase
 	 * 
 	 * @param	event
 	 */
-	private function onHorizontalUpCallback(event:Dynamic,XOffset:Int):Void
+	private function onHorizontalUpCallback(event:Dynamic,xOffset:Int):Void
 	{
 		event.preventDefault();
 		
 		// if movement was negative and more that half of the size of the screen
-		if (XOffset < -Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
+		if (xOffset < -Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
 		{
 			// if the current list is not the last one, increment index using setter
 			if (index < _listViews.length - 1)
 				index++;
 		}
 		// if movement was positive and less that half of the size of the screen
-		else if (XOffset > Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
+		else if (xOffset > Lib.window.innerHeight * Constants.SWIP_HORIZONTAL_WIDTH_RATIO)
 		{
 			// if the current list is not the first one, decrement index using setter
 			if (index > 0)
@@ -353,7 +357,7 @@ class SwippableListView extends ListViewBase
 		#end*/
 		
 		// compute horizontal ratio
-		var horizontalRatio:Float = computeHorizontalRatio(XOffset);
+		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
 		
 		// if onHorizontalUp callback is defined, call it
 		if (onHorizontalUp != null)
@@ -369,6 +373,7 @@ class SwippableListView extends ListViewBase
 	 */
 	override private function onScrollCallback(event:Event):Void
 	{
+		
 	}
 
 	/**
@@ -379,10 +384,10 @@ class SwippableListView extends ListViewBase
 		#if js
 		untyped
 		{
-		node.addEventListener("touchstart",touchStart, false);
-		node.addEventListener("touchmove", touchMove, false);
-		node.addEventListener("touchend", touchEnd, false);
-		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
+			node.addEventListener("touchstart",touchStart, false);
+			node.addEventListener("touchmove", touchMove, false);
+			node.addEventListener("touchend", touchEnd, false);
+			node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
 		}
 		#end
 	}

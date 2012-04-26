@@ -2941,7 +2941,7 @@ org.intermedia.view.Scroll2D.prototype = {
 	,onHorizontalMoveCallback: function(event) {
 		event.preventDefault();
 		this._scrollPosition = { x : this.initialScrollPosition.x - this._offset.x, y : this.initialScrollPosition.y};
-		this.onHorizontalScrollCallback(this._scrollPosition.x);
+		this.onHorizontalScrollCallback(this._offset.x);
 	}
 	,onVerticalMoveCallback: function(event) {
 		event.preventDefault();
@@ -2956,12 +2956,12 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onHorizontalUp != null) this.onHorizontalUp(event,this._offset.x);
 	}
 	,horizontalReleaseTween: function(xOrigin,xTarget) {
-		this._horizontalTween = new feffects.Tween(xOrigin,xTarget,600,feffects.easing.Quint.easeOut);
+		this._horizontalTween = new feffects.Tween(-xOrigin,-xTarget,600,feffects.easing.Quint.easeOut);
 		this._horizontalTween.setTweenHandlers(this.onHorizontalTweenCallback.$bind(this),this.horizontalTweenEnd.$bind(this));
 		this._horizontalTween.start();
 	}
-	,onHorizontalScrollCallback: function(e) {
-		if(this.onHorizontalScroll != null) this.onHorizontalScroll(e | 0,this._offset.x);
+	,onHorizontalScrollCallback: function(xOffset) {
+		if(this.onHorizontalScroll != null) this.onHorizontalScroll(xOffset | 0);
 	}
 	,onHorizontalTweenCallback: function(e) {
 		if(this.onHorizontalTween != null) this.onHorizontalTween(e | 0);
@@ -3043,7 +3043,7 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.both);
 	this._moveHandler.onVerticalScroll = this.onVerticalScroll.$bind(this);
-	this._moveHandler.onHorizontalScroll = this.onHorizontalMoveCallback.$bind(this);
+	this._moveHandler.onHorizontalScroll = this.onHorizontalScrollCallback.$bind(this);
 	this._moveHandler.onHorizontalUp = this.onHorizontalUpCallback.$bind(this);
 	this._moveHandler.onHorizontalTween = this.onHorizontalTweenCallback.$bind(this);
 	this.addTouchEvents();
@@ -3110,7 +3110,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._index = v;
 		this._currentListView = this._listViews[v];
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this._moveHandler.horizontalReleaseTween(this.node.scrollLeft,this._currentListView.node.offsetLeft);
+		this._moveHandler.horizontalReleaseTween(this.node.scrollLeft - this._moveHandler.initialScrollPosition.x,this._currentListView.node.offsetLeft - this._moveHandler.initialScrollPosition.x);
 		return v;
 	}
 	,scrollToCurrentList: function() {
@@ -3126,33 +3126,33 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			list.refreshStyles();
 		}
 	}
-	,onHorizontalMoveCallback: function(XScroll,XOffset) {
-		var horizontalRatio = this.computeHorizontalRatio(XOffset);
-		this.node.scrollLeft = XScroll;
+	,onHorizontalScrollCallback: function(xOffset) {
+		var horizontalRatio = this.computeHorizontalRatio(xOffset);
+		this.node.scrollLeft = this._moveHandler.initialScrollPosition.x - xOffset;
 		if(this.onHorizontalMove != null && horizontalRatio != 0) this.onHorizontalMove(horizontalRatio);
 	}
-	,onHorizontalTweenCallback: function(XScroll) {
-		this.node.scrollLeft = XScroll;
+	,onHorizontalTweenCallback: function(xOffset) {
+		this.node.scrollLeft = this._moveHandler.initialScrollPosition.x - xOffset;
 	}
-	,onVerticalScroll: function(y) {
-		this._currentListView.node.scrollTop = this._moveHandler.initialScrollPosition.y - y;
+	,onVerticalScroll: function(yOffset) {
+		this._currentListView.node.scrollTop = this._moveHandler.initialScrollPosition.y - yOffset;
 	}
-	,onHorizontalUpCallback: function(event,XOffset) {
+	,onHorizontalUpCallback: function(event,xOffset) {
 		event.preventDefault();
-		if(XOffset < -js.Lib.window.innerHeight * 0.2) {
+		if(xOffset < -js.Lib.window.innerHeight * 0.2) {
 			if(this.getIndex() < this._listViews.length - 1) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 + 1);
 				_g1;
 			}
-		} else if(XOffset > js.Lib.window.innerHeight * 0.2) {
+		} else if(xOffset > js.Lib.window.innerHeight * 0.2) {
 			if(this.getIndex() > 0) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 - 1);
 				_g1;
 			}
 		} else this.setIndex(this.getIndex());
-		var horizontalRatio = this.computeHorizontalRatio(XOffset);
+		var horizontalRatio = this.computeHorizontalRatio(xOffset);
 		if(this.onHorizontalUp != null) this.onHorizontalUp(this._index);
 	}
 	,onScrollCallback: function(event) {
