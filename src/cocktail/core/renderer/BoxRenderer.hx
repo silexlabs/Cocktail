@@ -132,7 +132,7 @@ class BoxRenderer extends ElementRenderer
 			#elseif nme
 			nativeElement.graphics.beginFill(0xFF0000, 0.01);
 			#end
-			nativeElement.graphics.drawRect(_globalOrigin.x, _globalOrigin.y, _bounds.width, _bounds.height);
+			nativeElement.graphics.drawRect(_globalOrigin.x + _bounds.x, _globalOrigin.y + _bounds.y, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
 			backgrounds.push(nativeElement);
