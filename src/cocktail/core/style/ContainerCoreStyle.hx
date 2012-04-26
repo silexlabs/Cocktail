@@ -23,7 +23,6 @@ import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.dom.DOMData;
-import cocktail.core.dom.DOMData;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.FlowBoxRenderer;
@@ -31,7 +30,6 @@ import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.geom.GeomData;
-import cocktail.core.dom.DOMData;
 import cocktail.core.font.FontData;
 import haxe.Timer;
 

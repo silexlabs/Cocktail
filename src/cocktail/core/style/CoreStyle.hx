@@ -79,7 +79,6 @@ class CoreStyle
 	// STYLES attributes
 	////////////////////////////////
 	
-
 	/**
 	 * display styles
 	 */
@@ -265,10 +264,11 @@ class CoreStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
-	 * determine wether the HTMLElement and its chidlren must
-	 * be laid out again
+	 * determine wether the HTMLElement is currently being
+	 * laid out, in which case it won't take any subsequent
+	 * layout request into account
 	 */
-	private var _isDirty:Bool;
+	private var _isLayingOut:Bool;
 	
 	/**
 	 * A reference to the rendering tree node created by this
@@ -291,7 +291,7 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this._htmlElement = htmlElement;
-		this._isDirty = false;
+		this._isLayingOut = false;
 		
 		initDefaultStyleValues();
 	}
@@ -679,8 +679,9 @@ class CoreStyle
 			insertAbsolutelyPositionedHTMLElement(formattingContext, lastPositionedHTMLElementData);
 		}
 		
-		//The HTMLElement has been laid out and is now valid
-		this._isDirty = false;
+		//The HTMLElement has been laid out and can now be laid out again
+		//if it changes
+		this._isLayingOut = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -865,14 +866,14 @@ class CoreStyle
 	public function invalidate(immediate:Bool = false):Void
 	{
 		//only invalidate the parent if it isn't
-		//done already or if an immediate layout is required
-		if (this._isDirty == false || immediate == true)
+		//already being laid out or if an immediate layout is required
+		if (this._isLayingOut == false || immediate == true)
 		{
-			//set the dirty flag to prevent multiple
+			//set the layout flag to prevent multiple
 			//layout of the HTMLElement in a row
 			//The HTMLElement will be able to be invalidated
 			//again once it has been laid out
-			this._isDirty = true;
+			this._isLayingOut = true;
 			
 			//if the HTMLElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
