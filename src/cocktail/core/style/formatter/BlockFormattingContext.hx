@@ -40,14 +40,8 @@ class BlockFormattingContext extends FormattingContext
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
 		//TODO : seems a bit hackish to do that here, do it in the method setting global positions instead ?
-		if (_formattingContextRoot.isInitialContainer() == false)
-		{
-			doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement);	
-		}
-		else
-		{
-			doFormat2(_formattingContextRoot, 0, 0, staticPositionedElement);	
-		}
+		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement);	
+
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer):Void
