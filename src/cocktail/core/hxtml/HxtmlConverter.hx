@@ -1,6 +1,7 @@
 package cocktail.core.hxtml;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import hxtml.Browser;
 import cocktail.Lib;
 import cocktail.Dom;

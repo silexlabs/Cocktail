@@ -8,50 +8,19 @@
 package cocktail;
 
 /**
- * Define type aliases for all of Cocktail's public API
+ * Define type aliases to match Haxe JS API
  */
 
-/**
- * DOM
- */
-/**
- * TODO : are those useful ?
- * 
-typedef Element = cocktail.core.dom.Element;
-typedef Node = cocktail.core.dom.Node;
-typedef Text = cocktail.core.dom.Text;
-typedef Document = cocktail.core.dom.Document;
-typedef Attr = cocktail.core.dom.Attr;
-typedef NamedNodeMap = cocktail.core.dom.NamedNodeMap;
-*/
-
-/**
- * HTML
- */
-
-//HaxeJs types
 typedef Image = cocktail.core.html.HTMLImageElement;
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
 typedef Style = cocktail.core.style.adapter.Style;
+typedef Window = cocktail.core.window.AbstractWindow;
+typedef Document = cocktail.core.html.AbstractHTMLDocument;
 
-typedef HTMLAnchorElement = cocktail.core.HTMLAnchorElement;
-typedef HTMLImageElement = cocktail.core.html.HTMLImageElement;
-typedef HTMLElement = cocktail.core.html.HTMLElement;
-typedef HTMLDocument = cocktail.core.HTMLDocument;
+//TODO : how to match also keyboard event ? In Haxe JS, mouse
+//and keyboard info are mixed
+typedef Event = cocktail.core.event.MouseEvent;
 
-/**
- * EVENT
- */
- 
-typedef Event = cocktail.core.event.Event;
-typedef IEventTarget = cocktail.core.event.IEventTarget;
-typedef MouseEvent = cocktail.core.event.MouseEvent;
-typedef UIEvent = cocktail.core.event.UIEvent;
-typedef KeyboardEvent = cocktail.core.event.KeyboardEvent;
-
-/**
- * RESOURCE
- */
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
