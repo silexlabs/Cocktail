@@ -77,7 +77,7 @@ class BlockFormattingContext extends FormattingContext
 						var firstChild:ElementRenderer = cast(child.firstChild);
 						if (firstChild.coreStyle.computedStyle.marginTop > marginTop && child.coreStyle.computedStyle.paddingTop == 0)
 						{
-							//	marginTop = firstChild.coreStyle.computedStyle.marginTop;
+								marginTop = firstChild.coreStyle.computedStyle.marginTop;
 						}
 					}
 					

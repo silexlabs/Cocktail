@@ -144,12 +144,12 @@ class LineBox extends Node
 	public function render():Array<NativeElement>
 	{
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _elementRenderer.coreStyle);
-		
+
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
+			backgrounds[i].x = _bounds.x  + _elementRenderer.globalOrigin.x;
+			backgrounds[i].y = _bounds.y + _elementRenderer.globalOrigin.y;
 			#end
 		}
 		return backgrounds;
