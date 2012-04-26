@@ -203,13 +203,13 @@ class BodyCoreStyle extends ContainerCoreStyle
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			child.globalOrigin = {
-				x: addedX,
-				y : addedY
+				x: addedX + _computedStyle.marginLeft,
+				y : addedY + _computedStyle.marginTop
 			}
 			
 			child.globalPositionnedOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
+				x: addedPositionedX + _computedStyle.marginLeft,
+				y : addedPositionedY + _computedStyle.marginTop
 			}
 			
 			//call the method recursively if the child has children itself
