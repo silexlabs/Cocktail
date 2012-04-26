@@ -109,10 +109,14 @@ class Document extends Node
 	 * If more than one element has an ID attribute with that value, return the first found one.
 	 * use Attr.isId to determine if an attribute is of type ID.
 	 * 
+	 * IMPORTANT : this method is supposed to return an Element but to match
+	 * Haxe JS API, we return an HTMLElement instead. It might be a problem
+	 * eventually to use the lib with other XML format
+	 * 
 	 * @param	elementId The unique id value for an element.
 	 * @return	The matching element or null if there is none.
 	 */
-	public function getElementById(elementId:String):Element
+	public function getElementById(elementId:String):HTMLElement
 	{
 		return doGetElementById(_documentElement, elementId);
 	}
@@ -126,14 +130,14 @@ class Document extends Node
 	 * elementId, by traversing recursively the 
 	 * DOM tree
 	 */
-	private function doGetElementById(node:Node, elementId:String):Element
+	private function doGetElementById(node:Node, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
 			for (i in 0...node.childNodes.length)
 			{
-				var matchingElement:Element = doGetElementById(node.childNodes[i], elementId);
+				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
 				//if a matching element is found, return it
 				if (matchingElement != null)
 				{
@@ -147,7 +151,7 @@ class Document extends Node
 		if (node.hasAttributes() == true)
 		{
 			var attributes:NamedNodeMap = node.attributes;
-			var element:Element = cast(node);
+			var element:HTMLElement = cast(node);
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined
