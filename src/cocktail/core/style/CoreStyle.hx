@@ -523,7 +523,7 @@ class CoreStyle
 				
 			case "p" :
 				_display = Display.block;
-				_marginTop = _marginBottom = Margin.length(em(1.67));	
+				_marginTop = _marginBottom = Margin.length(em(1));	
 				
 			case "pre" : 
 				_display = Display.block;
