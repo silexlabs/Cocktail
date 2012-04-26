@@ -119,31 +119,32 @@ class MenuListViewText extends ListViewBase
 		// depending on the index value, set each menu item left end position
 		switch(_index)
 		{
-			case 0:
-				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
-				_menuItem2LeftTarget = Lib.window.innerWidth;
-			case 1:
-				_menuItem0LeftTarget = 0;
-				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
-			case 2:
-				_menuItem0LeftTarget = -_menuItem0Width;
-				_menuItem1LeftTarget = 0;
-				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			// android market style
+			// google+ menu style
 			//case 0:
 				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				//_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - _menuItem1Width/2);
+				//_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
 				//_menuItem2LeftTarget = Lib.window.innerWidth;
 			//case 1:
-				//_menuItem0LeftTarget = Std.int(-_menuItem2Width/2);
+				//_menuItem0LeftTarget = 0;
 				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				//_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - _menuItem2Width/2);
+				//_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
 			//case 2:
 				//_menuItem0LeftTarget = -_menuItem0Width;
-				//_menuItem1LeftTarget = Std.int(-_menuItem1Width/2);
+				//_menuItem1LeftTarget = 0;
 				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+			// android market style
+			case 0:
+				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
+				_menuItem2LeftTarget = Std.int(3 * Lib.window.innerWidth / 2);
+			case 1:
+				_menuItem0LeftTarget = Std.int(-(_menuItem0Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
+			case 2:
+				_menuItem0LeftTarget = Std.int( -Lib.window.innerWidth / 2);
+				_menuItem1LeftTarget = Std.int(-(_menuItem1Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
 			default:
 				_menuItem0LeftTarget = 0;
 				_menuItem1LeftTarget = 0;
@@ -203,6 +204,7 @@ class MenuListViewText extends ListViewBase
 		_menuItem0Width = _cells[0].node.clientWidth;
 		_menuItem1Width = _cells[1].node.clientWidth;
 		_menuItem2Width = _cells[2].node.clientWidth;
+		Firebug.trace(_menuItem0Width + "," + _menuItem1Width + "," + _menuItem2Width);
 	}
 	
 	/**
@@ -215,13 +217,12 @@ class MenuListViewText extends ListViewBase
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
 	}
 	
-	
 	/**
 	 * update view
 	 */
 	override private function updateView():Void
 	{
-		_index = 0;
+		//_index = 0;
 		for (field in Reflect.fields(_data))
 		{
 			// build cell
@@ -239,30 +240,12 @@ class MenuListViewText extends ListViewBase
 			// add cell to list
 			node.appendChild(cell.node);
 			
-			var style:HtmlDom->Void = setCellsStyle();
-			style(cell.node);
-			
-			// re-apply cell styles, as we need to apply some styles which need to be computed by the layout
-			//var style:HtmlDom->Void = setCellsStyle();
-			//style(cell.node);
-			
-			// depending on the index value, set a specific id
-			switch(_index)
-			{
-				case 0:
-					cell.node.id = "menu_item0";
-				case 1:
-					cell.node.id = "menu_item1";
-				case 2:
-					cell.node.id = "menu_item2";
-				default:
-			}
-			
-			_index++;
-			
 		}
+		
+		computeMenuItemsWidth();
 		// set index to its initial value 
-		_index = 1;
+		//_index = 1;
+		index = 1;
 
 		
 		// if loader is attached to to list container, detach it
@@ -295,25 +278,6 @@ class MenuListViewText extends ListViewBase
 		return cell;
 	}
 	
-	
-	private function setCellsStyle():HtmlDom->Void
-	{
-		// set default cell style
-		var style:HtmlDom->Void = MenuCellTextStyle.setCellStyle;
-		// depending on the index value, apply corresponding style
-		switch(_index)
-		{
-			case 0:
-				style = MenuCellTextStyle.setLeftCellStyle;
-			case 1:
-				style = MenuCellTextStyle.setMiddleCellStyle;
-			case 2:
-				style = MenuCellTextStyle.setRightCellStyle;
-			default:
-		}
-		return style;
-	}
-
 	/**
 	 * onListItemSelected callback
 	 * @param	cellData
@@ -331,9 +295,13 @@ class MenuListViewText extends ListViewBase
 	 */
 	public function moveHorizontally(ratio:Float):Void
 	{
+		//computeMenuItemLeftTarget();
 		menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
 		menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
 		menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
+		//menuItem0Move(_menuItem0LeftPos + ((_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
+		//menuItem1Move(_menuItem1LeftPos + ((_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
+		//menuItem2Move(_menuItem2LeftPos + ((_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
 	}
 	
 	/**

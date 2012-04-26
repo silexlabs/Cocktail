@@ -52,53 +52,6 @@ class MenuCellTextStyle
 		// remove border
 		CellStyle.removeBorder(node);
 		node.style.backgroundColor = null;
-
-	}
-	
-	/**
-	 * Defines cell Style
-	 * 
-	 * @param	node
-	 */
-	public static function setLeftCellStyle(node:HtmlDom):Void
-	{
-		setCellStyle(node);
-
-		//node.style.textAlign = "left";
-		//node.style.left = Std.string(CELL_HORIZONTAL_PADDING) + "px";
-		node.style.left = "0px";
-	}
-	
-	/**
-	 * Defines cell Style
-	 * 
-	 * @param	node
-	 */
-	public static function setMiddleCellStyle(node:HtmlDom):Void
-	{
-		setCellStyle(node);
-
-		//node.style.textAlign = "center";
-		node.style.marginLeft = "auto";
-		node.style.marginRight = "auto";
-		node.style.left = Std.int((Lib.window.innerWidth - node.offsetWidth) / 2) + "px";
-		//node.style.left = Std.int((2*node.clientWidth) / 2) + "px";
-		
-		//Firebug.trace(node.offsetWidth + "," + node.clientWidth);
-	}
-	
-	/**
-	 * Defines cell Style
-	 * 
-	 * @param	node
-	 */
-	public static function setRightCellStyle(node:HtmlDom):Void
-	{
-		setCellStyle(node);
-
-		//node.style.textAlign = "right";
-		//node.style.right = Std.string(CELL_HORIZONTAL_PADDING) + "px";
-		node.style.right = "0px";
 	}
 	
 	/**

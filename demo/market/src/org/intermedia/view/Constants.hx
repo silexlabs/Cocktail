@@ -29,6 +29,7 @@ class Constants
 	//public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
 	public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
+	public static inline var MENU_LATERAL_OFFSET:Int = 30;
 	
 	// set swippable view constants
 	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.2;	
