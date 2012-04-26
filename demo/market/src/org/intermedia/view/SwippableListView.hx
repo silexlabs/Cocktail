@@ -65,7 +65,8 @@ class SwippableListView extends ListViewBase
 	public var onHorizontalMove:Float->Void;
 	
 	// horizontal tween end
-	public var onHorizontalTweenEnd:Float->Void;
+	//public var onHorizontalTweenEnd:Float->Void;
+	public var onHorizontalTweenEnd:Int->Void;
 	
 	// horizontal tween end
 	public var onHorizontalUp:Int->Void;
@@ -245,9 +246,9 @@ class SwippableListView extends ListViewBase
 		
 		// launch horizontal tween
 		//_moveHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
-		_moveHandler.horizontalReleaseTween(node.scrollLeft - _moveHandler.initialScrollPosition.x, _currentListView.node.offsetLeft - _moveHandler.initialScrollPosition.x);
-		
 		//Firebug.trace(node.scrollLeft + ", " + _moveHandler.initialScrollPosition.x + ", " + _currentListView.node.offsetLeft);
+		Firebug.trace(Std.string(node.scrollLeft - _moveHandler.initialScrollPosition.x) + "," + Std.string(_currentListView.node.offsetLeft - _moveHandler.initialScrollPosition.x));
+		_moveHandler.horizontalReleaseTween(node.scrollLeft - _moveHandler.initialScrollPosition.x, _currentListView.node.offsetLeft - _moveHandler.initialScrollPosition.x);
 
 		return v;
 	}
@@ -257,7 +258,8 @@ class SwippableListView extends ListViewBase
 	 */
 	public function scrollToCurrentList():Void
 	{
-		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0,-2));
+		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0, -2));
+		_moveHandler.initialScrollPosition = _moveHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 	}
 	
 	/**
@@ -287,8 +289,12 @@ class SwippableListView extends ListViewBase
     //private function onHorizontalScrollCallback( XScroll:Int, XOffset:Int )
     private function onHorizontalScrollCallback( xOffset:Int )
     {
+		// unset current list item selected callback
+		_currentListView.onListItemSelected = null;
+
 		// compute horizontal ratio
 		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
+		Firebug.trace(horizontalRatio + ", " + xOffset);
 		
 		//node.scrollLeft = XScroll;
 		node.scrollLeft = _moveHandler.initialScrollPosition.x - xOffset;
@@ -325,12 +331,16 @@ class SwippableListView extends ListViewBase
 	 */
     private function onHorizontalTweenEndCallback(xOffset:Int):Void
 	{
+		// set current list item selected callback
+		_currentListView.onListItemSelected = onListItemSelectedCallback;
+
 		// compute horizontal ratio
 		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
 
 		if (onHorizontalTweenEnd != null)
 		{
-			onHorizontalTweenEnd(horizontalRatio);
+			//onHorizontalTweenEnd(horizontalRatio);
+			onHorizontalTweenEnd(_index);
 		}
 	}
 	
@@ -381,7 +391,7 @@ class SwippableListView extends ListViewBase
 		#end*/
 		
 		// compute horizontal ratio
-		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
+		//var horizontalRatio:Float = computeHorizontalRatio(xOffset);
 		
 		// if onHorizontalUp callback is defined, call it
 		//if (onHorizontalUp != null)

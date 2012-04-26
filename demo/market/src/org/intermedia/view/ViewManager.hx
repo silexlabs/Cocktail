@@ -121,7 +121,7 @@ class ViewManager
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		_swippableListView.onHorizontalMove = _menu.moveHorizontally;
-		_swippableListView.onHorizontalUp = _menu.horizontalUp;
+		//_swippableListView.onHorizontalUp = _menu.horizontalUp;
 		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
@@ -301,7 +301,7 @@ class ViewManager
 	private function onResizeCallback(event:Event):Void
 	{
 		// launch needed callbacks
-		_menu.onResizeCallback(event);
+		_menu.onResizeCallback();
 		_swippableListView.onResizeCallback(event);
 	}
 

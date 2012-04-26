@@ -38,7 +38,6 @@ class MenuCellText extends CellBase
 			node.appendChild(cellTextContainer);
 			MenuCellTextStyle.setCellTextStyle(cellTextContainer);
 		}
-			
 	}
 
 	

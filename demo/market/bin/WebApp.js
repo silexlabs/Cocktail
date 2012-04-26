@@ -2689,6 +2689,9 @@ org.intermedia.view.MenuListViewStyle.prototype = {
 }
 org.intermedia.view.MenuListViewText = $hxClasses["org.intermedia.view.MenuListViewText"] = function() {
 	this._index = 0;
+	this._menuItem0LeftTarget = 0;
+	this._menuItem1LeftTarget = 0;
+	this._menuItem2LeftTarget = 0;
 	org.intermedia.view.ListViewBase.call(this);
 	org.intermedia.view.MenuListViewStyle.setMenuStyle(this.node);
 	this.displayListBottomLoader = false;
@@ -2707,45 +2710,49 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,_menuItem0LeftTarget: null
 	,_menuItem1LeftTarget: null
 	,_menuItem2LeftTarget: null
+	,updateView: function() {
+		var me = this;
+		var _g = 0, _g1 = Reflect.fields(this._data);
+		while(_g < _g1.length) {
+			var field = _g1[_g];
+			++_g;
+			var cell = [this.createCell()];
+			cell[0].setData(Reflect.field(this._data,field));
+			cell[0].node.onmouseup = (function(cell) {
+				return function(mouseEventData) {
+					me.onListItemSelectedCallback(cell[0].getData());
+				};
+			})(cell);
+			this._cells.push(cell[0]);
+			this.node.appendChild(cell[0].node);
+		}
+		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
+		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
+		this.computeMenuItemsWidth();
+		this._index = 1;
+		this.onResizeCallback();
+	}
+	,createCell: function() {
+		var cell = new org.intermedia.view.MenuCellText();
+		return cell;
+	}
+	,onListItemSelectedCallback: function(cellData) {
+		this.setIndex(cellData.id);
+		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
+	}
 	,getIndex: function() {
 		return this._index;
 	}
 	,setIndex: function(v) {
 		this._index = v;
-		this.computeMenuItemLeftTarget();
+		this.computeMenuItemsLeftTarget(this._index);
 		var tween0 = new feffects.Tween(this._cells[0].node.offsetLeft,this._menuItem0LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween0.setTweenHandlers(this.menuItem0Move.$bind(this),this.menuItemMoveEnd.$bind(this));
-		tween0.start();
 		var tween1 = new feffects.Tween(this._cells[1].node.offsetLeft,this._menuItem1LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween1.setTweenHandlers(this.menuItem1Move.$bind(this),this.menuItemMoveEnd.$bind(this));
-		tween1.start();
 		var tween2 = new feffects.Tween(this._cells[2].node.offsetLeft,this._menuItem2LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween2.setTweenHandlers(this.menuItem2Move.$bind(this),this.menuItemMoveEnd.$bind(this));
-		tween2.start();
 		return v;
-	}
-	,computeMenuItemLeftTarget: function() {
-		switch(this._index) {
-		case 0:
-			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
-			this._menuItem1LeftTarget = js.Lib.window.innerWidth - 30 | 0;
-			this._menuItem2LeftTarget = 3 * js.Lib.window.innerWidth / 2 | 0;
-			break;
-		case 1:
-			this._menuItem0LeftTarget = -(this._menuItem0Width - 30) | 0;
-			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
-			this._menuItem2LeftTarget = js.Lib.window.innerWidth - 30 | 0;
-			break;
-		case 2:
-			this._menuItem0LeftTarget = -js.Lib.window.innerWidth / 2 | 0;
-			this._menuItem1LeftTarget = -(this._menuItem1Width - 30) | 0;
-			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
-			break;
-		default:
-			this._menuItem0LeftTarget = 0;
-			this._menuItem1LeftTarget = 0;
-			this._menuItem2LeftTarget = 0;
-		}
 	}
 	,menuItem0Move: function(e) {
 		this._cells[0].node.style.left = (e | 0) + "px";
@@ -2763,60 +2770,52 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		this._menuItem0Width = this._cells[0].node.clientWidth;
 		this._menuItem1Width = this._cells[1].node.clientWidth;
 		this._menuItem2Width = this._cells[2].node.clientWidth;
-		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 207, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
+		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 246, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
 	}
 	,computeMenuItemsLeftPos: function() {
 		this._menuItem0LeftPos = this._cells[0].node.offsetLeft;
 		this._menuItem1LeftPos = this._cells[1].node.offsetLeft;
 		this._menuItem2LeftPos = this._cells[2].node.offsetLeft;
+		haxe.Firebug.trace(this._menuItem0LeftPos + "," + this._menuItem1LeftPos + "," + this._menuItem2LeftPos,{ fileName : "MenuListViewText.hx", lineNumber : 257, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsLeftPos"});
 	}
-	,updateView: function() {
-		var me = this;
-		var _g = 0, _g1 = Reflect.fields(this._data);
-		while(_g < _g1.length) {
-			var field = _g1[_g];
-			++_g;
-			var cell = [this.createCell()];
-			cell[0].setData(Reflect.field(this._data,field));
-			cell[0].node.onmouseup = (function(cell) {
-				return function(mouseEventData) {
-					me.onListItemSelectedCallback(cell[0].getData());
-				};
-			})(cell);
-			this._cells.push(cell[0]);
-			this.node.appendChild(cell[0].node);
+	,computeMenuItemsLeftTarget: function(targetIndex) {
+		switch(targetIndex) {
+		case 0:
+			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
+			this._menuItem1LeftTarget = js.Lib.window.innerWidth - 30 | 0;
+			this._menuItem2LeftTarget = 3 * js.Lib.window.innerWidth / 2 | 0;
+			break;
+		case 1:
+			this._menuItem0LeftTarget = -(this._menuItem0Width - 30) | 0;
+			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
+			this._menuItem2LeftTarget = js.Lib.window.innerWidth - 30 | 0;
+			break;
+		case 2:
+			this._menuItem0LeftTarget = -js.Lib.window.innerWidth / 2 | 0;
+			this._menuItem1LeftTarget = -(this._menuItem1Width - 30) | 0;
+			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
+			break;
+		default:
 		}
-		this.computeMenuItemsWidth();
-		this.setIndex(1);
-		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
-		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
-		this.computeMenuItemsWidth();
-		this.computeMenuItemsLeftPos();
-	}
-	,createCell: function() {
-		var cell = new org.intermedia.view.MenuCellText();
-		return cell;
-	}
-	,onListItemSelectedCallback: function(cellData) {
-		this.setIndex(cellData.id);
-		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
 	}
 	,moveHorizontally: function(ratio) {
-		this.menuItem0Move(this._menuItem0LeftPos + (js.Lib.window.innerWidth - this._menuItem0Width) * ratio / 2);
-		this.menuItem1Move(this._menuItem1LeftPos + (js.Lib.window.innerWidth - this._menuItem1Width) * ratio / 2);
-		this.menuItem2Move(this._menuItem2LeftPos + (js.Lib.window.innerWidth - this._menuItem2Width) * ratio / 2);
+		haxe.Firebug.trace(ratio,{ fileName : "MenuListViewText.hx", lineNumber : 321, className : "org.intermedia.view.MenuListViewText", methodName : "moveHorizontally"});
+		if(ratio > 0) this.computeMenuItemsLeftTarget(Math.max(this._index - 1,0) | 0); else if(ratio < 0) this.computeMenuItemsLeftTarget(Math.min(this._index + 1,2) | 0);
+		this.menuItem0Move(this._menuItem0LeftPos + Math.abs(this._menuItem0LeftTarget - this._menuItem0LeftPos) * ratio);
+		this.menuItem1Move(this._menuItem1LeftPos + Math.abs(this._menuItem1LeftTarget - this._menuItem1LeftPos) * ratio);
+		this.menuItem2Move(this._menuItem2LeftPos + Math.abs(this._menuItem2LeftTarget - this._menuItem2LeftPos) * ratio);
 	}
-	,horizontalUp: function(listIndex) {
-		this.setIndex(listIndex);
-	}
-	,horizontalTweenEnd: function(ratio) {
+	,horizontalTweenEnd: function(newIndex) {
+		haxe.Firebug.trace(this._menuItem0LeftTarget + "," + this._menuItem1LeftTarget + "," + this._menuItem2LeftTarget,{ fileName : "MenuListViewText.hx", lineNumber : 367, className : "org.intermedia.view.MenuListViewText", methodName : "horizontalTweenEnd"});
+		this._index = newIndex;
 		this.computeMenuItemsLeftPos();
 	}
-	,onResizeCallback: function(event) {
-		this.computeMenuItemLeftTarget();
+	,onResizeCallback: function() {
+		this.computeMenuItemsLeftTarget(this._index);
 		this.menuItem0Move(this._menuItem0LeftTarget);
 		this.menuItem1Move(this._menuItem1LeftTarget);
 		this.menuItem2Move(this._menuItem2LeftTarget);
+		this.computeMenuItemsLeftPos();
 	}
 	,__class__: org.intermedia.view.MenuListViewText
 	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
@@ -2862,6 +2861,7 @@ org.intermedia.view.Scroll2D.prototype = {
 	,onHorizontalTweenEnd: null
 	,_horizontalTween: null
 	,_verticalTween: null
+	,_timer: null
 	,touchHandler: function(event) {
 		switch(event.type) {
 		case "touchstart":
@@ -2891,7 +2891,10 @@ org.intermedia.view.Scroll2D.prototype = {
 			var absX = Math.abs(this._offset.x);
 			var absY = Math.abs(this._offset.y);
 			if(Math.max(absX,absY) >= 5) {
-				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
+				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else {
+					this._direction = org.intermedia.view.Direction.vertical;
+					this._timer = haxe.Timer.delay(this.computeAcceleration.$bind(this),100);
+				}
 			}
 		}
 		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) {
@@ -2941,6 +2944,19 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onVerticalScroll != null) this.onVerticalScroll(e | 0);
 	}
 	,onVerticalTweenEnd: function(e) {
+	}
+	,_previousY: null
+	,_previousSpeed: null
+	,computeAcceleration: function() {
+		var speed = this.deriv(this._previousY,this._offset.y);
+		var acceleration = this.deriv(this._previousSpeed,speed);
+		this._previousY = this._offset.y;
+		this._previousSpeed = speed;
+		haxe.Log.trace(speed + ", " + acceleration,{ fileName : "Scroll2D.hx", lineNumber : 420, className : "org.intermedia.view.Scroll2D", methodName : "computeAcceleration"});
+		this._timer = haxe.Timer.delay(this.computeAcceleration.$bind(this),100);
+	}
+	,deriv: function(a,b) {
+		return (b - a) / 100;
 	}
 	,__class__: org.intermedia.view.Scroll2D
 }
@@ -3069,11 +3085,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._index = v;
 		this._currentListView = this._listViews[v];
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
+		haxe.Firebug.trace(Std.string(this.node.scrollLeft - this._moveHandler.initialScrollPosition.x) + "," + Std.string(this._currentListView.node.offsetLeft - this._moveHandler.initialScrollPosition.x),{ fileName : "SwippableListView.hx", lineNumber : 250, className : "org.intermedia.view.SwippableListView", methodName : "setIndex"});
 		this._moveHandler.horizontalReleaseTween(this.node.scrollLeft - this._moveHandler.initialScrollPosition.x,this._currentListView.node.offsetLeft - this._moveHandler.initialScrollPosition.x);
 		return v;
 	}
 	,scrollToCurrentList: function() {
 		this.node.scrollLeft = Std.parseInt(this._currentListView.node.style.left.substr(0,-2));
+		this._moveHandler.initialScrollPosition = this._moveHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
 	}
 	,onResizeCallback: function(event) {
 		this.positionLists();
@@ -3086,15 +3104,18 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		}
 	}
 	,onHorizontalScrollCallback: function(xOffset) {
+		this._currentListView.onListItemSelected = null;
 		var horizontalRatio = this.computeHorizontalRatio(xOffset);
+		haxe.Firebug.trace(horizontalRatio + ", " + xOffset,{ fileName : "SwippableListView.hx", lineNumber : 297, className : "org.intermedia.view.SwippableListView", methodName : "onHorizontalScrollCallback"});
 		this.node.scrollLeft = this._moveHandler.initialScrollPosition.x - xOffset;
 		if(this.node.scrollLeft > this.list0.node.offsetLeft && this.node.scrollLeft < this.list2.node.offsetLeft) {
 			if(this.onHorizontalMove != null && horizontalRatio != 0) this.onHorizontalMove(horizontalRatio);
 		}
 	}
 	,onHorizontalTweenEndCallback: function(xOffset) {
+		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		var horizontalRatio = this.computeHorizontalRatio(xOffset);
-		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd(horizontalRatio);
+		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd(this._index);
 	}
 	,onVerticalScroll: function(yOffset) {
 		this._currentListView.node.scrollTop = this._moveHandler.initialScrollPosition.y - yOffset;
@@ -3114,7 +3135,6 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 				_g1;
 			}
 		} else this.setIndex(this.getIndex());
-		var horizontalRatio = this.computeHorizontalRatio(xOffset);
 	}
 	,onScrollCallback: function(event) {
 	}
@@ -3250,7 +3270,6 @@ org.intermedia.view.ViewManager.prototype = {
 		this._swippableListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$_.loadCellData.$bind($_));
 		this._swippableListView.onHorizontalMove = ($_=this._menu,$_.moveHorizontally.$bind($_));
-		this._swippableListView.onHorizontalUp = ($_=this._menu,$_.horizontalUp.$bind($_));
 		this._swippableListView.onHorizontalTweenEnd = ($_=this._menu,$_.horizontalTweenEnd.$bind($_));
 		this._applicationController.loadCellData({ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url);
 		this._applicationController.loadCellData({ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url);
@@ -3305,7 +3324,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._body.appendChild(view.node);
 	}
 	,onResizeCallback: function(event) {
-		this._menu.onResizeCallback(event);
+		this._menu.onResizeCallback();
 		this._swippableListView.onResizeCallback(event);
 	}
 	,__class__: org.intermedia.view.ViewManager
@@ -3491,6 +3510,7 @@ org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
 org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.Scroll2D.VERTICAL_TWEEN_DELTA = 100;
+org.intermedia.view.Scroll2D.TIME_DELTA = 100;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;
 org.intermedia.view.SwippableListView.LIST_QTY = 2;
