@@ -24,8 +24,8 @@ import haxe.Log;
 
 /**
  * This is the style implementation for HTMLBodyElement.
- * It inherits from ContainerStyle and implement behaviours
- * specific to the root of the runtime where appropriate
+ * It inherits from ContainerCoreStyle and implement behaviours
+ * specific to the root of the DOM where appropriate
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -78,25 +78,14 @@ class BodyCoreStyle extends ContainerCoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
+	// PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The main layout method. When called, the HTMLElement's styles (width, height, margins, paddings...)
-	 * are computed into actual values, the HTMLElement layout its children if it has any then add itself
-	 * to the layout.
-	 * 
-	 * TODO : update doc
-	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
-	 * this HTMLElement must be laid out
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' style other than 'static'. When positioning an absolutely positioned HTMLElement (a HTMLElement with a 'position' style
-	 * of 'absolute'), it it used as origin.
-	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
-	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
-	 * @param containingHTMLElementFontMetricsData contains font metrics of the parent HTMLElement, used for instance
-	 * to layout children in an inline formatting context
+	 * Start the layout of all of the HTMLElements tree which set the bounds
+	 * of the all of the rendring tree elements relative to their containing block.
+	 * Then set the global bounds (relative to the window) for all of the elements
+	 * of the rendering tree
 	 */
 	public function startLayout():Void
 	{
@@ -108,22 +97,39 @@ class BodyCoreStyle extends ContainerCoreStyle
 			data:windowData
 		}
 		
+		//layout all the HTMLElements. After that they all know their bounds relative to the containing
+		//blocks
 		layout(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
+		//set the global bounds on the rendering tree. After that all the elements know their positions
+		//relative to the window
 		setGlobalOrigins(_elementRenderer,0,0, 0,0);
 	}
 	
-	//TODO : there is still a problem with body margin. Should body child have the margins of the body
-	//in their bounds ?
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
+	 * traversing it recursively
+	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
+	 * @param	addedX the added x position for the normal flow
+	 * @param	addedY the added y position for the norlam flow
+	 * @param	addedPositionedX the added X position for positioned elements
+	 * @param	addedPositionedY the added Y position for positioned elements
+	 */
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
+		//if the element establishes a new formatting context, then its
+		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
-			//TODO : should be either bounds or static position ?
-			//add a method to return the right origin ?
-		
+			//if the element is positioned, it can either add its bounds
+			//or positioned origin to the global x and y for normal flow. If it
+			//uses its static position, it uses its bounds, else it uses its
+			//positioned origin
 			if (elementRenderer.isPositioned() == true)
 			{
-				//TODO : don't do if uses static position
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
 					addedX += elementRenderer.positionedOrigin.x;
@@ -142,6 +148,8 @@ class BodyCoreStyle extends ContainerCoreStyle
 					addedY += elementRenderer.bounds.y;
 				}
 			}
+			//if the element is not positioned, it always add
+			//its bounds to the global x and y flow
 			else
 			{
 				addedX += elementRenderer.bounds.x;
@@ -149,8 +157,12 @@ class BodyCoreStyle extends ContainerCoreStyle
 			}
 		}
 		
+		//if the element is positioned, it must also add
+		//its bounds to the global positioned origin
 		if (elementRenderer.isPositioned() == true)
 		{
+			//absolutely positioned elements either add their static position
+			//or their positioned either
 			if (elementRenderer.coreStyle.position != relative)
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
@@ -171,6 +183,9 @@ class BodyCoreStyle extends ContainerCoreStyle
 					addedPositionedY += elementRenderer.bounds.y;
 				}
 			}
+			//relative positioned elements always use their bounds, as the relative
+			//offset is only applied at render time and isn't used in the bounds
+			//computation
 			else
 			{
 				addedPositionedX += elementRenderer.bounds.x;
@@ -179,10 +194,10 @@ class BodyCoreStyle extends ContainerCoreStyle
 			
 		}
 		
+		//for its child of the element
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
 			
 			child.globalOrigin = {
 				x: addedX,
@@ -194,7 +209,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 				y : addedPositionedY
 			}
 			
-			
+			//call the method recursively if the child has children itself
 			if (child.hasChildNodes() == true)
 			{
 				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
