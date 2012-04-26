@@ -56,6 +56,11 @@ class MenuListViewText extends ListViewBase
 	{
 		_index = 0;
 		
+		//init left target values
+		_menuItem0LeftTarget = 0;
+		_menuItem1LeftTarget = 0;
+		_menuItem2LeftTarget = 0;
+
 		super();
 		//MenuListViewStyle.setListStyle(node);
 		MenuListViewStyle.setMenuStyle(node);
@@ -66,6 +71,82 @@ class MenuListViewText extends ListViewBase
 		//Lib.window.onresize = onResizeCallback;
 	}
 	
+	/**
+	 * update view
+	 */
+	override private function updateView():Void
+	{
+		//_index = 0;
+		for (field in Reflect.fields(_data))
+		{
+			// build cell
+			var cell:CellBase = createCell();
+			
+			// set cell data
+			cell.data = Reflect.field(_data, field);
+			
+			// set mouseUp callback
+			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			
+			// push created cell to _cells
+			_cells.push(cell);
+
+			// add cell to list
+			node.appendChild(cell.node);
+			
+		}
+		
+		// if loader is attached to to list container, detach it
+		if (_listBottomLoader.parentNode != null)
+		{
+			node.removeChild(_listBottomLoader);
+		}
+		// add loader at the bottom of the screen if there is still data to load
+		if(displayListBottomLoader == true)
+		{
+			node.appendChild(_listBottomLoader);
+		}
+		
+		// reset width attributes
+		computeMenuItemsWidth();
+		
+		// set index to its initial value 
+		//_index = 1;
+		_index = 1;
+		onResizeCallback();
+		
+		// reset position attributes
+		//computeMenuItemsLeftPos();
+	}	
+
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	override private function createCell():CellBase
+	{
+		//var style:HtmlDom->Void = setCellsStyle();
+		var cell:MenuCellText = new MenuCellText();
+		return cell;
+	}
+	
+	/**
+	 * onListItemSelected callback
+	 * @param	cellData
+	 */
+	override public function onListItemSelectedCallback(cellData:CellData)
+	{
+		index = cellData.id;
+		//_index = cellData.id;
+
+		// reset left positions
+		//computeMenuItemsLeftPos();
+
+		super.onListItemSelectedCallback(cellData);
+	}
+
 	/**
 	 * index getter
 	 * 
@@ -88,69 +169,27 @@ class MenuListViewText extends ListViewBase
 		_index = v;
 		
 		// Compute menu items left target
-		computeMenuItemLeftTarget();
+		computeMenuItemsLeftTarget(_index);
 		
 		// menu item 0 tween
 		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
 		// launch the tween
-		tween0.start();
+		//tween0.start();
 
 		// menu item 1 tween
 		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
 		// launch the tween
-		tween1.start();
+		//tween1.start();
 
 		// menu item 0 tween
 		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
 		// launch the tween
-		tween2.start();
+		//tween2.start();
 
 		return v;
-	}
-	
-	/**
-	 * Compute menu items left target
-	 */
-	private function computeMenuItemLeftTarget():Void
-	{
-		// depending on the index value, set each menu item left end position
-		switch(_index)
-		{
-			// google+ menu style
-			//case 0:
-				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				//_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
-				//_menuItem2LeftTarget = Lib.window.innerWidth;
-			//case 1:
-				//_menuItem0LeftTarget = 0;
-				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				//_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
-			//case 2:
-				//_menuItem0LeftTarget = -_menuItem0Width;
-				//_menuItem1LeftTarget = 0;
-				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			// android market style
-			case 0:
-				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
-				_menuItem2LeftTarget = Std.int(3 * Lib.window.innerWidth / 2);
-			case 1:
-				_menuItem0LeftTarget = Std.int(-(_menuItem0Width - Constants.MENU_LATERAL_OFFSET));
-				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
-			case 2:
-				_menuItem0LeftTarget = Std.int( -Lib.window.innerWidth / 2);
-				_menuItem1LeftTarget = Std.int(-(_menuItem1Width - Constants.MENU_LATERAL_OFFSET));
-				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			default:
-				_menuItem0LeftTarget = 0;
-				_menuItem1LeftTarget = 0;
-				_menuItem2LeftTarget = 0;
-		}
-
 	}
 	
 	/**
@@ -215,79 +254,63 @@ class MenuListViewText extends ListViewBase
 		_menuItem0LeftPos = _cells[0].node.offsetLeft;
 		_menuItem1LeftPos = _cells[1].node.offsetLeft;
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
+		Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos);
 	}
 	
 	/**
-	 * update view
-	 */
-	override private function updateView():Void
-	{
-		//_index = 0;
-		for (field in Reflect.fields(_data))
-		{
-			// build cell
-			var cell:CellBase = createCell();
-			
-			// set cell data
-			cell.data = Reflect.field(_data, field);
-			
-			// set mouseUp callback
-			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
-			
-			// push created cell to _cells
-			_cells.push(cell);
-
-			// add cell to list
-			node.appendChild(cell.node);
-			
-		}
-		
-		computeMenuItemsWidth();
-		// set index to its initial value 
-		//_index = 1;
-		index = 1;
-
-		
-		// if loader is attached to to list container, detach it
-		if (_listBottomLoader.parentNode != null)
-		{
-			node.removeChild(_listBottomLoader);
-		}
-		// add loader at the bottom of the screen if there is still data to load
-		if(displayListBottomLoader == true)
-		{
-			node.appendChild(_listBottomLoader);
-		}
-		
-		// reset width attributes
-		computeMenuItemsWidth();
-		// reset position attributes
-		computeMenuItemsLeftPos();
-	}	
-
-	/**
-	 * Creates a cell of the correct type
-	 * To be overriden in child classes
+	 * Compute menu items left target
 	 * 
-	 * @return
+	 * @param	targetIndex	the menu item which "should" be the new target. we don not know yet as scroll is not complete
 	 */
-	override private function createCell():CellBase
+	private function computeMenuItemsLeftTarget(targetIndex:Int):Void
 	{
-		//var style:HtmlDom->Void = setCellsStyle();
-		var cell:MenuCellText = new MenuCellText();
-		return cell;
+		// check is done so that index is always between 0 an 2
+		//if (targetIndex < 0)
+		//{
+			//targetIndex = 0;
+		//}
+		//else if (targetIndex > 2)
+		//{
+			//targetIndex = 2;
+		//}
+		
+		// depending on the index value, set each menu item left end position
+		switch(targetIndex)
+		{
+			// google+ menu style
+			//case 0:
+				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				//_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
+				//_menuItem2LeftTarget = Lib.window.innerWidth;
+			//case 1:
+				//_menuItem0LeftTarget = 0;
+				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				//_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
+			//case 2:
+				//_menuItem0LeftTarget = -_menuItem0Width;
+				//_menuItem1LeftTarget = 0;
+				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+			// android market style
+			case 0:
+				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
+				_menuItem2LeftTarget = Std.int(3 * Lib.window.innerWidth / 2);
+			case 1:
+				_menuItem0LeftTarget = Std.int(-(_menuItem0Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
+			case 2:
+				_menuItem0LeftTarget = Std.int( -Lib.window.innerWidth / 2);
+				_menuItem1LeftTarget = Std.int(-(_menuItem1Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+			// keep the same values
+			default:
+		}
+		
+		//Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
+
 	}
 	
-	/**
-	 * onListItemSelected callback
-	 * @param	cellData
-	 */
-	override public function onListItemSelectedCallback(cellData:CellData)
-	{
-		index = cellData.id;
-		super.onListItemSelectedCallback(cellData);
-	}
-
 	/**
 	 * move horizontally menu items
 	 * 
@@ -295,13 +318,30 @@ class MenuListViewText extends ListViewBase
 	 */
 	public function moveHorizontally(ratio:Float):Void
 	{
-		//computeMenuItemLeftTarget();
-		menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
-		menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
-		menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
-		//menuItem0Move(_menuItem0LeftPos + ((_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
-		//menuItem1Move(_menuItem1LeftPos + ((_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
-		//menuItem2Move(_menuItem2LeftPos + ((_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
+		Firebug.trace(ratio);
+		// depending on ratio sign, increment or decrement _index
+		// check is done so that index is always between 0 an 2
+		if (ratio > 0)
+		{
+			computeMenuItemsLeftTarget(Std.int(Math.max(_index - 1, 0)));
+		}
+		else if (ratio < 0)
+		{
+			computeMenuItemsLeftTarget(Std.int(Math.min(_index + 1, 2)));
+		}
+		
+		//computeMenuItemsLeftTarget();
+		//menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
+		//menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
+		//menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
+		//menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
+		//menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
+		//menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
+		menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
+		menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
+		menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
+		//Firebug.trace(_menuItem0LeftPos + (-(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
+		//Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos );
 	}
 	
 	/**
@@ -309,33 +349,41 @@ class MenuListViewText extends ListViewBase
 	 * 
 	 * @param	Xoffset
 	 */
-	public function horizontalUp(listIndex:Int):Void
+	/*public function horizontalUp(listIndex:Int):Void
 	{
 		// set index value to launch setter
 		index = listIndex;
-	}
+	}*/
 	
 	/**
 	 * swippable view horizontal tween end callback
 	 * 
-	 * @param	e
+	 * @param	newIndex	the new index value
 	 */
-    public function horizontalTweenEnd(ratio:Float):Void
+    //public function horizontalTweenEnd(ratio:Float):Void
+    public function horizontalTweenEnd(newIndex:Int):Void
 	{
+		//Firebug.trace("horizontalTweenEnd");
+		Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
+		_index = newIndex;
 		//moveHorizontally(ratio);
 		computeMenuItemsLeftPos();
+		//computeMenuItemsLeftTarget(_index);
 	}
 	
 	/**
 	 * on rezize callback
 	 */
-	public function onResizeCallback(event:Event):Void
+	//public function onResizeCallback(event:Event):Void
+	public function onResizeCallback():Void
 	{
 		// reset lists position
-		computeMenuItemLeftTarget();
+		computeMenuItemsLeftTarget(_index);
 		menuItem0Move(_menuItem0LeftTarget);
 		menuItem1Move(_menuItem1LeftTarget);
 		menuItem2Move(_menuItem2LeftTarget);
+		// reset left positions
+		computeMenuItemsLeftPos();
 	}
 	
 

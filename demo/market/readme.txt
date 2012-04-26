@@ -202,6 +202,7 @@ Feedback market Pol & Alex 24/04/2012
 Scroll swippable view
  => scroll horizontal a ameliorer (cf. Android Market)
  => release scroll vertical basé sur l'acceleration
+ => cellules clickées pendant le scroll
 
 Pol:
  => tile header
@@ -211,15 +212,15 @@ Pol:
 
 Menu:
  => police à changer:
-     => donner la police à pol
-     => enlever le gras
+     => donner la police à pol => OK
+     => enlever le gras => OK
  => copier le menu d'android market
      => déplacement
      => menu latéraux
        => position
        => ombre
- => couleur du bouton clické à retirer
- => bug release menu
+ => couleur du bouton clické à retirer => OK: propriétés css non-génériques utilisées
+ => bug release menu => OK
 
 
 Créer une Home page contenant les icônes de chaque flux rss

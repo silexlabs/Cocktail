@@ -1,5 +1,6 @@
 package org.intermedia.view;
 
+import haxe.Timer;
 import js.Lib;
 import org.intermedia.view.Constants;
 import feffects.Tween;
@@ -17,6 +18,7 @@ class Scroll2D
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
 	static inline var VERTICAL_TWEEN_DELTA:Int = 100;
+	static inline var TIME_DELTA:Int = 100;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -56,6 +58,9 @@ class Scroll2D
 	
 	// vertical tween end
 	private var _verticalTween:Tween;
+	
+	// acceleration computing timer
+	private var _timer:Timer;
 	
 	public function new(scrollType:ScrollType) 
 	{
@@ -179,6 +184,7 @@ class Scroll2D
 				else
 				{
 					_direction = Direction.vertical;
+					_timer = Timer.delay(computeAcceleration, TIME_DELTA);
 				}
 			}
 		}
@@ -395,8 +401,39 @@ class Scroll2D
 			_verticalTween.stop();
 		}
 	}*/
-
 	
+	private var _previousY:Int;
+	private var _previousSpeed:Float;
+	
+	/**
+	 * Computes instantaneous speed and acceleration
+	 * 
+	 * @return
+	 */
+	//private function computeAcceleration():Float
+	private function computeAcceleration():Void
+	{
+		var speed:Float = deriv(_previousY, _offset.y);
+		var acceleration:Float = deriv(_previousSpeed, speed);
+		_previousY = _offset.y;
+		_previousSpeed = speed;
+		trace(speed + ", " + acceleration);
+		// call itself
+		_timer = Timer.delay(computeAcceleration, TIME_DELTA);
+		//return acceleration;
+	}
+	
+	/**
+	 * Derivates 2 values based on time
+	 * 
+	 * @param	a
+	 * @param	b
+	 * @return
+	 */
+	private function deriv(a:Float, b:Float):Float
+	{
+		return (b - a) / TIME_DELTA;
+	}
 }
 
 typedef Coordinate = {
