@@ -48,17 +48,23 @@ class ElementRenderer extends Node
 {
 	/**
 	 * The bounds of the element renderer, relative to its
-	 * formatting context root
+	 * containing block
 	 */
 	private var _bounds:RectangleData;
 	public var bounds(get_bounds, set_bounds):RectangleData;
 	
-	//TODO : maybe should be containing block bounds instead ?
+	//TODO : is actually global coord of containing block, should
+	//also have global coord of first positioned ancestor where applicable ?
+	//should store ref to containing block and/or first positioned ancestor ?
 	private var _globalOrigin:PointData;
 	public var globalOrigin(get_globalOrigin, set_globalOrigin):PointData;
 	
 	private var _positionedOrigin:PointData;
 	public var positionedOrigin(get_positionedOrigin, set_positionedOrigin):PointData;
+	
+	private var _globalPositionnedOrigin:PointData;
+	public var globalPositionnedOrigin(get_globalPositionnedOrigin, set_globalPositionnedOrigin):PointData;
+	
 	
 	/**
 	 * A reference to the Style which instantiated
@@ -103,6 +109,11 @@ class ElementRenderer extends Node
 		}
 		
 		_positionedOrigin = {
+			x:0.0,
+			y:0.0
+		}
+		
+		_globalPositionnedOrigin = {
 			x:0.0,
 			y:0.0
 		}
@@ -289,5 +300,15 @@ class ElementRenderer extends Node
 	private function set_positionedOrigin(value:PointData):PointData
 	{
 		return _positionedOrigin = value;
+	}
+	
+	private function get_globalPositionnedOrigin():PointData 
+	{
+		return _globalPositionnedOrigin;
+	}
+	
+	private function set_globalPositionnedOrigin(value:PointData):PointData 
+	{
+		return _globalPositionnedOrigin = value;
 	}
 }

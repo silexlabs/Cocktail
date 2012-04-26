@@ -109,20 +109,18 @@ class BodyCoreStyle extends ContainerCoreStyle
 		}
 		
 		layout(windowData, windowData, lastPositionedHTMLElementData, fontMetrics, null, null);
-		setGlobalOrigins(_elementRenderer, _computedStyle.marginLeft, _computedStyle.marginTop);
+		setGlobalOrigins(_elementRenderer,0,0, 0,0);
 	}
 	
 	//TODO : there is still a problem with body margin. Should body child have the margins of the body
 	//in their bounds ?
-	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float):Void
+	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
 			//TODO : should be either bounds or static position ?
 			//add a method to return the right origin ?
-			addedX += elementRenderer.bounds.x;
-			addedY += elementRenderer.bounds.y;
-			
+		
 			if (elementRenderer.isPositioned() == true)
 			{
 				//TODO : don't do if uses static position
@@ -130,11 +128,53 @@ class BodyCoreStyle extends ContainerCoreStyle
 				{
 					addedX += elementRenderer.positionedOrigin.x;
 				}
+				else
+				{
+					addedX += elementRenderer.bounds.x;
+				}
+				
 				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
 					addedY += elementRenderer.positionedOrigin.y;
 				}
-				
+				else
+				{
+					addedY += elementRenderer.bounds.y;
+				}
+			}
+			else
+			{
+				addedX += elementRenderer.bounds.x;
+				addedY += elementRenderer.bounds.y;
+			}
+		}
+		
+		if (elementRenderer.isPositioned() == true)
+		{
+			if (elementRenderer.coreStyle.position != relative)
+			{
+				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+				{
+					addedPositionedX += elementRenderer.positionedOrigin.x;
+				}
+				else
+				{
+					addedPositionedX += elementRenderer.bounds.x;
+				}
+				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				{
+					addedPositionedY += elementRenderer.positionedOrigin.y;
+					
+				}
+				else
+				{
+					addedPositionedY += elementRenderer.bounds.y;
+				}
+			}
+			else
+			{
+				addedPositionedX += elementRenderer.bounds.x;
+				addedPositionedY += elementRenderer.bounds.y;
 			}
 			
 		}
@@ -143,18 +183,20 @@ class BodyCoreStyle extends ContainerCoreStyle
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
+			
 			child.globalOrigin = {
 				x: addedX,
 				y : addedY
 			}
 			
-			//child.positionedOrigin.x += addedX;
-			//child.positionedOrigin.y += addedY;
-
+			child.globalPositionnedOrigin = {
+				x: addedPositionedX,
+				y : addedPositionedY
+			}
 			
 			if (child.hasChildNodes() == true)
 			{
-				setGlobalOrigins(child, addedX, addedY);
+				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 			}
 		}
 	}
