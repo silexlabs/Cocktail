@@ -263,13 +263,13 @@ class ContainerCoreStyle extends CoreStyle
 		childLastPositionedHTMLElementData.data = getPositionedHTMLElementData();
 		
 		//position each stored children
-		for (i in 0...childLastPositionedHTMLElementData.children.length)
+		for (i in 0...childLastPositionedHTMLElementData.elements.length)
 		{
-			var positionedHTMLElementData:PositionedElementData = childLastPositionedHTMLElementData.children[i];
+			var element:ElementRenderer = childLastPositionedHTMLElementData.elements[i];
 
 			//position the child HTMLElement's ElementRenderer which set its x and y bounds in the space of this HTMLElement's
 			//formatting context
-			positionedHTMLElementData.element.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData, positionedHTMLElementData.staticPosition);
+			element.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData);
 			
 			//This container might establish a new formatting context, for instance if it is absolute,
 			//in this case, the positioned children, whose bounds are defined relative to their nearest block
@@ -279,37 +279,39 @@ class ContainerCoreStyle extends CoreStyle
 			//their bounds are also defined in this ancestor block box space.
 			//It isn't applied if the positioned children use their static position as their bounds are already relative to their
 			//first ancestor block box
+			//
+			//TODO : check if element is not passed by value
 			if (establishesNewFormattingContext() == false)
 			{
 				//TODO : this bit should go into BoxPositioner
-				var childStyle:CoreStyle = positionedHTMLElementData.element.coreStyle;
+				var childStyle:CoreStyle = element.coreStyle;
 				
 				if (childStyle.computedStyle.position != fixed)
 				{
 					if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.y += _elementRenderer.bounds.y;
+						element.positionedOrigin.y += _elementRenderer.bounds.y;
 					}
 					if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.x += _elementRenderer.bounds.x;
+						element.positionedOrigin.x += _elementRenderer.bounds.x;
 					}
 				}
 			}
 			else
 			{
 				//TODO : this bit should go into BoxPositioner
-				var childStyle:CoreStyle = positionedHTMLElementData.element.coreStyle;
+				var childStyle:CoreStyle = element.coreStyle;
 				
 				if (childStyle.computedStyle.position != fixed)
 				{
 					if (childStyle.top == PositionOffset.cssAuto && childStyle.bottom == PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.y += _computedStyle.marginTop;
+						element.positionedOrigin.y += _computedStyle.marginTop;
 					}
 					if (childStyle.left == PositionOffset.cssAuto && childStyle.right == PositionOffset.cssAuto)
 					{
-						positionedHTMLElementData.element.positionedOrigin.x +=  _computedStyle.marginLeft;
+						element.positionedOrigin.x +=  _computedStyle.marginLeft;
 					}
 				}
 			}
@@ -656,7 +658,7 @@ class ContainerCoreStyle extends CoreStyle
 		{
 			childLastPositionedHTMLElementData = {
 				data: getContainerHTMLElementData(),
-				children: new Array<PositionedElementData>()
+				elements: new Array<ElementRenderer>()
 			}
 		}
 		else

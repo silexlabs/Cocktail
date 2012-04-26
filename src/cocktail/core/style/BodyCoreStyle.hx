@@ -104,7 +104,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 		
 		//the first positioned parent of the body is always the viewport					
 		var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
-			children: new Array<PositionedElementData>(),
+			elements: new Array<ElementRenderer>(),
 			data:windowData
 		}
 		

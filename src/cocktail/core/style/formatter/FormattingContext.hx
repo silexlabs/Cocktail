@@ -113,17 +113,13 @@ class FormattingContext
 	 * Return the static position of an element renderer, the position it 
 	 * would have had if it were in flow
 	 * 
-	 * TODO : static position is wrong in inline formatting context, buf with layOutLastLine ?
-	 * 
-	 * TODO : this is really messy, this should be re-written with the static element
-	 * passed to the layout method
+	 * TODO : in inline formatting context, static position is set on the line
+	 * box of the absolute element, should also add it to the bounds of the element
+	 * in doFormat
 	 */
-	public function getStaticPosition(element:ElementRenderer):PointData
+	public function setStaticPosition(element:ElementRenderer):Void
 	{
 		doFormat(element);
-		var x:Float = element.bounds.x;
-		var y:Float = element.bounds.y;
-		return {x:x, y:y};
 	}
 	
 	/**
