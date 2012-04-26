@@ -76,22 +76,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		
 	}
-	
-	/**
-	 * When the element requesting its static position in an inline formatting
-	 * context, return the bound of its first line box, as the element is an
-	 * absolute element which generate only one line box
-	 * 
-	 * TODO : messy should the elementRenderer process its bounds whenever its 
-	 * line boxes are set ?
-	 */
-	override public function getStaticPosition(element:ElementRenderer):PointData
-	{
-		doFormat(element);
-		var x:Float = element.lineBoxes[0].bounds.x;
-		var y:Float = element.lineBoxes[0].bounds.y;
-		return {x:x, y:y};
-	}
+
 	
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
 	{

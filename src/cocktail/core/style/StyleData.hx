@@ -1123,24 +1123,8 @@ import cocktail.core.renderer.TextRenderer;
 	 * positioned htmlElement.
 	 */
 	typedef LastPositionedHTMLElementData = {
-		var children:Array<PositionedElementData>;
+		var elements:Array<ElementRenderer>;
 		var data:ContainingHTMLElementData;
-	}
-	
-	/**
-	 * Holds a reference to the ElementRenderer of a
-	 * positioned htmlElement. The static position
-	 * is the x,y point where the ElementRenderer
-	 * would have been if its position style
-	 * had been 'static'.
-	 * 
-	 * It is used if left and right or
-	 * top and bottom styles are both
-	 * set to 'cssAuto'
-	 */
-	typedef PositionedElementData =  {
-		var element:ElementRenderer;
-		var staticPosition:PointData;
 	}
 	
 	/**
