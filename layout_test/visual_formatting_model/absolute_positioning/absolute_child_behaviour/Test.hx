@@ -13,7 +13,9 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-
+/**
+ * TODO : fail text outside of orange box
+ */
 class Test 
 {
 	public static function main()

@@ -13,10 +13,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : doesn't work because fixed is placed relative to its
- * nearest containing block instead of window
- */
 class Test 
 {
 	public static function main()

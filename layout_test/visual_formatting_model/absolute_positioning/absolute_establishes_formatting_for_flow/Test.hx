@@ -13,7 +13,9 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-
+/**
+ * TODO : fail because blue box not below orange box, because of body margin
+ */
 class Test 
 {
 	public static function main()
