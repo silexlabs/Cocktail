@@ -123,7 +123,7 @@ class ViewManager
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		_swippableListView.onHorizontalMove = _menu.moveHorizontally;
 		_swippableListView.onHorizontalUp = _menu.horizontalUp;
-		//_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
+		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
 		_applicationController.loadCellData(Feeds.FEED_1.url);

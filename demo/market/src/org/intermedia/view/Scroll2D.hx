@@ -49,7 +49,7 @@ class Scroll2D
 	public var onHorizontalTween:Int->Void;
 	
 	// horizontal tween end
-	//public var onHorizontalTweenEnd:Void->Void;
+	public var onHorizontalTweenEnd:Int->Void;
 	
 	// horizontal tween
 	private var _horizontalTween:Tween;
@@ -105,8 +105,19 @@ class Scroll2D
 	 */
 	public function onDownCallback(event:Dynamic):Void
 	{
-		stopTweens();
 		// stop all tweens
+		//stopTweens();
+
+		// Stop all initialised & running tweens
+		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
+		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
+		{
+			_horizontalTween.pause();
+		}
+		if ( (_verticalTween != null) && _verticalTween.isPlaying)
+		{
+			_verticalTween.stop();
+		}
 		
 		// set onMouseMove & onMouseUp callbacks
 		//onMouseMove = onMoveCallback;
@@ -279,9 +290,9 @@ class Scroll2D
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
 		// create the tween
-        _horizontalTween = new Tween( -xOrigin, -xTarget, 600, Quint.easeOut );
-		_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
-		//_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
+        _horizontalTween = new Tween( -xOrigin, -xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
+		//_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
+		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
         // launch the tween
         _horizontalTween.start();
 	}
@@ -320,10 +331,10 @@ class Scroll2D
 	 */
     private function horizontalTweenEnd(e : Float )
 	{
-		/*if (onHorizontalTweenEnd != null)
+		if (onHorizontalTweenEnd != null)
 		{
-			onHorizontalTweenEnd();
-		}*/
+			onHorizontalTweenEnd(Std.int(e));
+		}
 	}
 	
 	/**
@@ -372,7 +383,7 @@ class Scroll2D
 	/**
 	 * Stop all initialised & running tweens
 	 */
-	private function stopTweens():Void
+	/*private function stopTweens():Void
 	{
 		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
 		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
@@ -383,7 +394,7 @@ class Scroll2D
 		{
 			_verticalTween.stop();
 		}
-	}
+	}*/
 
 	
 }

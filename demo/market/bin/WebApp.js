@@ -2211,7 +2211,7 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(node) {
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
 	node.style.height = Std.string(43) + "px";
-	node.style.backgroundImage = "url(" + "assets/headerGrey.jpg" + ")";
+	node.style.backgroundImage = "url(" + "" + ")";
 }
 org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(node) {
 	node.style.position = "static";
@@ -2306,7 +2306,7 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 		org.intermedia.view.HeaderStyle.setHeaderStyle(this.node);
 		this._image = js.Lib.document.createElement("img");
 		org.intermedia.view.HeaderStyle.setThumbImageStyle(this._image);
-		this._image.src = "assets/rss-icon.png";
+		this._image.src = "";
 		this.node.appendChild(this._image);
 		this._titleTextElement = js.Lib.document.createTextNode(this._data);
 		this._titleContainer = js.Lib.document.createElement("div");
@@ -2679,7 +2679,7 @@ org.intermedia.view.MenuListViewStyle.setMenuStyle = function(node) {
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "auto";
 	node.style.backgroundColor = null;
-	node.style.backgroundImage = "url(" + "assets/headerBlue.png" + ")";
+	node.style.backgroundImage = "url(" + "" + ")";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
 }
@@ -2727,13 +2727,13 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,setIndex: function(v) {
 		this._index = v;
 		this.computeMenuItemLeftTarget();
-		var tween0 = new feffects.Tween(this._cells[0].node.offsetLeft,this._menuItem0LeftTarget,600,feffects.easing.Quint.easeOut);
+		var tween0 = new feffects.Tween(this._cells[0].node.offsetLeft,this._menuItem0LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween0.setTweenHandlers(this.menuItem0Move.$bind(this),this.menuItemMoveEnd.$bind(this));
 		tween0.start();
-		var tween1 = new feffects.Tween(this._cells[1].node.offsetLeft,this._menuItem1LeftTarget,600,feffects.easing.Quint.easeOut);
+		var tween1 = new feffects.Tween(this._cells[1].node.offsetLeft,this._menuItem1LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween1.setTweenHandlers(this.menuItem1Move.$bind(this),this.menuItemMoveEnd.$bind(this));
 		tween1.start();
-		var tween2 = new feffects.Tween(this._cells[2].node.offsetLeft,this._menuItem2LeftTarget,600,feffects.easing.Quint.easeOut);
+		var tween2 = new feffects.Tween(this._cells[2].node.offsetLeft,this._menuItem2LeftTarget,150,feffects.easing.Quint.easeOut);
 		tween2.setTweenHandlers(this.menuItem2Move.$bind(this),this.menuItemMoveEnd.$bind(this));
 		tween2.start();
 		return v;
@@ -2853,6 +2853,9 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,horizontalUp: function(listIndex) {
 		this.setIndex(listIndex);
 	}
+	,horizontalTweenEnd: function(ratio) {
+		this.computeMenuItemsLeftPos();
+	}
 	,onResizeCallback: function(event) {
 		this.computeMenuItemLeftTarget();
 		this.menuItem0Move(this._menuItem0LeftTarget);
@@ -2900,6 +2903,7 @@ org.intermedia.view.Scroll2D.prototype = {
 	,onVerticalScroll: null
 	,onHorizontalUp: null
 	,onHorizontalTween: null
+	,onHorizontalTweenEnd: null
 	,_horizontalTween: null
 	,_verticalTween: null
 	,touchHandler: function(event) {
@@ -2918,7 +2922,8 @@ org.intermedia.view.Scroll2D.prototype = {
 		}
 	}
 	,onDownCallback: function(event) {
-		this.stopTweens();
+		if(this._horizontalTween != null && this._horizontalTween.isPlaying) this._horizontalTween.pause();
+		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
 		this._initialPosition.x = event.touches[0].pageX;
 		this._initialPosition.y = event.touches[0].pageY;
 		if(this._scrollType == org.intermedia.view.ScrollType.horizontal) this._direction = org.intermedia.view.Direction.horizontal; else if(this._scrollType == org.intermedia.view.ScrollType.vertical) this._direction = org.intermedia.view.Direction.vertical; else this._direction = org.intermedia.view.Direction.notYetSet;
@@ -2956,8 +2961,8 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onHorizontalUp != null) this.onHorizontalUp(event,this._offset.x);
 	}
 	,horizontalReleaseTween: function(xOrigin,xTarget) {
-		this._horizontalTween = new feffects.Tween(-xOrigin,-xTarget,600,feffects.easing.Quint.easeOut);
-		this._horizontalTween.setTweenHandlers(this.onHorizontalTweenCallback.$bind(this),this.horizontalTweenEnd.$bind(this));
+		this._horizontalTween = new feffects.Tween(-xOrigin,-xTarget,150,feffects.easing.Quint.easeOut);
+		this._horizontalTween.setTweenHandlers(this.onHorizontalScrollCallback.$bind(this),this.horizontalTweenEnd.$bind(this));
 		this._horizontalTween.start();
 	}
 	,onHorizontalScrollCallback: function(xOffset) {
@@ -2967,6 +2972,7 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onHorizontalTween != null) this.onHorizontalTween(e | 0);
 	}
 	,horizontalTweenEnd: function(e) {
+		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd(e | 0);
 	}
 	,verticalReleaseTween: function() {
 		var verticalTweenEnd = 0;
@@ -2979,10 +2985,6 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onVerticalScroll != null) this.onVerticalScroll(e | 0);
 	}
 	,onVerticalTweenEnd: function(e) {
-	}
-	,stopTweens: function() {
-		if(this._horizontalTween != null && this._horizontalTween.isPlaying) this._horizontalTween.pause();
-		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
 	}
 	,__class__: org.intermedia.view.Scroll2D
 }
@@ -3045,7 +3047,8 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	this._moveHandler.onVerticalScroll = this.onVerticalScroll.$bind(this);
 	this._moveHandler.onHorizontalScroll = this.onHorizontalScrollCallback.$bind(this);
 	this._moveHandler.onHorizontalUp = this.onHorizontalUpCallback.$bind(this);
-	this._moveHandler.onHorizontalTween = this.onHorizontalTweenCallback.$bind(this);
+	this._moveHandler.onHorizontalTween = this.onHorizontalScrollCallback.$bind(this);
+	this._moveHandler.onHorizontalTweenEnd = this.onHorizontalTweenEndCallback.$bind(this);
 	this.addTouchEvents();
 };
 org.intermedia.view.SwippableListView.__name__ = ["org","intermedia","view","SwippableListView"];
@@ -3129,10 +3132,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	,onHorizontalScrollCallback: function(xOffset) {
 		var horizontalRatio = this.computeHorizontalRatio(xOffset);
 		this.node.scrollLeft = this._moveHandler.initialScrollPosition.x - xOffset;
-		if(this.onHorizontalMove != null && horizontalRatio != 0) this.onHorizontalMove(horizontalRatio);
+		if(this.node.scrollLeft > this.list0.node.offsetLeft && this.node.scrollLeft < this.list2.node.offsetLeft) {
+			if(this.onHorizontalMove != null && horizontalRatio != 0) this.onHorizontalMove(horizontalRatio);
+		}
 	}
-	,onHorizontalTweenCallback: function(xOffset) {
-		this.node.scrollLeft = this._moveHandler.initialScrollPosition.x - xOffset;
+	,onHorizontalTweenEndCallback: function(xOffset) {
+		var horizontalRatio = this.computeHorizontalRatio(xOffset);
+		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd(horizontalRatio);
 	}
 	,onVerticalScroll: function(yOffset) {
 		this._currentListView.node.scrollTop = this._moveHandler.initialScrollPosition.y - yOffset;
@@ -3153,7 +3159,6 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			}
 		} else this.setIndex(this.getIndex());
 		var horizontalRatio = this.computeHorizontalRatio(xOffset);
-		if(this.onHorizontalUp != null) this.onHorizontalUp(this._index);
 	}
 	,onScrollCallback: function(event) {
 	}
@@ -3175,9 +3180,9 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
 		this._moveHandler.touchHandler(event);
 	}
-	,computeHorizontalRatio: function(XOffset) {
+	,computeHorizontalRatio: function(xOffset) {
 		var ratio = 0;
-		if(js.Lib.window.innerHeight != 0) ratio = XOffset / js.Lib.window.innerHeight;
+		if(js.Lib.window.innerWidth != 0) ratio = xOffset / js.Lib.window.innerWidth;
 		return ratio;
 	}
 	,__class__: org.intermedia.view.SwippableListView
@@ -3291,6 +3296,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$_.loadCellData.$bind($_));
 		this._swippableListView.onHorizontalMove = ($_=this._menu,$_.moveHorizontally.$bind($_));
 		this._swippableListView.onHorizontalUp = ($_=this._menu,$_.horizontalUp.$bind($_));
+		this._swippableListView.onHorizontalTweenEnd = ($_=this._menu,$_.horizontalTweenEnd.$bind($_));
 		this._applicationController.loadCellData({ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url);
 		this._applicationController.loadCellData({ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url);
 		this._applicationController.loadCellData({ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url);
@@ -3506,11 +3512,13 @@ org.intermedia.view.CellThumbText1Style.CELL_TEXT_WIDTH_PERCENT = 60;
 org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 35;
 org.intermedia.view.Constants.HEADER_HOME_TITLE = "French Tech";
 org.intermedia.view.Constants.HEADER_DETAIL_TITLE = "Infos";
-org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "assets/headerGrey.jpg";
+org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "";
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
-org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "assets/headerBlue.png";
+org.intermedia.view.Constants.HEADER_IMAGE_URL = "";
+org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "";
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.2;
+org.intermedia.view.Constants.SWIP_HORIZONTAL_TWEEN_DELAY = 150;
 org.intermedia.view.Constants.LIST_TOP = 78;
 org.intermedia.view.Constants.LIST_BG_COLOR = "#CCCCCC";
 org.intermedia.view.Constants.CELL_BG_COLOR = "#FEFEFE";
@@ -3522,7 +3530,6 @@ org.intermedia.view.Constants.CELL_MAX_HEIGHT = 150;
 org.intermedia.view.Constants.CELL_MIN_WIDTH = 150;
 org.intermedia.view.Constants.CELL_THUMB_APPARITION_DELAY = 1500;
 org.intermedia.view.Constants.CELL_THUMB_TEXT_TITLE_LENGTH = 50;
-org.intermedia.view.HeaderView.IMAGE_URL = "assets/rss-icon.png";
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;

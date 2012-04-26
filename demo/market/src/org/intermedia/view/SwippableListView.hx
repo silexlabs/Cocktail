@@ -65,7 +65,7 @@ class SwippableListView extends ListViewBase
 	public var onHorizontalMove:Float->Void;
 	
 	// horizontal tween end
-	public var onHorizontalTweenEnd:Void->Void;
+	public var onHorizontalTweenEnd:Float->Void;
 	
 	// horizontal tween end
 	public var onHorizontalUp:Int->Void;
@@ -136,7 +136,9 @@ class SwippableListView extends ListViewBase
 		_moveHandler.onVerticalScroll = onVerticalScroll;
 		_moveHandler.onHorizontalScroll = onHorizontalScrollCallback;
 		_moveHandler.onHorizontalUp = onHorizontalUpCallback;
-		_moveHandler.onHorizontalTween = onHorizontalTweenCallback;
+		//_moveHandler.onHorizontalTween = onHorizontalTweenCallback;
+		_moveHandler.onHorizontalTween = onHorizontalScrollCallback;
+		_moveHandler.onHorizontalTweenEnd = onHorizontalTweenEndCallback;
 		
 		// js touch events handling
 		addTouchEvents();
@@ -291,11 +293,17 @@ class SwippableListView extends ListViewBase
 		//node.scrollLeft = XScroll;
 		node.scrollLeft = _moveHandler.initialScrollPosition.x - xOffset;
 		
-		// call onHorizontalMove callback
-		if (onHorizontalMove != null && horizontalRatio != 0)
+		// if swippableView is scrolled between the first list position or between the last list position, call onHorizontalMove
+		// done to scroll menu only when needed
+		if ( (node.scrollLeft > list0.node.offsetLeft) && (node.scrollLeft < list2.node.offsetLeft) )
 		{
-			onHorizontalMove(horizontalRatio);
+			// call onHorizontalMove callback
+			if (onHorizontalMove != null && horizontalRatio != 0)
+			{
+				onHorizontalMove(horizontalRatio);
+			}
 		}
+		
     }
 	
 	/**
@@ -304,10 +312,26 @@ class SwippableListView extends ListViewBase
 	 * @param	XScroll	new scroll position
 	 */
     //private function onHorizontalTweenCallback(xScroll:Int):Void
-    private function onHorizontalTweenCallback(xOffset:Int):Void
+    /*private function onHorizontalTweenCallback(xOffset:Int):Void
 	{
 		//node.scrollLeft = xScroll;
 		node.scrollLeft = _moveHandler.initialScrollPosition.x - xOffset;
+	}*/
+	
+	/**
+	 * Horizontal tween end callback
+	 * 
+	 * @param	XScroll	new scroll position
+	 */
+    private function onHorizontalTweenEndCallback(xOffset:Int):Void
+	{
+		// compute horizontal ratio
+		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
+
+		if (onHorizontalTweenEnd != null)
+		{
+			onHorizontalTweenEnd(horizontalRatio);
+		}
 	}
 	
 	/**
@@ -360,10 +384,10 @@ class SwippableListView extends ListViewBase
 		var horizontalRatio:Float = computeHorizontalRatio(xOffset);
 		
 		// if onHorizontalUp callback is defined, call it
-		if (onHorizontalUp != null)
-		{
-			onHorizontalUp(_index);
-		}
+		//if (onHorizontalUp != null)
+		//{
+			//onHorizontalUp(_index);
+		//}
 	}
 
 		
@@ -433,11 +457,11 @@ class SwippableListView extends ListViewBase
 	 * @param	XOffset
 	 * @return
 	 */
-	private function computeHorizontalRatio(XOffset:Int):Float
+	private function computeHorizontalRatio(xOffset:Int):Float
 	{
 		var ratio:Float = 0;
-		if (Lib.window.innerHeight != 0)
-			ratio = XOffset / Lib.window.innerHeight;
+		if (Lib.window.innerWidth != 0)
+			ratio = xOffset / Lib.window.innerWidth;
 		return ratio;
 
 	}
