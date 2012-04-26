@@ -194,6 +194,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 				y : addedPositionedY
 			}
 			
+			
 			if (child.hasChildNodes() == true)
 			{
 				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);

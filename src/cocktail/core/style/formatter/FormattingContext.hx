@@ -113,9 +113,8 @@ class FormattingContext
 	 * Return the static position of an element renderer, the position it 
 	 * would have had if it were in flow
 	 * 
-	 * TODO : in inline formatting context, static position is set on the line
-	 * box of the absolute element, should also add it to the bounds of the element
-	 * in doFormat
+	 * TODO : doesn't need a separate method for that ? Might happen
+	 * during regular formatting ?
 	 */
 	public function setStaticPosition(element:ElementRenderer):Void
 	{
