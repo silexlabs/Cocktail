@@ -111,7 +111,7 @@ class LayerRenderer
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
 		else if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == true)
 		{
-			//TODO
+			//TODO : render child layers
 			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
 			for (i in 0...lineBoxesChildren.length)
 			{
@@ -131,9 +131,7 @@ class LayerRenderer
 			}
 		}
 		
-		//TODO : will add wrong position for fixed elements, pass a relative offset to
-		//ElementRender.render, so that it can chose wether to apply the offset ?
-		//
+		
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
 		//its children

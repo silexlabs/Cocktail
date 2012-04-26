@@ -107,5 +107,5 @@ typedef FontMetricsData = {
 	 * the width of a space character for
 	 * a given font at a given size
 	 */
-	var spaceWidth:Int;
+	var spaceWidth:Float;
 }
