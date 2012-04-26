@@ -16,6 +16,8 @@ import js.Lib;
 /**
  * TODO : fail because of inline div not wrapped in anonymous block.
  * Works when removing the "p" element
+ * 
+ * TODO : slight difference in background because of line-height
  */
 class Test 
 {
