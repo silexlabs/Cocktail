@@ -36,7 +36,7 @@ import haxe.Timer;
 import haxe.Log;
 
 /**
- * This is the style implementation for HTMLElement which are also
+ * This is the style implementation for HTMLElements which are also
  * containers.
  * 
  * This HTMLElement can have children, and when laid out,
@@ -100,9 +100,9 @@ class ContainerCoreStyle extends CoreStyle
 		for (i in 0..._htmlElement.childNodes.length)
 		{
 			//only HTMLElement styles are computed, not Text as they have no style.
-			//When determining the formatting context to use, TextElement are always assumed
+			//When determining the formatting context to use, Text nodes are always assumed
 			//to be inline as text is always laid out on a line when rendered.
-			//Text use its parent HTMLElement's styles for rendering
+			//Text node use its parent HTMLElement's styles for rendering
 			if (_htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				var childHTMLElement:HTMLElement = cast(_htmlElement.childNodes[i]);
@@ -121,20 +121,19 @@ class ContainerCoreStyle extends CoreStyle
 		var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
 		
 		//get the computed font metrics of the parent HTMLElement. Those metrics
-		//are based on the font itself and the font size used
+		//are based on the font family and the font size used
 		var childrenContainingHTMLElementFontMetricsData:FontMetricsData = this.fontMetrics;
 		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children and to each of the children using it as first positioned ancestor
-		var childLastPositionedHTMLElementData:LastPositionedHTMLElementData;
-		
+		//
 		//if the HTMLElement is positioned, it becomes the last positioned HTMLElement for the children it
 		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned
 		//children will be stored and once this HTMLElement is laid out, it will position all those children.
 		//The layout of absolutely positioned children must happen once the dimensions of this HTMLElement are 
 		//known so that children can be positioned using the 'bottom' and 'right' styles which use the dimensions
 		//of the HTMLElement as reference
-		childLastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
+		var childLastPositionedHTMLElementData:LastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
 		
 		//flow all children and store their laid out position in the created child ElementRenderers, relative to the HTMLElement
 		//which started the children formatting context
@@ -188,7 +187,7 @@ class ContainerCoreStyle extends CoreStyle
 		var flowBoxRenderer:FlowBoxRenderer = cast(_elementRenderer);
 		
 		//first remove all the child that might have been added to the renderer
-		//if any, as this method can be called multiple, it prevents multiple
+		//if any, as this method can be called multiple time, it prevents multiple
 		//text renderers to be generated for the same Text node
 		//
 		//TODO : should Text node have explicit reference to TextRenderer, like
@@ -222,8 +221,8 @@ class ContainerCoreStyle extends CoreStyle
 		
 		//prompt the children formatting context, to format all the children
 		//ElementRenderer that were added to it. After this call, all the
-		//ElementRenderer have the right bounds, in the space of their formatting
-		// context
+		//ElementRenderer have the right bounds, in the space of their containing
+		//block (the HTMLElement which started the formatting context)
 		//
 		//This method is only called if a new formatting
 		//context was established by this HTMLElement,
@@ -238,6 +237,8 @@ class ContainerCoreStyle extends CoreStyle
 	
 	/**
 	 * Do position absolutely positioned descendant if this HTMLElement is positioned
+	 * 
+	 * TODO : shouldn't need 2 methods but needed to be overriden by BodyCoreStyle
 	 */
 	private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
@@ -253,9 +254,7 @@ class ContainerCoreStyle extends CoreStyle
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
 	 * 
-	 * TODO : update doc 
-	 * 
-	 * TODO : should position fixed element ? just for static position ?
+	 * TODO : update doc
 	 */
 	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
@@ -267,59 +266,11 @@ class ContainerCoreStyle extends CoreStyle
 		{
 			var element:ElementRenderer = childLastPositionedHTMLElementData.elements[i];
 
-			//position the child HTMLElement's ElementRenderer which set its x and y bounds in the space of this HTMLElement's
+			//position the child ElementRenderer which set its x and y positioned origin in the space of this HTMLElement's
 			//formatting context
 			element.coreStyle.positionElement(childLastPositionedHTMLElementData.data, viewportData);
-			
-			//This container might establish a new formatting context, for instance if it is absolute,
-			//in this case, the positioned children, whose bounds are defined relative to their nearest block
-			//box container, use the container as origin.
-			//Else, if this container does not establish a new formatting context, for instance if it is relative,
-			//it's bounds which are relative to its own first ancestor block box are added to it's positioned children, so that
-			//their bounds are also defined in this ancestor block box space.
-			//It isn't applied if the positioned children use their static position as their bounds are already relative to their
-			//first ancestor block box
-			//
-			//TODO : check if element is not passed by value
-			if (establishesNewFormattingContext() == false)
-			{
-				//TODO : this bit should go into BoxPositioner
-				var childStyle:CoreStyle = element.coreStyle;
-				
-				if (childStyle.computedStyle.position != fixed)
-				{
-					if (childStyle.top != PositionOffset.cssAuto || childStyle.bottom != PositionOffset.cssAuto)
-					{
-						element.positionedOrigin.y += _elementRenderer.bounds.y;
-					}
-					if (childStyle.left != PositionOffset.cssAuto || childStyle.right != PositionOffset.cssAuto)
-					{
-						element.positionedOrigin.x += _elementRenderer.bounds.x;
-					}
-				}
-			}
-			else
-			{
-				//TODO : this bit should go into BoxPositioner
-				var childStyle:CoreStyle = element.coreStyle;
-				
-				if (childStyle.computedStyle.position != fixed)
-				{
-					if (childStyle.top == PositionOffset.cssAuto && childStyle.bottom == PositionOffset.cssAuto)
-					{
-						element.positionedOrigin.y += _computedStyle.marginTop;
-					}
-					if (childStyle.left == PositionOffset.cssAuto && childStyle.right == PositionOffset.cssAuto)
-					{
-						element.positionedOrigin.x +=  _computedStyle.marginLeft;
-					}
-				}
-			}
 		}
 	}
-	
-	
-	
 	
 	/**
 	 * In certain cases, when the width of the HTMLElement is 'auto',

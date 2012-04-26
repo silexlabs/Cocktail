@@ -91,7 +91,7 @@ class BoxRenderer extends ElementRenderer
 				}
 				else
 				{
-					backgrounds[i].x = _globalOrigin.x + _positionedOrigin.x;
+					backgrounds[i].x = _globalPositionnedOrigin.x + _positionedOrigin.x;
 				}
 				
 				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
@@ -100,9 +100,8 @@ class BoxRenderer extends ElementRenderer
 				}
 				else
 				{
-					backgrounds[i].y = _positionedOrigin.y + _globalOrigin.y;
+					backgrounds[i].y = _globalPositionnedOrigin.y + _positionedOrigin.y;
 				}
-				
 			}
 			else
 			{

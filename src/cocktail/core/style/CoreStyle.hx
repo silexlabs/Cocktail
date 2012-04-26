@@ -69,7 +69,7 @@ import haxe.Timer;
  * TODO IMPORTANT : eventually, this class and its subclasses should be merged
  * with the classes of the renderer package as there is a lot of common code
  * between the 2. This way, we can follow the same pattern as webkit with :
-	 * A DOM tree with the HTMLElement
+	 * A DOM tree with the HTMLElement who ows the rendering tree
 	 * A rendering tree with the ElementRender classes merged with the CoreStyle classes, in
 	 * charge of the layout and of rendering themselves
 	 * A layer tree, in charge of rendering each layer of the rendering tree in the right order
@@ -790,7 +790,7 @@ class CoreStyle
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Int):Int
 	{
 		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
-		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right;
+		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
 	}
 	
 	/**
