@@ -548,6 +548,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			child.bounds.x = flowX;
+			
 			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
