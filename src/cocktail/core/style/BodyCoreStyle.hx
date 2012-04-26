@@ -180,7 +180,6 @@ class BodyCoreStyle extends ContainerCoreStyle
 				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
 					addedPositionedY += elementRenderer.positionedOrigin.y;
-					
 				}
 				else
 				{
