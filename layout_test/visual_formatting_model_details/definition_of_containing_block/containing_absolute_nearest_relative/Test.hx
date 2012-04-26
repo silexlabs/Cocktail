@@ -23,7 +23,7 @@ class Test
 	public function new()
 	{
 		//should add black border
-		var test = '<div><p>Test passes if the blue box is in the upper-right corner of the black box.</p>';
+		var test = '<div>';
 		test += '<div style="position:relative; top:0; margin:50px;">';
 		test += '<div style="height:1in; width:1in; margin:50px;">';
 		test += '<div style="background-color:blue; height:1in; width:1in; position:absolute; right:0; top:0;"></div>';

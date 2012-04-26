@@ -14,7 +14,8 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because div is not wrapped in anonymous block
+ * TODO : fail because div is not wrapped in anonymous block. Works
+ * withour the "p" element
  */
 class Test 
 {
