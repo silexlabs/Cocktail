@@ -15,7 +15,7 @@ import js.Lib;
 
 /**
  * TODO : fail because div should be inline and other elements are not wrapped
- * in anonymous block
+ * in anonymous block. Works when wrapping spans in a div
  */
 class Test 
 {

@@ -44,8 +44,8 @@ Test = function(p) {
 	var test = "<div><p>Test passes if the letter \"a\" is below the blue line and the letter \"b\" is above.</p>";
 	test += "<div>";
 	test += "<div style=\"position:relative; top:24px; width:200px; height:2px; left:0; background-color:blue;\"></div>";
-	test += "<span style=\"position:relative; top:25px;\">a</span>";
-	test += "<span>b</span>";
+	test += "<div><span style=\"position:relative; top:25px;\">a</span>";
+	test += "<span>b</span></div>";
 	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
 }

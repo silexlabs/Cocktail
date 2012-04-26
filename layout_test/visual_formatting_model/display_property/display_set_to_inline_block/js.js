@@ -41,7 +41,7 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if the \"Filler Text\" below is all on the same line.</p>";
+	var test = "<div>";
 	test += "<div>";
 	test += "Filler Text";
 	test += "<div style=\"display:inline-block; height:50px; width:150px;\">Filler Text Filler Text</div>";

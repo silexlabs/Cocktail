@@ -32,5 +32,6 @@ class Test
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
+		Lib.document.body.style.marginTop = "0";
 	}
 }

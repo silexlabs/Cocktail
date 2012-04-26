@@ -13,9 +13,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail because background is not under text
- */
 class Test 
 {
 	public static function main()

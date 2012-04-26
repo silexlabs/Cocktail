@@ -48,6 +48,7 @@ Test = function(p) {
 	test += "<div style=\"display:inline;\">Filler Text </div>";
 	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
+	js.Lib.document.body.style.marginTop = "0";
 }
 Test.__name__ = ["Test"];
 Test.main = function() {
