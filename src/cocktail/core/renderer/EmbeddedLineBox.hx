@@ -1,5 +1,6 @@
 package cocktail.core.renderer;
 import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
 
 /**
  * ...
@@ -19,12 +20,19 @@ class EmbeddedLineBox extends LineBox
 	
 	override private function get_leadedAscent():Float 
 	{
-		return _bounds.height;
+		return bounds.height;
 	}
 	
+	//TODO : messy ?
 	override public function render():Array<NativeElement>
 	{
-		_elementRenderer.bounds = _bounds;
 		return _elementRenderer.render();
+	}
+	
+	//TODO : messy ? return element renderer bounds, as embedded
+	//element only have one line box
+	override private function get_bounds():RectangleData
+	{
+		return _elementRenderer.bounds;
 	}
 }

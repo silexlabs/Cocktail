@@ -52,7 +52,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
-	
+		
 		//TODO : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
