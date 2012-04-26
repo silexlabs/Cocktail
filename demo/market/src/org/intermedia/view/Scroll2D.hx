@@ -37,7 +37,7 @@ class Scroll2D
 	private var _direction:Direction;
 	
 	// horizontal move callback, sending new scroll position & offset
-	public var onHorizontalScroll:Int->Int->Void;
+	public var onHorizontalScroll:Int->Void;
 	
 	// vertical move callback
 	public var onVerticalScroll:Int->Void;
@@ -201,7 +201,8 @@ class Scroll2D
 		event.preventDefault();
 		// call horizontal scroll callback with correct x position
 		_scrollPosition = {x: initialScrollPosition.x - _offset.x, y: initialScrollPosition.y }
-		onHorizontalScrollCallback(_scrollPosition.x);
+		//onHorizontalScrollCallback(_scrollPosition.x);
+		onHorizontalScrollCallback(_offset.x);
 	}
 
 	/**
@@ -278,8 +279,9 @@ class Scroll2D
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
 		// create the tween
-        _horizontalTween = new Tween( xOrigin, xTarget, 600, Quint.easeOut );
+        _horizontalTween = new Tween( -xOrigin, -xTarget, 600, Quint.easeOut );
 		_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
+		//_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
         // launch the tween
         _horizontalTween.start();
 	}
@@ -289,11 +291,12 @@ class Scroll2D
 	 * 
 	 * @param	e
 	 */
-    private function onHorizontalScrollCallback( e : Float )
+    private function onHorizontalScrollCallback( xOffset : Float )
     {
 		if (onHorizontalScroll != null)
 		{
-			onHorizontalScroll(Std.int(e),_offset.x);
+			//onHorizontalScroll(Std.int(e),_offset.x);
+			onHorizontalScroll(Std.int(xOffset));
 		}
     }
 
