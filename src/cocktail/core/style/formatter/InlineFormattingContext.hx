@@ -191,6 +191,19 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
+	 * In an inline foramtting context, the absolute elements generates
+	 * one line box to be formatted, its bounds are retrieved from this line box
+	 * 
+	 * TODO : should be done implicitely during formatting ? Should get_bounds
+	 * for positioned element return the bounds of the first line box ?
+	 */
+	override public function setStaticPosition(element:ElementRenderer):Void
+	{
+		doFormat(element);
+		element.bounds = element.lineBoxes[0].bounds;
+	}
+	
+	/**
 	 * Compute the bounds of a line box in the space
 	 * of the containing block establishing this formatting context
 	 * 
@@ -483,6 +496,7 @@ class InlineFormattingContext extends FormattingContext
 		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
 		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
+
 		
 		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
