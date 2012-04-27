@@ -89,7 +89,7 @@ class MenuListViewText extends ListViewBase
 			cell.data = Reflect.field(_data, field);
 			
 			// set mouseUp callback
-			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			//cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
 			_cells.push(cell);

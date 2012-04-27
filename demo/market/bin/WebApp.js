@@ -2731,20 +2731,14 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,_menuItem1LeftTarget: null
 	,_menuItem2LeftTarget: null
 	,updateView: function() {
-		var me = this;
 		var _g = 0, _g1 = Reflect.fields(this._data);
 		while(_g < _g1.length) {
 			var field = _g1[_g];
 			++_g;
-			var cell = [this.createCell()];
-			cell[0].setData(Reflect.field(this._data,field));
-			cell[0].node.onmouseup = (function(cell) {
-				return function(mouseEventData) {
-					me.onListItemSelectedCallback(cell[0].getData());
-				};
-			})(cell);
-			this._cells.push(cell[0]);
-			this.node.appendChild(cell[0].node);
+			var cell = this.createCell();
+			cell.setData(Reflect.field(this._data,field));
+			this._cells.push(cell);
+			this.node.appendChild(cell.node);
 		}
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
