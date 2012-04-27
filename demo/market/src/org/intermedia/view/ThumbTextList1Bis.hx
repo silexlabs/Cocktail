@@ -30,6 +30,7 @@ class ThumbTextList1Bis extends ThumbTextList1
 		//trace(homePageData);
 		//_homePageData = homePageData;
 		super(cellPerLine);
+		ThumbTextList1BisStyle.setListStyle(node);
 	}
 
 	
@@ -55,6 +56,28 @@ class ThumbTextList1Bis extends ThumbTextList1
 			node.appendChild(_cells[i].node);
 		}
 
+	}
+	
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	override private function createCell():CellBase
+	{
+		// init style model
+		var cellStyle = {
+			cell:CellThumbText1BisStyle.setCellStyle,
+			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
+			textBlock:CellThumbText1Style.setTextBlockStyle,
+			title:CellThumbText1Style.setTitleStyle,
+			author:CellThumbText1Style.setAuthorStyle,
+			line:CellThumbText1Style.setLineStyle
+		}
+		
+		var cell:CellThumbText1 = new CellThumbText1(_cellsPerLine, cellStyle);
+		return cell;
 	}
 	
 }

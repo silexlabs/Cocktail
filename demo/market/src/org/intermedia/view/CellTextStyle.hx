@@ -45,7 +45,7 @@ class CellTextStyle
 		node.style.width = Std.string(100 - 2*CELL_HORIZONTAL_SPACE) + "%";
 		
 		// apply border
-		CellStyle.addBorder(node);
+		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 		//node.style.borderStyle = "none none solid none";
 	}
 	

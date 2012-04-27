@@ -20,7 +20,7 @@ import js.Dom;
 
 class MenuCellTextStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = 5;
+	static inline var CELL_VERTICAL_SPACE:Int = 7;
 	static inline var CELL_HORIZONTAL_PADDING:Int = 5;
 	
 	/**
@@ -42,7 +42,7 @@ class MenuCellTextStyle
 		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
 		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
-		node.style.paddingBottom = "0px";
+		node.style.paddingBottom = Std.string(CELL_VERTICAL_SPACE) + "px";
 		
 		//node.style.width = Std.string(100/3) + "%";
 		node.style.width = "auto";

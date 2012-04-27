@@ -202,7 +202,7 @@ Feedback market Pol & Alex 24/04/2012
 Scroll swippable view
  => scroll horizontal a ameliorer (cf. Android Market)
  => release scroll vertical basé sur l'acceleration
- => cellules clickées pendant le scroll
+ => cellules clickées pendant le scroll => OK
 
 Pol:
  => tile header

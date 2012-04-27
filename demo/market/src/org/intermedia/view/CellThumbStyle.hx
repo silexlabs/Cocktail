@@ -39,7 +39,7 @@ class CellThumbStyle
 		node.style.overflowY = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(node);
+		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 	}
 	
 	

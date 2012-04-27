@@ -81,7 +81,7 @@ class HeaderStyle
 		node.style.fontFamily = 'Arial, sans-serif';
 
 		node.style.textAlign = "center";
-		node.style.paddingTop = "8px";
+		node.style.paddingTop = "10px";
 	
 		node.style.minWidth = "100%";
 		node.style.top = "0px";
