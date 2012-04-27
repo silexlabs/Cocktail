@@ -179,6 +179,7 @@ class ViewManager
 	//public function onCellDataLoaded(cellsData:Array<CellData>):Void
 	public function onCellDataLoaded(listData:ListData):Void
 	{
+		//trace("onCellDataLoaded");
 		// if no more data fetched, remove bottom loader
 		if (listData.cells.length == 0) _swippableListView.displayListBottomLoader = false;
 		
@@ -222,6 +223,7 @@ class ViewManager
 	 */
 	public function onStartLoading():Void
 	{
+		//trace("onStartLoading");
 		//_currentView.displayLoading = true;
 	}
 	
@@ -230,6 +232,7 @@ class ViewManager
 	 */
 	public function onLoadingError(error:Dynamic):Void
 	{
+		//trace("Load error: " + Std.string(error));
 		Firebug.trace("Load error: " + Std.string(error));
 	}
 	

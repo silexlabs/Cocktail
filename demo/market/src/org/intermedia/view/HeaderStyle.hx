@@ -35,7 +35,8 @@ class HeaderStyle
 		
 		node.style.minWidth = "100%";
 		node.style.width = "100%";
-		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
+		//node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
+		node.style.height = Std.string(Constants.HEADER_WITH_SHADOW_HEIGHT) + "px";
 		
 		// set to the forehead
 		//node.style.zIndex = 1000;
@@ -61,7 +62,8 @@ class HeaderStyle
 
 		node.style.minWidth = "100%";
 		node.style.width = "100%";
-		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
+		//node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
+		node.style.height = "58px";
 		
 	}
 
@@ -74,7 +76,7 @@ class HeaderStyle
 	{
 		node.style.position = "absolute";
 
-		node.style.color = '#454545';
+		node.style.color = Constants.HEADER_FONT_COLOR;
 		node.style.fontSize = "20px";
 		node.style.fontWeight = "bold";
 		node.style.fontStyle = "normal";

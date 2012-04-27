@@ -19,17 +19,21 @@ class Constants
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
-	public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
+	//public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
+	public static inline var HEADER_BG_IMAGE_URL:String = "assets/tile_french-tech.png";
 	//public static inline var HEADER_BG_IMAGE_URL:String = "";
+	public static inline var HEADER_FONT_COLOR:String = '#EEEEEE';
 	public static inline var HEADER_HEIGHT:Int = 43;
+	public static inline var HEADER_WITH_SHADOW_HEIGHT:Int = 43;
 	public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
 	//public static inline var HEADER_IMAGE_URL:String = "";
 	
 	// set header constants
-	public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
+	public static inline var MENU_BG_IMAGE_URL:String = "assets/tile_french-tech2.png";
 	//public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
 	public static inline var MENU_LATERAL_OFFSET:Int = 30;
+	public static inline var MENU_FONT_COLOR:String = '#AAAAAA';
 	
 	// set swippable view constants
 	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.1;	
@@ -39,6 +43,8 @@ class Constants
 	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;
 	public static inline var LIST_BG_GREY_COLOR:String = "#CCCCCC";
 	public static inline var LIST_BG_BLACK_COLOR:String = "#191919";
+	//public static inline var LIST_BG_GREY_COLOR:String = "";
+	//public static inline var LIST_BG_BLACK_COLOR:String = "";
 	
 	// set cells constants
 	//public static inline var CELL_STYLE_REFRESH_DELAY:Int = 600;

@@ -174,6 +174,7 @@ To Do Alex 30/03/2012
 -crop thumbs des thumblist & thumbtext list: utiliser des masques html => deniers ajustements à faire => OK
 -swippable view scroll non fonctionnel sur android & Firefox => OK
 
+
 To do Alex pre fine tuning:
 -loading screen n'apparait pas en mode offline
 	=> il apparait bien comme prévu, mais disparait au moment de la construction du DOM. Pour le voir, aller sur l'appli à partir d'un autre site, mais non en faisant un refresh
@@ -222,11 +223,25 @@ Menu:
  => couleur du bouton clické à retirer => OK: propriétés css non-génériques utilisées
  => bug release menu => OK
 
+ 
+Point market 27/04/2012
+=> auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
+=> menu cliquable a finaliser
+=> redimensionement
 
+App native:
+=> parsage du xml à améliorer car l'appli freeze au niveau du chargement de nouveaux flux
+  => utiliser XML.Fast
+  => parlser les Xml sur le server, transmission à l'appli en haxe remoting
+=> bottom loading screen non visible
+=> les flux locaux ne se chargent pas
+
+Dans une prochaine version
 Créer une Home page contenant les icônes de chaque flux rss
  => un click sur,le Header ramène à la homepage
 
 
+ 
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles

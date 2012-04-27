@@ -1,5 +1,6 @@
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
@@ -102,17 +103,19 @@ class ListViewBase extends ViewBase
 		}
 		
 		
-		// if list is not attached to body
-		//if(this.parentNode.parentNode != null)
-		//{
+		// if list is attached to body
+		if(node.parentNode.parentNode != null)
+		{
 			// if list content height is not filling the totality of the screen's height
 			//if (node.scrollHeight < Lib.window.innerHeight && node.scrollHeight != 0)
-			/*if (node.scrollHeight < Lib.window.innerHeight)
+			Firebug.trace(node.scrollHeight + ", " + Lib.window.innerHeight + ", " + Std.int(Lib.window.innerHeight - Constants.LIST_TOP ));
+			if (node.scrollHeight <= Lib.window.innerHeight)
 			{
+				Firebug.trace("request more data from " + id);
 				// request more data
 				onDataRequestCallback(id);
-			}*/
-		//}
+			}
+		}
 	}
 	
 	/**
