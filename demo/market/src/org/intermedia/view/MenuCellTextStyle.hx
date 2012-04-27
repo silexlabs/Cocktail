@@ -81,7 +81,7 @@ class MenuCellTextStyle
 		
 		node.style.verticalAlign = "middle";
 		
-		node.style.color = '#444444';
+		node.style.color = Constants.MENU_FONT_COLOR;
 		
 	}
 	

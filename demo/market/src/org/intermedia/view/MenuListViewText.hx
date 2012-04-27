@@ -250,7 +250,7 @@ class MenuListViewText extends ListViewBase
 		_menuItem0Width = _cells[0].node.clientWidth;
 		_menuItem1Width = _cells[1].node.clientWidth;
 		_menuItem2Width = _cells[2].node.clientWidth;
-		Firebug.trace(_menuItem0Width + "," + _menuItem1Width + "," + _menuItem2Width);
+		//Firebug.trace(_menuItem0Width + "," + _menuItem1Width + "," + _menuItem2Width);
 	}
 	
 	/**
@@ -261,7 +261,7 @@ class MenuListViewText extends ListViewBase
 		_menuItem0LeftPos = _cells[0].node.offsetLeft;
 		_menuItem1LeftPos = _cells[1].node.offsetLeft;
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
-		Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos);
+		//Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos);
 	}
 	
 	/**

@@ -40,12 +40,12 @@ class ApplicationModel
 	// online/offline switch
 	private var _online:Bool;
 
-	static inline var CELL_QTY:Int = 10;
+	static inline var CELL_QTY:Int = 15;
 
 	public function new() 
 	{
 		// init online switch
-		_online = false;
+		_online = true;
 		
 		// initialise private attributes
 		_loadedCellsData = new Array<CellData>();

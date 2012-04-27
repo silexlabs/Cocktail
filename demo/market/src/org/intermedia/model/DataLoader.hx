@@ -2,6 +2,7 @@ package org.intermedia.model;
 
 //import cocktail.Cocktail;
 //import org.intermedia.model.XmlLoader;
+import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -71,6 +72,7 @@ class DataLoader
 			}
 			_pageIndexHash.set(feed,pageIndex);
 			
+			Firebug.trace(feed + " => " + pageIndex);
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 			//haxe.Log.trace(fullUrl);
 			// handle page index

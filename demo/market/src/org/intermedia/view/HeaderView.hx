@@ -66,7 +66,7 @@ class HeaderView extends ViewBase
 		// if back button has to be displayed, remove thumb image, and attach backbutton to this
 		if (_displayBackButton)
 		{
-			node.removeChild(_image);
+			//node.removeChild(_image);
 			//node.appendChild(_backButtonContainer);
 			node.appendChild(_backButtonContainer);
 		}
@@ -77,7 +77,7 @@ class HeaderView extends ViewBase
 			{
 				//this.removeChild(_backButtonContainer);
 				node.removeChild(_backButtonContainer);
-				node.appendChild(_image);
+				//node.appendChild(_image);
 			}
 		}
 		return _displayBackButton;
@@ -92,10 +92,10 @@ class HeaderView extends ViewBase
 		HeaderStyle.setHeaderStyle(node);
 		
 		// build thumbnail and attach it
-		_image = cast Lib.document.createElement("img");
+		/*_image = cast Lib.document.createElement("img");
 		HeaderStyle.setThumbImageStyle(_image);
 		_image.src = Constants.HEADER_IMAGE_URL;
-		node.appendChild(_image);
+		node.appendChild(_image);*/
 		
 		// build title and attach it
 		_titleTextElement = Lib.document.createTextNode(_data);

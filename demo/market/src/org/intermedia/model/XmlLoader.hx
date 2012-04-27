@@ -76,6 +76,15 @@ class XmlLoader
 		{
 			onXmlError(error);
 		}
+		
+		//} catch( msg : String ) {
+		   //onXmlError("Error message : " + msg );
+		//} catch( errorCode : Int ) {
+		   //onXmlError("Error #"+errorCode);
+		//} catch( unknown : Dynamic ) {
+		   //onXmlError("Unknown exception : "+Std.string(unknown));
+		//}		
+		
 	}
 	
 	/**

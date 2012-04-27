@@ -1473,7 +1473,7 @@ org.intermedia.controller.ApplicationController.prototype = {
 }
 if(!org.intermedia.model) org.intermedia.model = {}
 org.intermedia.model.ApplicationModel = $hxClasses["org.intermedia.model.ApplicationModel"] = function() {
-	this._online = false;
+	this._online = true;
 	this._loadedCellsData = new Array();
 	this._loadedDetailData = new Array();
 	this._dataLoader = new org.intermedia.model.DataLoader(this._online);
@@ -1492,7 +1492,7 @@ org.intermedia.model.ApplicationModel.prototype = {
 		if(this._loadedCellsData.length == 0) {
 			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		}
-		this._dataLoader.loadCellData(feed,10,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
+		this._dataLoader.loadCellData(feed,15,this.onCellsDataLoadComplete.$bind(this),this.onModelDataLoadError);
 	}
 	,loadDetailData: function(cellData) {
 		if(this.onModelStartsLoading != null) this.onModelStartsLoading();
@@ -1572,6 +1572,7 @@ org.intermedia.model.DataLoader.prototype = {
 			var pageIndex = 1;
 			if(this._pageIndexHash.exists(feed)) pageIndex = this._pageIndexHash.get(feed) + 1;
 			this._pageIndexHash.set(feed,pageIndex);
+			haxe.Firebug.trace(feed + " => " + pageIndex,{ fileName : "DataLoader.hx", lineNumber : 75, className : "org.intermedia.model.DataLoader", methodName : "loadCellData"});
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 		} else if(feed == { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"}.url) fullUrl = "data/feed1.rss"; else if(feed == { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"}.url) fullUrl = "data/feed2.rss"; else if(feed == { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url) fullUrl = "data/feed3.rss";
 		var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,this.onCellsXmlLoaded.$bind(this),this.onLoadingError,feed);
@@ -2230,18 +2231,18 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(node) {
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
 	node.style.height = Std.string(43) + "px";
-	node.style.backgroundImage = "url(" + "assets/headerGrey.jpg" + ")";
+	node.style.backgroundImage = "url(" + "assets/tile_french-tech.png" + ")";
 }
 org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(node) {
 	node.style.position = "static";
 	node.style.display = "block";
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
-	node.style.height = Std.string(43) + "px";
+	node.style.height = "58px";
 }
 org.intermedia.view.HeaderStyle.setHeaderTextStyle = function(node) {
 	node.style.position = "absolute";
-	node.style.color = "#454545";
+	node.style.color = "#EEEEEE";
 	node.style.fontSize = "20px";
 	node.style.fontWeight = "bold";
 	node.style.fontStyle = "normal";
@@ -2312,21 +2313,11 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 	}
 	,setDisplayBackButton: function(v) {
 		this._displayBackButton = v;
-		if(this._displayBackButton) {
-			this.node.removeChild(this._image);
-			this.node.appendChild(this._backButtonContainer);
-		} else if(this._backButtonContainer.parentNode != null) {
-			this.node.removeChild(this._backButtonContainer);
-			this.node.appendChild(this._image);
-		}
+		if(this._displayBackButton) this.node.appendChild(this._backButtonContainer); else if(this._backButtonContainer.parentNode != null) this.node.removeChild(this._backButtonContainer);
 		return this._displayBackButton;
 	}
 	,buildView: function() {
 		org.intermedia.view.HeaderStyle.setHeaderStyle(this.node);
-		this._image = js.Lib.document.createElement("img");
-		org.intermedia.view.HeaderStyle.setThumbImageStyle(this._image);
-		this._image.src = "assets/rss-icon.png";
-		this.node.appendChild(this._image);
 		this._titleTextElement = js.Lib.document.createTextNode(this._data);
 		this._titleContainer = js.Lib.document.createElement("div");
 		this._titleContainer.appendChild(this._titleTextElement);
@@ -2497,6 +2488,13 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		}
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
+		if(this.node.parentNode.parentNode != null) {
+			haxe.Firebug.trace(this.node.scrollHeight + ", " + js.Lib.window.innerHeight + ", " + (js.Lib.window.innerHeight - 78 | 0),{ fileName : "ListViewBase.hx", lineNumber : 111, className : "org.intermedia.view.ListViewBase", methodName : "updateView"});
+			if(this.node.scrollHeight <= js.Lib.window.innerHeight) {
+				haxe.Firebug.trace("request more data from " + this.id,{ fileName : "ListViewBase.hx", lineNumber : 114, className : "org.intermedia.view.ListViewBase", methodName : "updateView"});
+				this.onDataRequestCallback(this.id);
+			}
+		}
 	}
 	,createCell: function() {
 		var cell = new org.intermedia.view.CellBase();
@@ -2661,7 +2659,7 @@ org.intermedia.view.MenuCellTextStyle.setCellTextStyle = function(node) {
 	node.style.textIndent = "0px";
 	node.style.whiteSpace = "normal";
 	node.style.verticalAlign = "middle";
-	node.style.color = "#444444";
+	node.style.color = "#AAAAAA";
 }
 org.intermedia.view.MenuCellTextStyle.prototype = {
 	__class__: org.intermedia.view.MenuCellTextStyle
@@ -2685,7 +2683,7 @@ org.intermedia.view.MenuListViewStyle.setMenuStyle = function(node) {
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "auto";
 	node.style.backgroundColor = null;
-	node.style.backgroundImage = "url(" + "assets/headerBlue.png" + ")";
+	node.style.backgroundImage = "url(" + "assets/tile_french-tech2.png" + ")";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
 }
@@ -2772,13 +2770,11 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		this._menuItem0Width = this._cells[0].node.clientWidth;
 		this._menuItem1Width = this._cells[1].node.clientWidth;
 		this._menuItem2Width = this._cells[2].node.clientWidth;
-		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 253, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
 	}
 	,computeMenuItemsLeftPos: function() {
 		this._menuItem0LeftPos = this._cells[0].node.offsetLeft;
 		this._menuItem1LeftPos = this._cells[1].node.offsetLeft;
 		this._menuItem2LeftPos = this._cells[2].node.offsetLeft;
-		haxe.Firebug.trace(this._menuItem0LeftPos + "," + this._menuItem1LeftPos + "," + this._menuItem2LeftPos,{ fileName : "MenuListViewText.hx", lineNumber : 264, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsLeftPos"});
 	}
 	,computeMenuItemsLeftTarget: function(targetIndex) {
 		switch(targetIndex) {
@@ -3310,7 +3306,7 @@ org.intermedia.view.ViewManager.prototype = {
 	,onStartLoading: function() {
 	}
 	,onLoadingError: function(error) {
-		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 233, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 236, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("French Tech");
@@ -3484,7 +3480,7 @@ feffects.Tween._aTweens = new haxe.FastList();
 feffects.Tween._aPaused = new haxe.FastList();
 feffects.Tween.INTERVAL = 10;
 js.Lib.onerror = null;
-org.intermedia.model.ApplicationModel.CELL_QTY = 10;
+org.intermedia.model.ApplicationModel.CELL_QTY = 15;
 org.intermedia.model.Feeds.FEED_1 = { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/"};
 org.intermedia.model.Feeds.FEED_2 = { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/"};
 org.intermedia.model.Feeds.FEED_3 = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"};
@@ -3497,12 +3493,15 @@ org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 34;
 org.intermedia.view.CellThumbText1Style.CELL_TOP_MARGIN_PERCENT = 8;
 org.intermedia.view.Constants.HEADER_HOME_TITLE = "French Tech";
 org.intermedia.view.Constants.HEADER_DETAIL_TITLE = "Infos";
-org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "assets/headerGrey.jpg";
+org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "assets/tile_french-tech.png";
+org.intermedia.view.Constants.HEADER_FONT_COLOR = "#EEEEEE";
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
+org.intermedia.view.Constants.HEADER_WITH_SHADOW_HEIGHT = 43;
 org.intermedia.view.Constants.HEADER_IMAGE_URL = "assets/rss-icon.png";
-org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "assets/headerBlue.png";
+org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "assets/tile_french-tech2.png";
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
 org.intermedia.view.Constants.MENU_LATERAL_OFFSET = 30;
+org.intermedia.view.Constants.MENU_FONT_COLOR = "#AAAAAA";
 org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.1;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_TWEEN_DELAY = 150;
 org.intermedia.view.Constants.LIST_TOP = 78;
