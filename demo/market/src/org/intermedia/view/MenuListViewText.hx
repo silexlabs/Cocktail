@@ -23,6 +23,9 @@ import feffects.easing.Quint;
 
 class MenuListViewText extends ListViewBase
 {
+	// bold font offset
+	static inline var BOLD_FONT_OFFSET:Int = 5;
+	
 	// menu index
 	private var _index:Int;
 	public var index(getIndex,setIndex):Int;
@@ -112,7 +115,7 @@ class MenuListViewText extends ListViewBase
 		
 		// set index to its initial value 
 		//_index = 1;
-		_index = 1;
+		index = 1;
 		onResizeCallback();
 		
 		// reset position attributes
@@ -136,16 +139,16 @@ class MenuListViewText extends ListViewBase
 	 * onListItemSelected callback
 	 * @param	cellData
 	 */
-	override public function onListItemSelectedCallback(cellData:CellData)
+	/*override public function onListItemSelectedCallback(cellData:CellData)
 	{
-		index = cellData.id;
+		//_index = cellData.id;
 		//_index = cellData.id;
 
 		// reset left positions
 		//computeMenuItemsLeftPos();
 
 		super.onListItemSelectedCallback(cellData);
-	}
+	}*/
 
 	/**
 	 * index getter
@@ -166,13 +169,17 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
+		_cells[_index].node.style.fontWeight = "normal";
+		_cells[v].node.style.fontWeight = "bold";
+
 		_index = v;
 		
+		
 		// Compute menu items left target
-		computeMenuItemsLeftTarget(_index);
+		//computeMenuItemsLeftTarget(_index);
 		
 		// menu item 0 tween
-		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
+		/*var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
 		// launch the tween
 		//tween0.start();
@@ -187,7 +194,7 @@ class MenuListViewText extends ListViewBase
 		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
 		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
 		// launch the tween
-		//tween2.start();
+		//tween2.start();*/
 
 		return v;
 	}
@@ -228,7 +235,7 @@ class MenuListViewText extends ListViewBase
 	 * 
 	 * @param	e
 	 */
-	private function menuItemMoveEnd(e:Float):Void
+	/*private function menuItemMoveEnd(e:Float):Void
 	{
 		// reset position attributes
 		computeMenuItemsLeftPos();
@@ -274,6 +281,8 @@ class MenuListViewText extends ListViewBase
 			//targetIndex = 2;
 		//}
 		
+		//computeMenuItemsWidth();
+		
 		// depending on the index value, set each menu item left end position
 		switch(targetIndex)
 		{
@@ -292,17 +301,17 @@ class MenuListViewText extends ListViewBase
 				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
 			// android market style
 			case 0:
-				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
+				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2 - BOLD_FONT_OFFSET/2);
 				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
 				_menuItem2LeftTarget = Std.int(3 * Lib.window.innerWidth / 2);
 			case 1:
 				_menuItem0LeftTarget = Std.int(-(_menuItem0Width - Constants.MENU_LATERAL_OFFSET));
-				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
+				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width - BOLD_FONT_OFFSET) / 2);
 				_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
 			case 2:
 				_menuItem0LeftTarget = Std.int( -Lib.window.innerWidth / 2);
 				_menuItem1LeftTarget = Std.int(-(_menuItem1Width - Constants.MENU_LATERAL_OFFSET));
-				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
+				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2 - BOLD_FONT_OFFSET/2);
 			// keep the same values
 			default:
 		}
@@ -365,7 +374,7 @@ class MenuListViewText extends ListViewBase
 	{
 		//Firebug.trace("horizontalTweenEnd");
 		Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
-		_index = newIndex;
+		index = newIndex;
 		//moveHorizontally(ratio);
 		computeMenuItemsLeftPos();
 		//computeMenuItemsLeftTarget(_index);

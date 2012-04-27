@@ -184,7 +184,7 @@ class Scroll2D
 				else
 				{
 					_direction = Direction.vertical;
-					_timer = Timer.delay(computeAcceleration, TIME_DELTA);
+					//_timer = Timer.delay(computeAcceleration, TIME_DELTA);
 				}
 			}
 		}
@@ -199,10 +199,10 @@ class Scroll2D
 		{
 			onVerticalMoveCallback(event);
 			// if horizontal tween has been initialised, resume it. Done to avoid horizontal scroll stopping between 2 lists
-			if ( (_horizontalTween != null) )
-			{
-				_horizontalTween.resume();
-			}
+			//if ( (_horizontalTween != null) )
+			//{
+				//_horizontalTween.resume();
+			//}
 		}
 		
 	}
@@ -417,9 +417,9 @@ class Scroll2D
 		var acceleration:Float = deriv(_previousSpeed, speed);
 		_previousY = _offset.y;
 		_previousSpeed = speed;
-		trace(speed + ", " + acceleration);
+		//trace(speed + ", " + acceleration);
 		// call itself
-		_timer = Timer.delay(computeAcceleration, TIME_DELTA);
+		//_timer = Timer.delay(computeAcceleration, TIME_DELTA);
 		//return acceleration;
 	}
 	

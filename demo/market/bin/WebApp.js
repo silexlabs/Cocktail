@@ -1807,14 +1807,10 @@ org.intermedia.view.CellStyle.setCellStyle = function(node,cellPerLine) {
 	node.style.verticalAlign = "top";
 	node.style.backgroundColor = "#FEFEFE";
 }
-org.intermedia.view.CellStyle.computeWidthPercentage = function(cellPerLine) {
+org.intermedia.view.CellStyle.computeWidthPercentage = function(cellPerLine,borderWidth) {
+	if(borderWidth == null) borderWidth = 0;
 	var cellWidthPercent = 100;
-	if(cellPerLine != 0) {
-		if(cellPerLine != 1) {
-			cellWidthPercent = 100 / cellPerLine;
-			cellWidthPercent -= 0.95;
-		}
-	}
+	if(cellPerLine != 0) cellWidthPercent = 100 / cellPerLine - borderWidth * 100 / js.Lib.window.innerWidth - borderWidth * 100 / (js.Lib.window.innerWidth * cellPerLine);
 	return cellWidthPercent;
 }
 org.intermedia.view.CellStyle.computeWidthPixels = function(cellPerLine) {
@@ -1822,8 +1818,9 @@ org.intermedia.view.CellStyle.computeWidthPixels = function(cellPerLine) {
 	if(cellPerLine != 0) cellWidthPixels = cellWidthPixels / cellPerLine | 0;
 	return cellWidthPixels;
 }
-org.intermedia.view.CellStyle.addBorder = function(node) {
-	node.style.margin = Std.string(1) + "px";
+org.intermedia.view.CellStyle.addBorder = function(node,borderWidth) {
+	node.style.marginTop = Std.string(borderWidth) + "px";
+	node.style.marginLeft = Std.string(borderWidth) + "px";
 }
 org.intermedia.view.CellStyle.removeBorder = function(node) {
 	node.style.margin = "0px";
@@ -1864,7 +1861,7 @@ org.intermedia.view.CellTextStyle.setCellStyle = function(node) {
 	node.style.paddingTop = Std.string(4) + "px";
 	node.style.paddingBottom = Std.string(4) + "px";
 	node.style.width = Std.string(96) + "%";
-	org.intermedia.view.CellStyle.addBorder(node);
+	org.intermedia.view.CellStyle.addBorder(node,1);
 }
 org.intermedia.view.CellTextStyle.setCellTextStyle = function(node) {
 	node.style.display = "inline";
@@ -1925,10 +1922,10 @@ org.intermedia.view.CellThumbStyle.setCellStyle = function(node,cellPerLine) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellStyle.setCellStyle(node,cellPerLine);
 	node.style.height = Std.string(90) + "px";
-	node.style.maxHeight = Std.string(150) + "px";
+	node.style.maxHeight = Std.string(160) + "px";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
-	org.intermedia.view.CellStyle.addBorder(node);
+	org.intermedia.view.CellStyle.addBorder(node,1);
 }
 org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle = function(node) {
 	node.style.width = Std.string(100) + "%";
@@ -1963,8 +1960,8 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellB
 		this.node.appendChild(cellTextBlockContainer);
 		if(this._data.title != "" && this._data.title != null) {
 			var text = this._data.title;
-			if(text.length > 50) {
-				text = text.substr(0,50);
+			if(text.length > 42) {
+				text = text.substr(0,42);
 				text = text.substr(0,text.lastIndexOf(" ")) + "...";
 			}
 			var textElement = js.Lib.document.createTextNode(text);
@@ -1979,27 +1976,49 @@ org.intermedia.view.CellThumbText1.prototype = $extend(org.intermedia.view.CellB
 	}
 	,__class__: org.intermedia.view.CellThumbText1
 });
+org.intermedia.view.CellThumbText1BisStyle = $hxClasses["org.intermedia.view.CellThumbText1BisStyle"] = function() { }
+org.intermedia.view.CellThumbText1BisStyle.__name__ = ["org","intermedia","view","CellThumbText1BisStyle"];
+org.intermedia.view.CellThumbText1BisStyle.setCellStyle = function(node,cellPerLine) {
+	if(cellPerLine == null) cellPerLine = 1;
+	org.intermedia.view.CellStyle.setCellStyle(node,cellPerLine);
+	var cellWidthPercent = org.intermedia.view.CellStyle.computeWidthPercentage(cellPerLine,4);
+	node.style.width = Std.string(cellWidthPercent) + "%";
+	node.style.height = Std.string(90) + "px";
+	node.style.maxHeight = Std.string(160) + "px";
+	node.style.overflowX = "hidden";
+	node.style.overflowY = "hidden";
+	org.intermedia.view.CellStyle.addBorder(node,4);
+}
+org.intermedia.view.CellThumbText1BisStyle.prototype = {
+	__class__: org.intermedia.view.CellThumbText1BisStyle
+}
 org.intermedia.view.CellThumbText1Style = $hxClasses["org.intermedia.view.CellThumbText1Style"] = function() { }
 org.intermedia.view.CellThumbText1Style.__name__ = ["org","intermedia","view","CellThumbText1Style"];
 org.intermedia.view.CellThumbText1Style.setCellStyle = function(node,cellPerLine) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.CellStyle.setCellStyle(node,cellPerLine);
+	node.style.verticalAlign = "middle";
+	var cellWidthPercent = org.intermedia.view.CellStyle.computeWidthPercentage(cellPerLine,1);
+	node.style.width = Std.string(cellWidthPercent) + "%";
 	node.style.height = Std.string(90) + "px";
-	node.style.maxHeight = Std.string(150) + "px";
+	node.style.maxHeight = Std.string(160) + "px";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
-	org.intermedia.view.CellStyle.addBorder(node);
+	org.intermedia.view.CellStyle.addBorder(node,1);
 }
 org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
-	node.style.width = Std.string(35) + "%";
-	node.style.height = Std.string(100) + "%";
+	node.style.marginTop = Std.string(8) + "%";
+	node.style.marginLeft = "3%";
+	node.style.width = Std.string(34) + "%";
+	node.style.height = Std.string(70) + "%";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
 	node.style.display = "inline-block";
 }
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(node) {
 	node.style.display = "inline-block";
-	node.style.marginLeft = "2%";
+	node.style.marginTop = Std.string(4. | 0) + "%";
+	node.style.marginLeft = "3%";
 	node.style.verticalAlign = "top";
 	node.style.width = Std.string(60) + "%";
 }
@@ -2211,7 +2230,7 @@ org.intermedia.view.HeaderStyle.setHeaderStyle = function(node) {
 	node.style.minWidth = "100%";
 	node.style.width = "100%";
 	node.style.height = Std.string(43) + "px";
-	node.style.backgroundImage = "url(" + "" + ")";
+	node.style.backgroundImage = "url(" + "assets/headerGrey.jpg" + ")";
 }
 org.intermedia.view.HeaderStyle.setHeaderStaticStyle = function(node) {
 	node.style.position = "static";
@@ -2228,7 +2247,7 @@ org.intermedia.view.HeaderStyle.setHeaderTextStyle = function(node) {
 	node.style.fontStyle = "normal";
 	node.style.fontFamily = "Arial, sans-serif";
 	node.style.textAlign = "center";
-	node.style.paddingTop = "8px";
+	node.style.paddingTop = "10px";
 	node.style.minWidth = "100%";
 	node.style.top = "0px";
 	node.style.width = "100%";
@@ -2306,7 +2325,7 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 		org.intermedia.view.HeaderStyle.setHeaderStyle(this.node);
 		this._image = js.Lib.document.createElement("img");
 		org.intermedia.view.HeaderStyle.setThumbImageStyle(this._image);
-		this._image.src = "";
+		this._image.src = "assets/rss-icon.png";
 		this.node.appendChild(this._image);
 		this._titleTextElement = js.Lib.document.createTextNode(this._data);
 		this._titleContainer = js.Lib.document.createElement("div");
@@ -2359,35 +2378,36 @@ org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ViewBase.pr
 	,cells: null
 	,buildView: function() {
 		var me = this;
-		var cell0 = new org.intermedia.view.CellThumb(1);
+		var cellStyle = { cell : org.intermedia.view.CellThumbText1BisStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle};
+		var cell0 = new org.intermedia.view.CellThumb(1,cellStyle);
 		cell0.setData(this._data[0]);
 		cell0.node.onmouseup = function(mouseEventData) {
 			me.onListItemSelectedCallback(cell0.getData());
 		};
 		this.node.appendChild(cell0.node);
 		this.cells.push(cell0);
-		var cell1 = new org.intermedia.view.CellThumb(2);
+		var cell1 = new org.intermedia.view.CellThumb(2,cellStyle);
 		cell1.setData(this._data[1]);
 		cell1.node.onmouseup = function(mouseEventData) {
 			me.onListItemSelectedCallback(cell1.getData());
 		};
 		this.node.appendChild(cell1.node);
 		this.cells.push(cell1);
-		var cell2 = new org.intermedia.view.CellThumb(2);
+		var cell2 = new org.intermedia.view.CellThumb(2,cellStyle);
 		cell2.setData(this._data[2]);
 		cell2.node.onmouseup = function(mouseEventData) {
 			me.onListItemSelectedCallback(cell2.getData());
 		};
 		this.node.appendChild(cell2.node);
 		this.cells.push(cell2);
-		var cell3 = new org.intermedia.view.CellThumb(2);
+		var cell3 = new org.intermedia.view.CellThumb(2,cellStyle);
 		cell3.setData(this._data[3]);
 		cell3.node.onmouseup = function(mouseEventData) {
 			me.onListItemSelectedCallback(cell3.getData());
 		};
 		this.node.appendChild(cell3.node);
 		this.cells.push(cell3);
-		var cell4 = new org.intermedia.view.CellThumb(2);
+		var cell4 = new org.intermedia.view.CellThumb(2,cellStyle);
 		cell4.setData(this._data[4]);
 		cell4.node.onmouseup = function(mouseEventData) {
 			me.onListItemSelectedCallback(cell4.getData());
@@ -2514,7 +2534,7 @@ org.intermedia.view.ListViewStyle.setListStyle = function(node) {
 	node.style.paddingRight = "0px";
 	node.style.paddingTop = "0px";
 	node.style.paddingBottom = "0px";
-	node.style.width = Std.string(100 / 3) + "%";
+	node.style.width = Std.string(js.Lib.window.innerWidth) + "px";
 	node.style.height = Std.string(js.Lib.window.innerHeight) + "px";
 	node.style.top = "0px";
 	node.style.bottom = "0px";
@@ -2619,8 +2639,8 @@ org.intermedia.view.MenuCellTextStyle.setCellStyle = function(node) {
 	node.style.marginBottom = "0px";
 	node.style.paddingLeft = "0px";
 	node.style.paddingRight = "0px";
-	node.style.paddingTop = Std.string(5) + "px";
-	node.style.paddingBottom = "0px";
+	node.style.paddingTop = Std.string(7) + "px";
+	node.style.paddingBottom = Std.string(7) + "px";
 	node.style.width = "auto";
 	org.intermedia.view.CellStyle.removeBorder(node);
 	node.style.backgroundColor = null;
@@ -2665,7 +2685,7 @@ org.intermedia.view.MenuListViewStyle.setMenuStyle = function(node) {
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "auto";
 	node.style.backgroundColor = null;
-	node.style.backgroundImage = "url(" + "" + ")";
+	node.style.backgroundImage = "url(" + "assets/headerBlue.png" + ")";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
 }
@@ -2729,29 +2749,20 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
 		this.computeMenuItemsWidth();
-		this._index = 1;
+		this.setIndex(1);
 		this.onResizeCallback();
 	}
 	,createCell: function() {
 		var cell = new org.intermedia.view.MenuCellText();
 		return cell;
 	}
-	,onListItemSelectedCallback: function(cellData) {
-		this.setIndex(cellData.id);
-		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
-	}
 	,getIndex: function() {
 		return this._index;
 	}
 	,setIndex: function(v) {
+		this._cells[this._index].node.style.fontWeight = "normal";
+		this._cells[v].node.style.fontWeight = "bold";
 		this._index = v;
-		this.computeMenuItemsLeftTarget(this._index);
-		var tween0 = new feffects.Tween(this._cells[0].node.offsetLeft,this._menuItem0LeftTarget,150,feffects.easing.Quint.easeOut);
-		tween0.setTweenHandlers(this.menuItem0Move.$bind(this),this.menuItemMoveEnd.$bind(this));
-		var tween1 = new feffects.Tween(this._cells[1].node.offsetLeft,this._menuItem1LeftTarget,150,feffects.easing.Quint.easeOut);
-		tween1.setTweenHandlers(this.menuItem1Move.$bind(this),this.menuItemMoveEnd.$bind(this));
-		var tween2 = new feffects.Tween(this._cells[2].node.offsetLeft,this._menuItem2LeftTarget,150,feffects.easing.Quint.easeOut);
-		tween2.setTweenHandlers(this.menuItem2Move.$bind(this),this.menuItemMoveEnd.$bind(this));
 		return v;
 	}
 	,menuItem0Move: function(e) {
@@ -2763,51 +2774,48 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,menuItem2Move: function(e) {
 		this._cells[2].node.style.left = (e | 0) + "px";
 	}
-	,menuItemMoveEnd: function(e) {
-		this.computeMenuItemsLeftPos();
-	}
 	,computeMenuItemsWidth: function() {
 		this._menuItem0Width = this._cells[0].node.clientWidth;
 		this._menuItem1Width = this._cells[1].node.clientWidth;
 		this._menuItem2Width = this._cells[2].node.clientWidth;
-		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 246, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
+		haxe.Firebug.trace(this._menuItem0Width + "," + this._menuItem1Width + "," + this._menuItem2Width,{ fileName : "MenuListViewText.hx", lineNumber : 253, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsWidth"});
 	}
 	,computeMenuItemsLeftPos: function() {
 		this._menuItem0LeftPos = this._cells[0].node.offsetLeft;
 		this._menuItem1LeftPos = this._cells[1].node.offsetLeft;
 		this._menuItem2LeftPos = this._cells[2].node.offsetLeft;
-		haxe.Firebug.trace(this._menuItem0LeftPos + "," + this._menuItem1LeftPos + "," + this._menuItem2LeftPos,{ fileName : "MenuListViewText.hx", lineNumber : 257, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsLeftPos"});
+		haxe.Firebug.trace(this._menuItem0LeftPos + "," + this._menuItem1LeftPos + "," + this._menuItem2LeftPos,{ fileName : "MenuListViewText.hx", lineNumber : 264, className : "org.intermedia.view.MenuListViewText", methodName : "computeMenuItemsLeftPos"});
 	}
 	,computeMenuItemsLeftTarget: function(targetIndex) {
 		switch(targetIndex) {
 		case 0:
-			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 | 0;
+			this._menuItem0LeftTarget = (js.Lib.window.innerWidth - this._menuItem0Width) / 2 - 2.5 | 0;
 			this._menuItem1LeftTarget = js.Lib.window.innerWidth - 30 | 0;
 			this._menuItem2LeftTarget = 3 * js.Lib.window.innerWidth / 2 | 0;
 			break;
 		case 1:
 			this._menuItem0LeftTarget = -(this._menuItem0Width - 30) | 0;
-			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width) / 2 | 0;
+			this._menuItem1LeftTarget = (js.Lib.window.innerWidth - this._menuItem1Width - 5) / 2 | 0;
 			this._menuItem2LeftTarget = js.Lib.window.innerWidth - 30 | 0;
 			break;
 		case 2:
 			this._menuItem0LeftTarget = -js.Lib.window.innerWidth / 2 | 0;
 			this._menuItem1LeftTarget = -(this._menuItem1Width - 30) | 0;
-			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 | 0;
+			this._menuItem2LeftTarget = (js.Lib.window.innerWidth - this._menuItem2Width) / 2 - 2.5 | 0;
 			break;
 		default:
 		}
 	}
 	,moveHorizontally: function(ratio) {
-		haxe.Firebug.trace(ratio,{ fileName : "MenuListViewText.hx", lineNumber : 321, className : "org.intermedia.view.MenuListViewText", methodName : "moveHorizontally"});
+		haxe.Firebug.trace(ratio,{ fileName : "MenuListViewText.hx", lineNumber : 330, className : "org.intermedia.view.MenuListViewText", methodName : "moveHorizontally"});
 		if(ratio > 0) this.computeMenuItemsLeftTarget(Math.max(this._index - 1,0) | 0); else if(ratio < 0) this.computeMenuItemsLeftTarget(Math.min(this._index + 1,2) | 0);
 		this.menuItem0Move(this._menuItem0LeftPos + Math.abs(this._menuItem0LeftTarget - this._menuItem0LeftPos) * ratio);
 		this.menuItem1Move(this._menuItem1LeftPos + Math.abs(this._menuItem1LeftTarget - this._menuItem1LeftPos) * ratio);
 		this.menuItem2Move(this._menuItem2LeftPos + Math.abs(this._menuItem2LeftTarget - this._menuItem2LeftPos) * ratio);
 	}
 	,horizontalTweenEnd: function(newIndex) {
-		haxe.Firebug.trace(this._menuItem0LeftTarget + "," + this._menuItem1LeftTarget + "," + this._menuItem2LeftTarget,{ fileName : "MenuListViewText.hx", lineNumber : 367, className : "org.intermedia.view.MenuListViewText", methodName : "horizontalTweenEnd"});
-		this._index = newIndex;
+		haxe.Firebug.trace(this._menuItem0LeftTarget + "," + this._menuItem1LeftTarget + "," + this._menuItem2LeftTarget,{ fileName : "MenuListViewText.hx", lineNumber : 376, className : "org.intermedia.view.MenuListViewText", methodName : "horizontalTweenEnd"});
+		this.setIndex(newIndex);
 		this.computeMenuItemsLeftPos();
 	}
 	,onResizeCallback: function() {
@@ -2891,16 +2899,10 @@ org.intermedia.view.Scroll2D.prototype = {
 			var absX = Math.abs(this._offset.x);
 			var absY = Math.abs(this._offset.y);
 			if(Math.max(absX,absY) >= 5) {
-				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else {
-					this._direction = org.intermedia.view.Direction.vertical;
-					this._timer = haxe.Timer.delay(this.computeAcceleration.$bind(this),100);
-				}
+				if(absX > absY) this._direction = org.intermedia.view.Direction.horizontal; else this._direction = org.intermedia.view.Direction.vertical;
 			}
 		}
-		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) {
-			this.onVerticalMoveCallback(event);
-			if(this._horizontalTween != null) this._horizontalTween.resume();
-		}
+		if(this._direction == org.intermedia.view.Direction.horizontal) this.onHorizontalMoveCallback(event); else if(this._direction == org.intermedia.view.Direction.vertical) this.onVerticalMoveCallback(event);
 	}
 	,onHorizontalMoveCallback: function(event) {
 		event.preventDefault();
@@ -2952,8 +2954,6 @@ org.intermedia.view.Scroll2D.prototype = {
 		var acceleration = this.deriv(this._previousSpeed,speed);
 		this._previousY = this._offset.y;
 		this._previousSpeed = speed;
-		haxe.Log.trace(speed + ", " + acceleration,{ fileName : "Scroll2D.hx", lineNumber : 420, className : "org.intermedia.view.Scroll2D", methodName : "computeAcceleration"});
-		this._timer = haxe.Timer.delay(this.computeAcceleration.$bind(this),100);
 	}
 	,deriv: function(a,b) {
 		return (b - a) / 100;
@@ -3122,13 +3122,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	}
 	,onHorizontalUpCallback: function(event,xOffset) {
 		event.preventDefault();
-		if(xOffset < -js.Lib.window.innerHeight * 0.2) {
+		if(xOffset < -js.Lib.window.innerHeight * 0.1) {
 			if(this.getIndex() < this._listViews.length - 1) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 + 1);
 				_g1;
 			}
-		} else if(xOffset > js.Lib.window.innerHeight * 0.2) {
+		} else if(xOffset > js.Lib.window.innerHeight * 0.1) {
 			if(this.getIndex() > 0) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 - 1);
@@ -3215,6 +3215,7 @@ org.intermedia.view.ThumbTextList1.prototype = $extend(org.intermedia.view.ListV
 org.intermedia.view.ThumbTextList1Bis = $hxClasses["org.intermedia.view.ThumbTextList1Bis"] = function(cellPerLine) {
 	if(cellPerLine == null) cellPerLine = 1;
 	org.intermedia.view.ThumbTextList1.call(this,cellPerLine);
+	org.intermedia.view.ThumbTextList1BisStyle.setListStyle(this.node);
 };
 org.intermedia.view.ThumbTextList1Bis.__name__ = ["org","intermedia","view","ThumbTextList1Bis"];
 org.intermedia.view.ThumbTextList1Bis.__super__ = org.intermedia.view.ThumbTextList1;
@@ -3230,8 +3231,21 @@ org.intermedia.view.ThumbTextList1Bis.prototype = $extend(org.intermedia.view.Th
 			this.node.appendChild(this._cells[i].node);
 		}
 	}
+	,createCell: function() {
+		var cellStyle = { cell : org.intermedia.view.CellThumbText1BisStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle, textBlock : org.intermedia.view.CellThumbText1Style.setTextBlockStyle, title : org.intermedia.view.CellThumbText1Style.setTitleStyle, author : org.intermedia.view.CellThumbText1Style.setAuthorStyle, line : org.intermedia.view.CellThumbText1Style.setLineStyle};
+		var cell = new org.intermedia.view.CellThumbText1(this._cellsPerLine,cellStyle);
+		return cell;
+	}
 	,__class__: org.intermedia.view.ThumbTextList1Bis
 });
+org.intermedia.view.ThumbTextList1BisStyle = $hxClasses["org.intermedia.view.ThumbTextList1BisStyle"] = function() { }
+org.intermedia.view.ThumbTextList1BisStyle.__name__ = ["org","intermedia","view","ThumbTextList1BisStyle"];
+org.intermedia.view.ThumbTextList1BisStyle.setListStyle = function(node) {
+	node.style.backgroundColor = "#191919";
+}
+org.intermedia.view.ThumbTextList1BisStyle.prototype = {
+	__class__: org.intermedia.view.ThumbTextList1BisStyle
+}
 org.intermedia.view.ViewManager = $hxClasses["org.intermedia.view.ViewManager"] = function(applicationModel,applicationController) {
 	this._applicationModel = applicationModel;
 	this._applicationController = applicationController;
@@ -3482,32 +3496,38 @@ org.intermedia.model.Feeds.FEED_2 = { id : 1, title : "SiliconSentier", url : "h
 org.intermedia.model.Feeds.FEED_3 = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"};
 org.intermedia.view.CellTextStyle.CELL_VERTICAL_SPACE = 4;
 org.intermedia.view.CellTextStyle.CELL_HORIZONTAL_SPACE = 2;
+org.intermedia.view.CellThumbText1BisStyle.CELL_TEXT_WIDTH_PERCENT = 60;
+org.intermedia.view.CellThumbText1BisStyle.CELL_THUMB_WIDTH_PERCENT = 35;
 org.intermedia.view.CellThumbText1Style.CELL_TEXT_WIDTH_PERCENT = 60;
-org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 35;
+org.intermedia.view.CellThumbText1Style.CELL_THUMB_WIDTH_PERCENT = 34;
+org.intermedia.view.CellThumbText1Style.CELL_TOP_MARGIN_PERCENT = 8;
 org.intermedia.view.Constants.HEADER_HOME_TITLE = "French Tech";
 org.intermedia.view.Constants.HEADER_DETAIL_TITLE = "Infos";
-org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "";
+org.intermedia.view.Constants.HEADER_BG_IMAGE_URL = "assets/headerGrey.jpg";
 org.intermedia.view.Constants.HEADER_HEIGHT = 43;
-org.intermedia.view.Constants.HEADER_IMAGE_URL = "";
-org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "";
+org.intermedia.view.Constants.HEADER_IMAGE_URL = "assets/rss-icon.png";
+org.intermedia.view.Constants.MENU_BG_IMAGE_URL = "assets/headerBlue.png";
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
 org.intermedia.view.Constants.MENU_LATERAL_OFFSET = 30;
-org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.2;
+org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.1;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_TWEEN_DELAY = 150;
 org.intermedia.view.Constants.LIST_TOP = 78;
-org.intermedia.view.Constants.LIST_BG_COLOR = "#CCCCCC";
+org.intermedia.view.Constants.LIST_BG_GREY_COLOR = "#CCCCCC";
+org.intermedia.view.Constants.LIST_BG_BLACK_COLOR = "#191919";
 org.intermedia.view.Constants.CELL_BG_COLOR = "#FEFEFE";
 org.intermedia.view.Constants.CELL_VERTICAL_SPACE = 2;
 org.intermedia.view.Constants.CELL_BORDER_WIDTH = 1;
+org.intermedia.view.Constants.CELL_BORDER_WIDTH_LARGE = 4;
 org.intermedia.view.Constants.CELL_BORDER_COLOR = "#CCCCCC";
 org.intermedia.view.Constants.CELL_HEIGHT = 90;
-org.intermedia.view.Constants.CELL_MAX_HEIGHT = 150;
-org.intermedia.view.Constants.CELL_MIN_WIDTH = 150;
+org.intermedia.view.Constants.CELL_MAX_HEIGHT = 160;
+org.intermedia.view.Constants.CELL_MIN_WIDTH = 160;
 org.intermedia.view.Constants.CELL_THUMB_APPARITION_DELAY = 1500;
-org.intermedia.view.Constants.CELL_THUMB_TEXT_TITLE_LENGTH = 50;
+org.intermedia.view.Constants.CELL_THUMB_TEXT_TITLE_LENGTH = 42;
 org.intermedia.view.LoadingViewStyle.CELL_VERTICAL_SPACE = 5;
-org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 5;
+org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 7;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
+org.intermedia.view.MenuListViewText.BOLD_FONT_OFFSET = 5;
 org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.Scroll2D.VERTICAL_TWEEN_DELTA = 100;
 org.intermedia.view.Scroll2D.TIME_DELTA = 100;

@@ -35,7 +35,7 @@ text-decoration:none;*/
 /*-webkit-box-sizing:border-box; /* Safari */
 
 /* Done to avoid default mobile Safari tap color */
-/* -webkit-tap-highlight-color: rgba(0,0,0,0); */
+-webkit-tap-highlight-color: rgba(0,0,0,0);
 /* This will disable user selection (orange border on click) in Firefox and WebKit */
 -webkit-user-select:none;
 -moz-user-select:none;

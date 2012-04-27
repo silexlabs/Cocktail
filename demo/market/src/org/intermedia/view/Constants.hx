@@ -19,42 +19,44 @@ class Constants
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
-	//public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
-	public static inline var HEADER_BG_IMAGE_URL:String = "";
+	public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
+	//public static inline var HEADER_BG_IMAGE_URL:String = "";
 	public static inline var HEADER_HEIGHT:Int = 43;
-	//public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
-	public static inline var HEADER_IMAGE_URL:String = "";
+	public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
+	//public static inline var HEADER_IMAGE_URL:String = "";
 	
 	// set header constants
-	//public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
-	public static inline var MENU_BG_IMAGE_URL:String = "";
+	public static inline var MENU_BG_IMAGE_URL:String = "assets/headerBlue.png";
+	//public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
 	public static inline var MENU_LATERAL_OFFSET:Int = 30;
 	
 	// set swippable view constants
-	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.2;	
+	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.1;	
 	public static inline var SWIP_HORIZONTAL_TWEEN_DELAY:Int = 150;	
 	
 	// set lists constants
 	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;
-	public static inline var LIST_BG_COLOR:String = "#CCCCCC";
+	public static inline var LIST_BG_GREY_COLOR:String = "#CCCCCC";
+	public static inline var LIST_BG_BLACK_COLOR:String = "#191919";
 	
 	// set cells constants
 	//public static inline var CELL_STYLE_REFRESH_DELAY:Int = 600;
 	public static inline var CELL_BG_COLOR:String = "#FEFEFE";
 	public static inline var CELL_VERTICAL_SPACE:Int = 2;
 	public static inline var CELL_BORDER_WIDTH:Int = 1;
+	public static inline var CELL_BORDER_WIDTH_LARGE:Int = 4;
 	public static inline var CELL_BORDER_COLOR:String = "#CCCCCC";
 	//public static inline var CELL_RATIO:Float = 16/9;
 	public static inline var CELL_HEIGHT:Int = 90;
-	public static inline var CELL_MAX_HEIGHT:Int = 150;
-	public static inline var CELL_MIN_WIDTH:Int = 150;
+	public static inline var CELL_MAX_HEIGHT:Int = 160;
+	public static inline var CELL_MIN_WIDTH:Int = 160;
 
 	// set cells thumb constants
 	public static inline var CELL_THUMB_APPARITION_DELAY:Int = 1500;
 	
 	// set cells thumb text constants
-	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 50;
+	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 42;
 	
 	
 }

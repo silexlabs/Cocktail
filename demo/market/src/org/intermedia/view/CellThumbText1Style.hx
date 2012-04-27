@@ -22,7 +22,8 @@ import org.intermedia.model.ApplicationModel;
 class CellThumbText1Style
 {
 	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
-	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
+	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 6;
+	public static inline var CELL_TOP_MARGIN_PERCENT:Int = 8;
 	
 	/**
 	 * Defines cell Style
@@ -35,6 +36,12 @@ class CellThumbText1Style
 	{
 		CellStyle.setCellStyle(node,cellPerLine);
 		
+		node.style.verticalAlign = "middle";
+		
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Float = CellStyle.computeWidthPercentage(cellPerLine,Constants.CELL_BORDER_WIDTH);
+		node.style.width = Std.string(cellWidthPercent) + "%";
+
 		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
 		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 
@@ -42,7 +49,7 @@ class CellThumbText1Style
 		node.style.overflowY = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(node);
+		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 		
 	}
 	
@@ -53,8 +60,11 @@ class CellThumbText1Style
 	 */
 	public static function setThumbnailMaskStyle(node:HtmlDom):Void
 	{
+		node.style.marginTop = Std.string(CELL_TOP_MARGIN_PERCENT) + "%";
+		node.style.marginLeft = "3%";
+
 		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
-		node.style.height = Std.string(100) + "%";
+		node.style.height = Std.string(70) + "%";
 		
 		// apply mask style so it can crop the image
 		node.style.overflowX = "hidden";
@@ -64,16 +74,6 @@ class CellThumbText1Style
 	}
 	
 	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	image
-	 */
-	/*public static function setThumbnailStyle(image:Image,maskSize:Size):Void
-	{
-		CellThumbStyle.setThumbnailStyle(image,maskSize);
-	}*/
-		
-	/**
 	 * Defines cell text block Style
 	 * 
 	 * @param	node
@@ -81,9 +81,11 @@ class CellThumbText1Style
 	public static function setTextBlockStyle(node:HtmlDom):Void
 	{
 		//setCellStyle(node);
-		
 		node.style.display = "inline-block";
-		node.style.marginLeft = "2%";
+		
+		node.style.marginTop = Std.string(Std.int(CELL_TOP_MARGIN_PERCENT/2)) + "%";
+		node.style.marginLeft = "3%";
+		
 		node.style.verticalAlign = "top";
 		node.style.width = Std.string(CELL_TEXT_WIDTH_PERCENT) + "%";
 		

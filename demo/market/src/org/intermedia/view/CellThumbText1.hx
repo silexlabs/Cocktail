@@ -27,7 +27,7 @@ class CellThumbText1 extends CellBase
 	 * @param	?cellPerLine	number of cells per line
 	 * @param	?cellStyle		cell style
 	 */
-	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
+	public function new(?cellPerLine:Int = 1, ?cellStyle:Dynamic) 
 	{
 		super(cellPerLine,cellStyle);
 	}
