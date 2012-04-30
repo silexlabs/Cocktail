@@ -7,16 +7,13 @@
 
 package components.lists;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.textElement.TextElement;
-
 // list specific
 import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
+
+import js.Lib;
+import js.Dom;
 
 //import cocktail.viewport.Viewport;
 import ScreenResolution;
@@ -56,50 +53,50 @@ class ThumbTextList1 extends ListBase
 	 * 
 	 * @return the array of data DOM to be added into the cell
 	 */
-	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
+	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<HtmlDom>
 	{
-		var cellContent:Array<DOMElement> = new Array<DOMElement>();
+		var cellContent:Array<HtmlDom> = new Array<HtmlDom>();
 		
 		// INFO
 		
 		// add text block
-		var cellInfoBlockContainer:ContainerDOMElement = Utils.getContainer();
+		var cellInfoBlockContainer = Utils.getContainer();
 		listStyle.cellInfoBlock(cellInfoBlockContainer);
 		cellContent.push(cellInfoBlockContainer);
 		
 		// add cell number
-		var cellNumberContainer:ContainerDOMElement = Utils.getContainer();
-		var textElement:TextElement = new TextElement(Std.string(_currentCellIndex + 1));
-		cellNumberContainer.addText(textElement);
+		var cellNumberContainer = Utils.getContainer();
+		var textElement = Lib.document.createTextNode(Std.string(_currentCellIndex + 1));
+		cellNumberContainer.appendChild(textElement);
 		listStyle.cellNumber(cellNumberContainer,screenResolutionSize);
-		cellInfoBlockContainer.addChild(cellNumberContainer);
+		cellInfoBlockContainer.appendChild(cellNumberContainer);
 		
 		// add dots line
-		var celldotsLine:ImageDOMElement = new ImageDOMElement();
+		var celldotsLine:Image = cast(Lib.document.createElement("img"));
 		// set image style
 		listStyle.cellInfoBlockLine(celldotsLine,screenResolutionSize);
 		// add image
-		cellInfoBlockContainer.addChild(celldotsLine);
+		cellInfoBlockContainer.appendChild(celldotsLine);
 		// load image
-		celldotsLine.load("images/dotsLine.png");
+		celldotsLine.src = "images/dotsLine.png";
 		
 		// add comment image
-		var cellCommentImage:ImageDOMElement = new ImageDOMElement();
+		var cellCommentImage:Image = cast(Lib.document.createElement("img"));
 		// set image style
 		listStyle.cellInfoBlockImage(cellCommentImage,screenResolutionSize);
 		// add image
-		cellInfoBlockContainer.addChild(cellCommentImage);
+		cellInfoBlockContainer.appendChild(cellCommentImage);
 		// load image
-		cellCommentImage.load("images/bubble.png");
+		cellCommentImage.src = "images/bubble.png";
 		
 		// add comment count
 		if (cellData.commentCount != "" && cellData.commentCount != null)
 		{
-			var cellCommentCountContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.commentCount);
-			cellCommentCountContainer.addText(textElement);
+			var cellCommentCountContainer = Utils.getContainer();
+			var textElement = Lib.document.createTextNode(cellData.commentCount);
+			cellCommentCountContainer.appendChild(textElement);
 			listStyle.cellCommentCount(cellCommentCountContainer,screenResolutionSize);
-			cellInfoBlockContainer.addChild(cellCommentCountContainer);
+			cellInfoBlockContainer.appendChild(cellCommentCountContainer);
 		}
 		
 		
@@ -108,41 +105,41 @@ class ThumbTextList1 extends ListBase
 		// image part
 		if (cellData.thumbnail != "" && cellData.thumbnail != null)
 		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			var cellImage:Image = cast(Lib.document.createElement("img"));
 			// set image style
 			listStyle.cellThumbnail(cellImage,screenResolutionSize);
 			// add image
 			cellContent.push(cellImage);
 			// load image
-			cellImage.load(cellData.thumbnail);
+			cellImage.src = cellData.thumbnail;
 		}
 		
 		
 		// TEXT
 		
 		// add text block
-		var cellTextBlockContainer:ContainerDOMElement = Utils.getContainer();
+		var cellTextBlockContainer = Utils.getContainer();
 		listStyle.cellTextBlock(cellTextBlockContainer);
 		cellContent.push(cellTextBlockContainer);
 		
 		// add title
 		if (cellData.title != "" && cellData.title != null)
 		{
-			var cellTitleContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.title);
-			cellTitleContainer.addText(textElement);
+			var cellTitleContainer = Utils.getContainer();
+			var textElement = Lib.document.createTextNode(cellData.title);
+			cellTitleContainer.appendChild(textElement);
 			listStyle.cellTitle(cellTitleContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellTitleContainer);
+			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
 		// add comment
 		if (cellData.comment != "" && cellData.comment != null)
 		{
-			var cellCommentContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.comment);
-			cellCommentContainer.addText(textElement);
+			var cellCommentContainer = Utils.getContainer();
+			var textElement = Lib.document.createTextNode(cellData.comment);
+			cellCommentContainer.appendChild(textElement);
 			listStyle.cellComment(cellCommentContainer, screenResolutionSize);
-			cellTextBlockContainer.addChild(cellCommentContainer);
+			cellTextBlockContainer.appendChild(cellCommentContainer);
 		}
 		
 		// if screen resolution is large
@@ -155,23 +152,23 @@ class ThumbTextList1 extends ListBase
 				if (screenResolutionSize == normal) textLength = 95;
 				else textLength = 200;
 				
-				var cellDescriptionContainer:ContainerDOMElement = Utils.getContainer();
+				var cellDescriptionContainer = Utils.getContainer();
 				var shortenedText = cellData.description.substr(0, textLength) + "...";
-				var textElement:TextElement = new TextElement(shortenedText);
-				cellDescriptionContainer.addText(textElement);
+				var textElement = Lib.document.createTextNode(shortenedText);
+				cellDescriptionContainer.appendChild(textElement);
 				listStyle.cellDescription(cellDescriptionContainer);
-				cellTextBlockContainer.addChild(cellDescriptionContainer);
+				cellTextBlockContainer.appendChild(cellDescriptionContainer);
 			}
 		}
 		
 		// LINE
 		
 		// add separation line
-		var line:ImageDOMElement = new ImageDOMElement();
+		var line:Image = cast(Lib.document.createElement("img"));
 		// set image style
 		listStyle.cellLine(line);
 		cellContent.push(line);
-		line.load("images/greyPixel.png");
+		line.src = "images/greyPixel.png";
 
 		return cellContent;
 	}

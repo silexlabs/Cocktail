@@ -13,10 +13,6 @@ package components.dataProvider;
  * @author Raphael Harmel
  */
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
 
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
