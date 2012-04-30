@@ -39,7 +39,7 @@ class AppList extends ListBase
 		// create selectedImage
 		
 		// add selected menu item image over the selected menu item
-		_selectedMenuItemImage = cast(Lib.document.createElement("a"));
+		_selectedMenuItemImage = cast(Lib.document.createElement("img"));
 		// set image style
 		listStyle.cellSelected(_selectedMenuItemImage);
 		// load image
