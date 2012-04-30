@@ -571,19 +571,25 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignCenter(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
+	private function alignCenter(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
 	{
+		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			child.bounds.x = Math.round(remainingSpace / 2) + flowX;
-			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignCenter(flowX, remainingSpace, child);
+				flowX =  alignCenter(flowX, remainingSpace, child);
 			}
+			
+			child.bounds.x = Math.round(remainingSpace / 2) + flowX;
+			flowX += Math.round(child.bounds.width);
 		}
+		
+		flowX += lineBox.marginRight + lineBox.paddingRight;
+		
+		return flowX;
 	}
 	
 	/**

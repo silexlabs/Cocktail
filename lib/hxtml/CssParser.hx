@@ -417,7 +417,7 @@ class CssParser<DisplayObjectType> {
 			if( l != null ) {
 				s.setWordSpacingNum(d, l.value, l.unit);
 				return true;
-			}
+			}	
 			
 		case "letter-spacing":
 			//case label (normal)
@@ -430,6 +430,20 @@ class CssParser<DisplayObjectType> {
 			var l = getValueObject(v);
 			if( l != null ) {
 				s.setLetterSpacingNum(d, l.value, l.unit);
+				return true;
+			}	
+			
+		case "text-indent":
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setTextIndent(d, l.value, l.unit);
+				return true;
+			}	
+			
+		case "text-align":
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setTextAlign(d, val);
 				return true;
 			}	
 //---------------------
