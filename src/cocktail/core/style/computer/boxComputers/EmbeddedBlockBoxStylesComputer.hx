@@ -106,7 +106,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(computedHeight * embeddedHTMLElement.intrinsicRatio);
+				ret = Math.round(computedHeight / embeddedHTMLElement.intrinsicRatio);
 			}
 			//else use the intrinsic width if defined
 			else if (embeddedHTMLElement.intrinsicWidth != null)

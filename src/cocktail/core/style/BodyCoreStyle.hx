@@ -135,7 +135,18 @@ class BodyCoreStyle extends ContainerCoreStyle
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
-					addedX += elementRenderer.positionedOrigin.x;
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedX += elementRenderer.positionedOrigin.x;
+					}
+					//here the positioned ElementRenderer is fixed and is placed
+					//relative to the window. In this case, its x is not added
+					//TODO : complet doc + check if necessary everywhere
+					else
+					{
+						addedX = elementRenderer.positionedOrigin.x;
+					}
+					
 				}
 				else
 				{
@@ -144,8 +155,14 @@ class BodyCoreStyle extends ContainerCoreStyle
 				
 				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
-					addedY += elementRenderer.positionedOrigin.y;
-
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedY += elementRenderer.positionedOrigin.y;
+					}
+					else
+					{
+						addedY = elementRenderer.positionedOrigin.y;
+					}
 				}
 				else
 				{
@@ -171,7 +188,15 @@ class BodyCoreStyle extends ContainerCoreStyle
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
-					addedPositionedX += elementRenderer.positionedOrigin.x;
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedPositionedX += elementRenderer.positionedOrigin.x;
+					}
+					else
+					{
+						addedPositionedX = elementRenderer.positionedOrigin.x;
+					}
+					
 				}
 				else
 				{
@@ -179,7 +204,15 @@ class BodyCoreStyle extends ContainerCoreStyle
 				}
 				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 				{
-					addedPositionedY += elementRenderer.positionedOrigin.y;
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedPositionedY += elementRenderer.positionedOrigin.y;
+					}
+					else
+					{
+						addedPositionedY = elementRenderer.positionedOrigin.y;
+					}
+					
 				}
 				else
 				{

@@ -61,7 +61,7 @@ class LayerRenderer
 		}
 		
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-
+		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
 		if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == false || 
@@ -87,8 +87,14 @@ class LayerRenderer
 			
 			//TODO here : render non-positioned float
 			
-			//TODO here : render block-level replaced elements
+			//TODO :  doc + check if replaced block children are not added twice
+			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
 			
+			for (i in 0...replacedBlockChildren.length)
+			{
+				nativeElements.push(replacedBlockChildren[i]);
+			}
+
 			//render all the line boxes belonging to this layer
 			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes(rootRenderer);
 			
@@ -96,7 +102,7 @@ class LayerRenderer
 			{
 				nativeElements.push(lineBoxesChildren[i]);
 			}
-			
+						
 			//render all the child layers with a z-index of 0
 			var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
 
@@ -227,6 +233,56 @@ class LayerRenderer
 		}
 		return ret;
 	}
+	
+	
+	//TODO : doc
+	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer):Array<NativeElement>
+	{
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(cast(rootRenderer));
+		
+		var ret:Array<NativeElement> = new Array<NativeElement>();
+		
+		for (i in 0...childrenBlockReplaced.length)
+		{
+			var nativeElements:Array<NativeElement> = childrenBlockReplaced[i].render();
+			
+			for (j in 0...nativeElements.length)
+			{
+				ret.push(nativeElements[j]);
+			}
+		}
+		return ret;
+	}
+	
+	private function getBlockReplacedChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	{
+		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...rootRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			
+			if (child.layerRenderer == this)
+			{
+				//TODO : must add more condition, for instance, no float
+				if (child.canHaveChildren() == true && child.coreStyle.display == block)
+				{
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(cast(child));
+					
+					for (j in 0...childElementRenderer.length)
+					{
+						ret.push(childElementRenderer[j]);
+					}
+				}
+				else if (child.coreStyle.display == block)
+				{
+					ret.push(cast(child));
+				}
+			}
+		}
+		return ret;
+	}
+	
 	
 	/**
 	 * Render all the children LayerRenderer of this LayerRenderer
