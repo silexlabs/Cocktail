@@ -145,8 +145,6 @@ class InlineFormattingContext extends FormattingContext
 				
 				//The right margin and padding is added to the last generated line box of the current inline
 				//box renderer
-				//
-				//TODO : check if it works for multiple line child
 				child.lineBoxes[child.lineBoxes.length - 1].marginRight = child.coreStyle.computedStyle.marginRight;
 				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
 				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
@@ -529,7 +527,6 @@ class InlineFormattingContext extends FormattingContext
 				{
 					//when justified, the concatenated width of the HTMLElements
 					//must take all the containing HTMLElement width
-					//TODO : move to the place where concatenated length will be computed
 					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
 					
 					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);

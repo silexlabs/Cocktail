@@ -58,8 +58,6 @@ class BoxRenderer extends ElementRenderer
 		
 		for (i in 0...backgrounds.length)
 		{
-			//TODO : cause bug in the placement of block box backgrounds as x and y are also
-			//applied in the LayerRenderer
 			#if (flash9 || nme)
 			
 			if (_coreStyle.position == fixed)
@@ -67,7 +65,7 @@ class BoxRenderer extends ElementRenderer
 				
 				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 				{
-					backgrounds[i].x = _globalOrigin.x + _bounds.x;
+					backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
 				}
 				else
 				{
@@ -76,7 +74,7 @@ class BoxRenderer extends ElementRenderer
 				
 				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 				{
-					backgrounds[i].y = _globalOrigin.y + _bounds.y;
+					backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
 				}
 				else
 				{
@@ -87,26 +85,26 @@ class BoxRenderer extends ElementRenderer
 			{
 				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 				{
-					backgrounds[i].x = _globalOrigin.x + _bounds.x;
+					backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
 				}
 				else
 				{
-					backgrounds[i].x = _globalPositionnedOrigin.x + _positionedOrigin.x;
+					backgrounds[i].x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
 				}
 				
 				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 				{
-					backgrounds[i].y = _globalOrigin.y + _bounds.y;
+					backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
 				}
 				else
 				{
-					backgrounds[i].y = _globalPositionnedOrigin.y + _positionedOrigin.y;
+					backgrounds[i].y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
 				}
 			}
 			else
 			{
-				backgrounds[i].x = _globalOrigin.x + _bounds.x;
-				backgrounds[i].y = _globalOrigin.y + _bounds.y;
+				backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
+				backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
 			}
 			
 			#end
@@ -132,7 +130,7 @@ class BoxRenderer extends ElementRenderer
 			#elseif nme
 			nativeElement.graphics.beginFill(0xFF0000, 0.01);
 			#end
-			nativeElement.graphics.drawRect(_globalOrigin.x + _bounds.x, _globalOrigin.y + _bounds.y, _bounds.width, _bounds.height);
+			nativeElement.graphics.drawRect(_globalContainingBlockOrigin.x + _bounds.x, _globalContainingBlockOrigin.y + _bounds.y, _bounds.width, _bounds.height);
 			nativeElement.graphics.endFill();
 			
 			backgrounds.push(nativeElement);
