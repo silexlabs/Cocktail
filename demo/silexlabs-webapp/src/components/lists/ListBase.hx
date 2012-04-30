@@ -113,6 +113,7 @@ class ListBase
 		// add link for focus
 		var cellLink:Anchor = cast(Lib.document.createElement("a"));
 		cellLink.style.textAlign = "center";
+		cellLink.style.display = "block";
 		
 		// in case the cellcontent is leading to an url, set le linkdomelement href for it to be focusable
 		if(cellData.action == "openUrl" || cellData.action == "goToUrl" )

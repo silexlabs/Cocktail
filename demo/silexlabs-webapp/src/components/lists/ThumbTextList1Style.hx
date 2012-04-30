@@ -172,7 +172,7 @@ class ThumbTextList1Style
 	//public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement):Void
 	{
 		//domElement.style.display = DisplayStyleValue.block;
-		domElement.style.display = "inline-block";
+		domElement.style.display = "block";
 		
 		domElement.style.marginLeft = "auto";
 		domElement.style.marginRight = "auto";
@@ -238,7 +238,7 @@ class ThumbTextList1Style
 	 */
 	public static function getCellLineStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = "block";
+		domElement.style.display = "inline";
 		domElement.style.width = "100%";
 		domElement.style.height = "1px";
 	}
