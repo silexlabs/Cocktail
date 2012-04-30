@@ -314,14 +314,15 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HTMLElement).style.wordSpacing = value;
 	}
 	public function setTextIndent (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.textIndent = value+unit;
+		cast(element, HtmlDom).style.textIndent = value + unit;
+	}
+	public function setTextAlign (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.textAlign = value;
 	}
 /*	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.whiteSpace = value+unit;
 	}
-	public function setTextAlign (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.textAlign = value+unit;
-	}
+	
 	
 	public function setVerticalAlign (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.verticalAlign = value+unit;

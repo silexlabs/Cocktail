@@ -86,12 +86,13 @@ interface IStyleProxy<DisplayObjectType>
 	public function setLineHeightNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setLineHeightKey (element:DisplayObjectType, value:String):Void;
 	public function setTextTransform (element:DisplayObjectType, value:String):Void;
+	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setLetterSpacingNum (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setLetterSpacingKey (element:DisplayObjectType, value:String):Void;
 	public function setWordSpacingNum (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setWordSpacingKey (element:DisplayObjectType, value:String):Void;
+	public function setTextAlign (element:DisplayObjectType, value:String):Void;
 /*	public function setWhiteSpace (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setTextAlign (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setVerticalAlign (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setOpacity (element:DisplayObjectType, value:Int, unit:String):Void;
