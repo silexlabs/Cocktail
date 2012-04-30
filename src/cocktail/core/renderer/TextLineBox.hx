@@ -40,8 +40,9 @@ class TextLineBox extends LineBox
 		#if (flash9 || nme)
 		//get the dimensions of the text
 		_bounds.width = getTextWidth();
-		_bounds.height = getTextHeight();
 		#end
+		_bounds.height = getTextHeight();
+
 		
 	}
 	

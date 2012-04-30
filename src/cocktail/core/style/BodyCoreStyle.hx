@@ -201,6 +201,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
+			//TODO : doc on added ody margin
 			child.globalContainingBlockOrigin = {
 				x: addedX + _computedStyle.marginLeft,
 				y : addedY + _computedStyle.marginTop

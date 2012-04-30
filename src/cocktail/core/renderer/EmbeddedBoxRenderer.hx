@@ -47,9 +47,56 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		for (i in 0...ret.length)
 		{
 			#if (flash9 || nme)
-			ret[i].x = _globalContainingBlockOrigin.x;
-			ret[i].y = _globalContainingBlockOrigin.y;
+			
+			if (_coreStyle.position == fixed)
+			{
+				
+				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+				{
+					ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
+				}
+				else
+				{
+					ret[i].x = _positionedOrigin.x;
+				}
+				
+				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+				{
+					ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
+				}
+				else
+				{
+					ret[i].y = _positionedOrigin.y;
+				}
+			}
+			else if (_coreStyle.position == absolute)
+			{
+				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+				{
+					ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
+				}
+				else
+				{
+					ret[i].x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
+				}
+				
+				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+				{
+					ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
+				}
+				else
+				{
+					ret[i].y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
+				}
+			}
+			else
+			{
+				ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
+				ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
+			}
+			
 			#end
+		
 		}
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
@@ -83,6 +130,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		nativeElement.graphics.endFill();
 
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
+		
 		ret.push(embeddedHTMLElement.embeddedAsset);
 		
 		
@@ -92,9 +140,57 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		
-	
 		
 		ret.push(nativeElement);
+
+		//TODO : duplicate with BoxRenderer + apply also to hit test NativeElement above
+		if (_coreStyle.position == fixed)
+		{
+			
+			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			{
+				embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
+			}
+			else
+			{
+				embeddedHTMLElement.embeddedAsset.x = _positionedOrigin.x;
+			}
+			
+			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			{
+				embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
+			}
+			else
+			{
+				embeddedHTMLElement.embeddedAsset.y = _positionedOrigin.y;
+			}
+		}
+		else if (_coreStyle.position == absolute)
+		{
+			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			{
+				embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
+			}
+			else
+			{
+				embeddedHTMLElement.embeddedAsset.x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
+			}
+			
+			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			{
+				embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
+			}
+			else
+			{
+				embeddedHTMLElement.embeddedAsset.y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
+			}
+		}
+		else
+		{
+			embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
+			embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
+		}
+		
 		
 		
 		#end

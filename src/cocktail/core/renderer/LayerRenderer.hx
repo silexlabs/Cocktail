@@ -104,8 +104,6 @@ class LayerRenderer
 			{
 				nativeElements.push(childLayers[i]);
 			}
-			
-			#if (flash9 || nme)
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
@@ -131,6 +129,7 @@ class LayerRenderer
 			}
 		}
 		
+		#if (flash9 || nme)
 		
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
@@ -237,8 +236,8 @@ class LayerRenderer
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
 		
-		//TODO : shouldn't have to do that
-		childLayers.reverse();
+		//TODO : check if it shouldn't be kept after all
+		//childLayers.reverse();
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
