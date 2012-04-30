@@ -196,6 +196,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		#end
 		
 		
+	
 		//TODO : apply transformations, opacity and visibility
 		
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background

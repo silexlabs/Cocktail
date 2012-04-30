@@ -167,7 +167,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//TODO : setting a number too big makes BitmapData crashes in Flash
-			setComputedWidth(style, 1000000);
+			setComputedWidth(style, 1000);
 		}
 	}
 	
