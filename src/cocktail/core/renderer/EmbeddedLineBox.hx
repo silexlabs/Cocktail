@@ -23,6 +23,11 @@ class EmbeddedLineBox extends LineBox
 		return bounds.height;
 	}
 	
+	override private function get_leadedDescent():Float
+	{
+		return 0.0;
+	}
+	
 	//TODO : messy ?
 	override public function render():Array<NativeElement>
 	{

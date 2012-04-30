@@ -162,7 +162,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			setComputedWidth(style, containingHTMLElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
 		}
 		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to an "inifinite" width which will allow to find the max line width of the formatted children
+		//so the width is first set to an "infinite" width which will allow to find the max line width of the formatted children
 		//used by the shrink-to-fit method
 		else
 		{

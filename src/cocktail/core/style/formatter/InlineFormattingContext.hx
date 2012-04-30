@@ -528,7 +528,7 @@ class InlineFormattingContext extends FormattingContext
 					//when justified, the concatenated width of the HTMLElements
 					//must take all the containing HTMLElement width
 					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
-					
+					 
 					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);
 				}
 		}
