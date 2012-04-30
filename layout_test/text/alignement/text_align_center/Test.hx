@@ -13,9 +13,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail because body margin are applied to absolute element
- */
+
 class Test 
 {
 	public static function main()
@@ -25,12 +23,10 @@ class Test
 	
 	public function new()
 	{
-		//should add black border
-		var test = '<div><p>Test passes if the blue box below is in the bottom-left corner of the page.</p>';
-		test += '<div style="margin:1in">';
-		test += '<div style="margin:1in">';
-		test += '<div style="background-color:blue; bottom:0; height:1in; left:0; position:absolute; width:1in;"></div>';
-		test += '</div></div></div>';
+		//TODO : should add border
+		var test = '<div><p>Test passes if the words "Filler Text" below are aligned in the center, inside the blue box.</p>';
+		test += '<div style="text-align:center">Filler Text</div>';
+		test += '</div>';
 		
 		Lib.document.body.innerHTML = test;
 	}
