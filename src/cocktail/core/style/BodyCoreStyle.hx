@@ -201,12 +201,12 @@ class BodyCoreStyle extends ContainerCoreStyle
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
-			child.globalOrigin = {
+			child.globalContainingBlockOrigin = {
 				x: addedX + _computedStyle.marginLeft,
 				y : addedY + _computedStyle.marginTop
 			}
 			
-			child.globalPositionnedOrigin = {
+			child.globalPositionnedAncestorOrigin = {
 				x: addedPositionedX + _computedStyle.marginLeft,
 				y : addedPositionedY + _computedStyle.marginTop
 			}

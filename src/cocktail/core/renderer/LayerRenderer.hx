@@ -1,7 +1,3 @@
-package cocktail.core.renderer;
-import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
-import haxe.Log;
 /*
 	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
 	This project is © 2010-2011 Silex Labs and is released under the GPL License:
@@ -9,7 +5,12 @@ import haxe.Log;
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
+package cocktail.core.renderer;
+
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.Matrix;
+import cocktail.core.NativeElement;
+import haxe.Log;
 
 /**
  * A LayerRenderer is in charge of rendering 
@@ -34,7 +35,6 @@ class LayerRenderer
 	 * created the LayerRenderer
 	 */
 	private var _rootRenderer:ElementRenderer;
-	public var rootRenderer(get_rootRenderer, never):ElementRenderer;
 
 	/**
 	 * class constructor
@@ -201,9 +201,6 @@ class LayerRenderer
 	/**
 	 * Retrieve all the children block container of this LayerRenderer by traversing
 	 * recursively the rendering tree.
-	 * 
-	 * TODO : would also return the InlineBoxRenderer if they were attached to the
-	 * rendering tree as they should
 	 */
 	private function getBlockContainerChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
@@ -493,10 +490,4 @@ class LayerRenderer
 		//currentMatrix.translate(this._nativeX, this._nativeY);
 		return currentMatrix;
 	}
-	
-	private function get_rootRenderer():ElementRenderer
-	{
-		return _rootRenderer;
-	}
-	
 }
