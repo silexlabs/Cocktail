@@ -41,10 +41,10 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if the orange box is to the left of the blue box and both boxes are above the yellow box.</p>";
+	var test = "<div><p>Test passes if there is one black box on this page (with no jagged edges).</p>";
 	test += "<div>";
-	test += "<span style=\"background-color:blue; width:1in;\">Inline box</span>";
-	test += "<span style=\"background-color:yellow\" id=\"div2\">Block box</span>";
+	test += "<div style=\"margin-left:96px; font-size:16px;\">xx</div>";
+	test += "<div style=\"text-indent:96px; font-size:16px;\">xx</div>";
 	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
 }

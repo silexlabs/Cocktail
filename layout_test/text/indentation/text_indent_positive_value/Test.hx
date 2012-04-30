@@ -14,7 +14,7 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because body margin are applied to absolute element
+ * TODO : doesn't work because text indent not implemented in inline formatting context
  */
 class Test 
 {
@@ -25,12 +25,11 @@ class Test
 	
 	public function new()
 	{
-		//should add black border
-		var test = '<div><p>Test passes if the blue box below is in the bottom-left corner of the page.</p>';
-		test += '<div style="margin:1in">';
-		test += '<div style="margin:1in">';
-		test += '<div style="background-color:blue; bottom:0; height:1in; left:0; position:absolute; width:1in;"></div>';
-		test += '</div></div></div>';
+		var test = '<div><p>Test passes if there is one black box on this page (with no jagged edges).</p>';
+		test += '<div>';
+		test += '<div style="margin-left:96px; font-size:16px;">xx</div>';
+		test += '<div style="text-indent:96px; font-size:16px;">xx</div>';
+		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
 	}

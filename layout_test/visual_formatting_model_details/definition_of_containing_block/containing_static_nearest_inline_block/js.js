@@ -41,7 +41,7 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if there is no red visible on the page.</p>";
+	var test = "<div>";
 	test += "<div style=\"background-color:red; display:inline-block; height:100px; width:100px;\">";
 	test += "<div style=\"background-color:green; height:100%; width:100%; position:static;\"></div>";
 	test += "</div></div>";
