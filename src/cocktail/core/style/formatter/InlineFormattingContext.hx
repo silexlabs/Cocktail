@@ -60,7 +60,6 @@ class InlineFormattingContext extends FormattingContext
 	{
 		_unbreakableLineBoxes = new Array<LineBox>();
 		_unbreakableWidth = 0;
-		
 		super(formattingContextRoot);
 		
 		//set the textIndent as an offset on the first line of text
@@ -81,7 +80,6 @@ class InlineFormattingContext extends FormattingContext
 	private function startFormat(staticPositionedElement:ElementRenderer):Void
 	{
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
-		
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);
 		
@@ -110,7 +108,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				//remove all the previous line boxes before creating new ones
 				child.lineBoxes = new Array<LineBox>();
-				
+			
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
@@ -140,6 +138,10 @@ class InlineFormattingContext extends FormattingContext
 				//remove the reference to this inline box renderer so that when a new line
 				//is created, no line box pointing to this inline box renderer is created
 				openedElementRenderers.pop();
+				
+				//The current line box must also be set to the parent line box so that no more
+				//line boxes are added to this line box as it is done formatting its child line boxes
+				lineBox = cast(lineBox.parentNode);
 				
 				//The right margin and padding is added to the last generated line box of the current inline
 				//box renderer
@@ -180,13 +182,13 @@ class InlineFormattingContext extends FormattingContext
 				//get all the line boxes of the element, for instance, for a TextRenderer it will be an array
 				//of TextLineBox
 				var childLineBoxes:Array<LineBox> = child.lineBoxes;
-
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 		}
+	
 		return lineBox;
 	}
 	
@@ -295,6 +297,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
+		
 		//loop in all the line boxes which must be added to the current line
 		for ( i in 0...lineBoxes.length)
 		{
@@ -540,28 +543,33 @@ class InlineFormattingContext extends FormattingContext
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
 	 * @param	flowX the x position of the first HTMLElement
 	 */
-	private function alignLeft(flowX:Int, lineBox:LineBox):Void
+	private function alignLeft(flowX:Int, lineBox:LineBox):Int
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
-			
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			child.bounds.x = flowX;
-			
-			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignLeft(flowX, child);
+				flowX = alignLeft(flowX, child);
 			}
+			
+			child.bounds.x = flowX;
+			flowX += Math.round(child.bounds.width);
+			
 		}
 		flowX += lineBox.marginRight + lineBox.paddingRight;
+		
+		return flowX;
 	}
 	
 
 	/**
 	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
+	 * 
+	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * 
 	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
@@ -584,6 +592,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * align the HTMLElements starting from the right edge to the left edge of the
 	 * containing HTMLElement
+	 * 
+	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * 
 	 * @param	flowX the x position of the HTMLElement to left most of the line box
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
@@ -606,6 +617,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Justify the HTMLElements in the line box by adjusting
 	 * the width of the space characters
+	 * 
+	 * TODO : flowX, remainingSpace and spacesInLine should be passed by reference, not value
+	 * 
 	 * @param	flowX
 	 * @param	remainingSpace
 	 */

@@ -267,8 +267,6 @@ class HTMLElement extends Element, implements IEventTarget
 	 * internally doing all the style heavy lifting.
 	 * It can be used by end-user when they want to
 	 * define styles using typed object instead of string
-	 * 
-	 * TODO : update doc for this all around
 	 */
 	private var _coreStyle:CoreStyle;
 	public var coreStyle(get_coreStyle, never):CoreStyle;
