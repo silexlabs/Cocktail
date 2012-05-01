@@ -74,70 +74,29 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		super(HTML_ANCHOR_TAG_NAME);
 		_target = TARGET_SELF;
 	}
-	
-	/**
-	 * create a native anchor element
-	 */
-	override private function initNativeElement():Void
-	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.anchor);
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN MOUSE SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * When setting a mouse down callback, it is always
-	 * set on the mouse for the HTML anchor as even
-	 * if the user sets a null callback for the mouse down
-	 * event, the callback must be called to follow the
-	 * http link if it is provided
-	 */
-	override private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
+	//TODO : doc + check if actaully works
+	override private function get_onMouseDown():MouseEvent->Void
 	{
-		_onMouseDown = value;
-		_mouse.onMouseDown = onMouseDownCallback;
-		
-		return _onMouseDown;
-	}
-	
-	/**
-	 * Same as mouse down, the callbakc is always set
-	 * to add the default behaviour of setting the mouse
-	 * cursor on mouse over
-	 */
-	override private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
-	{
-		_onMouseOver = value;
-		_mouse.onMouseOver = onMouseOverCallback;
-		
-		return _onMouseOver;
-	}
-	
-	/**
-	 * Same as mouse out
-	 */
-	override private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
-	{
-		_onMouseOut = value;
-		_mouse.onMouseOut = onMouseOutCallback;
-		
-		return _onMouseOut;
+		return onMouseUpCallback;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN MOUSE EVENT CALLBACK
+	// MOUSE EVENT CALLBACK
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Open the link in addition to calling the user callback
 	 */
-	override private function onMouseDownCallback(mouseEvent:MouseEvent):Void
+	private function onMouseUpCallback(mouseEvent:MouseEvent):Void
 	{
-		if (_onMouseDown != null)
+		if (_onMouseUp != null)
 		{
-			_onMouseDown(mouseEvent);
+			_onMouseUp(mouseEvent);
 		}
 		
 		//check wether a user callback canceled
@@ -147,33 +106,6 @@ class AbstractHTMLAnchorElement extends HTMLElement
 			openDocument();
 		}
 	}
-
-	/**
-	 * Display a pointer cursor when hovering an anchor
-	 */
-	override private function onMouseOverCallback(mouseEvent:MouseEvent):Void
-	{
-		if (_onMouseOver != null)
-		{
-			_onMouseOver(mouseEvent);
-		}
-		
-		displayPointerCursor();
-	}
-	
-	/**
-	 * Remove the pointer cursor when hovering out of an anchor
-	 */
-	override private function onMouseOutCallback(mouseEvent:MouseEvent):Void
-	{
-		if (_onMouseOut != null)
-		{
-			_onMouseOut(mouseEvent);
-		}
-		
-		hidePointerCursor();
-	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
@@ -199,44 +131,22 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	 * Open the linked document using
 	 * runtime specific API. Overriden
 	 * by runtime as needed
+	 * 
+	 * TODO : should use instead window.location so that
+	 * there won't be a need to subclass
 	 */
 	private function openDocument():Void
 	{
 		//abstract
 	}
 	
-	/**
-	 * set the pointer cursor
-	 */
-	private function displayPointerCursor():Void
-	{
-		MouseCursorManager.setMouseCursor(MouseCursorValue.native(NativeOSMouseCursorValue.pointer));
-	}
-	
-	/**
-	 * switch back to the default cursor
-	 */
-	private function hidePointerCursor():Void
-	{
-		MouseCursorManager.setMouseCursor(MouseCursorValue.cssAuto);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOCUMENT LINK SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * set the href attribute and refresh
-	 * the mouse down callback with the new href
-	 * value
-	 */
 	private function set_href(value:String):String
 	{
-		_href = value;
-		set_onMouseDown(_onMouseDown);
-		set_onMouseOver(_onMouseOver);
-		set_onMouseOut(_onMouseOut);
-		return value;
+		return 	_href = value;
 	}
 	
 	private function get_href():String
@@ -244,18 +154,9 @@ class AbstractHTMLAnchorElement extends HTMLElement
 		return _href;
 	}
 		
-	/**
-	 * set the target attribute and refresh
-	 * the mouse down callback with the new target
-	 * value
-	 */
 	private function set_target(value:String):String
 	{
-		_target = value;
-		set_onMouseDown(_onMouseDown);
-		set_onMouseOver(_onMouseOver);
-		set_onMouseOut(_onMouseOut);
-		return value;
+		return _target = value;
 	}
 	
 	private function get_target():String

@@ -34,6 +34,8 @@ import cocktail.core.style.StyleData;
  * Elements that only expose the HTML core attributes are represented 
  * by the base HTMLElement interface.
  * 
+ * TODO : update doc now that mouse and keyboard are removed
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLElement extends Element, implements IEventTarget
@@ -50,26 +52,19 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : add mouse double click
 	
 	/**
-	 * An instance of the cross-platform mouse class, used to listen
-	 * to native mouse events
-	 */
-	private var _mouse:Mouse;
-	
-	/**
 	 * The callback called on mouse click (rapid mouse down and mouse up)
-	 * through the mouse instance
 	 */
 	private var _onClick:MouseEvent->Void;
 	public var onclick(get_onClick, set_onClick):MouseEvent->Void;
 	
 	/**
-	 * The callback called on mouse down through the mouse instance
+	 * The callback called on mouse down 
 	 */
 	private var _onMouseDown:MouseEvent->Void;
 	public var onmousedown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
 	
 	/**
-	 * The callback called on mouse up through the mouse instance
+	 * The callback called on mouse up
 	 */
 	private var _onMouseUp:MouseEvent->Void;
 	public var onmouseup(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
@@ -97,19 +92,13 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An instance of the cross-platform keyboard class, used to listen
-	 * to key down and up event
-	 */
-	private var _keyboard:Keyboard;
-	
-	/**
-	 * The callback called on key down through the keyboard instance
+	 * The callback called on key down when this htmlElement has focus
 	 */
 	private var _onKeyDown:KeyboardEvent->Void;
 	public var onkeydown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
 	
 	/**
-	 * The callback called on key up through the keyboard instance
+	 * The callback called on key up when this htmlElement has focus
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
 	public var onkeyup(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
@@ -180,13 +169,6 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * An abstract reference to the native element wrapped by this HTMLElement.
-	 * Varies for each runtime : in JS it is an HTML element, in Flash a Sprite
-	 */
-	private var _nativeElement:NativeElement;
-	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/**
 	 * This attribute assigns a name to an element. 
@@ -299,15 +281,6 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function init():Void
 	{	
-		//instantiate the right NativeElement for this HTMLElement
-		initNativeElement();
-		
-		//init mouse listeners
-		initMouse();
-		
-		//init key listeners
-		initKeyboard();
-		
 		//init the core style for this HTMLElement
 		initCoreStyle();
 		
@@ -316,33 +289,6 @@ class HTMLElement extends Element, implements IEventTarget
 		
 		//init the Id attribute
 		initId();
-	}
-	
-	/**
-	 * instantiate the right nativeElement
-	 */
-	private function initNativeElement():Void
-	{
-		_nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.semantic(_tagName));
-	}
-	
-	/**
-	 * initialise the mouse listeners on this HTMLElement by 
-	 * listening to the current native element
-	 */
-	private function initMouse():Void
-	{
-		_mouse = new Mouse(cast(this));
-	}
-	
-	/**
-	 * initialise the keyboard listener on this HTMLElement. The 
-	 * key events are triggered on the HTMLElement which has the
-	 * focus
-	 */
-	private function initKeyboard():Void
-	{
-		_keyboard = new Keyboard(cast(this));
 	}
 	
 	/**
@@ -410,7 +356,6 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE SETTER/GETTER AND METHOD
-	// Proxies setting/getting properties from the mouse listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -427,24 +372,13 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_onClick != null)
 		{
-			onClickCallback(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
+			_onClick(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
 		}
 	}
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onClick = value;
-		
-		if (_onClick == null)
-		{
-			_mouse.onClick = null;
-		}
-		else
-		{
-			_mouse.onClick = onClickCallback;
-		}
-		
-		return value;
+		return _onClick = value;
 	}
 	
 	private function get_onClick():MouseEvent->Void
@@ -454,18 +388,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onMouseDown = value;
-		
-		if (_onMouseDown == null)
-		{
-			_mouse.onMouseDown = null;
-		}
-		else
-		{
-			_mouse.onMouseDown = onMouseDownCallback;
-		}
-		
-		return value;
+		return _onMouseDown = value;
 	}
 	
 	private function get_onMouseDown():MouseEvent->Void
@@ -475,18 +398,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onMouseUp = value;
-		
-		if (_onMouseUp == null)
-		{
-			_mouse.onMouseUp = null;
-		}
-		else
-		{
-			_mouse.onMouseUp = onMouseUpCallback;
-		}
-		
-		return value;
+		return _onMouseUp = value;
 	}
 	
 	private function get_onMouseUp():MouseEvent->Void
@@ -496,18 +408,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onMouseOver = value;
-		
-		if (_onMouseOver == null)
-		{
-			_mouse.onMouseOver = null;
-		}
-		else
-		{
-			_mouse.onMouseOver = onMouseOverCallback;
-		}
-		
-		return value;
+		return _onMouseOver = value;
 	}
 	
 	private function get_onMouseOver():MouseEvent->Void
@@ -517,18 +418,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onMouseOut = value;
-		
-		if (_onMouseOut == null)
-		{
-			_mouse.onMouseOut = null;
-		}
-		else
-		{
-			_mouse.onMouseOut = onMouseOutCallback;
-		}
-		
-		return value;
+		return _onMouseOut = value;
 	}
 	
 	private function get_onMouseOut():MouseEvent->Void
@@ -538,18 +428,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_onMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
-		_onMouseMove = value;
-		
-		if (_onMouseMove == null)
-		{
-			_mouse.onMouseMove = null;
-		}
-		else
-		{
-			_mouse.onMouseMove = onMouseMoveCallback;
-		}
-		
-		return value;
+		return _onMouseMove = value;
 	}
 	
 	private function get_onMouseMove():MouseEvent->Void
@@ -558,102 +437,27 @@ class HTMLElement extends Element, implements IEventTarget
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE EVENT CALLBACK
-	// called by the Mouse instance when the user interacts
-	// with the HTMLElement with its mouse
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function onClickCallback(mouseEvent:MouseEvent):Void
-	{
-		_onClick(mouseEvent);
-	}
-	
-	private function onMouseDownCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseDown(mouseEvent);
-	}
-	
-	private function onMouseUpCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseUp(mouseEvent);
-	}
-	
-	private function onMouseMoveCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseMove(mouseEvent);
-	}
-	
-	private function onMouseOverCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseOver(mouseEvent);
-	}
-	
-	private function onMouseOutCallback(mouseEvent:MouseEvent):Void
-	{
-		_onMouseOut(mouseEvent);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// KEYBOARD SETTER/GETTER
-	// Proxies setting/getting properties from the keyboard listener instance
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function set_onKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		_onKeyDown = value;
-		
-		if (_onKeyDown == null)
-		{
-			_keyboard.onKeyDown = null;
-		}
-		else
-		{
-			_keyboard.onKeyDown = onKeyDownCallback;
-		}
-		
-		return value;
+		return _onKeyDown = value;
 	}
 	
 	private function get_onKeyDown():KeyboardEvent->Void
 	{
-		return _keyboard.onKeyDown;
+		return _onKeyDown;
 	}
 	
 	private function set_onKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		_onKeyUp = value;
-		
-		if (_onKeyUp == null)
-		{
-			_keyboard.onKeyUp = null;
-		}
-		else
-		{
-			_keyboard.onKeyUp = onKeyUpCallback;
-		}
-		
-		return value;
+		return _onKeyUp = value;
 	}
 	
 	private function get_onKeyUp():KeyboardEvent->Void
 	{
-		return _keyboard.onKeyUp;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// KEYBOARD EVENT CALLBACK
-	// called by the Keyboard instance when the user interacts
-	// with the keyboard while this HTMLElement has the focus
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function onKeyDownCallback(keyEventData:KeyboardEvent):Void
-	{
-		_onKeyDown(keyEventData);
-	}
-	
-	private function onKeyUpCallback(keyEventData:KeyboardEvent):Void
-	{
-		_onKeyUp(keyEventData);
+		return _onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -819,15 +623,6 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Returns the reference to this HTMLElement native element
-	 * @return a DisplayObject in AS, an HTML element in JS...
-	 */
-	private function get_nativeElement():NativeElement
-	{
-		return this._nativeElement;
-	}
 	
 	/**
 	 * Retrieve the id value from the attributes

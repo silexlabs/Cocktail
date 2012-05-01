@@ -1,7 +1,7 @@
 package cocktail.core.html;
 import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
-import cocktail.core.drawing.DrawingManager;
+import cocktail.core.DrawingManager;
 
 /**
  * ...
@@ -36,13 +36,12 @@ class HTMLCanvasElement extends EmbeddedElement
 		_intrinsicHeight = CANVAS_INTRINSIC_HEIGHT;
 		_intrinsicWidth = CANVAS_INTRINSIC_WIDTH;
 		_intrinsicRatio = _intrinsicWidth / _intrinsicHeight;
-		
-		
 	}
 	
+	//TODO : no need anymore of this method ?
 	override private function initEmbeddedAsset():Void
 	{
-		_embeddedAsset = _nativeElement;
+		//_embeddedAsset = _nativeElement;
 	}
 	
 	public function getContext(contextID:String):DrawingManager
@@ -51,7 +50,9 @@ class HTMLCanvasElement extends EmbeddedElement
 		{
 			if (_drawingManager == null)
 			{
-				_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
+				//TODO : shouldn't need to create a native element anymore, should be
+				//encapsulated by drawing manager
+				_drawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.canvas),_intrinsicHeight, _intrinsicWidth );
 			}
 			return _drawingManager;
 		}
