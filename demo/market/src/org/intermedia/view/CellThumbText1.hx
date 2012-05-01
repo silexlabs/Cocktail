@@ -130,8 +130,8 @@ class CellThumbText1 extends CellBase
 	
 	override public function refreshStyles():Void 
 	{
+		super.refreshStyles();
 		// reset cropped image style
-		//_croppedImage.refreshStyles();
 		_croppedImage.refreshStyles();
 	}
 

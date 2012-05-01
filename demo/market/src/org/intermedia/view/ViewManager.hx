@@ -1,6 +1,8 @@
 package org.intermedia.view;
 
 import haxe.Firebug;
+import haxe.Http;
+import haxe.Timer;
 import js.Lib;
 import js.Dom;
 import org.intermedia.controller.ApplicationController;
@@ -47,6 +49,9 @@ class ViewManager
 	//A ref to the currently displayed main view (not the header)
 	private var _currentView:ViewBase;
 	
+	// _time is used to compute execution time for analysing performance
+	private var _time:Float;
+	
 	/**
 	 * Store ref to application model and controller. Instantiate headerView, loadingView, swippableView then call init().
 	 * 
@@ -55,13 +60,15 @@ class ViewManager
 	 */
 	public function new(applicationModel:ApplicationModel, applicationController:ApplicationController)
 	{
+		// set the time
+		_time = Timer.stamp();
+
 		// simple haxe js test
-		/*var text:HtmlDom = Lib.document.createTextNode("hello de LU");
-		_body.appendChild(text);
-		//var image:Image = untyped __js__("new Image()");
-		var image:Image = cast Lib.document.createElement("img");
-		image.src = "assets/loading.gif";
-		_body.appendChild(image);*/
+		//var text:HtmlDom = Lib.document.createTextNode("hello de LU");
+		//_body.appendChild(text);
+		//var image:Image = cast Lib.document.createElement("img");
+		//image.src = "assets/loading.gif";
+		//_body.appendChild(image);
 		
 		// Store ref to application model and controller
 		_applicationModel = applicationModel;
@@ -92,12 +99,19 @@ class ViewManager
 		
 		// onresize callback
 		Lib.window.onresize = onResizeCallback;
+		// on scroll callback is placed here for iPhone & Android phones, so that swippableView is resized when navigation bar is hidden
+		// can be romoved in native apps
+		Lib.window.onscroll = onResizeCallback;
 
 		// call init()
 		init();
 		
 		//_header.node.style.visibility = "hidden";
 		//_menu.node.style.visibility = "hidden";
+
+		//Firebug.trace("ViewManager built in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
+		//trace("ViewManager built in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
+		
 	}
 	
 	/**
@@ -232,8 +246,8 @@ class ViewManager
 	 */
 	public function onLoadingError(error:Dynamic):Void
 	{
-		//trace("Load error: " + Std.string(error));
-		Firebug.trace("Load error: " + Std.string(error));
+		trace("Load error: " + Std.string(error));
+		haxe.Firebug.trace("Load error: " + Std.string(error));
 	}
 	
 	/**

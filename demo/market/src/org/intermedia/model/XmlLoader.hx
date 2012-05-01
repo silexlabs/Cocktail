@@ -13,8 +13,6 @@
 
 package org.intermedia.model;
 
-////import cocktail.Cocktail;
-//import cocktail.resource.ResourceLoaderManager;
 import haxe.Http;
 import org.intermedia.model.ApplicationModel;
 
@@ -58,11 +56,20 @@ class XmlLoader
 	{
 		var fullUrl:String = "";
 		
+		// this way of loading local feeds is no longuer used as not supported by PhoneGap
 		// if application is offline, access local url feed
-		if (!_online) fullUrl = xmlUrl;
+		/*if (!_online)
+		{
+			fullUrl = xmlUrl;
+		}
 		// otherwise access online feed using silexlabs proxy
-		else fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
+		else
+		{
+			fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
+		}*/
 		
+		fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
+
 		// try to load the xml feed using a Silex labs proxy
 		try {
 			//ResourceLoaderManager.loadString( fullUrl, function (xml:String) { onXmlLoaded(listId, xml); }, onXmlError);

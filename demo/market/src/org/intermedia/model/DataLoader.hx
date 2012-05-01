@@ -1,7 +1,6 @@
 package org.intermedia.model;
 
-//import cocktail.Cocktail;
-//import org.intermedia.model.XmlLoader;
+import js.Lib;
 import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 
@@ -74,25 +73,28 @@ class DataLoader
 			
 			Firebug.trace(feed + " => " + pageIndex);
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
-			//haxe.Log.trace(fullUrl);
-			// handle page index
-			//_pageIndex++;
 			
+			// load xml feed
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 		}
 		// prepare local feed url
 		else
 		{
-			//fullUrl = "data/silex_plugins.rss";
+			// depending on the feed, load corresponding local xml ressource, parse it and call callback 
 			if (feed == Feeds.FEED_1.url)
-				fullUrl = "data/feed1.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed1")));
+			}
 			else if (feed == Feeds.FEED_2.url)
-				fullUrl = "data/feed2.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed2")));
+			}
 			else if (feed == Feeds.FEED_3.url)
-				fullUrl = "data/feed3.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed3")));
+			}
 		}
 		
-		// load xml feed
-		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 	}
 	
 	/**
@@ -112,13 +114,21 @@ class DataLoader
 		var fullUrl:String = "";
 		
 		// prepare online feed url
-		if (_online) fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
+		if (_online)
+		{
+			fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
+			
+			// load xml feed
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
+		}
 		// prepare local feed url
-		else fullUrl = "data/detail.rss";
+		else
+		{
+			// load local xml ressource, parse it and call callback 
+			onCellDetailXmlLoaded(Xml.parse(haxe.Resource.getString("detail")),cellData);
+		}
 		
-		// load xml feed
-		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
-
+var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
 	}
 	
 	/**

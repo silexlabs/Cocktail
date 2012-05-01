@@ -17,8 +17,9 @@ class Scroll2D
 {
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
-	static inline var VERTICAL_TWEEN_DELTA:Int = 100;
+	static inline var VERTICAL_TWEEN_DELTA:Int = 50;
 	static inline var TIME_DELTA:Int = 100;
+	static inline var VERTICAL_RELEASE_TIME:Int = 100;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -62,14 +63,27 @@ class Scroll2D
 	// acceleration computing timer
 	private var _timer:Timer;
 	
+	// values needed to compute velocity
+	private var _verticalVelocity:Float;
+	private var _previousY:Int;
+		
 	public function new(scrollType:ScrollType) 
 	{
 		// init attributes
 		_scrollType = scrollType;
+		initialScrollPosition = { x:0, y:0 };
+		init();
+	}
+	
+	/**
+	 * init attributes
+	 */
+	private function init():Void
+	{
+		// init attributes
 		_initialPosition = { x:0, y:0 };
 		_offset = { x:0, y:0 };
 		_scrollPosition = { x:0, y:0 };
-		initialScrollPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
 	}
 	
@@ -84,7 +98,7 @@ class Scroll2D
 		switch(event.type)
 		{
 			//case "touchstart": type = "mousedown";
-			//case "touchmove":  type="mousemove";        
+			//case "touchmove":  type="mousemove";
 			//case "touchend":   type="mouseup";
 			//default: return;
 			case "touchstart":
@@ -110,6 +124,8 @@ class Scroll2D
 	 */
 	public function onDownCallback(event:Dynamic):Void
 	{
+		init();
+		
 		// stop all tweens
 		//stopTweens();
 
@@ -133,6 +149,14 @@ class Scroll2D
 		// initialise initial touch positions
 		_initialPosition.x = event.touches[0].pageX;
 		_initialPosition.y = event.touches[0].pageY;
+		
+		// init timer & attributes used for acceleration computation
+		_timer = new Timer(TIME_DELTA);
+		_verticalVelocity = 0;
+		_previousY = 0;
+		// launch timer used for computing velocity and acceleration
+		//_timer.run = computeAcceleration;
+		_timer.run = computeVelocity;
 		
 		// set _direction
 		if (_scrollType == ScrollType.horizontal)
@@ -184,7 +208,6 @@ class Scroll2D
 				else
 				{
 					_direction = Direction.vertical;
-					//_timer = Timer.delay(computeAcceleration, TIME_DELTA);
 				}
 			}
 		}
@@ -199,6 +222,7 @@ class Scroll2D
 		{
 			onVerticalMoveCallback(event);
 			// if horizontal tween has been initialised, resume it. Done to avoid horizontal scroll stopping between 2 lists
+			// creates a bug !!!!!!!
 			//if ( (_horizontalTween != null) )
 			//{
 				//_horizontalTween.resume();
@@ -348,14 +372,29 @@ class Scroll2D
 	 */
 	private function verticalReleaseTween():Void
 	{
+		// stop timer to freeze computed values
+		_timer.stop();
+		
+		// compute the vertical tween end position
 		var verticalTweenEnd:Int = 0;
+		//trace(_verticalVelocity + ", " + _verticalAcceleration);
+		verticalTweenEnd = _offset.y +
+			Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME));
+		//trace(initialScrollPosition.y + ", " + _previousY + ", " +_offset.y + ", " + Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME)));
 		// if scrolling direction is down
-		if (_offset.y > 0 )
+		/*if (_offset.y > 0 )
+		{
 			//verticalTweenEnd = _scrollPosition.y - VERTICAL_TWEEN_DELTA;
-			verticalTweenEnd = _offset.y + VERTICAL_TWEEN_DELTA;
+			//verticalTweenEnd = _offset.y + VERTICAL_TWEEN_DELTA;
+			verticalTweenEnd = _offset.y + verticalTweenDelta;
+		}
 		else
+		{
 			//verticalTweenEnd = _scrollPosition.y + VERTICAL_TWEEN_DELTA;
-			verticalTweenEnd = _offset.y - VERTICAL_TWEEN_DELTA;
+			//verticalTweenEnd = _offset.y - VERTICAL_TWEEN_DELTA;
+			verticalTweenEnd = _offset.y - verticalTweenDelta;
+		}*/
+		
 		// create the tween
         _verticalTween = new Tween( _offset.y, verticalTweenEnd, 600, Quint.easeOut );
 		_verticalTween.setTweenHandlers( onVerticalScrollCallback, onVerticalTweenEnd );
@@ -402,26 +441,30 @@ class Scroll2D
 		}
 	}*/
 	
-	private var _previousY:Int;
-	private var _previousSpeed:Float;
-	
 	/**
-	 * Computes instantaneous speed and acceleration
+	 * Computes instantaneous velocity
 	 * 
 	 * @return
 	 */
-	//private function computeAcceleration():Float
-	private function computeAcceleration():Void
+	private function computeVelocity():Void
 	{
-		var speed:Float = deriv(_previousY, _offset.y);
-		var acceleration:Float = deriv(_previousSpeed, speed);
-		_previousY = _offset.y;
-		_previousSpeed = speed;
-		//trace(speed + ", " + acceleration);
-		// call itself
-		//_timer = Timer.delay(computeAcceleration, TIME_DELTA);
-		//return acceleration;
+		// compute velocity
+		_verticalVelocity = deriv(_previousY, _offset.y);
+		_previousY = Std.parseInt(Std.string(_offset.y));
+		//_previousY = _offset.y;
 	}
+	
+	/**
+	 * Computes instantaneous acceleration
+	 * 
+	 * @return
+	 */
+	/*private function computeAcceleration():Void
+	{
+		// compute acceleration
+		_verticalAcceleration = deriv(_previousSpeed, _verticalVelocity);
+		_previousSpeed = Std.parseInt(Std.string(_verticalVelocity));
+	}*/
 	
 	/**
 	 * Derivates 2 values based on time

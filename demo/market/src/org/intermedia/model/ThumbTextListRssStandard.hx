@@ -13,16 +13,14 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
-////import cocktail.Cocktail;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.HtmlDom;
-//import cocktail.NativeElementManager;
-//import cocktail.NativeElementData;
-
 import org.intermedia.model.ApplicationModel;
+import haxe.Timer;
 
 class ThumbTextListRssStandard 
 {
+	// _time is used to compute execution time for analysing performance
+	//static var _time:Float;
+	
 	/**
 	 * Converts a rss to an Array of CellDatas
 	 * 
@@ -31,6 +29,9 @@ class ThumbTextListRssStandard
 	 */
 	public static function rss2Cells(rss:Xml):Array<CellData>
 	{
+		// set the time
+		//var _time:Float = Timer.stamp();
+
 		var cells:Array<CellData> = new Array<CellData>();
 
 		// set channel node
@@ -102,6 +103,8 @@ class ThumbTextListRssStandard
 				}
 			}
 		}
+		//haxe.Firebug.trace("Feed parsed in " + Std.string((Timer.stamp() - _time) * 1000).substr(0,5) + "ms");
+		//trace("Feed parsed in " + Std.string((Timer.stamp() - _time) * 1000).substr(0,5) + "ms");
 		// return cell array
 		return cells;
 	}

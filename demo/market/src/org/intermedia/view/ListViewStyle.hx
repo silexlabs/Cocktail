@@ -43,13 +43,13 @@ class ListViewStyle
 		//node.style.width = Std.string(node.clientWidth) + "px";
 		//node.style.width = "auto";
 		// set list width to 1/3 of the swippable list view
-		//node.style.width = Std.string(100/3) + "%";
-		node.style.width = Std.string(Lib.window.innerWidth) + "px";
-		node.style.height = Std.string(Lib.window.innerHeight) + "px";
+		node.style.width = Std.string(100/3) + "%";
+		//node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
 		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
 		//node.style.height = "auto";
-		//node.style.height = "100%";
+		node.style.height = "100%";
 		
 		node.style.top = "0px";
 		node.style.bottom = "0px";
@@ -69,14 +69,12 @@ class ListViewStyle
 	 */
 	public static function loaderImage(node:HtmlDom)
 	{
-		var VERTICAL_MARGIN:Int = 20;
-		
 		node.style.display = "block";
 		
 		node.style.marginLeft = "auto";
 		node.style.marginRight = "auto";
-		node.style.marginTop = Std.string(VERTICAL_MARGIN) + "px";
-		node.style.marginBottom = Std.string(VERTICAL_MARGIN) + "px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = Std.string(Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN) + "px";
 		
 		node.style.top = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.zIndex = 1000;

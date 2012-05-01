@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 
@@ -103,6 +104,21 @@ class CellStyle
 		// add border using margin and background as not supported by cocktail yet
 		node.style.marginTop = Std.string(borderWidth) + "px";
 		node.style.marginLeft = Std.string(borderWidth) + "px";
+		// reduce width accordingly
+		// if unit is %
+		/*if (node.style.width.substr(-1) == "%")
+		{
+			//Firebug.trace(node.style.width);
+			//Firebug.trace(node.style.width.substr(0, -1));
+			node.style.width = Std.string( Std.parseInt(node.style.width.substr(0, -1)) - (borderWidth/Lib.window.innerWidth) ) + "%";
+			Firebug.trace(node.style.width);
+		}
+		// if unit is px
+		else if (node.style.width.substr( -2) == "px")
+		{
+			node.style.width = Std.string( Std.parseInt(node.style.width.substr(0, -2)) - borderWidth ) + "px";
+		}*/
+		
 	}
 	
 	/*public static function addBorderCss(node:HtmlDom):Void
