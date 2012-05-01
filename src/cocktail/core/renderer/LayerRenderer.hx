@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -176,6 +177,78 @@ class LayerRenderer
 		
 		
 		return nativeElements;
+	}
+	
+	public function getElementRenderersAtPoint(point:PointData):Array<ElementRenderer>
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootRenderer, point);
+
+		if (_rootRenderer.hasChildNodes() == true)
+		{
+			var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+			
+			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
+			
+			for (i in 0...elementRenderersAtPointInChildLayers.length)
+			{
+				elementRenderersAtPoint.push(elementRenderersAtPointInChildLayers[i]);
+			}
+		}
+		
+		
+		return elementRenderersAtPoint;
+	}
+	
+	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData):Array<ElementRenderer>
+	{
+		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...renderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(renderer.childNodes[i]);
+			
+			if (child.layerRenderer == this)
+			{
+				if (isWithinBounds(point, child.globalBounds) == true)
+				{
+					elementRenderersAtPointInLayer.push(child);
+				}
+				
+				if (child.hasChildNodes() == true)
+				{
+					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point);
+					
+					for (j in 0...childElementRenderersAtPointInLayer.length)
+					{
+						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+					}
+				}
+			}
+		}
+		
+		return elementRenderersAtPointInLayer;
+	}
+	
+	private function getElementRenderersAtPointInChildLayers(point:PointData, childLayers:Array<LayerRenderer>):Array<ElementRenderer>
+	{
+		var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...childLayers.length)
+		{
+			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = childLayers[i].getElementRenderersAtPoint(point);
+			
+			for (j in 0...elementRenderersAtPointInChildLayer.length)
+			{
+				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);
+			}
+		}
+		
+		return elementRenderersAtPointInChildLayers;
+	}
+	
+	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
+	{
+		return point.x > bounds.x && (point.x < bounds.x + bounds.width) && point.y > bounds.y && (point.y < bounds.y + bounds.height);	
 	}
 	
 	/////////////////////////////////

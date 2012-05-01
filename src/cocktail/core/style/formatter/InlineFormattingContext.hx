@@ -176,7 +176,7 @@ class InlineFormattingContext extends FormattingContext
 				
 				child.lineBoxes.push(embeddedLineBox);
 				
-				
+				//TODO : should had left and right margin to line box, like for inline-block
 				
 				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);

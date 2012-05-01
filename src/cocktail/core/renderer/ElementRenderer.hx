@@ -12,6 +12,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.drawing.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.StyleData;
 
 /**
  * This is the base class for element renderers.
@@ -65,6 +66,17 @@ class ElementRenderer extends Node
 	 */
 	private var _bounds:RectangleData;
 	public var bounds(get_bounds, set_bounds):RectangleData;
+	
+	/**
+	 * The bounds of the ElementRenderer in the space of the Window.
+	 * 
+	 * This is a utility read-only property which returns the
+	 * relevant global bounds for an ElementRenderer. For instance
+	 * if the ElementRenderer uses the normal flow, then its bounds
+	 * will be used to determine its global bounds whereas if it
+	 * is absolutely positioned, it will use its positioned bounds
+	 */
+	public var globalBounds(get_globalBounds, never):RectangleData;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -284,6 +296,67 @@ class ElementRenderer extends Node
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
+	
+	private function get_globalBounds():RectangleData
+	{
+		var globalX:Float;
+		var globalY:Float;
+		
+		if (_coreStyle.position == fixed)
+		{
+			
+			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			{
+				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+			}
+			else
+			{
+				globalX = _positionedOrigin.x;
+			}
+			
+			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			{
+				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+			}
+			else
+			{
+				globalY = _positionedOrigin.y;
+			}
+		}
+		else if (_coreStyle.position == absolute)
+		{
+			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			{
+				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+			}
+			else
+			{
+				globalX = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
+			}
+			
+			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			{
+				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+			}
+			else
+			{
+				globalY = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
+			}
+		}
+		else
+		{
+			globalX = _globalContainingBlockOrigin.x + _bounds.x;
+			globalY = _globalContainingBlockOrigin.y + _bounds.y;
+		}
+		
+		
+		return {
+			x:globalX,
+			y:globalY,
+			width:bounds.width,
+			height:bounds.height
+		}
+	}
 	
 	private function getLineBoxes():Array<LineBox>
 	{

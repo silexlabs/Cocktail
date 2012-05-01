@@ -115,25 +115,28 @@ class BoxRenderer extends ElementRenderer
 		
 		if (isInitialContainer() == false)
 		{
+			if (_coreStyle.htmlElement.onmousedown != null)
+			{
+					//TODO : implement properly hit area for flash_player
+				var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
 			
-			//TODO : implement properly hit area for flash_player
-			var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
-		
-			nativeElement.x = 0;
-			nativeElement.y = 0;
+				nativeElement.x = 0;
+				nativeElement.y = 0;
+				
+				nativeElement.graphics.clear();
+				
+				#if flash9
+				nativeElement.graphics.beginFill(0xFF0000, 0.5);
+				//bug in nme, no click event for transparent rect
+				#elseif nme
+				nativeElement.graphics.beginFill(0xFF0000, 0.01);
+				#end
+				nativeElement.graphics.drawRect(_globalContainingBlockOrigin.x + _bounds.x, _globalContainingBlockOrigin.y + _bounds.y, _bounds.width, _bounds.height);
+				nativeElement.graphics.endFill();
+				
+				backgrounds.push(nativeElement);
+			}
 			
-			nativeElement.graphics.clear();
-			
-			#if flash9
-			nativeElement.graphics.beginFill(0xFF0000, 0.0);
-			//bug in nme, no click event for transparent rect
-			#elseif nme
-			nativeElement.graphics.beginFill(0xFF0000, 0.01);
-			#end
-			nativeElement.graphics.drawRect(_globalContainingBlockOrigin.x + _bounds.x, _globalContainingBlockOrigin.y + _bounds.y, _bounds.width, _bounds.height);
-			nativeElement.graphics.endFill();
-			
-			backgrounds.push(nativeElement);
 			
 		}
 		#end

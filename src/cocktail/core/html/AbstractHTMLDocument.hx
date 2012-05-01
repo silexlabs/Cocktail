@@ -11,6 +11,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.event.MouseEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
@@ -19,10 +20,13 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
+import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
 import cocktail.core.nativeElement.NativeElementManager;
+import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
+import haxe.Log;
 import haxe.Timer;
 
 /**
@@ -121,6 +125,15 @@ class AbstractHTMLDocument extends Document
 		_window.onResize = onWindowResize;
 		
 		initKeyboardListeners();
+		initMouseListeners();
+	}
+	
+	private function initMouseListeners():Void
+	{
+		var mouse:Mouse = new Mouse(_body);
+		mouse.onMouseDown = onMouseDown;
+		mouse.onMouseUp = onMouseUp;
+		mouse.onMouseMove = onMouseMove;
 	}
 	
 	/**
@@ -206,6 +219,48 @@ class AbstractHTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function onMouseDown(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	private function onMouseMove(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	private function onMouseUp(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
+				break;
+			}
+		}	
+	}
 	
 	/**
 	 * When a key is pressed, redirect it to
