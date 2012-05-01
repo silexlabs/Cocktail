@@ -48,7 +48,7 @@ class CellBase extends ViewBase
 	 */
 	public function refreshStyles():Void
 	{
-
+		_cellStyle.cell(node,_cellPerLine);
 	}
 
 	

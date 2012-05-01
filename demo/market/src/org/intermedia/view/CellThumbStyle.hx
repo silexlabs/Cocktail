@@ -32,6 +32,10 @@ class CellThumbStyle
 		// use default style
 		CellStyle.setCellStyle(node, cellPerLine);
 		
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Float = CellStyle.computeWidthPercentage(cellPerLine,Constants.CELL_BORDER_WIDTH_LARGE);
+		node.style.width = Std.string(cellWidthPercent) + "%";
+
 		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
 		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 

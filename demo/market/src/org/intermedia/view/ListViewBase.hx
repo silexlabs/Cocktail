@@ -4,6 +4,7 @@ import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
+import haxe.Timer;
 
 /**
  * Base class for list views. Inherithed by the 3 ListViews.
@@ -33,13 +34,22 @@ class ListViewBase extends ViewBase
 	// the list id feed, used to store the feedUrl
 	public var id:String;
 	
-	// list bottom loader
-	//private var _listBottomLoader:Image;
+	// list bottom loader image container
 	private var _listBottomLoader:HtmlDom;
 
+	// list bottom loader image
+	var _bottomLoaderImage:Image;
+
+	// flag indicating if list is waiting for data
+	private var _waitingData:Bool;
+
+	// _time is used to compute execution time for analysing performance
+	//private var _time:Float;
+	
 	public function new()
 	{
 		super();
+		_waitingData = true;
 		
 		ListViewStyle.setListStyle(node);
 		
@@ -51,6 +61,8 @@ class ListViewBase extends ViewBase
 		//node.onScroll = onScrollCallback;
 		node.onscroll = onScrollCallback;
 		
+		//_time = Timer.stamp();
+		
 	}
 	
 	/**
@@ -58,11 +70,11 @@ class ListViewBase extends ViewBase
 	 */
 	private function buildBottomLoader():Void
 	{
-		var bottomLoaderImage:Image = cast Lib.document.createElement("img");
-		ListViewStyle.loaderImage(bottomLoaderImage);
-		bottomLoaderImage.src = "assets/loading.gif";
+		_bottomLoaderImage = cast Lib.document.createElement("img");
+		ListViewStyle.loaderImage(_bottomLoaderImage);
+		_bottomLoaderImage.src = "assets/loading.gif";
 		_listBottomLoader = Lib.document.createElement("div");
-		_listBottomLoader.appendChild(bottomLoaderImage);
+		_listBottomLoader.appendChild(_bottomLoaderImage);
 		CellStyle.setCellStyle(_listBottomLoader);
 	}
 	
@@ -72,6 +84,11 @@ class ListViewBase extends ViewBase
 	 */
 	override private function updateView():Void
 	{
+		_waitingData = false;
+
+		//haxe.Firebug.trace("List " + id + " data received in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
+		//trace("List " + id + " data received in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
+		//_time = Timer.stamp();
 		for (index in Reflect.fields(_data))
 		{
 			// build cell
@@ -102,19 +119,20 @@ class ListViewBase extends ViewBase
 			node.appendChild(_listBottomLoader);
 		}
 		
+		//haxe.Firebug.trace("List " + id + " updated in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
+		//trace("List " + id + " updated in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
 		
 		// if list is attached to body
 		if(node.parentNode.parentNode != null)
 		{
 			// if list content height is not filling the totality of the screen's height
-			//if (node.scrollHeight < Lib.window.innerHeight && node.scrollHeight != 0)
-			Firebug.trace(node.scrollHeight + ", " + Lib.window.innerHeight + ", " + Std.int(Lib.window.innerHeight - Constants.LIST_TOP ));
-			if (node.scrollHeight <= Lib.window.innerHeight)
+			// removed as now list update is done without beeing attached, and as a result scrollHeight equals 0
+			/*Firebug.trace("node.scrollHeight: " + node.scrollHeight);
+			if (node.scrollHeight <= (Lib.window.innerHeight - Constants.LIST_TOP) + Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN)
 			{
-				Firebug.trace("request more data from " + id);
 				// request more data
 				onDataRequestCallback(id);
-			}
+			}*/
 		}
 	}
 	
@@ -149,9 +167,8 @@ class ListViewBase extends ViewBase
 	//override private function onScrollCallback(event:ScrollEventData):Void
 	private function onScrollCallback(event:Event):Void
 	{
-		// if the bottom of the list is reached via scrolling
-		//if (event.scrollTop >= event.scrollHeight - Lib.window.innerHeight)
-		if (node.scrollTop >= node.scrollHeight - Lib.window.innerHeight)
+		// if the bottom of the loading screen is reached via scrolling
+		if (node.scrollTop >= node.scrollHeight - (Lib.window.innerHeight - Constants.LIST_TOP) - Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN)
 		{
 			// call callback
 			onDataRequestCallback(id);
@@ -167,7 +184,16 @@ class ListViewBase extends ViewBase
 		// call callback
 		if (onDataRequest != null)
 		{
-			onDataRequest(id);
+			// if list has not already requested new data, request new data
+			//if (_waitingData != true)
+			if (true)
+			{
+				//_time = Timer.stamp();
+				haxe.Firebug.trace("List " + id + " data requested");
+				//trace("List " + id + " data requested");
+				_waitingData = true;
+				onDataRequest(id);
+			}
 		}
 	}
 	
@@ -176,6 +202,7 @@ class ListViewBase extends ViewBase
 	 */
 	public function refreshStyles():Void
 	{
+		//ListViewStyle.setListStyle(node);
 		for (cell in _cells)
 		{
 			cell.refreshStyles();
