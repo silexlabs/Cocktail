@@ -130,7 +130,7 @@ class AbstractHTMLDocument extends Document
 	
 	private function initMouseListeners():Void
 	{
-		var mouse:Mouse = new Mouse(_body);
+		var mouse:Mouse = new Mouse(NativeElementManager.getRoot());
 		mouse.onMouseDown = onMouseDown;
 		mouse.onMouseUp = onMouseUp;
 		mouse.onMouseMove = onMouseMove;
@@ -142,7 +142,7 @@ class AbstractHTMLDocument extends Document
 	private function initKeyboardListeners():Void
 	{
 		//listens for event on the root of the runtime
-		var keyboard:Keyboard = new Keyboard(_body);
+		var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
 		keyboard.onKeyDown = onKeyDown;
 		keyboard.onKeyUp = onKeyUp;
 	}

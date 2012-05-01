@@ -23,6 +23,9 @@ import cocktail.core.NativeElement;
  * 
  * This is a base abstract class, implemented for each runtime
  * 
+ * TODO : should now be simplified now that events are only listened
+ * by HTMLDocument
+ * 
  * @author a.hoyau [at] silexlabs.org
  * @author Yannick DOMINGUEZ
  */
@@ -44,9 +47,9 @@ class AbstractKeyboard
 
 
 	/**
-	 * The HTMLElement on which keyboard event are listened to
+	 * The NativeElement on which keyboard event are listened to
 	 */
-	private var _htmlElement:HTMLElement;
+	private var _nativeElement:NativeElement;
 	
 	/**
 	 * keyboard event types
@@ -57,9 +60,9 @@ class AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new(nativeElement:NativeElement) 
 	{
-		_htmlElement = htmlElement;
+		_nativeElement = nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
