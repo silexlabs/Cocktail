@@ -565,8 +565,8 @@ class InlineFormattingContext extends FormattingContext
 				flowX = alignLeft(flowX, child);
 			}
 			
-			child.bounds.x = flowX;
-			flowX += Math.round(child.bounds.width);
+			child.bounds.x = flowX + child.marginLeft;
+			flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
