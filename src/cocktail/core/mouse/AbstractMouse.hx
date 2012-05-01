@@ -23,6 +23,9 @@ import cocktail.core.mouse.MouseData;
  * It takes a target HTMLElement objects onto which the mouse
  * event will be listened.
  * 
+ * TODO : should now be simplified now that events are only listened
+ * by HTMLDocument
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractMouse 
@@ -79,16 +82,16 @@ class AbstractMouse
 	private var _mouseMoveEvent:String;
 	
 	/**
-	 * The HTMLElement on which mouse event are listened to
+	 * The NativeElement on which mouse event are listened to
 	 */
-	private var _htmlElement:HTMLElement;
+	private var _nativeElement:NativeElement;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new(nativeElement:NativeElement) 
 	{
-		_htmlElement = htmlElement;
+		_nativeElement = nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
