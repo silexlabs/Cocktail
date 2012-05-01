@@ -108,27 +108,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		#if (flash9 || nme)
 		
 	
-		
-		
-		//TODO : implement properly hit area for flash_player
-		
-		//TODO : as first step, we might create a nativeElement to receive mouse /touch event
-		//and set its callback to call the HTMLElement's onmousover, onmousedown...
-		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
-		
-		nativeElement.x = 0;
-		nativeElement.y = 0;
-		
-		nativeElement.graphics.clear();
-		#if flash9
-		nativeElement.graphics.beginFill(0xFF0000, 0.0);
-		//bug in nme, no click event for transparent rect
-		#elseif nme
-		nativeElement.graphics.beginFill(0xFF0000, 0.01);
-		#end
-		nativeElement.graphics.drawRect(_globalContainingBlockOrigin.x+ _bounds.x,_globalContainingBlockOrigin.y+ _bounds.y, _bounds.width,_bounds.height);
-		nativeElement.graphics.endFill();
-
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		
 		ret.push(embeddedHTMLElement.embeddedAsset);
@@ -140,8 +119,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		
-		
-		ret.push(nativeElement);
 
 		//TODO : duplicate with BoxRenderer + apply also to hit test NativeElement above
 		if (_coreStyle.position == fixed)

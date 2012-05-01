@@ -234,6 +234,7 @@ class AbstractHTMLDocument extends Document
 		}	
 	}
 	
+	//TODO : implement mouse over and mouse out with this method
 	private function onMouseMove(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );

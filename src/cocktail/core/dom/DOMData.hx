@@ -9,6 +9,7 @@ package cocktail.core.dom;
 
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
+import cocktail.core.NativeElement;
 import cocktail.core.renderer.TextLineBox;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;
@@ -164,7 +165,7 @@ enum TextToken {
 			
 			//a bitmap fill, created with the data of an image htmlElement.
 			//The fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLImageElement, repeat:Bool);
+			bitmap(nativeElement:NativeElement, repeat:Bool);
 		}
 
 		/**
@@ -184,7 +185,7 @@ enum TextToken {
 			
 			//a bitmap line, created with the data of an image htmlElement.
 			//The line fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLImageElement, lineStyle:LineStyleData, repeat:Bool);
+			bitmap(nativeElement:NativeElement, lineStyle:LineStyleData, repeat:Bool);
 		}
 
 		/**

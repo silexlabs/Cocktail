@@ -33,14 +33,6 @@ class HTMLBodyElement extends HTMLElement
 	}
 	
 	/**
-	 * overriden to use the root of the runtime
-	 */
-	override private function initNativeElement():Void
-	{
-		_nativeElement = NativeElementManager.getRoot();
-	}
-	
-	/**
 	 * Instantiate a Style specific to this
 	 * HTMLElement
 	 */
