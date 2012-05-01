@@ -288,11 +288,12 @@ class ContainerCoreStyle extends CoreStyle
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
 		var shrinkedWidth:Int = boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
-		
+
 		//if the computed width of the HTMLElement was shrinked, then
 		//a new layout must happen
 		if (this._computedStyle.width != shrinkedWidth)
 		{
+		
 			//store the new computed width
 			this._computedStyle.width = shrinkedWidth;
 			

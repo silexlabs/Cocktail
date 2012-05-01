@@ -160,6 +160,10 @@ class InlineFormattingContext extends FormattingContext
 				
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
 				child.lineBoxes.push(embeddedLineBox);
+				
+				embeddedLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
+				embeddedLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
+
 				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
@@ -169,7 +173,11 @@ class InlineFormattingContext extends FormattingContext
 			else if (child.isEmbedded() == true && child.isText() == false)
 			{
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				
 				child.lineBoxes.push(embeddedLineBox);
+				
+				
+				
 				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
@@ -291,7 +299,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Insert an array of line boxes into the current line. If the line boxes
 	 * can't all fit in the line, as many new line as necessary are created
 	 * 
-	 * TODO : call for each lin box instead of an array of line boxes ?
+	 * TODO : should take marginLeft and marginRight into account
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
@@ -305,7 +313,7 @@ class InlineFormattingContext extends FormattingContext
 			_unbreakableLineBoxes.push(lineBoxes[i]);	
 			
 			//the width of the line box is added to the total width which can't be broken
-			_unbreakableWidth += Math.round(lineBoxes[i].bounds.width);
+			_unbreakableWidth += Math.round(lineBoxes[i].bounds.width) + lineBox.marginLeft + lineBox.marginRight;
 				
 			//get the remaining available space on the current line
 			var remainingLineWidth:Int = getRemainingLineWidth();
@@ -379,10 +387,12 @@ class InlineFormattingContext extends FormattingContext
 		//format line boxes horizontally
 		var lineBoxWidth:Int = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
 		
+		
 		if (lineBoxWidth > _formattingContextData.maxWidth)
 		{
-			_formattingContextData.maxWidth = lineBoxWidth;
+				_formattingContextData.maxWidth = lineBoxWidth;
 		}
+	
 				
 		
 		//format line boxes vertically
@@ -538,6 +548,9 @@ class InlineFormattingContext extends FormattingContext
 	
 	/**
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
+	 * 
+	 * TODO : margins are not used for embedded line boxes
+	 * 
 	 * @param	flowX the x position of the first HTMLElement
 	 */
 	private function alignLeft(flowX:Int, lineBox:LineBox):Int
@@ -554,8 +567,8 @@ class InlineFormattingContext extends FormattingContext
 			
 			child.bounds.x = flowX;
 			flowX += Math.round(child.bounds.width);
-			
 		}
+		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
 		
 		return flowX;
