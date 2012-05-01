@@ -47,7 +47,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			var computedStyle:ComputedStyleData = style.computedStyle;
 			//compute the shrinked width
 			shrinkedWidth = doShrinkToFit(style, containingHTMLElementData, minimumWidth);
-			
+
 			//if both right and left are auto, use left static position, then deduce right
 			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
 			{
@@ -166,8 +166,10 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		//used by the shrink-to-fit method
 		else
 		{
-			//TODO : setting a number too big makes BitmapData crashes in Flash
-			setComputedWidth(style, 1000);
+			//TODO : setting the containing element width is a hack which will not
+			//always work. The shrink to fit computation of this class needs to be 
+			//improved
+			setComputedWidth(style, containingHTMLElementData.width);
 		}
 	}
 	
