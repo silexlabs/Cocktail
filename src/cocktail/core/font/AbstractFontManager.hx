@@ -143,20 +143,18 @@ class AbstractFontManager
 	/**
 	 * Capitalise a text (turn each word's first letter
 	 * to uppercase)
-	 * 
-	 * TODO : doesn't work
 	 */
 	public function capitalizeText(text:String):String
 	{
-		var capitalizedText:String = text.charAt(0);
+		var capitalizedText:String = "";
 		
 		/**
-		 * loop in all charachter looking for word breaks
-		 * and capitalize each word's first letter
+		 * concatenate each character and transform
+		 * the first to upper case
 		 */
-		for (i in 1...text.length)
+		for (i in 0...text.length)
 		{	
-			if (text.charAt(i - 1) == " ")
+			if (i == 0)
 			{
 				capitalizedText += text.charAt(i).toUpperCase();
 			}
@@ -164,6 +162,7 @@ class AbstractFontManager
 			{
 				capitalizedText += text.charAt(i);
 			}
+			
 		}
 		return capitalizedText;
 	}
