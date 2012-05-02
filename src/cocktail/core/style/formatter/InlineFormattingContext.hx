@@ -910,6 +910,7 @@ class InlineFormattingContext extends FormattingContext
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
 		setRootLineBoxMetrics(rootLineBox, rootLineBox);
+		
 		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y);
 		
 		//compute the line box height
@@ -931,14 +932,16 @@ class InlineFormattingContext extends FormattingContext
 			var leadedAscent:Float = child.leadedAscent;
 			var leadedDescent:Float = child.leadedDescent;
 			var verticalAlign:Float = child.verticalAlign;
-			if (leadedAscent - verticalAlign > rootLineBox.leadedAscent)
+			
+			//TODO : should vertical align be added recursively ?
+			if (leadedAscent + verticalAlign > rootLineBox.leadedAscent)
 			{
-				rootLineBox.leadedAscent = leadedAscent - verticalAlign;
+				rootLineBox.leadedAscent = leadedAscent + verticalAlign;
 			}
 			
-			if (leadedDescent + verticalAlign > rootLineBox.leadedDescent)
+			if (leadedDescent - verticalAlign > rootLineBox.leadedDescent)
 			{
-				rootLineBox.leadedDescent = leadedDescent + verticalAlign;
+				rootLineBox.leadedDescent = leadedDescent - verticalAlign;
 			}
 		}
 	}
@@ -954,7 +957,7 @@ class InlineFormattingContext extends FormattingContext
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY);
 			}
 
-			child.bounds.y = lineBoxAscent + formattingContextY + child.verticalAlign;
+			child.bounds.y = lineBoxAscent + formattingContextY - child.verticalAlign;
 			
 			//TODO : used for embedded or inline block but implement better
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isEmbedded() == true && child.elementRenderer.isText() == false))
