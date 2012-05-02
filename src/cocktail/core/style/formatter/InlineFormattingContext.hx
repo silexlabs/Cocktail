@@ -899,6 +899,13 @@ class InlineFormattingContext extends FormattingContext
 	 * TODO : finish implementation of verticalAlign
 	 * 
 	 * TODO : update doc
+	 * 
+	 * TODO : On a block container element whose content is composed of inline-level
+	 * elements, 'line-height' specifies the minimal height of line boxes
+	 * within the element. The minimum height consists of a minimum
+	 * height above the baseline and a minimum depth below it, exactly
+	 * as if each line box starts with a zero-width inline box with t
+	 * he element's font and line height properties. We call that imaginary box a "strut." (The name is inspired by TeX.). 
 	 */
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{

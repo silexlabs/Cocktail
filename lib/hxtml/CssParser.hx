@@ -442,6 +442,21 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			
+		case "vertical-align":
+			// case label (normal)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setVerticalAlignKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setVerticalAlignNum(d, l.value, l.unit);
+				return true;
+			}
+				
+			
 		case "word-spacing":
 			//case label (normal)
 			var val = getIdent(v);

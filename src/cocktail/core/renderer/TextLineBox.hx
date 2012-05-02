@@ -71,7 +71,7 @@ class TextLineBox extends LineBox
 	{
 		#if flash9
 		_nativeElement.x = _bounds.x + _elementRenderer.globalContainingBlockOrigin.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y + getLeading() / 2;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y + leadedAscent / 2 - leadedDescent / 2;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
 		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
@@ -87,24 +87,16 @@ class TextLineBox extends LineBox
 	{
 		var ascent:Float = _elementRenderer.coreStyle.fontMetrics.ascent;
 		var descent:Float = _elementRenderer.coreStyle.fontMetrics.descent;	
-		
-		var leading:Float = getLeading();
-		
+	
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
+
 		//apply leading to the ascent and descent
 		var leadedAscent:Float = ascent + leading / 2;
 		var leadedDescent:Float = descent + leading / 2;
 		
 		return leadedAscent;
-	}
-	
-	private function getLeading():Float
-	{
-		var ascent:Float = _elementRenderer.coreStyle.fontMetrics.ascent;
-		var descent:Float = _elementRenderer.coreStyle.fontMetrics.descent;	
-	
-		//the leading is an extra height to apply equally to the ascent
-		//and the descent when laying out lines of text
-		return _elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
 	}
 	
 	/**
