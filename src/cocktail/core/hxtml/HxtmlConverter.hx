@@ -325,14 +325,18 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTextAlign (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.textAlign = value;
 	}
+	public function setVerticalAlignNum (element:Node, value:Int, unit:String):Void{
+		cast(element, HtmlDom).style.verticalAlign = value+unit;
+	}
+	public function setVerticalAlignKey (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.verticalAlign = value;
+	}
 /*	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.whiteSpace = value+unit;
 	}
 	
 	
-	public function setVerticalAlign (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.verticalAlign = value+unit;
-	}
+	
 	public function setOpacity (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.opacity = value+unit;
 	}
