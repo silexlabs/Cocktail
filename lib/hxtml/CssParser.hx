@@ -137,6 +137,21 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "margin-top":
+			
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginTopNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			//case label (auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -150,6 +165,28 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "margin-bottom":
+			
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginBottomNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginBottomZero(d);
+				return true;
+			}
+			
 			//case label (auto)
 			var val = getIdent(v);
 			if ( val != null) {

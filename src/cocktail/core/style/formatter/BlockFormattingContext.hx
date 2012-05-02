@@ -59,11 +59,10 @@ class BlockFormattingContext extends FormattingContext
 			//this particular children
 			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
 			{
-				
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
-				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 				
-				/////////////////////////////TODO : margin collapsing is messy
+				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
+
 				
 				if (child.hasChildNodes() == true)
 				{
@@ -117,8 +116,12 @@ class BlockFormattingContext extends FormattingContext
 				{
 					if (previousSibling.coreStyle.computedStyle.marginBottom > marginTop)
 					{
-						
-						marginTop = 0;
+						//TODO : doc, this an exception for negative margin whose height are substracted
+						//from collapsed margin height
+						if (marginTop > 0)
+						{
+							marginTop = 0;
+						}
 					}
 				}
 			}
