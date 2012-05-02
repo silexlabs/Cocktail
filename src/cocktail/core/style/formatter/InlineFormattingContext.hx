@@ -53,6 +53,9 @@ class InlineFormattingContext extends FormattingContext
 	
 	private var _unbreakableWidth:Int;
 	
+	//TODO : doc + should find a cleaner way for text indent
+	private var _firstLineFormatted:Bool;
+	
 	/**
 	 * class constructor. Init class attributes
 	 */
@@ -60,6 +63,8 @@ class InlineFormattingContext extends FormattingContext
 	{
 		_unbreakableLineBoxes = new Array<LineBox>();
 		_unbreakableWidth = 0;
+		_firstLineFormatted = false;
+		
 		super(formattingContextRoot);
 		
 		//set the textIndent as an offset on the first line of text
@@ -83,7 +88,10 @@ class InlineFormattingContext extends FormattingContext
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);
 		
-		_unbreakableWidth = 0;
+		//TODO : should implement text indent in a cleaner way
+		_unbreakableWidth = _formattingContextRoot.coreStyle.computedStyle.textIndent;
+		_formattingContextData.x = _formattingContextRoot.coreStyle.computedStyle.textIndent;
+		
 		
 		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
 
@@ -407,6 +415,8 @@ class InlineFormattingContext extends FormattingContext
 		//update the y of the formatting context so that the next line will start
 		//below this one
 		_formattingContextData.y += lineBoxHeight;
+		
+		_firstLineFormatted = true;
 	
 	}
 	
@@ -510,6 +520,12 @@ class InlineFormattingContext extends FormattingContext
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
 		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
 
+		
+		if (_firstLineFormatted == false)
+		{
+			flowX += _formattingContextRoot.coreStyle.computedStyle.textIndent;
+			remainingSpace -= _formattingContextRoot.coreStyle.computedStyle.textIndent;
+		}
 		
 		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
