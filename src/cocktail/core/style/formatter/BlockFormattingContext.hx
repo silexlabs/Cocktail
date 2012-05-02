@@ -39,15 +39,15 @@ class BlockFormattingContext extends FormattingContext
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
-		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement);	
+		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);	
 
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer):Void
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Void
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
-		//TODO : should try to collapse top margin here
-		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + elementRenderer.coreStyle.computedStyle.marginTop;
+
+		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
 		for (i in 0...elementRenderer.childNodes.length)
 		{
@@ -60,35 +60,21 @@ class BlockFormattingContext extends FormattingContext
 			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
 			{
 				
-				//TODO : margin collapsing is messy
-				var marginTop:Int = child.coreStyle.computedStyle.marginTop;
+				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
+				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 				
-				if (i == 0)
-				{
-					if (child.firstChild != null)
-					{
-						var firstChild:ElementRenderer = cast(child.firstChild);
-						if (firstChild.coreStyle.computedStyle.marginTop > marginTop && child.coreStyle.computedStyle.paddingTop == 0)
-						{
-								marginTop = firstChild.coreStyle.computedStyle.marginTop;
-						}
-					}
-					
-				}
-				
-				var marginBottom:Int = getCollapsedMarginBottom(child);
 				/////////////////////////////TODO : margin collapsing is messy
 				
 				if (child.hasChildNodes() == true)
 				{
 					if (child.establishesNewFormattingContext() == false)
 					{
-						doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement);
+						doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
 					}
 				}
 				
 				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
-				var y:Float = concatenatedY + child.coreStyle.computedStyle.marginTop;
+				var y:Float = concatenatedY + marginTop;
 				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
 				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
@@ -101,10 +87,8 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
-
 				concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 
-				
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 				{
@@ -115,55 +99,84 @@ class BlockFormattingContext extends FormattingContext
 				{
 					_formattingContextData.maxHeight = concatenatedY;
 				}
-				
 			}
-			
-			
 		}
-		
 	}
 	
-	private function getCollapsedMarginBottom(child:ElementRenderer):Int
+	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Int):Int
+	{
+		var marginTop:Int = child.coreStyle.computedStyle.marginTop;
+
+		if (child.coreStyle.computedStyle.paddingTop == 0)
+		{
+			if (child.previousSibling != null)
+			{
+				var previousSibling:ElementRenderer = cast(child.previousSibling);
+				
+				if (previousSibling.coreStyle.computedStyle.paddingBottom == 0)
+				{
+					if (previousSibling.coreStyle.computedStyle.marginBottom > marginTop)
+					{
+						
+						marginTop = 0;
+					}
+				}
+			}
+			else if (child.parentNode != null)
+			{
+				var parent:ElementRenderer = cast(child.parentNode);
+				
+				if (parent.establishesNewFormattingContext() == false)
+				{
+					if (parent.coreStyle.computedStyle.paddingTop == 0)
+					{
+						if (parentCollapsedMarginTop > marginTop)
+						{
+							marginTop = 0;
+						}
+					}
+				}
+			}
+		}
+		
+		return marginTop;
+	}
+	
+	private function getCollapsedMarginBottom(child:ElementRenderer, parentCollapsedMarginBottom:Int):Int
 	{
 		var marginBottom:Int = child.coreStyle.computedStyle.marginBottom;
 		
-		if (child.nextSibling != null)
+		if (child.coreStyle.computedStyle.paddingBottom == 0)
 		{
-			var nextSibling:ElementRenderer = cast(child.nextSibling);
-			
-			if (nextSibling.coreStyle.computedStyle.marginTop > marginBottom)
+			if (child.nextSibling != null)
 			{
-				marginBottom = 0;
+				var nextSibling:ElementRenderer = cast(child.nextSibling);
+				
+				if (nextSibling.coreStyle.computedStyle.paddingTop == 0)
+				{
+					if (nextSibling.coreStyle.computedStyle.marginTop > marginBottom)
+					{
+						marginBottom = 0;
+					}
+				}
 			}
-			else
+			else if (child.parentNode != null)
 			{
-				marginBottom -= nextSibling.coreStyle.computedStyle.marginTop;
+				var parent:ElementRenderer = cast(child.parentNode);
+				
+				if (parent.establishesNewFormattingContext() == false)
+				{
+					if (parent.coreStyle.computedStyle.paddingBottom == 0)
+					{
+						if (parentCollapsedMarginBottom > marginBottom)
+						{
+							marginBottom = 0;
+						}
+					}
+				}
 			}
 		}
 		
 		return marginBottom;
 	}
-	
-	/**
-	 * Insert a floated HTMLElement. overriden by sub-classes
-	 * 
-	 
-	override private function insertFloat(element:ElementRenderer):Void
-	{
-		var parent:FlowBoxRenderer = cast( element.parentNode);
-		var floatData:FloatData = _floatsManager.computeFloatData(element, _formattingContextData, Math.round(parent.coreStyle.computedStyle.width));
-		
-		var x:Float = floatData.x + parent.coreStyle.computedStyle.paddingLeft;
-		var y:Float = floatData.y + parent.coreStyle.computedStyle.paddingTop;
-		var width:Float = floatData.width;
-		var height:Float = floatData.height;
-		
-		element.bounds = {
-			x:x,
-			y:y,
-			width:width,
-			height:height
-		}
-	}
-	*/
 }

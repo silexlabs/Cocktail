@@ -229,8 +229,10 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	public function setBgImage (element:Node, value:Array<String>):Void{
 		// TODO : check for space and do not add "
-		if (value.length > 0) 
-			cast(element, HTMLElement).style.backgroundImage = "\"" + value.join("\"");
+		if (value.length == 1) 
+			//TODO : hack to make it work for at least one background image
+			cast(element, HTMLElement).style.backgroundImage = "url(" + value[0] + ")";
+			//cast(element, HTMLElement).style.backgroundImage = "\"" + value.join("\"");
 		else
 			cast(element, HTMLElement).style.backgroundImage = "";
 	}
