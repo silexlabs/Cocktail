@@ -99,6 +99,12 @@ class InlineFormattingContext extends FormattingContext
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
 		
 		_formattingContextRoot.lineBoxes = rootLineBoxes;
+		
+		//apply formatting height to formatting context root if auto height
+		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
+		{
+			_formattingContextRoot.bounds.height = _formattingContextData.y + _formattingContextRoot.coreStyle.computedStyle.paddingTop + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
+		}
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox

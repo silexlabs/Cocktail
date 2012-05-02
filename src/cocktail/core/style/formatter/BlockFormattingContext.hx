@@ -43,12 +43,14 @@ class BlockFormattingContext extends FormattingContext
 
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Void
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Int
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
+		var childHeight:Int = concatenatedY;
+		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
@@ -60,17 +62,7 @@ class BlockFormattingContext extends FormattingContext
 			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
 			{
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
-				
 				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
-
-				
-				if (child.hasChildNodes() == true)
-				{
-					if (child.establishesNewFormattingContext() == false)
-					{
-						doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
-					}
-				}
 				
 				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 				var y:Float = concatenatedY + marginTop;
@@ -78,7 +70,6 @@ class BlockFormattingContext extends FormattingContext
 				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 			
-
 				child.bounds = {
 					x:x, 
 					y:y,
@@ -86,8 +77,23 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
-				concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
-
+				
+				if (child.hasChildNodes() == true)
+				{
+					if (child.establishesNewFormattingContext() == false)
+					{
+						concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
+					}
+					else
+					{
+						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+					}
+				}
+				else
+				{
+					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+				}
+			
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 				{
@@ -100,6 +106,22 @@ class BlockFormattingContext extends FormattingContext
 				}
 			}
 		}
+		
+		childHeight = concatenatedY - childHeight;
+		
+		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
+		{
+			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
+		}
+		
+		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
+		
+		
+	
+		
+		
+		return concatenatedY;
+		
 	}
 	
 	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Int):Int
