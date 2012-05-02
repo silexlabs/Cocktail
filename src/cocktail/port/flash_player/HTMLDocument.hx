@@ -50,7 +50,7 @@ class HTMLDocument extends AbstractHTMLDocument
 		}
 		catch (e:Dynamic)
 		{
-		//	trace(nativeElement);
+			trace(nativeElement);
 		}
 	
 	}

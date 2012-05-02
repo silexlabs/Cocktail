@@ -103,6 +103,7 @@ class BlockFormattingContext extends FormattingContext
 				
 
 				concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+
 				
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
