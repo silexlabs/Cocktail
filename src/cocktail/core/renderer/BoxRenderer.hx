@@ -59,7 +59,7 @@ class BoxRenderer extends ElementRenderer
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			
+			//TODO : should use globzlBounds instead
 			if (_coreStyle.position == fixed)
 			{
 				

@@ -148,8 +148,8 @@ class LineBox extends Node
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x  + _elementRenderer.globalContainingBlockOrigin.x;
-			backgrounds[i].y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y;
+			backgrounds[i].x = _bounds.x  + _elementRenderer.globalBounds.x;
+			backgrounds[i].y = _bounds.y + _elementRenderer.globalBounds.y;
 			#end
 		}
 		return backgrounds;
