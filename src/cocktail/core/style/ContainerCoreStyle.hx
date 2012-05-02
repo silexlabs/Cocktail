@@ -167,7 +167,9 @@ class ContainerCoreStyle extends CoreStyle
 				childrenFormattingContext.format();
 			}
 			
-			this._computedStyle.height = applyContentHeightIfNeeded(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, childrenFormattingContext.getChildrenHeight(cast(this._elementRenderer)));
+			//TODO : check if this intermediate method is actually useful, seems to be only
+			//used for positioned elements
+			this._computedStyle.height = applyContentHeightIfNeeded(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, Math.round(_elementRenderer.bounds.height));
 		}
 		
 		//if this HTMLElement is positioned, it means that it is the first positioned ancestor
