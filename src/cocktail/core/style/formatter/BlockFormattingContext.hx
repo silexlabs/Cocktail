@@ -109,7 +109,8 @@ class BlockFormattingContext extends FormattingContext
 		
 		childHeight = concatenatedY - childHeight;
 		
-		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
+		//TODO : initial container should know when to use the window bounds
+		if (elementRenderer.coreStyle.height == Dimension.cssAuto && elementRenderer.isInitialContainer() == false)
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 		}

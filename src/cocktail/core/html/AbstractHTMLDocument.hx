@@ -141,6 +141,7 @@ class AbstractHTMLDocument extends Document
 		_mouse.onMouseDown = onMouseDown;
 		_mouse.onMouseUp = onMouseUp;
 		_mouse.onMouseMove = onMouseMove;
+		_mouse.onClick = onClick;
 	}
 	
 	/**
@@ -230,13 +231,28 @@ class AbstractHTMLDocument extends Document
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-		
+
 		//TODO : if empty array, use body
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
 			{
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	private function onClick(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+
+		//TODO : if empty array, use body
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onclick != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
 				break;
 			}
 		}	
