@@ -108,6 +108,10 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setMarginBottomKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.marginBottom = value;
 	}
+	//TODO : duplicate for margin left, right and top
+	public function setMarginBottomZero (element:Node):Void{
+		cast(element, HTMLElement).style.marginBottom = "0";
+	}
 
 	public function setPaddingLeft (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.paddingLeft = value + unit;

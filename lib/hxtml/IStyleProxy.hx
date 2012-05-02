@@ -20,6 +20,7 @@ interface IStyleProxy<DisplayObjectType>
 	public function setMarginRightKey (element:DisplayObjectType, value:String):Void;
 	public function setMarginBottomNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginBottomKey (element:DisplayObjectType, value:String):Void;
+	public function setMarginBottomZero (element:DisplayObjectType):Void;
 	public function setPaddingLeft (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setPaddingTop (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setPaddingRight (element:DisplayObjectType, value:Float, unit:String):Void;
