@@ -135,7 +135,7 @@ class FormattingContext
 		
 		var childBounds:Array<RectangleData> = getChildElementBounds(elementRenderer);
 		height = Math.round(getChildrenBounds(childBounds).height);
-	
+		
 		return height;
 	}
 

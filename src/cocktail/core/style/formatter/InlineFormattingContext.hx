@@ -218,6 +218,8 @@ class InlineFormattingContext extends FormattingContext
 	 * This method is only called for the line box which can have child
 	 * line boxes.
 	 * 
+	 * TODO : should be on LineBox class instead ?
+	 * 
 	 * @param	lineBox the line box whose bounds must be found
 	 */
 	private function getLineBoxBounds(lineBox:LineBox):RectangleData

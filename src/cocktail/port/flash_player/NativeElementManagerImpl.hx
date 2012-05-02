@@ -56,8 +56,6 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 			//for other types, it is a Sprite	
 			case canvas, anchor, input:
 				nativeElement = new Sprite();
-			case semantic(name):
-				nativeElement = new Sprite();
 				
 		}
 		

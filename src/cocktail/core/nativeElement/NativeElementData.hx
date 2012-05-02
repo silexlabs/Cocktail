@@ -42,12 +42,5 @@ package cocktail.core.nativeElement;
 	  * text
 	  */
 	 input;
-	 
-	 /**
-	  * Can be any other type of native element.
-	  * The name can be used for instance in HTML
-	  * as a tag name
-	  */
-	 semantic(name:String);
  }
  

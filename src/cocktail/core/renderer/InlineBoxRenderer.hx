@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
+import cocktail.core.geom.GeomData;
 
 /**
  * An Inline Box renderer is an element which participates
@@ -27,5 +28,17 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	public function new(style:CoreStyle) 
 	{
 		super(style);
+	}
+	
+	//TODO : doc
+	override private function get_bounds():RectangleData
+	{
+		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		for (i in 0..._lineBoxes.length)
+		{
+			lineBoxesBounds.push(_lineBoxes[i].bounds);
+		}
+		
+		return getChildrenBounds(lineBoxesBounds);
 	}
 }

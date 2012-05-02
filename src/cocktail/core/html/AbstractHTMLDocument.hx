@@ -105,6 +105,12 @@ class AbstractHTMLDocument extends Document
 	private var _keyboard:Keyboard;
 	
 	/**
+	 * An instance of the cross-platform mouse class, used to listen
+	 * to mouse input
+	 */
+	private var _mouse:Mouse;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -128,12 +134,13 @@ class AbstractHTMLDocument extends Document
 		initMouseListeners();
 	}
 	
+	//TODO : doc
 	private function initMouseListeners():Void
 	{
-		var mouse:Mouse = new Mouse(NativeElementManager.getRoot());
-		mouse.onMouseDown = onMouseDown;
-		mouse.onMouseUp = onMouseUp;
-		mouse.onMouseMove = onMouseMove;
+		_mouse = new Mouse(NativeElementManager.getRoot());
+		_mouse.onMouseDown = onMouseDown;
+		_mouse.onMouseUp = onMouseUp;
+		_mouse.onMouseMove = onMouseMove;
 	}
 	
 	/**
@@ -142,9 +149,9 @@ class AbstractHTMLDocument extends Document
 	private function initKeyboardListeners():Void
 	{
 		//listens for event on the root of the runtime
-		var keyboard:Keyboard = new Keyboard(NativeElementManager.getRoot());
-		keyboard.onKeyDown = onKeyDown;
-		keyboard.onKeyUp = onKeyUp;
+		_keyboard = new Keyboard(NativeElementManager.getRoot());
+		_keyboard.onKeyDown = onKeyDown;
+		_keyboard.onKeyUp = onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -224,6 +231,7 @@ class AbstractHTMLDocument extends Document
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 		
+		//TODO : if empty array, use body
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)

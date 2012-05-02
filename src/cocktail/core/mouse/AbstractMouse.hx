@@ -24,7 +24,8 @@ import cocktail.core.mouse.MouseData;
  * event will be listened.
  * 
  * TODO : should now be simplified now that events are only listened
- * by HTMLDocument
+ * by HTMLDocument.
+ * Add an InputManager ?
  * 
  * @author Yannick DOMINGUEZ
  */
