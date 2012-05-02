@@ -573,21 +573,24 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLeft(flowX:Int, lineBox:LineBox):Int
 	{
-		flowX += lineBox.marginLeft + lineBox.paddingLeft;
+		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
+			//TODO : doc + should also update alignRight, justify... in the same way
 			if (child.hasChildNodes() == true)
 			{
 				flowX = alignLeft(flowX, child);
 			}
-			
-			child.bounds.x = flowX + child.marginLeft;
-			flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
+			else
+			{
+				child.bounds.x = flowX + child.marginLeft;
+				flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
+			}
 		}
 		
-		flowX += lineBox.marginRight + lineBox.paddingRight;
+		flowX += lineBox.paddingRight + lineBox.marginRight;
 		
 		return flowX;
 	}
