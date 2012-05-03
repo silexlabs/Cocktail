@@ -59,56 +59,9 @@ class BoxRenderer extends ElementRenderer
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			//TODO : should use globzlBounds instead
-			if (_coreStyle.position == fixed)
-			{
-				
-				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-				{
-					backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				}
-				else
-				{
-					backgrounds[i].x = _positionedOrigin.x;
-				}
-				
-				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-				{
-					backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-				}
-				else
-				{
-					backgrounds[i].y = _positionedOrigin.y;
-				}
-			}
-			else if (_coreStyle.position == absolute)
-			{
-				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-				{
-					backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				}
-				else
-				{
-					backgrounds[i].x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
-				}
-				
-				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-				{
-					backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-				}
-				else
-				{
-					backgrounds[i].y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
-				}
-			}
-			else
-			{
-				backgrounds[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				backgrounds[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-			}
-			
+			backgrounds[i].x = globalBounds.x;
+			backgrounds[i].y = globalBounds.y;
 			#end
-		
 		}
 		
 		

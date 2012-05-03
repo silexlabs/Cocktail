@@ -50,9 +50,9 @@ class DrawingManager extends AbstractDrawingManager
 	 * a default width and height. Add a bitmap display object that
 	 * will copy the vector drawing as they are drawn
 	 */
-	public function new(nativeElement:NativeElement, width:Int, height:Int) 
+	public function new(width:Int, height:Int) 
 	{
-		super(nativeElement, width, height);
+		super(width, height);
 		
 		_typedNativeElement = cast(this._nativeElement);
 		
