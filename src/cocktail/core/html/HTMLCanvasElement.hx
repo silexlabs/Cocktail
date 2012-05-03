@@ -31,29 +31,24 @@ class HTMLCanvasElement extends EmbeddedElement
 	
 	public function new() 
 	{
-		super(HTML_CANVAS_TAG_NAME);
-		
 		_intrinsicHeight = CANVAS_INTRINSIC_HEIGHT;
 		_intrinsicWidth = CANVAS_INTRINSIC_WIDTH;
 		_intrinsicRatio = _intrinsicWidth / _intrinsicHeight;
+		
+		_drawingManager = new DrawingManager(_intrinsicHeight, _intrinsicWidth );
+		
+		super(HTML_CANVAS_TAG_NAME);
 	}
 	
-	//TODO : no need anymore of this method ?
 	override private function initEmbeddedAsset():Void
 	{
-		//_embeddedAsset = _nativeElement;
+		_embeddedAsset = _drawingManager.nativeElement;
 	}
 	
 	public function getContext(contextID:String):DrawingManager
 	{	
 		if (contextID == CANVAS_2D_CONTEXT)
 		{
-			if (_drawingManager == null)
-			{
-				//TODO : shouldn't need to create a native element anymore, should be
-				//encapsulated by drawing manager
-				_drawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.canvas),_intrinsicHeight, _intrinsicWidth );
-			}
 			return _drawingManager;
 		}
 		else

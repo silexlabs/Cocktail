@@ -128,8 +128,7 @@ class BackgroundManager
 			//the background color which use the same property as the last background image
 			if (i == style.backgroundImage.length - 1)
 			{
-				var backgroundColorNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
-				drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundColorNativeElement, backgroundBox, style.backgroundPosition[i],
+				var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundBox, style.backgroundPosition[i],
 				style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
 
 				//at this point the array contain only background image, reverse the array
@@ -177,12 +176,16 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
-		var backgroundImageNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 		
 		var imageLoader:ImageLoader = new ImageLoader();
 		
+		var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
+		backgroundBox);
+		
+		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
+		
 		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
-		var onBackgroundImageLoadedDelegate:NativeElement->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
+		var onBackgroundImageLoadedDelegate:BackgroundDrawingManager->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoaded;
 		
@@ -193,7 +196,7 @@ class BackgroundManager
 		//try to load the picture, and set the callbacks
 		imageLoader.load(imageDeclaration.urls,
 		function(loadedImage:NativeElement) {
-			onBackgroundImageLoadedDelegate(backgroundImageNativeElement, loadedImage, imageLoader, style, backgroundBox, backgroundPosition, backgroundSize, 
+			onBackgroundImageLoadedDelegate(backgroundImageDrawingManager, loadedImage, imageLoader, style, backgroundBox, backgroundPosition, backgroundSize, 
 			backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 		}, function(error:String) {
 			onBackgroundImageLoadErrorDelegate(error, imageDeclaration.fallbackColor, backgroundImageNativeElement, style, backgroundBox, backgroundPosition, backgroundSize, 
@@ -219,7 +222,7 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoaded(backgroundImageNativeElement:NativeElement, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:CoreStyle, backgroundBox:RectangleData,
+	private function onBackgroundImageLoaded(backgroundImageDrawingManager:BackgroundDrawingManager, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
@@ -227,8 +230,7 @@ class BackgroundManager
 			style, backgroundBox, imageLoader.intrinsicWidth, imageLoader.intrinsicHeight, imageLoader.intrinsicRatio, backgroundPosition,
 			backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 			
-			var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundImageNativeElement,
-			backgroundBox);
+			
 			
 			backgroundImageDrawingManager.drawBackgroundImage(
 			loadedBackgroundImage, 
@@ -264,8 +266,9 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
-		drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
-				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
+		//TODO : re-implement
+		/**drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
+				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);*/
 	}
 	
 	/**
@@ -282,19 +285,21 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundColorNativeElement:NativeElement, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
-	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
+	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
 			
-		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundColorNativeElement,
+		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
 		backgroundBox);
 		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, getBackgroundPaintingBox(computedBackgroundStyles.backgroundClip));
 
 		_backgroundDrawingManagers.push(backgroundColorDrawingManager);
+		
+		return backgroundColorDrawingManager.nativeElement;
 	}
 	
 	/**
@@ -318,11 +323,8 @@ class BackgroundManager
 		var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
-							
-
-			var gradientNativeElement:NativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 		
-			var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(gradientNativeElement,
+			var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
 			backgroundBox );
 			backgroundGradientDrawingManager.drawBackgroundGradient(
 			gradientValue,
@@ -332,7 +334,7 @@ class BackgroundManager
 			computedGradientStyles.backgroundPosition, 
 			computedGradientStyles.backgroundRepeat);
 			
-		return gradientNativeElement;
+		return backgroundGradientDrawingManager.nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

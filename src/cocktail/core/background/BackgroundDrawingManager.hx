@@ -36,9 +36,9 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	nativeElement
 	 * @param	backgroundBox
 	 */
-	public function new(nativeElement:NativeElement, backgroundBox:RectangleData) 
+	public function new(backgroundBox:RectangleData) 
 	{
-		super(nativeElement, Math.round(backgroundBox.width), Math.round(backgroundBox.height));
+		super(Math.round(backgroundBox.width), Math.round(backgroundBox.height));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
-		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.canvas), computedBackgroundSize.width, computedBackgroundSize.height);
+		var gradientSurface:DrawingManager = new DrawingManager(computedBackgroundSize.width, computedBackgroundSize.height);
 		
 		var fillStyle:FillStyleValue;
 		var lineStyle = LineStyleValue.none;
