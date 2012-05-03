@@ -11,6 +11,8 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.dom.DOMData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.nativeElement.NativeElementManager;
+import cocktail.core.nativeElement.NativeElementData;
 
 /**
  * The drawing manager exposes a cross-platform
@@ -43,9 +45,10 @@ class AbstractDrawingManager
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement, width:Int, height:Int) 
+	public function new(width:Int, height:Int) 
 	{
-		this._nativeElement = nativeElement;
+		
+		this._nativeElement = NativeElementManager.createNativeElement(NativeElementTypeValue.canvas);
 		this._width = width;
 		this._height = height;
 	}
