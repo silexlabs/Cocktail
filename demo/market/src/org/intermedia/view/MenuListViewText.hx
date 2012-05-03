@@ -89,7 +89,7 @@ class MenuListViewText extends ListViewBase
 			cell.data = Reflect.field(_data, field);
 			
 			// set mouseUp callback
-			//cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
 			_cells.push(cell);
@@ -139,16 +139,17 @@ class MenuListViewText extends ListViewBase
 	 * onListItemSelected callback
 	 * @param	cellData
 	 */
-	/*override public function onListItemSelectedCallback(cellData:CellData)
+	override public function onListItemSelectedCallback(cellData:CellData)
 	{
-		//_index = cellData.id;
+		//index = cellData.id;
 		//_index = cellData.id;
 
 		// reset left positions
 		//computeMenuItemsLeftPos();
+		//computeMenuItemsLeftTarget(cellData.id);
 
 		super.onListItemSelectedCallback(cellData);
-	}*/
+	}
 
 	/**
 	 * index getter
@@ -169,6 +170,7 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
+		// set previous menu item's font to normal, and current one to bold
 		_cells[_index].node.style.fontWeight = "normal";
 		_cells[v].node.style.fontWeight = "bold";
 
@@ -327,7 +329,7 @@ class MenuListViewText extends ListViewBase
 	 */
 	public function moveHorizontally(ratio:Float):Void
 	{
-		Firebug.trace(ratio);
+		//Firebug.trace(ratio);
 		// depending on ratio sign, increment or decrement _index
 		// check is done so that index is always between 0 an 2
 		if (ratio > 0)
@@ -373,7 +375,8 @@ class MenuListViewText extends ListViewBase
     public function horizontalTweenEnd(newIndex:Int):Void
 	{
 		//Firebug.trace("horizontalTweenEnd");
-		Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
+		//Firebug.trace("new index = " + newIndex);
+		//Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
 		index = newIndex;
 		//moveHorizontally(ratio);
 		computeMenuItemsLeftPos();

@@ -225,8 +225,10 @@ Menu:
 
  
 Point market 27/04/2012
-=> menu cliquable a finaliser
+=> menu cliquable a finaliser => OK
 => redimensionement
+	=> propriété du viewport "height=device-height" retirée, résultat hide url bar ne fonctionne plus car impacte le redimmensionnement en mode paysage
+	=> OK
 => auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
 
 App native:
@@ -235,6 +237,8 @@ App native:
 	  => utiliser XML.Fast
 	  => parser les Xml sur le server, transmission à l'appli en haxe remoting
 	  => stoker les xml sur le serveur pour améliorer la vitesse de chargement
+	=> ajout de nouvelles cellules au DOM en detachant la liste parent puis en la réatachant
+	  => gain de 50% du temps moyen de creation du DOM (initial: 140ms - après optim: 70ms)
 => bottom loading screen non visible => OK
 => les flux locaux ne se chargent pas => Réglé en utilisant les fichiers locaux comme ressources haxe => OK
 

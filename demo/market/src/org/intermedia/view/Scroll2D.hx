@@ -4,8 +4,10 @@ import haxe.Timer;
 import js.Lib;
 import org.intermedia.view.Constants;
 import feffects.Tween;
-import feffects.easing.Quart;
+import feffects.easing.Linear;
 import feffects.easing.Quint;
+import feffects.easing.Quad;
+import feffects.easing.Cubic;
 
 /**
  * This class handles the default behaviour when scrolling on a device with touch events or mouse events
@@ -18,8 +20,9 @@ class Scroll2D
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
 	static inline var VERTICAL_TWEEN_DELTA:Int = 50;
-	static inline var TIME_DELTA:Int = 100;
-	static inline var VERTICAL_RELEASE_TIME:Int = 100;
+	static inline var TIME_DELTA:Int = 10;
+	static inline var VERTICAL_RELEASE_TIME:Int = 500;
+	static inline var VERTICAL_RELEASE_ACCELERATION:Float = -0.1;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -320,7 +323,8 @@ class Scroll2D
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
 		// create the tween
-        _horizontalTween = new Tween( -xOrigin, -xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
+        //_horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
+        _horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quad.easeOut );
 		//_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
 		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
         // launch the tween
@@ -380,6 +384,8 @@ class Scroll2D
 		//trace(_verticalVelocity + ", " + _verticalAcceleration);
 		verticalTweenEnd = _offset.y +
 			Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME));
+		var verticalReleaseTime:Int = - Std.int(_verticalVelocity / VERTICAL_RELEASE_ACCELERATION);
+		trace(_verticalVelocity + ", " + verticalReleaseTime);
 		//trace(initialScrollPosition.y + ", " + _previousY + ", " +_offset.y + ", " + Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME)));
 		// if scrolling direction is down
 		/*if (_offset.y > 0 )
@@ -396,7 +402,10 @@ class Scroll2D
 		}*/
 		
 		// create the tween
-        _verticalTween = new Tween( _offset.y, verticalTweenEnd, 600, Quint.easeOut );
+        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Quint.easeIn );
+        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Cubic.easeInOut );
+        _verticalTween = new Tween( _offset.y, verticalTweenEnd, verticalReleaseTime, Cubic.easeInOut );
+        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Linear.easeNone );
 		_verticalTween.setTweenHandlers( onVerticalScrollCallback, onVerticalTweenEnd );
         // launch the tween
         _verticalTween.start();

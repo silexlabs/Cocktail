@@ -99,7 +99,7 @@ class ListViewBase extends ViewBase
 			
 			// set mouseUp callback
 			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
-			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			//cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
 			_cells.push(cell);
@@ -189,7 +189,7 @@ class ListViewBase extends ViewBase
 			if (true)
 			{
 				//_time = Timer.stamp();
-				haxe.Firebug.trace("List " + id + " data requested");
+				//haxe.Firebug.trace("List " + id + " data requested");
 				//trace("List " + id + " data requested");
 				_waitingData = true;
 				onDataRequest(id);
@@ -202,7 +202,7 @@ class ListViewBase extends ViewBase
 	 */
 	public function refreshStyles():Void
 	{
-		//ListViewStyle.setListStyle(node);
+		ListViewStyle.setListStyle(node);
 		for (cell in _cells)
 		{
 			cell.refreshStyles();

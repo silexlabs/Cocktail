@@ -13,8 +13,6 @@ import org.intermedia.model.ApplicationModel;
 class MenuCellText extends CellBase
 {
 
-	//public function new() 
-	//public function new(?cellStyle:HtmlDom->Void) 
 	public function new() 
 	{
 		super();

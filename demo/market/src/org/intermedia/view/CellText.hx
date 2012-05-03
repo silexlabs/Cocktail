@@ -44,5 +44,5 @@ class CellText extends CellBase
 		line.src("assets/greyPixel.png");*/
 
 	}
-
+	
 }

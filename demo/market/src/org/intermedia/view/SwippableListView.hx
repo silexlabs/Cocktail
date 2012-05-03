@@ -279,7 +279,8 @@ class SwippableListView extends ListViewBase
 		//_scrollHandler.horizontalReleaseTween(node.scrollLeft, _currentListView.node.offsetLeft);
 		//Firebug.trace(node.scrollLeft + ", " + _scrollHandler.initialScrollPosition.x + ", " + _currentListView.node.offsetLeft);
 		//Firebug.trace(Std.string(node.scrollLeft - _scrollHandler.initialScrollPosition.x) + "," + Std.string(_currentListView.node.offsetLeft - _scrollHandler.initialScrollPosition.x));
-		_scrollHandler.horizontalReleaseTween(node.scrollLeft - _scrollHandler.initialScrollPosition.x, _currentListView.node.offsetLeft - _scrollHandler.initialScrollPosition.x);
+		//_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		_scrollHandler.horizontalReleaseTween(_scrollHandler.initialScrollPosition.x - node.scrollLeft, _scrollHandler.initialScrollPosition.x - _currentListView.node.offsetLeft);
 
 		return v;
 	}
@@ -290,7 +291,8 @@ class SwippableListView extends ListViewBase
 	public function scrollToCurrentList():Void
 	{
 		node.scrollLeft = Std.parseInt(_currentListView.node.style.left.substr(0, -2));
-		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		//_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		resetInitScrollPosition();
 	}
 	
 	/**
@@ -312,6 +314,11 @@ class SwippableListView extends ListViewBase
 		{
 			list.refreshStyles();
 		}
+	}
+	
+	override public function refreshStyles():Void
+	{
+		
 	}
 	
 	/**
@@ -467,7 +474,8 @@ class SwippableListView extends ListViewBase
 	 */
 	private function touchStart(event:Dynamic):Void
 	{
-		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		//_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
+		resetInitScrollPosition();
 		_scrollHandler.touchHandler(event);
 	}
 
@@ -508,5 +516,13 @@ class SwippableListView extends ListViewBase
 			ratio = xOffset / Lib.window.innerWidth;
 		return ratio;
 
+	}
+	
+	/**
+	 * Resets initial scroll position
+	 */
+	public function resetInitScrollPosition():Void
+	{
+		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 	}
 }
