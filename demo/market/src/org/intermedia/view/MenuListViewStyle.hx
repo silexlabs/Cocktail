@@ -55,7 +55,7 @@ class MenuListViewStyle
 		node.style.backgroundImage = 'url(' + Constants.MENU_BG_IMAGE_URL + ')';
 
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "auto";
+		node.style.overflowY = "hidden";
 	}
 	
 	/**

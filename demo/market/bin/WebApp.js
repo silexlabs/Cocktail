@@ -1253,6 +1253,54 @@ haxe.Public.prototype = {
 	__class__: haxe.Public
 }
 if(!feffects.easing) feffects.easing = {}
+feffects.easing.Cubic = $hxClasses["feffects.easing.Cubic"] = function() { }
+feffects.easing.Cubic.__name__ = ["feffects","easing","Cubic"];
+feffects.easing.Cubic.__interfaces__ = [haxe.Public];
+feffects.easing.Cubic.easeIn = function(t,b,c,d) {
+	return c * (t /= d) * t * t + b;
+}
+feffects.easing.Cubic.easeOut = function(t,b,c,d) {
+	return c * ((t = t / d - 1) * t * t + 1) + b;
+}
+feffects.easing.Cubic.easeInOut = function(t,b,c,d) {
+	if((t /= d * 0.5) < 1) return c * 0.5 * t * t * t + b; else return c * 0.5 * ((t -= 2) * t * t + 2) + b;
+}
+feffects.easing.Cubic.prototype = {
+	__class__: feffects.easing.Cubic
+}
+feffects.easing.Linear = $hxClasses["feffects.easing.Linear"] = function() { }
+feffects.easing.Linear.__name__ = ["feffects","easing","Linear"];
+feffects.easing.Linear.__interfaces__ = [haxe.Public];
+feffects.easing.Linear.easeNone = function(t,b,c,d) {
+	return c * t / d + b;
+}
+feffects.easing.Linear.easeIn = function(t,b,c,d) {
+	return c * t / d + b;
+}
+feffects.easing.Linear.easeOut = function(t,b,c,d) {
+	return c * t / d + b;
+}
+feffects.easing.Linear.easeInOut = function(t,b,c,d) {
+	return c * t / d + b;
+}
+feffects.easing.Linear.prototype = {
+	__class__: feffects.easing.Linear
+}
+feffects.easing.Quad = $hxClasses["feffects.easing.Quad"] = function() { }
+feffects.easing.Quad.__name__ = ["feffects","easing","Quad"];
+feffects.easing.Quad.__interfaces__ = [haxe.Public];
+feffects.easing.Quad.easeIn = function(t,b,c,d) {
+	return c * (t /= d) * t + b;
+}
+feffects.easing.Quad.easeOut = function(t,b,c,d) {
+	return -c * (t /= d) * (t - 2) + b;
+}
+feffects.easing.Quad.easeInOut = function(t,b,c,d) {
+	if((t /= d * 0.5) < 1) return c * 0.5 * t * t + b; else return -c * 0.5 * (--t * (t - 2) - 1) + b;
+}
+feffects.easing.Quad.prototype = {
+	__class__: feffects.easing.Quad
+}
 feffects.easing.Quart = $hxClasses["feffects.easing.Quart"] = function() { }
 feffects.easing.Quart.__name__ = ["feffects","easing","Quart"];
 feffects.easing.Quart.__interfaces__ = [haxe.Public];
@@ -2795,7 +2843,7 @@ org.intermedia.view.DetailStyle = $hxClasses["org.intermedia.view.DetailStyle"] 
 org.intermedia.view.DetailStyle.__name__ = ["org","intermedia","view","DetailStyle"];
 org.intermedia.view.DetailStyle.setDetailStyle = function(node) {
 	node.style.display = "inline-block";
-	node.style.position = "absolute";
+	node.style.position = "fixed";
 	node.style.marginLeft = "0px";
 	node.style.marginRight = "0px";
 	node.style.marginTop = "0px";
@@ -2806,6 +2854,7 @@ org.intermedia.view.DetailStyle.setDetailStyle = function(node) {
 	node.style.paddingBottom = "10px";
 	node.style.width = "96%";
 	node.style.height = "auto";
+	node.style.height = Std.string(js.Lib.window.innerHeight - 43) + "px";
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "0px";
 	node.style.overflowX = "hidden";
@@ -3060,43 +3109,23 @@ org.intermedia.view.HomePage.prototype = $extend(org.intermedia.view.ViewBase.pr
 	onListItemSelected: null
 	,cells: null
 	,buildView: function() {
-		var me = this;
 		var cellStyle = { cell : org.intermedia.view.CellThumbText1BisStyle.setCellStyle, thumbnailMask : org.intermedia.view.CellThumbStyle.setThumbnailMaskStyle};
 		var cell0 = new org.intermedia.view.CellThumb(1,cellStyle);
-		cell0.setData(this._data[0]);
-		cell0.node.onmouseup = function(mouseEventData) {
-			me.onListItemSelectedCallback(cell0.getData());
-		};
-		this.node.appendChild(cell0.node);
 		this.cells.push(cell0);
 		var cell1 = new org.intermedia.view.CellThumb(2,cellStyle);
-		cell1.setData(this._data[1]);
-		cell1.node.onmouseup = function(mouseEventData) {
-			me.onListItemSelectedCallback(cell1.getData());
-		};
-		this.node.appendChild(cell1.node);
 		this.cells.push(cell1);
 		var cell2 = new org.intermedia.view.CellThumb(2,cellStyle);
-		cell2.setData(this._data[2]);
-		cell2.node.onmouseup = function(mouseEventData) {
-			me.onListItemSelectedCallback(cell2.getData());
-		};
-		this.node.appendChild(cell2.node);
 		this.cells.push(cell2);
 		var cell3 = new org.intermedia.view.CellThumb(2,cellStyle);
-		cell3.setData(this._data[3]);
-		cell3.node.onmouseup = function(mouseEventData) {
-			me.onListItemSelectedCallback(cell3.getData());
-		};
-		this.node.appendChild(cell3.node);
 		this.cells.push(cell3);
 		var cell4 = new org.intermedia.view.CellThumb(2,cellStyle);
-		cell4.setData(this._data[4]);
-		cell4.node.onmouseup = function(mouseEventData) {
-			me.onListItemSelectedCallback(cell4.getData());
-		};
-		this.node.appendChild(cell4.node);
 		this.cells.push(cell4);
+		var _g1 = 0, _g = this.cells.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.cells[i].setData(this._data[i]);
+			this.node.appendChild(this.cells[i].node);
+		}
 	}
 	,loadThumb: function(url) {
 		var image = js.Lib.document.createElement("img");
@@ -3166,21 +3195,15 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 		org.intermedia.view.CellStyle.setCellStyle(this._listBottomLoader);
 	}
 	,updateView: function() {
-		var me = this;
 		this._waitingData = false;
 		var _g = 0, _g1 = Reflect.fields(this._data);
 		while(_g < _g1.length) {
 			var index = _g1[_g];
 			++_g;
-			var cell = [this.createCell()];
-			cell[0].setData(Reflect.field(this._data,index));
-			cell[0].node.onmouseup = (function(cell) {
-				return function(mouseEventData) {
-					me.onListItemSelectedCallback(cell[0].getData());
-				};
-			})(cell);
-			this._cells.push(cell[0]);
-			this.node.appendChild(cell[0].node);
+			var cell = this.createCell();
+			cell.setData(Reflect.field(this._data,index));
+			this._cells.push(cell);
+			this.node.appendChild(cell.node);
 		}
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
@@ -3199,12 +3222,12 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 	}
 	,onDataRequestCallback: function(id) {
 		if(this.onDataRequest != null) {
-			haxe.Firebug.trace("List " + id + " data requested",{ fileName : "ListViewBase.hx", lineNumber : 192, className : "org.intermedia.view.ListViewBase", methodName : "onDataRequestCallback"});
 			this._waitingData = true;
 			this.onDataRequest(id);
 		}
 	}
 	,refreshStyles: function() {
+		org.intermedia.view.ListViewStyle.setListStyle(this.node);
 		var _g = 0, _g1 = this._cells;
 		while(_g < _g1.length) {
 			var cell = _g1[_g];
@@ -3256,8 +3279,6 @@ org.intermedia.view.ListViewText.prototype = $extend(org.intermedia.view.ListVie
 	createCell: function() {
 		var cell = new org.intermedia.view.CellText();
 		return cell;
-	}
-	,refreshStyles: function() {
 	}
 	,__class__: org.intermedia.view.ListViewText
 });
@@ -3379,7 +3400,7 @@ org.intermedia.view.MenuListViewStyle.setMenuStyle = function(node) {
 	node.style.backgroundColor = null;
 	node.style.backgroundImage = "url(" + "" + ")";
 	node.style.overflowX = "hidden";
-	node.style.overflowY = "auto";
+	node.style.overflowY = "hidden";
 }
 org.intermedia.view.MenuListViewStyle.setListStyle = function(node) {
 	node.style.display = "inline-block";
@@ -3423,14 +3444,20 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,_menuItem1LeftTarget: null
 	,_menuItem2LeftTarget: null
 	,updateView: function() {
+		var me = this;
 		var _g = 0, _g1 = Reflect.fields(this._data);
 		while(_g < _g1.length) {
 			var field = _g1[_g];
 			++_g;
-			var cell = this.createCell();
-			cell.setData(Reflect.field(this._data,field));
-			this._cells.push(cell);
-			this.node.appendChild(cell.node);
+			var cell = [this.createCell()];
+			cell[0].setData(Reflect.field(this._data,field));
+			cell[0].node.onmouseup = (function(cell) {
+				return function(mouseEventData) {
+					me.onListItemSelectedCallback(cell[0].getData());
+				};
+			})(cell);
+			this._cells.push(cell[0]);
+			this.node.appendChild(cell[0].node);
 		}
 		if(this._listBottomLoader.parentNode != null) this.node.removeChild(this._listBottomLoader);
 		if(this.displayListBottomLoader == true) this.node.appendChild(this._listBottomLoader);
@@ -3441,6 +3468,9 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 	,createCell: function() {
 		var cell = new org.intermedia.view.MenuCellText();
 		return cell;
+	}
+	,onListItemSelectedCallback: function(cellData) {
+		org.intermedia.view.ListViewBase.prototype.onListItemSelectedCallback.call(this,cellData);
 	}
 	,getIndex: function() {
 		return this._index;
@@ -3491,14 +3521,12 @@ org.intermedia.view.MenuListViewText.prototype = $extend(org.intermedia.view.Lis
 		}
 	}
 	,moveHorizontally: function(ratio) {
-		haxe.Firebug.trace(ratio,{ fileName : "MenuListViewText.hx", lineNumber : 330, className : "org.intermedia.view.MenuListViewText", methodName : "moveHorizontally"});
 		if(ratio > 0) this.computeMenuItemsLeftTarget(Math.max(this._index - 1,0) | 0); else if(ratio < 0) this.computeMenuItemsLeftTarget(Math.min(this._index + 1,2) | 0);
 		this.menuItem0Move(this._menuItem0LeftPos + Math.abs(this._menuItem0LeftTarget - this._menuItem0LeftPos) * ratio);
 		this.menuItem1Move(this._menuItem1LeftPos + Math.abs(this._menuItem1LeftTarget - this._menuItem1LeftPos) * ratio);
 		this.menuItem2Move(this._menuItem2LeftPos + Math.abs(this._menuItem2LeftTarget - this._menuItem2LeftPos) * ratio);
 	}
 	,horizontalTweenEnd: function(newIndex) {
-		haxe.Firebug.trace(this._menuItem0LeftTarget + "," + this._menuItem1LeftTarget + "," + this._menuItem2LeftTarget,{ fileName : "MenuListViewText.hx", lineNumber : 376, className : "org.intermedia.view.MenuListViewText", methodName : "horizontalTweenEnd"});
 		this.setIndex(newIndex);
 		this.computeMenuItemsLeftPos();
 	}
@@ -3580,7 +3608,7 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this._verticalTween != null && this._verticalTween.isPlaying) this._verticalTween.stop();
 		this._initialPosition.x = event.touches[0].pageX;
 		this._initialPosition.y = event.touches[0].pageY;
-		this._timer = new haxe.Timer(100);
+		this._timer = new haxe.Timer(10);
 		this._verticalVelocity = 0;
 		this._previousY = 0;
 		this._timer.run = this.computeVelocity.$bind(this);
@@ -3616,7 +3644,7 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onHorizontalUp != null) this.onHorizontalUp(event,this._offset.x);
 	}
 	,horizontalReleaseTween: function(xOrigin,xTarget) {
-		this._horizontalTween = new feffects.Tween(-xOrigin,-xTarget,150,feffects.easing.Quint.easeOut);
+		this._horizontalTween = new feffects.Tween(xOrigin,xTarget,150,feffects.easing.Quad.easeOut);
 		this._horizontalTween.setTweenHandlers(this.onHorizontalScrollCallback.$bind(this),this.horizontalTweenEnd.$bind(this));
 		this._horizontalTween.start();
 	}
@@ -3632,8 +3660,10 @@ org.intermedia.view.Scroll2D.prototype = {
 	,verticalReleaseTween: function() {
 		this._timer.stop();
 		var verticalTweenEnd = 0;
-		verticalTweenEnd = this._offset.y + (this._verticalVelocity * 100 | 0);
-		this._verticalTween = new feffects.Tween(this._offset.y,verticalTweenEnd,600,feffects.easing.Quint.easeOut);
+		verticalTweenEnd = this._offset.y + (this._verticalVelocity * 500 | 0);
+		var verticalReleaseTime = -(this._verticalVelocity / -0.1 | 0);
+		haxe.Log.trace(this._verticalVelocity + ", " + verticalReleaseTime,{ fileName : "Scroll2D.hx", lineNumber : 388, className : "org.intermedia.view.Scroll2D", methodName : "verticalReleaseTween"});
+		this._verticalTween = new feffects.Tween(this._offset.y,verticalTweenEnd,verticalReleaseTime,feffects.easing.Cubic.easeInOut);
 		this._verticalTween.setTweenHandlers(this.onVerticalScrollCallback.$bind(this),this.onVerticalTweenEnd.$bind(this));
 		this._verticalTween.start();
 	}
@@ -3647,7 +3677,7 @@ org.intermedia.view.Scroll2D.prototype = {
 		this._previousY = Std.parseInt(Std.string(this._offset.y));
 	}
 	,deriv: function(a,b) {
-		return (b - a) / 100;
+		return (b - a) / 10;
 	}
 	,__class__: org.intermedia.view.Scroll2D
 }
@@ -3777,12 +3807,12 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this._index = v;
 		this._currentListView = this._listViews[v];
 		this._currentListView.onListItemSelected = this.onListItemSelectedCallback.$bind(this);
-		this._scrollHandler.horizontalReleaseTween(this.node.scrollLeft - this._scrollHandler.initialScrollPosition.x,this._currentListView.node.offsetLeft - this._scrollHandler.initialScrollPosition.x);
+		this._scrollHandler.horizontalReleaseTween(this._scrollHandler.initialScrollPosition.x - this.node.scrollLeft,this._scrollHandler.initialScrollPosition.x - this._currentListView.node.offsetLeft);
 		return v;
 	}
 	,scrollToCurrentList: function() {
 		this.node.scrollLeft = Std.parseInt(this._currentListView.node.style.left.substr(0,-2));
-		this._scrollHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
+		this.resetInitScrollPosition();
 	}
 	,onResizeCallback: function(event) {
 		org.intermedia.view.SwippableListViewStyle.setSwippableListStyle(this.node);
@@ -3794,6 +3824,8 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 			++_g;
 			list.refreshStyles();
 		}
+	}
+	,refreshStyles: function() {
 	}
 	,onHorizontalScrollCallback: function(xOffset) {
 		this._currentListView.onListItemSelected = null;
@@ -3836,7 +3868,7 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		this.node.addEventListener("touchcancel",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
 	}
 	,touchStart: function(event) {
-		this._scrollHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
+		this.resetInitScrollPosition();
 		this._scrollHandler.touchHandler(event);
 	}
 	,touchMove: function(event) {
@@ -3851,6 +3883,9 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 		var ratio = 0;
 		if(js.Lib.window.innerWidth != 0) ratio = xOffset / js.Lib.window.innerWidth;
 		return ratio;
+	}
+	,resetInitScrollPosition: function() {
+		this._scrollHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this._currentListView.node.scrollTop};
 	}
 	,__class__: org.intermedia.view.SwippableListView
 	,__properties__: $extend(org.intermedia.view.ListViewBase.prototype.__properties__,{set_index:"setIndex",get_index:"getIndex"})
@@ -3984,6 +4019,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._applicationController.loadCellData({ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/"}.url);
 	}
 	,onMenuItemSelectedCallback: function(cellData) {
+		this._swippableListView.resetInitScrollPosition();
 		this._swippableListView.setIndex(cellData.id);
 	}
 	,onListItemSelectedCallback: function(cellData) {
@@ -4010,8 +4046,8 @@ org.intermedia.view.ViewManager.prototype = {
 	,onStartLoading: function() {
 	}
 	,onLoadingError: function(error) {
-		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 249, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
-		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 250, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Log.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 250, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
+		haxe.Firebug.trace("Load error: " + Std.string(error),{ fileName : "ViewManager.hx", lineNumber : 251, className : "org.intermedia.view.ViewManager", methodName : "onLoadingError"});
 	}
 	,onHeaderBackButtonPressed: function() {
 		this._header.setData("French Tech");
@@ -4232,8 +4268,9 @@ org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
 org.intermedia.view.MenuListViewText.BOLD_FONT_OFFSET = 5;
 org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.Scroll2D.VERTICAL_TWEEN_DELTA = 50;
-org.intermedia.view.Scroll2D.TIME_DELTA = 100;
-org.intermedia.view.Scroll2D.VERTICAL_RELEASE_TIME = 100;
+org.intermedia.view.Scroll2D.TIME_DELTA = 10;
+org.intermedia.view.Scroll2D.VERTICAL_RELEASE_TIME = 500;
+org.intermedia.view.Scroll2D.VERTICAL_RELEASE_ACCELERATION = -0.1;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;
 org.intermedia.view.SwippableListView.LIST_QTY = 2;

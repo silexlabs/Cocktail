@@ -29,7 +29,8 @@ class DetailStyle
 	public static function setDetailStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		node.style.position = "absolute";
+		//node.style.position = "absolute";
+		node.style.position = "fixed";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
@@ -45,6 +46,7 @@ class DetailStyle
 		node.style.height = "auto";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = "100px";
+		node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
 		
 		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.bottom = "0px";

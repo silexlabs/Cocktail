@@ -152,6 +152,7 @@ class ViewManager
 	 */
 	private function onMenuItemSelectedCallback(cellData:CellData):Void
 	{
+		_swippableListView.resetInitScrollPosition();
 		_swippableListView.index = cellData.id;
 	}
 	
