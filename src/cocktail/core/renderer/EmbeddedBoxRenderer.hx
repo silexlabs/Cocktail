@@ -43,136 +43,30 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	override public function render():Array<NativeElement>
 	{
 		var ret:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
-		
+		#if (flash9 || nme)
 		for (i in 0...ret.length)
 		{
-			#if (flash9 || nme)
 			
-			if (_coreStyle.position == fixed)
-			{
-				
-				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-				{
-					ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				}
-				else
-				{
-					ret[i].x = _positionedOrigin.x;
-				}
-				
-				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-				{
-					ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-				}
-				else
-				{
-					ret[i].y = _positionedOrigin.y;
-				}
-			}
-			else if (_coreStyle.position == absolute)
-			{
-				if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-				{
-					ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				}
-				else
-				{
-					ret[i].x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
-				}
-				
-				if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-				{
-					ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-				}
-				else
-				{
-					ret[i].y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
-				}
-			}
-			else
-			{
-				ret[i].x = _globalContainingBlockOrigin.x + _bounds.x;
-				ret[i].y = _globalContainingBlockOrigin.y + _bounds.y;
-			}
-			
-			#end
+			ret[i].x = globalBounds.x;
+			ret[i].y = globalBounds.y;
 		
 		}
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 		
-		
-	
-		
-		#if (flash9 || nme)
-		
 	
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		
 		ret.push(embeddedHTMLElement.embeddedAsset);
-		
-		
-		embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x + _coreStyle.computedStyle.paddingLeft;
-		embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y + _coreStyle.computedStyle.paddingTop;
+	
+		embeddedHTMLElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		embeddedHTMLElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		
-
-		//TODO : duplicate with BoxRenderer + apply also to hit test NativeElement above
-		if (_coreStyle.position == fixed)
-		{
-			
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-			{
-				embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
-			}
-			else
-			{
-				embeddedHTMLElement.embeddedAsset.x = _positionedOrigin.x;
-			}
-			
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-			{
-				embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
-			}
-			else
-			{
-				embeddedHTMLElement.embeddedAsset.y = _positionedOrigin.y;
-			}
-		}
-		else if (_coreStyle.position == absolute)
-		{
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-			{
-				embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
-			}
-			else
-			{
-				embeddedHTMLElement.embeddedAsset.x = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
-			}
-			
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-			{
-				embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
-			}
-			else
-			{
-				embeddedHTMLElement.embeddedAsset.y = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
-			}
-		}
-		else
-		{
-			embeddedHTMLElement.embeddedAsset.x = _globalContainingBlockOrigin.x + _bounds.x;
-			embeddedHTMLElement.embeddedAsset.y = _globalContainingBlockOrigin.y + _bounds.y;
-		}
-		
-		
-		
 		#end
-		
-		
 	
 		//TODO : apply transformations, opacity and visibility
 		
