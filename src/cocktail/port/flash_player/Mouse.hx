@@ -17,8 +17,7 @@ import cocktail.core.mouse.MouseData;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.
- * Listens to flash native mouse event on the provided
- * flash display object.
+ * Listens to flash native mouse event on the flash Stage.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -37,6 +36,9 @@ class Mouse extends AbstractMouse
 	// Overriden private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Set mouse listeners on the stage
+	 */
 	override private function setNativeListeners():Void
 	{
 		Lib.current.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
@@ -45,6 +47,9 @@ class Mouse extends AbstractMouse
 		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 	}
 	
+	/**
+	 * Remove mouse listeners from the stage
+	 */
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
@@ -54,9 +59,10 @@ class Mouse extends AbstractMouse
 	}
 	
 	/**
-	 * Returns the current mouse data
+	 * Create and return a cross-platform mouse event
+	 * form the flash mouse event
+	 * 
 	 * @param	event the native mouse event
-	 * @return a sruct containing the mouse current data
 	 */
 	override private function getMouseEvent(event:Dynamic):MouseEvent
 	{
