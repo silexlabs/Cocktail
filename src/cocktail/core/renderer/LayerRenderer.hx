@@ -54,7 +54,7 @@ class LayerRenderer
 	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render(rootRenderer:ElementRenderer = null):Array<NativeElement>
+	public function render(rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Array<NativeElement>
 	{
 		if (rootRenderer == null)
 		{
@@ -98,19 +98,27 @@ class LayerRenderer
 
 			//render all the line boxes belonging to this layer
 			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes(rootRenderer);
-			
+
 			for (i in 0...lineBoxesChildren.length)
 			{
 				nativeElements.push(lineBoxesChildren[i]);
 			}
-						
-			//render all the child layers with a z-index of 0
-			var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
-
-			for (i in 0...childLayers.length)
+			
+			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
+			//child layers, maybe add a new "if(inlineblock)" instead but should also
+			//work for float
+			if (renderChildLayers == true)
 			{
-				nativeElements.push(childLayers[i]);
+				//render all the child layers with a z-index of 0
+				var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
+
+				for (i in 0...childLayers.length)
+				{
+					nativeElements.push(childLayers[i]);
+				}
 			}
+			
+			
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
@@ -128,8 +136,8 @@ class LayerRenderer
 		else
 		{
 			//render the replaced element, render its background and asset
-			
 			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
+			
 			for (i in 0...rootRendererElements.length)
 			{
 				nativeElements.push(rootRendererElements[i]);
@@ -452,7 +460,7 @@ class LayerRenderer
 	private function renderLineBoxes(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
-		
+
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...lineBoxes.length)
@@ -464,7 +472,9 @@ class LayerRenderer
 			}
 			else
 			{	
-				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer);
+				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
+				//layer, will need to do the same thing for floats
+				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, false);
 			}
 			
 			for (j in 0...nativeElements.length)

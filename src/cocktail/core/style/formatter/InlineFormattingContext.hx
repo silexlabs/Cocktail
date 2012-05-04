@@ -8,6 +8,7 @@
 package cocktail.core.style.formatter;
 
 import cocktail.core.renderer.EmbeddedLineBox;
+import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.LineBox;
 import cocktail.core.renderer.RootLineBox;
 import cocktail.core.renderer.TextLineBox;
@@ -171,13 +172,13 @@ class InlineFormattingContext extends FormattingContext
 				child.bounds.width = child.coreStyle.computedStyle.width;
 				child.bounds.height = child.coreStyle.computedStyle.height;
 				
-				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
-				child.lineBoxes.push(embeddedLineBox);
+				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
+				child.lineBoxes.push(inlineBlockLineBox);
 				
-				embeddedLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
-				embeddedLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
+				inlineBlockLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
+				inlineBlockLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
 
-				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
+				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
