@@ -41,14 +41,12 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div><p>Test passes if there is at least one black box and there is no red visible on the page.</p>";
+	var test = "<div>";
 	test += "<div style=\"position:relative; font-size:12pt; font-family:ahem;\">";
-	test += "<div style=\"position:relative; font-size:12pt; color:red;\">";
+	test += "<div style=\"position:relative; font-size:12pt; font-family:ahem; color:red;\">";
 	test += "<span style=\"font-size:12pt; color:red; font-family:ahem; vertical-align:96px;\">X</span>";
 	test += "X";
 	test += "</div>";
-	test += "<div style=\"position:absolute; top:0; font-family:ahem; font-size:12pt;\">X</div>";
-	test += "<div style=\"position:absolute; left:1em; top:96px; font-family:ahem; font-size:12pt;\">X</div>";
 	test += "</div>";
 	test += "</div>";
 	js.Lib.document.body.innerHTML = test;

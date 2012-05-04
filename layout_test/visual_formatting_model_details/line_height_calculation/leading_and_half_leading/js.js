@@ -41,7 +41,7 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div>";
+	var test = "<div><p>Test passes if the orange box is vertically centered inside the blue box.</p>";
 	test += "<div style=\"width:2in; background-color:blue; font-size:1in; \">";
 	test += "<span style=\"color:orange; line-height:5in; font-size:1in; font-family:ahem;\">X</span>";
 	test += "</div></div>";

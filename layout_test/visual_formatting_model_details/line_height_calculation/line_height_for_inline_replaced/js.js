@@ -41,11 +41,12 @@ IntIter.prototype.next = function() {
 IntIter.prototype.__class__ = IntIter;
 Test = function(p) {
 	if( p === $_ ) return;
-	var test = "<div>";
-	test += "<div style=\"background-color:blue;\">";
-	test += "<span style=\"font-size:0.5in; font-family:ahem;\">Filler</span>";
-	test += "<span style=\"font-size:2in;font-family:ahem; \">Text</span>";
-	test += "</div></div>";
+	var test = "<div><p>Test passes if the blue and orange boxes below are the same height.</p>";
+	test += "<div style=\"position:relative;\">";
+	test += "<img style=\"display:inline; line-height:2in;\" src=\"blue96x96.png\" />";
+	test += "<div style=\"background-color:orange; height:96px; width:96px; left:1in; top:0; position:absolute;\"></div>";
+	test += "</div>";
+	test += "</div>";
 	js.Lib.document.body.innerHTML = test;
 }
 Test.__name__ = ["Test"];

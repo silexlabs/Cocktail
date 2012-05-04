@@ -22,14 +22,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div>';
-		test += '<div style="position:relative; font-size:12pt; font-family:ahem;">';
-			test += '<div style="position:relative; font-size:12pt; font-family:ahem; color:red;">';
-				test += '<span style="font-size:12pt; color:red; font-family:ahem; vertical-align:96px;">X</span>';
-				test += 'X';
-			test += '</div>';	
-			//test += '<div style="position:absolute; top:0; font-family:ahem; font-size:12pt;">X</div>';
-			//test += '<div style="position:absolute; left:1em; top:96px; font-family:ahem; font-size:12pt;">X</div>';
+		var test = '<div><p>Test passes if the two boxes below are the same height.</p>';
+		test += '<div style="position:relative; width:1em;">';
+			test += '<div style="position:relative; width:1em; background-color:black;  font-size:12pt; line-height:96px; font-family:ahem;">X</div>';
+			test += '<div style="position:absolute; left:1.2em; top:0; font-size:12pt; width:1em; background-color:black; font-family:ahem; height:96px;"></div>';
 		test += '</div>';
 		test += '</div>';
 		
