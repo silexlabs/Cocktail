@@ -20,7 +20,7 @@ class EmbeddedLineBox extends LineBox
 	
 	override private function get_leadedAscent():Float 
 	{
-		return bounds.height;
+		return bounds.height + _elementRenderer.coreStyle.computedStyle.marginTop + _elementRenderer.coreStyle.computedStyle.marginBottom;
 	}
 	
 	override private function get_leadedDescent():Float

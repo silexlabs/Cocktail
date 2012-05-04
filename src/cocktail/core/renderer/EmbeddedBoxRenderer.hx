@@ -54,7 +54,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
-		
 	
 		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		
