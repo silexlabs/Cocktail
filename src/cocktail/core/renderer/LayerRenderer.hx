@@ -88,7 +88,7 @@ class LayerRenderer
 			
 			//TODO here : render non-positioned float
 			
-			//TODO :  doc + check if replaced block children are not added twice
+			//TODO :  doc
 			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
 			
 			for (i in 0...replacedBlockChildren.length)

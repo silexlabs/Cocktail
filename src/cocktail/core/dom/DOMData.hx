@@ -21,44 +21,8 @@ import cocktail.core.unit.UnitData;
  */
 
 /**
- * TextElement enum and struct
+ * TODO : obsolete, should now use the Canvas API
  */
-
-/**
- * Lists all the different consituant
- * of a plain text, including 
- * controls characters
- * 
- * TODO : should be moved to renderer package
- */
-enum TextToken {
-	
-	/**
-	 * a word, surrounded by
-	 * spaces
-	 */
-	word(value:String);
-	
-	/**
-	 * represents one
-	 * space which can be 
-	 * between 2 words or among
-	 * a space sequence
-	 */
-	space;
-	
-	/**
-	 * a tabulation
-	 */
-	tab;
-	
-	/**
-	 * a line feed (starts
-	 * a new line)
-	 */
-	lineFeed;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic HTMLElement structures and enums
 //////////////////////////////////////////////////////////////////////////////////////////
