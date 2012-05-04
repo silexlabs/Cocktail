@@ -25,8 +25,6 @@ import haxe.Log;
 //import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
-import cocktail.core.nativeElement.NativeElementManager;
-import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.style.StyleData;
 
 /**

@@ -26,7 +26,6 @@ class AbstractMediaLoader extends AbstractResourceLoader
 	private var _nativeElement:NativeElement;
 	public var nativeElement(getNativeElement, never):NativeElement;
 	
-	
 	/**
 	 * The intrinsic width of the loaded asset.
 	 */
@@ -48,9 +47,8 @@ class AbstractMediaLoader extends AbstractResourceLoader
 	/**
 	 * class constructor. Store provided NativeElement
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new() 
 	{
-		_nativeElement = nativeElement;
 		super();
 	}
 	

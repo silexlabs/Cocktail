@@ -34,9 +34,10 @@ class MediaLoader extends AbstractMediaLoader
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new() 
 	{
-		super(nativeElement);
+		_nativeElement = new Loader();
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

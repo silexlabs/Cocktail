@@ -8,7 +8,6 @@
 package cocktail.core.html;
 
 import cocktail.core.event.Event;
-import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.style.BodyCoreStyle;
 
 /**

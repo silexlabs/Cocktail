@@ -31,14 +31,6 @@ class NativeElementManagerImpl extends AbstractNativeElementManagerImpl
 	}
 	
 	/**
-	 * Returns a reference to the Flash Stage
-	 */
-	override public function getRoot():NativeElement
-	{
-		return flash.Lib.current.stage;
-	}
-	
-	/**
 	 * Instantiate a native flash display object based on the requested type and returns a reference to it.
 	 * @param	nativeElementType the type of element to create (img, canvas...)
 	 */

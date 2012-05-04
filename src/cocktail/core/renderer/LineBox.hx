@@ -165,6 +165,7 @@ class LineBox extends Node
 		return _elementRenderer.establishesNewFormattingContext();
 	}
 	
+	//TODO : doc + missing values for vertical align
 	public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
 	{
 		
