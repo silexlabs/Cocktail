@@ -299,7 +299,7 @@ class AbstractHTMLDocument extends Document
 			activeElement.onkeydown(keyboardEvent);
 		}
 		
-		switch (keyboardEvent.key)
+		switch (keyboardEvent.key.charCodeAt(0))
 		{
 			case TAB_KEY_CODE:
 				//only do sequantial navigation if default was not prevented
