@@ -50,6 +50,11 @@ class TextLineBox extends LineBox
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	override public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
+	{
+		return parentBaselineOffset;
+	}
+	
 	/**
 	 * Overriden as TextLineBox might be
 	 * wrapping a space character
@@ -71,7 +76,7 @@ class TextLineBox extends LineBox
 	{
 		#if flash9
 		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + leadedAscent / 2 - leadedDescent / 2;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
 		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);

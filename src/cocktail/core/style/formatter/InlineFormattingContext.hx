@@ -909,55 +909,60 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
-		setRootLineBoxMetrics(rootLineBox, rootLineBox);
+		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
+
+		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0);
 		
-		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y);
-		
+
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.leadedAscent + rootLineBox.leadedDescent;
 		
 		return Math.round(lineBoxHeight);
 	}
 	
-	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox):Void
+	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float):Void
 	{
+		
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			if (child.hasChildNodes() == true)
-			{
-				setRootLineBoxMetrics(child, rootLineBox);
-			}
 			
 			var leadedAscent:Float = child.leadedAscent;
 			var leadedDescent:Float = child.leadedDescent;
-			var verticalAlign:Float = child.verticalAlign;
+			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
 			
 			//TODO : should vertical align be added recursively ?
-			if (leadedAscent + verticalAlign > rootLineBox.leadedAscent)
+			if (leadedAscent + baselineOffset > rootLineBox.leadedAscent)
 			{
-				rootLineBox.leadedAscent = leadedAscent + verticalAlign;
+				rootLineBox.leadedAscent = leadedAscent + baselineOffset;
 			}
 			
-			if (leadedDescent - verticalAlign > rootLineBox.leadedDescent)
+			if (leadedDescent + baselineOffset > rootLineBox.leadedDescent)
 			{
-				rootLineBox.leadedDescent = leadedDescent - verticalAlign;
+				rootLineBox.leadedDescent = leadedDescent + baselineOffset;
+			}
+			
+			if (child.hasChildNodes() == true)
+			{
+				setRootLineBoxMetrics(child, rootLineBox, baselineOffset);
 			}
 		}
 	}
 	
-	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Int):Void
+	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Int, parentBaseLineOffset:Float):Void
 	{
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
+			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
+			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
+		
 			if (child.hasChildNodes() == true)
 			{
-				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY);
+				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
 			}
 
-			child.bounds.y = lineBoxAscent + formattingContextY - child.verticalAlign;
 			
 			//TODO : used for embedded or inline block but implement better
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isEmbedded() == true && child.elementRenderer.isText() == false))
