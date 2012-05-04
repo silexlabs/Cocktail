@@ -301,6 +301,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setLineHeightKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.lineHeight = value;
 	}
+	public function setLineHeightZero (element:Node):Void{
+		cast(element, HTMLElement).style.lineHeight = "0";
+	}
 	public function setLineHeightNum (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.lineHeight = value+unit;
 	}
