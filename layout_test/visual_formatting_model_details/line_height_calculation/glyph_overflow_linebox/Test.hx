@@ -22,14 +22,9 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div>';
-		test += '<div style="position:relative; font-size:12pt; font-family:ahem;">';
-			test += '<div style="position:relative; font-size:12pt; font-family:ahem; color:red;">';
-				test += '<span style="font-size:12pt; color:red; font-family:ahem; vertical-align:96px;">X</span>';
-				test += 'X';
-			test += '</div>';	
-			//test += '<div style="position:absolute; top:0; font-family:ahem; font-size:12pt;">X</div>';
-			//test += '<div style="position:absolute; left:1em; top:96px; font-family:ahem; font-size:12pt;">X</div>';
+		var test = '<div><p>Test passes if the "Filler Text" below is completely visible without any clipping and there is no red visible on the page.</p>';
+		test += '<div style="margin-top:1in; ">';
+			test += '<div style="background-color:red;  line-height:0; font-size:1in; font-family:serif;">Filler Text</div>';
 		test += '</div>';
 		test += '</div>';
 		

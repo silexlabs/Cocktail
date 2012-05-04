@@ -25,10 +25,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the "Filler Text" below is completely contained within the blue box.</p>';
+		var test = '<div>';
 		test += '<div style="background-color:blue;">';
-			test += '<span style="font-size:0.5in;">Filler</span>';
-			test += '<span style="font-size:2in;">Text</span>';
+			test += '<span style="font-size:0.5in; font-family:ahem;">Filler</span>';
+			test += '<span style="font-size:2in;font-family:ahem; ">Text</span>';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
