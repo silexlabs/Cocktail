@@ -12,6 +12,7 @@ import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.dom.DOMData;
+import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.mouse.MouseData;
 
@@ -135,15 +136,14 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	
 	/**
 	 * Open the linked document using
-	 * runtime specific API. Overriden
-	 * by runtime as needed
-	 * 
-	 * TODO : should use instead window.location so that
-	 * there won't be a need to subclass
+	 * the Window object
 	 */
 	private function openDocument():Void
 	{
-		//abstract
+		if (_href != null)
+		{
+			Lib.window.open(_href, _target);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
