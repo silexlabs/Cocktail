@@ -78,8 +78,9 @@ class Keyboard extends AbstractKeyboard
 		}
 		
 		//TODO : keyboard event is now null
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, null, 0.0, typedEvent.charCode, 
-		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		//TODO : String.fromCharCode must be wrong for the keycode
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, null, 0.0, String.fromCharCode(typedEvent.charCode), 
+		String.fromCharCode(typedEvent.keyCode), typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		
 		return keyboardEvent;
