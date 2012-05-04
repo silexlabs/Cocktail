@@ -16,11 +16,9 @@ import haxe.Log;
  * An array of URL can be provided, in which case, the first valid URL will be used. The onError callback is only
  * called when all the provided URLs are invalid
  * 
- * TODO : rename ResourceLoader
- * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractResourceLoader 
+class ResourceLoader 
 {	
 	/**
 	 * Stores the callback to call once the file is successfully loaded
