@@ -52,20 +52,6 @@ class AbstractMouse
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
 	
 	/**
-	 * the callback to call when the native element
-	 * is hovered
-	 */
-	private var _onMouseOver:MouseEvent->Void;
-	public var onMouseOver(getOnMouseOver, setOnMouseOver):MouseEvent->Void;
-	
-	/**
-	 * The callback to call when the native element
-	 * is moused out
-	 */
-	private var _onMouseOut:MouseEvent->Void;
-	public var onMouseOut(getOnMouseOut, setOnMouseOut):MouseEvent->Void;
-	
-	/**
 	 * The callback to call when the mouse move while
 	 * over the native element
 	 */
@@ -73,26 +59,11 @@ class AbstractMouse
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
 	
 	/**
-	 * mouse event types
-	 */
-	private var _clickEvent:String;
-	private var _mouseDownEvent:String;
-	private var _mouseUpEvent:String;
-	private var _mouseOverEvent:String;
-	private var _mouseOutEvent:String;
-	private var _mouseMoveEvent:String;
-	
-	/**
-	 * The NativeElement on which mouse event are listened to
-	 */
-	private var _nativeElement:NativeElement;
-	
-	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new() 
 	{
-		_nativeElement = nativeElement;
+		setNativeListeners();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -137,31 +108,6 @@ class AbstractMouse
 	}
 	
 	/**
-	 * Calls the onMouseOver callback with the current mouse data
-	 * @param	event the native mouse over event
-	 */
-	private function onNativeMouseOver(event:Dynamic):Void
-	{
-		if (onMouseOver != null)
-		{
-			onMouseOver(getMouseEvent(event));
-		}
-	}
-	
-	/**
-	 * Calls the onMouseOut callback with the current mouse data
-	 * @param	event the native mouse out event
-	 */
-	private function onNativeMouseOut(event:Dynamic):Void
-	{
-		if (onMouseOut != null)
-		{
-			onMouseOut(getMouseEvent(event));
-		}
-	}
-	
-	
-	/**
 	 * Calls the onMouseMove callback with the current mouse data
 	 * @param	event the native mouse move event
 	 */
@@ -177,15 +123,13 @@ class AbstractMouse
 	// Private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Actually remove and set listeners on the nativeElement.
-	 * Implemented by each runtime
-	 * 
-	 * @param mouseEvent the mouse event type that must be listened to
-	 * @param nativeCallback the native, runtime-specific callback
-	 * @param htmlElementCallback the cross-platform mouse callback defined on the htmlElement
-	 */
-	private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:MouseEvent->Void):Void
+	//TODO : doc
+	private function setNativeListeners():Void
+	{
+		//abstract
+	}
+	
+	private function removeNativeListeners():Void
 	{
 		//abstract
 	}
@@ -206,7 +150,6 @@ class AbstractMouse
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateListeners(_clickEvent, onNativeClick, value);
 		return this._onClick = value;
 	}
 	
@@ -217,7 +160,6 @@ class AbstractMouse
 	
 	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateListeners(_mouseDownEvent, onNativeMouseDown, value);
 		return this._onMouseDown = value;
 	}
 	
@@ -228,7 +170,6 @@ class AbstractMouse
 	
 	private function setOnMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateListeners(_mouseUpEvent, onNativeMouseUp, value);
 		return this._onMouseUp = value;
 	}
 	
@@ -237,31 +178,8 @@ class AbstractMouse
 		return this._onMouseUp;
 	}
 	
-	private function setOnMouseOver(value:MouseEvent->Void):MouseEvent->Void
-	{
-		updateListeners(_mouseOverEvent, onNativeMouseOver, value);
-		return this._onMouseOver = value;
-	}
-	
-	private function getOnMouseOver():MouseEvent->Void
-	{
-		return this._onMouseOver;
-	}
-	
-	private function setOnMouseOut(value:MouseEvent->Void):MouseEvent->Void
-	{
-		updateListeners(_mouseOutEvent, onNativeMouseOut, value);
-		return this._onMouseOut = value;
-	}
-	
-	private function getOnMouseOut():MouseEvent->Void
-	{
-		return this._onMouseOut;
-	}
-	
 	private function setOnMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateListeners(_mouseMoveEvent, onNativeMouseMove, value);
 		return this._onMouseMove = value;
 	}
 	
