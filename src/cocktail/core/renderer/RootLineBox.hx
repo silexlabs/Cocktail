@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.style.CoreStyle;
+import cocktail.core.geom.GeomData;
 
 /**
  * A special kind of line box which represents
@@ -24,6 +25,89 @@ class RootLineBox extends LineBox
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super(elementRenderer);
+	}
+	
+	//TODO : doc
+	override private function get_bounds():RectangleData
+	{
+		return getChildrenBounds(getLineBoxesBounds(this));
+	}
+	
+	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleData>
+	{
+		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		
+		for (i in 0...lineBox.childNodes.length)
+		{
+			var child:LineBox = cast(lineBox.childNodes[i]);
+			
+			lineBoxesBounds.push(child.bounds);
+
+
+			if (child.hasChildNodes() == true)
+			{
+				var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
+				for (j in 0...childrenBounds.length)
+				{
+					lineBoxesBounds.push(childrenBounds[j]);
+				}
+			}
+		}
+		
+		return lineBoxesBounds;
+	}
+	
+	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
+	{
+
+		var bounds:RectangleData;
+		
+		var left:Float = 50000;
+		var top:Float = 50000;
+		var right:Float = -50000;
+		var bottom:Float = -50000;
+		
+		
+		for (i in 0...childrenBounds.length)
+		{
+			if (childrenBounds[i].x < left)
+			{
+				left = childrenBounds[i].x;
+			}
+			if (childrenBounds[i].y < top)
+			{
+				top = childrenBounds[i].y;
+			}
+			if (childrenBounds[i].x + childrenBounds[i].width > right)
+			{
+				right = childrenBounds[i].x + childrenBounds[i].width;
+			}
+			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
+			{
+				bottom = childrenBounds[i].y + childrenBounds[i].height;
+			}
+		}
+			
+		bounds = {
+					x:left,
+					y:top,
+					width : right - left,
+					height :  bottom - top,
+				}
+		
+		//need to implement better fix,
+		//sould not be negative
+		if (bounds.width < 0)
+		{
+			bounds.width = 0;
+		}
+		if (bounds.height < 0)
+		{
+			bounds.height = 0;
+		}
+				
+		return bounds;
+		
 	}
 	
 }

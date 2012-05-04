@@ -47,6 +47,8 @@ Test = function(p) {
 	test += "<span style=\"font-size:12pt; color:red; font-family:ahem; vertical-align:96px;\">X</span>";
 	test += "X";
 	test += "</div>";
+	test += "<div style=\"position:absolute; top:0; font-family:ahem; font-size:12pt;\">X</div>";
+	test += "<div style=\"position:absolute; left:1em; top:96px; font-family:ahem; font-size:12pt;\">X</div>";
 	test += "</div>";
 	test += "</div>";
 	js.Lib.document.body.innerHTML = test;
