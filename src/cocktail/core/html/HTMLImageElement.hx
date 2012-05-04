@@ -11,7 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
-import cocktail.core.ImageLoader;
+import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
 
