@@ -7,53 +7,51 @@
 */
 package cocktail.core.mouse;
 
-import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
 import cocktail.core.event.MouseEvent;
 
 import cocktail.core.mouse.MouseData;
 
 /**
- * This package is made to offer a simple API for mouse interactions.
- *
- * This class is the base class for mouse interaction. It listens to 
- * mouse events thanks to runtime specific implementations and calls
- * the appropriate registered callbacks.
+ * This class listens to native mouse event
+ * using the API of the current platform.
  * 
- * It takes a target HTMLElement objects onto which the mouse
- * event will be listened.
+ * It then builds a cross-platform MouseEvent
+ * from the dispatched native mouse events,
+ * and call the callback corresponding to 
+ * the mouse event type if provided
  * 
- * TODO : should now be simplified now that events are only listened
- * by HTMLDocument.
- * Add an InputManager ?
+ * For instance in Flash, it listens to mouse
+ * events on the Stage.
+ * 
+ * TODO : Add an InputManager ?
  * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractMouse 
 {
 	/**The callback to call when
-	 * the native element is clicked
+	 * a native click event is dispatched
 	 */
 	private var _onClick:MouseEvent->Void;
 	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
 	
 	/** 
 	 * The callback to call when
-	 * the mouse is pressed on the native element
+	 * a native mouse down evednt is dispatched
 	 */
 	private var _onMouseDown:MouseEvent->Void;
 	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback to call when 
-	 * the native element is released
+	 * a native mouse up event is dispatched
 	 */
 	private var _onMouseUp:MouseEvent->Void;
 	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
 	
 	/**
-	 * The callback to call when the mouse move while
-	 * over the native element
+	 * The callback to call when a native
+	 * mouse move event is dispatched
 	 */
 	private var _onMouseMove:MouseEvent->Void;
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
@@ -63,6 +61,7 @@ class AbstractMouse
 	 */
 	public function new() 
 	{
+		//starts to listen to native mouse events
 		setNativeListeners();
 	}
 	
@@ -72,8 +71,11 @@ class AbstractMouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Calls the onClick callback with the current mouse data
-	 * @param	event the native mouse down event
+	 * Create a cross-platform mouse click event form
+	 * the native mouse click event, and call
+	 * the click callback if provided
+	 * 
+	 * @param	event the native mouse click event
 	 */
 	private function onNativeClick(event:Dynamic):Void
 	{
@@ -84,8 +86,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * Calls the onMouseDown callback with the current mouse data
-	 * @param	event the native mouse down event
+	 * same as mouse click
 	 */
 	private function onNativeMouseDown(event:Dynamic):Void
 	{
@@ -96,8 +97,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * Calls the onMouseUp callback with the current mouse data
-	 * @param	event the native mouse up event
+	 * same as mouse click
 	 */
 	private function onNativeMouseUp(event:Dynamic):Void
 	{
@@ -108,8 +108,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * Calls the onMouseMove callback with the current mouse data
-	 * @param	event the native mouse move event
+	 * same as mouse click
 	 */
 	private function onNativeMouseMove(event:Dynamic):Void
 	{
@@ -123,21 +122,27 @@ class AbstractMouse
 	// Private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : doc
+	/**
+	 * Set listener for platform specific events
+	 */
 	private function setNativeListeners():Void
 	{
 		//abstract
 	}
 	
+	/**
+	 * Set listeners of platform specific events
+	 */
 	private function removeNativeListeners():Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * Returns the current mouse data
+	 * Create and return a cross-platform mouse event
+	 * from the dispatched native mouse event
+	 * 
 	 * @param	event the native mouse event
-	 * @return a sruct containing the mouse current data
 	 */
 	private function getMouseEvent(event:Dynamic):MouseEvent
 	{
