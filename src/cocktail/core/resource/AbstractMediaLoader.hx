@@ -15,7 +15,7 @@ import cocktail.core.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractMediaLoader extends AbstractResourceLoader
+class AbstractMediaLoader extends ResourceLoader
 {
 	/**
 	 * A reference to the native element actually loading

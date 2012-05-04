@@ -9,7 +9,6 @@ package cocktail.port.flash_player;
 
 import cocktail.core.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
-import cocktail.core.resource.AbstractResourceLoader;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
