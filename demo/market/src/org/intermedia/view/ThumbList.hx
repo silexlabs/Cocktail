@@ -25,7 +25,6 @@ class ThumbList extends ListViewBase
 	{
 		_cellsPerLine = cellPerLine;
 		super();
-		ListViewStyle.setListStyle(this);
 	}
 	
 	/**

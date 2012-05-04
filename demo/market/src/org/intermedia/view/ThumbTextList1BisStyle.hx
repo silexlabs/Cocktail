@@ -26,7 +26,7 @@ class ThumbTextList1BisStyle
 	 */
 	public static function setListStyle(node:HtmlDom):Void
 	{
-		//ListViewStyle.setListStyle(node);
+		ListViewStyle.setListStyle(node);
 		
 		node.style.backgroundColor = Constants.LIST_BG_BLACK_COLOR;
 	}

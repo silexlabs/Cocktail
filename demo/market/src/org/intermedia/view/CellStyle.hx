@@ -102,7 +102,8 @@ class CellStyle
 	public static function addBorder(node:HtmlDom, borderWidth:Int):Void
 	{
 		// add border using margin and background as not supported by cocktail yet
-		node.style.marginTop = Std.string(borderWidth) + "px";
+		//node.style.marginTop = Std.string(borderWidth) + "px";
+		node.style.marginBottom = Std.string(borderWidth) + "px";
 		node.style.marginLeft = Std.string(borderWidth) + "px";
 		// reduce width accordingly
 		// if unit is %

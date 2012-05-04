@@ -29,8 +29,8 @@ class DetailStyle
 	public static function setDetailStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		//node.style.position = "absolute";
-		node.style.position = "fixed";
+		node.style.position = "absolute";
+		//node.style.position = "fixed";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
@@ -52,7 +52,8 @@ class DetailStyle
 		node.style.bottom = "0px";
 		
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "scroll";
+		//node.style.overflowY = "scroll";
+		node.style.overflowY = "visible";
 		
 		
 		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));

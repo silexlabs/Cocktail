@@ -43,6 +43,7 @@ class ViewManagerStyle
 		
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
+		//node.style.overflowY = "visible";
 	}
 	
 }

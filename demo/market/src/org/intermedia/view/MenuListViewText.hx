@@ -65,13 +65,19 @@ class MenuListViewText extends ListViewBase
 		_menuItem2LeftTarget = 0;
 
 		super();
-		//MenuListViewStyle.setListStyle(node);
-		MenuListViewStyle.setMenuStyle(node);
 		
 		displayListBottomLoader = false;
-		
-		// onresize callback
-		//Lib.window.onresize = onResizeCallback;
+	}
+	
+	/**
+	 * initialize the default style
+	 */
+	override function initStyle():Void
+	{
+		// init style model
+		_style = {
+			list:MenuListViewStyle.setMenuStyle
+		}
 	}
 	
 	/**
@@ -116,10 +122,7 @@ class MenuListViewText extends ListViewBase
 		// set index to its initial value 
 		//_index = 1;
 		index = 1;
-		onResizeCallback();
-		
-		// reset position attributes
-		//computeMenuItemsLeftPos();
+		refreshStyles();
 	}	
 
 	/**
@@ -130,27 +133,10 @@ class MenuListViewText extends ListViewBase
 	 */
 	override private function createCell():CellBase
 	{
-		//var style:HtmlDom->Void = setCellsStyle();
 		var cell:MenuCellText = new MenuCellText();
 		return cell;
 	}
 	
-	/**
-	 * onListItemSelected callback
-	 * @param	cellData
-	 */
-	override public function onListItemSelectedCallback(cellData:CellData)
-	{
-		//index = cellData.id;
-		//_index = cellData.id;
-
-		// reset left positions
-		//computeMenuItemsLeftPos();
-		//computeMenuItemsLeftTarget(cellData.id);
-
-		super.onListItemSelectedCallback(cellData);
-	}
-
 	/**
 	 * index getter
 	 * 
@@ -176,28 +162,6 @@ class MenuListViewText extends ListViewBase
 
 		_index = v;
 		
-		
-		// Compute menu items left target
-		//computeMenuItemsLeftTarget(_index);
-		
-		// menu item 0 tween
-		/*var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
-		// launch the tween
-		//tween0.start();
-
-		// menu item 1 tween
-		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
-		// launch the tween
-		//tween1.start();
-
-		// menu item 0 tween
-		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
-		// launch the tween
-		//tween2.start();*/
-
 		return v;
 	}
 	
@@ -233,17 +197,6 @@ class MenuListViewText extends ListViewBase
 	}
 	
 	/**
-	 * Menu item tween move end callback 
-	 * 
-	 * @param	e
-	 */
-	/*private function menuItemMoveEnd(e:Float):Void
-	{
-		// reset position attributes
-		computeMenuItemsLeftPos();
-	}
-	
-	/**
 	 * Compute menu items width. It needs to be done at the beginning,
 	 * as if an item is not visible in the viewport, its width is 0
 	 */
@@ -252,7 +205,6 @@ class MenuListViewText extends ListViewBase
 		_menuItem0Width = _cells[0].node.clientWidth;
 		_menuItem1Width = _cells[1].node.clientWidth;
 		_menuItem2Width = _cells[2].node.clientWidth;
-		//Firebug.trace(_menuItem0Width + "," + _menuItem1Width + "," + _menuItem2Width);
 	}
 	
 	/**
@@ -263,7 +215,6 @@ class MenuListViewText extends ListViewBase
 		_menuItem0LeftPos = _cells[0].node.offsetLeft;
 		_menuItem1LeftPos = _cells[1].node.offsetLeft;
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
-		//Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos);
 	}
 	
 	/**
@@ -273,18 +224,6 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function computeMenuItemsLeftTarget(targetIndex:Int):Void
 	{
-		// check is done so that index is always between 0 an 2
-		//if (targetIndex < 0)
-		//{
-			//targetIndex = 0;
-		//}
-		//else if (targetIndex > 2)
-		//{
-			//targetIndex = 2;
-		//}
-		
-		//computeMenuItemsWidth();
-		
 		// depending on the index value, set each menu item left end position
 		switch(targetIndex)
 		{
@@ -318,8 +257,6 @@ class MenuListViewText extends ListViewBase
 			default:
 		}
 		
-		//Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
-
 	}
 	
 	/**
@@ -329,7 +266,6 @@ class MenuListViewText extends ListViewBase
 	 */
 	public function moveHorizontally(ratio:Float):Void
 	{
-		//Firebug.trace(ratio);
 		// depending on ratio sign, increment or decrement _index
 		// check is done so that index is always between 0 an 2
 		if (ratio > 0)
@@ -341,53 +277,26 @@ class MenuListViewText extends ListViewBase
 			computeMenuItemsLeftTarget(Std.int(Math.min(_index + 1, 2)));
 		}
 		
-		//computeMenuItemsLeftTarget();
-		//menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
-		//menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
-		//menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
-		//menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
-		//menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
-		//menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
 		menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
 		menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
 		menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
-		//Firebug.trace(_menuItem0LeftPos + (-(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
-		//Firebug.trace(_menuItem0LeftPos + "," + _menuItem1LeftPos + "," + _menuItem2LeftPos );
 	}
-	
-	/**
-	 * swippable view horizontal up callback
-	 * 
-	 * @param	Xoffset
-	 */
-	/*public function horizontalUp(listIndex:Int):Void
-	{
-		// set index value to launch setter
-		index = listIndex;
-	}*/
 	
 	/**
 	 * swippable view horizontal tween end callback
 	 * 
 	 * @param	newIndex	the new index value
 	 */
-    //public function horizontalTweenEnd(ratio:Float):Void
     public function horizontalTweenEnd(newIndex:Int):Void
 	{
-		//Firebug.trace("horizontalTweenEnd");
-		//Firebug.trace("new index = " + newIndex);
-		//Firebug.trace(_menuItem0LeftTarget + "," + _menuItem1LeftTarget + "," + _menuItem2LeftTarget);
 		index = newIndex;
-		//moveHorizontally(ratio);
 		computeMenuItemsLeftPos();
-		//computeMenuItemsLeftTarget(_index);
 	}
 	
 	/**
-	 * on rezize callback
+	 * refresh styles
 	 */
-	//public function onResizeCallback(event:Event):Void
-	public function onResizeCallback():Void
+	override public function refreshStyles():Void
 	{
 		// reset lists position
 		computeMenuItemsLeftTarget(_index);
@@ -396,7 +305,6 @@ class MenuListViewText extends ListViewBase
 		menuItem2Move(_menuItem2LeftTarget);
 		// reset left positions
 		computeMenuItemsLeftPos();
-	}
-	
+	}	
 
 }

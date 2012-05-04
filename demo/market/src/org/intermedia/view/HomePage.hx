@@ -84,7 +84,7 @@ class HomePage extends ViewBase
 			// fill cell with corresponding data
 			cells[i].data = _data[i];
 			// set mouseUp callback
-			//cells[i].node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cells[i].data); };
+			cells[i].node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cells[i].data); };
 			// attach cell to homepage
 			node.appendChild(cells[i].node);
 		}
