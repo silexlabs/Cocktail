@@ -5,12 +5,30 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core;
+package cocktail.core.resource;
+
+import cocktail.core.MediaLoader;
+import cocktail.core.NativeElement;
+import haxe.Http;
+import haxe.Log;
 
 /**
- * Set the right runtime specific ImageLoader at compile-time
+ * This class is in charge of loading a picture. When multiple
+ * pictures are loaded with the same instance, the picture is 
+ * replaced
+ * 
+ * TODO : shouldn't be done this way, each picture should be 
+ * stored in a different ResourceLoader which can then be retrieved
+ * 
+ * @author Yannick DOMINGUEZ
  */
-#if (flash9 || nme)
-typedef ImageLoader = cocktail.core.resource.AbstractImageLoader;
-
-#end
+class ImageLoader extends MediaLoader
+{
+	/**
+	 * class constructor
+	 */
+	public function new()
+	{
+		super();
+	}
+}

@@ -12,7 +12,6 @@ import cocktail.core.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.ImageLoader;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.unit.UnitManager;

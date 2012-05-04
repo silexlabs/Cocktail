@@ -13,7 +13,6 @@ import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
-import cocktail.core.ImageLoader;
 import cocktail.core.dom.DOMData;
 import cocktail.core.unit.UnitManager;
 import haxe.Log;

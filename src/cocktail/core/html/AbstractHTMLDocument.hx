@@ -280,6 +280,8 @@ class AbstractHTMLDocument extends Document
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
 			{
+				//shouldn't break if the executed behaviour is a default behaviour, for instance
+				//opening a document for an anchor element
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
 				break;
 			}
