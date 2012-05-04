@@ -24,12 +24,17 @@ import cocktail.core.mouse.MouseData;
  * events on the Stage.
  * 
  * TODO : Add an InputManager ?
+ * or merge keyboard and mouse into an Input class ?
+ * This way the flash port might take care of things
+ * not provided by the flash platform natively, such as 
+ * key press ?
  * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractMouse 
 {
-	/**The callback to call when
+	/**
+	 * The callback to call when
 	 * a native click event is dispatched
 	 */
 	private var _onClick:MouseEvent->Void;
