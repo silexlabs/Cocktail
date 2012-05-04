@@ -79,8 +79,14 @@ class AbstractHTMLAnchorElement extends HTMLElement
 	// OVERRIDEN MOUSE SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : doc + check if actaully works
-	override private function get_onMouseDown():MouseEvent->Void
+	/**
+	 * When the mouse up callback is retrieved, for instance when it needs to be called
+	 * as a mouse up event has been dispatched over this HTMLElement, it returns
+	 * a custom callback which not only executes the user callback if provided
+	 * but also executes the default behaviour ofthe anchor element which is to 
+	 * try to open the link
+	 */
+	override private function get_onMouseUp():MouseEvent->Void
 	{
 		return onMouseUpCallback;
 	}
