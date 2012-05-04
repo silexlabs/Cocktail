@@ -22,7 +22,7 @@ import cocktail.core.mouse.MouseData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLAnchorElement extends HTMLElement
+class HTMLAnchorElement extends HTMLElement
 {
 	//target const
 	
