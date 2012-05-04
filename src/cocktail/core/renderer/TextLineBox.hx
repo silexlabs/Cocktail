@@ -148,6 +148,8 @@ class TextLineBox extends LineBox
 	/**
 	 * return the generated text height, which is
 	 * the addition of the leaded ascent and descent
+	 * 
+	 * TODO : should be line height in some cases
 	 */
 	private function getTextHeight():Float
 	{

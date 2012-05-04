@@ -92,7 +92,6 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		_formattingContextData.x = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		
-		
 		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
 
 		//format the last line
@@ -406,10 +405,8 @@ class InlineFormattingContext extends FormattingContext
 		
 		if (lineBoxWidth > _formattingContextData.maxWidth)
 		{
-				_formattingContextData.maxWidth = lineBoxWidth;
+			_formattingContextData.maxWidth = lineBoxWidth;
 		}
-	
-				
 		
 		//format line boxes vertically
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
@@ -912,10 +909,10 @@ class InlineFormattingContext extends FormattingContext
 		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
 
 		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0);
-		
 
 		//compute the line box height
-		var lineBoxHeight:Float = rootLineBox.leadedAscent + rootLineBox.leadedDescent;
+		var lineBoxHeight:Float = rootLineBox.bounds.height;
+
 		
 		return Math.round(lineBoxHeight);
 	}
