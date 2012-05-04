@@ -13,7 +13,7 @@ package cocktail;
 
 typedef Image = cocktail.core.html.HTMLImageElement;
 typedef HtmlDom = cocktail.core.html.HTMLElement;
-typedef Anchor = cocktail.core.HTMLAnchorElement;
+typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
 typedef Style = cocktail.core.style.adapter.Style;
 typedef Window = cocktail.core.window.AbstractWindow;
