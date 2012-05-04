@@ -8,12 +8,8 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
-import cocktail.core.html.HTMLElement;
 import cocktail.core.mouse.AbstractMouse;
-import cocktail.core.NativeElement;
 import flash.Lib;
-
-import cocktail.core.mouse.MouseData;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.

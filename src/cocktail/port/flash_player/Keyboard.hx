@@ -15,9 +15,8 @@ import haxe.Log;
 import cocktail.core.keyboard.AbstractKeyboard;
 
 /**
- * This is the flash AVM2 implementation of the keyboard abstraction.
- * Set listeners on native flash keyboard event and call the corresponding
- * callback
+ * This is the flash AVM2 implementation of the keyboard event manager.
+ * Listens to flash native keyboard event on the flash Stage.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -35,12 +34,18 @@ class Keyboard extends AbstractKeyboard
 	// Overriden private key utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Set keyboard listeners on the stage
+	 */
 	override private function setNativeListeners():Void
 	{
 		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
 		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
 	}
 	
+	/**
+	 * REmove keyboard listeners from the stage
+	 */
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
@@ -48,9 +53,10 @@ class Keyboard extends AbstractKeyboard
 	}
 	
 	/**
-	 * Returns the key that triggered the keyboard event
-	 * @param	event the native key up or down event
-	 * @return a sruct containing the key code and other key values
+	 * Create and return a cross-platform keyboard event
+	 * form the flash keyboard event
+	 * 
+	 * @param	event the native mouse event
 	 */
 	override private function getKeyData(event:Dynamic):KeyboardEvent
 	{
