@@ -1,7 +1,7 @@
 ECHO OFF
 ECHO.
 SET config_file=config.xml
-SET input_files_path=icons splashScreens_PhoneGap config.xml index.html ../../bin/default.css ../../bin/assets ../../bin/data ../../bin/WebApp.js
+SET input_files_path=icons splashScreens_PhoneGap config.xml index.html ../../bin/default.css ../../bin/assets ../../bin/WebApp.js
 SET output_file_path=WebApp_PhoneGapBuild_Dev.zip
 
 cls
