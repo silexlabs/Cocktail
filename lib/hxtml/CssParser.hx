@@ -429,6 +429,14 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "line-height":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setLineHeightZero(d);
+				return true;
+			}
+			
 			// case label (normal)
 			var val = getIdent(v);
 			if ( val != null) {
