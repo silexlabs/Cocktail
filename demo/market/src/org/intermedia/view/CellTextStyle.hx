@@ -47,6 +47,9 @@ class CellTextStyle
 		// apply border
 		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 		//node.style.borderStyle = "none none solid none";
+
+		node.style.backgroundColor = Constants.CELL_BG_COLOR;
+
 	}
 	
 	/**

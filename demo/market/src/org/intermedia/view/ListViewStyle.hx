@@ -43,8 +43,8 @@ class ListViewStyle
 		//node.style.width = Std.string(node.clientWidth) + "px";
 		//node.style.width = "auto";
 		// set list width to 1/3 of the swippable list view
-		node.style.width = Std.string(100/3) + "%";
-		//node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		//node.style.width = Std.string(100/3) + "%";
+		node.style.width = Std.string(Lib.window.innerWidth) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
 		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
@@ -73,7 +73,7 @@ class ListViewStyle
 		
 		node.style.marginLeft = "auto";
 		node.style.marginRight = "auto";
-		node.style.marginTop = "0px";
+		node.style.marginTop = "10px";
 		node.style.marginBottom = Std.string(Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN) + "px";
 		
 		node.style.top = Std.string(Lib.window.innerHeight) + "px";

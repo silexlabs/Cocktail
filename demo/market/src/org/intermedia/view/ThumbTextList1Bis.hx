@@ -30,9 +30,21 @@ class ThumbTextList1Bis extends ThumbTextList1
 		//trace(homePageData);
 		//_homePageData = homePageData;
 		super(cellPerLine);
-		ThumbTextList1BisStyle.setListStyle(node);
+		//ThumbTextList1BisStyle.setListStyle(node);
 	}
 
+	/**
+	 * initialize the default style
+	 */
+	override function initStyle():Void
+	{
+		// init style model
+		_style = {
+			list:ThumbTextList1BisStyle.setListStyle,
+			//bottomLoaderImage:ListViewStyle.loaderImage,
+			//bottomLoaderCell:CellStyle.setCellStyle
+		}
+	}
 	
 	public function buildHomePage(homePageData:Array<Dynamic>):Void
 	{
@@ -43,7 +55,7 @@ class ThumbTextList1Bis extends ThumbTextList1
 		{
 			// copy homepage children node to this.node. cloneNode Does not seem to work correctly here
 			//node.appendChild(homePage.node.childNodes[i].cloneNode(true));
-			// instead, children nodes are moves
+			// instead, children nodes are moved
 			node.appendChild(homePage.node.childNodes[0]);
 			
 		}*/

@@ -55,13 +55,14 @@ class DetailView extends ViewBase
 		
 		super();
 		
-		//addTouchEvents();
 		//_initialScrollPosition = { x:0, y:0 };
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.vertical);
 		_moveHandler.onVerticalScroll = onVerticalScroll;
-		
+
+		// js touch events handling
+		addTouchEvents();	
 	}
 	
 	/**
@@ -169,10 +170,26 @@ class DetailView extends ViewBase
 		#if js
 		untyped
 		{
-		node.addEventListener("touchstart",touchStart, false);
-		node.addEventListener("touchmove", _moveHandler.touchHandler, false);
-		node.addEventListener("touchend", _moveHandler.touchHandler, false);
-		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
+			node.addEventListener("touchstart", touchStart, false);
+			node.addEventListener("touchmove", _moveHandler.touchHandler, false);
+			node.addEventListener("touchend", _moveHandler.touchHandler, false);
+			node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
+		}
+		#end
+	}
+	
+	/**
+	 * Removes touch events
+	 */
+	public function unsetTouchEvents():Void
+	{
+		#if js
+		untyped
+		{
+			node.removeEventListener("touchstart", touchStart, false);
+			node.removeEventListener("touchmove", _moveHandler.touchHandler, false);
+			node.removeEventListener("touchend", _moveHandler.touchHandler, false);
+			node.removeEventListener("touchcancel", _moveHandler.touchHandler, false);
 		}
 		#end
 	}

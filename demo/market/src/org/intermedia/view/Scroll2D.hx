@@ -6,6 +6,7 @@ import org.intermedia.view.Constants;
 import feffects.Tween;
 import feffects.easing.Linear;
 import feffects.easing.Quint;
+import feffects.easing.Quart;
 import feffects.easing.Quad;
 import feffects.easing.Cubic;
 
@@ -20,9 +21,9 @@ class Scroll2D
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
 	static inline var VERTICAL_TWEEN_DELTA:Int = 50;
-	static inline var TIME_DELTA:Int = 10;
-	static inline var VERTICAL_RELEASE_TIME:Int = 500;
-	static inline var VERTICAL_RELEASE_ACCELERATION:Float = -0.1;
+	static inline var TIME_DELTA:Int = 20;
+	static inline var VERTICAL_RELEASE_TIME:Int = 200;
+	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.003;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -66,10 +67,17 @@ class Scroll2D
 	// acceleration computing timer
 	private var _timer:Timer;
 	
+	// time marker
+	private var _time:Float;
+	
+	private var _decelerationTimer:Timer;
+	
 	// values needed to compute velocity
 	private var _verticalVelocity:Float;
 	private var _previousY:Int;
 		
+	private var _verticalReleaseDeceleration:Float;
+
 	public function new(scrollType:ScrollType) 
 	{
 		// init attributes
@@ -105,8 +113,6 @@ class Scroll2D
 			//case "touchend":   type="mouseup";
 			//default: return;
 			case "touchstart":
-				// initialise _moveHandler class initialScrollPosition
-				//initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 				// call onDownCallback
 				onDownCallback(event);
 			case "touchmove":
@@ -153,12 +159,13 @@ class Scroll2D
 		_initialPosition.x = event.touches[0].pageX;
 		_initialPosition.y = event.touches[0].pageY;
 		
+		// stop timer if exists, done to avoid bug where swippableView is not scrollable anymore
+		if (_timer != null) _timer.stop();
 		// init timer & attributes used for acceleration computation
 		_timer = new Timer(TIME_DELTA);
 		_verticalVelocity = 0;
 		_previousY = 0;
 		// launch timer used for computing velocity and acceleration
-		//_timer.run = computeAcceleration;
 		_timer.run = computeVelocity;
 		
 		// set _direction
@@ -186,7 +193,6 @@ class Scroll2D
 		
 		//_currentListView.onListItemSelected = null;
 		
-		//trace(_direction + " - " + _offset.x + "," + _offset.y );
 		// done to avoid top rebound effect - to be done also on bottom rebound one
 		//if (_currentListView.scrollTop <= 0 && _offset.y > 0)
 		//{
@@ -218,6 +224,8 @@ class Scroll2D
 		// if direction is horizontal
 		if (_direction == Direction.horizontal)
 		{
+			// stops timer as only needed for vertical scroll
+			_timer.stop();
 			onHorizontalMoveCallback(event);
 		}
 		// if direction is vertical
@@ -245,7 +253,6 @@ class Scroll2D
 		event.preventDefault();
 		// call horizontal scroll callback with correct x position
 		_scrollPosition = {x: initialScrollPosition.x - _offset.x, y: initialScrollPosition.y }
-		//onHorizontalScrollCallback(_scrollPosition.x);
 		onHorizontalScrollCallback(_offset.x);
 	}
 
@@ -264,7 +271,6 @@ class Scroll2D
 		
 		// call vertical scroll callback with correct y position
 		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
-		//onVerticalScrollCallback(_scrollPosition.y);
 		onVerticalScrollCallback(_offset.y);
 	}
 
@@ -323,9 +329,7 @@ class Scroll2D
 	public function horizontalReleaseTween(xOrigin:Int,xTarget:Int):Void
 	{
 		// create the tween
-        //_horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
         _horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quad.easeOut );
-		//_horizontalTween.setTweenHandlers( onHorizontalTweenCallback, horizontalTweenEnd );
 		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
         // launch the tween
         _horizontalTween.start();
@@ -379,36 +383,22 @@ class Scroll2D
 		// stop timer to freeze computed values
 		_timer.stop();
 		
-		// compute the vertical tween end position
-		var verticalTweenEnd:Int = 0;
-		//trace(_verticalVelocity + ", " + _verticalAcceleration);
-		verticalTweenEnd = _offset.y +
-			Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME));
-		var verticalReleaseTime:Int = - Std.int(_verticalVelocity / VERTICAL_RELEASE_ACCELERATION);
-		trace(_verticalVelocity + ", " + verticalReleaseTime);
-		//trace(initialScrollPosition.y + ", " + _previousY + ", " +_offset.y + ", " + Std.int((_verticalVelocity * VERTICAL_RELEASE_TIME)));
+		_time = Timer.stamp();
+		
 		// if scrolling direction is down
-		/*if (_offset.y > 0 )
+		if (_offset.y > 0 )
 		{
-			//verticalTweenEnd = _scrollPosition.y - VERTICAL_TWEEN_DELTA;
-			//verticalTweenEnd = _offset.y + VERTICAL_TWEEN_DELTA;
-			verticalTweenEnd = _offset.y + verticalTweenDelta;
+			_verticalReleaseDeceleration = -VERTICAL_RELEASE_DECELERATION;
 		}
 		else
 		{
-			//verticalTweenEnd = _scrollPosition.y + VERTICAL_TWEEN_DELTA;
-			//verticalTweenEnd = _offset.y - VERTICAL_TWEEN_DELTA;
-			verticalTweenEnd = _offset.y - verticalTweenDelta;
-		}*/
+			_verticalReleaseDeceleration = VERTICAL_RELEASE_DECELERATION;
+		}
 		
-		// create the tween
-        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Quint.easeIn );
-        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Cubic.easeInOut );
-        _verticalTween = new Tween( _offset.y, verticalTweenEnd, verticalReleaseTime, Cubic.easeInOut );
-        //_verticalTween = new Tween( _offset.y, verticalTweenEnd, VERTICAL_RELEASE_TIME, Linear.easeNone );
-		_verticalTween.setTweenHandlers( onVerticalScrollCallback, onVerticalTweenEnd );
-        // launch the tween
-        _verticalTween.start();
+		// scroll release automation
+		_decelerationTimer = new Timer(10);
+		_decelerationTimer.run = onVerticalReleaseCallback;
+		
 	}
 	
 	/**
@@ -421,6 +411,34 @@ class Scroll2D
 		if (onVerticalScroll != null)
 		{
 			onVerticalScroll(Std.int(e));
+		}
+    }
+	
+	/**
+	 * move view on the vertical axis
+	 * 
+	 * @param	e
+	 */
+    private function onVerticalReleaseCallback()
+    {
+		if (onVerticalScroll != null)
+		{
+			// compute elapsed time since release
+			var timeDelta:Float = (Timer.stamp() - _time) * 1000;
+			// if elapsed time is lower than wanted deceleration time
+			if(timeDelta <= Math.abs(_verticalVelocity) / VERTICAL_RELEASE_DECELERATION)
+			{
+				// compute vertical release delta, based on _offset.y, velocity and deceleration
+				var verticalReleaseDelta:Int = Std.int(_offset.y + (_verticalVelocity * timeDelta) + (_verticalReleaseDeceleration * Math.pow(timeDelta, 2) / 2));
+				// call callback
+				onVerticalScroll(verticalReleaseDelta);
+			}
+			// if elapsed time is higher than wanted deceleration time
+			else
+			{
+				// stop deceleration timer
+				_decelerationTimer.stop();
+			}
 		}
     }
 	
@@ -458,22 +476,12 @@ class Scroll2D
 	private function computeVelocity():Void
 	{
 		// compute velocity
-		_verticalVelocity = deriv(_previousY, _offset.y);
-		_previousY = Std.parseInt(Std.string(_offset.y));
-		//_previousY = _offset.y;
+		//trace(_previousY + ", " + _offset.y);
+		//_verticalVelocity = deriv(_previousY, _offset.y);
+		// an average velocity is computed to improve experience
+		_verticalVelocity = (deriv(_previousY, _offset.y) + _verticalVelocity) / 2;
+		_previousY = _offset.y;
 	}
-	
-	/**
-	 * Computes instantaneous acceleration
-	 * 
-	 * @return
-	 */
-	/*private function computeAcceleration():Void
-	{
-		// compute acceleration
-		_verticalAcceleration = deriv(_previousSpeed, _verticalVelocity);
-		_previousSpeed = Std.parseInt(Std.string(_verticalVelocity));
-	}*/
 	
 	/**
 	 * Derivates 2 values based on time

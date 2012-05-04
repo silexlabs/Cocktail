@@ -20,6 +20,18 @@ class CellText extends CellBase
 	}
 	
 	/**
+	 * initialize the default style
+	 */
+	override private function initStyle():Void
+	{
+		// init style model
+		_style = {
+			cell:CellTextStyle.setCellStyle,
+			text:CellTextStyle.setCellTextStyle
+		}
+	}
+
+	/**
 	 * update view
 	 */
 	override private function updateView():Void
@@ -32,7 +44,8 @@ class CellText extends CellBase
 		{
 			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
-			CellTextStyle.setCellTextStyle(cellTextContainer);
+			//CellTextStyle.setCellTextStyle(cellTextContainer);
+			_style.text(cellTextContainer);
 			node.appendChild(cellTextContainer);
 		}
 			

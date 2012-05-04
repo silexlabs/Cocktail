@@ -18,21 +18,32 @@ class Constants
 	// Global constants
 	//public static inline var ONLINE:Bool = false;
 	
+	// production values
+	public static inline var HEADER_BG_IMAGE_URL:String = "assets/tile_french-tech.png";
+	public static inline var MENU_BG_IMAGE_URL:String = "assets/tile_french-tech2.png";
+	public static inline var LIST_BG_GREY_COLOR:String = "#CCCCCC";
+	public static inline var LIST_BG_BLACK_COLOR:String = "#191919";
+	public static inline var CELL_BG_COLOR:String = "#FEFEFE";
+	
+	// Test values
+	//public static inline var HEADER_BG_IMAGE_URL:String = "";
+	//public static inline var MENU_BG_IMAGE_URL:String = "";
+	//public static inline var LIST_BG_GREY_COLOR:String = "";
+	//public static inline var LIST_BG_BLACK_COLOR:String = "";
+	//public static inline var CELL_BG_COLOR:String = "";
+	
+	
+	
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
-	//public static inline var HEADER_BG_IMAGE_URL:String = "assets/headerGrey.jpg";
-	//public static inline var HEADER_BG_IMAGE_URL:String = "assets/tile_french-tech.png";
-	public static inline var HEADER_BG_IMAGE_URL:String = "";
 	public static inline var HEADER_FONT_COLOR:String = '#EEEEEE';
 	public static inline var HEADER_HEIGHT:Int = 43;
 	public static inline var HEADER_WITH_SHADOW_HEIGHT:Int = 43;
-	public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
+	//public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
 	//public static inline var HEADER_IMAGE_URL:String = "";
 	
 	// set header constants
-	//public static inline var MENU_BG_IMAGE_URL:String = "assets/tile_french-tech2.png";
-	public static inline var MENU_BG_IMAGE_URL:String = "";
 	public static inline var MENU_HEIGHT:Int = 35;
 	public static inline var MENU_LATERAL_OFFSET:Int = 30;
 	public static inline var MENU_FONT_COLOR:String = '#AAAAAA';
@@ -43,16 +54,10 @@ class Constants
 	
 	// set lists constants
 	public static inline var LIST_TOP:Int = HEADER_HEIGHT + MENU_HEIGHT;
-	//public static inline var LIST_BG_GREY_COLOR:String = "#CCCCCC";
-	//public static inline var LIST_BG_BLACK_COLOR:String = "#191919";
-	public static inline var LIST_BG_GREY_COLOR:String = "";
-	public static inline var LIST_BG_BLACK_COLOR:String = "";
 	public static inline var LIST_BOTTOM_LOADER_VERTICAL_MARGIN:Int = 10;
 	
 	// set cells constants
 	//public static inline var CELL_STYLE_REFRESH_DELAY:Int = 600;
-	//public static inline var CELL_BG_COLOR:String = "#FEFEFE";
-	public static inline var CELL_BG_COLOR:String = "";
 	public static inline var CELL_VERTICAL_SPACE:Int = 2;
 	public static inline var CELL_BORDER_WIDTH:Int = 1;
 	public static inline var CELL_BORDER_WIDTH_LARGE:Int = 4;

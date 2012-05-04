@@ -51,18 +51,35 @@ class ListViewBase extends ViewBase
 		super();
 		_waitingData = true;
 		
-		ListViewStyle.setListStyle(node);
+		// init style
+		//if (_style == null) initStyle();
+		initStyle();
 		
+		// apply style
+		_style.list(node);
+
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
 		buildBottomLoader();
 		
-		//node.onScroll = onScrollCallback;
 		node.onscroll = onScrollCallback;
 		
 		//_time = Timer.stamp();
 		
+	}
+	
+	/**
+	 * initialize the default style
+	 */
+	private function initStyle():Void
+	{
+		// init style model
+		_style = {
+			list:ListViewStyle.setListStyle,
+			//bottomLoaderImage:ListViewStyle.loaderImage,
+			//bottomLoaderCell:CellStyle.setCellStyle
+		}
 	}
 	
 	/**
@@ -71,10 +88,12 @@ class ListViewBase extends ViewBase
 	private function buildBottomLoader():Void
 	{
 		_bottomLoaderImage = cast Lib.document.createElement("img");
+		//_style.bottomLoaderImage(_bottomLoaderImage);
 		ListViewStyle.loaderImage(_bottomLoaderImage);
 		_bottomLoaderImage.src = "assets/loading.gif";
 		_listBottomLoader = Lib.document.createElement("div");
 		_listBottomLoader.appendChild(_bottomLoaderImage);
+		//_style.bottomLoaderCell(_listBottomLoader);
 		CellStyle.setCellStyle(_listBottomLoader);
 	}
 	
@@ -98,8 +117,7 @@ class ListViewBase extends ViewBase
 			cell.data = Reflect.field(_data, index);
 			
 			// set mouseUp callback
-			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
-			//cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
 			_cells.push(cell);
@@ -202,7 +220,9 @@ class ListViewBase extends ViewBase
 	 */
 	public function refreshStyles():Void
 	{
-		ListViewStyle.setListStyle(node);
+		// apply style
+		_style.list(node);
+		//ListViewStyle.setListStyle(node);
 		for (cell in _cells)
 		{
 			cell.refreshStyles();

@@ -12,33 +12,30 @@ import org.intermedia.view.StyleModel;
 class CellBase extends ViewBase
 {
 	
-	// cell style
-	private var _cellStyle:Dynamic;
-	
 	// number of celles per line
 	private var _cellPerLine:Int;
 	
-	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
+	public function new(?cellPerLine:Int = 1, ?style:CellStyleModel) 
 	{
 		super();
 		
 		_cellPerLine = cellPerLine;
 		
 		// init style
-		if (cellStyle != null) _cellStyle = cellStyle;
-		else initCellStyle();
+		if (style != null) _style = style;
+		else initStyle();
 		
 		// apply cell style
-		_cellStyle.cell(node,cellPerLine);
+		_style.cell(node,cellPerLine);
 	}
 	
 	/**
-	 * initialize the default cell style
+	 * initialize the default style
 	 */
-	private function initCellStyle():Void
+	private function initStyle():Void
 	{
 		// init style model
-		_cellStyle = {
+		_style = {
 			cell:CellStyle.setCellStyle
 		}
 	}
@@ -48,7 +45,7 @@ class CellBase extends ViewBase
 	 */
 	public function refreshStyles():Void
 	{
-		_cellStyle.cell(node,_cellPerLine);
+		_style.cell(node,_cellPerLine);
 	}
 
 	

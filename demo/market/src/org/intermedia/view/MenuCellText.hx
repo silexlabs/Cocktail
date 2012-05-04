@@ -16,10 +16,20 @@ class MenuCellText extends CellBase
 	public function new() 
 	{
 		super();
-		MenuCellTextStyle.setCellStyle(node);
-		//cellStyle(node);
 	}
 	
+	/**
+	 * initialize the default style
+	 */
+	override private function initStyle():Void
+	{
+		// init style model
+		_style = {
+			cell:MenuCellTextStyle.setCellStyle,
+			text:MenuCellTextStyle.setCellTextStyle
+		}
+	}
+
 	/**
 	 * update view
 	 */
@@ -34,7 +44,7 @@ class MenuCellText extends CellBase
 			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
 			node.appendChild(cellTextContainer);
-			MenuCellTextStyle.setCellTextStyle(cellTextContainer);
+			_style.text(cellTextContainer);
 		}
 	}
 

@@ -26,20 +26,20 @@ class CellThumb extends CellBase
 	 * constructor
 	 * 
 	 * @param	?cellPerLine	number of cells per line
-	 * @param	?cellStyle		cell style
+	 * @param	?style		cell style
 	 */
-	public function new(?cellPerLine:Int = 1, ?cellStyle:Dynamic) 
+	public function new(?cellPerLine:Int = 1, ?style:Dynamic) 
 	{
-		super(cellPerLine,cellStyle);
+		super(cellPerLine,style);
 	}
 	
 	/**
 	 * initialize the default cell style
 	 */
-	override private function initCellStyle():Void
+	override private function initStyle():Void
 	{
 		// init style model
-		_cellStyle = {
+		_style = {
 			cell:CellThumbStyle.setCellStyle,
 			thumbnailMask:CellThumbStyle.setThumbnailMaskStyle,
 			//thumbnail:CellThumbStyle.setThumbnailStyle
@@ -59,12 +59,12 @@ class CellThumb extends CellBase
 			_croppedImage.onImageLoadSuccess = refreshStyles;
 			_croppedImage.loadThumb(_data.thumbUrl);
 			// apply style
-			_cellStyle.thumbnailMask(_croppedImage.node);
+			_style.thumbnailMask(_croppedImage.node);
 			// attach it to hierarchy
 			node.appendChild(_croppedImage.node);*/
 			
 			// create blockThumb containing cropped thumb image
-			_croppedImage = new CroppedImage(_cellStyle);
+			_croppedImage = new CroppedImage(_style);
 			_croppedImage.data = _data;
 			node.appendChild(_croppedImage.node);
 		}

@@ -47,7 +47,7 @@ class ViewManager
 	private var _applicationController:ApplicationController;
 	
 	//A ref to the currently displayed main view (not the header)
-	private var _currentView:ViewBase;
+	//private var _currentView:ViewBase;
 	
 	// _time is used to compute execution time for analysing performance
 	private var _time:Float;
@@ -93,15 +93,15 @@ class ViewManager
 		// init swippable view
 		_swippableListView = new SwippableListView();
 		// set current view on swippable view
-		_currentView = _swippableListView;
+		//_currentView = _swippableListView;
 		// attach swippable view to body
 		_body.appendChild(_swippableListView.node);
 		
 		// onresize callback
 		Lib.window.onresize = onResizeCallback;
 		// on scroll callback is placed here for iPhone & Android phones, so that swippableView is resized when navigation bar is hidden
-		// can be romoved in native apps
-		Lib.window.onscroll = onResizeCallback;
+		// can be removed in native apps
+		//Lib.window.onscroll = onResizeCallback;
 
 		// call init()
 		init();
@@ -176,10 +176,10 @@ class ViewManager
 		_body.appendChild(_detailView.node);
 		
 		// start listening to touch event on detail view
-		_detailView.addTouchEvents();
+		//_detailView.addTouchEvents();
 		
 		// set current view to detail view
-		_currentView = _detailView;
+		//_currentView = _detailView;
 
 		// request detail view loading to controller
 		//_applicationController.openDetailView(cellData);
@@ -282,13 +282,13 @@ class ViewManager
 		//setZIndexToMax(_header);
 
 		// set current view on swippable view
-		_currentView = _swippableListView;
+		//_currentView = _swippableListView;
 		
 		// remove detailview touch events listener
 		//_detailView.unsetTouchEvents();
 
 		// start listening to touch event on _swippableListView
-		_swippableListView.addTouchEvents();
+		//_swippableListView.addTouchEvents();
 		
 	}
 	
@@ -319,8 +319,10 @@ class ViewManager
 	private function onResizeCallback(event:Event):Void
 	{
 		// launch needed callbacks
-		_menu.onResizeCallback();
-		_swippableListView.onResizeCallback(event);
+		//_menu.onResizeCallback();
+		_menu.refreshStyles();
+		//_swippableListView.onResizeCallback(event);
+		_swippableListView.refreshStyles();
 	}
 
 	

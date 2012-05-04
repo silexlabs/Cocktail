@@ -25,20 +25,20 @@ class CellThumbText1 extends CellBase
 	 * constructor
 	 * 
 	 * @param	?cellPerLine	number of cells per line
-	 * @param	?cellStyle		cell style
+	 * @param	?style		cell style
 	 */
-	public function new(?cellPerLine:Int = 1, ?cellStyle:Dynamic) 
+	public function new(?cellPerLine:Int = 1, ?style:Dynamic) 
 	{
-		super(cellPerLine,cellStyle);
+		super(cellPerLine,style);
 	}
 
 	/**
 	 * cell style init
 	 */
-	override private function initCellStyle():Void
+	override private function initStyle():Void
 	{
 		// init style model
-		_cellStyle = {
+		_style = {
 			cell:CellThumbText1Style.setCellStyle,
 			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
@@ -66,12 +66,12 @@ class CellThumbText1 extends CellBase
 			_croppedImage.onImageLoadSuccess = refreshStyles;
 			_croppedImage.loadThumb(_data.thumbUrl);
 			// apply style
-			_cellStyle.thumbnailMask(_croppedImage.node);
+			_style.thumbnailMask(_croppedImage.node);
 			// attach it to hierarchy
 			node.appendChild(_croppedImage.node);*/
 
 			// create blockThumb containing cropped thumb image
-			_croppedImage = new CroppedImage(_cellStyle);
+			_croppedImage = new CroppedImage(_style);
 			_croppedImage.data = _data;
 			node.appendChild(_croppedImage.node);
 			
@@ -82,7 +82,7 @@ class CellThumbText1 extends CellBase
 		
 		// add text block
 		var cellTextBlockContainer:HtmlDom = Lib.document.createElement("div");
-		_cellStyle.textBlock(cellTextBlockContainer);
+		_style.textBlock(cellTextBlockContainer);
 		node.appendChild(cellTextBlockContainer);
 		
 		// add title
@@ -100,7 +100,7 @@ class CellThumbText1 extends CellBase
 			var textElement:HtmlDom = Lib.document.createTextNode(text);
 			var cellTitleContainer:HtmlDom = Lib.document.createElement("div");
 			cellTitleContainer.appendChild(textElement);
-			_cellStyle.title(cellTitleContainer);
+			_style.title(cellTitleContainer);
 			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
@@ -110,7 +110,7 @@ class CellThumbText1 extends CellBase
 			var cellAuthorContainer:HtmlDom = Lib.document.createElement("div");
 			var textElement:HtmlDom = Lib.document.createTextNode(_data.author);
 			cellAuthorContainer.appendChild(textElement);
-			_cellStyle.author(cellAuthorContainer);
+			_style.author(cellAuthorContainer);
 			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
 			cellTextBlockContainer.appendChild(cellAuthorContainer);
 		}*/
@@ -121,7 +121,7 @@ class CellThumbText1 extends CellBase
 		// add separation line
 		/*var line:HtmlDom = Lib.document.createElement("div");
 		// set image style
-		_cellStyle.line(line);
+		_style.line(line);
 		node.appendChild(line);
 		line.src("assets/greyPixel.png");*/
 

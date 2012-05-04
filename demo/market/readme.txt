@@ -230,7 +230,6 @@ Point market 27/04/2012
 	=> propriété du viewport "height=device-height" retirée, résultat hide url bar ne fonctionne plus car impacte le redimmensionnement en mode paysage
 	=> OK
 => auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
-
 App native:
 => performance à améliorer car l'appli freeze au niveau du chargement de nouveaux flux
 	=> parsage du xml à améliorer ? => après mesure, ce n'est pas la qu'il y a la plus grosse perte de temps
@@ -246,8 +245,14 @@ Dans une prochaine version
 Créer une Home page contenant les icônes de chaque flux rss
  => un click sur le Header ramène à la homepage
 
-
- 
+Taches restantes:
+-Générique:
+	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut
+-Galaxy note: le bouton de menu silicon sentier ne marche pas
+-iPhone:
+	=> l'inertie du scroll n'est plus utilisable dans la swippable view une fois qu'on a cliqué dans une vue détail => OK
+	=> la list text n'a pas pas les lignes de séparation grises => OK
+	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
 
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
