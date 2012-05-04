@@ -11,6 +11,7 @@ import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.NativeElement;
+import cocktail.core.style.StyleData;
 
 /**
  * 
@@ -72,11 +73,6 @@ class LineBox extends Node
 	 */
 	private var _leadedDescent:Float;
 	public var leadedDescent(get_leadedDescent, set_leadedDescent):Float;
-	
-	/**
-	 * The offset of the line box from the basline
-	 */
-	public var verticalAlign(get_verticalAlign, never):Float;
 	
 	/**
 	 * the left margin of the line box
@@ -169,6 +165,22 @@ class LineBox extends Node
 		return _elementRenderer.establishesNewFormattingContext();
 	}
 	
+	public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
+	{
+		
+		var baselineOffset:Float = parentBaselineOffset + _elementRenderer.coreStyle.computedStyle.verticalAlign;
+		
+		switch (_elementRenderer.coreStyle.verticalAlign)
+		{
+			case VerticalAlign.middle:
+				baselineOffset -=  (bounds.height / 2) - (parentXHeight / 2);
+				
+			default:	
+		}
+		
+		return baselineOffset;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -241,11 +253,6 @@ class LineBox extends Node
 	private function get_leadedAscent():Float 
 	{
 		return _leadedAscent;
-	}
-	
-	private function get_verticalAlign():Float
-	{
-		return _elementRenderer.coreStyle.computedStyle.verticalAlign;
 	}
 	
 	private function set_leadedAscent(value:Float):Float 

@@ -136,22 +136,22 @@ class FontManager extends AbstractFontManager
 		//below the baseline) from the flash font metrics
 		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
-		
+
 		//get the x height (roughly the height of a lower-case "x")
-		var xHeight:Int = getXHeight(elementFormat.clone());
+		var xHeight:Float = getXHeight(elementFormat.clone());
 	
 		//get the width of a space character
 		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
-			ascent:Math.round(ascent),
-			descent:Math.round(descent),
+			ascent:ascent,
+			descent:descent,
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:Math.round(elementFormat.getFontMetrics().superscriptOffset),
-			subscriptOffset:Math.round(elementFormat.getFontMetrics().subscriptOffset),
-			underlineOffset:Math.round(elementFormat.getFontMetrics().underlineOffset)
+			superscriptOffset:elementFormat.getFontMetrics().superscriptOffset,
+			subscriptOffset:elementFormat.getFontMetrics().subscriptOffset,
+			underlineOffset:elementFormat.getFontMetrics().underlineOffset
 		};
 		
 		return fontMetrics;
@@ -215,7 +215,7 @@ class FontManager extends AbstractFontManager
 	 * return the x height of the font which is equal to 
 	 * the height of a lower-case 'x'.
 	 */
-	private function getXHeight(elementFormat:ElementFormat):Int
+	private function getXHeight(elementFormat:ElementFormat):Float
 	{
 		var textBlock:TextBlock = new TextBlock();
 		
@@ -223,7 +223,7 @@ class FontManager extends AbstractFontManager
 		var textLine:TextLine = textBlock.createTextLine(null, 10000);
 		var descent:Float = textLine.descent;
 		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
-		return Math.round(top - descent);
+		return top - descent;
 	}
 	
 	/**
