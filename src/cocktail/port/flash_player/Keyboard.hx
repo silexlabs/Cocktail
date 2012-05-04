@@ -26,32 +26,25 @@ class Keyboard extends AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new() 
 	{
-		super(nativeElement);
-		
-		//set native Flash events
-		_keyDownEvent = flash.events.KeyboardEvent.KEY_DOWN;
-		_keyUpEvent = flash.events.KeyboardEvent.KEY_UP;
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private key utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Actually remove and set listeners on the nativeElement.
-	 * The listener is always removed and if the htmlElement
-	 * callback is not null a new listener is set
-	 */
-	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
+	override private function setNativeListeners():Void
 	{
-		_nativeElement.removeEventListener(keyboardEvent, nativeCallback);
-		
-		if (htmlElementCallback != null)
-		{
-			_nativeElement.addEventListener(keyboardEvent, nativeCallback);
-		}
+		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
+	}
+	
+	override private function removeNativeListeners():Void
+	{
+		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
 	}
 	
 	/**

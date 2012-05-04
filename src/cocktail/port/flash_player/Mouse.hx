@@ -11,6 +11,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.mouse.AbstractMouse;
 import cocktail.core.NativeElement;
+import flash.Lib;
 
 import cocktail.core.mouse.MouseData;
 
@@ -27,37 +28,29 @@ class Mouse extends AbstractMouse
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new() 
 	{
-		super(nativeElement);
-		
-		//set the Flash event types
-		_clickEvent = flash.events.MouseEvent.CLICK;
-		_mouseDownEvent = flash.events.MouseEvent.MOUSE_DOWN;
-		_mouseUpEvent = flash.events.MouseEvent.MOUSE_UP;
-		_mouseOverEvent = flash.events.MouseEvent.MOUSE_OVER;
-		_mouseOutEvent = flash.events.MouseEvent.MOUSE_OUT;
-		_mouseMoveEvent = flash.events.MouseEvent.MOUSE_MOVE;
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually remove and set listeners on the native flash DisplayObject. Listeners
-	 * are always removed, as they must be removed if the user either removes the 
-	 * listener or set a new one. Listeners are only added if the htmlElement callback
-	 * is not null
-	 */
-	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:MouseEvent->Void):Void
+
+	override private function setNativeListeners():Void
 	{
-		_nativeElement.removeEventListener(mouseEvent, nativeCallback);
-		
-		if (htmlElementCallback != null)
-		{
-			_nativeElement.addEventListener(mouseEvent, nativeCallback);
-		}
+		Lib.current.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+	}
+	
+	override private function removeNativeListeners():Void
+	{
+		Lib.current.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 	}
 	
 	/**
@@ -81,13 +74,7 @@ class Mouse extends AbstractMouse
 				eventType = MouseEvent.MOUSE_DOWN;
 				
 			case flash.events.MouseEvent.MOUSE_UP:
-				eventType = MouseEvent.MOUSE_UP;	
-				
-			case flash.events.MouseEvent.MOUSE_OVER:
-				eventType = MouseEvent.MOUSE_OVER;
-				
-			case flash.events.MouseEvent.MOUSE_OUT:
-				eventType = MouseEvent.MOUSE_OUT;	
+				eventType = MouseEvent.MOUSE_UP;
 				
 			case flash.events.MouseEvent.MOUSE_MOVE:
 				eventType = MouseEvent.MOUSE_MOVE;	

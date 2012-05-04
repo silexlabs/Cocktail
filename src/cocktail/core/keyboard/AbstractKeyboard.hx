@@ -44,25 +44,13 @@ class AbstractKeyboard
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
-
-
-	/**
-	 * The NativeElement on which keyboard event are listened to
-	 */
-	private var _nativeElement:NativeElement;
-	
-	/**
-	 * keyboard event types
-	 */
-	private var _keyDownEvent:String;
-	private var _keyUpEvent:String;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(nativeElement:NativeElement) 
+	public function new() 
 	{
-		_nativeElement = nativeElement;
+		setNativeListeners();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +89,6 @@ class AbstractKeyboard
 	
 	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateListeners(_keyDownEvent, onNativeKeyDown, value);
 		return _onKeyDown = value;
 	}
 	
@@ -112,7 +99,6 @@ class AbstractKeyboard
 	
 	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateListeners(_keyUpEvent, onNativeKeyUp, value);
 		return _onKeyUp = value;
 	}
 	
@@ -125,15 +111,13 @@ class AbstractKeyboard
 	// Private key utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Actually remove and set listeners on the nativeElement.
-	 * Implemented by each runtime
-	 * 
-	 * @param keyboardEvent the keyboard event type that must be listened to
-	 * @param nativeCallback the native, runtime-specific callback
-	 * @param htmlElementCallback the cross-platform keyboard callback defined on the HTMLElement
-	 */
-	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
+	//TODO : doc
+	private function setNativeListeners():Void
+	{
+		//abstract
+	}
+	
+	private function removeNativeListeners():Void
 	{
 		//abstract
 	}
