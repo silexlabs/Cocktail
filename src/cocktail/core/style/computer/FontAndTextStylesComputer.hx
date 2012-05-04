@@ -116,7 +116,7 @@ class FontAndTextStylesComputer
 	
 	/**
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
-	 * formatting context
+	 * formatting context.
 	 */
 	private static function getComputedVerticalAlign(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
 	{
@@ -138,11 +138,9 @@ class FontAndTextStylesComputer
 				
 			case textTop:
 				verticalAlign = 0;
-				//TODO : Align the top of the box with the top of the parent's content area
 				
 			case textBottom:
 				verticalAlign = 0;
-				//TODO : Align the bottom of the box with the bottom of the parent's content area 
 				
 			case percent(value):
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));

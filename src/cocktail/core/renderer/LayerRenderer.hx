@@ -373,9 +373,6 @@ class LayerRenderer
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
 		
-		//TODO : check if it shouldn't be kept after all
-		//childLayers.reverse();
-		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)

@@ -8,8 +8,6 @@
 package cocktail.core.html;
 
 import cocktail.core.mouse.MouseCursorManager;
-import cocktail.core.nativeElement.NativeElementManager;
-import cocktail.core.nativeElement.NativeElementData;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.dom.DOMData;
 import cocktail.Lib;

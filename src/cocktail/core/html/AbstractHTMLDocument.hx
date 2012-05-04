@@ -22,7 +22,6 @@ import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
