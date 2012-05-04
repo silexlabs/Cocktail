@@ -32,8 +32,6 @@ import cocktail.core.style.StyleData;
  * Elements that only expose the HTML core attributes are represented 
  * by the base HTMLElement interface.
  * 
- * TODO : update doc now that mouse and keyboard are removed
- * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLElement extends Element, implements IEventTarget
@@ -169,8 +167,8 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * This attribute assigns a name to an element. 
-	 * This name must be unique in a document.
+	 * This attribute assigns an id to an element. 
+	 * This id must be unique in a document.
 	 * 
 	 * get/set the id attribute from the attributes
 	 * map
@@ -296,7 +294,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new ContainerCoreStyle(cast(this));
+		this._coreStyle = new ContainerCoreStyle(this);
 	}
 	
 	/**
