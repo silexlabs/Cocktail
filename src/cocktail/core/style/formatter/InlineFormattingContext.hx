@@ -180,6 +180,13 @@ class InlineFormattingContext extends FormattingContext
 
 				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
 				
+				//TODO : hack to make absolutely position element take the bounds of the line box,
+				//shouldn't be necessary
+				if (child.isPositioned() == true && child.coreStyle.computedStyle.position != relative)
+				{
+					child.bounds = child.lineBoxes[0].bounds;
+				}
+				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//TODO : messy, inline block and embedded should not share classes
@@ -596,14 +603,20 @@ class InlineFormattingContext extends FormattingContext
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
 			//TODO : doc + should also update alignRight, justify... in the same way
-			if (child.hasChildNodes() == true)
+			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
 			{
 				flowX = alignLeft(flowX, child);
 			}
 			else
 			{
 				child.bounds.x = flowX + child.marginLeft;
-				flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
+				
+				//TODO : a bit hackish to require checking if is text
+				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
+				{
+					flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
+				}
+			
 			}
 		}
 		
