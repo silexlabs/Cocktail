@@ -23,7 +23,6 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.style.adapter.Style;
-import cocktail.core.style.ContainerCoreStyle;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
@@ -310,7 +309,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new ContainerCoreStyle();
+		this._coreStyle = new CoreStyle();
 	}
 	
 	/**

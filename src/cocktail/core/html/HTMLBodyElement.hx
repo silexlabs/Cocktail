@@ -7,9 +7,6 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.event.Event;
-import cocktail.core.style.BodyCoreStyle;
-
 /**
  * The HTML document body. This element is always present
  * in the DOM API, even if the tags are not present in the source document.
