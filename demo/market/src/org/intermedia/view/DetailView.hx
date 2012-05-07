@@ -212,6 +212,9 @@ class DetailView extends ViewBase
 	{
 		// reset style
 		DetailStyle.setDetailStyle(node);
+		// resize children iframe & img
+		resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer,"img");
 	}
 	
 	/**
@@ -225,17 +228,37 @@ class DetailView extends ViewBase
 	private function resizeNodeChildrenTag(node:HtmlDom, tagName:String):Void
 	{
 		var tagNodes:HtmlCollection<HtmlDom> = node.getElementsByTagName(tagName);
+		var originalWidth:Int;
+		var originalHeight:Int;
+		
 		// for all nodes with the given tag name
 		for (i in 0...tagNodes.length)
 		{
+			// if maxWidth & maxHeight  are not yet set, set them 
 			// if tag node width does not fit in the window, resize it proportionally
-			if(tagNodes[i].clientWidth > Lib.window.innerWidth)
+			if(tagNodes[i].style.maxWidth == "" || tagNodes[i].style.maxHeight == "" )
 			{
-				var originalWidth:Int = tagNodes[i].clientWidth;
-				tagNodes[i].setAttribute("width", Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%");
-				var newHeight:Float = Std.parseInt(tagNodes[i].getAttribute("height")) * tagNodes[i].clientWidth / originalWidth;
-				tagNodes[i].setAttribute("height", Std.string(newHeight));
+				// compute original size & width
+				originalWidth = tagNodes[i].clientWidth;
+				originalHeight = tagNodes[i].clientHeight;
+				// set maxWidth & maxHeight 
+				tagNodes[i].style.maxWidth = Std.string(originalWidth) + "px";
+				tagNodes[i].style.maxHeight = Std.string(originalHeight) + "px";
 			}
+			
+			// set width
+			tagNodes[i].style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT ) + "%";
+			// get original sizes & width from maxWidth & maxHeight
+			originalWidth = Std.parseInt(Std.string(tagNodes[i].style.maxWidth).substr(0,-2));
+			originalHeight = Std.parseInt(Std.string(tagNodes[i].style.maxHeight).substr(0, -2));
+			
+			// compute & set height
+			var newHeight:Float = originalHeight * tagNodes[i].clientWidth / originalWidth;
+			tagNodes[i].style.height = Std.string(Std.int(newHeight)) + "px";
+			
+			// remove width & height attributes to avoid browsers incorrect behaviours
+			untyped { tagNodes[i].removeAttribute("width"); };
+			untyped { tagNodes[i].removeAttribute("height"); };
 		}
 	}
 
