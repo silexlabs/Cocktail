@@ -24,7 +24,6 @@ import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
 import haxe.Log;
 import haxe.Timer;
