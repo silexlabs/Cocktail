@@ -254,6 +254,21 @@ Taches restantes:
 	=> la list text n'a pas pas les lignes de séparation grises => OK
 	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
 
+Point market 04/05/2012
+Pol:
+-Toujours des données locales ?
+ Le bandeau de haut de page est tellement rédhibitoire que si nous devons utiliser ces données il faudrait mettre à jour les références en terme de feed
+ => OK
+-Par ailleurs les "anims" sont vraiment heurtées au sens ou ce n'est pas fluide
+-La version native rame sa mère
+
+Alex:
+- quand le detail contient une image large, au retour a la liste ca bug => problème avec les iframes & images trop larges => OK
+- la barre d adresse du navigateur est a moitier remontee seulement => complètement désactivé => OK
+- le scroll vertical et son acceleration sont moins bien qu'avant
+
+	
+	
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
  => could create a helper to emulate a flash textfield
@@ -261,6 +276,9 @@ Cocktail remarks:
 CSS resolved issues:
 -to have a nice layout for cells, and lists, it is necessary to use vertical-align=top
 -box-sizing css property is usefull so that borders are included in container width
+-"native" iOS scroll can be used on pages where height is not set and overflow=visible
+-on Android browser, there is a bug in which window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
+	=> to resolve this issue, get all iframes and resize them to match the window.innerWidth
 
 Missing useful functionalities in cocktail
 -zIndex

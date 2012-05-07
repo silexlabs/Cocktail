@@ -91,15 +91,15 @@ class DetailView extends ViewBase
 		node.appendChild(_thumbnail);*/
 		
 		// add description
-		_descriptionContainer = Lib.document.createElement("div");
-		DetailStyle.setDescription(_descriptionContainer);
-		_descriptionContainer.appendChild(_descriptionElement);
-		node.appendChild(_descriptionContainer);
+		//_descriptionContainer = Lib.document.createElement("div");
+		//DetailStyle.setDescription(_descriptionContainer);
+		//_descriptionContainer.appendChild(_descriptionElement);
+		//node.appendChild(_descriptionContainer);
 		
 		// add content
 		_contentContainer = Lib.document.createElement("div");
 		DetailStyle.setDescription(_contentContainer);
-		_contentContainer.appendChild(_contentElement);
+		//_contentContainer.appendChild(_contentElement);
 		node.appendChild(_contentContainer);
 		
 	}
@@ -144,10 +144,11 @@ class DetailView extends ViewBase
 		_contentContainer.removeChild(_contentElement);
 		_contentElement.text = _data.content;
 		_contentContainer.appendChild(_contentElement);*/
+		_contentContainer.innerHTML = _data.content;
+		// resize children iframe & img
+		resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer,"img");
 		
-		//html2DOM(_data.description);
-		//html2Node(_data.content);
-		node.innerHTML += _data.content;
 	}
 
 
@@ -204,5 +205,38 @@ class DetailView extends ViewBase
 		node.scrollTop = _moveHandler.initialScrollPosition.y - y;
     }
 	
+	/**
+	 * Refresh styles
+	 */
+	public function refreshStyles():Void
+	{
+		// reset style
+		DetailStyle.setDetailStyle(node);
+	}
+	
+	/**
+	 * Resizes the node's selected children tag
+	 * Used for better user experience.
+	 * Resolves also a bug of Android browser where window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
+	 * => to resolve this issue, get all iframes and resize them to match the window.innerWidth
+	 * 
+	 * @param	node
+	 */
+	private function resizeNodeChildrenTag(node:HtmlDom, tagName:String):Void
+	{
+		var tagNodes:HtmlCollection<HtmlDom> = node.getElementsByTagName(tagName);
+		// for all nodes with the given tag name
+		for (i in 0...tagNodes.length)
+		{
+			// if tag node width does not fit in the window, resize it proportionally
+			if(tagNodes[i].clientWidth > Lib.window.innerWidth)
+			{
+				var originalWidth:Int = tagNodes[i].clientWidth;
+				tagNodes[i].setAttribute("width", Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%");
+				var newHeight:Float = Std.parseInt(tagNodes[i].getAttribute("height")) * tagNodes[i].clientWidth / originalWidth;
+				tagNodes[i].setAttribute("height", Std.string(newHeight));
+			}
+		}
+	}
 
 }

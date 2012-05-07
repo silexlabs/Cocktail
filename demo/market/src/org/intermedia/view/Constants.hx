@@ -73,5 +73,9 @@ class Constants
 	// set cells thumb text constants
 	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 42;
 	
+	// set detail constants
+	public static inline var DETAIL_HORIZONTAL_PADDING_PERCENT:Int = 2;
+	public static inline var DETAIL_HORIZONTAL_PERCENT:Int = 100 - 2 * DETAIL_HORIZONTAL_PADDING_PERCENT;
+	
 	
 }

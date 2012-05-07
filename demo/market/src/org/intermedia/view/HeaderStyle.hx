@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import js.Lib;
 import js.Dom;
 import org.intermedia.view.Constants;
 

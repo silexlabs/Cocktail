@@ -37,15 +37,17 @@ class DetailStyle
 		node.style.marginTop = "0px";
 		node.style.marginBottom = "0px";
 		
-		node.style.paddingLeft = "2%";
-		node.style.paddingRight = "2%";
+		node.style.paddingLeft = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
+		node.style.paddingRight = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
 		node.style.paddingTop = "10px";
 		node.style.paddingBottom = "10px";
 		
-		node.style.width = "96%";
-		node.style.height = "auto";
+		//node.style.width = "96%";
+		node.style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+		//node.style.width = Std.string(Lib.window.innerWidth - 20) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = "100px";
+		//node.style.height = "auto";
 		node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
 		
 		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
