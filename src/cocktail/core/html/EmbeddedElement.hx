@@ -82,15 +82,6 @@ class EmbeddedElement extends HTMLElement
 		//abstract
 	}
 	
-	/**
-	 * Override to instantiate an Style specific 
-	 * to embedded elements
-	 */
-	override private function initCoreStyle():Void
-	{
-		this._coreStyle = new CoreStyle(this);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

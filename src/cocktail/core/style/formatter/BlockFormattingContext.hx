@@ -86,14 +86,14 @@ class BlockFormattingContext extends FormattingContext
 					{
 						concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
 					}
-					else if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
+					else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 					{
 						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 					}
 				}
 				//TODO : doc, for absolutely positioned element, their bounds are set to their static position
 				//but they do not influence the formatting of subsequent children or sibling
-				else if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
+				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 				{
 					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 				}

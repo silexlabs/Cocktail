@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.RendererData;
@@ -39,10 +40,10 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Class constructor.
 	 */
-	public function new(style:CoreStyle, text:Text) 
+	public function new(node:Node) 
 	{
-		super(style);
-		_text = text;
+		super(node);
+		_text = cast(node);
 		init();
 	}
 	

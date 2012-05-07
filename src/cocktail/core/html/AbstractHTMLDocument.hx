@@ -23,6 +23,7 @@ import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
 import haxe.Log;
@@ -245,21 +246,22 @@ class AbstractHTMLDocument extends Document
 	{
 		//retrieve all the ElementRenderer under the mouse
 		//pointer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+/**
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
 		//
 		//TODO : wrong order, top-most is last element of the array
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
+			if (elementRenderersAtPoint[i].htmlElement.onmousedown != null)
 			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
+				elementRenderersAtPoint[i].htmlElement.onmousedown(mouseEvent);
 				//return as only one callback is executed
 				return;
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -271,16 +273,17 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+/**
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onclick != null)
+			if (elementRenderersAtPoint[i].htmlElement.onclick != null)
 			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
+				elementRenderersAtPoint[i].htmlElement.onclick(mouseEvent);
 				return;
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -289,79 +292,88 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-		
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		/**
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
+			if (elementRenderersAtPoint[i].htmlElement.onmouseup != null)
 			{
 				//TODO : shouldn't break if the executed behaviour is a default behaviour, for instance
 				//opening a document for an anchor element
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
+				elementRenderersAtPoint[i].htmlElement.onmouseup(mouseEvent);
 				return;
 			}
 		}
+		*/
 	}
 	
 	/**
 	 * Called when a mouse move is dispatched. Same as for 
 	 * mouse down
+	 * 
+	 * TODO : re-implement
 	 */
 	private function onMouseMove(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 			
 		//TODO : doc for mouse over / out
+		
+		/**
 		if (elementRenderersAtPoint.length > 0)
 		{
 			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1] != _hoveredElementRenderer)
 			{
 				if (_hoveredElementRenderer != null)
 				{
-					if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseout != null)
+					
+					
+					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
 					{
-						_hoveredElementRenderer.coreStyle.htmlElement.onmouseout(mouseEvent);
+						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
 					}
 				}
 				_hoveredElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
-				if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseover != null)
+				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
 				{
-					_hoveredElementRenderer.coreStyle.htmlElement.onmouseover(mouseEvent);
+					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
 				}
 			}
 		}
 		else
 		{
+			//TODO : should be hoveredHTMLelement instead
 			if (_hoveredElementRenderer == null)
 			{
-				_hoveredElementRenderer = _body.coreStyle.elementRenderer;
+				_hoveredElementRenderer = _body.elementRenderer;
 			}
 			
-			if (_hoveredElementRenderer.coreStyle.htmlElement != _body)
+			if (_hoveredElementRenderer.htmlElement != _body)
 			{
 				if (_hoveredElementRenderer != null)
 				{
-					if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseout != null)
+					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
 					{
-						_hoveredElementRenderer.coreStyle.htmlElement.onmouseout(mouseEvent);
+						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
 					}
 				}
-				_hoveredElementRenderer = _body.coreStyle.elementRenderer;
-				if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseover != null)
+				_hoveredElementRenderer = _body.elementRenderer;
+				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
 				{
-					_hoveredElementRenderer.coreStyle.htmlElement.onmouseover(mouseEvent);
+					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
 				}
 			}
 		}
 			
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
+			if (elementRenderersAtPoint[i].htmlElement.onmousemove != null)
 			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
+				elementRenderersAtPoint[i].htmlElement.onmousemove(mouseEvent);
 				return;
 			}
 		}
+		*/
 	}
 	
 	/**
@@ -428,8 +440,8 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function layout():Void
 	{
-		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
-		bodyCoreStyle.startLayout();
+		var initialContainer:InitialBlockRenderer = cast(_body.elementRenderer);
+		initialContainer.startLayout();
 	}
 	
 	/**
@@ -446,7 +458,7 @@ class AbstractHTMLDocument extends Document
 		detachNativeElements(_nativeElements);
 		
 		//start the rendering at the root layer renderer
-		_nativeElements = _body.coreStyle.elementRenderer.layerRenderer.render();
+		_nativeElements = _body.elementRenderer.layerRenderer.render();
 		attachNativeElements(_nativeElements);
 	}
 	

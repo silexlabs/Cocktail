@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -25,9 +26,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
-		super(style);
+		super(node);
 	}
 	
 	//TODO : doc
