@@ -77,9 +77,12 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
-				
+				//TODO : doc, for child with children, their padding and margin are added at
+				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
 				{
+					//TODO : doc, don't call method for block container children as they have
+					//their own formatting context
 					if (child.establishesNewFormattingContext() == false)
 					{
 						concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
@@ -89,7 +92,9 @@ class BlockFormattingContext extends FormattingContext
 						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 					}
 				}
-				else
+				//TODO : doc, for absolutely positioned element, their bounds are set to their static position
+				//but they do not influence the formatting of subsequent children or sibling
+				else if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
 				{
 					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 				}

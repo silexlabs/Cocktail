@@ -703,51 +703,17 @@ class HTMLElement extends Element, implements IEventTarget
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : will it work for inline elements ? use ElementRenderer bounds ?
+	//TODO : unit test
 	private function get_offsetLeft():Int
 	{
 		_coreStyle.invalidate(true);
-		
-		var firstPositionedAncestor:HTMLElement = offsetParent;
-		
-		var offsetLeft:Int = 0;
-		
-		if (firstPositionedAncestor != null)
-		{
-			var parent:HTMLElement = cast(parentNode);
-			offsetLeft = parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
-			
-			while (parent != firstPositionedAncestor)
-			{
-				offsetLeft += parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
-				parent = cast(parent.parentNode);
-			}
-		}
-		
-		return offsetLeft;
+		return Math.round(_coreStyle.elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
 		_coreStyle.invalidate(true);
-		
-		var firstPositionedAncestor:HTMLElement = offsetParent;
-		
-		var offsetTop:Int = 0;
-		
-		if (firstPositionedAncestor != null)
-		{
-			var parent:HTMLElement = cast(parentNode);
-			offsetTop = parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
-			
-			while (parent != firstPositionedAncestor)
-			{
-				offsetTop += parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
-				parent = cast(parent.parentNode);
-			}
-		}
-		
-		return offsetTop;
+		return Math.round(_coreStyle.elementRenderer.positionedOrigin.y);
 	}
 	
 	private function get_clientWidth():Int

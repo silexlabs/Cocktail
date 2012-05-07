@@ -160,6 +160,11 @@ class LineBox extends Node
 		return false;
 	}
 	
+	public function isAbsolutelyPositioned():Bool
+	{
+		return _elementRenderer.coreStyle.computedStyle.position == fixed || _elementRenderer.coreStyle.computedStyle.position == absolute;
+	}
+	
 	public function establishesNewFormattingContext():Bool
 	{
 		return _elementRenderer.establishesNewFormattingContext();
