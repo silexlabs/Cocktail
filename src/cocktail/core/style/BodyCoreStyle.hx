@@ -133,6 +133,7 @@ class BodyCoreStyle extends ContainerCoreStyle
 			//positioned origin
 			if (elementRenderer.isPositioned() == true)
 			{
+				//TODO : use globalBounds to determine which bounds to add ?
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)

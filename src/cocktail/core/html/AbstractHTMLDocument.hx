@@ -110,6 +110,13 @@ class AbstractHTMLDocument extends Document
 	private var _mouse:Mouse;
 	
 	/**
+	 * A reference to the ElementRenderer currently hovered by the
+	 * mouse pointer. Used to detect when to dispatch mouse over
+	 * and mouse out events 
+	 */
+	private var _hoveredElementRenderer:ElementRenderer;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -133,7 +140,9 @@ class AbstractHTMLDocument extends Document
 		initMouseListeners();
 	}
 	
-	//TODO : doc
+	/**
+	 * init mouse listeners
+	 */
 	private function initMouseListeners():Void
 	{
 		_mouse = new Mouse();
@@ -148,7 +157,6 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function initKeyboardListeners():Void
 	{
-		//listens for event on the root of the runtime
 		_keyboard = new Keyboard();
 		_keyboard.onKeyDown = onKeyDown;
 		_keyboard.onKeyUp = onKeyUp;
@@ -224,54 +232,75 @@ class AbstractHTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
+	// PRIVATE INPUT METHODS
+	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Called when a mouse down event is dispatched.
+	 * Retrieve the top-most ElementRenderer under the mouse
+	 * pointer and call its mouse down down callback if provided
+	 * 
+	 * TODO : shouldn't need a special case for body, 
+	 * the initialElementRenderer should always be returned
+	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
+		//retrieve all the ElementRenderer under the mouse
+		//pointer
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
-		//TODO : if empty array, use body
+		//execute the callback of the first top-most
+		//ElementRenderer with a mouse down callback
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
 			{
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
-				break;
+				//return as only one callback is executed
+				return;
 			}
-		}	
+		}
+		
+		//if none of the ElementRenderer as a callback, try to call the mouse down
+		//callback of the body
+		if (_body.onmousedown != null)
+		{
+			_body.onmousedown(mouseEvent);
+		}
+		
 	}
 	
+	/**
+	 * Called when a mouse click is dispatched. Same as 
+	 * for mouse down
+	 * 
+	 * TODO : should click be abstracted as a rapid sequence
+	 * of mouse down/ mouse up ?
+	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
-		//TODO : if empty array, use body
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onclick != null)
 			{
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
-				break;
+				return;
 			}
 		}	
-	}
-	
-	//TODO : implement mouse over and mouse out with this method
-	private function onMouseMove(mouseEvent:MouseEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-
-		for (i in 0...elementRenderersAtPoint.length)
+		
+		if (_body.onclick != null)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
-			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
-				break;
-			}
-		}	
+			_body.onclick(mouseEvent);
+		}
 	}
 	
+	/**
+	 * Called when a mouse up is dispatched. Same as for 
+	 * mouse down
+	 */
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
@@ -280,13 +309,95 @@ class AbstractHTMLDocument extends Document
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
 			{
-				//shouldn't break if the executed behaviour is a default behaviour, for instance
+				//TODO : shouldn't break if the executed behaviour is a default behaviour, for instance
 				//opening a document for an anchor element
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
-				break;
+				return;
 			}
 		}	
+		
+		if (_body.onmouseup != null)
+		{
+			_body.onmouseup(mouseEvent);
+		}
 	}
+	
+	/**
+	 * Called when a mouse move is dispatched. Same as for 
+	 * mouse down
+	 * 
+	 * TODO : implement mouse over and mouse out with this method
+	 * 
+	 * @param
+	 */
+	private function onMouseMove(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+			
+		if (elementRenderersAtPoint.length > 0)
+		{
+			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1] != _hoveredElementRenderer)
+			{
+				if (_hoveredElementRenderer != null)
+				{
+					if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseout != null)
+					{
+						_hoveredElementRenderer.coreStyle.htmlElement.onmouseout(mouseEvent);
+					}
+				}
+				_hoveredElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+				if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseover != null)
+				{
+					_hoveredElementRenderer.coreStyle.htmlElement.onmouseover(mouseEvent);
+				}
+			}
+		}
+		else
+		{
+			if (_hoveredElementRenderer == null)
+			{
+				_hoveredElementRenderer = _body.coreStyle.elementRenderer;
+			}
+			
+			if (_hoveredElementRenderer.coreStyle.htmlElement != _body)
+			{
+				if (_hoveredElementRenderer != null)
+				{
+					if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseout != null)
+					{
+						_hoveredElementRenderer.coreStyle.htmlElement.onmouseout(mouseEvent);
+					}
+				}
+				_hoveredElementRenderer = _body.coreStyle.elementRenderer;
+				if (_hoveredElementRenderer.coreStyle.htmlElement.onmouseover != null)
+				{
+					_hoveredElementRenderer.coreStyle.htmlElement.onmouseover(mouseEvent);
+				}
+			}
+		}
+			
+
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
+				return;
+			}
+		}	
+			
+		
+		if (_body.onmousemove != null)
+		{
+			_body.onmousemove(mouseEvent);
+		}
+		
+		
+	
+		
+	}
+	
+
 	
 	/**
 	 * When a key is pressed, redirect it to
