@@ -194,7 +194,7 @@ class LayerRenderer
 		if (_rootRenderer.hasChildNodes() == true)
 		{
 			var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
-			
+		
 			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
 			
 			for (i in 0...elementRenderersAtPointInChildLayers.length)
@@ -211,17 +211,17 @@ class LayerRenderer
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
+		if (isWithinBounds(point, renderer.globalBounds) == true)
+		{
+			elementRenderersAtPointInLayer.push(renderer);
+		}
+		
 		for (i in 0...renderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(renderer.childNodes[i]);
 			
 			if (child.layerRenderer == this)
 			{
-				if (isWithinBounds(point, child.globalBounds) == true)
-				{
-					elementRenderersAtPointInLayer.push(child);
-				}
-				
 				if (child.hasChildNodes() == true)
 				{
 					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point);
@@ -229,6 +229,13 @@ class LayerRenderer
 					for (j in 0...childElementRenderersAtPointInLayer.length)
 					{
 						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+					}
+				}
+				else
+				{
+					if (isWithinBounds(point, child.globalBounds) == true)
+					{
+						elementRenderersAtPointInLayer.push(child);
 					}
 				}
 			}
@@ -250,6 +257,7 @@ class LayerRenderer
 				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);
 			}
 		}
+		
 		
 		return elementRenderersAtPointInChildLayers;
 	}
