@@ -59,8 +59,7 @@ class BlockFormattingContext extends FormattingContext
 			//only allow static or relative
 			//TODO : when static position element is found, should stop formatting as it is a formatting only done to format
 			//this particular children
-			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
-			{
+
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 				
@@ -87,7 +86,7 @@ class BlockFormattingContext extends FormattingContext
 					{
 						concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
 					}
-					else
+					else if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true)
 					{
 						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 					}
@@ -109,7 +108,7 @@ class BlockFormattingContext extends FormattingContext
 				{
 					_formattingContextData.maxHeight = concatenatedY;
 				}
-			}
+			
 		}
 		
 		childHeight = concatenatedY - childHeight;

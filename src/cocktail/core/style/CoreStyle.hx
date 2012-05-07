@@ -823,17 +823,6 @@ class CoreStyle
 			return;
 		}
 		
-		//TODO : setting static position might not be always necessary, let formatting context decide ?
-		
-		//set the static position (the position of the HTMLElement
-		//if its position style were 'static' relative to its containing block).
-		//This static position is stored in the bounds of the ElementRenderer
-		//and use if left and right or top and bottom both are auto
-		//
-		//TODO : maybe instead of having a separate method, formatting context takes care of the static position
-		//and don't account for absolute positioned elements ?
-		formattingContext.setStaticPosition(_elementRenderer);
-		
 		//store as a positioned ElementRenderer.
 		//an absolutely positioned ElementRenderer is not positioned right away, it must
 		//wait for its first positioned ancestor to be laid out. The reason is that
