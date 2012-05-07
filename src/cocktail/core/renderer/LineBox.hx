@@ -151,6 +151,11 @@ class LineBox extends Node
 		return backgrounds;
 	}
 	
+	public function isText():Bool
+	{
+		return false;
+	}
+	
 	/**
 	 * Helper method to determine if this
 	 * line box wraps a space character
