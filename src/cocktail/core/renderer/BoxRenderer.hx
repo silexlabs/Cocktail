@@ -221,7 +221,7 @@ class BoxRenderer extends ElementRenderer
 				var childHTMLElement:HTMLElement = cast(_node.childNodes[i]);
 				//the layout method also lays out recursively all the children of the children HTMLElement
 				//if it is an HTMLElement
-				childHTMLElement.elementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext, cast(this));
+				childHTMLElement.elementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 			}
 			//else if it is a Text node, call a method that will create a TextRenderer
 			//to render the text content of the text node, and attach the TextRenderer
@@ -372,7 +372,7 @@ class BoxRenderer extends ElementRenderer
 	 * @param	formattingContext The formatting context used by the parent HTMLElement. Can be an inline or block formatting context.
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	override public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{		
 		//the ElementRenderer removes itself from the parent if necessary as the new layout
 		//will create a new rendering tree
@@ -949,7 +949,7 @@ class BoxRenderer extends ElementRenderer
 	 * 
 	 * @return true if all children are inline level HTMLElements
 	 */
-	public function childrenInline():Bool
+	override public function childrenInline():Bool
 	{
 		
 		//return false for a container with no children

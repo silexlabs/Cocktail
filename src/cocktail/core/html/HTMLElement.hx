@@ -362,9 +362,11 @@ class HTMLElement extends Element, implements IEventTarget
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
+				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
 				_elementRenderer = new InlineBoxRenderer(this);
+				_elementRenderer.coreStyle = _coreStyle;
 				
 			case none:
 		}

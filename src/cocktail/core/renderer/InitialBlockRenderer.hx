@@ -85,7 +85,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(windowData, windowData, lastPositionedHTMLElementData, _coreStyle.fontMetrics, null, null);
+		layout(windowData, windowData, lastPositionedHTMLElementData, _coreStyle.fontMetrics, null);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		setGlobalOrigins(this,0,0, 0,0);

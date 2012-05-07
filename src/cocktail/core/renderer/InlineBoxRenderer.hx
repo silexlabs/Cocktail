@@ -21,7 +21,7 @@ import cocktail.core.geom.GeomData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class InlineBoxRenderer extends FlowBoxRenderer
+class InlineBoxRenderer extends BoxRenderer
 {
 	/**
 	 * class constructor

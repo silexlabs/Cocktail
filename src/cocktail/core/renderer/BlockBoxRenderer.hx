@@ -23,7 +23,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockBoxRenderer extends FlowBoxRenderer
+class BlockBoxRenderer extends BoxRenderer
 {
 		
 	public function new(node:Node) 

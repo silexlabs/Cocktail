@@ -7,7 +7,6 @@
 */
 package cocktail.core.style.formatter;
 import cocktail.core.dom.Node;
-import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
