@@ -109,18 +109,6 @@ class FormattingContext
 		doFormat();
 	}
 	
-	/**
-	 * Return the static position of an element renderer, the position it 
-	 * would have had if it were in flow
-	 * 
-	 * TODO : doesn't need a separate method for that ? Might happen
-	 * during regular formatting ?
-	 */
-	public function setStaticPosition(element:ElementRenderer):Void
-	{
-		doFormat(element);
-	}
-	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
