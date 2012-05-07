@@ -2966,18 +2966,29 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 	}
 	,refreshStyles: function() {
 		org.intermedia.view.DetailStyle.setDetailStyle(this.node);
+		this.resizeNodeChildrenTag(this._contentContainer,"iframe");
+		this.resizeNodeChildrenTag(this._contentContainer,"img");
 	}
 	,resizeNodeChildrenTag: function(node,tagName) {
 		var tagNodes = node.getElementsByTagName(tagName);
+		var originalWidth;
+		var originalHeight;
 		var _g1 = 0, _g = tagNodes.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			if(tagNodes[i].clientWidth > js.Lib.window.innerWidth) {
-				var originalWidth = tagNodes[i].clientWidth;
-				tagNodes[i].setAttribute("width",Std.string(96) + "%");
-				var newHeight = Std.parseInt(tagNodes[i].getAttribute("height")) * tagNodes[i].clientWidth / originalWidth;
-				tagNodes[i].setAttribute("height",Std.string(newHeight));
+			if(tagNodes[i].style.maxWidth == "" || tagNodes[i].style.maxHeight == "") {
+				originalWidth = tagNodes[i].clientWidth;
+				originalHeight = tagNodes[i].clientHeight;
+				tagNodes[i].style.maxWidth = Std.string(originalWidth) + "px";
+				tagNodes[i].style.maxHeight = Std.string(originalHeight) + "px";
 			}
+			tagNodes[i].style.width = Std.string(96) + "%";
+			originalWidth = Std.parseInt(Std.string(tagNodes[i].style.maxWidth).substr(0,-2));
+			originalHeight = Std.parseInt(Std.string(tagNodes[i].style.maxHeight).substr(0,-2));
+			var newHeight = originalHeight * tagNodes[i].clientWidth / originalWidth;
+			tagNodes[i].style.height = Std.string(newHeight | 0) + "px";
+			tagNodes[i].removeAttribute("width");
+			tagNodes[i].removeAttribute("height");
 		}
 	}
 	,__class__: org.intermedia.view.DetailView
@@ -3116,9 +3127,6 @@ org.intermedia.view.HeaderView.prototype = $extend(org.intermedia.view.ViewBase.
 	}
 	,onBackButtonClickCallback: function() {
 		if(this.onBackButtonClick != null) this.onBackButtonClick();
-	}
-	,refreshStyles: function() {
-		org.intermedia.view.HeaderStyle.setHeaderStyle(this.node);
 	}
 	,__class__: org.intermedia.view.HeaderView
 	,__properties__: $extend(org.intermedia.view.ViewBase.prototype.__properties__,{set_displayBackButton:"setDisplayBackButton",get_displayBackButton:"getDisplayBackButton"})
@@ -4131,7 +4139,6 @@ org.intermedia.view.ViewManager.prototype = {
 		this._body.appendChild(view.node);
 	}
 	,onResizeCallback: function() {
-		this._header.refreshStyles();
 		this._menu.refreshStyles();
 		this._swippableListView.refreshStyles();
 		this._detailView.refreshStyles();

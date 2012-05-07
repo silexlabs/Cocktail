@@ -332,7 +332,7 @@ class ViewManager
 	private function onResizeCallback():Void
 	{
 		// launch needed callbacks
-		_header.refreshStyles();
+		//_header.refreshStyles();
 		//_menu.onResizeCallback();
 		_menu.refreshStyles();
 		//_swippableListView.onResizeCallback(event);
