@@ -8,6 +8,8 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.EmbeddedBoxRenderer;
+import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.NativeElement;
 
@@ -103,6 +105,28 @@ class EmbeddedElement extends HTMLElement
 		return oldChild;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
+	{
+		_elementRenderer = new EmbeddedBoxRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+		
+		if (_elementRenderer != null)
+		{
+			if (establishesNewStackingContext() == false)
+			{
+				_elementRenderer.layerRenderer = parentLayerRenderer;
+			}
+			else
+			{
+				_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
+			}
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////

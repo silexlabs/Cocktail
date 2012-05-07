@@ -22,6 +22,7 @@ import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.InlineBoxRenderer;
+import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -309,7 +310,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new CoreStyle();
+		this._coreStyle = new CoreStyle(_tagName);
 	}
 	
 	/**
@@ -337,26 +338,50 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO : doc
-	public function attach(parent:ElementRenderer):Void
+	public function attach():Void
 	{
-		createElementRenderer();
-		if (_elementRenderer != null)
-		{
-			parent.appendChild(_elementRenderer);
-		}
+		var parent:HTMLElement = cast(_parentNode);
 		
+		if (parent.elementRenderer != null)
+		{
+			createElementRenderer(parent.elementRenderer.layerRenderer);
+			if (_elementRenderer != null)
+			{
+				parent.elementRenderer.appendChild(_elementRenderer);
+				
+				for (i in 0..._childNodes.length)
+				{
+					var child:HTMLElement = cast(_childNodes[i]);
+					child.attach();
+				}
+			}
+		}
 	}
 	
-	public function detach(parent:ElementRenderer):Void
+	public function detach():Void
 	{
-		parent.removeChild(_elementRenderer);
+		var parent:HTMLElement = cast(_parentNode);
+		
+		if (parent.elementRenderer != null)
+		{
+			if (_elementRenderer != null)
+			{
+				for (i in 0..._childNodes.length)
+				{
+					var child:HTMLElement = cast(_childNodes[i]);
+					child.detach();
+				}
+				parent.elementRenderer.removeChild(_elementRenderer);
+			}
+			
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function createElementRenderer():Void
+	private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
 	{
 		switch (_coreStyle.computedStyle.display)
 		{
@@ -370,6 +395,30 @@ class HTMLElement extends Element, implements IEventTarget
 				
 			case none:
 		}
+		
+		if (_elementRenderer != null)
+		{
+			if (establishesNewStackingContext() == false)
+			{
+				_elementRenderer.layerRenderer = parentLayerRenderer;
+			}
+			else
+			{
+				_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
+			}
+		}
+	}
+	
+	private function establishesNewStackingContext():Bool
+	{
+		switch (_coreStyle.position)
+		{
+			case cssStatic :
+				return false;
+				
+			default:
+				return true;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -378,11 +427,15 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	/**
 	 * invalidate Style after DOM change
+	 * 
+	 * TODO : update doc
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-	//	_coreStyle.invalidate();
+		//TODO : should be different for Text node
+		var htmlChild:HTMLElement = cast(newChild);
+		htmlChild.attach();
 		return newChild;
 	}
 	
@@ -392,7 +445,8 @@ class HTMLElement extends Element, implements IEventTarget
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		//_coreStyle.invalidate();
+		var htmlChild:HTMLElement = cast(oldChild);
+		htmlChild.detach();
 		return oldChild;
 	}
 	
