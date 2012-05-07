@@ -34,12 +34,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		super(node);
 		
-		
+		//TODO : re-implement when coreStyle is set
+		/**
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
 		
 		_bounds.width = width;
 		_bounds.height = height;
+		*/
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

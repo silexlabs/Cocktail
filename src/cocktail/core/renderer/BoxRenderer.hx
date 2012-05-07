@@ -68,6 +68,7 @@ class BoxRenderer extends ElementRenderer
 	public function new(node:Node) 
 	{
 		super(node);
+		this._isLayingOut = false;
 		init();
 		
 	}
@@ -200,18 +201,7 @@ class BoxRenderer extends ElementRenderer
 	 * Actually layout all the children of the HTMLElement
 	 */
 	private function doLayoutChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
-	{	
-		//first remove all the child that might have been added to the renderer
-		//if any, as this method can be called multiple time, it prevents multiple
-		//text renderers to be generated for the same Text node
-		//
-		//TODO : should Text node have explicit reference to TextRenderer, like
-		//HTMLElement have reference to ElementRenderer through CoreStyle ?
-		for (i in 0...this.childNodes.length)
-		{
-			this.removeChild(this.childNodes[0]);
-		}
-		
+	{			
 		//layout all children 
 		for (i in 0..._node.childNodes.length)
 		{
@@ -230,6 +220,7 @@ class BoxRenderer extends ElementRenderer
 			{
 				var childrenText:Text = cast(_node.childNodes[i]);
 				var insertedText:TextRenderer = getTextRenderer(childrenText);
+				//TODO IMPORTANT : bug, a new text renderer is added for each layout
 				appendChild(insertedText);
 			}
 		}
@@ -336,6 +327,7 @@ class BoxRenderer extends ElementRenderer
 		textRenderer.coreStyle = _coreStyle;
 		
 		textRenderer.layerRenderer = _layerRenderer;
+		
 		return textRenderer;
 	}
 	

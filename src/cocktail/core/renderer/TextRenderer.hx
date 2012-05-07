@@ -44,7 +44,6 @@ class TextRenderer extends ElementRenderer
 	{
 		super(node);
 		_text = cast(node);
-		init();
 	}
 	
 	/**
@@ -60,6 +59,13 @@ class TextRenderer extends ElementRenderer
 			//create and store the line boxes
 			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
 		}
+	}
+	
+	override private function set_coreStyle(value:CoreStyle):CoreStyle
+	{
+		_coreStyle = value;
+		init();
+		return _coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

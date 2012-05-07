@@ -156,6 +156,8 @@ class ElementRenderer extends Node
 	{
 		super();
 
+		_node = node;
+		
 		_bounds = {
 			x:0.0,
 			y:0.0,

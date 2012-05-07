@@ -271,15 +271,15 @@ class CoreStyle
 	 * The style is invalid by default and will be updated
 	 * when the HTMLElement is added to the DOM.
 	 */
-	public function new() 
+	public function new(tagName:String) 
 	{
-		initDefaultStyleValues();
+		initDefaultStyleValues(tagName);
 	}
 	
 	/**
 	 * Init the standard default value for styles
 	 */
-	private function initDefaultStyleValues():Void
+	private function initDefaultStyleValues(tagName:String):Void
 	{
 		initComputedStyles();
 		
@@ -364,7 +364,7 @@ class CoreStyle
 		_color = defaultStyles.color;
 		
 		//TODO : get tag name
-		applyDefaultHTMLStyles("");
+		applyDefaultHTMLStyles(tagName);
 	}
 	
 	/**
@@ -568,20 +568,6 @@ class CoreStyle
 	public function computeBackgroundStyles():Void
 	{
 		BackgroundStylesComputer.compute(this);
-	}
-	
-	/**
-	 * Compute first the styles determining the HTMLElement's
-	 * positioning scheme (position, float, clear...),
-	 * the style detemining font and text display,
-	 * then the styles determining its box model (width, height, margins
-	 * paddings...) which are computed last because they may use
-	 * some font metrics to compute the box model, for instance
-	 * when a dimension is defined with an 'em' unit
-	 */
-	public function computeHTMLElementStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{
-	
 	}
 	
 	/**

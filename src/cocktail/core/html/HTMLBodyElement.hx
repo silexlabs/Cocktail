@@ -6,6 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.renderer.LayerRenderer;
 
 /**
  * The HTML document body. This element is always present
@@ -26,5 +28,20 @@ class HTMLBodyElement extends HTMLElement
 	public function new() 
 	{	
 		super(HTML_BODY_TAG_NAME);
+		
+		//TODO : doc
+		createElementRenderer(null);
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
+	{
+		_elementRenderer = new InitialBlockRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+		_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
 	}
 }

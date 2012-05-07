@@ -68,6 +68,7 @@ class LayerRenderer
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
+			
 			//render the ElementRenderer which created this layer
 			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			
@@ -380,7 +381,7 @@ class LayerRenderer
 	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
-		
+
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)
