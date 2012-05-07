@@ -1262,31 +1262,6 @@ class CoreStyle
 	}
 	
 	/**
-	 * Get the dimensions of the first ancestor
-	 * of the styled HTMLElement which is positioned
-	 * or of the HTMLBodyElement
-	 */
-	private function getFirstPositionedAncestorData():ContainingHTMLElementData
-	{
-		var firstPositionedAncestorData:ContainingHTMLElementData;
-		var firstPositionedAncestor:HTMLElement = getFirstPositionedAncestor();
-		
-		//if the htmlElement has a parent
-		if (firstPositionedAncestor != null)
-		{
-			var firstPositionedAncestorStyle:ContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
-			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
-		}
-		//if the HTMLElement has no parent, return the Window data
-		else
-		{
-			firstPositionedAncestorData = getWindowData();
-		}
-		
-		return firstPositionedAncestorData;
-	}
-	
-	/**
 	 * Retrieve the data of the viewport. The viewport
 	 * origin is always to the top left of the window
 	 * displaying the document

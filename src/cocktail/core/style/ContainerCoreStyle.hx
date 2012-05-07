@@ -481,14 +481,14 @@ class ContainerCoreStyle extends CoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC HELPER METHODS
+	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return the dimensions data
 	 * of the HTMLElement
 	 */
-	public function getContainerHTMLElementData():ContainingHTMLElementData
+	private function getContainerHTMLElementData():ContainingHTMLElementData
 	{
 		return {
 			width:this._computedStyle.width,
@@ -497,10 +497,6 @@ class ContainerCoreStyle extends CoreStyle
 			isHeightAuto:this._height == Dimension.cssAuto
 		};
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * return the data of this htmlElement to be used when it is
