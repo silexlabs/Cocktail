@@ -257,9 +257,14 @@ class ElementRenderer extends Node
 		
 	}
 	
-	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		
+	}
+	
+	public function childrenInline():Bool
+	{
+		return false;
 	}
 	
 	/////////////////////////////////
@@ -273,10 +278,6 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function canHaveChildren():Bool
-	{
-		return false;
-	}
 	
 	public function isFloat():Bool
 	{
@@ -293,9 +294,9 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function isEmbedded():Bool
+	public function isReplaced():Bool
 	{
-		return true;
+		return false;
 	}
 	
 	public function isText():Bool

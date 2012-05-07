@@ -13,7 +13,6 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 /**

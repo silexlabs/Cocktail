@@ -56,6 +56,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 	}
 	
+	override public function isReplaced():Bool
+	{
+		return true;
+	}
+	
 	/**
 	 * Determine if all the children of the 
 	 * HTMLElement are inline-level. 

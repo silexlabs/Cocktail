@@ -17,7 +17,6 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import haxe.Log;
 
@@ -191,7 +190,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			//TODO : messy, inline block and embedded should not share classes
 			//TODO : Text should not be considered embed, isEmbedded should be removed
-			else if (child.isEmbedded() == true && child.isText() == false)
+			else if (child.isReplaced() == true && child.isText() == false)
 			{
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
 				
@@ -983,7 +982,7 @@ class InlineFormattingContext extends FormattingContext
 
 			
 			//TODO : used for embedded or inline block but implement better
-			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isEmbedded() == true && child.elementRenderer.isText() == false))
+			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
 			{
 				//TODO : hack that won't work for absolutely positioned inline-block
 				if (child.isAbsolutelyPositioned() == false)

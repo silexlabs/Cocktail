@@ -65,7 +65,7 @@ class LayerRenderer
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
-		if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == false || 
+		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
 			//render the ElementRenderer which created this layer
@@ -122,7 +122,7 @@ class LayerRenderer
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
-		else if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == true)
+		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
 			//TODO : render child layers
 			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
@@ -296,7 +296,7 @@ class LayerRenderer
 	 * Retrieve all the children block container of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getBlockContainerChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getBlockContainerChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -307,11 +307,11 @@ class LayerRenderer
 			if (child.layerRenderer == this)
 			{
 				//TODO : must add more condition, for instance, no float
-				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
+				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
 					ret.push(cast(child));
 					
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(child));
+					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -343,7 +343,7 @@ class LayerRenderer
 		return ret;
 	}
 	
-	private function getBlockReplacedChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -354,9 +354,9 @@ class LayerRenderer
 			if (child.layerRenderer == this)
 			{
 				//TODO : must add more condition, for instance, no float
-				if (child.canHaveChildren() == true && child.coreStyle.display == block)
+				if (child.isReplaced() == false && child.coreStyle.display == block)
 				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(cast(child));
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -399,7 +399,7 @@ class LayerRenderer
 	 * Retrieve all the children LayerRenderer of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getChildLayers(rootRenderer:FlowBoxRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
+	private function getChildLayers(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
 	{
 		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
@@ -412,9 +412,9 @@ class LayerRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (child.canHaveChildren() == true)
+				if (child.isReplaced() == false)
 				{
-					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
+					var childElementRenderer:Array<LayerRenderer> = getChildLayers(child, referenceLayer);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -497,7 +497,7 @@ class LayerRenderer
 	 * Return all the in flow children of this LayerRenderer by traversing
 	 * recursively the rendering tree
 	 */
-	private function getLineBoxes(rootRenderer:FlowBoxRenderer):Array<LineBox>
+	private function getLineBoxes(rootRenderer:ElementRenderer):Array<LineBox>
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
@@ -529,9 +529,9 @@ class LayerRenderer
 					{
 						if (child.isPositioned() == false)
 						{	
-							if (child.canHaveChildren() == true)
+							if (child.isReplaced() == false)
 							{	
-								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
+								var childLineBoxes:Array<LineBox> = getLineBoxes(child);
 								for (j in 0...childLineBoxes.length)
 								{
 									ret.push(childLineBoxes[j]);
