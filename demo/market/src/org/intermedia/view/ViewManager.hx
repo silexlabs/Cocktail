@@ -98,7 +98,8 @@ class ViewManager
 		_body.appendChild(_swippableListView.node);
 		
 		// onresize callback
-		Lib.window.onresize = onResizeCallback;
+		//Lib.window.onresize = onResizeCallback;
+		Lib.window.onresize = function (event:Event) { onResizeCallback();};
 		// on scroll callback is placed here for iPhone & Android phones, so that swippableView is resized when navigation bar is hidden
 		// can be removed in native apps
 		//Lib.window.onscroll = onResizeCallback;
@@ -161,6 +162,8 @@ class ViewManager
 	 */
 	private function onListItemSelectedCallback(cellData:CellData):Void
 	{
+		//trace(Lib.window.innerWidth);
+		//trace(Lib.window.screen.width);
 		// remove swippable view touch events listener
 		//_swippableListView.unsetTouchEvents();
 		// remove swippableListView and menu and add empty detail view
@@ -231,6 +234,8 @@ class ViewManager
 		
 		// hide loader
 		_detailView.displayLoading = false;
+		
+		onResizeCallback();
 	}
 	
 	/**
@@ -256,6 +261,9 @@ class ViewManager
 	 */
 	public function onHeaderBackButtonPressed():Void
 	{
+		//trace(Lib.window.innerWidth);
+		//trace(Lib.window.screen.width);
+		
 		//_applicationController.goBackToListView();
 
 		// update header title
@@ -267,16 +275,16 @@ class ViewManager
 		_body.removeChild(_detailView.node);
 		_body.appendChild(_menu.node);
 		_body.appendChild(_swippableListView.node);
-		_swippableListView.scrollToCurrentList();
 		//_swippableListView.style.display = "inline-block";
 		//_swippableListView.isVisible = true;
+		
 		
 		// to be used once switching to cocktail js version
 		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
 		//_menu.style.display = "block";
 
 		
-		// update zIndex using a workaround
+		// update zIndex
 		updateZIndexes();
 		//setZIndexToMax(_menu);
 		//setZIndexToMax(_header);
@@ -290,6 +298,10 @@ class ViewManager
 		// start listening to touch event on _swippableListView
 		//_swippableListView.addTouchEvents();
 		
+		// on resize callback is called here to resolve an Android Browser bug, where application width is not refreshed correctly
+		_swippableListView.scrollToCurrentList();
+		//Timer.delay( onResizeCallback, 1);
+		onResizeCallback();
 	}
 	
 	/**
@@ -316,13 +328,17 @@ class ViewManager
 	/**
 	 * on rezize callback
 	 */
-	private function onResizeCallback(event:Event):Void
+	//private function onResizeCallback(event:Event):Void
+	private function onResizeCallback():Void
 	{
 		// launch needed callbacks
+		_header.refreshStyles();
 		//_menu.onResizeCallback();
 		_menu.refreshStyles();
 		//_swippableListView.onResizeCallback(event);
 		_swippableListView.refreshStyles();
+		
+		_detailView.refreshStyles();
 	}
 
 	

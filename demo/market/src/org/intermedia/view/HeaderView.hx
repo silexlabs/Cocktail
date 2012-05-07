@@ -162,4 +162,13 @@ class HeaderView extends ViewBase
 		}
 	}
 	
+	/**
+	 * Refresh styles
+	 */
+	public function refreshStyles():Void
+	{
+		// set header style
+		HeaderStyle.setHeaderStyle(node);
+	}
+	
 }
