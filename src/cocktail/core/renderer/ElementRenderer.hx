@@ -8,11 +8,15 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
+
 
 /**
  * This is the base class for element renderers.
@@ -114,6 +118,9 @@ class ElementRenderer extends Node
 	private var _globalPositionnedAncestorOrigin:PointData;
 	public var globalPositionnedAncestorOrigin(get_globalPositionnedAncestorOrigin, set_globalPositionnedAncestorOrigin):PointData;
 	
+	private var _node:Node;
+	public var node(get_node, never):Node;
+	
 	/**
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
@@ -121,7 +128,7 @@ class ElementRenderer extends Node
 	 * TODO : should be instantiated by the DOM tree instead ?
 	 */
 	private var _coreStyle:CoreStyle;
-	public var coreStyle(getCoreStyle, never):CoreStyle;
+	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
 	
 	/**
 	 * A reference to the LayerRenderer rendering this
@@ -145,11 +152,9 @@ class ElementRenderer extends Node
 	 * @param	style the Style which created
 	 * the ElementRenderer
 	 */
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
 		super();
-		
-		_coreStyle = style;
 
 		_bounds = {
 			x:0.0,
@@ -241,6 +246,21 @@ class ElementRenderer extends Node
 		return bounds;
 		
 	}
+
+	public function getFirstPositionedAncestor():HTMLElement
+	{
+		return null;
+	}
+	
+	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	{
+		
+	}
+	
+	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	{	
+		
+	}
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
@@ -260,17 +280,17 @@ class ElementRenderer extends Node
 	
 	public function isFloat():Bool
 	{
-		return _coreStyle.isFloat();
+		return false;
 	}
 	
 	public function isPositioned():Bool
 	{
-		return _coreStyle.isPositioned();
+		return false;
 	}
 	
 	public function isInlineLevel():Bool
 	{
-		return _coreStyle.isInlineLevel();
+		return false;
 	}
 	
 	public function isEmbedded():Bool
@@ -290,7 +310,22 @@ class ElementRenderer extends Node
 	
 	public function isDisplayed():Bool
 	{
-		return _coreStyle.isDisplayed();
+		return false;
+	}
+	
+	public function isRelativePositioned():Bool
+	{
+		return false;
+	}
+	
+	public function invalidate(immediate:Bool = false):Void
+	{
+		
+	}
+
+	public function isOffsetParent():Bool
+	{
+		return isPositioned();
 	}
 	
 	/////////////////////////////////
@@ -378,9 +413,14 @@ class ElementRenderer extends Node
 		return _layerRenderer;
 	}
 	
-	private function getCoreStyle():CoreStyle
+	private function get_coreStyle():CoreStyle
 	{
 		return _coreStyle;
+	}
+	
+	private function set_coreStyle(value:CoreStyle):CoreStyle
+	{
+		return _coreStyle = value;
 	}
 	
 	private function get_bounds():RectangleData
@@ -421,5 +461,10 @@ class ElementRenderer extends Node
 	private function set_globalPositionnedAncestorOrigin(value:PointData):PointData 
 	{
 		return _globalPositionnedAncestorOrigin = value;
+	}
+	
+	private function get_node():Node
+	{
+		return _node;
 	}
 }

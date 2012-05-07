@@ -149,7 +149,7 @@ class LayerRenderer
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
 		//its children
-		if (rootRenderer.coreStyle.isRelativePositioned() == true)
+		if (rootRenderer.isRelativePositioned() == true)
 		{
 			for (i in 0...nativeElements.length)
 			{
@@ -501,7 +501,7 @@ class LayerRenderer
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			

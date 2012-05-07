@@ -7,9 +7,18 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
+import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.font.FontData;
+import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -27,13 +36,50 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * of the element, as for embedded element
 	 * they are intrinsic to the embeddded asset
 	 */
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
-		super(style);
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		super(node);
 		
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Layout all the children of a HTMLElement if it has any
+	 */
+	override private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{
+		
+	}
+	
+	/**
+	 * Determine if all the children of the 
+	 * HTMLElement are inline-level. 
+	 * Default is false when the HTMLElement
+	 * can't have children
+	 * 
+	 * TODO : should replaced elements be default ?
+	 */
+	override public function childrenInline():Bool
+	{
+		return false;
+	}
+	
+		/**
+	 * Wheter this HTMLElement starts a new
+	 * formatting context for its children.
+	 * Default is false as only ContainerHTMLElements
+	 * can start new formatting context
+	 * 
+	 * TODO : should replaced elements be default ?
+	 */
+	override public function establishesNewFormattingContext():Bool
+	{
+		return false;
 	}
 	
 	/**
@@ -55,7 +101,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 	
-		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
+		var embeddedHTMLElement:EmbeddedElement = cast(_node);
 		
 		ret.push(embeddedHTMLElement.embeddedAsset);
 	

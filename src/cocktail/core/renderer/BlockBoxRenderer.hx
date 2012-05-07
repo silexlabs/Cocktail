@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -25,8 +26,8 @@ import haxe.Log;
 class BlockBoxRenderer extends FlowBoxRenderer
 {
 		
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
-		super(style);
+		super(node);
 	}
 }

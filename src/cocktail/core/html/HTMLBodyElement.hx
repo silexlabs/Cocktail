@@ -30,13 +30,4 @@ class HTMLBodyElement extends HTMLElement
 	{	
 		super(HTML_BODY_TAG_NAME);
 	}
-	
-	/**
-	 * Instantiate a Style specific to this
-	 * HTMLElement
-	 */
-	override private function initCoreStyle():Void
-	{
-		_coreStyle = new BodyCoreStyle(this);
-	}
 }
