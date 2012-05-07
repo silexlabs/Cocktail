@@ -240,9 +240,6 @@ class AbstractHTMLDocument extends Document
 	 * Called when a mouse down event is dispatched.
 	 * Retrieve the top-most ElementRenderer under the mouse
 	 * pointer and call its mouse down down callback if provided
-	 * 
-	 * TODO : shouldn't need a special case for body, 
-	 * the initialElementRenderer should always be returned
 	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
@@ -252,6 +249,8 @@ class AbstractHTMLDocument extends Document
 
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
+		//
+		//TODO : wrong order, top-most is last element of the array
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
@@ -261,14 +260,6 @@ class AbstractHTMLDocument extends Document
 				return;
 			}
 		}
-		
-		//if none of the ElementRenderer as a callback, try to call the mouse down
-		//callback of the body
-		if (_body.onmousedown != null)
-		{
-			_body.onmousedown(mouseEvent);
-		}
-		
 	}
 	
 	/**
@@ -289,11 +280,6 @@ class AbstractHTMLDocument extends Document
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
 				return;
 			}
-		}	
-		
-		if (_body.onclick != null)
-		{
-			_body.onclick(mouseEvent);
 		}
 	}
 	
@@ -314,26 +300,18 @@ class AbstractHTMLDocument extends Document
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
 				return;
 			}
-		}	
-		
-		if (_body.onmouseup != null)
-		{
-			_body.onmouseup(mouseEvent);
 		}
 	}
 	
 	/**
 	 * Called when a mouse move is dispatched. Same as for 
 	 * mouse down
-	 * 
-	 * TODO : implement mouse over and mouse out with this method
-	 * 
-	 * @param
 	 */
 	private function onMouseMove(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 			
+		//TODO : doc for mouse over / out
 		if (elementRenderersAtPoint.length > 0)
 		{
 			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1] != _hoveredElementRenderer)
@@ -376,7 +354,6 @@ class AbstractHTMLDocument extends Document
 			}
 		}
 			
-
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
@@ -384,20 +361,8 @@ class AbstractHTMLDocument extends Document
 				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
 				return;
 			}
-		}	
-			
-		
-		if (_body.onmousemove != null)
-		{
-			_body.onmousemove(mouseEvent);
 		}
-		
-		
-	
-		
 	}
-	
-
 	
 	/**
 	 * When a key is pressed, redirect it to
