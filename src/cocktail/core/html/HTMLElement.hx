@@ -789,11 +789,37 @@ class HTMLElement extends Element, implements IEventTarget
 	 * return the first positioned ancestor of the HTMLElement
 	 * 
 	 * @return an HTMLElement or null if this HTMLElement is not yet
-	 * added to the DOM or is the HTMLBodyElement
+	 * added to the DOM
 	 */
 	private function get_offsetParent():HTMLElement
 	{
-		return _elementRenderer.getFirstPositionedAncestor();
+		//here the HTMLElement is not
+		//attached to the DOM
+		if (_parentNode == null)
+		{
+			return null;
+		}
+		
+		var parent:HTMLElement = cast(_parentNode);
+		
+		//loop in all the parents until a positioned or a null parent is found
+		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
+		
+		while (isOffsetParent == false)
+		{
+			if (parent.parentNode != null)
+			{
+				parent = cast(parent.parentNode);
+				isOffsetParent = parent.elementRenderer.isPositioned();
+			}
+			//break the loop if the current parent has no parent
+			else
+			{
+				isOffsetParent = true;
+			}
+		}
+		
+		return parent;
 	}
 	
 	private function get_offsetWidth():Int
@@ -836,6 +862,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function get_clientHeight():Int
 	{
+		//TODO : re-implement
 		//_coreStyle.invalidate(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;

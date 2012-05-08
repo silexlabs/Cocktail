@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
+import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -110,11 +111,11 @@ class AbstractHTMLDocument extends Document
 	private var _mouse:Mouse;
 	
 	/**
-	 * A reference to the ElementRenderer currently hovered by the
+	 * A reference to the HTMLElement currently hovered by the
 	 * mouse pointer. Used to detect when to dispatch mouse over
 	 * and mouse out events 
 	 */
-	private var _hoveredElementRenderer:ElementRenderer;
+	private var _hoveredHTMLElement:HTMLElement;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -246,21 +247,27 @@ class AbstractHTMLDocument extends Document
 		//retrieve all the ElementRenderer under the mouse
 		//pointer
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-/**
+
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
 		//
 		//TODO : wrong order, top-most is last element of the array
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].htmlElement.onmousedown != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				elementRenderersAtPoint[i].htmlElement.onmousedown(mouseEvent);
-				//return as only one callback is executed
-				return;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onmousedown != null)
+					{
+						htmlElement.onmousedown(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
+			
 		}
-		*/
+		
 	}
 	
 	/**
@@ -273,16 +280,24 @@ class AbstractHTMLDocument extends Document
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-/**
+
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].htmlElement.onclick != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				elementRenderersAtPoint[i].htmlElement.onclick(mouseEvent);
-				return;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onclick != null)
+					{
+						htmlElement.onclick(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
+			
 		}
-		*/
+		
+		
 	}
 	
 	/**
@@ -292,18 +307,22 @@ class AbstractHTMLDocument extends Document
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-		/**
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].htmlElement.onmouseup != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				//TODO : shouldn't break if the executed behaviour is a default behaviour, for instance
-				//opening a document for an anchor element
-				elementRenderersAtPoint[i].htmlElement.onmouseup(mouseEvent);
-				return;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onmouseup != null)
+					{
+						htmlElement.onmouseup(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
+			
 		}
-		*/
 	}
 	
 	/**

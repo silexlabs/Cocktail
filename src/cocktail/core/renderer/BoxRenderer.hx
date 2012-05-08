@@ -202,27 +202,30 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function doLayoutChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{			
-		//layout all children 
-		for (i in 0..._node.childNodes.length)
+		//layout all children
+		for (i in 0..._childNodes.length)
 		{
-			//if the children is an HTMLElement, call its layout method
-			if (_node.childNodes[i].nodeType == Node.ELEMENT_NODE)
-			{
-				var childHTMLElement:HTMLElement = cast(_node.childNodes[i]);
-				//the layout method also lays out recursively all the children of the children HTMLElement
-				//if it is an HTMLElement
-				childHTMLElement.elementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-			}
+			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
+			//the layout method also lays out recursively all the children of the children HTMLElement
+			//if it is an HTMLElement
+			childElementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+		
+			
+			//TODO : obsolete, at this point Text is ElementRenderer
+			
 			//else if it is a Text node, call a method that will create a TextRenderer
 			//to render the text content of the text node, and attach the TextRenderer
 			//to the rendering tree
-			else 
-			{
-				var childrenText:Text = cast(_node.childNodes[i]);
+			//else 
+			//{
+				/**var childrenText:Text = cast(_node.childNodes[i]);
 				var insertedText:TextRenderer = getTextRenderer(childrenText);
-				//TODO IMPORTANT : bug, a new text renderer is added for each layout
-				appendChild(insertedText);
-			}
+				
+				//TODO IMPORTANT : bug, a new text renderer is added for each layout,
+				//should instead be created by the Text node itself
+				
+				appendChild(insertedText);*/
+			//}
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -365,16 +368,7 @@ class BoxRenderer extends ElementRenderer
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
 	override public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{		
-		//the ElementRenderer removes itself from the parent if necessary as the new layout
-		//will create a new rendering tree
-		//
-		//TODO : shouldn't be necessary to remove and recreate ElementRenderer anymore
-		//if (_elementRenderer != null && parentElementRenderer != null)
-		//{
-			//parentElementRenderer.removeChild(_elementRenderer);
-		//}
-		
+	{	
 		//do nothing if the HTMLElement must not be displayed, i.e, added
 		//to the DOM
 		if (isDisplayed() == false)
@@ -386,6 +380,8 @@ class BoxRenderer extends ElementRenderer
 		//reset an auto height to 0 if a layout has already
 		//occured which might create bugs in the computation of
 		//font and text styles which use the computed height value
+		//
+		//TODO : re-implement
 		//initComputedStyles();
 		
 		//compute all the styles of a HTMLElement
@@ -777,55 +773,7 @@ class BoxRenderer extends ElementRenderer
 		
 		return ret;
 	}
-	
-	/**
-	 * Get the first parent HTMLElement which is positioned
-	 * or null if the HTMLElement has no parent (it is
-	 * not attached to the DOM or is the HTMLBodyElement)
-	 * 
-	 * TODO : should be done by the DOM tree
-	 */
-	override public function getFirstPositionedAncestor():HTMLElement
-	{
-		//here it is either the HTMLBodyElement
-		//or not attached to the DOM
-		if (_node.parentNode == null)
-		{
-			return null;
-		}
-		
-		var parent:HTMLElement = cast(_node.parentNode);
-		
-		//loop in all the parents until a positioned or a null parent is found
-		var isOffsetParent:Bool = parent.elementRenderer.isOffsetParent();
-		
-		while (isOffsetParent == false)
-		{
-			if (parent.parentNode != null)
-			{
-				parent = cast(parent.parentNode);
-				isOffsetParent = parent.elementRenderer.isOffsetParent();
-			}
-			//break the loop if the current parent has no parent
-			else
-			{
-				isOffsetParent = true;
-			}
-		}
-		
-		return parent;
-	}
-	
-	/**
-	 * Return wether this Style is the 
-	 * offset parent for its children.
-	 * Meant to be overriden
-	 */
-	override public function isOffsetParent():Bool
-	{
-		return isPositioned();
-	}
-	
+
 	/**
 	 * Determine wether the HTMLElement is added
 	 * to the document

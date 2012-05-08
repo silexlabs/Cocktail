@@ -44,4 +44,12 @@ class HTMLBodyElement extends HTMLElement
 		_elementRenderer.coreStyle = _coreStyle;
 		_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
 	}
+	
+	/**
+	 * TODO : doc
+	 */
+	override private function get_offsetParent():HTMLElement
+	{
+		return null;
+	}
 }

@@ -67,7 +67,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * Default is false when the HTMLElement
 	 * can't have children
 	 * 
-	 * TODO : should replaced elements be default ?
 	 */
 	override public function childrenInline():Bool
 	{
@@ -80,7 +79,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * Default is false as only ContainerHTMLElements
 	 * can start new formatting context
 	 * 
-	 * TODO : should replaced elements be default ?
 	 */
 	override public function establishesNewFormattingContext():Bool
 	{
