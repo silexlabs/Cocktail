@@ -1,6 +1,6 @@
 ECHO OFF
 ECHO.
-SET input_dir=C:\Users\Raph\Downloads
+SET input_dir=C:\Users\Codam\Downloads
 SET output_dir=..\..\bin\native_apps
 SET app_name=FrenchTech
 
