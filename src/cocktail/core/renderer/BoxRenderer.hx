@@ -110,8 +110,6 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Lay out all the children of the HTMLElement
 	 * 
-	 * TODO : move implementation to flow box renderer
-	 * 
 	 */
 	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -176,7 +174,7 @@ class BoxRenderer extends ElementRenderer
 		
 		_coreStyle.computeDisplayStyles();
 		_coreStyle.computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
-		_coreStyle.computeBoxModelStyles(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data));
+		_coreStyle.computeBoxModelStyles(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data), isReplaced());
 		
 		//layout all the children of the HTMLElement if it has any
 		layoutChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);

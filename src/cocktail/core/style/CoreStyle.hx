@@ -36,36 +36,15 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
-import cocktail.core.Window;
 import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
 
 /**
  * This is the base class for all Style classes. Style classes
- * are in charge of storing the style value for a HTMLElement
- * and applying them.
- * 
- * This class holds a reference to the styled HTMLElement.
- * 
- * During the layout, a rendering tree, paralleling the DOM tree
- * is built. The rendering tree contains objects of type
- * ElementRenderer. For instance, a ContainerCoreStyle with Text node
- * children will build a tree containing TextRenderer and BlockBoxRenderer
- * or InlineBoxRenderer.
- * Those objects know how to render themselves.
- * 
- * Styling is done in 2 phases : 
- * - first the styles of the HTMLElement are computed into
- * usable values, for instance values defined as percentage
- * are converted to absolute values. During this phase, an
- * abstract rendering tree of the element is built
- * - once all the styles are computed and the rendering tree is ready, it
- * renders itself
- * 
- * This class implements the default behaviour of an embedded HTMLElement
- * 
- * TODO : update all the doc
+ * are in charge of storing the style value for an HTMLElement
+ * and computing them into usable values. For instance values
+ * defined as percentage are converted to absolute pixel values.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -242,8 +221,7 @@ class CoreStyle
 	 * be stored once computed to pixels into this structure
 	 */
 	private var _computedStyle:ComputedStyleData;
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
-	
+	public var computedStyle(get_computedStyle, set_computedStyle):ComputedStyleData;
 		
 	/**
 	 * Returns metrics info for the currently defined
@@ -252,27 +230,30 @@ class CoreStyle
 	 * position
 	 */
 	private var _fontMetrics:FontMetricsData;
-	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
+	public var fontMetrics(get_fontMetricsData, never):FontMetricsData;
+	
+	/**
+	 * Store a reference to the styled HTMLElement
+	 */
+	private var _htmlElement:HTMLElement;
+	public var htmlElement(get_htmlElement, never):HTMLElement;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Class constructor. Stores the target HTMLElement.
-	 * Init the class attributes
-	 * 
-	 * The style is invalid by default and will be updated
-	 * when the HTMLElement is added to the DOM.
+	 * Class constructor. Set default values
+	 * for styles
 	 */
-	public function new(tagName:String) 
+	public function new(htmlElement:HTMLElement) 
 	{
-		initDefaultStyleValues(tagName);
+		_htmlElement = htmlElement;
+		initDefaultStyleValues(htmlElement.tagName);
 	}
 	
 	/**
 	 * Init the standard default value for styles
-	 * 
 	 * 
 	 * TODO : doc tag name
 	 */
@@ -360,7 +341,6 @@ class CoreStyle
 		_fontFamily = defaultStyles.fontFamily;
 		_color = defaultStyles.color;
 		
-		//TODO : get tag name
 		applyDefaultHTMLStyles(tagName);
 	}
 	
@@ -546,12 +526,6 @@ class CoreStyle
 	 * This method computes the styles determing
 	 * the HTMLElement's layout scheme :
 	 * position, display, float and clear.
-	 * 
-	 * It is public as it may be called by the
-	 * ContainerCoreStyle of the parent HTMLElement
-	 * which may need to known the display style of its
-	 * children to determine which type of formatting context
-	 * to establish for its children
 	 */
 	public function computeDisplayStyles():Void
 	{
@@ -560,7 +534,7 @@ class CoreStyle
 	
 	/**
 	 * Computes the styles determining the background
-	 * color, images... of a HTMLElement
+	 * color, images... of an HTMLElement
 	 */
 	public function computeBackgroundStyles():Void
 	{
@@ -587,20 +561,74 @@ class CoreStyle
 	 * Compute the box model styles (width, height, paddings, margins...) of the HTMLElement, based on
 	 * its positioning scheme
 	 */ 
-	public function computeBoxModelStyles(containingBlockDimensions:ContainingHTMLElementData):Void
+	public function computeBoxModelStyles(containingBlockDimensions:ContainingHTMLElementData, isReplaced:Bool):Void
 	{
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
 		
 		//do compute the box model styles
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
+	/**
+	 * In most cases, when the height of a HTMLElement
+	 * is 'auto', its computed height become the total height
+	 * of its in flow children, computed once all its
+	 * children have been laid out 
+	 * 
+	 * @param	childrenHeight the total height of the children once laid out
+	 */
+	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingHTMLElementData, childrenHeight:Int, isReplaced:Bool):Int
+	{		
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);		
+		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
+	}
+	
+	/**
+	 * In certain cases, when the width of the HTMLElement is 'auto',
+	 * its computed value is 'shrink-to-fit' meaning that it will take either
+	 * the width of the widest line formed by its children or the width of its
+	 * container if the children overflows
+	 * 
+	 * If the width of this HTMLElement is indeed shrinked, all
+	 * its children are laid out again
+	 * 
+	 * @param	containingHTMLElementData
+	 * @param	minimumWidth the width of the widest line of children laid out
+	 * by this HTMLElement which will be the minimum width that should
+	 * have this HTMLElement if it is shrinked to fit
+	 */
+	public function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, isReplaced:Bool):Int
+	{		
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
+		return boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE COMPUTING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the right class used to compute the box model
+	 * styles
+	 * @param	isReplaced wether the HTMLElement whose styles are computed
+	 * is replaced
+	 */
+	private function getBoxStylesComputer(isReplaced:Bool):BoxStylesComputer
+	{
+		if (isReplaced == true)
+		{
+			return getReplacedBoxStylesComputer();
+		}
+		else
+		{
+			return getFlowBoxStylesComputer();
+		}
+	}
 		
 	/**
-	 * overriden to use box computer specific to 
-	 * container HTMLElement instead of the embedded one
+	 * Return box style computer for container box
 	 */
-	private function getBoxStylesComputer():BoxStylesComputer
+	private function getFlowBoxStylesComputer():BoxStylesComputer
 	{
 		var boxComputer:BoxStylesComputer;
 				
@@ -639,19 +667,20 @@ class CoreStyle
 		return boxComputer;
 	}
 	
-/**
- * TODO : re-implement
-	override private function getBoxStylesComputer():BoxStylesComputer
+	/**
+	 * Return box style computer for replaced box
+	 */
+	private function getReplacedBoxStylesComputer():BoxStylesComputer
 	{
 		var boxComputer:BoxStylesComputer;
 		
 		//get the embedded box computers based on
 		//the positioning scheme
-		if (isFloat() == true)
+		if (_computedStyle.cssFloat == CSSFloat.left || _computedStyle.cssFloat == CSSFloat.right)
 		{
 			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		else if (isPositioned() == true && isRelativePositioned() == false)
+		else if (_computedStyle.position == fixed || _computedStyle.position == absolute)
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
@@ -675,51 +704,13 @@ class CoreStyle
 		}
 		
 		return boxComputer;
-	}*/
+	}
 	
-		/**
-	 * In most cases, when the height of a HTMLElement
-	 * is 'auto', its computed height become the total height
-	 * of its in flow children, computed once all its
-	 * children have been laid out 
-	 * 
-	 * @param	childrenHeight the total height of the children once laid out
+
+	/**
+	 * TODO : what to do when the value of a style changes ?
+	 * Invalidate the HTMLElement ?
 	 */
-	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingHTMLElementData, childrenHeight:Int):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer();		
-		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
-	}
-	
-		/**
-	 * In certain cases, when the width of the HTMLElement is 'auto',
-	 * its computed value is 'shrink-to-fit' meaning that it will take either
-	 * the width of the widest line formed by its children or the width of its
-	 * container if the children overflows
-	 * 
-	 * If the width of this HTMLElement is indeed shrinked, all
-	 * its children are laid out again
-	 * 
-	 * @param	containingHTMLElementData
-	 * @param	minimumWidth the width of the widest line of children laid out
-	 * by this HTMLElement which will be the minimum width that should
-	 * have this HTMLElement if it is shrinked to fit
-	 */
-	public function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		return boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
-	}
-	
-	
-	private function getFontMetricsData():FontMetricsData
-	{
-		var fontManager:FontManager = new FontManager();
-		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
-	
-		return _fontMetrics;
-	}
-	
 	private function invalidate():Void
 	{
 		//TODO
@@ -729,16 +720,28 @@ class CoreStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 
-	private function getComputedStyle():ComputedStyleData
+	private function get_computedStyle():ComputedStyleData
 	{
 		return _computedStyle;
 	}
 	
-	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	private function set_computedStyle(value:ComputedStyleData):ComputedStyleData
 	{
 		return _computedStyle = value;
 	}
 
+	private function get_fontMetricsData():FontMetricsData
+	{
+		var fontManager:FontManager = new FontManager();
+		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
+	
+		return _fontMetrics;
+	}
+	
+	private function get_htmlElement():HTMLElement
+	{
+		return _htmlElement;
+	}
 	
 	/////////////////////////////////
 	// INVALIDATING STYLES SETTERS
