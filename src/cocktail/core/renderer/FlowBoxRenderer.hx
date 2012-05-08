@@ -22,8 +22,6 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * Lay out all the children of the HTMLElement
 	 * 
-	 * TODO : move implementation to flow box renderer
-	 * 
 	 */
 	override private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -104,7 +102,7 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//TODO : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
-			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data), Math.round(this.bounds.height));
+			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data), Math.round(this.bounds.height), isReplaced());
 		}
 		
 		//if this HTMLElement is positioned, it means that it is the first positioned ancestor
@@ -112,7 +110,7 @@ class FlowBoxRenderer extends BoxRenderer
 		positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData, viewportData);
 	}
 	
-		/**
+	/**
 	 * Actually layout all the children of the HTMLElement
 	 */
 	private function doLayoutChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
@@ -159,7 +157,7 @@ class FlowBoxRenderer extends BoxRenderer
 		return childrenFormattingContext;
 	}
 	
-		/**
+	/**
 	 * In certain cases, when the width of the HTMLElement is 'auto',
 	 * its computed value is 'shrink-to-fit' meaning that it will take either
 	 * the width of the widest line formed by its children or the width of its
@@ -175,7 +173,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{		
-		var shrinkedWidth:Int = _coreStyle.shrinkToFitIfNeeded(containingHTMLElementData, minimumWidth);
+		var shrinkedWidth:Int = _coreStyle.shrinkToFitIfNeeded(containingHTMLElementData, minimumWidth, isReplaced());
 		
 		//if the computed width of the HTMLElement was shrinked, then
 		//a new layout must happen
@@ -197,8 +195,6 @@ class FlowBoxRenderer extends BoxRenderer
 	 * Do position absolutely positioned descendant if this HTMLElement is positioned
 	 * 
 	 * TODO : shouldn't need 2 methods but needed to be overriden by BodyCoreStyle
-	 * 
-	 * TODO : move implementation to FlowBoxRenderer
 	 */
 	private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{

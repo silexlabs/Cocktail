@@ -310,7 +310,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new CoreStyle(_tagName);
+		this._coreStyle = new CoreStyle(this);
 	}
 	
 	/**
