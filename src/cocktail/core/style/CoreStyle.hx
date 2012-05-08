@@ -709,11 +709,12 @@ class CoreStyle
 
 	/**
 	 * TODO : what to do when the value of a style changes ?
-	 * Invalidate the HTMLElement ?
+	 * Invalidate the HTMLElement which in turn invalidate
+	 * ElementRenderer or set _coreStyle on ElementRenderer ?
 	 */
 	private function invalidate():Void
 	{
-		//TODO
+
 	}
 	
 	/////////////////////////////////

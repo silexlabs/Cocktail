@@ -148,6 +148,13 @@ class ElementRenderer extends Node
 	public var lineBoxes(getLineBoxes, setLineBoxes):Array<LineBox>;
 	
 	/**
+	 * determine wether the HTMLElement is currently being
+	 * laid out, in which case it won't take any subsequent
+	 * layout request into account
+	 */
+	private var _isLayingOut:Bool;
+	
+	/**
 	 * class constructor. init class attribute
 	 * @param	style the Style which created
 	 * the ElementRenderer
@@ -157,6 +164,8 @@ class ElementRenderer extends Node
 		super();
 
 		_node = node;
+		
+		_isLayingOut = false;
 		
 		_bounds = {
 			x:0.0,
@@ -267,8 +276,6 @@ class ElementRenderer extends Node
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
-	// TODO : shouldn't have to repeat this
-	// from CoreStyle
 	////////////////////////////////
 	
 	public function establishesNewFormattingContext():Bool

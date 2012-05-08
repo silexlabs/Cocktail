@@ -122,23 +122,6 @@ class FlowBoxRenderer extends BoxRenderer
 			//the layout method also lays out recursively all the children of the children HTMLElement
 			//if it is an HTMLElement
 			childElementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-		
-			
-			//TODO : obsolete, at this point Text is ElementRenderer
-			
-			//else if it is a Text node, call a method that will create a TextRenderer
-			//to render the text content of the text node, and attach the TextRenderer
-			//to the rendering tree
-			//else 
-			//{
-				/**var childrenText:Text = cast(_node.childNodes[i]);
-				var insertedText:TextRenderer = getTextRenderer(childrenText);
-				
-				//TODO IMPORTANT : bug, a new text renderer is added for each layout,
-				//should instead be created by the Text node itself
-				
-				appendChild(insertedText);*/
-			//}
 		}
 		
 		//prompt the children formatting context, to format all the children
