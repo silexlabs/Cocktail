@@ -101,7 +101,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
 	 * traversing it recursively
 	 * 
-	 * TODO : should be on ElementRenderer instead ?
+	 * TODO : should be on ElementRenderer instead for incremental layout
 	 * 
 	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
 	 * @param	addedX the added x position for the normal flow
@@ -275,23 +275,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return false;
 	}
 	
-	/**
-	 * The HTMLBodyElement is always an
-	 * offset parent
-	 */
-	override public function isOffsetParent():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * The HTMLBodyElement has no offset parent has it is
-	 * the first visual node of the document
-	 */
-	override public function getFirstPositionedAncestor():HTMLElement
-	{
-		return null;
-	}
 	
 	/**
 	 * The root of the runtime always starts a block formatting context

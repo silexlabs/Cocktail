@@ -249,10 +249,6 @@ class ElementRenderer extends Node
 		
 	}
 
-	public function getFirstPositionedAncestor():HTMLElement
-	{
-		return null;
-	}
 	
 	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
@@ -324,11 +320,6 @@ class ElementRenderer extends Node
 	public function invalidate(immediate:Bool = false):Void
 	{
 		
-	}
-
-	public function isOffsetParent():Bool
-	{
-		return isPositioned();
 	}
 	
 	/////////////////////////////////
@@ -420,7 +411,7 @@ class ElementRenderer extends Node
 	{
 		return _coreStyle;
 	}
-	
+	 
 	private function set_coreStyle(value:CoreStyle):CoreStyle
 	{
 		return _coreStyle = value;
