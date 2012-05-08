@@ -23,11 +23,63 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockBoxRenderer extends BoxRenderer
+class BlockBoxRenderer extends FlowBoxRenderer
 {
 		
 	public function new(node:Node) 
 	{
 		super(node);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the HTMLElement
+	 * establishes a new formatting context for
+	 * its children
+	 */
+	override public function establishesNewFormattingContext():Bool
+	{
+		var establishesNewFormattingContext:Bool = false;
+		
+		//floats always establishes new formatting context
+		if (isFloat() == true)
+		{
+			establishesNewFormattingContext = true;
+		}
+		//positioned element which are not relative always establishes new context
+		else if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			establishesNewFormattingContext = true;
+		}
+		else
+		{
+			switch (this.computedStyle.display)
+			{
+				//element with an inline-block display style
+				//always establishes a new context
+				case inlineBlock:
+				establishesNewFormattingContext = true; 
+				
+				//a block HTMLElement may start a new inline
+				//formatting context if all its children are inline,
+				//else its children participate in the current block formatting
+				//context
+				case block:
+					if (childrenInline() == true)
+					{
+						establishesNewFormattingContext = true;
+					}
+					
+				default:
+			}
+		}
+		
+		//in the other cases such as an inline level inline container
+		//the current formatting context is used
+		
+		return establishesNewFormattingContext;
 	}
 }
