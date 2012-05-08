@@ -2989,14 +2989,6 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 			}
 		}
 	}
-	,removeNodeChildrenTag: function(node,tagName) {
-		var tagNodes = node.getElementsByTagName(tagName);
-		var _g1 = 0, _g = tagNodes.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			tagNodes[i].parentNode = null;
-		}
-	}
 	,__class__: org.intermedia.view.DetailView
 });
 org.intermedia.view.HeaderStyle = $hxClasses["org.intermedia.view.HeaderStyle"] = function() { }
@@ -3723,7 +3715,7 @@ org.intermedia.view.Scroll2D.prototype = {
 	,verticalReleaseTween: function() {
 		this._timer.stop();
 		this._time = haxe.Timer.stamp();
-		if(this._offset.y > 0) this._verticalReleaseDeceleration = -0.003; else this._verticalReleaseDeceleration = 0.003;
+		if(this._offset.y > 0) this._verticalReleaseDeceleration = -0.02; else this._verticalReleaseDeceleration = 0.02;
 		this._decelerationTimer = new haxe.Timer(10);
 		this._decelerationTimer.run = this.onVerticalReleaseCallback.$bind(this);
 	}
@@ -3733,10 +3725,11 @@ org.intermedia.view.Scroll2D.prototype = {
 	,onVerticalReleaseCallback: function() {
 		if(this.onVerticalScroll != null) {
 			var timeDelta = (haxe.Timer.stamp() - this._time) * 1000;
-			if(timeDelta <= Math.abs(this._verticalVelocity) / 0.003) {
-				var verticalReleaseDelta = this._offset.y + this._verticalVelocity * timeDelta + this._verticalReleaseDeceleration * Math.pow(timeDelta,2) / 2 | 0;
-				this.onVerticalScroll(verticalReleaseDelta);
-			} else this._decelerationTimer.stop();
+			var releaseTime = Math.abs(this._verticalVelocity / 0.02);
+			var amplitude = this._verticalVelocity * releaseTime;
+			var verticalReleaseDelta = this._offset.y + (amplitude * (1 - Math.exp(-timeDelta / releaseTime)) | 0);
+			this.onVerticalScroll(verticalReleaseDelta);
+			if(timeDelta > 6 * releaseTime) this._decelerationTimer.stop();
 		}
 	}
 	,onVerticalTweenEnd: function(e) {
@@ -4345,10 +4338,8 @@ org.intermedia.view.MenuCellTextStyle.CELL_VERTICAL_SPACE = 7;
 org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
 org.intermedia.view.MenuListViewText.BOLD_FONT_OFFSET = 5;
 org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
-org.intermedia.view.Scroll2D.VERTICAL_TWEEN_DELTA = 50;
 org.intermedia.view.Scroll2D.TIME_DELTA = 20;
-org.intermedia.view.Scroll2D.VERTICAL_RELEASE_TIME = 200;
-org.intermedia.view.Scroll2D.VERTICAL_RELEASE_DECELERATION = 0.003;
+org.intermedia.view.Scroll2D.VERTICAL_RELEASE_DECELERATION = 0.02;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;
 org.intermedia.view.SwippableListView.LIST_QTY = 2;

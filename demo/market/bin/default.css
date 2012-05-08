@@ -40,4 +40,7 @@ text-decoration:none;*/
 -webkit-user-select:none;
 -moz-user-select:none;
 
+/* used to have native scroll in iOS5 */
+-webkit-overflow-scrolling: touch;
+
 }

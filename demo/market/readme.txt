@@ -298,6 +298,8 @@ CSS resolved issues:
 			=> style.overflowY does no matter
 		=> parent container
 			=> style.overflowY = "scroll"
+-issue with maxWidth on Alex' Android phone:
+	=> in detailView for iframes & img resize, the width is computed manually (without maxWidth)
 
 Missing useful functionalities in cocktail
 -zIndex

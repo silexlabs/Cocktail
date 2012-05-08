@@ -181,6 +181,7 @@ class DetailView extends ViewBase
 		#end
 	}
 	
+
 	/**
 	 * Removes touch events
 	 */
