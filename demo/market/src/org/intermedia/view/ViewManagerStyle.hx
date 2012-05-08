@@ -42,8 +42,10 @@ class ViewManagerStyle
 		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
 		
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "hidden";
+		//node.style.overflowY = "hidden";
+		//node.style.overflowY = "scroll";
 		//node.style.overflowY = "visible";
+		node.style.overflowY = "auto";
 	}
 	
 }

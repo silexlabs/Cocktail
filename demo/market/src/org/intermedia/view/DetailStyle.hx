@@ -29,12 +29,14 @@ class DetailStyle
 	public static function setDetailStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		node.style.position = "absolute";
+		//node.style.position = "absolute";
 		//node.style.position = "fixed";
+		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
-		node.style.marginTop = "0px";
+		//node.style.marginTop = "0px";
+		node.style.marginTop = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.marginBottom = "0px";
 		
 		node.style.paddingLeft = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
@@ -47,15 +49,18 @@ class DetailStyle
 		//node.style.width = Std.string(Lib.window.innerWidth - 20) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.height = "100px";
-		//node.style.height = "auto";
-		node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
+		//node.style.height = "100%";
+		node.style.height = "auto";
+		//node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
 		
 		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.bottom = "0px";
 		
 		node.style.overflowX = "hidden";
+		node.style.overflowY = "hidden";
 		//node.style.overflowY = "scroll";
-		node.style.overflowY = "visible";
+		//node.style.overflowY = "visible";
+		//node.style.overflowY = "auto";
 		
 		
 		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));

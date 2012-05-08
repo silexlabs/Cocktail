@@ -27,8 +27,9 @@ class SwippableListViewStyle
 	public static function setSwippableListStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		node.style.position = "absolute";
+		//node.style.position = "absolute";
 		//node.style.position = "fixed";
+		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
