@@ -279,6 +279,25 @@ CSS resolved issues:
 -"native" iOS scroll can be used on pages where height is not set and overflow=visible
 -on Android browser, there is a bug in which window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
 	=> to resolve this issue, get all iframes and resize them to match the window.innerWidth
+-to use native scroll on iOS & Android (tested on iPhone 4S & Yannick HTC Android):
+	=> no event.preventDefault(); has to be applied
+	=> for iOS, the following settings needs to be used:
+		In the following case, scroll is in fact not used. It uses only the normal webpage navigation, which in fact moves the viewport on the screen.
+		When using scroll with iOS, page can be scrolled correctly, but no release effect happens
+		=> container to be scrolled:
+			=> style.position !="fixed" &  !="absolute"
+			=> style.height = "auto";
+			=> style.overflowY does no matter
+		=> parent container
+			=> no special style needs to be set
+	=> for Android, the scrollable container needs to have the following:
+		=> keep in mind that the headers using fixed position are also scrolled with these settings
+		=> container to be scrolled:
+			=> style.position != "fixed" & "absolute"
+			=> style.height = "auto";
+			=> style.overflowY does no matter
+		=> parent container
+			=> style.overflowY = "scroll"
 
 Missing useful functionalities in cocktail
 -zIndex

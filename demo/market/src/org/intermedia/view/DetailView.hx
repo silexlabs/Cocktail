@@ -59,10 +59,10 @@ class DetailView extends ViewBase
 		
 		// initialise move handler
 		_moveHandler = new Scroll2D(ScrollType.vertical);
-		_moveHandler.onVerticalScroll = onVerticalScroll;
+		//_moveHandler.onVerticalScroll = onVerticalScroll;
 
 		// js touch events handling
-		addTouchEvents();	
+		//addTouchEvents();	
 	}
 	
 	/**
@@ -144,10 +144,12 @@ class DetailView extends ViewBase
 		_contentContainer.removeChild(_contentElement);
 		_contentElement.text = _data.content;
 		_contentContainer.appendChild(_contentElement);*/
+		node.removeChild(_contentContainer);
 		_contentContainer.innerHTML = _data.content;
 		// resize children iframe & img
 		resizeNodeChildrenTag(_contentContainer,"iframe");
-		resizeNodeChildrenTag(_contentContainer,"img");
+		resizeNodeChildrenTag(_contentContainer, "img");
+		node.appendChild(_contentContainer);
 		
 	}
 
@@ -222,6 +224,7 @@ class DetailView extends ViewBase
 	 * Used for better user experience.
 	 * Resolves also a bug of Android browser where window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
 	 * => to resolve this issue, get all iframes and resize them to match the window.innerWidth
+	 * => already tried using maxWidth & maxHeight, but creates bugs on Alex' Android Phone
 	 * 
 	 * @param	node
 	 */
@@ -234,31 +237,29 @@ class DetailView extends ViewBase
 		// for all nodes with the given tag name
 		for (i in 0...tagNodes.length)
 		{
-			// if maxWidth & maxHeight  are not yet set, set them 
-			// if tag node width does not fit in the window, resize it proportionally
-			if(tagNodes[i].style.maxWidth == "" || tagNodes[i].style.maxHeight == "" )
+			
+			originalWidth = Std.parseInt(tagNodes[i].getAttribute("width"));
+			originalHeight = Std.parseInt(tagNodes[i].getAttribute("height"));
+
+			// set width & heigth
+			if ( Std.parseInt(tagNodes[i].getAttribute("width")) > Lib.window.innerWidth )
 			{
-				// compute original size & width
-				originalWidth = tagNodes[i].clientWidth;
-				originalHeight = tagNodes[i].clientHeight;
-				// set maxWidth & maxHeight 
-				tagNodes[i].style.maxWidth = Std.string(originalWidth) + "px";
-				tagNodes[i].style.maxHeight = Std.string(originalHeight) + "px";
+				var newWidth:Int = Std.int(Constants.DETAIL_HORIZONTAL_PERCENT * Lib.window.innerWidth / 100);
+				tagNodes[i].style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+				
+				// compute & set height
+				var newHeight:Int = Std.int(originalHeight * newWidth / originalWidth);
+				tagNodes[i].style.height = Std.string(newHeight) + "px";
 			}
-			
-			// set width
-			tagNodes[i].style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT ) + "%";
-			// get original sizes & width from maxWidth & maxHeight
-			originalWidth = Std.parseInt(Std.string(tagNodes[i].style.maxWidth).substr(0,-2));
-			originalHeight = Std.parseInt(Std.string(tagNodes[i].style.maxHeight).substr(0, -2));
-			
-			// compute & set height
-			var newHeight:Float = originalHeight * tagNodes[i].clientWidth / originalWidth;
-			tagNodes[i].style.height = Std.string(Std.int(newHeight)) + "px";
-			
+			else
+			{
+				tagNodes[i].style.width = Std.parseInt(tagNodes[i].getAttribute("width")) + "px";
+				tagNodes[i].style.height = Std.parseInt(tagNodes[i].getAttribute("height")) + "px";
+			}
+		
 			// remove width & height attributes to avoid browsers incorrect behaviours
-			untyped { tagNodes[i].removeAttribute("width"); };
-			untyped { tagNodes[i].removeAttribute("height"); };
+			//untyped { tagNodes[i].removeAttribute("width"); };
+			//untyped { tagNodes[i].removeAttribute("height"); };
 		}
 	}
 
