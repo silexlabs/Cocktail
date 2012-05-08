@@ -20,10 +20,10 @@ class Scroll2D
 {
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
-	static inline var VERTICAL_TWEEN_DELTA:Int = 50;
+	//static inline var VERTICAL_TWEEN_DELTA:Int = 50;
 	static inline var TIME_DELTA:Int = 20;
-	static inline var VERTICAL_RELEASE_TIME:Int = 200;
-	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.003;
+	//static inline var VERTICAL_RELEASE_TIME:Int = 200;
+	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.02;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -416,6 +416,7 @@ class Scroll2D
 	
 	/**
 	 * move view on the vertical axis
+	 * taken from http://ariya.ofilabs.com/2011/10/flick-list-with-its-momentum-scrolling-and-deceleration.html
 	 * 
 	 * @param	e
 	 */
@@ -425,16 +426,16 @@ class Scroll2D
 		{
 			// compute elapsed time since release
 			var timeDelta:Float = (Timer.stamp() - _time) * 1000;
-			// if elapsed time is lower than wanted deceleration time
-			if(timeDelta <= Math.abs(_verticalVelocity) / VERTICAL_RELEASE_DECELERATION)
-			{
-				// compute vertical release delta, based on _offset.y, velocity and deceleration
-				var verticalReleaseDelta:Int = Std.int(_offset.y + (_verticalVelocity * timeDelta) + (_verticalReleaseDeceleration * Math.pow(timeDelta, 2) / 2));
-				// call callback
-				onVerticalScroll(verticalReleaseDelta);
-			}
-			// if elapsed time is higher than wanted deceleration time
-			else
+			var releaseTime:Float = Math.abs(_verticalVelocity / VERTICAL_RELEASE_DECELERATION);
+			var amplitude:Float = _verticalVelocity * releaseTime;
+
+			// compute vertical release delta, based on _offset.y, velocity and deceleration
+			//var verticalReleaseDelta:Int = Std.int(_offset.y + (_verticalVelocity * timeDelta) + (_verticalReleaseDeceleration * Math.pow(timeDelta, 2) / 2));
+			var verticalReleaseDelta:Int = _offset.y + Std.int(amplitude * ( 1 - Math.exp(-timeDelta / releaseTime)));
+			// call callback
+			onVerticalScroll(verticalReleaseDelta);
+
+			if (timeDelta > 6 * releaseTime)
 			{
 				// stop deceleration timer
 				_decelerationTimer.stop();
