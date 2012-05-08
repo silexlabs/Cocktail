@@ -57,8 +57,6 @@ class BlockFormattingContext extends FormattingContext
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			//only allow static or relative
-			//TODO : when static position element is found, should stop formatting as it is a formatting only done to format
-			//this particular children
 
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
