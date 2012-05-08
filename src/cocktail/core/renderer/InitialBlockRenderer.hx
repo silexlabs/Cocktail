@@ -298,8 +298,4 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
-	override private function init():Void
-	{
-		_backgroundManager = new InitialBlockBackgroundManager();
-	}
 }

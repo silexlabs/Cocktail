@@ -34,33 +34,21 @@ import haxe.Log;
 
 /**
  * Base class for box renderers. A box renderer
- * is an element displayed as a box, with margins,
- * paddings, backgrounds...
+ * is a visual element which conforms to the
+ * CSS box model. This base class deals with
+ * both replaced box (image...) and container box
+ * (block box, inline box)
  * 
  * @author Yannick DOMINGUEZ
  */
 class BoxRenderer extends ElementRenderer
 {
 	/**
-	 * a reference to the background manager in charge
-	 * of displaying the background of the element
-	 */
-	private var _backgroundManager:BackgroundManager;
-	
-	/**
 	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
-
-	
-	/**
-	 * determine wether the HTMLElement is currently being
-	 * laid out, in which case it won't take any subsequent
-	 * layout request into account
-	 */
-	private var _isLayingOut:Bool;
 	
 	/**
 	 * class constructor
@@ -68,17 +56,7 @@ class BoxRenderer extends ElementRenderer
 	public function new(node:Node) 
 	{
 		super(node);
-		this._isLayingOut = false;
-		init();
-		
 	}
-	
-	private function init():Void
-	{
-		_backgroundManager = new BackgroundManager();
-	}
-	
-	
 	
 	/**
 	 * Render and position the background color and
@@ -88,9 +66,10 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
+		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
+		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{
@@ -104,34 +83,11 @@ class BoxRenderer extends ElementRenderer
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Lay out all the children of the HTMLElement
-	 * 
-	 */
-	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{
-		
-	}
-	
-
-	
-
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE COMPUTING METHODS
-	// compute styles definition into usable values
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * This method is in charge of laying out an HTMLElement which consist in computing its styles (box model, font, text...)
+	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
 	 * into usable values and determining the bounds of its corresponding ElementRenderer in its containing block space.
 	 * 
 	 * This method is called recursively on every children of the HTMLElement if it has any to layout all of the rendering tree.
@@ -207,7 +163,6 @@ class BoxRenderer extends ElementRenderer
 		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
 		insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext, lastPositionedHTMLElementData);
 		
-		
 		//The HTMLElement has been laid out and can now be laid out again
 		//if it changes
 		this._isLayingOut = false;
@@ -216,6 +171,15 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lay out all the children of the HTMLElement
+	 * 
+	 */
+	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{
+		
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ABSOLUTE POSITIONING METHODS
@@ -249,6 +213,32 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE ABSOLUTE POSITIONING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Insert the HTMLElement's ElementRenderer in the array of absolutely positioned elements if it
+	 * in fact an absolutely positioned element
+	 */
+	private function insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
+	{
+		//don't do anything for static or relative positioned elements.
+		//Relative positioning is only an offset applied during rendering
+		if (isPositioned() == false || isRelativePositioned() == true)
+		{
+			return;
+		}
+		
+		//store as a positioned ElementRenderer.
+		//an absolutely positioned ElementRenderer is not positioned right away, it must
+		//wait for its first positioned ancestor to be laid out. The reason is that
+		//if the positioned ancestor height is 'auto', the height of the positioned
+		//ancestor is not yet determined and so this ElementRenderer can't be positioned
+		//using the bottom or right style yet. Once the first ancestor is laid out, it
+		//position all the stored positioned children
+		
+		//store the ElementRenderer to be positioned later
+		lastPositionedHTMLElementData.elements.push(this);
+		
+	}
 	
 	/**
 	 * Actually position the positioned ElementRenderer
@@ -319,32 +309,6 @@ class BoxRenderer extends ElementRenderer
 		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;
 	}
 	
-	/**
-	 * Insert the HTMLElement's ElementRenderer in the array of absolutely positioned elements if it
-	 * in fact an absolutely positioned element
-	 */
-	private function insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
-	{
-		//don't do anything for static or relative positioned elements.
-		//Relative positioning is only an offset applied during rendering
-		if (isPositioned() == false || isRelativePositioned() == true)
-		{
-			return;
-		}
-		
-		//store as a positioned ElementRenderer.
-		//an absolutely positioned ElementRenderer is not positioned right away, it must
-		//wait for its first positioned ancestor to be laid out. The reason is that
-		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this ElementRenderer can't be positioned
-		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//position all the stored positioned children
-		
-		//store the ElementRenderer to be positioned later
-		lastPositionedHTMLElementData.elements.push(this);
-		
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -385,51 +349,9 @@ class BoxRenderer extends ElementRenderer
 			}
 		}
 	}
-
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE COMPUTING METHODS
-	// compute styles definition into usable values
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Get the right containing parent dimensions for an HTMLElement
-	 * based on its position style value
-	 */
-	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
-	{
-		var containingBlockDimensions:ContainingHTMLElementData;
-		
-		switch (computedStyle.position)
-		{
-			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
-			case fixed:
-				containingBlockDimensions = {
-					width:viewportData.width,
-					height:viewportData.height,
-					isHeightAuto:viewportData.isHeightAuto,
-					isWidthAuto:viewportData.isWidthAuto };
-					
-			//for 'absolute' takes the first positioned ancestor
-			case absolute:
-				containingBlockDimensions = {
-					width:lastPositionedHTMLElementData.width,
-					height:lastPositionedHTMLElementData.height,
-					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
-					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
-				
-			//for 'static' or 'relative' HTMLElement, takes the containing HTMLElement dimensions which is the parent		
-			case cssStatic, relative:
-				containingBlockDimensions = containingHTMLElementData;
-				
-		}
-		
-		return containingBlockDimensions;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC HELPER METHODS
+	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -550,6 +472,40 @@ class BoxRenderer extends ElementRenderer
 		return this.computedStyle.display != Display.none;
 	}
 	
+	/**
+	 * Determine wether the children of this HTMLElement
+	 * are all block level or if they are all inline level
+	 * elements
+	 * 
+	 * TODO : throw exception when there is a float in the children
+	 * 
+	 * @return true if all children are inline level HTMLElements
+	 */
+	override public function childrenInline():Bool
+	{		
+		//return false for a container with no children
+		if (_node.childNodes.length == 0)
+		{
+			return false;
+		}
+		
+		//establish if the first child is inline or block
+		//all other child must be of the same type
+		var ret:Bool = isChildInline(_node.childNodes[0]);
+		
+		//loop in all children and throw an exception
+		//if one the children is not of the same type as the first
+		for (i in 0..._node.childNodes.length)
+		{
+			if (isChildInline(_node.childNodes[i]) != ret)
+			{
+				//throw "children of a block container can only be either all block or all inline";
+			}
+		}
+		
+		return ret;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -595,43 +551,39 @@ class BoxRenderer extends ElementRenderer
 		return windowData;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
-	 * Determine wether the children of this HTMLElement
-	 * are all block level or if they are all inline level
-	 * elements
-	 * 
-	 * TODO : throw exception when there is a float in the children
-	 * 
-	 * @return true if all children are inline level HTMLElements
+	 * Get the right containing parent dimensions for an HTMLElement
+	 * based on its position style value
 	 */
-	override public function childrenInline():Bool
+	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
 	{
+		var containingBlockDimensions:ContainingHTMLElementData;
 		
-		//return false for a container with no children
-		if (_node.childNodes.length == 0)
+		switch (computedStyle.position)
 		{
-			return false;
+			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
+			case fixed:
+				containingBlockDimensions = {
+					width:viewportData.width,
+					height:viewportData.height,
+					isHeightAuto:viewportData.isHeightAuto,
+					isWidthAuto:viewportData.isWidthAuto };
+					
+			//for 'absolute' takes the first positioned ancestor
+			case absolute:
+				containingBlockDimensions = {
+					width:lastPositionedHTMLElementData.width,
+					height:lastPositionedHTMLElementData.height,
+					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
+					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
+				
+			//for 'static' or 'relative' HTMLElement, takes the containing HTMLElement dimensions which is the parent		
+			case cssStatic, relative:
+				containingBlockDimensions = containingHTMLElementData;
+				
 		}
 		
-		//establish if the first child is inline or block
-		//all other child must be of the same type
-		var ret:Bool = isChildInline(_node.childNodes[0]);
-		
-		//loop in all children and throw an exception
-		//if one the children is not of the same type as the first
-		for (i in 0..._node.childNodes.length)
-		{
-			if (isChildInline(_node.childNodes[i]) != ret)
-			{
-				//throw "children of a block container can only be either all block or all inline";
-			}
-		}
-		
-		return ret;
+		return containingBlockDimensions;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

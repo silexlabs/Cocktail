@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
@@ -40,6 +41,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		super(node);
 		
+		//TODO : at this point, computed styles are false
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -91,7 +93,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
-		var ret:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
+		var backgroundManager:BackgroundManager = new BackgroundManager();
+		
+		var ret:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
 		#if (flash9 || nme)
 		for (i in 0...ret.length)
 		{
