@@ -23,7 +23,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 * Lay out all the children of the HTMLElement
 	 * 
 	 */
-	override private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		//compute all the styles of the children that will affect
 		//their layout (display, position, float, clear)
@@ -51,7 +51,7 @@ class FlowBoxRenderer extends BoxRenderer
 		
 		//get the dimensions that will be used to lay out the children
 		//of the HTMLElement (its width and height)
-		var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
+		var childrenContainingBlockData:ContainingBlockData = getContainerHTMLElementData();
 		
 		//get the computed font metrics of the parent HTMLElement. Those metrics
 		//are based on the font family and the font size used
@@ -66,18 +66,18 @@ class FlowBoxRenderer extends BoxRenderer
 		//The layout of absolutely positioned children must happen once the dimensions of this HTMLElement are 
 		//known so that children can be positioned using the 'bottom' and 'right' styles which use the dimensions
 		//of the HTMLElement as reference
-		var childLastPositionedHTMLElementData:LastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
+		var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildFirstPositionedAncestorData(firstPositionedAncestorData);
 		
 		//flow all children and store their laid out position in the created child ElementRenderers, relative to the HTMLElement
 		//which started the children formatting context
-		childrenFormattingContext = doLayoutChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+		childrenFormattingContext = doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		//in some cases
 		if (this._coreStyle.width == Dimension.cssAuto)
 		{
-			shrinkToFitIfNeeded(containingHTMLElementData, childrenFormattingContext.maxWidth, formattingContext, lastPositionedHTMLElementData, viewportData );
+			shrinkToFitIfNeeded(containingBlockData, childrenFormattingContext.maxWidth, formattingContext, firstPositionedAncestorData, viewportData );
 		}
 		
 		//if the 'height' style of this HTMLElement is 
@@ -102,18 +102,18 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//TODO : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
-			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data), Math.round(this.bounds.height), isReplaced());
+			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(this.bounds.height), isReplaced());
 		}
 		
 		//if this HTMLElement is positioned, it means that it is the first positioned ancestor
 		//for its children and it is its responsability to position them.
-		positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData, viewportData);
+		positionAbsolutelyPositionedHTMLElementsIfNeeded(childFirstPositionedAncestorData, viewportData);
 	}
 	
 	/**
 	 * Actually layout all the children of the HTMLElement
 	 */
-	private function doLayoutChildren(childrenContainingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, childLastPositionedHTMLElementData:LastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
+	private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):FormattingContext
 	{			
 		//layout all children
 		for (i in 0..._childNodes.length)
@@ -121,7 +121,7 @@ class FlowBoxRenderer extends BoxRenderer
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			//the layout method also lays out recursively all the children of the children HTMLElement
 			//if it is an HTMLElement
-			childElementRenderer.layout(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -149,14 +149,14 @@ class FlowBoxRenderer extends BoxRenderer
 	 * If the width of this HTMLElement is indeed shrinked, all
 	 * its children are laid out again
 	 * 
-	 * @param	containingHTMLElementData
+	 * @param	containingBlockData
 	 * @param	minimumWidth the width of the widest line of children laid out
 	 * by this HTMLElement which will be the minimum width that should
 	 * have this HTMLElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, formattingContext:FormattingContext, firstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{		
-		var shrinkedWidth:Int = _coreStyle.shrinkToFitIfNeeded(containingHTMLElementData, minimumWidth, isReplaced());
+		var shrinkedWidth:Int = _coreStyle.shrinkToFitIfNeeded(containingBlockData, minimumWidth, isReplaced());
 		
 		//if the computed width of the HTMLElement was shrinked, then
 		//a new layout must happen
@@ -168,9 +168,9 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//update the structures used for the layout and starts a new layout
 			var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-			var childrenContainingHTMLElementData:ContainingHTMLElementData = getContainerHTMLElementData();
-			var childLastPositionedHTMLElementData:LastPositionedHTMLElementData = getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData);
-			doLayoutChildren(childrenContainingHTMLElementData, viewportData, childLastPositionedHTMLElementData, _coreStyle.fontMetrics, childrenFormattingContext);
+			var childrenContainingBlockData:ContainingBlockData = getContainerHTMLElementData();
+			var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildFirstPositionedAncestorData(firstPositionedAncestorData);
+			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
 		}
 	}
 	
@@ -179,11 +179,11 @@ class FlowBoxRenderer extends BoxRenderer
 	 * 
 	 * TODO : shouldn't need 2 methods but needed to be overriden by BodyCoreStyle
 	 */
-	private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
 		if (isPositioned() == true)
 		{
-			doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData, viewportData);
+			doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData, viewportData);
 		}
 	}
 	
@@ -193,18 +193,18 @@ class FlowBoxRenderer extends BoxRenderer
 	 * are known so that absolutely positioned children can be positioned using the bottom
 	 * and right styles
 	 */
-	private function doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	private function doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
 		//update the data of the HTMLElement now that its width and height are known
-		childLastPositionedHTMLElementData.data = getPositionedHTMLElementData();
+		childFirstPositionedAncestorData.data = getPositionedHTMLElementData();
 		
 		//position each stored children
-		for (i in 0...childLastPositionedHTMLElementData.elements.length)
+		for (i in 0...childFirstPositionedAncestorData.elements.length)
 		{
-			var element:ElementRenderer = childLastPositionedHTMLElementData.elements[i];
+			var element:ElementRenderer = childFirstPositionedAncestorData.elements[i];
 			//position the child ElementRenderer which set its x and y positioned origin in the space of this HTMLElement's
 			//formatting context
-			element.positionElement(childLastPositionedHTMLElementData.data, viewportData);
+			element.layoutPositionedChildren(childFirstPositionedAncestorData.data, viewportData);
 		}
 	}
 }

@@ -523,24 +523,22 @@ class LayerRenderer
 			for (i in 0...rootRenderer.childNodes.length)
 			{
 				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-				
-				if (child.isDisplayed() == true)
+
+				if (child.layerRenderer == this)
 				{
-					if (child.layerRenderer == this)
-					{
-						if (child.isPositioned() == false)
+					if (child.isPositioned() == false)
+					{	
+						if (child.isReplaced() == false)
 						{	
-							if (child.isReplaced() == false)
-							{	
-								var childLineBoxes:Array<LineBox> = getLineBoxes(child);
-								for (j in 0...childLineBoxes.length)
-								{
-									ret.push(childLineBoxes[j]);
-								}
+							var childLineBoxes:Array<LineBox> = getLineBoxes(child);
+							for (j in 0...childLineBoxes.length)
+							{
+								ret.push(childLineBoxes[j]);
 							}
 						}
 					}
 				}
+				
 
 			}
 		}

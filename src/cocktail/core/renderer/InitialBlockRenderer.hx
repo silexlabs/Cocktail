@@ -77,17 +77,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	public function startLayout():Void
 	{
-		var windowData:ContainingHTMLElementData = getWindowData();
+		var windowData:ContainingBlockData = getWindowData();
 		
 		//the first positioned parent of the body is always the viewport					
-		var lastPositionedHTMLElementData:LastPositionedHTMLElementData = {
+		var firstPositionedAncestorData:FirstPositionedAncestorData = {
 			elements: new Array<ElementRenderer>(),
 			data:windowData
 		}
 		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(windowData, windowData, lastPositionedHTMLElementData, _coreStyle.fontMetrics, null);
+		layout(windowData, windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		setGlobalOrigins(this,0,0, 0,0);
@@ -250,9 +250,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * overriden as the HTMLBodyElement, being at the top of the hierarchy, always position its positioned
 	 * children
 	 */
-	override private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childLastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	override private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
-		doPositionAbsolutelyPositionedHTMLElements(childLastPositionedHTMLElementData, viewportData);	
+		doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData, viewportData);	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * return the dimension of the Window for the HTMLBodyElement
 	 */
-	override private function getPositionedHTMLElementData():ContainingHTMLElementData
+	override private function getPositionedHTMLElementData():ContainingBlockData
 	{
 		return getWindowData();
 	}

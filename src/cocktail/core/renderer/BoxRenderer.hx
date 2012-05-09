@@ -88,66 +88,51 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
-	 * into usable values and determining the bounds of its corresponding ElementRenderer in its containing block space.
+	 * into usable values and determining its bounds in the space of the containing block which started its formatting context.
 	 * 
-	 * This method is called recursively on every children of the HTMLElement if it has any to layout all of the rendering tree.
+	 * This method is called recursively on every children of the ElementRenderer if it has any to layout all of the rendering tree.
 	 * 
-	 * After this method was called, each ElementRenderer in the rendering tree is aware of its bounds relative to
-	 * its containing block which is the HTMLElement which started the formatting context used to layout the ElementRenderer
-	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement used to layout this
-	 * HTMLElement. for instance if this HTMLElement has a width style of 'auto', it will use the width
-	 * of its containing HTMLElement
-	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned HTMLElement
-	 * (a HTMLElement with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned HTMLElement ( a HTMLElement with a 'position' style
-	 * of 'absolute'), it it used as containing dimensions. It also contains a reference to each absolutely positioned ElementRenderer for whom
+	 * @param	containingBlockData the computed dimensions of the parent block of this
+	 * ElemenrRenderer.
+	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned ElementRenderer
+	 * (an ElementRenderer with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
+	 * @param	firstPositionedAncestorData the dimensions of the first positioned ancestor in the hierarchy, meaning that
+	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned ElementRenderer ( an ElementRenderer with a 'position' style
+	 * of 'absolute'), it it used as containing block dimensions. It also contains a reference to each absolutely positioned ElementRenderer for whom
 	 * it is the first positioned ancestor
-	 * @param   containingHTMLElementFontMetricsData the font metrics of the containing block parent which might be necessary to compute some styles.
-	 * For instance, style defined with a length using the 'em' value will refer to the computed font size of the containing parent
-	 * @param	formattingContext The formatting context used by the parent HTMLElement. Can be an inline or block formatting context.
-	 * @param parentElementRenderer the parent node in the rendering tree
+	 * @param   containingBlockFontMetricsData the font metrics of the containing block which might be necessary to compute some styles.
+	 * For instance, style defined with a length using the 'em' unit will refer to the computed font size of the containing block
+	 * @param	formattingContext The formatting context used by the containing block. Can be an inline or block formatting context.
 	 */
-	override public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
-		//do nothing if the HTMLElement must not be displayed, i.e, added
-		//to the DOM
-		if (isDisplayed() == false)
-		{
-			return;
-		}
-
 		//reset the computed styles, useful for instance to
 		//reset an auto height to 0 if a layout has already
 		//occured which might create bugs in the computation of
 		//font and text styles which use the computed height value
-		//
-		//TODO : re-implement
-		//initComputedStyles();
+		_coreStyle.initComputedStyles();
 		
-		//compute all the styles of a HTMLElement
-		
+		//compute all the styles of the ElementRenderer
 		_coreStyle.computeDisplayStyles();
-		_coreStyle.computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
-		_coreStyle.computeBoxModelStyles(getContainingHTMLElementData(containingHTMLElementData, viewportData,  lastPositionedHTMLElementData.data), isReplaced());
+		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
+		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
-		//layout all the children of the HTMLElement if it has any
-		layoutChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
+		//layout all the children of the ElementRenderer if it has any
+		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
-		//when all the dimensions of the htmlElement are known, compute the 
+		//when all the dimensions of the ElementRenderer are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
 		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the HTMLElement
+		//instance the transform style use the height and width of the ElementRenderer
 		//to determine the transformation center
 		_coreStyle.computeVisualEffectStyles();
 		
 		//some text and font styles needs to be re-computed now that all the dimension
-		//of the HTMLElement are known, for instance some values of the VerticalAlign style
+		//of the ElementRenderer are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
 		//
-		//TODO : shouldn't have to re-compute all of the font and text styles
-		_coreStyle.computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
+		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting
+		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 		
 		//compute the background styles which can be computed at this time,
 		//such as the background color, most of the background styles will be computed
@@ -157,13 +142,13 @@ class BoxRenderer extends ElementRenderer
 		//during rendering
 		_coreStyle.computeBackgroundStyles();
 		
-		//insert the HTMLElement in the absolutely positioned array if it is itself absolutely positioned
+		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
 		//so that it can be positioned by its first positioned ancestor once it is laid out
 		//
 		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
-		insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext, lastPositionedHTMLElementData);
+		insertAbsolutelyPositionedHTMLElementIfNecessary(firstPositionedAncestorData);
 		
-		//The HTMLElement has been laid out and can now be laid out again
+		//The ElementRenderer has been laid out and can now be laid out again
 		//if it changes
 		this._isLayingOut = false;
 	}
@@ -173,12 +158,12 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Lay out all the children of the HTMLElement
+	 * Lay out all the children of the ElementRenderer
 	 * 
 	 */
-	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -186,26 +171,27 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Position an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
-	 * using either the first positioned ancestor as reference or the viewport
+	 * layout an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
+	 * using either the first positioned ancestor dimensions or the viewport's
 	 * 
 	 * TODO : tried to move it to ContainerCoreStyle but had problem has ElementRenderer
 	 * was passed by value instead of reference
 	 * 
-	 * @param lastPositionedHTMLElementData the dimensions of the first positioned ancestor
+	 * @param firstPositionedAncestorData the dimensions of the first positioned ancestor
 	 * @param viewportData the dimensions of the viewport
 	 */
-	override public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	override public function layoutPositionedChildren(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
 		switch (_coreStyle.computedStyle.position)
 		{	
-			//positioned 'fixed' HTMLElement, use the viewport
+			//positioned 'fixed' ElementRenderer, use the viewport
 			case fixed:
-				doPositionElement(this, viewportData);
+				doLayoutPositionedChildren(this, viewportData);
 				
-			//positioned 'absolute' HTMLElement	
+			//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
 			case absolute:
-				doPositionElement(this, lastPositionedHTMLElementData);
+				doLayoutPositionedChildren(this, firstPositionedAncestorData);
+				
 			default:
 		}
 	}
@@ -215,10 +201,10 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Insert the HTMLElement's ElementRenderer in the array of absolutely positioned elements if it
+	 * Insert the ElementRenderer in the array of absolutely positioned elements if it
 	 * in fact an absolutely positioned element
 	 */
-	private function insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
+	private function insertAbsolutelyPositionedHTMLElementIfNecessary(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
 		//don't do anything for static or relative positioned elements.
 		//Relative positioning is only an offset applied during rendering
@@ -228,24 +214,23 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		//store as a positioned ElementRenderer.
-		//an absolutely positioned ElementRenderer is not positioned right away, it must
+		//an absolutely positioned ElementRenderer is not laid out right away, it must
 		//wait for its first positioned ancestor to be laid out. The reason is that
 		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this ElementRenderer can't be positioned
+		//ancestor is not yet determined and so this ElementRenderer can't be laid out
 		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//position all the stored positioned children
+		//lays out all the stored positioned children
 		
-		//store the ElementRenderer to be positioned later
-		lastPositionedHTMLElementData.elements.push(this);
-		
+		//store the ElementRenderer to be laid out later
+		firstPositionedAncestorData.elements.push(this);
 	}
 	
 	/**
-	 * Actually position the positioned ElementRenderer
+	 * Actually lay out the positioned ElementRenderer
 	 * 
 	 * TODO : should be called by FlowBoxRenderer on itzs children instead
 	 */
-	private function doPositionElement(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData):Void
+	private function doLayoutPositionedChildren(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockData):Void
 	{
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
@@ -254,13 +239,13 @@ class BoxRenderer extends ElementRenderer
 			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
 		}
 		//if no left offset is defined, then try to apply a right offset.
-		//Right offset takes the containing HTMLElement width minus the
+		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 		{
-			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingHTMLElementData.width);
+			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingBlockData.width);
 		}
-		//if both right and left are 'auto', then the HTMLElement is positioned to its
+		//if both right and left are 'auto', then the ElementRenderer is positioned to its
 		//static position, the position it would have had in the flow if it were positioned as 'static'.
 		//At this point the bounds of the ElementRenderer already matches its static position
 		
@@ -271,7 +256,7 @@ class BoxRenderer extends ElementRenderer
 		}
 		else if (elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
 		{
-			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingHTMLElementData.height);
+			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingBlockData.height);
 		}
 	}
 	
@@ -318,10 +303,12 @@ class BoxRenderer extends ElementRenderer
 	 * a re-layout (such as width, height, display...) is
 	 * changed.
 	 * 
-	 * An invalidated HTMLElement will in turn invalidate its
-	 * parent and so on until the root HTMLBodyElement is invalidated.
-	 * The root HTMLBodyElement will then layout itself, laying out
+	 * An invalidated ElementRenderer will in turn invalidate its
+	 * parent and so on until the initial ElementRenderer is invalidated.
+	 * The initial ElementRenderer will then layout itself, laying out
 	 * at the same time all its invalidated children.
+	 * 
+	 * TODO : shouldn't need to invalidate all of the rendering tree
 	 * 
 	 * A layout can be immediate or scheduled asynchronously, which
 	 * increase preformance when many style value are set in a 
@@ -334,14 +321,18 @@ class BoxRenderer extends ElementRenderer
 		if (this._isLayingOut == false || immediate == true)
 		{
 			//set the layout flag to prevent multiple
-			//layout of the HTMLElement in a row
-			//The HTMLElement will be able to be invalidated
+			//layout of the ElementRenderer in a row
+			//The ElementRenderer will be able to be invalidated
 			//again once it has been laid out
 			this._isLayingOut = true;
 			
-			//if the HTMLElement doesn't have a parent, then it
+			//if the ElementRenderer doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
+			//
+			//TODO : not possible anymore, when an HTMLElement is not
+			//attached to the DOM, it doesn't create an ElementRenderer,
+			//only the initial ElementRenderer doesn't have a parent
 			if (this._parentNode != null)
 			{
 				var parent:ElementRenderer = cast(_parentNode);
@@ -355,16 +346,16 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine if the HTMLElement is a floated
-	 * HTMLElement. A floated HTMLElement is first
+	 * Determine if the ElementRenderer is a floated
+	 * ElementRenderer. A floated ElementRenderer is first
 	 * placed in the flow then moved to the
-	 * left-most or right-most of its container.
-	 * Any subsequent HTMLElement flows
-	 * around the float until a new line 
+	 * left-most or right-most of its containing block.
+	 * Any subsequent line box flows
+	 * around its margin box until a new line 
 	 * starts below the float or if it is cleared
-	 * by another HTMLElement.
+	 * by another ElementRenderer.
 	 * 
-	 * An HTMLElement is float if he declares either
+	 * An ElementRenderer is floated if it declares either
 	 * a left or right float
 	 */
 	override public function isFloat():Bool
@@ -390,11 +381,11 @@ class BoxRenderer extends ElementRenderer
 	 * 
 	 * The 'relative', 'absolute' and'fixed'
 	 * values of the 'position' style makes
-	 * a HTMLElement 'positioned'. 
+	 * an ElementRenderer 'positioned'. 
 	 * 
 	 * The 'absolute' and 'fixed' value make
-	 * a HTMLElement an 'absolutely positioned'
-	 * HTMLElement. This kind of HTMLElement
+	 * an ElementRenderer an 'absolutely positioned'
+	 * ElementRenderer. This kind of ElementRenderer
 	 * doesn't affect the normal flow (it is
 	 * treated as if it doesn't exist). It
 	 * uses as origin its first ancestor
@@ -419,10 +410,10 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	/**
-	 * Determine wether a HTMLElement has
+	 * Determine wether an ElementRenderer has
 	 * the 'position' value 'relative'.
 	 * 
-	 * A 'relative' HTMLElement is first placed
+	 * A 'relative' ElementRenderer is first placed
 	 * normally in the flow then an offset is 
 	 * applied to it with the top, left, right
 	 * and bottom computed styles.
@@ -430,7 +421,7 @@ class BoxRenderer extends ElementRenderer
 	 * It is used as origin for any 'absolute'
 	 * or 'fixed' positioned children and 
 	 * grand-children until another positioned
-	 * HTMLElement is found
+	 * ElementRenderer is found
 	 */
 	override public function isRelativePositioned():Bool
 	{
@@ -438,11 +429,11 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	/**
-	 * An inline-level HTMLElement is one that is
-	 * laid out on a line. It will be placed
-	 * either next to the preceding HTMLElement
-	 * or on a new line if the current line
-	 * is too short to host it.
+	 * An inline-level ElementRenderer is one that is
+	 * laid out on a line. Its line boxes will be placed
+	 * either next to the preceding ElementRenderer's line boxes
+	 * or on new lines if the current line
+	 * is too short to host them.
 	 * 
 	 * Wheter an element is inline-level is determined
 	 * by its display style
@@ -462,24 +453,15 @@ class BoxRenderer extends ElementRenderer
 		
 		return ret;
 	}
-
-	/**
-	 * Determine wether the HTMLElement is added
-	 * to the document
-	 */
-	override public function isDisplayed():Bool
-	{
-		return this.computedStyle.display != Display.none;
-	}
 	
 	/**
-	 * Determine wether the children of this HTMLElement
+	 * Determine wether the children of this ElementRenderer
 	 * are all block level or if they are all inline level
 	 * elements
 	 * 
 	 * TODO : throw exception when there is a float in the children
 	 * 
-	 * @return true if all children are inline level HTMLElements
+	 * @return true if all children are inline level ElementRenderer
 	 */
 	override public function childrenInline():Bool
 	{		
@@ -511,10 +493,10 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine wether the HTMLElement introduces
+	 * Determine wether the ElementRenderer introduces
 	 * 'clearance', which as the effect of placing
-	 * the HTMLElement below any preceding floated
-	 * HTMLElement. A HTMLElement introduces clearance
+	 * the ElementRenderer below any preceding floated
+	 * ElementRenderer. An ElementRenderer introduces clearance
 	 * if he clears either left floats, right floats
 	 * or both
 	 */
@@ -539,9 +521,9 @@ class BoxRenderer extends ElementRenderer
 	 * origin is always to the top left of the window
 	 * displaying the document
 	 */
-	private function getWindowData():ContainingHTMLElementData
+	private function getWindowData():ContainingBlockData
 	{	
-		var windowData:ContainingHTMLElementData = {
+		var windowData:ContainingBlockData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
 			width:cocktail.Lib.window.innerWidth,
@@ -552,16 +534,16 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	/**
-	 * Get the right containing parent dimensions for an HTMLElement
-	 * based on its position style value
+	 * Get the right containing block dimensions for an ElementRenderer
+	 * based on its positioning scheme
 	 */
-	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
+	private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
 	{
-		var containingBlockDimensions:ContainingHTMLElementData;
+		var containingBlockDimensions:ContainingBlockData;
 		
 		switch (computedStyle.position)
 		{
-			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
+			//for 'fixed' ElementRenderer, takes the viewport (the 'window' through which the document is viewed)
 			case fixed:
 				containingBlockDimensions = {
 					width:viewportData.width,
@@ -572,14 +554,14 @@ class BoxRenderer extends ElementRenderer
 			//for 'absolute' takes the first positioned ancestor
 			case absolute:
 				containingBlockDimensions = {
-					width:lastPositionedHTMLElementData.width,
-					height:lastPositionedHTMLElementData.height,
-					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
-					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
+					width:firstPositionedAncestorData.width,
+					height:firstPositionedAncestorData.height,
+					isHeightAuto:firstPositionedAncestorData.isHeightAuto,
+					isWidthAuto:firstPositionedAncestorData.isWidthAuto};
 				
-			//for 'static' or 'relative' HTMLElement, takes the containing HTMLElement dimensions which is the parent		
+			//for 'static' or 'relative' ElementRenderer, takes the containing ElementRenderer dimensions which is the parent		
 			case cssStatic, relative:
-				containingBlockDimensions = containingHTMLElementData;
+				containingBlockDimensions = containingBlockData;
 				
 		}
 		
@@ -592,9 +574,9 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Return the dimensions data
-	 * of the HTMLElement
+	 * of the ElementRenderer
 	 */
-	private function getContainerHTMLElementData():ContainingHTMLElementData
+	private function getContainerHTMLElementData():ContainingBlockData
 	{
 		return {
 			width:this.computedStyle.width,
@@ -609,7 +591,7 @@ class BoxRenderer extends ElementRenderer
 	 * the first positioned ancestor for its children.
 	 * Meant to be overriden
 	 */
-	private function getPositionedHTMLElementData():ContainingHTMLElementData
+	private function getPositionedHTMLElementData():ContainingBlockData
 	{
 		return getContainerHTMLElementData();
 	}
@@ -702,23 +684,23 @@ class BoxRenderer extends ElementRenderer
 	 * children. If this HTMLElement is positioned, a new
 	 * structure is created, else the current one is used
 	 */
-	private function getChildLastPositionedHTMLElementData(lastPositionedHTMLElementData:LastPositionedHTMLElementData):LastPositionedHTMLElementData
+	private function getChildFirstPositionedAncestorData(firstPositionedAncestorData:FirstPositionedAncestorData):FirstPositionedAncestorData
 	{
-		var childLastPositionedHTMLElementData:LastPositionedHTMLElementData;
+		var childFirstPositionedAncestorData:FirstPositionedAncestorData;
 		
 		if (isPositioned() == true)
 		{
-			childLastPositionedHTMLElementData = {
+			childFirstPositionedAncestorData = {
 				data: getContainerHTMLElementData(),
 				elements: new Array<ElementRenderer>()
 			}
 		}
 		else
 		{
-			childLastPositionedHTMLElementData = lastPositionedHTMLElementData;
+			childFirstPositionedAncestorData = firstPositionedAncestorData;
 		}
 		
-		return childLastPositionedHTMLElementData;
+		return childFirstPositionedAncestorData;
 	}
 	
 	private function getComputedStyle():ComputedStyleData
