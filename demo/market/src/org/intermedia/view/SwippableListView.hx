@@ -177,11 +177,6 @@ class SwippableListView extends ListViewBase
 	 */
 	override private function updateView():Void
 	{
-		_waitingData = false;
-
-		// set the time
-		//_time = Timer.stamp();
-
 		// set the data on the correct list, depending on the list id
 		for (list in _listViews)
 		{
@@ -234,12 +229,7 @@ class SwippableListView extends ListViewBase
 				node.appendChild(_listsContainer);
 			}
 			scrollToCurrentList();
-			
-
 		}
-		
-
-
 	}
 	
 	/**
@@ -330,7 +320,6 @@ class SwippableListView extends ListViewBase
 				onHorizontalMove(horizontalRatio);
 			}
 		}
-		
     }
 	
 	/**

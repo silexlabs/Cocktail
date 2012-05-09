@@ -86,9 +86,9 @@ class DetailView extends ViewBase
 		node.appendChild(_authorContainer);
 		
 		// add thumbnail
-		/*_thumbnail = cast Lib.document.createElement("img");
+		_thumbnail = cast Lib.document.createElement("img");
 		DetailStyle.setThumbnail(_thumbnail);
-		node.appendChild(_thumbnail);*/
+		node.appendChild(_thumbnail);
 		
 		// add description
 		//_descriptionContainer = Lib.document.createElement("div");
@@ -229,39 +229,52 @@ class DetailView extends ViewBase
 	 * 
 	 * @param	node
 	 */
-	private function resizeNodeChildrenTag(node:HtmlDom, tagName:String):Void
+	private function resizeNodeChildrenTag(nodeToResize:HtmlDom, tagName:String):Void
 	{
-		var tagNodes:HtmlCollection<HtmlDom> = node.getElementsByTagName(tagName);
-		var originalWidth:Int;
-		var originalHeight:Int;
+		var tagNodes:HtmlCollection<HtmlDom> = nodeToResize.getElementsByTagName(tagName);
 		
 		// for all nodes with the given tag name
 		for (i in 0...tagNodes.length)
 		{
-			
-			originalWidth = Std.parseInt(tagNodes[i].getAttribute("width"));
-			originalHeight = Std.parseInt(tagNodes[i].getAttribute("height"));
-
-			// set width & heigth
-			if ( Std.parseInt(tagNodes[i].getAttribute("width")) > Lib.window.innerWidth )
-			{
-				var newWidth:Int = Std.int(Constants.DETAIL_HORIZONTAL_PERCENT * Lib.window.innerWidth / 100);
-				tagNodes[i].style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
-				
-				// compute & set height
-				var newHeight:Int = Std.int(originalHeight * newWidth / originalWidth);
-				tagNodes[i].style.height = Std.string(newHeight) + "px";
-			}
-			else
-			{
-				tagNodes[i].style.width = Std.parseInt(tagNodes[i].getAttribute("width")) + "px";
-				tagNodes[i].style.height = Std.parseInt(tagNodes[i].getAttribute("height")) + "px";
-			}
-		
-			// remove width & height attributes to avoid browsers incorrect behaviours
-			//untyped { tagNodes[i].removeAttribute("width"); };
-			//untyped { tagNodes[i].removeAttribute("height"); };
+			resizeNode(tagNodes[i]);
 		}
+	}
+
+	/**
+	 * Resizes the node
+	 * Used for better user experience.
+	 * Resolves also a bug of Android browser where window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
+	 * => to resolve this issue, get all iframes and resize them to match the window.innerWidth
+	 * => already tried using maxWidth & maxHeight, but creates bugs on Alex' Android Phone
+	 * 
+	 * @param	node
+	 */
+	private function resizeNode(nodeToResize:HtmlDom):Void
+	{
+		var originalWidth:Int = Std.parseInt(nodeToResize.getAttribute("width"));
+		var originalHeight:Int = Std.parseInt(nodeToResize.getAttribute("height"));
+		
+		// set width & heigth
+		if ( Std.parseInt(nodeToResize.getAttribute("width")) > Lib.window.innerWidth )
+		{
+			var newWidth:Int = Std.int(Constants.DETAIL_HORIZONTAL_PERCENT * Lib.window.innerWidth / 100);
+			nodeToResize.style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+			
+			// compute & set height
+			var newHeight:Int = Std.int(originalHeight * newWidth / originalWidth);
+			nodeToResize.style.height = Std.string(newHeight) + "px";
+		}
+		else
+		{
+			nodeToResize.style.width = Std.parseInt(nodeToResize.getAttribute("width")) + "px";
+			nodeToResize.style.height = Std.parseInt(nodeToResize.getAttribute("height")) + "px";
+		}
+	
+		// remove width & height attributes to avoid browsers incorrect behaviours
+		//untyped { tagNodes[i].removeAttribute("width"); };
+		//untyped { tagNodes[i].removeAttribute("height"); };
+		
+		//return nodeToResize;
 	}
 
 }

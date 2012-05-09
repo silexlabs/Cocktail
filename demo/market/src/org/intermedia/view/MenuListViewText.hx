@@ -270,13 +270,14 @@ class MenuListViewText extends ListViewBase
 		// check is done so that index is always between 0 an 2
 		if (ratio > 0)
 		{
-			computeMenuItemsLeftTarget(Std.int(Math.max(_index - 1, 0)));
+			computeMenuItemsLeftTarget(Std.int(Math.max(_index-1, 0)));
 		}
 		else if (ratio < 0)
 		{
-			computeMenuItemsLeftTarget(Std.int(Math.min(_index + 1, 2)));
+			computeMenuItemsLeftTarget(Std.int(Math.min(_index+1, 2)));
 		}
 		
+		// move menu items depending on the ratio
 		menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
 		menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
 		menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
@@ -290,7 +291,9 @@ class MenuListViewText extends ListViewBase
     public function horizontalTweenEnd(newIndex:Int):Void
 	{
 		index = newIndex;
-		computeMenuItemsLeftPos();
+		//computeMenuItemsLeftPos();
+		// styles are refreshed here to resolve bugs where menu items are not correctly positioned when a data loading is occuring
+		refreshStyles();
 	}
 	
 	/**

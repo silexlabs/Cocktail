@@ -267,7 +267,8 @@ class Scroll2D
 		//node.scrollLeft = initialScrollPosition.x;
 		
 		// prevent default scroll behaviour
-		event.preventDefault();
+		// removed to have top rebound effect
+		//event.preventDefault();
 		
 		// call vertical scroll callback with correct y position
 		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
