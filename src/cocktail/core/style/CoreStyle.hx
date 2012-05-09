@@ -428,9 +428,18 @@ class CoreStyle
 		{
 			case "html", "adress",
 			"dd", "div", "dl", "dt", "fieldset",
-			"form", "frame", "frameset", "noframes", "ol", "ul",
+			"form", "frame", "frameset", "noframes", "ol",
 			"center", "dir", "hr", "menu" :
 				_display = Display.block;
+				
+			//TODO : should be replaced by list-item once implemented	
+			case "li" :
+				_display = Display.block;
+				
+			case "ul":
+				_display = Display.block;
+				_marginTop = _marginBottom = Margin.length(em(1.12));
+				_marginLeft = Margin.length(px(40));
 				
 			case "head" :	
 				_display = Display.none;
