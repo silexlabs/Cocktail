@@ -3637,6 +3637,7 @@ org.intermedia.view.Scroll2D.prototype = {
 	,_verticalVelocityArray: null
 	,_verticalVelocity: null
 	,_previousY: null
+	,_yDelta: null
 	,_verticalReleaseDeceleration: null
 	,init: function() {
 		this._initialPosition = { x : 0, y : 0};
@@ -3644,6 +3645,11 @@ org.intermedia.view.Scroll2D.prototype = {
 		this._scrollPosition = { x : 0, y : 0};
 		this._direction = org.intermedia.view.Direction.notYetSet;
 		this._verticalVelocityArray = new Array();
+		this._yDelta = 0;
+		this._time = haxe.Timer.stamp() * 1000;
+		this._timer = new haxe.Timer(20);
+		this._verticalVelocity = 0;
+		this._previousY = 0;
 	}
 	,touchHandler: function(event) {
 		switch(event.type) {
@@ -3667,10 +3673,6 @@ org.intermedia.view.Scroll2D.prototype = {
 		this._initialPosition.x = event.touches[0].pageX;
 		this._initialPosition.y = event.touches[0].pageY;
 		if(this._timer != null) this._timer.stop();
-		this._timer = new haxe.Timer(20);
-		this._verticalVelocity = 0;
-		this._previousY = 0;
-		this._timer.run = this.computeVelocity.$bind(this);
 		if(this._scrollType == org.intermedia.view.ScrollType.horizontal) this._direction = org.intermedia.view.Direction.horizontal; else if(this._scrollType == org.intermedia.view.ScrollType.vertical) this._direction = org.intermedia.view.Direction.vertical; else this._direction = org.intermedia.view.Direction.notYetSet;
 	}
 	,onMoveCallback: function(event) {
@@ -3694,6 +3696,9 @@ org.intermedia.view.Scroll2D.prototype = {
 		this.onHorizontalScrollCallback(this._offset.x);
 	}
 	,onVerticalMoveCallback: function(event) {
+		var timeDelta = haxe.Timer.stamp() * 1000 - this._time;
+		this._time = haxe.Timer.stamp() * 1000;
+		this.computeVelocity2(timeDelta);
 		event.preventDefault();
 		this._scrollPosition = { x : this.initialScrollPosition.x, y : this.initialScrollPosition.y - this._offset.y};
 		this.onVerticalScrollCallback(this._offset.y);
@@ -3720,11 +3725,10 @@ org.intermedia.view.Scroll2D.prototype = {
 		if(this.onHorizontalTweenEnd != null) this.onHorizontalTweenEnd(e | 0);
 	}
 	,verticalReleaseTween: function() {
-		this._timer.stop();
-		this._time = haxe.Timer.stamp();
-		if(this._offset.y > 0) this._verticalReleaseDeceleration = -0.02; else this._verticalReleaseDeceleration = 0.02;
+		this._time = haxe.Timer.stamp() * 1000;
+		if(this._offset.y > 0) this._verticalReleaseDeceleration = -0.01; else this._verticalReleaseDeceleration = 0.01;
 		this.computeAverageVelocity();
-		this._decelerationTimer = new haxe.Timer(20);
+		this._decelerationTimer = new haxe.Timer(10);
 		this._decelerationTimer.run = this.onVerticalReleaseCallback.$bind(this);
 	}
 	,onVerticalScrollCallback: function(e) {
@@ -3732,8 +3736,8 @@ org.intermedia.view.Scroll2D.prototype = {
 	}
 	,onVerticalReleaseCallback: function() {
 		if(this.onVerticalScroll != null) {
-			var timeDelta = (haxe.Timer.stamp() - this._time) * 1000;
-			var releaseTime = Math.abs(this._verticalVelocity / 0.02);
+			var timeDelta = haxe.Timer.stamp() * 1000 - this._time;
+			var releaseTime = Math.abs(this._verticalVelocity / 0.01);
 			var amplitude = this._verticalVelocity * releaseTime;
 			var verticalReleaseDelta = this._offset.y + (amplitude * (1 - Math.exp(-timeDelta / releaseTime)) | 0);
 			this.onVerticalScroll(verticalReleaseDelta);
@@ -3744,6 +3748,20 @@ org.intermedia.view.Scroll2D.prototype = {
 	}
 	,computeVelocity: function() {
 		this._verticalVelocity = this.deriv(this._previousY,this._offset.y);
+		this._previousY = this._offset.y;
+		if(this._verticalVelocityArray.length < 5) {
+			var _g = 0;
+			while(_g < 5) {
+				var i = _g++;
+				this._verticalVelocityArray.push(this._verticalVelocity);
+			}
+		} else {
+			this._verticalVelocityArray.unshift(this._verticalVelocity);
+			this._verticalVelocityArray.pop();
+		}
+	}
+	,computeVelocity2: function(time) {
+		this._verticalVelocity = (this._offset.y - this._previousY) / time;
 		this._previousY = this._offset.y;
 		if(this._verticalVelocityArray.length < 5) {
 			var _g = 0;
@@ -3934,13 +3952,13 @@ org.intermedia.view.SwippableListView.prototype = $extend(org.intermedia.view.Li
 	}
 	,onHorizontalUpCallback: function(event,xOffset) {
 		event.preventDefault();
-		if(xOffset < -js.Lib.window.innerHeight * 0.1) {
+		if(xOffset < -js.Lib.window.innerHeight * 0.06) {
 			if(this.getIndex() < this._listViews.length - 1) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 + 1);
 				_g1;
 			}
-		} else if(xOffset > js.Lib.window.innerHeight * 0.1) {
+		} else if(xOffset > js.Lib.window.innerHeight * 0.06) {
 			if(this.getIndex() > 0) {
 				var _g = this, _g1 = _g.getIndex();
 				_g.setIndex(_g1 - 1);
@@ -4184,6 +4202,7 @@ org.intermedia.view.ViewManagerStyle.setBodyStyle = function(node) {
 	node.style.paddingTop = "0px";
 	node.style.paddingBottom = "0px";
 	node.style.width = "100%";
+	node.style.height = "auto";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "auto";
 }
@@ -4347,7 +4366,7 @@ org.intermedia.view.Constants.HEADER_WITH_SHADOW_HEIGHT = 43;
 org.intermedia.view.Constants.MENU_HEIGHT = 35;
 org.intermedia.view.Constants.MENU_LATERAL_OFFSET = 30;
 org.intermedia.view.Constants.MENU_FONT_COLOR = "#AAAAAA";
-org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.1;
+org.intermedia.view.Constants.SWIP_HORIZONTAL_WIDTH_RATIO = 0.06;
 org.intermedia.view.Constants.SWIP_HORIZONTAL_TWEEN_DELAY = 150;
 org.intermedia.view.Constants.LIST_TOP = 78;
 org.intermedia.view.Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN = 10;
@@ -4368,7 +4387,7 @@ org.intermedia.view.MenuCellTextStyle.CELL_HORIZONTAL_PADDING = 5;
 org.intermedia.view.MenuListViewText.BOLD_FONT_OFFSET = 5;
 org.intermedia.view.Scroll2D.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.Scroll2D.TIME_DELTA = 20;
-org.intermedia.view.Scroll2D.VERTICAL_RELEASE_DECELERATION = 0.02;
+org.intermedia.view.Scroll2D.VERTICAL_RELEASE_DECELERATION = 0.01;
 org.intermedia.view.Scroll2D.VERTICAL_VELOCITY_MESURES = 5;
 org.intermedia.view.SwippableListView.DIRECTION_PIXEL_MINIMUM = 5;
 org.intermedia.view.SwippableListView.HOMEPAGE_ITEM_PER_LIST = 3;

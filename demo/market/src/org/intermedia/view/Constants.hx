@@ -49,7 +49,7 @@ class Constants
 	public static inline var MENU_FONT_COLOR:String = '#AAAAAA';
 	
 	// set swippable view constants
-	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.1;	
+	public static inline var SWIP_HORIZONTAL_WIDTH_RATIO:Float = 0.06;	
 	public static inline var SWIP_HORIZONTAL_TWEEN_DELAY:Int = 150;	
 	
 	// set lists constants

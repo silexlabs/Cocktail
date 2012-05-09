@@ -24,7 +24,7 @@ class Scroll2D
 	//static inline var VERTICAL_TWEEN_DELTA:Int = 50;
 	static inline var TIME_DELTA:Int = 20;
 	//static inline var VERTICAL_RELEASE_TIME:Int = 200;
-	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.02;
+	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.01;
 	static inline var VERTICAL_VELOCITY_MESURES:Int = 5;
 	
 	// touch offset
@@ -78,6 +78,7 @@ class Scroll2D
 	private var _verticalVelocityArray:Array<Float>;
 	private var _verticalVelocity:Float;
 	private var _previousY:Int;
+	private var _yDelta:Int;
 		
 	private var _verticalReleaseDeceleration:Float;
 
@@ -100,6 +101,13 @@ class Scroll2D
 		_scrollPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
 		_verticalVelocityArray = new Array<Float>();
+		_yDelta = 0;
+		_time = Timer.stamp() * 1000;
+
+		// init timer & attributes used for acceleration computation
+		_timer = new Timer(TIME_DELTA);
+		_verticalVelocity = 0;
+		_previousY = 0;
 	}
 	
 	
@@ -165,12 +173,9 @@ class Scroll2D
 		
 		// stop timer if exists, done to avoid bug where swippableView is not scrollable anymore
 		if (_timer != null) _timer.stop();
-		// init timer & attributes used for acceleration computation
-		_timer = new Timer(TIME_DELTA);
-		_verticalVelocity = 0;
-		_previousY = 0;
 		// launch timer used for computing velocity and acceleration
-		_timer.run = computeVelocity;
+		//_timer.run = computeVelocity;
+		
 		
 		// set _direction
 		if (_scrollType == ScrollType.horizontal)
@@ -267,12 +272,22 @@ class Scroll2D
 	 */
 	private function onVerticalMoveCallback(event:Dynamic):Void
 	{
+		var timeDelta:Float = (Timer.stamp() * 1000) - _time;
+		_time = Timer.stamp() * 1000;
+		//_yDelta = _yDelta - Std.int(event.touches[0].pageY);
+		
+		computeVelocity2(timeDelta);
+		
 		// block left scroll position
 		//node.scrollLeft = initialScrollPosition.x;
 		
 		// prevent default scroll behaviour
 		// can be removed to have top rebound effect, but conflicts with native scroll
 		event.preventDefault();
+		
+		// compute velocity
+		//_verticalVelocity = _yDelta / timeDelta;
+		//trace(_yDelta + ", " + timeDelta + ", " + _verticalVelocity);
 		
 		// call vertical scroll callback with correct y position
 		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
@@ -386,9 +401,9 @@ class Scroll2D
 	private function verticalReleaseTween():Void
 	{
 		// stop timer to freeze computed values
-		_timer.stop();
+		//_timer.stop();
 		
-		_time = Timer.stamp();
+		_time = Timer.stamp() * 1000;
 		
 		// if scrolling direction is down
 		if (_offset.y > 0 )
@@ -404,7 +419,7 @@ class Scroll2D
 		computeAverageVelocity();
 		
 		// scroll release automation
-		_decelerationTimer = new Timer(20);
+		_decelerationTimer = new Timer(10);
 		_decelerationTimer.run = onVerticalReleaseCallback;
 		//trace(_verticalVelocity);
 		
@@ -434,7 +449,7 @@ class Scroll2D
 		if (onVerticalScroll != null)
 		{
 			// compute elapsed time since release
-			var timeDelta:Float = (Timer.stamp() - _time) * 1000;
+			var timeDelta:Float = (Timer.stamp() * 1000) - _time;
 			var releaseTime:Float = Math.abs(_verticalVelocity / VERTICAL_RELEASE_DECELERATION);
 			var amplitude:Float = _verticalVelocity * releaseTime;
 
@@ -509,6 +524,34 @@ class Scroll2D
 	}
 	
 	/**
+	 * Computes instantaneous velocity
+	 * 
+	 * @return
+	 */
+	private function computeVelocity2(time:Float):Void
+	{
+		//_verticalVelocity = deriv(_previousY, _offset.y);
+		_verticalVelocity = (_offset.y - _previousY)/time;
+		_previousY = _offset.y;
+		
+		// store the newly computed velocity in the velocity array
+		if(_verticalVelocityArray.length < VERTICAL_VELOCITY_MESURES)
+		{
+			// if the array is not already filed, fill it with initial velocity
+			for (i in 0...VERTICAL_VELOCITY_MESURES)
+			{
+				_verticalVelocityArray.push(_verticalVelocity);
+			}
+		}
+		else
+		{
+			// add latest velocity and remove oldest from _verticalVelocityArray
+			_verticalVelocityArray.unshift(_verticalVelocity);
+			_verticalVelocityArray.pop();
+		}
+	}
+	
+	/**
 	 * Derivates 2 values based on time
 	 * 
 	 * @param	a
@@ -520,20 +563,16 @@ class Scroll2D
 		return (b - a) / TIME_DELTA;
 	}
 	
+	/**
+	 * compute AverageVelocity
+	 */
 	private function computeAverageVelocity():Void
 	{
 		_verticalVelocity = 0;
 		var sum:Float = 0;
-		//var U0:Float = 0.3;
-		//var Un:Float = U0;
-		//var n:Int = _verticalVelocityArray.length;
-		//var r:Float = (1 - (1/u0)) / (2 / ((n-1) * n));
-		//var r:Float = 0.05;
 		
 		for (i in 0..._verticalVelocityArray.length)
 		{
-			//_verticalVelocity += _verticalVelocityArray[i] * Un;
-			//Un = U0 - 0.05;
 			sum += _verticalVelocityArray[i] * (VERTICAL_VELOCITY_MESURES - i);
 		}
 		_verticalVelocity = sum / (VERTICAL_VELOCITY_MESURES * (VERTICAL_VELOCITY_MESURES + 1) / 2);
