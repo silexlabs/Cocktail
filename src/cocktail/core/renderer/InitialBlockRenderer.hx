@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.background.BackgroundManager;
 import cocktail.core.background.InitialBlockBackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
@@ -46,18 +47,42 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		_nativeElements = new Array<NativeElement>();
 		
-		//TODO : re-implement when coreStyle is set
-		/**
+
+		
+		//in Flash, the Stage is always defined as no scale as the transformations
+		//will be managed by Cocktail
+		
+		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+	}
+	
+	/**
+	 * Render and position the background color and
+	 * image of the element using runtime specific
+	 * API and return an array of NativeElement from
+	 * it
+	 */
+	override public function render():Array<NativeElement>
+	{
+		var backgroundManager:BackgroundManager = new BackgroundManager();
+		
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
 		
 		_bounds.width = width;
 		_bounds.height = height;
-		*/
 		
-		//in Flash, the Stage is always defined as no scale as the transformations
-		//will be managed by Cocktail
-		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		//TODO : should only pass dimensions instead of bounds
+		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
+		
+		for (i in 0...backgrounds.length)
+		{
+			#if (flash9 || nme)
+			backgrounds[i].x = globalBounds.x;
+			backgrounds[i].y = globalBounds.y;
+			#end
+		}
+	
+		return backgrounds;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -86,10 +111,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override public function invalidate(immediate:Bool = false):Void
 	{
+	
 		//don't call if the body has already scheduled a layout, unless
 		//an immediate layout is required
 		if (this._isLayingOut == false || immediate == true)
 		{
+				trace("in");
 			this._isLayingOut = true;
 			doInvalidate(immediate);
 		}

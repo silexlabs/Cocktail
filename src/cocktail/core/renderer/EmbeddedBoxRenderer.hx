@@ -21,6 +21,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.font.FontData;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -42,8 +43,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		super(node);
 		
 		//TODO : at this point, computed styles are false
-		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +51,13 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 
+	override private function get_bounds():RectangleData
+	{
+		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return _bounds;
+	}
+	
 	override public function isReplaced():Bool
 	{
 		return true;

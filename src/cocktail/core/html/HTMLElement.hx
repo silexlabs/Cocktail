@@ -397,7 +397,6 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_elementRenderer != null)
 		{
-		
 			_elementRenderer.invalidate();
 		}
 	}
