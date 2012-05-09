@@ -10,6 +10,7 @@ package cocktail.core.mouse;
 import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.mouse.MouseData;
+import cocktail.core.NativeElement;
 
 /**
  * This is the base class for mouse cursor abstration.
@@ -51,8 +52,8 @@ class AbstractMouseCursor
 			//if the cursor is a bitmap, calls
 			//a dedicated method with the imageHTMLElement
 			//to be used as cursor
-			case custom(imageHTMLElement, hotSpot):
-				setBitmapCursor(imageHTMLElement, hotSpot);
+			case custom(nativeElement, hotSpot):
+				setBitmapCursor(nativeElement, hotSpot);
 			
 			//let the browser manage the cursor	
 			case cssAuto:
@@ -86,7 +87,7 @@ class AbstractMouseCursor
 	 * Set a bitmap as mouse cursor using native API. The hotSpot is the registration
 	 * point of the mouse cursor
 	 */
-	private function setBitmapCursor(imageHTMLElement:HTMLImageElement, hotSpot:PointData):Void
+	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void
 	{
 		//abstract
 	}

@@ -1,0 +1,4 @@
+-js text.js
+-cp ../../src/
+-cp ../../lib/
+-main org.text.demo.Text

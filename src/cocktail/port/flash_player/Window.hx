@@ -8,9 +8,11 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.dom.Document;
+import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.window.AbstractWindow;
 import cocktail.core.event.Event;
 import flash.Lib;
+import flash.net.URLRequest;
 
 /**
  * This is the implementation of the 
@@ -26,6 +28,18 @@ class Window extends AbstractWindow
 	public function new(document:Document = null) 
 	{
 		super(document);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Open a new window using flash API
+	 */
+	override public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
+	{
+		flash.Lib.getURL(new URLRequest(url), name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

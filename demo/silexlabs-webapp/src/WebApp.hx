@@ -14,20 +14,8 @@ package;
  * @date	2001-12-16
  */
 
-import cocktail.domElement.BodyDOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.geom.GeomData;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.DOMElementData;
-
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.nativeElement.NativeElementManager;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+ import js.Lib;
+ import js.Dom;
 
 // list specific
 import components.lists.ListBase;
@@ -38,12 +26,13 @@ import components.lists.ListBaseUtils;
 import Utils;
 
 
+
 class WebApp 
 {
 	
 	// the main container which will be attached to the body of the publication
-	private var _body:BodyDOMElement;
-	private var _mainContainer:ContainerDOMElement;
+	private var _body:Body;
+	private var _mainContainer:HtmlDom;
 	
 	public static function main()
 	{
@@ -53,9 +42,9 @@ class WebApp
 	/**
 	 * Contructor
 	 */
-	public function new() 
+	public function new()
 	{
-		_body = new BodyDOMElement();
+		_body = Lib.document.body;
 		WebAppStyle.getBodyStyle(_body);
 		drawInterface();
 	}
@@ -70,9 +59,26 @@ class WebApp
 		
 		// initialize container
 		_mainContainer = applicationStructure.pagesContainer;
-		WebAppStyle.getDefaultStyle(_mainContainer);
+		//WebAppStyle.getDefaultStyle(_mainContainer);
+		WebAppStyle.getMainContainerStyle(_mainContainer);
 		
 		// attach main container to document root
-		_body.addChild(_mainContainer);
+		_body.appendChild(_mainContainer);
+
+		//_body.onKeyDown = onKeyDownBody;
+		//_body.onKeyDown = _mainContainer.children[0].child.children[1].onListKeyDown;
+		
 	}
+	
+	/*private function onKeyDownBody(key:KeyEventData):Void
+	{
+		trace("onKeyDownBody: " + key.value);
+		//trace(key.value);
+		if (key.value == KeyboardKeyValue.right || key.value == KeyboardKeyValue.VK_RIGHT || key.value == KeyboardKeyValue.left || key.value == KeyboardKeyValue.VK_LEFT)
+		{
+			// dispatch menu list item change
+			_mainContainer.children[0].child.children[1].onListKeyDown(key);
+		}
+	}*/
+
 }

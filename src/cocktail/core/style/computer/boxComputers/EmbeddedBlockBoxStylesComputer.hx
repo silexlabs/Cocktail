@@ -106,7 +106,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(computedHeight * embeddedHTMLElement.intrinsicRatio);
+				ret = Math.round(computedHeight / embeddedHTMLElement.intrinsicRatio);
 			}
 			//else use the intrinsic width if defined
 			else if (embeddedHTMLElement.intrinsicWidth != null)
@@ -143,11 +143,13 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			if (embeddedHTMLElement.intrinsicHeight != null)
 			{
 				ret = embeddedHTMLElement.intrinsicHeight;
+				
 			}
 		}
 		//else if 'width' is not 'auto'
 		else
 		{
+			
 			//compute the used value of 'width'
 			var computedWidth:Int = getComputedDimension(style.width, containingHTMLElementData.width, containingHTMLElementData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			setComputedWidth(style, computedWidth);
@@ -155,7 +157,8 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = Math.round(style.computedStyle.width / embeddedHTMLElement.intrinsicRatio);
+				ret = Math.round(style.computedStyle.width * embeddedHTMLElement.intrinsicRatio);
+				
 			}
 			else
 			{
