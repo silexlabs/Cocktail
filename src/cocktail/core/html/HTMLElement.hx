@@ -458,7 +458,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 * Overriden to make the tag name case-insensitive in an
 	 * HTML document
 	 */
-	override public function getElementsByTagName(tagName:String):Array<Node>
+	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
 		return super.getElementsByTagName(tagName.toLowerCase());
 	}
@@ -744,6 +744,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function get_id():String
 	{
+		trace("get id");
 		return getAttribute(HTML_ID_ATTRIBUTE);
 	}
 	
