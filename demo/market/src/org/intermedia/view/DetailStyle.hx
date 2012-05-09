@@ -75,14 +75,15 @@ class DetailStyle
 	 */
 	public static function setThumbnail(node:HtmlDom):Void
 	{
-		var imageMaxWidth:Int = 250;
+		var IMAGE_MAX_HEIGHT:Int = 120;
 		
 		node.style.display = "block";
 		
-			node.style.maxWidth = Std.string(imageMaxWidth) + "px";
-			node.style.maxHeight = "50%";
-			node.style.width = "80%";	
+		node.style.marginLeft = "auto";
+		node.style.marginRight = "auto";
 		
+		node.style.maxWidth = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+		node.style.maxHeight = Std.string(IMAGE_MAX_HEIGHT) + "px";
 	}
 	
 	/**

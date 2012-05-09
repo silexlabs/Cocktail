@@ -97,6 +97,9 @@ class ViewManager
 		// attach swippable view to body
 		_body.appendChild(_swippableListView.node);
 		
+		// create detail view
+		_detailView = new DetailView();
+
 		// onresize callback
 		//Lib.window.onresize = onResizeCallback;
 		Lib.window.onresize = function (event:Event) { onResizeCallback();};

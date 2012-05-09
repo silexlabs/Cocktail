@@ -1,4 +1,5 @@
 package org.intermedia.model;
+import org.intermedia.Settings;
 
 /**
  * Load and hold the RSS data. Notifies the view when a change occurs
@@ -37,20 +38,16 @@ class ApplicationModel
 	// Store a reference to each loaded DetailData
 	private var _loadedDetailData : Array<DetailData>;
 	
-	// online/offline switch
-	private var _online:Bool;
-
 	static inline var CELL_QTY:Int = 15;
 
 	public function new() 
 	{
-		// init online switch
-		_online = false;
-		
 		// initialise private attributes
 		_loadedCellsData = new Array<CellData>();
 		_loadedDetailData = new Array<DetailData>();
-		_dataLoader = new DataLoader(_online);
+		
+		// init _dataLoader with online switch
+		_dataLoader = new DataLoader(Settings.ONLINE);
 	}
 	
 	/**

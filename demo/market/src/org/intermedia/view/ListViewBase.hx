@@ -5,6 +5,7 @@ import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
 import haxe.Timer;
+import org.intermedia.Settings;
 
 /**
  * Base class for list views. Inherithed by the 3 ListViews.
@@ -40,16 +41,12 @@ class ListViewBase extends ViewBase
 	// list bottom loader image
 	var _bottomLoaderImage:Image;
 
-	// flag indicating if list is waiting for data
-	private var _waitingData:Bool;
-
 	// _time is used to compute execution time for analysing performance
 	//private var _time:Float;
 	
 	public function new()
 	{
 		super();
-		_waitingData = true;
 		
 		// init style
 		//if (_style == null) initStyle();
@@ -103,11 +100,6 @@ class ListViewBase extends ViewBase
 	 */
 	override private function updateView():Void
 	{
-		_waitingData = false;
-
-		//haxe.Firebug.trace("List " + id + " data received in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
-		//trace("List " + id + " data received in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
-		//_time = Timer.stamp();
 		for (index in Reflect.fields(_data))
 		{
 			// build cell
@@ -182,14 +174,23 @@ class ListViewBase extends ViewBase
 	 * list scroll callback
 	 * @param	event
 	 */
-	//override private function onScrollCallback(event:ScrollEventData):Void
 	private function onScrollCallback(event:Event):Void
 	{
 		// if the bottom of the loading screen is reached via scrolling
 		if (node.scrollTop >= node.scrollHeight - (Lib.window.innerHeight - Constants.LIST_TOP) - Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN)
 		{
-			// call callback
-			onDataRequestCallback(id);
+			// if using online data
+			if(Settings.ONLINE)
+			{
+				// call callback
+				onDataRequestCallback(id);
+			}
+			// if using local data
+			else
+			{
+				// instead of calling onDataRequestCallback(id), we reload the same data again (way faster !)
+				data = _data;
+			}
 		}
 	}
 	
@@ -203,15 +204,7 @@ class ListViewBase extends ViewBase
 		if (onDataRequest != null)
 		{
 			// if list has not already requested new data, request new data
-			//if (_waitingData != true)
-			if (true)
-			{
-				//_time = Timer.stamp();
-				//haxe.Firebug.trace("List " + id + " data requested");
-				//trace("List " + id + " data requested");
-				_waitingData = true;
-				onDataRequest(id);
-			}
+			onDataRequest(id);
 		}
 	}
 	

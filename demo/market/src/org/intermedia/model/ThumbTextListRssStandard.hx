@@ -13,6 +13,9 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
+import haxe.Firebug;
+import js.Dom;
+import js.Lib;
 import org.intermedia.model.ApplicationModel;
 import haxe.Timer;
 
@@ -27,7 +30,7 @@ class ThumbTextListRssStandard
 	 * @param	rss
 	 * @return
 	 */
-	public static function rss2Cells(rss:Xml):Array<CellData>
+	public static function rss2Cells(rss:Xml,?listId:String = ""):Array<CellData>
 	{
 		// set the time
 		//var _time:Float = Timer.stamp();
@@ -81,9 +84,19 @@ class ThumbTextListRssStandard
 						
 						// get the thumb image
 						cell.thumbUrl = getThumb(cell.description);
+						
+						//var node:HtmlDom = Lib.document.createElement("div");
+						//node.innerHTML = cell.description;
+						//var images:HtmlCollection<HtmlDom> = node.getElementsByTagName("img");
+						//if (images.length != 0)
+						//{
+							//Firebug.trace(images[0].getAttribute("src"));
+							//Firebug.trace(images[0]);
+							//images[0].parentNode.removeChild(images[0]);
+						//}
 					}
 					
-					// if node is a description
+					// if node is a content
 					if (itemParam.nodeName == "content:encoded")
 					{
 						// get and clean the node text
@@ -93,6 +106,16 @@ class ThumbTextListRssStandard
 						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.content);
 					}
 					
+				}
+				
+				// if thumb url is empty, fill it with default image
+				if (cell.thumbUrl == "")
+				{
+					// for silicon sentier feed, add thumb if missing
+					if (listId == Feeds.FEED_2.url)
+					{
+						cell.thumbUrl = Feeds.FEED_2.thumb;
+					}
 				}
 				
 				// if the cell contains at least a title, a thumb and a either a description or a content

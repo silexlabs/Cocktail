@@ -71,7 +71,7 @@ class DataLoader
 			}
 			_pageIndexHash.set(feed,pageIndex);
 			
-			Firebug.trace(feed + " => " + pageIndex);
+			//Firebug.trace(feed + " => " + pageIndex);
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 			
 			// load xml feed
@@ -128,7 +128,7 @@ class DataLoader
 			onCellDetailXmlLoaded(Xml.parse(haxe.Resource.getString("detail")),cellData);
 		}
 		
-var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
+		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate,
 	 */
 	private function onCellsXmlLoaded(listId:String, xml:Xml):Void
 	{
-		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml)});
+		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml,listId)});
 	}	
 	
 	/**
