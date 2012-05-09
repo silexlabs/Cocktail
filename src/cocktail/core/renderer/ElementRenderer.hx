@@ -212,16 +212,7 @@ class ElementRenderer extends Node
 		return newChild;
 	}
 	
-	override public function insertBefore(newChild:Node, refChild:Node):Node
-	{
-		super.insertBefore(newChild, refChild);
-		
-		var child:ElementRenderer = cast(newChild);
-		child.attach();
-			invalidate();trace(child);
-		
-		return newChild;
-	}
+	
 	
 	
 	/**

@@ -353,7 +353,6 @@ class HTMLElement extends Element, implements IEventTarget
 			if (_elementRenderer == null && isRendered() == true)
 			{
 				createElementRenderer();
-		
 			}
 			
 			if (_elementRenderer != null)
@@ -403,60 +402,6 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
-	public function attachBefore(refChild:HTMLElement):Void
-	{
-		if (_parentNode == null)
-		{
-
-			return;
-		}
-		
-	
-		
-		var parent:HTMLElement = cast(_parentNode);
-
-		if (parent.elementRenderer != null)
-		{
-			if (_elementRenderer == null && isRendered() == true)
-			{
-				createElementRenderer();
-		
-			}
-			
-			if (_elementRenderer != null)
-			{
-				parent.elementRenderer.insertBefore(_elementRenderer, refChild.elementRenderer);
-				for (i in 0..._childNodes.length)
-				{
-					switch (_childNodes[i].nodeType)
-					{
-						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(_childNodes[i]);
-							child.attach();
-							
-						case Node.TEXT_NODE:
-							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
-							textRenderer.coreStyle = _coreStyle;
-							_elementRenderer.appendChild(textRenderer);
-				
-					}
-				
-				}
-			}
-		}
-	}
-
-	override public function insertBefore(newChild:Node, refChild:Node):Node
-	{
-
-		super.insertBefore(newChild, refChild);
-		var child:HTMLElement = cast(newChild);
-		
-		var typedRefChild:HTMLElement = cast(refChild);
-		
-		child.attachBefore(typedRefChild);
-		return newChild;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
@@ -474,6 +419,24 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		detach();
 		attach();
+		
+		if (_elementRenderer != null)
+		{
+			var parentHTML:HTMLElement = cast(_parentNode);
+			if (parentHTML.elementRenderer != null)
+			{
+				//TODO : big hack just to make the demo work
+				if (_elementRenderer.previousSibling != null)
+				{
+					
+					parentHTML.elementRenderer.insertBefore(_elementRenderer, _elementRenderer.previousSibling);
+					parentHTML.elementRenderer.invalidate();
+				}
+				
+				
+			}
+		}
+		
 		//TODO : should be invalidated by default when attached
 		//invalidateStyle();
 	}
