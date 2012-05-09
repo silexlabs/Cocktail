@@ -713,7 +713,7 @@ class CoreStyle
 	 */
 	private function invalidate():Void
 	{
-
+		_htmlElement.invalidateStyle();
 	}
 	
 	/////////////////////////////////

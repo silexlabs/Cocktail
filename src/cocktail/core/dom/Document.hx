@@ -181,6 +181,8 @@ class Document extends Node
 	 * document order with a given tag name and
 	 * are contained in the document.
 	 * 
+	 * TODO : should return array of HTMLElement to match haxe JS
+	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * For XML, the tagname parameter is case-sensitive, otherwise
 	 * it depends on the case-sensitivity of the markup language in use. 

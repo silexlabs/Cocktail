@@ -48,16 +48,6 @@ class Text extends CharacterData
 		super();
 	}
 	
-	//TODO : should text have a derived class in html package ? Or should TextRenderer be
-	//created by parent HTMLElement instead ?
-	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
-	{
-		_elementRenderer = new TextRenderer(this);
-		//TODO : should use parent coreStyle instead
-		_elementRenderer.coreStyle = _coreStyle;
-		_elementRenderer.layerRenderer = parentLayerRenderer;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
