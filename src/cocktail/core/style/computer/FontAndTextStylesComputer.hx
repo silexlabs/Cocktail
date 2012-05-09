@@ -40,21 +40,21 @@ class FontAndTextStylesComputer
 	/**
 	 * compute all the font and text styles of the HTMLElement
 	 * @param	style
-	 * @param	containingHTMLElementData
-	 * @param	containingHTMLElementFontMetricsData
+	 * @param	containingBlockData
+	 * @param	containingBlockFontMetricsData
 	 */
-	public static function compute(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
 
 		//font size
-		computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
+		computedStyle.fontSize = getComputedFontSize(style, containingBlockFontMetricsData.fontSize, containingBlockFontMetricsData.xHeight);
 		
 		//line height
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingHTMLElementData, containingHTMLElementFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockData, containingBlockFontMetricsData);
 		
 		//font weight
 		computedStyle.fontWeight = style.fontWeight;
@@ -78,7 +78,7 @@ class FontAndTextStylesComputer
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
 		//text indent
-		computedStyle.textIndent = getComputedTextIndent(style, containingHTMLElementData);
+		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData);
 		
 		//white space
 		computedStyle.whiteSpace = style.whiteSpace;
@@ -98,7 +98,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Int
 	{
 		var textIndent:Float;
 		
@@ -108,7 +108,7 @@ class FontAndTextStylesComputer
 				textIndent = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
-				textIndent = UnitManager.getPixelFromPercent(value, containingHTMLElementData.width);
+				textIndent = UnitManager.getPixelFromPercent(value, containingBlockData.width);
 		}
 		
 		return Math.round(textIndent);
@@ -118,7 +118,7 @@ class FontAndTextStylesComputer
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
 	 * formatting context.
 	 */
-	private static function getComputedVerticalAlign(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -131,10 +131,10 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case sub:
-				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
+				verticalAlign = containingBlockFontMetricsData.subscriptOffset;
 				
 			case cssSuper:
-				verticalAlign = containingHTMLElementFontMetricsData.superscriptOffset;
+				verticalAlign = containingBlockFontMetricsData.superscriptOffset;
 				
 			case textTop:
 				verticalAlign = 0;

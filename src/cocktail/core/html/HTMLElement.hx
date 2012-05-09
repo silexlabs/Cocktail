@@ -11,15 +11,19 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.IEventTarget;
-import cocktail.core.HTMLDocument;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.renderer.BlockBoxRenderer;
+import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.InlineBlockLineBox;
+import cocktail.core.renderer.InlineBoxRenderer;
+import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
-import cocktail.core.style.ContainerCoreStyle;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
 //import cocktail.core.focus.FocusManager;
@@ -181,6 +185,18 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Rendering attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * This object is part of the rendering tree
+	 * and is used to render this HTMLElement using
+	 * its computed styles
+	 */
+	private var _elementRenderer:ElementRenderer;
+	public var elementRenderer(get_elementRenderer, never):ElementRenderer;
+	
 	/////////////////////////////////
 	// COORDS attributes
 	////////////////////////////////
@@ -294,7 +310,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new ContainerCoreStyle(this);
+		this._coreStyle = new CoreStyle(this);
 	}
 	
 	/**
@@ -303,7 +319,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(cast(_coreStyle));
+		_style = new Style(_coreStyle);
 	}
 	
 	/**
@@ -318,16 +334,154 @@ class HTMLElement extends Element, implements IEventTarget
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : doc
+	public function attach():Void
+	{
+		if (_parentNode == null)
+		{
+
+			return;
+		}
+		
+		var parent:HTMLElement = cast(_parentNode);
+
+		if (parent.elementRenderer != null)
+		{
+			if (_elementRenderer == null && isRendered() == true)
+			{
+				createElementRenderer();
+			}
+			
+			if (_elementRenderer != null)
+			{
+				parent.elementRenderer.appendChild(_elementRenderer);
+				for (i in 0..._childNodes.length)
+				{
+					switch (_childNodes[i].nodeType)
+					{
+						case Node.ELEMENT_NODE:
+							var child:HTMLElement = cast(_childNodes[i]);
+							child.attach();
+							
+						case Node.TEXT_NODE:
+							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
+							textRenderer.coreStyle = _coreStyle;
+							_elementRenderer.appendChild(textRenderer);
+				
+					}
+				
+				}
+			}
+		}
+	}
+	
+	public function detach():Void
+	{
+		if (_parentNode == null)
+		{
+			return;
+		}
+		var parent:HTMLElement = cast(_parentNode);
+		
+		if (parent.elementRenderer != null)
+		{
+			if (_elementRenderer != null)
+			{
+				for (i in 0..._childNodes.length)
+				{
+					var child:HTMLElement = cast(_childNodes[i]);
+					child.detach();
+				}
+				parent.elementRenderer.removeChild(_elementRenderer);
+				_elementRenderer = null;
+			}
+			
+		}
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function invalidateStyle():Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidate();
+		}
+	}
+	
+	public function invalidateDisplay():Void
+	{
+		detach();
+		attach();
+		
+		if (_elementRenderer != null)
+		{
+			var parentHTML:HTMLElement = cast(_parentNode);
+			if (parentHTML.elementRenderer != null)
+			{
+				//TODO : big hack just to make the demo work
+				if (_elementRenderer.previousSibling != null)
+				{
+					
+					parentHTML.elementRenderer.insertBefore(_elementRenderer, _elementRenderer.previousSibling);
+					parentHTML.elementRenderer.invalidate();
+				}
+				
+				
+			}
+		}
+		
+		//TODO : should be invalidated by default when attached
+		//invalidateStyle();
+	}
+	
+	//TODO : clean-up
+	private function createElementRenderer():Void
+	{
+		_coreStyle.computeDisplayStyles();
+		
+		switch (_coreStyle.computedStyle.display)
+		{
+			case block, inlineBlock:
+				_elementRenderer = new BlockBoxRenderer(this);
+				_elementRenderer.coreStyle = _coreStyle;
+				
+			case cssInline:
+				_elementRenderer = new InlineBoxRenderer(this);
+				_elementRenderer.coreStyle = _coreStyle;
+				
+			case none:
+		}
+	}
+	
+	private function isRendered():Bool
+	{
+		return _coreStyle.display != Display.none;
+	}
+	
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * invalidate Style after DOM change
+	 * 
+	 * TODO : update doc
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		_coreStyle.invalidate();
+		//TODO : should be different for Text node
+		var htmlChild:HTMLElement = cast(newChild);
+		htmlChild.attach();
 		return newChild;
 	}
 	
@@ -337,7 +491,8 @@ class HTMLElement extends Element, implements IEventTarget
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		_coreStyle.invalidate();
+		var htmlChild:HTMLElement = cast(oldChild);
+		htmlChild.detach();
 		return oldChild;
 	}
 	
@@ -345,7 +500,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 * Overriden to make the tag name case-insensitive in an
 	 * HTML document
 	 */
-	override public function getElementsByTagName(tagName:String):Array<Node>
+	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
 		return super.getElementsByTagName(tagName.toLowerCase());
 	}
@@ -680,88 +835,81 @@ class HTMLElement extends Element, implements IEventTarget
 	 * return the first positioned ancestor of the HTMLElement
 	 * 
 	 * @return an HTMLElement or null if this HTMLElement is not yet
-	 * added to the DOM or is the HTMLBodyElement
+	 * added to the DOM
 	 */
 	private function get_offsetParent():HTMLElement
 	{
-		return _coreStyle.getFirstPositionedAncestor();
+		//here the HTMLElement is not
+		//attached to the DOM
+		if (_parentNode == null)
+		{
+			return null;
+		}
+		
+		var parent:HTMLElement = cast(_parentNode);
+		
+		//loop in all the parents until a positioned or a null parent is found
+		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
+		
+		while (isOffsetParent == false)
+		{
+			if (parent.parentNode != null)
+			{
+				parent = cast(parent.parentNode);
+				isOffsetParent = parent.elementRenderer.isPositioned();
+			}
+			//break the loop if the current parent has no parent
+			else
+			{
+				isOffsetParent = true;
+			}
+		}
+		
+		return parent;
 	}
 	
 	private function get_offsetWidth():Int
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		_coreStyle.invalidate(true);
+		//_coreStyle.invalidate(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		_coreStyle.invalidate(true);
+		//_coreStyle.invalidate(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : will it work for inline elements ? use ElementRenderer bounds ?
+	//TODO : unit test
 	private function get_offsetLeft():Int
 	{
-		_coreStyle.invalidate(true);
-		
-		var firstPositionedAncestor:HTMLElement = offsetParent;
-		
-		var offsetLeft:Int = 0;
-		
-		if (firstPositionedAncestor != null)
-		{
-			var parent:HTMLElement = cast(parentNode);
-			offsetLeft = parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
-			
-			while (parent != firstPositionedAncestor)
-			{
-				offsetLeft += parent.coreStyle.computedStyle.paddingLeft + parent.coreStyle.computedStyle.marginLeft;
-				parent = cast(parent.parentNode);
-			}
-		}
-		
-		return offsetLeft;
+		//_coreStyle.invalidate(true);
+		return Math.round(_elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
-		_coreStyle.invalidate(true);
-		
-		var firstPositionedAncestor:HTMLElement = offsetParent;
-		
-		var offsetTop:Int = 0;
-		
-		if (firstPositionedAncestor != null)
-		{
-			var parent:HTMLElement = cast(parentNode);
-			offsetTop = parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
-			
-			while (parent != firstPositionedAncestor)
-			{
-				offsetTop += parent.coreStyle.computedStyle.paddingTop + parent.coreStyle.computedStyle.marginTop;
-				parent = cast(parent.parentNode);
-			}
-		}
-		
-		return offsetTop;
+		//_coreStyle.invalidate(true);
+		return Math.round(_elementRenderer.positionedOrigin.y);
 	}
 	
 	private function get_clientWidth():Int
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		_coreStyle.invalidate(true);
+		//_coreStyle.invalidate(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		_coreStyle.invalidate(true);
+		//TODO : re-implement
+		//_coreStyle.invalidate(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -769,15 +917,24 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : should be top border height
 	private function get_clientTop():Int
 	{
-		_coreStyle.invalidate(true);
+		//_coreStyle.invalidate(true);
 		return 0;
 	}
 	
 	//TODO : should be left border width
 	private function get_clientLeft():Int
 	{
-		_coreStyle.invalidate(true);
+		//_coreStyle.invalidate(true);
 		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// RENDERING GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_elementRenderer():ElementRenderer
+	{
+		return _elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

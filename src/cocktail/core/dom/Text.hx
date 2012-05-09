@@ -6,6 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.dom;
+import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.renderer.TextRenderer;
 
 /**
  * The Text interface inherits from CharacterData and represents the textual
