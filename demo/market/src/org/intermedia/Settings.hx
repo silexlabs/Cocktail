@@ -8,5 +8,5 @@ package org.intermedia;
 
 class Settings 
 {
-	public static inline var ONLINE:Bool = true;
+	public static inline var ONLINE:Bool = false;
 }
