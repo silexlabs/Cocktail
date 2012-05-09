@@ -41,7 +41,7 @@ class DetailView extends ViewBase
 	private var _contentElement:HtmlDom;
 	
 	// touch & mouse handler
-	private var _moveHandler:Scroll2D;
+	private var _scrollHandler:Scroll2D;
 	
 	// initial scroll position
 	//private var _initialScrollPosition:Coordinate;
@@ -58,8 +58,8 @@ class DetailView extends ViewBase
 		//_initialScrollPosition = { x:0, y:0 };
 		
 		// initialise move handler
-		_moveHandler = new Scroll2D(ScrollType.vertical);
-		//_moveHandler.onVerticalScroll = onVerticalScroll;
+		_scrollHandler = new Scroll2D(ScrollType.vertical);
+		//_scrollHandler.onVerticalScroll = onVerticalScroll;
 
 		// js touch events handling
 		//addTouchEvents();	
@@ -161,8 +161,8 @@ class DetailView extends ViewBase
 	 */
 	private function touchStart(event:Dynamic):Void
 	{
-		_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:node.scrollTop };
-		_moveHandler.touchHandler(event);
+		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:node.scrollTop };
+		_scrollHandler.touchHandler(event);
 	}
 
 	/**
@@ -174,9 +174,9 @@ class DetailView extends ViewBase
 		untyped
 		{
 			node.addEventListener("touchstart", touchStart, false);
-			node.addEventListener("touchmove", _moveHandler.touchHandler, false);
-			node.addEventListener("touchend", _moveHandler.touchHandler, false);
-			node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
+			node.addEventListener("touchmove", _scrollHandler.touchHandler, false);
+			node.addEventListener("touchend", _scrollHandler.touchHandler, false);
+			node.addEventListener("touchcancel", _scrollHandler.touchHandler, false);
 		}
 		#end
 	}
@@ -191,9 +191,9 @@ class DetailView extends ViewBase
 		untyped
 		{
 			node.removeEventListener("touchstart", touchStart, false);
-			node.removeEventListener("touchmove", _moveHandler.touchHandler, false);
-			node.removeEventListener("touchend", _moveHandler.touchHandler, false);
-			node.removeEventListener("touchcancel", _moveHandler.touchHandler, false);
+			node.removeEventListener("touchmove", _scrollHandler.touchHandler, false);
+			node.removeEventListener("touchend", _scrollHandler.touchHandler, false);
+			node.removeEventListener("touchcancel", _scrollHandler.touchHandler, false);
 		}
 		#end
 	}
@@ -205,7 +205,7 @@ class DetailView extends ViewBase
 	 */
     private function onVerticalScroll( y : Int )
     {
-		node.scrollTop = _moveHandler.initialScrollPosition.y - y;
+		node.scrollTop = _scrollHandler.initialScrollPosition.y - y;
     }
 	
 	/**
