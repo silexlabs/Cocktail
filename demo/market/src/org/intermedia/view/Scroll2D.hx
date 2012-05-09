@@ -1,5 +1,6 @@
 package org.intermedia.view;
 
+import haxe.Firebug;
 import haxe.Timer;
 import js.Lib;
 import org.intermedia.view.Constants;
@@ -24,6 +25,7 @@ class Scroll2D
 	static inline var TIME_DELTA:Int = 20;
 	//static inline var VERTICAL_RELEASE_TIME:Int = 200;
 	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.02;
+	static inline var VERTICAL_VELOCITY_MESURES:Int = 5;
 	
 	// touch offset
 	private var _offset:Coordinate;
@@ -73,6 +75,7 @@ class Scroll2D
 	private var _decelerationTimer:Timer;
 	
 	// values needed to compute velocity
+	private var _verticalVelocityArray:Array<Float>;
 	private var _verticalVelocity:Float;
 	private var _previousY:Int;
 		
@@ -96,6 +99,7 @@ class Scroll2D
 		_offset = { x:0, y:0 };
 		_scrollPosition = { x:0, y:0 };
 		_direction = Direction.notYetSet;
+		_verticalVelocityArray = new Array<Float>();
 	}
 	
 	
@@ -396,9 +400,13 @@ class Scroll2D
 			_verticalReleaseDeceleration = VERTICAL_RELEASE_DECELERATION;
 		}
 		
+		// compute average velocity
+		computeAverageVelocity();
+		
 		// scroll release automation
-		_decelerationTimer = new Timer(10);
+		_decelerationTimer = new Timer(20);
 		_decelerationTimer.run = onVerticalReleaseCallback;
+		//trace(_verticalVelocity);
 		
 	}
 	
@@ -481,8 +489,23 @@ class Scroll2D
 		//trace(_previousY + ", " + _offset.y);
 		//_verticalVelocity = deriv(_previousY, _offset.y);
 		// an average velocity is computed to improve experience
-		_verticalVelocity = (deriv(_previousY, _offset.y) + _verticalVelocity) / 2;
+		//_verticalVelocity = (deriv(_previousY, _offset.y) + _verticalVelocity) / 2;
+		_verticalVelocity = deriv(_previousY, _offset.y);
 		_previousY = _offset.y;
+		
+		// store the newly computed velocity in the velocity array
+		if(_verticalVelocityArray.length < VERTICAL_VELOCITY_MESURES)
+		{
+			for (i in 0...VERTICAL_VELOCITY_MESURES)
+			{
+				_verticalVelocityArray.push(_verticalVelocity);
+			}
+		}
+		else
+		{
+			_verticalVelocityArray.unshift(_verticalVelocity);
+			_verticalVelocityArray.pop();
+		}
 	}
 	
 	/**
@@ -495,6 +518,25 @@ class Scroll2D
 	private function deriv(a:Float, b:Float):Float
 	{
 		return (b - a) / TIME_DELTA;
+	}
+	
+	private function computeAverageVelocity():Void
+	{
+		_verticalVelocity = 0;
+		var sum:Float = 0;
+		//var U0:Float = 0.3;
+		//var Un:Float = U0;
+		//var n:Int = _verticalVelocityArray.length;
+		//var r:Float = (1 - (1/u0)) / (2 / ((n-1) * n));
+		//var r:Float = 0.05;
+		
+		for (i in 0..._verticalVelocityArray.length)
+		{
+			//_verticalVelocity += _verticalVelocityArray[i] * Un;
+			//Un = U0 - 0.05;
+			sum += _verticalVelocityArray[i] * (VERTICAL_VELOCITY_MESURES - i);
+		}
+		_verticalVelocity = sum / (VERTICAL_VELOCITY_MESURES * (VERTICAL_VELOCITY_MESURES + 1) / 2);
 	}
 }
 
