@@ -51,7 +51,7 @@ class FlowBoxRenderer extends BoxRenderer
 		
 		//get the dimensions that will be used to lay out the children
 		//of the HTMLElement (its width and height)
-		var childrenContainingBlockData:ContainingBlockData = getContainerHTMLElementData();
+		var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
 		
 		//get the computed font metrics of the parent HTMLElement. Those metrics
 		//are based on the font family and the font size used
@@ -168,7 +168,7 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//update the structures used for the layout and starts a new layout
 			var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-			var childrenContainingBlockData:ContainingBlockData = getContainerHTMLElementData();
+			var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
 			var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildFirstPositionedAncestorData(firstPositionedAncestorData);
 			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
 		}
@@ -183,28 +183,35 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		if (isPositioned() == true)
 		{
-			doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData, viewportData);
+			//position each stored children
+			for (i in 0...childFirstPositionedAncestorData.elements.length)
+			{
+				var element:ElementRenderer = childFirstPositionedAncestorData.elements[i];
+				//position the child ElementRenderer which set its x and y positioned origin in the space of this HTMLElement's
+				//formatting context
+				element.layoutPositionedChild(getContainerBlockData(), viewportData);
+			}
 		}
 	}
 	
 	/**
-	 * When this HTMLElement is positioned, position each of its children using it
-	 * as its origin. This method is called once all the dimensions of HTMLElement
-	 * are known so that absolutely positioned children can be positioned using the bottom
-	 * and right styles
+	 * Return the right formatting context to layout this ElementRenderer's
+	 * children.
+	 * 
+	 * An HTMLElement can either establish a new formatting context
+	 * or participate in the current formatting context. If it participates
+	 * in the current formatting context, then the previous formatting
+	 * is returned else a new block or inline formatting context is
+	 * instantiated
+	 * 
+	 * @param	previousformattingContext the formatting context of the parent of this
+	 * HTMLElement, might be returned if the HTMLElement participates
+	 * in the same formatting context as its parent
+	 * 
+	 * @return an inline or block formatting context
 	 */
-	private function doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
+	private function getFormattingContext(currentFormattingContext:FormattingContext):FormattingContext
 	{
-		//update the data of the HTMLElement now that its width and height are known
-		childFirstPositionedAncestorData.data = getPositionedHTMLElementData();
-		
-		//position each stored children
-		for (i in 0...childFirstPositionedAncestorData.elements.length)
-		{
-			var element:ElementRenderer = childFirstPositionedAncestorData.elements[i];
-			//position the child ElementRenderer which set its x and y positioned origin in the space of this HTMLElement's
-			//formatting context
-			element.layoutPositionedChildren(childFirstPositionedAncestorData.data, viewportData);
-		}
+		return currentFormattingContext;
 	}
 }

@@ -144,9 +144,7 @@ class BoxRenderer extends ElementRenderer
 		
 		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
 		//so that it can be positioned by its first positioned ancestor once it is laid out
-		//
-		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
-		insertAbsolutelyPositionedHTMLElementIfNecessary(firstPositionedAncestorData);
+		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
 		
 		//The ElementRenderer has been laid out and can now be laid out again
 		//if it changes
@@ -180,7 +178,7 @@ class BoxRenderer extends ElementRenderer
 	 * @param firstPositionedAncestorData the dimensions of the first positioned ancestor
 	 * @param viewportData the dimensions of the viewport
 	 */
-	override public function layoutPositionedChildren(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
+	override public function layoutPositionedChild(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
 		switch (_coreStyle.computedStyle.position)
 		{	
@@ -204,7 +202,7 @@ class BoxRenderer extends ElementRenderer
 	 * Insert the ElementRenderer in the array of absolutely positioned elements if it
 	 * in fact an absolutely positioned element
 	 */
-	private function insertAbsolutelyPositionedHTMLElementIfNecessary(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
 		//don't do anything for static or relative positioned elements.
 		//Relative positioning is only an offset applied during rendering
@@ -493,6 +491,47 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Determine wether a children is inline or not
+	 */
+	private function isChildInline(child:Node):Bool
+	{
+		var ret:Bool = true;
+		
+		//here the children is a HTMLElement
+		if (child.nodeType == Node.ELEMENT_NODE)
+		{
+			var childHTMLElement:HTMLElement = cast(child);
+			//here the child is of type block
+			if (childHTMLElement.coreStyle.computedStyle.display == block)
+			{
+				//floated children are not taken into account 
+				if (childHTMLElement.elementRenderer.isFloat() == false)
+				{
+					ret = false;
+				}
+				//absolutely positioned children are not taken into account but relative positioned are
+				else if (childHTMLElement.elementRenderer.isPositioned() == false || childHTMLElement.elementRenderer.isRelativePositioned() == true)
+				{
+					ret = false;
+				}
+			}
+			//here the child is inline
+			else
+			{
+				ret = true;
+			}
+		}
+		//here the children is a Text node, which is
+		//always inline as text is always displayed on a line
+		else
+		{
+			ret = true;
+		}
+		
+		return ret;
+	}
+	
+	/**
 	 * Determine wether the ElementRenderer introduces
 	 * 'clearance', which as the effect of placing
 	 * the ElementRenderer below any preceding floated
@@ -559,7 +598,7 @@ class BoxRenderer extends ElementRenderer
 					isHeightAuto:firstPositionedAncestorData.isHeightAuto,
 					isWidthAuto:firstPositionedAncestorData.isWidthAuto};
 				
-			//for 'static' or 'relative' ElementRenderer, takes the containing ElementRenderer dimensions which is the parent		
+			//for 'static' or 'relative' ElementRenderer, takes the containing block dimensions which is the parent	block	
 			case cssStatic, relative:
 				containingBlockDimensions = containingBlockData;
 				
@@ -568,15 +607,11 @@ class BoxRenderer extends ElementRenderer
 		return containingBlockDimensions;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Return the dimensions data
 	 * of the ElementRenderer
 	 */
-	private function getContainerHTMLElementData():ContainingBlockData
+	private function getContainerBlockData():ContainingBlockData
 	{
 		return {
 			width:this.computedStyle.width,
@@ -584,99 +619,6 @@ class BoxRenderer extends ElementRenderer
 			height:this.computedStyle.height,
 			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
 		};
-	}
-	
-	/**
-	 * return the data of this htmlElement to be used when it is
-	 * the first positioned ancestor for its children.
-	 * Meant to be overriden
-	 */
-	private function getPositionedHTMLElementData():ContainingBlockData
-	{
-		return getContainerHTMLElementData();
-	}
-	
-	/**
-	 * Return the right formatting context to layout this HTMLElement's
-	 * children.
-	 * 
-	 * An HTMLElement can either establish a new formatting context
-	 * or participate in the current formatting context. If it participates
-	 * in the current formatting context, then the previous formatting
-	 * is returned else a new block or inline formatting context is
-	 * instantiated
-	 * 
-	 * @param	previousformattingContext the formatting context of the parent of this
-	 * HTMLElement, might be returned if the HTMLElement participates
-	 * in the same formatting context as its parent
-	 * 
-	 * @return an inline or block formatting context
-	 */
-	private function getFormattingContext(previousformattingContext:FormattingContext = null):FormattingContext
-	{
-		var formattingContext:FormattingContext;
-		
-		//here, a new formatting context is created
-		if (establishesNewFormattingContext() == true || previousformattingContext == null)
-		{	
-			//instantiate the right formatting context
-			//based on the children computed display styles
-			if (childrenInline() == true)
-			{
-				formattingContext = new InlineFormattingContext(cast(this));	
-			}
-			else
-			{
-				formattingContext = new BlockFormattingContext(cast(this));
-			}
-		}
-		else
-		{
-			formattingContext = previousformattingContext;
-		}
-		
-		return formattingContext;
-	}
-	
-	/**
-	 * Determine wether a children is inline or not
-	 */
-	private function isChildInline(child:Node):Bool
-	{
-		var ret:Bool = true;
-		
-		//here the children is a HTMLElement
-		if (child.nodeType == Node.ELEMENT_NODE)
-		{
-			var childHTMLElement:HTMLElement = cast(child);
-			//here the child is of type block
-			if (childHTMLElement.coreStyle.computedStyle.display == block)
-			{
-				//floated children are not taken into account 
-				if (childHTMLElement.elementRenderer.isFloat() == false)
-				{
-					ret = false;
-				}
-				//absolutely positioned children are not taken into account but relative positioned are
-				else if (childHTMLElement.elementRenderer.isPositioned() == false || childHTMLElement.elementRenderer.isRelativePositioned() == true)
-				{
-					ret = false;
-				}
-			}
-			//here the child is inline
-			else
-			{
-				ret = true;
-			}
-		}
-		//here the children is a Text node, which is
-		//always inline as text is always displayed on a line
-		else
-		{
-			ret = true;
-		}
-		
-		return ret;
 	}
 	
 	/**
@@ -691,7 +633,7 @@ class BoxRenderer extends ElementRenderer
 		if (isPositioned() == true)
 		{
 			childFirstPositionedAncestorData = {
-				data: getContainerHTMLElementData(),
+				data: getContainerBlockData(),
 				elements: new Array<ElementRenderer>()
 			}
 		}
@@ -702,6 +644,10 @@ class BoxRenderer extends ElementRenderer
 		
 		return childFirstPositionedAncestorData;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getComputedStyle():ComputedStyleData
 	{

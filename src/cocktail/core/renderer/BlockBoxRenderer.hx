@@ -10,6 +10,9 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.BlockFormattingContext;
+import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.style.formatter.InlineFormattingContext;
 import haxe.Log;
 
 /**
@@ -81,5 +84,47 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//the current formatting context is used
 		
 		return establishesNewFormattingContext;
+	}
+	
+	/**
+	 * Return the right formatting context to layout this ElementRenderer's
+	 * children.
+	 * 
+	 * An HTMLElement can either establish a new formatting context
+	 * or participate in the current formatting context. If it participates
+	 * in the current formatting context, then the previous formatting
+	 * is returned else a new block or inline formatting context is
+	 * instantiated
+	 * 
+	 * @param	previousformattingContext the formatting context of the parent of this
+	 * HTMLElement, might be returned if the HTMLElement participates
+	 * in the same formatting context as its parent
+	 * 
+	 * @return an inline or block formatting context
+	 */
+	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
+	{
+		var formattingContext:FormattingContext;
+		
+		//here, a new formatting context is created
+		if (establishesNewFormattingContext() == true)
+		{	
+			//instantiate the right formatting context
+			//based on the children computed display styles
+			if (childrenInline() == true)
+			{
+				formattingContext = new InlineFormattingContext(this);	
+			}
+			else
+			{
+				formattingContext = new BlockFormattingContext(this);
+			}
+		}
+		else
+		{
+			formattingContext = previousformattingContext;
+		}
+		
+		return formattingContext;
 	}
 }

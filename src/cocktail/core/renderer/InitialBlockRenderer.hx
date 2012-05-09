@@ -247,25 +247,27 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as the HTMLBodyElement, being at the top of the hierarchy, always position its positioned
-	 * children
+	 * Overriden for 2 reasons
+	 * 	- The initial ElementRenderer always layout its positioned children as it is the root of the rendering tree
+	 *  - it uses the viewport dimensions as first positioned ancestor dimensions for the 'absolute' children
+	 * 	instead of its own dimensions. For instance an ElementRenderer with a 'position' style of absolute' and a 'bottom'
+	 * style of 0 will always be displayed at the bottom of the viewport event if the initial ElementRenderer is not
+	 * as high as the viewport
 	 */
 	override private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
-		doPositionAbsolutelyPositionedHTMLElements(childFirstPositionedAncestorData, viewportData);	
+		for (i in 0...childFirstPositionedAncestorData.elements.length)
+		{
+			var element:ElementRenderer = childFirstPositionedAncestorData.elements[i];
+			//use the viewport dimensions both times
+			element.layoutPositionedChild(viewportData, viewportData);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * return the dimension of the Window for the HTMLBodyElement
-	 */
-	override private function getPositionedHTMLElementData():ContainingBlockData
-	{
-		return getWindowData();
-	}
 	
 	/**
 	 * The HTMLBodyElement is always a block container
@@ -279,9 +281,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
-	override private function getFormattingContext(previousformattingContext:FormattingContext = null):FormattingContext
+	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
 	{
-		return new BlockFormattingContext(cast(this));
+		return new BlockFormattingContext(this);
 	}
 	
 	/**
