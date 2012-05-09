@@ -5,8 +5,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.mouse.MouseData;
+import js.Dom;
+
 import components.lists.ListBaseModels;
 
 /**
@@ -19,29 +19,29 @@ import components.lists.ListBaseModels;
 class Navigation 
 {
 	// pagesContainer is the container for all pages
-	public var pagesContainer:ContainerDOMElement;
+	public var pagesContainer:HtmlDom;
 
 	// the current visible page
-	public var currentPage:ContainerDOMElement;
+	public var currentPage:HtmlDom;
 
 	// the previous page
-	private var _previousPages:Array<ContainerDOMElement>;
+	private var _previousPages:Array<HtmlDom>;
 	
 	/**
 	 * Constructor
 	 */
-	public function new(container:ContainerDOMElement, startPage:ContainerDOMElement)
+	public function new(container:HtmlDom, startPage:HtmlDom)
 	{
 		// initializes pagesContainer & current page
 		pagesContainer = container;
 		currentPage = startPage;
 
 		// initializes _previousPage
-		_previousPages = new Array<ContainerDOMElement>();
+		_previousPages = new Array<HtmlDom>();
 		_previousPages.push(startPage);
 		
 		// adds the home page to pagesContainer
-		pagesContainer.addChild(startPage);
+		pagesContainer.appendChild(startPage);
 	}
 	
 	/**
@@ -60,13 +60,13 @@ class Navigation
 	 * 
 	 * @return
 	 */
-	private function getPreviousPage():ContainerDOMElement
+	private function getPreviousPage():HtmlDom
 	{
 		// remove current page from history
 		_previousPages.pop();
 		
 		// get previous page from history
-		var previousPage:ContainerDOMElement = _previousPages[_previousPages.length-1];
+		var previousPage:HtmlDom = _previousPages[_previousPages.length-1];
 		
 		// in case history is emtpy, go to home page
 		if (previousPage == null)
@@ -80,7 +80,7 @@ class Navigation
 	 * Adds a page to history
 	 * 
 	 */
-	private function addToHistory(page:ContainerDOMElement):Void
+	private function addToHistory(page:HtmlDom):Void
 	{
 		// if page to show is _homepage, reset history
 		if (page == _previousPages[0])
@@ -95,12 +95,12 @@ class Navigation
 	 * 
 	 * @param	page	the wanted page
 	 */
-	private function showPage(page:ContainerDOMElement):Void
+	private function showPage(page:HtmlDom):Void
 	{
 		// removes the current page from the page container
 		pagesContainer.removeChild(currentPage);
 		// adds the new page to the page container
-		pagesContainer.addChild(page);
+		pagesContainer.appendChild(page);
 		currentPage = page;
 	}
 	
@@ -116,7 +116,7 @@ class Navigation
 		if (cell.action == "goToPage")
 		{
 			//trace("Navigation.onChangeListCallback goToPage");
-			var page:ContainerDOMElement = cell.actionTarget;
+			var page:HtmlDom = cell.actionTarget;
 		
 			// history handling
 			addToHistory(page);

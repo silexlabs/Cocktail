@@ -11,18 +11,21 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.event.MouseEvent;
 import cocktail.core.focus.FocusManager;
-import cocktail.core.HTMLAnchorElement;
+import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
+import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.NativeElementManager;
+import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.BodyCoreStyle;
 import cocktail.core.Window;
+import haxe.Log;
 import haxe.Timer;
 
 /**
@@ -81,8 +84,8 @@ class AbstractHTMLDocument extends Document
 	private var _nativeElements:Array<NativeElement>;
 	
 	/**
-	 *	The activeElement set/get the element
-	 * in the document that is focused.
+	 *The activeElement set/get the element
+	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
 	private var _activeElement:HTMLElement;
@@ -99,6 +102,12 @@ class AbstractHTMLDocument extends Document
 	 * to key down and up event
 	 */
 	private var _keyboard:Keyboard;
+	
+	/**
+	 * An instance of the cross-platform mouse class, used to listen
+	 * to mouse input
+	 */
+	private var _mouse:Mouse;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -121,6 +130,17 @@ class AbstractHTMLDocument extends Document
 		_window.onResize = onWindowResize;
 		
 		initKeyboardListeners();
+		initMouseListeners();
+	}
+	
+	//TODO : doc
+	private function initMouseListeners():Void
+	{
+		_mouse = new Mouse();
+		_mouse.onMouseDown = onMouseDown;
+		_mouse.onMouseUp = onMouseUp;
+		_mouse.onMouseMove = onMouseMove;
+		_mouse.onClick = onClick;
 	}
 	
 	/**
@@ -129,9 +149,9 @@ class AbstractHTMLDocument extends Document
 	private function initKeyboardListeners():Void
 	{
 		//listens for event on the root of the runtime
-		var keyboard:Keyboard = new Keyboard(_body);
-		keyboard.onKeyDown = onKeyDown;
-		keyboard.onKeyUp = onKeyUp;
+		_keyboard = new Keyboard();
+		_keyboard.onKeyDown = onKeyDown;
+		_keyboard.onKeyUp = onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +227,67 @@ class AbstractHTMLDocument extends Document
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	private function onMouseDown(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+
+		//TODO : if empty array, use body
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	private function onClick(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+
+		//TODO : if empty array, use body
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onclick != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	//TODO : implement mouse over and mouse out with this method
+	private function onMouseMove(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
+			{
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
+	private function onMouseUp(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
+			{
+				//shouldn't break if the executed behaviour is a default behaviour, for instance
+				//opening a document for an anchor element
+				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
+				break;
+			}
+		}	
+	}
+	
 	/**
 	 * When a key is pressed, redirect it to
 	 * the active element and detect if a tab
@@ -219,7 +300,7 @@ class AbstractHTMLDocument extends Document
 			activeElement.onkeydown(keyboardEvent);
 		}
 		
-		switch (keyboardEvent.key)
+		switch (keyboardEvent.key.charCodeAt(0))
 		{
 			case TAB_KEY_CODE:
 				//only do sequantial navigation if default was not prevented
@@ -272,7 +353,7 @@ class AbstractHTMLDocument extends Document
 	private function layout():Void
 	{
 		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
-		bodyCoreStyle.layout();
+		bodyCoreStyle.startLayout();
 	}
 	
 	/**

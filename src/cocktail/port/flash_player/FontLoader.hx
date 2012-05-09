@@ -52,7 +52,7 @@ class FontLoader extends AbstractFontLoader
 
 		if (fontData.type == swf || fontData.type == unknown)
 		{
-			//TODO : re-implement with updated XMLHttpRequest
+			//TODO : re-implement with MediaLoader
 			//ResourceLoaderManager.loadLibrary(url, _onLoadComplete, _onLoadError);
 		}
 		else

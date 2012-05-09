@@ -59,23 +59,9 @@ class FormattingContext
 	private var _formattingContextData:FormattingContextData;
 	
 	/**
-	 * Holds a reference to each of the ElementRenderer formatted by this
-	 * formatting context.
-	 */
-	private var _elementsInFormattingContext:Array<ElementRenderer>;
-	
-	/**
-	 * a reference to the last inserted element renderer during 
-	 * a formatting
-	 */
-	private var _lastInsertedElement:ElementRenderer;
-	
-	/**
 	 * get the width of the largest line in the formatting context
 	 */
 	public var maxWidth(getMaxWidth, never):Int;
-	
-	private var _layOutLastLine:Bool;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
@@ -93,7 +79,6 @@ class FormattingContext
 		//formatting context
 		_floatsManager = new FloatsManager();
 		initFormattingContextData();
-		_elementsInFormattingContext = new Array<ElementRenderer>();
 	}
 	
 	/**
@@ -103,324 +88,48 @@ class FormattingContext
 	private function initFormattingContextData():Void
 	{
 		_formattingContextData = {
-			x : 0,
-			y : 0,
+			//TODO : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
+			//use instead local var in recursive method, like for block formatting context
+			x : _formattingContextRoot.coreStyle.computedStyle.paddingLeft,
+			y : _formattingContextRoot.coreStyle.computedStyle.paddingTop,
 			maxHeight : 0,
 			maxWidth:0
 		};
 	}
 	
-	/**
-	 * clean up class attributes
-	 */
-	public function dispose():Void
-	{
-		_elementsInFormattingContext = null;
-		_formattingContextData = null;
-		_lastInsertedElement = null;
-		
-		_floatsManager.dispose();
-		_floatsManager = null;
-		_formattingContextRoot = null;
-	}
-
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////
 	
 	/**
-	 * inert an ElementRenderer in the formatting context
-	 */
-	public function insertElement(element:ElementRenderer):Void
-	{
-		_elementsInFormattingContext.push(element);
-	}
-
-	/**
 	 * starts a formatting
 	 */
 	public function format():Void
 	{	
-		_layOutLastLine = true;
-		doFormat(_elementsInFormattingContext);
+		doFormat();
 	}
 	
 	/**
 	 * Return the static position of an element renderer, the position it 
 	 * would have had if it were in flow
 	 * 
-	 * TODO : static position is wrong in inline formatting context, buf with layOutLastLine ?
+	 * TODO : doesn't need a separate method for that ? Might happen
+	 * during regular formatting ?
 	 */
-	public function getStaticPosition(element:ElementRenderer):PointData
+	public function setStaticPosition(element:ElementRenderer):Void
 	{
-		_layOutLastLine = true;
-		var elementsToFormat:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0..._elementsInFormattingContext.length)
-		{
-			elementsToFormat.push(_elementsInFormattingContext[i]);
-		}
-		
-		elementsToFormat.push(element);
-		
-		doFormat(elementsToFormat);
-		
-		var x:Float = element.bounds.x;
-		var y:Float = element.bounds.y;
-		
-		return {x:x, y:y};
+		doFormat(element);
 	}
-	
-	/**
-	 * Return the added height of the children of an ElementRenderer
-	 * in this formatting context. Used by ElementRenderer with 
-	 * an auto height to determine its height
-	 * 
-	 * TODO : add a method getChildrenWidth for shrink-to-fit ?
-	 * 
-	 * TODO : no longer need getChildElementRenderers, use childNodes ?
-	 */
-	public function getChildrenHeight(elementRenderer:FlowBoxRenderer):Int
-	{
-		var height:Int = 0;
-		
-		//get bounds of all the children of the element in the formatting context root space
-		var elementRenderers:Array<ElementRenderer> = getChildElementRenderers(elementRenderer);
-		height = Math.round(getBounds(elementRenderers).height);
-		
-		
-		return height;
-	}
-
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-		private function getBounds(elements:Array<ElementRenderer>):RectangleData
-	{
-
-		var bounds:RectangleData;
-		
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		
-		for (i in 0...elements.length)
-		{
-			if (elements[i].bounds.x < left)
-			{
-				left = elements[i].bounds.x;
-			}
-			if (elements[i].bounds.y < top)
-			{
-				if (elements[i].isText() == false)
-				{
-					top = elements[i].bounds.y;
-				}
-				else
-				{
-					
-					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
-					var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
-		
-				//apply leading to the ascent and descent
-				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
-				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
-					
-					top = elements[i].bounds.y - htmlElementAscent;
-				}
-				
-			}
-			if (elements[i].bounds.x + elements[i].bounds.width > right)
-			{
-				right = elements[i].bounds.x + elements[i].bounds.width;
-			}
-			if (elements[i].bounds.y + elements[i].bounds.height  > bottom)
-			{
-				if (elements[i].isText() == false)
-				{
-					bottom = elements[i].bounds.y + elements[i].bounds.height;
-				}
-				else
-				{
-					
-					
-					
-					var htmlElementAscent:Float = elements[i].coreStyle.fontMetrics.ascent;
-				var htmlElementDescent:Float = elements[i].coreStyle.fontMetrics.descent;	
-			
-				//the leading is an extra height to apply equally to the ascent
-				//and the descent when laying out lines of text
-				var leading:Float = elements[i].coreStyle.computedStyle.lineHeight - (htmlElementAscent + htmlElementDescent);
-		
-				//apply leading to the ascent and descent
-				htmlElementAscent = Math.round((htmlElementAscent + leading / 2));
-				htmlElementDescent = Math.round((htmlElementDescent + leading / 2));
-					
-					bottom = elements[i].bounds.y - htmlElementAscent + elements[i].bounds.height;
-				}
-			}
-		}
-			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-		
-		//need to implement better fix,
-		//sould not be negative
-		if (bounds.width < 0)
-		{
-			bounds.width = 0;
-		}
-		if (bounds.height < 0)
-		{
-			bounds.height = 0;
-		}
-				
-		return bounds;
-		
-	}
-	
-	private function doFormat(elementsInFormattingContext:Array<ElementRenderer>):Void
+	private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//init/reset the formating context data to insert the first element at the
 		//origin of the containing block
 		initFormattingContextData();
-		
-		//format all the box element in order
-		for (i in 0...elementsInFormattingContext.length)
-		{
-			doInsertElement(elementsInFormattingContext[i], isNextElementALineFeed(elementsInFormattingContext, i));
-		}
-	}
-
-	private function doInsertElement(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		if (element.isFloat() == true)
-		{
-			insertFloat(element);
-		}
-		else if (element.canHaveChildren() == true)
-		{
-			if (element.coreStyle.establishesNewFormattingContext() == true)
-			{
-				insertFormattingContextRootElement(element);
-			}
-			else
-			{
-				insertContainerElement(element);
-			}
-		}
-		else
-		{
-			if (element.isText() == true)
-			{
-				if (element.isSpace() == true)
-				{
-					insertSpace(element, isNextElementALineFeed);
-				}
-				else
-				{
-					insertText(element);
-				}
-				
-			}
-			else
-			{
-				insertEmbeddedElement(element);
-			}
-		}
-	}
-	
-	private function getChildElementRenderers(elementRenderer:FlowBoxRenderer):Array<ElementRenderer>
-	{
-		var elementRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0..._elementsInFormattingContext.length)
-		{
-			if (_elementsInFormattingContext[i].parentNode == elementRenderer)
-			{
-				elementRenderers.push(_elementsInFormattingContext[i]);
-			}
-		}
-
-		return elementRenderers;
-	}
-	
-	private function insertEmbeddedElement(element:ElementRenderer):Void
-	{ 
-		//abstract
-	}
-	
-
-	private function insertFormattingContextRootElement(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	private function insertContainerElement(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-
-	/**
-	 * Insert a text. overriden by sub-classes
-	 */
-	private function insertText(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a space. overriden by sub-classes
-	 */
-	private function insertSpace(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		//abstract	
-	}
-	
-	/**
-	 * Insert an horizontal offset. overriden by sub-classes
-	 */
-	private function insertHorizontalOffset(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a tab. overriden by sub-classes
-	 */
-	private function insertTab(element:ElementRenderer, isNextElementALineFeed:Bool):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a linefeed. overriden by sub-classes
-	 */
-	private function insertLineFeed(element:ElementRenderer):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert a floated HTMLElement. overriden by sub-classes
-	 * 
-	 * TODO : re-implement floats
-	 */
-	private function insertFloat(element:ElementRenderer):Void
-	{
-		//abstract
 	}
 
 	/////////////////////////////////
@@ -456,18 +165,18 @@ class FormattingContext
 	 */
 	private function isNextElementALineFeed(elementsInFormattingContext:Array<ElementRenderer>, currentIndex:Int):Bool
 	{
-		var isNextElementALineFeed:Bool;
-		
+		var isNextElementALineFeed:Bool = false;
+		//
 		//here the current element is the last in the array
-		if (currentIndex + 1 >= elementsInFormattingContext.length)
-		{
-			isNextElementALineFeed = false;
-		}
+		//if (currentIndex + 1 >= elementsInFormattingContext.length)
+		//{
+			//isNextElementALineFeed = false;
+		//}
 		//else check if the next element is indeed a line feed
-		else
-		{
-			isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
-		}
+		//else
+		//{
+			//isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
+		//}
 		
 		return isNextElementALineFeed;
 	}

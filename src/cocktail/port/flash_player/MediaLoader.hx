@@ -9,7 +9,6 @@ package cocktail.port.flash_player;
 
 import cocktail.core.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
-import cocktail.core.resource.AbstractResourceLoader;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -34,9 +33,10 @@ class MediaLoader extends AbstractMediaLoader
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new() 
 	{
-		super(nativeElement);
+		_nativeElement = new Loader();
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

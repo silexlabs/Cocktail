@@ -63,7 +63,7 @@ typedef FontMetricsData = {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	var ascent:Int;
+	var ascent:Float;
 	
 	/**
 	 * A characteristic height
@@ -73,7 +73,7 @@ typedef FontMetricsData = {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	var descent:Int;
+	var descent:Float;
 	
 	/**
 	 * This is a standard metrics used 
@@ -81,31 +81,31 @@ typedef FontMetricsData = {
 	 * the height of a lowercase "x" glyph
 	 * at the given font size
 	 */ 
-	var xHeight:Int;
+	var xHeight:Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for subscript
 	 * glyphs
 	 */
-	var subscriptOffset:Int;
+	var subscriptOffset:Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for superscript
 	 * glyphs
 	 */
-	var superscriptOffset:Int;
+	var superscriptOffset:Float;
 	
 	/**
 	 * A suggested offset to apply from
 	 * the baseline when drawing underlines
 	 */
-	var underlineOffset:Int;
+	var underlineOffset:Float;
 	
 	/**
 	 * the width of a space character for
 	 * a given font at a given size
 	 */
-	var spaceWidth:Int;
+	var spaceWidth:Float;
 }

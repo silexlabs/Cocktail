@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.StyleData;
 import haxe.Log;
 
 /**
@@ -42,14 +43,6 @@ class BoxRenderer extends ElementRenderer
 		_backgroundManager = new BackgroundManager();
 	}
 	
-	override public function dispose():Void
-	{
-		super.dispose();
-		
-		_backgroundManager.dispose();
-		
-		_backgroundManager = null;
-	}
 	
 	/**
 	 * Render and position the background color and
@@ -57,44 +50,20 @@ class BoxRenderer extends ElementRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function renderBackground():Array<NativeElement>
+	override public function render():Array<NativeElement>
 	{
+		
+		//TODO : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
+			backgrounds[i].x = globalBounds.x;
+			backgrounds[i].y = globalBounds.y;
 			#end
 		}
 		
-		#if (flash9 || nme)
-		
-		if (isInitialContainer() == false)
-		{
-			
-			//TODO : implement properly hit area for flash_player
-			var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
-		
-			nativeElement.x = 0;
-			nativeElement.y = 0;
-			
-			nativeElement.graphics.clear();
-			
-			#if flash9
-			nativeElement.graphics.beginFill(0xFF0000, 0.0);
-			//bug in nme, no click event for transparent rect
-			#elseif nme
-			nativeElement.graphics.beginFill(0xFF0000, 0.01);
-			#end
-			nativeElement.graphics.drawRect(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
-			nativeElement.graphics.endFill();
-			
-			backgrounds.push(nativeElement);
-			
-		}
-		#end
 		
 	
 		return backgrounds;
