@@ -109,22 +109,10 @@ class EmbeddedElement extends HTMLElement
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
+	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new EmbeddedBoxRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
-		
-		if (_elementRenderer != null)
-		{
-			if (establishesNewStackingContext() == false)
-			{
-				_elementRenderer.layerRenderer = parentLayerRenderer;
-			}
-			else
-			{
-				_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
-			}
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

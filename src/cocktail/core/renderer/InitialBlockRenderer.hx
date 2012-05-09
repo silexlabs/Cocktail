@@ -84,6 +84,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return backgrounds;
 	}
 	
+	override public function attach():Void
+	{
+		_layerRenderer = new LayerRenderer(this);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	// attach/detach the rendered native elements to/from the flash Stage

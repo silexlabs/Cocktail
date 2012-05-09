@@ -32,7 +32,7 @@ class HTMLHtmlElement extends HTMLElement
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
+	override private function createElementRenderer():Void
 	{
 		
 	}

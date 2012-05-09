@@ -79,7 +79,7 @@ class HTMLDocument extends Document
 	private var _window:Window;
 	
 	/**
-	 *The activeElement set/get the element
+	 * The activeElement set/get the element
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
@@ -119,6 +119,8 @@ class HTMLDocument extends Document
 		super();
 		
 		_body = cast(createElement(HTML_BODY_TAG_NAME));
+		_body.attach();
+		
 		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
 		
@@ -195,8 +197,6 @@ class HTMLDocument extends Document
 		
 		return element;
 	}
-	
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INPUT METHODS
@@ -408,15 +408,13 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the Window is resized, schedule
-	 * a layout and rendering
+	 * When the Window is resized, invalidate
+	 * the body
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		_body.elementRenderer.invalidate();
+		_body.invalidateStyle();
 	}
-	
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS

@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
@@ -29,7 +30,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer 
+class LayerRenderer extends Node
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -42,6 +43,7 @@ class LayerRenderer
 	 */
 	public function new(rootRenderer:ElementRenderer) 
 	{
+		super();
 		_rootRenderer = rootRenderer;
 	}
 	
