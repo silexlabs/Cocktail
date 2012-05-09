@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.renderer.LayerRenderer;
 
 /**
  * Root of an HTML document
@@ -25,5 +26,14 @@ class HTMLHtmlElement extends HTMLElement
 	public function new() 
 	{
 		super(HTML_HTML_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer():Void
+	{
+		
 	}
 }

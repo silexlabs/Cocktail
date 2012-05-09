@@ -8,6 +8,8 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.EmbeddedBoxRenderer;
+import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.NativeElement;
 
@@ -82,15 +84,6 @@ class EmbeddedElement extends HTMLElement
 		//abstract
 	}
 	
-	/**
-	 * Override to instantiate an Style specific 
-	 * to embedded elements
-	 */
-	override private function initCoreStyle():Void
-	{
-		this._coreStyle = new CoreStyle(this);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +105,16 @@ class EmbeddedElement extends HTMLElement
 		return oldChild;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new EmbeddedBoxRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////

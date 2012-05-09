@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The Element interface represents an element in an HTML or XML document.
@@ -257,12 +258,14 @@ class Element extends Node
 	 * Returns a NodeList of all descendant
 	 * Elements with a given tag name, in document order.
 	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * @return	A list of matching Element nodes.
 	 */
-	public function getElementsByTagName(tagName:String):Array<Node>
+	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
-		var elements:Array<Node> = new Array<Node>();
+		var elements:Array<HTMLElement> = new Array<HTMLElement>();
 		doGetElementsByTagName(this, tagName, elements);
 		return elements;
 	}
@@ -275,7 +278,7 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<Node>):Void
+	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
@@ -286,12 +289,12 @@ class Element extends Node
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
 				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == Node.ELEMENT_NODE)
 				{
-					elements.push(childNode);
+					elements.push(cast(childNode));
 				}
 				
 				doGetElementsByTagName(childNode, tagName, elements);

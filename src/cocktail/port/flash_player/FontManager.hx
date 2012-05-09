@@ -111,7 +111,7 @@ class FontManager extends AbstractFontManager
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public virtual methods, font rendering and measure
+	// Overriden virtual methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -119,7 +119,7 @@ class FontManager extends AbstractFontManager
 	 * provided by the flash text engine. The
 	 * font metrics are provided for a given font at a given size
 	 */
-	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	override private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
 	{
 		//the flash object used to access flash font metrics
 		var elementFormat:ElementFormat = new ElementFormat();

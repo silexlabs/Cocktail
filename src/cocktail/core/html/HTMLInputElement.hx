@@ -83,18 +83,6 @@ class HTMLInputElement extends HTMLElement
 		_value = "";
 	}
 	
-	/**
-	 * init the style of the text input
-	 * 
-	 * TODO : implement a separate style
-	 * for form control ?
-	 */
-	override private function initCoreStyle():Void
-	{
-		_coreStyle = new CoreStyle(this);
-	}
-
-	
 	/////////////////////////////////
 	// CHANGE SETTER/GETTER
 	/////////////////////////////////

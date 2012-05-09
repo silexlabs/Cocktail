@@ -7,7 +7,6 @@
 */
 package cocktail.core.style.formatter;
 import cocktail.core.dom.Node;
-import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
@@ -38,6 +37,7 @@ class BlockFormattingContext extends FormattingContext
 	//TODO : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
+		
 		//remove margin of formatting context, as child must be placed relative to padding box
 		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);	
 
@@ -57,10 +57,7 @@ class BlockFormattingContext extends FormattingContext
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
 			//only allow static or relative
-			//TODO : when static position element is found, should stop formatting as it is a formatting only done to format
-			//this particular children
-			if (child.coreStyle.isPositioned() == false || child.coreStyle.isRelativePositioned() == true || child == staticPositionedElement)
-			{
+
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 				
@@ -77,19 +74,24 @@ class BlockFormattingContext extends FormattingContext
 					height:height
 				}
 				
-				
+				//TODO : doc, for child with children, their padding and margin are added at
+				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
 				{
+					//TODO : doc, don't call method for block container children as they have
+					//their own formatting context
 					if (child.establishesNewFormattingContext() == false)
 					{
 						concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
 					}
-					else
+					else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 					{
 						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 					}
 				}
-				else
+				//TODO : doc, for absolutely positioned element, their bounds are set to their static position
+				//but they do not influence the formatting of subsequent children or sibling
+				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 				{
 					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
 				}
@@ -104,13 +106,12 @@ class BlockFormattingContext extends FormattingContext
 				{
 					_formattingContextData.maxHeight = concatenatedY;
 				}
-			}
+			
 		}
 		
 		childHeight = concatenatedY - childHeight;
 		
-		//TODO : initial container should know when to use the window bounds
-		if (elementRenderer.coreStyle.height == Dimension.cssAuto && elementRenderer.isInitialContainer() == false)
+		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 		}

@@ -79,7 +79,7 @@ class TextLineBox extends LineBox
 		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
+		_nativeElement.y = _bounds.y - (leadedAscent + leadedDescent);
 		#end
 		
 		return [_nativeElement];
@@ -118,6 +118,11 @@ class TextLineBox extends LineBox
 		var leadedDescent:Float = descent + leading / 2;
 		
 		return leadedDescent;
+	}
+	
+	override public function isText():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
