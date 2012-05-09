@@ -35,7 +35,7 @@ import haxe.Log;
 /**
  * Base class for box renderers. A box renderer
  * is a visual element which conforms to the
- * CSS box model. This base class deals with
+ * CSS box model. This base class is used by
  * both replaced box (image...) and container box
  * (block box, inline box)
  * 
@@ -93,7 +93,7 @@ class BoxRenderer extends ElementRenderer
 	 * This method is called recursively on every children of the ElementRenderer if it has any to layout all of the rendering tree.
 	 * 
 	 * @param	containingBlockData the computed dimensions of the parent block of this
-	 * ElemenrRenderer.
+	 * ElementRenderer.
 	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned ElementRenderer
 	 * (an ElementRenderer with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
 	 * @param	firstPositionedAncestorData the dimensions of the first positioned ancestor in the hierarchy, meaning that
@@ -164,40 +164,6 @@ class BoxRenderer extends ElementRenderer
 		//abstract
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ABSOLUTE POSITIONING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * layout an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
-	 * using either the first positioned ancestor dimensions or the viewport's
-	 * 
-	 * TODO : tried to move it to ContainerCoreStyle but had problem has ElementRenderer
-	 * was passed by value instead of reference
-	 * 
-	 * @param firstPositionedAncestorData the dimensions of the first positioned ancestor
-	 * @param viewportData the dimensions of the viewport
-	 */
-	override public function layoutPositionedChild(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
-	{
-		switch (_coreStyle.computedStyle.position)
-		{	
-			//positioned 'fixed' ElementRenderer, use the viewport
-			case fixed:
-				doLayoutPositionedChildren(this, viewportData);
-				
-			//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
-			case absolute:
-				doLayoutPositionedChildren(this, firstPositionedAncestorData);
-				
-			default:
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ABSOLUTE POSITIONING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Insert the ElementRenderer in the array of absolutely positioned elements if it
 	 * in fact an absolutely positioned element
@@ -221,75 +187,6 @@ class BoxRenderer extends ElementRenderer
 		
 		//store the ElementRenderer to be laid out later
 		firstPositionedAncestorData.elements.push(this);
-	}
-	
-	/**
-	 * Actually lay out the positioned ElementRenderer
-	 * 
-	 * TODO : should be called by FlowBoxRenderer on itzs children instead
-	 */
-	private function doLayoutPositionedChildren(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockData):Void
-	{
-		//for horizonal offset, if both left and right are not auto,
-		//left takes precedance so we try to apply left offset first
-		if (elementRenderer.coreStyle.left != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
-		}
-		//if no left offset is defined, then try to apply a right offset.
-		//Right offset takes the containing block width minus the
-		//width of the positioned children as value for a 0 right offset
-		else if (elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingBlockData.width);
-		}
-		//if both right and left are 'auto', then the ElementRenderer is positioned to its
-		//static position, the position it would have had in the flow if it were positioned as 'static'.
-		//At this point the bounds of the ElementRenderer already matches its static position
-		
-		//for vertical offset, the same rule as horizontal offsets apply
-		if (elementRenderer.coreStyle.top != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
-		}
-		else if (elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingBlockData.height);
-		}
-	}
-	
-	/**
-	 * get the left offset to apply the ElementRenderer
-	 */
-	private function getLeftOffset(elementRenderer:ElementRenderer):Int
-	{
-		return elementRenderer.coreStyle.computedStyle.left + elementRenderer.coreStyle.computedStyle.marginLeft;
-	}
-	
-	/**
-	 * get the right offset to apply the ElementRenderer
-	 */
-	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Int):Int
-	{
-		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
-		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
-	}
-	
-	/**
-	 * get the top offset to apply the ElementRenderer
-	 */
-	private function getTopOffset(elementRenderer:ElementRenderer):Int
-	{
-		return elementRenderer.coreStyle.computedStyle.top + elementRenderer.coreStyle.computedStyle.marginTop;
-	}
-	
-	/**
-	 * get the bottom offset to apply the ElementRenderer
-	 */
-	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Int):Int
-	{
-		return containingHTMLElementHeight - elementRenderer.coreStyle.computedStyle.height + elementRenderer.coreStyle.computedStyle.paddingTop +
-		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -605,44 +502,6 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		return containingBlockDimensions;
-	}
-	
-	/**
-	 * Return the dimensions data
-	 * of the ElementRenderer
-	 */
-	private function getContainerBlockData():ContainingBlockData
-	{
-		return {
-			width:this.computedStyle.width,
-			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
-			height:this.computedStyle.height,
-			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
-		};
-	}
-	
-	/**
-	 * Return the structure used to layout absolutely positioned
-	 * children. If this HTMLElement is positioned, a new
-	 * structure is created, else the current one is used
-	 */
-	private function getChildFirstPositionedAncestorData(firstPositionedAncestorData:FirstPositionedAncestorData):FirstPositionedAncestorData
-	{
-		var childFirstPositionedAncestorData:FirstPositionedAncestorData;
-		
-		if (isPositioned() == true)
-		{
-			childFirstPositionedAncestorData = {
-				data: getContainerBlockData(),
-				elements: new Array<ElementRenderer>()
-			}
-		}
-		else
-		{
-			childFirstPositionedAncestorData = firstPositionedAncestorData;
-		}
-		
-		return childFirstPositionedAncestorData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

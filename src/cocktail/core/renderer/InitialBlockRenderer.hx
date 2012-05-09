@@ -254,13 +254,13 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * style of 0 will always be displayed at the bottom of the viewport event if the initial ElementRenderer is not
 	 * as high as the viewport
 	 */
-	override private function positionAbsolutelyPositionedHTMLElementsIfNeeded(childFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
+	override private function layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
-		for (i in 0...childFirstPositionedAncestorData.elements.length)
+		for (i in 0...childrenFirstPositionedAncestorData.elements.length)
 		{
-			var element:ElementRenderer = childFirstPositionedAncestorData.elements[i];
+			var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
 			//use the viewport dimensions both times
-			element.layoutPositionedChild(viewportData, viewportData);
+			layoutPositionedChild(element, viewportData, viewportData);
 		}
 	}
 	
